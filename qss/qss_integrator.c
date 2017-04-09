@@ -24,7 +24,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../../graph/graph_profile.h"
 #include "../common/data.h"
 #include "qss_commands.h"
 #include "qss_data.h"

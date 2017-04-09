@@ -6,17 +6,10 @@ DEBUG ?= False
 CC          := gcc
 FC 			:= gfortran 
 
-#The Target Binary Program
-TARGET      := libqss.a
-LIBTIMESTEP := libtimestep.a
-ifeq ($(DEBUG),True)
-TARGET      := libqssd.a
-LIBTIMESTEP := libtimestepd.a
-endif
-
 #The Directories, Source, Includes, Objects, Binary 
-SRCDIR      := ../../src
-ENGINEDIR 	:= ../engine
+ROOTDIR      := ../..
+SRCDIR      := ..
+ENGINEDIR 	:= .
 QSSDIR 		:= $(ENGINEDIR)/qss
 METHODSDIR 	:= $(QSSDIR)
 CLASSICDIR 	:= $(ENGINEDIR)/classic
@@ -28,11 +21,18 @@ BUILDDIR    := $(ENGINEDIR)/$(OBJDIR)/release
 ifeq ($(DEBUG),True)
 BUILDDIR    := $(ENGINEDIR)/$(OBJDIR)/debug
 endif
-GRAPHDIR    := $(SRCDIR)/graph
-TARGETDIR   := ./
+TARGETDIR   := $(ROOTDIR)/libs
 SRCEXT      := c
 DEPEXT      := d
 OBJEXT      := o
+
+# Target Binary Program
+TARGET      := $(TARGETDIR)/libqss.a
+LIBTIMESTEP := $(TARGETDIR)/libtimestep.a
+ifeq ($(DEBUG),True)
+TARGET      := $(TARGETDIR)/libqssd.a
+LIBTIMESTEP := $(TARGETDIR)/libtimestepd.a
+endif
 
 #Flags, Libraries and Includes
 CFLAGS 		:= -Wall -msse2 -mfpmath=sse -O2 
@@ -61,8 +61,6 @@ DASSLSRC = $(DASSLDIR)/daux.f $(DASSLDIR)/ddaskr.f $(DASSLDIR)/dlinpk.f
 
 DOPRISRC = $(DOPRIDIR)/dopri5.c 
 
-GRAPHSRC = $(GRAPHDIR)/graph_profile.c
-
 # Objects
 COMMONOBJ=$(addprefix $(BUILDDIR)/, $(notdir $(COMMONSRC:.c=.o)))
 
@@ -75,8 +73,6 @@ CLASSICOBJ=$(addprefix $(BUILDDIR)/, $(notdir $(CLASSICSRC:.c=.o)))
 DASSLOBJ=$(addprefix $(BUILDDIR)/, $(notdir $(DASSLSRC:.f=.o)))
 
 DOPRIOBJ=$(addprefix $(BUILDDIR)/, $(notdir $(DOPRISRC:.c=.o)))
-
-GRAPHOBJ=$(addprefix $(GRAPHDIR)/$(OBJDIR)/grp_, $(notdir $(GRAPHSRC:.c=.o)))
 
 # Make dependencies
 DEPS = $(COMMONOBJ:.o=.d) $(SEQOBJ:.o=.d) $(PAROBJ:.o=.d) $(CLASSICOBJ:.o=.d)
@@ -109,8 +105,9 @@ $(BUILDDIR)/%.o : $(DASSLDIR)/%.f
 $(LIBTIMESTEP): $(DASSLOBJ) $(DOPRIOBJ)
 	@ar rvs $(@) $(DASSLOBJ) $(DOPRIOBJ)
 
-$(TARGET): $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ) $(GRAPHOBJ)
-	@ar rsc $@ $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ) $(GRAPHOBJ)
+$(TARGET): $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ) 
+	@mkdir -p $(TARGETDIR)
+	@ar rsc $@ $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ)
 
 $(COMMONOBJ): | $(BUILDDIR)
 
@@ -120,12 +117,12 @@ $(PAROBJ): | $(BUILDDIR)
 
 $(CLASSICOBJ): | $(BUILDDIR)
 
-$(GRAPHOBJ): 
-	@cd $(GRAPHDIR) && $(MAKE)
-
 $(BUILDDIR):
 	@mkdir -p $(BUILDDIR)
 	
+$(LIBSDIR):
+	@mkdir -p $(TARGETDIR)
+
 -include $(DEPS)
 
 .PHONY: clean
@@ -134,7 +131,7 @@ clean:
 	$(RMS) $(DEPS) $(TARGET) $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ) $(DASSLOBJ) $(DOPRIOBJ)
 
 help:
-	@echo "make DEBUG=<True|False> OS=<unix|win32|mac>"
+	@echo "make DEBUG=<True|False> OS=<unix|win|osx>"
 	@echo "Default value:"
 	@echo ""
 	@echo "DEBUG=False"
