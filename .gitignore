@@ -1,0 +1,10 @@
+external/*
+libs/*
+models/*
+packages/*
+src/usr/*
+src/engine/*
+src/mmoc/*
+src/gui/*
+src/interfaces/*
+src/test-suite/*
