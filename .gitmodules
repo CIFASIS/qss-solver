@@ -25,3 +25,9 @@
 [submodule "src/usr"]
 	path = src/usr
 	url = https://github.com/CIFASIS/qss-solver-user-libs.git
+[submodule "src/interfaces/sbml"]
+	path = src/interfaces/sbml
+	url = https://github.com/CIFASIS/sbml-mmo.git
+[submodule "external"]
+	path = external
+	url = https://github.com/CIFASIS/qss-solver-external-tools.git
