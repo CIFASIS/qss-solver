@@ -1,0 +1,10 @@
+Package: qss-solver	
+Version: 3.1
+Architecture: i386
+Maintainer: Joaquin Fernandez <fernandez@cifasis-conicet.gov.ar>
+Installed-Size: 15599
+Depends: gnuplot-x11 (>= 4.2.4), build-essential (>= 11.4), libqtcore4 (>= 4.7), libqtgui4 (>= 4.7), libqt4-svg (>= 4.7), zenity, gfortran (>=4.6.3), libconfig-dev, libblas-dev, libgsl0-dev
+Section: science
+Priority: extra
+Homepage: https://sourceforge.net/projects/qssengine/
+Description:  Quantized State System Solver.

@@ -1,0 +1,99 @@
+<giproject version="4.0">
+	<languages>
+		<language id="ENU"/>
+		<language id="EPO"/>
+		<language id="DEU"/>
+		<language id="FRA"/>
+		<language id="RUS"/>
+		<language id="ENU" pluginid="StdUI"/>
+		<language id="EPO" pluginid="StdUI"/>
+		<language id="DEU" pluginid="StdUI"/>
+		<language id="FRA" pluginid="StdUI"/>
+		<language id="RUS" pluginid="StdUI"/>
+	</languages>
+	<packages>
+		<package filename="qss-solver-install" main="1">
+			<components>
+				<component dst="%InstallPath%" id="app" name="app">
+					<files>
+						<file dst="*.*" src="qss-solver\*.*"/>
+					</files>
+					<runapps>
+						<runapp cmdline="%InstallPath%\bin\Installgcc.bat" msg="Uncompressing Gcc." showcmd="hide" workdir="%InstallPath%\bin"/>
+						<runapp cmdline="%InstallPath%\bin\Installgnuplot.bat" msg="Uncompressing Gnuplot." showcmd="hide" workdir="%InstallPath%\bin"/>
+					</runapps>
+					<shortcuts>
+						<shortcut cmdline="%InstallPath%\bin\qss-solver.exe" name="%AppFolder%\%AppName%" workdir="%InstallPath%\bin"/>
+						<shortcut cmdline="%InstallPath%\Uninstall.exe" name="%AppFolder%\Uninstall %AppName%"/>
+					</shortcuts>
+				</component>
+			</components>
+			<plugins>
+				<plugin id="StdUI">
+					<config>
+						<paramgroup name="Config">
+							<param name="PreInstallDialogSequence" value="DLG_WELCOME,DLG_LICENSE,DLG_README,DLG_DIR,DLG_INSTALLTYPE,DLG_GROUP,DLG_START"/>
+							<param name="PostInstallDialogSequence"/>
+							<param name="ShowMainWindow" value="1"/>
+							<param name="ShowDialogTitle" value="1"/>
+							<param name="ShowDialogSubTitle" value="1"/>
+							<param name="ShowFinalDialog" value="1"/>
+							<param name="GradientTopColor" value="0"/>
+							<param name="GradientBottomColor" value="$FF0000"/>
+							<param name="StretchBanner" value="0"/>
+							<param name="DialogFont" value="MS Sans Serif,8"/>
+                            <param name="DialogTitleFont" value="MS Sans Serif,10,$C08000,B"/>
+							<param name="DialogTitleShadow" value="0"/>
+							<param name="DialogTitleShadowColor" value="$C0C0C0"/>
+							<param name="DialogPosition" value="1,1"/>
+                       		<param name="LicenseBackColor" value="$80FFFF"/>
+							<param name="ReadmeBackColor"/>
+							<param name="UninstallTitleFont"/>
+							<param name="DialogSubTitlePosition" value="30,28"/>
+							<param name="TitlePosition" value="15,8"/>
+							<param name="DialogSubTitleFont" value="MS Sans Serif,8,$000000"/>
+						</paramgroup>
+						<paramgroup name="Labels">
+							<param name="TitleShadow" value="%AppName%,33,23,0,Arial,30,$606060,B"/>
+							<param name="Title" value="%AppName%,30,20,0,Arial,30,$FF0000,B"/>
+						</paramgroup>
+						<paramgroup name="StaticBitmaps">
+							<param name="Bitmap1" value="%Presetup%\integrator.svg,30,10,3,$FFFFFF"/>
+						</paramgroup>
+						<paramgroup name="DialogBitmaps">
+							<param name="DLG_LICENSE"/>
+							<param name="DLG_WELCOME"/>
+							<param name="DLG_README"/>
+							<param name="DLG_DIR"/>
+							<param name="DLG_INSTALLTYPE"/>
+							<param name="DLG_FEATURES"/>
+							<param name="DLG_START"/>
+							<param name="DLG_PROGRESS"/>
+							<param name="DLG_FINISH"/>
+							<param name="DLG_NOTFINISH"/>
+							<param name="DLG_PASSWORD"/>
+							<param name="DLG_GROUP"/>
+						</paramgroup>
+					</config>
+				</plugin>
+			</plugins>
+			<presetup>
+				<file src="main\presetup\*.*"/>
+			</presetup>
+		</package>
+	</packages>
+	<variables>
+		<var name="perc" value="%"/>
+		<var name="AppID" value="QSS Solver"/>
+		<var name="AppName" value="QSS Solver"/>
+		<var name="CompanyName"/>
+		<var name="OutputPath" value="Output"/>
+		<var name="Password"/>
+		<var name="CompressionLevel" value="7"/>
+		<var name="AutoSelectLanguage" value="1"/>
+		<var name="Uninstall" value="1"/>
+		<var name="ProgramGroup" value="%AppName%"/>
+		<var name="AppFolder" value="%ProgramsMenu%\%ProgramGroup%"/>
+		<var name="InstallPath" value="%BootDrive%\QssSolver"/>
+	</variables>
+</giproject>

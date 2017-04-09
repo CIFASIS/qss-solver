@@ -1,0 +1,2239 @@
+\documentclass[11pt,a4paper,notitlepage]{report}
+\usepackage{syntax}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage[table]{xcolor}
+\usepackage{float}
+\usepackage[scanall]{psfrag}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{placeins}
+\graphicspath{{images/}}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{algorithm,algpseudocode}
+\usepackage{hyperref}
+%\input{commands}
+\renewcommand*{\lstlistingname}{Algorithm}
+
+\usepackage{enumerate}
+\usepackage{makeidx}
+
+\setlength{\grammarparsep}{0.2em}   % vertical distance between production rules
+\setlength{\grammarindent}{8em}      % horizontal indent distance
+
+\begin{document}
+\thispagestyle{empty}
+
+\title{\textbf{$\mu$-Modelica Language Specification.}}
+
+\author{ Joaquín Fernández \quad Ernesto Kofman\quad \\
+       CIFASIS-CONICET, Rosario, Argentina \\
+       $\texttt{\{fernandez, kofman\}@cifasis-conicet.gov.ar}$
+}
+
+\date{} % <--- leave date empty
+
+\maketitle\thispagestyle{empty} %% <-- you need this for the first page
+
+\begin{abstract}
+This document defines the $\mu$-Modelica language. $\mu$-Modelica is part of the Stand--Alone QSS solver, which is an implementation of the Quantized State System (QSS) integration methods for continuous and hybrid system simulation. A difficulty imposed by the QSS methods is that it makes use of structural information of the model and this information must be given on the form of incidence matrices.
+To overcome this difficulty, the solver has a Modeling Front--End that allows the user to describe models in a standard way and then it automatically generates all the structure matrices required.
+
+$\mu$-Modelica is defined as a sub--set of the standard \href{https://www.modelica.org}{Modelica} language. Modelica is a free high level, object-oriented language for modeling of large, complex, and heterogeneous systems. Models in Modelica are mathematically described by differential, algebraic and discrete equations. 
+
+The $\mu$-Modelica specification is based on the \href{https://www.modelica.org/documents}{Modelica Specification, version 3.3} and it contains only the necessary Modelica keywords and structures to define an ODE based hybrid model.
+\end{abstract}
+
+%\newpage
+\tableofcontents
+\newpage
+\chapter{Lexical Structure}\label{ch:lexical}
+
+This section describes several of the basic building blocks of $\mu$-Modelica such as characters and lexical units including identifiers and literals. Without question, the smallest building blocks in $\mu$-Modelica are single characters belonging to a character set. Characters are combined to form lexical units, also called tokens. These tokens are detected by the lexical analysis part of the $\mu$-Modelica translator. Examples of tokens are literal constants, identifiers, and operators. Comments are not really lexical units since they are eventually discarded. On the other
+hand, comments are detected by the lexical analyzer before being thrown away. 
+
+\section{Character Set}
+
+The character set of the $\mu$-Modelica language is Unicode, but restricted to the Unicode characters corresponding to 7-bit ASCII characters in several places.
+
+\section{Comments}
+
+There are two kinds of comments in $\mu$-Modelica which are not lexical units in the language and therefore are treated as whitespace by a $\mu$-Modelica translator. The whitespace characters are space, tabulator, and line separators (carriage return and line feed); and whitespace cannot occur inside tokens, e.g., $<=$ must be written as two characters without space or comments between them. [\emph{The comment syntax is identical to that of C++}]. The following comment variants are available:
+
+\begin{center}
+\begin{tabular}{cp{3in}}
+	// comment & Characters from // to the end of the line are ignored. \\	
+	/* comment */ & Characters between /* and */ are ignored, \ 
+					including line terminators.  \\
+\end{tabular}
+\label{tab:comments}
+\end{center}
+
+$\mu$-Modelica comments do not nest, i.e., /* */ cannot be embedded within /* */ . The following is invalid:
+
+\begin{verbatim}
+/* Commented out - erroneous comment, invalid nesting of comments!
+
+/* This is a interesting model */
+model interesting
+  ...
+end interesting;
+*/
+\end{verbatim}
+
+%
+%There is also a kind of “documentation comment,” really a documentation string that is part of the Modelica
+%language and therefore not ignored by the Modelica translator. Such “comments” may occur at the ends of
+%declarations, equations, or statements or at the beginning of class definitions. For example:
+%model TempResistor
+%...
+%parameter Real R
+%...
+%"Temperature dependent resistor"
+%"Resistance for reference temp.";12 Modelica Language Specification 3.3
+%end TempResistor;
+
+\section{Identifiers, Names, and Keywords}
+
+Identifiers are sequences of letters, digits, and other characters such as underscore, which are used for naming various items in the language. Certain combinations of letters are keywords represented as reserved words in the $\mu$-Modelica grammar and are therefore not available as identifiers.
+
+\subsection{Identifiers}
+
+$\mu$-Modelica identifiers, used for naming classes, variables, constants, and other items, must always start with a letter or underscore ($\_$), followed by any number of letters, digits, or underscores (unlike Modelica which also allows the definition of quoted literal strings). Case is
+significant, i.e., the names \textbf{Inductor} and \textbf{inductor} are different. The following BNF-like rules define $\mu$-Modelica identifiers, where curly brackets $\{\ \}$ indicate repetition zero or more times, and vertical bar $|$ indicates alternatives.
+
+\begin{grammar}\scriptsize
+
+<IDENT> = NONDIGIT "{" DIGIT | NONDIGIT "}" 
+
+<NONDIGIT> = "\"_\"" | letters "\"a\"" to "\"z\"" | letters "\"A\"" to "\"Z\""
+
+<STRING> = "\"" { S-CHAR | S-ESCAPE } "\""
+
+<S-CHAR> = any member of the Unicode character set except double-quote "\"\"\"", and backslash "\\".  
+
+<S-ESCAPE> = "\"’\"" | "\\\"" | "\"?\"" | "\"\\\"" |
+"\"\\a\"" | "\"\\b\"" | "\"\\f\"" | "\"\\n\"" | "\"\\r\"" | "\"\\t\"" | "\"\\v\""
+
+<DIGIT> = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+
+<UNSIGNED_INTEGER> = DIGIT "{" DIGIT "}"
+
+<UNSIGNED_NUMBER> = UNSIGNED_INTEGER [ "." [ UNSIGNED_INTEGER ] ] [ ( "e" | "E" ) [ "+" | "-" ] UNSIGNED_INTEGER ]
+
+\end{grammar}
+
+\subsection{Names}
+
+A name is an identifier with a certain interpretation or meaning. A name may denote an \verb"Integer"
+variable, a \verb"Real" variable, a function, etc. In $\mu$-Modelica the name always have the same meaning in all the model given that all models arew flattened, i.e. there is only one scope defined where all the names are visible. The exception to this rule are \verb"for indexes" which are only visible inside the for loop definition.
+
+\subsection{$\mu$-Modelica Keywords}
+
+\FloatBarrier
+The following $\mu$-Modelica keywords are reserved words and may not be used as identifiers:
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+	\hline
+	\verb"in" & \verb"for" & \verb"loop" & \verb"end" & \verb"if" \\	
+	\hline
+	\verb"then" & \verb"else" & \verb"elseif" & \verb"output" & \verb"each" \\
+	\hline
+	\verb"model" & \verb"elsewhen" & \verb"annotation" & \verb"equation" & \verb"when" \\
+	\hline	
+	\verb"reinit" & \verb"algorithm" & \verb"time" & \verb"pre" & \verb"function" \\
+	\hline 	 
+	\verb"end" & \verb"output" & \verb"input" & \verb"initial" & \verb"der" \\ 
+	\hline	
+	\verb"parameter" & \verb"constant" & \verb"boolean" & \verb"discrete" & \verb"start" \\
+	\hline
+	\verb"Real" & \verb"Integer" & \verb"import" & \verb"external"  &  \\
+	\hline
+	\verb"each" & \verb"protected" & \verb"return" & \verb""  &  \\
+	\hline
+\end{tabular}
+\end{center}
+
+\FloatBarrier
+The following keywords are used by the QSS solver, they are defined as annotations in $\mu$-Modelica and may not be used as identifiers:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+	\hline
+	\verb"MMO_OutputType" & \verb"sampled" & \verb"dense" & \verb"step"  \\	
+	\hline
+	\verb"random" & \verb"" & \verb"linear" & \verb"include" \\
+	\hline
+	\verb"MMO_SymDiff" & \verb"MMO_Scheduler" & \verb"binary" & \verb"MMO_DerDelta" \\
+	\hline 	
+	\verb"MMO_StepSize" & \verb"Library" & \verb"MMO_MinStep" & \verb"MMO_ZcHyst" \\
+	\hline 
+	\verb"Tolerance" & \verb"AbsTolerance" & \verb"MMO_Solver" & \verb"MMO_LPS" \\  	 
+	\hline	
+	\verb"experiment" &  \verb"StartTime" & \verb"StopTime" & \verb"MMO_Description"\\	
+	\hline
+	\verb"QSS" & \verb"CQSS" & \verb"LIQSS" & \verb"QSS2" \\
+	\hline	
+	\verb"LIQSS2" & \verb"QSS3" & \verb"LIQSS3" & \verb"Include" \\ 	
+	\hline
+\end{tabular}
+\end{center}
+
+\section{Literal Constants}
+
+Literal constants are unnamed constants that have different forms depending on their type. Each of the predefined types in $\mu$-Modelica has a way of expressing unnamed constants of the corresponding type, which is presented in the ensuing subsections. 
+
+\subsection{Floating Point Numbers}
+
+A floating point number is expressed as a decimal number in the form of a sequence of decimal digits optionally followed by a decimal point, optionally followed by an exponent. At least one digit must be present. The exponent is indicated by an $E$ or $e$, followed by an optional sign ($+$ or $-$) and one or more decimal digits. The minimal recommended range is that of IEEE double precision floating point numbers, for which the largest representable positive number is $1.7976931348623157E+308$ and the smallest positive number is $2.2250738585072014E-308$.
+
+For example, the following are floating point number literal constants:
+\begin{itemize}
+\item 22.5
+\item 3.141592653589793
+\item 1.2E-35 
+\end{itemize}
+
+The same floating point number can be represented by different literals. For example, all of the following literals denote the same number:
+
+\begin{itemize}
+\item 13.
+\item 13E0
+\item 1.3e1
+\item 0.13E2
+\end{itemize}
+
+\subsection{Integer Literals}
+
+Literals of type \verb"Integer" are sequences of decimal digits, e.g. as in the integer numbers:
+
+\begin{itemize}
+\item 33
+\item 0
+\item 100
+\item 30030044
+\end{itemize}
+
+[\emph{Negative numbers are formed by unary minus followed by an integer literal}]. The minimal recommended number range is from $-2147483648$ to $+2147483647$ for a two’s-complement 32-bit integer implementation.
+
+\subsection{Boolean Literals}
+
+The two \verb"Boolean" literal values are true and false .
+
+\chapter{Operators and Expressions}\label{ch:operators}
+
+The lexical units are combined to form even larger building blocks such as expressions according to the rules given by the expression part of the $\mu$-Modelica grammar. This chapter describes the evaluation rules for expressions, the concept of expression variability, built-in
+mathematical operators and functions, and the built-in special $\mu$-Modelica operators with function syntax.
+
+Expressions can contain variables and constants, which have predefined types. The predefined
+built-in types of $\mu$-Modelica are \verb"Real", \verb"Integer" and \verb"Boolean" types which are presented in more detail in Section \ref{types:predefined}. 
+
+\section{Expressions}
+
+$\mu$-Modelica equations, assignments and declaration equations contain expressions.
+Expressions can contain basic operations, $+, -, *, /, \hat{}$, etc. with normal precedence as defined in Section 3.2. It is also possible to define functions and call them in a normal fashion.
+
+\section{Operator Precedence and Associativity}
+
+Operator precedence determines the order of evaluation of operators in an expression. An operator with higher precedence is evaluated before an operator with lower precedence in the same expression.
+The following table presents all the expression operators in order of precedence from highest to lowest. All operators are binary except the postfix operators and those shown as unary together with \verb"expr", the conditional operator. Operators with the same precedence occur at the same line of the table:
+
+\FloatBarrier
+The following $\mu$-Modelica keywords are reserved words and may not be used as identifiers:
+\begin{center}
+\begin{tabular}{|p{1in}|p{2in}|p{1.5in}|}
+	\hline
+	\emph{Operator Group} & \emph{Operator Syntax} & \emph{Examples} \\	
+	\hline
+	postfix array index operator & \verb"[]" & \verb"arr[index]" \\
+	\hline
+	postfix function call & $funcName(function-arguments)$ & \verb"sin(3.46)" \\
+	\hline	
+	exponentiation & $\hat{}$ & \verb"2^3" \\
+	\hline 	 
+	multiplicative & $*\ /$ & \verb"2*3, 2/3" \\ 
+	\hline	
+	aditive & $+\ -\ +expr\ -expr$ & \verb"a+b, a-b, +a, -a" \\
+	\hline
+	relational & $<\ >\ <=\ >=$ & \verb"a < b, a > b,..." \\
+	\hline
+	unary negation & $not\ expr$ & \verb"not a" \\
+	\hline
+	logical and & $and$ & \verb"a and b" \\
+	\hline
+	logical or & $or$ & \verb"a and b" \\
+	\hline
+	conditional & $if\ expr\ then\ expr\ else\ expr$ & \verb"if b then 3 else x" \\
+	\hline
+	named argument & $ident = expr$ & \verb"x = 2.26" \\
+	\hline
+\end{tabular}
+\end{center}
+
+The conditional operator may also include elseif-clauses. Equality $=$ and assignment $:=$ are not expression operators since they are allowed only in equations and in assignment statements respectively. All binary expression operators are left associative, except exponentiation which is non-associative. 
+
+\section{Arithmetic Operators}
+
+\FloatBarrier
+$\mu$-Modelica supports five binary arithmetic operators that operate on any numerical type:
+\begin{center}
+\begin{tabular}{|c|c|}
+	\hline
+	$\hat{}$ & Exponentiation \\	
+	\hline
+	* & Multiplication \\
+	\hline
+	/ & Division \\
+	\hline 	 
+	+ & Addition \\  	 
+	\hline
+	- & Subtraction \\
+	\hline
+\end{tabular}
+\label{tab:arithmeticOperators}
+\end{center}
+The syntax of these operators is defined by the following rules from the $\mu$-Modelica grammar:
+\begin{grammar}\scriptsize
+<arithmetic_expression> ::= [ <add_op> ] <term> "{" <add_op> <term> "}"
+
+<add_op> ::= "\"+\"" 
+\alt "\"-\""
+
+<term> ::= <factor> "{" <mul_op> <factor> "}"
+
+<mul_op> ::= "\"*\"" 
+\alt "\"/\""
+
+<factor> ::= <primary> "[" "\"^\"" <primary> "]"
+\end{grammar}
+
+\section{Equality, Relational, and Logical Operators}
+\FloatBarrier
+$\mu$-Modelica supports the standard set of relational and logical operators, all of which produce the standard boolean values \verb"true" or \verb"false".
+
+\begin{center}
+\begin{tabular}{|c|c|}
+	\hline
+	$>$ & Greater than \\	
+	\hline
+	$>=$ & Greater than or equal \\
+	\hline
+	$<$ & Less than \\
+	\hline 	 
+	$<=$ & Less than or equal \\  	 
+	\hline
+\end{tabular}
+\end{center}
+
+A single equals sign $=$ is never used in relational expressions, only in equations.
+The following logical operators are defined:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+	\hline
+	not & Negation, unary operator \\	
+	\hline
+	and & Logical and \\
+	\hline
+	or & Logical or \\
+	\hline
+\end{tabular}
+\end{center}
+
+The grammar rules define the syntax of the relational and logical operators.
+
+\begin{grammar}\scriptsize
+<logical_expression> ::= <logical_term> "{" "or" <logical_term> "}"
+
+<logical_term> ::= <logical_factor> "{" "and" <logical_factor> "}" 
+
+<logical_factor> ::= [ "not" ] <relation>
+
+<relation> ::= <arithmetic_expression> [ <rel_op> <arithmetic_expression> ]
+
+<rel_op> ::= "\"<\"" \alt "\"<=\"" \alt "\">\"" \alt "\">=\"" \alt "\"==\"" \alt "\"<>\""
+\end{grammar}
+
+The following holds for relational operators:
+\begin{itemize}
+\item Relational operators $<, <=, >, >=, ==, <>$, are only defined for scalar operands of simple types. The result is \verb"Boolean" and is \verb"true" or \verb"false" if the relation is fulfilled or not, respectively. 
+\item In relations of the form $v1 == v2$ or $v1 <> v2$, $v1$ or $v2$ shall not be used in zero--crossing functions, i.e. as expressions of \verb"when" statements, unless used in a function.
+\item Relations of the form $v1\ rel\_op\ v2$, with $v1$ and $v2$ variables and $rel\_op$ a relational operator are called elementary relations. If either $v1$ and $v2$ shall be \verb"Real" varaibles and the relation is called a \emph{Real elementary relation}.  
+\end{itemize}
+
+\subsection{Built-in Variable time}
+All declared variables are functions of the independent variable \verb"time". The variable \verb"time" is a built-in variable available in all models, which is treated as an input variable. The initial value of the time variable is set to the time instant at which the simulation is started.
+
+\subsection{Built-in Intrinsic Operators with Function Syntax}
+Certain built-in operators of $\mu$-Modelica have the same syntax as a function call. However, they do not behave as a mathematical function, because the result depends not only on the input arguments but also on the status of the simulation. The following built-in intrinsic operators/functions are available:
+\begin{enumerate}
+\item Mathematical functions and conversion functions.
+\item Derivative and special purpose operators with function syntax.
+\end{enumerate}
+
+All operators in this section can only be called with positional arguments.
+
+\subsection{Numeric Functions and Conversion Functions}
+The following mathematical operators and functions, also including some conversion functions, are predefined in $\mu$-Modelica. 
+\begin{center}
+\begin{tabular}{|c|p{3in}|}
+	\hline
+	$sqrt(v)$ & Returns the square root of $v$ if $v>=0$, otherwise an error occurs.
+Argument $v$ needs to be an Integer or Real expression.  \\	
+	\hline
+	$boolToReal(x)$ & Convert the boolean argument $x$ to $1.0$ if $x = true$ or $0.0$ if $x = false$ \\
+	\hline
+\end{tabular}
+\end{center}
+
+\subsection{Built-in Mathematical Functions and External Built-in Functions}
+The following built-in mathematical functions are available in $\mu$-Modelica and can be called directly.
+\begin{center}
+\begin{tabular}{|c|p{3in}|}
+	\hline
+	$sin(x)$ & sine \\	
+	\hline
+	$cos(x)$ & cosine \\
+	\hline
+	$tan(x)$ & tangent \\ %(x shall not be: ..., -π/2, π/2, 3π/2, ...) \\
+	\hline 	 
+	$asin(x)$ & inverse sine ($-1 ≤ x ≤ 1$) \\
+	\hline
+	$acos(x)$	& inverse cosine ($-1 ≤ x ≤ 1$) \\
+	\hline
+	$atan(x)$ & inverse tangent \\	    	 
+	\hline
+	$atan2(y, x)$ & the $atan2(y, x)$ function calculates the principal Modelica Language Specification 3.3
+value of the arc tangent of $y/x$, using the signs
+of the
+two arguments to determine the quadrant of
+the result. \\
+	\hline
+	$sinh(x)$ & hyperbolic sine \\
+	\hline
+	$cosh(x)$ & hyperbolic cosine \\
+	\hline
+	$tanh(x)$ & hyperbolic tangent \\
+	\hline
+	$exp(x)$ & exponential, base e \\
+	\hline
+	$log(x)$ & natural (base e) logarithm ($x > 0$) \\
+	\hline
+	$log10(x)$ & base 10 logarithm ($x > 0$) \\
+	\hline	
+\end{tabular}
+\end{center}
+
+\subsection{Derivative and Special Purpose Operators with Function Syntax}
+The following derivative operator and special purpose operators with function syntax are predefined:
+\begin{center}
+\begin{tabular}{|c|p{3in}|}
+	\hline
+	$der(expr)$ & The time derivative of $expr$. If the expression $expr$ is a scalar it needs to
+be Real. The expression and all its subexpressions must be differentiable. [\emph{For Real parameters and constants the result is a zero
+scalar.}] \\
+	\hline
+\end{tabular}
+\end{center}
+
+\chapter{Predefined types and Declarations}\label{types}
+
+This chapter describes $\mu$-Modelica predefined types, variability prefixes and the restrictions impossed to varaibles declarations.
+All $\mu$-Modelica model variables are of type \verb"Real" and each varaible can belong to one of the following cathegories: 
+\begin{itemize}
+\item continuous states.
+\item discretes states.
+\item algebraic variables.
+\end{itemize}
+
+\section{Component Variability Prefixes discrete, parameter, constant}
+
+The prefixes \verb"discrete", \verb"parameter" and \verb"constant" of a component declaration are called variability prefixes and define in which situation the variable values of a component are initialized (see Section \ref{equations:events} and Section \ref{equations:initial}) and when they are changed in transient analysis (= solution of initial value problem of the hybrid DAE):
+\begin{itemize}
+\item A variable $vc$ declared with the \verb"parameter" or \verb"constant" prefixes remains constant during transient analysis.
+\item A discrete-time variable $vd$ has a vanishing time derivative (informally $der(vd)=0$ , but it is not legal to apply the $der()$ operator to discrete-time variables) and can change its values only at event instants during transient analysis (see Section \ref{equations:events}).  
+\item A continuous-time variable $vn$ may have a non-vanishing time derivative ( $der(vn)<>0$ possible) and may also change its value discontinuously at any time during transient analysis (see Section \ref{equations:events}). If there are any discontinuities the variable is not differentiable. 
+\end{itemize}
+
+If a \verb"Real" variable is declared with the prefix \verb"discrete" in a simulation model it must be assigned in a when-clause by an assignment.
+A \verb"Real" variable not assigned in any when-clause and without any type prefix is a continuous-time variable.
+A \verb"constant" variable is similar to a \verb"parameter" with the difference that constants cannot be changed after translation and usually not changed after they have been given a value, their values remains constant during simulation. 
+
+\section{Predefined Types}\label{types:predefined}
+
+$\mu$-Modelica has three predefined types:
+
+\begin{itemize}
+\item \verb"Real"
+\item \verb"Integer"
+\item \verb"Bool"
+\end{itemize}
+
+These predefined types are the only types allowed on $\mu$-Modelica, the names are reserved such that it is illegal to declare an element with these names.
+ 
+The different combinations of predefined types and types refixes allowd in $\mu$-Modelica are described by following rules:
+\begin{itemize}
+\item The \verb"constant" prefix can only be used with \verb"Integer" variables. 
+\item The \verb"parameter" or \verb"discrete" prefixes can only be used with \verb"Real" variables.   
+\end{itemize} 
+Variables prefixes are not allowed with \verb"Boolean" type. 
+
+Unlike Modelica, in $\mu$-Modelica all discrete-time variable must be defined with the \verb"discrete" prefix, it is an error to modify a variable inside a when-clause that is not declared with the \verb"discrete" prefix.
+[\emph{Example:}
+\begin{verbatim}
+model bball
+  Real y(start = 10),vy(start = 0), F;
+  parameter Real m = 1, b = 30, g = 9.8, k = 1e6;
+  Real contact(start = 0); // Error, contact must be declared discrete.
+  equation
+    F = k*y+b*vy;
+    der(y) = vy;
+    der(vy) = -g - (contact * F)/m;
+  algorithm 
+  when y < 0 then
+    contact := 1;
+  elsewhen y > 0 then
+    contact := 0;
+  end when;
+end bball;
+\end{verbatim}
+\emph{The model above represents a bouncing ball with valid Modelica code, but if the contact variable is not defined with the discrete prefix it is not valid $\mu$-Modelica code.}]    
+
+\section{Attribute start}
+
+The attribute \verb"start" is only allowed for \verb"Real" types (the variable can have the \verb"discrete" prefix), furthermore, if the variable is not declare as \verb"discrete" is must be a state variable, i.e., the $der()$ operation has to be defined for that variable. It is an error to assign initial values using the \verb"start" attribute to an algebraic variable.
+
+[\emph{Example:}
+\begin{verbatim}
+model bball
+  // Error, F is an algebraic variable.  
+  Real y(start = 10),vy(start = 0), F(start=10);
+  parameter Real m = 1, b = 30, g = 9.8, k = 1e6;
+  discrete Real contact(start = 0); 
+  equation
+    F = k*y+b*vy;
+    der(y) = vy;
+    der(vy) = -g - (contact * F)/m;
+  algorithm 
+  when y < 0 then
+    contact := 1;
+  elsewhen y > 0 then
+    contact := 0;
+  end when;
+end bball;
+\end{verbatim}]
+
+\chapter{Equations}\label{ch:equations}
+
+\section{Equation Categories}
+
+Equations in Modelica can be classified into different categories depending on the syntactic context in which they occur:
+\begin{itemize}
+\item Normal equality equations occurring in equation sections.
+\item Initial equations, which are used to express equations for solving initialization problems (Section \ref{equations:initial})  
+\end{itemize}
+
+\section{Equations in Equation Sections}
+
+The following kinds of equations may occur in equation sections. The syntax is defined as follows:
+equation :
+\begin{grammar}
+<simple_expression> "\"=\"" <expression>
+\alt <name> <function_call_args> 
+\end{grammar}
+
+No statements are allowed in equation sections, including the assignment statement using the $:=$ operator.
+
+\subsection{Simple Equality Equations} \label{equations:simpleequality}
+
+Simple equality equations are the traditional kinds of equations known from mathematics that express an equality relation between two expressions. There are two syntactic forms of such equations in $\mu$-Modelica. The first form below is equality equations between two expressions, whereas the second form is used when calling a function with several results. The syntax for simple equality equations is as follows:
+\begin{grammar}
+  <simple_expression> "\"=\"" <expression>
+\end{grammar}
+The types of the left-hand-side and the right-hand-side of an equation need to be compatible in the same way as two arguments of binary operators.
+Two examples:
+\begin{itemize}
+\item $simple_expr1 = expr2;$ 
+\item $(out1, out2, out3) = function_name(inexpr1, inexpr2);$
+\end{itemize}
+
+\subsection{For-Equations – Repetitive Equation Structures}
+
+The syntax of a for-equation is as follows:
+\begin{grammar}
+<for_equation> := "for" <for_index> "loop"
+  "{" <equation> "\";\"" "}"
+"end for" "\";\""
+\end{grammar}
+Multiple iterators are not allowed in $\mu$-Modelica, the syntax of the indexes is the following:
+\begin{grammar}
+<for_index> ::=
+	<IDENT>  "in" <expression>
+\end{grammar}
+
+The following is one example of a prefix of a for-equation:
+\begin{verbatim}
+for IDENT in expression loop
+\end{verbatim}
+
+The expression of a for-equation shall be a vector expression. It is evaluated once for each for-equation, and is evaluated in the scope immediately enclosing the for-equation. The expression of a for-equation shall be a parameter expression. The loop-variable (\verb"IDENT") is in scope inside the loop-construct and shall not be assigned to. The loop-variable has the same type as the type of the elements of the vector expression.
+[\emph{Example:}
+
+\begin{verbatim}
+for i in 1:10 loop // i takes the values 1,2,3,...,10
+for r in 1.0:1.5:5.5 loop // r takes the values 1.0, 2.5, 4.0, 5.5
+\end{verbatim}
+
+\emph{The loop-variable may hide other variables as in the following example. Using another name for the loop-variable is, however, strongly recommended.}
+
+\begin{verbatim}
+constant Integer j=4;
+Real x[j];
+equation
+  for j in 1:j loop // The loop-variable j takes the values 1,2,3,4
+    x[j]=j; // Uses the loop-variable j
+  end for;
+\end{verbatim}
+]
+
+\subsection{reinit} \label{equations:reinit}
+The \verb"reinit" operator can only be used in the body of a when-statement. It has the following
+syntax:
+\begin{verbatim}
+reinit(x, expr);
+\end{verbatim}
+
+The operator reinitializes \verb"x" with \verb"expr" at an event instant, \verb"x" is a \verb"Real" variable (or an array of \verb"Real" variables) that must be selected as a state (resp., states) at least when the enclosing when clause becomes active, \verb"expr" needs to be type-compatible with \verb"x". The \verb"reinit" operator can for the same variable (resp. array of variables) only be applied (either as an individual variable or as part of an array of variables) either in one equation (having reinit of the same variable in when and else-when of the same variable is allowed) or one or more times in one algorithm section.
+
+The \verb"reinit" operator does not break the single assignment rule, because \verb"reinit(x,expr)"  evaluates \verb"expr" to a value (values), and then performs the assignment “$x := value$” in an \verb"algorithm" section. 
+
+[\emph{Example for the usage of the reinit operator:}
+\begin{verbatim}
+der(h) = v;
+der(v) = flying*-g;
+when h <= 0 then
+	flying := 0;	
+	reinit(v, -e*pre(v));
+end when;
+when h > 0 then
+	flying := 1;
+end when;
+\end{verbatim}
+]
+
+\subsection{assert} \label{equations:assert}
+
+An equation or statement of the following form:
+\begin{verbatim}
+assert(condition, message, level = AssertionLevel.error);
+\end{verbatim}
+is an assertion, where condition is a \verb"Boolean" expression, \verb"message" is a string expression, and \verb"level" is a built-in enumeration with a default value. It can be used in equation sections or algorithm sections.
+If the condition of an assertion is \verb"true", \verb"message" is not evaluated and the procedure call is ignored. If the condition evaluates to \verb"false" different actions are taken depending on the level input:
+\begin{itemize}
+\item $level = AssertionLevel.error$ : The current evaluation is aborted. The simulation may continue
+with another evaluation [\emph{e.g., with a shorter step-size, or by changing the values of iteration variables}]. If the simulation is aborted, message indicates the cause of the error. Failed assertions takes precedence over successful termination, such that if the model first triggers the
+end of successful analysis by reaching the stop-time, but the evaluation with $terminal()=true$ triggers an assert, the analysis failed. 
+\item $level = AssertionLevel.warning$ : The current evaluation is not aborted. message indicates the
+cause of the warning [\emph{It is recommended to report the warning only once when the condition becomes false, and it is reported that the condition is no longer violated when the condition returns to true. The assert(...) statement shall have no influence on the behavior of the model.}]. 
+\end{itemize}
+[\emph{The AssertionLevel.error case can be used to avoid evaluating a model outside its limits of validity; for instance, a function to compute the saturated liquid temperature cannot be called with a pressure lower than the triple point value. The AssertionLevel.warning case can be used when the boundary of validity is not hard: for instance, a fluid property model based on a polynomial interpolation curve might give accurate results between temperatures of 250 K and 400 K, but still give reasonable results in the range 200 K and 500 K. When the temperature gets out of the smaller interval, but still stays in the largest one, the user should be warned, but the simulation should continue without any further action. The corresponding code would be:}
+\begin{verbatim}
+assert(T > 250 and T < 400, "Medium model outside full 
+       accuracy range",AssertionLevel.warning);
+assert(T > 200 and T < 500, "Medium model outside 
+       feasible region");
+\end{verbatim}
+]
+
+\section{Synchronous Data-flow Principle and Single Assignment Rule}
+
+$\mu$-Modelica is based on the synchronous data flow principle and the single assignment rule, which are defined in the following way:
+\begin{enumerate}
+\item All variables keep their actual values until these values are explicitly changed. Variable values can be accessed at any time instant during continuous integration and at event instants.
+\item At every time instant, during continuous integration and at event instants, the active equations express relations between variables which have to be fulfilled concurrently (equations are not active if the corresponding if-branch, when-clause or block in which the equation is present is not active). 
+\item Computation and communication at an event instant does not take time. [\emph{If computation or communication time has to be simulated, this property has to be explicitly modeled}]. 
+\item The total number of equations is identical to the total “number of unknown variables” (= single assignment rule). 
+\end{enumerate}
+
+\section{Events and Synchronization}\label{equations:events}
+
+The integration is halted and an event occurs whenever a \verb"Real" elementary relation, e.g. “$x > 2$”, changes its value. The value of such a relation can only be changed at event instants [\emph{in other words, Real elementary relations induce state or time events}]. The relation which triggered an event changes its value when evaluated literally before the model is processed at the event instant [\emph{in other words, a root finding mechanism is needed which determines a small time interval in which the relation changes its value; the event occurs at the right side of this interval}]. Relations in the body of a when-clause are always taken literally. During continuous integration a \verb"Real" elementary relation has the constant value of the relation from the last event instant.
+[\emph{Example:}
+\begin{verbatim}
+equation
+y = du;
+algorithm
+when u > uMax then
+   du := uMax;
+end when;
+
+when u < uMin then
+  du:= uMin;
+elsewhen u >= uMin then 
+  du :=  u;
+end when;
+\end{verbatim}
+
+\emph{The integration is halted whenever $u-uMax$ or $u-uMin$ crosses zero. At the event instant, the correct statement is selected and the integration is restarted. Numerical integration methods of order $n$ ($n>=1$) require continuous model equations which are differentiable up to order $n$. This requirement can be fulfilled if Real elementary relations are not treated literally but as defined above, because discontinuous changes can only occur at event instants and no longer during continuous integration.}
+]
+[\emph{It is a quality of implementation issue that the following special relations}
+\begin{verbatim}
+time >= discrete expression
+time < discrete expression
+\end{verbatim}
+\emph{trigger a time event at “$time = discrete expression$”, i.e., the event instant is known in advance and no iteration is needed to find the exact event instant.}
+]
+$\mu$-Modelica is based on the synchronous data flow principle.
+[\emph{The rules for the synchronous data flow principle guarantee that variables are always defined by a unique set of equations. It is not possible that a variable is e.g. defined by two equations, which would give rise to conflicts or non-deterministic behavior. Furthermore, the continuous and the discrete parts of a model are always automatically “synchronized”.}
+
+There is no guarantee that two different events occur at the same time instant.
+
+[\emph{As a consequence, synchronization of events has to be explicitly programmed in the model, e.g. via counters.}]
+
+\section{Initialization, initial equation, and initial algorithm}\label{equations:initial}
+
+Before any operation is carried out with a $\mu$-Modelica model [\emph{e.g., simulation or linearization}], initialization takes place to assign consistent values for all variables present in the model. During this phase, also the derivatives, $der(..)$ , and the pre-variables, $pre(..)$ , are interpreted as unknown algebraic variables. The initialization uses all equations and algorithms that are utilized in the intended operation [\emph{such as simulation or linearization}].
+
+Further constraints, necessary to determine the initial values of all variables, can be defined in the following two ways:
+\begin{enumerate}
+\item As assignments in an \verb"initial algorithm" section. The assignments in these initial sections are purely algebraic, stating constraints between the variables at the initial time instant. It is not allowed to use when-clauses in these sections. 
+\item Implicitly by using the attributes \verb"start=value" in the declaration of variables:
+	\begin{itemize}
+	\item For all continuous-time \verb"Real" variables $v$ , the equation $v = startExpression$ is added to the initialization equations, if $start = startExpression$. 
+	\item For all discrete variables $vd$ , the equation $vd = startExpression$ is added to the initialization equations, if $start = startExpression$. 	
+	\item For all variables declared as \verb"constant" and \verb"parameter"; no equation is added to the initialization equations. 
+	\end{itemize}	 
+\end{enumerate}
+If a \verb"parameter" has a start-expression, and neither has a binding equation nor is part of a record having a binding equation, the start-expression can be used as parameter-expression although a diagnostic message is recommended when initializing the model without setting the parameter value.
+
+[\emph{This is used in libraries to give non-zero defaults so that users can quickly combine models and simulate without setting parameters; but still easily find the parameters that need to be set.}]
+
+\chapter{Arrays}\label{ch:arrays}
+
+An array can be regarded as a collection of values, all of the same type. Each array has a certain dimensionality, i.e. number of dimensions. The degenerate case of a scalar variable is
+not really an array, but can be regarded as an array with zero dimensions. An array is allocated by declaring an array variable. Elements of an array are indexed by an \verb"Integer" value.
+
+\section{Array Declarations}
+
+The following restrictions are defined for array declarations in $\mu$-Modelica:
+
+\begin{itemize}
+\item Only one dimension arrays are allowed (i.e. \emph{vectors}).
+\item All arrays must have \verb"Real" type.
+\item The only valid form of declaration is:
+ 
+ \verb" {discrete} Real x[n];"
+
+where $n$ is the size of the array and must be an \verb"Integer" constant. Additionaly, the \verb"discrete" type prefix can be used to define a discrete variable array.
+\end{itemize}
+
+%more than two dimensions. [There is no distinguishing between a row and column vector.]
+%The following table shows the two possible forms of declarations and defines the terminology. C is a
+%placeholder for any class, including the built-in type classes Real, Integer, Boolean, String, and enumeration
+%types. The type of a dimension upper bound expression, e.g. n, m, p,... in the table below, need to be a subtype of
+%Integer or the name E for an enumeration type E, or Boolean. Colon ( : ) indicates that the dimension upper bound
+%is unknown and is a subtype of Integer.
+Upper and lower array dimension index bounds are described in Section \ref{array:bounds}.
+%An array indexed by Boolean or enumeration type can only be used in the following ways:
+% Subscripted using expressions of the appropriate type (i.e. Boolean or the enumerated type)
+% Binding equations of the form x1 = x2 as well as declaration assignments of the form x1 := x2 are allowed
+%for arrays independent of whether the index types of dimensions are subtypes of Integer, Boolean, or
+%enumeration types.
+%Table 10-1. General forms of declaration of arrays.110 Modelica Language Specification 3.3
+%Modelica form 1 Modelica form 2 # dimensions Designation Explanation
+%C x; C x; 0 Scalar Scalar
+%C[n] x; 
+%C[E] x; C x[E] 1 Vector Vector index by enumeration type E
+%C[n, m] x; C x[n, m]; 2 Matrix n x m Matrix
+%C[n 1 , n 2, ..., n k ] x; C x[n 1 , n 2, ..., n k ]; k Array Array with k dimensions (k>=0).
+%[The number of dimensions and the dimensions sizes are part of the type, and shall be checked for example at
+%redeclarations. Declaration form 1 displays clearly the type of an array, whereas declaration form 2 is the
+%traditional way of array declarations in languages such as Fortran, C, C++.
+%v1, v2
+%// vectors v1 and v2 have unknown sizes. The actual sizes may be different.
+%It is possible to mix the two declaration forms although it might be confusing.
+%Real[:]
+%Real[3,2] x[4,5];
+%// x has type
+%Real[4,5,3,2];
+%The reason for this order is given by examples such as:
+%type R3=Real[3];
+%R3 a;
+%R3 b[1]={a};
+%Real[3] c[1]=b;
+%Using a type for “a” and “b” in this way is normal, and substituting a type by its definition allow “c”.
+%A vector y indexed by enumeration values
+%type TwoEnums = enumeration(one,two);
+%Real[TwoEnums] y;
+%]
+%Zero-valued dimensions are allowed, so: C x[0]; declares an empty vector and: C x[0,3]; an empty matrix.
+%[Special cases:
+%Table 10-2. Declaration of arrays as 1-vectors, row-vectors, or column-vectors of arrays.
+%Modelica form 1
+%C[1] x;
+%C[1,1] x;
+%C[n,1] x;
+%C[1,n] x;
+%]
+%Modelica form 2
+%C x[1];
+%C x[1, 1];
+%C x[n, 1];
+%C x[1, n];
+%# dimensions
+%1
+%2
+%2
+%2
+%Designation
+%Vector
+%Matrix
+%Matrix
+%Matrix
+%Explanation
+%1 – Vector, representing a scalar
+%1 x 1 – Matrix, representing a scalar
+%n x 1 – Matrix, representing a column
+%1 x n – Matrix, representing a row
+%The type of an array of array is the multidimensional array which is constructed by taking the first dimensions
+%from the component declaration and subsequent dimensions from the maximally expanded component type. A
+%type is maximally expanded, if it is either one of the built-in types (Real, Integer, Boolean, String, enumeration
+%type) or it is not a type class. Before operator overloading is applied, a type class of a variable is maximally
+%expanded.
+%[Example:
+%type Voltage = Real(unit
+%type Current = Real(unit
+%connector Pin
+%Voltage
+%v;
+%flow Current i;
+%end Pin;
+%type MultiPin = Pin[5]; = "V");
+%= "A");
+%MultiPin[4] // type class of p is MultiPin, type of p is Pin[4,5];
+%p;
+%// type class of v = Voltage, type of v = Real
+%// type class of i = Current, type of i = Real111
+%type Point = Real[3];
+%Point p1[10];
+%Real p2[10,3];
+%The components p1 and p2 have identical types.
+%p2[5] = p1[2]+ p2[4];
+%Real r[3] = p1[2];
+%// equivalent to
+%// equivalent to
+%p2[5,:] = p1[2,:] + p2[4,:]
+%r[3] = p1[2,:]
+%]
+%[Automatic assertions at simulation time:
+%Let A be a declared array and i be the declared maximum dimension size of the di -dimension, then an assert
+%statement assert(i>=0, ...) is generated provided this assertion cannot be checked at compile time. It is a
+%quality of implementation issue to generate a good error message if the assertion fails.
+%Let A be a declared array and i be an index accessing an index of the di -dimension. Then for every such
+%index-access an assert statement assert(i>=1 and i<=size(A,di), ... ) is generated, provided this
+%assertion cannot be checked at compile time.
+%For efficiency reasons, these implicit assert statement may be optionally suppressed.]
+
+\subsection{Array Dimension Lower and Upper Index Bounds} \label{array:bounds}
+
+The lower and upper index bounds for a dimension of an array are indexed by \verb"Integer" values and have a lower bound of $1$ and an upper bopund being the $size$ of the array.
+
+%\section{Built-in Array Functions}
+%Completar
+
+%Modelica provides a number of built-in functions that are applicable to arrays.
+%The following promote function cannot be used in Modelica, but is utilized below to define other array operators
+%and functions:
+%promote(A,n)
+%Fills dimensions of size 1 from the right to array A upto dimension n, where "n >=
+%ndims(A)" is required. Let C = promote(A,n), with nA=ndims(A), then ndims(C)
+%= n, size(C,j) = size(A,j) for 1 <= j <= nA, size(C,j) = 1 for nA+1 <= j <= n,
+%C[i_1, ..., i_nA, 1, ..., 1] = A[i_1, ..., i_nA]
+%[The function promote cannot be used in Modelica, because the number of dimensions of the returned array
+%cannot be determined at compile time if n is a variable. Below, promote is only used for constant n.
+%Some examples of using the functions defined in the following Section 10.3.1 to Section 10.3.5:
+%Real x[4,1,6];
+%size(x,1) = 4;
+%size(x);
+%// vector with elements 4, 1, 6
+%size(2*x+x ) = size(x);
+%Real[3] v1 = fill(1.0, 3);
+%Real[3,1] m = matrix(v1);112 Modelica Language Specification 3.3
+%Real[3] v2 = vector(m);
+%Boolean check[3,4] = fill(true, 3, 4);
+%]
+%\subsection{Specialized Array Constructor Functions}
+%Completar
+%
+%An array constructor function constructs and returns an array computed from its arguments. Most of the
+%constructor functions in the table below construct an array by filling in values according to a certain pattern, in
+%several cases just giving all array elements the same value. The general array constructor with syntax array (...)
+%or {...} is described in Section 10.4.
+%Table 10-5. Specialized array constructor functions.
+%Modelica
+%identity(n)
+%diagonal(v)
+%Explanation
+%Returns the n x n Integer identity matrix, with ones on the diagonal and zeros at
+%the other places.
+%Returns a square matrix with the elements of vector v on the diagonal and all other
+%elements zero.
+%zeros(n 1 ,n 2 ,n 3 ,... Returns the n 1 x n 2 x n 3 x ... Integer array with all elements equal to zero (n i >= 0).
+%)
+%ones(n 1 ,n 2 ,n 3 ,...) Return the n 1 x n 2 x n 3 x ... Integer array with all elements equal to one (n i >=0 ).
+%fill(s,n 1 ,n 2 ,n 3 ,
+%...)
+%Returns the n 1 x n 2 x n 3 x ... array with all elements equal to scalar or array
+%expression s (n i >= 0). The returned array has the same type as s.
+%Recursive definition:
+%fill (s,n 1 ,n 2 ,n 3 , ...) = fill ( fill (s,n 2 ,n 3 , ...), n 1 );113
+%fill (s,n)={s,s,..., s}
+%linspace(x1,x2,n) Returns
+%a Real vector with n equally spaced elements, such that
+%v= linspace (x1,x2,n),
+%v[i] = x1 + (x2-x1)*(i-1)/(n-1) for 1 <= i <= n. It is required that n >= 2. The
+%arguments x1 and x2 shall be numeric scalar expressions.
+
+%\subsection{Reduction Functions and Operators}
+%Completar
+%A reduction function “reduces” an array (or several scalars) to one value (normally a scalar). Note that none of
+%these operators (particularly min and max) generate events themselves (but arguments could generate events). The
+%following reduction functions are available:
+%Table 10-6. Array reduction functions and operators.
+%Modelica
+%min(A) Explanation
+%Returns the smallest element of array expression A.
+%min(x,y) Returns the smallest element of the scalars x and y.
+%min(
+%Also described in Section 10.3.4.1
+%e(i, ..., j) for
+%Returns the smallest value of the scalar expression e(i, ..., j) evaluated for all
+%i in u, ...,
+%combinations of i in u, ..., j in v:
+%j in v)
+%max(A)
+%Returns the largest element of array expression A.
+%max(x,y)
+%Returns the largest element of the scalars x and y.
+%max(
+%Also described in Section 10.3.4.1
+%e(i, ..., j) for
+%Returns the largest value of the scalar expression e(i, ..., j) evaluated for all
+%i in u, ...,
+%combinations of i in u, ..., j in v:
+%j in v)
+%sum(A)
+%Returns the scalar sum of all the elements of array expression:
+%A[1,...,1]+A[2,...,1]+....+A[end,...,1]+A[end,...,end]
+%sum(
+%Also described in Section 10.3.4.1
+%e(i, ..., j) for
+%Returns the sum of the expression e(i, ..., j) evaluated for all combinations of i in
+%i in u, ...,
+%u, ..., j in v:
+%e(u[1],...
+%,v[1])+e(u[2],...
+%,v[1])+...
+%+e(u[end],...
+%j in v)
+%,v[1])+...+e(u[end],... ,v[end])
+%The type of sum(e(i, ..., j) for i in u, ..., j in v) is the same as the type of e(i,...j).
+%product(A)
+%Returns the scalar product of all the elements of array expression A.
+%A[1,...,1]*A[2,...,1]*....*A[end,...,1]*A[end,...,end]
+%product(
+%Also described in Section 10.3.4.1.
+%e(i, ..., j) for
+%Returns the product of the scalar expression e(i, ..., j) evaluated for all
+%i in u, ...,
+%combinations of i in u, ..., j in v: e(u[1],...,v[1])*e(u[2],...,v[1])*...
+%j in v)
+%*(u[end],...,v[1])*...*e(u[end],...,v[end])
+%The type of product(e(i, ..., j) for i in u, ..., j in v) is the same as the type of
+%e(i,...j).
+
+%\subsubsection{Reduction Expressions}
+%Completar
+%
+%An expression:
+%function-name "(" expression1 for iterators ")"
+%is a reduction-expression. The expressions in the iterators of a reduction-expression shall be vector expressions.
+%They are evaluated once for each reduction-expression, and are evaluated in the scope immediately enclosing the
+%reduction-expression.114 Modelica Language Specification 3.3
+%For an iterator:
+%IDENT in expression2
+%the loop-variable, IDENT , is in scope inside expression1 . The loop-variable may hide other variables, as in for-
+%clauses. The result depends on the function-name , and currently the only legal function-names are the built-in
+%operators array , sum , product , min , and max . For array, see Section 10.4. If function-name is sum ,
+%product , min , or max the result is of the same type as expression1 and is constructed by evaluating
+%expression1 for each value of the loop-variable and computing the sum , product , min , or max of the
+%computed elements. For deduction of ranges, see Section 11.2.2.1; and for using types as ranges see Section
+%11.2.2.2.
+%Function-name
+%Restriction on expression1
+%Integer or Real
+%Scalar Integer or Real
+%Scalar enumeration,
+%Boolean, Integer or Real
+%sum
+%product
+%min
+%zeros(...)
+%1
+%Maximum value of type (
+%Modelica.Constants.inf
+%for Real)
+%Minimum value of type (
+%Scalar enumeration,
+%Boolean, Integer or Real
+%max
+%Result if expression2 is empty
+%-Modelica.Constants.inf
+%for Real)
+%[Example:
+%sum(i for i in 1:10)
+%// Gives
+%
+%10
+%i  1
+%i  1+2+...+10=55
+%// Read it as: compute the sum of i for i in the range 1 to 10.
+%sum(i^2 for i in {1,3,7,6})
+%// Gives
+%
+%i   1 3 7 6 
+%2
+%i  1+9+49+36=95
+%{product(j for j in 1:i) for i in 0:4} // Gives {1,1,2,6,24}
+%max(i^2 for i in {3,7,6})
+%// Gives 49
+%]
+%
+%
+%\section{Vector, Matrix and Array Constructors}
+%Completar
+%The constructor function array(A,B,C,...) constructs an array from its arguments according to the following
+%rules:
+% Size matching: All arguments must have the same sizes, i.e., size(A)=size(B)=size(C)= ...
+% All arguments must be type compatible expressions (Section 6.6) giving the type of the elements. The data
+%type of the result array is the maximally expanded type of the arguments. Real and Integer subtypes can be
+%mixed resulting in a Real result array where the Integer numbers have been transformed to Real numbers.
+% Each application of this constructor function adds a one-sized dimension to the left in the result compared to
+%the dimensions of the argument arrays, i.e., ndims(array(A,B,C)) = ndims(A) + 1 = ndims(B) +
+%1 , ...
+% {A, B, C, ...} is a shorthand notation for array(A, B, C, ...) .
+% There must be at least one argument [i.e., array() or {} is not defined].
+%[Examples:
+%{1,2,3} is a 3-vector of type Integer.
+%{{11,12,13}, {21,22,23}} is a 2x3 matrix of type Integer
+%{{{1.0, 2.0, 3.0}}} is a 1x1x3 array of type Real.
+%Real[3] v = array(1, 2, 3.0);
+%type Angle = Real(unit="rad");
+%parameter Angle alpha = 2.0;
+%// type of alpha is Real.
+%// array(alpha, 2, 3.0) or {alpha, 2, 3.0} is a 3-vector of type Real.
+%Angle[3] a = {1.0, alpha, 4};
+%// type of a is Real[3].
+%]
+
+%\subsection{Array Constructor with Iterators}
+%Completar
+%An expression:
+%"{" expression for iterators "}"
+%or
+%array "(" expression for iterators ")"
+%is an array constructor with iterators. The expressions inside the iterators of an array constructor shall be vector
+%expressions. They are evaluated once for each array constructor, and is evaluated in the scope immediately
+%enclosing the array constructor.
+%For an iterator:
+%IDENT in array_expression
+%the loop-variable, IDENT , is in scope inside expression in the array construction. The loop-variable may hide other
+%variables, as in for-clauses. The loop-variable has the same type as the type of the elements of array_expression.
+%For deduction of ranges, see Section 11.2.2.1; and for using types as range see Section 11.2.2.2.
+%10.4.1.1 Array Constructor with One Iterator
+%If only one iterator is used, the result is a vector constructed by evaluating expression for each value of the loop-
+%variable and forming an array of the result.
+%[Example:
+%array(i for i in 1:10)
+%// Gives the vector 1:10={1,2,3,...,10}
+%{r for r in 1.0 : 1.5 : 5.5}
+%// Gives the vector 1.0:1.5:5.5={1.0, 2.5, 4.0, 5.5}116 Modelica Language Specification 3.3
+%{i^2 for i in {1,3,7,6}}
+%// Gives the vector {1, 9, 49, 36}
+%10.4.1.2 Array Constructor with Several Iterators
+%The notation with several iterators is a shorthand notation for nested array constructors. The notation can be
+%expanded into the usual form by replacing each ' , ' by ' } for ' and prepending the array constructor with a ' { '.
+%[Example:
+%Real hilb[:,:]= {(1/(i+j-1) for i in 1:n, j in 1:n};
+%Real hilb2[:,:]={{(1/(i+j-1) for j in 1:n} for i in 1:n};
+%10.4.2
+%Array Concatenation
+%The function cat(k,A,B,C,...) concatenates arrays A , B , C ,... along dimension k according to the following
+%rules:
+% Arrays A, B, C, ... must have the same number of dimensions, i.e., ndims(A) = ndims(B) = ...
+% Arrays A, B, C, ... must be type compatible expressions (Section 6.6) giving the type of the elements of the
+%result. The maximally expanded types should be equivalent. Real and Integer subtypes can be mixed
+%resulting in a Real result array where the Integer numbers have been transformed to Real numbers.
+% k has to characterize an existing dimension, i.e., 1 <= k <= ndims(A) = ndims(B) = ndims(C); k shall be an
+%integer number.
+% Size matching: Arrays A, B, C, ... must have identical array sizes with the exception of the size of
+%dimension k, i.e., size(A,j) = size(B,j), for 1 <= j <= ndims(A) and j <> k.
+%[Examples:
+%Real[2,3]
+%Real[2,6]
+%r1
+%r2
+%= cat(1, {{1.0, 2.0, 3}}, {{4, 5, 6}});
+%= cat(2, r1, 2*r1);
+%]
+%Concatenation is formally defined according to:
+%Let R = cat(k,A,B,C,...), and let n = ndims(A) = ndims(B) = ndims(C) = ...., then
+%size(R,k) = size(A,k) + size(B,k) + size(C,k) + ...
+%size(R,j) = size(A,j) = size(B,j) = size(C,j) = ...., for 1 <= j <= n and j <> k.
+%R[i_1, ..., i_k, ..., i_n] = A[i_1, ..., i_k, ..., i_n], for i_k <= size(A,k),
+%R[i_1, ..., i_k, ..., i_n] = B[i_1, ..., i_k - size(A,i), ..., i_n], for i_k <= size(A,k) + size(B,k),
+%....
+%where 1 <= i_j <= size(R,j) for 1 <= j <= n.
+\section{Array Indexing}
+
+The array indexing operator name $[ ... ]$ is used to access array elements for retrieval of their values or for updating these values. An indexing operation is subject to upper and lower array dimension index bounds (Section \ref{array:bounds}). [\emph{An indexing operation is assumed to take constant time, i.e., largely independent of the size of the array.}] 
+
+The indexing operator takes two operands, where the first operand is the array to be indexed and the second operand are index expressions:
+
+\verb"arrayname[indexexpr]"
+
+It is also possible to use the array access operator to assign to element/elements of an array in \verb"algorithm" and \verb"equation" sections. If the index is an array the assignments take place in the order given by the index array. For assignments to arrays and elements of arrays, the entire right-hand side and the index on the left-hand side is evaluated before any element is assigned a new value.
+
+Indexes in arrays inside for statements in \verb"algorithm" or \verb"equation" sections are restricted to expressions of the form:
+
+\begin{equation*}
+\alpha \cdot i + \beta
+\end{equation*}
+
+where $\alpha$ and $\beta$ are integer expressions and $i$ is the iteration index.
+
+%\section{Scalar, Vector, Matrix, and Array Operator Functions}
+%Completar
+%
+%The mathematical operations defined on scalars, vectors, and matrices are the subject of linear algebra.
+%In all contexts that require an expression which is a subtype of Real, an expression which is a subtype of
+%Integer can also be used; the Integer expression is automatically converted to Real.
+%The term numeric or numeric class is used below for a subtype of the Real or Integer type classes.
+%10.6.1
+%Equality and Assignment
+%Equality a=b and assignment a:=b of scalars, vectors, matrices, and arrays is defined element-wise and require
+%both objects to have the same number of dimensions and corresponding dimension sizes. The operands need to be
+%type equivalent. This is legal for the simple types and all types satisfying the requirements for a record, and is in
+%the latter case applied to each component-element of the records.
+%Table 10-9. Equality and assignment of arrays and scalars.
+%Type of a
+%Scalar
+%Vector[n]
+%Matrix[n, m]
+%Array[n, m, ...]
+%10.6.2
+%Type of b
+%Scalar
+%Vector[n]
+%Matrix[n, m]
+%Array[n, m, ...]
+%Result of a = b
+%Scalar
+%Vector[n]
+%Matrix[n, m]
+%Array[n, m, ...]
+%Operation (j=1:n, k=1:m)
+%a = b
+%a[j] = b[j]
+%a[j, k] = b[j, k]
+%a[j, k, ...] = b[j, k, ...]
+%Array Element-wise Addition, Subtraction, and String Concatenation
+%Addition a+b and subtraction a-b of numeric scalars, vectors, matrices, and arrays is defined element-wise and
+%require size(a)=size(b) and a numeric type for a and b . Addition a+b of string scalars, vectors, matrices, and
+%arrays is defined as element-wise string concatenation of corresponding elements from a and b , and require
+%size(a)=size(b) .
+%Table 10-10. Array addition, subtraction, and string concatenation.
+%Type of a Type of b Result of a +/- b Operation c := a +/- b (j=1:n, k=1:m)
+%Scalar Scalar Scalar c := a +/- b120 Modelica Language Specification 3.3
+%Vector[n] Vector[n] Vector[n] c[j] := a[j] +/- b[j]
+%Matrix[n, m] Matrix[n, m] Matrix[n, m] c[j, k] := a[j, k] +/- b[j, k]
+%Array[n, m, ...] Array[n, m, ...] Array[n, m, ...] c [j, k, ...] := a[j, k, ...] +/- b[j, k, ...]
+%Element-wise addition a.+b and subtraction a.-b of numeric scalars, vectors, matrices or arrays a and b requires
+%a numeric type class for a and b and either size(a) = size(b) or scalar a or scalar b. Element-wise addition a.+b of
+%string scalars, vectors, matrices, and arrays is defined as element-wise string concatenation of corresponding
+%elements from a and b, and require either size(a) = size(b) or scalar a or scalar b.
+%Table 10-11 Array element-wise addition, subtraction, and string concatenation.
+%Type of a Type of b Result of a .+/.- b Operation c := a .+/.- b (j=1:n, k=1:m)
+%Scalar Scalar Scalar c := a +/- b
+%Scalar Array[n, m, ...] Array[n, m, ...] c[j, k, ...] := a +/- b[j, k, ...]
+%Array[n, m, ...] Scalar Array[n, m, ...] c[j, k, ...] := a[j, k, ...] +/- b
+%Array[n, m, ...] Array[n, m, ...] Array[n, m, ...] c [j, k, ...] := a[j, k, ...] +/- b[j, k, ...]
+
+%\section{Array Element-wise Multiplication}
+%Completar
+%
+%Scalar multiplication s*a or a*s with numeric scalar s and numeric scalar, vector, matrix or array a is defined
+%element-wise:
+%Table 10-12. Scalar and scalar to array multiplication of numeric elements
+%Type of s Type of a Type of s* a and a*s Operation c := s*a or c := a*s (j=1:n, k=1:m)
+%Scalar Scalar Scalar
+%c := s * a
+%Scalar Vector [n] Vector [n]
+%c[j] := s* a[j]
+%Scalar Matrix [n, m] Matrix [n, m]
+%c[j, k] := s* a[j, k]
+%Scalar Array[n, m, ...] Array [n, m, ...]
+%c[j, k, ...] := s*a[j, k, ...]
+%Element-wise multiplication a.*b of numeric scalars, vectors, matrices or arrays a and b requires a numeric type
+%class for a and b and either size(a) = size(b) or scalar a or scalar b.
+%Table 10-13 Array element-wise multiplication
+%Type of a Type of b Type of a .* b Operation c:=a .* b (j=1:n, k=1:m)
+%Scalar Scalar Scalar c := a * b
+%Scalar Array[n, m, ...] Array[n, m, ...] c[j, k, ...] := a* b[j, k, ...]
+%Array[n, m, ...] Scalar Array[n, m, ...] c[j, k, ...] := a[j, k, ...]* b
+%Array[n, m, ...] Array[n, m, ...] Array [n, m, ...] c[j, k, ...] := a[j, k, ...]* b[j, k, ...]
+
+
+\chapter{Statements and Algorithm Sections}\label{ch:statements}
+Whereas equations are very well suited for physical modeling, there are situations where computations are more
+conveniently expressed as algorithms, i.e., sequences of statements. In this chapter we describe the algorithmic
+constructs that are available in $\mu$-Modelica.
+Statements are imperative constructs allowed in algorithm sections.
+
+\section{Algorithm Sections}
+
+Algorithm sections is comprised of the keyword \verb"algorithm" followed by a sequence of statements. The formal
+syntax is as follows:
+\begin{grammar}
+<algorithm_section> ::=
+[ "initial" ] "algorithm" "{" <statement> "\";\"" 
+\alt "annotation" "\";\"" "}"
+\end{grammar}
+Equation equality $=$ or any other kind of equation (see Chapter \ref{ch:equations}) shall not be used in an algorithm section.
+
+\subsection{Initial Algorithm Sections}
+
+See Section \ref{equations:initial} for a description of both initial algorithm sections and initial equation sections.
+
+\subsection{Execution of an algorithm in a model}
+
+An algorithm section is conceptually a code fragment that remains together and the statements of an algorithm
+section are executed in the order of appearance. Whenever an algorithm section is invoked, all variables appearing
+on the left hand side of the assignment operator ":=" are initialized (at least conceptually):
+\begin{itemize}
+\item A non-discrete variable is initialized with its start value (i.e. the value of the start-attribute).
+\item A discrete variable $v$ is initialized with \verb"pre(v)". 
+\end{itemize}
+
+[\emph{
+Initialization is performed, in order that an algorithm section cannot introduce a "memory" (except in the case of
+discrete states which are explicitly given), which could invalidate the assumptions of a numerical integration
+algorithm. Note, a Modelica tool may change the evaluation of an algorithm section, provided the result is
+identical to the case, as if the above conceptual processing is performed.}
+
+\emph{An algorithm section is treated as an atomic vector-equation, which is sorted together with all other equations.
+Conceptually the algorithm can be viewed as $(lhs1, lhs2, ...) = someFunction(nonLhs1, nonLhs2, ...)$, where $lhs$
+are the variables assigned and $nonLhs$ are other appearing variables. For the sorting process (BLT), every
+algorithm section with $N$ different left-hand side variables, is treated as an atomic N-dimensional vector-equation
+containing all variables appearing in the algorithm section. This guarantees that all $N$ equations end up in an
+algebraic loop and the statements of the algorithm section remain together.}]
+
+%\subsection{Execution of the algorithm in a function}
+
+%See section 12.4.4 “Initialization and Declaration Assignments of Components in Functions”.
+
+\section{Statements}
+
+Statements are imperative constructs allowed in algorithm sections. A flattened statement is identical to the
+corresponding nonflattened statement.
+Names in statements are found as follows:
+\begin{itemize}
+\item If the name occurs inside an expression: it is first found among the lexically enclosing reduction functions
+(see Section 10.3.4) in order starting from the inner-most, and if not found it proceeds as if it were outside
+an expression: 
+\item Names in a statement are first found among the lexically enclosing for-statements in order starting from the
+inner-most, and if not found: 
+\item Names in a statement shall be found by looking up in the partially flattened enclosing class of the algorithm
+section.  
+\end{itemize}
+The syntax of statements is as follows:
+\begin{grammar}
+
+<statement> ::=
+( <component_reference> ( "\":=\"" <expression> | <function_call_args> )
+\alt "\"(\"" <output_expression_list> "\")\"" "\":=\"" <component_reference> <function_call_args>
+\alt "return"
+\alt <if_statement>
+\alt <for_statement>
+\alt <when_statement> )
+
+\end{grammar}
+
+\subsection{Simple Assignment Statements}
+The syntax of simple assignment statement is as follows:
+\begin{grammar}
+<component_reference> "\":=\"" <expression>
+\end{grammar}
+The \verb"expression" is evaluated. The resulting value is stored into the variable denoted by \verb"component_reference".
+
+\subsubsection{Assignments from Called Functions with Multiple Results}
+
+There is a special form of assignment statement that is used only when the right-hand side contains a call to a
+function with multiple results. The left-hand side contains a parenthesized, comma-separated list of variables
+receiving the results from the function call. A function with $n$ results needs $m<=n$ receiving variables on the left-hand side.
+
+\begin{equation*}
+(out1, out2, out3) := function\_name(in1, in2, in3, in4);
+\end{equation*}
+
+It is possible to omit receiving variables from this list:
+
+\begin{equation*}
+(out1,, out3) := function\_name(in1, in2, in3, in4);
+\end{equation*}
+
+[\emph{Example: The function f called below has three results and two inputs:}
+\begin{eqnarray*}
+ &&(a, b, c) := f(1.0, 2.0); \\
+ &&(x[1], x[2], x[3]) := f(3,4);
+\end{eqnarray*}]
+
+The syntax of an assignment statement with a call to a function with multiple results is as follows:
+
+\begin{equation*}
+"(" output\_expression\_list ")" ":=" component\_reference(function\_call\_args)
+\end{equation*}
+
+
+[\emph{Also see Section \ref{equations:simpleequality} regarding calling functions with multiple results within equations.}]
+
+\subsection{For-statement}
+
+The syntax of a for-statement is as follows:
+
+
+\begin{grammar}
+<for_statement> := "for" <for_index> "loop"
+  "{" <statement> "\";\"" "}"
+"end for" "\";\""
+\end{grammar}
+
+\begin{grammar}
+<for_index> ::=
+	<IDENT>  "in" <expression>
+\end{grammar}
+
+The following is an example of a prefix of a for-statement:
+\begin{verbatim}
+for IDENT in expression loop
+\end{verbatim}
+
+The expression of a for-statement shall be a vector expression. It is evaluated once for each for-statement, and
+is evaluated in the scope immediately enclosing the for-statement. The loop-variable ( IDENT ) is in scope inside
+the loop-construct and shall not be assigned to. The loop-variable has the same type as the type of the elements of
+the vector expression.
+
+[\emph{Example:}
+\begin{center}
+\begin{tabular}{l p{3in}}
+	 \verb2for i in 1:10 loop2 & // i takes the values 1,2,3,...,10. \\	
+	 \verb2for i in 1: 1.5: 5.5 loop2  & // r takes the values 1.0, 2.5, 4.0, 5.5 \\
+\end{tabular}
+\label{tab:comments}
+\end{center}
+
+\emph{The loop-variable may hide other variables as in the following example. Using another name for the loop-variable is, however, strongly recommended.}
+\begin{verbatim}
+constant Integer j=4;
+Real x[j];
+equation
+  for j in 1:j loop // The loop-variable j takes the values 1,2,3,4
+    x[j]=j;
+    // Uses the loop-variable j
+end for;
+\end{verbatim}
+]
+
+\subsection{Return-Statements}
+
+Can only be used inside functions, see Section \ref{functions:return}.
+
+\subsection{If-Statement}
+
+If-statements have the following syntax:
+
+\begin{grammar}
+<if_statement> ::=
+"if" <expression> "then"
+"{" <statement> "\";\"" "}"
+"{" "elseif" <expression> "then"
+"{" <statement> "\";\"" "}"
+[ "else"
+"{" <statement> "\";\"" "}"
+]
+"end if"
+\end{grammar}
+
+The \verb"expression" of an if- or elseif-clause must be scalar \verb"Boolean" expression. One if-clause, and zero or more elseif-clauses, and an optional else-clause together form a list of branches. One or zero of the bodies of these if-,
+elseif- and else-clauses is selected, by evaluating the conditions of the if- and elseif-clauses sequentially until a
+condition that evaluates to true is found. If none of the conditions evaluate to true the body of the else-clause is
+selected (if an else-clause exists, otherwise no body is selected). In an algorithm section, the selected body is then
+executed. The bodies that are not selected have no effect on that model evaluation.
+
+\subsection{When-Statements}
+
+A when-statement has the following syntax:
+
+\begin{grammar}
+<when_statement> ::=
+"when" <expression> "then"
+"{" <statement> "\";\"" "}" 
+"{" "elsewhen" <expression> "then"
+"{" <statement> "\";\"" "}" "}"
+"end when"
+\end{grammar}
+
+The \verb"expression" of a when-statement shall be a discrete-time \verb"Boolean" scalar or vector expression. The algorithmic statements within a when-statement are activated when the scalar or any one of the elements of the
+vector-expression becomes true.
+
+[\emph{Example:
+Algorithms are activated when $x$ becomes $> 2$:}
+\begin{verbatim}
+when x > 2 then
+  y1 := sin(x);
+  y3 := 2*x + y1+y2;
+end when;
+\end{verbatim}
+
+\emph{This is a valid Modelica condition that is not supported in $\mu$-Modelica. (Completar)
+The statements inside the when-statement are activated when either $x$ becomes $> 2$ or $sample(0,2)$ becomes $true$ or $x$ becomes $< 5$:}
+\begin{verbatim}
+when {x > 2, sample(0,2), x < 5} then
+  y1 := sin(x);
+  y3 := 2*x + y1+y2;
+end when;
+\end{verbatim}
+
+\emph{For when-statements in algorithm sections the order is significant and it is advisable to have only one assignment within the when-statement and instead use several algorithm sections having when-statements with identical conditions, e.g.:}
+
+\begin{verbatim}
+algorithm
+  when x > 2 then
+    y1 := sin(x);
+  end when;
+equation
+  y2 = sin(y1);
+algorithm
+  when x > 2 then
+    y3 := 2*x +y1+y2;
+  end when;
+\end{verbatim}
+
+\emph{Merging the when-statements can lead to less efficient code and different models with different behavior depending on the order of the assignment to y1 and y3 in the algorithm.}
+]
+\subsubsection{Restrictions on When-Statements}
+\begin{itemize}
+\item A when-statement shall not be used within a function.
+\item When-statements cannot be nested.
+\item When-statements may not occur inside if, and for-clauses in algorithms.  
+\end{itemize}
+
+[\emph{Example:
+The following nested when-statement is invalid:}
+\begin{verbatim}
+when x > 2 then
+  when y1 > 3 then
+    y2 := sin(x);
+  end when;
+end when;
+\end{verbatim}
+]
+
+\section{Special Statements}
+These special statements have the same form and semantics as the corresponding equations, apart from the general difference in semantics between equations and statements.
+
+\subsubsection{Reinit Statement}
+
+See Section \ref{equations:reinit}.
+
+\subsubsection{Assert Statement}
+
+See Section \ref{equations:assert}. A failed assert stops the execution of the current algorithm.
+
+\chapter{Functions}\label{ch:functions}
+This chapter describes the Modelica function construct.
+
+\section{Function Declaration}
+A $\mu$-Modelica function is an algorithm section that contains procedural algorithmic code to be executed when the function is called or alternatively an external function specifier, functions are defined using the keyword \verb"function". Formal parameters are specified using the
+\verb"input" keyword, whereas results are denoted using the \verb"output" keyword.
+[\emph{The structure of a typical function declaration is sketched by the following schematic function example:}
+\begin{verbatim}
+function functionname
+  input TypeI1 in1;
+  input TypeI2 in2;
+  input TypeI3 in3;
+  ...
+  output TypeO1 out1;
+  output TypeO2 out2;
+  ...
+  protected
+  < local variables >
+  ...
+  algorithm
+  ...
+  < statements >
+  ...
+  end functionname;
+\end{verbatim}
+]
+It is not allowed to use default values with any \verb"input" or \verb"output" formal parameter through declaration assignments. 
+[\emph{Example:}
+
+\begin{verbatim}
+function functionname
+  input TypeI1 in1 := default1; 
+  ...
+  output TypeO1 out1 := default2;
+  ...
+  end functionname;
+\end{verbatim}
+\emph{In the above example, both formal parameters definitions are wrong (note that this example is valid Modelica code).}
+ 
+[\emph{All internal parts of a function are optional; i.e., the following is also a legal function:}
+\begin{verbatim}
+function functionname
+end functionname;
+\end{verbatim}
+]
+\subsection{Ordering of Formal Parameters}
+
+The relative ordering between input formal parameter declarations is significant since that determines the matching between actual arguments and formal parameters at function calls with positional parameter passing. Likewise, the relative ordering between the declarations of the outputs is significant since that determines the matching with receiving variables at function calls of functions with multiple results. However, the declarations of the inputs and outputs can be intermixed as long as these internal orderings are preserved. [\emph{Mixing declarations in
+this way is not recommended, however, since it makes the code hard to read.}]
+[\emph{Example:}
+\begin{verbatim}
+function <functionname>
+  output TypeO1 out1; // Intermixed declarations of inputs and outputs
+  input TypeI1 in1; // not recommended since code becomes hard to read
+  input TypeI2 in2;
+  ...
+  output TypeO2 out2;
+  input TypeI3 in3;
+  ...
+end < functionname >;
+\end{verbatim}
+]
+
+\subsection{Function Return-Statement}\label{functions:return}
+The return-statement terminates the current function call. It can only be used in an algorithm section of a function. It has the following form:
+
+\verb"return;"
+
+
+[\emph{Example:}
+
+\begin{verbatim}
+function max
+  input Real x;
+  input Real y;
+  output Real res;
+  algorithm
+    index := x;
+    if y > x then
+      res := y;
+      return;
+    end if;
+    return;
+end max;
+\end{verbatim}
+]
+
+\section{Pure Modelica Functions}
+$\mu$-Modelica functions are pure, i.e., are side-effect free with respect to the $\mu$-Modelica state (the set of all $\mu$-Modelica variables in a simulation model), apart from the exceptional case specified further below. This means that:
+\begin{itemize}
+\item  Pure $\mu$-Modelica functions are mathematical functions, i.e. calls with the same input argument values always give the same results.
+\item A pure $\mu$-Modelica function is side-effect free with respect to the internal $\mu$-Modelica simulation state. Specifically, the ordering of function calls and the number of calls to a function shall not influence the simulation state.
+\item A $\mu$-Modelica function which does not have the pure function properties is impure and needs to be declared as stated below. 
+\end{itemize}
+
+[\emph{Comment: The Modelica translator is responsible for maintaining this property for pure non-external
+functions. Regarding external functions, the external function implementor is responsible. Note that external functions can have side-effects as long as they do not influence the internal Modelica simulation state, e.g. caching variables for performance or printing trace output to a log file.}]
+
+With the prefix keyword \verb"impure" it is stated that a Modelica function is impure and it is only allowed to call such a function from within:
+\begin{itemize}
+\item another function marked with the prefixes \verb"impure" or \verb"pure"
+\item a when-statement.  
+\end{itemize}
+
+With the prefix keyword \verb"pure" it is stated that a $\mu$-Modelica function is pure even though it may call impure functions.
+
+\section{Function Call}
+Functions can be called as described in this section.
+
+\subsubsection{Positional or Named Input Arguments of Functions}
+
+$\mu$-Modelica function calls has only positional arguments, such as
+
+\verb"f(3.5, 5.76, 5, 8.3);"
+
+The formal syntax of a function call:
+
+\begin{grammar}
+
+<primary> ::=
+<name> <function_call_args>
+
+<name> ::=
+<IDENT> 
+
+<function_call_args> ::=
+"\"(\"" [ <function_arguments> ] "\")\""
+
+<function_arguments> ::=
+<function_argument> [ "\",\"" <function_arguments> ]
+
+<function_argument> ::=
+<expression>
+
+\end{grammar}
+
+The interpretation of a function call is as follows: A list of unfilled slots is created for all formal input parameters. There shall be no remaining unfilled slots [otherwise an error occurs] and the list of filled slots is used as the argument list for the call. The type of each argument must agree with the type of the corresponding parameter, except where the standard type coercions can be used to make the types agree.
+
+\subsection{Output Formal Parameters of Functions}
+
+A function may have more than one output component, corresponding to multiple return values. The only way to use more than the first return value of such a function is to make the function call the right hand side of an equation or assignment. In this case, the left hand side of the equation or assignment shall contain a list of component references within parentheses:
+
+\verb"(out1, out2, out3) = f(...);"
+
+The component references are associated with the output components according to their position in the list. Thus output component $i$ is set equal to, or assigned to, component reference $i$ in the list, where the order of the output components is given by the order of the component declarations in the function definition. The type of each component reference in the list must agree with the type of the corresponding output component.
+A function application may be used as expression whose value and type is given by the value and type of the first output component, if at least one return result is provided.
+It is possible to omit left hand side component references and/or truncate the left hand side list in order to discard outputs from a function call.
+
+The only permissible use of an expression in the form of a list of expressions in parentheses, is when it is used as the left hand side of an equation or assignment where the right hand side is an application of a function.
+
+\subsection{Initialization and Declaration Assignments of Components in Functions}
+
+Components in a function can be divided into three groups:
+\begin{itemize}
+\item Public components which are input formal parameters.
+\item Public components which are output formal parameters.
+\item Protected components which are local variables, parameters, or constants.   
+\end{itemize}
+
+When a function is called components of a function do not have start-attributes. However, a declaration 
+
+\verb"assignment ( := expression )" 
+
+with an expression may be present for a component.
+A declaration assignment for a non-input component initializes the component to this expression at the start of every function invocation (before executing the algorithm section or calling the external function). These bindings must be executed in an order where a variable is not used before its declaration assignment has been executed; it is an error if no such order exists (i.e. the binding must be acyclic).
+Declaration assignments can only be used for components of a function. If no declaration assignment is given for a non-input component its value at the start of the function invocation is undefined. It is a quality of implementation issue to diagnose this for non-external functions.
+
+\section{Built-in Functions}
+
+There are basically four groups of built-in functions in Modelica:
+
+\begin{itemize}
+\item Intrinsic mathematical and conversion functions.
+\item Derivative and special operators with function syntax.
+\item Event-related operators with function syntax.
+\item Built-in array functions.  
+\end{itemize}
+
+%\section{Declaring Derivatives of Functions}
+%Completar
+%%
+%%Derivatives of functions can be declared explicitly using the derivative annotation, see Section 12.7.1, whereas
+%%a function can be defined as a partial derivative of another function using the der -operator in a short function
+%%definition, see Section 12.7.2.
+%%12.7.1
+%%Using the Derivative Annotation
+%%A function declaration can have an annotation derivative specifying the derivative function. This can influence
+%%simulation time and accuracy and can be applied to both functions written in Modelica and to external functions.
+%%A derivative annotation can state that it is only valid under certain restrictions on the input arguments. These
+%%restrictions are defined using the following optional attributes: order (only a restriction if order>1 , the default
+%%for order is 1), noDerivative , and zeroDerivative . The given derivative-function can only be used to
+%%compute the derivative of a function call if these restrictions are satisfied. There may be multiple restrictions on
+%%the derivative, in which case they must all be satisfied. The restrictions also imply that some derivatives of some
+%%inputs are excluded from the call of the derivative (since they are not necessary). A function may supply multiple
+%%derivative functions subject to different restrictions.
+%%[Example:
+%%function foo0 annotation(derivative=foo1); end foo0;
+%%function foo1 annotation(derivative(order=2)=foo2); end foo1;
+%%function foo2 end foo2;
+%%]
+%%The inputs to the derivative function of order 1 are constructed as follows:146 Modelica Language Specification 3.3
+%% First are all inputs to the original function, and after all them we will in order append one derivative for
+%%each input containing reals.
+%% The outputs are constructed by starting with an empty list and then in order appending one derivative for
+%%each output containing reals.
+%% If the Modelica function call is a nth derivative (n>=1), i.e. this function call has been derived from an (n-
+%%1)th derivative, an annotation(order=n+1)=... , specifies the (n+1)th derivative, and the (n+1)th
+%%derivative call is constructed as follows:
+%% The input arguments are appended with the (n+1)th derivative, which are constructed in order from the nth
+%%order derivatives.
+%% The output arguments are similar to the output argument for the nth derivative, but each output is one higher
+%%in derivative order.
+%%[Example: Given the declarations
+%%function foo0
+%%...
+%%input Real x;
+%%input Boolean linear;
+%%input ...;
+%%output Real y;
+%%...
+%%annotation(derivative=foo1);
+%%end foo0;
+%%function foo1
+%%...
+%%input Real x;
+%%input Boolean linear;
+%%input ...;
+%%input Real der_x;
+%%...
+%%output Real der_y;
+%%...
+%%annotation(derivative(order=2)=foo2);
+%%end foo1;
+%%function foo2
+%%...
+%%input Real x;
+%%input Boolean linear;
+%%input ...;
+%%input Real der_x;
+%%...;
+%%input Real der_2_x;
+%%...
+%%output Real der_2_y;
+%%...
+%%the equation
+%%(...,y(t),...)=foo0(...,x(t),b,...);
+%%implies that:
+%%(...,d y(t)/dt,...)=foo1(...,x(t),b,..., ...,d x(t)/dt,...);
+%%(...,d^2 y(t)/dt^2,...)=foo2(...,x(t),b,...,d x(t)/dt,..., ...,d^2 x(t)/dt^2,...);
+%%]
+%%An input or output to the function may be any simple type (Real, Boolean, Integer, String and enumeration types)
+%%or a record, provided the record does not contain both reals and non-reals predefined types. The function must
+%%have at least one input containing reals. The output list of the derivative function may not be empty.
+%% zeroDerivative=input_var1147
+%%The derivative function is only valid if input_var1 is independent of the variables the function call is
+%%differentiated with respect to (i.e. that the derivative of input_var1 is “zero”). The derivative of input_var1 is
+%%excluded from the argument list of the derivative-function.
+%%[Assume that function f takes a matrix and a scalar. Since the matrix argument is usually a parameter expression
+%%it is then useful to define the function as follows (the additional derivative = f_general_der is optional and can
+%%be used when the derivative of the matrix is non-zero).
+%%function f "Simple table lookup"
+%%input Real x;
+%%input Real y[:, 2];
+%%output Real z;
+%%annotation(derivative(zeroDerivative=y) = f_der,
+%%derivative=f_general_der);
+%%algorithm
+%%...
+%%end f;
+%%function f_der "Derivative of simple table lookup"
+%%input Real x;
+%%input Real y[:, 2];
+%%input Real x_der;
+%%output Real z_der;
+%%algorithm
+%%...
+%%end f_der;
+%%function f_general_der "Derivative of table lookup taking into account varying tables"
+%%input Real x;
+%%input Real y[:, 2];
+%%input Real x_der;
+%%input Real y_der[:, 2];
+%%output Real z_der;
+%%algorithm
+%%...
+%%end f_general_der;
+%%]
+%% noDerivative(input_var2 = f(input_var1, ...) )
+%%The derivative function is only valid if the input argument input_var2 is computed as f(input_var1, ...). The
+%%derivative of input_var2 is excluded from the argument list of the derivative-function.
+%%[Assume that function fg is defined as a composition f(x, g(x)). When differentiating f it is useful to give the
+%%derivative under the assumption that the second argument is defined in this way:
+%%function fg
+%%input Real x;
+%%output Real z;
+%%algorithm
+%%z := f(x, g(x));
+%%end fg;
+%%function f
+%%input Real x;
+%%input Real y;
+%%output Real z;
+%%annotation(derivative(noDerivative(y = g(x))) = f_der);
+%%algorithm
+%%...
+%%end f;
+%%function f_der
+%%input Real x;
+%%input Real x_der;
+%%input Real y;148 Modelica Language Specification 3.3
+%%output Real z_der;
+%%algorithm
+%%...
+%%end f_der;
+%%This is useful if g represents the major computational effort of fg .]
+
+\section{External Function Interface}
+
+Here, the word \verb"function" is used to refer to an arbitrary external routine, whether or not the routine has a return value or returns its result via output parameters (or both). The $\mu$-Modelica external function call interface provides the following:
+\begin{itemize}
+\item Support for external functions written in \verb"C".
+\item Mapping of argument types from Modelica to the target language and back.
+\item Natural type conversion rules in the sense that there is a mapping from $\mu$-Modelica to standard libraries of the target language.
+\item Handling arbitrary parameter order for the external function.
+\item Passing arrays to and from external functions where the dimension sizes are passed as explicit integer parameters.
+\item Handling of external function parameters which are used both for input and output.
+\end{itemize}
+
+The format of an external function declaration is as follows.
+\begin{verbatim}
+function IDENT 
+  { component_clause ";" }
+  [ protected { component_clause ";" } ]
+  external [ language_specification ] [ external_function_call ]
+  [annotation ] ";"
+  [ annotation ";" ]
+end IDENT;
+\end{verbatim}
+
+Components in the public part of an external function declaration shall be declared either as input or output. [\emph{This is just as for any other function. The components in the protected part allows local variables for temporary storage to be declared.}]
+The \verb"language_specification" must be \verb1"C"1. The \verb"external-function-call" specification allows functions whose prototypes do not match the default assumptions as defined below to be called. It also gives the name used to call the external function. If the external call is not given explicitly, this name is assumed to be the same as the $\mu$-Modelica name.
+The only permissible kinds of expressions in the argument list are identifiers and scalar constants. The annotations are used to pass additional information to the compiler when necessary.
+
+\subsection{Argument type Mapping}
+
+The arguments of the external function are declared in the same order as in the $\mu$-Modelica declaration, unless specified otherwise in an explicit external function call. Protected variables (i.e. temporaries) are passed in the same way as outputs, whereas constants are passed as inputs.
+
+\subsubsection{Simple Types}
+
+\FloatBarrier
+
+Arguments of simple types are by default mapped as follows in \verb"C":
+\begin{table}[h]
+\begin{small}
+\begin{tabular}{|l|ll|}
+\hline
+\multicolumn{1}{|c|}{\textbf{Modelica}} &\multicolumn{2}{c|}{\textbf{C}}\\
+\cline{2-3}
+&\multicolumn{1}{c|}{\textbf{Input}} &\multicolumn{1}{c|}{\textbf{Output}}\\
+\hline
+\multicolumn{1}{|l|}{Real}&\multicolumn{1}{l|}{double} &\multicolumn{1}{l|}{double *}\\
+\hline
+\multicolumn{1}{|l|}{Integer}&\multicolumn{1}{l|}{int} &\multicolumn{1}{l|}{int *}\\
+\hline
+\multicolumn{1}{|l|}{Boolean}&\multicolumn{1}{l|}{int} &\multicolumn{1}{l|}{int *}\\
+\hline
+\end{tabular}
+\end{small}
+\end{table}
+
+\subsubsection{Arrays}
+
+Unless an explicit function call is present in the external declaration, an array is passed by its address followed by $n$ arguments of type \verb"size_t" with the corresponding array dimension sizes, where $n$ is the number of dimensions.
+[\emph{The type size\_t is a C unsigned integer type.}]
+
+\subsection{Return Type Mapping}
+
+If there is a single output parameter and no explicit call of the external function, or if there is an explicit external call in the form of an equation, in which case the LHS must be one of the output parameters, the external routine is assumed to be a value-returning function. 
+
+\section{Annotations for External Libraries and Include Files}
+
+The following annotations are useful in the context of calling external functions from Modelica:
+\begin{itemize}
+\item The \verb1annotation(Library="libraryName")1, used by the linker to include the library file where the compiled external function is available.
+\item The \verb3annotation(Library={"libraryName1","libraryName2"})3, used by the linker to include the library files where the compiled external function is available and additional libraries used to implement it. For shared libraries it is recommended to include all non-system libraries in this list.  
+\item The \verb1annotation(Include="includeDirective")1, used to include source files, [\emph{e.g., header files or source files that contain the functions referenced in the external function declaration}], needed for calling the external function in the code generated by the $\mu$-Modelica compiler. 
+\end{itemize}
+[\emph{Example: to show the use of external functions and of object libraries:}
+\begin{verbatim}
+\end{verbatim}
+
+
+\chapter{Packages}
+
+\section{Motivation and Usage of Packages}
+Packages in $\mu$-Modelica can only contain function definitions. Parameters, constans, variables and models cannot be declared in a package. The definitions in a package should typically be related in some way, which is the main reason they are placed in a particular package.
+Packages are useful for a number of reasons:
+\begin{itemize}
+\item Definitions that are related to some particular topic are typically grouped into a package. This makes those definitions easier to find and the code more understandable.
+\item Packages provide encapsulation and coarse-grained structuring that reduces the complexity of large systems. 
+\item Name conflicts between definitions in different packages are eliminated since the package name is implicitly prefixed to names of definitions declared in a package.
+\end{itemize}
+
+\section{Importing Definitions from a Package}
+
+The import-clause makes functions definitions declared in some package available for use by shorter names in a model or a package. It is the only way of referring to definitions declared in some other package for use inside an encapsulated package or function.
+[\emph{Import-clauses in a package or class fill the following two needs:}
+\begin{itemize}
+\item Making definitions from other packages available for use (by shorter names) in a package or model.
+\item Explicit declaration of usage dependences on other packages.
+\end{itemize}
+]
+An import-clause can occur in the following syntactic form:
+
+\verb"import packagename; (single definition import)" 
+
+Here packagename is the fully qualified name of the imported package including possible dot notation.
+ 
+\subsection{Lookup of Imported Names}
+
+This section only defines how the imported name is looked up in the import clause.
+Lookup of the name of an imported package, e.g. A in the clause import A;. Is defined in the following way:
+\begin{itemize}
+\item Look for the package A in the local working directory.
+\item Look for the package A in the package folder specified in the directory structure. This feature is implementation dependent.
+\end{itemize} 
+
+\subsection{Summary of Rules for Import Clauses}
+The following rules apply to import-clauses:
+\begin{itemize}
+\item Import-clauses are not inherited.
+\item Import-clauses are not named elements of a class or package. 
+\item The order of import-clauses does not matter.
+\item One can only import from packages. 
+\item An imported package or definition should always be referred to by its fully qualified name in the import-clause.
+\end{itemize}
+
+\subsection{Mapping Package/Class Structures to a Hierarchical File System}
+
+Packages in $\mu$-Modelica are represented as nonstructured entities [\emph{e.g. a file in the file system}] where all the function definitions are located. 
+
+\subsubsection{Mapping a Package/Class Hierarchy into a Single File (Nonstructured Entity)}
+
+A nonstructured entity [\emph{e.g. the file A.mo}] shall contain only a stored-definition that defines a package [ A ] with a name matching the name of the nonstructured entity.
+
+\chapter{Annotations}\label{ch:annotations}
+
+Annotations are intended for storing extra information about a model, such as graphics, documentation or versioning, etc. A Modelica tool is free to define and use other annotations, in addition to those defined here, according to Section \ref{annotations:specific}. The only requirement is that any tool shall save files with all annotations from this chapter and all vendor-specific annotations intact. To ensure this, annotations must be represented with constructs according to the Modelica grammar. The specification in this document defines the semantic meaning if a tool implements any of these annotations.
+
+\section{Vendor-Specific Annotations}\label{annotations:specific}
+
+A vendor may – anywhere inside an annotation – add specific, possibly undocumented, annotations which are not intended to be interpreted by other tools. Two variants of vendor-specific annotations exist; one simple and one hierarchical. Double underscore concatenated with a vendor name as initial characters of the identifier are used to identify vendor-specific annotations.
+[\emph{Example:}
+\begin{verbatim}
+annotation (
+  Icon(coordinateSystem(extent={{-100,-100}, {100,100}}),
+  graphics={__NameOfVendor(Circle(center={0,0}, radius=10))})
+);
+\end{verbatim}
+\emph{This introduces a new graphical primitive Circle using the hierarchical variant of vendor-specific annotations.}
+\begin{verbatim}
+annotation (
+  Icon(coordinateSystem(extent={{-100,-100}, {100,100}}),
+  graphics={Rectangle(extent={{-5,-5},{7,7}}, __NameOfVendor_shadow=2)})
+);
+\end{verbatim}
+\emph{This introduces a new attribute __NameOfVendor_shadow for the Rectangle primitive using the simple variant of vendor-specific annotations.}]
+
+\section{Annotations for Simulation Experiments}
+\begin{grammar}
+<experiment_annotation> ::=
+"annotation" "\"(\"" "experiment" "\"(\"" [<experiment_option>] "{" "," <experiment_option>"}"] "\")\""
+
+<experiment_option> ::=
+"StartTime" "\"=\"" ["\"+\"" | "\"-\""] UNSIGNED_NUMBER 
+\alt "StopTime" "\"=\"" ["\"+\"" | "\"-\""] UNSIGNED_NUMBER 
+\alt "Interval" "\"=\""  UNSIGNED_NUMBER
+\alt "Tolerance" "\"=\"" UNSIGNED_NUMBER
+\end{grammar}
+
+The experiment annotation defines the default start time ( \verb"StartTime" ) in [s], the default stop time ( \verb"StopTime" ) in [s], the suitable time resolution for the result grid ( \verb"Interval" ) in [s], and the default relative integration tolerance ( \verb"Tolerance" ) for simulation experiments to be carried out with the model or block at hand.
+
+%
+%\section{Annotations for Functions}
+%\subsection{Function Derivative Annotations}
+%Completar
+%%See Section 12.7.1
+%\subsection{Inverse Function Annotation}
+%Completar
+%%See Section 12.8.
+%\subsection{External Function Annotations}
+%Completar
+%%See Section 12.9.4.
+%\section{Annotation for External Libraries and Include Files}
+%Completar
+%%See Section 12.9.4.
+
+\chapter{$\mu$-Modelica Concrete Syntax}\label{ch:grammar}
+
+\section{Lexical conventions}
+The following syntactic meta symbols are used (extended BNF):
+
+$[\ ]$ optional
+
+$\{\ \}$ repeat zero or more times
+
+$|$ or
+
+"text" The text is treated as a single token (no whitespace between any characters)
+The following lexical units are defined (the ones in boldface are the ones used in the grammar, the rest are just
+internal to the definition of other lexical units):
+\begin{grammar}\scriptsize
+
+<IDENT> ::= <NONDIGIT> "{" <DIGIT> | <NONDIGIT> "}"
+
+<NONDIGIT> ::= "\"_\"" | letters "\"a\"" to "\"z\"" | letters "\"A\"" to "\"Z\""
+
+<STRING> ::= "\"" { <S-CHAR> | <S-ESCAPE> } "\""
+
+<S-CHAR> = any member of the Unicode character set except double-quote "\"\"\"", and backslash "\\".  
+
+<S-ESCAPE> = "\"’\"" | "\\\"" | "\"?\"" | "\"\\\"" |
+"\"\\a\"" | "\"\\b\"" | "\"\\f\"" | "\"\\n\"" | "\"\\r\"" | "\"\\t\"" | "\"\\v\""
+
+<DIGIT> = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+
+<UNSIGNED_INTEGER> = <DIGIT> "{" <DIGIT> "}"
+
+<UNSIGNED_NUMBER> = <UNSIGNED_INTEGER> [ "\".\"" [ <UNSIGNED_INTEGER> ] ]
+[ ( "\"e\"" | "\"E\"" ) [ "\"+\"" | "\"-\"" ] <UNSIGNED_INTEGER> ]
+
+\end{grammar}
+
+\begin{itemize}
+\item $\mu$-Modelica uses the same comment syntax as C++ and Java (i.e., // signals the start of a line comment and /* .... */ is a multi-line comment); comments may contain any Unicode character. \item Boldface denotes keywords of the $\mu$-Modelica language. Keywords are reserved words and may not be used as identifiers.
+\end{itemize}
+
+\section{Stored Definition}
+
+\begin{grammar}\scriptsize
+<stored_definition> ::= 
+"{" <class_definition> "\";\"" "}"
+\end{grammar}
+
+
+\section{Class Definition}
+
+\begin{grammar}\scriptsize
+<class_definition> ::=
+<class_prefixes> <class_specifier>
+
+<class_prefixes> ::=
+"model"
+\alt "package" 
+\alt [ ( "pure" | "impure" ) ] "function"
+
+<class_specifier> ::=
+<IDENT> <string_comment> <composition> "end" <IDENT>
+
+<composition> ::=
+<element_list> "{" "protected" <element_list> | <equation_section> | <algorithm_section> "}"
+[ "external" [ <language_specification> ] [ <external_function_call> ] [ "annotation" ] "\";\"" ]
+[ "annotation" "\";\"" ]
+
+<language_specification> ::=
+STRING
+
+<external_function_call> ::=
+[ <component_reference> "\"=\"" ] <IDENT> "(" [ <expression_list> ] ")"
+
+<element_list> ::=
+"{" <element> "\";\"" "}"
+
+<element> ::=
+<import_clause> 
+\alt <class_definition> 
+\alt <component_clause>
+
+<import_clause> ::=
+"import" <name> 
+
+\end{grammar}
+
+\section{Component Clause}
+
+\begin{grammar}\scriptsize
+
+<component_clause> ::=
+<type_prefix> <type_specifier> <component_list>
+
+<type_prefix> ::=
+[ "discrete" | "parameter" | "constant" ] [ "input" | "output" ]
+
+<type_specifier> ::=
+"Real"
+\alt "Integer"
+\alt "Boolean"
+
+<component_list> ::=
+<component_declaration> "{" "\",\"" <component_declaration> "}"
+
+<component_declaration> ::=
+<declaration> 
+
+<declaration> :
+<IDENT> [ <array_subscripts> ] [ <modification> ]
+
+\end{grammar}
+
+\section{Modification}
+
+\begin{grammar}\scriptsize
+
+<modification> ::=
+<class_modification> [ "\"=\"" <expression> ]
+\alt "\"=\"" <expression>
+%\alt "\":=\"" <expression>
+
+<class_modification> ::=
+"\"(\"" [ <argument_list> ] "\")\""
+
+<argument_list> ::=
+<argument> "{" "\",\"" <argument> "}"
+
+<argument> ::=
+<element_modification_or_replaceable>
+
+<element_modification_or_replaceable> ::=
+[ "each" ]  <element_modification> 
+
+<element_modification> ::=
+<name> [ <modification> ] 
+
+\end{grammar}
+
+\section{Equations}
+
+\begin{grammar}\scriptsize
+
+<equation_section> ::=
+"equation" "{" <equation> "\";\"" "}"
+
+<algorithm_section> ::=
+[ "initial" ] "algorithm" "{" <statement> "\";\"" "}"
+
+<equation> ::=
+ <simple_expression> "\"=\"" <expression>
+\alt <for_equation>
+
+<statement> ::=
+<component_reference> ( "\":=\"" <expression> | <function_call_args> )
+%\alt "\"(\"" <output_expression_list> "\")\"" "\":=\"" <component_reference> <function_call_args>
+\alt "return"
+\alt <if_statement>
+\alt <for_statement>
+\alt <when_statement>
+
+<if_statement> ::=
+"if" <expression> "then"
+"{" <statement> "\";\"" "}"
+"{" "elseif" <expression> "then"
+"{" <statement> "\";\"" "}"
+[ "else"
+"{" <statement> "\";\"" "}"
+]
+"end if"
+
+<for_equation> ::=
+"for" <for_index> "loop"
+"{" <equation> "\";\"" "}"
+"end for"
+
+<for_statement> ::=
+"for" <for_index> "loop"
+"{" <statement> "\";\"" "}"
+"end for"
+
+<for_index> ::=
+<IDENT> "in" expression 
+
+<when_statement> ::=
+"when" <expression> "then"
+"{" <statement> "\";\"" "}" 
+"{" "elsewhen" <expression> "then"
+"{" <statement> "\";\"" "}" "}"
+"end when"
+
+\end{grammar}
+
+\section{Expressions}
+
+\begin{grammar}\scriptsize
+
+<expression> ::=
+<simple_expression>
+
+<simple_expression> ::=
+<logical_expression> [ "\":\"" <logical_expression> [ "\":\"" <logical_expression> ] ]
+
+<logical_expression> ::=
+<logical_term> "{" "or" <logical_term> "}"
+
+<logical_term> ::=
+<logical_factor> "{" "and" <logical_factor> "}"
+
+<logical_factor> ::=
+[ "not" ] <relation>
+
+<relation> ::=
+<arithmetic_expression> [ <rel_op> <arithmetic_expression> ]
+
+<rel_op> ::=
+"\"<\"" 
+\alt "\"<=\"" 
+\alt "\">\"" 
+\alt "\">=\"" 
+\alt "\"==\"" 
+\alt "\"<>\""
+
+<arithmetic_expression> ::=
+[ <add_op> ] <term> "{" <add_op> <term> "}"
+
+<add_op> ::=
+"\"+\""
+\alt "\"-\""
+
+<term> ::=
+<factor> "{" <mul_op> <factor> "}"
+
+<mul_op> ::=
+"\"*\""
+\alt "\"/\"" 
+
+<factor> ::=
+<primary> [ "\"^\"" <primary> ]
+
+<primary> ::=
+UNSIGNED_NUMBER
+\alt "false"
+\alt "true"
+\alt ( name | "der" ) <function_call_args>
+\alt <component_reference>
+\alt "\"(\"" <output_expression_list> "\")\""
+
+<name> ::=
+<IDENT> 
+
+<component_reference> ::=
+<IDENT> [ <array_subscripts> ] 
+
+<function_call_args> ::=
+"\"(\"" [ <function_arguments> ] "\")\""
+
+<function_arguments> ::=
+<function_argument> [ "\",\"" <function_arguments> ]
+
+<function_argument> ::=
+<expression>
+
+<output_expression_list> ::=
+[ <expression> ] "{" "\",\"" [ <expression> ] "}"
+
+<expression_list> ::=
+<expression> "{" "\",\"" <expression> "}"
+
+<array_subscripts> ::=
+"\"[\"" <subscript> "{" "\",\"" <subscript> "}" "\"]\""
+
+<subscript> ::=
+<expression>
+
+<annotation> ::=
+"annotation" <class_modification>
+\end{grammar}
+
+\end{document}

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Comment= QSS Solver.
+Exec=/opt/qss-solver/bin/run.sh
+Icon=/opt/qss-solver/bin/integrator.svg
+Name=QSS Solver
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Education;Science;Math;Development;Physics;
+X-KDE-SubstituteUID=false
+X-Ubuntu-Gettext-Domain=desktop_kdebase
+Name[en]=qss-solver
