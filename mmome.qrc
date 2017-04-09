@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/copy.png</file>
+        <file>images/cut.png</file>
+        <file>images/delete.png</file>
+        <file>images/editfile.png</file>
+        <file>images/settings.png</file>
+        <file>images/run.png</file>
+        <file>images/clear.png</file>
+        <file>images/run_copy.png</file>
+        <file>images/compile.png</file>
+        <file>images/debug.png</file>
+        <file>images/cancel.png</file>
+        <file>images/log.png</file>
+        <file>images/document_save.png</file>
+        <file>images/save_all.png</file>
+        <file>images/saveas.png</file>
+        <file>images/folder.svg</file>
+        <file>images/newFile.png</file>
+        <file>images/integrator.svg</file>
+        <file>images/multiplier.svg</file>
+        <file>images/gnuplot.png</file>
+        <file>images/ImportFile.png</file>
+    </qresource>
+</RCC>
