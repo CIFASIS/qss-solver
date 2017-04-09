@@ -1,0 +1,27 @@
+[submodule "src/engine"]
+	path = src/engine
+	url = https://github.com/CIFASIS/qss-solver-engine.git
+[submodule "src/mmoc"]
+	path = src/mmoc
+	url = https://github.com/CIFASIS/qss-solver-mmoc.git
+[submodule "src/gui"]
+	path = src/gui
+	url = https://github.com/CIFASIS/qss-solver-gui.git
+[submodule "models"]
+	path = models
+	url = https://github.com/CIFASIS/qss-solver-models.git
+[submodule "packages"]
+	path = packages
+	url = https://github.com/CIFASIS/qss-solver-packages.git
+[submodule "src/test-suite"]
+	path = src/test-suite
+	url = https://github.com/CIFASIS/qss-solver-test-suite.git
+[submodule "tools/external"]
+	path = tools/external
+	url = https://github.com/CIFASIS/qss-solver-external-tools.git
+[submodule "tools/interfaces/sbml"]
+	path = tools/interfaces/sbml
+	url = https://github.com/CIFASIS/sbml-mmo.git
+[submodule "src/usr"]
+	path = src/usr
+	url = https://github.com/CIFASIS/qss-solver-user-libs.git
