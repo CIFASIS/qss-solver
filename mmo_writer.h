@@ -43,8 +43,8 @@ using namespace std;
  */
 typedef enum
 {
-  WR_MMO,
-  WR_BR
+    WR_MMO,
+    WR_BR
 } WR_Type;
 
 /**
@@ -53,100 +53,100 @@ typedef enum
 class MMOWriter : public MMOVisitor
 {
 public:
-  /**
-   *
-   * @param file
-   */
-  MMOWriter (string file);
-  /**
-   *
-   */
-  ~MMOWriter ();
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMOExp *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMODecl *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMODecl x);
-  /**
-   *
-   * @param x
-   */
-  void
-  leave (MMODecl *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMOEvent *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMOEvent x);
-  /**
-   *
-   * @param x
-   */
-  void
-  leave (MMOEvent *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMOFunction *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMOFunction x);
-  /**
-   *
-   * @param x
-   */
-  void
-  leave (MMOFunction *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMOSection *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMOSection x);
-  /**
-   *
-   * @param x
-   */
-  void
-  leave (MMOSection *x);
+    /**
+     *
+     * @param file
+     */
+    MMOWriter (string file);
+    /**
+     *
+     */
+    ~MMOWriter ();
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMOExp *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMODecl *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMODecl x);
+    /**
+     *
+     * @param x
+     */
+    void
+    leave (MMODecl *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMOEvent *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMOEvent x);
+    /**
+     *
+     * @param x
+     */
+    void
+    leave (MMOEvent *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMOFunction *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMOFunction x);
+    /**
+     *
+     * @param x
+     */
+    void
+    leave (MMOFunction *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMOSection *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMOSection x);
+    /**
+     *
+     * @param x
+     */
+    void
+    leave (MMOSection *x);
 private:
-  int _indent;
-  string _modelName;
-  fstream _out;
-  list<string> _outputs;
-  bool _condition;
-  bool _initialAsignment;
+    int _indent;
+    string _modelName;
+    fstream _out;
+    list<string> _outputs;
+    bool _condition;
+    bool _initialAsignment;
 };
 
 #endif /* MMO_WRITER_H */

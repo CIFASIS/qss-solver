@@ -35,80 +35,82 @@ LIBSBML_CPP_NAMESPACE_USE
 class MMOUtils
 {
 protected:
-  /**
-   *
-   */
-  MMOUtils ();
-  /**
-   *
-   * @param copy
-   */
-  MMOUtils (MMOUtils const& copy);
-  /**
-   *
-   * @param copy
-   * @return
-   */
-  MMOUtils&
-  operator= (MMOUtils const& copy);
+    /**
+     *
+     */
+    MMOUtils ();
+    /**
+     *
+     * @param copy
+     */
+    MMOUtils (MMOUtils const& copy);
+    /**
+     *
+     * @param copy
+     * @return
+     */
+    MMOUtils&
+    operator= (MMOUtils const& copy);
 private:
-  int _varnum;
-  map<string,map<string,string> > _predefinedFunctions;
-  static bool _instance;
-  static MMOUtils *_utils;
-  bool _bioricaLanguage;
-  string
-  _applyList(ASTNode *node, string oper);
-  bool
-  _controlOperation(ASTNodeType_t type);
+    int _varnum;
+    map<string, map<string, string> > _predefinedFunctions;
+    static bool _instance;
+    static MMOUtils *_utils;
+    bool _bioricaLanguage;
+    string
+    _applyList (ASTNode *node, string oper);
+    bool
+    _controlOperation (ASTNodeType_t type);
 public:
-  /**
-   *
-   */
-  ~MMOUtils ()
-  {
-    _instance = false;
-  };
-  /**
-   *
-   * @return
-   */
-  static MMOUtils *
-  getInstance ();
-  /**
-   *
-   * @param vstr
-   * @return
-   */
-  const char*
-  getVar (string vstr = "tmpVar_");
-  /**
-   *
-   * @param f
-   */
-  void
-  bioricaLanguage(bool f);
-  /**
-   *
-   * @param node
-   * @param asgVariable
-   * @return
-   */
-  string
-  getExp (ASTNode *node, string asgVariable = "");
-  /**
-   *
-   * @param n
-   * @return
-   */
-  string
-  indent (int n);
-  /**
-   *
-   * @param node
-   * @return
-   */
-  string checkPredefinedFunctions(ASTNode *node);
+    /**
+     *
+     */
+    ~MMOUtils ()
+    {
+        _instance = false;
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    static MMOUtils *
+    getInstance ();
+    /**
+     *
+     * @param vstr
+     * @return
+     */
+    const char*
+    getVar (string vstr = "tmpVar_");
+    /**
+     *
+     * @param f
+     */
+    void
+    bioricaLanguage (bool f);
+    /**
+     *
+     * @param node
+     * @param asgVariable
+     * @return
+     */
+    string
+    getExp (ASTNode *node, string asgVariable = "");
+    /**
+     *
+     * @param n
+     * @return
+     */
+    string
+    indent (int n);
+    /**
+     *
+     * @param node
+     * @return
+     */
+    string
+    checkPredefinedFunctions (ASTNode *node);
 };
 
 #endif /* MMO_UTILS_H_ */

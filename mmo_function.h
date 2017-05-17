@@ -33,41 +33,42 @@ using namespace std;
 class MMOFunction : public MMOExp
 {
 public:
-  /**
-   *
-   * @param id
-   */
-  MMOFunction (string id);
-  /**
-   *
-   */
-  ~MMOFunction ();
-  /**
-   *
-   * @param visitor
-   */
-  void
-  accept (MMOVisitor *visitor);
-  /**
-   *
-   * @param decl
-   */
-  void
-  add (MMODecl *decl);
-  /**
-   *
-   * @return
-   */
-  string
-  getId ()
-  {
-    return (_id);
-  };
+    /**
+     *
+     * @param id
+     */
+    MMOFunction (string id);
+    /**
+     *
+     */
+    ~MMOFunction ();
+    /**
+     *
+     * @param visitor
+     */
+    void
+    accept (MMOVisitor *visitor);
+    /**
+     *
+     * @param decl
+     */
+    void
+    add (MMODecl *decl);
+    /**
+     *
+     * @return
+     */
+    string
+    getId ()
+    {
+        return (_id);
+    }
+    ;
 private:
-  string _id;
-  MMODecl *_definition;
-  list<MMODecl*> _inputs;
-  MMODecl *_output;
+    string _id;
+    MMODecl *_definition;
+    list<MMODecl*> _inputs;
+    MMODecl *_output;
 };
 
 #endif  /* MMO_FUNCTION_H_ */

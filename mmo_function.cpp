@@ -22,7 +22,7 @@
 #include "mmo_visitor.h"
 
 MMOFunction::MMOFunction (string id) :
-    _id (id), _definition (NULL), _inputs (), _output (NULL)
+        _id (id), _definition (NULL), _inputs (), _output (NULL)
 {
 }
 
@@ -33,27 +33,26 @@ MMOFunction::~MMOFunction ()
 void
 MMOFunction::accept (MMOVisitor *visitor)
 {
-  visitor->visit (this);
-  for (list<MMODecl*>::iterator it = _inputs.begin (); it != _inputs.end ();
-      it++)
+    visitor->visit (this);
+    for (list<MMODecl*>::iterator it = _inputs.begin (); it != _inputs.end (); it++)
     {
-      visitor->visit (*it);
+        visitor->visit (*it);
     }
-  visitor->visit (_output);
-  visitor->visit (_definition);
-  visitor->leave (this);
+    visitor->visit (_output);
+    visitor->visit (_definition);
+    visitor->leave (this);
 }
 
 void
 MMOFunction::add (MMODecl *decl)
 {
-  if (decl->isFunctionInput ())
+    if (decl->isFunctionInput ())
     {
-      _inputs.push_back (decl);
+        _inputs.push_back (decl);
     }
-  else if (decl->isFunctionDefinition ())
+    else if (decl->isFunctionDefinition ())
     {
-      _definition = decl;
-      _output = new MMODecl (decl->getId (), DEC_FUNCTION_OUTPUT);
+        _definition = decl;
+        _output = new MMODecl (decl->getId (), DEC_FUNCTION_OUTPUT);
     }
 }

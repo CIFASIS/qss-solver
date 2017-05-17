@@ -43,116 +43,116 @@ using namespace std;
 class BioRicaWriter : public MMOVisitor
 {
 public:
-  /**
-   *
-   * @param file
-   */
-  BioRicaWriter (string file);
-  /**
-   *
-   */
-  ~BioRicaWriter ();
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMOExp *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMODecl *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMODecl x);
-  /**
-   *
-   * @param x
-   */
-  void
-  leave (MMODecl *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMOEvent *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMOEvent x);
-  /**
-   *
-   * @param x
-   */
-  void
-  leave (MMOEvent *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMOFunction *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMOFunction x);
-  /**
-   *
-   * @param x
-   */
-  void
-  leave (MMOFunction *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMOSection *x);
-  /**
-   *
-   * @param x
-   */
-  void
-  visit (MMOSection x);
-  /**
-   *
-   * @param x
-   */
-  void
-  leave (MMOSection *x);
+    /**
+     *
+     * @param file
+     */
+    BioRicaWriter (string file);
+    /**
+     *
+     */
+    ~BioRicaWriter ();
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMOExp *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMODecl *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMODecl x);
+    /**
+     *
+     * @param x
+     */
+    void
+    leave (MMODecl *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMOEvent *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMOEvent x);
+    /**
+     *
+     * @param x
+     */
+    void
+    leave (MMOEvent *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMOFunction *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMOFunction x);
+    /**
+     *
+     * @param x
+     */
+    void
+    leave (MMOFunction *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMOSection *x);
+    /**
+     *
+     * @param x
+     */
+    void
+    visit (MMOSection x);
+    /**
+     *
+     * @param x
+     */
+    void
+    leave (MMOSection *x);
 private:
-  string
-  _flatId (MMODecl *x);
-  void
-  _print (list<string> *l, string sep = "\n", string finalSep = "");
-  list<string>
-  _getList (map<string, string> m);
-  int _indent;
-  string _modelName;
-  fstream _out;
-  list<string> _consts;
-  list<string> _formulas;
-  list<string> _domains;
-  list<string> _nodeElementStates;
-  list<string> _nodeElementFlows;
-  list<string> _nodeElementEvents;
-  list<string> _nodeFieldEqDiffs;
-  map<string, pair<string, list<string>*> > _nodeFieldTransitions;
-  list<string> _nodeFieldAssertions;
-  list<string> _nodeFieldExternals;
-  list<string> _nodeFieldSynchs;
-  map<string, string> _nodeFieldInits;
-  string _currentEvent;
+    string
+    _flatId (MMODecl *x);
+    void
+    _print (list<string> *l, string sep = "\n", string finalSep = "");
+    list<string>
+    _getList (map<string, string> m);
+    int _indent;
+    string _modelName;
+    fstream _out;
+    list<string> _consts;
+    list<string> _formulas;
+    list<string> _domains;
+    list<string> _nodeElementStates;
+    list<string> _nodeElementFlows;
+    list<string> _nodeElementEvents;
+    list<string> _nodeFieldEqDiffs;
+    map<string, pair<string, list<string>*> > _nodeFieldTransitions;
+    list<string> _nodeFieldAssertions;
+    list<string> _nodeFieldExternals;
+    list<string> _nodeFieldSynchs;
+    map<string, string> _nodeFieldInits;
+    string _currentEvent;
 };
 
 #endif /* BIORICA_WRITER_H_ */

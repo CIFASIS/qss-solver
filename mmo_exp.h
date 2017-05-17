@@ -32,26 +32,26 @@ using namespace std;
 class MMOExp
 {
 public:
-  /**
-   *
-   */
-  virtual
-  ~MMOExp ()
-  {
-  }
-  ;
-  /**
-   *
-   * @param visitor
-   */
-  virtual void
-  accept (MMOVisitor *visitor) = 0;
-  /**
-   *
-   * @return
-   */
-  virtual string
-  getId () = 0;
+    /**
+     *
+     */
+    virtual
+    ~MMOExp ()
+    {
+    }
+    ;
+    /**
+     *
+     * @param visitor
+     */
+    virtual void
+    accept (MMOVisitor *visitor) = 0;
+    /**
+     *
+     * @return
+     */
+    virtual string
+    getId () = 0;
 };
 
 #endif  /* MMO_EXP_H_ */

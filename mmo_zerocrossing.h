@@ -37,65 +37,65 @@ LIBSBML_CPP_NAMESPACE_USE
 class MMOZeroCrossing
 {
 public:
-  /**
-   *
-   */
-  MMOZeroCrossing ();
-  /**
-   *
-   * @param math
-   */
-  MMOZeroCrossing (ASTNode *math);
-  /**
-   *
-   */
-  ~MMOZeroCrossing ();
-  /**
-   *
-   * @return
-   */
-  string
-  getReverseRelation ();
-  /**
-   *
-   * @return
-   */
-  pair<string, string>
-  first ();
-  /**
-   *
-   * @return
-   */
-  pair<string, string>
-  next ();
-  /**
-   *
-   * @return
-   */
-  bool
-  end ();
-  /**
-   *
-   * @param i
-   * @return
-   */
-  bool
-  isPositive (int i);
+    /**
+     *
+     */
+    MMOZeroCrossing ();
+    /**
+     *
+     * @param math
+     */
+    MMOZeroCrossing (ASTNode *math);
+    /**
+     *
+     */
+    ~MMOZeroCrossing ();
+    /**
+     *
+     * @return
+     */
+    string
+    getReverseRelation ();
+    /**
+     *
+     * @return
+     */
+    pair<string, string>
+    first ();
+    /**
+     *
+     * @return
+     */
+    pair<string, string>
+    next ();
+    /**
+     *
+     * @return
+     */
+    bool
+    end ();
+    /**
+     *
+     * @param i
+     * @return
+     */
+    bool
+    isPositive (int i);
 private:
-  void
-  _parseLogicalOperators (ASTNode *node, ASTNode *cond);
-  void
-  _parseZeroCrossing (ASTNode *node, ASTNode *cond);
-  ASTNode *
-  _reverseRelation (ASTNode *node);
-  ASTNode *
-  _addCond (ASTNode *cond, ASTNode *node);
-  void
-  _negateNode (ASTNode *node, ASTNode *cond);
-  list<pair<ASTNode *, ASTNode *> > _zero_crossings;
-  vector<bool> _types;
-  ASTNode *_zero_crossing;
-  list<pair<ASTNode *, ASTNode *> >::iterator _it;
+    void
+    _parseLogicalOperators (ASTNode *node, ASTNode *cond);
+    void
+    _parseZeroCrossing (ASTNode *node, ASTNode *cond);
+    ASTNode *
+    _reverseRelation (ASTNode *node);
+    ASTNode *
+    _addCond (ASTNode *cond, ASTNode *node);
+    void
+    _negateNode (ASTNode *node, ASTNode *cond);
+    list<pair<ASTNode *, ASTNode *> > _zero_crossings;
+    vector<bool> _types;
+    ASTNode *_zero_crossing;
+    list<pair<ASTNode *, ASTNode *> >::iterator _it;
 };
 
 #endif /* MMO_ZEROCROSSING_H_ */

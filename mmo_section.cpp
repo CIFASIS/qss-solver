@@ -26,29 +26,29 @@
 #include "mmo_visitor.h"
 
 MMOSection::MMOSection (MMOSectionType type) :
-    _expIt(0), _algebraics (), _setInitialValues (false)
+        _expIt (0), _algebraics (), _setInitialValues (false)
 {
-  _type = type;
-  switch (type)
+    _type = type;
+    switch (type)
     {
-    case SEC_EQUATION:
-      _id = "equation";
-      break;
-    case SEC_INITIAL_ALGORITHM:
-      _id = "initial algorithm";
-      break;
-    case SEC_EXTERNAL_FUNCTIONS:
-      _id = "";
-      break;
-    case SEC_ALGORITHM:
-      _id = "algorithm";
-      break;
-    case SEC_DECLARATIONS:
-      _id = "";
-      break;
-    case SEC_IMPORTS:
-      _id = "";
-      break;
+        case SEC_EQUATION:
+            _id = "equation";
+            break;
+        case SEC_INITIAL_ALGORITHM:
+            _id = "initial algorithm";
+            break;
+        case SEC_EXTERNAL_FUNCTIONS:
+            _id = "";
+            break;
+        case SEC_ALGORITHM:
+            _id = "algorithm";
+            break;
+        case SEC_DECLARATIONS:
+            _id = "";
+            break;
+        case SEC_IMPORTS:
+            _id = "";
+            break;
     }
 }
 
@@ -59,147 +59,141 @@ MMOSection::~MMOSection ()
 void
 MMOSection::accept (MMOVisitor *visitor)
 {
-  if (!_setInitialValues)
+    if (!_setInitialValues)
     {
-      visitor->visit (this);
+        visitor->visit (this);
     }
-  if (_type == SEC_DECLARATIONS)
+    if (_type == SEC_DECLARATIONS)
     {
-      for (std::map<string, MMOExp*>::iterator it = _exps.begin ();
-	  it != _exps.end (); ++it)
-	{
-	  MMODecl *tmp = (MMODecl*) it->second;
-	  if (tmp->isImport ())
-	    {
-	      visitor->visit (it->second);
-	    }
-	}
-      for (std::map<string, MMOExp*>::iterator it = _exps.begin ();
-	  it != _exps.end (); ++it)
-	{
-	  MMODecl *tmp = (MMODecl*) it->second;
-	  if (!tmp->isImport ())
-	    {
-	      visitor->visit (it->second);
-	    }
-	}
+        for (std::map<string, MMOExp*>::iterator it = _exps.begin (); it != _exps.end (); ++it)
+        {
+            MMODecl *tmp = (MMODecl*) it->second;
+            if (tmp->isImport ())
+            {
+                visitor->visit (it->second);
+            }
+        }
+        for (std::map<string, MMOExp*>::iterator it = _exps.begin (); it != _exps.end (); ++it)
+        {
+            MMODecl *tmp = (MMODecl*) it->second;
+            if (!tmp->isImport ())
+            {
+                visitor->visit (it->second);
+            }
+        }
 
     }
-  else if (_type == SEC_EQUATION)
+    else if (_type == SEC_EQUATION)
     {
-      for (list<string>::iterator it = _algebraics.begin ();
-	  it != _algebraics.end (); it++)
-	{
-	  MMODecl *v = findDec (*it);
-	  if (v->isAlgebraicEquation ())
-	    {
-	      visitor->visit (v);
-	    }
-	}
-      for (std::map<string, MMOExp*>::iterator it = _exps.begin ();
-	  it != _exps.end (); ++it)
-	{
-	  MMODecl *tmp = (MMODecl*) it->second;
-	  if (tmp->isDerivative ())
-	    {
-	      visitor->visit (it->second);
-	    }
-	}
+        for (list<string>::iterator it = _algebraics.begin (); it != _algebraics.end (); it++)
+        {
+            MMODecl *v = findDec (*it);
+            if (v->isAlgebraicEquation ())
+            {
+                visitor->visit (v);
+            }
+        }
+        for (std::map<string, MMOExp*>::iterator it = _exps.begin (); it != _exps.end (); ++it)
+        {
+            MMODecl *tmp = (MMODecl*) it->second;
+            if (tmp->isDerivative ())
+            {
+                visitor->visit (it->second);
+            }
+        }
     }
-  else if (_type == SEC_ALGORITHM && _setInitialValues)
+    else if (_type == SEC_ALGORITHM && _setInitialValues)
     {
-       for (std::map<string, MMOExp*>::iterator it = _exps.begin ();
-	  it != _exps.end (); ++it)
-	{
-	  MMOEvent *tmp = (MMOEvent*) it->second;
-	  tmp->setInitialAlgorithm (true);
-	  visitor->visit (it->second);
-	  tmp->setInitialAlgorithm (false);
-	}
+        for (std::map<string, MMOExp*>::iterator it = _exps.begin (); it != _exps.end (); ++it)
+        {
+            MMOEvent *tmp = (MMOEvent*) it->second;
+            tmp->setInitialAlgorithm (true);
+            visitor->visit (it->second);
+            tmp->setInitialAlgorithm (false);
+        }
     }
-  else
+    else
     {
-      for (std::map<string, MMOExp*>::iterator it = _exps.begin ();
-	  it != _exps.end (); ++it)
-	{
-	  visitor->visit (it->second);
-	}
+        for (std::map<string, MMOExp*>::iterator it = _exps.begin (); it != _exps.end (); ++it)
+        {
+            visitor->visit (it->second);
+        }
     }
-  if (!_setInitialValues)
+    if (!_setInitialValues)
     {
-      visitor->leave (this);
+        visitor->leave (this);
     }
 }
 
 void
 MMOSection::add (MMOExp *exp)
 {
-  _exps.insert (pair<string, MMOExp*> (exp->getId (), exp));
+    _exps.insert (pair<string, MMOExp*> (exp->getId (), exp));
 }
 
 MMOExp *
 MMOSection::find (string id)
 {
-  map<string, MMOExp*>::iterator it = _exps.find (id);
-  if (it != _exps.end ())
+    map<string, MMOExp*>::iterator it = _exps.find (id);
+    if (it != _exps.end ())
     {
-      return (it->second);
+        return (it->second);
     }
-  return (NULL);
+    return (NULL);
 }
 
 MMODecl *
 MMOSection::findDec (string id)
 {
-  if (_type == SEC_DECLARATIONS || _type == SEC_EQUATION)
+    if (_type == SEC_DECLARATIONS || _type == SEC_EQUATION)
     {
-      return ((MMODecl*) find (id));
+        return ((MMODecl*) find (id));
     }
-  return (NULL);
+    return (NULL);
 }
 
 void
 MMOSection::setAlgebraics (list<string> algebraics)
 {
-  _algebraics = algebraics;
+    _algebraics = algebraics;
 }
 
 MMODecl *
 MMOSection::first ()
 {
-  _expIt = 0;
-  map<string,MMOExp*>::iterator it = _exps.begin();
-  if (it == _exps.end())
+    _expIt = 0;
+    map<string, MMOExp*>::iterator it = _exps.begin ();
+    if (it == _exps.end ())
     {
-      return (NULL);
+        return (NULL);
     }
-  return ((MMODecl*)it->second);
+    return ((MMODecl*) it->second);
 }
 
 MMODecl*
 MMOSection::next ()
 {
-  _expIt++;
-    map<string,MMOExp*>::iterator it = _exps.begin();
-  for (unsigned int i = 0; i < _expIt; i++)
+    _expIt++;
+    map<string, MMOExp*>::iterator it = _exps.begin ();
+    for (unsigned int i = 0; i < _expIt; i++)
     {
-      it++;
+        it++;
     }
-    if (it == _exps.end())
-      {
+    if (it == _exps.end ())
+    {
         return (NULL);
-      }
-    return ((MMODecl*)it->second);
+    }
+    return ((MMODecl*) it->second);
 }
 
 bool
 MMOSection::end ()
 {
-  return (_expIt == _exps.size());
+    return (_expIt == _exps.size ());
 }
 
 void
 MMOSection::setInitialValues (bool iv)
 {
-  _setInitialValues = iv;
+    _setInitialValues = iv;
 }

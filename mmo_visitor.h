@@ -38,92 +38,92 @@ class MMOSection;
 class MMOVisitor
 {
 public:
-  /**
-   *
-   */
-  virtual
-  ~MMOVisitor ()
-  {
-  }
-  ;
-  /**
-   *
-   * @param x
-   */
-  virtual void
-  visit (MMOExp *x) = 0;
-  /**
-   *
-   * @param x
-   */
-  virtual void
-  visit (MMODecl *x) = 0;
-  /**
-   *
-   * @param x
-   */
-  virtual void
-  visit (MMODecl x) = 0;
-  /**
-   *
-   * @param x
-   */
-  virtual void
-  leave (MMODecl *x) = 0;
-  /**
-   *
-   * @param x
-   */
-  virtual void
-  visit (MMOFunction *x) = 0;
-  /**
-   *
-   * @param x
-   */
-  virtual void
-  visit (MMOFunction x) = 0;
-  /**
-   *
-   * @param x
-   */
-  virtual void
-  leave (MMOFunction *x) = 0;
-  /**
-   *
-   * @param x
-   */
-  virtual void
-  visit (MMOEvent *x) = 0;
-  /**
-   *
-   * @param x
-   */
-  virtual void
-  visit (MMOEvent x) = 0;
-  /**
-   *
-   * @param x
-   */
-  virtual void
-  leave (MMOEvent *x) = 0;
-  /**
-   *
-   * @param x
-   */
-  virtual void
-  visit (MMOSection *x) = 0;
-  /**
-   *
-   * @param x
-   */
-  virtual void
-  visit (MMOSection x) = 0;
-  /**
-   *
-   * @param x
-   */
-  virtual void
-  leave (MMOSection *x) = 0;
+    /**
+     *
+     */
+    virtual
+    ~MMOVisitor ()
+    {
+    }
+    ;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit (MMOExp *x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit (MMODecl *x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit (MMODecl x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    leave (MMODecl *x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit (MMOFunction *x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit (MMOFunction x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    leave (MMOFunction *x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit (MMOEvent *x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit (MMOEvent x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    leave (MMOEvent *x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit (MMOSection *x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit (MMOSection x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    leave (MMOSection *x) = 0;
 };
 
 #endif /* MMO_VISITOR_H_ */

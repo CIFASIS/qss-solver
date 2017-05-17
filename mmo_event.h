@@ -32,8 +32,8 @@ using namespace std;
  */
 typedef enum
 {
-  positive, //!< positive
-  negative //!< negative
+    positive, //!< positive
+    negative //!< negative
 } MMOHandlerType;
 
 /**
@@ -42,69 +42,70 @@ typedef enum
 class MMOEvent : public MMOExp
 {
 public:
-  /**
-   *
-   * @param id
-   */
-  MMOEvent (string id, bool generateInitialAsignment = false);
-  /**
-   *
-   */
-  ~MMOEvent ();
-  /**
-   *
-   * @param visitor
-   */
-  void
-  accept (MMOVisitor *visitor);
-  /**
-   *
-   * @param decl
-   * @param type
-   */
-  void
-  add (MMODecl decl, MMOHandlerType type);
-  /**
-   *
-   * @param decl
-   */
-  void
-  add (MMODecl decl);
-  /**
-   *
-   * @return
-   */
-  string
-  getId ()
-  {
-    return (_id);
-  };
-  /**
-   *
-   * @return
-   */
-  bool
-  generateInitialAsignments();
-  /**
-   *
-   * @param ia
-   */
-  void
-  setInitialAlgorithm (bool ia);
-  /**
-   *
-   * @return
-   */
-  bool
-  initialAlgorithm ();
+    /**
+     *
+     * @param id
+     */
+    MMOEvent (string id, bool generateInitialAsignment = false);
+    /**
+     *
+     */
+    ~MMOEvent ();
+    /**
+     *
+     * @param visitor
+     */
+    void
+    accept (MMOVisitor *visitor);
+    /**
+     *
+     * @param decl
+     * @param type
+     */
+    void
+    add (MMODecl decl, MMOHandlerType type);
+    /**
+     *
+     * @param decl
+     */
+    void
+    add (MMODecl decl);
+    /**
+     *
+     * @return
+     */
+    string
+    getId ()
+    {
+        return (_id);
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    bool
+    generateInitialAsignments ();
+    /**
+     *
+     * @param ia
+     */
+    void
+    setInitialAlgorithm (bool ia);
+    /**
+     *
+     * @return
+     */
+    bool
+    initialAlgorithm ();
 private:
-  string _id;
-  MMODecl _zero_crossing;
-  MMODecl _condition;
-  list<MMODecl> _handler_pos;
-  list<MMODecl> _handler_neg;
-  bool _generateInitialAsignment;
-  bool _initialAlgorithm;
+    string _id;
+    MMODecl _zero_crossing;
+    MMODecl _condition;
+    list<MMODecl> _handler_pos;
+    list<MMODecl> _handler_neg;
+    bool _generateInitialAsignment;
+    bool _initialAlgorithm;
 };
 
 #endif  /* MMO_EVENT_H_ */

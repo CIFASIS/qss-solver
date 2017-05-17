@@ -22,10 +22,10 @@
 #include "mmo_visitor.h"
 
 MMOEvent::MMOEvent (string id, bool generateInitialAsignment) :
- _id(), _zero_crossing(), _condition(), _handler_pos(), _handler_neg(),
- _generateInitialAsignment(generateInitialAsignment), _initialAlgorithm(false)
+        _id (), _zero_crossing (), _condition (), _handler_pos (), _handler_neg (), _generateInitialAsignment (generateInitialAsignment), _initialAlgorithm (
+                false)
 {
-  _id = id;
+    _id = id;
 }
 
 MMOEvent::~MMOEvent ()
@@ -35,69 +35,67 @@ MMOEvent::~MMOEvent ()
 void
 MMOEvent::accept (MMOVisitor *visitor)
 {
-  if (_initialAlgorithm && !_generateInitialAsignment)
+    if (_initialAlgorithm && !_generateInitialAsignment)
     {
-      return;
+        return;
     }
-  visitor->visit (this);
-  visitor->visit (&_zero_crossing);
-  if (_condition.isCondition())
+    visitor->visit (this);
+    visitor->visit (&_zero_crossing);
+    if (_condition.isCondition ())
     {
-      visitor->visit (&_condition);
+        visitor->visit (&_condition);
     }
-  for (std::list<MMODecl>::iterator it = _handler_pos.begin ();
-      it != _handler_pos.end (); ++it)
+    for (std::list<MMODecl>::iterator it = _handler_pos.begin (); it != _handler_pos.end (); ++it)
     {
-      visitor->visit (*it);
+        visitor->visit (*it);
     }
-  for (std::list<MMODecl>::iterator it = _handler_neg.begin ();
-      it != _handler_neg.end (); ++it)
+    for (std::list<MMODecl>::iterator it = _handler_neg.begin (); it != _handler_neg.end (); ++it)
     {
-      visitor->visit (*it);
+        visitor->visit (*it);
     }
-  visitor->leave (this);
+    visitor->leave (this);
 }
 
 void
 MMOEvent::add (MMODecl decl)
 {
-  if (decl.isZeroCrossing ())
+    if (decl.isZeroCrossing ())
     {
-      _zero_crossing = decl;
+        _zero_crossing = decl;
     }
-  else if (decl.isCondition ())
+    else if (decl.isCondition ())
     {
-      _condition = decl;
+        _condition = decl;
     }
 }
 
 void
 MMOEvent::add (MMODecl decl, MMOHandlerType type)
 {
-  if (type == positive)
+    if (type == positive)
     {
-      _handler_pos.push_back (decl);
+        _handler_pos.push_back (decl);
     }
-  else
+    else
     {
-      _handler_neg.push_back (decl);
+        _handler_neg.push_back (decl);
     }
 }
 
 bool
 MMOEvent::generateInitialAsignments ()
 {
-  return (_generateInitialAsignment);
+    return (_generateInitialAsignment);
 }
 
 void
 MMOEvent::setInitialAlgorithm (bool ia)
 {
-  _initialAlgorithm = ia;
+    _initialAlgorithm = ia;
 }
 
 bool
 MMOEvent::initialAlgorithm ()
 {
-  return (_initialAlgorithm);
+    return (_initialAlgorithm);
 }

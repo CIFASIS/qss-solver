@@ -22,47 +22,47 @@
 #include "mmo_visitor.h"
 
 MMODecl::MMODecl () :
-    _value (), _type (DEC_CONSTANT), _init ()
+        _value (), _type (DEC_CONSTANT), _init ()
 {
 }
 
 MMODecl::MMODecl (string id, double value, MMODeclType type)
 {
-  _id = id;
-  _exp = "";
-  _type = type;
-  _value = value;
-  _init = false;
+    _id = id;
+    _exp = "";
+    _type = type;
+    _value = value;
+    _init = false;
 }
 
 MMODecl::MMODecl (string id, string exp, MMODeclType type, bool conditional)
 {
-  _id = id;
-  _exp = exp;
-  _type = type;
-  if (type == DEC_ASSIGNMENT && conditional)
+    _id = id;
+    _exp = exp;
+    _type = type;
+    if (type == DEC_ASSIGNMENT && conditional)
     {
-      _type = DEC_CONDITIONAL_ASSIGNMENT;
+        _type = DEC_CONDITIONAL_ASSIGNMENT;
     }
-  _value = 0;
-  _init = false;
+    _value = 0;
+    _init = false;
 }
 
 MMODecl::MMODecl (string id, MMODeclType type)
 {
-  if (type == DEC_ZC_RELATION || type == DEC_CONDITION)
+    if (type == DEC_ZC_RELATION || type == DEC_CONDITION)
     {
-      _id = "";
-      _exp = id;
+        _id = "";
+        _exp = id;
     }
-  else
+    else
     {
-      _id = id;
-      _exp = "";
+        _id = id;
+        _exp = "";
     }
-  _type = type;
-  _value = 0;
-  _init = false;
+    _type = type;
+    _value = 0;
+    _init = false;
 }
 
 MMODecl::~MMODecl ()
@@ -72,179 +72,179 @@ MMODecl::~MMODecl ()
 void
 MMODecl::accept (MMOVisitor *visitor)
 {
-  visitor->visit (this);
-  visitor->leave (this);
+    visitor->visit (this);
+    visitor->leave (this);
 }
 
 string
 MMODecl::getId ()
 {
-  return (_id);
+    return (_id);
 }
 
 void
 MMODecl::id (string i)
 {
-  _id = i;
+    _id = i;
 }
 
 void
 MMODecl::setType (MMODeclType type)
 {
-  _type = type;
+    _type = type;
 }
 
 string
 MMODecl::getExp ()
 {
-  return (_exp);
+    return (_exp);
 }
 
 void
 MMODecl::exp (string i)
 {
-  _exp = i;
+    _exp = i;
 }
 
 void
 MMODecl::value (double i)
 {
-  _value = i;
+    _value = i;
 }
 
 double
 MMODecl::getValue ()
 {
-  return (_value);
+    return (_value);
 }
 
 bool
 MMODecl::hasExp ()
 {
-  return (_exp != "");
+    return (_exp != "");
 }
 
 bool
 MMODecl::hasValue ()
 {
-  return (_exp == "");
+    return (_exp == "");
 }
 
 bool
 MMODecl::isAlgebraicEquation ()
 {
-  return (_type == DEC_ALGEBRAIC_EQUATION);
+    return (_type == DEC_ALGEBRAIC_EQUATION);
 }
 
 bool
 MMODecl::isInitialAssignment ()
 {
-  return (_type == DEC_INITIAL_ASSIGNMENT);
+    return (_type == DEC_INITIAL_ASSIGNMENT);
 }
 
 bool
 MMODecl::isAssignment ()
 {
-  return (_type == DEC_ASSIGNMENT);
+    return (_type == DEC_ASSIGNMENT);
 }
 
 bool
 MMODecl::isZeroCrossing ()
 {
-  return (_type == DEC_ZC_RELATION);
+    return (_type == DEC_ZC_RELATION);
 }
 
 bool
 MMODecl::isOppositeZeroCrossing ()
 {
-  return (_type == DEC_ZC_OPPOSITE_RELATION);
+    return (_type == DEC_ZC_OPPOSITE_RELATION);
 }
 bool
 MMODecl::isDerivative ()
 {
-  return (_type == DEC_DERIVATIVE);
+    return (_type == DEC_DERIVATIVE);
 }
 
 bool
 MMODecl::isParameter ()
 {
-  return (_type == DEC_PARAMETER);
+    return (_type == DEC_PARAMETER);
 }
 
 bool
 MMODecl::isConstant ()
 {
-  return (_type == DEC_CONSTANT);
+    return (_type == DEC_CONSTANT);
 }
 
 bool
 MMODecl::isState ()
 {
-  return (_type == DEC_STATE);
+    return (_type == DEC_STATE);
 }
 
 bool
 MMODecl::isDiscrete ()
 {
-  return (_type == DEC_DISCRETE);
+    return (_type == DEC_DISCRETE);
 }
 
 bool
 MMODecl::isAlgebraic ()
 {
-  return (_type == DEC_ALGEBRAIC);
+    return (_type == DEC_ALGEBRAIC);
 }
 
 bool
 MMODecl::isCondition ()
 {
-  return (_type == DEC_CONDITION);
+    return (_type == DEC_CONDITION);
 }
 
 bool
 MMODecl::isFunctionInput ()
 {
-  return (_type == DEC_FUNCTION_INPUT);
+    return (_type == DEC_FUNCTION_INPUT);
 }
 
 bool
 MMODecl::isFunctionOutput ()
 {
-  return (_type == DEC_FUNCTION_OUTPUT);
+    return (_type == DEC_FUNCTION_OUTPUT);
 }
 
 bool
 MMODecl::isFunctionDefinition ()
 {
-  return (_type == DEC_FUNCTION_DEFINITION);
+    return (_type == DEC_FUNCTION_DEFINITION);
 }
 
 bool
 MMODecl::isFunctionFormula ()
 {
-  return (_type == DEC_FUNCTION_FORMULA);
+    return (_type == DEC_FUNCTION_FORMULA);
 }
 
 bool
 MMODecl::isReinit ()
 {
-  return (_type == DEC_REINIT);
+    return (_type == DEC_REINIT);
 }
 
 bool
 MMODecl::isImport ()
 {
-  return (_type == DEC_IMPORT);
+    return (_type == DEC_IMPORT);
 }
 
 bool
 MMODecl::isImplicit ()
 {
-  return (_type == DEC_IMPLICIT_EQUATION);
+    return (_type == DEC_IMPLICIT_EQUATION);
 }
 
 bool
 MMODecl::isConditionalAssignment ()
 {
-  return (_type == DEC_CONDITIONAL_ASSIGNMENT);
+    return (_type == DEC_CONDITIONAL_ASSIGNMENT);
 }

@@ -24,21 +24,19 @@
 #include "mmo_utils.h"
 #include "mmo_zerocrossing.h"
 
-MMOMath::MMOMath (bool replace,
-		  map<string, pair<list<string>, ASTNode*> > *functions,
-		  string prefix) :
-    _algebraics (), _currentAlgebraic (0), _type (MATH_EQUATION), _functions (
-    NULL), _replace (replace), _imports (), _currentImport (0), _asgVariable(), _isConditional (false)
+MMOMath::MMOMath (bool replace, map<string, pair<list<string>, ASTNode*> > *functions, string prefix) :
+        _algebraics (), _currentAlgebraic (0), _type (MATH_EQUATION), _functions (
+        NULL), _replace (replace), _imports (), _currentImport (0), _asgVariable (), _isConditional (false)
 {
-  if (_replace)
+    if (_replace)
     {
-      _functions = functions;
-      _prefix = prefix;
+        _functions = functions;
+        _prefix = prefix;
     }
-  _equation = NULL;
-  _zerocrossing = NULL;
-  _assignment = NULL;
-  _exp = NULL;
+    _equation = NULL;
+    _zerocrossing = NULL;
+    _assignment = NULL;
+    _exp = NULL;
 }
 
 MMOMath::~MMOMath ()
@@ -48,370 +46,361 @@ MMOMath::~MMOMath ()
 void
 MMOMath::parseEquation (const ASTNode *node)
 {
-  _type = MATH_EQUATION;
-  _exp = new ASTNode (*node);
-  _processNode (_exp);
-  if (_replace)
+    _type = MATH_EQUATION;
+    _exp = new ASTNode (*node);
+    _processNode (_exp);
+    if (_replace)
     {
-      _replaceFunctions (_exp);
+        _replaceFunctions (_exp);
     }
-  _equation = new MMOEquation (_exp);
+    _equation = new MMOEquation (_exp);
 }
 
 void
 MMOMath::parseZeroCrossing (ASTNode *node)
 {
-  _type = MATH_ZERO_CROSSING;
-  _exp = new ASTNode (*node);
-  _processNode (_exp);
-  _replaceFunctions (_exp);
-  _equation = new MMOEquation (_exp);
-  _zerocrossing = new MMOZeroCrossing (_equation->ASTExpression ());
+    _type = MATH_ZERO_CROSSING;
+    _exp = new ASTNode (*node);
+    _processNode (_exp);
+    _replaceFunctions (_exp);
+    _equation = new MMOEquation (_exp);
+    _zerocrossing = new MMOZeroCrossing (_equation->ASTExpression ());
 }
 
 void
 MMOMath::parseAssignment (ASTNode *node, string asgVariable)
 {
-  _type = MATH_ASSIGNMENT;
-  _exp = new ASTNode (*node);
-  _processNode (_exp);
-  if (_replace)
+    _type = MATH_ASSIGNMENT;
+    _exp = new ASTNode (*node);
+    _processNode (_exp);
+    if (_replace)
     {
-      _replaceFunctions (_exp);
+        _replaceFunctions (_exp);
     }
-  _asgVariable = asgVariable;
-  _assignment = new MMOAssignment (_exp);
+    _asgVariable = asgVariable;
+    _assignment = new MMOAssignment (_exp);
 }
 
 bool
 MMOMath::hasZeroCrossing ()
 {
-  if (_equation)
+    if (_equation)
     {
-      return (_equation->hasZeroCrossing ());
+        return (_equation->hasZeroCrossing ());
     }
-  return (false);
+    return (false);
 }
 
 bool
 MMOMath::hasEquation ()
 {
-  if (_equation)
+    if (_equation)
     {
-      return (_equation->hasEquation ());
+        return (_equation->hasEquation ());
     }
-  return (false);
+    return (false);
 }
 
 bool
 MMOMath::hasAssignment ()
 {
-  if (_assignment)
+    if (_assignment)
     {
-      return (true);
+        return (true);
     }
-  return (false);
+    return (false);
 }
 
 pair<ASTNode *, list<pair<string, ASTNode *> > >
 MMOMath::firstEvent ()
 {
-  return (_equation->first ());
+    return (_equation->first ());
 }
 
 pair<ASTNode *, list<pair<string, ASTNode *> > >
 MMOMath::nextEvent ()
 {
-  return (_equation->next ());
+    return (_equation->next ());
 }
 
 bool
 MMOMath::endEvent ()
 {
-  return (_equation->end ());
+    return (_equation->end ());
 }
 
 pair<string, string>
 MMOMath::firstZC ()
 {
-  return (_zerocrossing->first ());
+    return (_zerocrossing->first ());
 }
 
 pair<string, string>
 MMOMath::nextZC ()
 {
-  return (_zerocrossing->next ());
+    return (_zerocrossing->next ());
 }
 
 bool
 MMOMath::endZC ()
 {
-  return (_zerocrossing->end ());
+    return (_zerocrossing->end ());
 }
 
 string
 MMOMath::firstAsg ()
 {
-  return ("");
+    return ("");
 }
 
 string
 MMOMath::nextAsg ()
 {
-  return ("");
+    return ("");
 }
 
 bool
 MMOMath::endAsg ()
 {
-  return ("");
+    return ("");
 }
 
 pair<string, pair<string, list<string> > >
 MMOMath::firstAlgebraic ()
 {
-  _currentAlgebraic = 0;
-  map<string, pair<string, list<string> > >::iterator it = _algebraics.begin ();
-  if (it == _algebraics.end ())
+    _currentAlgebraic = 0;
+    map<string, pair<string, list<string> > >::iterator it = _algebraics.begin ();
+    if (it == _algebraics.end ())
     {
-      return (pair<string, pair<string, list<string> > > (
-	  "", pair<string, list<string> > ("", list<string> ())));
+        return (pair<string, pair<string, list<string> > > ("", pair<string, list<string> > ("", list<string> ())));
     }
-  return (*it);
+    return (*it);
 }
 
 pair<string, pair<string, list<string> > >
 MMOMath::nextAlgebraic ()
 {
-  _currentAlgebraic++;
-  map<string, pair<string, list<string> > >::iterator it = _algebraics.begin ();
-  for (unsigned int i = 0; i < _currentAlgebraic; i++)
+    _currentAlgebraic++;
+    map<string, pair<string, list<string> > >::iterator it = _algebraics.begin ();
+    for (unsigned int i = 0; i < _currentAlgebraic; i++)
     {
-      it++;
+        it++;
     }
-  if (it == _algebraics.end ())
+    if (it == _algebraics.end ())
     {
-      return (pair<string, pair<string, list<string> > > (
-	  "", pair<string, list<string> > ("", list<string> ())));
+        return (pair<string, pair<string, list<string> > > ("", pair<string, list<string> > ("", list<string> ())));
     }
-  return (*it);
+    return (*it);
 }
 
 bool
 MMOMath::endAlgebraic ()
 {
-  return (_currentAlgebraic == _algebraics.size ());
+    return (_currentAlgebraic == _algebraics.size ());
 }
 
 void
 MMOMath::_getVariables (const ASTNode *node, list<string> *ret)
 {
-  if (node->getType () == AST_NAME)
+    if (node->getType () == AST_NAME)
     {
-      ret->push_back (node->getName ());
+        ret->push_back (node->getName ());
     }
-  int childs = node->getNumChildren ();
-  int i;
-  for (i = 0; i < childs; i++)
+    int childs = node->getNumChildren ();
+    int i;
+    for (i = 0; i < childs; i++)
     {
-      _getVariables (node->getChild (i), ret);
+        _getVariables (node->getChild (i), ret);
     }
 }
 
 list<string>
 MMOMath::getVariables ()
 {
-  list<string> ret;
-  _getVariables (_exp, &ret);
-  return (ret);
+    list<string> ret;
+    _getVariables (_exp, &ret);
+    return (ret);
 }
 
 string
 MMOMath::getExp ()
 {
-  ASTNode *e;
-  if (_type == MATH_EQUATION)
+    ASTNode *e;
+    if (_type == MATH_EQUATION)
     {
-      e = _equation->getEquation ();
-      _processNode (e);
-      return (MMOUtils::getInstance ()->getExp (e));
+        e = _equation->getEquation ();
+        _processNode (e);
+        return (MMOUtils::getInstance ()->getExp (e));
     }
-  if (_type == MATH_ASSIGNMENT)
+    if (_type == MATH_ASSIGNMENT)
     {
-      e = _assignment->getAssignment ();
-      _processNode (e);
-      return (MMOUtils::getInstance ()->getExp (e, _asgVariable));
+        e = _assignment->getAssignment ();
+        _processNode (e);
+        return (MMOUtils::getInstance ()->getExp (e, _asgVariable));
     }
-  return ("");
+    return ("");
 }
 
 bool
 MMOMath::isPositive (int i)
 {
-  return (_zerocrossing->isPositive (i));
+    return (_zerocrossing->isPositive (i));
 }
 
 bool
 MMOMath::hasImports ()
 {
-  return (_imports.size () > 0);
+    return (_imports.size () > 0);
 }
 
 string
 MMOMath::firstImport ()
 {
-  _currentImport = 0;
-  map<string, string>::iterator it = _imports.begin ();
-  if (it == _imports.end ())
+    _currentImport = 0;
+    map<string, string>::iterator it = _imports.begin ();
+    if (it == _imports.end ())
     {
-      return ("");
+        return ("");
     }
-  return (it->first);
+    return (it->first);
 }
 
 string
 MMOMath::nextImport ()
 {
-  _currentImport++;
-  map<string, string>::iterator it = _imports.begin ();
-  for (unsigned int i = 0; i < _currentImport; i++)
+    _currentImport++;
+    map<string, string>::iterator it = _imports.begin ();
+    for (unsigned int i = 0; i < _currentImport; i++)
     {
-      it++;
+        it++;
     }
-  if (it == _imports.end ())
+    if (it == _imports.end ())
     {
-      return ("");
+        return ("");
     }
-  return (it->first);
+    return (it->first);
 
 }
 
 bool
 MMOMath::endImport ()
 {
-  return (_currentImport == _imports.size ());
+    return (_currentImport == _imports.size ());
 }
 
 void
 MMOMath::_processNode (ASTNode* node)
 {
-  ASTNodeType_t t = node->getType ();
-  if (t == AST_FUNCTION_ROOT)
+    ASTNodeType_t t = node->getType ();
+    if (t == AST_FUNCTION_ROOT)
     {
-      ASTNode *first = new ASTNode (*node->getChild (0));
-      ASTNode *exp = new ASTNode (AST_DIVIDE);
-      ASTNode *constant = new ASTNode (AST_REAL);
-      constant->setValue (1);
-      exp->addChild (constant);
-      exp->addChild (first);
-      node->setType (AST_POWER);
-      node->removeChild (0);
-      node->addChild (exp);
+        ASTNode *first = new ASTNode (*node->getChild (0));
+        ASTNode *exp = new ASTNode (AST_DIVIDE);
+        ASTNode *constant = new ASTNode (AST_REAL);
+        constant->setValue (1);
+        exp->addChild (constant);
+        exp->addChild (first);
+        node->setType (AST_POWER);
+        node->removeChild (0);
+        node->addChild (exp);
     }
-  else if (t == AST_NAME && !_prefix.empty ()
-      && node->getId ().compare ("REPLACED_FUNCTION"))
+    else if (t == AST_NAME && !_prefix.empty () && node->getId ().compare ("REPLACED_FUNCTION"))
     {
-      string controlName = node->getName ();
-      string flatName = _prefix + "_";
-      if (controlName.compare (0, flatName.size (), flatName))
-	{
-	  flatName.append (node->getName ());
-	  node->setName (flatName.c_str ());
-	}
+        string controlName = node->getName ();
+        string flatName = _prefix + "_";
+        if (controlName.compare (0, flatName.size (), flatName))
+        {
+            flatName.append (node->getName ());
+            node->setName (flatName.c_str ());
+        }
     }
-  if (t == AST_FUNCTION_PIECEWISE)
+    if (t == AST_FUNCTION_PIECEWISE)
     {
-      _isConditional = true;
+        _isConditional = true;
     }
-  string package = MMOUtils::getInstance ()->checkPredefinedFunctions (node);
-  if (!package.empty ())
+    string package = MMOUtils::getInstance ()->checkPredefinedFunctions (node);
+    if (!package.empty ())
     {
-      _imports[package] = package;
+        _imports[package] = package;
     }
-  int childs = node->getNumChildren ();
-  int i;
-  for (i = 0; i < childs; i++)
+    int childs = node->getNumChildren ();
+    int i;
+    for (i = 0; i < childs; i++)
     {
-      _processNode (node->getChild (i));
+        _processNode (node->getChild (i));
     }
 }
 
 void
 MMOMath::_replaceFunctions (ASTNode* node)
 {
-  if (node->isFunction ())
+    if (node->isFunction ())
     {
-      map<string, pair<list<string>, ASTNode*> >::iterator it =
-	  _functions->find (node->getName ());
-      if (it != _functions->end ())
-	{
-	  int childs = node->getNumChildren ();
-	  int i;
-	  string var = MMOUtils::getInstance ()->getVar ();
-	  list<string> args;
-	  for (i = 0; i < childs; i++)
-	    {
-	      string insertArg = "(";
-	      insertArg.append (
-		  MMOUtils::getInstance ()->getExp (node->getChild (i))).append (
-		  ")");
-	      args.push_back (insertArg);
-	    }
-	  pair<string, list<string> > algDef = _generateAlgebraic (it->second,
-								   args, node);
-	  _algebraics.insert (
-	      pair<string, pair<string, list<string> > > (var, algDef));
-	}
+        map<string, pair<list<string>, ASTNode*> >::iterator it = _functions->find (node->getName ());
+        if (it != _functions->end ())
+        {
+            int childs = node->getNumChildren ();
+            int i;
+            string var = MMOUtils::getInstance ()->getVar ();
+            list<string> args;
+            for (i = 0; i < childs; i++)
+            {
+                string insertArg = "(";
+                insertArg.append (MMOUtils::getInstance ()->getExp (node->getChild (i))).append (")");
+                args.push_back (insertArg);
+            }
+            pair<string, list<string> > algDef = _generateAlgebraic (it->second, args, node);
+            _algebraics.insert (pair<string, pair<string, list<string> > > (var, algDef));
+        }
     }
-  int childs = node->getNumChildren ();
-  int i;
-  for (i = 0; i < childs; i++)
+    int childs = node->getNumChildren ();
+    int i;
+    for (i = 0; i < childs; i++)
     {
-      _replaceFunctions (node->getChild (i));
+        _replaceFunctions (node->getChild (i));
     }
 }
 
 pair<string, list<string> >
-MMOMath::_generateAlgebraic (pair<list<string>, ASTNode*> function,
-			     list<string> args, ASTNode *node)
+MMOMath::_generateAlgebraic (pair<list<string>, ASTNode*> function, list<string> args, ASTNode *node)
 {
-  ASTNode *repNode = new ASTNode (*function.second);
-  _processNode (repNode);
-  list<string>::iterator defArgs = function.first.begin ();
-  list<string> variables;
-  for (list<string>::iterator it = args.begin (); it != args.end (); it++)
+    ASTNode *repNode = new ASTNode (*function.second);
+    _processNode (repNode);
+    list<string>::iterator defArgs = function.first.begin ();
+    list<string> variables;
+    for (list<string>::iterator it = args.begin (); it != args.end (); it++)
     {
-      repNode->renameSIdRefs (*defArgs, *it);
-      defArgs++;
+        repNode->renameSIdRefs (*defArgs, *it);
+        defArgs++;
     }
-  string ret = MMOUtils::getInstance ()->getExp (repNode);
-  _getVariables (repNode, &variables);
-  int childs = node->getNumChildren (), i;
-  for (i = 0; i < childs; i++)
+    string ret = MMOUtils::getInstance ()->getExp (repNode);
+    _getVariables (repNode, &variables);
+    int childs = node->getNumChildren (), i;
+    for (i = 0; i < childs; i++)
     {
-      node->removeChild (0);
+        node->removeChild (0);
     }
-  if (_type == MATH_ZERO_CROSSING)
+    if (_type == MATH_ZERO_CROSSING)
     {
-      node->setType (repNode->getType ());
-      childs = repNode->getNumChildren ();
-      for (i = 0; i < childs; i++)
-	{
-	  node->addChild (new ASTNode (*repNode->getChild (i)));
-	}
+        node->setType (repNode->getType ());
+        childs = repNode->getNumChildren ();
+        for (i = 0; i < childs; i++)
+        {
+            node->addChild (new ASTNode (*repNode->getChild (i)));
+        }
     }
-  else
+    else
     {
-      node->setType (AST_NAME);
-      node->setName (ret.c_str ());
-      node->setId ("REPLACED_FUNCTION");
+        node->setType (AST_NAME);
+        node->setName (ret.c_str ());
+        node->setId ("REPLACED_FUNCTION");
     }
-  delete repNode;
-  return (pair<string, list<string> > (ret, variables));
+    delete repNode;
+    return (pair<string, list<string> > (ret, variables));
 }
 
 bool
 MMOMath::isConditional ()
 {
-  return (_isConditional);
+    return (_isConditional);
 }
