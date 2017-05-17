@@ -1,0 +1,5 @@
+# Testsuite objects.
+/**/*.o
+
+# Tarball files.
+*.tar.gz
