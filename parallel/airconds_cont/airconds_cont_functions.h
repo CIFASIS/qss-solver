@@ -1,1 +1,2 @@
-double __getSection(double x);
+double
+__getSection (double x);
