@@ -1,0 +1,13 @@
+# Packages generated objects.
+*.o
+
+# Packages generated C headers.
+*.h
+
+# Packages generated C source code.
+
+*.c 
+
+# Packages description moo files.
+
+*.moo
