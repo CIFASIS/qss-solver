@@ -2,7 +2,7 @@ OS ?= unix
 DEBUG ?= False
 
 # Source Path.
-libraries=../../lib/
+libraries=../lib/
 source=./src/
 include=./include
 random=../
@@ -42,7 +42,7 @@ clean:
 	$(RMS) $(OBJ) $(TARGET)  
 
 help:
-	echo "make DEBUG=<True|False> SO=<unix|win32|osx>"
+	echo "make DEBUG=<True|False> SO=<unix|win32|mac>"
 	echo "Default values:"
 	echo ""
 	echo "DEBUG=False"
