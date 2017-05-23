@@ -364,7 +364,7 @@ model hres_stiff
   discrete Real d23(start=0);
   discrete Real d24(start=boost_panel2_cont_pwm1_iTime);
 
-//Muestreo de salida
+  //Muestreo de salida
   discrete Real lastTsOut(start=0);
   parameter Real TsOut=0.0125137;
   discrete Real Tsubsamp(start=1e-4);
@@ -378,213 +378,210 @@ model hres_stiff
   discrete Real ptanque;
   discrete Real lastsubsamp(start=0);
 
-Real Qt1;
-Real Qt2;
-Real Qt3;
+  Real Qt1;
+  Real Qt2;
+  Real Qt3;
 
-initial algorithm
-//  batteryAndBockBoost_battery_Qt := (1-batteryAndBockBoost_battery_SoC0/100)*batteryAndBockBoost_battery_Q;
-//  batteryAndBockBoost_battery1_Qt := (1-batteryAndBockBoost_battery1_SoC0/100)*batteryAndBockBoost_battery1_Q;
-//  batteryAndBockBoost_battery2_Qt := (1-batteryAndBockBoost_battery2_SoC0/100)*batteryAndBockBoost_battery2_Q;
+  initial algorithm
+    //  batteryAndBockBoost_battery_Qt := (1-batteryAndBockBoost_battery_SoC0/100)*batteryAndBockBoost_battery_Q;
+    //  batteryAndBockBoost_battery1_Qt := (1-batteryAndBockBoost_battery1_SoC0/100)*batteryAndBockBoost_battery1_Q;
+    //  batteryAndBockBoost_battery2_Qt := (1-batteryAndBockBoost_battery2_SoC0/100)*batteryAndBockBoost_battery2_Q;
 
-Qt1:=1000*((1-batteryAndBockBoost_battery_SoC0/100)*batteryAndBockBoost_battery_Q);
-Qt2:=1000*( (1-batteryAndBockBoost_battery1_SoC0/100)*batteryAndBockBoost_battery1_Q);
-Qt3:=1000*( (1-batteryAndBockBoost_battery2_SoC0/100)*batteryAndBockBoost_battery2_Q);
+    Qt1:=1000*((1-batteryAndBockBoost_battery_SoC0/100)*batteryAndBockBoost_battery_Q);
+    Qt2:=1000*( (1-batteryAndBockBoost_battery1_SoC0/100)*batteryAndBockBoost_battery1_Q);
+    Qt3:=1000*( (1-batteryAndBockBoost_battery2_SoC0/100)*batteryAndBockBoost_battery2_Q);
 
-algSuperv_EB := 0;
-algSuperv_FC := 0;
-algSuperv_satElect := 1;
-algSuperv_satFC := 1;
-batteryAndBockBoost_bookBoostPWMcontrol1_DC := 0.98;
-batteryAndBockBoost_bookBoostPWMcontrol1_Output := 1;
-batteryAndBockBoost_bookBoostPWMcontrol1_tnext := 0.000049;
-batteryAndBockBoost_voltageControl_Sat := 1;
-batteryAndBockBoost_voltageControl_SatLevel := 0;
-boost_panel1_cont_pwm1_dc := 0;
-boost_panel1_cont_pwm1_tnext := 1e20;
-boost_panel1_cont_pwm1_vout := 0;
-boost_panel1_mmt1_actu := 0;
-boost_panel1_mmt1_deltap := 0;
-boost_panel1_mmt1_deltau := 0;
-boost_panel1_mmt1_potact := 0;
-boost_panel1_mmt1_potprev := 0;
-boost_panel1_mmt1_prevu := 0;
-boost_panel1_mmt1_vref := 36;
-boost_panel2_cont_pwm1_dc := 0;
-boost_panel2_cont_pwm1_tnext := 1e20;
-boost_panel2_cont_pwm1_vout := 0;
-boost_panel2_mmt1_actu := 0;
-boost_panel2_mmt1_deltap := 0;
-boost_panel2_mmt1_deltau := 0;
-boost_panel2_mmt1_potact := 0;
-boost_panel2_mmt1_potprev := 0;
-boost_panel2_mmt1_prevu := 0;
-boost_panel2_mmt1_vref := 36;
-d0 := 1;
-d10 := 1;
-d11 := 0;
-d12 := 0;
-d13 := 1;
-d14 := 1;
-d15 := 1;
-d16 := 1;
-d17 := 1;
-d18 := 0;
-d19 := 0;
-d1 := 1;
-d20 := 0.1;
-d21 := 0.0000011;
-d22 := 0.00005;
-d23 := 0.1;
-d24 := 0.0000011;
-d2 := 1;
-d3 := 0;
-d4 := 0;
-d5 := 1;
-d6 := 1;
-d7 := 1;
-d8 := 1;
-d9 := 1;
-Ibatery := 5.69999;
-lastsubsamp := 0.0001;
-lastTsOut := 0.125137;
-Pcons := 487562;
-Pelectro := 0;
-PFcel := 0;
-Pgen := 0;
-ptanque := 800000;
-SOC := 41.5;
-Tsubsamp := 0.0001;
-variableR1_R := 1005;
-Vc2 := 50;
+    algSuperv_EB := 0;
+    algSuperv_FC := 0;
+    algSuperv_satElect := 1;
+    algSuperv_satFC := 1;
+    batteryAndBockBoost_bookBoostPWMcontrol1_DC := 0.98;
+    batteryAndBockBoost_bookBoostPWMcontrol1_Output := 1;
+    batteryAndBockBoost_bookBoostPWMcontrol1_tnext := 0.000049;
+    batteryAndBockBoost_voltageControl_Sat := 1;
+    batteryAndBockBoost_voltageControl_SatLevel := 0;
+    boost_panel1_cont_pwm1_dc := 0;
+    boost_panel1_cont_pwm1_tnext := 1e20;
+    boost_panel1_cont_pwm1_vout := 0;
+    boost_panel1_mmt1_actu := 0;
+    boost_panel1_mmt1_deltap := 0;
+    boost_panel1_mmt1_deltau := 0;
+    boost_panel1_mmt1_potact := 0;
+    boost_panel1_mmt1_potprev := 0;
+    boost_panel1_mmt1_prevu := 0;
+    boost_panel1_mmt1_vref := 36;
+    boost_panel2_cont_pwm1_dc := 0;
+    boost_panel2_cont_pwm1_tnext := 1e20;
+    boost_panel2_cont_pwm1_vout := 0;
+    boost_panel2_mmt1_actu := 0;
+    boost_panel2_mmt1_deltap := 0;
+    boost_panel2_mmt1_deltau := 0;
+    boost_panel2_mmt1_potact := 0;
+    boost_panel2_mmt1_potprev := 0;
+    boost_panel2_mmt1_prevu := 0;
+    boost_panel2_mmt1_vref := 36;
+    d0 := 1;
+    d10 := 1;
+    d11 := 0;
+    d12 := 0;
+    d13 := 1;
+    d14 := 1;
+    d15 := 1;
+    d16 := 1;
+    d17 := 1;
+    d18 := 0;
+    d19 := 0;
+    d1 := 1;
+    d20 := 0.1;
+    d21 := 0.0000011;
+    d22 := 0.00005;
+    d23 := 0.1;
+    d24 := 0.0000011;
+    d2 := 1;
+    d3 := 0;
+    d4 := 0;
+    d5 := 1;
+    d6 := 1;
+    d7 := 1;
+    d8 := 1;
+    d9 := 1;
+    Ibatery := 5.69999;
+    lastsubsamp := 0.0001;
+    lastTsOut := 0.125137;
+    Pcons := 487562;
+    Pelectro := 0;
+    PFcel := 0;
+    Pgen := 0;
+    ptanque := 800000;
+    SOC := 41.5;
+    Tsubsamp := 0.0001;
+    variableR1_R := 1005;
+    Vc2 := 50;
 
-equation
+  equation
+    batteryAndBockBoost_battery_Qt=Qt1/1000;
+    batteryAndBockBoost_battery2_Qt=Qt2/1000;
+    batteryAndBockBoost_battery1_Qt=Qt3/1000;
+    boost_panel1_panel_n_i = fsolve1(boost_panel1_capacitor1_v);
+    boost_panel1_mmt1_pot = boost_panel1_capacitor1_v*boost_panel1_boost1_inductor_i;
+    der(boost_panel1_mmt1_potActFiltrada) = (boost_panel1_mmt1_pot-boost_panel1_mmt1_potActFiltrada)*100;
+    boost_panel1_mmt1_y = pre(boost_panel1_mmt1_vref);
+    boost_panel1_cont_pwm1_vgate = pre(boost_panel1_cont_pwm1_vout);
+    boost_panel1_boost1_idealDiode_off = pre(d0);
+    batteryAndBockBoost_bookBoostDB_inductor_n_i = (-batteryAndBockBoost_bookBoostDB_inductor_i);
+    batteryAndBockBoost_bookBoostDB_idealDiode_off = pre(d5);
+    batteryAndBockBoost_bookBoostDB_idealDiode1_off = pre(d8);
+    batteryAndBockBoost_bookBoostDB_Sw2 = pre(batteryAndBockBoost_bookBoostPWMcontrol1_Output);
+    batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_control = 1-batteryAndBockBoost_bookBoostDB_Sw2;
+    batteryAndBockBoost_voltageControl_Err = 56-capacitor2_v;
+    der(batteryAndBockBoost_voltageControl_intErr) = batteryAndBockBoost_voltageControl_Err;
+    batteryAndBockBoost_voltageControl_IrefCont = 0.95*batteryAndBockBoost_voltageControl_Err+90*batteryAndBockBoost_voltageControl_intErr;
+    batteryAndBockBoost_bookBoostPWMcontrol1_yref = pre(batteryAndBockBoost_voltageControl_Sat)*batteryAndBockBoost_voltageControl_IrefCont+pre(batteryAndBockBoost_voltageControl_SatLevel);
+    batteryAndBockBoost_battery_E = 12.6463-1.98/(6-batteryAndBockBoost_battery_Qt)+0.66*exp((-2884.61*batteryAndBockBoost_battery_Qt));
+    batteryAndBockBoost_battery_SoC = (1-batteryAndBockBoost_battery_Qt/6)*100;
+    batteryAndBockBoost_battery1_E = 12.6463-1.98/(6-batteryAndBockBoost_battery1_Qt)+0.66*exp((-2884.61*batteryAndBockBoost_battery1_Qt));
+    batteryAndBockBoost_battery1_SoC = (1-batteryAndBockBoost_battery1_Qt/6)*100;
+    batteryAndBockBoost_battery2_E = 12.6463-1.98/(6-batteryAndBockBoost_battery2_Qt)+0.66*exp((-2884.61*batteryAndBockBoost_battery2_Qt));
+    batteryAndBockBoost_u = (1-batteryAndBockBoost_battery2_Qt/6)*100;
+    boost_panel2_panel_n_i = fsolve2(boost_panel2_capacitor1_v);
+    boost_panel2_mmt1_pot = boost_panel2_capacitor1_v*boost_panel2_boost1_inductor_i;
+    der(boost_panel2_mmt1_potActFiltrada) = (boost_panel2_mmt1_pot-boost_panel2_mmt1_potActFiltrada)*100;
+    boost_panel2_mmt1_y = pre(boost_panel2_mmt1_vref);
+    boost_panel2_cont_pwm1_vgate = pre(boost_panel2_cont_pwm1_vout);
+    boost_panel2_boost1_idealDiode_off = pre(d15);
+    fCellAndElectro_electComp_compresor_p_tanq = 1e-05*fCellAndElectro_tanque_p_tanque;
+    variableR1_n_i = (-capacitor2_v*(1/(variableR1_R)));
+    inductor_n_i = (-inductor_i);
+    PCons_Sensor_pc_i = (-inductor_n_i)-variableR1_n_i;
+    boost_panel1_capacitor1_n_i = (-boost_panel1_panel_n_i)+boost_panel1_boost1_inductor_i;
+    batteryAndBockBoost_battery2_pin_p_i = batteryAndBockBoost_bookBoostDB_inductor_n_i;
+    boost_panel2_capacitor1_n_i = boost_panel2_boost1_inductor_i-boost_panel2_panel_n_i;
+    batteryAndBockBoost_bookBoostPWMcontrol1_Err = batteryAndBockBoost_bookBoostPWMcontrol1_yref-(-batteryAndBockBoost_battery2_pin_p_i);
+    batteryAndBockBoost_battery1_pin_n_v = batteryAndBockBoost_battery_E-0.25*(-batteryAndBockBoost_battery2_pin_p_i);
+    batteryAndBockBoost_battery1_v = batteryAndBockBoost_battery1_E-0.25*(-batteryAndBockBoost_battery2_pin_p_i);
+    batteryAndBockBoost_battery2_v = batteryAndBockBoost_battery2_E-0.25*(-batteryAndBockBoost_battery2_pin_p_i);
+    PCons_Sensor_product_y = capacitor2_v*PCons_Sensor_pc_i;
+    algSuperv_deltaP = algSuperv_Pgenfilt-PCons_Sensor_product_y;
+    fCellAndElectro_electComp_electrolizadorAnda1_u = algSuperv_EB*(algSuperv_deltaP*(1-algSuperv_satElect)+algSuperv_satElect*200);
+    algSuperv_Pref_FC = algSuperv_FC*((-algSuperv_deltaP*(1-algSuperv_satFC))+200*algSuperv_satFC);
+    fCellAndElectro_fuellCell_i = algSuperv_Pref_FC*(1/(capacitor2_v));
+    fCellAndElectro_fuellCell_IFC = fsolve3(algSuperv_Pref_FC);
+    fCellAndElectro_fuellCell_fH2_FC = 47*fCellAndElectro_fuellCell_IFC/2/96487;
+    fCellAndElectro_electComp_pin_n_i = (-(1/(capacitor2_v))*fCellAndElectro_electComp_electrolizadorAnda1_u);
+    fCellAndElectro_electComp_electrolizadorAnda1_Ucell = fsolve4(fCellAndElectro_electComp_electrolizadorAnda1_u);
+    fCellAndElectro_electComp_compresor_FH2_electrolizador = fCellAndElectro_electComp_electrolizadorAnda1_u/(fCellAndElectro_electComp_electrolizadorAnda1_Ucell*2*96485);
+    fCellAndElectro_pin_p_i = (-fCellAndElectro_fuellCell_i)-fCellAndElectro_electComp_pin_n_i;
+    fCellAndElectro_pin_n_i = fCellAndElectro_electComp_pin_n_i+fCellAndElectro_fuellCell_i;
+    batteryAndBockBoost_battery2_pin_n_v = batteryAndBockBoost_battery1_v+batteryAndBockBoost_battery1_pin_n_v;
+    boost_panel1_boost1_idealDiode_s = (1/((-1)-(0.99998)*d1*d4-(0.99998)*d3*d2+(0.99999)*d3-(9.9999e-06)*d1-(9.9999e-06)*d4+(0.99999)*d2))*(1/((-1e-05)-(0.99999)*d1))*((-(0.99998)*d3*d1*boost_panel1_boost1_inductor_i)-(0.99998)*d1*d4*capacitor2_v+(0.99999)*d1*boost_panel1_boost1_inductor_i-(9.9999e-06)*d4*capacitor2_v-(9.9999e-06)*d3*boost_panel1_boost1_inductor_i-(9.9999e-06)*d1*capacitor2_v+(1e-05)*boost_panel1_boost1_inductor_i-(1e-10)*capacitor2_v);
+    boost_panel1_boost1_idealDiode_n_i = (1/((-1)-(0.99998)*d1*d4-(0.99998)*d3*d2+(0.99999)*d3-(9.9999e-06)*d1-(9.9999e-06)*d4+(0.99999)*d2))*((0.99998)*d3*d1*boost_panel1_boost1_inductor_i+(0.99998)*d1*d4*capacitor2_v-(0.99999)*d1*boost_panel1_boost1_inductor_i+(9.9999e-06)*d4*capacitor2_v+(9.9999e-06)*d3*boost_panel1_boost1_inductor_i+(9.9999e-06)*d1*capacitor2_v-(1e-05)*boost_panel1_boost1_inductor_i+(1e-10)*capacitor2_v)*(1/((-1e-05)-(0.99999)*d1))*(1-(0.99999)*d2);
+    boost_panel1_boost1_idealDiode_v = (1/((-1)-(0.99998)*d1*d4-(0.99998)*d3*d2+(0.99999)*d3-(9.9999e-06)*d1-(9.9999e-06)*d4+(0.99999)*d2))*((0.99998)*d3*d1*boost_panel1_boost1_inductor_i+(0.99998)*d1*d4*capacitor2_v-(0.99999)*d1*boost_panel1_boost1_inductor_i+(9.9999e-06)*d4*capacitor2_v+(9.9999e-06)*d3*boost_panel1_boost1_inductor_i+(9.9999e-06)*d1*capacitor2_v-(1e-05)*boost_panel1_boost1_inductor_i+(1e-10)*capacitor2_v);
+    boost_panel1_boost1_inductor_n_v = (-(1/((-1)-(0.99998)*d1*d4-(0.99998)*d3*d2+(0.99999)*d3-(9.9999e-06)*d1-(9.9999e-06)*d4+(0.99999)*d2))*((-1)+(0.99999)*d3)*((0.99999)*d2*capacitor2_v-(0.99999)*d1*boost_panel1_boost1_inductor_i-(1e-05)*boost_panel1_boost1_inductor_i-capacitor2_v));
+    boost_panel1_boost1_controlledIdealClosingSwitch_s = (1/((-1)-(0.99998)*d1*d4-(0.99998)*d3*d2+(0.99999)*d3-(9.9999e-06)*d1-(9.9999e-06)*d4+(0.99999)*d2))*((0.99999)*d2*capacitor2_v-(0.99999)*d1*boost_panel1_boost1_inductor_i-(1e-05)*boost_panel1_boost1_inductor_i-capacitor2_v);
+    boost_panel1_boost1_pin_ground_i = (1/((-1)-(0.99998)*d1*d4-(0.99998)*d3*d2+(0.99999)*d3-(9.9999e-06)*d1-(9.9999e-06)*d4+(0.99999)*d2))*((0.99999)*d2*capacitor2_v-(0.99999)*d1*boost_panel1_boost1_inductor_i-(1e-05)*boost_panel1_boost1_inductor_i-capacitor2_v)*((-1e-05)-(0.99999)*d4);
+    batteryAndBockBoost_bookBoostDB_idealDiode_s = (-((-1)+(0.99999)*d13)*(1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((9.9999e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99998)*d9*d12*capacitor2_v-(0.99999)*d11*capacitor2_v-(1e-05)*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*capacitor2_v+(0.99998)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d12*capacitor2_v-(0.99999)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(1)*capacitor2_v-(0.99999)*d10*capacitor2_v+(0.99998)*d11*d10*capacitor2_v));
+    batteryAndBockBoost_bookBoostDB_idealDiode_n_i = (-((-1)+(0.99999)*d13)*(1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((-1)+(0.99999)*d7)*((9.9999e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99998)*d9*d12*capacitor2_v-(0.99999)*d11*capacitor2_v-(1e-05)*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*capacitor2_v+(0.99998)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d12*capacitor2_v-(0.99999)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(1)*capacitor2_v-(0.99999)*d10*capacitor2_v+(0.99998)*d11*d10*capacitor2_v));
+    batteryAndBockBoost_bookBoostDB_idealDiode1_s = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((-(9.9998e-06)*d11*capacitor2_v*d7)-(9.9998e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d13*capacitor2_v*d7+(9.9998e-11)*d11*d6*capacitor2_v-(9.9999e-11)*d6*capacitor2_v+(9.9999e-11)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(0.99998)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(0.99998)*d9*d13*capacitor2_v+(9.9999e-06)*capacitor2_v*d7+(0.99997)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(0.99997)*d11*d9*d13*capacitor2_v+(9.9997e-06)*d11*d13*capacitor2_v*d7-(9.9998e-06)*d14*d9*capacitor2_v-(9.9999e-11)*d14*capacitor2_v+(9.9999e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9998e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(9.9997e-06)*d14*d11*d6*capacitor2_v-(9.9997e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(9.9999e-06)*d11*capacitor2_v-(6.31089e-30)*d12*d13*capacitor2_v-(1e-10)*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99996)*d14*d11*d9*d6*capacitor2_v+(0.99998)*d11*d9*capacitor2_v-(0.99999)*d9*capacitor2_v+(0.99996)*d11*d9*d13*capacitor2_v*d7+(9.9998e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i-(9.9999e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i-(0.99997)*d14*d9*d6*capacitor2_v-(9.9998e-06)*d14*d6*capacitor2_v+(0.99997)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(0.99996)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(9.9998e-11)*d14*d11*capacitor2_v-(0.99997)*d11*d9*capacitor2_v*d7+(9.9997e-06)*d14*d11*d9*capacitor2_v+(9.9997e-06)*d11*d9*d6*capacitor2_v-(9.9997e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d9*d6*capacitor2_v-(1e-05)*capacitor2_v-(0.99997)*d9*d13*capacitor2_v*d7+(0.99998)*d9*capacitor2_v*d7+(9.9999e-06)*d13*capacitor2_v-(9.9999e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(9.9998e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(9.9998e-06)*d11*d13*capacitor2_v)*(1/((-1e-05)-(0.99999)*d9));
+    batteryAndBockBoost_bookBoostDB_idealDiode1_n_i = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((9.9998e-06)*d11*capacitor2_v*d7+(9.9998e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d13*capacitor2_v*d7-(9.9998e-11)*d11*d6*capacitor2_v+(9.9999e-11)*d6*capacitor2_v-(9.9999e-11)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(0.99998)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(0.99998)*d9*d13*capacitor2_v-(9.9999e-06)*capacitor2_v*d7-(0.99997)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(0.99997)*d11*d9*d13*capacitor2_v-(9.9997e-06)*d11*d13*capacitor2_v*d7+(9.9998e-06)*d14*d9*capacitor2_v+(9.9999e-11)*d14*capacitor2_v-(9.9999e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i-(9.9998e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9997e-06)*d14*d11*d6*capacitor2_v+(9.9997e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9999e-06)*d11*capacitor2_v+(6.31089e-30)*d12*d13*capacitor2_v+(1e-10)*batteryAndBockBoost_bookBoostDB_inductor_n_i-(0.99996)*d14*d11*d9*d6*capacitor2_v-(0.99998)*d11*d9*capacitor2_v+(0.99999)*d9*capacitor2_v-(0.99996)*d11*d9*d13*capacitor2_v*d7-(9.9998e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99997)*d14*d9*d6*capacitor2_v+(9.9998e-06)*d14*d6*capacitor2_v-(0.99997)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(0.99996)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9998e-11)*d14*d11*capacitor2_v+(0.99997)*d11*d9*capacitor2_v*d7-(9.9997e-06)*d14*d11*d9*capacitor2_v-(9.9997e-06)*d11*d9*d6*capacitor2_v+(9.9997e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d9*d6*capacitor2_v+(1e-05)*capacitor2_v+(0.99997)*d9*d13*capacitor2_v*d7-(0.99998)*d9*capacitor2_v*d7-(9.9999e-06)*d13*capacitor2_v+(9.9999e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(9.9998e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(9.9998e-06)*d11*d13*capacitor2_v)*(1/((-1e-05)-(0.99999)*d9))*(1-(0.99999)*d10);
+    batteryAndBockBoost_bookBoostDB_idealDiode1_v = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((9.9998e-06)*d11*capacitor2_v*d7+(9.9998e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d13*capacitor2_v*d7-(9.9998e-11)*d11*d6*capacitor2_v+(9.9999e-11)*d6*capacitor2_v-(9.9999e-11)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(0.99998)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(0.99998)*d9*d13*capacitor2_v-(9.9999e-06)*capacitor2_v*d7-(0.99997)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(0.99997)*d11*d9*d13*capacitor2_v-(9.9997e-06)*d11*d13*capacitor2_v*d7+(9.9998e-06)*d14*d9*capacitor2_v+(9.9999e-11)*d14*capacitor2_v-(9.9999e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i-(9.9998e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9997e-06)*d14*d11*d6*capacitor2_v+(9.9997e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9999e-06)*d11*capacitor2_v+(6.31089e-30)*d12*d13*capacitor2_v+(1e-10)*batteryAndBockBoost_bookBoostDB_inductor_n_i-(0.99996)*d14*d11*d9*d6*capacitor2_v-(0.99998)*d11*d9*capacitor2_v+(0.99999)*d9*capacitor2_v-(0.99996)*d11*d9*d13*capacitor2_v*d7-(9.9998e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99997)*d14*d9*d6*capacitor2_v+(9.9998e-06)*d14*d6*capacitor2_v-(0.99997)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(0.99996)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9998e-11)*d14*d11*capacitor2_v+(0.99997)*d11*d9*capacitor2_v*d7-(9.9997e-06)*d14*d11*d9*capacitor2_v-(9.9997e-06)*d11*d9*d6*capacitor2_v+(9.9997e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d9*d6*capacitor2_v+(1e-05)*capacitor2_v+(0.99997)*d9*d13*capacitor2_v*d7-(0.99998)*d9*capacitor2_v*d7-(9.9999e-06)*d13*capacitor2_v+(9.9999e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(9.9998e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(9.9998e-06)*d11*d13*capacitor2_v);
+    batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_s = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((-(9.9998e-06)*d11*capacitor2_v*d7)-(9.9998e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d13*capacitor2_v*d7+(9.9998e-11)*d11*d6*capacitor2_v-(9.9999e-11)*d6*capacitor2_v+(9.9999e-11)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(0.99998)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(0.99998)*d9*d13*capacitor2_v+(9.9999e-06)*capacitor2_v*d7+(0.99997)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(0.99997)*d11*d9*d13*capacitor2_v+(9.9997e-06)*d11*d13*capacitor2_v*d7-(9.9998e-06)*d14*d9*capacitor2_v-(9.9999e-11)*d14*capacitor2_v+(9.9999e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9998e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(9.9997e-06)*d14*d11*d6*capacitor2_v-(9.9997e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(9.9999e-06)*d11*capacitor2_v-(6.31089e-30)*d12*d13*capacitor2_v-(1e-10)*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99996)*d14*d11*d9*d6*capacitor2_v+(0.99998)*d11*d9*capacitor2_v-(0.99999)*d9*capacitor2_v+(0.99996)*d11*d9*d13*capacitor2_v*d7+(9.9998e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i-(9.9999e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i-(0.99997)*d14*d9*d6*capacitor2_v-(9.9998e-06)*d14*d6*capacitor2_v+(0.99997)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(0.99996)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(9.9998e-11)*d14*d11*capacitor2_v-(0.99997)*d11*d9*capacitor2_v*d7+(9.9997e-06)*d14*d11*d9*capacitor2_v+(9.9997e-06)*d11*d9*d6*capacitor2_v-(9.9997e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d9*d6*capacitor2_v-(1e-05)*capacitor2_v-(0.99997)*d9*d13*capacitor2_v*d7+(0.99998)*d9*capacitor2_v*d7+(9.9999e-06)*d13*capacitor2_v-(9.9999e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(9.9998e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(9.9998e-06)*d11*d13*capacitor2_v)*(1/((-1)+(0.99999)*d11));
+    batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_n_i = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((9.9998e-06)*d11*capacitor2_v*d7+(9.9998e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d13*capacitor2_v*d7-(9.9998e-11)*d11*d6*capacitor2_v+(9.9999e-11)*d6*capacitor2_v-(9.9999e-11)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(0.99998)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(0.99998)*d9*d13*capacitor2_v-(9.9999e-06)*capacitor2_v*d7-(0.99997)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(0.99997)*d11*d9*d13*capacitor2_v-(9.9997e-06)*d11*d13*capacitor2_v*d7+(9.9998e-06)*d14*d9*capacitor2_v+(9.9999e-11)*d14*capacitor2_v-(9.9999e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i-(9.9998e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9997e-06)*d14*d11*d6*capacitor2_v+(9.9997e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9999e-06)*d11*capacitor2_v+(6.31089e-30)*d12*d13*capacitor2_v+(1e-10)*batteryAndBockBoost_bookBoostDB_inductor_n_i-(0.99996)*d14*d11*d9*d6*capacitor2_v-(0.99998)*d11*d9*capacitor2_v+(0.99999)*d9*capacitor2_v-(0.99996)*d11*d9*d13*capacitor2_v*d7-(9.9998e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99997)*d14*d9*d6*capacitor2_v+(9.9998e-06)*d14*d6*capacitor2_v-(0.99997)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(0.99996)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9998e-11)*d14*d11*capacitor2_v+(0.99997)*d11*d9*capacitor2_v*d7-(9.9997e-06)*d14*d11*d9*capacitor2_v-(9.9997e-06)*d11*d9*d6*capacitor2_v+(9.9997e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d9*d6*capacitor2_v+(1e-05)*capacitor2_v+(0.99997)*d9*d13*capacitor2_v*d7-(0.99998)*d9*capacitor2_v*d7-(9.9999e-06)*d13*capacitor2_v+(9.9999e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(9.9998e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(9.9998e-06)*d11*d13*capacitor2_v)*(1e-05+(0.99999)*d12)*(1/((-1)+(0.99999)*d11));
+    batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_v = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((9.9998e-06)*d11*capacitor2_v*d7+(9.9998e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d13*capacitor2_v*d7-(9.9998e-11)*d11*d6*capacitor2_v+(9.9999e-11)*d6*capacitor2_v-(9.9999e-11)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(0.99998)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(0.99998)*d9*d13*capacitor2_v-(9.9999e-06)*capacitor2_v*d7-(0.99997)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(0.99997)*d11*d9*d13*capacitor2_v-(9.9997e-06)*d11*d13*capacitor2_v*d7+(9.9998e-06)*d14*d9*capacitor2_v+(9.9999e-11)*d14*capacitor2_v-(9.9999e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i-(9.9998e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9997e-06)*d14*d11*d6*capacitor2_v+(9.9997e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9999e-06)*d11*capacitor2_v+(6.31089e-30)*d12*d13*capacitor2_v+(1e-10)*batteryAndBockBoost_bookBoostDB_inductor_n_i-(0.99996)*d14*d11*d9*d6*capacitor2_v-(0.99998)*d11*d9*capacitor2_v+(0.99999)*d9*capacitor2_v-(0.99996)*d11*d9*d13*capacitor2_v*d7-(9.9998e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99997)*d14*d9*d6*capacitor2_v+(9.9998e-06)*d14*d6*capacitor2_v-(0.99997)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(0.99996)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9998e-11)*d14*d11*capacitor2_v+(0.99997)*d11*d9*capacitor2_v*d7-(9.9997e-06)*d14*d11*d9*capacitor2_v-(9.9997e-06)*d11*d9*d6*capacitor2_v+(9.9997e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d9*d6*capacitor2_v+(1e-05)*capacitor2_v+(0.99997)*d9*d13*capacitor2_v*d7-(0.99998)*d9*capacitor2_v*d7-(9.9999e-06)*d13*capacitor2_v+(9.9999e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(9.9998e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(9.9998e-06)*d11*d13*capacitor2_v);
+    batteryAndBockBoost_bookBoostDB_idealDiode_n_v = (-((-1)+(0.99999)*d13)*(1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((-1e-05)-(0.99999)*d6)*((9.9999e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99998)*d9*d12*capacitor2_v-(0.99999)*d11*capacitor2_v-(1e-05)*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*capacitor2_v+(0.99998)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d12*capacitor2_v-(0.99999)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(1)*capacitor2_v-(0.99999)*d10*capacitor2_v+(0.99998)*d11*d10*capacitor2_v));
+    batteryAndBockBoost_bookBoostDB_idealClosingSwitch2_s = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((-1e-05)-(0.99999)*d6)*((9.9999e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99998)*d9*d12*capacitor2_v-(0.99999)*d11*capacitor2_v-(1e-05)*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*capacitor2_v+(0.99998)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d12*capacitor2_v-(0.99999)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(1)*capacitor2_v-(0.99999)*d10*capacitor2_v+(0.99998)*d11*d10*capacitor2_v);
+    batteryAndBockBoost_bookBoostDB_idealClosingSwitch2_n_i = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((-1e-05)-(0.99999)*d14)*((-1e-05)-(0.99999)*d6)*((9.9999e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99998)*d9*d12*capacitor2_v-(0.99999)*d11*capacitor2_v-(1e-05)*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*capacitor2_v+(0.99998)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d12*capacitor2_v-(0.99999)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(1)*capacitor2_v-(0.99999)*d10*capacitor2_v+(0.99998)*d11*d10*capacitor2_v);
+    boost_panel2_boost1_idealDiode_v = (-(1/((-1)+(0.99999)*d18-(9.9999e-06)*d16-(0.99998)*d16*d19-(9.9999e-06)*d19+(0.99999)*d17-(0.99998)*d18*d17))*((-1e-05)-(0.99999)*d16)*((0.99999)*d18*boost_panel2_boost1_inductor_i+(0.99999)*d19*capacitor2_v-boost_panel2_boost1_inductor_i+(1e-05)*capacitor2_v));
+    boost_panel2_boost1_idealDiode_s = (1/((-1)+(0.99999)*d18-(9.9999e-06)*d16-(0.99998)*d16*d19-(9.9999e-06)*d19+(0.99999)*d17-(0.99998)*d18*d17))*((0.99999)*d18*boost_panel2_boost1_inductor_i+(0.99999)*d19*capacitor2_v-boost_panel2_boost1_inductor_i+(1e-05)*capacitor2_v);
+    boost_panel2_boost1_inductor_n_v = (1/((-1)+(0.99999)*d18-(9.9999e-06)*d16-(0.99998)*d16*d19-(9.9999e-06)*d19+(0.99999)*d17-(0.99998)*d18*d17))*((9.9999e-06)*d18*boost_panel2_boost1_inductor_i+(0.99999)*d18*capacitor2_v+(0.99998)*d18*d16*boost_panel2_boost1_inductor_i-(0.99998)*d18*d17*capacitor2_v+(0.99999)*d17*capacitor2_v-(1e-05)*boost_panel2_boost1_inductor_i-capacitor2_v-(0.99999)*d16*boost_panel2_boost1_inductor_i);
+    boost_panel2_boost1_controlledIdealClosingSwitch_s = ((-(9.9999e-06)*d18*boost_panel2_boost1_inductor_i)-(0.99999)*d18*capacitor2_v-(0.99998)*d18*d16*boost_panel2_boost1_inductor_i+(0.99998)*d18*d17*capacitor2_v-(0.99999)*d17*capacitor2_v+(1e-05)*boost_panel2_boost1_inductor_i+capacitor2_v+(0.99999)*d16*boost_panel2_boost1_inductor_i)*(1/((-1)+(0.99999)*d18-(9.9999e-06)*d16-(0.99998)*d16*d19-(9.9999e-06)*d19+(0.99999)*d17-(0.99998)*d18*d17))*(1/((-1)+(0.99999)*d18));
+    boost_panel2_boost1_pin_ground_i = (1/((-1)+(0.99999)*d18-(9.9999e-06)*d16-(0.99998)*d16*d19-(9.9999e-06)*d19+(0.99999)*d17-(0.99998)*d18*d17))*((-(0.99998)*d16*d19*boost_panel2_boost1_inductor_i)+(9.9999e-11)*d18*boost_panel2_boost1_inductor_i+(0.99998)*d19*d17*capacitor2_v+(9.9999e-06)*d18*capacitor2_v+(9.9998e-06)*d18*d16*boost_panel2_boost1_inductor_i-(0.99997)*d18*d19*d17*capacitor2_v+(9.9998e-06)*d18*d19*boost_panel2_boost1_inductor_i-(0.99999)*d19*capacitor2_v-(9.9998e-06)*d18*d17*capacitor2_v-(9.9999e-06)*d19*boost_panel2_boost1_inductor_i+(0.99997)*d18*d16*d19*boost_panel2_boost1_inductor_i+(0.99998)*d18*d19*capacitor2_v+(9.9999e-06)*d17*capacitor2_v-(1e-10)*boost_panel2_boost1_inductor_i-(1e-05)*capacitor2_v-(9.9999e-06)*d16*boost_panel2_boost1_inductor_i)*(1/((-1)+(0.99999)*d18));
+    boost_panel2_boost1_idealDiode_n_i = (1/((-1)+(0.99999)*d18-(9.9999e-06)*d16-(0.99998)*d16*d19-(9.9999e-06)*d19+(0.99999)*d17-(0.99998)*d18*d17))*((-1)+(0.99999)*d17)*((0.99999)*d18*boost_panel2_boost1_inductor_i+(0.99999)*d19*capacitor2_v-boost_panel2_boost1_inductor_i+(1e-05)*capacitor2_v);
+    batteryAndBockBoost_bookBoostDB_pin_p_out_i = batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_n_i+batteryAndBockBoost_bookBoostDB_idealDiode1_n_i;
+    batteryAndBockBoost_bookBoostDB_pin_n_i = batteryAndBockBoost_bookBoostDB_idealClosingSwitch2_n_i-batteryAndBockBoost_bookBoostDB_idealDiode_n_i;
+    PGen_Sensor_pc_i = (-boost_panel1_boost1_idealDiode_n_i)-boost_panel2_boost1_idealDiode_n_i;
+    capacitor2_n_i = (-PGen_Sensor_pc_i)+fCellAndElectro_pin_p_i+batteryAndBockBoost_bookBoostDB_pin_p_out_i+PCons_Sensor_pc_i;
+    boost_panel2_pin_n_i = boost_panel2_capacitor1_n_i+boost_panel2_panel_n_i+boost_panel2_boost1_pin_ground_i;
+    boost_panel1_pin_n_i = boost_panel1_capacitor1_n_i+boost_panel1_panel_n_i+boost_panel1_boost1_pin_ground_i;
+    batteryAndBockBoost_pin_n_i = batteryAndBockBoost_bookBoostDB_pin_n_i-batteryAndBockBoost_battery2_pin_p_i;
+    batteryAndBockBoost_bookBoostDB_inductor_p_v = batteryAndBockBoost_battery2_v+batteryAndBockBoost_battery2_pin_n_v;
+    PGen_Sensor_product_y = capacitor2_v*PGen_Sensor_pc_i;
+    resistor_v = 100*(-inductor_n_i);
+    resistor_LossPower = resistor_v*(-inductor_n_i);
+    inductor_p_v = (-resistor_v)+capacitor2_v;
+    der(inductor_i) = (100000)*inductor_p_v;
+    ground_p_i = (-boost_panel2_pin_n_i)-fCellAndElectro_pin_n_i-inductor_n_i-variableR1_n_i-capacitor2_n_i-boost_panel1_pin_n_i-batteryAndBockBoost_pin_n_i;
+    der(fCellAndElectro_tanque_p_tanque) = 26022.8*(fCellAndElectro_electComp_compresor_FH2_electrolizador-fCellAndElectro_fuellCell_fH2_FC);
+    fCellAndElectro_electComp_compresor_PotConsumida = fCellAndElectro_electComp_compresor_FH2_electrolizador*((((fCellAndElectro_electComp_compresor_p_tanq/1)^0.285714))-1)*313*8.314*1.4/0.4/0.72;
+    der(capacitor2_v) = (-(200)*capacitor2_n_i);
+    der(boost_panel2_capacitor1_v) = (-(2127.66)*boost_panel2_capacitor1_n_i);
+    boost_panel2_boost1_inductor_v = boost_panel2_capacitor1_v-boost_panel2_boost1_inductor_n_v;
+    der(boost_panel2_boost1_inductor_i) = (66.6667)*boost_panel2_boost1_inductor_v;
+    boost_panel2_boost1_idealDiode_LossPower = boost_panel2_boost1_idealDiode_v*(-boost_panel2_boost1_idealDiode_n_i);
+    boost_panel2_boost1_controlledIdealClosingSwitch_LossPower = (boost_panel2_boost1_inductor_n_v)*(-boost_panel2_boost1_pin_ground_i);
+    der(boost_panel1_capacitor1_v) = (-(2127.66)*boost_panel1_capacitor1_n_i);
+    boost_panel1_boost1_inductor_v = boost_panel1_capacitor1_v-boost_panel1_boost1_inductor_n_v;
+    der(boost_panel1_boost1_inductor_i) = (66.6667)*boost_panel1_boost1_inductor_v;
+    boost_panel1_boost1_idealDiode_LossPower = boost_panel1_boost1_idealDiode_v*(-boost_panel1_boost1_idealDiode_n_i);
+    boost_panel1_boost1_controlledIdealClosingSwitch_LossPower = (boost_panel1_boost1_inductor_n_v)*(-boost_panel1_boost1_pin_ground_i);
+    der(batteryAndBockBoost_bookBoostPWMcontrol1_intErr) = batteryAndBockBoost_bookBoostPWMcontrol1_Err;
+    batteryAndBockBoost_bookBoostDB_inductor_v = batteryAndBockBoost_bookBoostDB_inductor_p_v-batteryAndBockBoost_bookBoostDB_idealDiode_n_v;
+    der(batteryAndBockBoost_bookBoostDB_inductor_i) = (66.6667)*batteryAndBockBoost_bookBoostDB_inductor_v;
+    batteryAndBockBoost_bookBoostDB_idealDiode_LossPower = (-batteryAndBockBoost_bookBoostDB_idealDiode_n_v)*(-batteryAndBockBoost_bookBoostDB_idealDiode_n_i);
+    batteryAndBockBoost_bookBoostDB_idealDiode1_LossPower = batteryAndBockBoost_bookBoostDB_idealDiode1_v*(-batteryAndBockBoost_bookBoostDB_idealDiode1_n_i);
+    batteryAndBockBoost_bookBoostDB_idealClosingSwitch2_LossPower = batteryAndBockBoost_bookBoostDB_idealDiode_n_v*(-batteryAndBockBoost_bookBoostDB_idealClosingSwitch2_n_i);
+    batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_LossPower = batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_v*(-batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_n_i);
 
-batteryAndBockBoost_battery_Qt=Qt1/1000;
-batteryAndBockBoost_battery2_Qt=Qt2/1000;
-batteryAndBockBoost_battery1_Qt=Qt3/1000;
+    der(Qt1)=1000* (-batteryAndBockBoost_battery2_pin_p_i)/3600;
+    der(Qt2)=1000* (-batteryAndBockBoost_battery2_pin_p_i)/3600;
+    der(Qt3)=1000* (-batteryAndBockBoost_battery2_pin_p_i)/3600;
 
-  boost_panel1_panel_n_i = fsolve1(boost_panel1_capacitor1_v);
-  boost_panel1_mmt1_pot = boost_panel1_capacitor1_v*boost_panel1_boost1_inductor_i;
-  der(boost_panel1_mmt1_potActFiltrada) = (boost_panel1_mmt1_pot-boost_panel1_mmt1_potActFiltrada)*100;
-  boost_panel1_mmt1_y = pre(boost_panel1_mmt1_vref);
-  boost_panel1_cont_pwm1_vgate = pre(boost_panel1_cont_pwm1_vout);
-  boost_panel1_boost1_idealDiode_off = pre(d0);
-  batteryAndBockBoost_bookBoostDB_inductor_n_i = (-batteryAndBockBoost_bookBoostDB_inductor_i);
-  batteryAndBockBoost_bookBoostDB_idealDiode_off = pre(d5);
-  batteryAndBockBoost_bookBoostDB_idealDiode1_off = pre(d8);
-  batteryAndBockBoost_bookBoostDB_Sw2 = pre(batteryAndBockBoost_bookBoostPWMcontrol1_Output);
-  batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_control = 1-batteryAndBockBoost_bookBoostDB_Sw2;
-  batteryAndBockBoost_voltageControl_Err = 56-capacitor2_v;
-  der(batteryAndBockBoost_voltageControl_intErr) = batteryAndBockBoost_voltageControl_Err;
-  batteryAndBockBoost_voltageControl_IrefCont = 0.95*batteryAndBockBoost_voltageControl_Err+90*batteryAndBockBoost_voltageControl_intErr;
-  batteryAndBockBoost_bookBoostPWMcontrol1_yref = pre(batteryAndBockBoost_voltageControl_Sat)*batteryAndBockBoost_voltageControl_IrefCont+pre(batteryAndBockBoost_voltageControl_SatLevel);
-  batteryAndBockBoost_battery_E = 12.6463-1.98/(6-batteryAndBockBoost_battery_Qt)+0.66*exp((-2884.61*batteryAndBockBoost_battery_Qt));
-  batteryAndBockBoost_battery_SoC = (1-batteryAndBockBoost_battery_Qt/6)*100;
-  batteryAndBockBoost_battery1_E = 12.6463-1.98/(6-batteryAndBockBoost_battery1_Qt)+0.66*exp((-2884.61*batteryAndBockBoost_battery1_Qt));
-  batteryAndBockBoost_battery1_SoC = (1-batteryAndBockBoost_battery1_Qt/6)*100;
-  batteryAndBockBoost_battery2_E = 12.6463-1.98/(6-batteryAndBockBoost_battery2_Qt)+0.66*exp((-2884.61*batteryAndBockBoost_battery2_Qt));
-  batteryAndBockBoost_u = (1-batteryAndBockBoost_battery2_Qt/6)*100;
-  boost_panel2_panel_n_i = fsolve2(boost_panel2_capacitor1_v);
-  boost_panel2_mmt1_pot = boost_panel2_capacitor1_v*boost_panel2_boost1_inductor_i;
-  der(boost_panel2_mmt1_potActFiltrada) = (boost_panel2_mmt1_pot-boost_panel2_mmt1_potActFiltrada)*100;
-  boost_panel2_mmt1_y = pre(boost_panel2_mmt1_vref);
-  boost_panel2_cont_pwm1_vgate = pre(boost_panel2_cont_pwm1_vout);
-  boost_panel2_boost1_idealDiode_off = pre(d15);
-  fCellAndElectro_electComp_compresor_p_tanq = 1e-05*fCellAndElectro_tanque_p_tanque;
-  variableR1_n_i = (-capacitor2_v*(1/(variableR1_R)));
-  inductor_n_i = (-inductor_i);
-  PCons_Sensor_pc_i = (-inductor_n_i)-variableR1_n_i;
-  boost_panel1_capacitor1_n_i = (-boost_panel1_panel_n_i)+boost_panel1_boost1_inductor_i;
-  batteryAndBockBoost_battery2_pin_p_i = batteryAndBockBoost_bookBoostDB_inductor_n_i;
-  boost_panel2_capacitor1_n_i = boost_panel2_boost1_inductor_i-boost_panel2_panel_n_i;
-  batteryAndBockBoost_bookBoostPWMcontrol1_Err = batteryAndBockBoost_bookBoostPWMcontrol1_yref-(-batteryAndBockBoost_battery2_pin_p_i);
-  batteryAndBockBoost_battery1_pin_n_v = batteryAndBockBoost_battery_E-0.25*(-batteryAndBockBoost_battery2_pin_p_i);
-  batteryAndBockBoost_battery1_v = batteryAndBockBoost_battery1_E-0.25*(-batteryAndBockBoost_battery2_pin_p_i);
-  batteryAndBockBoost_battery2_v = batteryAndBockBoost_battery2_E-0.25*(-batteryAndBockBoost_battery2_pin_p_i);
-  PCons_Sensor_product_y = capacitor2_v*PCons_Sensor_pc_i;
-  algSuperv_deltaP = algSuperv_Pgenfilt-PCons_Sensor_product_y;
-  fCellAndElectro_electComp_electrolizadorAnda1_u = algSuperv_EB*(algSuperv_deltaP*(1-algSuperv_satElect)+algSuperv_satElect*200);
-  algSuperv_Pref_FC = algSuperv_FC*((-algSuperv_deltaP*(1-algSuperv_satFC))+200*algSuperv_satFC);
-  fCellAndElectro_fuellCell_i = algSuperv_Pref_FC*(1/(capacitor2_v));
-  fCellAndElectro_fuellCell_IFC = fsolve3(algSuperv_Pref_FC);
-  fCellAndElectro_fuellCell_fH2_FC = 47*fCellAndElectro_fuellCell_IFC/2/96487;
-  fCellAndElectro_electComp_pin_n_i = (-(1/(capacitor2_v))*fCellAndElectro_electComp_electrolizadorAnda1_u);
-  fCellAndElectro_electComp_electrolizadorAnda1_Ucell = fsolve4(fCellAndElectro_electComp_electrolizadorAnda1_u);
-  fCellAndElectro_electComp_compresor_FH2_electrolizador = fCellAndElectro_electComp_electrolizadorAnda1_u/(fCellAndElectro_electComp_electrolizadorAnda1_Ucell*2*96485);
-  fCellAndElectro_pin_p_i = (-fCellAndElectro_fuellCell_i)-fCellAndElectro_electComp_pin_n_i;
-  fCellAndElectro_pin_n_i = fCellAndElectro_electComp_pin_n_i+fCellAndElectro_fuellCell_i;
-  batteryAndBockBoost_battery2_pin_n_v = batteryAndBockBoost_battery1_v+batteryAndBockBoost_battery1_pin_n_v;
-  boost_panel1_boost1_idealDiode_s = (1/((-1)-(0.99998)*d1*d4-(0.99998)*d3*d2+(0.99999)*d3-(9.9999e-06)*d1-(9.9999e-06)*d4+(0.99999)*d2))*(1/((-1e-05)-(0.99999)*d1))*((-(0.99998)*d3*d1*boost_panel1_boost1_inductor_i)-(0.99998)*d1*d4*capacitor2_v+(0.99999)*d1*boost_panel1_boost1_inductor_i-(9.9999e-06)*d4*capacitor2_v-(9.9999e-06)*d3*boost_panel1_boost1_inductor_i-(9.9999e-06)*d1*capacitor2_v+(1e-05)*boost_panel1_boost1_inductor_i-(1e-10)*capacitor2_v);
-  boost_panel1_boost1_idealDiode_n_i = (1/((-1)-(0.99998)*d1*d4-(0.99998)*d3*d2+(0.99999)*d3-(9.9999e-06)*d1-(9.9999e-06)*d4+(0.99999)*d2))*((0.99998)*d3*d1*boost_panel1_boost1_inductor_i+(0.99998)*d1*d4*capacitor2_v-(0.99999)*d1*boost_panel1_boost1_inductor_i+(9.9999e-06)*d4*capacitor2_v+(9.9999e-06)*d3*boost_panel1_boost1_inductor_i+(9.9999e-06)*d1*capacitor2_v-(1e-05)*boost_panel1_boost1_inductor_i+(1e-10)*capacitor2_v)*(1/((-1e-05)-(0.99999)*d1))*(1-(0.99999)*d2);
-  boost_panel1_boost1_idealDiode_v = (1/((-1)-(0.99998)*d1*d4-(0.99998)*d3*d2+(0.99999)*d3-(9.9999e-06)*d1-(9.9999e-06)*d4+(0.99999)*d2))*((0.99998)*d3*d1*boost_panel1_boost1_inductor_i+(0.99998)*d1*d4*capacitor2_v-(0.99999)*d1*boost_panel1_boost1_inductor_i+(9.9999e-06)*d4*capacitor2_v+(9.9999e-06)*d3*boost_panel1_boost1_inductor_i+(9.9999e-06)*d1*capacitor2_v-(1e-05)*boost_panel1_boost1_inductor_i+(1e-10)*capacitor2_v);
-  boost_panel1_boost1_inductor_n_v = (-(1/((-1)-(0.99998)*d1*d4-(0.99998)*d3*d2+(0.99999)*d3-(9.9999e-06)*d1-(9.9999e-06)*d4+(0.99999)*d2))*((-1)+(0.99999)*d3)*((0.99999)*d2*capacitor2_v-(0.99999)*d1*boost_panel1_boost1_inductor_i-(1e-05)*boost_panel1_boost1_inductor_i-capacitor2_v));
-  boost_panel1_boost1_controlledIdealClosingSwitch_s = (1/((-1)-(0.99998)*d1*d4-(0.99998)*d3*d2+(0.99999)*d3-(9.9999e-06)*d1-(9.9999e-06)*d4+(0.99999)*d2))*((0.99999)*d2*capacitor2_v-(0.99999)*d1*boost_panel1_boost1_inductor_i-(1e-05)*boost_panel1_boost1_inductor_i-capacitor2_v);
-  boost_panel1_boost1_pin_ground_i = (1/((-1)-(0.99998)*d1*d4-(0.99998)*d3*d2+(0.99999)*d3-(9.9999e-06)*d1-(9.9999e-06)*d4+(0.99999)*d2))*((0.99999)*d2*capacitor2_v-(0.99999)*d1*boost_panel1_boost1_inductor_i-(1e-05)*boost_panel1_boost1_inductor_i-capacitor2_v)*((-1e-05)-(0.99999)*d4);
-  batteryAndBockBoost_bookBoostDB_idealDiode_s = (-((-1)+(0.99999)*d13)*(1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((9.9999e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99998)*d9*d12*capacitor2_v-(0.99999)*d11*capacitor2_v-(1e-05)*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*capacitor2_v+(0.99998)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d12*capacitor2_v-(0.99999)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(1)*capacitor2_v-(0.99999)*d10*capacitor2_v+(0.99998)*d11*d10*capacitor2_v));
-  batteryAndBockBoost_bookBoostDB_idealDiode_n_i = (-((-1)+(0.99999)*d13)*(1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((-1)+(0.99999)*d7)*((9.9999e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99998)*d9*d12*capacitor2_v-(0.99999)*d11*capacitor2_v-(1e-05)*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*capacitor2_v+(0.99998)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d12*capacitor2_v-(0.99999)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(1)*capacitor2_v-(0.99999)*d10*capacitor2_v+(0.99998)*d11*d10*capacitor2_v));
-  batteryAndBockBoost_bookBoostDB_idealDiode1_s = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((-(9.9998e-06)*d11*capacitor2_v*d7)-(9.9998e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d13*capacitor2_v*d7+(9.9998e-11)*d11*d6*capacitor2_v-(9.9999e-11)*d6*capacitor2_v+(9.9999e-11)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(0.99998)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(0.99998)*d9*d13*capacitor2_v+(9.9999e-06)*capacitor2_v*d7+(0.99997)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(0.99997)*d11*d9*d13*capacitor2_v+(9.9997e-06)*d11*d13*capacitor2_v*d7-(9.9998e-06)*d14*d9*capacitor2_v-(9.9999e-11)*d14*capacitor2_v+(9.9999e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9998e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(9.9997e-06)*d14*d11*d6*capacitor2_v-(9.9997e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(9.9999e-06)*d11*capacitor2_v-(6.31089e-30)*d12*d13*capacitor2_v-(1e-10)*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99996)*d14*d11*d9*d6*capacitor2_v+(0.99998)*d11*d9*capacitor2_v-(0.99999)*d9*capacitor2_v+(0.99996)*d11*d9*d13*capacitor2_v*d7+(9.9998e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i-(9.9999e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i-(0.99997)*d14*d9*d6*capacitor2_v-(9.9998e-06)*d14*d6*capacitor2_v+(0.99997)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(0.99996)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(9.9998e-11)*d14*d11*capacitor2_v-(0.99997)*d11*d9*capacitor2_v*d7+(9.9997e-06)*d14*d11*d9*capacitor2_v+(9.9997e-06)*d11*d9*d6*capacitor2_v-(9.9997e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d9*d6*capacitor2_v-(1e-05)*capacitor2_v-(0.99997)*d9*d13*capacitor2_v*d7+(0.99998)*d9*capacitor2_v*d7+(9.9999e-06)*d13*capacitor2_v-(9.9999e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(9.9998e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(9.9998e-06)*d11*d13*capacitor2_v)*(1/((-1e-05)-(0.99999)*d9));
-  batteryAndBockBoost_bookBoostDB_idealDiode1_n_i = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((9.9998e-06)*d11*capacitor2_v*d7+(9.9998e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d13*capacitor2_v*d7-(9.9998e-11)*d11*d6*capacitor2_v+(9.9999e-11)*d6*capacitor2_v-(9.9999e-11)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(0.99998)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(0.99998)*d9*d13*capacitor2_v-(9.9999e-06)*capacitor2_v*d7-(0.99997)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(0.99997)*d11*d9*d13*capacitor2_v-(9.9997e-06)*d11*d13*capacitor2_v*d7+(9.9998e-06)*d14*d9*capacitor2_v+(9.9999e-11)*d14*capacitor2_v-(9.9999e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i-(9.9998e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9997e-06)*d14*d11*d6*capacitor2_v+(9.9997e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9999e-06)*d11*capacitor2_v+(6.31089e-30)*d12*d13*capacitor2_v+(1e-10)*batteryAndBockBoost_bookBoostDB_inductor_n_i-(0.99996)*d14*d11*d9*d6*capacitor2_v-(0.99998)*d11*d9*capacitor2_v+(0.99999)*d9*capacitor2_v-(0.99996)*d11*d9*d13*capacitor2_v*d7-(9.9998e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99997)*d14*d9*d6*capacitor2_v+(9.9998e-06)*d14*d6*capacitor2_v-(0.99997)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(0.99996)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9998e-11)*d14*d11*capacitor2_v+(0.99997)*d11*d9*capacitor2_v*d7-(9.9997e-06)*d14*d11*d9*capacitor2_v-(9.9997e-06)*d11*d9*d6*capacitor2_v+(9.9997e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d9*d6*capacitor2_v+(1e-05)*capacitor2_v+(0.99997)*d9*d13*capacitor2_v*d7-(0.99998)*d9*capacitor2_v*d7-(9.9999e-06)*d13*capacitor2_v+(9.9999e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(9.9998e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(9.9998e-06)*d11*d13*capacitor2_v)*(1/((-1e-05)-(0.99999)*d9))*(1-(0.99999)*d10);
-  batteryAndBockBoost_bookBoostDB_idealDiode1_v = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((9.9998e-06)*d11*capacitor2_v*d7+(9.9998e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d13*capacitor2_v*d7-(9.9998e-11)*d11*d6*capacitor2_v+(9.9999e-11)*d6*capacitor2_v-(9.9999e-11)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(0.99998)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(0.99998)*d9*d13*capacitor2_v-(9.9999e-06)*capacitor2_v*d7-(0.99997)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(0.99997)*d11*d9*d13*capacitor2_v-(9.9997e-06)*d11*d13*capacitor2_v*d7+(9.9998e-06)*d14*d9*capacitor2_v+(9.9999e-11)*d14*capacitor2_v-(9.9999e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i-(9.9998e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9997e-06)*d14*d11*d6*capacitor2_v+(9.9997e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9999e-06)*d11*capacitor2_v+(6.31089e-30)*d12*d13*capacitor2_v+(1e-10)*batteryAndBockBoost_bookBoostDB_inductor_n_i-(0.99996)*d14*d11*d9*d6*capacitor2_v-(0.99998)*d11*d9*capacitor2_v+(0.99999)*d9*capacitor2_v-(0.99996)*d11*d9*d13*capacitor2_v*d7-(9.9998e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99997)*d14*d9*d6*capacitor2_v+(9.9998e-06)*d14*d6*capacitor2_v-(0.99997)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(0.99996)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9998e-11)*d14*d11*capacitor2_v+(0.99997)*d11*d9*capacitor2_v*d7-(9.9997e-06)*d14*d11*d9*capacitor2_v-(9.9997e-06)*d11*d9*d6*capacitor2_v+(9.9997e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d9*d6*capacitor2_v+(1e-05)*capacitor2_v+(0.99997)*d9*d13*capacitor2_v*d7-(0.99998)*d9*capacitor2_v*d7-(9.9999e-06)*d13*capacitor2_v+(9.9999e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(9.9998e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(9.9998e-06)*d11*d13*capacitor2_v);
-  batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_s = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((-(9.9998e-06)*d11*capacitor2_v*d7)-(9.9998e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d13*capacitor2_v*d7+(9.9998e-11)*d11*d6*capacitor2_v-(9.9999e-11)*d6*capacitor2_v+(9.9999e-11)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(0.99998)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(0.99998)*d9*d13*capacitor2_v+(9.9999e-06)*capacitor2_v*d7+(0.99997)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(0.99997)*d11*d9*d13*capacitor2_v+(9.9997e-06)*d11*d13*capacitor2_v*d7-(9.9998e-06)*d14*d9*capacitor2_v-(9.9999e-11)*d14*capacitor2_v+(9.9999e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9998e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(9.9997e-06)*d14*d11*d6*capacitor2_v-(9.9997e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(9.9999e-06)*d11*capacitor2_v-(6.31089e-30)*d12*d13*capacitor2_v-(1e-10)*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99996)*d14*d11*d9*d6*capacitor2_v+(0.99998)*d11*d9*capacitor2_v-(0.99999)*d9*capacitor2_v+(0.99996)*d11*d9*d13*capacitor2_v*d7+(9.9998e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i-(9.9999e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i-(0.99997)*d14*d9*d6*capacitor2_v-(9.9998e-06)*d14*d6*capacitor2_v+(0.99997)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(0.99996)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(9.9998e-11)*d14*d11*capacitor2_v-(0.99997)*d11*d9*capacitor2_v*d7+(9.9997e-06)*d14*d11*d9*capacitor2_v+(9.9997e-06)*d11*d9*d6*capacitor2_v-(9.9997e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d9*d6*capacitor2_v-(1e-05)*capacitor2_v-(0.99997)*d9*d13*capacitor2_v*d7+(0.99998)*d9*capacitor2_v*d7+(9.9999e-06)*d13*capacitor2_v-(9.9999e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(9.9998e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(9.9998e-06)*d11*d13*capacitor2_v)*(1/((-1)+(0.99999)*d11));
-  batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_n_i = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((9.9998e-06)*d11*capacitor2_v*d7+(9.9998e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d13*capacitor2_v*d7-(9.9998e-11)*d11*d6*capacitor2_v+(9.9999e-11)*d6*capacitor2_v-(9.9999e-11)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(0.99998)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(0.99998)*d9*d13*capacitor2_v-(9.9999e-06)*capacitor2_v*d7-(0.99997)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(0.99997)*d11*d9*d13*capacitor2_v-(9.9997e-06)*d11*d13*capacitor2_v*d7+(9.9998e-06)*d14*d9*capacitor2_v+(9.9999e-11)*d14*capacitor2_v-(9.9999e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i-(9.9998e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9997e-06)*d14*d11*d6*capacitor2_v+(9.9997e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9999e-06)*d11*capacitor2_v+(6.31089e-30)*d12*d13*capacitor2_v+(1e-10)*batteryAndBockBoost_bookBoostDB_inductor_n_i-(0.99996)*d14*d11*d9*d6*capacitor2_v-(0.99998)*d11*d9*capacitor2_v+(0.99999)*d9*capacitor2_v-(0.99996)*d11*d9*d13*capacitor2_v*d7-(9.9998e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99997)*d14*d9*d6*capacitor2_v+(9.9998e-06)*d14*d6*capacitor2_v-(0.99997)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(0.99996)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9998e-11)*d14*d11*capacitor2_v+(0.99997)*d11*d9*capacitor2_v*d7-(9.9997e-06)*d14*d11*d9*capacitor2_v-(9.9997e-06)*d11*d9*d6*capacitor2_v+(9.9997e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d9*d6*capacitor2_v+(1e-05)*capacitor2_v+(0.99997)*d9*d13*capacitor2_v*d7-(0.99998)*d9*capacitor2_v*d7-(9.9999e-06)*d13*capacitor2_v+(9.9999e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(9.9998e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(9.9998e-06)*d11*d13*capacitor2_v)*(1e-05+(0.99999)*d12)*(1/((-1)+(0.99999)*d11));
-  batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_v = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((9.9998e-06)*d11*capacitor2_v*d7+(9.9998e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d13*capacitor2_v*d7-(9.9998e-11)*d11*d6*capacitor2_v+(9.9999e-11)*d6*capacitor2_v-(9.9999e-11)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(0.99998)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(0.99998)*d9*d13*capacitor2_v-(9.9999e-06)*capacitor2_v*d7-(0.99997)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(0.99997)*d11*d9*d13*capacitor2_v-(9.9997e-06)*d11*d13*capacitor2_v*d7+(9.9998e-06)*d14*d9*capacitor2_v+(9.9999e-11)*d14*capacitor2_v-(9.9999e-11)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i-(9.9998e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9997e-06)*d14*d11*d6*capacitor2_v+(9.9997e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9999e-06)*d11*capacitor2_v+(6.31089e-30)*d12*d13*capacitor2_v+(1e-10)*batteryAndBockBoost_bookBoostDB_inductor_n_i-(0.99996)*d14*d11*d9*d6*capacitor2_v-(0.99998)*d11*d9*capacitor2_v+(0.99999)*d9*capacitor2_v-(0.99996)*d11*d9*d13*capacitor2_v*d7-(9.9998e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99997)*d14*d9*d6*capacitor2_v+(9.9998e-06)*d14*d6*capacitor2_v-(0.99997)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13+(0.99996)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6*d13-(9.9998e-11)*d14*d11*capacitor2_v+(0.99997)*d11*d9*capacitor2_v*d7-(9.9997e-06)*d14*d11*d9*capacitor2_v-(9.9997e-06)*d11*d9*d6*capacitor2_v+(9.9997e-06)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13-(9.9998e-06)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i*d13+(9.9998e-06)*d9*d6*capacitor2_v+(1e-05)*capacitor2_v+(0.99997)*d9*d13*capacitor2_v*d7-(0.99998)*d9*capacitor2_v*d7-(9.9999e-06)*d13*capacitor2_v+(9.9999e-06)*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6-(9.9998e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i*d6+(9.9998e-06)*d11*d13*capacitor2_v);
-  batteryAndBockBoost_bookBoostDB_idealDiode_n_v = (-((-1)+(0.99999)*d13)*(1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((-1e-05)-(0.99999)*d6)*((9.9999e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99998)*d9*d12*capacitor2_v-(0.99999)*d11*capacitor2_v-(1e-05)*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*capacitor2_v+(0.99998)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d12*capacitor2_v-(0.99999)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(1)*capacitor2_v-(0.99999)*d10*capacitor2_v+(0.99998)*d11*d10*capacitor2_v));
-  batteryAndBockBoost_bookBoostDB_idealClosingSwitch2_s = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((-1e-05)-(0.99999)*d6)*((9.9999e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99998)*d9*d12*capacitor2_v-(0.99999)*d11*capacitor2_v-(1e-05)*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*capacitor2_v+(0.99998)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d12*capacitor2_v-(0.99999)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(1)*capacitor2_v-(0.99999)*d10*capacitor2_v+(0.99998)*d11*d10*capacitor2_v);
-  batteryAndBockBoost_bookBoostDB_idealClosingSwitch2_n_i = (1/((-2e-05)-(1.99996e-05)*d9*d6+(0.99996)*d9*d12*d6*d13-(1.99996e-05)*d11*d13+(9.9997e-06)*d11*d9*d6+(0.99996)*d11*d9*d13*d7-(9.9999e-11)*d14-(0.99997)*d9*d13*d7+(0.99998)*d11*d9-(9.9998e-06)*d12*d6+(1.99998e-05)*d11+(9.9997e-06)*d9*d12*d13+(0.99996)*d11*d10*d6*d13-(0.99999)*d9+(0.99996)*d14*d11*d9*d6-(9.9998e-06)*d11*d7-(9.9998e-06)*d9*d12+(9.9997e-06)*d14*d11*d6-(0.99997)*d11*d10*d6-(9.9998e-06)*d14*d9-(0.99997)*d11*d6*d13+(0.99998)*d6*d13-(0.99997)*d10*d6*d13+(0.99998)*d10*d6+(9.9997e-06)*d9*d6*d13-(9.9998e-06)*d10*d13-(9.9999e-11)*d12-(9.9998e-06)*d11*d10+(9.9998e-11)*d14*d11+(9.9999e-06)*d10+(9.9997e-06)*d14*d11*d9+(9.9997e-06)*d11*d10*d13+(0.99998)*d9*d7-(0.99999)*d6-(0.99997)*d14*d9*d6-(9.9998e-06)*d14*d6-(0.99997)*d11*d9*d7-(0.99997)*d9*d12*d6+(9.9997e-06)*d11*d13*d7+(9.9998e-11)*d12*d13+(1.99998e-05)*d13-(9.9998e-06)*d13*d7-(0.99997)*d11*d9*d13+(9.9997e-06)*d12*d6*d13+(0.99998)*d11*d6+(9.9999e-06)*d7+(0.99998)*d9*d13))*((-1e-05)-(0.99999)*d14)*((-1e-05)-(0.99999)*d6)*((9.9999e-06)*d11*batteryAndBockBoost_bookBoostDB_inductor_n_i+(0.99998)*d9*d12*capacitor2_v-(0.99999)*d11*capacitor2_v-(1e-05)*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d9*capacitor2_v+(0.99998)*d11*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(9.9999e-06)*d12*capacitor2_v-(0.99999)*d9*batteryAndBockBoost_bookBoostDB_inductor_n_i+(1)*capacitor2_v-(0.99999)*d10*capacitor2_v+(0.99998)*d11*d10*capacitor2_v);
-  boost_panel2_boost1_idealDiode_v = (-(1/((-1)+(0.99999)*d18-(9.9999e-06)*d16-(0.99998)*d16*d19-(9.9999e-06)*d19+(0.99999)*d17-(0.99998)*d18*d17))*((-1e-05)-(0.99999)*d16)*((0.99999)*d18*boost_panel2_boost1_inductor_i+(0.99999)*d19*capacitor2_v-boost_panel2_boost1_inductor_i+(1e-05)*capacitor2_v));
-  boost_panel2_boost1_idealDiode_s = (1/((-1)+(0.99999)*d18-(9.9999e-06)*d16-(0.99998)*d16*d19-(9.9999e-06)*d19+(0.99999)*d17-(0.99998)*d18*d17))*((0.99999)*d18*boost_panel2_boost1_inductor_i+(0.99999)*d19*capacitor2_v-boost_panel2_boost1_inductor_i+(1e-05)*capacitor2_v);
-  boost_panel2_boost1_inductor_n_v = (1/((-1)+(0.99999)*d18-(9.9999e-06)*d16-(0.99998)*d16*d19-(9.9999e-06)*d19+(0.99999)*d17-(0.99998)*d18*d17))*((9.9999e-06)*d18*boost_panel2_boost1_inductor_i+(0.99999)*d18*capacitor2_v+(0.99998)*d18*d16*boost_panel2_boost1_inductor_i-(0.99998)*d18*d17*capacitor2_v+(0.99999)*d17*capacitor2_v-(1e-05)*boost_panel2_boost1_inductor_i-capacitor2_v-(0.99999)*d16*boost_panel2_boost1_inductor_i);
-  boost_panel2_boost1_controlledIdealClosingSwitch_s = ((-(9.9999e-06)*d18*boost_panel2_boost1_inductor_i)-(0.99999)*d18*capacitor2_v-(0.99998)*d18*d16*boost_panel2_boost1_inductor_i+(0.99998)*d18*d17*capacitor2_v-(0.99999)*d17*capacitor2_v+(1e-05)*boost_panel2_boost1_inductor_i+capacitor2_v+(0.99999)*d16*boost_panel2_boost1_inductor_i)*(1/((-1)+(0.99999)*d18-(9.9999e-06)*d16-(0.99998)*d16*d19-(9.9999e-06)*d19+(0.99999)*d17-(0.99998)*d18*d17))*(1/((-1)+(0.99999)*d18));
-  boost_panel2_boost1_pin_ground_i = (1/((-1)+(0.99999)*d18-(9.9999e-06)*d16-(0.99998)*d16*d19-(9.9999e-06)*d19+(0.99999)*d17-(0.99998)*d18*d17))*((-(0.99998)*d16*d19*boost_panel2_boost1_inductor_i)+(9.9999e-11)*d18*boost_panel2_boost1_inductor_i+(0.99998)*d19*d17*capacitor2_v+(9.9999e-06)*d18*capacitor2_v+(9.9998e-06)*d18*d16*boost_panel2_boost1_inductor_i-(0.99997)*d18*d19*d17*capacitor2_v+(9.9998e-06)*d18*d19*boost_panel2_boost1_inductor_i-(0.99999)*d19*capacitor2_v-(9.9998e-06)*d18*d17*capacitor2_v-(9.9999e-06)*d19*boost_panel2_boost1_inductor_i+(0.99997)*d18*d16*d19*boost_panel2_boost1_inductor_i+(0.99998)*d18*d19*capacitor2_v+(9.9999e-06)*d17*capacitor2_v-(1e-10)*boost_panel2_boost1_inductor_i-(1e-05)*capacitor2_v-(9.9999e-06)*d16*boost_panel2_boost1_inductor_i)*(1/((-1)+(0.99999)*d18));
-  boost_panel2_boost1_idealDiode_n_i = (1/((-1)+(0.99999)*d18-(9.9999e-06)*d16-(0.99998)*d16*d19-(9.9999e-06)*d19+(0.99999)*d17-(0.99998)*d18*d17))*((-1)+(0.99999)*d17)*((0.99999)*d18*boost_panel2_boost1_inductor_i+(0.99999)*d19*capacitor2_v-boost_panel2_boost1_inductor_i+(1e-05)*capacitor2_v);
-  batteryAndBockBoost_bookBoostDB_pin_p_out_i = batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_n_i+batteryAndBockBoost_bookBoostDB_idealDiode1_n_i;
-  batteryAndBockBoost_bookBoostDB_pin_n_i = batteryAndBockBoost_bookBoostDB_idealClosingSwitch2_n_i-batteryAndBockBoost_bookBoostDB_idealDiode_n_i;
-  PGen_Sensor_pc_i = (-boost_panel1_boost1_idealDiode_n_i)-boost_panel2_boost1_idealDiode_n_i;
-  capacitor2_n_i = (-PGen_Sensor_pc_i)+fCellAndElectro_pin_p_i+batteryAndBockBoost_bookBoostDB_pin_p_out_i+PCons_Sensor_pc_i;
-  boost_panel2_pin_n_i = boost_panel2_capacitor1_n_i+boost_panel2_panel_n_i+boost_panel2_boost1_pin_ground_i;
-  boost_panel1_pin_n_i = boost_panel1_capacitor1_n_i+boost_panel1_panel_n_i+boost_panel1_boost1_pin_ground_i;
-  batteryAndBockBoost_pin_n_i = batteryAndBockBoost_bookBoostDB_pin_n_i-batteryAndBockBoost_battery2_pin_p_i;
-  batteryAndBockBoost_bookBoostDB_inductor_p_v = batteryAndBockBoost_battery2_v+batteryAndBockBoost_battery2_pin_n_v;
-  PGen_Sensor_product_y = capacitor2_v*PGen_Sensor_pc_i;
-  resistor_v = 100*(-inductor_n_i);
-  resistor_LossPower = resistor_v*(-inductor_n_i);
-  inductor_p_v = (-resistor_v)+capacitor2_v;
-  der(inductor_i) = (100000)*inductor_p_v;
-  ground_p_i = (-boost_panel2_pin_n_i)-fCellAndElectro_pin_n_i-inductor_n_i-variableR1_n_i-capacitor2_n_i-boost_panel1_pin_n_i-batteryAndBockBoost_pin_n_i;
-  der(fCellAndElectro_tanque_p_tanque) = 26022.8*(fCellAndElectro_electComp_compresor_FH2_electrolizador-fCellAndElectro_fuellCell_fH2_FC);
-  fCellAndElectro_electComp_compresor_PotConsumida = fCellAndElectro_electComp_compresor_FH2_electrolizador*((((fCellAndElectro_electComp_compresor_p_tanq/1)^0.285714))-1)*313*8.314*1.4/0.4/0.72;
-  der(capacitor2_v) = (-(200)*capacitor2_n_i);
-  der(boost_panel2_capacitor1_v) = (-(2127.66)*boost_panel2_capacitor1_n_i);
-  boost_panel2_boost1_inductor_v = boost_panel2_capacitor1_v-boost_panel2_boost1_inductor_n_v;
-  der(boost_panel2_boost1_inductor_i) = (66.6667)*boost_panel2_boost1_inductor_v;
-  boost_panel2_boost1_idealDiode_LossPower = boost_panel2_boost1_idealDiode_v*(-boost_panel2_boost1_idealDiode_n_i);
-  boost_panel2_boost1_controlledIdealClosingSwitch_LossPower = (boost_panel2_boost1_inductor_n_v)*(-boost_panel2_boost1_pin_ground_i);
-  der(boost_panel1_capacitor1_v) = (-(2127.66)*boost_panel1_capacitor1_n_i);
-  boost_panel1_boost1_inductor_v = boost_panel1_capacitor1_v-boost_panel1_boost1_inductor_n_v;
-  der(boost_panel1_boost1_inductor_i) = (66.6667)*boost_panel1_boost1_inductor_v;
-  boost_panel1_boost1_idealDiode_LossPower = boost_panel1_boost1_idealDiode_v*(-boost_panel1_boost1_idealDiode_n_i);
-  boost_panel1_boost1_controlledIdealClosingSwitch_LossPower = (boost_panel1_boost1_inductor_n_v)*(-boost_panel1_boost1_pin_ground_i);
-  der(batteryAndBockBoost_bookBoostPWMcontrol1_intErr) = batteryAndBockBoost_bookBoostPWMcontrol1_Err;
-  batteryAndBockBoost_bookBoostDB_inductor_v = batteryAndBockBoost_bookBoostDB_inductor_p_v-batteryAndBockBoost_bookBoostDB_idealDiode_n_v;
-  der(batteryAndBockBoost_bookBoostDB_inductor_i) = (66.6667)*batteryAndBockBoost_bookBoostDB_inductor_v;
-  batteryAndBockBoost_bookBoostDB_idealDiode_LossPower = (-batteryAndBockBoost_bookBoostDB_idealDiode_n_v)*(-batteryAndBockBoost_bookBoostDB_idealDiode_n_i);
-  batteryAndBockBoost_bookBoostDB_idealDiode1_LossPower = batteryAndBockBoost_bookBoostDB_idealDiode1_v*(-batteryAndBockBoost_bookBoostDB_idealDiode1_n_i);
-  batteryAndBockBoost_bookBoostDB_idealClosingSwitch2_LossPower = batteryAndBockBoost_bookBoostDB_idealDiode_n_v*(-batteryAndBockBoost_bookBoostDB_idealClosingSwitch2_n_i);
-  batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_LossPower = batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_v*(-batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_n_i);
+    //  der(batteryAndBockBoost_battery_Qt) = (-batteryAndBockBoost_battery2_pin_p_i)/3600;
+    //  der(batteryAndBockBoost_battery2_Qt) = (-batteryAndBockBoost_battery2_pin_p_i)/3600;
+    //  der(batteryAndBockBoost_battery1_Qt) = (-batteryAndBockBoost_battery2_pin_p_i)/3600;
+    der(algSuperv_Pgenfilt) = (PGen_Sensor_product_y-algSuperv_Pgenfilt)*100;
 
-der(Qt1)=1000* (-batteryAndBockBoost_battery2_pin_p_i)/3600;
-der(Qt2)=1000* (-batteryAndBockBoost_battery2_pin_p_i)/3600;
-der(Qt3)=1000* (-batteryAndBockBoost_battery2_pin_p_i)/3600;
-
-//  der(batteryAndBockBoost_battery_Qt) = (-batteryAndBockBoost_battery2_pin_p_i)/3600;
-//  der(batteryAndBockBoost_battery2_Qt) = (-batteryAndBockBoost_battery2_pin_p_i)/3600;
-//  der(batteryAndBockBoost_battery1_Qt) = (-batteryAndBockBoost_battery2_pin_p_i)/3600;
-
-
-  der(algSuperv_Pgenfilt) = (PGen_Sensor_product_y-algSuperv_Pgenfilt)*100;
-algorithm
-    when time>pre(d20) then 
+  algorithm
+    when time>pre(d20) then
       d20:=time+boost_panel1_mmt1_Ts;
       boost_panel1_mmt1_potprev:=boost_panel1_mmt1_potact;
       boost_panel1_mmt1_potact:=boost_panel1_mmt1_potActFiltrada;
@@ -592,62 +589,62 @@ algorithm
       boost_panel1_mmt1_actu:=boost_panel1_capacitor1_v;
       boost_panel1_mmt1_deltau:=boost_panel1_mmt1_actu-boost_panel1_mmt1_prevu;
       boost_panel1_mmt1_deltap:=boost_panel1_mmt1_potact-boost_panel1_mmt1_potprev;
-      if abs(boost_panel1_mmt1_deltau)>0.1*boost_panel1_mmt1_deltaVpvRefPanel then 
-        if abs(boost_panel1_mmt1_deltap)>0.2 then 
-          if boost_panel1_mmt1_deltap/boost_panel1_mmt1_deltau>0 then 
+      if abs(boost_panel1_mmt1_deltau)>0.1*boost_panel1_mmt1_deltaVpvRefPanel then
+        if abs(boost_panel1_mmt1_deltap)>0.2 then
+          if boost_panel1_mmt1_deltap/boost_panel1_mmt1_deltau>0 then
             boost_panel1_mmt1_vref:=boost_panel1_mmt1_vref+boost_panel1_mmt1_deltaVpvRefPanel;
           end if;
-          if boost_panel1_mmt1_deltap/boost_panel1_mmt1_deltau<0 then 
+          if boost_panel1_mmt1_deltap/boost_panel1_mmt1_deltau<0 then
             boost_panel1_mmt1_vref:=boost_panel1_mmt1_vref-boost_panel1_mmt1_deltaVpvRefPanel;
           end if;
         end if;
       end if;
     end when;
-    when time>pre(d21) then 
+    when time>pre(d21) then
       d21:=time+boost_panel1_cont_pwm1_T;
       boost_panel1_cont_pwm1_dc:=0.85-(boost_panel1_mmt1_y-boost_panel1_capacitor1_v)*0.1;
-      if boost_panel1_cont_pwm1_dc>0.98 then 
+      if boost_panel1_cont_pwm1_dc>0.98 then
         boost_panel1_cont_pwm1_dc:=0.98;
-      elseif boost_panel1_cont_pwm1_dc<0.3 then 
+      elseif boost_panel1_cont_pwm1_dc<0.3 then
         boost_panel1_cont_pwm1_dc:=0.3;
       end if;
       boost_panel1_cont_pwm1_tnext:=time+boost_panel1_cont_pwm1_T*boost_panel1_cont_pwm1_dc;
       boost_panel1_cont_pwm1_vout:=1;
     end when;
-    when time>boost_panel1_cont_pwm1_tnext then 
+    when time>boost_panel1_cont_pwm1_tnext then
       boost_panel1_cont_pwm1_vout:=0;
     end when;
-    when time>pre(d22) then 
+    when time>pre(d22) then
       d22:=time+batteryAndBockBoost_bookBoostPWMcontrol1_T;
       batteryAndBockBoost_bookBoostPWMcontrol1_DC:=0.5+batteryAndBockBoost_bookBoostPWMcontrol1_Kp*batteryAndBockBoost_bookBoostPWMcontrol1_Err+batteryAndBockBoost_bookBoostPWMcontrol1_Ki*batteryAndBockBoost_bookBoostPWMcontrol1_intErr;
-      if batteryAndBockBoost_bookBoostPWMcontrol1_DC>0.98 then 
+      if batteryAndBockBoost_bookBoostPWMcontrol1_DC>0.98 then
         batteryAndBockBoost_bookBoostPWMcontrol1_DC:=0.98;
-      elseif batteryAndBockBoost_bookBoostPWMcontrol1_DC<0.1 then 
+      elseif batteryAndBockBoost_bookBoostPWMcontrol1_DC<0.1 then
         batteryAndBockBoost_bookBoostPWMcontrol1_DC:=0.1;
       end if;
       batteryAndBockBoost_bookBoostPWMcontrol1_tnext:=time+batteryAndBockBoost_bookBoostPWMcontrol1_T*batteryAndBockBoost_bookBoostPWMcontrol1_DC;
       batteryAndBockBoost_bookBoostPWMcontrol1_Output:=1;
     end when;
-    when time>batteryAndBockBoost_bookBoostPWMcontrol1_tnext then 
+    when time>batteryAndBockBoost_bookBoostPWMcontrol1_tnext then
       batteryAndBockBoost_bookBoostPWMcontrol1_Output:=0;
     end when;
-    when batteryAndBockBoost_voltageControl_IrefCont>batteryAndBockBoost_voltageControl_Imax then 
+    when batteryAndBockBoost_voltageControl_IrefCont>batteryAndBockBoost_voltageControl_Imax then
       batteryAndBockBoost_voltageControl_Sat:=0;
       batteryAndBockBoost_voltageControl_SatLevel:=batteryAndBockBoost_voltageControl_Imax;
     end when;
-    when batteryAndBockBoost_voltageControl_IrefCont<batteryAndBockBoost_voltageControl_Imax then 
+    when batteryAndBockBoost_voltageControl_IrefCont<batteryAndBockBoost_voltageControl_Imax then
       batteryAndBockBoost_voltageControl_Sat:=1;
       batteryAndBockBoost_voltageControl_SatLevel:=0;
     end when;
-    when batteryAndBockBoost_voltageControl_IrefCont<((-batteryAndBockBoost_voltageControl_Imax)) then 
+    when batteryAndBockBoost_voltageControl_IrefCont<((-batteryAndBockBoost_voltageControl_Imax)) then
       batteryAndBockBoost_voltageControl_Sat:=0;
       batteryAndBockBoost_voltageControl_SatLevel:=((-batteryAndBockBoost_voltageControl_Imax));
     end when;
-    when batteryAndBockBoost_voltageControl_IrefCont>((-batteryAndBockBoost_voltageControl_Imax)) then 
+    when batteryAndBockBoost_voltageControl_IrefCont>((-batteryAndBockBoost_voltageControl_Imax)) then
       batteryAndBockBoost_voltageControl_Sat:=1;
       batteryAndBockBoost_voltageControl_SatLevel:=0;
     end when;
-    when time>pre(d23) then 
+    when time>pre(d23) then
       d23:=time+boost_panel2_mmt1_Ts;
       boost_panel2_mmt1_potprev:=boost_panel2_mmt1_potact;
       boost_panel2_mmt1_potact:=boost_panel2_mmt1_potActFiltrada;
@@ -655,272 +652,272 @@ algorithm
       boost_panel2_mmt1_actu:=boost_panel2_capacitor1_v;
       boost_panel2_mmt1_deltau:=boost_panel2_mmt1_actu-boost_panel2_mmt1_prevu;
       boost_panel2_mmt1_deltap:=boost_panel2_mmt1_potact-boost_panel2_mmt1_potprev;
-      if abs(boost_panel2_mmt1_deltau)>0.1*boost_panel2_mmt1_deltaVpvRefPanel then 
-        if abs(boost_panel2_mmt1_deltap)>0.2 then 
-          if boost_panel2_mmt1_deltap/boost_panel2_mmt1_deltau>0 then 
+      if abs(boost_panel2_mmt1_deltau)>0.1*boost_panel2_mmt1_deltaVpvRefPanel then
+        if abs(boost_panel2_mmt1_deltap)>0.2 then
+          if boost_panel2_mmt1_deltap/boost_panel2_mmt1_deltau>0 then
             boost_panel2_mmt1_vref:=boost_panel2_mmt1_vref+boost_panel2_mmt1_deltaVpvRefPanel;
           end if;
-          if boost_panel2_mmt1_deltap/boost_panel2_mmt1_deltau<0 then 
+          if boost_panel2_mmt1_deltap/boost_panel2_mmt1_deltau<0 then
             boost_panel2_mmt1_vref:=boost_panel2_mmt1_vref-boost_panel2_mmt1_deltaVpvRefPanel;
           end if;
         end if;
       end if;
     end when;
-    when time>pre(d24) then 
+    when time>pre(d24) then
       d24:=time+boost_panel2_cont_pwm1_T;
       boost_panel2_cont_pwm1_dc:=0.85-(boost_panel2_mmt1_y-boost_panel2_capacitor1_v)*0.1;
-      if boost_panel2_cont_pwm1_dc>0.98 then 
+      if boost_panel2_cont_pwm1_dc>0.98 then
         boost_panel2_cont_pwm1_dc:=0.98;
-      elseif boost_panel2_cont_pwm1_dc<0.3 then 
+      elseif boost_panel2_cont_pwm1_dc<0.3 then
         boost_panel2_cont_pwm1_dc:=0.3;
       end if;
       boost_panel2_cont_pwm1_tnext:=time+boost_panel2_cont_pwm1_T*boost_panel2_cont_pwm1_dc;
       boost_panel2_cont_pwm1_vout:=1;
     end when;
-    when time>boost_panel2_cont_pwm1_tnext then 
+    when time>boost_panel2_cont_pwm1_tnext then
       boost_panel2_cont_pwm1_vout:=0;
     end when;
-    when batteryAndBockBoost_u>algSuperv_SOCmax then 
+    when batteryAndBockBoost_u>algSuperv_SOCmax then
       algSuperv_EB:=1;
     end when;
-    when batteryAndBockBoost_u<algSuperv_SOCmax-(algSuperv_SOCmax-algSuperv_SOCmin)*algSuperv_histelect then 
+    when batteryAndBockBoost_u<algSuperv_SOCmax-(algSuperv_SOCmax-algSuperv_SOCmin)*algSuperv_histelect then
       algSuperv_EB:=0;
     end when;
-    when algSuperv_deltaP<algSuperv_PminElect then 
+    when algSuperv_deltaP<algSuperv_PminElect then
       algSuperv_satElect:=1;
     end when;
-    when algSuperv_deltaP>algSuperv_PminElect then 
+    when algSuperv_deltaP>algSuperv_PminElect then
       algSuperv_satElect:=0;
     end when;
-    when batteryAndBockBoost_u<algSuperv_SOCmin then 
+    when batteryAndBockBoost_u<algSuperv_SOCmin then
       algSuperv_FC:=1;
     end when;
-    when batteryAndBockBoost_u>algSuperv_SOCmin+(algSuperv_SOCmax-algSuperv_SOCmin)*algSuperv_histFC then 
+    when batteryAndBockBoost_u>algSuperv_SOCmin+(algSuperv_SOCmax-algSuperv_SOCmin)*algSuperv_histFC then
       algSuperv_FC:=0;
     end when;
-    when ((-algSuperv_deltaP))<algSuperv_PminFC then 
+    when ((-algSuperv_deltaP))<algSuperv_PminFC then
       algSuperv_satFC:=1;
     end when;
-    when ((-algSuperv_deltaP))>algSuperv_PminFC then 
+    when ((-algSuperv_deltaP))>algSuperv_PminFC then
       algSuperv_satFC:=0;
     end when;
-    when time>1150+1.2*0 then 
+    when time>1150+1.2*0 then
       variableR1_R:=10;
     end when;
-    when time>1450+1.5*0 then 
+    when time>1450+1.5*0 then
       variableR1_R:=5;
     end when;
-    when time>2500+2.5*0 then 
+    when time>2500+2.5*0 then
       variableR1_R:=1005;
     end when;
-    when boost_panel1_boost1_idealDiode_s<0 then 
+    when boost_panel1_boost1_idealDiode_s<0 then
       d0:=1;
-    elsewhen boost_panel1_boost1_idealDiode_s>=0 then 
+    elsewhen boost_panel1_boost1_idealDiode_s>=0 then
       d0:=0;
     end when;
-    when boost_panel1_boost1_idealDiode_off>0.5 then 
+    when boost_panel1_boost1_idealDiode_off>0.5 then
       d1:=1;
-    elsewhen boost_panel1_boost1_idealDiode_off<0.5 then 
+    elsewhen boost_panel1_boost1_idealDiode_off<0.5 then
       d1:=0;
     end when;
-    when boost_panel1_boost1_idealDiode_off>0.5 then 
+    when boost_panel1_boost1_idealDiode_off>0.5 then
       d2:=1;
-    elsewhen boost_panel1_boost1_idealDiode_off<0.5 then 
+    elsewhen boost_panel1_boost1_idealDiode_off<0.5 then
       d2:=0;
     end when;
-    when boost_panel1_cont_pwm1_vgate>boost_panel1_boost1_controlledIdealClosingSwitch_level then 
+    when boost_panel1_cont_pwm1_vgate>boost_panel1_boost1_controlledIdealClosingSwitch_level then
       d3:=1;
-    elsewhen boost_panel1_cont_pwm1_vgate<=boost_panel1_boost1_controlledIdealClosingSwitch_level then 
+    elsewhen boost_panel1_cont_pwm1_vgate<=boost_panel1_boost1_controlledIdealClosingSwitch_level then
       d3:=0;
     end when;
-    when boost_panel1_cont_pwm1_vgate>boost_panel1_boost1_controlledIdealClosingSwitch_level then 
+    when boost_panel1_cont_pwm1_vgate>boost_panel1_boost1_controlledIdealClosingSwitch_level then
       d4:=1;
-    elsewhen boost_panel1_cont_pwm1_vgate<=boost_panel1_boost1_controlledIdealClosingSwitch_level then 
+    elsewhen boost_panel1_cont_pwm1_vgate<=boost_panel1_boost1_controlledIdealClosingSwitch_level then
       d4:=0;
     end when;
-    when batteryAndBockBoost_bookBoostDB_idealDiode_s<0 then 
+    when batteryAndBockBoost_bookBoostDB_idealDiode_s<0 then
       d5:=1;
-    elsewhen batteryAndBockBoost_bookBoostDB_idealDiode_s>=0 then 
+    elsewhen batteryAndBockBoost_bookBoostDB_idealDiode_s>=0 then
       d5:=0;
     end when;
-    when batteryAndBockBoost_bookBoostDB_idealDiode_off>0.5 then 
+    when batteryAndBockBoost_bookBoostDB_idealDiode_off>0.5 then
       d6:=1;
-    elsewhen batteryAndBockBoost_bookBoostDB_idealDiode_off<0.5 then 
+    elsewhen batteryAndBockBoost_bookBoostDB_idealDiode_off<0.5 then
       d6:=0;
     end when;
-    when batteryAndBockBoost_bookBoostDB_idealDiode_off>0.5 then 
+    when batteryAndBockBoost_bookBoostDB_idealDiode_off>0.5 then
       d7:=1;
-    elsewhen batteryAndBockBoost_bookBoostDB_idealDiode_off<0.5 then 
+    elsewhen batteryAndBockBoost_bookBoostDB_idealDiode_off<0.5 then
       d7:=0;
     end when;
-    when batteryAndBockBoost_bookBoostDB_idealDiode1_s<0 then 
+    when batteryAndBockBoost_bookBoostDB_idealDiode1_s<0 then
       d8:=1;
-    elsewhen batteryAndBockBoost_bookBoostDB_idealDiode1_s>=0 then 
+    elsewhen batteryAndBockBoost_bookBoostDB_idealDiode1_s>=0 then
       d8:=0;
     end when;
-    when batteryAndBockBoost_bookBoostDB_idealDiode1_off>0.5 then 
+    when batteryAndBockBoost_bookBoostDB_idealDiode1_off>0.5 then
       d9:=1;
-    elsewhen batteryAndBockBoost_bookBoostDB_idealDiode1_off<0.5 then 
+    elsewhen batteryAndBockBoost_bookBoostDB_idealDiode1_off<0.5 then
       d9:=0;
     end when;
-    when batteryAndBockBoost_bookBoostDB_idealDiode1_off>0.5 then 
+    when batteryAndBockBoost_bookBoostDB_idealDiode1_off>0.5 then
       d10:=1;
-    elsewhen batteryAndBockBoost_bookBoostDB_idealDiode1_off<0.5 then 
+    elsewhen batteryAndBockBoost_bookBoostDB_idealDiode1_off<0.5 then
       d10:=0;
     end when;
-    when batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_control>0.5 then 
+    when batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_control>0.5 then
       d11:=1;
-    elsewhen batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_control<0.5 then 
+    elsewhen batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_control<0.5 then
       d11:=0;
     end when;
-    when batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_control>0.5 then 
+    when batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_control>0.5 then
       d12:=1;
-    elsewhen batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_control<0.5 then 
+    elsewhen batteryAndBockBoost_bookBoostDB_idealClosingSwitch1_control<0.5 then
       d12:=0;
     end when;
-    when batteryAndBockBoost_bookBoostDB_Sw2>0.5 then 
+    when batteryAndBockBoost_bookBoostDB_Sw2>0.5 then
       d13:=1;
-    elsewhen batteryAndBockBoost_bookBoostDB_Sw2<0.5 then 
+    elsewhen batteryAndBockBoost_bookBoostDB_Sw2<0.5 then
       d13:=0;
     end when;
-    when batteryAndBockBoost_bookBoostDB_Sw2>0.5 then 
+    when batteryAndBockBoost_bookBoostDB_Sw2>0.5 then
       d14:=1;
-    elsewhen batteryAndBockBoost_bookBoostDB_Sw2<0.5 then 
+    elsewhen batteryAndBockBoost_bookBoostDB_Sw2<0.5 then
       d14:=0;
     end when;
-    when boost_panel2_boost1_idealDiode_s<0 then 
+    when boost_panel2_boost1_idealDiode_s<0 then
       d15:=1;
-    elsewhen boost_panel2_boost1_idealDiode_s>=0 then 
+    elsewhen boost_panel2_boost1_idealDiode_s>=0 then
       d15:=0;
     end when;
-    when boost_panel2_boost1_idealDiode_off>0.5 then 
+    when boost_panel2_boost1_idealDiode_off>0.5 then
       d16:=1;
-    elsewhen boost_panel2_boost1_idealDiode_off<0.5 then 
+    elsewhen boost_panel2_boost1_idealDiode_off<0.5 then
       d16:=0;
     end when;
-    when boost_panel2_boost1_idealDiode_off>0.5 then 
+    when boost_panel2_boost1_idealDiode_off>0.5 then
       d17:=1;
-    elsewhen boost_panel2_boost1_idealDiode_off<0.5 then 
+    elsewhen boost_panel2_boost1_idealDiode_off<0.5 then
       d17:=0;
     end when;
-    when boost_panel2_cont_pwm1_vgate>boost_panel2_boost1_controlledIdealClosingSwitch_level then 
+    when boost_panel2_cont_pwm1_vgate>boost_panel2_boost1_controlledIdealClosingSwitch_level then
       d18:=1;
-    elsewhen boost_panel2_cont_pwm1_vgate<=boost_panel2_boost1_controlledIdealClosingSwitch_level then 
+    elsewhen boost_panel2_cont_pwm1_vgate<=boost_panel2_boost1_controlledIdealClosingSwitch_level then
       d18:=0;
     end when;
-    when boost_panel2_cont_pwm1_vgate>boost_panel2_boost1_controlledIdealClosingSwitch_level then 
+    when boost_panel2_cont_pwm1_vgate>boost_panel2_boost1_controlledIdealClosingSwitch_level then
       d19:=1;
-    elsewhen boost_panel2_cont_pwm1_vgate<=boost_panel2_boost1_controlledIdealClosingSwitch_level then 
+    elsewhen boost_panel2_cont_pwm1_vgate<=boost_panel2_boost1_controlledIdealClosingSwitch_level then
       d19:=0;
     end when;
 
-//Muestreo de variables
-    when time>pre(lastTsOut) then 
+    //Muestreo de variables
+    when time>pre(lastTsOut) then
       lastTsOut:=time+TsOut;
-	Vc2:=capacitor2_v;
-	Ibatery:=batteryAndBockBoost_voltageControl_IrefCont;
-	Pgen:=algSuperv_Pgenfilt;
-	Pcons:=PCons_Sensor_product_y;
-	PFcel:=algSuperv_Pref_FC;
-	Pelectro:=fCellAndElectro_electComp_electrolizadorAnda1_u;
-	SOC:=batteryAndBockBoost_u;
-	ptanque:=fCellAndElectro_tanque_p_tanque;
+      Vc2:=capacitor2_v;
+      Ibatery:=batteryAndBockBoost_voltageControl_IrefCont;
+      Pgen:=algSuperv_Pgenfilt;
+      Pcons:=PCons_Sensor_product_y;
+      PFcel:=algSuperv_Pref_FC;
+      Pelectro:=fCellAndElectro_electComp_electrolizadorAnda1_u;
+      SOC:=batteryAndBockBoost_u;
+      ptanque:=fCellAndElectro_tanque_p_tanque;
     end when;
 
 
-	when time>0.25 then
-		Tsubsamp:=1e10;
-		lastsubsamp:=time+Tsubsamp;
-	end when;
-
-
-	when time>983.4 then
-		Tsubsamp:=1e-3;
-		lastsubsamp:=time+Tsubsamp;
-	end when;
-	when time>984.2 then
-		Tsubsamp:=1e10;
-		lastsubsamp:=time+Tsubsamp;
-	end when;
-
-	when time>1149.8 then
-		Tsubsamp:=1e-3;
-		lastsubsamp:=time+Tsubsamp;
-	end when;
-	when time>1150.25 then
-		Tsubsamp:=1e10;
-		lastsubsamp:=time+Tsubsamp;
-	end when;
-
-	when time>1340.4 then
-		Tsubsamp:=1e-3;
-		lastsubsamp:=time+Tsubsamp;
-	end when;
-	when time>1341.3 then
-		Tsubsamp:=1e10;
-		lastsubsamp:=time+Tsubsamp;
-	end when;
-
-	when time>1449.85 then
-		Tsubsamp:=1e-3;
-		lastsubsamp:=time+Tsubsamp;
-	end when;
-	when time>1450.4 then
-		Tsubsamp:=1e10;
-		lastsubsamp:=time+Tsubsamp;
-	end when;
-
-	when time>2333.3 then
-		Tsubsamp:=1e-3;
-		lastsubsamp:=time+Tsubsamp;
-	end when;
-	when time>2334 then
-		Tsubsamp:=1e10;
-		lastsubsamp:=time+Tsubsamp;
-	end when;
-
-	when time>2499.9 then
-		Tsubsamp:=1e-3;
-		lastsubsamp:=time+Tsubsamp;
-	end when;
-	when time>2500.25 then
-		Tsubsamp:=1e10;
-		lastsubsamp:=time+Tsubsamp;
-	end when;
-
-	when time>2569.1 then
-		Tsubsamp:=1e-3;
-		lastsubsamp:=time+Tsubsamp;
-	end when;
-	when time>2569.6 then
-		Tsubsamp:=1e10;
-		lastsubsamp:=time+Tsubsamp;
-	end when;
-
-//Out: SOC,algSuperv_EB,algSuperv_FC,Vc2,Ibatery,Pgen,Pcons,PFcel,Pelectro,ptanque
-
-    when time>pre(lastsubsamp) then 
+    when time>0.25 then
+      Tsubsamp:=1e10;
       lastsubsamp:=time+Tsubsamp;
-	Vc2:=capacitor2_v;
-	Ibatery:=batteryAndBockBoost_voltageControl_IrefCont;
-	Pgen:=algSuperv_Pgenfilt;
-	Pcons:=PCons_Sensor_product_y;
-	PFcel:=algSuperv_Pref_FC;
-	Pelectro:=fCellAndElectro_electComp_electrolizadorAnda1_u;
-	SOC:=batteryAndBockBoost_u;
-	ptanque:=fCellAndElectro_tanque_p_tanque;
     end when;
-	annotation(
 
-	experiment(
-		MMO_Description="",
-		MMO_Solver=LIQSS2,
-		MMO_Period={2},
-		MMO_Output={SOC},
-		MMO_OutputType=CI_Sampled,
-		StartTime=0.0,
-		StopTime=3000,
-		Tolerance={1e-5},
-		AbsTolerance={1e-5}
-	));
+
+    when time>983.4 then
+      Tsubsamp:=1e-3;
+      lastsubsamp:=time+Tsubsamp;
+    end when;
+    when time>984.2 then
+      Tsubsamp:=1e10;
+      lastsubsamp:=time+Tsubsamp;
+    end when;
+
+    when time>1149.8 then
+      Tsubsamp:=1e-3;
+      lastsubsamp:=time+Tsubsamp;
+    end when;
+    when time>1150.25 then
+      Tsubsamp:=1e10;
+      lastsubsamp:=time+Tsubsamp;
+    end when;
+
+    when time>1340.4 then
+      Tsubsamp:=1e-3;
+      lastsubsamp:=time+Tsubsamp;
+    end when;
+    when time>1341.3 then
+      Tsubsamp:=1e10;
+      lastsubsamp:=time+Tsubsamp;
+    end when;
+
+    when time>1449.85 then
+      Tsubsamp:=1e-3;
+      lastsubsamp:=time+Tsubsamp;
+    end when;
+    when time>1450.4 then
+      Tsubsamp:=1e10;
+      lastsubsamp:=time+Tsubsamp;
+    end when;
+
+    when time>2333.3 then
+      Tsubsamp:=1e-3;
+      lastsubsamp:=time+Tsubsamp;
+    end when;
+    when time>2334 then
+      Tsubsamp:=1e10;
+      lastsubsamp:=time+Tsubsamp;
+    end when;
+
+    when time>2499.9 then
+      Tsubsamp:=1e-3;
+      lastsubsamp:=time+Tsubsamp;
+    end when;
+    when time>2500.25 then
+      Tsubsamp:=1e10;
+      lastsubsamp:=time+Tsubsamp;
+    end when;
+
+    when time>2569.1 then
+      Tsubsamp:=1e-3;
+      lastsubsamp:=time+Tsubsamp;
+    end when;
+    when time>2569.6 then
+      Tsubsamp:=1e10;
+      lastsubsamp:=time+Tsubsamp;
+    end when;
+
+    //Out: SOC,algSuperv_EB,algSuperv_FC,Vc2,Ibatery,Pgen,Pcons,PFcel,Pelectro,ptanque
+
+    when time>pre(lastsubsamp) then
+      lastsubsamp:=time+Tsubsamp;
+      Vc2:=capacitor2_v;
+      Ibatery:=batteryAndBockBoost_voltageControl_IrefCont;
+      Pgen:=algSuperv_Pgenfilt;
+      Pcons:=PCons_Sensor_product_y;
+      PFcel:=algSuperv_Pref_FC;
+      Pelectro:=fCellAndElectro_electComp_electrolizadorAnda1_u;
+      SOC:=batteryAndBockBoost_u;
+      ptanque:=fCellAndElectro_tanque_p_tanque;
+    end when;
+  annotation(
+
+  experiment(
+    MMO_Description="",
+    MMO_Solver=LIQSS2,
+    MMO_Period={2},
+    MMO_Output={SOC},
+    MMO_OutputType=CI_Sampled,
+    StartTime=0.0,
+    StopTime=3000,
+    Tolerance={1e-5},
+    AbsTolerance={1e-5}
+  ));
 end hres_stiff;
