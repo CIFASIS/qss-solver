@@ -1,16 +1,16 @@
-#Target OS variables
+# Target OS variables
 OS ?= unix
 DEBUG ?= False
 
-#Compiler and Linker
+# Compiler and Linker
 CXX         := g++
 BISON 		:= bison++
 FLEX 		:= flex++
 
-#The Target Binary Program
+# The Target Binary Program
 TARGET      := ../../bin/mmoc
 
-#The Directories, Source, Includes, Objects, Binary 
+# The Directories, Source, Includes, Objects, Binary 
 SRCDIR      := .
 ASTDIR 		:= $(SRCDIR)/ast
 GENERATORDIR:= $(SRCDIR)/generator
@@ -25,7 +25,12 @@ SRCEXT      := cpp
 DEPEXT      := d
 OBJEXT      := o
 
-#Flags, Libraries and Includes
+
+# Repositories location.
+
+modelica-compiler-repo 	:= ./mocc 
+
+# Flags, Libraries and Includes
 LIB 		:= -L./usr/lib/ -lginac -lcln -lgmp -L./mmoc/lib/ -lmodelica -lmmostruct
 ifeq ($(OS),win32)
 LIB 		:= -L/local/lib -lginac -lcln -lgmp
@@ -96,7 +101,7 @@ $(BUILDDIR)/util_%.o : $(UTILDIR)/%.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
 
-mocc:
+$(modelica-compiler-repo):
 	@echo Cloning Modelica C Compiler
 	$(shell git clone -b analize_struct https://joafernandez@git.code.sf.net/p/modelicacc/master mocc) 
 	@cd mocc && autoconf 
@@ -104,7 +109,7 @@ mocc:
 	@cd mocc && $(MAKE)
 	@echo Done
 	
-mmoc: mocc $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(GRAPHOBJ) 
+mmoc: $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(GRAPHOBJ) | $(modelica-compiler-repo)
 	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(GRAPHOBJ) $(LIB) 
 
 ifneq ($(OS),win32)
@@ -143,7 +148,7 @@ else
 endif
 
 help:
-	@echo "make DEBUG=<True|False> OS=<unix|win32|mac>"
+	@echo "make DEBUG=<True|False> OS=<unix|win32|osx>"
 	@echo "Default values:"
 	@echo ""
 	@echo "DEBUG=False"
