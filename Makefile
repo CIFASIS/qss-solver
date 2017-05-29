@@ -19,8 +19,6 @@ PARSERDIR 	:= $(SRCDIR)/parser
 UTILDIR 	:= $(SRCDIR)/util
 OBJDIR      := obj
 BUILDDIR    := $(SRCDIR)/$(OBJDIR)
-COMMONDIR   := ../
-GRAPHDIR    := $(COMMONDIR)/graph
 SRCEXT      := cpp
 DEPEXT      := d
 OBJEXT      := o
@@ -54,9 +52,7 @@ IRSRC = $(IRDIR)/mmo_model_checker.cpp  $(IRDIR)/mmo_util.cpp  $(IRDIR)/expressi
 
 PARSERSRC = $(PARSERDIR)/mocc_parser.cpp $(PARSERDIR)/mocc_scanner.cpp $(PARSERDIR)/parse.cpp 
 
-UTILSRC = $(UTILDIR)/util.cpp $(UTILDIR)/ast_util.cpp $(UTILDIR)/type.cpp $(UTILDIR)/symbol_table.cpp $(UTILDIR)/error.cpp $(UTILDIR)/debug.cpp $(UTILDIR)/compile_flags.cpp $(UTILDIR)/derivative.cpp $(UTILDIR)/ginac_interface.cpp $(UTILDIR)/index.cpp $(UTILDIR)/dependencies.cpp  $(UTILDIR)/graph.cpp 
-
-GRAPHSRC = $(GRAPHDIR)/graph_profile.c
+UTILSRC = $(UTILDIR)/util.cpp $(UTILDIR)/ast_util.cpp $(UTILDIR)/type.cpp $(UTILDIR)/symbol_table.cpp $(UTILDIR)/error.cpp $(UTILDIR)/debug.cpp $(UTILDIR)/compile_flags.cpp $(UTILDIR)/derivative.cpp $(UTILDIR)/ginac_interface.cpp $(UTILDIR)/index.cpp $(UTILDIR)/dependencies.cpp  $(UTILDIR)/graph.cpp $(UTILDIR)/graph_profile.cpp 
 
 # Objects
 ASTOBJ=$(addprefix $(BUILDDIR)/ast_, $(notdir $(ASTSRC:.cpp=.o)))
@@ -109,8 +105,8 @@ $(modelica-compiler-repo):
 	@cd mocc && $(MAKE)
 	@echo Done
 	
-mmoc: $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(GRAPHOBJ) | $(modelica-compiler-repo)
-	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(GRAPHOBJ) $(LIB) 
+mmoc: $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) | $(modelica-compiler-repo)
+	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(LIB) 
 
 ifneq ($(OS),win32)
 $(PARSERDIR)/mocc_parser.cpp: parser/mocc.y
