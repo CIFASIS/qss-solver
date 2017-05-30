@@ -43,7 +43,7 @@ GRP_nodeWeight (GRP_graphProfile g, GRP_EdgeType type)
 GRP_graphProfile
 GRP_GraphProfile ()
 {
-  GRP_graphProfile p = malloc (sizeof(*p));
+  GRP_graphProfile p = (GRP_graphProfile) malloc (sizeof(*p));
   p->ops = GRP_GraphProfileOps ();
   p->state = GRP_GraphProfileState ();
   return (p);
@@ -60,7 +60,7 @@ GRP_freeGraphProfile (GRP_graphProfile g)
 GRP_graphProfileOps
 GRP_GraphProfileOps ()
 {
-  GRP_graphProfileOps p = malloc (sizeof(*p));
+  GRP_graphProfileOps p = (GRP_graphProfileOps) malloc (sizeof(*p));
   p->weight = GRP_nodeWeight;
   return (p);
 }
@@ -74,7 +74,7 @@ GRP_freeGraphProfileOps (GRP_graphProfileOps ops)
 GRP_graphProfileState
 GRP_GraphProfileState ()
 {
-  GRP_graphProfileState p = malloc (sizeof(*p));
+  GRP_graphProfileState p = (GRP_graphProfileState) malloc (sizeof(*p));
   p->states = 0;
   p->events = 0;
   p->contEdgeWeight = 10;
