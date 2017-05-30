@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "../../src/engine/common/random.h"
+#include "../../engine/common/random.h"
 #include "mmo_math.h"
 
 static unsigned long *marked = NULL;
