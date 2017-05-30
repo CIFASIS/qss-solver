@@ -11,6 +11,9 @@ FLEX 		:= flex++
 TARGET      := ../../bin/mmoc
 
 # The Directories, Source, Includes, Objects, Binary 
+ROOTDIR     := ..
+3RDPARTYDIR := $(ROOTDIR)/3rd-party
+LIBDIR      := ../../lib
 SRCDIR      := .
 ASTDIR 		:= $(SRCDIR)/ast
 GENERATORDIR:= $(SRCDIR)/generator
@@ -24,12 +27,12 @@ DEPEXT      := d
 OBJEXT      := o
 
 
-# Repositories location.
+# Deterministic Ginac Library. 
 
-modelica-compiler-repo 	:= ./mocc 
+libginac 	:= ../usr/lib/libginac.a 
 
 # Flags, Libraries and Includes
-LIB 		:= -L./usr/lib/ -lginac -lcln -lgmp -L./mmoc/lib/ -lmodelica -lmmostruct
+LIB 		:= -L../usr/lib/ -lginac -lcln -lgmp 
 ifeq ($(OS),win32)
 LIB 		:= -L/local/lib -lginac -lcln -lgmp
 endif
@@ -37,7 +40,7 @@ CXXFLAGS 	:= -Wno-write-strings -Wall -std=c++11
 ifeq ($(DEBUG),True)
 CXXFLAGS 	+= -DYY_MCC_Parser_DEBUG -g  
 endif
-INC         := -I$(SRCDIR) -I./usr/include
+INC         := -I$(SRCDIR) -I../usr/include
 ifeq ($(OS),win32)
 INC 		+= -I/local/include -I/GnuWin32/include
 endif
@@ -70,12 +73,14 @@ GRAPHOBJ=$(addprefix $(GRAPHDIR)/$(OBJDIR)/grp_, $(notdir $(GRAPHSRC:.c=.o)))
 # Make dependencies
 DEPS = $(ASTOBJ:.o=.d) $(GENERATOROBJ:.o=.d) $(IROBJ:.o=.d) $(PARSEROBJ:.o=.d) $(UTILOBJ:.o=.d)
 
-all: mmoc 
+default: mmoc 
 
-usr/lib/libginac.a:
+$(libginac):
 	echo "Building deterministic GiNaC" 
-	cd 3rdParty ; tar xvjf ginac-1.7.0.tar.bz2
-	cd 3rdParty/ginac-1.7.0; ./configure --prefix=`pwd`/../../usr --disable-shared; make -j 4 install
+	cd $(3RDPARTYDIR)/ginac; tar xvjf ginac-1.7.0.tar.bz2
+	cd $(3RDPARTYDIR)/ginac/ginac-1.7.0; ./configure --prefix=`pwd`/../../../usr --disable-shared; make -j 4 install
+	cp ../usr/lib/*.a $(LIBDIR)
+	rm -rf $(3RDPARTYDIR)/ginac/ginac-1.7.0
   
 $(BUILDDIR)/ast_%.o : $(ASTDIR)/%.cpp $(ASTDIR)/%.h $(PARSERDIR)/mocc_parser.cpp $(PARSERDIR)/mocc_scanner.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
@@ -97,15 +102,7 @@ $(BUILDDIR)/util_%.o : $(UTILDIR)/%.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
 
-$(modelica-compiler-repo):
-	@echo Cloning Modelica C Compiler
-	$(shell git clone -b analize_struct https://joafernandez@git.code.sf.net/p/modelicacc/master mocc) 
-	@cd mocc && autoconf 
-	@cd mocc && ./configure
-	@cd mocc && $(MAKE)
-	@echo Done
-	
-mmoc: $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) | $(modelica-compiler-repo)
+mmoc: $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) | $(libginac)
 	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(LIB) 
 
 ifneq ($(OS),win32)
