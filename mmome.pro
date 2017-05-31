@@ -45,8 +45,8 @@ FORMS +=	$$UI_DIR/mmomegui.ui \
 
 RESOURCES += mmome.qrc
 
-OBJECTS_DIR = obj
-MOC_DIR = moc
-unix: TARGET= ../../bin/qss-solver
-mac: TARGET= ../../bin/qss-solver
-win32: TARGET= ../../../bin/qss-solver
+OBJECTS_DIR = usr/obj
+MOC_DIR = usr/moc
+unix: TARGET= usr/bin/qss-solver
+mac: TARGET= usr/bin/qss-solver
+win32: TARGET= usr/bin/qss-solver
