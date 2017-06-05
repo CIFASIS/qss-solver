@@ -129,6 +129,12 @@ $(BUILDDIR):
 	@mkdir -p $(LIBDIR)
 	@mkdir -p $(BUILDDIR)
 
+doc:
+	@mkdir -p $(USRDIR)/doc
+	@mkdir -p $(USRDIR)/doc/html
+	@mkdir -p $(USRDIR)/doc/latex
+	doxygen MMOCompiler.doxyfile
+
 -include $(DEPS)
 
 .PHONY: clean
