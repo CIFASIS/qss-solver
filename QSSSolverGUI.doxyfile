@@ -51,14 +51,14 @@ PROJECT_BRIEF =
 # and the maximum width should not exceed 200 pixels. Doxygen will copy the logo
 # to the output directory.
 
-PROJECT_LOGO = /home/joaquin/PHD/qss-solver/src/gui/images/integrator.svg
+PROJECT_LOGO = 
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
 # entered, it will be relative to the location where doxygen was started. If
 # left blank the current directory will be used.
 
-OUTPUT_DIRECTORY = /home/joaquin/PHD/qss-solver/doc/gui
+OUTPUT_DIRECTORY = ./usr/doc
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create 4096 sub-
 # directories (in 2 levels) under the output directory of each output format and
