@@ -15,6 +15,7 @@ DASSLDIR 	:= $(SRCDIR)/classic/dassl
 DOPRIDIR 	:= $(SRCDIR)/classic/dopri5
 COMMONDIR 	:= $(SRCDIR)/common
 USRDIR 		:= $(SRCDIR)/usr
+3RDPARTYDIR	:= $(SRCDIR)/3rd-party
 BUILDDIR    := $(USRDIR)/obj/release
 ifeq ($(DEBUG),True)
 BUILDDIR    := $(USRDIR)/obj/debug
@@ -81,14 +82,14 @@ DEPS = $(COMMONOBJ:.o=.d) $(SEQOBJ:.o=.d) $(PAROBJ:.o=.d) $(CLASSICOBJ:.o=.d)
 default: $(LIBCVODE) $(LIBIDA) $(LIBQSS) $(LIBTIMESTEP) 
 
 $(LIBCVODE):
-	tar xvzf $(SRCDIR)/3rd-party/cvode-2.9.0.tar.gz
+	tar xvzf $(3RDPARTYDIR)y/cvode-2.9.0.tar.gz
 	mkdir -p ./cvode-2.9.0/build
 	cd ./cvode-2.9.0/build; cmake .. -DLAPACK_ENABLE=ON -DCMAKE_BUILD_TYPE=Release  -DKLU_ENABLE=ON -DKLU_INCLUDE_DIR=/usr/include/suitesparse -DKLU_LIBRARY_DIR=/usr/lib/x86_64-linux-gnu/  -DCMAKE_INSTALL_PREFIX=/usr
 	make -C ./cvode-2.9.0/build install DESTDIR=`pwd`
 	rm -rf ./cvode-2.9.0
 
 $(LIBIDA):
-	tar xvzf $(SRCDIR)/3rd-party/ida-2.9.0.tar.gz
+	tar xvzf $(3RDPARTYDIR)/ida-2.9.0.tar.gz
 	mkdir -p ./ida-2.9.0/build
 	cd ./ida-2.9.0/build; cmake .. -DLAPACK_ENABLE=ON -DCMAKE_BUILD_TYPE=Release  -DKLU_ENABLE=ON -DKLU_INCLUDE_DIR=/usr/include/suitesparse -DKLU_LIBRARY_DIR=/usr/lib/x86_64-linux-gnu/ -DCMAKE_INSTALL_PREFIX=/usr
 	make -C ./ida-2.9.0/build install DESTDIR=`pwd`
