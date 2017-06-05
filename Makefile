@@ -7,32 +7,29 @@ CXX         := g++
 BISON 		:= bison++
 FLEX 		:= flex++
 
-# The Target Binary Program
-TARGET      := ../../bin/mmoc
 
 # The Directories, Source, Includes, Objects, Binary 
-ROOTDIR     := ..
-3RDPARTYDIR := $(ROOTDIR)/3rd-party
-LIBDIR      := ../../lib
 SRCDIR      := .
 ASTDIR 		:= $(SRCDIR)/ast
 GENERATORDIR:= $(SRCDIR)/generator
 IRDIR 		:= $(SRCDIR)/ir
 PARSERDIR 	:= $(SRCDIR)/parser
 UTILDIR 	:= $(SRCDIR)/util
-OBJDIR      := obj
-BUILDDIR    := $(SRCDIR)/$(OBJDIR)
+3RDPARTYDIR := $(SRCDIR)/3rd-party
+USRDIR 		:= $(SRCDIR)/usr
+BUILDDIR    := $(USRDIR)/obj
+LIBDIR      := $(USRDIR)/lib
+BINDIR      := $(USRDIR)/bin
+INCDIR      := $(USRDIR)/include
 SRCEXT      := cpp
 DEPEXT      := d
 OBJEXT      := o
 
-
-# Deterministic Ginac Library. 
-
-libginac 	:= ../usr/lib/libginac.a 
+# The Target Binary Program
+TARGET      := $(BINDIR)/mmoc
 
 # Flags, Libraries and Includes
-LIB 		:= -L../usr/lib/ -lginac -lcln -lgmp 
+LIB 		:= -L$(LIBDIR) -lginac -lcln -lgmp 
 ifeq ($(OS),win32)
 LIB 		:= -L/local/lib -lginac -lcln -lgmp
 endif
@@ -40,7 +37,7 @@ CXXFLAGS 	:= -Wno-write-strings -Wall -std=c++11
 ifeq ($(DEBUG),True)
 CXXFLAGS 	+= -DYY_MCC_Parser_DEBUG -g  
 endif
-INC         := -I$(SRCDIR) -I../usr/include
+INC         := -I$(SRCDIR) -I$(INCDIR)
 ifeq ($(OS),win32)
 INC 		+= -I/local/include -I/GnuWin32/include
 endif
@@ -75,11 +72,14 @@ DEPS = $(ASTOBJ:.o=.d) $(GENERATOROBJ:.o=.d) $(IROBJ:.o=.d) $(PARSEROBJ:.o=.d) $
 
 default: mmoc 
 
+# Deterministic Ginac Library. 
+
+libginac 	:= $(LIBDIR)/libginac.a 
+
 $(libginac):
 	echo "Building deterministic GiNaC" 
 	cd $(3RDPARTYDIR)/ginac; tar xvjf ginac-1.7.0.tar.bz2
 	cd $(3RDPARTYDIR)/ginac/ginac-1.7.0; ./configure --prefix=`pwd`/../../../usr --disable-shared; make -j 4 install
-	cp ../usr/lib/*.a $(LIBDIR)
 	rm -rf $(3RDPARTYDIR)/ginac/ginac-1.7.0
   
 $(BUILDDIR)/ast_%.o : $(ASTDIR)/%.cpp $(ASTDIR)/%.h $(PARSERDIR)/mocc_parser.cpp $(PARSERDIR)/mocc_scanner.cpp
@@ -102,7 +102,7 @@ $(BUILDDIR)/util_%.o : $(UTILDIR)/%.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
 
-mmoc: $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) | $(libginac)
+mmoc: | $(libginac) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) 
 	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(LIB) 
 
 ifneq ($(OS),win32)
@@ -123,10 +123,10 @@ $(PARSEROBJ): | $(BUILDDIR)
 
 $(UTILOBJ): | $(BUILDDIR)
 
-$(GRAPHOBJ): 
-	@cd $(GRAPHDIR) && $(MAKE) 
-
 $(BUILDDIR):
+	@mkdir -p $(BINDIR)
+	@mkdir -p $(INCDIR)
+	@mkdir -p $(LIBDIR)
 	@mkdir -p $(BUILDDIR)
 
 -include $(DEPS)
@@ -137,7 +137,7 @@ clean:
 ifeq ($(OS),win32)
 	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ)
 else
-	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h -rf usr
+	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h usr
 endif
 
 help:
