@@ -1,51 +1,52 @@
-#Target OS variables
+# Target OS variables
 OS ?= unix
 DEBUG ?= False
 
-#Compiler and Linker
+# Compiler and Linker
 CC          := gcc
 FC 			:= gfortran 
 
-#The Directories, Source, Includes, Objects, Binary 
-ROOTDIR      := ../..
-SRCDIR      := ..
-ENGINEDIR 	:= .
-QSSDIR 		:= $(ENGINEDIR)/qss
+# The Directories, Source, Includes, Objects, Binary 
+SRCDIR 		:= .
+QSSDIR 		:= $(SRCDIR)/qss
 METHODSDIR 	:= $(QSSDIR)
-CLASSICDIR 	:= $(ENGINEDIR)/classic
-DASSLDIR 	:= $(ENGINEDIR)/classic/dassl
-DOPRIDIR 	:= $(ENGINEDIR)/classic/dopri5
-COMMONDIR 	:= $(ENGINEDIR)/common
-OBJDIR      := obj
-BUILDDIR    := $(ENGINEDIR)/$(OBJDIR)/release
+CLASSICDIR 	:= $(SRCDIR)/classic
+DASSLDIR 	:= $(SRCDIR)/classic/dassl
+DOPRIDIR 	:= $(SRCDIR)/classic/dopri5
+COMMONDIR 	:= $(SRCDIR)/common
+USRDIR 		:= $(SRCDIR)/usr
+BUILDDIR    := $(USRDIR)/obj/release
 ifeq ($(DEBUG),True)
-BUILDDIR    := $(ENGINEDIR)/$(OBJDIR)/debug
+BUILDDIR    := $(USRDIR)/obj/debug
 endif
-TARGETDIR   := $(ROOTDIR)/libs
+LIBDIR   	:= $(USRDIR)/lib
+INCDIR   	:= $(USRDIR)/include
 SRCEXT      := c
 DEPEXT      := d
 OBJEXT      := o
 
-# Target Binary Program
-TARGET      := $(TARGETDIR)/libqss.a
-LIBTIMESTEP := $(TARGETDIR)/libtimestep.a
+# Libraries
+LIBQSS      := $(LIBDIR)/libqss.a
+LIBTIMESTEP := $(LIBDIR)/libtimestep.a
+LIBCVODE    := $(LIBDIR)/libsundials_cvode.a
+LIBIDA      := $(LIBDIR)/libsundials_ida.a
 ifeq ($(DEBUG),True)
-TARGET      := $(TARGETDIR)/libqssd.a
-LIBTIMESTEP := $(TARGETDIR)/libtimestepd.a
+LIBQSS      := $(LIBDIR)/libqssd.a
+LIBTIMESTEP := $(LIBDIR)/libtimestepd.a
 endif
 
-#Flags, Libraries and Includes
+# Flags, Libraries and Includes
 CFLAGS 		:= -Wall -msse2 -mfpmath=sse -O2 
 ifeq ($(DEBUG),True)
 CFLAGS 		:= -Wall -msse2 -mfpmath=sse -g -DDEBUG  
 endif
 LIB         := -lm 
-INC         := -I$(COMMONDIR) -I$(ENGINEDIR)
+INC         := -I$(COMMONDIR) -I$(SRCDIR) -I$(INCDIR)
 ifeq ($(OS),win32)
 INC         += -I/GnuWin32/include
 endif
 RMS 		:= rm -rf
-vpath %.c $(ENGINEDIR)
+vpath %.c $(SRCDIR)
 .SUFFIXES: .c
 
 # Source files.
@@ -77,7 +78,21 @@ DOPRIOBJ=$(addprefix $(BUILDDIR)/, $(notdir $(DOPRISRC:.c=.o)))
 # Make dependencies
 DEPS = $(COMMONOBJ:.o=.d) $(SEQOBJ:.o=.d) $(PAROBJ:.o=.d) $(CLASSICOBJ:.o=.d)
 
-default: $(TARGET) $(LIBTIMESTEP) 
+default: $(LIBCVODE) $(LIBIDA) $(LIBQSS) $(LIBTIMESTEP) 
+
+$(LIBCVODE):
+	tar xvzf $(SRCDIR)/3rd-party/cvode-2.9.0.tar.gz
+	mkdir -p ./cvode-2.9.0/build
+	cd ./cvode-2.9.0/build; cmake .. -DLAPACK_ENABLE=ON -DCMAKE_BUILD_TYPE=Release  -DKLU_ENABLE=ON -DKLU_INCLUDE_DIR=/usr/include/suitesparse -DKLU_LIBRARY_DIR=/usr/lib/x86_64-linux-gnu/  -DCMAKE_INSTALL_PREFIX=/usr
+	make -C ./cvode-2.9.0/build install DESTDIR=`pwd`
+	rm -rf ./cvode-2.9.0
+
+$(LIBIDA):
+	tar xvzf $(SRCDIR)/3rd-party/ida-2.9.0.tar.gz
+	mkdir -p ./ida-2.9.0/build
+	cd ./ida-2.9.0/build; cmake .. -DLAPACK_ENABLE=ON -DCMAKE_BUILD_TYPE=Release  -DKLU_ENABLE=ON -DKLU_INCLUDE_DIR=/usr/include/suitesparse -DKLU_LIBRARY_DIR=/usr/lib/x86_64-linux-gnu/ -DCMAKE_INSTALL_PREFIX=/usr
+	make -C ./ida-2.9.0/build install DESTDIR=`pwd`
+	rm -rf ./ida-2.9.0
 
 $(BUILDDIR)/%.o : $(COMMONDIR)/%.c
 	$(CC) $(INC) $(CFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
@@ -105,8 +120,7 @@ $(BUILDDIR)/%.o : $(DASSLDIR)/%.f
 $(LIBTIMESTEP): $(DASSLOBJ) $(DOPRIOBJ)
 	@ar rvs $(@) $(DASSLOBJ) $(DOPRIOBJ)
 
-$(TARGET): $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ) 
-	@mkdir -p $(TARGETDIR)
+$(LIBQSS): $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ) 
 	@ar rsc $@ $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ)
 
 $(COMMONOBJ): | $(BUILDDIR)
@@ -119,16 +133,14 @@ $(CLASSICOBJ): | $(BUILDDIR)
 
 $(BUILDDIR):
 	@mkdir -p $(BUILDDIR)
+	@mkdir -p $(LIBDIR)
 	
-$(LIBSDIR):
-	@mkdir -p $(TARGETDIR)
-
 -include $(DEPS)
 
 .PHONY: clean
 
 clean:
-	$(RMS) $(DEPS) $(TARGET) $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ) $(DASSLOBJ) $(DOPRIOBJ)
+	$(RMS) $(DEPS) $(TARGET) $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ) $(DASSLOBJ) $(DOPRIOBJ) $(USRDIR)
 
 help:
 	@echo "make DEBUG=<True|False> OS=<unix|win|osx>"
