@@ -1,22 +1,22 @@
 OS ?= unix
 DEBUG ?= False
+ENGINE ?= .
 
 # Source Path.
-libraries=../../lib/
-source=./src/
-include=./include
-random=../
+LIBDIR=./lib/
+SRCDIR=./src/
+INCDIR=./include
 
 # Source files.
-SRC = $(source)mmo_math.c $(source)mmo_file.c 
+SRC = $(SRCDIR)mmo_math.c $(SRCDIR)mmo_file.c 
 
-TARGET = $(libraries)libmmo_math.a $(libraries)libmmo_file.a
+TARGET = $(LIBDIR)libmmo_math.a $(LIBDIR)libmmo_file.a
 
 RMS = rm -rf
 
 OBJ = $(SRC:.c=.o)
 
-CFLAGS = -Wall -I$(include) -lm -msse2 -mfpmath=sse -O2   
+CFLAGS = -Wall -I$(INCDIR) -I$(ENGINE)/common -lm -msse2 -mfpmath=sse -O2   
 
 ifeq ($(DEBUG),True)
 	CFLAGS += -g   
@@ -36,14 +36,16 @@ default: $(TARGET)
 	$(CC) -c $< -o $@ $(CFLAGS)
 
 $(TARGET): $(OBJ)
+	@mkdir -p $(LIBDIR)
 	ar rsc $@ $(OBJ)  
 
 clean:
 	$(RMS) $(OBJ) $(TARGET)  
 
 help:
-	echo "make DEBUG=<True|False> SO=<unix|win32|osx>"
+	echo "make DEBUG=<True|False> SO=<unix|win32|osx> ENGINE=<qss-engine-root-dir>"
 	echo "Default values:"
 	echo ""
 	echo "DEBUG=False"
 	echo "OS=unix"
+	echo "ENGINE=."
