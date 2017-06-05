@@ -2,29 +2,31 @@
 OS ?= unix
 DEBUG ?= False
 
-#Compiler and Linker
+# Compiler and Linker
 CXX         := g++
 
-#The Target Binary Program
-TARGET      := ../../../bin/translate-sbml
-
-#The Directories, Source, Includes, Objects, Binary 
+# The Directories, Source, Includes, Objects, Binary 
 SRCDIR      := .
-BUILDDIR    := $(SRCDIR)/obj
+USRDIR    	:= $(SRCDIR)/usr
+BINDIR    	:= $(USRDIR)/bin
+BUILDDIR    := $(USRDIR)/obj
 SRCEXT      := cpp
 DEPEXT      := d
 OBJEXT      := o
 
-#Flags, Libraries and Includes
+# The Target Binary Program
+TARGET      := $(BINDIR)/translate-sbml
+
+# Flags, Libraries and Includes
 LIB 		 		:= -lsbml
 ifeq ($(OS),win32)
 LIB 				:= -L/usr/local/lib -lsbml -lxml2
 endif
-CXXFLAGS 		:= -Wall -Wabi-tag -lm -msse2 -mfpmath=sse -D_GLIBCXX_USE_CXX11_ABI=0
+CXXFLAGS 			:= -Wall -Wabi-tag -lm -msse2 -mfpmath=sse -D_GLIBCXX_USE_CXX11_ABI=0
 ifeq ($(DEBUG),True)
-CXXFLAGS 		+= -g
+CXXFLAGS 			:= -g
 endif
-INC 				:= -I.
+INC 				:= -I. 
 ifeq ($(OS),win32)
 INC 				+= -I/SBML/win32/include
 endif
@@ -48,9 +50,10 @@ $(BUILDDIR)/%.o : $(SRCDIR)/%.cpp
 sbml: $(OBJ)
 	$(CXX) convert.cpp -o $(TARGET) $(OBJ) $(INC) $(CXXFLAGS) $(LIB)
 
-$(OBJ): | $(BUILDDIR)
+$(OBJ): | create-dirs
 
-$(BUILDDIR):
+create-dirs:
+	@mkdir -p $(BINDIR)
 	@mkdir -p $(BUILDDIR)
 	
 -include $(DEPS)
@@ -61,7 +64,7 @@ clean:
 	$(RMS) $(OBJ) $(TARGET)
 
 help:
-	@echo "make DEBUG=<True|False> OS=<unix|win32|mac>"
+	@echo "make DEBUG=<True|False> OS=<unix|win32|osx>"
 	@echo "Default values:"
 	@echo ""
 	@echo "DEBUG=False"
