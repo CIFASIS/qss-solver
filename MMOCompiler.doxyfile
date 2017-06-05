@@ -51,14 +51,14 @@ PROJECT_BRIEF =
 # and the maximum width should not exceed 200 pixels. Doxygen will copy the logo
 # to the output directory.
 
-PROJECT_LOGO = /home/joaquin/PHD/qss-solver/src/gui/images/integrator.svg
+PROJECT_LOGO = 
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
 # entered, it will be relative to the location where doxygen was started. If
 # left blank the current directory will be used.
 
-OUTPUT_DIRECTORY = /home/joaquin/PHD/qss-solver/doc/mmoc
+OUTPUT_DIRECTORY = ./usr/doc
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create 4096 sub-
 # directories (in 2 levels) under the output directory of each output format and
@@ -1078,7 +1078,7 @@ HTML_EXTRA_STYLESHEET =
 # files will be copied as-is; there are no commands or markers available.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_FILES = /home/joaquin/PHD/qss-solver/doc/mmoc/micromodelicaspec.pdf
+HTML_EXTRA_FILES = 
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the stylesheet and background images according to
