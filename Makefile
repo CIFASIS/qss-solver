@@ -55,7 +55,13 @@ $(OBJ): | create-dirs
 create-dirs:
 	@mkdir -p $(BINDIR)
 	@mkdir -p $(BUILDDIR)
-	
+
+doc:
+	@mkdir -p $(USRDIR)/doc
+	@mkdir -p $(USRDIR)/doc/html
+	@mkdir -p $(USRDIR)/doc/latex
+	doxygen sbml.doxyfile
+
 -include $(DEPS)
 
 .PHONY: clean
