@@ -156,12 +156,9 @@ DASSL_integrate (SIM_simulator simulate)
 #endif
   while (t < _ft)
     {
-      if (!is_sampled)
-	{
+      if (!is_sampled) {
 	  tout = _ft;
-	}
-      else
-	{
+	} else {
 	  if (!event_detected)
 	    {
 	      tout = t + step_size;
@@ -206,9 +203,7 @@ DASSL_integrate (SIM_simulator simulate)
 	}
       if (!is_sampled)
 	{
-	  CLC_save_step (simOutput, solution, solution_time, t,
-			 clcData->totalOutputSteps, x, clcData->d,
-			 clcData->alg);
+	  CLC_save_step (simOutput, solution, solution_time, t, clcData->totalOutputSteps, x, clcData->d, clcData->alg);
 	  clcData->totalOutputSteps++;
 	}
       else

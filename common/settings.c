@@ -33,29 +33,33 @@ _getSolver (const char *sol)
     {
       return (SD_QSS);
     }
-  else if (!strcmp (sol, "QSS2"))
+  else if (!strcmp (sol, "CQSS"))
     {
-      return (SD_QSS2);
-    }
-  else if (!strcmp (sol, "QSS3"))
-    {
-      return (SD_QSS3);
+      return (SD_CQSS);
     }
   else if (!strcmp (sol, "LIQSS"))
     {
       return (SD_LIQSS);
     }
+  else if (!strcmp (sol, "QSS2"))
+    {
+      return (SD_QSS2);
+    }
   else if (!strcmp (sol, "LIQSS2"))
     {
       return (SD_LIQSS2);
+    }
+  else if (!strcmp (sol, "QSS3"))
+    {
+      return (SD_QSS3);
     }
   else if (!strcmp (sol, "LIQSS3"))
     {
       return (SD_LIQSS3);
     }
-  else if (!strcmp (sol, "CQSS"))
+  else if (!strcmp (sol, "QSS4"))
     {
-      return (SD_CQSS);
+      return (SD_QSS4);
     }
   else if (!strcmp (sol, "DASSL"))
     {
@@ -65,9 +69,17 @@ _getSolver (const char *sol)
     {
       return (SD_DOPRI);
     }
-  else if (!strcmp (sol, "QSS4"))
+  else if (!strcmp (sol, "CVODE_BDF"))
     {
-      return (SD_QSS4);
+      return (SD_CVODE_BDF);
+    }
+  else if (!strcmp (sol, "IDA"))
+    {
+      return (SD_IDA);
+    }
+  else if (!strcmp (sol, "CVODE_AM"))
+    {
+      return (SD_CVODE_AM);
     }
   return (SD_QSS);
 }
@@ -122,6 +134,9 @@ _getOrder (SD_Solver sol)
     case SD_LIQSS:
     case SD_DASSL:
     case SD_DOPRI:
+    case SD_CVODE_BDF:
+    case SD_IDA:
+    case SD_CVODE_AM:
       return (1);
     case SD_QSS2:
     case SD_LIQSS2:
@@ -236,6 +251,10 @@ SET_Settings (char *fname)
   if (config_lookup_int (cf, "lps", &ires))
     {
       p->lps = ires;
+    }
+  if (config_lookup_int (cf, "jacobian", &ires))
+    {
+      p->jacobian = ires;
     }
   if (config_lookup_int (cf, "nodesize", &ires))
     {

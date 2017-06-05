@@ -42,6 +42,7 @@ SD_copySimulationSettings (SD_simulationSettings settings)
   p->parallel = settings->parallel;
   p->hybrid = settings->hybrid;
   p->method = settings->method;
+  p->jacobian = settings->jacobian;
   return (p);
 }
 
@@ -192,7 +193,7 @@ SD_cleanEventData(SD_eventData events, int size)
 
 SD_parameters
 SD_Parameters (double derDelta, double zcHyst, double minStep, int symDiff,
-	       int lps, int nodeSize, SD_PartitionMethod pm, double dt, SD_DtSynch synch,   SD_partitionerOptions partitionerOptions)
+	       int lps, int nodeSize, SD_PartitionMethod pm, double dt, SD_DtSynch synch,   SD_partitionerOptions partitionerOptions, int jacobian)
 {
   SD_parameters p = checkedMalloc (sizeof(*p));
   p->derDelta = derDelta;
@@ -205,6 +206,7 @@ SD_Parameters (double derDelta, double zcHyst, double minStep, int symDiff,
   p->dt = dt;
   p->dtSynch = synch;
   p->partitionerOptions = partitionerOptions;
+  p->jacobian = jacobian;
   return (p);
 }
 

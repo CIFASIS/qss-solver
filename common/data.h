@@ -108,9 +108,12 @@ typedef enum
   SD_LIQSS2,  //!< SD_LIQSS2
   SD_QSS3,  //!< SD_QSS3
   SD_LIQSS3,  //!< SD_LIQSS3
+  SD_QSS4,   //!< SD_QSS4
   SD_DASSL, //!< SD_DASSL
   SD_DOPRI, //!< SD_DOPRI
-  SD_QSS4   //!< SD_QSS4
+  SD_CVODE_BDF,  //!< SD_CVODE_BDF
+  SD_CVODE_AM,  //!< SD_CVODE_
+  SD_IDA //!< SD_IDA
 } SD_Solver;
 
 /**
@@ -182,6 +185,7 @@ struct SD_simulationSettings_
   SD_Solver method; //!<
   bool parallel; //!<
   bool hybrid; //!<
+  int jacobian;
 };
 
 /**
@@ -334,6 +338,7 @@ struct SD_parameters_
   int symDiff; //!< Use symbolic derivatives.
   int lps; //!< Number of LPs defined for parallel simulations.
   int nodeSize; //!< Node size used in the memory list for output simulation values.
+  int jacobian;
   SD_PartitionMethod pm; //!< Partition method used to obtain a model partition for parallel simulations.
   SD_DtSynch dtSynch; //!< \f $ \delta t $ \f synchronization policy.
   SD_partitionerOptions partitionerOptions;
@@ -350,7 +355,7 @@ struct SD_parameters_
 SD_parameters
 SD_Parameters (double derDelta, double zcHyst, double minStep, int symDiff,
 	       int lps, int nodeSize, SD_PartitionMethod pm, double dt,
-	       SD_DtSynch synch, SD_partitionerOptions partitionerOptions);
+	       SD_DtSynch synch, SD_partitionerOptions partitionerOptions, int jacobian);
 
 /**
  *

@@ -120,7 +120,7 @@ CLC_save_step (SD_output simOutput, double **solution, double *solution_time,
   if (totalOutputSteps == MAX_OUTPUT_POINTS)
     {
       CLC_write_output (simOutput, solution, solution_time, totalOutputSteps);
-      printf ("Maximum number of output steps reached for DASSL\n");
+      printf ("Maximum number of output steps reached\n");
       abort ();
     }
   solution_time[totalOutputSteps] = t;

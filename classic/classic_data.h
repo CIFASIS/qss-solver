@@ -85,10 +85,13 @@ typedef struct CLC_event_ *CLC_event;
  */
 struct CLC_event_
 {
-  CLC_zc zeroCrossing; //!<
-  CLC_hnd handlerPos; //!<
-  CLC_hnd handlerNeg; //!<
+    CLC_zc zeroCrossing; //!<
+    CLC_hnd handlerPos; //!<
+    CLC_hnd handlerNeg; //!<
 };
+
+typedef void
+(*CLC_jac) (double *x, double *d, double *alg, double t, double *j);
 /**
  *
  * @param zeroCrossing
@@ -122,6 +125,9 @@ struct CLC_data_
   double it; //!<
   double ft; //!<
   int *nSD; //!<
+  int *nDS; //!<
+  int **SD; //!<
+  int **DS; //!<
   int *IT; //!<
   int states; //!<
   int discretes; //!<
@@ -160,6 +166,12 @@ void
 CLC_freeData (CLC_data data);
 /**
  *
+ * @param data
+ */
+void
+CLC_allocDataMatrix (CLC_data data);
+/**
+ *
  */
 typedef struct CLC_model_ *CLC_model;
 /**
@@ -167,8 +179,9 @@ typedef struct CLC_model_ *CLC_model;
  */
 struct CLC_model_
 {
-  CLC_eq f; /**< Model definition \f$ \forall \imath \in [0,DIM] f(x_{i}(t),t)_{i} \f$ 		*/
-  CLC_event events; //!<
+    CLC_eq f; /**< Model definition \f$ \forall \imath \in [0,DIM] f(x_{i}(t),t)_{i} \f$ 		*/
+    CLC_jac jac; 
+    CLC_event events; //!<
 };
 /**
  *
@@ -179,8 +192,7 @@ struct CLC_model_
  * @return
  */
 CLC_model
-CLC_Model (CLC_eq f, CLC_zc zeroCrossing, CLC_hnd handlerPos,
-	   CLC_hnd handlerNeg);
+CLC_Model (CLC_eq f, CLC_zc zeroCrossing, CLC_hnd handlerPos, CLC_hnd handlerNeg, CLC_jac);
 /**
  *
  * @param model
@@ -197,4 +209,5 @@ CLC_freeModel (CLC_model model);
 typedef void
 (*CLC_setData) (CLC_data, SD_output, CLC_model, SD_simulationSettings);
 
+void CLC_allocDataMatrix (CLC_data data) ;
 #endif /* CLASSIC_DATA_H_ */

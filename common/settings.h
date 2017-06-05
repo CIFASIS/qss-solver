@@ -47,6 +47,7 @@ struct SET_settings_
   SD_Solver solver; //!<
   int nDQMin; //!<
   int nDQRel; //!<
+  int jacobian;
   SD_PartitionMethod pm; //!<
   SD_DtSynch dtSynch; //!< \f $ \delta t $ \f synchronization policy.
   SD_partitionerOptions partitionerOptions;
