@@ -9,3 +9,5 @@ ui/ui_settings.h
 # Binaries and libs.
 usr/*
 
+# Local ChangeLog.
+ChangeLog
