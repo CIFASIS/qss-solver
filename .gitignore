@@ -3,3 +3,6 @@
 
 # Tarball files.
 *.tar.gz
+
+# Local ChangeLog.
+ChangeLog
