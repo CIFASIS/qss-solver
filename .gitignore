@@ -13,3 +13,6 @@
 
 # Shared files.
 /share/*
+
+# Local ChangeLog.
+ChangeLog
