@@ -11,3 +11,6 @@
 # Packages description moo files.
 
 *.moo
+
+# Local ChangeLog.
+ChangeLog
