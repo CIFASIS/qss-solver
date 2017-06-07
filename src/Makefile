@@ -19,7 +19,6 @@ qss-engine-repo 			:= ./engine
 qss-test-suite-repo			:= ./testsuite 
 qss-solver-gui-repo			:= ./gui 
 qss-user-libs-repo 			:= ./usr
-qss-solver-3rd-party-repo 	:= ./3rd-party
 
 all: mmo-compiler mmo-interfaces qss-engine qss-solver-gui qss-user-libs
 
@@ -49,16 +48,12 @@ $(qss-solver-gui-repo):
 $(qss-user-libs-repo):
 	$(shell git clone https://github.com/CIFASIS/qss-solver-user-libs.git usr)
 
-$(qss-solver-3rd-party-repo):
-	$(shell git clone https://github.com/CIFASIS/qss-solver-external-tools.git 3rd-party)
-
-
 mmo-interfaces: create-dirs | $(mmo-interfaces-repo)
 	@echo BUILDING MMO-SBML INTERFACE
 	@cd interfaces/sbml &&  $(MAKE) OS=$(OS) DEBUG=$(DEBUG) -j $(CORES)
 	@echo Done
 
-qss-engine: create-dirs | $(qss-engine-repo) $(qss-test-suite-repo) $(qss-solver-3rd-party-repo)
+qss-engine: create-dirs | $(qss-engine-repo) $(qss-test-suite-repo) 
 	@echo BUILDING QSS LIBRARY
 	@cd engine && $(MAKE) OS=$(OS) -j $(CORES)
 	@echo Done
@@ -66,40 +61,27 @@ qss-engine: create-dirs | $(qss-engine-repo) $(qss-test-suite-repo) $(qss-solver
 	@cd engine && $(MAKE) DEBUG=True OS=$(OS) -j $(CORES)
 	@echo Done
 
-qss-user-libs: create-dirs | $(qss-user-libs-repo)
+qss-user-libs: create-dirs qss-engine | $(qss-user-libs-repo)
 	@echo BUILDING USER LIBS
-	@cd usr && $(MAKE) OS=$(OS) DEBUG=$(DEBUG) -j $(CORES)      
+	@cd usr && $(MAKE) OS=$(OS) DEBUG=$(DEBUG) -j $(CORES) ENGINE=../engine     
 	@echo Done
 
-mmo-compiler: create-dirs | $(mmo-compiler-repo) $(qss-solver-3rd-party-repo)
+mmo-compiler: create-dirs | $(mmo-compiler-repo) 
 	@echo BUILDING MICROMODELICA C COMPILER
 	@cd mmoc && $(MAKE) OS=$(OS) DEBUG=$(DEBUG) -j $(CORES) 
 	@echo Done
 
 qss-solver-gui: create-dirs | $(qss-solver-gui-repo) $(mmo-models-repo) $(mmo-packages-repo)
 	@echo BUILDING MMO EDITOR
-	@cd gui && qmake
-	@cd gui && $(MAKE)      
+	@cd gui && $(MAKE) -f gui.makefile      
 	@echo Done
 
 qss-solver-doc: qss-engine mmo-compiler qss-solver-gui mmo-interfaces
 	@echo BUILDING PROJECT DOCUMENTATION
-	@mkdir -p $(ROOT)/doc/engine
-	@mkdir -p $(ROOT)/doc/engine/html
-	@mkdir -p $(ROOT)/doc/engine/latex
-	@cd engine && doxygen QSSSolver.doxyfile 
-	@mkdir -p $(ROOT)/doc/mmoc
-	@mkdir -p $(ROOT)/doc/mmoc/html
-	@mkdir -p $(ROOT)/doc/mmoc/latex
-	@cd mmoc && doxygen MMOCompiler.doxyfile 
-	@mkdir -p $(ROOT)/doc/gui
-	@mkdir -p $(ROOT)/doc/gui/html
-	@mkdir -p $(ROOT)/doc/gui/latex
-	@cd gui && doxygen QSSSolverGUI.doxyfile 
-	@mkdir -p $(ROOT)/doc/sbml
-	@mkdir -p $(ROOT)/doc/sbml/html
-	@mkdir -p $(ROOT)/doc/sbml/latex
-	@cd interfaces/sbml && doxygen sbml.doxyfile
+	@cd engine && $(MAKE) doc 
+	@cd mmoc && $(MAKE) doc 
+	@cd gui && $(MAKE) -f gui.makefile doc 
+	@cd interfaces/sbml && $(MAKE) doc 
 	
 create-dirs:
 	@mkdir -p $(ROOT)/bin
@@ -112,7 +94,6 @@ clean-repos:
 	@rm -rf engine
 	@rm -rf gui
 	@rm -rf interfaces
-	@rm -rf 3rd-party
 	@rm -rf usr
 	@rm -rf test-suite
 	@rm -rf $(ROOT)/models
@@ -124,25 +105,34 @@ update-repos:
 	@cd gui && $(shell git pull)
 	@cd usr && $(shell git pull)
 	@cd interfaces/sbml &&  $(shell git pull)
-	@cd 3rd-party &&  $(shell git pull)
 	@cd $(ROOT)/models &&  $(shell git pull)
 	@cd $(ROOT)/packages &&  $(shell git pull)
 
 install:	
+	@echo "Installing engine libraries."
+	@install $(ROOT)/src/engine/usr/lib/* $(ROOT)/lib/
+	@echo "Installing MicroModelica Compiler."
+	@install $(ROOT)/src/mmoc/usr/bin/mmoc $(ROOT)/bin/
+	@echo "Installing SBML translator."
+	@install $(ROOT)/src/interfaces/sbml/usr/bin/translate-sbml $(ROOT)/bin/
+	@echo "Installing solver GUI."
+	@install $(ROOT)/src/gui/usr/bin/qss-solver $(ROOT)/bin/
+	@echo "Installing user libraries."
+	@install $(ROOT)/src/usr/lib/* $(ROOT)/lib/
 ifeq ($(OS),unix)
 	@install $(ROOT)/deploy/linux/scripts/* $(ROOT)/bin/
 	@install $(ROOT)/deploy/linux/qss-solver.ini $(ROOT)/bin/
-	@install $(ROOT)/src/3rd-party/partitioners/hmetis/khmetis $(ROOT)/bin/
+	@install $(ROOT)/src/engine/3rd-party/partitioners/hmetis/khmetis $(ROOT)/bin/
 ifeq ($(AklRCH),i686)
-	@install $(ROOT)/src/3rd-party/partitioners/patoh/Linux-i386/libpatoh.a $(ROOT)/lib/
-	@install $(ROOT)/src/3rd-party/partitioners/metis/Linux-i386/libmetis.a $(ROOT)/lib/
-	@install $(ROOT)/src/3rd-party/partitioners/scotch/Linux-i386/libscotch.a $(ROOT)/lib/
-	@install $(ROOT)/src/3rd-party/partitioners/scotch/Linux-i386/libscotcherr.a $(ROOT)/lib/
+	@install $(ROOT)/src/engine/3rd-party/partitioners/patoh/Linux-i386/libpatoh.a $(ROOT)/lib/
+	@install $(ROOT)/src/engine/3rd-party/partitioners/metis/Linux-i386/libmetis.a $(ROOT)/lib/
+	@install $(ROOT)/src/engine/3rd-party/partitioners/scotch/Linux-i386/libscotch.a $(ROOT)/lib/
+	@install $(ROOT)/src/engine/3rd-party/partitioners/scotch/Linux-i386/libscotcherr.a $(ROOT)/lib/
 else
-	@install $(ROOT)/src/3rd-party/partitioners/patoh/Linux-x86_64/libpatoh.a $(ROOT)/lib/
-	@install $(ROOT)/src/3rd-party/partitioners/metis/Linux-x86_64/libmetis.a $(ROOT)/lib/
-	@install $(ROOT)/src/3rd-party/partitioners/scotch/Linux-x86_64/libscotch.a $(ROOT)/lib/
-	@install $(ROOT)/src/3rd-party/partitioners/scotch/Linux-x86_64/libscotcherr.a $(ROOT)/lib/
+	@install $(ROOT)/src/engine/3rd-party/partitioners/patoh/Linux-x86_64/libpatoh.a $(ROOT)/lib/
+	@install $(ROOT)/src/engine/3rd-party/partitioners/metis/Linux-x86_64/libmetis.a $(ROOT)/lib/
+	@install $(ROOT)/src/engine/3rd-party/partitioners/scotch/Linux-x86_64/libscotch.a $(ROOT)/lib/
+	@install $(ROOT)/src/engine/3rd-party/partitioners/scotch/Linux-x86_64/libscotcherr.a $(ROOT)/lib/
 endif
 else
 ifeq ($(OS),win)
