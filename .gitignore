@@ -22,3 +22,6 @@ src/test-suite/
 .project
 .cproject
 .settings
+
+# Local Changelog
+ChangeLog

@@ -1,9 +1,6 @@
 QSS Solver 3.1
 --------------
 
-Description
-----------.
-
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems.
 
@@ -48,7 +45,7 @@ Please see the file called INSTALL.
 Licensing
 ---------
 
-Please see the file called COPYING.
+Please see the file called LICENSE.
 
 
 Bug Reporting
@@ -56,12 +53,10 @@ Bug Reporting
 
 Report bugs to: fernandez@cifasis-conicet.gov.ar
 
-SVN Access
+ChangeLog
 ----------
 
-The QSS Solver source repository is available via SVN from sourceforge:
-
-				svn checkout http://svn.code.sf.net/p/qssengine/code-0/trunk 
+Please see the file called LICENSE.
 
 System-specific Notes
 ---------------------
