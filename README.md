@@ -48,15 +48,15 @@ Licensing
 Please see the file called LICENSE.
 
 
+ChangeLog
+----------
+
+Please see the file called CHANGELOG.
+
 Bug Reporting
 -------------
 
 Report bugs to: fernandez@cifasis-conicet.gov.ar
-
-ChangeLog
-----------
-
-Please see the file called LICENSE.
 
 System-specific Notes
 ---------------------
