@@ -1,10 +1,24 @@
-external/*
-libs/*
-models/*
-packages/*
-src/usr/*
-src/engine/*
-src/mmoc/*
-src/gui/*
-src/interfaces/*
-src/test-suite/*
+# Generated binary files and scripts.
+bin/
+
+# Local folders.
+output/
+build/
+lib/
+
+# Distributed models and packages.
+models/
+packages/
+
+# Solver source code submodules.
+src/usr/
+src/engine/
+src/mmoc/
+src/gui/
+src/interfaces/
+src/test-suite/
+
+# Eclipse project files.
+.project
+.cproject
+.settings
