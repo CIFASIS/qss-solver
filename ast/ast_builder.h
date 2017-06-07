@@ -66,8 +66,7 @@ newAST_ShortClass (AST_ClassPrefix, AST_String, AST_ShortClassExp);
  * @return
  */
 AST_ShortClassExp
-newAST_ShortClassExp (AST_TypePrefix, AST_String, AST_ExpressionList,
-		      AST_ArgumentList);
+newAST_ShortClassExp (AST_TypePrefix, AST_String, AST_ExpressionList, AST_ArgumentList);
 /**
  *
  * @param
@@ -237,8 +236,7 @@ newAST_ClassExtends (AST_String, AST_Composition);
  * @return
  */
 AST_Class
-newAST_ClassModification (AST_String, AST_TypePrefix, AST_String,
-			  AST_ExpressionList, AST_ArgumentList);
+newAST_ClassModification (AST_String, AST_TypePrefix, AST_String, AST_ExpressionList, AST_ArgumentList);
 AST_ClassList
 newAST_ClassList ();
 AST_Class
@@ -286,9 +284,7 @@ newAST_Composition (AST_ElementList el, AST_CompositionElementList cl);
 AST_Composition
 newAST_Composition (AST_CompositionElementList cl);
 AST_Composition
-AST_Composition_SetExternalAnnotation (AST_Composition c,
-				       AST_External_Function_Call ext,
-				       AST_ArgumentList annot);
+AST_Composition_SetExternalAnnotation (AST_Composition c, AST_External_Function_Call ext, AST_ArgumentList annot);
 AST_CompositionEqsAlgs
 newAST_NullCompositionEquations ();
 AST_CompositionEqsAlgs
@@ -302,8 +298,7 @@ newAST_CompositionAlgorithms (AST_StatementList);
 
 /* Components and elements */
 AST_Element_Component
-newAST_Element_Component (AST_DeclarationList cl, AST_String type,
-			  AST_TypePrefix, AST_ExpressionList);
+newAST_Element_Component (AST_DeclarationList cl, AST_String type, AST_TypePrefix, AST_ExpressionList);
 AST_Element_ComponentList
 newAST_Element_ComponentList (AST_DeclarationList);
 AST_Element_ComponentList
@@ -341,11 +336,9 @@ newAST_EquationList ();
 AST_Equation
 newAST_Equation_Equality (AST_Expression, AST_Expression);
 AST_Equation
-newAST_Equation_Connect (AST_Expression_ComponentReference,
-			 AST_Expression_ComponentReference);
+newAST_Equation_Connect (AST_Expression_ComponentReference, AST_Expression_ComponentReference);
 AST_Equation
-newAST_Equation_If (AST_Expression e, AST_EquationList eql,
-		    AST_Equation_ElseList, AST_EquationList);
+newAST_Equation_If (AST_Expression e, AST_EquationList eql, AST_Equation_ElseList, AST_EquationList);
 AST_Equation
 newAST_Equation_For (AST_ForIndexList, AST_EquationList eql);
 AST_Equation
@@ -381,11 +374,9 @@ newAST_Expression_Derivative (AST_ExpressionList el);
 AST_Expression_ComponentReference
 newAST_Expression_ComponentReference ();
 AST_Expression_ComponentReference
-AST_Expression_ComponentReference_Add (AST_Expression_ComponentReference,
-				       AST_String, AST_ExpressionList);
+AST_Expression_ComponentReference_Add (AST_Expression_ComponentReference, AST_String, AST_ExpressionList);
 AST_Expression_ComponentReference
-AST_Expression_ComponentReference_AddDot (AST_Expression_ComponentReference,
-					  AST_String, AST_ExpressionList);
+AST_Expression_ComponentReference_AddDot (AST_Expression_ComponentReference, AST_String, AST_ExpressionList);
 AST_Expression
 newAST_Expression_ComponentReferenceExp (AST_String);
 AST_Expression
@@ -393,20 +384,15 @@ newAST_Expression_ComponentReferenceExp (AST_String s, AST_String s2);
 AST_Expression
 newAST_Expression_ComponentReferenceExpDot (AST_String s, AST_String s2);
 AST_Expression
-AST_Expression_ComponentReferenceExpAddDot (AST_Expression_ComponentReference,
-					    AST_String, AST_String,
-					    AST_ExpressionList);
+AST_Expression_ComponentReferenceExpAddDot (AST_Expression_ComponentReference, AST_String, AST_String, AST_ExpressionList);
 AST_Expression
-AST_Expression_ComponentReferenceExpAdd (AST_Expression_ComponentReference,
-					 AST_String, AST_String,
-					 AST_ExpressionList);
+AST_Expression_ComponentReferenceExpAdd (AST_Expression_ComponentReference, AST_String, AST_String, AST_ExpressionList);
 AST_Expression
 newAST_Expression_BinOp (AST_Expression, AST_Expression, BinOpType);
 AST_Expression
 newAST_Expression_UnaryMinus (AST_Expression);
 AST_Expression
-newAST_Expression_If (AST_Expression, AST_Expression, AST_ExpressionList,
-		      AST_Expression);
+newAST_Expression_If (AST_Expression, AST_Expression, AST_ExpressionList, AST_Expression);
 AST_Expression
 newAST_Expression_Null ();
 AST_Expression
@@ -440,8 +426,7 @@ newAST_BracketExpList (AST_ExpressionListList);
 AST_External_Function_Call
 newAST_ExternalCall ();
 AST_External_Function_Call
-newAST_ExternalCall (AST_String lang, AST_Expression_ComponentReference cr,
-		     AST_Expression args, AST_ArgumentList annot);
+newAST_ExternalCall (AST_String lang, AST_Expression_ComponentReference cr, AST_Expression args, AST_ArgumentList annot);
 
 /* Modification */
 AST_Modification
@@ -461,21 +446,18 @@ newAST_Statement_Return ();
 AST_Statement
 newAST_Statement_While (AST_Expression, AST_StatementList);
 AST_Statement
-newAST_Statement_When (AST_Expression, AST_StatementList,
-		       AST_Statement_ElseList, AST_Comment);
+newAST_Statement_When (AST_Expression, AST_StatementList, AST_Statement_ElseList, AST_Comment);
 AST_Statement
 newAST_Statement_For (AST_ForIndexList, AST_StatementList);
 AST_Statement
-newAST_Statement_If (AST_Expression, AST_StatementList, AST_Statement_ElseList,
-		     AST_StatementList);
+newAST_Statement_If (AST_Expression, AST_StatementList, AST_Statement_ElseList, AST_StatementList);
 AST_Statement
 newAST_Statement_Assign (AST_Expression_ComponentReference, AST_Expression);
 AST_Statement
-newAST_Statement_OutputAssign (AST_ExpressionList,
-			       AST_Expression_ComponentReference,
+newAST_Statement_OutputAssign (AST_ExpressionList, AST_Expression_ComponentReference,
 /**
  *
- */			       AST_ExpressionList);
+ */AST_ExpressionList);
 AST_StatementList
 newAST_StatementList ();
 /**

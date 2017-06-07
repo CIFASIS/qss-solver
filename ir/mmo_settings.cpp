@@ -27,7 +27,7 @@
 /* MicroModelica Intermediate Representation */
 
 MMO_Settings_::MMO_Settings_ (string name) :
-    _class (NULL), _classModification (false), _insertAnnotation (false), _className(), _classPrefix(), _insideFunction()
+        _class (NULL), _classModification (false), _insertAnnotation (false), _className (), _classPrefix (), _insideFunction ()
 {
 }
 
@@ -38,33 +38,33 @@ MMO_Settings_::~MMO_Settings_ ()
 void
 MMO_Settings_::visit (AST_Class x)
 {
-  Error::getInstance ()->setClassName (*(x->name ()));
-  AST_TypePrefix p = x->prefix ();
-  if (_class != NULL)
+    Error::getInstance ()->setClassName (*(x->name ()));
+    AST_TypePrefix p = x->prefix ();
+    if (_class != NULL)
     {
-      if ((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE))
-	{
-	  _insertAnnotation = false;
-	  _insideFunction = true;
-	}
+        if ((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE))
+        {
+            _insertAnnotation = false;
+            _insideFunction = true;
+        }
     }
-  else
+    else
     {
-      if (p & CP_MODEL)
-	{
-	  _class = newMMO_Model (*x->name ());
-	  _insertAnnotation = true;
-	}
+        if (p & CP_MODEL)
+        {
+            _class = newMMO_Model (*x->name ());
+            _insertAnnotation = true;
+        }
     }
 }
 
 void
 MMO_Settings_::leave (AST_Class x)
 {
-  if (_insideFunction)
+    if (_insideFunction)
     {
-      _insertAnnotation = true;
-      _insideFunction = false;
+        _insertAnnotation = true;
+        _insideFunction = false;
     }
 }
 
@@ -111,18 +111,18 @@ MMO_Settings_::visit (AST_Element x)
 void
 MMO_Settings_::visit (AST_Modification x)
 {
-  if (x->modificationType () == MODCLASS)
+    if (x->modificationType () == MODCLASS)
     {
-      _classModification = true;
+        _classModification = true;
     }
 }
 
 void
 MMO_Settings_::leave (AST_Modification x)
 {
-  if (x->modificationType () == MODCLASS)
+    if (x->modificationType () == MODCLASS)
     {
-      _classModification = false;
+        _classModification = false;
     }
 }
 
@@ -154,16 +154,16 @@ MMO_Settings_::visit (AST_Expression x)
 void
 MMO_Settings_::visit (AST_Argument x)
 {
-  if (_insertAnnotation)
+    if (_insertAnnotation)
     {
-      if (x->argumentType () == AR_MODIFICATION)
-	{
-	  AST_Argument_Modification am = x->getAsModification ();
-	  if (am->hasModification () && _classModification == false)
-	    {
-	      _class->insert (am);
-	    }
-	}
+        if (x->argumentType () == AR_MODIFICATION)
+        {
+            AST_Argument_Modification am = x->getAsModification ();
+            if (am->hasModification () && _classModification == false)
+            {
+                _class->insert (am);
+            }
+        }
     }
 }
 
@@ -195,24 +195,24 @@ MMO_Settings_::leave (AST_StoredDefinition x)
 int
 MMO_Settings_::apply (AST_Node x)
 {
-  x->accept (this);
-  return (Error::getInstance ()->errors ());
+    x->accept (this);
+    return (Error::getInstance ()->errors ());
 }
 
 MMO_Annotation
 MMO_Settings_::annotations ()
 {
-  return (_class->getAsModel ()->annotation ());
+    return (_class->getAsModel ()->annotation ());
 }
 
 MMO_Settings
 newMMO_Settings (string name)
 {
-  return (new MMO_Settings_ (name));
+    return (new MMO_Settings_ (name));
 }
 
 void
 deleteMMO_Settings (MMO_Settings m)
 {
-  delete m;
+    delete m;
 }

@@ -28,38 +28,38 @@
 /* Argument Class */
 
 AST_Argument_::AST_Argument_ () :
-    _final (false), _each (false)
+        _final (false), _each (false)
 {
 }
 
 void
 AST_Argument_::setFinal ()
 {
-  _final = true;
+    _final = true;
 }
 
 void
 AST_Argument_::setEach ()
 {
-  _each = true;
+    _each = true;
 }
 
 bool
 AST_Argument_::hasEach () const
 {
-  return (_each);
+    return (_each);
 }
 
 bool
 AST_Argument_::isFinal () const
 {
-  return (_final);
+    return (_final);
 }
 
 void
 AST_Argument_::accept (AST_Visitor visitor)
 {
-  visitor->visit (this);
+    visitor->visit (this);
 }
 
 CLASS_PRINTER_IMP(AST_Argument);
@@ -70,14 +70,14 @@ GET_AS_IMP(Argument, Modification);
 ModificationType
 AST_Modification_::modificationType ()
 {
-  return (MODNONE);
+    return (MODNONE);
 }
 
 void
 AST_Modification_::accept (AST_Visitor visitor)
 {
-  visitor->visit (this);
-  visitor->leave (this);
+    visitor->visit (this);
+    visitor->leave (this);
 }
 
 GET_AS_IMP(Modification, Equal);
@@ -88,156 +88,154 @@ CLASS_PRINTER_IMP(AST_Modification);
 /* Modification Equal Class */
 
 AST_Modification_Equal_::AST_Modification_Equal_ (AST_Expression e) :
-    _e (e)
+        _e (e)
 {
 }
 
 string
 AST_Modification_Equal_::print () const
 {
-  stringstream ret (stringstream::out);
-  ret << " = " << _e;
-  return (ret.str ());
+    stringstream ret (stringstream::out);
+    ret << " = " << _e;
+    return (ret.str ());
 }
 
 AST_Expression
 AST_Modification_Equal_::exp ()
 {
-  return (_e);
+    return (_e);
 }
 
 ModificationType
 AST_Modification_Equal_::modificationType ()
 {
-  return (MODEQUAL);
+    return (MODEQUAL);
 }
 
 /* Modification assign Class*/
 
 AST_Modification_Assign_::AST_Modification_Assign_ (AST_Expression e) :
-    _e (e)
+        _e (e)
 {
 }
 
 AST_Expression
 AST_Modification_Assign_::exp ()
 {
-  return (_e);
+    return (_e);
 }
 
 ModificationType
 AST_Modification_Assign_::modificationType ()
 {
-  return (MODASSIGN);
+    return (MODASSIGN);
 }
 
 string
 AST_Modification_Assign_::print () const
 {
-  stringstream ret (stringstream::out);
-  ret << " := " << _e;
-  return (ret.str ());
+    stringstream ret (stringstream::out);
+    ret << " := " << _e;
+    return (ret.str ());
 }
 
 /* Modification Class Class */
 
-AST_Modification_Class_::AST_Modification_Class_ (AST_ArgumentList al,
-						  AST_Expression e) :
-    _e (e), _al (al)
+AST_Modification_Class_::AST_Modification_Class_ (AST_ArgumentList al, AST_Expression e) :
+        _e (e), _al (al)
 {
 }
 
 ModificationType
 AST_Modification_Class_::modificationType ()
 {
-  return (MODCLASS);
+    return (MODCLASS);
 }
 
 AST_Expression
 AST_Modification_Class_::exp () const
 {
-  return (_e);
+    return (_e);
 }
 
 AST_ArgumentList
 AST_Modification_Class_::arguments () const
 {
-  return (_al);
+    return (_al);
 }
 
 void
 AST_Modification_Class_::setArguments (AST_ArgumentList al)
 {
-  _al = al;
+    _al = al;
 }
 
 string
 AST_Modification_Class_::print () const
 {
-  stringstream ret (stringstream::out);
-  AST_ListPrint (arguments (), ret, "", ",", "(", ")");
-  if (exp ()->expressionType () != EXPNULL)
+    stringstream ret (stringstream::out);
+    AST_ListPrint (arguments (), ret, "", ",", "(", ")");
+    if (exp ()->expressionType () != EXPNULL)
     {
-      ret << " = " << exp ();
+        ret << " = " << exp ();
     }
-  return (ret.str ());
+    return (ret.str ());
 }
 
 bool
 AST_Modification_Class_::hasExpression ()
 {
-  return (_e != NULL);
+    return (_e != NULL);
 }
 
 /* Argument modification Class */
 
-AST_Argument_Modification_::AST_Argument_Modification_ (AST_String name,
-							AST_Modification m) :
-    _name (name), _mod (m)
+AST_Argument_Modification_::AST_Argument_Modification_ (AST_String name, AST_Modification m) :
+        _name (name), _mod (m)
 {
 }
 
 string
 AST_Argument_Modification_::print () const
 {
-  stringstream ret (stringstream::out);
-  if (hasEach ())
+    stringstream ret (stringstream::out);
+    if (hasEach ())
     {
-      ret << "each ";
+        ret << "each ";
     }
-  if (modification () != NULL)
+    if (modification () != NULL)
     {
-      ret << name () << modification ();
+        ret << name () << modification ();
     }
-  else
+    else
     {
-      ret << name ();
+        ret << name ();
     }
-  return (ret.str ());
+    return (ret.str ());
 }
 
 AST_String
 AST_Argument_Modification_::name () const
 {
-  return (_name);
+    return (_name);
 }
 
 AST_Modification
 AST_Argument_Modification_::modification () const
 {
-  return (_mod);
+    return (_mod);
 }
 
 ArgumentType
 AST_Argument_Modification_::argumentType () const
 {
-  return (AR_MODIFICATION);
+    return (AR_MODIFICATION);
 }
 
 bool
 AST_Argument_Modification_::hasModification ()
 {
-  return (_mod != NULL);
+    return (_mod != NULL);
 }
 
 /* Argument redeclaration Class */
@@ -249,12 +247,12 @@ AST_Argument_Redeclaration_::AST_Argument_Redeclaration_ ()
 string
 AST_Argument_Redeclaration_::print () const
 {
-  return ("");
+    return ("");
 }
 
 ArgumentType
 AST_Argument_Redeclaration_::argumentType () const
 {
-  return (AR_REDECLARATION);
+    return (AR_REDECLARATION);
 }
 

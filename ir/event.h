@@ -34,9 +34,9 @@
  */
 typedef enum
 {
-  HND_POSITIVE, //!< HND_POSITIVE
-  HND_NEGATIVE, //!< HND_NEGATIVE
-  HND_ZERO     //!< HND_ZERO
+    HND_POSITIVE, //!< HND_POSITIVE
+    HND_NEGATIVE, //!< HND_NEGATIVE
+    HND_ZERO     //!< HND_ZERO
 } HND_Type;
 
 /**
@@ -45,10 +45,10 @@ typedef enum
  */
 typedef enum
 {
-  ZC_LT,//!< ZC_LT
-  ZC_LE,//!< ZC_LE
-  ZC_GT,//!< ZC_GT
-  ZC_GE //!< ZC_GE
+    ZC_LT,     //!< ZC_LT
+    ZC_LE,     //!< ZC_LE
+    ZC_GT,     //!< ZC_GT
+    ZC_GE //!< ZC_GE
 } ZC_REL;
 
 /**
@@ -57,158 +57,158 @@ typedef enum
 class MMO_Event_ : public MMO_Base_
 {
 public:
-  /**
-   *
-   * @param cond
-   * @param data
-   */
-  MMO_Event_ (AST_Expression cond, MMO_ModelData data);
-  /**
-   *
-   */
-  ~MMO_Event_ ();
-  /**
-   *
-   * @return
-   */
-  string
-  print ();
-  /**
-   *
-   * @return
-   */
-  MMO_Equation
-  condition ();
-  /**
-   *
-   * @param cond
-   */
-  void
-  setCondition (MMO_Expression cond);
-  /**
-   *
-   * @param cond
-   * @return
-   */
-  bool
-  compareCondition (AST_Expression cond);
-  /**
-   *
-   * @param stm
-   */
-  void
-  insert (AST_Statement stm);
-  /**
-   *
-   * @param h
-   * @return
-   */
-  MMO_Statement
-  begin (HND_Type h);
-  /**
-   *
-   * @return
-   */
-  MMO_Statement
-  next ();
-  /**
-   *
-   * @return
-   */
-  bool
-  end ();
-  /**
-   *
-   * @return
-   */
-  Index
-  index ();
-  /**
-   *
-   * @param idx
-   */
-  void
-  setIndex (Index idx);
-  /**
-   *
-   * @return
-   */
-  int
-  beginRange ();
-  /**
-   *
-   * @return
-   */
-  int
-  endRange ();
-  /**
-   *
-   * @return
-   */
-  bool
-  hasPositiveHandler ();
-  /**
-   *
-   * @return
-   */
-  bool
-  hasNegativeHandler ();
-  /**
-   *
-   * @return
-   */
-  HND_Type
-  handlerType ();
-  /**
-   *
-   * @param h
-   */
-  void
-  setHandlerType (HND_Type h);
-  /**
-   *
-   * @return
-   */
-  Dependencies
-  deps ();
-  /**
-   *
-   * @return
-   */
-  Dependencies
-  lhs ();
-  /**
-   *
-   * @return
-   */
-  bool
-  hasWeight ();
-  /**
-   *
-   * @return
-   */
-  double
-  weight ();
-  ZC_REL
-  zcRelation();
+    /**
+     *
+     * @param cond
+     * @param data
+     */
+    MMO_Event_ (AST_Expression cond, MMO_ModelData data);
+    /**
+     *
+     */
+    ~MMO_Event_ ();
+    /**
+     *
+     * @return
+     */
+    string
+    print ();
+    /**
+     *
+     * @return
+     */
+    MMO_Equation
+    condition ();
+    /**
+     *
+     * @param cond
+     */
+    void
+    setCondition (MMO_Expression cond);
+    /**
+     *
+     * @param cond
+     * @return
+     */
+    bool
+    compareCondition (AST_Expression cond);
+    /**
+     *
+     * @param stm
+     */
+    void
+    insert (AST_Statement stm);
+    /**
+     *
+     * @param h
+     * @return
+     */
+    MMO_Statement
+    begin (HND_Type h);
+    /**
+     *
+     * @return
+     */
+    MMO_Statement
+    next ();
+    /**
+     *
+     * @return
+     */
+    bool
+    end ();
+    /**
+     *
+     * @return
+     */
+    Index
+    index ();
+    /**
+     *
+     * @param idx
+     */
+    void
+    setIndex (Index idx);
+    /**
+     *
+     * @return
+     */
+    int
+    beginRange ();
+    /**
+     *
+     * @return
+     */
+    int
+    endRange ();
+    /**
+     *
+     * @return
+     */
+    bool
+    hasPositiveHandler ();
+    /**
+     *
+     * @return
+     */
+    bool
+    hasNegativeHandler ();
+    /**
+     *
+     * @return
+     */
+    HND_Type
+    handlerType ();
+    /**
+     *
+     * @param h
+     */
+    void
+    setHandlerType (HND_Type h);
+    /**
+     *
+     * @return
+     */
+    Dependencies
+    deps ();
+    /**
+     *
+     * @return
+     */
+    Dependencies
+    lhs ();
+    /**
+     *
+     * @return
+     */
+    bool
+    hasWeight ();
+    /**
+     *
+     * @return
+     */
+    double
+    weight ();
+    ZC_REL
+    zcRelation ();
 private:
-  AST_Expression
-  _getExpression(AST_Expression exp);
-  MMO_Equation _cond;
-  list<MMO_Statement> _positiveHandlerStatements;
-  list<MMO_Statement> _negativeHandlerStatements;
-  Index _index;
-  int _init;
-  int _end;
-  HND_Type _handler;
-  HND_Type _handlerType;
-  list<MMO_Statement>::iterator _it;
-  MMO_ModelData _data;
-  Dependencies _deps;
-  Dependencies _lhs;
-  VarSymbolTable _lhsVars;
-  double _weight;
-  ZC_REL _zcRelation;
+    AST_Expression
+    _getExpression (AST_Expression exp);
+    MMO_Equation _cond;
+    list<MMO_Statement> _positiveHandlerStatements;
+    list<MMO_Statement> _negativeHandlerStatements;
+    Index _index;
+    int _init;
+    int _end;
+    HND_Type _handler;
+    HND_Type _handlerType;
+    list<MMO_Statement>::iterator _it;
+    MMO_ModelData _data;
+    Dependencies _deps;
+    Dependencies _lhs;
+    VarSymbolTable _lhsVars;
+    double _weight;
+    ZC_REL _zcRelation;
 };
 /**
  *

@@ -35,53 +35,53 @@ using namespace std;
 class MMO_StoredDefinition_ : public MMO_Base_
 {
 public:
-  /**
-   *
-   */
-  MMO_StoredDefinition_ ();
-  /**
-   *
-   */
-  ~MMO_StoredDefinition_ ();
-  /**
-   *
-   * @return
-   */
-  string
-  print ();
-  /**
-   *
-   * @return
-   */
-  list<MMO_Class>
-  classes () const;
-  /**
-   *
-   * @param c
-   */
-  void
-  addClass (MMO_Class c);
-  /**
-   *
-   * @return
-   */
-  MMO_Class
-  begin ();
-  /**
-   *
-   * @return
-   */
-  MMO_Class
-  next ();
-  /**
-   *
-   * @return
-   */
-  bool
-  end ();
+    /**
+     *
+     */
+    MMO_StoredDefinition_ ();
+    /**
+     *
+     */
+    ~MMO_StoredDefinition_ ();
+    /**
+     *
+     * @return
+     */
+    string
+    print ();
+    /**
+     *
+     * @return
+     */
+    list<MMO_Class>
+    classes () const;
+    /**
+     *
+     * @param c
+     */
+    void
+    addClass (MMO_Class c);
+    /**
+     *
+     * @return
+     */
+    MMO_Class
+    begin ();
+    /**
+     *
+     * @return
+     */
+    MMO_Class
+    next ();
+    /**
+     *
+     * @return
+     */
+    bool
+    end ();
 private:
-  list<MMO_Class> _classList;
-  list<MMO_Class>::iterator _it;
+    list<MMO_Class> _classList;
+    list<MMO_Class>::iterator _it;
 };
 /**
  *

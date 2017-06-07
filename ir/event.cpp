@@ -28,80 +28,79 @@
 #include "statement.h"
 
 MMO_Event_::MMO_Event_ (AST_Expression cond, MMO_ModelData data) :
-    _positiveHandlerStatements (), _negativeHandlerStatements (), _init (0), _end (
-	0), _handler (HND_ZERO), _handlerType (HND_ZERO), _data (data), _weight (
-	-1), _zcRelation(ZC_GT)
+        _positiveHandlerStatements (), _negativeHandlerStatements (),
+        _init (0), _end (0), _handler (HND_ZERO), _handlerType (HND_ZERO), _data (data), _weight (-1), _zcRelation (ZC_GT)
 {
-  MMO_ConvertCondition_ cc (_data);
-  _data->setCalculateAlgegraics(true);
-      _cond = newMMO_Equation (cc.foldTraverse (_getExpression(cond)), _data);
-      _data->setCalculateAlgegraics(false);
-  if (cc.zeroCrossing () > 0)
+    MMO_ConvertCondition_ cc (_data);
+    _data->setCalculateAlgegraics (true);
+    _cond = newMMO_Equation (cc.foldTraverse (_getExpression (cond)), _data);
+    _data->setCalculateAlgegraics (false);
+    if (cc.zeroCrossing () > 0)
     {
-      _handler = HND_POSITIVE;
-      _handlerType = HND_POSITIVE;
+        _handler = HND_POSITIVE;
+        _handlerType = HND_POSITIVE;
     }
-  else
+    else
     {
-      _handler = HND_NEGATIVE;
-      _handlerType = HND_NEGATIVE;
+        _handler = HND_NEGATIVE;
+        _handlerType = HND_NEGATIVE;
     }
-  if (cc.zeroCrossingRelation() == 0)
+    if (cc.zeroCrossingRelation () == 0)
     {
-      _zcRelation = ZC_LT;
+        _zcRelation = ZC_LT;
     }
-  else if (cc.zeroCrossingRelation() == 1)
+    else if (cc.zeroCrossingRelation () == 1)
     {
-      _zcRelation = ZC_LE;
+        _zcRelation = ZC_LE;
     }
-  else if (cc.zeroCrossingRelation() == 2)
+    else if (cc.zeroCrossingRelation () == 2)
     {
-      _zcRelation = ZC_GT;
+        _zcRelation = ZC_GT;
     }
-  else if (cc.zeroCrossingRelation() == 3)
+    else if (cc.zeroCrossingRelation () == 3)
     {
-      _zcRelation = ZC_GE;
+        _zcRelation = ZC_GE;
     }
-  _weight = data->weight ();
-  _deps = newDependencies ();
-  _lhs = newDependencies ();
-  _index = data->lhs ();
-  _end = _index.hi ();
-  _init = _index.low ();
-  _data = data;
+    _weight = data->weight ();
+    _deps = newDependencies ();
+    _lhs = newDependencies ();
+    _index = data->lhs ();
+    _end = _index.hi ();
+    _init = _index.low ();
+    _data = data;
 }
 
 MMO_Event_::~MMO_Event_ ()
 {
-  delete _cond;
-  delete _deps;
-  delete _lhs;
+    delete _cond;
+    delete _deps;
+    delete _lhs;
 }
 
 MMO_Equation
 MMO_Event_::condition ()
 {
-  return (_cond);
+    return (_cond);
 }
 
 bool
 MMO_Event_::hasWeight ()
 {
-  return (_weight >= 0);
+    return (_weight >= 0);
 }
 
 double
 MMO_Event_::weight ()
 {
-  return (_weight);
+    return (_weight);
 }
 
 void
 MMO_Event_::setCondition (MMO_Expression cond)
 {
-  _data->setCalculateAlgegraics(true);
-  _cond = newMMO_Equation (cond, _data);
-  _data->setCalculateAlgegraics(false);
+    _data->setCalculateAlgegraics (true);
+    _cond = newMMO_Equation (cond, _data);
+    _data->setCalculateAlgegraics (false);
 }
 
 /*! \brief Evaluates the eslewhen statement condition and sets the appropiate handler.
@@ -118,176 +117,176 @@ MMO_Event_::setCondition (MMO_Expression cond)
 bool
 MMO_Event_::compareCondition (AST_Expression cond)
 {
-  MMO_ConvertCondition_ cc (_data);
-  AST_Expression c = cc.foldTraverse (_getExpression(cond));
-  EqualExp ee (_data->symbols ());
-  bool cr = ee.equalTraverse (c, _cond->exp ()->exp ());
-  if (cr)
+    MMO_ConvertCondition_ cc (_data);
+    AST_Expression c = cc.foldTraverse (_getExpression (cond));
+    EqualExp ee (_data->symbols ());
+    bool cr = ee.equalTraverse (c, _cond->exp ()->exp ());
+    if (cr)
     {
-      if (_handler == HND_POSITIVE)
-	{
-	  _handler = HND_NEGATIVE;
-	  _handlerType = HND_ZERO;
-	}
-      else if (_handler == HND_NEGATIVE)
-	{
-	  _handler = HND_POSITIVE;
-	  _handlerType = HND_ZERO;
-	}
+        if (_handler == HND_POSITIVE)
+        {
+            _handler = HND_NEGATIVE;
+            _handlerType = HND_ZERO;
+        }
+        else if (_handler == HND_NEGATIVE)
+        {
+            _handler = HND_POSITIVE;
+            _handlerType = HND_ZERO;
+        }
     }
-  return (cr);
+    return (cr);
 }
 
 void
 MMO_Event_::insert (AST_Statement stm)
 {
-  _data->setWhenStatement (true);
-  Index tmp = _data->lhs();
-  _data->setLHS(_index);
-  MMO_Statement s = newMMO_Statement (stm, _data);
-  _data->setLHS(tmp);
-  _data->setWhenStatement (false);
-  _deps->join (s->deps ());
-  _lhs->join (s->lhs ());
-  if (_handler == HND_POSITIVE)
+    _data->setWhenStatement (true);
+    Index tmp = _data->lhs ();
+    _data->setLHS (_index);
+    MMO_Statement s = newMMO_Statement (stm, _data);
+    _data->setLHS (tmp);
+    _data->setWhenStatement (false);
+    _deps->join (s->deps ());
+    _lhs->join (s->lhs ());
+    if (_handler == HND_POSITIVE)
     {
-      _positiveHandlerStatements.push_back (s);
+        _positiveHandlerStatements.push_back (s);
     }
-  else if (_handler == HND_NEGATIVE)
+    else if (_handler == HND_NEGATIVE)
     {
-      _negativeHandlerStatements.push_back (s);
+        _negativeHandlerStatements.push_back (s);
     }
 }
 
 MMO_Statement
 MMO_Event_::begin (HND_Type h)
 {
-  _handler = h;
-  if (h == HND_POSITIVE)
+    _handler = h;
+    if (h == HND_POSITIVE)
     {
-      _it = _positiveHandlerStatements.begin ();
-      return (*_it);
+        _it = _positiveHandlerStatements.begin ();
+        return (*_it);
     }
-  else if (h == HND_NEGATIVE)
+    else if (h == HND_NEGATIVE)
     {
-      _it = _negativeHandlerStatements.begin ();
-      return (*_it);
+        _it = _negativeHandlerStatements.begin ();
+        return (*_it);
     }
-  return (NULL);
+    return (NULL);
 }
 
 MMO_Statement
 MMO_Event_::next ()
 {
-  _it++;
-  return (*_it);
+    _it++;
+    return (*_it);
 }
 
 bool
 MMO_Event_::end ()
 {
-  if (_handler == HND_POSITIVE)
+    if (_handler == HND_POSITIVE)
     {
-      return (_it == _positiveHandlerStatements.end ());
+        return (_it == _positiveHandlerStatements.end ());
     }
-  else if (_handler == HND_NEGATIVE)
+    else if (_handler == HND_NEGATIVE)
     {
-      return (_it == _negativeHandlerStatements.end ());
+        return (_it == _negativeHandlerStatements.end ());
     }
-  return (false);
+    return (false);
 }
 
 Index
 MMO_Event_::index ()
 {
-  return (_index);
+    return (_index);
 }
 
 void
 MMO_Event_::setIndex (Index idx)
 {
-  _index = idx;
+    _index = idx;
 }
 
 int
 MMO_Event_::beginRange ()
 {
-  return (_init);
+    return (_init);
 }
 
 int
 MMO_Event_::endRange ()
 {
-  return (_end);
+    return (_end);
 }
 
 HND_Type
 MMO_Event_::handlerType ()
 {
-  return (_handlerType);
+    return (_handlerType);
 }
 
 void
 MMO_Event_::setHandlerType (HND_Type h)
 {
-  _handlerType = h;
+    _handlerType = h;
 }
 
 string
 MMO_Event_::print ()
 {
-  string ret;
-  return (ret);
+    string ret;
+    return (ret);
 }
 
 Dependencies
 MMO_Event_::deps ()
 {
-  return (_deps);
+    return (_deps);
 }
 
 Dependencies
 MMO_Event_::lhs ()
 {
-  return (_lhs);
+    return (_lhs);
 }
 
 bool
 MMO_Event_::hasPositiveHandler ()
 {
-  return (!_positiveHandlerStatements.empty ());
+    return (!_positiveHandlerStatements.empty ());
 }
 
 bool
 MMO_Event_::hasNegativeHandler ()
 {
-  return (!_negativeHandlerStatements.empty ());
+    return (!_negativeHandlerStatements.empty ());
 }
 
 MMO_Event
 newMMO_Event (AST_Expression cond, MMO_ModelData data)
 {
-  return (new MMO_Event_ (cond, data));
+    return (new MMO_Event_ (cond, data));
 }
 
 void
 deleteMMO_Event (MMO_Event m)
 {
-  delete m;
+    delete m;
 }
 
 ZC_REL
 MMO_Event_::zcRelation ()
 {
-  return (_zcRelation);
+    return (_zcRelation);
 }
 
 AST_Expression
 MMO_Event_::_getExpression (AST_Expression exp)
 {
-  if (exp->expressionType () == EXPOUTPUT)
-       {
-        return (_getExpression(AST_ListFirst(exp->getAsOutput()->expressionList())));
-       }
-  return (exp);
+    if (exp->expressionType () == EXPOUTPUT)
+    {
+        return (_getExpression (AST_ListFirst (exp->getAsOutput ()->expressionList ())));
+    }
+    return (exp);
 }

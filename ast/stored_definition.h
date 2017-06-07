@@ -33,59 +33,59 @@ class AST_Imports;
 class AST_StoredDefinition_ : public AST_Node_
 {
 public:
-  /**
-   *
-   * @param ml
-   * @param within
-   */
-  AST_StoredDefinition_ (AST_ClassList ml, AST_String within);
-  /**
-   *
-   */
-  virtual
-  ~AST_StoredDefinition_ ()
-  {
-  }
-  ;
-  /**
-   *
-   */
-  DEFINE_CLASS_PRINTER(AST_StoredDefinition)
-  ;
-  /**
-   *
-   * @return
-   */
-  AST_ClassList
-  models () const;
-  /**
-   *
-   * @return
-   */
-  AST_String
-  within () const;
-  /**
-   *
-   * @param visitor
-   */
-  void
-  accept (AST_Visitor visitor);
-  /**
-   *
-   * @return
-   */
-  bool
-  hasWithin ();
-  /**
-   *
-   * @return
-   */
-  AST_StringList
-  imports ();
+    /**
+     *
+     * @param ml
+     * @param within
+     */
+    AST_StoredDefinition_ (AST_ClassList ml, AST_String within);
+    /**
+     *
+     */
+    virtual
+    ~AST_StoredDefinition_ ()
+    {
+    }
+    ;
+    /**
+     *
+     */
+    DEFINE_CLASS_PRINTER(AST_StoredDefinition)
+    ;
+    /**
+     *
+     * @return
+     */
+    AST_ClassList
+    models () const;
+    /**
+     *
+     * @return
+     */
+    AST_String
+    within () const;
+    /**
+     *
+     * @param visitor
+     */
+    void
+    accept (AST_Visitor visitor);
+    /**
+     *
+     * @return
+     */
+    bool
+    hasWithin ();
+    /**
+     *
+     * @return
+     */
+    AST_StringList
+    imports ();
 private:
-  AST_ClassList _model_list;
-  AST_String _within;
-  AST_Imports *_imports;
+    AST_ClassList _model_list;
+    AST_String _within;
+    AST_Imports *_imports;
 };
 
 #endif  /* STORED_DEFINITION_H_ */

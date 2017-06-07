@@ -8,12 +8,12 @@
 
 AST_Imports::AST_Imports ()
 {
-  _imports = newAST_StringList ();
+    _imports = newAST_StringList ();
 }
 
 AST_Imports::~AST_Imports ()
 {
-  delete _imports;
+    delete _imports;
 }
 
 void
@@ -64,16 +64,16 @@ AST_Imports::visit (AST_External_Function_Call)
 void
 AST_Imports::visit (AST_Element x)
 {
-  ElementType e = x->elementType ();
-  if (e == IMPORT)
+    ElementType e = x->elementType ();
+    if (e == IMPORT)
     {
-      AST_Element_ImportClause i = x->getAsImportClause ();
-      AST_ListAppend (_imports, newAST_String (i->name ()));
+        AST_Element_ImportClause i = x->getAsImportClause ();
+        AST_ListAppend (_imports, newAST_String (i->name ()));
     }
-  else if (e == ELCLASS)
+    else if (e == ELCLASS)
     {
-      AST_Class c = x->getAsClassWrapper ()->getClass ();
-      c->accept (this);
+        AST_Class c = x->getAsClassWrapper ()->getClass ();
+        c->accept (this);
     }
 }
 
@@ -145,12 +145,12 @@ AST_Imports::leave (AST_StoredDefinition x)
 int
 AST_Imports::apply (AST_Node x)
 {
-  x->accept (this);
-  return (0);
+    x->accept (this);
+    return (0);
 }
 
 AST_StringList
 AST_Imports::imports ()
 {
-  return (_imports);
+    return (_imports);
 }

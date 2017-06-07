@@ -35,13 +35,13 @@ using namespace std;
  */
 enum TypesType
 {
-  TYREAL,    //!< TYREAL
-  TYINTEGER,  //!< TYINTEGER
-  TYBOOLEAN, //!< TYBOOLEAN
-  TYSTRING,  //!< TYSTRING
-  TYARRAY,   //!< TYARRAY
-  TYTUPLA,   //!< TYTUPLA
-  TYFUNCTION  //!< TYFUNCTION
+    TYREAL,    //!< TYREAL
+    TYINTEGER,  //!< TYINTEGER
+    TYBOOLEAN, //!< TYBOOLEAN
+    TYSTRING,  //!< TYSTRING
+    TYARRAY,   //!< TYARRAY
+    TYTUPLA,   //!< TYTUPLA
+    TYFUNCTION  //!< TYFUNCTION
 };
 
 /**
@@ -87,91 +87,92 @@ DEFINE_LIST(Type);
 class Type_
 {
 public:
-  /**
-   *
-   */
-  virtual ~Type_()
+    /**
+     *
+     */
+    virtual
+    ~Type_ ()
     {
     }
-  ;
-  /**
-   *
-   * @return
-   */
-  virtual TypesType
-  getType () = 0;
-  /**
-   *
-   * @return
-   */
-  virtual string
-  print () const =0;
-  /**
-   *
-   * @param os
-   * @param e
-   * @return
-   */
-  friend ostream &
-  operator<< (ostream &os, const Type_ &e);
-  /**
-   *
-   * @param os
-   * @param e
-   * @return
-   */
-  friend ostream &
-  operator<< (ostream &os, const Type &e);
-  /**
-   *
-   * @param e1
-   * @param e2
-   * @return
-   */
-  friend int
-  operator== (Type_ &e1, Type_ &e2);
-  /**
-   *
-   * @param e1
-   * @param e2
-   * @return
-   */
-  friend int
-  operator== (Type_ &e1, Type e2);
-  /**
-   *
-   * @param e1
-   * @param e2
-   * @return
-   */
-  friend int
-  operator!= (Type_ &e1, Type_ &e2);
-  /**
-   *
-   * @param e1
-   * @param e2
-   * @return
-   */
-  friend int
-  operator!= (Type_ &e1, Type e2);
-  /**
-   *
-   * @return
-   */
-  Type_Array
-  getAsArray ();
-  /**
-   *
-   * @return
-   */
-  Type_Tupla
-  getAsTupla ();
-  /**
-   *
-   * @return
-   */
-  Type_Function
-  getAsFunction ();
+    ;
+    /**
+     *
+     * @return
+     */
+    virtual TypesType
+    getType () = 0;
+    /**
+     *
+     * @return
+     */
+    virtual string
+    print () const =0;
+    /**
+     *
+     * @param os
+     * @param e
+     * @return
+     */
+    friend ostream &
+    operator<< (ostream &os, const Type_ &e);
+    /**
+     *
+     * @param os
+     * @param e
+     * @return
+     */
+    friend ostream &
+    operator<< (ostream &os, const Type &e);
+    /**
+     *
+     * @param e1
+     * @param e2
+     * @return
+     */
+    friend int
+    operator== (Type_ &e1, Type_ &e2);
+    /**
+     *
+     * @param e1
+     * @param e2
+     * @return
+     */
+    friend int
+    operator== (Type_ &e1, Type e2);
+    /**
+     *
+     * @param e1
+     * @param e2
+     * @return
+     */
+    friend int
+    operator!= (Type_ &e1, Type_ &e2);
+    /**
+     *
+     * @param e1
+     * @param e2
+     * @return
+     */
+    friend int
+    operator!= (Type_ &e1, Type e2);
+    /**
+     *
+     * @return
+     */
+    Type_Array
+    getAsArray ();
+    /**
+     *
+     * @return
+     */
+    Type_Tupla
+    getAsTupla ();
+    /**
+     *
+     * @return
+     */
+    Type_Function
+    getAsFunction ();
 };
 
 /**
@@ -180,30 +181,30 @@ public:
 class Type_Real_ : public Type_
 {
 public:
-  /**
-   *
-   */
-  Type_Real_ ();
-  /**
-   *
-   */
-  virtual
-  ~Type_Real_ ();
-  /**
-   *
-   * @return
-   */
-  TypesType
-  getType ()
-  {
-    return (TYREAL);
-  }
-  /**
-   *
-   * @return
-   */
-  string
-  print () const;
+    /**
+     *
+     */
+    Type_Real_ ();
+    /**
+     *
+     */
+    virtual
+    ~Type_Real_ ();
+    /**
+     *
+     * @return
+     */
+    TypesType
+    getType ()
+    {
+        return (TYREAL);
+    }
+    /**
+     *
+     * @return
+     */
+    string
+    print () const;
 };
 /**
  *
@@ -224,31 +225,31 @@ deleteType_Real (Type_Real m);
 class Type_Integer_ : public Type_
 {
 public:
-  /**
-   *
-   */
-  Type_Integer_ ();
-  /**
-   *
-   */
-  virtual
-  ~Type_Integer_ ();
-  /**
-   *
-   * @return
-   */
-  TypesType
-  getType ()
-  {
-    return (TYINTEGER);
-  }
-  ;
-  /**
-   *
-   * @return
-   */
-  string
-  print () const;
+    /**
+     *
+     */
+    Type_Integer_ ();
+    /**
+     *
+     */
+    virtual
+    ~Type_Integer_ ();
+    /**
+     *
+     * @return
+     */
+    TypesType
+    getType ()
+    {
+        return (TYINTEGER);
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    string
+    print () const;
 };
 /**
  *
@@ -269,29 +270,30 @@ deleteType_Integer (Type_Integer m);
 class Type_Boolean_ : public Type_
 {
 public:
-  /**
-   *
-   */
-  virtual
-  ~Type_Boolean_ ()
-  {
-  };
-  /**
-   *
-   * @return
-   */
-  TypesType
-  getType ()
-  {
-    return (TYBOOLEAN);
-  }
-  ;
-  /**
-   *
-   * @return
-   */
-  string
-  print () const;
+    /**
+     *
+     */
+    virtual
+    ~Type_Boolean_ ()
+    {
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    TypesType
+    getType ()
+    {
+        return (TYBOOLEAN);
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    string
+    print () const;
 };
 
 /**
@@ -300,27 +302,27 @@ public:
 class Type_String_ : public Type_
 {
 public:
-  /**
-   *
-   */
-  virtual
-  ~Type_String_ ();
-  /**
-   *
-   * @return
-   */
-  TypesType
-  getType ()
-  {
-    return (TYSTRING);
-  }
-  ;
-  /**
-   *
-   * @return
-   */
-  string
-  print () const;
+    /**
+     *
+     */
+    virtual
+    ~Type_String_ ();
+    /**
+     *
+     * @return
+     */
+    TypesType
+    getType ()
+    {
+        return (TYSTRING);
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    string
+    print () const;
 };
 
 /**
@@ -329,51 +331,51 @@ public:
 class Type_Array_ : public Type_
 {
 public:
-  /**
-   *
-   * @param t
-   * @param dim
-   */
-  Type_Array_ (Type t, AST_Expression dim);
-  /**
-   *
-   */
-  virtual
-  ~Type_Array_ ();
-  /**
-   *
-   * @return
-   */
-  TypesType
-  getType ()
-  {
-    return (TYARRAY);
-  }
-  /**
-   *
-   * @return
-   */
-  string
-  print () const;
-  /**
-   *
-   * @return
-   */
-  Type
-  arrayOf ();
-  /**
-   *
-   * @return
-   */
-  AST_Expression
-  dimension ()
-  {
-    return (_dim);
-  }
-  ;
+    /**
+     *
+     * @param t
+     * @param dim
+     */
+    Type_Array_ (Type t, AST_Expression dim);
+    /**
+     *
+     */
+    virtual
+    ~Type_Array_ ();
+    /**
+     *
+     * @return
+     */
+    TypesType
+    getType ()
+    {
+        return (TYARRAY);
+    }
+    /**
+     *
+     * @return
+     */
+    string
+    print () const;
+    /**
+     *
+     * @return
+     */
+    Type
+    arrayOf ();
+    /**
+     *
+     * @return
+     */
+    AST_Expression
+    dimension ()
+    {
+        return (_dim);
+    }
+    ;
 private:
-  Type _t;
-  AST_Expression _dim;
+    Type _t;
+    AST_Expression _dim;
 };
 
 /**
@@ -382,43 +384,43 @@ private:
 class Type_Tupla_ : public Type_
 {
 public:
-  /**
-   *
-   * @param tyl
-   */
-  Type_Tupla_ (TypeList tyl);
-  /**
-   *
-   */
-  virtual
-  ~Type_Tupla_ ();
-  /**
-   *
-   * @return
-   */
-  string
-  print () const;
-  /**
-   *
-   * @return
-   */
-  TypeList
-  tupla ()
-  {
-    return (_tyl);
-  }
-  ;
-  /**
-   *
-   * @return
-   */
-  TypesType
-  getType ()
-  {
-    return (TYTUPLA);
-  }
+    /**
+     *
+     * @param tyl
+     */
+    Type_Tupla_ (TypeList tyl);
+    /**
+     *
+     */
+    virtual
+    ~Type_Tupla_ ();
+    /**
+     *
+     * @return
+     */
+    string
+    print () const;
+    /**
+     *
+     * @return
+     */
+    TypeList
+    tupla ()
+    {
+        return (_tyl);
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    TypesType
+    getType ()
+    {
+        return (TYTUPLA);
+    }
 private:
-  TypeList _tyl;
+    TypeList _tyl;
 };
 
 /**
@@ -427,56 +429,56 @@ private:
 class Type_Function_ : public Type_
 {
 public:
-  /**
-   *
-   * @param output
-   * @param input
-   */
-  Type_Function_ (Type output, TypeList input);
-  /**
-   *
-   */
-  virtual
-  ~Type_Function_ ();
-  /**
-   *
-   * @return
-   */
-  string
-  print () const;
-  /**
-   *
-   * @return
-   */
-  TypeList
-  input ()
-  {
-    return (_input);
-  }
-  ;
-  /**
-   *
-   * @return
-   */
-  Type
-  output ()
-  {
-    return (_output);
-  }
-  ;
-  /**
-   *
-   * @return
-   */
-  TypesType
-  getType ()
-  {
-    return (TYFUNCTION);
-  }
-  ;
+    /**
+     *
+     * @param output
+     * @param input
+     */
+    Type_Function_ (Type output, TypeList input);
+    /**
+     *
+     */
+    virtual
+    ~Type_Function_ ();
+    /**
+     *
+     * @return
+     */
+    string
+    print () const;
+    /**
+     *
+     * @return
+     */
+    TypeList
+    input ()
+    {
+        return (_input);
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    Type
+    output ()
+    {
+        return (_output);
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    TypesType
+    getType ()
+    {
+        return (TYFUNCTION);
+    }
+    ;
 private:
-  TypeList _input;
-  Type _output;
+    TypeList _input;
+    Type _output;
 };
 
 #endif  /* TYPE_H_ */

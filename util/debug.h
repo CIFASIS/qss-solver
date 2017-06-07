@@ -20,7 +20,6 @@
 // This debugging routines allow the user to turn on selected
 // debugging messages, controllable from the command line arguments
 // passed to modelicacc after de -d option.
-
 /**
  * Initialize so that only DEBUG messages with a flag in flagList
  * will be printed.

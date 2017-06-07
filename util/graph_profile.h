@@ -1,30 +1,28 @@
 /*****************************************************************************
 
-    This file is part of QSS Solver.
+ This file is part of QSS Solver.
 
-    QSS Solver is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ QSS Solver is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    QSS Solver is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ QSS Solver is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
-******************************************************************************/
+ ******************************************************************************/
 
 #ifndef GRAPH_GRAPH_PROFILE_H_
 #define GRAPH_GRAPH_PROFILE_H_
 
 typedef enum
 {
-  GRP_CONT,
-  GRP_DSC,
-  GRP_VIRT
+    GRP_CONT, GRP_DSC, GRP_VIRT
 } GRP_EdgeType;
 
 /**
@@ -56,7 +54,7 @@ typedef double
  */
 struct GRP_graphProfileOps_
 {
-  GRP_graphProfileWeight weight; //!<
+    GRP_graphProfileWeight weight; //!<
 };
 
 /**
@@ -64,11 +62,11 @@ struct GRP_graphProfileOps_
  */
 struct GRP_graphProfileState_
 {
-  int states; //!<
-  int events; //!<
-  double contEdgeWeight;
-  double dscEdgeWeight;
-  double virtEdgeWeight;
+    int states; //!<
+    int events; //!<
+    double contEdgeWeight;
+    double dscEdgeWeight;
+    double virtEdgeWeight;
 };
 
 /**
@@ -76,8 +74,8 @@ struct GRP_graphProfileState_
  */
 struct GRP_graphProfile_
 {
-  GRP_graphProfileOps ops; //!<
-  GRP_graphProfileState state; //!<
+    GRP_graphProfileOps ops; //!<
+    GRP_graphProfileState state; //!<
 };
 
 /**
@@ -125,6 +123,5 @@ GRP_freeGraphProfileState (GRP_graphProfileState state);
 
 double
 GRP_Weight (GRP_graphProfile g, GRP_EdgeType type);
-
 
 #endif /* GRAPH_GRAPH_PROFILE_H_ */

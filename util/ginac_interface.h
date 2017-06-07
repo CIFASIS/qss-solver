@@ -59,64 +59,62 @@ DECLARE_FUNCTION_1P(pre)
 class ConvertToGiNaC : public AST_Expression_Visitor<GiNaC::ex>
 {
 public:
-  /**
-   *
-   * @param varEnv
-   * @param forDerivation
-   * @param exp
-   */
-  ConvertToGiNaC (VarSymbolTable varEnv, bool forDerivation = false,
-		  MMO_Expression exp = NULL);
-  /**
-   *
-   * @param
-   * @param replaceDer
-   * @param generateIndexes
-   * @return
-   */
-  GiNaC::ex
-  convert (AST_Expression, bool replaceDer = true,
-	   bool generateIndexes = false);
-  /**
-   *
-   * @param
-   * @return
-   */
-  GiNaC::symbol&
-  getSymbol (AST_Expression_ComponentReference);
-  /**
-   *
-   * @param
-   * @return
-   */
-  GiNaC::symbol&
-  getSymbol (string);
-  /**
-   *
-   * @param
-   * @return
-   */
-  GiNaC::symbol&
-  getSymbol (AST_Expression_Derivative);
-  /**
-   *
-   * @return
-   */
-  GiNaC::symbol&
-  getTime ();
+    /**
+     *
+     * @param varEnv
+     * @param forDerivation
+     * @param exp
+     */
+    ConvertToGiNaC (VarSymbolTable varEnv, bool forDerivation = false, MMO_Expression exp = NULL);
+    /**
+     *
+     * @param
+     * @param replaceDer
+     * @param generateIndexes
+     * @return
+     */
+    GiNaC::ex
+    convert (AST_Expression, bool replaceDer = true, bool generateIndexes = false);
+    /**
+     *
+     * @param
+     * @return
+     */
+    GiNaC::symbol&
+    getSymbol (AST_Expression_ComponentReference);
+    /**
+     *
+     * @param
+     * @return
+     */
+    GiNaC::symbol&
+    getSymbol (string);
+    /**
+     *
+     * @param
+     * @return
+     */
+    GiNaC::symbol&
+    getSymbol (AST_Expression_Derivative);
+    /**
+     *
+     * @return
+     */
+    GiNaC::symbol&
+    getTime ();
 private:
-  virtual GiNaC::ex
-  foldTraverseElement (AST_Expression);
-  virtual GiNaC::ex
-  foldTraverseElementUMinus (AST_Expression);
-  virtual GiNaC::ex
-  foldTraverseElement (GiNaC::ex, GiNaC::ex, BinOpType);
-  map<string, GiNaC::symbol> directory;
-  bool _forDerivation;
-  VarSymbolTable _varEnv;
-  bool _replaceDer;
-  bool _generateIndexes;
-  MMO_Expression _exp;
+    virtual GiNaC::ex
+    foldTraverseElement (AST_Expression);
+    virtual GiNaC::ex
+    foldTraverseElementUMinus (AST_Expression);
+    virtual GiNaC::ex
+    foldTraverseElement (GiNaC::ex, GiNaC::ex, BinOpType);
+    map<string, GiNaC::symbol> directory;
+    bool _forDerivation;
+    VarSymbolTable _varEnv;
+    bool _replaceDer;
+    bool _generateIndexes;
+    MMO_Expression _exp;
 };
 
 /**
@@ -125,13 +123,13 @@ private:
 class ConvertToExpression
 {
 public:
-  /**
-   *
-   * @param
-   * @return
-   */
-  static AST_Expression
-  convert (GiNaC::ex);
+    /**
+     *
+     * @param
+     * @return
+     */
+    static AST_Expression
+    convert (GiNaC::ex);
 };
 
 #endif  /* GINAC_INTERFACE_H_ */

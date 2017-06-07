@@ -33,28 +33,23 @@
 AST_Equation_Equality
 EquationDerivator::derivate (AST_Equation_Equality eq, VarSymbolTable varEnv)
 {
-  ConvertToGiNaC tog (varEnv, true);
-  ConvertToExpression toe;
-  GiNaC::ex left = tog.convert (eq->left ());
-  GiNaC::ex right = tog.convert (eq->right ());
-  GiNaC::symbol time = tog.getTime ();
-  GiNaC::ex der_left = left.diff (time).subs (
-      var (GiNaC::wild (), time) == GiNaC::wild ());
-  GiNaC::ex der_right = right.diff (time).subs (
-      var (GiNaC::wild (), time) == GiNaC::wild ());
-  return (newAST_Equation_Equality (toe.convert (der_left),
-				   toe.convert (der_right))->getAsEquality ());
+    ConvertToGiNaC tog (varEnv, true);
+    ConvertToExpression toe;
+    GiNaC::ex left = tog.convert (eq->left ());
+    GiNaC::ex right = tog.convert (eq->right ());
+    GiNaC::symbol time = tog.getTime ();
+    GiNaC::ex der_left = left.diff (time).subs (var (GiNaC::wild (), time) == GiNaC::wild ());
+    GiNaC::ex der_right = right.diff (time).subs (var (GiNaC::wild (), time) == GiNaC::wild ());
+    return (newAST_Equation_Equality (toe.convert (der_left), toe.convert (der_right))->getAsEquality ());
 }
 
 AST_Expression
-ExpressionDerivator::derivate (AST_Expression exp, VarSymbolTable varEnv,
-			       MMO_Expression e)
+ExpressionDerivator::derivate (AST_Expression exp, VarSymbolTable varEnv, MMO_Expression e)
 {
-  ConvertToGiNaC tog (varEnv, true, e);
-  ConvertToExpression toe;
-  GiNaC::ex dexp = tog.convert (exp, false, true);
-  GiNaC::symbol time = tog.getTime ();
-  GiNaC::ex der_exp = dexp.diff (time).subs (
-      var (GiNaC::wild (), time) == GiNaC::wild ());
-  return (toe.convert (der_exp));
+    ConvertToGiNaC tog (varEnv, true, e);
+    ConvertToExpression toe;
+    GiNaC::ex dexp = tog.convert (exp, false, true);
+    GiNaC::symbol time = tog.getTime ();
+    GiNaC::ex der_exp = dexp.diff (time).subs (var (GiNaC::wild (), time) == GiNaC::wild ());
+    return (toe.convert (der_exp));
 }

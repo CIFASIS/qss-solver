@@ -22,7 +22,6 @@
 
 #include <string>
 
-
 using namespace std;
 
 /**
@@ -31,20 +30,20 @@ using namespace std;
 class MMO_Base_
 {
 public:
-  /**
-   *
-   */
-  virtual
-  ~MMO_Base_ ()
-  {
-  }
-  ;
-  /**
-   *
-   * @return
-   */
-  virtual string
-  print () = 0;
+    /**
+     *
+     */
+    virtual
+    ~MMO_Base_ ()
+    {
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    virtual string
+    print () = 0;
 };
 
 #endif  /*  MMO_BASE_H_ */

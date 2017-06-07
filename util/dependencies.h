@@ -31,17 +31,17 @@ using namespace std;
  */
 typedef enum
 {
-  DEP_STATE,          //!< DEP_STATE
-  DEP_DISCRETE,       //!< DEP_DISCRETE
-  DEP_ALGEBRAIC,      //!< DEP_ALGEBRAIC
-  DEP_ALGEBRAIC_DEF,  //!< DEP_ALGEBRAIC_DEF
-  DEP_ALGEBRAIC_STATE,  //!< DEP_ALGEBRAIC_STATE
-  DEP_ALGEBRAIC_DISCRETE,  //!< DEP_ALGEBRAIC_DISCRETE
-  DEP_STATE_VECTOR,   //!< DEP_STATE_VECTOR
-  DEP_DISCRETE_VECTOR,   //!< DEP_DISCRETE_VECTOR
-  DEP_ALGEBRAIC_VECTOR,   //!< DEP_ALGEBRAIC_VECTOR
-  DEP_ALGEBRAIC_VECTOR_DEF,   //!< DEP_ALGEBRAIC_VECTOR_DEF
-  DEP_ALGEBRAIC_STATES  //!< DEP_ALGEBRAIC_STATES
+    DEP_STATE,          //!< DEP_STATE
+    DEP_DISCRETE,       //!< DEP_DISCRETE
+    DEP_ALGEBRAIC,      //!< DEP_ALGEBRAIC
+    DEP_ALGEBRAIC_DEF,  //!< DEP_ALGEBRAIC_DEF
+    DEP_ALGEBRAIC_STATE,  //!< DEP_ALGEBRAIC_STATE
+    DEP_ALGEBRAIC_DISCRETE,  //!< DEP_ALGEBRAIC_DISCRETE
+    DEP_STATE_VECTOR,   //!< DEP_STATE_VECTOR
+    DEP_DISCRETE_VECTOR,   //!< DEP_DISCRETE_VECTOR
+    DEP_ALGEBRAIC_VECTOR,   //!< DEP_ALGEBRAIC_VECTOR
+    DEP_ALGEBRAIC_VECTOR_DEF,   //!< DEP_ALGEBRAIC_VECTOR_DEF
+    DEP_ALGEBRAIC_STATES  //!< DEP_ALGEBRAIC_STATES
 } DEP_Type;
 
 /**
@@ -50,201 +50,201 @@ typedef enum
 class Dependencies_
 {
 public:
-  /**
-   *
-   */
-  Dependencies_ ();
-  /**
-   *
-   */
-  ~Dependencies_ ();
-  /**
-   *
-   * @return
-   */
-  bool
-  autonomous ();
-  /**
-   *
-   * @param a
-   */
-  void
-  setAutonomous (bool a);
-  /**
-   *
-   * @param d
-   */
-  void
-  join (Dependencies d);
-  /**
-   *
-   * @param d
-   * @param index
-   * @param t
-   */
-  void
-  join (Dependencies d, Index index, DEP_Type t);
-  /**
-   *
-   * @param d
-   * @param val
-   */
-  void
-  join (Dependencies d, int val);
-  /**
-   *
-   * @param d
-   * @param t
-   */
-  void
-  join (Dependencies d, DEP_Type t);
-  /**
-   *
-   * @param d
-   * @param t
-   * @param val
-   */
-  void
-  join (Dependencies d, DEP_Type t, int val);
-  /**
-   *
-   * @param d
-   * @param st
-   * @param t
-   * @param val
-   */
-  void
-   join (Dependencies d, Index st, DEP_Type t, int val);
-  /**
-   *
-   * @param d
-   * @param index
-   */
-  void
-  join (Dependencies d, Index index);
+    /**
+     *
+     */
+    Dependencies_ ();
+    /**
+     *
+     */
+    ~Dependencies_ ();
+    /**
+     *
+     * @return
+     */
+    bool
+    autonomous ();
+    /**
+     *
+     * @param a
+     */
+    void
+    setAutonomous (bool a);
+    /**
+     *
+     * @param d
+     */
+    void
+    join (Dependencies d);
+    /**
+     *
+     * @param d
+     * @param index
+     * @param t
+     */
+    void
+    join (Dependencies d, Index index, DEP_Type t);
+    /**
+     *
+     * @param d
+     * @param val
+     */
+    void
+    join (Dependencies d, int val);
+    /**
+     *
+     * @param d
+     * @param t
+     */
+    void
+    join (Dependencies d, DEP_Type t);
+    /**
+     *
+     * @param d
+     * @param t
+     * @param val
+     */
+    void
+    join (Dependencies d, DEP_Type t, int val);
+    /**
+     *
+     * @param d
+     * @param st
+     * @param t
+     * @param val
+     */
+    void
+    join (Dependencies d, Index st, DEP_Type t, int val);
+    /**
+     *
+     * @param d
+     * @param index
+     */
+    void
+    join (Dependencies d, Index index);
 
-  /**
-   *
-   * @param vi
-   */
-  void
-  insert (VarInfo vi);
-  /**
-   *
-   * @param idx
-   * @param t
-   */
-  void
-  insert (Index idx, DEP_Type t);
-  void
-  insert (Index idx, Index dep, DEP_Type t);
-  Index
-  key (DEP_Type t);
-  /**
-   *
-   * @param t
-   * @return
-   */
-  Index *
-  begin (DEP_Type t);
-  /**
-   *
-   * @param t
-   * @return
-   */
-  bool
-  end (DEP_Type t);
-  /**
-   *
-   * @param t
-   * @return
-   */
-  Index *
-  next (DEP_Type t);
-  /**
-   *
-   * @param idx
-   * @param t
-   * @return
-   */
-  bool
-  find (Index idx, DEP_Type t);
-  /**
-   *
-   * @return
-   */
-  int
-  states ();
-  /**
-   *
-   * @return
-   */
-  int
-  discretes ();
-  /**
-   *
-   * @return
-   */
-  int
-  algebraics ();
-  /**
-   *
-   * @return
-   */
-  int
-  stateVectors ();
-  /**
-   *
-   * @return
-   */
-  int
-  discreteVectors ();
-  /**
-   *
-   * @return
-   */
-  bool
-  hasStates ();
-  /**
-   *
-   * @return
-   */
-  bool
-  hasDiscretes ();
-  /**
-   *
-   * @return
-   */
-  bool
-  hasAlgebraics ();
-  bool
-  hasAlgebraicDiscretes ();
-  bool
-  hasAlgebraicStates ();
-  bool
-  isVector(Index *idx);
-  Index *
-  algebraicState(Index *idx);
+    /**
+     *
+     * @param vi
+     */
+    void
+    insert (VarInfo vi);
+    /**
+     *
+     * @param idx
+     * @param t
+     */
+    void
+    insert (Index idx, DEP_Type t);
+    void
+    insert (Index idx, Index dep, DEP_Type t);
+    Index
+    key (DEP_Type t);
+    /**
+     *
+     * @param t
+     * @return
+     */
+    Index *
+    begin (DEP_Type t);
+    /**
+     *
+     * @param t
+     * @return
+     */
+    bool
+    end (DEP_Type t);
+    /**
+     *
+     * @param t
+     * @return
+     */
+    Index *
+    next (DEP_Type t);
+    /**
+     *
+     * @param idx
+     * @param t
+     * @return
+     */
+    bool
+    find (Index idx, DEP_Type t);
+    /**
+     *
+     * @return
+     */
+    int
+    states ();
+    /**
+     *
+     * @return
+     */
+    int
+    discretes ();
+    /**
+     *
+     * @return
+     */
+    int
+    algebraics ();
+    /**
+     *
+     * @return
+     */
+    int
+    stateVectors ();
+    /**
+     *
+     * @return
+     */
+    int
+    discreteVectors ();
+    /**
+     *
+     * @return
+     */
+    bool
+    hasStates ();
+    /**
+     *
+     * @return
+     */
+    bool
+    hasDiscretes ();
+    /**
+     *
+     * @return
+     */
+    bool
+    hasAlgebraics ();
+    bool
+    hasAlgebraicDiscretes ();
+    bool
+    hasAlgebraicStates ();
+    bool
+    isVector (Index *idx);
+    Index *
+    algebraicState (Index *idx);
 private:
-  MMO_IndexTable
-  _select (DEP_Type t);
-  bool
-  _testIntersection(MMO_IndexTable m, Index key);
-  MMO_IndexTable _states;
-  MMO_IndexTable _discretes;
-  MMO_IndexTable _algebraics;
-  MMO_IndexTable _algebraicsDefs;
-  MMO_IndexTable _algebraicsState;
-  MMO_IndexTable _algebraicsDiscrete;
-  MMO_IndexTable _stateVectors;
-  MMO_IndexTable _discreteVectors;
-  MMO_IndexTable _algebraicVectorsDef;
-  MMO_IndexTable _algebraicVectors;
-  MMO_IndexTable _algebraicStates;
-  bool _autonomous;
-  int _stateVectorsCount;
-  int _discreteVectorsCount;
-  int _algebraicVectorsCount;
+    MMO_IndexTable
+    _select (DEP_Type t);
+    bool
+    _testIntersection (MMO_IndexTable m, Index key);
+    MMO_IndexTable _states;
+    MMO_IndexTable _discretes;
+    MMO_IndexTable _algebraics;
+    MMO_IndexTable _algebraicsDefs;
+    MMO_IndexTable _algebraicsState;
+    MMO_IndexTable _algebraicsDiscrete;
+    MMO_IndexTable _stateVectors;
+    MMO_IndexTable _discreteVectors;
+    MMO_IndexTable _algebraicVectorsDef;
+    MMO_IndexTable _algebraicVectors;
+    MMO_IndexTable _algebraicStates;
+    bool _autonomous;
+    int _stateVectorsCount;
+    int _discreteVectorsCount;
+    int _algebraicVectorsCount;
 };
 /**
  *

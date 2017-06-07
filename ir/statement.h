@@ -35,95 +35,90 @@
 class MMO_Statement_ : public MMO_Base_
 {
 public:
-  /**
-   *
-   * @param stm
-   * @param data
-   */
-  MMO_Statement_ (AST_Statement stm, MMO_ModelData data);
-  /**
-   *
-   * @param stm
-   */
-  MMO_Statement_ (AST_Statement stm);
-  /**
-   *
-   */
-  MMO_Statement_ ();
-  /**
-   *
-   */
-  ~MMO_Statement_ ();
-  /**
-   *
-   * @return
-   */
-  string
-  print ();
-  /**
-   *
-   * @param indent
-   * @param idx
-   * @param offset
-   * @param order
-   * @param forOffset
-   * @return
-   */
-  list<string>
-  print (string indent, string idx = "", int offset = 0, int order = 1,
-	 int forOffset = 0);
-  /**
-   *
-   * @return
-   */
-  list<string>
-  getVariables ();
-  /**
-   *
-   * @return
-   */
-  Dependencies
-  deps ();
-  /**
-   *
-   * @return
-   */
-  Dependencies
-  lhs ();
+    /**
+     *
+     * @param stm
+     * @param data
+     */
+    MMO_Statement_ (AST_Statement stm, MMO_ModelData data);
+    /**
+     *
+     * @param stm
+     */
+    MMO_Statement_ (AST_Statement stm);
+    /**
+     *
+     */
+    MMO_Statement_ ();
+    /**
+     *
+     */
+    ~MMO_Statement_ ();
+    /**
+     *
+     * @return
+     */
+    string
+    print ();
+    /**
+     *
+     * @param indent
+     * @param idx
+     * @param offset
+     * @param order
+     * @param forOffset
+     * @return
+     */
+    list<string>
+    print (string indent, string idx = "", int offset = 0, int order = 1, int forOffset = 0);
+    /**
+     *
+     * @return
+     */
+    list<string>
+    getVariables ();
+    /**
+     *
+     * @return
+     */
+    Dependencies
+    deps ();
+    /**
+     *
+     * @return
+     */
+    Dependencies
+    lhs ();
 private:
-  void
-  _init ();
-  void
-  _setInitialCode (AST_Statement stm);
-  void
-  _insertDeps (AST_Expression exp);
-  void
-  _insertDeps (AST_Statement stm, int begin = 0, int end = 0);
-  void
-  _insertVectorDeps (Dependencies deps, Dependencies in, DEP_Type type,
-		     DEP_Type insert, int begin, int end);
-  Index
-  _getIndex (AST_Expression_ComponentReference cr, VarInfo vi);
-  void
-  _printAssignment (const string& name, AST_Expression_ComponentReference cr,
-		    AST_Expression e, const string& indent,
-		    const string& idx, int offset, int order, int forOffset,
-		    list<string>& ret);
-  void
-  _printList (AST_StatementListIterator it, AST_StatementList stl,
-	      const string& indent, const string& idx, int offset, int order,
-	      int forOffset, list<string>& ret);
-  void
-  _printIfExpression (AST_Expression e, string lhs, const string& indent, const string& idx,
-		      int order, int offset, int forOffset, list<string>& ret, list<string>& code);
+    void
+    _init ();
+    void
+    _setInitialCode (AST_Statement stm);
+    void
+    _insertDeps (AST_Expression exp);
+    void
+    _insertDeps (AST_Statement stm, int begin = 0, int end = 0);
+    void
+    _insertVectorDeps (Dependencies deps, Dependencies in, DEP_Type type, DEP_Type insert, int begin, int end);
+    Index
+    _getIndex (AST_Expression_ComponentReference cr, VarInfo vi);
+    void
+    _printAssignment (const string& name, AST_Expression_ComponentReference cr, AST_Expression e, const string& indent, const string& idx, int offset,
+                      int order, int forOffset, list<string>& ret);
+    void
+    _printList (AST_StatementListIterator it, AST_StatementList stl, const string& indent, const string& idx, int offset, int order, int forOffset,
+                list<string>& ret);
+    void
+    _printIfExpression (AST_Expression e, string lhs, const string& indent, const string& idx, int order, int offset, int forOffset,
+                        list<string>& ret, list<string>& code);
 
-  AST_Statement _stm;
-  MMO_ModelData _data;
-  Dependencies _deps;
-  Dependencies _lhs;
-  bool _initialCode;
-  list<string> _variables;
-  Index _eventLhs;
+    AST_Statement _stm;
+    MMO_ModelData _data;
+    Dependencies _deps;
+    Dependencies _lhs;
+    bool _initialCode;
+    list<string> _variables;
+    Index _eventLhs;
 };
 /**
  *

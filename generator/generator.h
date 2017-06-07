@@ -35,96 +35,96 @@ using namespace std;
 
 /*
 
-#include <map>
+ #include <map>
 
-#include <generator/generator_types.h>
-#include <ir/mmo_types.h>
-#include <util/compile_flags.h>
-*/
+ #include <generator/generator_types.h>
+ #include <ir/mmo_types.h>
+ #include <util/compile_flags.h>
+ */
 /**
  *
  */
 class MMO_Generator_
 {
 public:
-  /**
-   *
-   * @param std
-   * @param flags
-   */
-  MMO_Generator_ (MMO_StoredDefinition std, MMO_CompileFlags flags);
-  /**
-   *
-   */
-  ~MMO_Generator_ ();
-  /**
-   *
-   * @return
-   */
-  int
-  generate ();
+    /**
+     *
+     * @param std
+     * @param flags
+     */
+    MMO_Generator_ (MMO_StoredDefinition std, MMO_CompileFlags flags);
+    /**
+     *
+     */
+    ~MMO_Generator_ ();
+    /**
+     *
+     * @return
+     */
+    int
+    generate ();
 private:
-  void
-  _generateFunctionCode (MMO_Function f);
-  void
-  _generateHeader (string name);
-  void
-  _printList (list<string> l);
-  void
-  _variablesInitCode ();
-  void
-  _variables ();
-  void
-  _generateModel ();
-  void
-  _generateFunction (MMO_Function f, string fileName);
-  void
-  _generateFunction (MMO_FunctionDefinition f, string fileName);
-  void
-  _generateFunctionHeader (string fileName);
-  void
-  _generatePackage (MMO_Package p);
-  void
-  _header ();
-  void
-  _parameters ();
-  void
-  _modelDef ();
-  void
-  _modelDeps ();
-  void
-  _zeroCrossing ();
-  void
-  _handlerPositive ();
-  void
-  _handlerNegative ();
-  void
-  _output ();
-  void
-  _initMatrices ();
-  void
-  _functions ();
-  void
-  _initSections ();
-  void
-  _initEvents ();
-  void
-  _initTime ();
-  void
-  _initOutput ();
-  void
-  _initModel ();
-  MMO_StoredDefinition _std;
-  MMO_Model _model;
-  MMO_Function _function;
-  MMO_Package _package;
-  MMO_CompileFlags _flags;
-  MMO_Solver _solver;
-  MMO_Files _files;
-  MMO_Writer _writer;
-  ofstream _file;
-  map<string, string> _includes;
-  list<string> _fheader;
+    void
+    _generateFunctionCode (MMO_Function f);
+    void
+    _generateHeader (string name);
+    void
+    _printList (list<string> l);
+    void
+    _variablesInitCode ();
+    void
+    _variables ();
+    void
+    _generateModel ();
+    void
+    _generateFunction (MMO_Function f, string fileName);
+    void
+    _generateFunction (MMO_FunctionDefinition f, string fileName);
+    void
+    _generateFunctionHeader (string fileName);
+    void
+    _generatePackage (MMO_Package p);
+    void
+    _header ();
+    void
+    _parameters ();
+    void
+    _modelDef ();
+    void
+    _modelDeps ();
+    void
+    _zeroCrossing ();
+    void
+    _handlerPositive ();
+    void
+    _handlerNegative ();
+    void
+    _output ();
+    void
+    _initMatrices ();
+    void
+    _functions ();
+    void
+    _initSections ();
+    void
+    _initEvents ();
+    void
+    _initTime ();
+    void
+    _initOutput ();
+    void
+    _initModel ();
+    MMO_StoredDefinition _std;
+    MMO_Model _model;
+    MMO_Function _function;
+    MMO_Package _package;
+    MMO_CompileFlags _flags;
+    MMO_Solver _solver;
+    MMO_Files _files;
+    MMO_Writer _writer;
+    ofstream _file;
+    map<string, string> _includes;
+    list<string> _fheader;
 };
 /**
  *

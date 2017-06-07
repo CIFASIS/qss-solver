@@ -36,57 +36,57 @@ using namespace std;
 class MMO_Files_
 {
 public:
-  /**
-   *
-   * @param model
-   * @param solver
-   * @param flags
-   */
-  MMO_Files_ (MMO_Model model, MMO_Solver solver, MMO_CompileFlags flags);
-  /**
-   *
-   * @param name
-   * @param flags
-   */
-  MMO_Files_ (string name, MMO_CompileFlags flags);
-  /**
-   *
-   */
-  ~MMO_Files_ ();
-  /**
-   *
-   */
-  void
-  makefile ();
-  /**
-   *
-   */
-  void
-  run ();
-  /**
-   *
-   */
-  void
-  plot ();
-  /**
-   *
-   * @param annotation
-   */
-  void
-  settings (MMO_Annotation annotation);
-  void
-  graph ();
+    /**
+     *
+     * @param model
+     * @param solver
+     * @param flags
+     */
+    MMO_Files_ (MMO_Model model, MMO_Solver solver, MMO_CompileFlags flags);
+    /**
+     *
+     * @param name
+     * @param flags
+     */
+    MMO_Files_ (string name, MMO_CompileFlags flags);
+    /**
+     *
+     */
+    ~MMO_Files_ ();
+    /**
+     *
+     */
+    void
+    makefile ();
+    /**
+     *
+     */
+    void
+    run ();
+    /**
+     *
+     */
+    void
+    plot ();
+    /**
+     *
+     * @param annotation
+     */
+    void
+    settings (MMO_Annotation annotation);
+    void
+    graph ();
 private:
-  string
-  _variableSettings (Dependencies deps, string varName);
-  void
-  _printList(list<string> ann, string tag, MMO_Annotation annotation);
-  string _fname;
-  MMO_Model _model;
-  MMO_Solver _solver;
-  MMO_Writer _writer;
-  MMO_CompileFlags _flags;
-  ofstream _file;
+    string
+    _variableSettings (Dependencies deps, string varName);
+    void
+    _printList (list<string> ann, string tag, MMO_Annotation annotation);
+    string _fname;
+    MMO_Model _model;
+    MMO_Solver _solver;
+    MMO_Writer _writer;
+    MMO_CompileFlags _flags;
+    ofstream _file;
 };
 
 /**

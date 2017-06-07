@@ -255,9 +255,9 @@ using namespace std;
  */
 typedef enum
 {
-  ER_Warning, //!< ER_Warning
-  ER_Error,   //!< ER_Error
-  ER_Fatal    //!< ER_Fatal
+    ER_Warning, //!< ER_Warning
+        ER_Error,   //!< ER_Error
+        ER_Fatal    //!< ER_Fatal
 } ER_Type;
 
 /**
@@ -266,73 +266,73 @@ typedef enum
 class Error
 {
 public:
-  /**
-   *
-   * @return
-   */
-  static Error *
-  getInstance ();
-  /**
-   *
-   */
-  ~Error ();
-  /**
-   *
-   * @param pos
-   * @param code
-   * @param t
-   * @param message
-   */
-  void
-  add (int pos, unsigned int code, ER_Type t, const string message, ...);
-  /**
-   *
-   */
-  void
-  show ();
-  /**
-   *
-   * @param className
-   */
-  void
-  setClassName (string className);
-  /**
-   *
-   * @return
-   */
-  string
-  className ();
-  /**
-   *
-   * @param s
-   */
-  void
-  setFile (string s);
-  /**
-   *
-   * @return
-   */
-  string
-  file ();
-  /**
-   *
-   * @return
-   */
-  int
-  errors ();
+    /**
+     *
+     * @return
+     */
+    static Error *
+    getInstance ();
+    /**
+     *
+     */
+    ~Error ();
+    /**
+     *
+     * @param pos
+     * @param code
+     * @param t
+     * @param message
+     */
+    void
+    add (int pos, unsigned int code, ER_Type t, const string message, ...);
+    /**
+     *
+     */
+    void
+    show ();
+    /**
+     *
+     * @param className
+     */
+    void
+    setClassName (string className);
+    /**
+     *
+     * @return
+     */
+    string
+    className ();
+    /**
+     *
+     * @param s
+     */
+    void
+    setFile (string s);
+    /**
+     *
+     * @return
+     */
+    string
+    file ();
+    /**
+     *
+     * @return
+     */
+    int
+    errors ();
 private:
-  Error ();
-  static Error *_instance;
-  string
-  _typeString (ER_Type t);
-  string
-  _printCode (int code);
-  map<unsigned int, string> _errors;
-  map<unsigned int, string> _warnings;
-  int _numErrors;
-  int _numWarnings;
-  string _stdDef;
-  string _className;
+    Error ();
+    static Error *_instance;
+    string
+    _typeString (ER_Type t);
+    string
+    _printCode (int code);
+    map<unsigned int, string> _errors;
+    map<unsigned int, string> _warnings;
+    int _numErrors;
+    int _numWarnings;
+    string _stdDef;
+    string _className;
 };
 
 #endif  /* ERROR_H_ */
