@@ -30,42 +30,42 @@
  */
 class MmoHighlighter : public QSyntaxHighlighter
 {
-  Q_OBJECT
+    Q_OBJECT
 public:
-  /**
-   *
-   */
-  typedef enum
-  {
-    MMO_MODEL, //!< MMO_MODEL
-    MMO_LOG    //!< MMO_LOG
-  } h_type;
-  /**
-   *
-   * @param parent
-   * @param file
-   */
-  MmoHighlighter (QTextDocument *parent = 0, h_type file = MMO_MODEL);
+    /**
+     *
+     */
+    typedef enum
+    {
+        MMO_MODEL, //!< MMO_MODEL
+        MMO_LOG    //!< MMO_LOG
+    } h_type;
+    /**
+     *
+     * @param parent
+     * @param file
+     */
+    MmoHighlighter (QTextDocument *parent = 0, h_type file = MMO_MODEL);
 protected:
-  void
-  highlightBlock (const QString &text);
+    void
+    highlightBlock (const QString &text);
 
 private:
-  struct MmoHighlightingRule
-  {
-    QRegExp pattern;
-    QTextCharFormat format;
-  };
-  QVector<MmoHighlightingRule> highlightingRules;
-  QRegExp commentStartExpression;
-  QRegExp commentEndExpression;
-  QTextCharFormat keywordFormat;
-  QTextCharFormat functionFormat;
-  QTextCharFormat annotationFormat;
-  QTextCharFormat qssTagsFormat;
-  QTextCharFormat singleLineCommentFormat;
-  QTextCharFormat multiLineCommentFormat;
-  QTextCharFormat quotationFormat;
+    struct MmoHighlightingRule
+    {
+        QRegExp pattern;
+        QTextCharFormat format;
+    };
+    QVector<MmoHighlightingRule> highlightingRules;
+    QRegExp commentStartExpression;
+    QRegExp commentEndExpression;
+    QTextCharFormat keywordFormat;
+    QTextCharFormat functionFormat;
+    QTextCharFormat annotationFormat;
+    QTextCharFormat qssTagsFormat;
+    QTextCharFormat singleLineCommentFormat;
+    QTextCharFormat multiLineCommentFormat;
+    QTextCharFormat quotationFormat;
 };
 
 #endif  /* MMOHIGHLIGHTER_H_ */

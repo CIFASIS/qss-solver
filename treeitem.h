@@ -30,99 +30,99 @@
 class TreeItem
 {
 public:
-  /**
-   *
-   * @param data
-   * @param parent
-   */
-  TreeItem (const QVector<QVariant> &data, TreeItem *parent = 0);
-  /**
-   *
-   */
-  ~TreeItem ();
-  /**
-   *
-   * @param number
-   * @return
-   */
-  TreeItem *
-  child (int number);
-  /**
-   *
-   * @return
-   */
-  int
-  childCount () const;
-  /**
-   *
-   * @return
-   */
-  int
-  columnCount () const;
-  /**
-   *
-   * @param column
-   * @return
-   */
-  QVariant
-  data (int column) const;
-  /**
-   *
-   * @param position
-   * @param count
-   * @param columns
-   * @return
-   */
-  bool
-  insertChildren (int position, int count, int columns);
-  /**
-   *
-   * @param position
-   * @param columns
-   * @return
-   */
-  bool
-  insertColumns (int position, int columns);
-  /**
-   *
-   * @return
-   */
-  TreeItem *
-  parent ();
-  /**
-   *
-   * @param position
-   * @param count
-   * @return
-   */
-  bool
-  removeChildren (int position, int count);
-  /**
-   *
-   * @param position
-   * @param columns
-   * @return
-   */
-  bool
-  removeColumns (int position, int columns);
-  /**
-   *
-   * @return
-   */
-  int
-  childNumber () const;
-  /**
-   *
-   * @param column
-   * @param value
-   * @return
-   */
-  bool
-  setData (int column, const QVariant &value);
+    /**
+     *
+     * @param data
+     * @param parent
+     */
+    TreeItem (const QVector<QVariant> &data, TreeItem *parent = 0);
+    /**
+     *
+     */
+    ~TreeItem ();
+    /**
+     *
+     * @param number
+     * @return
+     */
+    TreeItem *
+    child (int number);
+    /**
+     *
+     * @return
+     */
+    int
+    childCount () const;
+    /**
+     *
+     * @return
+     */
+    int
+    columnCount () const;
+    /**
+     *
+     * @param column
+     * @return
+     */
+    QVariant
+    data (int column) const;
+    /**
+     *
+     * @param position
+     * @param count
+     * @param columns
+     * @return
+     */
+    bool
+    insertChildren (int position, int count, int columns);
+    /**
+     *
+     * @param position
+     * @param columns
+     * @return
+     */
+    bool
+    insertColumns (int position, int columns);
+    /**
+     *
+     * @return
+     */
+    TreeItem *
+    parent ();
+    /**
+     *
+     * @param position
+     * @param count
+     * @return
+     */
+    bool
+    removeChildren (int position, int count);
+    /**
+     *
+     * @param position
+     * @param columns
+     * @return
+     */
+    bool
+    removeColumns (int position, int columns);
+    /**
+     *
+     * @return
+     */
+    int
+    childNumber () const;
+    /**
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    bool
+    setData (int column, const QVariant &value);
 private:
-  QList<TreeItem*> childItems;
-  QVector<QVariant> itemData;
-  TreeItem *parentItem;
+    QList<TreeItem*> childItems;
+    QVector<QVariant> itemData;
+    TreeItem *parentItem;
 };
 
 /**
@@ -131,54 +131,54 @@ private:
 class FileItem
 {
 public:
-  /**
-   *
-   */
-  FileItem ();
-  /**
-   *
-   * @param v
-   * @param l
-   * @param s
-   * @param p
-   * @param i
-   * @param output
-   */
-  FileItem (QString v, bool l, bool s, bool p, bool i, QString output);
-  /**
-   *
-   */
-  ~FileItem ();
-  /**
-   *
-   * @return
-   */
-  QString
-  plotStr ();
-  /**
-   *
-   */
-  bool lines;
-  /**
-   *
-   */
-  bool steps;
-  /**
-   *
-   */
-  bool plot;
-  /**
-   *
-   */
-  bool impulses;
-  /**
-   *
-   */
-  QString variable;
-  /**
-   *
-   */
-  QString out;
+    /**
+     *
+     */
+    FileItem ();
+    /**
+     *
+     * @param v
+     * @param l
+     * @param s
+     * @param p
+     * @param i
+     * @param output
+     */
+    FileItem (QString v, bool l, bool s, bool p, bool i, QString output);
+    /**
+     *
+     */
+    ~FileItem ();
+    /**
+     *
+     * @return
+     */
+    QString
+    plotStr ();
+    /**
+     *
+     */
+    bool lines;
+    /**
+     *
+     */
+    bool steps;
+    /**
+     *
+     */
+    bool plot;
+    /**
+     *
+     */
+    bool impulses;
+    /**
+     *
+     */
+    QString variable;
+    /**
+     *
+     */
+    QString out;
 };
 
 /**
@@ -187,93 +187,93 @@ public:
 class MapFiles
 {
 public:
-  /**
-   *
-   * @param output
-   */
-  MapFiles (QString output = QString ());
-  /**
-   *
-   */
-  ~MapFiles ();
-  /**
-   *
-   * @param file
-   * @return
-   */
-  QList<FileItem>
-  files (QString file);
-  /**
-   *
-   * @param dir
-   * @param name
-   * @return
-   */
-  FileItem
-  fileItem (QString dir, QString name);
-  /**
-   *
-   * @param it
-   * @param dir
-   * @param name
-   */
-  void
-  setFileItem (FileItem it, QString dir, QString name);
-  /**
-   *
-   * @param dir
-   * @param init
-   */
-  void
-  addFiles (QString dir, bool init = true);
-  /**
-   *
-   * @param dir
-   */
-  void
-  clearFiles (QString dir);
-  /**
-   *
-   * @param dir
-   */
-  void
-  setFiles (QString dir);
-  /**
-   *
-   */
-  void
-  clearAllFiles ();
-  /**
-   *
-   */
-  void
-  setAllFiles ();
-  /**
-   *
-   */
-  void
-  clear ();
-  /**
-   *
-   * @param dir
-   */
-  void
-  removeFiles (QString dir);
-  /**
-   *
-   * @return
-   */
-  QMap<QString, QList<FileItem> >
-  map ()
-  {
-    return (*_files);
-  }
-  ;
+    /**
+     *
+     * @param output
+     */
+    MapFiles (QString output = QString ());
+    /**
+     *
+     */
+    ~MapFiles ();
+    /**
+     *
+     * @param file
+     * @return
+     */
+    QList<FileItem>
+    files (QString file);
+    /**
+     *
+     * @param dir
+     * @param name
+     * @return
+     */
+    FileItem
+    fileItem (QString dir, QString name);
+    /**
+     *
+     * @param it
+     * @param dir
+     * @param name
+     */
+    void
+    setFileItem (FileItem it, QString dir, QString name);
+    /**
+     *
+     * @param dir
+     * @param init
+     */
+    void
+    addFiles (QString dir, bool init = true);
+    /**
+     *
+     * @param dir
+     */
+    void
+    clearFiles (QString dir);
+    /**
+     *
+     * @param dir
+     */
+    void
+    setFiles (QString dir);
+    /**
+     *
+     */
+    void
+    clearAllFiles ();
+    /**
+     *
+     */
+    void
+    setAllFiles ();
+    /**
+     *
+     */
+    void
+    clear ();
+    /**
+     *
+     * @param dir
+     */
+    void
+    removeFiles (QString dir);
+    /**
+     *
+     * @return
+     */
+    QMap<QString, QList<FileItem> >
+    map ()
+    {
+        return (*_files);
+    }
+    ;
 private:
-  void
-  _changeFiles (QString file, bool st);
-  QMap<QString, QList<FileItem> > *_files;
-  QString _output;
+    void
+    _changeFiles (QString file, bool st);
+    QMap<QString, QList<FileItem> > *_files;
+    QString _output;
 };
 
 #endif  /* TREEITEM_H_ */

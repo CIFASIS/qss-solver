@@ -23,40 +23,40 @@
 
 ModelInfo::ModelInfo (QString fullname)
 {
-  setFullname (fullname);
-  _dirty = false;
-  if (name ().endsWith (".log"))
-    {
-      _init = false;
-    }
-  else
-    {
-      _init = true;
-    }
+    setFullname (fullname);
+    _dirty = false;
+    if (name ().endsWith (".log"))
+        {
+            _init = false;
+        }
+    else
+        {
+            _init = true;
+        }
 }
 
 ModelInfo::~ModelInfo ()
 {
-  return;
+    return;
 }
 
 QString
 ModelInfo::baseName ()
 {
-  QFileInfo fi (_fullname);
-  return (fi.baseName ());
+    QFileInfo fi (_fullname);
+    return (fi.baseName ());
 }
 
 QString
 ModelInfo::name ()
 {
-  QFileInfo fi (_fullname);
-  return (fi.fileName ());
+    QFileInfo fi (_fullname);
+    return (fi.fileName ());
 }
 
 QString
 ModelInfo::path ()
 {
-  QFileInfo fi (_fullname);
-  return (fi.absolutePath ());
+    QFileInfo fi (_fullname);
+    return (fi.absolutePath ());
 }
