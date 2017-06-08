@@ -46,7 +46,7 @@ typedef struct FRW_framework_ *FRW_framework;
  * @param
  */
 typedef void
-(*FRW_recomputeDerivativesFn) (FRW_framework,QSS_model, QSS_data, QSS_time, int);
+(*FRW_recomputeDerivativesFn) (FRW_framework, QSS_model, QSS_data, QSS_time, int);
 
 /**
  * 
@@ -57,7 +57,7 @@ typedef void
  * @param
  */
 typedef void
-(*FRW_recomputeDerivativeFn) (FRW_framework,QSS_model, QSS_data, QSS_time, int);
+(*FRW_recomputeDerivativeFn) (FRW_framework, QSS_model, QSS_data, QSS_time, int);
 
 /**
  *
@@ -67,7 +67,7 @@ typedef void
  * @param
  */
 typedef void
-(*FRW_nextEventTimeFn) (FRW_framework,QSS_model, QSS_data, QSS_time, int);
+(*FRW_nextEventTimeFn) (FRW_framework, QSS_model, QSS_data, QSS_time, int);
 
 /**
  *
@@ -79,15 +79,15 @@ typedef void
  * @param
  */
 typedef void
-(*FRW_nextInputTimeFn) (FRW_framework,QSS_model, QSS_data, QSS_time, double, int, int);
+(*FRW_nextInputTimeFn) (FRW_framework, QSS_model, QSS_data, QSS_time, double, int, int);
 
 /**
  *
  */
 struct FRW_frameworkState_
 {
-  double delta; //!<
-  double dxnOld; //!<
+    double delta; //!<
+    double dxnOld; //!<
 };
 
 /**
@@ -95,10 +95,10 @@ struct FRW_frameworkState_
  */
 struct FRW_frameworkOps_
 {
-  FRW_recomputeDerivativesFn recomputeDerivatives; //!<
-  FRW_recomputeDerivativeFn recomputeDerivative; //!<
-  FRW_nextEventTimeFn nextEventTime; //!<
-  FRW_nextInputTimeFn nextInputTime; //!<
+    FRW_recomputeDerivativesFn recomputeDerivatives; //!<
+    FRW_recomputeDerivativeFn recomputeDerivative; //!<
+    FRW_nextEventTimeFn nextEventTime; //!<
+    FRW_nextInputTimeFn nextInputTime; //!<
 };
 
 /**
@@ -106,8 +106,8 @@ struct FRW_frameworkOps_
  */
 struct FRW_framework_
 {
-  FRW_frameworkState state; //!<
-  FRW_frameworkOps ops; //!<
+    FRW_frameworkState state; //!<
+    FRW_frameworkOps ops; //!<
 };
 
 /**
@@ -162,8 +162,7 @@ FRW_freeFrameworkOps (FRW_frameworkOps f);
  * @param index
  */
 void
-FRW_recomputeDerivative (FRW_framework f,QSS_model simModel, QSS_data simData, QSS_time simTime,
-			 int index);
+FRW_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
 
 /**
  *
@@ -174,8 +173,7 @@ FRW_recomputeDerivative (FRW_framework f,QSS_model simModel, QSS_data simData, Q
  * @param index
  */
 void
-FRW_recomputeDerivatives (FRW_framework f,QSS_model simModel, QSS_data simData,
-			  QSS_time simTime, int index);
+FRW_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
 
 /**
  *
@@ -186,8 +184,7 @@ FRW_recomputeDerivatives (FRW_framework f,QSS_model simModel, QSS_data simData,
  * @param index
  */
 void
-FRW_nextEventTime (FRW_framework f,QSS_model simModel, QSS_data simData, QSS_time simTime,
-		   int index);
+FRW_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
 
 /**
  *
@@ -200,7 +197,6 @@ FRW_nextEventTime (FRW_framework f,QSS_model simModel, QSS_data simData, QSS_tim
  * @param index
  */
 void
-FRW_nextInputTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime,
-		   double elapsed, int var, int index);
+FRW_nextInputTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, double elapsed, int var, int index);
 
 #endif  /* QSS_FRW_H_ */

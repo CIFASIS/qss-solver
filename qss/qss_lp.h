@@ -33,19 +33,19 @@ typedef struct LP_partitionInfo_ *LP_partitionInfo;
  */
 struct LP_partitionInfo_
 {
-  int *stateInput; //!<
-  int *handlerInput; //!<
-  int *output; //!<
-  int *stateReinits; //!<
-  int nLPS; //!<
-  int lps; //!<
-  int states; //!<
-  int handlers; //!<
-  int outputs; //!<
-  int stateInputs; //!<
-  int handlerInputs; //!<
-  int lastHandler; //!<
-  int lastState; //!<
+    int *stateInput; //!<
+    int *handlerInput; //!<
+    int *output; //!<
+    int *stateReinits; //!<
+    int nLPS; //!<
+    int lps; //!<
+    int states; //!<
+    int handlers; //!<
+    int outputs; //!<
+    int stateInputs; //!<
+    int handlerInputs; //!<
+    int lastHandler; //!<
+    int lastState; //!<
 };
 
 /**

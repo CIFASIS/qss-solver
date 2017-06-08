@@ -41,7 +41,7 @@ QSS4_init (QA_quantizer quantizer, QSS_data simData, QSS_time simTime);
  * @param lqu
  */
 void
-QSS4_nextTime (QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)__attribute__((hot));
+QSS4_nextTime (QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu) __attribute__((hot));
 /**
  *
  * @param quantizer
@@ -53,8 +53,7 @@ QSS4_nextTime (QA_quantizer quantizer, int var, double t, double *nTime, double 
  * @param q
  */
 void
-QSS4_recomputeNextTime (QA_quantizer quantizer, int var, double t, double *nTime, double *x,
-			double *lqu, double *q)__attribute__((hot));
+QSS4_recomputeNextTime (QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q) __attribute__((hot));
 /**
  *
  * @param quantizer
@@ -67,8 +66,7 @@ QSS4_recomputeNextTime (QA_quantizer quantizer, int var, double t, double *nTime
  * @param q
  */
 void
-QSS4_recomputeNextTimes (QA_quantizer quantizer, int vars, int *inf, double t, double *nTime,
-			 double *x, double *lqu, double *q)__attribute__((hot));
+QSS4_recomputeNextTimes (QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q) __attribute__((hot));
 /**
  *
  * @param quantizer
@@ -99,7 +97,7 @@ QSS4_PAR_init (QA_quantizer quantizer, QSS_data simData, QSS_time simTime);
  * @param lqu
  */
 void
-QSS4_PAR_nextTime (QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)__attribute__((hot));
+QSS4_PAR_nextTime (QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu) __attribute__((hot));
 /**
  *
  * @param quantizer
@@ -111,8 +109,7 @@ QSS4_PAR_nextTime (QA_quantizer quantizer, int var, double t, double *nTime, dou
  * @param q
  */
 void
-QSS4_PAR_recomputeNextTime (QA_quantizer quantizer, int var, double t, double *nTime, double *x,
-			double *lqu, double *q)__attribute__((hot));
+QSS4_PAR_recomputeNextTime (QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q) __attribute__((hot));
 /**
  *
  * @param quantizer
@@ -125,8 +122,7 @@ QSS4_PAR_recomputeNextTime (QA_quantizer quantizer, int var, double t, double *n
  * @param q
  */
 void
-QSS4_PAR_recomputeNextTimes (QA_quantizer quantizer, int vars, int *inf, double t, double *nTime,
-			 double *x, double *lqu, double *q)__attribute__((hot));
+QSS4_PAR_recomputeNextTimes (QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q) __attribute__((hot));
 /**
  *
  * @param quantizer

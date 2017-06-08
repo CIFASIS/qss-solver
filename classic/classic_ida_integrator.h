@@ -25,6 +25,7 @@
 /**
  *
  */
-void IDA_integrate (SIM_simulator simulator);
+void
+IDA_integrate (SIM_simulator simulator);
 
 #endif  /* IDA_INTEGRATOR_H_ */

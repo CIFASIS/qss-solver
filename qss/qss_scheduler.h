@@ -44,7 +44,7 @@ typedef struct SC_scheduler_ *SC_scheduler;
  * @param QSS_time
  */
 typedef void
-(*SC_updateFn) (SC_scheduler,QSS_data, QSS_time);
+(*SC_updateFn) (SC_scheduler, QSS_data, QSS_time);
 
 /**
  *
@@ -52,30 +52,30 @@ typedef void
  * @param QSS_time
  */
 typedef void
-(*BT_upd) (SC_scheduler,QSS_data, QSS_time);
+(*BT_upd) (SC_scheduler, QSS_data, QSS_time);
 
 /**
  *
  */
 struct SC_schedulerState_
 {
-  BT_upd update; //!<
-  BT_tree states; //!<
-  BT_tree events; //!<
-  BT_tree inputs; //!<
-  BT_info info; //!<
-  BTR_tree BTR_states; //!<
-  BTR_tree BTR_events; //!<
-  BTR_tree BTR_inputs; //!<
-  BT_info visit; //!<
-  double minInputValue; //!<
-  double minEventValue; //!<
-  double tUnit; //!<
-  double tOut; //!<
-  int minInputIndex; //!<
-  int minEventIndex; //!<
-  QSS_StepType stepType; //!<
-  QSS_LP_data lp; //!<
+    BT_upd update; //!<
+    BT_tree states; //!<
+    BT_tree events; //!<
+    BT_tree inputs; //!<
+    BT_info info; //!<
+    BTR_tree BTR_states; //!<
+    BTR_tree BTR_events; //!<
+    BTR_tree BTR_inputs; //!<
+    BT_info visit; //!<
+    double minInputValue; //!<
+    double minEventValue; //!<
+    double tUnit; //!<
+    double tOut; //!<
+    int minInputIndex; //!<
+    int minEventIndex; //!<
+    QSS_StepType stepType; //!<
+    QSS_LP_data lp; //!<
 };
 
 /**
@@ -83,7 +83,7 @@ struct SC_schedulerState_
  */
 struct SC_schedulerOps_
 {
-  SC_updateFn update; //!<
+    SC_updateFn update; //!<
 };
 
 /**
@@ -91,8 +91,8 @@ struct SC_schedulerOps_
  */
 struct SC_scheduler_
 {
-  SC_schedulerState state; //!<
-  SC_schedulerOps ops; //!<
+    SC_schedulerState state; //!<
+    SC_schedulerOps ops; //!<
 };
 
 /**

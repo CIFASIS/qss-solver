@@ -29,63 +29,63 @@
 SIM_simulator
 SIM_Simulator (SD_simulationSettings settings)
 {
-  SIM_simulator p = checkedMalloc (sizeof(*p));
-  p->ops = SIM_SimulatorOps ();
-  p->state = SIM_SimulatorState ();
-  p->state->settings = settings;
-  if (settings->method == SD_DASSL || settings->method == SD_DOPRI)
-    {
-      CLC_initSimulator (p);
-    }
-  else
-    {
-      QSS_initSimulator (p);
-    }
-  CMD_init (settings);
-  return (p);
+    SIM_simulator p = checkedMalloc (sizeof(*p));
+    p->ops = SIM_SimulatorOps ();
+    p->state = SIM_SimulatorState ();
+    p->state->settings = settings;
+    if (settings->method == SD_DASSL || settings->method == SD_DOPRI)
+        {
+            CLC_initSimulator (p);
+        }
+    else
+        {
+            QSS_initSimulator (p);
+        }
+    CMD_init (settings);
+    return (p);
 }
 
 void
 SIM_freeSimulator (SIM_simulator simulator)
 {
-  simulator->ops->freeSimulator (simulator);
-  SIM_freeSimulatorState (simulator->state);
-  SIM_freeSimulatorOps (simulator->ops);
-  free (simulator);
+    simulator->ops->freeSimulator (simulator);
+    SIM_freeSimulatorState (simulator->state);
+    SIM_freeSimulatorOps (simulator->ops);
+    free (simulator);
 }
 
 SIM_simulatorState
 SIM_SimulatorState ()
 {
-  SIM_simulatorState p = checkedMalloc (sizeof(*p));
-  p->sim = NULL;
-  p->settings = NULL;
-  return (p);
+    SIM_simulatorState p = checkedMalloc (sizeof(*p));
+    p->sim = NULL;
+    p->settings = NULL;
+    return (p);
 }
 
 void
 SIM_freeSimulatorState (SIM_simulatorState state)
 {
-  free (state);
+    free (state);
 }
 
 SIM_simulatorOps
 SIM_SimulatorOps ()
 {
-  SIM_simulatorOps p = checkedMalloc (sizeof(*p));
-  p->freeSimulator = NULL;
-  p->simulate = NULL;
-  return (p);
+    SIM_simulatorOps p = checkedMalloc (sizeof(*p));
+    p->freeSimulator = NULL;
+    p->simulate = NULL;
+    return (p);
 }
 
 void
 SIM_freeSimulatorOps (SIM_simulatorOps ops)
 {
-  free (ops);
+    free (ops);
 }
 
 void
 SIM_simulate (SIM_simulator simulator)
 {
-  simulator->ops->simulate (simulator);
+    simulator->ops->simulate (simulator);
 }

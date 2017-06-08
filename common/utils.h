@@ -69,12 +69,10 @@
  */
 #define ASSIGNED_INPUT -3
 
-
 /**
  *
  */
 #define NOT_EQUAL -1
-
 
 /**
  *
@@ -102,7 +100,6 @@
  *
  */
 #define MAX_LPS 64
-
 
 /**
  *
@@ -240,10 +237,10 @@ typedef struct node_ *node;
  */
 struct node_
 {
-  double **val; //!< Storage matrix.
-  double *timeVal; //!< Time-stamp of the i-th stored value.
-  int used; //!< Pointer to the last value saved.
-  struct node_ *next; //!< Pointer to the next node in the list.
+    double **val; //!< Storage matrix.
+    double *timeVal; //!< Time-stamp of the i-th stored value.
+    int used; //!< Pointer to the last value saved.
+    struct node_ *next; //!< Pointer to the next node in the list.
 };
 
 /** \brief Memory list pointer
@@ -258,10 +255,10 @@ typedef struct list_ *list;
  */
 struct list_
 {
-  int nodeSize; //!< Maximum number of values that can be stored in a single node (the default value is NODE_SIZE).
-  int order; //!< Number of coefficients of the approximation polynomial stored.
-  node begin; //!< Pointer to the first element in the list.
-  node end; //!< Pointer to the last element in the list.
+    int nodeSize; //!< Maximum number of values that can be stored in a single node (the default value is NODE_SIZE).
+    int order; //!< Number of coefficients of the approximation polynomial stored.
+    node begin; //!< Pointer to the first element in the list.
+    node end; //!< Pointer to the last element in the list.
 };
 /** \brief Memory list contructor.
  *
@@ -291,12 +288,12 @@ typedef struct vector_ *vector;
  */
 struct vector_
 {
-  int *values; //!<
-  int size; //!<
-  int inc; //!<
-  int used; //!<
-  int iter; //!<
-  bool ordered; //!<
+    int *values; //!<
+    int size; //!<
+    int inc; //!<
+    int used; //!<
+    int iter; //!<
+    bool ordered; //!<
 };
 
 /**
@@ -328,7 +325,7 @@ insert (vector v, int value);
  * @return
  */
 int
-vectorFirst(vector v);
+vectorFirst (vector v);
 
 /**
  *
@@ -358,7 +355,7 @@ typedef vector *vMatrix;
  * @return
  */
 vMatrix
-VMatrix(int rows, int cols);
+VMatrix (int rows, int cols);
 
 /**
  *
@@ -366,7 +363,7 @@ VMatrix(int rows, int cols);
  * @param rows
  */
 void
-freeVMatrix(vMatrix m, int rows);
+freeVMatrix (vMatrix m, int rows);
 
 /**
  *
@@ -420,7 +417,7 @@ typedef uint32_t word_t;
  */
 enum
 {
-  BITS_PER_WORD = 32//!< BITS_PER_WORD
+    BITS_PER_WORD = 32 //!< BITS_PER_WORD
 };
 
 /**
@@ -433,12 +430,12 @@ typedef struct BIT_vector_ *BIT_vector;
  */
 struct BIT_vector_
 {
-  word_t *words; //!<
-  word_t *resetMask; //!<
-  int nwords; //!<
-  int nbits; //!<
-  int mask; //!<
-  int word; //!<
+    word_t *words; //!<
+    word_t *resetMask; //!<
+    int nwords; //!<
+    int nbits; //!<
+    int mask; //!<
+    int word; //!<
 };
 
 /**
@@ -492,7 +489,7 @@ BIT_print (BIT_vector b);
  * @param b
  */
 void
-BIT_clearAll(BIT_vector b);
+BIT_clearAll (BIT_vector b);
 
 /**
  *
@@ -507,7 +504,7 @@ BIT_setAll (BIT_vector b);
  * @return
  */
 word_t
-BIT_isAnySet(BIT_vector b);
+BIT_isAnySet (BIT_vector b);
 
 /**
  *
@@ -515,7 +512,7 @@ BIT_isAnySet(BIT_vector b);
  * @return
  */
 word_t
-BIT_numberOfSetBits(word_t i);
+BIT_numberOfSetBits (word_t i);
 
 /**
  *
@@ -523,7 +520,7 @@ BIT_numberOfSetBits(word_t i);
  * @return
  */
 word_t
-BIT_setBits(BIT_vector b);
+BIT_setBits (BIT_vector b);
 
 /**
  *
@@ -592,8 +589,8 @@ BIT_next (BIT_vector v);
  */
 typedef enum
 {
-  MSG_EVENT,//!< MSG_EVENT
-  MSG_ACK   //!< MSG_ACK
+    MSG_EVENT, //!< MSG_EVENT
+    MSG_ACK   //!< MSG_ACK
 } MSG_Type;
 
 /**
@@ -606,14 +603,13 @@ typedef struct IBX_message_ IBX_message;
  */
 struct IBX_message_
 {
-  int from; //!<
-  int type; //!<
-  int index; //!<
-  int sendAck; //!<
-  double value[MESSAGE_SIZE]; //!<
-  double time; //!<
+    int from; //!<
+    int type; //!<
+    int index; //!<
+    int sendAck; //!<
+    double value[MESSAGE_SIZE]; //!<
+    double time; //!<
 };
-
 
 /**
  *
@@ -625,18 +621,18 @@ typedef struct IBX_inbox_ *IBX_inbox;
  */
 struct IBX_inbox_
 {
-  IBX_message *messages; //!<
-  IBX_message *orderedMessages; //!<
-  IBX_message *waiting; //!<
-  BIT_vector waitingMessage; //!<
-  BIT_vector waitingAck; //!<
-  BIT_vector received; //!<
-  pthread_mutex_t receivedMutex; //!<
-  int *qMap;
-  int states;
-  int head; //!<
-  int tail; //!<
-  int size; //!<
+    IBX_message *messages; //!<
+    IBX_message *orderedMessages; //!<
+    IBX_message *waiting; //!<
+    BIT_vector waitingMessage; //!<
+    BIT_vector waitingAck; //!<
+    BIT_vector received; //!<
+    pthread_mutex_t receivedMutex; //!<
+    int *qMap;
+    int states;
+    int head; //!<
+    int tail; //!<
+    int size; //!<
 };
 
 /**
@@ -649,8 +645,8 @@ typedef struct MLB_mailbox_ *MLB_mailbox;
  */
 struct MLB_mailbox_
 {
-  IBX_inbox **inbox; //!< Inbox data structure used to send and receive simulation events.
-  int size; //!<
+    IBX_inbox **inbox; //!< Inbox data structure used to send and receive simulation events.
+    int size; //!<
 };
 
 /**
@@ -660,14 +656,14 @@ struct MLB_mailbox_
  * @return
  */
 IBX_inbox
-IBX_Inbox(int states, int ack, int *qMap);
+IBX_Inbox (int states, int ack, int *qMap);
 
 /**
  *
  * @param inbox
  */
 void
-IBX_freeInbox(IBX_inbox inbox);
+IBX_freeInbox (IBX_inbox inbox);
 
 /**
  *
@@ -684,8 +680,7 @@ IBX_add (MLB_mailbox mailbox, IBX_inbox inbox, int from, int to, IBX_message mes
  * @param from
  */
 void
-IBX_ack(IBX_inbox inbox, int from);
-
+IBX_ack (IBX_inbox inbox, int from);
 
 /**
  *
@@ -693,7 +688,7 @@ IBX_ack(IBX_inbox inbox, int from);
  * @return
  */
 word_t
-IBX_checkMail(IBX_inbox inbox);
+IBX_checkMail (IBX_inbox inbox);
 
 void
 IBX_receiveMessages (IBX_inbox inbox);
@@ -706,7 +701,7 @@ IBX_receiveAndAckMessages (IBX_inbox inbox, MLB_mailbox mailbox, int id);
  * @param inbox
  */
 void
-IBX_checkInbox(IBX_inbox inbox);
+IBX_checkInbox (IBX_inbox inbox);
 
 /**
  *
@@ -715,7 +710,7 @@ IBX_checkInbox(IBX_inbox inbox);
  * @param id
  */
 void
-IBX_checkAckInbox(IBX_inbox inbox, MLB_mailbox mailbox, int id);
+IBX_checkAckInbox (IBX_inbox inbox, MLB_mailbox mailbox, int id);
 
 /**
  *
@@ -723,7 +718,7 @@ IBX_checkAckInbox(IBX_inbox inbox, MLB_mailbox mailbox, int id);
  * @return
  */
 word_t
-IBX_ackMessages(IBX_inbox inbox);
+IBX_ackMessages (IBX_inbox inbox);
 
 /**
  *
@@ -731,14 +726,14 @@ IBX_ackMessages(IBX_inbox inbox);
  * @return
  */
 double
-IBX_nextMessageTime(IBX_inbox inbox);
+IBX_nextMessageTime (IBX_inbox inbox);
 
 /**
  *
  * @param inbox
  */
 void
-IBX_reset(IBX_inbox inbox);
+IBX_reset (IBX_inbox inbox);
 
 /**
  *
@@ -746,7 +741,7 @@ IBX_reset(IBX_inbox inbox);
  * @return
  */
 IBX_message
-IBX_nextMessage(IBX_inbox);
+IBX_nextMessage (IBX_inbox);
 
 /**
  *
@@ -754,7 +749,7 @@ IBX_nextMessage(IBX_inbox);
  * @param dir
  */
 void
-IBX_close(IBX_inbox inbox, int dir);
+IBX_close (IBX_inbox inbox, int dir);
 
 /**
  *
@@ -762,14 +757,14 @@ IBX_close(IBX_inbox inbox, int dir);
  * @return
  */
 MLB_mailbox
-MLB_Mailbox(int lps);
+MLB_Mailbox (int lps);
 
 /**
  *
  * @param mailbox
  */
 void
-MLB_freeMailbox(MLB_mailbox mailbox);
+MLB_freeMailbox (MLB_mailbox mailbox);
 
 /**
  *
@@ -779,7 +774,7 @@ MLB_freeMailbox(MLB_mailbox mailbox);
  * @param message
  */
 void
-MLB_send(MLB_mailbox mailbox, int to, int from, IBX_message message);
+MLB_send (MLB_mailbox mailbox, int to, int from, IBX_message message);
 
 /**
  *
@@ -788,7 +783,7 @@ MLB_send(MLB_mailbox mailbox, int to, int from, IBX_message message);
  * @param from
  */
 void
-MLB_ack(MLB_mailbox mailbox, int to, int from);
+MLB_ack (MLB_mailbox mailbox, int to, int from);
 
 /**
  *
@@ -797,7 +792,7 @@ MLB_ack(MLB_mailbox mailbox, int to, int from);
  * @param dir
  */
 void
-MLB_close(MLB_mailbox mailbox, int to, int dir);
+MLB_close (MLB_mailbox mailbox, int to, int dir);
 
 #else
 
@@ -807,9 +802,9 @@ typedef struct IBX_message_ IBX_message;
  *
  */
 struct IBX_message_
-{
-  double dummy;
-};
+    {
+        double dummy;
+    };
 
 /**
  *
@@ -820,9 +815,9 @@ typedef struct IBX_inbox_ *IBX_inbox;
  *
  */
 struct IBX_inbox_
-{
-  int dummy;
-};
+    {
+        int dummy;
+    };
 
 /**
  *
@@ -833,9 +828,9 @@ typedef struct MLB_mailbox_ *MLB_mailbox;
  *
  */
 struct MLB_mailbox_
-{
-  int dummy;
-};
+    {
+        int dummy;
+    };
 
 MLB_mailbox
 MLB_Mailbox(int lps);
@@ -897,7 +892,7 @@ cleanDoubleVector (double *vector, int value, int size);
 
 #ifdef SYNC_RT
 
-void waitUntil(double until) ;
+void waitUntil(double until);
 
 void setInitRealTime();
 

@@ -67,9 +67,9 @@ typedef void
  */
 struct OUT_outputState_
 {
-  LG_log log; //!<
-  int *steps; //!<
-  double *values; //!<
+    LG_log log; //!<
+    int *steps; //!<
+    double *values; //!<
 };
 
 /**
@@ -77,9 +77,9 @@ struct OUT_outputState_
  */
 struct OUT_outputOps_
 {
-  OUT_writeFn write; //!<
-  OUT_getStepsFn getSteps; //!<
-  OUT_saveFn save; //!<
+    OUT_writeFn write; //!<
+    OUT_getStepsFn getSteps; //!<
+    OUT_saveFn save; //!<
 };
 
 /**
@@ -87,8 +87,8 @@ struct OUT_outputOps_
  */
 struct OUT_output_
 {
-  OUT_outputState state; //!<
-  OUT_outputOps ops; //!<
+    OUT_outputState state; //!<
+    OUT_outputOps ops; //!<
 };
 
 /**
@@ -144,8 +144,7 @@ OUT_freeOutputOps (OUT_outputOps o);
  * @param simOutput
  */
 void
-OUT_write (OUT_output output, QSS_data simData, QSS_time simTime,
-	   SD_output simOutput);
+OUT_write (OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
 
 /**
  *

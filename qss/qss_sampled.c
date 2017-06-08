@@ -29,181 +29,172 @@
 #ifdef QSS_PARALLEL
 void
 SAM_PAR_writeOutvar (OUT_output output, QSS_data simData, QSS_time simTime,
-    SD_output simOutput, int index, int variable)
+        SD_output simOutput, int index, int variable)
 #else
 void
-SAM_writeOutvar (OUT_output output, QSS_data simData, QSS_time simTime,
-		 SD_output simOutput, int index, int variable)
+SAM_writeOutvar (OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput, int index, int variable)
 #endif
 {
-  int j, k, h, nOS = simOutput->nOS[index], nOD = simOutput->nOD[index], order =
-      simData->order, coeffs = order + 1, nStates = nOS * coeffs;
-  for (j = 0; j < nOS; j++)
-    {
-      double *q = simData->q;
-      k = simOutput->OS[index][j];
-      for (h = 0; h < order; h++)
-	{
-	  output->state->values[j * coeffs + h] = q[k * coeffs + h];
-	}
-    }
-  for (j = 0; j < nOD; j++)
-    {
-      k = simOutput->OD[index][j];
-      output->state->values[nStates + j] = simData->d[k];
-    }
-  LG_writeLine (output->state->log, variable, simTime->time,
-		output->state->values);
+    int j, k, h, nOS = simOutput->nOS[index], nOD = simOutput->nOD[index], order = simData->order, coeffs = order + 1, nStates = nOS * coeffs;
+    for (j = 0; j < nOS; j++)
+        {
+            double *q = simData->q;
+            k = simOutput->OS[index][j];
+            for (h = 0; h < order; h++)
+                {
+                    output->state->values[j * coeffs + h] = q[k * coeffs + h];
+                }
+        }
+    for (j = 0; j < nOD; j++)
+        {
+            k = simOutput->OD[index][j];
+            output->state->values[nStates + j] = simData->d[k];
+        }
+    LG_writeLine (output->state->log, variable, simTime->time, output->state->values);
 }
 
 #ifdef QSS_PARALLEL
 void
 SAM_PAR_init (OUT_output output, QSS_data simData, QSS_time simTime,
-    SD_output simOutput)
+        SD_output simOutput)
 #else
 void
-SAM_init (OUT_output output, QSS_data simData, QSS_time simTime,
-	  SD_output simOutput)
+SAM_init (OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput)
 #endif
 {
-  int i, j, max = 0, maxDiscrete = 0, outputs = simOutput->outputs, size =
-      outputs;
+    int i, j, max = 0, maxDiscrete = 0, outputs = simOutput->outputs, size = outputs;
 #ifdef QSS_PARALLEL
-  QSS_LP_data lp = simData->lp;
-  size = lp->outputs;
+    QSS_LP_data lp = simData->lp;
+    size = lp->outputs;
 #endif
-  if (size > 0)
-    {
-      output->state->log = LG_Log (simData, simOutput);
-      output->state->steps = (int*) malloc (outputs * sizeof(int));
-      for (j = 0; j < outputs; j++)
-	{
-	  if (max < simOutput->nOS[j])
-	    {
-	      max = simOutput->nOS[j];
-	    }
-	  if (maxDiscrete < simOutput->nOD[j])
-	    {
-	      maxDiscrete = simOutput->nOD[j];
-	    }
-	}
-      output->state->values = (double*) malloc (
-	  (((simData->order + 1) * max) + maxDiscrete) * sizeof(double));
-      i = 0;
-      for (j = 0; j < outputs; j++)
-	{
+    if (size > 0)
+        {
+            output->state->log = LG_Log (simData, simOutput);
+            output->state->steps = (int*) malloc (outputs * sizeof(int));
+            for (j = 0; j < outputs; j++)
+                {
+                    if (max < simOutput->nOS[j])
+                        {
+                            max = simOutput->nOS[j];
+                        }
+                    if (maxDiscrete < simOutput->nOD[j])
+                        {
+                            maxDiscrete = simOutput->nOD[j];
+                        }
+                }
+            output->state->values = (double*) malloc ((((simData->order + 1) * max) + maxDiscrete) * sizeof(double));
+            i = 0;
+            for (j = 0; j < outputs; j++)
+                {
 #ifdef QSS_PARALLEL
-	  if (lp->oMap[j] > NOT_ASSIGNED)
-	    {
-	      SAM_PAR_writeOutvar (output, simData, simTime, simOutput, j, i);
+                    if (lp->oMap[j] > NOT_ASSIGNED)
+                        {
+                            SAM_PAR_writeOutvar (output, simData, simTime, simOutput, j, i);
 #else
-	  SAM_writeOutvar (output, simData, simTime, simOutput, j, i);
+                    SAM_writeOutvar (output, simData, simTime, simOutput, j, i);
 #endif
-	  output->state->steps[i++] = 1;
+                    output->state->steps[i++] = 1;
 #ifdef QSS_PARALLEL
-	}
+                }
 #endif
-	}
+                }
 #ifdef QSS_PARALLEL
-      output->ops->write = SAM_PAR_write;
-      output->ops->getSteps = SAM_PAR_getSteps;
-      output->ops->save = SAM_PAR_save;
+            output->ops->write = SAM_PAR_write;
+            output->ops->getSteps = SAM_PAR_getSteps;
+            output->ops->save = SAM_PAR_save;
 #else
-      output->ops->write = SAM_write;
-      output->ops->getSteps = SAM_getSteps;
-      output->ops->save = SAM_save;
+            output->ops->write = SAM_write;
+            output->ops->getSteps = SAM_getSteps;
+            output->ops->save = SAM_save;
 #endif
 
-    }
+        }
 }
 
 #ifdef QSS_PARALLEL
 void
 SAM_PAR_write (OUT_output output, QSS_data simData, QSS_time simTime,
-    SD_output simOutput)
+        SD_output simOutput)
 #else
 void
-SAM_write (OUT_output output, QSS_data simData, QSS_time simTime,
-	   SD_output simOutput)
+SAM_write (OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput)
 #endif
 {
 #ifdef QSS_PARALLEL
-  QSS_LP_data lp = simData->lp;
+    QSS_LP_data lp = simData->lp;
 #endif
-  int i, k, h, j;
-  if (simTime->type == ST_State)
-    {
-      int nSO = simOutput->nSO[simTime->minIndex];
-      for (i = 0; i < nSO; i++)
-	{
-	  j = simOutput->SO[simTime->minIndex][i];
-	  int variable = j;
+    int i, k, h, j;
+    if (simTime->type == ST_State)
+        {
+            int nSO = simOutput->nSO[simTime->minIndex];
+            for (i = 0; i < nSO; i++)
+                {
+                    j = simOutput->SO[simTime->minIndex][i];
+                    int variable = j;
 #ifdef QSS_PARALLEL
-	  if (lp->oMap[j] > NOT_ASSIGNED)
-	    {
-	      variable = lp->oMap[j];
-	      SAM_PAR_writeOutvar (output, simData, simTime, simOutput, j, variable);
+                    if (lp->oMap[j] > NOT_ASSIGNED)
+                        {
+                            variable = lp->oMap[j];
+                            SAM_PAR_writeOutvar (output, simData, simTime, simOutput, j, variable);
 #else
-	  SAM_writeOutvar (output, simData, simTime, simOutput, j, variable);
+                    SAM_writeOutvar (output, simData, simTime, simOutput, j, variable);
 #endif
-	  output->state->steps[variable]++;
+                    output->state->steps[variable]++;
 #ifdef QSS_PARALLEL
-	}
+                }
 #endif
-	}
-    }
-  else if (simTime->type == ST_Event)
-    {
-      int nLHSSt = simData->event[simTime->minIndex].nLHSSt;
-      for (k = 0; k < nLHSSt; k++)
-	{
-	  h = simData->event[simTime->minIndex].LHSSt[k];
-	  int nSO = simOutput->nSO[h];
-	  for (i = 0; i < nSO; i++)
-	    {
-	      j = simOutput->SO[h][i];
-	      int variable = j;
+                }
+        }
+    else if (simTime->type == ST_Event)
+        {
+            int nLHSSt = simData->event[simTime->minIndex].nLHSSt;
+            for (k = 0; k < nLHSSt; k++)
+                {
+                    h = simData->event[simTime->minIndex].LHSSt[k];
+                    int nSO = simOutput->nSO[h];
+                    for (i = 0; i < nSO; i++)
+                        {
+                            j = simOutput->SO[h][i];
+                            int variable = j;
 #ifdef QSS_PARALLEL
-	      if (lp->oMap[j] > NOT_ASSIGNED)
-		{
-		  variable = lp->oMap[j];
-		  SAM_PAR_writeOutvar (output, simData, simTime, simOutput, j,
-		      variable);
+                            if (lp->oMap[j] > NOT_ASSIGNED)
+                                {
+                                    variable = lp->oMap[j];
+                                    SAM_PAR_writeOutvar (output, simData, simTime, simOutput, j,
+                                            variable);
 #else
-	      SAM_writeOutvar (output, simData, simTime, simOutput, j,
-			       variable);
+                            SAM_writeOutvar (output, simData, simTime, simOutput, j, variable);
 #endif
-	      output->state->steps[variable]++;
+                            output->state->steps[variable]++;
 #ifdef QSS_PARALLEL
-	    }
+                        }
 #endif
-	    }
-	}
-      int nLHSDsc = simData->event[simTime->minIndex].nLHSDsc;
-      for (k = 0; k < nLHSDsc; k++)
-	{
-	  h = simData->event[simTime->minIndex].LHSDsc[k];
-	  int nDO = simOutput->nDO[h];
-	  for (i = 0; i < nDO; i++)
-	    {
-	      j = simOutput->DO[h][i];
-	      int variable = j;
+                        }
+                }
+            int nLHSDsc = simData->event[simTime->minIndex].nLHSDsc;
+            for (k = 0; k < nLHSDsc; k++)
+                {
+                    h = simData->event[simTime->minIndex].LHSDsc[k];
+                    int nDO = simOutput->nDO[h];
+                    for (i = 0; i < nDO; i++)
+                        {
+                            j = simOutput->DO[h][i];
+                            int variable = j;
 #ifdef QSS_PARALLEL
-	      if (lp->oMap[j] > NOT_ASSIGNED)
-		{
-		  variable = lp->oMap[j];
-		  SAM_PAR_writeOutvar (output, simData, simTime, simOutput, j, variable);
+                            if (lp->oMap[j] > NOT_ASSIGNED)
+                                {
+                                    variable = lp->oMap[j];
+                                    SAM_PAR_writeOutvar (output, simData, simTime, simOutput, j, variable);
 #else
-	      SAM_writeOutvar (output, simData, simTime, simOutput, j,
-			       variable);
+                            SAM_writeOutvar (output, simData, simTime, simOutput, j, variable);
 #endif
-	      output->state->steps[variable]++;
+                            output->state->steps[variable]++;
 #ifdef QSS_PARALLEL
-	    }
+                        }
 #endif
-	    }
-	}
-    }
+                        }
+                }
+        }
 }
 
 #ifdef QSS_PARALLEL
@@ -214,7 +205,7 @@ int
 SAM_getSteps (OUT_output output, int var)
 #endif
 {
-  return (output->state->steps[var]);
+    return (output->state->steps[var]);
 }
 
 #ifdef QSS_PARALLEL
@@ -225,5 +216,5 @@ void
 SAM_save (OUT_output output)
 #endif
 {
-  LG_toFile (output->state->log);
+    LG_toFile (output->state->log);
 }

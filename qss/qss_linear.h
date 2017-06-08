@@ -53,5 +53,4 @@ LN_PAR_update (SC_scheduler scheduler, QSS_data, QSS_time);
 void
 LN_PAR_init (SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
 
-
 #endif  /* QSS_LINEAR_H_ */

@@ -32,17 +32,17 @@ typedef struct PRT_partition_ *PRT_partition;
  */
 struct PRT_partition_
 {
-  long int *values; //!<
-  int *nOutputs; //!<
-  int *nDsc;
-  int **dscInf;
-  int **asgDscInf;
-  int **outputs; //!<
-  int beginStates; //!<
-  int endStates; //!<
-  int beginHandlers; //!<
-  int endHandlers; //!<
-  int lps;
+    long int *values; //!<
+    int *nOutputs; //!<
+    int *nDsc;
+    int **dscInf;
+    int **asgDscInf;
+    int **outputs; //!<
+    int beginStates; //!<
+    int endStates; //!<
+    int beginHandlers; //!<
+    int endHandlers; //!<
+    int lps;
 };
 
 /**

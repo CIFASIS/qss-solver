@@ -47,9 +47,7 @@
  */
 #define MAX_OUTPUT_POINTS 1<<20
 
-
 #define HIST 1e-12
-
 
 /**
  *
@@ -59,8 +57,7 @@
  * @param totalOutputSteps
  */
 void
-CLC_write_output (SD_output simOutput, double **solution, double *solution_time,
-		  int totalOutputSteps);
+CLC_write_output (SD_output simOutput, double **solution, double *solution_time, int totalOutputSteps);
 /**
  *
  * @param clcData
@@ -84,9 +81,7 @@ CLC_compute_outputs (SD_output simOutput, double **solution, int num_steps);
  * @param outvar
  */
 void
-CLC_save_step (SD_output simOutput, double **solution, double *solution_time,
-	       const double t, const int totalOutputSteps, double *x, double *d,
-	       double *a);
+CLC_save_step (SD_output simOutput, double **solution, double *solution_time, const double t, const int totalOutputSteps, double *x, double *d, double *a);
 /**
  *
  * @param clcData
@@ -97,8 +92,7 @@ CLC_save_step (SD_output simOutput, double **solution, double *solution_time,
  * @param iwork
  */
 void
-CLC_handle_event (CLC_data clcData, CLC_model clcModel, double *x,
-		  int *root_output, double t, int *iwork);
+CLC_handle_event (CLC_data clcData, CLC_model clcModel, double *x, int *root_output, double t, int *iwork);
 
 void
 CLC_initialize (SIM_simulator simulate);

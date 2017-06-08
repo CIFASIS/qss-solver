@@ -25,51 +25,51 @@
 void
 shuffle (int *a, int size)
 {
-  gsl_ran_shuffle (_rseed, a, size, sizeof(int));
+    gsl_ran_shuffle (_rseed, a, size, sizeof(int));
 }
 
 unsigned long
 getRandomValue (int n)
 {
-  unsigned long ret = gsl_rng_get (_rseed) % n;
-  return (ret);
+    unsigned long ret = gsl_rng_get (_rseed) % n;
+    return (ret);
 }
 
 double
 exponential (double mu)
 {
-  return (gsl_ran_exponential (_rseed, mu));
+    return (gsl_ran_exponential (_rseed, mu));
 }
 
 double
 uniform (double a, double b)
 {
-  return (gsl_ran_flat (_rseed, a, b));
+    return (gsl_ran_flat (_rseed, a, b));
 }
 
 double
 normal (double sigma)
 {
-  return (gsl_ran_gaussian (_rseed, sigma));
+    return (gsl_ran_gaussian (_rseed, sigma));
 }
 
-double 
+double
 randomS (double max)
 {
-  return (max * gsl_rng_uniform (_rseed));
+    return (max * gsl_rng_uniform (_rseed));
 }
 
 void
 Random ()
 {
-  gsl_rng_env_setup ();
-  _random_generator = gsl_rng_default;
-  _rseed = gsl_rng_alloc (_random_generator);
-  gsl_rng_set (_rseed, time (NULL));
+    gsl_rng_env_setup ();
+    _random_generator = gsl_rng_default;
+    _rseed = gsl_rng_alloc (_random_generator);
+    gsl_rng_set (_rseed, time (NULL));
 }
 
 void
 freeRandom ()
 {
-  gsl_rng_free (_rseed);
+    gsl_rng_free (_rseed);
 }

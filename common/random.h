@@ -62,7 +62,7 @@ normal (double sigma);
  *
  *  @param max
  */
-double 
+double
 randomS (double max);
 /**
  *

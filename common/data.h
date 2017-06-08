@@ -82,8 +82,8 @@ typedef void
  */
 typedef enum
 {
-  SD_File, //!< SD_File
-  SD_Memory  //!< SD_Memory
+    SD_File, //!< SD_File
+    SD_Memory  //!< SD_Memory
 } SD_StoreData;
 
 /**
@@ -91,9 +91,9 @@ typedef enum
  */
 typedef enum
 {
-  CI_Step,   //!< CI_Step
-  CI_Dense,  //!< CI_Dense
-  CI_Sampled //!< CI_Sampled
+    CI_Step,   //!< CI_Step
+    CI_Dense,  //!< CI_Dense
+    CI_Sampled //!< CI_Sampled
 } SD_CommInterval;
 
 /**
@@ -101,19 +101,19 @@ typedef enum
  */
 typedef enum
 {
-  SD_QSS,   //!< SD_QSS
-  SD_CQSS,  //!< SD_CQSS
-  SD_LIQSS, //!< SD_LIQSS
-  SD_QSS2,  //!< SD_QSS2
-  SD_LIQSS2,  //!< SD_LIQSS2
-  SD_QSS3,  //!< SD_QSS3
-  SD_LIQSS3,  //!< SD_LIQSS3
-  SD_QSS4,   //!< SD_QSS4
-  SD_DASSL, //!< SD_DASSL
-  SD_DOPRI, //!< SD_DOPRI
-  SD_CVODE_BDF,  //!< SD_CVODE_BDF
-  SD_CVODE_AM,  //!< SD_CVODE_
-  SD_IDA //!< SD_IDA
+    SD_QSS,   //!< SD_QSS
+    SD_CQSS,  //!< SD_CQSS
+    SD_LIQSS, //!< SD_LIQSS
+    SD_QSS2,  //!< SD_QSS2
+    SD_LIQSS2,  //!< SD_LIQSS2
+    SD_QSS3,  //!< SD_QSS3
+    SD_LIQSS3,  //!< SD_LIQSS3
+    SD_QSS4,   //!< SD_QSS4
+    SD_DASSL, //!< SD_DASSL
+    SD_DOPRI, //!< SD_DOPRI
+    SD_CVODE_BDF,  //!< SD_CVODE_BDF
+    SD_CVODE_AM,  //!< SD_CVODE_
+    SD_IDA //!< SD_IDA
 } SD_Solver;
 
 /**
@@ -121,16 +121,16 @@ typedef enum
  */
 typedef enum
 {
-  SD_DBG_NoDebug = 0, //!< SD_DBG_NoDebug
-  SD_DBG_VarChanges = 1 << 0, //!< SD_DBG_VarSteps
-  SD_DBG_InitValues = 1 << 1, //!< SD_DBG_InitValues
-  SD_DBG_StepInfo = 1 << 2,   //!< SD_DBG_StepInfo
-  SD_DBG_Weights = 1 << 3,    //!< SD_DBG_Weights
-  SD_DBG_Memory = 1 << 4,     //!< SD_DBG_Memory
-  SD_DBG_ExternalEvent = 1 << 5,     //!< SD_DBG_ExternalEvent
-  SD_DBG_Synchronize = 1 << 6,     //!< SD_DBG_Synchronize
-  SD_DBG_WaitFor = 1 << 7,     //!< SD_DBG_WaitFor
-  SD_DBG_Dt = 1 << 8           //!< SD_DBG_Dt
+    SD_DBG_NoDebug = 0, //!< SD_DBG_NoDebug
+    SD_DBG_VarChanges = 1 << 0, //!< SD_DBG_VarSteps
+    SD_DBG_InitValues = 1 << 1, //!< SD_DBG_InitValues
+    SD_DBG_StepInfo = 1 << 2,   //!< SD_DBG_StepInfo
+    SD_DBG_Weights = 1 << 3,    //!< SD_DBG_Weights
+    SD_DBG_Memory = 1 << 4,     //!< SD_DBG_Memory
+    SD_DBG_ExternalEvent = 1 << 5,     //!< SD_DBG_ExternalEvent
+    SD_DBG_Synchronize = 1 << 6,     //!< SD_DBG_Synchronize
+    SD_DBG_WaitFor = 1 << 7,     //!< SD_DBG_WaitFor
+    SD_DBG_Dt = 1 << 8           //!< SD_DBG_Dt
 } SD_Debug;
 
 /**
@@ -138,11 +138,11 @@ typedef enum
  */
 typedef enum
 {
-  SD_Metis, //!< SD_Metis
-  SD_HMetis,   //!< SD_HMetis
-  SD_Scotch,   //!< SD_Scotch
-  SD_Patoh,     //!< SD_Patoh
-  SD_Manual
+    SD_Metis, //!< SD_Metis
+    SD_HMetis,   //!< SD_HMetis
+    SD_Scotch,   //!< SD_Scotch
+    SD_Patoh,     //!< SD_Patoh
+    SD_Manual
 } SD_PartitionMethod;
 
 /**
@@ -150,25 +150,25 @@ typedef enum
  */
 typedef enum
 {
-  SD_DT_Fixed,       //!<
-  SD_DT_Adaptive, //!<
-  SD_DT_AdaptiveDiscrete
+    SD_DT_Fixed,       //!<
+    SD_DT_Adaptive, //!<
+    SD_DT_AdaptiveDiscrete
 } SD_DtSynch;
 
 typedef struct
 {
-  char lvalue[128];
-  char value[128];
+    char lvalue[128];
+    char value[128];
 } SD_partitionerOption;
 
 typedef struct
 {
-  SD_partitionerOption patoh[50];
-  SD_partitionerOption scotch[50];
-  SD_partitionerOption metis[50];
-  int nPatoh;
-  int nScotch;
-  int nMetis;
+    SD_partitionerOption patoh[50];
+    SD_partitionerOption scotch[50];
+    SD_partitionerOption metis[50];
+    int nPatoh;
+    int nScotch;
+    int nMetis;
 } SD_partitionerOptions;
 
 /**
@@ -181,11 +181,11 @@ typedef struct SD_simulationSettings_ *SD_simulationSettings;
  */
 struct SD_simulationSettings_
 {
-  SD_Debug debug; //!<
-  SD_Solver method; //!<
-  bool parallel; //!<
-  bool hybrid; //!<
-  int jacobian;
+    SD_Debug debug; //!<
+    SD_Solver method; //!<
+    bool parallel; //!<
+    bool hybrid; //!<
+    int jacobian;
 };
 
 /**
@@ -219,10 +219,10 @@ typedef struct SD_simulationLog_ *SD_simulationLog;
  */
 struct SD_simulationLog_
 {
-  int *states; //!<
-  int *handlers; //!<
-  bool hasVariables; //!<
-  FILE *log; //!<
+    int *states; //!<
+    int *handlers; //!<
+    bool hasVariables; //!<
+    FILE *log; //!<
 };
 
 /**
@@ -282,16 +282,16 @@ typedef struct SD_eventData_ *SD_eventData;
  */
 struct SD_eventData_
 {
-  int nLHSSt; //!<
-  int nLHSDsc; //!<
-  int nRHSSt; //!<
-  int zcSign; //!<
-  int direction; //!<
-  int relation; //!<
-  int *LHSSt; //!<
-  int *LHSDsc; //!<
-  int *RHSSt; //!<
-  double zcHyst; //!<
+    int nLHSSt; //!<
+    int nLHSDsc; //!<
+    int nRHSSt; //!<
+    int zcSign; //!<
+    int direction; //!<
+    int relation; //!<
+    int *LHSSt; //!<
+    int *LHSDsc; //!<
+    int *RHSSt; //!<
+    double zcHyst; //!<
 };
 
 /**
@@ -331,17 +331,17 @@ typedef struct SD_parameters_ *SD_parameters;
  */
 struct SD_parameters_
 {
-  double derDelta; //!<
-  double zcHyst; //!<
-  double minStep; //!<
-  double dt; //!< For parallel simulations, minimum \f $ \delta t $\f value allowed.
-  int symDiff; //!< Use symbolic derivatives.
-  int lps; //!< Number of LPs defined for parallel simulations.
-  int nodeSize; //!< Node size used in the memory list for output simulation values.
-  int jacobian;
-  SD_PartitionMethod pm; //!< Partition method used to obtain a model partition for parallel simulations.
-  SD_DtSynch dtSynch; //!< \f $ \delta t $ \f synchronization policy.
-  SD_partitionerOptions partitionerOptions;
+    double derDelta; //!<
+    double zcHyst; //!<
+    double minStep; //!<
+    double dt; //!< For parallel simulations, minimum \f $ \delta t $\f value allowed.
+    int symDiff; //!< Use symbolic derivatives.
+    int lps; //!< Number of LPs defined for parallel simulations.
+    int nodeSize; //!< Node size used in the memory list for output simulation values.
+    int jacobian;
+    SD_PartitionMethod pm; //!< Partition method used to obtain a model partition for parallel simulations.
+    SD_DtSynch dtSynch; //!< \f $ \delta t $ \f synchronization policy.
+    SD_partitionerOptions partitionerOptions;
 };
 
 /**
@@ -353,9 +353,8 @@ struct SD_parameters_
  * @return
  */
 SD_parameters
-SD_Parameters (double derDelta, double zcHyst, double minStep, int symDiff,
-	       int lps, int nodeSize, SD_PartitionMethod pm, double dt,
-	       SD_DtSynch synch, SD_partitionerOptions partitionerOptions, int jacobian);
+SD_Parameters (double derDelta, double zcHyst, double minStep, int symDiff, int lps, int nodeSize, SD_PartitionMethod pm, double dt, SD_DtSynch synch,
+               SD_partitionerOptions partitionerOptions, int jacobian);
 
 /**
  *
@@ -387,8 +386,8 @@ typedef struct SD_sampledOutput_ *SD_sampledOutput;
  */
 struct SD_sampledOutput_
 {
-  double *nextTime; //!<
-  double *period; //!<
+    double *nextTime; //!<
+    double *period; //!<
 };
 
 /**
@@ -419,7 +418,7 @@ typedef struct SD_outputVariable_ *SD_outputVariable;
  */
 struct SD_outputVariable_
 {
-  char name[MAX_NAME_SIZE]; //!<
+    char name[MAX_NAME_SIZE]; //!<
 };
 
 /**
@@ -447,21 +446,21 @@ typedef struct SD_output_ *SD_output;
  */
 struct SD_output_
 {
-  char *name; //!<
-  int outputs; //!<
-  int *nDO; //!<
-  int *nOD; //!<
-  int *nSO; //!<
-  int *nOS; //!<
-  int **DO; //!<
-  int **OD; //!<
-  int **SO; //!<
-  int **OS; //!<
-  SD_CommInterval commInterval; //!<
-  SD_StoreData store; //!<
-  SD_sampledOutput sampled; //!<
-  SD_outputVariable variable; //!<
-  SD_eq value; //!<
+    char *name; //!<
+    int outputs; //!<
+    int *nDO; //!<
+    int *nOD; //!<
+    int *nSO; //!<
+    int *nOS; //!<
+    int **DO; //!<
+    int **OD; //!<
+    int **SO; //!<
+    int **OS; //!<
+    SD_CommInterval commInterval; //!<
+    SD_StoreData store; //!<
+    SD_sampledOutput sampled; //!<
+    SD_outputVariable variable; //!<
+    SD_eq value; //!<
 };
 
 /**
@@ -479,9 +478,8 @@ struct SD_output_
  * @return
  */
 SD_output
-SD_Output (string name, int outputs, int discretes, int states, double *period,
-	   int nPeriod, double it, SD_CommInterval commInterval,
-	   SD_StoreData store, SD_eq value);
+SD_Output (string name, int outputs, int discretes, int states, double *period, int nPeriod, double it, SD_CommInterval commInterval, SD_StoreData store,
+           SD_eq value);
 
 /**
  *
@@ -511,31 +509,31 @@ typedef struct SD_statistics_ *SD_statistics;
  */
 struct SD_statistics_
 {
-  double *simulationTimes;
-  double partitioningTime;
-  double initializeLPS;
-  int *steps;
-  unsigned long *simulationMessages;
-  unsigned long *simulationExternalEvents;
-  unsigned long modelEvaluations;
-  unsigned long totalSteps;
-  unsigned long reinits;
-  unsigned long memory;
-  double initTime;
-  double simulationTime;
-  double saveTime;
-  double sequentialMemory;
-  unsigned long messages;
-  unsigned long extTrans;
-  unsigned int pastEvents;
+    double *simulationTimes;
+    double partitioningTime;
+    double initializeLPS;
+    int *steps;
+    unsigned long *simulationMessages;
+    unsigned long *simulationExternalEvents;
+    unsigned long modelEvaluations;
+    unsigned long totalSteps;
+    unsigned long reinits;
+    unsigned long memory;
+    double initTime;
+    double simulationTime;
+    double saveTime;
+    double sequentialMemory;
+    unsigned long messages;
+    unsigned long extTrans;
+    unsigned int pastEvents;
 #ifdef _WIN32
-  struct timeval *iTime;
-  struct timeval *sTime;
-  struct timeval *sdTime;
+    struct timeval *iTime;
+    struct timeval *sTime;
+    struct timeval *sdTime;
 #else
-  struct timespec *iTime;
-  struct timespec *sTime;
-  struct timespec *sdTime;
+    struct timespec *iTime;
+    struct timespec *sTime;
+    struct timespec *sdTime;
 #endif
 };
 

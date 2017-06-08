@@ -1,21 +1,21 @@
 /*****************************************************************************
 
-    This file is part of QSS Solver.
+ This file is part of QSS Solver.
 
-    QSS Solver is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ QSS Solver is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    QSS Solver is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ QSS Solver is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
-******************************************************************************/
+ ******************************************************************************/
 
 #ifndef TREE_H_
 #define TREE_H_
@@ -33,9 +33,9 @@ typedef struct BT_node_ *BT_node;
  */
 struct BT_node_
 {
-  int value; //!<
-  int father; //!<
-  short size; //!<
+    int value; //!<
+    int father; //!<
+    short size; //!<
 };
 /**
  *
@@ -52,12 +52,12 @@ typedef struct BT_tree_ *BT_tree;
  */
 struct BT_tree_
 {
-  BT_node *nodes; //!<
-  leave leaves; //!<
-  int *map;
-  int *father; //!<
-  int height; //!<
-  int size; //!<
+    BT_node *nodes; //!<
+    leave leaves; //!<
+    int *map;
+    int *father; //!<
+    int height; //!<
+    int size; //!<
 };
 /**
  *
@@ -79,8 +79,8 @@ typedef struct BT_info_ *BT_info;
  */
 struct BT_info_
 {
-  int size; //!<
-  int **fathers; //!<
+    int size; //!<
+    int **fathers; //!<
 };
 /**
  *
@@ -106,10 +106,10 @@ typedef struct BTR_node_ *BTR_node;
  */
 struct BTR_node_
 {
-  int value; //!<
-  int father; //!<
-  short size; //!<
-  int visit[3]; //!<
+    int value; //!<
+    int father; //!<
+    short size; //!<
+    int visit[3]; //!<
 };
 
 /**
@@ -128,18 +128,18 @@ typedef struct BTR_tree_ *BTR_tree;
  */
 struct BTR_tree_
 {
-  BTR_node *nodes; //!<
-  leave leaves; //!<
-  int *father; //!<
-  int *equals; //!<
-  int *weightedEquals; //!<
-  int height; //!<
-  int size; //!<
-  int numEquals; //!<
-  int randomRange; //!<
-  int num; //!<
-  double *weights; //!<
-  double minimum; //!<
+    BTR_node *nodes; //!<
+    leave leaves; //!<
+    int *father; //!<
+    int *equals; //!<
+    int *weightedEquals; //!<
+    int height; //!<
+    int size; //!<
+    int numEquals; //!<
+    int randomRange; //!<
+    int num; //!<
+    double *weights; //!<
+    double minimum; //!<
 };
 /**
  *

@@ -31,8 +31,7 @@
  * @param simOutput
  */
 void
-SAM_write (OUT_output output, QSS_data simData, QSS_time simTime,
-	   SD_output simOutput);
+SAM_write (OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
 /**
  *
  * @param var
@@ -54,8 +53,7 @@ SAM_save (OUT_output output);
  * @param simOutput
  */
 void
-SAM_init (OUT_output output, QSS_data simData, QSS_time simTime,
-	  SD_output simOutput);
+SAM_init (OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
 
 /**
  *
@@ -64,8 +62,7 @@ SAM_init (OUT_output output, QSS_data simData, QSS_time simTime,
  * @param simOutput
  */
 void
-SAM_PAR_write (OUT_output output, QSS_data simData, QSS_time simTime,
-	   SD_output simOutput);
+SAM_PAR_write (OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
 /**
  *
  * @param var
@@ -87,7 +84,6 @@ SAM_PAR_save (OUT_output output);
  * @param simOutput
  */
 void
-SAM_PAR_init (OUT_output output, QSS_data simData, QSS_time simTime,
-	  SD_output simOutput);
+SAM_PAR_init (OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
 
 #endif  /* QSS_SAMPLED_H_ */

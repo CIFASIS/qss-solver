@@ -75,8 +75,8 @@ typedef void
  */
 struct LG_log_
 {
-  LG_logState state; //!<
-  LG_logOps ops; //!<
+    LG_logState state; //!<
+    LG_logOps ops; //!<
 };
 
 /**
@@ -84,13 +84,13 @@ struct LG_log_
  */
 struct LG_logState_
 {
-  list *states; //!<
-  QSS_data data; //!<
-  SD_output output; //!<
-  FILE **files; //!<
-  int size; //!<
-  char fileName[NAME_SIZE]; //!<
-  int *values; //!<
+    list *states; //!<
+    QSS_data data; //!<
+    SD_output output; //!<
+    FILE **files; //!<
+    int size; //!<
+    char fileName[NAME_SIZE]; //!<
+    int *values; //!<
 };
 
 /**
@@ -98,9 +98,9 @@ struct LG_logState_
  */
 struct LG_logOps_
 {
-  LG_writeFn write; //!<
-  LG_writeLineFn writeLine; //!<
-  LG_toFileFn toFile; //!<
+    LG_writeFn write; //!<
+    LG_writeLineFn writeLine; //!<
+    LG_toFileFn toFile; //!<
 
 };
 
@@ -171,6 +171,5 @@ LG_writeLine (LG_log log, int i, double time, double *value);
  */
 void
 LG_toFile (LG_log log);
-
 
 #endif  /* QSS_LOG_H_ */

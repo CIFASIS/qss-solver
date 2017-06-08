@@ -47,7 +47,6 @@ ST_getSteps (OUT_output output, int var);
 void
 ST_save (OUT_output output);
 
-
 /**
  *
  * @param simData
@@ -56,7 +55,6 @@ ST_save (OUT_output output);
  */
 void
 ST_init (OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
-
 
 /**
  *

@@ -21,29 +21,28 @@
 #include "model.h"
 #include "simulator.h"
 
-
 #ifdef __linux__
 #include <signal.h> 
 #include <stdlib.h> 
-void 
-segfault_hdlr(int dummy) 
+void
+segfault_hdlr (int dummy)
 {
-  printf("Segmentation fault detected\n");
-  exit(-1);
+    printf ("Segmentation fault detected\n");
+    exit (-1);
 }
 #endif
 
 int
-main()
+main ()
 {
 
 #ifdef __linux__
-  signal(SIGSEGV,segfault_hdlr);
+    signal (SIGSEGV, segfault_hdlr);
 #endif
-  SD_simulationSettings settings = SD_SimulationSettings();
-  MOD_settings(settings);
-  SIM_simulator simulator = SIM_Simulator (settings);
-  SIM_simulate (simulator);
-  SIM_freeSimulator (simulator);
-  return (0);
+    SD_simulationSettings settings = SD_SimulationSettings ();
+    MOD_settings (settings);
+    SIM_simulator simulator = SIM_Simulator (settings);
+    SIM_simulate (simulator);
+    SIM_freeSimulator (simulator);
+    return (0);
 }

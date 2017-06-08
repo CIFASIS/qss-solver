@@ -35,242 +35,237 @@
 QA_quantizerOps
 QA_QuantizerOps ()
 {
-  QA_quantizerOps p = checkedMalloc (sizeof(*p));
-  p->recomputeNextTimes = NULL;
-  p->recomputeNextTime = NULL;
-  p->nextTime = NULL;
-  p->updateQuantizedState = NULL;
-  return (p);
+    QA_quantizerOps p = checkedMalloc (sizeof(*p));
+    p->recomputeNextTimes = NULL;
+    p->recomputeNextTime = NULL;
+    p->nextTime = NULL;
+    p->updateQuantizedState = NULL;
+    return (p);
 }
 
 QA_quantizerState
 QA_QuantizerState ()
 {
-  QA_quantizerState p = checkedMalloc (sizeof(*p));
-  p->order = 0;
-  p->xOrder = 0;
-  p->dq = NULL;
-  p->a = NULL;
-  p->oldDx = NULL;
-  p->qAux = NULL;
-  p->u0 = NULL;
-  p->u1 = NULL;
-  p->u2 = NULL;
-  p->lt = NULL;
-  p->ltq = NULL;
-  p->lquOld = NULL;
-  p->qinf = NULL;
-  p->qsup = NULL;
-  p->simTime = NULL;
-  p->minStep = 0;
-  p->finTime = 0;
-  p->flag2 = NULL;
-  p->flag3 = NULL;
-  p->flag4 = NULL;
-  p->lSimTime = NULL;
-  p->qMap = NULL;
-  return (p);
+    QA_quantizerState p = checkedMalloc (sizeof(*p));
+    p->order = 0;
+    p->xOrder = 0;
+    p->dq = NULL;
+    p->a = NULL;
+    p->oldDx = NULL;
+    p->qAux = NULL;
+    p->u0 = NULL;
+    p->u1 = NULL;
+    p->u2 = NULL;
+    p->lt = NULL;
+    p->ltq = NULL;
+    p->lquOld = NULL;
+    p->qinf = NULL;
+    p->qsup = NULL;
+    p->simTime = NULL;
+    p->minStep = 0;
+    p->finTime = 0;
+    p->flag2 = NULL;
+    p->flag3 = NULL;
+    p->flag4 = NULL;
+    p->lSimTime = NULL;
+    p->qMap = NULL;
+    return (p);
 }
 
 QA_quantizer
 QA_Quantizer (QSS_data simData, QSS_time simTime)
 {
-  QA_quantizer p = checkedMalloc (sizeof(*p));
-  p->state = QA_QuantizerState ();
-  p->ops = QA_QuantizerOps ();
-  switch (simData->solver)
-    {
-    case SD_QSS:
-      if (simData->params->lps > 0)
-	{
-	  QSS_PAR_init (p, simData, simTime);
-	}
-      else
-	{
-	  QSS_init (p, simData, simTime);
-	}
-      break;
-    case SD_CQSS:
-      if (simData->params->lps > 0)
-	{
-	  CQSS_PAR_init (p, simData, simTime);
-	}
-      else
-	{
-	  CQSS_init (p, simData, simTime);
-	}
-      break;
-    case SD_LIQSS:
-      if (simData->params->lps > 0)
-	{
-	  LIQSS_PAR_init (p, simData, simTime);
-	}
-      else
-	{
-	  LIQSS_init (p, simData, simTime);
-	}
-      break;
-    case SD_QSS2:
-      if (simData->params->lps > 0)
-	{
-	  QSS2_PAR_init (p, simData, simTime);
-	}
-      else
-	{
-	  QSS2_init (p, simData, simTime);
-	}
-      break;
-    case SD_LIQSS2:
-      if (simData->params->lps > 0)
-	{
-	  LIQSS2_PAR_init (p, simData, simTime);
-	}
-      else
-	{
-	  LIQSS2_init (p, simData, simTime);
-	}
-      break;
-    case SD_QSS3:
-      if (simData->params->lps > 0)
-	{
-	  QSS3_PAR_init (p, simData, simTime);
-	}
-      else
-	{
-	  QSS3_init (p, simData, simTime);
-	}
-      break;
-    case SD_LIQSS3:
-      if (simData->params->lps > 0)
-	{
-	  LIQSS3_PAR_init (p, simData, simTime);
-	}
-      else
-	{
-	  LIQSS3_init (p, simData, simTime);
-	}
-      break;
-    case SD_QSS4:
-      if (simData->params->lps > 0)
-	{
-	  QSS4_PAR_init (p, simData, simTime);
-	}
-      else
-	{
-	  QSS4_init (p, simData, simTime);
-	}
-      break;
-    default:
-      return (NULL);
-    }
-  return (p);
+    QA_quantizer p = checkedMalloc (sizeof(*p));
+    p->state = QA_QuantizerState ();
+    p->ops = QA_QuantizerOps ();
+    switch (simData->solver)
+        {
+        case SD_QSS:
+            if (simData->params->lps > 0)
+                {
+                    QSS_PAR_init (p, simData, simTime);
+                }
+            else
+                {
+                    QSS_init (p, simData, simTime);
+                }
+            break;
+        case SD_CQSS:
+            if (simData->params->lps > 0)
+                {
+                    CQSS_PAR_init (p, simData, simTime);
+                }
+            else
+                {
+                    CQSS_init (p, simData, simTime);
+                }
+            break;
+        case SD_LIQSS:
+            if (simData->params->lps > 0)
+                {
+                    LIQSS_PAR_init (p, simData, simTime);
+                }
+            else
+                {
+                    LIQSS_init (p, simData, simTime);
+                }
+            break;
+        case SD_QSS2:
+            if (simData->params->lps > 0)
+                {
+                    QSS2_PAR_init (p, simData, simTime);
+                }
+            else
+                {
+                    QSS2_init (p, simData, simTime);
+                }
+            break;
+        case SD_LIQSS2:
+            if (simData->params->lps > 0)
+                {
+                    LIQSS2_PAR_init (p, simData, simTime);
+                }
+            else
+                {
+                    LIQSS2_init (p, simData, simTime);
+                }
+            break;
+        case SD_QSS3:
+            if (simData->params->lps > 0)
+                {
+                    QSS3_PAR_init (p, simData, simTime);
+                }
+            else
+                {
+                    QSS3_init (p, simData, simTime);
+                }
+            break;
+        case SD_LIQSS3:
+            if (simData->params->lps > 0)
+                {
+                    LIQSS3_PAR_init (p, simData, simTime);
+                }
+            else
+                {
+                    LIQSS3_init (p, simData, simTime);
+                }
+            break;
+        case SD_QSS4:
+            if (simData->params->lps > 0)
+                {
+                    QSS4_PAR_init (p, simData, simTime);
+                }
+            else
+                {
+                    QSS4_init (p, simData, simTime);
+                }
+            break;
+        default:
+            return (NULL);
+        }
+    return (p);
 }
 
 void
 QA_freeQuantizerState (QA_quantizerState state)
 {
-  if (state->dq != NULL)
-    {
-      free (state->dq);
-    }
-  if (state->a != NULL)
-    {
-      free (state->a);
-    }
-  if (state->oldDx != NULL)
-    {
-      free (state->oldDx);
-    }
-  if (state->qAux != NULL)
-    {
-      free (state->qAux);
-    }
-  if (state->u0 != NULL)
-    {
-      free (state->u0);
-    }
-  if (state->u1 != NULL)
-    {
-      free (state->u1);
-    }
-  if (state->u2 != NULL)
-    {
-      free (state->u2);
-    }
-  if (state->lt != NULL)
-    {
-      free (state->lt);
-    }
-  if (state->ltq != NULL)
-    {
-      free (state->ltq);
-    }
-  if (state->lquOld != NULL)
-    {
-      free (state->lquOld);
-    }
-  if (state->qinf != NULL)
-    {
-      free (state->qinf);
-    }
-  if (state->qsup != NULL)
-    {
-      free (state->qsup);
-    }
-  if (state->flag2 != NULL)
-    {
-      free (state->flag2);
-    }
-  if (state->flag3 != NULL)
-    {
-      free (state->flag3);
-    }
-  if (state->flag4 != NULL)
-    {
-      free (state->flag4);
-    }
-  free (state);
+    if (state->dq != NULL)
+        {
+            free (state->dq);
+        }
+    if (state->a != NULL)
+        {
+            free (state->a);
+        }
+    if (state->oldDx != NULL)
+        {
+            free (state->oldDx);
+        }
+    if (state->qAux != NULL)
+        {
+            free (state->qAux);
+        }
+    if (state->u0 != NULL)
+        {
+            free (state->u0);
+        }
+    if (state->u1 != NULL)
+        {
+            free (state->u1);
+        }
+    if (state->u2 != NULL)
+        {
+            free (state->u2);
+        }
+    if (state->lt != NULL)
+        {
+            free (state->lt);
+        }
+    if (state->ltq != NULL)
+        {
+            free (state->ltq);
+        }
+    if (state->lquOld != NULL)
+        {
+            free (state->lquOld);
+        }
+    if (state->qinf != NULL)
+        {
+            free (state->qinf);
+        }
+    if (state->qsup != NULL)
+        {
+            free (state->qsup);
+        }
+    if (state->flag2 != NULL)
+        {
+            free (state->flag2);
+        }
+    if (state->flag3 != NULL)
+        {
+            free (state->flag3);
+        }
+    if (state->flag4 != NULL)
+        {
+            free (state->flag4);
+        }
+    free (state);
 }
 
 void
 QA_freeQuantizerOps (QA_quantizerOps ops)
 {
-  free (ops);
+    free (ops);
 }
 
 void
 QA_freeQuantizer (QA_quantizer quantizer)
 {
-  QA_freeQuantizerState (quantizer->state);
-  QA_freeQuantizerOps (quantizer->ops);
-  free (quantizer);
+    QA_freeQuantizerState (quantizer->state);
+    QA_freeQuantizerOps (quantizer->ops);
+    free (quantizer);
 }
 
 void
-QA_recomputeNextTimes (QA_quantizer quantizer, int vars, int *inf, double t,
-		       double *nTime, double *x, double * lqu, double *q)
+QA_recomputeNextTimes (QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double * lqu, double *q)
 {
-  quantizer->ops->recomputeNextTimes (quantizer, vars, inf, t, nTime, x, lqu,
-				      q);
+    quantizer->ops->recomputeNextTimes (quantizer, vars, inf, t, nTime, x, lqu, q);
 }
 
 void
-QA_recomputeNextTime (QA_quantizer quantizer, int var, double t, double *nTime,
-		      double *x, double *lqu, double *q)
+QA_recomputeNextTime (QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
 {
-  quantizer->ops->recomputeNextTime (quantizer, var, t, nTime, x, lqu, q);
+    quantizer->ops->recomputeNextTime (quantizer, var, t, nTime, x, lqu, q);
 }
 
 void
-QA_nextTime (QA_quantizer quantizer, int var, double t, double *nTime,
-	     double *x, double *lqu)
+QA_nextTime (QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)
 {
-  quantizer->ops->nextTime (quantizer, var, t, nTime, x, lqu);
+    quantizer->ops->nextTime (quantizer, var, t, nTime, x, lqu);
 }
 
 void
-QA_updateQuantizedState (QA_quantizer quantizer, int var, double *q, double *x,
-			 double *lqu)
+QA_updateQuantizedState (QA_quantizer quantizer, int var, double *q, double *x, double *lqu)
 {
-  quantizer->ops->updateQuantizedState (quantizer, var, q, x, lqu);
+    quantizer->ops->updateQuantizedState (quantizer, var, q, x, lqu);
 }

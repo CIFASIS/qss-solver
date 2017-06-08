@@ -117,35 +117,35 @@ typedef struct CLC_data_ *CLC_data;
  */
 struct CLC_data_
 {
-  double *dQMin; //!<
-  double *dQRel; //!<
-  double *d; //!<
-  double *x; //!<
-  double *alg; //!<
-  double it; //!<
-  double ft; //!<
-  int *nSD; //!<
-  int *nDS; //!<
-  int **SD; //!<
-  int **DS; //!<
-  int *IT; //!<
-  int states; //!<
-  int discretes; //!<
-  int events; //!<
-  int inputs; //!<
-  char *fired;
-  unsigned long scalarEvaluations; //!<
-  unsigned long zeroCrossings; //!<
-  unsigned long long funEvaluations; //!<
-  unsigned long totalOutputSteps; //!<
-  unsigned long totalJacobians; //!<
-  unsigned long totalCrossingEvaluations; //!<
-  unsigned long totalStepsDASSL; //!<
-  unsigned long totalSteps; //!<
-  unsigned long totalEvents; //!<
-  SD_Solver solver; //!<
-  SD_eventData event; //!<
-  SD_parameters params; //!<
+    double *dQMin; //!<
+    double *dQRel; //!<
+    double *d; //!<
+    double *x; //!<
+    double *alg; //!<
+    double it; //!<
+    double ft; //!<
+    int *nSD; //!<
+    int *nDS; //!<
+    int **SD; //!<
+    int **DS; //!<
+    int *IT; //!<
+    int states; //!<
+    int discretes; //!<
+    int events; //!<
+    int inputs; //!<
+    char *fired;
+    unsigned long scalarEvaluations; //!<
+    unsigned long zeroCrossings; //!<
+    unsigned long long funEvaluations; //!<
+    unsigned long totalOutputSteps; //!<
+    unsigned long totalJacobians; //!<
+    unsigned long totalCrossingEvaluations; //!<
+    unsigned long totalStepsDASSL; //!<
+    unsigned long totalSteps; //!<
+    unsigned long totalEvents; //!<
+    SD_Solver solver; //!<
+    SD_eventData event; //!<
+    SD_parameters params; //!<
 };
 /**
  *
@@ -180,7 +180,7 @@ typedef struct CLC_model_ *CLC_model;
 struct CLC_model_
 {
     CLC_eq f; /**< Model definition \f$ \forall \imath \in [0,DIM] f(x_{i}(t),t)_{i} \f$ 		*/
-    CLC_jac jac; 
+    CLC_jac jac;
     CLC_event events; //!<
 };
 /**
@@ -209,5 +209,6 @@ CLC_freeModel (CLC_model model);
 typedef void
 (*CLC_setData) (CLC_data, SD_output, CLC_model, SD_simulationSettings);
 
-void CLC_allocDataMatrix (CLC_data data) ;
+void
+CLC_allocDataMatrix (CLC_data data);
 #endif /* CLASSIC_DATA_H_ */

@@ -38,13 +38,13 @@ typedef struct QSS_dtSynch_ *QSS_dtSynch;
  */
 struct QSS_dtSynch_
 {
-  int synch; //!< Synchronization flag for \f $ \delta t $ \f update.
-  int activeLPS;  //!< Number of active LPs in the simulation.
-  double t;
-  double elapsed;
+    int synch; //!< Synchronization flag for \f $ \delta t $ \f update.
+    int activeLPS;  //!< Number of active LPs in the simulation.
+    double t;
+    double elapsed;
 #ifdef __linux__
-  pthread_mutex_t activeMutex; //!< Active LPS mutex.
-  pthread_barrier_t b; //!< \f $ \delta t $ \f synchronization barrier.
+    pthread_mutex_t activeMutex; //!< Active LPS mutex.
+    pthread_barrier_t b; //!< \f $ \delta t $ \f synchronization barrier.
 #endif
 };
 
@@ -55,14 +55,15 @@ struct QSS_dtSynch_
  * @return New \f $ \delta t $ \f synchronization object.
  */
 QSS_dtSynch
-QSS_DtSynch(int lps);
+QSS_DtSynch (int lps);
 
 /**
  * @brief \f $ \delta t $ \f Synchronization destructor.
  *
  * @param dtSynch Object to destroy.
  */
-void QSS_freeDtSynch(QSS_dtSynch dtSynch);
+void
+QSS_freeDtSynch (QSS_dtSynch dtSynch);
 
 /**
  *
@@ -98,8 +99,8 @@ typedef bool
  */
 struct QSS_dtOps_
 {
-  QSS_dtLogStepFn logStep; //!<
-  QSS_dtLogOutputFn logOutput; //!<
+    QSS_dtLogStepFn logStep; //!<
+    QSS_dtLogOutputFn logOutput; //!<
 };
 
 /**
@@ -107,34 +108,34 @@ struct QSS_dtOps_
  */
 struct QSS_dtState_
 {
-  double *dtOpt; //!< Optimum dt calculated for each LP output variable.
-  double *gblDtMin; //!< Global vector with the values of the average step time of all lps defiend.
-  double dtMin; //!< Local dt minimum.
-  double dt; //!< \f $\delta t $ \f current global value.
-  double alpha;
-  double dtUpperBound; //!< Upper bound for asynchronous \f $ \delta t $ \f update strategy.
-  double dtLowerBound; //!< Lower bound for asynchronous \f $ \delta t $ \f update strategy.
-  int *synch; //!< Synchronization flag for the \f $ \delta t $ \f update.
-  int id; //!< LP number used to set the bit vector.
-  int lps; //!< Total number of LPs defined.
-  int outputs; //!< Number of output variables in the LP.
-  int dtMinIndex; //!< Index of the output variable that contains the local minimum for the LP.
-  int dtGlobalLP;
-  int simSteps;
-  int dtChanges;
-  double avgDt;
-  double lastChange;
-  double *t; //!< Current simulation time.
-  double *elapsed; //!< Elapsed time.
-  double simTime; //!< Total simulation time.
-  SD_DtSynch strategy;
-  QSS_idxMap dscMap;
-  QSS_idxMap qMap;
-  SD_simulationLog log;
-  SD_Debug debug;
-  QSS_time time;
+    double *dtOpt; //!< Optimum dt calculated for each LP output variable.
+    double *gblDtMin; //!< Global vector with the values of the average step time of all lps defiend.
+    double dtMin; //!< Local dt minimum.
+    double dt; //!< \f $\delta t $ \f current global value.
+    double alpha;
+    double dtUpperBound; //!< Upper bound for asynchronous \f $ \delta t $ \f update strategy.
+    double dtLowerBound; //!< Lower bound for asynchronous \f $ \delta t $ \f update strategy.
+    int *synch; //!< Synchronization flag for the \f $ \delta t $ \f update.
+    int id; //!< LP number used to set the bit vector.
+    int lps; //!< Total number of LPs defined.
+    int outputs; //!< Number of output variables in the LP.
+    int dtMinIndex; //!< Index of the output variable that contains the local minimum for the LP.
+    int dtGlobalLP;
+    int simSteps;
+    int dtChanges;
+    double avgDt;
+    double lastChange;
+    double *t; //!< Current simulation time.
+    double *elapsed; //!< Elapsed time.
+    double simTime; //!< Total simulation time.
+    SD_DtSynch strategy;
+    QSS_idxMap dscMap;
+    QSS_idxMap qMap;
+    SD_simulationLog log;
+    SD_Debug debug;
+    QSS_time time;
 #ifdef __linux__
-  pthread_barrier_t *b; //!< Barrier used for synchronization.
+    pthread_barrier_t *b; //!< Barrier used for synchronization.
 #endif
 };
 
@@ -143,8 +144,8 @@ struct QSS_dtState_
  */
 struct QSS_dt_
 {
-  QSS_dtOps ops; //!<
-  QSS_dtState state; //!<
+    QSS_dtOps ops; //!<
+    QSS_dtState state; //!<
 };
 
 /**
@@ -158,9 +159,7 @@ struct QSS_dt_
  * @return
  */
 QSS_dt
-QSS_Dt (double *gblDtMin, int id,
-	QSS_dtSynch dtSynch, char *file, SD_Debug debug,
-	QSS_data data, QSS_time time);
+QSS_Dt (double *gblDtMin, int id, QSS_dtSynch dtSynch, char *file, SD_Debug debug, QSS_data data, QSS_time time);
 
 /**
  *

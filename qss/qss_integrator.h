@@ -48,17 +48,17 @@
  * @param
  */
 typedef void
-    (*QSS_externaEventHandler) (QSS_simulator, IBX_message);
+(*QSS_externaEventHandler) (QSS_simulator, IBX_message);
 
 typedef void
-    (*QSS_internalEventHandler) (QSS_simulator);
+(*QSS_internalEventHandler) (QSS_simulator);
 
 /**
  *
  * @param
  */
 typedef void
-    (*QSS_parallelIntegrator) (QSS_simulator);
+(*QSS_parallelIntegrator) (QSS_simulator);
 
 /**
  *
@@ -206,6 +206,6 @@ QSS_PAR_passiveLP (QSS_simulator simulator, QSS_externaEventHandler externalEven
  * @param simulator
  */
 void
-QSS_PAR_waitFor(QSS_simulator simulator);
+QSS_PAR_waitFor (QSS_simulator simulator);
 
 #endif /* QSS_INTEGRATOR_H_ */

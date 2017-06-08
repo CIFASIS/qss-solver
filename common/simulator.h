@@ -41,21 +41,23 @@ typedef struct SIM_simulatorOps_ *SIM_simulatorOps;
  *
  * @param
  */
-typedef void (*SIM_simulateFn) (SIM_simulator);
+typedef void
+(*SIM_simulateFn) (SIM_simulator);
 
 /**
  *
  * @param
  */
-typedef void (*SIM_freeSimulatorFn) (SIM_simulator);
+typedef void
+(*SIM_freeSimulatorFn) (SIM_simulator);
 
 /**
  *
  */
 struct SIM_simulatorOps_
 {
-  SIM_simulateFn simulate; //!<
-  SIM_freeSimulatorFn freeSimulator; //!<
+    SIM_simulateFn simulate; //!<
+    SIM_freeSimulatorFn freeSimulator; //!<
 };
 
 /**
@@ -63,8 +65,8 @@ struct SIM_simulatorOps_
  */
 struct SIM_simulatorState_
 {
-  void *sim; //!<
-  SD_simulationSettings settings; //!<
+    void *sim; //!<
+    SD_simulationSettings settings; //!<
 };
 
 /**
@@ -72,8 +74,8 @@ struct SIM_simulatorState_
  */
 struct SIM_simulator_
 {
-  SIM_simulatorState state; //!<
-  SIM_simulatorOps ops; //!<
+    SIM_simulatorState state; //!<
+    SIM_simulatorOps ops; //!<
 };
 
 /**

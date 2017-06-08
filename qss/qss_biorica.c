@@ -24,12 +24,12 @@
 double
 root (int sq, double value)
 {
-  switch (sq)
-    {
-    case 2:
-      return (sqrt (value));
-    default:
-      return (0.0);
-    }
-  return (0.0);
+    switch (sq)
+        {
+        case 2:
+            return (sqrt (value));
+        default:
+            return (0.0);
+        }
+    return (0.0);
 }
