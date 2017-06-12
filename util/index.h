@@ -265,7 +265,7 @@ public:
      * @param val
      * @return
      */
-    Index
+    Index_
     indexValue (int val);
     /**
      *
@@ -426,14 +426,14 @@ public:
      *
      * @return
      */
-    Index
+    Index_
     map () const;
     /**
      *
      * @param map
      */
     void
-    setMap (Index map);
+    setMap (Index_ map);
     /**
      *
      * @return
@@ -454,13 +454,13 @@ public:
     string
     definition (string idx);
     string
-    variable (Index index, string var);
-    Index
-    variableIndex (Index index);
-    Index
-    applyVariableChange (Index index);
+    variable (Index_ index, string var);
+    Index_
+    variableIndex (Index_ index);
+    Index_
+    applyVariableChange (Index_ index);
     bool
-    variableChange (Index index);
+    variableChange (Index_ index);
     /**
      *
      * @param variable
@@ -583,7 +583,7 @@ public:
      * @param index
      * @param name
      */
-    VariableInterval_ (Index index, string name);
+    VariableInterval_ (Index_ index, string name);
     /**
      *
      */
@@ -592,7 +592,7 @@ public:
      *
      * @return
      */
-    Index
+    Index_
     index ();
     /**
      *
@@ -604,7 +604,7 @@ public:
      * @param index
      */
     void
-    setIndex (Index index);
+    setIndex (Index_ index);
     /**
      *
      * @param name
@@ -614,7 +614,7 @@ public:
     bool
     isEmpty ();
 private:
-    Index _index;
+    Index_ _index;
     string _name;
 };
 

@@ -110,7 +110,7 @@ Index_::parameter () const
     return (_parameter);
 }
 
-Index
+Index_
 Index_::map () const
 {
     return (Index_ (*_map));
@@ -843,7 +843,7 @@ VariableInterval_::VariableInterval_ () :
 {
 }
 
-VariableInterval_::VariableInterval_ (Index index, string name) :
+VariableInterval_::VariableInterval_ (Index_ index, string name) :
         _index (index), _name (name)
 {
 }
@@ -853,12 +853,12 @@ VariableInterval_::~VariableInterval_ ()
 }
 
 void
-VariableInterval_::setIndex (Index index)
+VariableInterval_::setIndex (Index_ index)
 {
     _index = index;
 }
 
-Index
+Index_
 VariableInterval_::index ()
 {
     return (_index);
@@ -876,10 +876,10 @@ VariableInterval_::name ()
     return (_name);
 }
 
-Index
+Index_
 Index_::indexValue (int val)
 {
-    Index ret (*this);
+    Index_ ret (*this);
     if (hasRange ())
     {
         ret.setConstant (val);
@@ -917,12 +917,12 @@ VariableInterval_::isEmpty ()
 }
 
 string
-Index_::variable (Index index, string var)
+Index_::variable (Index_ index, string var)
 {
     string ret = var;
     if (factor () != index.factor () || operConstant () != index.operConstant ())
     {
-        Index retIndex = *this;
+        Index_ retIndex = *this;
         retIndex.setFactor (index.factor () * factor ());
         retIndex.setConstant (factor () * index.operConstant () + operConstant ());
         ret = retIndex.definition (var);
@@ -930,27 +930,27 @@ Index_::variable (Index index, string var)
     return (ret);
 }
 
-Index
-Index_::variableIndex (Index index)
+Index_
+Index_::variableIndex (Index_ index)
 {
-    Index retIndex = *this;
+    Index_ retIndex = *this;
     if (factor () != index.factor () || operConstant () != index.operConstant ())
     {
         retIndex = applyVariableChange (index);
     }
     return (retIndex);
 }
-Index
-Index_::applyVariableChange (Index index)
+Index_
+Index_::applyVariableChange (Index_ index)
 {
-    Index retIndex = *this;
+    Index_ retIndex = *this;
     retIndex.setFactor (index.factor () * factor ());
     retIndex.setConstant (factor () * index.operConstant () + operConstant ());
     return (retIndex);
 }
 
 bool
-Index_::variableChange (Index index)
+Index_::variableChange (Index_ index)
 {
     bool ret = false;
     if (factor () != index.factor () || operConstant () != index.operConstant ())

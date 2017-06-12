@@ -25,7 +25,7 @@
 #include <string>
 
 #include "../ast/ast_types.h"
-#include "../util/index.h"
+#include "../util/md_index.h"
 #include "../util/util_types.h"
 #include "mmo_base.h"
 #include "mmo_types.h"

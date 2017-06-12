@@ -107,11 +107,11 @@ typedef class GenerateDeps_ *GenerateDeps;
 /**
  *
  */
-typedef class Index_ Index;
+typedef class MDIndex_ Index;
 /**
  *
  */
-typedef class VariableInterval_ VariableInterval;
+typedef class MDVariableInterval_ VariableInterval;
 /**
  *
  */

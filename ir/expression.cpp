@@ -26,7 +26,7 @@
 
 #include "../ast/ast_builder.h"
 #include "../util/error.h"
-#include "../util/index.h"
+#include "../util/md_index.h"
 #include "../util/symbol_table.h"
 #include "../util/type.h"
 #include "../util/util.h"

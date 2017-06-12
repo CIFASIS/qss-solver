@@ -32,6 +32,7 @@
 #include "../parser/parse.h"
 #include "../util/ast_util.h"
 #include "../util/dependencies.h"
+#include "../util/md_index.h"
 #include "../util/symbol_table.h"
 #include "../util/type.h"
 #include "../util/util.h"

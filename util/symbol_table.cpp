@@ -25,7 +25,6 @@
 #include "../ir/equation.h"
 #include "../ir/expression.h"
 #include "dependencies.h"
-#include "index.h"
 #include "util.h"
 
 /* VarInfo class. */

@@ -31,6 +31,7 @@
 #include "../ast/modification.h"
 #include "../ir/mmo_types.h"
 #include "../ir/mmo_util.h"
+#include "md_index.h"
 #include "type.h"
 #include "util_types.h"
 

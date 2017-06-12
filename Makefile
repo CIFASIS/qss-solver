@@ -52,7 +52,7 @@ IRSRC = $(IRDIR)/mmo_model_checker.cpp  $(IRDIR)/mmo_util.cpp  $(IRDIR)/expressi
 
 PARSERSRC = $(PARSERDIR)/mocc_parser.cpp $(PARSERDIR)/mocc_scanner.cpp $(PARSERDIR)/parse.cpp 
 
-UTILSRC = $(UTILDIR)/util.cpp $(UTILDIR)/ast_util.cpp $(UTILDIR)/type.cpp $(UTILDIR)/symbol_table.cpp $(UTILDIR)/error.cpp $(UTILDIR)/debug.cpp $(UTILDIR)/compile_flags.cpp $(UTILDIR)/derivative.cpp $(UTILDIR)/ginac_interface.cpp $(UTILDIR)/index.cpp $(UTILDIR)/dependencies.cpp  $(UTILDIR)/graph.cpp $(UTILDIR)/graph_profile.cpp 
+UTILSRC = $(UTILDIR)/util.cpp $(UTILDIR)/ast_util.cpp $(UTILDIR)/type.cpp $(UTILDIR)/symbol_table.cpp $(UTILDIR)/error.cpp $(UTILDIR)/debug.cpp $(UTILDIR)/compile_flags.cpp $(UTILDIR)/derivative.cpp $(UTILDIR)/ginac_interface.cpp $(UTILDIR)/index.cpp $(UTILDIR)/md_index.cpp $(UTILDIR)/dependencies.cpp  $(UTILDIR)/graph.cpp $(UTILDIR)/graph_profile.cpp 
 
 # Objects
 ASTOBJ=$(addprefix $(BUILDDIR)/ast_, $(notdir $(ASTSRC:.cpp=.o)))
