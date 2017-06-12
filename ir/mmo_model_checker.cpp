@@ -421,21 +421,21 @@ AST_MicroModelica_::_lValue (AST_Expression left)
             if (cr->hasIndexes ())
             {
                 AST_ExpressionListList ell = cr->indexes ();
-                if (ell->size () > 1)
+               /* if (ell->size () > 1)
                 {
                     Error::getInstance ()->add (cr->lineNum (),
                     EM_AST | EM_CLASS_DEFINITION,
                                                 ER_Error, "Wrong index expression.");
                     return (false);
-                }
+                }*/
                 AST_ExpressionList elll = AST_ListFirst (ell);
-                if (elll->size () > 1)
+              /*  if (elll->size () > 1)
                 {
                     Error::getInstance ()->add (cr->lineNum (),
                     EM_AST | EM_CLASS_DEFINITION,
                                                 ER_Error, "Wrong index expression.");
                     return (false);
-                }
+                }*/
                 _checkIndex (AST_ListFirst (elll));
             }
         }
@@ -488,13 +488,18 @@ AST_MicroModelica_::visit (AST_Equation x)
             EM_AST | EM_CLASS_DEFINITION,
                                         ER_Error, "No index found in For equation.");
         }
-        if (ef->forIndexList ()->size () > 1)
+        /*if (ef->forIndexList ()->size () > 1)
         {
             Error::getInstance ()->add (x->lineNum (),
             EM_AST | EM_CLASS_DEFINITION,
                                         ER_Error, "More than one Index definition.");
+        }*/
+        AST_ForIndexList fil = ef->forIndexList ();
+        AST_ForIndexListIterator filit;
+        foreach(filit, fil)
+        {
+            visit (current_element(filit));
         }
-        visit (ef->forIndexList ()->front ());
         AST_EquationList eql = ef->equationList ();
         AST_EquationListIterator eq;
         foreach(eq,eql)
@@ -661,13 +666,18 @@ AST_MicroModelica_::visit (AST_Statement x)
                 EM_AST | EM_CLASS_DEFINITION,
                                             ER_Error, "No index found in for statement.");
             }
-            if (ef->forIndexList ()->size () > 1)
+            /*if (ef->forIndexList ()->size () > 1)
             {
                 Error::getInstance ()->add (x->lineNum (),
                 EM_AST | EM_CLASS_DEFINITION,
                                             ER_Error, "More than one index definition.");
+            }*/
+            AST_ForIndexList fil = ef->forIndexList();
+            AST_ForIndexListIterator filit;
+            foreach (filit,fil)
+            {
+              visit (current_element(filit));
             }
-            visit (AST_ListFirst (ef->forIndexList ()));
             AST_StatementList eql = ef->statements ();
             AST_StatementListIterator eq;
             foreach(eq,eql)
