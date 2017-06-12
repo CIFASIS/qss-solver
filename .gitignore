@@ -24,4 +24,4 @@ src/test-suite/
 .settings
 
 # Local Changelog
-ChangeLog
+src/ChangeLog
