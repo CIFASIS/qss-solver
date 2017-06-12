@@ -571,51 +571,48 @@ public:
 /**
  *
  */
-class VariableInterval_
-{
-public:
+//class VariableInterval_
+//{
+//public:
     /**
      *
      */
-    VariableInterval_ ();
+//    VariableInterval_ ();
     /**
      *
      * @param index
      * @param name
      */
-    VariableInterval_ (Index_ index, string name);
+//    VariableInterval_ (Index_ index, string name);
     /**
      *
      */
-    ~VariableInterval_ ();
+//    ~VariableInterval_ ();
     /**
      *
      * @return
      */
-    Index_
-    index ();
+//    Index_
+//    index ();
     /**
      *
      */
-    string
-    name ();
+//    string
+//    name ();
     /**
      *
      * @param index
      */
-    void
-    setIndex (Index_ index);
+//    void
+ //   setIndex (Index_ index);
     /**
      *
      * @param name
      */
-    void
-    setName (string name);
-    bool
-    isEmpty ();
-private:
-    Index_ _index;
-    string _name;
-};
+//    void
+//    setName (string name);
+//    bool
+//    isEmpty ();
+//};
 
 #endif  /* INDEX_H_ */

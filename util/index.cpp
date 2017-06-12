@@ -838,7 +838,7 @@ Intersection::value ()
     return (_value);
 }
 
-VariableInterval_::VariableInterval_ () :
+/*VariableInterval_::VariableInterval_ () :
         _index (), _name ()
 {
 }
@@ -874,7 +874,7 @@ string
 VariableInterval_::name ()
 {
     return (_name);
-}
+}*/
 
 Index_
 Index_::indexValue (int val)
@@ -910,11 +910,11 @@ Index_::hasMap () const
     return (_map != NULL);
 }
 
-bool
+/*bool
 VariableInterval_::isEmpty ()
 {
     return (_name == "");
-}
+}*/
 
 string
 Index_::variable (Index_ index, string var)

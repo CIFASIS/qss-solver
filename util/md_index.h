@@ -255,7 +255,7 @@ public:
      * @return
      */
     Intersection
-    intersection (MDIndex_ b) const;
+    intersection (MDIndex_ b, int dim = 0) const;
     /**
      *
      * @return
@@ -457,6 +457,10 @@ public:
     setName (string name);
     bool
     isEmpty ();
+private:
+    MDIndex_ _index;
+    string _name;
+
 };
 
 
