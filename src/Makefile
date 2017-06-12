@@ -4,7 +4,7 @@ DEBUG ?= False
 CORES ?= 1
 
 # The Directories, Source, Includes, Objects, Binary 
-ROOT   := ..
+ROOT   	:= ..
 ifeq ($(OS),unix)
 ARCH = $(shell $(ROOT)/deploy/linux/scripts/print-arch.sh)
 endif
@@ -100,13 +100,13 @@ clean-repos:
 	@rm -rf $(ROOT)/packages
 
 update-repos:
-	@cd engine && $(shell git pull)
-	@cd mmoc && $(shell git pull)
-	@cd gui && $(shell git pull)
-	@cd usr && $(shell git pull)
-	@cd interfaces/sbml &&  $(shell git pull)
-	@cd $(ROOT)/models &&  $(shell git pull)
-	@cd $(ROOT)/packages &&  $(shell git pull)
+	@cd engine && git pull 
+	@cd mmoc && git pull
+	@cd gui && git pull
+	@cd usr && git pull
+	@cd interfaces/sbml &&  git pull
+	@cd $(ROOT)/models &&  git pull
+	@cd $(ROOT)/packages &&  git pull
 
 install:	
 	@echo "Installing engine libraries."
