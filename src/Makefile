@@ -110,15 +110,15 @@ update-repos:
 
 install:	
 	@echo "Installing engine libraries."
-	@install $(ROOT)/src/engine/usr/lib/* $(ROOT)/lib/
+	ln -s $(ROOT)/src/engine/usr/lib/* $(ROOT)/lib/
 	@echo "Installing MicroModelica Compiler."
-	@install $(ROOT)/src/mmoc/usr/bin/mmoc $(ROOT)/bin/
+	ln -s $(ROOT)/src/mmoc/usr/bin/mmoc $(ROOT)/bin/
 	@echo "Installing SBML translator."
-	@install $(ROOT)/src/interfaces/sbml/usr/bin/translate-sbml $(ROOT)/bin/
+	ln -s $(ROOT)/src/interfaces/sbml/usr/bin/translate-sbml $(ROOT)/bin/
 	@echo "Installing solver GUI."
-	@install $(ROOT)/src/gui/usr/bin/qss-solver $(ROOT)/bin/
+	ln -s $(ROOT)/src/gui/usr/bin/qss-solver $(ROOT)/bin/
 	@echo "Installing user libraries."
-	@install $(ROOT)/src/usr/lib/* $(ROOT)/lib/
+	ln -s $(ROOT)/src/usr/lib/* $(ROOT)/lib/
 ifeq ($(OS),unix)
 	@install $(ROOT)/deploy/linux/scripts/* $(ROOT)/bin/
 	@install $(ROOT)/deploy/linux/qss-solver.ini $(ROOT)/bin/
