@@ -1090,7 +1090,7 @@ MMO_ReplaceInterval_::end ()
 AST_Expression
 MMO_ReplaceInterval_::_indexExp (int constant, int factor)
 {
-    _vt->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, 1, false));
+    _vt->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, vector<int> (1,1), false));
     AST_Expression_ComponentReference idx = newAST_Expression_ComponentReference ();
     AST_Expression_ComponentReference_Add (idx, newAST_String ("i"), newAST_ExpressionList ());
     if (constant == 0 && factor == 1)
@@ -1251,7 +1251,7 @@ MMO_ReplaceInterval_::foldTraverseElement (AST_Expression exp)
             _replacedExps[varName] = ret;
             if (_replacedExpsVars.find (_currentVar) != _replacedExpsVars.end ())
             {
-                VarInfo vi = newVarInfo (newType_Real (), 0, NULL, NULL, 0, false);
+                VarInfo vi = newVarInfo (newType_Real (), 0, NULL, NULL, vector<int> (1,0), false);
                 vi->setBuiltIn ();
                 vi->setName (varName);
                 _vt->insert (varName, vi);

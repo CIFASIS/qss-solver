@@ -617,7 +617,7 @@ MMO_Model_::_transformExpression (AST_Expression l, AST_Expression r)
                             EM_IR | EM_VARIABLE_NOT_FOUND,
                                                         ER_Fatal, "Different array size in element-wise operation");
                         }
-                        _declarations->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, 1, false));
+                        _declarations->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, vector<int> (1,1), false));
                         stringstream buffer;
                         buffer << "for i in 1:" << elvi->size () << " loop" << endl;
                         buffer << prefix << eleft->name () << "[i]" << postfix << " = " << cleft->name () << "[i] "
@@ -634,7 +634,7 @@ MMO_Model_::_transformExpression (AST_Expression l, AST_Expression r)
                             EM_IR | EM_VARIABLE_NOT_FOUND,
                                                         ER_Fatal, "Different array size in element-wise operation");
                         }
-                        _declarations->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, 1, false));
+                        _declarations->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, vector<int> (1,1), false));
                         stringstream buffer;
                         buffer << "for i in 1:" << elvi->size () << " loop" << endl;
                         buffer << prefix << eleft->name () << "[i]" << postfix << " = " << cleft->name ()
@@ -651,7 +651,7 @@ MMO_Model_::_transformExpression (AST_Expression l, AST_Expression r)
                             EM_IR | EM_VARIABLE_NOT_FOUND,
                                                         ER_Error, "Different array size in element-wise operation");
                         }
-                        _declarations->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, 1, false));
+                        _declarations->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, vector<int> (1,1), false));
                         stringstream buffer;
                         buffer << "for i in 1:" << elvi->size () << " loop" << endl;
                         buffer << prefix << eleft->name () << "[i]" << postfix << " = " << cleft->name () << "[i]"
@@ -675,7 +675,7 @@ MMO_Model_::_transformExpression (AST_Expression l, AST_Expression r)
                         EM_IR | EM_VARIABLE_NOT_FOUND,
                                                     ER_Error, "Different array size in element-wise operation");
                     }
-                    _declarations->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, 1, false));
+                    _declarations->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, vector<int> (1,1), false));
                     stringstream buffer;
                     buffer << "for i in 1:" << elvi->size () << " loop" << endl;
                     buffer << prefix << eleft->name () << "[i]" << postfix << " = " << cleft->name () << "[i]"
@@ -699,7 +699,7 @@ MMO_Model_::_transformExpression (AST_Expression l, AST_Expression r)
                         EM_IR | EM_VARIABLE_NOT_FOUND,
                                                     ER_Error, "Different array size in element-wise operation");
                     }
-                    _declarations->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, 1, false));
+                    _declarations->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, vector<int> (1,1), false));
                     stringstream buffer;
                     buffer << "for i in 1:" << elvi->size () << " loop" << endl;
                     buffer << prefix << eleft->name () << "[i]" << postfix << " = " << _scalarValue (left)

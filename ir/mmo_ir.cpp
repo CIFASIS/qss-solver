@@ -205,19 +205,23 @@ MMO_MicroModelicaIR_::_insertComponent (AST_Element_Component x)
     AST_DeclarationList dl = c->nameList ();
     foreachReverse(it,dl)
     {
-        int size = 1;
+        vector<int> size;
         bool array = current_element(it)->hasIndexes ();
         if (array)
         {
-            size = 0;
             MMO_EvalInitExp_ e (_class->varTable ());
             AST_ExpressionList elist = current_element(it)->indexes ();
             AST_ExpressionListIterator elistit;
             foreach (elistit, elist)
             {
-                size += e.foldTraverse (current_element (elistit));
+                size.push_back(e.foldTraverse (current_element (elistit)));
             }
         }
+        else
+        {
+            size.push_back(1);
+        }
+
         DEC_Type t = DEC_PUBLIC;
         if (_compositionElement)
         {
@@ -329,7 +333,7 @@ MMO_MicroModelicaIR_::visit (AST_Equation x)
 void
 MMO_MicroModelicaIR_::visit (AST_ForIndex x)
 {
-    _class->insert (*x->variable (), newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, 1, false));
+    _class->insert (*x->variable (), newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, vector<int> (1,1), false));
 }
 
 void

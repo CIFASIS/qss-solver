@@ -276,7 +276,7 @@ MMO_Statement_::_init ()
             }
             AST_StatementList sts = stf->statements ();
             AST_StatementListIterator stit;
-            _data->symbols ()->insert (*fi->variable (), newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, 1, false));
+            _data->symbols ()->insert (*fi->variable (), newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, vector<int> (1,1), false));
             foreach(stit,sts)
             {
                 _insertDeps (current_element(stit), range[0], range[1]);

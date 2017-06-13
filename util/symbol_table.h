@@ -214,7 +214,7 @@ public:
      * @param m
      * @param s
      */
-    VarInfo_ (Type t, AST_TypePrefix tp, AST_Modification m, unsigned int s, bool array);
+    VarInfo_ (Type t, AST_TypePrefix tp, AST_Modification m, vector<int> s, bool array);
     /**
      *
      * @return
@@ -438,7 +438,7 @@ public:
      *
      * @return
      */
-    unsigned int
+    int
     size ();
     /**
      *
@@ -508,7 +508,7 @@ private:
     AST_Comment _comm;
     bool _builtin;
     Index _index;
-    int _size;
+    vector<int> _size;
     int _value;
     bool _algebraic;
     AST_Expression _exp;
@@ -633,7 +633,7 @@ public:
  * @return
  */
 VarInfo
-newVarInfo (Type t, AST_TypePrefix tp, AST_Modification, AST_Comment, unsigned int s = 0, bool array = false);
+newVarInfo (Type t, AST_TypePrefix tp, AST_Modification, AST_Comment, vector<int> s = vector<int>(), bool array = false);
 /**
  *
  * @return

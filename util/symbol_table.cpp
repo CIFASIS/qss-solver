@@ -30,7 +30,7 @@
 /* VarInfo class. */
 
 VarInfo_::VarInfo_ (Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c) :
-        _state (false), _discrete (false), _t (t), _tp (tp), _m (m), _comm (c), _builtin (false), _index (), _size (0), _value (0), _algebraic (
+        _state (false), _discrete (false), _t (t), _tp (tp), _m (m), _comm (c), _builtin (false), _index (), _size (), _value (0), _algebraic (
                 false), _exp (
         NULL), _hasStart (false), _hasEach (false), _hasAssigment (false), _name (), _isArray (false)
 {
@@ -38,7 +38,7 @@ VarInfo_::VarInfo_ (Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c
 }
 ;
 
-VarInfo_::VarInfo_ (Type t, AST_TypePrefix tp, AST_Modification m, unsigned int s, bool array) :
+VarInfo_::VarInfo_ (Type t, AST_TypePrefix tp, AST_Modification m, vector<int> s, bool array) :
         _state (false), _discrete (false), _t (t), _tp (tp), _m (m), _comm (NULL), _builtin (false), _index (), _size (s), _value (0), _algebraic (
                 false), _exp (
         NULL), _hasStart (false), _hasEach (false), _hasAssigment (false), _name (), _isArray (array)
@@ -184,10 +184,16 @@ VarInfo_::value ()
     return (_value);
 }
 
-unsigned int
+int
 VarInfo_::size ()
 {
-    return (_size);
+    vector<int>::iterator it;
+    int total = 0;
+    for (it = _size.begin(); it != _size.end(); it++)
+    {
+        total += *it;
+    }
+    return (total);
 }
 
 bool
@@ -262,9 +268,9 @@ VarInfo_::isArray ()
 }
 
 VarInfo
-newVarInfo (Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, unsigned int s, bool array)
+newVarInfo (Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array)
 {
-    if (s == 0)
+    if (s.empty ())
     {
         return (new VarInfo_ (t, tp, m, c));
     }
@@ -300,7 +306,7 @@ VarSymbolTable_::VarSymbolTable_ () :
 void
 VarSymbolTable_::initialize (TypeSymbolTable ty)
 {
-    VarInfo v = newVarInfo (ty->lookup ("Real"), 0, NULL, NULL, 0, false);
+    VarInfo v = newVarInfo (ty->lookup ("Real"), 0, NULL, NULL, vector<int> (1,0), false);
     v->setBuiltIn ();
     v->setName ("time");
     insert ("time", v);
