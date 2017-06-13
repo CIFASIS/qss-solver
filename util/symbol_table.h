@@ -492,6 +492,19 @@ public:
      */
     friend ostream &
     operator<< (ostream &os, const VarInfo_ &e);
+    /**
+     *
+     * @param dim
+     * @return
+     */
+    int
+    size (int dim);
+    /**
+     *
+     * @return
+     */
+    int
+    dimensions ();
 private:
     void
     _processModification ();
@@ -684,7 +697,7 @@ template<class Value>
                 _end = 0;
             }
             return (e);
-        }
+        }MMO_Model_::_setRealVariables
         ;
         /** @brief Returns an iterator to the next equation of the table.
          *

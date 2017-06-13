@@ -982,8 +982,14 @@ MMO_Model_::_setIndex (AST_Expression derArg, VarInfo vi, Index *idx)
     if (_isArray (derArg))
     {
         idx->setLow (1);
-        idx->setHi (vi->size ());
-        idx->setArray ();
+        idx->setHi (vi->size (0));
+        idx->setArray (0);
+        for (int i = 1; i < vi->dimensions(); i++)
+        {
+            idx->setLow (1,i);
+            idx->setHi (vi->size (i),i);
+            idx->setArray (i);
+        }
     }
 }
 

@@ -1045,6 +1045,18 @@ VarInfo_::_unsetAssignment ()
     _hasAssigment = false;
 }
 
+int
+VarInfo_::size (int dim)
+{
+    return (_size[dim]);
+}
+
+int
+VarInfo_::dimensions ()
+{
+    return (_size.size());
+}
+
 void
 VarInfo_::_unsetStartEach ()
 {
