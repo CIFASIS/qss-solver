@@ -16,18 +16,18 @@
 #       VERSION: 3.1
 #===================================================================================
 
-cd $MMOC_DOC/engine/html
+cd $MMOC_SRC/engine/usr/doc/html
 
 SSH_AUTH_SOCK=0 scp -r * jfernandez@www.cifasis-conicet.gov.ar:/home/jfernandez/public_html/engine/
 
-cd $MMOC_DOC/mmoc/html
+cd $MMOC_SRC/mmoc/usr/doc/html
 
 SSH_AUTH_SOCK=0 scp -r * jfernandez@www.cifasis-conicet.gov.ar:/home/jfernandez/public_html/mmoc/
 
-cd $MMOC_DOC/gui/html
+cd $MMOC_SRC/gui/usr/doc/html
 
 SSH_AUTH_SOCK=0 scp -r * jfernandez@www.cifasis-conicet.gov.ar:/home/jfernandez/public_html/gui/
 
-cd $MMOC_DOC/sbml/html
+cd $MMOC_SRC/interfaces/sbml/usr/doc/html
 
 SSH_AUTH_SOCK=0 scp -r * jfernandez@www.cifasis-conicet.gov.ar:/home/jfernandez/public_html/sbml/
