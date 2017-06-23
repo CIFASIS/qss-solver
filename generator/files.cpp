@@ -72,30 +72,31 @@ MMO_Files_::~MMO_Files_ ()
 void
 MMO_Files_::makefile ()
 {
-    stringstream buffer;
-    stringstream includes;
-    string fname = _fname;
-    map<string, string> include;
-    fname.append (".makefile");
-    _writer->setFile (fname);
-    _writer->print ("#Compiler and Linker");
-    _writer->print ("CC    := gcc");
-    _writer->print ("");
-    _writer->print ("#The Target Binary Program ");
-    _writer->print ("TARGET    := " + _fname);
-    _writer->print ("");
-    _writer->print ("#Flags, Libraries and Includes");
-    includes << "LDFLAGS    :=-L" << Util::getInstance ()->environmentVariable ("MMOC_LIBS");
-    list<string> tmp = _model->libraryDirectories ();
-    for (list<string>::iterator it = tmp.begin (); it != tmp.end (); it++)
+  stringstream buffer;
+  stringstream includes;
+  string fname = _fname;
+  map<string, string> include;
+  fname.append (".makefile");
+  _writer->setFile (fname);
+  _writer->print ("#Compiler and Linker");
+  _writer->print ("CC    := gcc");
+  _writer->print ("");
+  _writer->print ("#The Target Binary Program ");
+  _writer->print ("TARGET    := " + _fname);
+  _writer->print ("");
+  _writer->print ("#Flags, Libraries and Includes");
+  includes << "LDFLAGS    :=-L " << Util::getInstance ()->environmentVariable ("MMOC_LIBS");
+  list<string> tmp = _model->libraryDirectories ();
+  for (list<string>::iterator it = tmp.begin (); it != tmp.end (); it++)
     {
         includes << " -L" << *it;
     }
-    _writer->print (&includes);
-    _writer->print (_solver->makefile (SOL_LIBRARIES));
-    buffer << _solver->makefile (SOL_INCLUDES);
-    tmp = _model->includeDirectories ();
-    for (list<string>::iterator it = tmp.begin (); it != tmp.end (); it++)
+  includes << " -L " << Util::getInstance ()->environmentVariable ("MMOC_PATH") << "/usr/lib";
+  _writer->print (&includes);
+  _writer->print (_solver->makefile (SOL_LIBRARIES));
+  buffer << _solver->makefile (SOL_INCLUDES);
+  tmp = _model->includeDirectories ();
+  for (list<string>::iterator it = tmp.begin (); it != tmp.end (); it++)
     {
         include.insert (pair<string, string> (*it, *it));
     }
@@ -178,7 +179,7 @@ MMO_Files_::makefile ()
     }
     buffer << " $(TARGET_SRC) $(CFLAGS) -o $@ -lm -lgsl -lconfig -lgfortran";
 #ifdef	__linux__
-    buffer << " -lpthread -lmetis -lscotch -lscotcherr -lpatoh -lrt";
+  buffer << " -lpthread -lmetis -lscotch -lscotcherr -lpatoh -lrt -lsundials_cvode -lsundials_ida -lsundials_nvecserial -llapack -latlas -lf77blas -lklu";
 #endif
     buffer << " -lgslcblas" << includes.str ();
     if (_flags->parallel ())
@@ -321,6 +322,8 @@ MMO_Files_::settings (MMO_Annotation annotation)
         _writer->print ("lps=0;");
     }
     buffer << "nodesize=" << annotation->nodeSize () << ";";
+    _writer->print (&buffer);
+    buffer << "jacobian=" << (annotation->jacobian()) << ";";
     _writer->print (&buffer);
     buffer << "it=" << annotation->initialTime () << ";";
     _writer->print (&buffer);

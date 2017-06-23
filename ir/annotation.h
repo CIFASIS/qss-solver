@@ -46,9 +46,12 @@ typedef enum
     ANT_LIQSS2,
     ANT_QSS3,
     ANT_LIQSS3,
+    ANT_QSS4,
     ANT_DASSL,
     ANT_DOPRI,
-    ANT_QSS4
+    ANT_CVODE_BDF,
+    ANT_CVODE_AM,
+    ANT_IDA
 } ANT_Solver;
 
 typedef enum
@@ -208,6 +211,10 @@ public:
     setScotchSettings (string l);
     virtual void
     setMetisSettings (string l);
+    virtual void
+    setJacobian (int l) = 0;
+    virtual int
+    jacobian () = 0;
 };
 
 /**
@@ -291,6 +298,17 @@ public:
      */
     string
     libraryDirectory ();
+    virtual void
+    setJacobian (int l)
+    {
+    }
+    ;
+    virtual int
+    jacobian ()
+    {
+        return 0;
+    }
+    ;
 private:
     /**
      *
@@ -298,10 +316,10 @@ private:
     typedef enum
     {
         INCLUDE,          //!< INCLUDE
-            INCLUDE_DIRECTORY,          //!< INCLUDE_DIRECTORY
-            LIBRARY,          //!< LIBRARY
-            LIBRARY_DIRECTORY,          //!< LIBRARY_DIRECTORY
-            DERIVATIVE        //!< DERIVATIVE
+        INCLUDE_DIRECTORY,          //!< INCLUDE_DIRECTORY
+        LIBRARY,          //!< LIBRARY
+        LIBRARY_DIRECTORY,          //!< LIBRARY_DIRECTORY
+        DERIVATIVE        //!< DERIVATIVE
     } type;
     map<string, MMO_FunctionAnnotation_::type> _annotations;
     string _derivative;
@@ -647,6 +665,10 @@ public:
     setScotchSettings (string l);
     void
     setMetisSettings (string l);
+    virtual void
+    setJacobian (int l);
+    virtual int
+    jacobian ();
 private:
     /**
      *
@@ -654,31 +676,32 @@ private:
     typedef enum
     {
         EXPERIMENT,   //!< EXPERIMENT
-            DESC,         //!< DESC
-            DQMIN,        //!< DQMIN
-            DQREL,        //!< DQREL
-            WEIGHT,       //!< WEIGHT
-            SOLVER,       //!< SOLVER
-            INITIAL_TIME, //!< INITIAL_TIME
-            FINAL_TIME,   //!< FINAL_TIME
-            MIN_STEP,     //!< MIN_STEP
-            ZCHYST,       //!< ZCHYST
-            DER_DELTA,    //!< DER_DELTA
-            LPS,          //!< LPS
-            NODE_SIZE,    //!< NODE_SIZE
-            COMM_INTERVAL,    //!< COMM_INTERVAL
-            STEP_SIZE,    //!< STEP_SIZE
-            SYM_DIFF,     //!< SYM_DIFF
-            SCHEDULER,    //!< SCHEDULER
-            OUTPUT,       //!< OUTPUT
-            STORE_DATA,    //!< STORE_DATA
-            PARTITION_METHOD, //!< PARTITION_METHOD
-            PARALLEL, //!< PARALLEL
-            DELTAT, //!< DT
-            DELTAT_SYNCH, //!< DT_SYNCH
-            PATOH_SETTINGS, //!< PATOH_SETTINGS
-            SCOTCH_SETTINGS, //!< SCOTCH_SETTINGS
-            METIS_SETTINGS //!< METIS_SETTINGS
+        DESC,         //!< DESC
+        DQMIN,        //!< DQMIN
+        DQREL,        //!< DQREL
+        WEIGHT,       //!< WEIGHT
+        SOLVER,       //!< SOLVER
+        INITIAL_TIME, //!< INITIAL_TIME
+        FINAL_TIME,   //!< FINAL_TIME
+        MIN_STEP,     //!< MIN_STEP
+        ZCHYST,       //!< ZCHYST
+        DER_DELTA,    //!< DER_DELTA
+        LPS,          //!< LPS
+        NODE_SIZE,    //!< NODE_SIZE
+        COMM_INTERVAL,    //!< COMM_INTERVAL
+        STEP_SIZE,    //!< STEP_SIZE
+        SYM_DIFF,     //!< SYM_DIFF
+        SCHEDULER,    //!< SCHEDULER
+        OUTPUT,       //!< OUTPUT
+        STORE_DATA,    //!< STORE_DATA
+        PARTITION_METHOD, //!< PARTITION_METHOD
+        PARALLEL, //!< PARALLEL
+        DELTAT, //!< DT
+        DELTAT_SYNCH, //!< DT_SYNCH
+        PATOH_SETTINGS, //!< PATOH_SETTINGS
+        SCOTCH_SETTINGS, //!< SCOTCH_SETTINGS
+        METIS_SETTINGS, //!< METIS_SETTINGS
+        JACOBIAN //!< JACOBIAN
     } type;
     void
     _processAnnotation (string annot, AST_Modification_Equal x);
@@ -702,6 +725,7 @@ private:
     bool _symDiff;
     double _minStep;
     int _lps;
+    int _jacobian;
     double _derDelta;
     int _nodeSize;
     double _ZCHyst;

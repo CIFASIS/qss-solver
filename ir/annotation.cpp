@@ -109,7 +109,7 @@ MMO_FunctionAnnotation_::insert (AST_Argument_Modification x)
         }
     }
     switch (itf->second)
-    {
+        {
         case INCLUDE:
             if (mod->expressionType () == EXPSTRING)
             {
@@ -152,7 +152,7 @@ MMO_FunctionAnnotation_::insert (AST_Argument_Modification x)
             break;
         default:
             break;
-    }
+        }
     return (true);
 }
 
@@ -219,6 +219,7 @@ MMO_ModelAnnotation_::MMO_ModelAnnotation_ (MMO_ModelData data) :
     _annotations.insert (pair<string, MMO_ModelAnnotation_::type> ("MMO_NodeSize", NODE_SIZE));
     _annotations.insert (pair<string, MMO_ModelAnnotation_::type> ("MMO_OutputType", COMM_INTERVAL));
     _annotations.insert (pair<string, MMO_ModelAnnotation_::type> ("MMO_Period", STEP_SIZE));
+    _annotations.insert (pair<string, MMO_ModelAnnotation_::type> ("Jacobian", JACOBIAN));
     _annotations.insert (pair<string, MMO_ModelAnnotation_::type> ("MMO_SymDiff", SYM_DIFF));
     _annotations.insert (pair<string, MMO_ModelAnnotation_::type> ("MMO_Scheduler", SCHEDULER));
     _annotations.insert (pair<string, MMO_ModelAnnotation_::type> ("MMO_Output", OUTPUT));
@@ -286,51 +287,51 @@ MMO_ModelAnnotation_::insert (AST_Argument_Modification x)
         return (false);
     }
     switch (itf->second)
-    {
-        case EXPERIMENT:
         {
-            if (x->hasModification ())
+        case EXPERIMENT:
             {
-                AST_Modification mod = x->modification ();
-                if (mod->modificationType () == MODCLASS)
+                if (x->hasModification ())
                 {
-                    AST_Modification_Class mc = mod->getAsClass ();
-                    AST_ArgumentListIterator it;
-                    foreach(it,mc->arguments())
+                    AST_Modification mod = x->modification ();
+                    if (mod->modificationType () == MODCLASS)
                     {
-                        if (current_element(it)->argumentType () == AR_MODIFICATION)
+                        AST_Modification_Class mc = mod->getAsClass ();
+                        AST_ArgumentListIterator it;
+                        foreach(it,mc->arguments())
                         {
-                            _processArgument (
-                            current_element(it)->getAsModification ());
+                            if (current_element(it)->argumentType () == AR_MODIFICATION)
+                            {
+                                _processArgument (
+                                current_element(it)->getAsModification ());
+                            }
+                            else
+                            {
+                                Error::getInstance ()->add (x->lineNum (),
+                                EM_IR | EM_ANNOTATION_TYPE,
+                                                            ER_Error, "%s", x->name ()->c_str ());
+                            }
                         }
-                        else
-                        {
-                            Error::getInstance ()->add (x->lineNum (),
-                            EM_IR | EM_ANNOTATION_TYPE,
-                                                        ER_Error, "%s", x->name ()->c_str ());
-                        }
+                    }
+                    else
+                    {
+                        Error::getInstance ()->add (x->lineNum (), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Error, "Missing modification arguments. %s",
+                                                    x->name ()->c_str ());
                     }
                 }
                 else
                 {
-                    Error::getInstance ()->add (x->lineNum (), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Error, "Missing modification arguments. %s",
-                                                x->name ()->c_str ());
+                    Error::getInstance ()->add (x->lineNum (),
+                    EM_IR | EM_ANNOTATION_NOT_FOUND,
+                                                ER_Warning, "%s", x->name ()->c_str ());
                 }
             }
-            else
-            {
-                Error::getInstance ()->add (x->lineNum (),
-                EM_IR | EM_ANNOTATION_NOT_FOUND,
-                                            ER_Warning, "%s", x->name ()->c_str ());
-            }
-        }
             break;
         case WEIGHT:
             _processArgument (x);
             break;
         default:
             break;
-    }
+        }
     return (true);
 }
 
@@ -500,6 +501,24 @@ MMO_ModelAnnotation_::_getSolver (string s)
         _polyCoeffs = 1;
         return (ANT_DOPRI);
     }
+    else if (!s.compare ("CVODE_BDF"))
+    {
+        _order = 1;
+        _polyCoeffs = 1;
+        return (ANT_CVODE_BDF);
+    }
+    else if (!s.compare ("IDA"))
+    {
+        _order = 1;
+        _polyCoeffs = 1;
+        return (ANT_IDA);
+    }
+    else if (!s.compare ("CVODE_AM"))
+    {
+        _order = 1;
+        _polyCoeffs = 1;
+        return (ANT_CVODE_AM);
+    }
     else if (!s.compare ("QSS4"))
     {
         _order = 4;
@@ -526,7 +545,7 @@ MMO_ModelAnnotation_::_processAnnotation (string annot, AST_Modification_Equal x
         av = ea.foldTraverse (x->exp ());
     }
     switch (itf->second)
-    {
+        {
         case DESC:
             _desc = av.str ();
             break;
@@ -573,6 +592,9 @@ MMO_ModelAnnotation_::_processAnnotation (string annot, AST_Modification_Equal x
         case SCHEDULER:
             _scheduler = av.str ();
             break;
+        case JACOBIAN:
+            _jacobian = ("Sparse" == av.str () ? 0 : 1);
+            break;
         case SYM_DIFF:
             _symDiff = true;
             if (av.integer () == 0)
@@ -614,7 +636,7 @@ MMO_ModelAnnotation_::_processAnnotation (string annot, AST_Modification_Equal x
             break;
         default:
             break;
-    }
+        }
 }
 
 void
@@ -801,6 +823,18 @@ void
 MMO_ModelAnnotation_::setLps (int lps)
 {
     _lps = lps;
+}
+
+void
+MMO_ModelAnnotation_::setJacobian (int jacobian)
+{
+    _jacobian = jacobian;
+}
+
+int
+MMO_ModelAnnotation_::jacobian ()
+{
+    return (_jacobian);
 }
 
 int
@@ -991,6 +1025,9 @@ MMO_EvalAnnotation_::MMO_EvalAnnotation_ (VarSymbolTable st) :
     _tokens.insert (pair<string, string> ("QSS4", "QSS4"));
     _tokens.insert (pair<string, string> ("DASSL", "DASSL"));
     _tokens.insert (pair<string, string> ("DOPRI", "DOPRI"));
+    _tokens.insert (pair<string, string> ("CVODE_AM", "CVODE_AM"));
+    _tokens.insert (pair<string, string> ("IDA", "IDA"));
+    _tokens.insert (pair<string, string> ("CVODE_BDF", "CVODE_BDF"));
     _tokens.insert (pair<string, string> ("ST_Linear", "ST_Linear"));
     _tokens.insert (pair<string, string> ("ST_Binary", "ST_Binary"));
     _tokens.insert (pair<string, string> ("ST_Random", "ST_Random"));
@@ -1005,6 +1042,8 @@ MMO_EvalAnnotation_::MMO_EvalAnnotation_ (VarSymbolTable st) :
     _tokens.insert (pair<string, string> ("Patoh", "Patoh"));
     _tokens.insert (pair<string, string> ("Manual", "Manual"));
     _tokens.insert (pair<string, string> ("SD_DT_Fixed", "SD_DT_Fixed"));
+    _tokens.insert (pair<string, string> ("Sparse", "Sparse"));
+    _tokens.insert (pair<string, string> ("Dense", "Dense"));
     _tokens.insert (pair<string, string> ("SD_DT_Asynchronous", "SD_DT_Asynchronous"));
 }
 
@@ -1013,30 +1052,30 @@ MMO_EvalAnnotation_::foldTraverseElement (AST_Expression e)
 {
     MMO_AnnotationValue av = MMO_AnnotationValue ();
     switch (e->expressionType ())
-    {
+        {
         case EXPSTRING:
             av.setStr (e->getAsString ()->print ());
             break;
         case EXPCOMPREF:
-        {
-            AST_Expression_ComponentReference cr = e->getAsComponentReference ();
-            string name = cr->name ();
-            VarInfo vi = _st->lookup (name);
-            if (vi != NULL)
             {
-                if (vi->isConstant ())
+                AST_Expression_ComponentReference cr = e->getAsComponentReference ();
+                string name = cr->name ();
+                VarInfo vi = _st->lookup (name);
+                if (vi != NULL)
                 {
-                    av.setInteger (vi->value ());
+                    if (vi->isConstant ())
+                    {
+                        av.setInteger (vi->value ());
+                    }
+                }
+                else
+                {
+                    if (_tokens.find (name) != _tokens.end ())
+                    {
+                        av.setStr (name);
+                    }
                 }
             }
-            else
-            {
-                if (_tokens.find (name) != _tokens.end ())
-                {
-                    av.setStr (name);
-                }
-            }
-        }
             break;
         case EXPINTEGER:
             av.setInteger (e->getAsInteger ()->val ());
@@ -1057,21 +1096,21 @@ MMO_EvalAnnotation_::foldTraverseElement (AST_Expression e)
             }
             break;
         case EXPBOOLEANNOT:
-        {
-            MMO_AnnotationValue a = foldTraverse (e->getAsBooleanNot ()->exp ());
-            if (a.integer () == 1)
             {
-                av.setInteger (0);
+                MMO_AnnotationValue a = foldTraverse (e->getAsBooleanNot ()->exp ());
+                if (a.integer () == 1)
+                {
+                    av.setInteger (0);
+                }
+                else
+                {
+                    av.setInteger (1);
+                }
+                break;
             }
-            else
-            {
-                av.setInteger (1);
-            }
-            break;
-        }
         default:
             break;
-    }
+        }
     return (av);
 }
 
@@ -1093,7 +1132,7 @@ MMO_EvalAnnotation_::foldTraverseElement (MMO_AnnotationValue e1, MMO_Annotation
 {
     MMO_AnnotationValue av = MMO_AnnotationValue ();
     switch (bot)
-    {
+        {
         case BINOPOR:
             _setBoolean (e1.integer () || e2.integer (), &av);
             break;
@@ -1142,7 +1181,7 @@ MMO_EvalAnnotation_::foldTraverseElement (MMO_AnnotationValue e1, MMO_Annotation
             break;
         default:
             break;
-    }
+        }
     return (av);
 }
 
