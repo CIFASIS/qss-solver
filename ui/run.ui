@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>660</width>
-    <height>570</height>
+    <height>606</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -132,6 +132,21 @@
           <string>DOPRI5</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>CVODE_BDF</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>CVODE_AM</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>IDA</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item row="1" column="2">
@@ -239,13 +254,6 @@
         </item>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="_periodLbl">
-        <property name="text">
-         <string>Period</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
        <widget class="QComboBox" name="_commInterval">
         <item>
@@ -265,15 +273,22 @@
         </item>
        </widget>
       </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="_periodLbl">
+        <property name="text">
+         <string>Period</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="_minStep"/>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="_commIntervalLbl">
         <property name="text">
          <string>Output Type</string>
         </property>
        </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="_minStep"/>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="_symDiffLbl">
@@ -286,13 +301,6 @@
        <widget class="QLineEdit" name="_period">
         <property name="enabled">
          <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="_minStepLbl">
-        <property name="text">
-         <string>Minimum Step Size</string>
         </property>
        </widget>
       </item>
@@ -315,15 +323,12 @@
         </item>
        </widget>
       </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="_zcHystLbl">
+      <item row="3" column="0">
+       <widget class="QLabel" name="_minStepLbl">
         <property name="text">
-         <string>Zero Crossing Hysteresis</string>
+         <string>Minimum Step Size</string>
         </property>
        </widget>
-      </item>
-      <item row="2" column="3">
-       <widget class="QLineEdit" name="_derDelta"/>
       </item>
       <item row="3" column="3">
        <widget class="QComboBox" name="_parallel">
@@ -339,10 +344,13 @@
         </item>
        </widget>
       </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="_schedulerLbl">
+      <item row="2" column="3">
+       <widget class="QLineEdit" name="_derDelta"/>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="_zcHystLbl">
         <property name="text">
-         <string>Scheduler</string>
+         <string>Zero Crossing Hysteresis</string>
         </property>
        </widget>
       </item>
@@ -350,6 +358,13 @@
        <widget class="QLabel" name="_parallelLbl">
         <property name="text">
          <string>Parallel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="_schedulerLbl">
+        <property name="text">
+         <string>Scheduler</string>
         </property>
        </widget>
       </item>
@@ -423,6 +438,9 @@
         </property>
        </widget>
       </item>
+      <item row="8" column="3">
+       <widget class="QLineEdit" name="_metisSettings"/>
+      </item>
       <item row="7" column="3">
        <widget class="QLineEdit" name="_dt">
         <property name="enabled">
@@ -430,20 +448,17 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="2">
-       <widget class="QLabel" name="_metisSettingsLbl">
-        <property name="text">
-         <string>Metis Settings</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="3">
-       <widget class="QLineEdit" name="_metisSettings"/>
-      </item>
       <item row="9" column="3">
        <widget class="QCheckBox" name="_semiStaticChk">
         <property name="text">
          <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QLabel" name="_metisSettingsLbl">
+        <property name="text">
+         <string>Metis Settings</string>
         </property>
        </widget>
       </item>
@@ -460,6 +475,13 @@
         </property>
        </widget>
       </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="_patohSettingsLbl">
+        <property name="text">
+         <string>Patoh Settings</string>
+        </property>
+       </widget>
+      </item>
       <item row="8" column="0">
        <widget class="QLabel" name="_scotchSettingsLbl">
         <property name="text">
@@ -467,11 +489,25 @@
         </property>
        </widget>
       </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="_patohSettingsLbl">
+      <item row="10" column="0">
+       <widget class="QLabel" name="label">
         <property name="text">
-         <string>Patoh Settings</string>
+         <string>Jacobian (CVODE/IDA)</string>
         </property>
+       </widget>
+      </item>
+      <item row="10" column="1">
+       <widget class="QComboBox" name="_jacobian">
+        <item>
+         <property name="text">
+          <string>Sparse</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Dense</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>

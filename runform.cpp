@@ -74,45 +74,45 @@ void
 RunDlg::on__commInterval_currentIndexChanged (int index)
 {
     if (index == 0)
-        {
-            _period->setEnabled (false);
-        }
+    {
+        _period->setEnabled (false);
+    }
     else
-        {
-            _period->setEnabled (true);
-        }
+    {
+        _period->setEnabled (true);
+    }
 }
 
 void
 RunDlg::on__dtSynch_currentIndexChanged (int index)
 {
     if (index == 0)
-        {
-            _dtLbl->setText ("Dt tolerance");
-        }
+    {
+        _dtLbl->setText ("Dt tolerance");
+    }
     else
-        {
-            _dtLbl->setText ("Dt value");
-        }
+    {
+        _dtLbl->setText ("Dt value");
+    }
 }
 
 void
 RunDlg::on__parallel_currentIndexChanged (int index)
 {
     if (index == 1)
-        {
-            _lps->setEnabled (true);
-            _partitionMethod->setEnabled (true);
-            _dt->setEnabled (true);
-            _dtSynch->setEnabled (true);
-        }
+    {
+        _lps->setEnabled (true);
+        _partitionMethod->setEnabled (true);
+        _dt->setEnabled (true);
+        _dtSynch->setEnabled (true);
+    }
     else
-        {
-            _lps->setEnabled (false);
-            _partitionMethod->setEnabled (false);
-            _dt->setEnabled (false);
-            _dtSynch->setEnabled (false);
-        }
+    {
+        _lps->setEnabled (false);
+        _partitionMethod->setEnabled (false);
+        _dt->setEnabled (false);
+        _dtSynch->setEnabled (false);
+    }
 }
 
 int
@@ -138,6 +138,12 @@ RunDlg::_getSolverIdx (QString str)
         return (8);
     if (str.trimmed () == "DOPRI")
         return (9);
+    if (str.trimmed () == "CVODE_BDF")
+        return (10);
+    if (str.trimmed () == "CVODE_AM")
+        return (11);
+    if (str.trimmed () == "IDA")
+        return (12);
     return (-1);
 }
 
@@ -166,6 +172,12 @@ RunDlg::_getSolverString (int idx)
             return ("DASSL");
         case 9:
             return ("DOPRI");
+        case 10:
+            return ("CVODE_BDF");
+        case 11:
+            return ("CVODE_AM");
+        case 12:
+            return ("IDA");
         }
     return (QString ());
 }
@@ -178,6 +190,19 @@ RunDlg::_getSymDiffIdx (QString str)
     if (str.trimmed () == "false")
         return (1);
     return (0);
+}
+
+QString
+RunDlg::_getJacobianString (int idx)
+{
+    switch (idx)
+        {
+        case 0:
+            return ("Sparse");
+        case 1:
+            return ("Dense");
+        }
+    return ("Sparse");
 }
 
 QString
@@ -321,6 +346,16 @@ RunDlg::_getPartitionMethodString (int idx)
             return ("Manual");
         }
     return ("Metis");
+}
+
+int
+RunDlg::_getJacobianIdx (QString str)
+{
+    if (str.trimmed () == "Dense")
+        return (1);
+    if (str.trimmed () == "Sparse")
+        return (0);
+    return (0);
 }
 
 int

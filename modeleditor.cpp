@@ -66,9 +66,9 @@ ModelEditor::ModelEditor (QWidget *parent, QString name) :
 ModelEditor::~ModelEditor ()
 {
     if (_hl != NULL)
-        {
-            delete _hl;
-        }
+    {
+        delete _hl;
+    }
     delete _model_editor_tab;
     delete _models;
     delete _utils;
@@ -84,30 +84,30 @@ ModelEditor::editModel (QString name)
     int _tab = settings.value ("Editor/tab", "Value not found in file qss-solver.ini").toInt ();
     _textEditor->setTabStopWidth (_tab);
     if (!file.fileName ().isEmpty ())
+    {
+        QFileInfo fi (name);
+        _mname = fi.fileName ();
+        QIODevice::OpenModeFlag om = QIODevice::ReadWrite;
+        if (file.open (om))
         {
-            QFileInfo fi (name);
-            _mname = fi.fileName ();
-            QIODevice::OpenModeFlag om = QIODevice::ReadWrite;
-            if (file.open (om))
-                {
-                    _textEditor->setPlainText (file.readAll ());
-                }
-            else
-                {
-                    QMessageBox::critical (this, QString (tr ("Error")), QString (tr ("Can't open file.")));
-                    return;
-                }
+            _textEditor->setPlainText (file.readAll ());
         }
+        else
+        {
+            QMessageBox::critical (this, QString (tr ("Error")), QString (tr ("Can't open file.")));
+            return;
+        }
+    }
     QTextDocument *td = new QTextDocument (_textEditor->toPlainText (), this);
     _textEditor->setDocument (td);
     if (name.endsWith (QString (".log")))
-        {
-            _hl = new MmoHighlighter (_textEditor->document (), MmoHighlighter::MMO_LOG);
-        }
+    {
+        _hl = new MmoHighlighter (_textEditor->document (), MmoHighlighter::MMO_LOG);
+    }
     else
-        {
-            _hl = new MmoHighlighter (_textEditor->document (), MmoHighlighter::MMO_MODEL);
-        }
+    {
+        _hl = new MmoHighlighter (_textEditor->document (), MmoHighlighter::MMO_MODEL);
+    }
     connect (_textEditor, SIGNAL(modificationChanged(bool)), this,
             SLOT(on__textEditor_textChanged(bool)));
     setWindowTitle (_mname);
@@ -119,18 +119,17 @@ void
 ModelEditor::keyReleaseEvent (QKeyEvent * event)
 {
     if (event->nativeScanCode () == 117 && (event->nativeModifiers () & 4))
-        {
-            _model_editor_tab->setCurrentIndex ((_model_editor_tab->currentIndex () + 1) % _model_editor_tab->count ());
-        }
+    {
+        _model_editor_tab->setCurrentIndex ((_model_editor_tab->currentIndex () + 1) % _model_editor_tab->count ());
+    }
     else if (event->nativeScanCode () == 112 && (event->nativeModifiers () & 4))
-        {
-            _model_editor_tab->setCurrentIndex (
-                    _model_editor_tab->currentIndex () > 0 ? _model_editor_tab->currentIndex () - 1 : _model_editor_tab->count () - 1);
-        }
+    {
+        _model_editor_tab->setCurrentIndex (_model_editor_tab->currentIndex () > 0 ? _model_editor_tab->currentIndex () - 1 : _model_editor_tab->count () - 1);
+    }
     else
-        {
-            QWidget::keyReleaseEvent (event);
-        }
+    {
+        QWidget::keyReleaseEvent (event);
+    }
 }
 
 QString
@@ -197,20 +196,20 @@ void
 ModelEditor::on__textEditor_textChanged (bool changed)
 {
     if (changed == false)
-        {
-            return;
-        }
+    {
+        return;
+    }
     int idx = _model_editor_tab->currentIndex ();
     if (!_models->value (idx).name ().endsWith (".log"))
+    {
+        if (!_models->value (idx).dirty ())
         {
-            if (!_models->value (idx).dirty ())
-                {
-                    ModelInfo mi = _models->value (idx);
-                    mi.setDirty (true);
-                    _models->replace (idx, mi);
-                    _model_editor_tab->setTabText (idx, _model_editor_tab->tabText (idx) + QString ("*"));
-                }
+            ModelInfo mi = _models->value (idx);
+            mi.setDirty (true);
+            _models->replace (idx, mi);
+            _model_editor_tab->setTabText (idx, _model_editor_tab->tabText (idx) + QString ("*"));
         }
+    }
 }
 
 void
@@ -228,26 +227,26 @@ ModelEditor::on__model_editor_tab_tabCloseRequested (int index)
         return;
     ModelInfo mi = _models->value (index);
     if (!mi.init ())
+    {
+        if (mi.dirty ())
         {
-            if (mi.dirty ())
-                {
-                    QMessageBox::StandardButton res = QMessageBox::question (this, "Save", QString ("Save changes to file ") + mi.name () + QString ("?"),
-                                                                             QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-                    if (res == QMessageBox::Save)
-                        {
-                            _save (index);
-                        }
-                    else if (res == QMessageBox::Cancel)
-                        {
-                            return;
-                        }
-                }
+            QMessageBox::StandardButton res = QMessageBox::question (this, "Save", QString ("Save changes to file ") + mi.name () + QString ("?"),
+                                                                     QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+            if (res == QMessageBox::Save)
+            {
+                _save (index);
+            }
+            else if (res == QMessageBox::Cancel)
+            {
+                return;
+            }
         }
+    }
     else
-        {
-            mi.setInit (false);
-            _models->replace (index, mi);
-        }
+    {
+        mi.setInit (false);
+        _models->replace (index, mi);
+    }
     _delete (index);
 }
 
@@ -255,9 +254,9 @@ void
 ModelEditor::closeFiles ()
 {
 foreach(ModelInfo mi, *_models)
-    {
-        on__model_editor_tab_tabCloseRequested(0);
-    }
+{
+    on__model_editor_tab_tabCloseRequested(0);
+}
 }
 
 void
@@ -277,7 +276,7 @@ ModelEditor::save ()
 {
 int idx = _model_editor_tab->currentIndex ();
 if (idx < 0)
-return;
+    return;
 if (checkPackage ())
 {
     _deletePackageFiles (idx);
@@ -291,7 +290,7 @@ ModelEditor::saveAs (QString name)
 {
 int idx = _model_editor_tab->currentIndex ();
 if (idx < 0)
-return;
+    return;
 ModelInfo mi = _models->value (idx);
 if (mi.fullname ().isEmpty ())
 {
@@ -316,9 +315,9 @@ int _tab = 0;
 foreach(ModelInfo mi, *_models)
 {
 if(mi.dirty())
-    {
-        _save(_tab);
-    }
+{
+    _save(_tab);
+}
 _tab++;
 }
 }
@@ -468,7 +467,7 @@ ModelEditor::_setAnnotations (QString tag, QString value, bool separator)
 {
 QString add = value;
 if (tag == "Tolerance" || tag == "AbsTolerance" || tag == "MMO_Output" || tag == "MMO_Period" || tag == "MMO_PatohSettings" || tag == "MMO_ScotchSettings"
-|| tag == "MMO_MetisSettings")
+    || tag == "MMO_MetisSettings")
 {
 add.prepend ("{");
 add.append ("}");
@@ -531,33 +530,19 @@ if (_textEditor->find (QString ("experiment")))
     QString annotEnd ("));");
     tc = _textEditor->textCursor ();
     if (tc.position () > endModel)
-        {
-            return (true);
-        }
+    {
+        return (true);
+    }
     tc.select (QTextCursor::LineUnderCursor);
     line = tc.selection ().toPlainText ();
     if (!line.endsWith (annotEnd))
-        {
-            _textEditor->moveCursor (QTextCursor::Down);
-            tc = _textEditor->textCursor ();
-            tc.select (QTextCursor::LineUnderCursor);
-            line = tc.selection ().toPlainText ();
-            int c = 0;
-            while (!line.endsWith (annotEnd) && c < 100)
-                {
-                    _textEditor->moveCursor (QTextCursor::Down);
-                    tc = _textEditor->textCursor ();
-                    tc.select (QTextCursor::LineUnderCursor);
-                    line = tc.selection ().toPlainText ();
-                    c++;
-                }
-        }
-    _textEditor->moveCursor (QTextCursor::Down);
-    tc = _textEditor->textCursor ();
-    tc.select (QTextCursor::LineUnderCursor);
-    line = tc.selection ().toPlainText ();
-    int c = 0;
-    while (line.isEmpty () && c < 100)
+    {
+        _textEditor->moveCursor (QTextCursor::Down);
+        tc = _textEditor->textCursor ();
+        tc.select (QTextCursor::LineUnderCursor);
+        line = tc.selection ().toPlainText ();
+        int c = 0;
+        while (!line.endsWith (annotEnd) && c < 100)
         {
             _textEditor->moveCursor (QTextCursor::Down);
             tc = _textEditor->textCursor ();
@@ -565,6 +550,20 @@ if (_textEditor->find (QString ("experiment")))
             line = tc.selection ().toPlainText ();
             c++;
         }
+    }
+    _textEditor->moveCursor (QTextCursor::Down);
+    tc = _textEditor->textCursor ();
+    tc.select (QTextCursor::LineUnderCursor);
+    line = tc.selection ().toPlainText ();
+    int c = 0;
+    while (line.isEmpty () && c < 100)
+    {
+        _textEditor->moveCursor (QTextCursor::Down);
+        tc = _textEditor->textCursor ();
+        tc.select (QTextCursor::LineUnderCursor);
+        line = tc.selection ().toPlainText ();
+        c++;
+    }
     return (line.contains (end));
 }
 }
@@ -603,56 +602,56 @@ if (_textEditor->find ("experiment", QTextDocument::FindBackward))
 {
     tc = _textEditor->textCursor ();
     if (_textEditor->find ("annotation", QTextDocument::FindBackward))
+    {
+        tc = _textEditor->textCursor ();
+        if (tc.position () > endModel)
         {
+            return (QString ());
+        }
+        int np = tc.position ();
+        tc.select (QTextCursor::BlockUnderCursor);
+        line = tc.selection ().toPlainText ();
+        if (!line.contains ("experiment"))
+        {
+            _textEditor->moveCursor (QTextCursor::Down);
             tc = _textEditor->textCursor ();
-            if (tc.position () > endModel)
-                {
-                    return (QString ());
-                }
-            int np = tc.position ();
+            int ep = _controlEmptyLines (tc.position ());
+            if (ep > endModel)
+            {
+                return (QString ());
+            }
+            tc.setPosition (ep);
             tc.select (QTextCursor::BlockUnderCursor);
             line = tc.selection ().toPlainText ();
             if (!line.contains ("experiment"))
-                {
-                    _textEditor->moveCursor (QTextCursor::Down);
-                    tc = _textEditor->textCursor ();
-                    int ep = _controlEmptyLines (tc.position ());
-                    if (ep > endModel)
-                        {
-                            return (QString ());
-                        }
-                    tc.setPosition (ep);
-                    tc.select (QTextCursor::BlockUnderCursor);
-                    line = tc.selection ().toPlainText ();
-                    if (!line.contains ("experiment"))
-                        {
-                            return (QString ());
-                        }
-                }
-            tc.setPosition (np);
-            tc.select (QTextCursor::BlockUnderCursor);
-            line = tc.selection ().toPlainText ();
-            if (line.contains (end))
+            {
                 return (QString ());
+            }
+        }
+        tc.setPosition (np);
+        tc.select (QTextCursor::BlockUnderCursor);
+        line = tc.selection ().toPlainText ();
+        if (line.contains (end))
+            return (QString ());
+        tc = _textEditor->textCursor ();
+        tc.select (QTextCursor::BlockUnderCursor);
+        line = tc.selection ().toPlainText ();
+        int c = 0;
+        while (!line.contains (end) && c < 100)
+        {
+            tc.select (QTextCursor::BlockUnderCursor);
+            _textEditor->moveCursor (QTextCursor::Down);
             tc = _textEditor->textCursor ();
             tc.select (QTextCursor::BlockUnderCursor);
             line = tc.selection ().toPlainText ();
-            int c = 0;
-            while (!line.contains (end) && c < 100)
-                {
-                    tc.select (QTextCursor::BlockUnderCursor);
-                    _textEditor->moveCursor (QTextCursor::Down);
-                    tc = _textEditor->textCursor ();
-                    tc.select (QTextCursor::BlockUnderCursor);
-                    line = tc.selection ().toPlainText ();
-                    annotations.append (line.trimmed ());
-                    c++;
-                }
+            annotations.append (line.trimmed ());
+            c++;
         }
+    }
     else
-        {
-            _textEditor->moveCursor (QTextCursor::Down);
-        }
+    {
+        _textEditor->moveCursor (QTextCursor::Down);
+    }
 }
 }
 QStringList annotationValue = annotations.split (str);
@@ -699,23 +698,23 @@ if (tc.position () <= modelEnd)
     int lastFunction = tc.position ();
     _textEditor->moveCursor (QTextCursor::Down);
     while (_textEditor->find ("function "))
+    {
+        tc = _textEditor->textCursor ();
+        if (tc.position () > modelEnd)
         {
-            tc = _textEditor->textCursor ();
-            if (tc.position () > modelEnd)
-                {
-                    break;
-                }
-            tc.select (QTextCursor::LineUnderCursor);
-            fname = tc.selection ().toPlainText ().remove ("function ").trimmed ();
-            lastFunction = tc.position ();
-            _textEditor->moveCursor (QTextCursor::Down);
+            break;
         }
+        tc.select (QTextCursor::LineUnderCursor);
+        fname = tc.selection ().toPlainText ().remove ("function ").trimmed ();
+        lastFunction = tc.position ();
+        _textEditor->moveCursor (QTextCursor::Down);
+    }
     tc.setPosition (lastFunction);
     _textEditor->setTextCursor (tc);
     if (_textEditor->find ("end " + fname))
-        {
-            return (_textEditor->textCursor ().position ());
-        }
+    {
+        return (_textEditor->textCursor ().position ());
+    }
 }
 }
 return (modelInit);
@@ -767,57 +766,57 @@ if (_textEditor->find ("experiment", QTextDocument::FindBackward))
 {
     tc = _textEditor->textCursor ();
     if (_textEditor->find ("annotation", QTextDocument::FindBackward))
+    {
+        tc = _textEditor->textCursor ();
+        if (tc.position () > endModel)
         {
+            return;
+        }
+        int np = tc.position ();
+        tc.select (QTextCursor::BlockUnderCursor);
+        line = tc.selection ().toPlainText ();
+        if (!line.contains ("experiment"))
+        {
+            _textEditor->moveCursor (QTextCursor::Down);
             tc = _textEditor->textCursor ();
-            if (tc.position () > endModel)
-                {
-                    return;
-                }
-            int np = tc.position ();
+            int ep = _controlEmptyLines (tc.position ());
+            if (ep > endModel)
+            {
+                return;
+            }
+            tc.setPosition (ep);
             tc.select (QTextCursor::BlockUnderCursor);
             line = tc.selection ().toPlainText ();
             if (!line.contains ("experiment"))
-                {
-                    _textEditor->moveCursor (QTextCursor::Down);
-                    tc = _textEditor->textCursor ();
-                    int ep = _controlEmptyLines (tc.position ());
-                    if (ep > endModel)
-                        {
-                            return;
-                        }
-                    tc.setPosition (ep);
-                    tc.select (QTextCursor::BlockUnderCursor);
-                    line = tc.selection ().toPlainText ();
-                    if (!line.contains ("experiment"))
-                        {
-                            return;
-                        }
-                }
-            tc.setPosition (np);
-            tc.select (QTextCursor::BlockUnderCursor);
-            line = tc.selection ().toPlainText ();
-            tc.removeSelectedText ();
-            if (line.contains (end))
+            {
                 return;
+            }
+        }
+        tc.setPosition (np);
+        tc.select (QTextCursor::BlockUnderCursor);
+        line = tc.selection ().toPlainText ();
+        tc.removeSelectedText ();
+        if (line.contains (end))
+            return;
+        tc = _textEditor->textCursor ();
+        tc.select (QTextCursor::BlockUnderCursor);
+        line = tc.selection ().toPlainText ();
+        int c = 0;
+        while (!line.contains (end) && c < 100)
+        {
+            tc.removeSelectedText ();
+            tc.select (QTextCursor::BlockUnderCursor);
+            _textEditor->moveCursor (QTextCursor::Down);
             tc = _textEditor->textCursor ();
             tc.select (QTextCursor::BlockUnderCursor);
             line = tc.selection ().toPlainText ();
-            int c = 0;
-            while (!line.contains (end) && c < 100)
-                {
-                    tc.removeSelectedText ();
-                    tc.select (QTextCursor::BlockUnderCursor);
-                    _textEditor->moveCursor (QTextCursor::Down);
-                    tc = _textEditor->textCursor ();
-                    tc.select (QTextCursor::BlockUnderCursor);
-                    line = tc.selection ().toPlainText ();
-                    c++;
-                }
+            c++;
         }
+    }
     else
-        {
-            _textEditor->moveCursor (QTextCursor::Down);
-        }
+    {
+        _textEditor->moveCursor (QTextCursor::Down);
+    }
     QString text = _textEditor->toPlainText ();
     text = text.trimmed ();
     _textEditor->setPlainText (text);
@@ -999,6 +998,8 @@ if (!_scotchSettings.isEmpty ())
 _setAnnotations ("MMO_ScotchSettings", _scotchSettings, true);
 if (!_metisSettings.isEmpty ())
 _setAnnotations ("MMO_MetisSettings", _metisSettings, true);
+if (!_jacobian.isEmpty ())
+_setAnnotations ("Jacobian", _jacobian, true);
 _setAnnotations ("StartTime", _startTime, true);
 _setAnnotations ("StopTime", _stopTime, true);
 _setAnnotations ("Tolerance", _tolerance, true);
@@ -1030,19 +1031,19 @@ foreach(QString an, _annotations)
 {
     tc = _textEditor->textCursor();
     if(tc.atEnd())
+    {
+        _textEditor->insertPlainText("\n");
+    }
+    else
+    {
+        tc.select(QTextCursor::LineUnderCursor);
+        line = tc.selection().toPlainText();
+        if(!line.isEmpty())
         {
+            _textEditor->moveCursor(QTextCursor::Up);
             _textEditor->insertPlainText("\n");
         }
-    else
-        {
-            tc.select(QTextCursor::LineUnderCursor);
-            line = tc.selection().toPlainText();
-            if(!line.isEmpty())
-                {
-                    _textEditor->moveCursor(QTextCursor::Up);
-                    _textEditor->insertPlainText("\n");
-                }
-        }
+    }
     _textEditor->insertPlainText(an);
     _textEditor->moveCursor(QTextCursor::Down);
 }
@@ -1056,10 +1057,10 @@ else
     tc.select (QTextCursor::LineUnderCursor);
     line = tc.selection ().toPlainText ();
     if (!line.isEmpty ())
-        {
-            _textEditor->moveCursor (QTextCursor::Up);
-            _textEditor->insertPlainText ("\n");
-        }
+    {
+        _textEditor->moveCursor (QTextCursor::Up);
+        _textEditor->insertPlainText ("\n");
+    }
 }
 _textEditor->insertPlainText (end);
 tc = _textEditor->textCursor ();

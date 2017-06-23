@@ -123,17 +123,17 @@ MmomeGui::done (QString name, QString ext)
 {
     QMdiSubWindow *sw = mdiArea->currentSubWindow ();
     if (sw)
+    {
+        if (!ext.endsWith (".log"))
+            _deleteVariables (name);
+        if (Editor::instance ()->count () == 0)
         {
-            if (!ext.endsWith (".log"))
-                _deleteVariables (name);
-            if (Editor::instance ()->count () == 0)
-                {
-                    Editor::drop ();
-                    sw->close ();
-                    _model_variables->setModel (NULL);
-                    delete sw;
-                }
+            Editor::drop ();
+            sw->close ();
+            _model_variables->setModel (NULL);
+            delete sw;
         }
+    }
 }
 
 void
@@ -141,9 +141,9 @@ MmomeGui::closeEvent (QCloseEvent * event)
 {
     QMdiSubWindow *sw = mdiArea->currentSubWindow ();
     if (sw)
-        {
-            Editor::instance ()->closeFiles ();
-        }
+    {
+        Editor::instance ()->closeFiles ();
+    }
     Editor::drop ();
     event->accept ();
 }
@@ -153,9 +153,9 @@ MmomeGui::on_action_Save_As_triggered ()
 {
     QMdiSubWindow *sw = mdiArea->currentSubWindow ();
     if (sw)
-        {
-            Editor::instance ()->saveAs (Editor::instance ()->newFileName ());
-        }
+    {
+        Editor::instance ()->saveAs (Editor::instance ()->newFileName ());
+    }
 }
 
 void
@@ -173,9 +173,9 @@ MmomeGui::on_actionImport_triggered ()
 {
     QString fileName = QFileDialog::getOpenFileName (this, tr ("Load SBML Model"), _utils->appDir (MMOC_MODELS), "XML *.xml (*.xml)");
     if (fileName.isNull ())
-        {
-            return;
-        }
+    {
+        return;
+    }
     QFileInfo sbmlfi (fileName);
     QDir modelsDir (_utils->appDir (MMOC_MODELS));
     modelsDir.mkdir (sbmlfi.baseName ());
@@ -199,32 +199,32 @@ MmomeGui::on_actionImport_triggered ()
 void
 MmomeGui::on_action_New_triggered ()
 {
-    _editModel (QString ());
-}
+    _editModel (
+    QString ());}
 
 void
 MmomeGui::_editModel (QString name)
 {
     QMdiSubWindow *sw = mdiArea->currentSubWindow ();
     if (sw)
-        {
-            Editor::instance ()->editModel (name);
-        }
+    {
+        Editor::instance ()->editModel (name);
+    }
     else
-        {
-            QMdiSubWindow *sw = new QMdiSubWindow (this, Qt::CustomizeWindowHint);
-            sw->setWidget (Editor::instance (this, name));
-            mdiArea->addSubWindow (sw);
-            connect (Editor::instance (), SIGNAL (done (QString, QString)), this, SLOT (done (QString, QString)));
-            connect (Editor::instance (), SIGNAL(clean(int)), this,
-                    SLOT(cleanBuildDir(int)));
-            connect (action_Save, SIGNAL(triggered(void)), Editor::instance (),
-                    SLOT(save(void)));
-            connect (actionSa_ve_All, SIGNAL(triggered(void)), Editor::instance (),
-                    SLOT(saveAll(void)));
-            Editor::instance ()->setWindowState (Qt::WindowMaximized);
-            Editor::instance ()->show ();
-        }
+    {
+        QMdiSubWindow *sw = new QMdiSubWindow (this, Qt::CustomizeWindowHint);
+        sw->setWidget (Editor::instance (this, name));
+        mdiArea->addSubWindow (sw);
+        connect (Editor::instance (), SIGNAL (done (QString, QString)), this, SLOT (done (QString, QString)));
+        connect (Editor::instance (), SIGNAL(clean(int)), this,
+                SLOT(cleanBuildDir(int)));
+        connect (action_Save, SIGNAL(triggered(void)), Editor::instance (),
+                SLOT(save(void)));
+        connect (actionSa_ve_All, SIGNAL(triggered(void)), Editor::instance (),
+                SLOT(saveAll(void)));
+        Editor::instance ()->setWindowState (Qt::WindowMaximized);
+        Editor::instance ()->show ();
+    }
 }
 
 void
@@ -232,9 +232,9 @@ MmomeGui::on_action_Load_triggered ()
 {
     QString fileName = QFileDialog::getOpenFileName (this, tr ("Load Model"), _utils->appDir (MMOC_MODELS), "MicroModelica *.mo (*.mo)");
     if (fileName.isNull ())
-        {
-            return;
-        }
+    {
+        return;
+    }
     _loadFile (fileName);
 }
 
@@ -280,25 +280,25 @@ void
 MmomeGui::_run_finished (int exitCode, QProcess::ExitStatus exitStatus)
 {
     if (exitStatus == QProcess::NormalExit && exitCode == 0)
-        {
-            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + _proc->readAllStandardError ());
-            QByteArray logs = _proc->readAllStandardOutput ();
-            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + logs);
-            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("Simulation ended."));
-            QDir buildDir (_utils->appDir (MMOC_BUILD));
-            buildDir.refresh ();
-            QString _name = Editor::instance ()->activeBaseFileName ();
-            _deleteVariables (_name);
-            _addVariables ();
-            _selectVariables ();
-        }
+    {
+        _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + _proc->readAllStandardError ());
+        QByteArray logs = _proc->readAllStandardOutput ();
+        _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + logs);
+        _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("Simulation ended."));
+        QDir buildDir (_utils->appDir (MMOC_BUILD));
+        buildDir.refresh ();
+        QString _name = Editor::instance ()->activeBaseFileName ();
+        _deleteVariables (_name);
+        _addVariables ();
+        _selectVariables ();
+    }
     else
-        {
-            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + _proc->readAllStandardError ());
-            QByteArray logs = _proc->readAllStandardOutput ();
-            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + logs);
-            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + "Simulation failed. Exit code: " + QString ("%1").arg (exitCode));
-        }
+    {
+        _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + _proc->readAllStandardError ());
+        QByteArray logs = _proc->readAllStandardOutput ();
+        _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + logs);
+        _compiler_msg->setPlainText (_compiler_msg->toPlainText () + "Simulation failed. Exit code: " + QString ("%1").arg (exitCode));
+    }
     delete _proc;
     _proc = NULL;
     _compiler_msg->moveCursor (QTextCursor::End);
@@ -329,23 +329,23 @@ MmomeGui::_run (QString name)
     args << name;
 
     if (Editor::instance ()->isParallel ())
-        {
-            args << QString ("true");
-            QFileInfo _mo_file (Editor::instance ()->activeFullFileName ());
-            args << _mo_file.absolutePath ();
-        }
+    {
+        args << QString ("true");
+        QFileInfo _mo_file (Editor::instance ()->activeFullFileName ());
+        args << _mo_file.absolutePath ();
+    }
     else
-        {
-            args << QString ("false");
-        }
+    {
+        args << QString ("false");
+    }
     if (Editor::instance ()->semiStaticPartitioning ())
-        {
-            args << QString ("true");
-        }
+    {
+        args << QString ("true");
+    }
     else
-        {
-            args << QString ("false");
-        }
+    {
+        args << QString ("false");
+    }
     connect (_proc, SIGNAL (readyReadStandardError ()), this, SLOT (_simulation_message ()));
     _timeInterval = Editor::instance ()->stopTime ().toDouble () - Editor::instance ()->startTime ().toDouble ();
     _sim_progress->setMaximum (100);
@@ -366,6 +366,7 @@ MmomeGui::_run (QString name)
     env.insert ("MMOC_LIBRARIES", QDir (_utils->appDir (MMOC_LIBRARIES)).absolutePath ()); // Add an environment variable
     env.insert ("MMOC_INCLUDE", QDir (_utils->appDir (MMOC_INCLUDE)).absolutePath ()); // Add an environment variable
     env.insert ("MMOC_OUTPUT", QDir (_utils->appDir (MMOC_OUTPUT)).absolutePath ()); // Add an environment variable
+    env.insert ("LD_LIBRARY_PATH", QDir (_utils->appDir (MMOC_LIBRARIES)).absolutePath () + "/../lib"); // Add an environment variable
     _proc->setProcessEnvironment (env);
     _proc->start (_utils->appDir (MMOC_BIN) + SLASH + sim, args);
 }
@@ -376,10 +377,10 @@ MmomeGui::_simulation_message ()
     QString out (_proc->readAllStandardError ().constData ());
     int _init = out.lastIndexOf ('*');
     if (_init >= 0)
-        {
-            int pc = (out.mid (_init + 1).toDouble () / _timeInterval) * 100.0;
-            _sim_progress->setValue (pc);
-        }
+    {
+        int pc = (out.mid (_init + 1).toDouble () / _timeInterval) * 100.0;
+        _sim_progress->setValue (pc);
+    }
 }
 
 void
@@ -408,6 +409,7 @@ MmomeGui::runDlgClose ()
     Editor::instance ()->setLPS (_runDlg->LPS ());
     Editor::instance ()->setDT (_runDlg->DT ());
     Editor::instance ()->setDtSynch (_runDlg->dtSynch ());
+    Editor::instance ()->setJacobian (_runDlg->jacobian ());
     Editor::instance ()->setPartitionMethod (_runDlg->partitionMethod ());
     Editor::instance ()->setPatohSettings (_runDlg->patohSettings ());
     Editor::instance ()->setScotchSettings (_runDlg->scotchSettings ());
@@ -418,22 +420,22 @@ MmomeGui::runDlgClose ()
     bool debugFlag = _runDlg->enableDebug ();
     _enableActions (false);
     if (Editor::instance ()->activeDirty ())
-        {
-            Editor::instance ()->save ();
-            _compile (debugFlag);
-        }
+    {
+        Editor::instance ()->save ();
+        _compile (debugFlag);
+    }
     else
+    {
+        QDir buildDir (_utils->appDir (MMOC_BUILD));
+        buildDir.cd (Editor::instance ()->activeBaseFileName ());
+        QFileInfo exefi (buildDir.absolutePath () + SLASH + Editor::instance ()->activeBaseFileName ());
+        if (!exefi.exists ())
         {
-            QDir buildDir (_utils->appDir (MMOC_BUILD));
-            buildDir.cd (Editor::instance ()->activeBaseFileName ());
-            QFileInfo exefi (buildDir.absolutePath () + SLASH + Editor::instance ()->activeBaseFileName ());
-            if (!exefi.exists ())
-                {
-                    _enableActions (false);
-                    _settings_only = false;
-                }
-            _compile (debugFlag);
+            _enableActions (false);
+            _settings_only = false;
         }
+        _compile (debugFlag);
+    }
     delete _runDlg;
 }
 
@@ -448,14 +450,14 @@ void
 MmomeGui::on_actionRun_triggered ()
 {
     if (Editor::instance ()->activeBaseFileName ().isEmpty ())
-        {
-            return;
-        }
+    {
+        return;
+    }
     if (!Editor::instance ()->checkModel ())
-        {
-            QMessageBox::information (this, "Simulation", "No model definition found.");
-            return;
-        }
+    {
+        QMessageBox::information (this, "Simulation", "No model definition found.");
+        return;
+    }
     _compiler_msg->clear ();
     _runDlg = new RunDlg (this);
     connect (_runDlg, SIGNAL (accepted ()), this, SLOT (runDlgClose ()));
@@ -483,6 +485,7 @@ MmomeGui::on_actionRun_triggered ()
     _runDlg->setSemiStaticPartitioning (Editor::instance ()->semiStaticPartitioning ());
     _runDlg->setDtSynch (Editor::instance ()->dtSynch ());
     _runDlg->setDescription (Editor::instance ()->description ());
+    _runDlg->setJacobian (Editor::instance ()->jacobian ());
     _runDlg->show ();
 }
 
@@ -493,11 +496,11 @@ MmomeGui::_plotScript ()
     QFile file (_utils->appDir (MMOC_OUTPUT) + SLASH + name + SLASH + name + QString (".plt"));
     bool ret = false;
     if (!file.open (QIODevice::ReadWrite | QIODevice::Truncate))
-        {
-            QMessageBox::critical (this, QString (tr ("Error")), QString (tr ("Can't open file ")) + name + QString (".plt"));
-            file.close ();
-            return (false);
-        }
+    {
+        QMessageBox::critical (this, QString (tr ("Error")), QString (tr ("Can't open file ")) + name + QString (".plt"));
+        file.close ();
+        return (false);
+    }
     QString _data;
     _data.append ("set title \"").append (name).append ("\"\n");
     _data.append ("set ylabel \"State Variables\"\n");
@@ -508,42 +511,42 @@ MmomeGui::_plotScript ()
     _data.append ("set grid\n");
     _data.append ("plot ");
     for (int k = 0; k < _model->rowCount (); k++)
+    {
+        QStandardItem *it = _model->item (k);
+        for (int g = 0; g < it->rowCount (); g++)
         {
-            QStandardItem *it = _model->item (k);
-            for (int g = 0; g < it->rowCount (); g++)
+            QStandardItem *c = it->child (g, 1);
+            QString name = c->text ();
+            if (c->checkState () == Qt::Checked)
+            {
+                _data.append ("\"").append (_utils->appDir (MMOC_OUTPUT)).append (
+                SLASH).append (_model->item (k)->text ()).append (SLASH).append (c->text ()).append (".dat\"");
+                c = it->child (g, 2);
+                if (c->text () != "None")
                 {
-                    QStandardItem *c = it->child (g, 1);
-                    QString name = c->text ();
-                    if (c->checkState () == Qt::Checked)
-                        {
-                            _data.append ("\"").append (_utils->appDir (MMOC_OUTPUT)).append (
-                            SLASH).append (_model->item (k)->text ()).append (SLASH).append (c->text ()).append (".dat\"");
-                            c = it->child (g, 2);
-                            if (c->text () != "None")
-                                {
-                                    _data.append (" with ").append (c->text ());
-                                }
-                            _data.append (" title \"").append (name).append ("\"");
-                            _data.append (", ");
-                            ret = true;
-                        }
+                    _data.append (" with ").append (c->text ());
                 }
+                _data.append (" title \"").append (name).append ("\"");
+                _data.append (", ");
+                ret = true;
+            }
         }
+    }
     int l = _data.length ();
     _data = _data.remove (l - 2, 1);
     _data.append ("\n");
     if (file.write (_data.toStdString ().c_str ()) == -1)
-        {
-            QMessageBox::critical (this, QString (tr ("Error")), QString (tr ("Can't write data ")) + name + QString (".plt"));
-            file.close ();
-            return (false);
-        }
+    {
+        QMessageBox::critical (this, QString (tr ("Error")), QString (tr ("Can't write data ")) + name + QString (".plt"));
+        file.close ();
+        return (false);
+    }
     if (!file.flush ())
-        {
-            QMessageBox::critical (this, QString (tr ("Error")), QString (tr ("Can't save file ")) + name + QString (".plt"));
-            file.close ();
-            return (false);
-        }
+    {
+        QMessageBox::critical (this, QString (tr ("Error")), QString (tr ("Can't save file ")) + name + QString (".plt"));
+        file.close ();
+        return (false);
+    }
     return (ret);
 }
 
@@ -559,17 +562,17 @@ MmomeGui::cleanBuildDir (int idx)
     QFileInfo cfi (buildDir.absolutePath () + SLASH + Editor::instance ()->baseFileName (idx) + QString (".c"));
     QFileInfo exefi (buildDir.absolutePath () + SLASH + Editor::instance ()->activeBaseFileName ());
     if (makefi.exists ())
-        {
-            buildDir.remove (makefi.absoluteFilePath ());
-        }
+    {
+        buildDir.remove (makefi.absoluteFilePath ());
+    }
     if (cfi.exists ())
-        {
-            buildDir.remove (cfi.absoluteFilePath ());
-        }
+    {
+        buildDir.remove (cfi.absoluteFilePath ());
+    }
     if (exefi.exists ())
-        {
-            buildDir.remove (exefi.absoluteFilePath ());
-        }
+    {
+        buildDir.remove (exefi.absoluteFilePath ());
+    }
     _setCurrentFile (Editor::instance ()->activeFullFileName ());
 }
 
@@ -583,17 +586,17 @@ MmomeGui::_compile (bool dbg)
     buildDir.cd (Editor::instance ()->activeBaseFileName ());
     QString fileName (buildDir.absolutePath () + SLASH + Editor::instance ()->activeBaseFileName () + QString (".part"));
     if (QFile::exists (fileName))
-        {
-            QFile::remove (fileName);
-        }
+    {
+        QFile::remove (fileName);
+    }
     QFile::copy (modelFile.absoluteDir ().absolutePath () + SLASH + Editor::instance ()->activeBaseFileName () + QString (".part"), fileName);
     _compiler_msg->setPlainText (_compiler_msg->toPlainText () + buildDir.absolutePath ());
     QFileInfo makefi (buildDir.absolutePath () + SLASH + Editor::instance ()->activeBaseFileName () + QString (".makefile"));
     QFileInfo cfi (buildDir.absolutePath () + SLASH + Editor::instance ()->activeBaseFileName () + QString (".c"));
     if (!_settings_only)
-        {
-            cleanBuildDir (Editor::instance ()->activeFileIndex ());
-        }
+    {
+        cleanBuildDir (Editor::instance ()->activeFileIndex ());
+    }
     QString flags = _utils->appFlag (FLG_FLAGS);
     _proc = new QProcess (this);
     connect (_proc, SIGNAL(finished(int,QProcess::ExitStatus)), this,
@@ -601,27 +604,27 @@ MmomeGui::_compile (bool dbg)
     QStringList args;
     QString set;
     if (_settings_only)
-        {
-            set += "-s ";
-        }
+    {
+        set += "-s ";
+    }
     if (!flags.isEmpty ())
-        {
-            if (Editor::instance ()->isParallel () && !flags.contains ("-p"))
-                {
-                    set += "-p ";
-                }
-            set += flags + " ";
-        }
-    else if (Editor::instance ()->isParallel ())
+    {
+        if (Editor::instance ()->isParallel () && !flags.contains ("-p"))
         {
             set += "-p ";
         }
+        set += flags + " ";
+    }
+    else if (Editor::instance ()->isParallel ())
+    {
+        set += "-p ";
+    }
     if (dbg)
-        {
-            flags = _utils->appFlag (FLG_DEBUG);
-            flags.append (" ");
-            set += flags;
-        }
+    {
+        flags = _utils->appFlag (FLG_DEBUG);
+        flags.append (" ");
+        set += flags;
+    }
     set += "-o " + buildDir.absolutePath () + SLASH + Editor::instance ()->activeBaseFileName ();
     args << set;
     args << Editor::instance ()->activeFullFileName ();
@@ -652,15 +655,15 @@ void
 MmomeGui::_importFinished (int exitCode, QProcess::ExitStatus exitStatus)
 {
     if (exitStatus == QProcess::NormalExit)
-        {
-            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + _proc->readAllStandardError ());
-            _editModel (_sbmlFile);
-            _addVariables ();
-        }
+    {
+        _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + _proc->readAllStandardError ());
+        _editModel (_sbmlFile);
+        _addVariables ();
+    }
     else
-        {
-            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nCan not import SBML file.") + QString (exitCode));
-        }
+    {
+        _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nCan not import SBML file.") + QString (exitCode));
+    }
     _sbmlFile.clear ();
     delete _proc;
     _proc = NULL;
@@ -670,33 +673,33 @@ void
 MmomeGui::_make_finished (int exitCode, QProcess::ExitStatus exitStatus)
 {
     if (exitStatus == QProcess::NormalExit)
-        {
-            QString execName = _utils->appDir (MMOC_BUILD) + SLASH + Editor::instance ()->activeBaseFileName () + QString (SLASH)
-                    + Editor::instance ()->activeBaseFileName ();
+    {
+        QString execName = _utils->appDir (MMOC_BUILD) + SLASH + Editor::instance ()->activeBaseFileName () + QString (SLASH)
+                + Editor::instance ()->activeBaseFileName ();
 #ifdef _WIN32
-            execName += ".exe";
+        execName += ".exe";
 #endif
-            QFileInfo exefi (execName);
-            if (!exefi.exists ())
-                {
-                    _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + _proc->readAllStandardError ());
-                    _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nCan't generate binary file.") + QString (exitCode));
-                    _enableActions (true);
-                    _settings_only = false;
-                    return;
-                }
-            else
-                {
-                    _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nBinary file generated, ready to start simulation."));
-                }
-        }
-    else
+        QFileInfo exefi (execName);
+        if (!exefi.exists ())
         {
-            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nError generating binary file.).") + QString (exitCode));
+            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + _proc->readAllStandardError ());
+            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nCan't generate binary file.") + QString (exitCode));
             _enableActions (true);
             _settings_only = false;
             return;
         }
+        else
+        {
+            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nBinary file generated, ready to start simulation."));
+        }
+    }
+    else
+    {
+        _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nError generating binary file.).") + QString (exitCode));
+        _enableActions (true);
+        _settings_only = false;
+        return;
+    }
     delete _proc;
     _proc = NULL;
     _compiler_msg->moveCursor (QTextCursor::End);
@@ -708,72 +711,72 @@ void
 MmomeGui::_comp_finished (int exitCode, QProcess::ExitStatus exitStatus)
 {
     if (exitStatus == QProcess::NormalExit)
+    {
+        QDir buildDir (_utils->appDir (MMOC_BUILD));
+        buildDir.mkdir (Editor::instance ()->activeBaseFileName ());
+        buildDir.cd (Editor::instance ()->activeBaseFileName ());
+        QFileInfo cfi (buildDir.absolutePath () + SLASH + Editor::instance ()->activeBaseFileName () + QString (".c"));
+        _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + _proc->readAllStandardError ());
+        QByteArray logs = _proc->readAllStandardOutput ();
+        if (!logs.isEmpty ())
+            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + logs);
+        if (!cfi.exists ())
         {
-            QDir buildDir (_utils->appDir (MMOC_BUILD));
-            buildDir.mkdir (Editor::instance ()->activeBaseFileName ());
-            buildDir.cd (Editor::instance ()->activeBaseFileName ());
-            QFileInfo cfi (buildDir.absolutePath () + SLASH + Editor::instance ()->activeBaseFileName () + QString (".c"));
-            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + _proc->readAllStandardError ());
-            QByteArray logs = _proc->readAllStandardOutput ();
-            if (!logs.isEmpty ())
-                _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\n") + logs);
-            if (!cfi.exists ())
-                {
-                    _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nCan't generate C file."));
-                    _enableActions (true);
-                    _settings_only = false;
-                    return;
-                }
-            QFileInfo modelfi = Editor::instance ()->activeFullFileName ();
-            QDir modeldir = modelfi.absoluteDir ();
-            QFileInfoList filst = modeldir.entryInfoList (QStringList () << "*.c" << "*.h");
-            foreach(QFileInfo qfi, filst)
-                {
-                    QFile file(qfi.filePath());
-                    file.copy(buildDir.absolutePath()+SLASH+qfi.fileName());
-                    file.close();
-                }
-            modeldir = QCoreApplication::applicationDirPath ();
-            filst = modeldir.entryInfoList (QStringList () << "*.im");
-            foreach(QFileInfo qfi, filst)
-                {
-                    QFile file(qfi.filePath());
-                    file.copy(buildDir.absolutePath()+SLASH+qfi.fileName());
-                    file.remove();
-                }
-            QFileInfo makefi (buildDir.absolutePath () + SLASH + Editor::instance ()->activeBaseFileName () + QString (".makefile"));
-            if (!makefi.exists ())
-                {
-                    _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nCan't generate makefile."));
-                    _enableActions (true);
-                    _settings_only = false;
-                    return;
-                }
-            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nRunning makefile."));
-            QStringList args;
-            args.clear ();
-            args << makefi.baseName ();
-            _compiler_msg->setPlainText (
-                    _compiler_msg->toPlainText () + QString ("\n") + QString ("make -f ") + buildDir.absolutePath () + SLASH + makefi.fileName ());
-            QString build = _utils->appCommand (CMD_BUILD);
-            delete _proc;
-            _proc = new QProcess (this);
-            connect (_proc, SIGNAL(finished(int,QProcess::ExitStatus)), this,
-                    SLOT(_make_finished(int,QProcess::ExitStatus)));
-            QProcessEnvironment env = QProcessEnvironment::systemEnvironment ();
-            env.insert ("MMOC_BUILD", QDir (_utils->appDir (MMOC_BUILD)).absolutePath ()); // Add an environment variable
-            env.insert ("MMOC_BIN", QDir (_utils->appDir (MMOC_BIN)).absolutePath ()); // Add an environment variable
-            _proc->setProcessEnvironment (env);
-            _proc->start (_utils->appDir (MMOC_BIN) + SLASH + build, args);
-        }
-    else
-        {
-            delete _proc;
-            _proc = NULL;
-            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nError during compilation.") + QString (exitCode));
+            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nCan't generate C file."));
             _enableActions (true);
             _settings_only = false;
+            return;
         }
+        QFileInfo modelfi = Editor::instance ()->activeFullFileName ();
+        QDir modeldir = modelfi.absoluteDir ();
+        QFileInfoList filst = modeldir.entryInfoList (QStringList () << "*.c" << "*.h");
+        foreach(QFileInfo qfi, filst)
+        {
+            QFile file(qfi.filePath());
+            file.copy(buildDir.absolutePath()+SLASH+qfi.fileName());
+            file.close();
+        }
+        modeldir = QCoreApplication::applicationDirPath ();
+        filst = modeldir.entryInfoList (QStringList () << "*.im");
+        foreach(QFileInfo qfi, filst)
+        {
+            QFile file(qfi.filePath());
+            file.copy(buildDir.absolutePath()+SLASH+qfi.fileName());
+            file.remove();
+        }
+        QFileInfo makefi (buildDir.absolutePath () + SLASH + Editor::instance ()->activeBaseFileName () + QString (".makefile"));
+        if (!makefi.exists ())
+        {
+            _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nCan't generate makefile."));
+            _enableActions (true);
+            _settings_only = false;
+            return;
+        }
+        _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nRunning makefile."));
+        QStringList args;
+        args.clear ();
+        args << makefi.baseName ();
+        _compiler_msg->setPlainText (
+                _compiler_msg->toPlainText () + QString ("\n") + QString ("make -f ") + buildDir.absolutePath () + SLASH + makefi.fileName ());
+        QString build = _utils->appCommand (CMD_BUILD);
+        delete _proc;
+        _proc = new QProcess (this);
+        connect (_proc, SIGNAL(finished(int,QProcess::ExitStatus)), this,
+                SLOT(_make_finished(int,QProcess::ExitStatus)));
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment ();
+        env.insert ("MMOC_BUILD", QDir (_utils->appDir (MMOC_BUILD)).absolutePath ()); // Add an environment variable
+        env.insert ("MMOC_BIN", QDir (_utils->appDir (MMOC_BIN)).absolutePath ()); // Add an environment variable
+        _proc->setProcessEnvironment (env);
+        _proc->start (_utils->appDir (MMOC_BIN) + SLASH + build, args);
+    }
+    else
+    {
+        delete _proc;
+        _proc = NULL;
+        _compiler_msg->setPlainText (_compiler_msg->toPlainText () + QString ("\nError during compilation.") + QString (exitCode));
+        _enableActions (true);
+        _settings_only = false;
+    }
     _compiler_msg->moveCursor (QTextCursor::End);
     _compiler_msg->ensureCursorVisible ();
 }
@@ -782,9 +785,9 @@ void
 MmomeGui::on_actionCompile_triggered ()
 {
     if (Editor::instance ()->activeBaseFileName ().isEmpty ())
-        {
-            return;
-        }
+    {
+        return;
+    }
 
 #ifdef Q_OS_LINUX
     Q_PID pid=_proc->pid();
@@ -797,20 +800,20 @@ MmomeGui::on_actionCompile_triggered ()
     params << "--noheaders";
     killer.start("/bin/ps",params,QIODevice::ReadOnly);
     if(killer.waitForStarted(-1))
+    {
+        if(killer.waitForFinished(-1))
         {
-            if(killer.waitForFinished(-1))
-                {
-                    QByteArray temp=killer.readAllStandardOutput();
-                    QString str=QString::fromLocal8Bit(temp);
-                    QStringList list=str.split("\n");
+            QByteArray temp=killer.readAllStandardOutput();
+            QString str=QString::fromLocal8Bit(temp);
+            QStringList list=str.split("\n");
 
-                    for(int i=0;i<list.size();i++)
-                        {
-                            if(!list.at(i).isEmpty())
-                            ::kill(list.at(i).toInt(),SIGKILL);
-                        }
-                }
+            for(int i=0;i<list.size();i++)
+            {
+                if(!list.at(i).isEmpty())
+                ::kill(list.at(i).toInt(),SIGKILL);
+            }
         }
+    }
 #endif
     _proc->kill ();
     _enableActions (true);
@@ -821,9 +824,9 @@ MmomeGui::on_actionLog_triggered ()
 {
     QString name = Editor::instance ()->activeBaseFileName ();
     if (name.isEmpty ())
-        {
-            return;
-        }
+    {
+        return;
+    }
     QString logCmd = _utils->appCommand (CMD_LOG);
     _log = new QProcess (this);
     connect (_log, SIGNAL(finished(int,QProcess::ExitStatus)), this,
@@ -845,9 +848,9 @@ MmomeGui::on_actionClear_Log_triggered ()
     outputDir.cd (Editor::instance ()->activeBaseFileName ());
     QStringList dirs = outputDir.entryList (QStringList () << "*.log" << "*.dat" << "*.plt");
 foreach(QString f, dirs)
-    {
-        outputDir.remove(f);
-    }
+{
+    outputDir.remove(f);
+}
 }
 
 void
@@ -864,13 +867,13 @@ for (int k = 0; k < _model->rowCount (); k++)
 {
     QStandardItem *it = _model->item (k);
     if (name == it->text ())
-        {
-            idx = k;
-            break;
-        }
+    {
+        idx = k;
+        break;
+    }
 }
 if (idx < 0)
-return;
+    return;
 _model->removeRows (idx, 1);
 _model_variables->setModel (_model);
 _model_variables->setItemDelegateForColumn (2, _cboxd);
@@ -896,7 +899,7 @@ exitAct->setStatusTip (tr ("Exit the application"));
 connect (exitAct, SIGNAL (triggered ()), qApp, SLOT (closeAllWindows ()));
 separatorAct = menu_File->addSeparator ();
 for (int i = 0; i < MaxRecentFiles; ++i)
-menu_File->addAction (recentFileActs[i]);
+    menu_File->addAction (recentFileActs[i]);
 separatorAct->setVisible (false);
 menu_File->addSeparator ();
 menu_File->addAction (exitAct);
@@ -930,7 +933,7 @@ for (int i = 0; i < numRecentFiles; ++i)
     recentFileActs[i]->setVisible (true);
 }
 for (int j = numRecentFiles; j < MaxRecentFiles; ++j)
-recentFileActs[j]->setVisible (false);
+    recentFileActs[j]->setVisible (false);
 
 separatorAct->setVisible (numRecentFiles > 0);
 }
@@ -953,7 +956,7 @@ QStringList files = settings.value ("Editor/recentFileList").toStringList ();
 files.removeAll (fileName);
 files.prepend (fileName);
 while (files.size () > MaxRecentFiles)
-files.removeLast ();
+    files.removeLast ();
 
 settings.setValue ("Editor/recentFileList", files);
 _updateRecentFileActions ();
@@ -969,23 +972,23 @@ for (int k = 0; k < _model->rowCount (); k++)
     QStandardItem *it = _model->item (k);
     Qt::CheckState cs = Qt::Unchecked;
     if (name == it->text ())
-        {
-            cs = Qt::Checked;
-            QModelIndex idx = _model->index (k, 0, QModelIndex ());
-            _model_variables->setExpanded (idx, true);
-            found = true;
-        }
+    {
+        cs = Qt::Checked;
+        QModelIndex idx = _model->index (k, 0, QModelIndex ());
+        _model_variables->setExpanded (idx, true);
+        found = true;
+    }
     else
-        {
-            QModelIndex idx = _model->index (k, 0, QModelIndex ());
-            _model_variables->setExpanded (idx, false);
-        }
+    {
+        QModelIndex idx = _model->index (k, 0, QModelIndex ());
+        _model_variables->setExpanded (idx, false);
+    }
     for (int g = 0; g < it->rowCount (); g++)
-        {
-            QStandardItem *c = it->child (g, 1);
-            QString name = c->text ();
-            c->setCheckState (cs);
-        }
+    {
+        QStandardItem *c = it->child (g, 1);
+        QString name = c->text ();
+        c->setCheckState (cs);
+    }
 }
 if (!found)
 {
@@ -998,11 +1001,11 @@ if (!found)
     QModelIndex idx = _model->index (k, 0, QModelIndex ());
     _model_variables->setExpanded (idx, true);
     for (int g = 0; g < it->rowCount (); g++)
-        {
-            QStandardItem *c = it->child (g, 1);
-            QString name = c->text ();
-            c->setCheckState (cs);
-        }
+    {
+        QStandardItem *c = it->child (g, 1);
+        QString name = c->text ();
+        c->setCheckState (cs);
+    }
 }
 }
 
@@ -1014,9 +1017,9 @@ for (int k = 0; k < _model->rowCount (); k++)
 {
     QStandardItem *it = _model->item (k);
     if (name == it->text ())
-        {
-            return;
-        }
+    {
+        return;
+    }
 }
 if (!name.isEmpty ())
 {
@@ -1027,9 +1030,9 @@ if (!name.isEmpty ())
     _model_variables->setModel (_model);
     _model_variables->setItemDelegateForColumn (2, _cboxd);
     for (int column = 0; column < _model->columnCount (); ++column)
-        {
-            _model_variables->resizeColumnToContents (column);
-        }
+    {
+        _model_variables->resizeColumnToContents (column);
+    }
 }
 }
 
@@ -1038,9 +1041,9 @@ MmomeGui::on_actionGraphics_triggered ()
 {
 QString name = Editor::instance ()->activeBaseFileName ();
 if (name.isEmpty ())
-return;
+    return;
 if (!_plotScript ())
-return;
+    return;
 _compiler_msg->clear ();
 QString plotCmd = _utils->appCommand (CMD_PLOT);
 QString plotOptions = _utils->appFlag (FLG_PLOT);
@@ -1053,7 +1056,7 @@ if (!of.exists ())
 }
 _plot = new QProcess (this);
 connect (_plot, SIGNAL(finished(int,QProcess::ExitStatus)), this,
-    SLOT(_plot_finished(int,QProcess::ExitStatus)));
+        SLOT(_plot_finished(int,QProcess::ExitStatus)));
 QStringList args;
 if (plotOptions.isEmpty ())
 {
