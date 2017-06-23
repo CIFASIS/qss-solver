@@ -135,7 +135,14 @@ $(CLASSICOBJ): | $(BUILDDIR)
 $(BUILDDIR):
 	@mkdir -p $(BUILDDIR)
 	@mkdir -p $(LIBDIR)
-	
+
+doc:
+	@mkdir -p $(USRDIR)/doc
+	@mkdir -p $(USRDIR)/doc/html
+	@mkdir -p $(USRDIR)/doc/latex
+	doxygen QSSSolver.doxyfile
+
+
 -include $(DEPS)
 
 .PHONY: clean
