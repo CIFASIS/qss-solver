@@ -101,15 +101,20 @@ typedef enum
     WR_HANDLER_NEG_SIMPLE, //!< WR_HANDLER_NEG_SIMPLE
     WR_HANDLER_NEG_GENERIC, //!< WR_HANDLER_NEG_GENERIC
     WR_OUTPUT_SIMPLE,      //!< WR_OUTPUT_SIMPLE
+    WR_MODEL_JACOBIAN,      //!< WR_MODEL_JACOBIAN
     WR_OUTPUT_GENERIC,     //!< WR_OUTPUT_GENERIC
     WR_FUNCTION_HEADER,    //!< WR_FUNCTION_HEADER
     WR_FUNCTION_CODE,      //!< WR_FUNCTION_CODE
     WR_NULL                //!< WR_NULL
 } WR_Section;
 
-/**
- *
- */
+typedef enum
+{
+    WR_APPEND_SIMPLE,
+    WR_APPEND_GENERIC,
+    WR_PREPEND
+} WR_InsertType;
+
 class MMO_Writer_
 {
 public:
@@ -138,7 +143,7 @@ public:
      * @param section
      */
     virtual void
-    write (string str, WR_Section section) = 0;
+    write (string str, WR_Section section, WR_InsertType it = WR_PREPEND) = 0;
     /**
      *
      * @param s
@@ -146,7 +151,9 @@ public:
      * @param clean
      */
     virtual void
-    write (stringstream *s, WR_Section section, bool clean = true) = 0;
+    write (stringstream *s, WR_Section section, bool clean = true, WR_InsertType it = WR_PREPEND) = 0;
+    virtual void
+    removeFromSection (string str, WR_Section section) = 0;
     /**
      *
      * @param block
@@ -265,7 +272,7 @@ public:
      * @param section
      */
     void
-    write (string str, WR_Section section);
+    write (string str, WR_Section section, WR_InsertType it = WR_PREPEND);
     /**
      *
      * @param s
@@ -273,7 +280,9 @@ public:
      * @param clean
      */
     void
-    write (stringstream *s, WR_Section section, bool clean = true);
+    write (stringstream *s, WR_Section section, bool clean = true, WR_InsertType it = WR_PREPEND);
+    void
+    removeFromSection (string str, WR_Section section);
     /**
      *
      * @param block
@@ -366,6 +375,7 @@ private:
     string _block;
     int _indent;
     int _blockIndent;
+    list<string>::iterator _removeIt;
 };
 /**
  *
@@ -411,7 +421,7 @@ public:
      * @param section
      */
     void
-    write (string str, WR_Section section);
+    write (string str, WR_Section section, WR_InsertType it = WR_PREPEND);
     /**
      *
      * @param s
@@ -419,7 +429,9 @@ public:
      * @param clean
      */
     void
-    write (stringstream *s, WR_Section section, bool clean = true);
+    write (stringstream *s, WR_Section section, bool clean = true, WR_InsertType it = WR_PREPEND);
+    void
+    removeFromSection (string str, WR_Section section);
     /**
      *
      * @param block

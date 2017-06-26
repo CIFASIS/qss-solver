@@ -27,7 +27,9 @@
 #include <ginac/power.h>
 #include <ginac/print.h>
 #include <ginac/registrar.h>
+#include <ginac/relational.h>
 #include <ginac/wildcard.h>
+#include <string>
 #include <iostream>
 #include <list>
 #include <sstream>
@@ -139,11 +141,53 @@ var_derivative (const ex & x, const ex & y, unsigned diff_param)
 }
 REGISTER_FUNCTION(var, derivative_func(var_derivative))
 
+GiNaC::symbol&
+ConvertToGiNaC::first ()
+{
+    return (getSymbol (""));
+}
+
+GiNaC::symbol&
+ConvertToGiNaC::next ()
+{
+    return (getSymbol (""));
+}
+
+bool
+ConvertToGiNaC::end ()
+{
+    return (true);
+}
+
+map<string, GiNaC::symbol>
+ConvertToGiNaC::directory ()
+{
+    return (_directory);
+}
+
+string
+ConvertToGiNaC::identifier (string str)
+{
+    std::size_t found = str.find ("[");
+    if (found == std::string::npos)
+    {
+        return (str);
+    }
+    else
+    {
+        std::size_t end = str.find ("]");
+        string ret = str;
+        ret.erase (found, end);
+        return (ret);
+    }
+    return ("");
+}
+
 ex
 ConvertToGiNaC::foldTraverseElement (ex l, ex r, BinOpType b)
 {
     switch (b)
-    {
+        {
         case BINOPADD:
             return (l + r);
         case BINOPSUB:
@@ -157,7 +201,7 @@ ConvertToGiNaC::foldTraverseElement (ex l, ex r, BinOpType b)
         default:
             cerr << "BinOp not converted to GiNaC " << b << endl;
             return (ex (0));
-    }
+        }
 }
 
 symbol&
@@ -181,31 +225,41 @@ ConvertToGiNaC::getSymbol (AST_Expression_ComponentReference cr)
         ei.setEnvironment ("i", true);
         s += ei.foldTraverse (cr);
     }
-    map<string, symbol>::iterator i = directory.find (s);
-    if (i != directory.end ())
+    map<string, symbol>::iterator i = _directory.find (s);
+    if (i != _directory.end ())
+    {
         return (i->second);
+    }
     else
-        return (directory.insert (make_pair (s, symbol (s))).first->second);
+    {
+        symbol c = symbol (s);
+        return (_directory.insert (make_pair (s, c)).first->second);
+    }
 }
 
 symbol&
 ConvertToGiNaC::getSymbol (string cr)
 {
-    map<string, symbol>::iterator i = directory.find (cr);
-    if (i != directory.end ())
+    map<string, symbol>::iterator i = _directory.find (cr);
+    if (i != _directory.end ())
+    {
         return (i->second);
+    }
     else
-        return (directory.insert (make_pair (cr, symbol (cr))).first->second);
+    {
+        symbol c = symbol (cr);
+        return (_directory.insert (make_pair (cr, c)).first->second);
+    }
 }
 
 symbol&
 ConvertToGiNaC::getTime ()
 {
     string s = "time";
-    map<string, symbol>::iterator i = directory.find (s);
-    if (i != directory.end ())
+    map<string, symbol>::iterator i = _directory.find (s);
+    if (i != _directory.end ())
         return (i->second);
-    return (directory.insert (make_pair (s, symbol (s))).first->second);
+    return (_directory.insert (make_pair (s, symbol (s))).first->second);
 }
 
 ex
@@ -218,28 +272,28 @@ ex
 ConvertToGiNaC::foldTraverseElement (AST_Expression e)
 {
     switch (e->expressionType ())
-    {
+        {
         case EXPREAL:
             return (ex (e->getAsReal ()->val ()));
         case EXPINTEGER:
             return (ex (e->getAsInteger ()->val ()));
         case EXPCOMPREF:
-        {
-            if (!_forDerivation)
             {
-                return (getSymbol (e->getAsComponentReference ()));
-            }
-            else
-            {
-                VarInfo v = _varEnv->lookup (e->getAsComponentReference ()->name ());
-                if (v->isParameter () || v->isDiscrete () || v->isConstant () || v->isForType ())
+                if (!_forDerivation)
+                {
                     return (getSymbol (e->getAsComponentReference ()));
-                else if (v->builtIn () && !v->name ().compare ("time"))
-                    return (getTime ());
+                }
                 else
-                    return (var (getSymbol (e->getAsComponentReference ()), getTime ()));
+                {
+                    VarInfo v = _varEnv->lookup (e->getAsComponentReference ()->name ());
+                    if (v->isParameter () || v->isDiscrete () || v->isConstant () || v->isForType ())
+                        return (getSymbol (e->getAsComponentReference ()));
+                    else if (v->builtIn () && !v->name ().compare ("time"))
+                        return (getTime ());
+                    else
+                        return (var (getSymbol (e->getAsComponentReference ()), getTime ()));
+                }
             }
-        }
         case EXPDERIVATIVE:
             if (_replaceDer)
             {
@@ -249,154 +303,158 @@ ConvertToGiNaC::foldTraverseElement (AST_Expression e)
             {
                 AST_Expression ed = e->getAsDerivative ()->arguments ()->front ();
                 switch (ed->expressionType ())
-                {
-                    case EXPCOMPREF:
                     {
-                        AST_Expression_ComponentReference cr = ed->getAsComponentReference ();
-                        return (der (getSymbol (cr), getTime ()));
-                    }
+                    case EXPCOMPREF:
+                        {
+                            AST_Expression_ComponentReference cr = ed->getAsComponentReference ();
+                            return (der (getSymbol (cr), getTime ()));
+                        }
                     default:
                         cerr << "Derivate argument " << ed << " not converted to GiNaC" << endl;
                         return (ex (0));
-                }
+                    }
             }
             break;
         case EXPCALL:
-        {
-            AST_Expression_Call c = e->getAsCall ();
-            if (toStr(c->name()) == "sin")
             {
-                return (sin (convert (AST_ListFirst (c->arguments ()), _replaceDer, _generateIndexes)));
-            }
-            else if (toStr(c->name()) == "cos")
-            {
-                return (cos (convert (AST_ListFirst (c->arguments ()), _replaceDer, _generateIndexes)));
-            }
-            else if (toStr(c->name()) == "log")
-            {
-                return (log (convert (AST_ListFirst (c->arguments ()), _replaceDer, _generateIndexes)));
-            }
-            else if (toStr(c->name()) == "pre")
-            {
-                return (pre (convert (AST_ListFirst (c->arguments ()), _replaceDer, _generateIndexes)));
-            }
-            else if (toStr(c->name()) == "der2")
-            {
-                AST_Expression ed = AST_ListFirst (c->arguments ());
-                switch (ed->expressionType ())
+                AST_Expression_Call c = e->getAsCall ();
+                if (toStr(c->name()) == "sin")
                 {
-                    case EXPCOMPREF:
+                    return (sin (convert (AST_ListFirst (c->arguments ()), _replaceDer, _generateIndexes)));
+                }
+                else if (toStr(c->name()) == "cos")
+                {
+                    return (cos (convert (AST_ListFirst (c->arguments ()), _replaceDer, _generateIndexes)));
+                }
+                else if (toStr(c->name()) == "log")
+                {
+                    return (log (convert (AST_ListFirst (c->arguments ()), _replaceDer, _generateIndexes)));
+                }
+                else if (toStr(c->name()) == "pre")
+                {
+                    return (pre (convert (AST_ListFirst (c->arguments ()), _replaceDer, _generateIndexes)));
+                }
+                else if (toStr(c->name()) == "der2")
+                {
+                    AST_Expression ed = AST_ListFirst (c->arguments ());
+                    switch (ed->expressionType ())
+                        {
+                        case EXPCOMPREF:
+                            {
+                                AST_Expression_ComponentReference cr = ed->getAsComponentReference ();
+                                return (der2 (getSymbol (cr), getTime ()));
+                            }
+                        default:
+                            cerr << "Derivate argument " << ed << " not converted to GiNaC" << endl;
+                            return (ex (0));
+                        }
+                }
+                else if (toStr(c->name()) == "der3")
+                {
+                    return (der3 (convert (AST_ListFirst (c->arguments ()), _replaceDer, _generateIndexes)));
+                }
+                else if (toStr(c->name()) == "sum")
+                {
+                    if (_exp != NULL)
                     {
-                        AST_Expression_ComponentReference cr = ed->getAsComponentReference ();
-                        return (der2 (getSymbol (cr), getTime ()));
+                        string varName = _exp->findVar (e);
+                        Util::getInstance ()->addBuiltInVariables (varName, BIV_SUM);
+                        return (var (getSymbol (varName), getTime ()));
                     }
-                    default:
-                        cerr << "Derivate argument " << ed << " not converted to GiNaC" << endl;
+                    else
+                    {
                         return (ex (0));
+                    }
                 }
-            }
-            else if (toStr(c->name()) == "der3")
-            {
-                return (der3 (convert (AST_ListFirst (c->arguments ()), _replaceDer, _generateIndexes)));
-            }
-            else if (toStr(c->name()) == "sum")
-            {
-                if (_exp != NULL)
+                else if (toStr(c->name()) == "product")
                 {
-                    string varName = _exp->findVar (e);
-                    Util::getInstance ()->addBuiltInVariables (varName, BIV_SUM);
-                    return (var (getSymbol (varName), getTime ()));
+                    if (_exp != NULL)
+                    {
+                        string varName = _exp->findVar (e);
+                        Util::getInstance ()->addBuiltInVariables (varName, BIV_PRODUCT);
+                        return (var (getSymbol (varName), getTime ()));
+                    }
+                    else
+                    {
+                        return (ex (0));
+                    }
                 }
-                else
+                else if (toStr(c->name()) == "min")
+                {
+                    if (_exp != NULL)
+                    {
+                        string varName = _exp->findVar (e);
+                        Util::getInstance ()->addBuiltInVariables (varName, BIV_MIN);
+                        return (var (getSymbol (varName), getTime ()));
+                    }
+                    else
+                    {
+                        return (ex (0));
+                    }
+                }
+                else if (toStr(c->name()) == "max")
+                {
+                    if (_exp != NULL)
+                    {
+                        string varName = _exp->findVar (e);
+                        Util::getInstance ()->addBuiltInVariables (varName, BIV_MAX);
+                        return (var (getSymbol (varName), getTime ()));
+                    }
+                    else
+                    {
+                        return (ex (0));
+                    }
+                }
+                else if (toStr(c->name()) == "__INNER_PRODUCT")
+                {
+                    if (_exp != NULL)
+                    {
+                        string varName = _exp->findVar (e);
+                        Util::getInstance ()->addBuiltInVariables (varName, BIV_INNER_PRODUCT);
+                        return (var (getSymbol (varName), getTime ()));
+                    }
+                    else
+                    {
+                        return (ex (0));
+                    }
+                }
+                else if (toStr(c->name()) == "pow")
+                {
+                    AST_ExpressionList el = c->arguments ();
+                    AST_Expression f = AST_ListFirst (el);
+                    AST_Expression s = AST_ListElement (el, 2);
+                    return (pow (convert (f, _replaceDer, _generateIndexes), convert (s, _replaceDer, _generateIndexes)));
+                }
+                else if (toStr(c->name()) == "sqrt")
+                {
+                    AST_ExpressionList el = c->arguments ();
+                    AST_Expression f = AST_ListFirst (el);
+                    return (sqrt (convert (f, _replaceDer, _generateIndexes)));
+                }
+                else if (toStr(c->name()) == "exp")
+                {
+                    return (exp (convert (AST_ListFirst (c->arguments ()), _replaceDer, _generateIndexes)));
+                }
+                else if (Util::getInstance ()->checkGKLinkFunctions (toStr(c->name ())))
                 {
                     return (ex (0));
                 }
-            }
-            else if (toStr(c->name()) == "product")
-            {
-                if (_exp != NULL)
-                {
-                    string varName = _exp->findVar (e);
-                    Util::getInstance ()->addBuiltInVariables (varName, BIV_PRODUCT);
-                    return (var (getSymbol (varName), getTime ()));
-                }
                 else
                 {
+                    cerr << "Function call : " << c->name ()->c_str () << " not converted to GiNaC" << endl;
                     return (ex (0));
                 }
             }
-            else if (toStr(c->name()) == "min")
-            {
-                if (_exp != NULL)
-                {
-                    string varName = _exp->findVar (e);
-                    Util::getInstance ()->addBuiltInVariables (varName, BIV_MIN);
-                    return (var (getSymbol (varName), getTime ()));
-                }
-                else
-                {
-                    return (ex (0));
-                }
-            }
-            else if (toStr(c->name()) == "max")
-            {
-                if (_exp != NULL)
-                {
-                    string varName = _exp->findVar (e);
-                    Util::getInstance ()->addBuiltInVariables (varName, BIV_MAX);
-                    return (var (getSymbol (varName), getTime ()));
-                }
-                else
-                {
-                    return (ex (0));
-                }
-            }
-            else if (toStr(c->name()) == "__INNER_PRODUCT")
-            {
-                if (_exp != NULL)
-                {
-                    string varName = _exp->findVar (e);
-                    Util::getInstance ()->addBuiltInVariables (varName, BIV_INNER_PRODUCT);
-                    return (var (getSymbol (varName), getTime ()));
-                }
-                else
-                {
-                    return (ex (0));
-                }
-            }
-            else if (toStr(c->name()) == "pow")
-            {
-                AST_ExpressionList el = c->arguments ();
-                AST_Expression f = AST_ListFirst (el);
-                AST_Expression s = AST_ListElement (el, 2);
-                return (pow (convert (f, _replaceDer, _generateIndexes), convert (s, _replaceDer, _generateIndexes)));
-            }
-            else if (toStr(c->name()) == "sqrt")
-            {
-                AST_ExpressionList el = c->arguments ();
-                AST_Expression f = AST_ListFirst (el);
-                return (sqrt (convert (f, _replaceDer, _generateIndexes)));
-            }
-            else if (toStr(c->name()) == "exp")
-            {
-                return (exp (convert (AST_ListFirst (c->arguments ()), _replaceDer, _generateIndexes)));
-            }
-            else
-            {
-                cerr << "Function call : " << c->name ()->c_str () << " not converted to GiNaC" << endl;
-                return (ex (0));
-            }
-        }
             break;
         case EXPOUTPUT:
-        {
-            AST_Expression el = AST_ListFirst (e->getAsOutput ()->expressionList ());
-            return (ex ((foldTraverse (el))));
-        }
+            {
+                AST_Expression el = AST_ListFirst (e->getAsOutput ()->expressionList ());
+                return (ex ((foldTraverse (el))));
+            }
         default:
             cerr << "Expression: " << e << " not converted to GiNaC" << endl;
             return (ex (0));
-    }
+        }
 }
 
 AST_Expression

@@ -169,6 +169,15 @@ Dependencies_::join (Dependencies d, DEP_Type t)
             }
         }
     }
+    map<Index, string>::iterator it;
+    for (it = d->_stateIds.begin (); it != d->_stateIds.end (); it++)
+    {
+        _stateIds[it->first] = it->second;
+    }
+    for (it = d->_algebraicIds.begin (); it != d->_algebraicIds.end (); it++)
+    {
+        _algebraicIds[it->first] = it->second;
+    }
     _autonomous = _autonomous && d->autonomous ();
 }
 
@@ -309,7 +318,7 @@ MMO_IndexTable
 Dependencies_::_select (DEP_Type t)
 {
     switch (t)
-    {
+        {
         case DEP_STATE:
             return (_states);
         case DEP_DISCRETE:
@@ -332,7 +341,7 @@ Dependencies_::_select (DEP_Type t)
             return (_algebraicVectorsDef);
         default:
             break;
-    }
+        }
     return (_states);
 }
 
@@ -361,6 +370,13 @@ Dependencies_::key (DEP_Type t)
 {
     MMO_IndexTable m = _select (t);
     return (m->key ());
+}
+
+Index
+Dependencies_::key (DEP_Type t, int at)
+{
+    MMO_IndexTable m = _select (t);
+    return (m->key (at));
 }
 
 Index *
@@ -482,4 +498,45 @@ Index *
 Dependencies_::algebraicState (Index* idx)
 {
     return (_algebraicStates->lookup (*idx));
+}
+
+void
+Dependencies_::insert (Index idx, string stateId, DEP_Type type)
+{
+    if (type == DEP_STATE)
+    {
+        _stateIds[idx] = stateId;
+    }
+    else
+    {
+        _algebraicIds[idx] = stateId;
+    }
+}
+
+string
+Dependencies_::identifier (Index idx, DEP_Type type)
+{
+    if (type == DEP_STATE)
+    {
+        return (_stateIds[idx]);
+    }
+    else
+    {
+        return (_algebraicIds[idx]);
+    }
+    return ("");
+}
+
+map<Index, string>
+Dependencies_::_identifier (DEP_Type t)
+{
+    if (t == DEP_STATE)
+    {
+        return (_stateIds);
+    }
+    else
+    {
+        return (_algebraicIds);
+    }
+    return (map<Index, string> ());
 }

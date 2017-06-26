@@ -28,6 +28,8 @@
 
 #include "../ast/ast_builder.h"
 #include "../ast/equation.h"
+#include "../ir/mmo_util.h"
+#include "../ir/expression.h"
 #include "ginac_interface.h"
 
 AST_Equation_Equality
@@ -52,4 +54,33 @@ ExpressionDerivator::derivate (AST_Expression exp, VarSymbolTable varEnv, MMO_Ex
     GiNaC::symbol time = tog.getTime ();
     GiNaC::ex der_exp = dexp.diff (time).subs (var (GiNaC::wild (), time) == GiNaC::wild ());
     return (toe.convert (der_exp));
+}
+
+map<string, MMO_Expression>
+ExpressionDerivator::generateJacobianExps (AST_Expression exp, MMO_ModelData data)
+{
+    ConvertToGiNaC tog (data->symbols (), true);
+    ConvertToExpression toe;
+    ReplaceDer_ rd (data->symbols ());
+    GiNaC::ex dexp = tog.convert (exp, false, true);
+    map<string, GiNaC::symbol> dir = tog.directory ();
+    map<string, GiNaC::symbol>::iterator it;
+    map<string, MMO_Expression> jacobianExps;
+    GiNaC::symbol time = tog.getTime ();
+    for (it = dir.begin (); it != dir.end (); it++)
+    {
+        VarInfo v = data->symbols ()->lookup (tog.identifier (it->first));
+        if (v != NULL)
+        {
+            if (v->isState () || v->isAlgebraic ())
+            {
+                GiNaC::ex der_exp = dexp.subs (var (GiNaC::wild (), time) == GiNaC::wild ()).diff (it->second);
+                bool algState = data->calculateAlgebraics ();
+                data->setCalculateAlgegraics (true);
+                jacobianExps[it->first] = newMMO_Expression (rd.foldTraverse (toe.convert (der_exp)), data);
+                data->setCalculateAlgegraics (algState);
+            }
+        }
+    }
+    return (jacobianExps);
 }

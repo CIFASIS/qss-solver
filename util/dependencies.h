@@ -140,6 +140,8 @@ public:
     insert (Index idx, Index dep, DEP_Type t);
     Index
     key (DEP_Type t);
+    Index
+    key (DEP_Type t, int at);
     /**
      *
      * @param t
@@ -225,9 +227,15 @@ public:
     isVector (Index *idx);
     Index *
     algebraicState (Index *idx);
+    void
+    insert (Index idx, string stateId, DEP_Type type);
+    string
+    identifier (Index idx, DEP_Type type);
 private:
     MMO_IndexTable
     _select (DEP_Type t);
+    map<Index, string>
+    _identifier (DEP_Type t);
     bool
     _testIntersection (MMO_IndexTable m, Index key);
     MMO_IndexTable _states;
@@ -241,6 +249,8 @@ private:
     MMO_IndexTable _algebraicVectorsDef;
     MMO_IndexTable _algebraicVectors;
     MMO_IndexTable _algebraicStates;
+    map<Index, string> _stateIds;
+    map<Index, string> _algebraicIds;
     bool _autonomous;
     int _stateVectorsCount;
     int _discreteVectorsCount;

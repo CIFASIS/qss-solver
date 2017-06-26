@@ -20,6 +20,8 @@
 #ifndef DERIVATIVE_H_
 #define DERIVATIVE_H_
 
+#include <map>
+
 #include "../ast/ast_types.h"
 #include "../ir/mmo_types.h"
 #include "util_types.h"
@@ -55,6 +57,8 @@ public:
      */
     static AST_Expression
     derivate (AST_Expression exp, VarSymbolTable varEnv, MMO_Expression e);
+    map<string, MMO_Expression>
+    generateJacobianExps (AST_Expression exp, MMO_ModelData data);
 };
 
 #endif  /* DERIVATIVE_H_ */

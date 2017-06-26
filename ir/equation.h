@@ -23,10 +23,12 @@
 #include <list>
 #include <set>
 #include <string>
+#include <map>
 
 #include "../ast/ast_types.h"
-#include "../util/md_index.h"
+#include "../util/index.h"
 #include "../util/util_types.h"
+#include "../util/dependencies.h"
 #include "mmo_base.h"
 #include "mmo_types.h"
 
@@ -40,6 +42,7 @@ typedef enum
     EQ_ZC,
     EQ_HANDLER,
     EQ_HANDLER_IF,
+    EQ_JACOBIAN
 } EQ_Type;
 
 /**
@@ -123,8 +126,8 @@ public:
      * @return
      */
     list<string>
-    print (string indent, string lhs = "", string idx = "", bool palgs = false, MMO_EquationTable algs = NULL, EQ_Type type = EQ_DERIVATIVE,
-           int order = 1, bool constant = false, int offset = 0, bool dereq = true, int forOffset = 0, int constantOffset = 0);
+    print (string indent, string lhs = "", string idx = "", bool palgs = false, MMO_EquationTable algs = NULL, EQ_Type type = EQ_DERIVATIVE, int order = 1,
+           bool constant = false, int offset = 0, bool dereq = true, int forOffset = 0, int constantOffset = 0);
     /**
      *
      * @param variable
@@ -165,11 +168,17 @@ public:
      */
     set<Index>
     algebraicArguments ();
-private:
+    MMO_Equation
+    jacobianExp (Index idx, DEP_Type type = DEP_STATE);
     bool
-    _controlAlgebraicArguments (set<Index> *algs, set<Index> eqAlgs);
+    controlAlgebraicArguments (set<Index> *algs, set<Index> eqAlgs);
+private:
     void
     _initDerivatives ();
+    MMO_Expression
+    _generateChainRule (Index idx);
+    void
+    _generateJacobianExps ();
     string
     _printArguments (int i, string idx, int offset, int cte, int order, int forOffset);
     MMO_ModelData _data;
@@ -183,6 +192,7 @@ private:
     list<string> _equation;
     list<string> _algebraics;
     set<Index> _algebraicArguments;
+    map<string, MMO_Expression> _jacobianExps;
     int _coeffs;
 };
 /**

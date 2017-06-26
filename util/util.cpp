@@ -70,6 +70,10 @@ Util::Util () :
     _builtInFunctions.insert (pair<string, BIF_NAMES> ("log", BIF_LOG));
     _builtInFunctions.insert (pair<string, BIF_NAMES> ("log10", BIF_LOG10));
     _builtInFunctions.insert (pair<string, BIF_NAMES> ("pre", BIF_PRE));
+    _builtInFunctions.insert (pair<string, BIF_NAMES> ("GQLink_GetB", BIF_GQLINK));
+    _builtInFunctions.insert (pair<string, BIF_NAMES> ("GQLink_GetBx", BIF_GQLINK));
+    _builtInFunctions.insert (pair<string, BIF_NAMES> ("GQLink_GetBy", BIF_GQLINK));
+    _builtInFunctions.insert (pair<string, BIF_NAMES> ("GQLink_GetBz", BIF_GQLINK));
     _builtInFunctionImp.insert (pair<BIF_NAMES, BIF*> (BIF_SUM, new BuiltInSumFunction ()));
     _builtInFunctionImp.insert (pair<BIF_NAMES, BIF*> (BIF_PRODUCT, new BuiltInProductFunction ()));
     _builtInFunctionImp.insert (pair<BIF_NAMES, BIF*> (BIF_INNER_PRODUCT, new BuiltInInnerProductFunction ()));
@@ -107,6 +111,26 @@ Util::getInstance ()
         _instance = new Util ();
     }
     return (_instance);
+}
+
+string
+Util::trimString (string str)
+{
+    // trim trailing spaces
+    string ret = str;
+    size_t endpos = ret.find_last_not_of (" \t");
+    if (string::npos != endpos)
+    {
+        ret = ret.substr (0, endpos + 1);
+    }
+
+    // trim leading spaces
+    size_t startpos = ret.find_first_not_of (" \t");
+    if (string::npos != startpos)
+    {
+        ret = ret.substr (startpos);
+    }
+    return (ret);
 }
 
 string
@@ -388,8 +412,7 @@ Util::printInitialAssignment (VarInfo vi, string indent, string localVar)
     }
     else if (vi->hasEachModifier ())
     {
-        buffer << "for(" << localVar << " = " << vi->index ().begin () << "; " << localVar << " <= " << vi->index ().end () << ";" << localVar
-                << "++)" << endl;
+        buffer << "for(" << localVar << " = " << vi->index ().begin () << "; " << localVar << " <= " << vi->index ().end () << ";" << localVar << "++)" << endl;
         buffer << indent << "{" << endl;
         buffer << indent << indent << vt->print (vi, localVar) << " = " << exp->print (localVar) << ";" << endl;
         buffer << indent << "}";
@@ -485,10 +508,7 @@ BIF::generateCode (string variableMap, string variableIndex, list<VariableInterv
         code.push_back (buffer.str ());
         buffer.str ("");
         code.push_back ("{");
-        /*      for (int j = 0; j < expOrder; j++)
-         {*/
         code.push_back (_reduce (variableMap, variableIndex, 0, variableInterval, states));
-//	}
         code.push_back ("}");
     }
     return (code);
@@ -610,8 +630,7 @@ BuiltInSumFunction::_reduce (string variableMap, string variableIndex, int varia
     string expOrderStr = BIF::expressionOrderStr (variableOrder, vin);
     if (hasStates)
     {
-        buffer << "\t" << variableMap << "[" << variableOrder << "] += " << variablePrefix << "[(" << idx.print (variableIndex) << ")" << expOrderStr
-                << "];";
+        buffer << "\t" << variableMap << "[" << variableOrder << "] += " << variablePrefix << "[(" << idx.print (variableIndex) << ")" << expOrderStr << "];";
     }
     else
     {
@@ -649,8 +668,7 @@ BuiltInProductFunction::_reduce (string variableMap, string variableIndex, int v
     string expOrderStr = BIF::expressionOrderStr (variableOrder, vin);
     if (hasStates)
     {
-        buffer << "\t" << variableMap << "[" << variableOrder << "] *= " << variablePrefix << "[(" << idx.print (variableIndex) << ")" << expOrderStr
-                << "];";
+        buffer << "\t" << variableMap << "[" << variableOrder << "] *= " << variablePrefix << "[(" << idx.print (variableIndex) << ")" << expOrderStr << "];";
     }
     else
     {
@@ -679,8 +697,7 @@ BuiltInInnerProductFunction::~BuiltInInnerProductFunction ()
 }
 
 string
-BuiltInInnerProductFunction::_reduce (string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval,
-                                      bool hasStates)
+BuiltInInnerProductFunction::_reduce (string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
 {
     if (variableInterval.size () != 2)
     {
@@ -707,8 +724,8 @@ BuiltInInnerProductFunction::_reduce (string variableMap, string variableIndex, 
             if (variableOrder == 0)
             {
                 string expOrderStr = BIF::expressionOrderStr (variableOrder, vin[0]);
-                buffer << "\t" << variableMap << "[" << variableOrder << "] += " << variable0Prefix << "[(" << idx0.print (variableIndex) << ")"
-                        << expOrderStr << "] * " << variable1Prefix << "[(" << idx1.print (variableIndex) << ")" << expOrderStr << "];";
+                buffer << "\t" << variableMap << "[" << variableOrder << "] += " << variable0Prefix << "[(" << idx0.print (variableIndex) << ")" << expOrderStr
+                        << "] * " << variable1Prefix << "[(" << idx1.print (variableIndex) << ")" << expOrderStr << "];";
             }
             else if (variableOrder == 1)
             {
@@ -732,8 +749,8 @@ BuiltInInnerProductFunction::_reduce (string variableMap, string variableIndex, 
                 buffer << "\t" << variableMap << "[" << variableOrder << "] += " << variable0Prefix << "[(" << idx0.print (variableIndex) << ")"
                         << expOrder02Str << "] * " << variable1Prefix << "[(" << idx1.print (variableIndex) << ")" << expOrder10Str << "] + 2 * "
                         << variable0Prefix << "[(" << idx0.print (variableIndex) << ")" << expOrder01Str << " ] * " << variable1Prefix << "[("
-                        << idx1.print (variableIndex) << ")" << expOrder11Str << "] + " << variable0Prefix << "[(" << idx0.print (variableIndex)
-                        << ")" << expOrder00Str << "] * " << variable1Prefix << "[(" << idx1.print (variableIndex) << ")" << expOrder12Str << "];";
+                        << idx1.print (variableIndex) << ")" << expOrder11Str << "] + " << variable0Prefix << "[(" << idx0.print (variableIndex) << ")"
+                        << expOrder00Str << "] * " << variable1Prefix << "[(" << idx1.print (variableIndex) << ")" << expOrder12Str << "];";
             }
             else if (variableOrder == 3)
             {
@@ -748,10 +765,10 @@ BuiltInInnerProductFunction::_reduce (string variableMap, string variableIndex, 
                 buffer << "\t" << variableMap << "[" << variableOrder << "] += " << variable0Prefix << "[(" << idx0.print (variableIndex) << ")"
                         << expOrder03Str << "] * " << variable1Prefix << "[(" << idx1.print (variableIndex) << ")" << expOrder10Str << "] + 3 * "
                         << variable0Prefix << "[(" << idx0.print (variableIndex) << ")" << expOrder02Str << "] * " << variable1Prefix << "[("
-                        << idx1.print (variableIndex) << ")" << expOrder11Str << "] + 3 * " << variable0Prefix << "[(" << idx0.print (variableIndex)
-                        << ")" << expOrder01Str << "] * " << variable1Prefix << "[(" << idx1.print (variableIndex) << ")" << expOrder12Str << "] + "
-                        << variable0Prefix << "[(" << idx0.print (variableIndex) << ")" << expOrder00Str << "] * " << variable1Prefix << "[("
-                        << idx1.print (variableIndex) << ")" << expOrder13Str << "];";
+                        << idx1.print (variableIndex) << ")" << expOrder11Str << "] + 3 * " << variable0Prefix << "[(" << idx0.print (variableIndex) << ")"
+                        << expOrder01Str << "] * " << variable1Prefix << "[(" << idx1.print (variableIndex) << ")" << expOrder12Str << "] + " << variable0Prefix
+                        << "[(" << idx0.print (variableIndex) << ")" << expOrder00Str << "] * " << variable1Prefix << "[(" << idx1.print (variableIndex) << ")"
+                        << expOrder13Str << "];";
             }
             else if (variableOrder == 4)
             {
@@ -768,19 +785,18 @@ BuiltInInnerProductFunction::_reduce (string variableMap, string variableIndex, 
                 buffer << "\t" << variableMap << "[" << variableOrder << "] += " << variable0Prefix << "[(" << idx0.print (variableIndex) << ")"
                         << expOrder04Str << "] * " << variable1Prefix << "[(" << idx1.print (variableIndex) << ")" << expOrder10Str << "] + 4 * "
                         << variable0Prefix << "[(" << idx0.print (variableIndex) << ")" << expOrder03Str << "] * " << variable1Prefix << "[("
-                        << idx1.print (variableIndex) << ")" << expOrder11Str << "] + 6 * " << variable0Prefix << "[(" << idx0.print (variableIndex)
-                        << ")" << expOrder02Str << "] * " << variable1Prefix << "[(" << idx1.print (variableIndex) << ")" << expOrder12Str
-                        << "] + 4 * " << variable0Prefix << "[(" << idx0.print (variableIndex) << ")" << expOrder01Str << "] * " << variable1Prefix
-                        << "[(" << idx1.print (variableIndex) << ")" << expOrder13Str << "] + " << variable0Prefix << "[("
-                        << idx0.print (variableIndex) << ")" << expOrder00Str << "] * " << variable1Prefix << "[(" << idx1.print (variableIndex)
-                        << ")" << expOrder14Str << "];";
+                        << idx1.print (variableIndex) << ")" << expOrder11Str << "] + 6 * " << variable0Prefix << "[(" << idx0.print (variableIndex) << ")"
+                        << expOrder02Str << "] * " << variable1Prefix << "[(" << idx1.print (variableIndex) << ")" << expOrder12Str << "] + 4 * "
+                        << variable0Prefix << "[(" << idx0.print (variableIndex) << ")" << expOrder01Str << "] * " << variable1Prefix << "[("
+                        << idx1.print (variableIndex) << ")" << expOrder13Str << "] + " << variable0Prefix << "[(" << idx0.print (variableIndex) << ")"
+                        << expOrder00Str << "] * " << variable1Prefix << "[(" << idx1.print (variableIndex) << ")" << expOrder14Str << "];";
             }
         }
         else if (BIF::isState (vin[0]) && !BIF::isState (vin[1]))
         {
             string expOrderStr = BIF::expressionOrderStr (variableOrder, vin[0]);
-            buffer << "\t" << variableMap << "[" << variableOrder << "] += " << variable0Prefix << "[(" << idx0.print (variableIndex) << ")"
-                    << expOrderStr << "] * " << variable1Prefix << "[" << idx1.print (variableIndex) << "];";
+            buffer << "\t" << variableMap << "[" << variableOrder << "] += " << variable0Prefix << "[(" << idx0.print (variableIndex) << ")" << expOrderStr
+                    << "] * " << variable1Prefix << "[" << idx1.print (variableIndex) << "];";
 
         }
         else if (!BIF::isState (vin[0]) && BIF::isState (vin[1]))
@@ -827,10 +843,9 @@ BuiltInMinFunction::_reduce (string variableMap, string variableIndex, int varia
     Index idx = vin.index ();
     if (hasStates)
     {
-        buffer << "\t if (" << variableMap << "[" << variableOrder << "] > " << variablePrefix << "[(" << idx.print (variableIndex) << ")" << expOrder
-                << "])" << endl;
-        buffer << "\t \t" << variableMap << "[" << variableOrder << "] = " << variablePrefix << "[(" << idx.print (variableIndex) << ")" << expOrder
-                << "];";
+        buffer << "\t if (" << variableMap << "[" << variableOrder << "] > " << variablePrefix << "[(" << idx.print (variableIndex) << ")" << expOrder << "])"
+                << endl;
+        buffer << "\t \t" << variableMap << "[" << variableOrder << "] = " << variablePrefix << "[(" << idx.print (variableIndex) << ")" << expOrder << "];";
     }
     else
     {
@@ -873,10 +888,9 @@ BuiltInMaxFunction::_reduce (string variableMap, string variableIndex, int varia
     Index idx = vin.index ();
     if (hasStates)
     {
-        buffer << "\t if (" << variableMap << "[" << variableOrder << "] < " << variablePrefix << "[(" << idx.print (variableIndex) << ")" << expOrder
-                << "])" << endl;
-        buffer << "\t \t" << variableMap << "[" << variableOrder << "] = " << variablePrefix << "[(" << idx.print (variableIndex) << ")" << expOrder
-                << "];";
+        buffer << "\t if (" << variableMap << "[" << variableOrder << "] < " << variablePrefix << "[(" << idx.print (variableIndex) << ")" << expOrder << "])"
+                << endl;
+        buffer << "\t \t" << variableMap << "[" << variableOrder << "] = " << variablePrefix << "[(" << idx.print (variableIndex) << ")" << expOrder << "];";
     }
     else
     {
@@ -947,4 +961,11 @@ Util::builtInReductionFunctions (BIF_NAMES fn)
         return (it->second);
     }
     return (new BuiltInFunction ());
+}
+
+bool
+Util::checkGKLinkFunctions (string name)
+{
+    map<string, BIF_NAMES>::iterator it = _builtInFunctions.find (name);
+    return (it != _builtInFunctions.end ());
 }

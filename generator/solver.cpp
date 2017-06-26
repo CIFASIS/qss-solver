@@ -70,8 +70,8 @@ QSS_::initData ()
 {
     stringstream buffer;
     MMO_Annotation annot = _model->annotation ();
-    buffer << "simulator->data = QSS_Data(" << _model->states () << "," << _model->discretes () << "," << _model->evs () << "," << _model->inputs ()
-            << "," << _model->algs () << ",\"" << _name << "\");" << endl;
+    buffer << "simulator->data = QSS_Data(" << _model->states () << "," << _model->discretes () << "," << _model->evs () << "," << _model->inputs () << ","
+            << _model->algs () << ",\"" << _name << "\");" << endl;
     buffer << "  QSS_data modelData = simulator->data;" << endl;
     buffer << "  const double t = " << annot->initialTime () << ";" << endl;
     return (buffer.str ());
@@ -117,8 +117,8 @@ QSS_::initTime ()
             }
         }
     }
-    buffer << "simulator->time = QSS_Time(" << _model->states () << "," << _model->evs () << "," << _model->inputs () << "," << annot->initialTime ()
-            << "," << annot->scheduler () << "," << weightsStr << ");" << endl;
+    buffer << "simulator->time = QSS_Time(" << _model->states () << "," << _model->evs () << "," << _model->inputs () << "," << annot->initialTime () << ","
+            << annot->scheduler () << "," << weightsStr << ");" << endl;
     return (buffer.str ());
 }
 
@@ -207,7 +207,7 @@ QSS_::_indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, 
         }
     }
     switch (intersection.type ())
-    {
+        {
         case IDX_DISJOINT:
             found = false;
             break;
@@ -279,8 +279,8 @@ QSS_::_indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, 
                     _writer->write (&buffer, init);
                     buffer << "{";
                     _writer->write (&buffer, init);
-                    buffer << indent << initStr << "[" << idxStr << "][" << counter << "[" << idxStr << "]++] = "
-                            << infIdx.print ("i", -infIdx.begin ()) << ";";
+                    buffer << indent << initStr << "[" << idxStr << "][" << counter << "[" << idxStr << "]++] = " << infIdx.print ("i", -infIdx.begin ())
+                            << ";";
                     _writer->write (&buffer, init);
                     buffer << "}";
                     _writer->write (&buffer, init);
@@ -320,140 +320,140 @@ QSS_::_indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, 
             }
             break;
         case IDX_SUBSET:
-        {
-            Index tmp (infIdx);
-            if (dIdx->hasMap ())
             {
-                tmp.setMap (*dIdx);
+                Index tmp (infIdx);
+                if (dIdx->hasMap ())
+                {
+                    tmp.setMap (*dIdx);
+                }
+                int begin = idx.mappedBegin () + infDIdx->lowValue () - dIdx->lowValue ();
+                buffer << "for(i = " << begin << "; i <= " << begin + infDIdx->range () - 1 << "; i++)";
+                _writer->write (&buffer, alloc, false);
+                _writer->write (&buffer, init);
+                buffer << "{";
+                _writer->write (&buffer, alloc, false);
+                _writer->write (&buffer, init);
+                buffer << indent << allocStr << "[i]++;";
+                _writer->write (&buffer, alloc);
+                buffer << indent << initStr << "[i][" << counter << "[i]++] = " << tmp.print ("i", -begin + infIdx.begin () - idx.begin ()) << ";";
+                _writer->write (&buffer, init);
+                buffer << "}";
+                _writer->write (&buffer, alloc, false);
+                _writer->write (&buffer, init);
+                if (_parallel)
+                {
+                    Index inf (infIdx);
+                    inf.setOffset (inf.offset () - begin);
+                    Index st (idx);
+                    st.setOffset (0);
+                    st.setLow (begin + 1);
+                    st.setHi (begin + infDIdx->range ());
+                    _common->graphInsert (st, inf, nodOffset, nt, assignments);
+                }
             }
-            int begin = idx.mappedBegin () + infDIdx->lowValue () - dIdx->lowValue ();
-            buffer << "for(i = " << begin << "; i <= " << begin + infDIdx->range () - 1 << "; i++)";
-            _writer->write (&buffer, alloc, false);
-            _writer->write (&buffer, init);
-            buffer << "{";
-            _writer->write (&buffer, alloc, false);
-            _writer->write (&buffer, init);
-            buffer << indent << allocStr << "[i]++;";
-            _writer->write (&buffer, alloc);
-            buffer << indent << initStr << "[i][" << counter << "[i]++] = " << tmp.print ("i", -begin + infIdx.begin () - idx.begin ()) << ";";
-            _writer->write (&buffer, init);
-            buffer << "}";
-            _writer->write (&buffer, alloc, false);
-            _writer->write (&buffer, init);
-            if (_parallel)
-            {
-                Index inf (infIdx);
-                inf.setOffset (inf.offset () - begin);
-                Index st (idx);
-                st.setOffset (0);
-                st.setLow (begin + 1);
-                st.setHi (begin + infDIdx->range ());
-                _common->graphInsert (st, inf, nodOffset, nt, assignments);
-            }
-        }
             break;
         case IDX_SUBSET_OF:
-        {
-            Index tmp (infIdx);
-            if (dIdx->hasMap ())
             {
-                tmp.setMap (*dIdx);
+                Index tmp (infIdx);
+                if (dIdx->hasMap ())
+                {
+                    tmp.setMap (*dIdx);
+                }
+                buffer << "for(i = " << idx.mappedBegin () << "; i <= " << idx.mappedEnd () << "; i++)";
+                _writer->write (&buffer, alloc, false);
+                _writer->write (&buffer, init);
+                buffer << "{";
+                _writer->write (&buffer, alloc, false);
+                _writer->write (&buffer, init);
+                buffer << indent << allocStr << "[i]++;";
+                _writer->write (&buffer, alloc);
+                buffer << indent << initStr << "[i][" << counter << "[i]++] = " << tmp.print ("i", -idx.mappedBegin () + idx.begin ()) << ";";
+                _writer->write (&buffer, init);
+                buffer << "}";
+                _writer->write (&buffer, alloc, false);
+                _writer->write (&buffer, init);
+                if (_parallel)
+                {
+                    Index inf (*dIdx);
+                    inf.setOffset (inf.offset () - dIdx->offset () + infIdx.mappedBegin ());
+                    Index st (idx);
+                    st.setOffset (0);
+                    _common->graphInsert (st, inf, nodOffset, nt, assignments);
+                }
             }
-            buffer << "for(i = " << idx.mappedBegin () << "; i <= " << idx.mappedEnd () << "; i++)";
-            _writer->write (&buffer, alloc, false);
-            _writer->write (&buffer, init);
-            buffer << "{";
-            _writer->write (&buffer, alloc, false);
-            _writer->write (&buffer, init);
-            buffer << indent << allocStr << "[i]++;";
-            _writer->write (&buffer, alloc);
-            buffer << indent << initStr << "[i][" << counter << "[i]++] = " << tmp.print ("i", -idx.mappedBegin () + idx.begin ()) << ";";
-            _writer->write (&buffer, init);
-            buffer << "}";
-            _writer->write (&buffer, alloc, false);
-            _writer->write (&buffer, init);
-            if (_parallel)
-            {
-                Index inf (*dIdx);
-                inf.setOffset (inf.offset () - dIdx->offset () + infIdx.mappedBegin ());
-                Index st (idx);
-                st.setOffset (0);
-                _common->graphInsert (st, inf, nodOffset, nt, assignments);
-            }
-        }
             break;
         case IDX_ARB_AB:
-        {
-            buffer << "for( i = " << idx.mappedBegin () << "; i <= ";
-            buffer << idx.mappedBegin () + dIdx->lowValue () - infDIdx->hiValue () << "; i++)";
-            _writer->write (&buffer, alloc, false);
-            _writer->write (&buffer, init);
-            buffer << "{";
-            _writer->write (&buffer, alloc, false);
-            _writer->write (&buffer, init);
-            buffer << indent << allocStr << "[i]++;";
-            _writer->write (&buffer, alloc);
-            buffer << indent << initStr << "[i][" << counter << "[i]++] = "
-                    << dIdx->print ("i", -dIdx->offset () + infIdx.mappedBegin () + idx.low ()) << ";";
-            _writer->write (&buffer, init);
-            buffer << "}";
-            _writer->write (&buffer, alloc, false);
-            _writer->write (&buffer, init);
-            if (_parallel)
             {
-                Index inf (infIdx);
-                inf.setOffset (inf.offset () - dIdx->offset () + infIdx.mappedBegin () + idx.low ());
-                Index st (idx);
-                st.setOffset (0);
-                st.setHi (idx.mappedBegin () + dIdx->lowValue () - infDIdx->hiValue () + 1);
-                _common->graphInsert (st, inf, nodOffset, nt, assignments);
+                buffer << "for( i = " << idx.mappedBegin () << "; i <= ";
+                buffer << idx.mappedBegin () + dIdx->lowValue () - infDIdx->hiValue () << "; i++)";
+                _writer->write (&buffer, alloc, false);
+                _writer->write (&buffer, init);
+                buffer << "{";
+                _writer->write (&buffer, alloc, false);
+                _writer->write (&buffer, init);
+                buffer << indent << allocStr << "[i]++;";
+                _writer->write (&buffer, alloc);
+                buffer << indent << initStr << "[i][" << counter << "[i]++] = " << dIdx->print ("i", -dIdx->offset () + infIdx.mappedBegin () + idx.low ())
+                        << ";";
+                _writer->write (&buffer, init);
+                buffer << "}";
+                _writer->write (&buffer, alloc, false);
+                _writer->write (&buffer, init);
+                if (_parallel)
+                {
+                    Index inf (infIdx);
+                    inf.setOffset (inf.offset () - dIdx->offset () + infIdx.mappedBegin () + idx.low ());
+                    Index st (idx);
+                    st.setOffset (0);
+                    st.setHi (idx.mappedBegin () + dIdx->lowValue () - infDIdx->hiValue () + 1);
+                    _common->graphInsert (st, inf, nodOffset, nt, assignments);
+                }
             }
-        }
             break;
         case IDX_ARB_BA:
-        {
-            int begin = idx.mappedBegin () + infIdx.begin () - idx.begin ();
-            buffer << "for(i = " << begin << "; i <= ";
-            buffer << idx.mappedEnd () << "; i++)";
-            _writer->write (&buffer, alloc, false);
-            _writer->write (&buffer, init);
-            buffer << "{";
-            _writer->write (&buffer, alloc, false);
-            _writer->write (&buffer, init);
-            buffer << indent << allocStr << "[i]++;";
-            _writer->write (&buffer, alloc);
-            buffer << indent << initStr << "[i][" << counter << "[i]++] = " << infIdx.print ("i", -begin) << ";";
-            _writer->write (&buffer, init);
-            buffer << "}";
-            _writer->write (&buffer, alloc, false);
-            _writer->write (&buffer, init);
-            if (_parallel)
             {
-                Index inf (infIdx);
-                inf.setOffset (inf.offset () - begin);
-                Index st (idx);
-                st.setOffset (0);
-                st.setLow (begin + 1);
-                _common->graphInsert (st, inf, nodOffset, nt, assignments);
+                int begin = idx.mappedBegin () + infIdx.begin () - idx.begin ();
+                buffer << "for(i = " << begin << "; i <= ";
+                buffer << idx.mappedEnd () << "; i++)";
+                _writer->write (&buffer, alloc, false);
+                _writer->write (&buffer, init);
+                buffer << "{";
+                _writer->write (&buffer, alloc, false);
+                _writer->write (&buffer, init);
+                buffer << indent << allocStr << "[i]++;";
+                _writer->write (&buffer, alloc);
+                buffer << indent << initStr << "[i][" << counter << "[i]++] = " << infIdx.print ("i", -begin) << ";";
+                _writer->write (&buffer, init);
+                buffer << "}";
+                _writer->write (&buffer, alloc, false);
+                _writer->write (&buffer, init);
+                if (_parallel)
+                {
+                    Index inf (infIdx);
+                    inf.setOffset (inf.offset () - begin);
+                    Index st (idx);
+                    st.setOffset (0);
+                    st.setLow (begin + 1);
+                    _common->graphInsert (st, inf, nodOffset, nt, assignments);
+                }
             }
-        }
             break;
         default:
-        {
-            int loc = idx.mappedBegin () + intersection.value ();
-            buffer << allocStr << "[" << loc << "]++;";
-            _writer->write (&buffer, alloc);
-            buffer << initStr << "[" << loc << "][" << counter << "[" << loc << "]++] = " << infIdx.print ("i") << ";";
-            _writer->write (&buffer, init);
-            if (_parallel)
             {
-                Index st = idx.indexValue (loc + 1);
-                st.setOffset (0);
-                _common->graphInsert (st, infIdx, nodOffset, nt, assignments);
+                int loc = idx.mappedBegin () + intersection.value ();
+                buffer << allocStr << "[" << loc << "]++;";
+                _writer->write (&buffer, alloc);
+                buffer << initStr << "[" << loc << "][" << counter << "[" << loc << "]++] = " << infIdx.print ("i") << ";";
+                _writer->write (&buffer, init);
+                if (_parallel)
+                {
+                    Index st = idx.indexValue (loc + 1);
+                    st.setOffset (0);
+                    _common->graphInsert (st, infIdx, nodOffset, nt, assignments);
+                }
             }
-        }
             break;
-    }
+        }
     return (found);
 }
 
@@ -483,8 +483,8 @@ QSS_::_eventDeps (MMO_Event e, Index index, MMO_EventTable evt, DEP_Type type, m
                 {
                     events[ecIndex] = ecIndex;
                 }
-                _indexDependencies (index, hndIdx, ecIndex, zcIdx, &simpleZCNDeps, WR_ALLOC_LD_HZ, WR_INIT_LD_HZ, "modelData->nHZ", "modelData->HZ",
-                                    "events", is, assignments);
+                _indexDependencies (index, hndIdx, ecIndex, zcIdx, &simpleZCNDeps, WR_ALLOC_LD_HZ, WR_INIT_LD_HZ, "modelData->nHZ", "modelData->HZ", "events",
+                                    is, assignments);
             }
             if (_parallel && type == DEP_DISCRETE)
             {
@@ -509,11 +509,10 @@ QSS_::_eventDeps (MMO_Event e, Index index, MMO_EventTable evt, DEP_Type type, m
                             _hasDD = true;
                         }
                     }
-                    _indexDependencies (index, hndIdx, ecIndex, hdIdx, &simpleDDDependencies, WR_ALLOC_LD_DD, WR_INIT_LD_DD, "modelData->nDD",
-                                        "modelData->DD", "events", is, assignments);
+                    _indexDependencies (index, hndIdx, ecIndex, hdIdx, &simpleDDDependencies, WR_ALLOC_LD_DD, WR_INIT_LD_DD, "modelData->nDD", "modelData->DD",
+                                        "events", is, assignments);
                 }
-                for (Index *hdIdx = hndDeps->begin (DEP_DISCRETE_VECTOR); !hndDeps->end (DEP_DISCRETE_VECTOR);
-                        hdIdx = hndDeps->next (DEP_DISCRETE_VECTOR))
+                for (Index *hdIdx = hndDeps->begin (DEP_DISCRETE_VECTOR); !hndDeps->end (DEP_DISCRETE_VECTOR); hdIdx = hndDeps->next (DEP_DISCRETE_VECTOR))
                 {
                     if (e->index ().hasRange () && e->index () == ev->index () && *hndIdx == *hdIdx && hndIdx->hasRange ())
                     {
@@ -634,8 +633,8 @@ QSS_::_eventAlgebraicDeps (MMO_Event e, Index index, MMO_EventTable evt, DEP_Typ
                 Index algVar = zcDeps->key (type);
                 _setInterval (&algVar, &ecIndex);
                 Intersection is = hndIdx->intersection (algVar);
-                _indexDependencies (index, hndIdx, ecIndex, &algVar, &simpleZCNDeps, WR_ALLOC_LD_HZ, WR_INIT_LD_HZ, "modelData->nHZ", "modelData->HZ",
-                                    "events", is, assignments);
+                _indexDependencies (index, hndIdx, ecIndex, &algVar, &simpleZCNDeps, WR_ALLOC_LD_HZ, WR_INIT_LD_HZ, "modelData->nHZ", "modelData->HZ", "events",
+                                    is, assignments);
             }
         }
     }
@@ -659,8 +658,7 @@ QSS_::_setInterval (Index *i1, Index *i2)
 }
 
 void
-QSS_::_eventVectorDependencies (Index index, Dependencies deps, WR_Section alloc, WR_Section init, string allocString, string initString,
-                                DEP_Type type)
+QSS_::_eventVectorDependencies (Index index, Dependencies deps, WR_Section alloc, WR_Section init, string allocString, string initString, DEP_Type type)
 {
     stringstream buffer;
     string indent = _writer->indent (1);
@@ -831,9 +829,8 @@ QSS_::initializeMatrices ()
                 _common->graphInsert (dIdx, e->lhs ());
             }
         }
-        _common->addAlgebriacDeps (deps, e->lhs (), defStates, "modelData->nDS", "modelData->nSD", "modelData->DS", "modelData->SD",
-                                   WR_ALLOC_LD_ALG_DS, WR_ALLOC_LD_ALG_SD, WR_INIT_LD_ALG_DS, WR_INIT_LD_ALG_SD, "states", "states",
-                                   DEP_ALGEBRAIC_STATE, _modelDeps);
+        _common->addAlgebriacDeps (deps, e->lhs (), defStates, "modelData->nDS", "modelData->nSD", "modelData->DS", "modelData->SD", WR_ALLOC_LD_ALG_DS,
+                                   WR_ALLOC_LD_ALG_SD, WR_INIT_LD_ALG_DS, WR_INIT_LD_ALG_SD, "states", "states", DEP_ALGEBRAIC_STATE, _modelDeps);
         map<Index, list<Intersection> > HD;
         for (Index *dIdx = deps->begin (DEP_DISCRETE); !deps->end (DEP_DISCRETE); dIdx = deps->next (DEP_DISCRETE))
         {
@@ -856,8 +853,8 @@ QSS_::initializeMatrices ()
                         continue;
                     }
                     Index equationIndex = e->lhs ();
-                    _indexDependencies (eIndex, eIdx, equationIndex, dIdx, &simpleHDDeps, WR_ALLOC_LD_HD, WR_INIT_LD_HD, "modelData->nHD",
-                                        "modelData->HD", "events", is, assignments);
+                    _indexDependencies (eIndex, eIdx, equationIndex, dIdx, &simpleHDDeps, WR_ALLOC_LD_HD, WR_INIT_LD_HD, "modelData->nHD", "modelData->HD",
+                                        "events", is, assignments);
                     HD[eIndex].push_back (is);
                 }
             }
@@ -896,8 +893,8 @@ QSS_::initializeMatrices ()
                         equationIndex.setLow (1);
                         equationIndex.setHi (1);
                     }
-                    _indexDependencies (eIndex, eIdx, equationIndex, &algState, &simpleHDDeps, WR_ALLOC_LD_HD, WR_INIT_LD_HD, "modelData->nHD",
-                                        "modelData->HD", "events", is, assignments);
+                    _indexDependencies (eIndex, eIdx, equationIndex, &algState, &simpleHDDeps, WR_ALLOC_LD_HD, WR_INIT_LD_HD, "modelData->nHD", "modelData->HD",
+                                        "events", is, assignments);
                     HD[eIndex].push_back (is);
                 }
             }
@@ -929,8 +926,8 @@ QSS_::initializeMatrices ()
                     {
                         equationIndex = e->lhs ();
                     }
-                    _indexDependencies (eIndex, eIdx, equationIndex, dIdx, &simpleHDDeps, WR_ALLOC_LD_HD, WR_INIT_LD_HD, "modelData->nHD",
-                                        "modelData->HD", "events", is, assignments);
+                    _indexDependencies (eIndex, eIdx, equationIndex, dIdx, &simpleHDDeps, WR_ALLOC_LD_HD, WR_INIT_LD_HD, "modelData->nHD", "modelData->HD",
+                                        "events", is, assignments);
                     HD[eIndex].push_back (is);
                 }
             }
@@ -1326,8 +1323,907 @@ QSS_::model ()
 }
 
 void
-QSS_::_printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equations, MMO_EquationTable algebraics, string idxStr, WR_Section s,
-                  int i, bool constant)
+QSS_::_printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equations, MMO_EquationTable algebraics, string idxStr, WR_Section s, int i,
+                  bool constant)
+{
+    stringstream buffer;
+    int indent = i;
+    bool controlRange = (s == WR_MODEL_DEPS_SIMPLE);
+    int order = _common->getOrder ();
+    int xCoeff = _model->annotation ()->polyCoeffs ();
+    bool constantPrint = constant;
+    string aux1, aux2;
+    set<Index> algebraicArguments;
+    for (Index *dIdx = d->begin (DEP_ALGEBRAIC); !d->end (DEP_ALGEBRAIC); dIdx = d->next (DEP_ALGEBRAIC))
+    {
+        if (d->isVector (dIdx))
+        {
+            string vn;
+            buffer.str ("");
+            list<MMO_Equation> eqs = algebraics->equation (*dIdx);
+            if (eqs.empty ())
+            {
+                Error::getInstance ()->add (0, EM_CG | EM_NO_EQ, ER_Error, "Print vector algebraic dependencies for index %s.", dIdx->print ().c_str ());
+                return;
+            }
+            list<MMO_Equation>::iterator eq;
+            for (eq = eqs.begin (); eq != eqs.end (); eq++)
+            {
+                if (!(*eq)->controlAlgebraicArguments (&algebraicArguments, (*eq)->algebraicArguments ()))
+                {
+                    continue;
+                }
+                string iter;
+                Index lhsEq = (*eq)->lhs ();
+                stringstream aLhs;
+                if (lhsEq.hasRange ())
+                {
+                    iter = Util::getInstance ()->newVarName ("j", _model->varTable ());
+                    _common->addLocalVar (iter, &_modelDepsVars);
+                    buffer << _writer->indent (indent) << "for(" << iter << " = " << lhsEq.begin () << "; " << iter << " <= " << lhsEq.end () << "; " << iter
+                            << "++)";
+                    _writer->write (&buffer, s);
+                    _writer->write ("{", s);
+                    aLhs << "alg[(" << (*eq)->lhs ().print (iter) << ")";
+                    aLhs << " * " << xCoeff;
+                }
+                else
+                {
+                    int cte = dIdx->mappedValue ((*eq)->lhs ().constant ());
+                    aLhs << "alg[" << cte * xCoeff;
+                }
+                _common->print ((*eq)->print (_writer->indent (indent), aLhs.str (), iter, false,
+                NULL,
+                                              EQ_ALGEBRAIC, order, false, 0, false, dIdx->low (), 0),
+                                s);
+                if (lhsEq.hasRange ())
+                {
+                    _writer->write ("}", s);
+                }
+            }
+        }
+        else
+        {
+            string vn, vm;
+            string varIdx = "j";
+            list<MMO_Equation> eqs = algebraics->equation (*dIdx);
+            if (eqs.empty ())
+            {
+                Error::getInstance ()->add (0, EM_CG | EM_NO_EQ, ER_Error, "Print algebraic dependencies for index %s.", dIdx->print ().c_str ());
+                return;
+            }
+            Index *algebraicState = d->algebraicState (dIdx);
+            list<MMO_Equation>::iterator eq;
+            for (eq = eqs.begin (); eq != eqs.end (); eq++)
+            {
+                if (!(*eq)->controlAlgebraicArguments (&algebraicArguments, (*eq)->algebraicArguments ()))
+                {
+                    continue;
+                }
+                bool range = ((*eq)->lhs ().hasRange () && (*eq)->lhs ().range () != derivativeIndex.range ()) && (dIdx->factor () != 0);
+                if (range)
+                {
+                    if (aux1.empty ())
+                    {
+                        aux1 = Util::getInstance ()->newVarName ("j", _model->varTable ());
+                        _modelDepsVars["int " + aux1 + " = 0;"] = "int " + aux1 + " = 0;";
+                    }
+                    vn = aux1;
+                }
+                else
+                {
+                    vn = varIdx;
+                }
+                bool variableMod = false;
+                constantPrint = constant;
+                stringstream lhs;
+                if (constant && algebraicState && algebraicState->hasRange () && dIdx->hasRange ())
+                {
+                    _common->addLocalVar (varIdx, &_modelDepsVars);
+                    buffer << _writer->indent (indent) << "for(" << varIdx << " = " << algebraicState->begin () << ";" << varIdx << " <= "
+                            << algebraicState->end () << "; " << varIdx << "++)";
+                    _writer->write (&buffer, s);
+                    buffer << _writer->indent (indent) << "{";
+                    _writer->write (&buffer, s);
+                    constantPrint = false;
+                    indent++;
+                }
+                int cte = 0;
+                if ((*eq)->lhs ().factor () == 0)
+                {
+                    cte = (*eq)->lhs ().mappedConstant ();
+                    lhs << "alg[" << cte * xCoeff;
+                    constantPrint = true;
+                }
+                else if (dIdx->factor () == 0)
+                {
+                    if (dIdx->isArray ())
+                    {
+                        cte = dIdx->mappedValue ((*eq)->lhs ().constant ());
+                        lhs << "alg[" << cte * xCoeff;
+                        cte = dIdx->constant ();
+                        constantPrint = true;
+                    }
+                    else
+                    {
+                        lhs << "alg[(" << dIdx->print (varIdx) << ")";
+                    }
+                }
+                else
+                {
+                    if (dIdx->factor () != 1 || dIdx->operConstant () != 0)
+                    {
+                        if (aux2.empty ())
+                        {
+                            aux2 = Util::getInstance ()->newVarName ("j", _model->varTable ());
+                            _modelDepsVars["int " + aux2 + " = 0;"] = "int " + aux2 + " = 0;";
+                        }
+                        vm = aux2;
+                        variableMod = true;
+                        lhs << "alg[(" << (*eq)->lhs ().print (dIdx->definition ("j"), -(*eq)->lhs ().operConstant ()) << ")";
+                        varIdx = vm;
+                    }
+                    else
+                    {
+                        lhs << "alg[(" << (*eq)->lhs ().print ("j", -(*eq)->lhs ().operConstant ()) << ")";
+                        varIdx = vn;
+                    }
+                }
+                if (!constantPrint)
+                {
+                    lhs << " * " << xCoeff;
+                }
+                if (range)
+                {
+                    _writer->write ((*eq)->printRange ("j", vn, _writer->indent (indent), (*eq)->lhs ()), s);
+                }
+                if (variableMod)
+                {
+                    _writer->write ((*eq)->printRange (vn, vm, _writer->indent (indent), *dIdx, true), s);
+                }
+                _common->print ((*eq)->print (_writer->indent (indent), lhs.str (), varIdx, false,
+                NULL,
+                                              EQ_ALGEBRAIC, order, constantPrint, 0, false, dIdx->low (), cte),
+                                s);
+                _common->insertLocalVariables (&_modelDepsVars, (*eq)->getVariables ());
+                if (constant && algebraicState && algebraicState->hasRange () && dIdx->hasRange ())
+                {
+                    indent--;
+                    buffer << _writer->indent (indent) << "}";
+                    _writer->write (&buffer, s);
+                    constantPrint = constant;
+                }
+                if (variableMod)
+                {
+                    buffer << _writer->indent (indent) << "}";
+                    _writer->write (&buffer, s);
+                }
+                if (range)
+                {
+                    buffer << _writer->indent (indent) << "}";
+                    _writer->write (&buffer, s);
+                }
+            }
+        }
+    }
+    constantPrint = constant;
+    for (Index *dIdx = d->begin (DEP_STATE); !d->end (DEP_STATE); dIdx = d->next (DEP_STATE))
+    {
+        stringstream lhs;
+        list<MMO_Equation> eqs = equations->equation (*dIdx);
+        if (eqs.empty ())
+        {
+            Error::getInstance ()->add (0, EM_CG | EM_NO_EQ, ER_Error, "Print state dependencies for index %s.", dIdx->print ().c_str ());
+            return;
+        }
+        list<MMO_Equation>::iterator eq;
+        for (eq = eqs.begin (); eq != eqs.end (); eq++)
+        {
+            string varIdx = "j";
+            if (dIdx->hasRange () && controlRange)
+            {
+                _common->addLocalVar (varIdx, &_modelDepsVars);
+                buffer << _writer->indent (indent) << "for(" << varIdx << " = " << (*eq)->lhs ().begin () << "; " << varIdx << " <= " << (*eq)->lhs ().end ()
+                        << "; " << varIdx << "++)";
+                _writer->write (&buffer, s);
+                buffer << _writer->indent (indent++) << "{";
+                _writer->write (&buffer, s);
+                constantPrint = false;
+            }
+            int constantOffset = 0;
+            stringstream varMap;
+            if (dIdx->hasRange ())
+            {
+                string varIndex = (*eq)->lhs ().print (varIdx);
+                varMap << _engine->variableMap (varIndex);
+                lhs << "der[(" << varIndex << ")";
+                if (!constantPrint)
+                {
+                    lhs << " * " << xCoeff;
+                }
+            }
+            else
+            {
+                stringstream varIndex;
+                constantOffset = (*eq)->lhs ().mappedValue (dIdx->constant ());
+                varIndex << constantOffset;
+                varMap << _engine->variableMap (varIndex.str ());
+                lhs << "der[" << constantOffset * xCoeff;
+                constantOffset = dIdx->constant ();
+            }
+            _writer->write (varMap.str (), s);
+            _common->print ((*eq)->print (_writer->indent (indent), lhs.str (), varIdx, false,
+            NULL,
+                                          EQ_DEPENDENCIES, order, constantPrint, 0, true, dIdx->low (), constantOffset),
+                            s);
+            _writer->write (_engine->endMap (), s);
+            _common->insertLocalVariables (&_modelDepsVars, (*eq)->getVariables ());
+            if (dIdx->hasRange () && controlRange)
+            {
+                buffer << _writer->indent (--indent) << "}";
+                _writer->write (&buffer, s);
+                constantPrint = constant;
+            }
+        }
+    }
+}
+
+void
+QSS_::modelDeps ()
+{
+    MMO_EquationTable equations = _model->derivatives ();
+    MMO_EquationTable algebraics = _model->algebraics ();
+    stringstream buffer;
+    string indent = _writer->indent (1);
+    int order = _common->getOrder ();
+    int coeff = _model->annotation ()->order () + 1;
+    for (Dependencies d = _modelDeps->begin (); !_modelDeps->end (); d = _modelDeps->next ())
+    {
+        Index idx = _modelDeps->key ();
+        Index eqIdx = equations->equationIndex (idx);
+        if (idx.hasRange ())
+        {
+            _common->genericDefCondition (eqIdx, idx, WR_MODEL_DEPS_GENERIC, &_modelDepsVars);
+            _printDeps (d, eqIdx, equations, algebraics, idx.print ("j"), WR_MODEL_DEPS_GENERIC, 1, false);
+            buffer << "}";
+            _writer->write (&buffer, WR_MODEL_DEPS_GENERIC);
+        }
+        else
+        {
+            buffer << indent << "case " << idx.print () << ":";
+            _writer->write (&buffer, WR_MODEL_DEPS_SIMPLE);
+            _printDeps (d, eqIdx, equations, algebraics, "", WR_MODEL_DEPS_SIMPLE, 2, true);
+            if (equations->findGenericDependencies (idx.mappedValue ()))
+            {
+                buffer << _writer->indent (2) << "break;";
+            }
+            else
+            {
+                buffer << _writer->indent (2) << "return;";
+            }
+            _writer->write (&buffer, WR_MODEL_DEPS_SIMPLE);
+        }
+    }
+    for (Dependencies d = _modelVectorDeps->begin (); !_modelVectorDeps->end (); d = _modelVectorDeps->next ())
+    {
+        stringstream lhs, bufferGen;
+        bool genericDef = false;
+        Index k = _modelVectorDeps->key ();
+        for (Index *idx = d->begin (DEP_STATE_VECTOR); !d->end (DEP_STATE_VECTOR); idx = d->next (DEP_STATE_VECTOR))
+        {
+            string idxVar = "j";
+            _common->genericDefCondition (k, k, WR_MODEL_DEPS_GENERIC, &_modelDepsVars);
+            list<MMO_Equation> eqs = equations->equation (*idx);
+            if (eqs.empty ())
+            {
+                Error::getInstance ()->add (0, EM_CG | EM_NO_EQ, ER_Error, "Vector dependencies for index %s.", idx->print ().c_str ());
+                return;
+            }
+            list<MMO_Equation>::iterator eq;
+            for (eq = eqs.begin (); eq != eqs.end (); eq++)
+            {
+                lhs.str ("");
+                Index lhsEq = (*eq)->lhs ();
+                if (idx->factor () != 0 && lhsEq.hasRange ())
+                {
+                    idxVar = Util::getInstance ()->newVarName ("j", _model->varTable ());
+                    bufferGen << "for(" << idxVar << " = " << idx->begin () << "; " << idxVar << " <= " << idx->end () << "; " << idxVar << "++)" << endl;
+                    bufferGen << "{" << endl;
+                    genericDef = true;
+                    _common->addLocalVar (idxVar, &_modelDepsVars);
+                }
+                _writer->write (&bufferGen, WR_MODEL_DEPS_GENERIC);
+                if (lhsEq.hasRange ())
+                {
+                    lhs << "der[(" << idx->print (idxVar, -k.mappedBegin ()) << " * " << coeff;
+                }
+                else
+                {
+                    int cte = (*eq)->lhs ().mappedConstant () * coeff;
+                    lhs << "der[" << cte;
+                }
+                _common->print ((*eq)->print (_writer->indent (1), lhs.str (), idxVar, true, algebraics, EQ_DEPENDENCIES, order), WR_MODEL_DEPS_GENERIC);
+                _common->insertLocalVariables (&_modelDepsVars, (*eq)->getVariables ());
+                if (genericDef)
+                {
+                    _writer->write ("}", WR_MODEL_DEPS_GENERIC);
+                    genericDef = false;
+                }
+            }
+            _writer->write ("}", WR_MODEL_DEPS_GENERIC);
+        }
+    }
+}
+
+void
+QSS_::zeroCrossing ()
+{
+    _common->zeroCrossing (VST_MODEL_FUNCTIONS, &_zcVars);
+}
+
+void
+QSS_::handler ()
+{
+    _common->handler (VST_MODEL_FUNCTIONS, &_handlerPosVars, &_handlerNegVars);
+}
+
+void
+QSS_::output ()
+{
+    _common->output (VST_MODEL_OUTPUT_FUNCTIONS, &_outputVars);
+}
+
+void
+QSS_::_init ()
+{
+    stringstream buffer;
+    string iTime;
+    _writer->print (_engine->prototype (SOL_INIT));
+    _writer->beginBlock ();
+    for (map<string, string>::iterator it = _initializeVars.begin (); it != _initializeVars.end (); it++)
+    {
+        _writer->print (it->second);
+    }
+    _writer->print (initData ());
+    _writer->print (WR_ALLOC_LD);
+    _writer->print (WR_START_CODE);
+    _writer->print (WR_INIT_CODE);
+    _writer->print (WR_ALLOC_LD_DS);
+    _writer->print (WR_ALLOC_LD_ALG_DS);
+    _writer->print (WR_ALLOC_LD_SD);
+    _writer->print (WR_ALLOC_LD_ALG_SD);
+    _writer->print (WR_ALLOC_LD_ZS);
+    _writer->print (WR_ALLOC_LD_ALG_ZS);
+    _writer->print (WR_ALLOC_LD_SZ);
+    _writer->print (WR_ALLOC_LD_ALG_SZ);
+    _writer->print (WR_ALLOC_LD_HZ);
+    _writer->print (WR_ALLOC_LD_HD);
+    if (_flags->parallel ())
+    {
+        _writer->print (WR_ALLOC_STATE_HANDLERS);
+        _writer->print (WR_ALLOC_LD_DD);
+        _writer->print (WR_ALLOC_LD_DH);
+    }
+    _writer->print (WR_ALLOC_EVENT_LHSST);
+    _writer->print (WR_ALLOC_EVENT_RHSST);
+    _writer->print ("QSS_allocDataMatrix(modelData);");
+
+    _writer->print (WR_ALLOC_EVENT_ALG_RHSST);
+    _writer->print (WR_ALLOC_EVENT_DSC);
+    _writer->print ("QSS_allocDataMatrix(modelData);");
+    _writer->print (WR_INIT_LD);
+    _writer->print (WR_INIT_TIME);
+    _common->printSection ("states", _model->states (), WR_INIT_LD_DS);
+    if (_writer->isEmpty (WR_INIT_LD_DS))
+    {
+        _common->printSection ("states", _model->states (), WR_INIT_LD_ALG_DS);
+    }
+    else
+    {
+        _writer->print (WR_INIT_LD_ALG_DS);
+    }
+    _common->printSection ("states", _model->states (), WR_INIT_LD_SD);
+    if (_writer->isEmpty (WR_INIT_LD_SD))
+    {
+        _common->printSection ("states", _model->states (), WR_INIT_LD_ALG_SD);
+    }
+    else
+    {
+        _writer->print (WR_INIT_LD_ALG_SD);
+    }
+    _common->printSection ("events", _model->evs (), WR_INIT_LD_ZS);
+    if (_writer->isEmpty (WR_INIT_LD_ZS))
+    {
+        _common->printSection ("events", _model->evs (), WR_INIT_LD_ALG_ZS);
+    }
+    else
+    {
+        _writer->print (WR_INIT_LD_ALG_ZS);
+    }
+    _common->printSection ("states", _model->states (), WR_INIT_LD_SZ);
+    if (_writer->isEmpty (WR_INIT_LD_SZ))
+    {
+        _common->printSection ("states", _model->states (), WR_INIT_LD_ALG_SZ);
+    }
+    else
+    {
+        _writer->print (WR_INIT_LD_ALG_SZ);
+    }
+    _common->printSection ("events", _model->evs (), WR_INIT_LD_HZ);
+    _common->printSection ("events", _model->evs (), WR_INIT_LD_HD);
+    if (_flags->parallel ())
+    {
+        _common->printSection ("states", _model->states (), WR_INIT_STATE_HANDLERS);
+        _common->printSection ("events", _model->evs (), WR_INIT_LD_DD);
+        _common->printSection ("discretes", _model->discretes (), WR_INIT_LD_DH);
+    }
+    _common->printSection ("events", _model->evs (), WR_INIT_EVENT_LHSST);
+    _common->printSection ("events", _model->evs (), WR_INIT_EVENT_RHSST);
+    if (_writer->isEmpty (WR_INIT_EVENT_RHSST))
+    {
+        _common->printSection ("states", _model->states (), WR_INIT_EVENT_ALG_RHSST);
+    }
+    else
+    {
+        _writer->print (WR_INIT_EVENT_ALG_RHSST);
+    }
+    _common->printSection ("events", _model->evs (), WR_INIT_EVENT_DSC);
+    _common->printSection ("events", _model->evs (), WR_INIT_EVENT);
+    iTime = initTime ();
+    _writer->print (WR_INIT_TIME_STRUCT);
+    _writer->print (iTime);
+    _writer->print (initOutput ());
+    _writer->print (WR_ALLOC_OUTPUT_STATES);
+    _writer->print (WR_ALLOC_OUTPUT_ALG_STATES);
+    _writer->print (WR_ALLOC_OUTPUT_DSC);
+    _writer->print (WR_ALLOC_OUTPUT_ALG_DSC);
+    if (_model->outs ())
+    {
+        buffer << "SD_allocOutputMatrix(modelOutput," << _model->states () << "," << _model->discretes () << ");";
+        _writer->print (&buffer);
+    }
+    if (!_writer->isEmpty (WR_INIT_OUTPUT_STATES) || !_writer->isEmpty (WR_INIT_OUTPUT_ALG_STATES))
+    {
+        _common->printCleanVector ("states", _model->states ());
+    }
+    if (!_writer->isEmpty (WR_INIT_OUTPUT_DSC) || !_writer->isEmpty (WR_INIT_OUTPUT_ALG_DSC))
+    {
+        _common->printCleanVector ("discretes", _model->discretes ());
+    }
+    _common->printSection ("outputs", _model->outs (), WR_INIT_OUTPUT);
+    _common->printSection ("outputs", _model->outs (), WR_INIT_OUTPUT_STATES);
+    if (_writer->isEmpty (WR_INIT_OUTPUT_STATES))
+    {
+        _common->printSection ("outputs", _model->outs (), WR_INIT_OUTPUT_ALG_STATES);
+    }
+    else
+    {
+        _writer->print (WR_INIT_OUTPUT_ALG_STATES);
+    }
+    _common->printSection ("outputs", _model->outs (), WR_INIT_OUTPUT_DSC);
+    if (_writer->isEmpty (WR_INIT_OUTPUT_DSC))
+    {
+        _common->printSection ("outputs", _model->outs (), WR_INIT_OUTPUT_ALG_DSC);
+    }
+    else
+    {
+        _writer->print (WR_INIT_OUTPUT_ALG_DSC);
+    }
+    _writer->print (initModel ());
+    for (map<string, string>::iterator it = _freeVars.begin (); it != _freeVars.end (); it++)
+    {
+        _writer->print ("free(" + it->second + ");");
+    }
+    _writer->endBlock ();
+    _writer->print ("}");
+    _writer->print ("");
+    _writer->print ("void");
+    _writer->print ("CLC_initializeDataStructs (CLC_simulator simulator)");
+    _writer->print ("{");
+    _writer->print ("}");
+}
+
+void
+QSS_::print (SOL_Function f)
+{
+    stringstream buffer;
+    switch (f)
+        {
+        case SOL_MODEL_SETTINGS:
+            _common->settings ();
+            break;
+        case SOL_MODEL:
+            _print (f, _modelVars, WR_MODEL_SIMPLE, WR_MODEL_GENERIC, true);
+            break;
+        case SOL_DEPS:
+            _print (f, _modelDepsVars, WR_MODEL_DEPS_SIMPLE, WR_MODEL_DEPS_GENERIC, false);
+            break;
+        case SOL_ZC:
+            _print (f, _zcVars, WR_ZC_SIMPLE, WR_ZC_GENERIC, true);
+            break;
+        case SOL_HANDLER_POS:
+            _print (f, _handlerPosVars, WR_HANDLER_POS_SIMPLE, WR_HANDLER_POS_GENERIC, true);
+            break;
+        case SOL_HANDLER_NEG:
+            _print (f, _handlerNegVars, WR_HANDLER_NEG_SIMPLE, WR_HANDLER_NEG_GENERIC, true);
+            break;
+        case SOL_OUTPUT:
+            _print (f, _outputVars, WR_OUTPUT_SIMPLE, WR_OUTPUT_GENERIC, true);
+            break;
+        case SOL_INIT:
+            _init ();
+            break;
+        default:
+            break;
+        }
+}
+
+void
+QSS_::_print (SOL_Function f, map<string, string> localVars, WR_Section simple, WR_Section generic, bool switchGen)
+{
+    stringstream buffer;
+    string indent = _writer->indent (1);
+    _writer->print (_engine->prototype (f));
+    _writer->beginBlock ();
+    for (map<string, string>::iterator it = localVars.begin (); it != localVars.end (); it++)
+    {
+        _writer->print (it->second);
+    }
+    if (!_writer->isEmpty (simple))
+    {
+        _writer->print ("switch(i)");
+        _writer->print ("{");
+        _writer->print (simple);
+        if (!_writer->isEmpty (generic) && switchGen)
+        {
+            buffer << indent << "default:";
+            _writer->print (&buffer);
+            _writer->setIndent (2);
+            _writer->print (generic);
+            _writer->setIndent (0);
+        }
+        _writer->print ("}");
+        if (!switchGen && !_writer->isEmpty (generic))
+        {
+            _writer->print (generic);
+        }
+    }
+    else if (!_writer->isEmpty (generic))
+    {
+        _writer->print (generic);
+    }
+    _writer->endBlock ();
+    buffer << "}" << endl;
+    _writer->print (&buffer);
+}
+
+void
+QSS_::initialCode ()
+{
+    _common->initialCode (&_initializeVars);
+}
+
+QSS
+newQSS (MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer)
+{
+    return (new QSS_ (model, flags, writer));
+}
+
+void
+deleteQSS (QSS m)
+{
+    delete m;
+}
+
+/* Classic Solver class. */
+
+Classic_::Classic_ (MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer) :
+        _flags (flags), _model (model), _writer (writer), _modelVars (), _zcVars (), _handlerPosVars (), _handlerNegVars (), _outputVars (), _initializeVars (), _name (
+                model->name ()), _freeVars ()
+{
+    _modelDeps = newMMO_DependenciesTable ();
+    if (_flags->hasOutputFile ())
+    {
+        _name = _flags->outputFileName ();
+    }
+    _common = newSolverCommon (model, flags, writer);
+    _model->varTable ()->setPolyCoeffs (_model->annotation ()->polyCoeffs ());
+}
+
+Classic_::~Classic_ ()
+{
+}
+
+string
+Classic_::initData ()
+{
+    MMO_Annotation annot = _model->annotation ();
+    stringstream buffer;
+    buffer << "simulator->data = CLC_Data(" << _model->states () << "," << _model->discretes () << "," << _model->evs () << "," << _model->inputs () << ","
+            << _model->algs () << ",\"" << _name << "\");" << endl;
+    buffer << "  modelData = simulator->data;" << endl;
+    buffer << "  const double t = " << annot->initialTime () << ";" << endl;
+    return (buffer.str ());
+}
+
+string
+Classic_::initTime ()
+{
+    return ("");
+}
+
+string
+Classic_::initOutput ()
+{
+    return (_common->initOutput ());
+}
+
+string
+Classic_::initModel ()
+{
+    stringstream buffer;
+    string zeroCrossing = "NULL", handlerPos = "NULL", handlerNeg = "NULL";
+    if (!_writer->isEmpty (WR_ZC_SIMPLE) || !_writer->isEmpty (WR_ZC_GENERIC))
+    {
+        zeroCrossing = "MOD_zeroCrossing";
+    }
+    if (!_writer->isEmpty (WR_HANDLER_POS_SIMPLE) || !_writer->isEmpty (WR_HANDLER_POS_GENERIC))
+    {
+        handlerPos = "MOD_handlerPos";
+    }
+    if (!_writer->isEmpty (WR_HANDLER_NEG_SIMPLE) || !_writer->isEmpty (WR_HANDLER_NEG_GENERIC))
+    {
+        handlerNeg = "MOD_handlerNeg";
+    }
+    buffer << "simulator->model = CLC_Model(MOD_definition," << zeroCrossing << "," << handlerPos << "," << handlerNeg << ", MOD_jacobian);";
+    return (buffer.str ());
+}
+
+string
+Classic_::initHeader ()
+{
+    stringstream buffer;
+    buffer << "#include <common/model.h>" << endl;
+    buffer << "#include <qss/qss_model.h>" << endl;
+    buffer << "#include <classic/classic_model.h>" << endl;
+    buffer << "static CLC_data modelData = NULL;" << endl;
+    return (buffer.str ());
+}
+
+string
+Classic_::runCmd ()
+{
+    return ("./");
+}
+
+string
+Classic_::makefile (SOL_Makefile m)
+{
+    stringstream buffer;
+    switch (m)
+        {
+        case SOL_LIBRARIES:
+            if (_flags->debug ())
+            {
+                return ("LIBS    := -lqssd -ltimestepd");
+            }
+            else
+            {
+                return ("LIBS    := -lqss -ltimestep");
+            }
+        case SOL_INCLUDES:
+            return ("INC    := -I" + Util::getInstance ()->environmentVariable ("MMOC_ENGINE"));
+        }
+    return ("");
+}
+
+void
+Classic_::initializeMatrices ()
+{
+    stringstream buffer;
+    stringstream bufferGen;
+    string indent = _writer->indent (1);
+    MMO_EventTable evt = _model->events ();
+    bool genericEquation = false;
+    bufferGen.str ("");
+    buffer << "int *states = (int*)malloc(" << _model->states () << "*sizeof(int));";
+    _initializeVars[buffer.str ()] = buffer.str ();
+    _freeVars["states"] = "states";
+    buffer.str ("");
+    if (_model->evs ())
+    {
+        buffer << "int *events = (int*)malloc(" << _model->evs () << "*sizeof(int));";
+        _initializeVars[buffer.str ()] = buffer.str ();
+        _freeVars["events"] = "events";
+        buffer.str ("");
+    }
+    MMO_EquationTable et = _model->derivatives ();
+    bool hasInit = false;
+    for (MMO_Equation e = et->begin (); !et->end (); e = et->next ())
+    {
+        Index index = et->key ();
+        string eqsIdx = e->lhs ().print ("i");
+        Dependencies deps = e->exp ()->deps ();
+        if (et->endGenericDefinition ())
+        {
+            genericEquation = false;
+            bufferGen.str ("");
+            if (hasInit)
+            {
+                indent = "";
+                hasInit = false;
+                _writer->write ("}", WR_ALLOC_LD_DS);
+                _writer->write ("}", WR_ALLOC_LD_SD);
+                _writer->write ("}", WR_INIT_LD_DS);
+                _writer->write ("}", WR_INIT_LD_SD);
+            }
+        }
+        if (et->beginGenericDefinition ())
+        {
+            genericEquation = true;
+            if (!hasInit)
+            {
+                bufferGen << "for(i = " << index.begin () << "; i <= " << index.end () << "; i++)";
+            }
+        }
+        if (deps->hasStates () && !bufferGen.str ().empty ())
+        {
+            indent = _writer->indent (1);
+            hasInit = true;
+            _writer->write (&bufferGen, WR_ALLOC_LD_DS, false);
+            _writer->write (&bufferGen, WR_INIT_LD_DS, false);
+            _writer->write (&bufferGen, WR_INIT_LD_SD, false);
+            _writer->write (&bufferGen, WR_ALLOC_LD_SD);
+            buffer << "{";
+            _writer->write (&buffer, WR_ALLOC_LD_DS, false);
+            _writer->write (&buffer, WR_INIT_LD_DS, false);
+            _writer->write (&buffer, WR_INIT_LD_SD, false);
+            _writer->write (&buffer, WR_ALLOC_LD_SD);
+        }
+        if (deps->states ())
+        {
+            buffer << indent << "modelData->nDS[" << eqsIdx << "] = " << deps->states () << ";";
+            _writer->write (&buffer, WR_ALLOC_LD_DS);
+        }
+        map<Index, Index> defStates;
+        for (Index *idx = deps->begin (DEP_STATE); !deps->end (DEP_STATE); idx = deps->next (DEP_STATE))
+        {
+            Index dIdx (*idx);
+            defStates[dIdx] = dIdx;
+            string sIdx = idx->print ("i");
+            buffer << indent << "modelData->DS[" << eqsIdx << "][states[" << eqsIdx << "]++] = " << sIdx << ";";
+            _writer->write (&buffer, WR_INIT_LD_DS);
+            buffer << indent << "modelData->nSD[" << sIdx << "]++;";
+            _writer->write (&buffer, WR_ALLOC_LD_SD);
+            buffer << indent << "modelData->SD[" << sIdx << "][states[" << sIdx << "]++] = " << eqsIdx << ";";
+            _writer->write (&buffer, WR_INIT_LD_SD);
+            _common->addModelDeps (deps, dIdx, e->lhs (), _modelDeps);
+        }
+        _common->vectorDependencies (e->lhs (), deps, WR_ALLOC_LD_DS, WR_INIT_LD_DS, "modelData->nDS", "modelData->DS", WR_ALLOC_LD_SD, WR_INIT_LD_SD,
+                                     "modelData->nSD", "modelData->SD", "states", "states", true, DEP_STATE_VECTOR, &_initializeVars);
+        _common->addAlgebriacDeps (deps, e->lhs (), defStates, "modelData->nDS", "modelData->nSD", "modelData->DS", "modelData->SD", WR_ALLOC_LD_ALG_DS,
+                                   WR_ALLOC_LD_ALG_SD, WR_INIT_LD_ALG_DS, WR_INIT_LD_ALG_SD, "states", "states", DEP_ALGEBRAIC_STATE, _modelDeps);
+    }
+    if (genericEquation && hasInit)
+    {
+        _writer->write ("}", WR_ALLOC_LD_DS);
+        _writer->write ("}", WR_ALLOC_LD_SD);
+        _writer->write ("}", WR_INIT_LD_DS);
+        _writer->write ("}", WR_INIT_LD_SD);
+    }
+    genericEquation = false;
+    for (MMO_Event e = evt->begin (); !evt->end (); e = evt->next ())
+    {
+        Index index = evt->key ();
+        string eIdx = index.print ("i", -index.begin ());
+        if (evt->endGenericDefinition ())
+        {
+            genericEquation = false;
+            _writer->write ("}", WR_INIT_EVENT);
+        }
+        if (evt->beginGenericDefinition ())
+        {
+            genericEquation = true;
+            bufferGen << "for(i = " << index.begin () << "; i <= " << index.end () << "; i++)";
+            _writer->write (&bufferGen, WR_INIT_EVENT, false);
+            _writer->write ("{", WR_INIT_EVENT);
+        }
+        if (e->handlerType () == HND_POSITIVE)
+        {
+            buffer << indent << "modelData->event[" << eIdx << "].direction = 1;";
+            _writer->write (&buffer, WR_INIT_EVENT);
+        }
+        else if (e->handlerType () == HND_NEGATIVE)
+        {
+            buffer << indent << "modelData->event[" << eIdx << "].direction = -1;";
+            _writer->write (&buffer, WR_INIT_EVENT);
+        }
+        else if (e->handlerType () == HND_ZERO)
+        {
+            buffer << indent << "modelData->event[" << eIdx << "].direction = 0;";
+            _writer->write (&buffer, WR_INIT_EVENT);
+        }
+    }
+    if (genericEquation)
+    {
+        _writer->write ("}", WR_INIT_EVENT);
+    }
+    _model->initOutput ();
+    if (_model->outs ())
+    {
+        buffer << "int *outputs = (int*)malloc(" << _model->outs () << "*sizeof(int));";
+        _initializeVars[buffer.str ()] = buffer.str ();
+        _freeVars["outputs"] = "outputs";
+        buffer.str ("");
+        if (_model->discretes ())
+        {
+            buffer << "int *discretes = (int*)malloc(" << _model->discretes () << "*sizeof(int));";
+            _initializeVars[buffer.str ()] = buffer.str ();
+            _freeVars["discretes"] = "discretes";
+        }
+    }
+}
+
+void
+Classic_::model ()
+{
+    MMO_EquationTable equations = _model->derivatives ();
+    VarSymbolTable vt = _model->varTable ();
+    MMO_EquationTable algebraics = _model->algebraics ();
+    stringstream buffer;
+    vt->setPrintEnvironment (VST_CLASSIC_MODEL_FUNCTIONS);
+    string indent = _writer->indent (1);
+    int order = 1;
+    _model->varTable ()->setPrintEnvironment (VST_CLASSIC_MODEL_FUNCTIONS);
+    for (MMO_Equation eq = algebraics->begin (); !algebraics->end (); eq = algebraics->next ())
+    {
+        Index idx = algebraics->key ();
+        Index lhs = eq->lhs ();
+        if (lhs.hasRange ())
+        {
+            _common->addLocalVar ("i", &_modelVars);
+            buffer << "for(i = " << lhs.begin () << "; i <= " << lhs.end () << "; i++)";
+            _writer->write (&buffer, WR_MODEL_SIMPLE);
+            buffer << "{";
+            _writer->write (&buffer, WR_MODEL_SIMPLE);
+            _common->print (eq->print (indent, "alg[" + lhs.print ("i") + "]", "i", false, algebraics, EQ_CLASSIC, order), WR_MODEL_SIMPLE);
+            buffer << "}";
+            _writer->write (&buffer, WR_MODEL_SIMPLE);
+            _common->insertLocalVariables (&_modelVars, eq->getVariables ());
+        }
+        else
+        {
+            _common->print (eq->print (indent, "alg[" + lhs.print ("i") + "]", "", false, algebraics, EQ_CLASSIC, order, true), WR_MODEL_SIMPLE);
+            _common->insertLocalVariables (&_modelVars, eq->getVariables ());
+        }
+    }
+    for (MMO_Equation eq = equations->begin (); !equations->end (); eq = equations->next ())
+    {
+        Index idx = equations->key ();
+        Index lhs = eq->lhs ();
+        if (idx.hasRange ())
+        {
+            _common->addLocalVar ("i", &_modelVars);
+            buffer << "for(i = " << idx.begin () << "; i <= " << idx.end () << "; i++)";
+            _writer->write (&buffer, WR_MODEL_SIMPLE);
+            buffer << "{";
+            _writer->write (&buffer, WR_MODEL_SIMPLE);
+            _common->print (eq->print (indent, "dx[" + lhs.print ("i") + "]", "i", false, algebraics, EQ_CLASSIC, order), WR_MODEL_SIMPLE);
+            buffer << "}";
+            _writer->write (&buffer, WR_MODEL_SIMPLE);
+            _common->insertLocalVariables (&_modelVars, eq->getVariables ());
+        }
+        else
+        {
+            _common->print (eq->print (indent, "dx[" + lhs.print ("i") + "]", "", false, algebraics, EQ_CLASSIC, order, true), WR_MODEL_SIMPLE);
+            _common->insertLocalVariables (&_modelVars, eq->getVariables ());
+        }
+    }
+}
+
+void
+Classic_::_printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equations, MMO_EquationTable algebraics, string idxStr, WR_Section s, int i,
+                      bool constant, Index infIdx)
 {
     stringstream buffer;
     int indent = i;
@@ -1345,8 +2241,7 @@ QSS_::_printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equat
             list<MMO_Equation> eqs = algebraics->equation (*dIdx);
             if (eqs.empty ())
             {
-                Error::getInstance ()->add (0, EM_CG | EM_NO_EQ, ER_Error, "Print vector algebraic dependencies for index %s.",
-                                            dIdx->print ().c_str ());
+                Error::getInstance ()->add (0, EM_CG | EM_NO_EQ, ER_Error, "Print vector algebraic dependencies for index %s.", dIdx->print ().c_str ());
                 return;
             }
             list<MMO_Equation>::iterator eq;
@@ -1359,8 +2254,8 @@ QSS_::_printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equat
                 {
                     iter = Util::getInstance ()->newVarName ("j", _model->varTable ());
                     _common->addLocalVar (iter, &_modelDepsVars);
-                    buffer << _writer->indent (indent) << "for(" << iter << " = " << lhsEq.begin () << "; " << iter << " <= " << lhsEq.end () << "; "
-                            << iter << "++)";
+                    buffer << _writer->indent (indent) << "for(" << iter << " = " << lhsEq.begin () << "; " << iter << " <= " << lhsEq.end () << "; " << iter
+                            << "++)";
                     _writer->write (&buffer, s);
                     _writer->write ("{", s);
                     aLhs << "alg[(" << (*eq)->lhs ().print (iter) << ")";
@@ -1518,41 +2413,24 @@ QSS_::_printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equat
             if (dIdx->hasRange () && controlRange)
             {
                 _common->addLocalVar (varIdx, &_modelDepsVars);
-                buffer << _writer->indent (indent) << "for(" << varIdx << " = " << (*eq)->lhs ().begin () << "; " << varIdx << " <= "
-                        << (*eq)->lhs ().end () << "; " << varIdx << "++)";
+                buffer << _writer->indent (indent) << "for(" << varIdx << " = " << (*eq)->lhs ().begin () << "; " << varIdx << " <= " << (*eq)->lhs ().end ()
+                        << "; " << varIdx << "++)";
                 _writer->write (&buffer, s);
                 buffer << _writer->indent (indent++) << "{";
                 _writer->write (&buffer, s);
                 constantPrint = false;
             }
-            int constantOffset = 0;
             stringstream varMap;
-            if (dIdx->hasRange ())
+            lhs << "jac[jit++] ";
+            MMO_Equation printEq = (*eq)->jacobianExp (infIdx);
+            if (printEq != NULL)
             {
-                string varIndex = (*eq)->lhs ().print (varIdx);
-                varMap << _engine->variableMap (varIndex);
-                lhs << "der[(" << varIndex << ")";
-                if (!constantPrint)
-                {
-                    lhs << " * " << xCoeff;
-                }
+                _common->print (printEq->print (_writer->indent (indent), lhs.str (), varIdx, false,
+                NULL,
+                                                EQ_JACOBIAN, order, constantPrint, 0, true, dIdx->low (), constant),
+                                s);
+                _common->insertLocalVariables (&_modelDepsVars, (*eq)->getVariables ());
             }
-            else
-            {
-                stringstream varIndex;
-                constantOffset = (*eq)->lhs ().mappedValue (dIdx->constant ());
-                varIndex << constantOffset;
-                varMap << _engine->variableMap (varIndex.str ());
-                lhs << "der[" << constantOffset * xCoeff;
-                constantOffset = dIdx->constant ();
-            }
-            _writer->write (varMap.str (), s);
-            _common->print ((*eq)->print (_writer->indent (indent), lhs.str (), varIdx, false,
-            NULL,
-                                          EQ_DEPENDENCIES, order, constantPrint, 0, true, dIdx->low (), constantOffset),
-                            s);
-            _writer->write (_engine->endMap (), s);
-            _common->insertLocalVariables (&_modelDepsVars, (*eq)->getVariables ());
             if (dIdx->hasRange () && controlRange)
             {
                 buffer << _writer->indent (--indent) << "}";
@@ -1564,552 +2442,93 @@ QSS_::_printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equat
 }
 
 void
-QSS_::modelDeps ()
+Classic_::_reorderSD (Dependencies d, const Index& idx, const string& indent, stringstream& buffer, WR_InsertType it)
 {
-    MMO_EquationTable equations = _model->derivatives ();
-    MMO_EquationTable algebraics = _model->algebraics ();
-    stringstream buffer;
-    string indent = _writer->indent (1);
-    int order = _common->getOrder ();
-    int coeff = _model->annotation ()->order () + 1;
-    for (Dependencies d = _modelDeps->begin (); !_modelDeps->end (); d = _modelDeps->next ())
+    int i = 0, c = d->states () - 1;
+    for (i = c; i >= 0; i--)
     {
-        Index idx = _modelDeps->key ();
-        Index eqIdx = equations->equationIndex (idx);
-        if (idx.hasRange ())
-        {
-            _common->genericDefCondition (eqIdx, idx, WR_MODEL_DEPS_GENERIC, &_modelDepsVars);
-            _printDeps (d, eqIdx, equations, algebraics, idx.print ("j"), WR_MODEL_DEPS_GENERIC, 1, false);
-            buffer << "}";
-            _writer->write (&buffer, WR_MODEL_DEPS_GENERIC);
-        }
-        else
-        {
-            buffer << indent << "case " << idx.print () << ":";
-            _writer->write (&buffer, WR_MODEL_DEPS_SIMPLE);
-            _printDeps (d, eqIdx, equations, algebraics, "", WR_MODEL_DEPS_SIMPLE, 2, true);
-            if (equations->findGenericDependencies (idx.mappedValue ()))
-            {
-                buffer << _writer->indent (2) << "break;";
-            }
-            else
-            {
-                buffer << _writer->indent (2) << "return;";
-            }
-            _writer->write (&buffer, WR_MODEL_DEPS_SIMPLE);
-        }
+        Index stateDep = d->key (DEP_STATE, i);
+        string sIdx = idx.print ("i");
+        string eqsIdx = stateDep.print ("i");
+        buffer << indent << "modelData->SD[" << sIdx << "][states[" << sIdx << "]++] = " << eqsIdx << ";";
+        _writer->removeFromSection (buffer.str (), WR_INIT_LD_SD);
+        _writer->write (&buffer, WR_INIT_LD_SD, true, it);
     }
-    for (Dependencies d = _modelVectorDeps->begin (); !_modelVectorDeps->end (); d = _modelVectorDeps->next ())
-    {
-        stringstream lhs, bufferGen;
-        bool genericDef = false;
-        Index k = _modelVectorDeps->key ();
-        for (Index *idx = d->begin (DEP_STATE_VECTOR); !d->end (DEP_STATE_VECTOR); idx = d->next (DEP_STATE_VECTOR))
-        {
-            string idxVar = "j";
-            _common->genericDefCondition (k, k, WR_MODEL_DEPS_GENERIC, &_modelDepsVars);
-            list<MMO_Equation> eqs = equations->equation (*idx);
-            if (eqs.empty ())
-            {
-                Error::getInstance ()->add (0, EM_CG | EM_NO_EQ, ER_Error, "Vector dependencies for index %s.", idx->print ().c_str ());
-                return;
-            }
-            list<MMO_Equation>::iterator eq;
-            for (eq = eqs.begin (); eq != eqs.end (); eq++)
-            {
-                lhs.str ("");
-                Index lhsEq = (*eq)->lhs ();
-                if (idx->factor () != 0 && lhsEq.hasRange ())
-                {
-                    idxVar = Util::getInstance ()->newVarName ("j", _model->varTable ());
-                    bufferGen << "for(" << idxVar << " = " << idx->begin () << "; " << idxVar << " <= " << idx->end () << "; " << idxVar << "++)"
-                            << endl;
-                    bufferGen << "{" << endl;
-                    genericDef = true;
-                    _common->addLocalVar (idxVar, &_modelDepsVars);
-                }
-                _writer->write (&bufferGen, WR_MODEL_DEPS_GENERIC);
-                if (lhsEq.hasRange ())
-                {
-                    lhs << "der[(" << idx->print (idxVar, -k.mappedBegin ()) << " * " << coeff;
-                }
-                else
-                {
-                    int cte = (*eq)->lhs ().mappedConstant () * coeff;
-                    lhs << "der[" << cte;
-                }
-                _common->print ((*eq)->print (_writer->indent (1), lhs.str (), idxVar, true, algebraics, EQ_DEPENDENCIES, order),
-                                WR_MODEL_DEPS_GENERIC);
-                _common->insertLocalVariables (&_modelDepsVars, (*eq)->getVariables ());
-                if (genericDef)
-                {
-                    _writer->write ("}", WR_MODEL_DEPS_GENERIC);
-                    genericDef = false;
-                }
-            }
-            _writer->write ("}", WR_MODEL_DEPS_GENERIC);
-        }
-    }
-}
-
-void
-QSS_::zeroCrossing ()
-{
-    _common->zeroCrossing (VST_MODEL_FUNCTIONS, &_zcVars);
-}
-
-void
-QSS_::handler ()
-{
-    _common->handler (VST_MODEL_FUNCTIONS, &_handlerPosVars, &_handlerNegVars);
-}
-
-void
-QSS_::output ()
-{
-    _common->output (VST_MODEL_OUTPUT_FUNCTIONS, &_outputVars);
-}
-
-void
-QSS_::_init ()
-{
-    stringstream buffer;
-    string iTime;
-    _writer->print (_engine->prototype (SOL_INIT));
-    _writer->beginBlock ();
-    for (map<string, string>::iterator it = _initializeVars.begin (); it != _initializeVars.end (); it++)
-    {
-        _writer->print (it->second);
-    }
-    _writer->print (initData ());
-    _writer->print (WR_ALLOC_LD);
-    _writer->print (WR_START_CODE);
-    _writer->print (WR_INIT_CODE);
-    _writer->print (WR_ALLOC_LD_DS);
-    _writer->print (WR_ALLOC_LD_ALG_DS);
-    _writer->print (WR_ALLOC_LD_SD);
-    _writer->print (WR_ALLOC_LD_ALG_SD);
-    _writer->print (WR_ALLOC_LD_ZS);
-    _writer->print (WR_ALLOC_LD_ALG_ZS);
-    _writer->print (WR_ALLOC_LD_SZ);
-    _writer->print (WR_ALLOC_LD_ALG_SZ);
-    _writer->print (WR_ALLOC_LD_HZ);
-    _writer->print (WR_ALLOC_LD_HD);
-    if (_flags->parallel ())
-    {
-        _writer->print (WR_ALLOC_STATE_HANDLERS);
-        _writer->print (WR_ALLOC_LD_DD);
-        _writer->print (WR_ALLOC_LD_DH);
-    }
-    _writer->print (WR_ALLOC_EVENT_LHSST);
-    _writer->print (WR_ALLOC_EVENT_RHSST);
-    _writer->print (WR_ALLOC_EVENT_ALG_RHSST);
-    _writer->print (WR_ALLOC_EVENT_DSC);
-    _writer->print ("QSS_allocDataMatrix(modelData);");
-    _writer->print (WR_INIT_LD);
-    _writer->print (WR_INIT_TIME);
-    _common->printSection ("states", _model->states (), WR_INIT_LD_DS);
-    if (_writer->isEmpty (WR_INIT_LD_DS))
-    {
-        _common->printSection ("states", _model->states (), WR_INIT_LD_ALG_DS);
-    }
-    else
-    {
-        _writer->print (WR_INIT_LD_ALG_DS);
-    }
-    _common->printSection ("states", _model->states (), WR_INIT_LD_SD);
-    if (_writer->isEmpty (WR_INIT_LD_SD))
-    {
-        _common->printSection ("states", _model->states (), WR_INIT_LD_ALG_SD);
-    }
-    else
-    {
-        _writer->print (WR_INIT_LD_ALG_SD);
-    }
-    _common->printSection ("events", _model->evs (), WR_INIT_LD_ZS);
-    if (_writer->isEmpty (WR_INIT_LD_ZS))
-    {
-        _common->printSection ("events", _model->evs (), WR_INIT_LD_ALG_ZS);
-    }
-    else
-    {
-        _writer->print (WR_INIT_LD_ALG_ZS);
-    }
-    _common->printSection ("states", _model->states (), WR_INIT_LD_SZ);
-    if (_writer->isEmpty (WR_INIT_LD_SZ))
-    {
-        _common->printSection ("states", _model->states (), WR_INIT_LD_ALG_SZ);
-    }
-    else
-    {
-        _writer->print (WR_INIT_LD_ALG_SZ);
-    }
-    _common->printSection ("events", _model->evs (), WR_INIT_LD_HZ);
-    _common->printSection ("events", _model->evs (), WR_INIT_LD_HD);
-    if (_flags->parallel ())
-    {
-        _common->printSection ("states", _model->states (), WR_INIT_STATE_HANDLERS);
-        _common->printSection ("events", _model->evs (), WR_INIT_LD_DD);
-        _common->printSection ("discretes", _model->discretes (), WR_INIT_LD_DH);
-    }
-    _common->printSection ("events", _model->evs (), WR_INIT_EVENT_LHSST);
-    _common->printSection ("events", _model->evs (), WR_INIT_EVENT_RHSST);
-    if (_writer->isEmpty (WR_INIT_EVENT_RHSST))
-    {
-        _common->printSection ("states", _model->states (), WR_INIT_EVENT_ALG_RHSST);
-    }
-    else
-    {
-        _writer->print (WR_INIT_EVENT_ALG_RHSST);
-    }
-    _common->printSection ("events", _model->evs (), WR_INIT_EVENT_DSC);
-    _common->printSection ("events", _model->evs (), WR_INIT_EVENT);
-    iTime = initTime ();
-    _writer->print (WR_INIT_TIME_STRUCT);
-    _writer->print (iTime);
-    _writer->print (initOutput ());
-    _writer->print (WR_ALLOC_OUTPUT_STATES);
-    _writer->print (WR_ALLOC_OUTPUT_ALG_STATES);
-    _writer->print (WR_ALLOC_OUTPUT_DSC);
-    _writer->print (WR_ALLOC_OUTPUT_ALG_DSC);
-    if (_model->outs ())
-    {
-        buffer << "SD_allocOutputMatrix(modelOutput," << _model->states () << "," << _model->discretes () << ");";
-        _writer->print (&buffer);
-    }
-    if (!_writer->isEmpty (WR_INIT_OUTPUT_STATES) || !_writer->isEmpty (WR_INIT_OUTPUT_ALG_STATES))
-    {
-        _common->printCleanVector ("states", _model->states ());
-    }
-    if (!_writer->isEmpty (WR_INIT_OUTPUT_DSC) || !_writer->isEmpty (WR_INIT_OUTPUT_ALG_DSC))
-    {
-        _common->printCleanVector ("discretes", _model->discretes ());
-    }
-    _common->printSection ("outputs", _model->outs (), WR_INIT_OUTPUT);
-    _common->printSection ("outputs", _model->outs (), WR_INIT_OUTPUT_STATES);
-    if (_writer->isEmpty (WR_INIT_OUTPUT_STATES))
-    {
-        _common->printSection ("outputs", _model->outs (), WR_INIT_OUTPUT_ALG_STATES);
-    }
-    else
-    {
-        _writer->print (WR_INIT_OUTPUT_ALG_STATES);
-    }
-    _common->printSection ("outputs", _model->outs (), WR_INIT_OUTPUT_DSC);
-    if (_writer->isEmpty (WR_INIT_OUTPUT_DSC))
-    {
-        _common->printSection ("outputs", _model->outs (), WR_INIT_OUTPUT_ALG_DSC);
-    }
-    else
-    {
-        _writer->print (WR_INIT_OUTPUT_ALG_DSC);
-    }
-    _writer->print (initModel ());
-    for (map<string, string>::iterator it = _freeVars.begin (); it != _freeVars.end (); it++)
-    {
-        _writer->print ("free(" + it->second + ");");
-    }
-    _writer->endBlock ();
-    _writer->print ("}");
-    _writer->print ("");
-    _writer->print ("void");
-    _writer->print ("CLC_initializeDataStructs (CLC_simulator simulator)");
-    _writer->print ("{");
-    _writer->print ("}");
-}
-
-void
-QSS_::print (SOL_Function f)
-{
-    stringstream buffer;
-    switch (f)
-    {
-        case SOL_MODEL_SETTINGS:
-            _common->settings ();
-            break;
-        case SOL_MODEL:
-            _print (f, _modelVars, WR_MODEL_SIMPLE, WR_MODEL_GENERIC, true);
-            break;
-        case SOL_DEPS:
-            _print (f, _modelDepsVars, WR_MODEL_DEPS_SIMPLE, WR_MODEL_DEPS_GENERIC, false);
-            break;
-        case SOL_ZC:
-            _print (f, _zcVars, WR_ZC_SIMPLE, WR_ZC_GENERIC, true);
-            break;
-        case SOL_HANDLER_POS:
-            _print (f, _handlerPosVars, WR_HANDLER_POS_SIMPLE, WR_HANDLER_POS_GENERIC, true);
-            break;
-        case SOL_HANDLER_NEG:
-            _print (f, _handlerNegVars, WR_HANDLER_NEG_SIMPLE, WR_HANDLER_NEG_GENERIC, true);
-            break;
-        case SOL_OUTPUT:
-            _print (f, _outputVars, WR_OUTPUT_SIMPLE, WR_OUTPUT_GENERIC, true);
-            break;
-        case SOL_INIT:
-            _init ();
-            break;
-        default:
-            break;
-    }
-}
-
-void
-QSS_::_print (SOL_Function f, map<string, string> localVars, WR_Section simple, WR_Section generic, bool switchGen)
-{
-    stringstream buffer;
-    string indent = _writer->indent (1);
-    _writer->print (_engine->prototype (f));
-    _writer->beginBlock ();
-    for (map<string, string>::iterator it = localVars.begin (); it != localVars.end (); it++)
-    {
-        _writer->print (it->second);
-    }
-    if (!_writer->isEmpty (simple))
-    {
-        _writer->print ("switch(i)");
-        _writer->print ("{");
-        _writer->print (simple);
-        if (!_writer->isEmpty (generic) && switchGen)
-        {
-            buffer << indent << "default:";
-            _writer->print (&buffer);
-            _writer->setIndent (2);
-            _writer->print (generic);
-            _writer->setIndent (0);
-        }
-        _writer->print ("}");
-        if (!switchGen && !_writer->isEmpty (generic))
-        {
-            _writer->print (generic);
-        }
-    }
-    else if (!_writer->isEmpty (generic))
-    {
-        _writer->print (generic);
-    }
-    _writer->endBlock ();
-    buffer << "}" << endl;
-    _writer->print (&buffer);
-}
-
-void
-QSS_::initialCode ()
-{
-    _common->initialCode (&_initializeVars);
-}
-
-QSS
-newQSS (MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer)
-{
-    return (new QSS_ (model, flags, writer));
-}
-
-void
-deleteQSS (QSS m)
-{
-    delete m;
-}
-
-/* Classic Solver class. */
-
-Classic_::Classic_ (MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer) :
-        _flags (flags), _model (model), _writer (writer), _modelVars (), _zcVars (), _handlerPosVars (), _handlerNegVars (), _outputVars (), _initializeVars (), _name (
-                model->name ()), _freeVars ()
-{
-    if (_flags->hasOutputFile ())
-    {
-        _name = _flags->outputFileName ();
-    }
-    _common = newSolverCommon (model, flags, writer);
-    _model->varTable ()->setPolyCoeffs (_model->annotation ()->polyCoeffs ());
-}
-
-Classic_::~Classic_ ()
-{
-}
-
-string
-Classic_::initData ()
-{
-    MMO_Annotation annot = _model->annotation ();
-    stringstream buffer;
-    buffer << "simulator->data = CLC_Data(" << _model->states () << "," << _model->discretes () << "," << _model->evs () << "," << _model->inputs ()
-            << "," << _model->algs () << ",\"" << _name << "\");" << endl;
-    buffer << "  modelData = simulator->data;" << endl;
-    buffer << "  const double t = " << annot->initialTime () << ";" << endl;
-    return (buffer.str ());
-}
-
-string
-Classic_::initTime ()
-{
-    return ("");
-}
-
-string
-Classic_::initOutput ()
-{
-    return (_common->initOutput ());
-}
-
-string
-Classic_::initModel ()
-{
-    stringstream buffer;
-    string zeroCrossing = "NULL", handlerPos = "NULL", handlerNeg = "NULL";
-    if (!_writer->isEmpty (WR_ZC_SIMPLE) || !_writer->isEmpty (WR_ZC_GENERIC))
-    {
-        zeroCrossing = "MOD_zeroCrossing";
-    }
-    if (!_writer->isEmpty (WR_HANDLER_POS_SIMPLE) || !_writer->isEmpty (WR_HANDLER_POS_GENERIC))
-    {
-        handlerPos = "MOD_handlerPos";
-    }
-    if (!_writer->isEmpty (WR_HANDLER_NEG_SIMPLE) || !_writer->isEmpty (WR_HANDLER_NEG_GENERIC))
-    {
-        handlerNeg = "MOD_handlerNeg";
-    }
-    buffer << "simulator->model = CLC_Model(MOD_definition," << zeroCrossing << "," << handlerPos << "," << handlerNeg << ");";
-    return (buffer.str ());
-}
-
-string
-Classic_::initHeader ()
-{
-    stringstream buffer;
-    buffer << "#include <common/model.h>" << endl;
-    buffer << "#include <qss/qss_model.h>" << endl;
-    buffer << "#include <classic/classic_model.h>" << endl;
-    buffer << "static CLC_data modelData = NULL;" << endl;
-    return (buffer.str ());
-}
-
-string
-Classic_::runCmd ()
-{
-    return ("./");
-}
-
-string
-Classic_::makefile (SOL_Makefile m)
-{
-    stringstream buffer;
-    switch (m)
-    {
-        case SOL_LIBRARIES:
-            if (_flags->debug ())
-            {
-                return ("LIBS    := -lqssd -ltimestepd");
-            }
-            else
-            {
-                return ("LIBS    := -lqss -ltimestep");
-            }
-        case SOL_INCLUDES:
-            return ("INC    := -I" + Util::getInstance ()->environmentVariable ("MMOC_ENGINE"));
-    }
-    return ("");
-}
-
-void
-Classic_::initializeMatrices ()
-{
-    stringstream buffer;
-    stringstream bufferGen;
-    string indent = _writer->indent (1);
-    MMO_EventTable evt = _model->events ();
-    bool genericEquation = false;
-    bufferGen.str ("");
-    for (MMO_Event e = evt->begin (); !evt->end (); e = evt->next ())
-    {
-        Index index = evt->key ();
-        string eIdx = index.print ("i", -index.begin ());
-        if (evt->endGenericDefinition ())
-        {
-            genericEquation = false;
-            _writer->write ("}", WR_INIT_EVENT);
-        }
-        if (evt->beginGenericDefinition ())
-        {
-            genericEquation = true;
-            bufferGen << "for(i = " << index.begin () << "; i <= " << index.end () << "; i++)";
-            _writer->write (&bufferGen, WR_INIT_EVENT, false);
-            _writer->write ("{", WR_INIT_EVENT);
-        }
-        if (e->handlerType () == HND_POSITIVE)
-        {
-            buffer << indent << "modelData->event[" << eIdx << "].direction = 1;";
-            _writer->write (&buffer, WR_INIT_EVENT);
-        }
-        else if (e->handlerType () == HND_NEGATIVE)
-        {
-            buffer << indent << "modelData->event[" << eIdx << "].direction = -1;";
-            _writer->write (&buffer, WR_INIT_EVENT);
-        }
-        else if (e->handlerType () == HND_ZERO)
-        {
-            buffer << indent << "modelData->event[" << eIdx << "].direction = 0;";
-            _writer->write (&buffer, WR_INIT_EVENT);
-        }
-    }
-    if (genericEquation)
-    {
-        _writer->write ("}", WR_INIT_EVENT);
-    }
-    _model->initOutput ();
-    if (_model->outs ())
-    {
-        buffer << "int *outputs = (int*)malloc(" << _model->outs () << "*sizeof(int));";
-        _initializeVars[buffer.str ()] = buffer.str ();
-        _freeVars["outputs"] = "outputs";
-        buffer.str ("");
-        if (_model->discretes ())
-        {
-            buffer << "int *discretes = (int*)malloc(" << _model->discretes () << "*sizeof(int));";
-            _initializeVars[buffer.str ()] = buffer.str ();
-            _freeVars["discretes"] = "discretes";
-        }
-    }
-}
-
-void
-Classic_::model ()
-{
-    MMO_EquationTable equations = _model->derivatives ();
-    VarSymbolTable vt = _model->varTable ();
-    MMO_EquationTable algebraics = _model->algebraics ();
-    stringstream buffer;
-    vt->setPrintEnvironment (VST_CLASSIC_MODEL_FUNCTIONS);
-    string indent = _writer->indent (1);
-    int order = 1;
-    _model->varTable ()->setPrintEnvironment (VST_CLASSIC_MODEL_FUNCTIONS);
-    for (MMO_Equation eq = equations->begin (); !equations->end (); eq = equations->next ())
-    {
-        Index idx = equations->key ();
-        Index lhs = eq->lhs ();
-        if (idx.hasRange ())
-        {
-            _common->addLocalVar ("i", &_modelVars);
-            buffer << "for(i = " << idx.begin () << "; i <= " << idx.end () << "; i++)";
-            _writer->write (&buffer, WR_MODEL_GENERIC);
-            buffer << "{";
-            _writer->write (&buffer, WR_MODEL_GENERIC);
-            _common->print (eq->print (indent, "dx[" + lhs.print ("i") + "]", "i", true, algebraics, EQ_CLASSIC, order), WR_MODEL_GENERIC);
-            buffer << "}";
-            _writer->write (&buffer, WR_MODEL_GENERIC);
-            _common->insertLocalVariables (&_modelVars, eq->getVariables ());
-        }
-        else
-        {
-            _common->print (eq->print (indent, "dx[" + lhs.print ("i") + "]", "", true, algebraics, EQ_CLASSIC, order, true), WR_MODEL_SIMPLE);
-            _common->insertLocalVariables (&_modelVars, eq->getVariables ());
-        }
-    }
+    return;
 }
 
 void
 Classic_::modelDeps ()
 {
+    MMO_EquationTable equations = _model->derivatives ();
+    MMO_EquationTable algebraics = _model->algebraics ();
+    stringstream buffer;
+    string indent = _writer->indent (1);
+    for (Dependencies d = _modelDeps->begin (); !_modelDeps->end (); d = _modelDeps->next ())
+    {
+        Index idx = _modelDeps->key ();
+        Index eqIdx = equations->equationIndex (idx);
+        if (!idx.hasRange ())
+        {
+            buffer << indent << "case " << idx.print () << ":";
+            _writer->write (&buffer, WR_MODEL_DEPS_SIMPLE);
+            _printDeps (d, eqIdx, equations, algebraics, "", WR_MODEL_DEPS_SIMPLE, 3, true, idx);
+            buffer << _writer->indent (3) << "break;";
+            _writer->write (&buffer, WR_MODEL_DEPS_SIMPLE);
+            if (equations->findGenericDependencies (idx.mappedValue ()))
+            {
+                _reorderSD (d, idx, indent, buffer, WR_APPEND_SIMPLE);
+            }
+        }
+    }
+    int i = 0, c = _modelDeps->count () - 1;
+    for (i = c; i >= 0; i--)
+    {
+        Index idx = _modelDeps->key (i);
+        Index eqIdx = equations->equationIndex (idx);
+        if (idx.hasRange ())
+        {
+            Dependencies d = _modelDeps->val (i);
+            _common->genericDefCondition (eqIdx, idx, WR_MODEL_DEPS_GENERIC, &_modelDepsVars);
+            _printDeps (d, eqIdx, equations, algebraics, idx.print ("j"), WR_MODEL_DEPS_GENERIC, 2, false, idx);
+            buffer << _writer->indent (1) << "}";
+            _writer->write (&buffer, WR_MODEL_DEPS_GENERIC);
+            _reorderSD (d, idx, indent, buffer, WR_APPEND_GENERIC);
+        }
+    }
+}
+
+void
+Classic_::_jacobian ()
+{
+    stringstream buffer;
+    string indent = _writer->indent (1);
+    _writer->print (_prototype (SOL_DEPS));
+    _writer->beginBlock ();
+    for (map<string, string>::iterator it = _modelDepsVars.begin (); it != _modelDepsVars.end (); it++)
+    {
+        _writer->print (it->second);
+    }
+    _writer->print ("int jit = 0;");
+    _writer->print ("int i = 0;");
+    buffer << "for( i = 0; i < " << _model->states () << "; i++)";
+    _writer->print (&buffer);
+    _writer->print ("{");
+    if (!_writer->isEmpty (WR_MODEL_DEPS_SIMPLE))
+    {
+        _writer->print ("switch (i)");
+        _writer->print ("{");
+        _writer->print (WR_MODEL_DEPS_SIMPLE);
+        _writer->print ("}");
+    }
+    if (!_writer->isEmpty (WR_MODEL_DEPS_GENERIC))
+    {
+        _writer->print (WR_MODEL_DEPS_GENERIC);
+    }
+    _writer->print ("}");
+    _writer->endBlock ();
+    buffer << "}" << endl;
+    _writer->print (&buffer);
 }
 
 void
@@ -2216,8 +2635,31 @@ Classic_::_init ()
     }
     _writer->print (initData ());
     _writer->print (WR_ALLOC_LD);
+    _writer->print (WR_ALLOC_LD_DS);
+    _writer->print (WR_ALLOC_LD_SD);
+    _writer->print (WR_ALLOC_LD_ALG_DS);
+    _writer->print (WR_ALLOC_LD_ALG_SD);
     _writer->print (WR_START_CODE);
     _writer->print (WR_INIT_CODE);
+    _writer->print ("CLC_allocDataMatrix(modelData);");
+    _common->printSection ("states", _model->states (), WR_INIT_LD_DS);
+    if (_writer->isEmpty (WR_INIT_LD_DS))
+    {
+        _common->printSection ("states", _model->states (), WR_INIT_LD_ALG_DS);
+    }
+    else
+    {
+        _writer->print (WR_INIT_LD_ALG_DS);
+    }
+    _common->printSection ("states", _model->states (), WR_INIT_LD_SD);
+    if (_writer->isEmpty (WR_INIT_LD_SD))
+    {
+        _common->printSection ("states", _model->states (), WR_INIT_LD_ALG_SD);
+    }
+    else
+    {
+        _writer->print (WR_INIT_LD_ALG_SD);
+    }
     _writer->print (WR_INIT_EVENT);
     _writer->print (initOutput ());
     _writer->print (WR_ALLOC_OUTPUT_STATES);
@@ -2257,7 +2699,7 @@ Classic_::print (SOL_Function f)
 {
     stringstream buffer;
     switch (f)
-    {
+        {
         case SOL_MODEL_SETTINGS:
             _common->settings ();
             break;
@@ -2279,9 +2721,12 @@ Classic_::print (SOL_Function f)
         case SOL_OUTPUT:
             _print (f, _outputVars, WR_OUTPUT_SIMPLE, WR_OUTPUT_GENERIC, true);
             break;
+        case SOL_DEPS:
+            _jacobian ();
+            break;
         default:
             break;
-    }
+        }
 }
 
 void
@@ -2295,7 +2740,7 @@ string
 Classic_::_prototype (SOL_Function f)
 {
     switch (f)
-    {
+        {
         case SOL_MODEL:
             return ("void\nMOD_definition(double *x, double *d, double *alg, double t, double *dx)\n{");
         case SOL_ZC:
@@ -2310,9 +2755,11 @@ Classic_::_prototype (SOL_Function f)
             return ("void\nCLC_initializeDataStructs(CLC_simulator simulator)\n{");
         case SOL_CALLBACK:
             return ("setData(modelData,modelOutput,modelDefinition,modelSettings);");
+        case SOL_DEPS:
+            return ("void\nMOD_jacobian(double *x, double *d, double *alg, double t, double *jac)\n{");
         default:
             break;
-    }
+        }
     return ("");
 }
 
@@ -2343,7 +2790,7 @@ string
 MMO_SerialEngine_::prototype (SOL_Function f)
 {
     switch (f)
-    {
+        {
         case SOL_MODEL:
             return ("void\nMOD_definition(int i, double *x, double *d, double *alg, double t, double *dx)\n{");
         case SOL_DEPS:
@@ -2362,7 +2809,7 @@ MMO_SerialEngine_::prototype (SOL_Function f)
             return ("setData(modelData,modelTime,modelOutput,modelDefinition,modelSettings);");
         default:
             break;
-    }
+        }
     return ("");
 }
 
@@ -2370,7 +2817,7 @@ string
 MMO_SerialEngine_::makefile (SOL_Makefile m)
 {
     switch (m)
-    {
+        {
         case SOL_LIBRARIES:
             if (_flags->debug ())
             {
@@ -2382,7 +2829,7 @@ MMO_SerialEngine_::makefile (SOL_Makefile m)
             }
         case SOL_INCLUDES:
             return ("INC    := -I" + Util::getInstance ()->environmentVariable ("MMOC_ENGINE"));
-    }
+        }
     return ("");
 }
 
@@ -2449,7 +2896,7 @@ string
 MMO_ParallelEngine_::prototype (SOL_Function f)
 {
     switch (f)
-    {
+        {
         case SOL_MODEL:
             return ("void\nMOD_definition(int i, double *x, double *d, double *alg, double t, double *dx)\n{");
         case SOL_DEPS:
@@ -2468,7 +2915,7 @@ MMO_ParallelEngine_::prototype (SOL_Function f)
             return ("setData(modelData,modelTime,modelOutput,modelDefinition,modelSettings);");
         default:
             break;
-    }
+        }
     return ("");
 }
 
@@ -2476,7 +2923,7 @@ string
 MMO_ParallelEngine_::makefile (SOL_Makefile m)
 {
     switch (m)
-    {
+        {
         case SOL_LIBRARIES:
             if (_flags->debug ())
             {
@@ -2488,7 +2935,7 @@ MMO_ParallelEngine_::makefile (SOL_Makefile m)
             }
         case SOL_INCLUDES:
             return ("INC    := -I" + Util::getInstance ()->environmentVariable ("MMOC_ENGINE"));
-    }
+        }
     return ("");
 }
 
@@ -2949,8 +3396,7 @@ SolverCommon_::zeroCrossing (VST_Environment type, map<string, string> *zcVars)
         if (idx.hasRange ())
         {
             eventPrologue (idx, WR_ZC_SIMPLE, WR_ZC_GENERIC);
-            print (exp->print (indent, "zc", "i", true, algebraics, EQ_ZC, order, false, -idx.mappedBegin () + idx.begin (), true, idx.low ()),
-                   WR_ZC_GENERIC);
+            print (exp->print (indent, "zc", "i", true, algebraics, EQ_ZC, order, false, -idx.mappedBegin () + idx.begin (), true, idx.low ()), WR_ZC_GENERIC);
             buffer << "}";
             _writer->write (&buffer, WR_ZC_GENERIC);
             insertLocalVariables (zcVars, exp->getVariables ());
@@ -3009,7 +3455,8 @@ SolverCommon_::initialCode (map<string, string> *initializeVars)
     string indent = _writer->indent (1);
     MMO_StatementTable st = _model->initialCode ();
     _model->varTable ()->setPrintEnvironment (VST_INIT);
-    if (_model->annotation ()->solver () == ANT_DASSL || _model->annotation ()->solver () == ANT_DOPRI)
+    if (_model->annotation ()->solver () == ANT_DASSL || _model->annotation ()->solver () == ANT_DOPRI || _model->annotation ()->solver () == ANT_CVODE_BDF
+            || _model->annotation ()->solver () == ANT_IDA || _model->annotation ()->solver () == ANT_CVODE_AM)
     {
         _model->varTable ()->setPrintEnvironment (VST_CLASSIC_INIT);
     }
@@ -3166,9 +3613,8 @@ SolverCommon_::output (VST_Environment type, map<string, string> *outputVars)
             buffer << indent << "modelOutput->OS[" << indexStr << "][outputs[" << indexStr << "]++] = " << idxStr << ";";
             _writer->write (&buffer, WR_INIT_OUTPUT_STATES);
         }
-        addAlgebriacDeps (deps, eq->lhs (), defStates, "modelOutput->nOS", "modelOutput->nSO", "modelOutput->OS", "modelOutput->SO",
-                          WR_ALLOC_OUTPUT_ALG_STATES, WR_ALLOC_OUTPUT_ALG_STATES, WR_INIT_OUTPUT_ALG_STATES, WR_INIT_OUTPUT_ALG_STATES, "outputs",
-                          "states");
+        addAlgebriacDeps (deps, eq->lhs (), defStates, "modelOutput->nOS", "modelOutput->nSO", "modelOutput->OS", "modelOutput->SO", WR_ALLOC_OUTPUT_ALG_STATES,
+                          WR_ALLOC_OUTPUT_ALG_STATES, WR_INIT_OUTPUT_ALG_STATES, WR_INIT_OUTPUT_ALG_STATES, "outputs", "states");
         if (deps->discretes ())
         {
             buffer << indent << "modelOutput->nOD[" << indexStr << "] = " << deps->discretes () << ";";
@@ -3186,14 +3632,12 @@ SolverCommon_::output (VST_Environment type, map<string, string> *outputVars)
             buffer << indent << "modelOutput->OD[" << indexStr << "][outputs[" << indexStr << "]++] = " << idxStr << ";";
             _writer->write (&buffer, WR_INIT_OUTPUT_DSC);
         }
-        addAlgebriacDeps (deps, eq->lhs (), defStates, "modelOutput->nOD", "modelOutput->nDO", "modelOutput->OD", "modelOutput->DO",
-                          WR_ALLOC_OUTPUT_ALG_DSC, WR_ALLOC_OUTPUT_ALG_DSC, WR_INIT_OUTPUT_ALG_DSC, WR_INIT_OUTPUT_ALG_DSC, "outputs", "discretes",
-                          DEP_ALGEBRAIC_DISCRETE);
+        addAlgebriacDeps (deps, eq->lhs (), defStates, "modelOutput->nOD", "modelOutput->nDO", "modelOutput->OD", "modelOutput->DO", WR_ALLOC_OUTPUT_ALG_DSC,
+                          WR_ALLOC_OUTPUT_ALG_DSC, WR_INIT_OUTPUT_ALG_DSC, WR_INIT_OUTPUT_ALG_DSC, "outputs", "discretes", DEP_ALGEBRAIC_DISCRETE);
         vectorDependencies (index, deps, WR_ALLOC_OUTPUT_STATES, WR_INIT_OUTPUT_STATES, "modelOutput->nOS", "modelOutput->OS", WR_ALLOC_OUTPUT_STATES,
                             WR_INIT_OUTPUT_STATES, "modelOutput->nSO", "modelOutput->SO", "outputs", "states", false, DEP_STATE_VECTOR, outputVars);
         vectorDependencies (index, deps, WR_ALLOC_OUTPUT_DSC, WR_INIT_OUTPUT_DSC, "modelOutput->nOD", "modelOutput->OD", WR_ALLOC_OUTPUT_DSC,
-                            WR_INIT_OUTPUT_DSC, "modelOutput->nDO", "modelOutput->DO", "outputs", "discretes", false, DEP_DISCRETE_VECTOR,
-                            outputVars);
+                            WR_INIT_OUTPUT_DSC, "modelOutput->nDO", "modelOutput->DO", "outputs", "discretes", false, DEP_DISCRETE_VECTOR, outputVars);
     }
     if ((genericEquation && hasInit) || (genericEquation && hasInitDsc) || (genericEquation && hasOutput))
     {

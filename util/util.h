@@ -52,32 +52,33 @@ typedef int grp_t;
 typedef enum
 {
     BIF_NONE,  //!< BIF_NONE
-        BIF_REINIT,  //!< BIF_REINIT
-        BIF_TERMINATE, //!< BIF_TERMINATE
-        BIF_SUM,   //!< BIF_SUM
-        BIF_PRODUCT,   //!< BIF_PRODUCT
-        BIF_INNER_PRODUCT,   //!< BIF_INNER_PRODUCT
-        BIF_MIN,   //!< BIF_MIN
-        BIF_MAX,   //!< BIF_MAX
-        BIF_ABS,   //!< BIF_ABS
-        BIF_SIGN,  //!< BIF_SIGN
-        BIF_SQRT,  //!< BIF_SQRT
-        BIF_CEIL,  //!< BIF_CEIL
-        BIF_FLOOR, //!< BIF_FLOOR
-        BIF_SIN,   //!< BIF_SIN
-        BIF_COS,   //!< BIF_COS
-        BIF_TAN,   //!< BIF_TAN
-        BIF_ASIN,  //!< BIF_ASIN
-        BIF_ACOS,  //!< BIF_ACOS
-        BIF_ATAN,  //!< BIF_ATAN
-        BIF_ATAN2, //!< BIF_ATAN2
-        BIF_SINH,  //!< BIF_SINH
-        BIF_COSH,  //!< BIF_COSH
-        BIF_TANH,  //!< BIF_TANH
-        BIF_EXP,   //!< BIF_EXP
-        BIF_LOG,   //!< BIF_LOG
-        BIF_LOG10, //!< BIF_LOG10
-        BIF_PRE    //!< BIF_PRE
+    BIF_REINIT,  //!< BIF_REINIT
+    BIF_TERMINATE, //!< BIF_TERMINATE
+    BIF_SUM,   //!< BIF_SUM
+    BIF_PRODUCT,   //!< BIF_PRODUCT
+    BIF_INNER_PRODUCT,   //!< BIF_INNER_PRODUCT
+    BIF_MIN,   //!< BIF_MIN
+    BIF_MAX,   //!< BIF_MAX
+    BIF_ABS,   //!< BIF_ABS
+    BIF_SIGN,  //!< BIF_SIGN
+    BIF_SQRT,  //!< BIF_SQRT
+    BIF_CEIL,  //!< BIF_CEIL
+    BIF_FLOOR, //!< BIF_FLOOR
+    BIF_SIN,   //!< BIF_SIN
+    BIF_COS,   //!< BIF_COS
+    BIF_TAN,   //!< BIF_TAN
+    BIF_ASIN,  //!< BIF_ASIN
+    BIF_ACOS,  //!< BIF_ACOS
+    BIF_ATAN,  //!< BIF_ATAN
+    BIF_ATAN2, //!< BIF_ATAN2
+    BIF_SINH,  //!< BIF_SINH
+    BIF_COSH,  //!< BIF_COSH
+    BIF_TANH,  //!< BIF_TANH
+    BIF_EXP,   //!< BIF_EXP
+    BIF_LOG,   //!< BIF_LOG
+    BIF_LOG10, //!< BIF_LOG10
+    BIF_PRE,    //!< BIF_PRE
+    BIF_GQLINK  //!< BIF_GQLINK
 } BIF_NAMES;
 
 /**
@@ -86,12 +87,12 @@ typedef enum
 typedef enum
 {
     BIV_NONE, //!< BIV_NONE
-        BIV_TIME, //!< BIV_TIME
-        BIV_SUM,   //!< BIV_SUM
-        BIV_PRODUCT,   //!< BIV_PRODUCT
-        BIV_INNER_PRODUCT,   //!< BIV_INNER_PRODUCT
-        BIV_MIN,   //!< BIV_MIN
-        BIV_MAX   //!< BIV_MAX
+    BIV_TIME, //!< BIV_TIME
+    BIV_SUM,   //!< BIV_SUM
+    BIV_PRODUCT,   //!< BIV_PRODUCT
+    BIV_INNER_PRODUCT,   //!< BIV_INNER_PRODUCT
+    BIV_MIN,   //!< BIV_MIN
+    BIV_MAX   //!< BIV_MAX
 } BIV_NAMES;
 
 class BIF
@@ -152,6 +153,8 @@ public:
      *
      */
     ~Util ();
+    string
+    trimString (string str);
     /**
      *
      * @return
@@ -298,6 +301,8 @@ public:
     getFileName (string file);
     BIF *
     builtInReductionFunctions (BIF_NAMES fn);
+    bool
+    checkGKLinkFunctions (string name);
 private:
     Util ();
     static Util *_instance;

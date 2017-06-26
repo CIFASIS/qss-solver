@@ -302,8 +302,7 @@ private:
     _indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, map<int, int> *simpleMatrixDeps, WR_Section alloc, WR_Section init,
                         string allocStr, string initStr, string counter, Intersection intersection, int assignments);
     void
-    _eventVectorDependencies (Index index, Dependencies deps, WR_Section alloc, WR_Section init, string allocString, string initString,
-                              DEP_Type type);
+    _eventVectorDependencies (Index index, Dependencies deps, WR_Section alloc, WR_Section init, string allocString, string initString, DEP_Type type);
     void
     _init ();
     void
@@ -454,10 +453,19 @@ private:
     _print (SOL_Function f, map<string, string> localVars, WR_Section simple, WR_Section generic, bool switchGen);
     void
     _init ();
+    void
+    _printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equations, MMO_EquationTable algebraics, string idxStr, WR_Section s, int i,
+                bool constant, Index infIdx);
+    void
+    _jacobian ();
+    void
+    _reorderSD (Dependencies d, const Index& idx, const std::__cxx11::string& indent, std::stringstream& buffer, WR_InsertType it);
+
     MMO_CompileFlags _flags;
     MMO_Model _model;
     MMO_Writer _writer;
     map<string, string> _modelVars;
+    map<string, string> _modelDepsVars;
     map<string, string> _zcVars;
     map<string, string> _handlerPosVars;
     map<string, string> _handlerNegVars;
@@ -466,6 +474,7 @@ private:
     SolverCommon _common;
     string _name;
     map<string, string> _freeVars;
+    MMO_DependenciesTable _modelDeps;
 };
 /**
  *
@@ -622,10 +631,10 @@ public:
      * @param type
      */
     void
-    vectorDependencies (Index index, Dependencies deps, WR_Section alloc, WR_Section init, string allocString, string initString,
-                        WR_Section allocInverse, WR_Section initInverse, string allocInverseString, string initInverseString, string count = "states",
-                        string countInverse = "states", bool dependencies = true, DEP_Type type = DEP_STATE_VECTOR, map<string, string> *variables =
-                                NULL);
+    vectorDependencies (Index index, Dependencies deps, WR_Section alloc, WR_Section init, string allocString, string initString, WR_Section allocInverse,
+                        WR_Section initInverse, string allocInverseString, string initInverseString, string count = "states", string countInverse = "states",
+                        bool dependencies = true, DEP_Type type = DEP_STATE_VECTOR, map<string, string> *variables =
+                        NULL);
     /**
      *
      * @return
@@ -651,10 +660,9 @@ public:
      * @param modelDeps
      */
     void
-    addAlgebriacDeps (Dependencies deps, Index derivativeIndex, map<Index, Index> states, string alloc, string allocInverse, string init,
-                      string initInverse, WR_Section allocSection, WR_Section allocInverseSection, WR_Section initSection,
-                      WR_Section initInverseSection, string type, string inverseType, DEP_Type depType = DEP_ALGEBRAIC_STATE,
-                      MMO_DependenciesTable modelDeps = NULL);
+    addAlgebriacDeps (Dependencies deps, Index derivativeIndex, map<Index, Index> states, string alloc, string allocInverse, string init, string initInverse,
+                      WR_Section allocSection, WR_Section allocInverseSection, WR_Section initSection, WR_Section initInverseSection, string type,
+                      string inverseType, DEP_Type depType = DEP_ALGEBRAIC_STATE, MMO_DependenciesTable modelDeps = NULL);
     /**
      *
      * @param deps

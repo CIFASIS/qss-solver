@@ -102,6 +102,16 @@ public:
      */
     GiNaC::symbol&
     getTime ();
+    GiNaC::symbol&
+    first ();
+    GiNaC::symbol&
+    next ();
+    bool
+    end ();
+    map<string, GiNaC::symbol>
+    directory ();
+    string
+    identifier (string str);
 private:
     virtual GiNaC::ex
     foldTraverseElement (AST_Expression);
@@ -109,7 +119,7 @@ private:
     foldTraverseElementUMinus (AST_Expression);
     virtual GiNaC::ex
     foldTraverseElement (GiNaC::ex, GiNaC::ex, BinOpType);
-    map<string, GiNaC::symbol> directory;
+    map<string, GiNaC::symbol> _directory;
     bool _forDerivation;
     VarSymbolTable _varEnv;
     bool _replaceDer;
