@@ -49,7 +49,7 @@ MmoHighlighter::MmoHighlighter (QTextDocument *parent, h_type file) :
 	  << "\\binitial\\b" << "\\bwhen\\b" << "\\bthen\\b"
 	  << "\\bMMO_Weight\\b" << "\\bequation\\b" << "\\bMMO_MinStep\\b"
 	  << "\\bMMO_ZCHyst\\b" << "\\bMMO_DerDelta\\b" << "\\bInclude\\b"
-	  << "\\bIncludeDirectory\\b" << "\\bLibrary\\b"
+	  << "\\bIncludeDirectory\\b" << "\\bLibrary\\b"  << "\\bJacobian\\b"
 	  << "\\bLibraryDirectory\\b" << "\\bMMO_NodeSize\\b"
 	  << "\\bMMO_Parallel\\b" << "\\bMMO_PartitionMethod\\b" << "\\bMMO_DT_Min\\b"
 	  << "\\bMMO_DT_Synch\\b" << "\\bMMO_PatohSettings\\b" << "\\bMMO_ScotchSettings\\b" << "\\bMMO_MetisSettings\\b"
@@ -94,7 +94,7 @@ MmoHighlighter::MmoHighlighter (QTextDocument *parent, h_type file) :
   << "\\bLIQSS2\\b" << "\\bQSS3\\b" << "\\bLIQSS3\\b"
   << "\\bCI_Sampled\\b" << "\\bCI_Step\\b" << "\\bCI_Dense\\b"
   << "\\bSD_DT_Fixed\\b" << "\\bSD_DT_Asynchronous\\b"
-  << "\\bMetis\\b" << "\\bHMetis\\b"
+  << "\\bMetis\\b" << "\\bHMetis\\b" << "\\bDense\\b" << "\\bSparse\\b"
   << "\\bScotch\\b" << "\\bPatoh\\b" << "\\bManual\\b"
   << "\\btrue\\b" << "\\bfalse\\b" << "\\bDOPRI\\b" << "\\bDASSL\\b";
 
