@@ -17,27 +17,42 @@
 
  ******************************************************************************/
 
+#include <sstream>
+
 #include "md_index.h"
 
-MDIndex_::MDIndex_ () :
+MDIndex_::MDIndex_ (int dim) :
         _indexes (), _size (), _dimensions (1)
 {
-    Index_ idx;
-    _indexes.push_back (idx);
+    for (int i = 0; i < dim; i++)
+    {
+        Index_ idx;
+        _indexes.push_back (idx);
+    }
 }
 
-MDIndex_::MDIndex_ (int constant, int factor) :
+MDIndex_::MDIndex_ (int constant, int factor, int dim) :
         _indexes (), _size (), _dimensions (1)
 {
     Index_ idx (constant, factor);
     _indexes.push_back (idx);
+    for (int i = 1; i < dim; i++)
+    {
+        Index_ id;
+        _indexes.push_back (id);
+    }
 }
 
-MDIndex_::MDIndex_ (int constant, int factor, int low, int high) :
+MDIndex_::MDIndex_ (int constant, int factor, int low, int high, int dim) :
         _indexes (), _size (), _dimensions (1)
 {
     Index_ idx (constant, factor, low, high);
     _indexes.push_back (idx);
+    for (int i = 1; i < dim; i++)
+    {
+        Index_ id;
+        _indexes.push_back (id);
+    }
 }
 
 MDIndex_::~MDIndex_ ()
@@ -116,15 +131,18 @@ MDIndex_::factor (int dim) const
 }
 
 void
-MDIndex_::setOffset (int o, int dim)
+MDIndex_::setOffset (int o)
 {
-    _indexes[dim].setOffset (o);
+    for (int i = 0; i < _dimensions; i++)
+    {
+        _indexes[i].setOffset (o);
+    }
 }
 
 int
-MDIndex_::offset (int dim) const
+MDIndex_::offset () const
 {
-    return (_indexes[dim].offset ());
+    return (_indexes[0].offset ());
 }
 
 int
@@ -198,15 +216,28 @@ MDIndex_::reverseEnd (int dim) const
 }
 
 string
-MDIndex_::print (string sub, int offset, bool modelica) const
+MDIndex_::print (string sub, int offset, bool solver) const
 {
-    return ("");
+    stringstream ret;
+    ret << _indexes[0].print(sub, offset, solver);
+    return (ret.str());
 }
 
 string
 MDIndex_::printReverse (string variable, int offset)
 {
-    return ("");
+    stringstream idxStr, ret;
+    for (int i = 0; i < _dimensions; i++)
+    {
+        idxStr << variable << i;
+        if (i > 0)
+        {
+            ret << " + ";
+        }
+        ret << _indexes[i].printReverse(idxStr.str(), offset);
+        idxStr.str("");
+    }
+    return (ret.str());
 }
 
 bool
@@ -242,14 +273,7 @@ MDIndex_::isSet (int dim) const
 bool
 MDIndex_::hasRange (int dim) const
 {
-    for (int i = 0; i < _dimensions; i++)
-    {
-        if (_indexes[i].hasRange ())
-        {
-            return (true);
-        }
-    }
-    return (false);
+    return (_indexes[dim].hasRange());
 }
 
 void
@@ -283,15 +307,18 @@ MDIndex_::hiValue (int dim) const
 }
 
 void
-MDIndex_::setArray (int dim)
+MDIndex_::setArray ()
 {
-    _indexes[dim].setArray ();
+    for (int i = 0; i < _dimensions; i++)
+    {
+        _indexes[i].setArray ();
+    }
 }
 
 bool
-MDIndex_::isArray (int dim) const
+MDIndex_::isArray () const
 {
-    return (_indexes[dim].isArray ());
+    return (_indexes[0].isArray ());
 }
 
 void
@@ -467,12 +494,58 @@ MDIndex_::addIndex (int constant, int factor)
 }
 
 void
+MDIndex_::setLow (vector<int> l)
+{
+    int size = l.size ();
+    for (int i; i < size; i++)
+    {
+        _indexes[i].setLow(l[i]);
+    }
+}
+
+void
+MDIndex_::setHi (vector<int> h)
+{
+    int size = h.size ();
+    for (int i; i < size; i++)
+    {
+        _indexes[i].setHi(h[i]);
+    }
+}
+
+void
 MDIndex_::addIndex (int constant, int factor, int low, int high)
 {
     Index_ idx (constant, factor, low, high);
     _indexes.push_back (idx);
     _size.push_back (idx.range ());
     _dimensions++;
+}
+
+int
+MDIndex_::dimension ()
+{
+    return (_dimensions);
+}
+
+void
+MDIndex_::setDimension (int d)
+{
+    if (_dimensions < d)
+    {
+        int ub = d - _dimensions;
+        for (int i = 0; i < ub; i++)
+        {
+            _indexes.push_back(Index_ ());
+        }
+        _dimensions = d;
+    }
+}
+
+void
+MDIndex_::setIndex (MDIndex_ idx, int od, int dd)
+{
+    _indexes[od] = idx._indexes[dd];
 }
 
 MDVariableInterval_::MDVariableInterval_ () : _index(), _name()

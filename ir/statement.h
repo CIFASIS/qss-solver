@@ -91,15 +91,19 @@ public:
     lhs ();
 private:
     void
+    _getIndexList (AST_Expression_ComponentReference cr, Index index, list<Index> *idxs);
+    void
+    _getRanges (AST_Statement_For eqf, vector<int>& begin, vector<int>& end);
+    void
     _init ();
     void
     _setInitialCode (AST_Statement stm);
     void
     _insertDeps (AST_Expression exp);
     void
-    _insertDeps (AST_Statement stm, int begin = 0, int end = 0);
+    _insertDeps (AST_Statement stm, vector<int> begin = vector<int>(1,0), vector<int> end = vector<int>(1,0));
     void
-    _insertVectorDeps (Dependencies deps, Dependencies in, DEP_Type type, DEP_Type insert, int begin, int end);
+    _insertVectorDeps (Dependencies deps, Dependencies in, DEP_Type type, DEP_Type insert, vector<int> begin = vector<int>(1,0), vector<int> end = vector<int>(1,0));
     Index
     _getIndex (AST_Expression_ComponentReference cr, VarInfo vi);
     void

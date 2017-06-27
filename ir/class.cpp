@@ -232,7 +232,7 @@ MMO_Model_::_getFunctionDependencies (map<string, string> mdeps)
 }
 
 Index
-MMO_Model_::_getAlgebraicIndex (AST_Expression left, int begin, int end)
+MMO_Model_::_getAlgebraicIndex (AST_Expression left, vector<int> begin, vector<int> end)
 {
     AST_Expression_ComponentReference cr = left->getAsComponentReference ();
     string varName = _getComponentName (cr);
@@ -247,13 +247,20 @@ MMO_Model_::_getAlgebraicIndex (AST_Expression left, int begin, int end)
     }
     if (cr->hasIndexes ())
     {
+        lhs.setDimension(AST_ListFirst (cr->indexes ())->size());
         AST_ExpressionList el = AST_ListFirst (cr->indexes ());
+        AST_ExpressionListIterator elit;
         ExpressionIndex_ ei (_declarations);
-        lhs = ei.index (AST_ListFirst (el));
-        if (lhs.factor () != 0)
+        int dim = 0;
+        foreach (elit, el)
         {
-            lhs.setLow (begin);
-            lhs.setHi (end);
+            lhs.setIndex(ei.index (AST_ListFirst (el)), dim);
+            if (lhs.factor (dim) != 0)
+            {
+                lhs.setLow (begin[dim], dim);
+                lhs.setHi (end[dim], dim);
+            }
+            dim++;
         }
         lhs.setArray ();
     }
@@ -265,7 +272,7 @@ MMO_Model_::_getAlgebraicIndex (AST_Expression left, int begin, int end)
 }
 
 void
-MMO_Model_::_setAlgebraicOffset (AST_Expression left, int begin, int end)
+MMO_Model_::_setAlgebraicOffset (AST_Expression left, vector<int> begin, vector<int> end)
 {
     AST_Expression_ComponentReference cr = left->getAsComponentReference ();
     string varName = _getComponentName (cr);
@@ -279,7 +286,11 @@ MMO_Model_::_setAlgebraicOffset (AST_Expression left, int begin, int end)
     }
     if (cr->hasIndexes ())
     {
-        int range = end - begin + 1;
+        int range = 0, s = end.size ();
+        for (int i = 0; i < s; i++)
+        {
+            range += end[i] - begin[i] + 1;
+        }
         if (vi->index ().range () == _algebraicCurrentOffset[varName] + range)
         {
             _algebraicOffset[varName] = _algebraicEquations;
@@ -299,7 +310,7 @@ MMO_Model_::_setAlgebraicOffset (AST_Expression left, int begin, int end)
 }
 
 void
-MMO_Model_::_setAlgebraic (AST_Expression left, AST_Expression right, int begin, int end, AST_Expression arguments)
+MMO_Model_::_setAlgebraic (AST_Expression left, AST_Expression right, vector<int> begin, vector<int> end, AST_Expression arguments)
 {
     _data->clear ();
     AST_Expression_ComponentReference cr = left->getAsComponentReference ();
@@ -318,16 +329,36 @@ MMO_Model_::_setAlgebraic (AST_Expression left, AST_Expression right, int begin,
     mse->controlAlgebraicDefinition ();
     _data->setArguments (NULL);
     _algebraics->insert (idx, mse);
-    _algebraicEquations += end - begin + 1;
+    int s = end.size (), range  = 0;
+    for (int i = 0; i < s; i++)
+    {
+        range += end[i] - begin[i] + 1;
+    }
+    _algebraicEquations += range;
 }
 
 void
-MMO_Model_::_setRange (int begin, int end, Index *lhs)
+MMO_Model_::_setRange (vector<int> begin, vector<int> end, Index *lhs)
 {
-    if (begin > 0 && end > 0)
+    int s = begin.size();
+    for (int i = 0; i < s; i++)
     {
-        lhs->setRange ();
+        if (begin[i] > 0 && end[i] > 0)
+        {
+            lhs->setRange (i);
+        }
     }
+}
+
+int
+MMO_Model_::_getRange (vector<int> begin, vector<int> end)
+{
+    int range = 0, s = begin.size ();
+    for (int i = 0; i < s; i++)
+    {
+        range += end[i] - begin[i] + 1;
+    }
+    return (range);
 }
 
 /*! \brief Insert an equation defined in the equation section of the model.
@@ -350,13 +381,14 @@ MMO_Model_::_setRange (int begin, int end, Index *lhs)
  */
 
 void
-MMO_Model_::_insertEquation (AST_Equation eq, int begin, int end)
+MMO_Model_::_insertEquation (AST_Equation eq, vector<int> begin, vector<int> end)
 {
-    if (end < begin)
+    if (_controlRanges(begin, end))
     {
         Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong equation range.");
     }
     _controlEquation (eq);
+    int range = _getRange (begin, end);
     if (eq->equationType () == EQEQUALITY)
     {
         ExpressionIndex_ ei (_declarations);
@@ -377,21 +409,37 @@ MMO_Model_::_insertEquation (AST_Equation eq, int begin, int end)
             Index idx, lhs;
             if (edcr->hasIndexes ())
             {
-                lhs = ei.index (AST_ListFirst (edcr->firstIndex ()));
-                if (lhs.factor () != 0)
+                AST_ExpressionList el = edcr->firstIndex();
+                lhs.setDimension(el->size ());
+                idx.setDimension(el->size ());
+                AST_ExpressionListIterator elit;
+                int dim = 0, rg = 0;
+                foreach (elit, el)
                 {
-                    lhs.setLow (begin);
-                    lhs.setHi (end);
+                    lhs.setIndex(ei.index (current_element(elit)), dim);
+                    if (lhs.factor (dim) != 0)
+                    {
+                        lhs.setLow (begin[rg],dim);
+                        lhs.setHi (end[rg], dim);
+                        idx.setLow (begin[rg], dim);
+                        idx.setHi (end[rg], dim);
+                        idx.setFactor (lhs.factor (), dim);
+                        lhs.setRange(dim);
+                        idx.setRange(dim);
+                        rg++;
+                    }
+                    lhs.setArray ();
+                    idx.setArray ();
+                    dim++;
                 }
-                lhs.setArray ();
-                idx.setArray ();
-                _setRange (begin, end, &lhs);
-                _setRange (begin, end, &idx);
+            }
+            else
+            {
+                idx.setFactor (lhs.factor ());
+                idx.setLow (begin);
+                idx.setHi (end);
             }
             lhs.setOffset (vi->index ().offset ());
-            idx.setLow (begin);
-            idx.setHi (end);
-            idx.setFactor (lhs.factor ());
             idx.setOffset (_stateEquations);
             _data->clear ();
             _data->setBegin (begin);
@@ -404,10 +452,10 @@ MMO_Model_::_insertEquation (AST_Equation eq, int begin, int end)
             _data->setDisableSymDiff (false);
             if (!mse->exp ()->deps ()->autonomous ())
             {
-                _inputs += end - begin + 1;
+                _inputs += range;
             }
             _derivatives->insert (idx, mse);
-            _stateEquations += end - begin + 1;
+            _stateEquations += range;
         }
         else if (eqe->left ()->expressionType () == EXPCOMPREF)
         {
@@ -429,9 +477,9 @@ MMO_Model_::_insertEquation (AST_Equation eq, int begin, int end)
 }
 
 void
-MMO_Model_::_insertAlgebraicEquation (AST_Equation eq, int begin, int end)
+MMO_Model_::_insertAlgebraicEquation (AST_Equation eq, vector<int> begin, vector<int> end)
 {
-    if (end < begin)
+    if (_controlRanges(begin, end))
     {
         Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong equation range.");
     }
@@ -805,7 +853,7 @@ MMO_Model_::_setEvents ()
 }
 
 void
-MMO_Model_::_insertAlgebraic (AST_Equation eq, int begin, int end)
+MMO_Model_::_insertAlgebraic (AST_Equation eq, vector<int> begin, vector<int> end)
 {
     if (eq->equationType () == EQEQUALITY)
     {
@@ -843,7 +891,7 @@ MMO_Model_::_insertAlgebraic (AST_Equation eq, int begin, int end)
 
 void
 MMO_Model_::_equationTraverse (void
-(MMO_Model_::*tr) (AST_Equation, int, int))
+(MMO_Model_::*tr) (AST_Equation, vector<int>, vector<int>))
 {
     list<AST_Equation>::iterator it;
     for (it = _eqs.begin (); it != _eqs.end (); it++)
@@ -851,26 +899,18 @@ MMO_Model_::_equationTraverse (void
         AST_Equation eq = current_element(it);
         if (eq->equationType () == EQEQUALITY)
         {
-            (this->*tr) (eq, 0, 0);
+            (this->*tr) (eq, vector<int> (1,0), vector<int> (1,0));
         }
         else if (eq->equationType () == EQFOR)
         {
-            int range[2], i = 0;
+            vector<int> begin, end;
             AST_Equation_For eqf = eq->getAsFor ();
-            AST_ForIndex fi = AST_ListFirst (eqf->forIndexList ());
-            AST_Expression in = fi->in_exp ();
-            AST_ExpressionList el = in->getAsRange ()->expressionList ();
-            AST_ExpressionListIterator eli;
-            MMO_EvalInitExp_ eie (_declarations);
-            foreach(eli,el)
-            {
-                range[i++] = eie.foldTraverse (current_element(eli));
-            }
+            _getRanges(eqf, begin, end);
             AST_EquationList eqs = eqf->equationList ();
             AST_EquationListIterator it;
             foreach(it,eqs)
             {
-                (this->*tr) (current_element(it), range[0], range[1]);
+                (this->*tr) (current_element(it), begin, end);
             }
         }
     }
@@ -983,14 +1023,27 @@ MMO_Model_::_setIndex (AST_Expression derArg, VarInfo vi, Index *idx)
     {
         idx->setLow (1);
         idx->setHi (vi->size (0));
-        idx->setArray (0);
+        idx->setArray ();
         for (int i = 1; i < vi->dimensions(); i++)
         {
+            idx->addIndex(idx->constant (), idx->factor ());
             idx->setLow (1,i);
             idx->setHi (vi->size (i),i);
-            idx->setArray (i);
         }
     }
+}
+
+bool
+MMO_Model_::_controlRanges (vector<int> begin, vector<int> end)
+{
+    for (int i = 0; i < end.size (); i++)
+    {
+        if (end[i] < begin[i])
+        {
+            return (true);
+        }
+    }
+    return (false);
 }
 
 /*! \brief Set the type of the Real variables defined in the model.
@@ -1006,9 +1059,9 @@ MMO_Model_::_setIndex (AST_Expression derArg, VarInfo vi, Index *idx)
  */
 
 void
-MMO_Model_::_setRealVariables (AST_Equation eq, int begin, int end)
+MMO_Model_::_setRealVariables (AST_Equation eq, vector<int> begin, vector<int> end)
 {
-    if (end < begin)
+    if (_controlRanges(begin, end))
     {
         Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong equation range.");
     }
@@ -1127,6 +1180,23 @@ MMO_Model_::_transformEquation (AST_Equation eq)
     return (eq);
 }
 
+void
+MMO_Model_::_getRanges (AST_Equation_For eqf, vector<int>& begin, vector<int>& end)
+{
+    AST_ForIndexList fil = eqf->forIndexList ();
+    AST_ForIndexListIterator filit;
+    foreach (filit, fil)
+    {
+        AST_ForIndex fi = current_element(filit);
+        AST_Expression in = fi->in_exp ();
+        AST_ExpressionList el = in->getAsRange ()->expressionList ();
+        AST_ExpressionListIterator eli;
+        MMO_EvalInitExp_ eie (_declarations);
+        begin.push_back (eie.foldTraverse (AST_ListFirst(el)));
+        end.push_back (eie.foldTraverse (AST_ListAt(el, el->size() - 1)));
+    }
+}
+
 /*! \brief Set the variable information for the equation.
  *
  * 	\param eq: AST_Equation with the state variable or algebraic variable definition.
@@ -1154,21 +1224,13 @@ MMO_Model_::insert (AST_Equation eq)
     _eqs.push_back (teq);
     if (teq->equationType () == EQEQUALITY)
     {
-        _setRealVariables (teq, 0, 0);
+        _setRealVariables (teq, vector<int> (1,0), vector<int> (1,0));
     }
     else if (teq->equationType () == EQFOR)
     {
-        int range[2], i = 0;
+        vector<int> begin, end;
         AST_Equation_For eqf = teq->getAsFor ();
-        AST_ForIndex fi = AST_ListFirst (eqf->forIndexList ());
-        AST_Expression in = fi->in_exp ();
-        AST_ExpressionList el = in->getAsRange ()->expressionList ();
-        AST_ExpressionListIterator eli;
-        MMO_EvalInitExp_ eie (_declarations);
-        foreach(eli,el)
-        {
-            range[i++] = eie.foldTraverse (current_element(eli));
-        }
+        _getRanges (eqf, begin, end);
         AST_EquationList eqs = eqf->equationList ();
         AST_EquationListIterator it;
         foreach(it,eqs)
@@ -1179,7 +1241,7 @@ MMO_Model_::insert (AST_Equation eq)
             }
             else
             {
-                _setRealVariables (current_element(it), range[0], range[1]);
+                _setRealVariables (current_element(it), begin, end);
             }
         }
     }
@@ -1211,7 +1273,7 @@ MMO_Model_::_insertEvent (AST_Statement stm, int begin, int end)
         }
         Index idx (0, factor, begin, end);
         idx.setOffset (_evs);
-        _setRange (begin, end, &idx);
+        _setRange (vector<int>(1,begin), vector<int> (1,end), &idx);
         _evs += end - begin + 1;
         AST_Statement_When sw = stm->getAsWhen ();
         _data->setLHS (idx);
@@ -1239,7 +1301,7 @@ MMO_Model_::_insertEvent (AST_Statement stm, int begin, int end)
                 AST_Statement_Else se = current_element(ewit);
                 MMO_Event eve;
                 Index idxe (0, factor, begin, end);
-                _setRange (begin, end, &idxe);
+                _setRange (vector<int> (1,begin),vector<int> (1,end), &idxe);
                 idxe.setOffset (_evs);
                 if (ev->compareCondition (se->condition ()))
                 {

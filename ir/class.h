@@ -23,6 +23,7 @@
 #include <list>
 #include <map>
 #include <string>
+#include <vector>
 
 #include "../ast/ast_types.h"
 #include "../util/error.h"
@@ -463,7 +464,7 @@ private:
     int
     _evalExp (AST_Expression exp);
     Index
-    _getAlgebraicIndex (AST_Expression left, int begin, int end);
+    _getAlgebraicIndex (AST_Expression left, vector<int> begin, vector<int> end);
     string
     _getComponentName (AST_Expression exp);
     bool
@@ -473,22 +474,22 @@ private:
     void
     _getFunctionInfo (MMO_Function f);
     void
-    _setAlgebraic (AST_Expression left, AST_Expression right, int begin, int end, AST_Expression arguments = NULL);
+    _setAlgebraic (AST_Expression left, AST_Expression right, vector<int> begin, vector<int> end, AST_Expression arguments = NULL);
     void
     _insertEvent (AST_Statement stm, int begin, int end);
     void
-    _insertEquation (AST_Equation eq, int begin, int end);
+    _insertEquation (AST_Equation eq, vector<int> begin, vector<int> end);
     void
-    _insertAlgebraicEquation (AST_Equation eq, int begin, int end);
+    _insertAlgebraicEquation (AST_Equation eq, vector<int> begin, vector<int> end);
     void
     _equationTraverse (void
-    (MMO_Model_::*tr) (AST_Equation, int, int));
+    (MMO_Model_::*tr) (AST_Equation, vector<int>, vector<int>));
     void
     _controlEquation (AST_Equation eq);
     void
     _insertFunctionDependencies (list<string> deps, map<string, string> *mdeps);
     void
-    _setRealVariables (AST_Equation eq, int begin, int end);
+    _setRealVariables (AST_Equation eq, vector<int> begin, vector<int> end);
     void
     _setEvents ();
     AST_Statement_ElseList
@@ -500,11 +501,17 @@ private:
     void
     _controlDiscreteVariables (AST_Expression expEq);
     void
-    _setRange (int begin, int end, Index *lhs);
+    _setRange (vector<int> begin, vector<int> end, Index *lhs);
     void
-    _setAlgebraicOffset (AST_Expression left, int begin, int end);
+    _setAlgebraicOffset (AST_Expression left, vector<int> begin, vector<int> end);
     void
-    _insertAlgebraic (AST_Equation eq, int begin, int end);
+    _insertAlgebraic (AST_Equation eq, vector<int> begin, vector<int> end);
+    void
+    _getRanges (AST_Equation_For eqf, vector<int>& begin, vector<int>& end);
+    bool
+    _controlRanges (vector<int> begin, vector<int> end);
+    int
+    _getRange (vector<int> begin, vector<int> end);
     MMO_EquationTable _derivatives;
     MMO_EquationTable _algebraics;
     MMO_EquationTable _outputs;

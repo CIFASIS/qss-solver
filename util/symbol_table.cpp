@@ -585,9 +585,17 @@ VarSymbolTable_::printIndex (Index idx, list<Index> idxs, string sub, int offset
     }
     else
     {
+        buffer << "[";
+        int idxIt = 0;
+        stringstream s;
+        s << sub;
         for (list<Index>::iterator it = idxs.begin (); it != idxs.end (); it++)
         {
-            buffer << "[";
+            if (idxIt > 0)
+            {
+                buffer << " + ";
+                //s << sub << idxIt;
+            }
             if (_vste == VST_OUTPUT)
             {
                 if (constant >= 0 && it->isArray ())
@@ -597,7 +605,6 @@ VarSymbolTable_::printIndex (Index idx, list<Index> idxs, string sub, int offset
                 else if (sub.empty ())
                 {
                     buffer << it->operConstant ();
-
                 }
                 else
                 {
@@ -629,8 +636,13 @@ VarSymbolTable_::printIndex (Index idx, list<Index> idxs, string sub, int offset
                     }
                 }
             }
-            buffer << "]";
+            if (idxIt < (vi->dimensions () - 1))
+            {
+                buffer << " * " << vi->size (idxIt);
+            }
+            idxIt++;
         }
+        buffer << "]";
     }
     return (buffer.str ());
 }

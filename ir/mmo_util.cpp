@@ -12,7 +12,7 @@
 
 MMO_ModelData_::MMO_ModelData_ () :
         _symbols (NULL), _algebraics (NULL), _functions (NULL), _externalFunctions (
-        NULL), _packages (NULL), _initialCode (false), _generateDerivatives (true), _begin (0), _end (0), _lhs (), _whenStatement (false), _weight (
+        NULL), _packages (NULL), _initialCode (false), _generateDerivatives (true), _begin (1,0), _end (1,0), _lhs (), _whenStatement (false), _weight (
                 -1), _calledFunctions (), _calculateAlgebraics (false), _arguments (NULL), _annotation (NULL), _disableSymDiff (false)
 {
 }
@@ -138,25 +138,37 @@ MMO_ModelData_::setGenerateDerivatives (bool gd)
 int
 MMO_ModelData_::begin ()
 {
-    return (_begin);
+    return (_begin[0]);
 }
 
 void
-MMO_ModelData_::setBegin (int begin)
+MMO_ModelData_::setBegin (vector<int> begin)
 {
     _begin = begin;
+}
+
+void
+MMO_ModelData_::setBegin (int begin, int dim)
+{
+    _begin[dim] = begin;
 }
 
 int
 MMO_ModelData_::end ()
 {
-    return (_end);
+    return (_end[0]);
 }
 
 void
-MMO_ModelData_::setEnd (int end)
+MMO_ModelData_::setEnd (vector<int> end)
 {
     _end = end;
+}
+
+void
+MMO_ModelData_::setEnd (int end, int dim)
+{
+    _end[dim] = end;
 }
 
 void
@@ -175,8 +187,8 @@ void
 MMO_ModelData_::clear ()
 {
     _initialCode = false;
-    _begin = 0;
-    _end = 0;
+    _begin.clear();
+    _end.clear();
     _lhs.clear ();
     _generateDerivatives = true;
     _whenStatement = false;

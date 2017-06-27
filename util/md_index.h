@@ -34,13 +34,13 @@ public:
     /**
      *
      */
-    MDIndex_ ();
+    MDIndex_ (int dim = 1);
     /**
      *
      * @param constant
      * @param factor
      */
-    MDIndex_ (int constant, int factor);
+    MDIndex_ (int constant, int factor, int dim = 1);
     /**
      *
      * @param constant
@@ -48,7 +48,7 @@ public:
      * @param low
      * @param high
      */
-    MDIndex_ (int constant, int factor, int low, int high);
+    MDIndex_ (int constant, int factor, int low, int high, int dim = 1);
     /**
      *
      */
@@ -65,6 +65,12 @@ public:
      * @param l
      */
     void
+    setLow (vector<int> l);
+    /**
+     *
+     * @param l
+     */
+    void
     setLow (int l, int dim = 0);
     /**
      *
@@ -72,6 +78,8 @@ public:
      */
     int
     low (int dim = 0) const;
+    void
+    setHi (vector<int> h);
     /**
      *
      * @param h
@@ -125,13 +133,14 @@ public:
      * @param o
      */
     void
-    setOffset (int o, int dim = 0);
+    setOffset (int o);
+
     /**
      *
      * @return
      */
     int
-    offset (int dim = 0) const;
+    offset () const;
     /**
      *
      * @param val
@@ -272,13 +281,13 @@ public:
      *
      */
     void
-    setArray (int dim = 0);
+    setArray ();
     /**
      *
      * @return
      */
     bool
-    isArray (int dim = 0) const;
+    isArray () const;
     /**
      *
      */
@@ -406,6 +415,12 @@ public:
      */
     void
     addIndex (int constant, int factor, int low, int high);
+    int
+    dimension ();
+    void
+    setDimension (int d);
+    void
+    setIndex (MDIndex_ idx, int od = 0, int dd = 0);
 private:
     vector<Index_> _indexes;
     vector<int> _size;

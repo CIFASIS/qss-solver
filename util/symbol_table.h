@@ -697,7 +697,7 @@ template<class Value>
                 _end = 0;
             }
             return (e);
-        }MMO_Model_::_setRealVariables
+        }
         ;
         /** @brief Returns an iterator to the next equation of the table.
          *

@@ -155,7 +155,9 @@ public:
      * @param begin
      */
     void
-    setBegin (int begin);
+    setBegin (vector<int> begin);
+    void
+    setBegin (int begin, int dim = 0);
     /**
      *
      * @return
@@ -167,7 +169,9 @@ public:
      * @param end
      */
     void
-    setEnd (int end);
+    setEnd (vector<int> end);
+    void
+    setEnd (int end, int dim = 0);
     /**
      *
      * @return
@@ -251,8 +255,8 @@ private:
     MMO_PackageTable _packages;
     bool _initialCode;
     bool _generateDerivatives;
-    int _begin;
-    int _end;
+    vector<int> _begin;
+    vector<int> _end;
     Index _lhs;
     bool _whenStatement;
     double _weight;
