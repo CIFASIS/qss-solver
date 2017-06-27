@@ -2504,29 +2504,32 @@ Classic_::_jacobian ()
     stringstream buffer;
     string indent = _writer->indent (1);
     _writer->print (_prototype (SOL_DEPS));
-    _writer->beginBlock ();
-    for (map<string, string>::iterator it = _modelDepsVars.begin (); it != _modelDepsVars.end (); it++)
+    if (_generateJacobian ())
     {
-        _writer->print (it->second);
-    }
-    _writer->print ("int jit = 0;");
-    _writer->print ("int i = 0;");
-    buffer << "for( i = 0; i < " << _model->states () << "; i++)";
-    _writer->print (&buffer);
-    _writer->print ("{");
-    if (!_writer->isEmpty (WR_MODEL_DEPS_SIMPLE))
-    {
-        _writer->print ("switch (i)");
+        _writer->beginBlock ();
+        for (map<string, string>::iterator it = _modelDepsVars.begin (); it != _modelDepsVars.end (); it++)
+        {
+            _writer->print (it->second);
+        }
+        _writer->print ("int jit = 0;");
+        _writer->print ("int i = 0;");
+        buffer << "for( i = 0; i < " << _model->states () << "; i++)";
+        _writer->print (&buffer);
         _writer->print ("{");
-        _writer->print (WR_MODEL_DEPS_SIMPLE);
+        if (!_writer->isEmpty (WR_MODEL_DEPS_SIMPLE))
+        {
+            _writer->print ("switch (i)");
+            _writer->print ("{");
+            _writer->print (WR_MODEL_DEPS_SIMPLE);
+            _writer->print ("}");
+        }
+        if (!_writer->isEmpty (WR_MODEL_DEPS_GENERIC))
+        {
+            _writer->print (WR_MODEL_DEPS_GENERIC);
+        }
         _writer->print ("}");
+        _writer->endBlock ();
     }
-    if (!_writer->isEmpty (WR_MODEL_DEPS_GENERIC))
-    {
-        _writer->print (WR_MODEL_DEPS_GENERIC);
-    }
-    _writer->print ("}");
-    _writer->endBlock ();
     buffer << "}" << endl;
     _writer->print (&buffer);
 }
@@ -2609,6 +2612,14 @@ Classic_::graph ()
     return (Graph (0, 0));
 }
 
+bool
+Classic_::_generateJacobian ()
+{
+    return (_model->annotation()->solver() == ANT_IDA
+            ||_model->annotation()->solver() == ANT_CVODE_AM
+            ||_model->annotation()->solver() == ANT_CVODE_BDF);
+}
+
 void
 Classic_::_init ()
 {
@@ -2635,30 +2646,36 @@ Classic_::_init ()
     }
     _writer->print (initData ());
     _writer->print (WR_ALLOC_LD);
-    _writer->print (WR_ALLOC_LD_DS);
-    _writer->print (WR_ALLOC_LD_SD);
-    _writer->print (WR_ALLOC_LD_ALG_DS);
-    _writer->print (WR_ALLOC_LD_ALG_SD);
+    if (_generateJacobian ())
+    {
+        _writer->print (WR_ALLOC_LD_DS);
+        _writer->print (WR_ALLOC_LD_SD);
+        _writer->print (WR_ALLOC_LD_ALG_DS);
+        _writer->print (WR_ALLOC_LD_ALG_SD);
+    }
     _writer->print (WR_START_CODE);
     _writer->print (WR_INIT_CODE);
     _writer->print ("CLC_allocDataMatrix(modelData);");
-    _common->printSection ("states", _model->states (), WR_INIT_LD_DS);
-    if (_writer->isEmpty (WR_INIT_LD_DS))
+    if (_generateJacobian ())
     {
-        _common->printSection ("states", _model->states (), WR_INIT_LD_ALG_DS);
-    }
-    else
-    {
-        _writer->print (WR_INIT_LD_ALG_DS);
-    }
-    _common->printSection ("states", _model->states (), WR_INIT_LD_SD);
-    if (_writer->isEmpty (WR_INIT_LD_SD))
-    {
-        _common->printSection ("states", _model->states (), WR_INIT_LD_ALG_SD);
-    }
-    else
-    {
-        _writer->print (WR_INIT_LD_ALG_SD);
+        _common->printSection ("states", _model->states (), WR_INIT_LD_DS);
+        if (_writer->isEmpty (WR_INIT_LD_DS))
+        {
+            _common->printSection ("states", _model->states (), WR_INIT_LD_ALG_DS);
+        }
+        else
+        {
+            _writer->print (WR_INIT_LD_ALG_DS);
+        }
+        _common->printSection ("states", _model->states (), WR_INIT_LD_SD);
+        if (_writer->isEmpty (WR_INIT_LD_SD))
+        {
+            _common->printSection ("states", _model->states (), WR_INIT_LD_ALG_SD);
+        }
+        else
+        {
+            _writer->print (WR_INIT_LD_ALG_SD);
+        }
     }
     _writer->print (WR_INIT_EVENT);
     _writer->print (initOutput ());

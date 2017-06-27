@@ -460,7 +460,8 @@ private:
     _jacobian ();
     void
     _reorderSD (Dependencies d, const Index& idx, const std::__cxx11::string& indent, std::stringstream& buffer, WR_InsertType it);
-
+    bool
+    _generateJacobian ();
     MMO_CompileFlags _flags;
     MMO_Model _model;
     MMO_Writer _writer;
