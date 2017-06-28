@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <math.h>
 
 #include "md_index.h"
 
@@ -234,7 +235,7 @@ MDIndex_::print (string sub, int offset, bool solver) const
         ret << _indexes[i].print (idxStr.str(), offset, solver);
         if (i < _dimensions - 1)
         {
-            ret << " * " << _size[i];
+            ret << " * " << pow(_size[i],(_dimensions - i - 1));
         }
         idxStr.str ("");
     }

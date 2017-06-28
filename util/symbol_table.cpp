@@ -20,6 +20,7 @@
 #include "symbol_table.h"
 
 #include <sstream>
+#include <math.h>
 
 #include "../ast/expression.h"
 #include "../ir/equation.h"
@@ -637,7 +638,7 @@ VarSymbolTable_::printIndex (Index idx, list<Index> idxs, string sub, int offset
             }
             if (idxIt < (vi->dimensions () - 1))
             {
-                buffer << " * " << vi->size (idxIt);
+                buffer << " * " << pow (vi->size (idxIt), vi->dimensions() - idxIt - 1);
             }
             idxIt++;
             s.str ("");
