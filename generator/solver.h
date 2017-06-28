@@ -540,6 +540,8 @@ public:
      */
     void
     addLocalVar (string name, map<string, string> *variables, string type = "", int size = 0);
+    void
+    addLocalVar (string name, map<string, string> *variables, int dimensions, string type = "", int size = 0);
     /**
      *
      * @param idx
@@ -695,6 +697,10 @@ public:
      */
     void
     settings ();
+    int
+    beginForLoops (Index idx, WR_Section section);
+    void
+    endForLoops (Index idx, WR_Section section);
 private:
     MMO_Model _model;
     MMO_CompileFlags _flags;

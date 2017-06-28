@@ -222,7 +222,11 @@ MDIndex_::print (string sub, int offset, bool solver) const
     stringstream idxStr, ret;
     for (int i = 0; i < _dimensions; i++)
     {
-        idxStr << sub << i;
+        idxStr << sub;
+        if (solver)
+        {
+            idxStr << i;
+        }
         if (i > 0)
         {
             ret << " + ";
@@ -285,9 +289,22 @@ MDIndex_::isSet (int dim) const
 }
 
 bool
+MDIndex_::hasRange () const
+{
+    for (int i = 0; i < _dimensions; i++)
+    {
+        if (_indexes[i].hasRange ())
+        {
+            return (true);
+        }
+    }
+    return (false);
+}
+
+bool
 MDIndex_::hasRange (int dim) const
 {
-    return (_indexes[dim].hasRange());
+    return (_indexes[dim].hasRange ());
 }
 
 void

@@ -2173,7 +2173,7 @@ Classic_::model ()
     stringstream buffer;
     vt->setPrintEnvironment (VST_CLASSIC_MODEL_FUNCTIONS);
     string indent = _writer->indent (1);
-    int order = 1;
+    int order = 1, idt = 0;
     _model->varTable ()->setPrintEnvironment (VST_CLASSIC_MODEL_FUNCTIONS);
     for (MMO_Equation eq = algebraics->begin (); !algebraics->end (); eq = algebraics->next ())
     {
@@ -2181,14 +2181,10 @@ Classic_::model ()
         Index lhs = eq->lhs ();
         if (lhs.hasRange ())
         {
-            _common->addLocalVar ("i", &_modelVars);
-            buffer << "for(i = " << lhs.begin () << "; i <= " << lhs.end () << "; i++)";
-            _writer->write (&buffer, WR_MODEL_SIMPLE);
-            buffer << "{";
-            _writer->write (&buffer, WR_MODEL_SIMPLE);
-            _common->print (eq->print (indent, "alg[" + lhs.print ("i") + "]", "i", false, algebraics, EQ_CLASSIC, order), WR_MODEL_SIMPLE);
-            buffer << "}";
-            _writer->write (&buffer, WR_MODEL_SIMPLE);
+            _common->addLocalVar ("i", &_modelVars, lhs.dimension());
+            idt = _common->beginForLoops (lhs, WR_MODEL_SIMPLE);
+            _common->print (eq->print (_writer->indent (idt), "alg[" + lhs.print ("i") + "]", "i", false, algebraics, EQ_CLASSIC, order), WR_MODEL_SIMPLE);
+            _common->endForLoops (lhs, WR_MODEL_SIMPLE);
             _common->insertLocalVariables (&_modelVars, eq->getVariables ());
         }
         else
@@ -2203,14 +2199,10 @@ Classic_::model ()
         Index lhs = eq->lhs ();
         if (idx.hasRange ())
         {
-            _common->addLocalVar ("i", &_modelVars);
-            buffer << "for(i = " << idx.begin () << "; i <= " << idx.end () << "; i++)";
-            _writer->write (&buffer, WR_MODEL_SIMPLE);
-            buffer << "{";
-            _writer->write (&buffer, WR_MODEL_SIMPLE);
-            _common->print (eq->print (indent, "dx[" + lhs.print ("i") + "]", "i", false, algebraics, EQ_CLASSIC, order), WR_MODEL_SIMPLE);
-            buffer << "}";
-            _writer->write (&buffer, WR_MODEL_SIMPLE);
+            _common->addLocalVar ("i", &_modelVars, idx.dimension());
+            idt = _common->beginForLoops (idx, WR_MODEL_SIMPLE);
+            _common->print (eq->print (_writer->indent (idt), "dx[" + lhs.print ("i") + "]", "i", false, algebraics, EQ_CLASSIC, order), WR_MODEL_SIMPLE);
+            _common->endForLoops (lhs, WR_MODEL_SIMPLE);
             _common->insertLocalVariables (&_modelVars, eq->getVariables ());
         }
         else
@@ -3271,6 +3263,55 @@ SolverCommon_::insertLocalVariables (map<string, string> *local, list<string> va
     for (list<string>::iterator it = vars.begin (); it != vars.end (); it++)
     {
         local->insert (pair<string, string> (*it, *it));
+    }
+}
+
+void
+SolverCommon_::addLocalVar (string name, map<string, string> *variables, int dimensions,  string type, int size)
+{
+    for (int i = 0; i < dimensions; i++)
+    {
+        stringstream v;
+        v << name << i;
+        addLocalVar (v.str (), variables, type, size);
+        v.str ("");
+    }
+}
+
+int
+SolverCommon_::beginForLoops (Index idx, WR_Section section)
+{
+    stringstream buffer;
+    int dim = idx.dimension(), idt = 0;
+    for (int i = 0; i < dim; i++)
+    {
+        string indent = _writer->indent(idt);
+        if (idx.hasRange(i))
+        {
+            buffer << indent << "for(i" << i << " = " << idx.begin (i) << "; i" << i << " <= " << idx.end (i) << "; i" << i <<  "++)";
+            _writer->write (&buffer, section);
+            buffer << indent << "{";
+            _writer->write (&buffer, section);
+            idt++;
+        }
+    }
+    return (idt);
+}
+
+void
+SolverCommon_::endForLoops (Index idx, WR_Section section)
+{
+    stringstream buffer;
+    int dim = idx.dimension(), idt = dim - 1;
+    for (int i = 0; i < dim; i++)
+    {
+        string indent = _writer->indent(idt);
+        if (idx.hasRange(i))
+        {
+            buffer << indent << "}";
+            _writer->write (&buffer, section);
+        }
+        idt--;
     }
 }
 

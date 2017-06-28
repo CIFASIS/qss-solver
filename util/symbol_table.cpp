@@ -188,10 +188,10 @@ int
 VarInfo_::size ()
 {
     vector<int>::iterator it;
-    int total = 0;
+    int total = 1;
     for (it = _size.begin(); it != _size.end(); it++)
     {
-        total += *it;
+        total *= *it;
     }
     return (total);
 }
@@ -588,14 +588,13 @@ VarSymbolTable_::printIndex (Index idx, list<Index> idxs, string sub, int offset
         buffer << "[";
         int idxIt = 0;
         stringstream s;
-        s << sub;
         for (list<Index>::iterator it = idxs.begin (); it != idxs.end (); it++)
         {
             if (idxIt > 0)
             {
                 buffer << " + ";
-                //s << sub << idxIt;
             }
+            s << sub << idxIt;
             if (_vste == VST_OUTPUT)
             {
                 if (constant >= 0 && it->isArray ())
@@ -608,7 +607,7 @@ VarSymbolTable_::printIndex (Index idx, list<Index> idxs, string sub, int offset
                 }
                 else
                 {
-                    buffer << sub;
+                    buffer << s.str ();
                 }
             }
             else
@@ -632,7 +631,7 @@ VarSymbolTable_::printIndex (Index idx, list<Index> idxs, string sub, int offset
                     }
                     else
                     {
-                        buffer << "(" << it->print (sub, offset) << ")" << varOffset.str ();
+                        buffer << "(" << it->print (s.str (), offset, false) << ")" << varOffset.str ();
                     }
                 }
             }
@@ -641,6 +640,7 @@ VarSymbolTable_::printIndex (Index idx, list<Index> idxs, string sub, int offset
                 buffer << " * " << vi->size (idxIt);
             }
             idxIt++;
+            s.str ("");
         }
         buffer << "]";
     }

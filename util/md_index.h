@@ -249,7 +249,9 @@ public:
      * @return
      */
     bool
-    hasRange (int dim = 0) const;
+    hasRange () const;
+    bool
+    hasRange (int dim) const;
     void
     setRange (int dim = 0);
     /**

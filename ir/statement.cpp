@@ -606,37 +606,23 @@ MMO_Statement_::print (string indent, string idx, int offset, int order, int for
             _getRanges (stf, begin, end);
             AST_StatementList sts = stf->statements ();
             AST_StatementListIterator it;
-            string varName = Util::getInstance ()->newVarName ("i", _data->symbols ());
+            string varName = "i1";
             vector<int>::iterator vit;
             for (vit = begin.begin(); vit != begin.end(); vit++)
             {
+
                 _variables.push_back ("int " + varName + ";");
-                buffer << "for(" << varName << " = " << begin[i]  << "; " << varName << " <= " << end[i] - 1 << "; " << varName << "++)";
+                buffer << "for(" << varName << " = " << begin[i] - 1  << "; " << varName << " <= " << end[i] - 1 << "; " << varName << "++)";
                 ret.push_back (buffer.str ());
                 buffer.str ("");
                 ret.push_back ("{");
                 i++;
             }
-            /*AST_ForIndex fi = AST_ListFirst (stf->forIndexList ());
-            AST_Expression in = fi->in_exp ();
-            AST_ExpressionList el = in->getAsRange ()->expressionList ();
-            AST_ExpressionListIterator eli;
-            MMO_EvalInitExp_ eie (_data->symbols ());
-            foreach(eli,el)
-            {
-                range[i++] = eie.foldTraverse (current_element(eli));
-            }*/
-            /*string varName = Util::getInstance ()->newVarName ("i", _data->symbols ());
-            _variables.push_back ("int " + varName + ";");
-            buffer << "for(" << varName << " = " << range[0] - 1 << "; " << varName << " <= " << range[1] - 1 << "; " << varName << "++)";
-            ret.push_back (buffer.str ());
-            buffer.str ("");
-            ret.push_back ("{");*/
             foreach(it,sts)
             {
                 _data->setInitialCode (_initialCode);
                 MMO_Statement_ s (current_element(it), _data);
-                list<string> stms = s.print (indent, varName, offset, order, -offset + 1);
+                list<string> stms = s.print (indent, "i", offset, order, -offset + 1);
                 _data->setInitialCode (false);
                 list<string> vars = s.getVariables ();
                 _variables.insert (_variables.end (), vars.begin (), vars.end ());
