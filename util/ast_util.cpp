@@ -1195,18 +1195,29 @@ GenerateDeps_::foldTraverseElement (AST_Expression exp)
                 Index idx;
                 if (cr->hasIndexes ())
                 {
+                    AST_ExpressionListList ell = cr->indexes ();
+                    AST_ExpressionListListIterator ellit;
                     ExpressionIndex_ ei (_vt);
-                    AST_ExpressionList el = AST_ListFirst (cr->indexes ());
-                    AST_Expression eidx = AST_ListFirst (el);
-                    ExpressionType et = eidx->expressionType ();
-                    if (et == EXPRANGE || et == EXPCOLON)
-                    {
-                        break;
-                    }
-                    idx = ei.index (eidx);
                     idx.setArray ();
-                    ei.setIndex (&idx, _data->lhs ());
                     idx.setOffset (vi->index ().offset ());
+                    ei.setIndex (&idx, _data->lhs ());
+                    foreach(ellit,ell)
+                    {
+                        AST_ExpressionList el = current_element(ellit);
+                        AST_ExpressionListIterator elit;
+                        idx.setDimension(el->size ());
+                        int c = 0;
+                        foreach(elit,el)
+                        {
+                            ExpressionType et = current_element(elit)->expressionType ();
+                            if (et == EXPRANGE || et == EXPCOLON)
+                            {
+                                continue;
+                            }
+                            idx.setIndex (ei.index (current_element(elit)), c, vi->size(c));
+                            c++;
+                        }
+                    }
                     if (vi->isState ())
                     {
                         ret->insert (idx, DEP_STATE);

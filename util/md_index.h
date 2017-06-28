@@ -420,7 +420,7 @@ public:
     void
     setDimension (int d);
     void
-    setIndex (MDIndex_ idx, int od = 0, int dd = 0);
+    setIndex (MDIndex_ idx, int od = 0, int size = 1,  int dd = 0);
 private:
     vector<Index_> _indexes;
     vector<int> _size;

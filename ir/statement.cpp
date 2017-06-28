@@ -303,8 +303,8 @@ MMO_Statement_::_getIndex (AST_Expression_ComponentReference cr, VarInfo vi)
             idx.setDimension(el->size());
             foreach(elit,el)
             {
-                idx.setIndex(ei.index (current_element(elit)));
                 ei.setIndex (&idx, vi->index ());
+                idx.setIndex(ei.index (current_element(elit)), c);
                 Index lhs = _data->lhs ();
                 idx.setLow (lhs.low (), c);
                 idx.setHi (lhs.hi (), c);

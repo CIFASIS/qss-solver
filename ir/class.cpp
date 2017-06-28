@@ -254,7 +254,7 @@ MMO_Model_::_getAlgebraicIndex (AST_Expression left, vector<int> begin, vector<i
         int dim = 0;
         foreach (elit, el)
         {
-            lhs.setIndex(ei.index (AST_ListFirst (el)), dim);
+            lhs.setIndex(ei.index (AST_ListFirst (el)), dim, vi->size(dim));
             if (lhs.factor (dim) != 0)
             {
                 lhs.setLow (begin[dim], dim);
@@ -416,7 +416,7 @@ MMO_Model_::_insertEquation (AST_Equation eq, vector<int> begin, vector<int> end
                 int dim = 0, rg = 0;
                 foreach (elit, el)
                 {
-                    lhs.setIndex(ei.index (current_element(elit)), dim);
+                    lhs.setIndex(ei.index (current_element(elit)), dim, vi->size(dim));
                     if (lhs.factor (dim) != 0)
                     {
                         lhs.setLow (begin[rg],dim);

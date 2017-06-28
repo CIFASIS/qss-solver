@@ -17,12 +17,13 @@
 
  ******************************************************************************/
 
+#include <iostream>
 #include <sstream>
 
 #include "md_index.h"
 
 MDIndex_::MDIndex_ (int dim) :
-        _indexes (), _size (), _dimensions (1)
+        _indexes (), _size (), _dimensions (dim)
 {
     for (int i = 0; i < dim; i++)
     {
@@ -32,7 +33,7 @@ MDIndex_::MDIndex_ (int dim) :
 }
 
 MDIndex_::MDIndex_ (int constant, int factor, int dim) :
-        _indexes (), _size (), _dimensions (1)
+        _indexes (), _size (), _dimensions (dim)
 {
     Index_ idx (constant, factor);
     _indexes.push_back (idx);
@@ -44,7 +45,7 @@ MDIndex_::MDIndex_ (int constant, int factor, int dim) :
 }
 
 MDIndex_::MDIndex_ (int constant, int factor, int low, int high, int dim) :
-        _indexes (), _size (), _dimensions (1)
+        _indexes (), _size (), _dimensions (dim)
 {
     Index_ idx (constant, factor, low, high);
     _indexes.push_back (idx);
@@ -218,9 +219,22 @@ MDIndex_::reverseEnd (int dim) const
 string
 MDIndex_::print (string sub, int offset, bool solver) const
 {
-    stringstream ret;
-    ret << _indexes[0].print(sub, offset, solver);
-    return (ret.str());
+    stringstream idxStr, ret;
+    for (int i = 0; i < _dimensions; i++)
+    {
+        idxStr << sub << i;
+        if (i > 0)
+        {
+            ret << " + ";
+        }
+        ret << _indexes[i].print (idxStr.str(), offset, solver);
+        if (i < _dimensions - 1)
+        {
+            ret << " * " << _size[i];
+        }
+        idxStr.str ("");
+    }
+    return (ret.str ());
 }
 
 string
@@ -537,15 +551,17 @@ MDIndex_::setDimension (int d)
         for (int i = 0; i < ub; i++)
         {
             _indexes.push_back(Index_ ());
+            _size.push_back(1);
         }
         _dimensions = d;
     }
 }
 
 void
-MDIndex_::setIndex (MDIndex_ idx, int od, int dd)
+MDIndex_::setIndex (MDIndex_ idx, int od, int size, int dd)
 {
     _indexes[od] = idx._indexes[dd];
+    _size[od] = size;
 }
 
 MDVariableInterval_::MDVariableInterval_ () : _index(), _name()
