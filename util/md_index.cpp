@@ -623,3 +623,11 @@ MDVariableInterval_::isEmpty ()
 {
     return (_name == "");
 }
+
+Range_::Range_ () : _begin(), _end()
+{
+}
+
+Range_::~Range_ ()
+{
+}

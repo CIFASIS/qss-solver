@@ -481,4 +481,14 @@ private:
 };
 
 
+class Range_
+{
+public:
+    Range_();
+    ~Range_();
+private:
+    vector<int> _begin;
+    vector<int> _end;
+};
+
 #endif /* MD_INDEX_H_ */
