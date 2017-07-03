@@ -150,12 +150,6 @@ public:
      */
     int
     begin ();
-    /**
-     *
-     * @param begin
-     */
-    void
-    setBegin (vector<int> begin);
     void
     setBegin (int begin, int dim = 0);
     /**
@@ -164,14 +158,14 @@ public:
      */
     int
     end ();
-    /**
-     *
-     * @param end
-     */
-    void
-    setEnd (vector<int> end);
     void
     setEnd (int end, int dim = 0);
+    /**
+     *
+     * @param range
+     */
+    void
+    setRange (Range range);
     /**
      *
      * @return
@@ -255,8 +249,7 @@ private:
     MMO_PackageTable _packages;
     bool _initialCode;
     bool _generateDerivatives;
-    vector<int> _begin;
-    vector<int> _end;
+    Range _range;
     Index _lhs;
     bool _whenStatement;
     double _weight;

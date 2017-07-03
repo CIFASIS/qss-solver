@@ -23,8 +23,10 @@
 #include <string>
 #include <vector>
 
+#include "../ast/ast_types.h"
 #include "index.h"
 #include "util_types.h"
+
 
 using namespace std;
 
@@ -49,6 +51,7 @@ public:
      * @param high
      */
     MDIndex_ (int constant, int factor, int low, int high, int dim = 1);
+    MDIndex_ (int constant, Range range);
     /**
      *
      */
@@ -486,9 +489,38 @@ class Range_
 public:
     Range_();
     ~Range_();
+    int
+    begin (int dim);
+    int
+    end (int dim);
+    void
+    setBegin (int v, int d);
+    void
+    setEnd (int v, int d);
+    int
+    dimension ();
+    int
+    size (int dim);
+    int
+    size ();
+    void
+    setIndex (Index *lhs);
+    void
+    clear ();
+    bool
+    check ();
+    void
+    get (AST_Equation_For eqf, VarSymbolTable vt);
+    void
+    get (AST_Statement_For stf, VarSymbolTable vt);
+    bool
+    empty ();
 private:
+    void
+    _get (AST_ForIndexList fil, VarSymbolTable vt);
     vector<int> _begin;
     vector<int> _end;
+
 };
 
 #endif /* MD_INDEX_H_ */

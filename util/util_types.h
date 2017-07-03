@@ -111,6 +111,10 @@ typedef class MDIndex_ Index;
 /**
  *
  */
+typedef class Range_ Range;
+/**
+ *
+ */
 typedef class MDVariableInterval_ VariableInterval;
 /**
  *

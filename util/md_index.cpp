@@ -21,6 +21,10 @@
 #include <sstream>
 #include <math.h>
 
+#include "../ast/equation.h"
+#include "../ast/statement.h"
+#include "../ast/expression.h"
+#include "../ir/expression.h"
 #include "md_index.h"
 
 MDIndex_::MDIndex_ (int dim) :
@@ -42,6 +46,22 @@ MDIndex_::MDIndex_ (int constant, int factor, int dim) :
     {
         Index_ id;
         _indexes.push_back (id);
+    }
+}
+
+MDIndex_::MDIndex_ (int constant, Range range) :
+        _indexes (), _size (), _dimensions (range.dimension ())
+{
+    for (int i = 1; i < _dimensions; i++)
+    {
+        int factor = 1;
+        if (range.empty ())
+        {
+            factor = 0;
+        }
+        Index_ idx (constant, factor, range.begin (i), range.end (i));
+        _indexes.push_back (idx);
+        _size.push_back(range.size (i));
     }
 }
 
@@ -630,4 +650,128 @@ Range_::Range_ () : _begin(), _end()
 
 Range_::~Range_ ()
 {
+}
+
+int
+Range_::begin (int dim)
+{
+    if (_begin.empty ())
+    {
+        return (1);
+    }
+    return (_begin[dim]);
+}
+
+int
+Range_::end (int dim)
+{
+    if (_end.empty ())
+    {
+        return (1);
+    }
+    return (_end[dim]);
+}
+
+int
+Range_::dimension ()
+{
+    return (_begin.size());
+}
+
+int
+Range_::size ()
+{
+    int s = _begin.size(), ret = 0;
+    for (int i = 0; i < s; i++)
+    {
+        ret += _end[i] - _begin[i] + 1;
+    }
+    return (ret);
+}
+
+int
+Range_::size (int dim)
+{
+    return (_end[dim] - _begin[dim] + 1);
+}
+
+void
+Range_::setIndex (Index *lhs)
+{
+    int s = _begin.size();
+    for (int i = 0; i < s; i++)
+    {
+        if (_begin[i] > 0 && _end[i] > 0)
+        {
+            lhs->setRange (i);
+        }
+    }
+}
+
+void
+Range_::setBegin (int v, int d)
+{
+    _begin[d] = v;
+}
+
+void
+Range_::setEnd (int v, int d)
+{
+    _end[d] = v;
+}
+
+void
+Range_::clear ()
+{
+    _begin.clear ();
+    _end.clear ();
+}
+
+bool
+Range_::check ()
+{
+    for (unsigned int i = 0; i < _end.size (); i++)
+    {
+        if (_end[i] < _begin[i])
+        {
+            return (true);
+        }
+    }
+    return (false);
+}
+
+void
+Range_::get (AST_Equation_For eqf, VarSymbolTable vt)
+{
+    AST_ForIndexList fil = eqf->forIndexList ();
+    _get (fil, vt);
+}
+
+bool
+Range_::empty ()
+{
+    return (_begin.empty () && _end.empty ());
+}
+
+void
+Range_::_get (AST_ForIndexList fil, VarSymbolTable vt)
+{
+    AST_ForIndexListIterator filit;
+    foreach (filit, fil)
+    {
+        AST_ForIndex fi = current_element(filit);
+        AST_Expression in = fi->in_exp ();
+        AST_ExpressionList el = in->getAsRange ()->expressionList ();
+        AST_ExpressionListIterator eli;
+        MMO_EvalInitExp_ eie (vt);
+        _begin.push_back (eie.foldTraverse (AST_ListFirst (el)));
+        _end.push_back (eie.foldTraverse (AST_ListAt (el, el->size () - 1)));
+    }
+}
+
+void
+Range_::get (AST_Statement_For stf, VarSymbolTable vt)
+{
+    AST_ForIndexList fil = stf->forIndexList ();
+    _get (fil, vt);
 }
