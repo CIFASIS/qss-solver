@@ -34,6 +34,7 @@ MDIndex_::MDIndex_ (int dim) :
     {
         Index_ idx;
         _indexes.push_back (idx);
+        _size.push_back(1);
     }
 }
 
@@ -42,26 +43,38 @@ MDIndex_::MDIndex_ (int constant, int factor, int dim) :
 {
     Index_ idx (constant, factor);
     _indexes.push_back (idx);
+    _size.push_back(1);
     for (int i = 1; i < dim; i++)
     {
         Index_ id;
         _indexes.push_back (id);
+        _size.push_back(1);
     }
 }
 
 MDIndex_::MDIndex_ (int constant, Range range) :
         _indexes (), _size (), _dimensions (range.dimension ())
 {
-    for (int i = 1; i < _dimensions; i++)
+    if (range.empty ())
     {
-        int factor = 1;
-        if (range.empty ())
-        {
-            factor = 0;
-        }
-        Index_ idx (constant, factor, range.begin (i), range.end (i));
+        Index_ idx (constant, 0);
         _indexes.push_back (idx);
-        _size.push_back(range.size (i));
+        _size.push_back(1);
+        _dimensions = 1;
+    }
+    else
+    {
+        for (int i = 0; i < _dimensions; i++)
+        {
+            int factor = 1;
+            if (range.empty ())
+            {
+                factor = 0;
+            }
+            Index_ idx (constant, factor, range.begin (i), range.end (i));
+            _indexes.push_back (idx);
+            _size.push_back(range.size (i));
+        }
     }
 }
 
@@ -70,10 +83,12 @@ MDIndex_::MDIndex_ (int constant, int factor, int low, int high, int dim) :
 {
     Index_ idx (constant, factor, low, high);
     _indexes.push_back (idx);
+    _size.push_back(high - low + 1);
     for (int i = 1; i < dim; i++)
     {
         Index_ id;
         _indexes.push_back (id);
+        _size.push_back(1);
     }
 }
 
@@ -244,7 +259,7 @@ MDIndex_::print (string sub, int offset, bool solver) const
     for (int i = 0; i < _dimensions; i++)
     {
         idxStr << sub;
-        if (solver)
+        if (solver && !sub.empty())
         {
             idxStr << i;
         }
@@ -545,23 +560,15 @@ MDIndex_::addIndex (int constant, int factor)
     _dimensions++;
 }
 
-void
-MDIndex_::setLow (vector<int> l)
-{
-    int size = l.size ();
-    for (int i; i < size; i++)
-    {
-        _indexes[i].setLow(l[i]);
-    }
-}
 
 void
-MDIndex_::setHi (vector<int> h)
+MDIndex_::setRange (Range r)
 {
-    int size = h.size ();
+    int size = r.dimension ();
     for (int i; i < size; i++)
     {
-        _indexes[i].setHi(h[i]);
+        _indexes[i].setLow(r.begin (i));
+        _indexes[i].setHi(r.end (i));
     }
 }
 
@@ -644,7 +651,7 @@ MDVariableInterval_::isEmpty ()
     return (_name == "");
 }
 
-Range_::Range_ () : _begin(), _end()
+Range_::Range_ () : _begin (), _end (), _variables (), _localVariables ()
 {
 }
 
@@ -681,6 +688,10 @@ Range_::dimension ()
 int
 Range_::size ()
 {
+    if (empty ())
+    {
+        return (1);
+    }
     int s = _begin.size(), ret = 0;
     for (int i = 0; i < s; i++)
     {
@@ -766,6 +777,7 @@ Range_::_get (AST_ForIndexList fil, VarSymbolTable vt)
         MMO_EvalInitExp_ eie (vt);
         _begin.push_back (eie.foldTraverse (AST_ListFirst (el)));
         _end.push_back (eie.foldTraverse (AST_ListAt (el, el->size () - 1)));
+        _variables.push_back(fi->variable()->c_str());
     }
 }
 
@@ -774,4 +786,36 @@ Range_::get (AST_Statement_For stf, VarSymbolTable vt)
 {
     AST_ForIndexList fil = stf->forIndexList ();
     _get (fil, vt);
+}
+
+void
+Range_::setVariable (string v, int d)
+{
+    _variables[d] = v;
+}
+
+string
+Range_::variable (int dim)
+{
+    if (_variables.empty ())
+    {
+        return ("");
+    }
+    return (_variables[dim]);
+}
+
+void
+Range_::setLocalVariable (string v, int dim)
+{
+    _localVariables[_variables[dim]] = v;
+}
+
+string
+Range_::localVariable (string v)
+{
+    if (_localVariables.empty ())
+    {
+        return ("");
+    }
+    return (_localVariables[v]);
 }

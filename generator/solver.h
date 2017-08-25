@@ -539,7 +539,7 @@ public:
      * @param size
      */
     void
-    addLocalVar (string name, map<string, string> *variables, string type = "", int size = 0);
+    addLocalVar (string name, map<string, string> *variables, string type = "", int size = 0, string assign = "0");
     void
     addLocalVar (string name, map<string, string> *variables, int dimensions, string type = "", int size = 0);
     /**

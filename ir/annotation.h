@@ -215,6 +215,8 @@ public:
     setJacobian (int l) = 0;
     virtual int
     jacobian () = 0;
+    virtual bool
+    classic () = 0;
 };
 
 /**
@@ -298,17 +300,22 @@ public:
      */
     string
     libraryDirectory ();
-    virtual void
+    void
     setJacobian (int l)
     {
     }
     ;
-    virtual int
+    int
     jacobian ()
     {
-        return 0;
+        return (0);
     }
     ;
+    bool
+    classic ()
+    {
+        return (false);
+    };
 private:
     /**
      *
@@ -665,10 +672,12 @@ public:
     setScotchSettings (string l);
     void
     setMetisSettings (string l);
-    virtual void
+    void
     setJacobian (int l);
-    virtual int
+    int
     jacobian ();
+    bool
+    classic ();
 private:
     /**
      *
@@ -725,7 +734,6 @@ private:
     bool _symDiff;
     double _minStep;
     int _lps;
-    int _jacobian;
     double _derDelta;
     int _nodeSize;
     double _ZCHyst;
@@ -752,6 +760,7 @@ private:
     list<string> _patohSettings;
     list<string> _scotchSettings;
     list<string> _metisSettings;
+    int _jacobian;
 };
 /**
  *

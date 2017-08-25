@@ -21,6 +21,7 @@
 #define MD_INDEX_H_
 
 #include <string>
+#include <map>
 #include <vector>
 
 #include "../ast/ast_types.h"
@@ -68,12 +69,6 @@ public:
      * @param l
      */
     void
-    setLow (vector<int> l);
-    /**
-     *
-     * @param l
-     */
-    void
     setLow (int l, int dim = 0);
     /**
      *
@@ -82,7 +77,7 @@ public:
     int
     low (int dim = 0) const;
     void
-    setHi (vector<int> h);
+    setRange (Range r);
     /**
      *
      * @param h
@@ -515,12 +510,21 @@ public:
     get (AST_Statement_For stf, VarSymbolTable vt);
     bool
     empty ();
+    void
+    setVariable (string v, int d);
+    string
+    variable (int dim);
+    void
+    setLocalVariable (string v, int dim);
+    string
+    localVariable (string v);
 private:
     void
     _get (AST_ForIndexList fil, VarSymbolTable vt);
     vector<int> _begin;
     vector<int> _end;
-
+    vector<string> _variables;
+    map<string,string> _localVariables;
 };
 
 #endif /* MD_INDEX_H_ */

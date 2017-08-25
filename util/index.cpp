@@ -20,6 +20,8 @@
 
 #include <sstream>
 
+#include <iostream>
+
 Index_::Index_ () :
         _constant (-1), _factor (0), _offset (0), _low (1), _hi (1), _isSet (false), _array (false), _map (NULL), _parameter (), _rangeOp (false), _hasRange (
                 false)

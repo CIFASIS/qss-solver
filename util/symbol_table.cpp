@@ -623,12 +623,14 @@ VarSymbolTable_::printIndex (Index idx, list<Index> idxs, string sub, int offset
                     {
                         buffer << it->mappedValue (constant);
                     }
+                    cout << "Imprime: " << it->mappedValue (constant) << endl;
                 }
                 else
                 {
                     if (it->factor () == 0 && (vi->isState () || vi->isAlgebraic ()))
                     {
                         buffer << it->mappedConstant () * _coeffs + order;
+                        cout << "Imprime: " << it->mappedConstant () * _coeffs + order << endl;
                     }
                     else
                     {

@@ -917,19 +917,19 @@ ExpressionIndex_::index (AST_Expression exp)
 }
 
 void
-ExpressionIndex_::setIndex (Index *idx, Index index)
+ExpressionIndex_::setIndex (Index *idx, Index index, int dim)
 {
     idx->setOffset (index.offset ());
-    if (idx->factor () != 0)
+    if (index.factor (dim) != 0)
     {
-        idx->setLow (index.low ());
-        idx->setHi (index.hi ());
+        idx->setLow (index.low (dim), dim);
+        idx->setHi (index.hi (dim), dim);
         idx->setRange ();
     }
     else
     {
-        idx->setLow (1);
-        idx->setHi (1);
+        idx->setLow (1, dim);
+        idx->setHi (1, dim);
     }
 }
 
@@ -1198,9 +1198,6 @@ GenerateDeps_::foldTraverseElement (AST_Expression exp)
                     AST_ExpressionListList ell = cr->indexes ();
                     AST_ExpressionListListIterator ellit;
                     ExpressionIndex_ ei (_vt);
-                    idx.setArray ();
-                    idx.setOffset (vi->index ().offset ());
-                    ei.setIndex (&idx, _data->lhs ());
                     foreach(ellit,ell)
                     {
                         AST_ExpressionList el = current_element(ellit);
@@ -1215,9 +1212,12 @@ GenerateDeps_::foldTraverseElement (AST_Expression exp)
                                 continue;
                             }
                             idx.setIndex (ei.index (current_element(elit)), c, vi->size(c));
+                            ei.setIndex (&idx, _data->lhs (), c);
                             c++;
                         }
                     }
+                    idx.setArray ();
+                    idx.setOffset (vi->index ().offset ());
                     if (vi->isState ())
                     {
                         ret->insert (idx, DEP_STATE);

@@ -263,9 +263,9 @@ MMO_Statement_::_init ()
             break;
         case STFOR:
         {
-            vector <int> begin, end;
+            Range range;
             AST_Statement_For stf = _stm->getAsFor ();
-            _getRanges (stf, begin, end);
+            range.get (stf, _data->symbols());
             AST_ForIndexList fil = stf->forIndexList ();
             AST_ForIndexListIterator filit;
             foreach (filit, fil)
@@ -277,7 +277,7 @@ MMO_Statement_::_init ()
             AST_StatementListIterator stit;
             foreach(stit,sts)
             {
-                _insertDeps (current_element(stit), begin, end);
+                _insertDeps (current_element(stit), range);
             }
         }
             break;
@@ -311,6 +311,8 @@ MMO_Statement_::_getIndex (AST_Expression_ComponentReference cr, VarInfo vi)
                 c++;
             }
         }
+        idx.setArray();
+        idx.setOffset(vi->index().offset());
     }
     else
     {
@@ -344,16 +346,15 @@ MMO_Statement_::_insertDeps (AST_Expression exp)
 }
 
 void
-MMO_Statement_::_insertVectorDeps (Dependencies deps, Dependencies in, DEP_Type type, DEP_Type insert, vector<int> begin, vector<int> end)
+MMO_Statement_::_insertVectorDeps (Dependencies deps, Dependencies in, DEP_Type type, DEP_Type insert, Range range)
 {
     for (Index *idx = deps->begin (type); !deps->end (type); idx = deps->next (type))
     {
         if (idx->factor () != 0)
         {
             Index vector (*idx);
-            vector.setDimension (begin.size());
-            vector.setLow (begin);
-            vector.setHi (end);
+            vector.setDimension (range.dimension ());
+            vector.setRange (range);
             in->insert (vector, insert);
         }
         else
@@ -369,19 +370,19 @@ MMO_Statement_::_insertVectorDeps (Dependencies deps, Dependencies in, DEP_Type 
  */
 
 void
-MMO_Statement_::_insertDeps (AST_Statement stm, vector<int> begin, vector<int> end)
+MMO_Statement_::_insertDeps (AST_Statement stm, Range range)
 {
     MMO_Statement ls = newMMO_Statement (stm, _data);
-    if (begin != end)
+    if (range.empty ())
     {
         Dependencies deps = ls->deps ();
-        _insertVectorDeps (deps, _deps, DEP_STATE, DEP_STATE_VECTOR, begin, end);
-        _insertVectorDeps (deps, _deps, DEP_DISCRETE, DEP_DISCRETE_VECTOR, begin, end);
-        _insertVectorDeps (deps, _deps, DEP_ALGEBRAIC, DEP_ALGEBRAIC_VECTOR, begin, end);
+        _insertVectorDeps (deps, _deps, DEP_STATE, DEP_STATE_VECTOR, range);
+        _insertVectorDeps (deps, _deps, DEP_DISCRETE, DEP_DISCRETE_VECTOR, range);
+        _insertVectorDeps (deps, _deps, DEP_ALGEBRAIC, DEP_ALGEBRAIC_VECTOR, range);
         deps = ls->lhs ();
-        _insertVectorDeps (deps, _lhs, DEP_STATE, DEP_STATE_VECTOR, begin, end);
-        _insertVectorDeps (deps, _lhs, DEP_DISCRETE, DEP_DISCRETE_VECTOR, begin, end);
-        _insertVectorDeps (deps, _lhs, DEP_ALGEBRAIC, DEP_ALGEBRAIC_VECTOR, begin, end);
+        _insertVectorDeps (deps, _lhs, DEP_STATE, DEP_STATE_VECTOR, range);
+        _insertVectorDeps (deps, _lhs, DEP_DISCRETE, DEP_DISCRETE_VECTOR, range);
+        _insertVectorDeps (deps, _lhs, DEP_ALGEBRAIC, DEP_ALGEBRAIC_VECTOR, range);
 
     }
     else
@@ -600,27 +601,25 @@ MMO_Statement_::print (string indent, string idx, int offset, int order, int for
             break;
         case STFOR:
         {
-            vector <int> begin, end;
-            int i = 0;
+            Range range;
             AST_Statement_For stf = _stm->getAsFor ();
-            _getRanges (stf, begin, end);
+            range.get (stf, _data->symbols ());
+            int size = range.dimension ();
             AST_StatementList sts = stf->statements ();
             AST_StatementListIterator it;
-            string varName = "i1";
-            vector<int>::iterator vit;
-            for (vit = begin.begin(); vit != begin.end(); vit++)
+            string varName = "i0";
+            for (int i = 0; i < size; i++)
             {
-
-                _variables.push_back ("int " + varName + ";");
-                buffer << "for(" << varName << " = " << begin[i] - 1  << "; " << varName << " <= " << end[i] - 1 << "; " << varName << "++)";
+                range.setLocalVariable(varName, i);
+                buffer << "for(" << varName << " = " << range.begin (i) - 1  << "; " << varName << " <= " << range.end (i) - 1 << "; " << varName << "++)";
                 ret.push_back (buffer.str ());
                 buffer.str ("");
                 ret.push_back ("{");
-                i++;
             }
             foreach(it,sts)
             {
                 _data->setInitialCode (_initialCode);
+                _data->setRange (range);
                 MMO_Statement_ s (current_element(it), _data);
                 list<string> stms = s.print (indent, "i", offset, order, -offset + 1);
                 _data->setInitialCode (false);
@@ -628,7 +627,7 @@ MMO_Statement_::print (string indent, string idx, int offset, int order, int for
                 _variables.insert (_variables.end (), vars.begin (), vars.end ());
                 ret.insert (ret.end (), stms.begin (), stms.end ());
             }
-            for (vit = begin.begin (); vit != begin.end (); vit++)
+            for (int i = 0; i < size; i++)
             {
                 ret.push_back ("}");
             }
@@ -639,25 +638,6 @@ MMO_Statement_::print (string indent, string idx, int offset, int order, int for
     }
     return (ret);
 }
-
-// TODO: Move this to range structure.
-void
-MMO_Statement_::_getRanges (AST_Statement_For stf, vector<int>& begin, vector<int>& end)
-{
-    AST_ForIndexList fil = stf->forIndexList ();
-    AST_ForIndexListIterator filit;
-    foreach (filit, fil)
-    {
-        AST_ForIndex fi = current_element(filit);
-        AST_Expression in = fi->in_exp ();
-        AST_ExpressionList el = in->getAsRange ()->expressionList ();
-        AST_ExpressionListIterator eli;
-        MMO_EvalInitExp_ eie (_data->symbols());
-        begin.push_back (eie.foldTraverse (AST_ListFirst(el)));
-        end.push_back (eie.foldTraverse (AST_ListAt(el, el->size() - 1)));
-    }
-}
-
 
 list<string>
 MMO_Statement_::getVariables ()

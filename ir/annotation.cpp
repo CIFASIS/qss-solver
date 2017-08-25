@@ -202,7 +202,7 @@ MMO_ModelAnnotation_::MMO_ModelAnnotation_ (MMO_ModelData data) :
         _solver (ANT_LIQSS2), _solverString ("LIQSS2"), _commInterval ("CI_Step"), _symDiff (true), _minStep (1e-14), _lps (1), _derDelta (1e-8), _nodeSize (
                 10000), _ZCHyst (1e-12), _order (1), _scheduler ("ST_Binary"), _storeData ("SD_Memory"), _annotations (), _data (data), _DQMin (), _DQRel (), _weight (
                 -1), _sample (), _output (), _initialTime (0), _finalTime (0), _partitionMethod (ANT_Metis), _partitionMethodString ("MetisCut"), _parallel (
-                false), _dt (0), _polyCoeffs (1), _dtSynch (ANT_DT_Fixed), _dtSynchString ("SD_DT_Asynchronous"), _desc (), _patohSettings (), _scotchSettings (), _metisSettings ()
+                false), _dt (0), _polyCoeffs (1), _dtSynch (ANT_DT_Fixed), _dtSynchString ("SD_DT_Asynchronous"), _desc (), _patohSettings (), _scotchSettings (), _metisSettings (), _jacobian(0)
 {
     _annotations.insert (pair<string, MMO_ModelAnnotation_::type> ("experiment", EXPERIMENT));
     _annotations.insert (pair<string, MMO_ModelAnnotation_::type> ("MMO_Description", DESC));
@@ -836,6 +836,14 @@ MMO_ModelAnnotation_::jacobian ()
 {
     return (_jacobian);
 }
+
+bool
+MMO_ModelAnnotation_::classic ()
+{
+    return (_solver == ANT_DASSL || _solver == ANT_DOPRI || _solver == ANT_CVODE_BDF
+        || _solver == ANT_IDA || _solver == ANT_CVODE_AM);
+}
+
 
 int
 MMO_ModelAnnotation_::lps ()

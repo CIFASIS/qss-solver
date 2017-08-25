@@ -214,7 +214,7 @@ QSS_::_indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, 
         case IDX_EQUAL:
             if (idx.hasRange ())
             {
-                buffer << "for(i = " << idx.mappedBegin () << "; i <= " << idx.mappedEnd () << "; i++)";
+                buffer << "for(i0 = " << idx.mappedBegin () << "; i0 <= " << idx.mappedEnd () << "; i0++)";
                 _writer->write (&buffer, alloc, false);
                 _writer->write (&buffer, init);
                 buffer << "{";
@@ -222,16 +222,16 @@ QSS_::_indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, 
                 _writer->write (&buffer, init);
                 if (infIdx.hasRange ())
                 {
-                    _common->addLocalVar ("j", &_initializeVars);
-                    buffer << indent << allocStr << "[i] += " << infIdx.range () << ";";
+                    _common->addLocalVar ("j0", &_initializeVars);
+                    buffer << indent << allocStr << "[i0] += " << infIdx.range () << ";";
                     _writer->write (&buffer, alloc);
                     buffer << "}";
                     _writer->write (&buffer, alloc);
-                    buffer << indent << "for(j = " << infIdx.begin () << "; j <= " << infIdx.end () << "; j++)";
+                    buffer << indent << "for(j0 = " << infIdx.begin () << "; j0 <= " << infIdx.end () << "; j0++)";
                     _writer->write (&buffer, init);
                     buffer << indent << "{";
                     _writer->write (&buffer, init);
-                    buffer << _writer->indent (2) << initStr << "[i][" << counter << "[i]++] = " << infIdx.print ("j", -infIdx.begin ()) << ";";
+                    buffer << _writer->indent (2) << initStr << "[i0][" << counter << "[i0]++] = " << infIdx.print ("j0", -infIdx.begin ()) << ";";
                     _writer->write (&buffer, init);
                     buffer << indent << "}";
                     _writer->write (&buffer, init);
@@ -252,9 +252,9 @@ QSS_::_indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, 
                 }
                 else
                 {
-                    buffer << indent << allocStr << "[i]++;";
+                    buffer << indent << allocStr << "[i0]++;";
                     _writer->write (&buffer, alloc);
-                    buffer << indent << initStr << "[i][" << counter << "[i]++] = " << infIdx.print ("i", -infIdx.begin ()) << ";";
+                    buffer << indent << initStr << "[i0][" << counter << "[i0]++] = " << infIdx.print ("i", -infIdx.begin ()) << ";";
                     _writer->write (&buffer, init);
                     buffer << "}";
                     _writer->write (&buffer, alloc, false);
@@ -275,7 +275,7 @@ QSS_::_indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, 
                 string idxStr = idx.print ();
                 if (infIdx.hasRange ())
                 {
-                    buffer << "for(i = " << infIdx.begin () << "; i <= " << infIdx.end () << "; i++)";
+                    buffer << "for(i0 = " << infIdx.begin () << "; i0 <= " << infIdx.end () << "; i0++)";
                     _writer->write (&buffer, init);
                     buffer << "{";
                     _writer->write (&buffer, init);
@@ -327,15 +327,15 @@ QSS_::_indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, 
                     tmp.setMap (*dIdx);
                 }
                 int begin = idx.mappedBegin () + infDIdx->lowValue () - dIdx->lowValue ();
-                buffer << "for(i = " << begin << "; i <= " << begin + infDIdx->range () - 1 << "; i++)";
+                buffer << "for(i0 = " << begin << "; i0 <= " << begin + infDIdx->range () - 1 << "; i0++)";
                 _writer->write (&buffer, alloc, false);
                 _writer->write (&buffer, init);
                 buffer << "{";
                 _writer->write (&buffer, alloc, false);
                 _writer->write (&buffer, init);
-                buffer << indent << allocStr << "[i]++;";
+                buffer << indent << allocStr << "[i0]++;";
                 _writer->write (&buffer, alloc);
-                buffer << indent << initStr << "[i][" << counter << "[i]++] = " << tmp.print ("i", -begin + infIdx.begin () - idx.begin ()) << ";";
+                buffer << indent << initStr << "[i0][" << counter << "[i0]++] = " << tmp.print ("i", -begin + infIdx.begin () - idx.begin ()) << ";";
                 _writer->write (&buffer, init);
                 buffer << "}";
                 _writer->write (&buffer, alloc, false);
@@ -359,15 +359,15 @@ QSS_::_indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, 
                 {
                     tmp.setMap (*dIdx);
                 }
-                buffer << "for(i = " << idx.mappedBegin () << "; i <= " << idx.mappedEnd () << "; i++)";
+                buffer << "for(i0 = " << idx.mappedBegin () << "; i0 <= " << idx.mappedEnd () << "; i0++)";
                 _writer->write (&buffer, alloc, false);
                 _writer->write (&buffer, init);
                 buffer << "{";
                 _writer->write (&buffer, alloc, false);
                 _writer->write (&buffer, init);
-                buffer << indent << allocStr << "[i]++;";
+                buffer << indent << allocStr << "[i0]++;";
                 _writer->write (&buffer, alloc);
-                buffer << indent << initStr << "[i][" << counter << "[i]++] = " << tmp.print ("i", -idx.mappedBegin () + idx.begin ()) << ";";
+                buffer << indent << initStr << "[i0][" << counter << "[i0]++] = " << tmp.print ("i", -idx.mappedBegin () + idx.begin ()) << ";";
                 _writer->write (&buffer, init);
                 buffer << "}";
                 _writer->write (&buffer, alloc, false);
@@ -384,16 +384,16 @@ QSS_::_indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, 
             break;
         case IDX_ARB_AB:
             {
-                buffer << "for( i = " << idx.mappedBegin () << "; i <= ";
-                buffer << idx.mappedBegin () + dIdx->lowValue () - infDIdx->hiValue () << "; i++)";
+                buffer << "for( i0 = " << idx.mappedBegin () << "; i0 <= ";
+                buffer << idx.mappedBegin () + dIdx->lowValue () - infDIdx->hiValue () << "; i0++)";
                 _writer->write (&buffer, alloc, false);
                 _writer->write (&buffer, init);
                 buffer << "{";
                 _writer->write (&buffer, alloc, false);
                 _writer->write (&buffer, init);
-                buffer << indent << allocStr << "[i]++;";
+                buffer << indent << allocStr << "[i0]++;";
                 _writer->write (&buffer, alloc);
-                buffer << indent << initStr << "[i][" << counter << "[i]++] = " << dIdx->print ("i", -dIdx->offset () + infIdx.mappedBegin () + idx.low ())
+                buffer << indent << initStr << "[i0][" << counter << "[i0]++] = " << dIdx->print ("i", -dIdx->offset () + infIdx.mappedBegin () + idx.low ())
                         << ";";
                 _writer->write (&buffer, init);
                 buffer << "}";
@@ -413,16 +413,16 @@ QSS_::_indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, 
         case IDX_ARB_BA:
             {
                 int begin = idx.mappedBegin () + infIdx.begin () - idx.begin ();
-                buffer << "for(i = " << begin << "; i <= ";
-                buffer << idx.mappedEnd () << "; i++)";
+                buffer << "for(i0 = " << begin << "; i0 <= ";
+                buffer << idx.mappedEnd () << "; i0++)";
                 _writer->write (&buffer, alloc, false);
                 _writer->write (&buffer, init);
                 buffer << "{";
                 _writer->write (&buffer, alloc, false);
                 _writer->write (&buffer, init);
-                buffer << indent << allocStr << "[i]++;";
+                buffer << indent << allocStr << "[i0]++;";
                 _writer->write (&buffer, alloc);
-                buffer << indent << initStr << "[i][" << counter << "[i]++] = " << infIdx.print ("i", -begin) << ";";
+                buffer << indent << initStr << "[i0][" << counter << "[i0]++] = " << infIdx.print ("i", -begin) << ";";
                 _writer->write (&buffer, init);
                 buffer << "}";
                 _writer->write (&buffer, alloc, false);
@@ -441,6 +441,7 @@ QSS_::_indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, 
         default:
             {
                 int loc = idx.mappedBegin () + intersection.value ();
+                cout << "Indices: " << loc << endl;
                 buffer << allocStr << "[" << loc << "]++;";
                 _writer->write (&buffer, alloc);
                 buffer << initStr << "[" << loc << "][" << counter << "[" << loc << "]++] = " << infIdx.print ("i") << ";";
@@ -731,7 +732,7 @@ QSS_::initializeMatrices ()
 {
     string indent;
     stringstream buffer;
-    _initializeVars["int i;"] = "int i;";
+    _initializeVars["int i0;"] = "int i0;";
     buffer << "int *states = (int*)malloc(" << _model->states () << "*sizeof(int));";
     _initializeVars[buffer.str ()] = buffer.str ();
     _freeVars["states"] = "states";
@@ -773,7 +774,7 @@ QSS_::initializeMatrices ()
             genericEquation = true;
             if (!hasInit)
             {
-                bufferGen << "for(i = " << index.begin () << "; i <= " << index.end () << "; i++)";
+                bufferGen << "for(i0 = " << index.begin () << "; i0 <= " << index.end () << "; i0++)";
             }
         }
         if (deps->hasStates () && !bufferGen.str ().empty ())
@@ -800,7 +801,7 @@ QSS_::initializeMatrices ()
             _common->addLocalVar ("td", &_initializeVars);
             if (e->lhs ().hasRange ())
             {
-                buffer << indent << "for (i = " << e->lhs ().begin () << "; i <= " << e->lhs ().end () << ";i++)";
+                buffer << indent << "for (i0 = " << e->lhs ().begin () << "; i0 <= " << e->lhs ().end () << ";i0++)";
                 _writer->write (&buffer, WR_INIT_TIME);
                 _writer->write ("{", WR_INIT_TIME);
             }
@@ -1012,7 +1013,7 @@ QSS_::initializeMatrices ()
             genericDefInit = index.begin ();
             if (!hasInit && !hasLHSStates && !hasRHSStates && !hasDiscretes)
             {
-                bufferGen << "for(i = " << index.begin () << "; i <= " << index.end () << "; i++)";
+                bufferGen << "for(i0 = " << index.begin () << "; i0 <= " << index.end () << "; i0++)";
             }
             _writer->write (&bufferGen, WR_INIT_EVENT, false);
             _writer->write ("{", WR_INIT_EVENT);
@@ -2181,7 +2182,7 @@ Classic_::model ()
         Index lhs = eq->lhs ();
         if (lhs.hasRange ())
         {
-            _common->addLocalVar ("i", &_modelVars, lhs.dimension());
+            _common->addLocalVar ("i0", &_modelVars, lhs.dimension());
             idt = _common->beginForLoops (lhs, WR_MODEL_SIMPLE);
             _common->print (eq->print (_writer->indent (idt), "alg[" + lhs.print ("i") + "]", "i", false, algebraics, EQ_CLASSIC, order), WR_MODEL_SIMPLE);
             _common->endForLoops (lhs, WR_MODEL_SIMPLE);
@@ -2741,7 +2742,7 @@ Classic_::print (SOL_Function f)
 void
 Classic_::initialCode ()
 {
-    _common->addLocalVar ("i", &_initializeVars);
+    _common->addLocalVar ("i0", &_initializeVars);
     _common->initialCode (&_initializeVars);
 }
 
@@ -3316,7 +3317,7 @@ SolverCommon_::endForLoops (Index idx, WR_Section section)
 }
 
 void
-SolverCommon_::addLocalVar (string name, map<string, string> *variables, string type, int size)
+SolverCommon_::addLocalVar (string name, map<string, string> *variables, string type, int size, string assign)
 {
     string var;
     if (type.empty ())
@@ -3335,7 +3336,9 @@ SolverCommon_::addLocalVar (string name, map<string, string> *variables, string 
     }
     else
     {
-        var.append (" = 0;");
+        stringstream buffer;
+        buffer << " = " << assign << ";";
+        var.append (buffer.str ());
     }
     if (variables->find (var) == variables->end ())
     {
@@ -3350,7 +3353,7 @@ SolverCommon_::eventPrologue (Index idx, WR_Section simple, WR_Section generic)
     string indent = _writer->indent (1);
     if (idx.hasRange ())
     {
-        buffer << "if(i >= " << idx.mappedBegin () << " && i <= " << idx.mappedEnd () << ")";
+        buffer << "if(i0 >= " << idx.mappedBegin () << " && i0 <= " << idx.mappedEnd () << ")";
         _writer->write (&buffer, generic);
         buffer << "{";
         _writer->write (&buffer, generic);
@@ -3387,6 +3390,8 @@ SolverCommon_::handler (VST_Environment type, map<string, string> *handlerPosVar
     stringstream buffer;
     vt->setPrintEnvironment (type);
     string indent = _writer->indent (2);
+    addLocalVar ("i0", handlerPosVars, "int", 0, "i");
+    addLocalVar ("i0", handlerNegVars, "int", 0, "i");
     for (MMO_Event ev = events->begin (); !events->end (); ev = events->next ())
     {
         Index idx = events->key ();
@@ -3443,6 +3448,7 @@ SolverCommon_::zeroCrossing (VST_Environment type, map<string, string> *zcVars)
     vt->setPrintEnvironment (type);
     string indent = _writer->indent (1);
     int order = getOrder ();
+    addLocalVar ("i0", zcVars, "int", 0, "i");
     for (MMO_Event ev = events->begin (); !events->end (); ev = events->next ())
     {
         Index idx = events->key ();
@@ -3513,8 +3519,7 @@ SolverCommon_::initialCode (map<string, string> *initializeVars)
     string indent = _writer->indent (1);
     MMO_StatementTable st = _model->initialCode ();
     _model->varTable ()->setPrintEnvironment (VST_INIT);
-    if (_model->annotation ()->solver () == ANT_DASSL || _model->annotation ()->solver () == ANT_DOPRI || _model->annotation ()->solver () == ANT_CVODE_BDF
-            || _model->annotation ()->solver () == ANT_IDA || _model->annotation ()->solver () == ANT_CVODE_AM)
+    if (_model->annotation ()->classic ())
     {
         _model->varTable ()->setPrintEnvironment (VST_CLASSIC_INIT);
     }
@@ -3717,12 +3722,13 @@ void
 SolverCommon_::genericDefCondition (Index eqIdx, Index idx, WR_Section section, map<string, string> *variables)
 {
     stringstream buffer;
+    addLocalVar ("j0", variables);
+    addLocalVar ("i0", variables, "int", 0, "i");
     if (idx.factor () == 1)
     {
-        addLocalVar ("j", variables);
-        buffer << "j = " << idx.printReverse ("i") << ";";
+        buffer << "j0 = " << idx.printReverse ("i") << ";";
         _writer->write (&buffer, section);
-        buffer << "if(j >=" << idx.begin () << " && j <= " << idx.end () << ")";
+        buffer << "if(j0 >=" << idx.begin () << " && j0 <= " << idx.end () << ")";
         _writer->write (&buffer, section);
         buffer << "{";
         _writer->write (&buffer, section);
@@ -3731,23 +3737,21 @@ SolverCommon_::genericDefCondition (Index eqIdx, Index idx, WR_Section section, 
     {
         string tmp = Util::getInstance ()->newVarName ("tmp", _model->varTable ());
         addLocalVar (tmp, variables, "double");
-        addLocalVar ("j", variables);
         buffer << tmp << " = (double)" << idx.printReverse ("i") << ";";
         _writer->write (&buffer, section);
         buffer << "if((int)" << tmp << " == " << tmp << " && " << tmp << " >= " << eqIdx.begin () << " && " << tmp << " <= " << eqIdx.end () << ")";
         _writer->write (&buffer, section);
         buffer << "{";
         _writer->write (&buffer, section);
-        buffer << "j = (int) " << tmp << ";";
+        buffer << "j0 = (int) " << tmp << ";";
         _writer->write (&buffer, section);
 
     }
     else
     {
-        addLocalVar ("j", variables);
-        buffer << "j = i;";
+        buffer << "j0 = i;";
         _writer->write (&buffer, section);
-        buffer << "if(j == " << idx.printReverse ("i") << ")";
+        buffer << "if(j0 == " << idx.printReverse ("i") << ")";
         _writer->write (&buffer, section);
         buffer << "{";
         _writer->write (&buffer, section);
@@ -3787,8 +3791,8 @@ SolverCommon_::vectorDependencies (Index index, Dependencies deps, WR_Section al
     if (index.factor () != 0)
     {
         genericIndex = true;
-        forIdx = "j";
-        addLocalVar ("j", variables);
+        forIdx = "j0";
+        addLocalVar ("j0", variables);
     }
     string eqsIdx = index.print ("i");
     int numDeps = deps->stateVectors ();

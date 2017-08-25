@@ -761,7 +761,7 @@ public:
      * @param index
      */
     void
-    setIndex (Index *idx, Index index);
+    setIndex (Index *idx, Index index, int dim = 0);
 private:
     Index
     foldTraverseElement (AST_Expression);

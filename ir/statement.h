@@ -93,17 +93,15 @@ private:
     void
     _getIndexList (AST_Expression_ComponentReference cr, Index index, list<Index> *idxs);
     void
-    _getRanges (AST_Statement_For eqf, vector<int>& begin, vector<int>& end);
-    void
     _init ();
     void
     _setInitialCode (AST_Statement stm);
     void
     _insertDeps (AST_Expression exp);
     void
-    _insertDeps (AST_Statement stm, vector<int> begin = vector<int>(1,0), vector<int> end = vector<int>(1,0));
+    _insertDeps (AST_Statement stm, Range range = Range());
     void
-    _insertVectorDeps (Dependencies deps, Dependencies in, DEP_Type type, DEP_Type insert, vector<int> begin = vector<int>(1,0), vector<int> end = vector<int>(1,0));
+    _insertVectorDeps (Dependencies deps, Dependencies in, DEP_Type type, DEP_Type insert, Range range);
     Index
     _getIndex (AST_Expression_ComponentReference cr, VarInfo vi);
     void
