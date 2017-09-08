@@ -31,8 +31,9 @@ rm -rf $MMOC_PACKAGES/pkg_*
 
 > $MMOC_BIN/test.log
 
-for fol in `ls -I parallel`; do
-	cd $fol
+for fol in `(ls -d */ | grep -v parallel | sed 's/\/$//')`; do
+	echo $fol
+    cd $fol
 	echo "Running test for : " $fol >> $MMOC_BIN/test.log
 	echo "Running test for : " $fol 
 	mkdir -p $MMOC_OUTPUT/$fol
@@ -81,28 +82,29 @@ cd parallel
 
 for fol in `ls`; do
 	cd $fol
-	echo "Running test for : " $fol >> $MMOC_BIN/test.log
-	echo "Running test for : " $fol 
+	echo "Running Parallel test for : " $fol >> $MMOC_BIN/test.log
+	echo "Running Parallel test for : " $fol 
 	mkdir -p $MMOC_OUTPUT/$fol
 	rm -rf $MMOC_OUTPUT/$fol/*
 	mkdir -p $MMOC_BUILD/$fol
 	rm -rf $MMOC_BUILD/$fol/*
+	cp $MMOC_TESTS/parallel/$fol/*.c $MMOC_BUILD/$fol/  
 	$MMOC_BIN/runqss.sh $fol $MMOC_TESTS/parallel/$fol true
 	if [ ! -f $MMOC_BUILD/$fol/$fol.c ]; then
-		echo "ERROR Test: "$fol "Can't generate c file." >> $MMOC_BIN/test.log
-		echo "ERROR Test: "$fol "Can't generate c file." 
+		echo "ERROR Parallel Test: "$fol "Can't generate c file." >> $MMOC_BIN/test.log
+		echo "ERROR Parallel Test: "$fol "Can't generate c file." 
 		continue
 	fi
 	if [ ! -f $MMOC_BUILD/$fol/$fol.makefile ]; then
-		echo "ERROR Test: "$fol "Can't generate makefile." >> $MMOC_BIN/test.log
+		echo "ERROR Parallel Test: "$fol "Can't generate makefile." >> $MMOC_BIN/test.log
 		diff $MMOC_BUILD/$fol/$fol.c $MMOC_TESTS/$fol/$fol.c >> $MMOC_BIN/test.log
-		echo "ERROR Test: "$fol "Can't generate makefile." 
+		echo "ERROR Parallel Test: "$fol "Can't generate makefile." 
 		continue
 	fi
 	if [ ! -f $MMOC_BUILD/$fol/$fol ]; then
-		echo "ERROR Test: "$fol "Can't generate executable file." >> $MMOC_BIN/test.log
+		echo "ERROR Parallel Test: "$fol "Can't generate executable file." >> $MMOC_BIN/test.log
 		diff $MMOC_BUILD/$fol/$fol.c $MMOC_TESTS/$fol/$fol.c >> $MMOC_BIN/test.log
-		echo "ERROR Test: "$fol "Can't generate executable file." 
+		echo "ERROR Parallel Test: "$fol "Can't generate executable file." 
 		continue
 	fi
 	echo "Finished " >> $MMOC_BIN/test.log
