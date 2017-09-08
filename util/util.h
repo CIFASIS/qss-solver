@@ -122,6 +122,8 @@ public:
     setExpressionOrder (int expressionOrder);
     int
     expressionOrder ();
+    string
+    print (Index idx, string variableIndex);
 private:
     VarSymbolTable _vt;
     int _expressionOrder;
@@ -220,6 +222,13 @@ public:
     newVarName (string n, VarSymbolTable vt);
     /**
      *
+     * @param name
+     * @return
+     */
+    string
+    getVarName (string name);
+    /**
+     *
      * @param fileName
      * @param pt
      * @return
@@ -277,7 +286,7 @@ public:
      * @return
      */
     string
-    printInitialAssignment (VarInfo vi, string indent, string localVar = "i");
+    printInitialAssignment (VarInfo vi, string indent, string localVar = "i0");
     /**
      *
      * @param ev

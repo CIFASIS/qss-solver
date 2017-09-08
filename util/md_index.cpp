@@ -193,8 +193,8 @@ MDIndex_::indexValue (int val, int dim)
 {
     MDIndex_ idx;
     Index_ id = _indexes[dim].indexValue (val);
-    idx._indexes.push_back (id);
-    idx._size.push_back (id.range ());
+    idx._indexes[0] = id;
+    idx._size[0] = id.range ();
     return (idx);
 }
 
@@ -253,9 +253,10 @@ MDIndex_::reverseEnd (int dim) const
 }
 
 string
-MDIndex_::print (string sub, int offset, bool solver) const
+MDIndex_::print (string sub, int offset, bool solver, bool map) const
 {
     stringstream idxStr, ret;
+    bool modelica = solver;
     for (int i = 0; i < _dimensions; i++)
     {
         idxStr << sub;
@@ -267,7 +268,11 @@ MDIndex_::print (string sub, int offset, bool solver) const
         {
             ret << " + ";
         }
-        ret << _indexes[i].print (idxStr.str(), offset, solver);
+        if (map)
+        {
+            modelica = map;
+        }
+        ret << _indexes[i].print (idxStr.str(), offset, modelica);
         if (i < _dimensions - 1)
         {
             ret << " * " << pow(_size[i],(_dimensions - i - 1));
@@ -426,8 +431,8 @@ MDIndex_
 MDIndex_::map (int dim) const
 {
     MDIndex_ idx;
-    idx._indexes.push_back (_indexes[dim].map ());
-    idx._size.push_back (idx._indexes[0].range ());
+    idx._indexes[0] = _indexes[dim].map ();
+    idx._size[0] = idx._indexes[0].range ();
     return (idx);
 }
 
@@ -465,8 +470,8 @@ MDIndex_
 MDIndex_::variableIndex (MDIndex_ index, int dim)
 {
     MDIndex_ idx;
-    idx._indexes.push_back (_indexes[dim].variableIndex (index._indexes[dim]));
-    idx._size.push_back (idx._indexes[0].range ());
+    idx._indexes[0] =_indexes[dim].variableIndex (index._indexes[dim]);
+    idx._size[0] = idx._indexes[0].range ();
     return (idx);
 }
 
@@ -474,8 +479,8 @@ MDIndex_
 MDIndex_::applyVariableChange (MDIndex_ index, int dim)
 {
     MDIndex_ idx;
-    idx._indexes.push_back (_indexes[dim].applyVariableChange (index._indexes[dim]));
-    idx._size.push_back (idx._indexes[0].range ());
+    idx._indexes[0] = _indexes[dim].applyVariableChange (index._indexes[dim]);
+    idx._size[0] = idx._indexes[0].range ();
     return (idx);
 }
 

@@ -355,7 +355,7 @@ VarSymbolTable_::print (VarInfo vi, string idx, int offset, int order, list<Inde
         {
             ret << "(";
         }
-        ret << idx;
+        ret << idx << "0"; // Temporal hack source
         if (fo > 0)
         {
             ret << "+" << fo << ")";
@@ -623,18 +623,16 @@ VarSymbolTable_::printIndex (Index idx, list<Index> idxs, string sub, int offset
                     {
                         buffer << it->mappedValue (constant);
                     }
-                    cout << "Imprime: " << it->mappedValue (constant) << endl;
                 }
                 else
                 {
                     if (it->factor () == 0 && (vi->isState () || vi->isAlgebraic ()))
                     {
                         buffer << it->mappedConstant () * _coeffs + order;
-                        cout << "Imprime: " << it->mappedConstant () * _coeffs + order << endl;
                     }
                     else
                     {
-                        buffer << "(" << it->print (s.str (), offset, false) << ")" << varOffset.str ();
+                        buffer << "(" << it->print (s.str (), offset, false, true) << ")" << varOffset.str ();
                     }
                 }
             }

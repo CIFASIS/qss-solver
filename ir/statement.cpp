@@ -373,7 +373,7 @@ void
 MMO_Statement_::_insertDeps (AST_Statement stm, Range range)
 {
     MMO_Statement ls = newMMO_Statement (stm, _data);
-    if (range.empty ())
+    if (!range.empty ())
     {
         Dependencies deps = ls->deps ();
         _insertVectorDeps (deps, _deps, DEP_STATE, DEP_STATE_VECTOR, range);

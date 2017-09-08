@@ -1208,6 +1208,7 @@ MMO_Model_::_insertEvent (AST_Statement stm, Range range)
         _data->setDisableSymDiff (true);
         MMO_Event ev = newMMO_Event (sw->condition (), _data);
         _data->setDisableSymDiff (false);
+        _data->setRange (range);
         AST_StatementList stl = sw->statements ();
         AST_StatementListIterator it;
         foreach(it,stl)

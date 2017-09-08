@@ -517,7 +517,7 @@ MMO_Generator_::_variablesInitCode ()
     stringstream buffer;
     VarSymbolTable vt = _model->varTable ();
     vt->setPrintEnvironment (VST_INIT);
-    if (_model->annotation ()->solver () == ANT_DASSL || _model->annotation ()->solver () == ANT_DOPRI)
+    if (_model->annotation ()->classic())
     {
         vt->setPrintEnvironment (VST_CLASSIC_INIT);
     }

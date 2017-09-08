@@ -159,6 +159,12 @@ MMO_ModelData_::setRange (Range range)
     _range = range;
 }
 
+Range
+MMO_ModelData_::range ()
+{
+    return (_range);
+}
+
 void
 MMO_ModelData_::setEnd (int end, int dim)
 {

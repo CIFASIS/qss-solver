@@ -166,6 +166,8 @@ public:
      */
     void
     setRange (Range range);
+    Range
+    range ();
     /**
      *
      * @return

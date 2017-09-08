@@ -231,7 +231,7 @@ QSS_::_indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, 
                     _writer->write (&buffer, init);
                     buffer << indent << "{";
                     _writer->write (&buffer, init);
-                    buffer << _writer->indent (2) << initStr << "[i0][" << counter << "[i0]++] = " << infIdx.print ("j0", -infIdx.begin ()) << ";";
+                    buffer << _writer->indent (2) << initStr << "[i0][" << counter << "[i0]++] = " << infIdx.print ("j0", -infIdx.begin (), false) << ";";
                     _writer->write (&buffer, init);
                     buffer << indent << "}";
                     _writer->write (&buffer, init);
@@ -441,7 +441,6 @@ QSS_::_indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, 
         default:
             {
                 int loc = idx.mappedBegin () + intersection.value ();
-                cout << "Indices: " << loc << endl;
                 buffer << allocStr << "[" << loc << "]++;";
                 _writer->write (&buffer, alloc);
                 buffer << initStr << "[" << loc << "][" << counter << "[" << loc << "]++] = " << infIdx.print ("i") << ";";
@@ -1221,7 +1220,7 @@ QSS_::initializeMatrices ()
         {
             string forIdx = Util::getInstance ()->newVarName ("i", _model->varTable ());
             _common->addLocalVar (forIdx, &_initializeVars);
-            string idxStr = idx->print (forIdx);
+            string idxStr = idx->print (forIdx, 0, false);
             buffer << "for(" << forIdx << " = " << idx->begin () << "; " << forIdx << " <= " << idx->end () << "; " << forIdx << "++)";
             _writer->write (&buffer, WR_INIT_EVENT_RHSST);
             _writer->write ("{", WR_INIT_EVENT_RHSST);
@@ -1360,9 +1359,9 @@ QSS_::_printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equat
                 if (lhsEq.hasRange ())
                 {
                     iter = Util::getInstance ()->newVarName ("j", _model->varTable ());
-                    _common->addLocalVar (iter, &_modelDepsVars);
-                    buffer << _writer->indent (indent) << "for(" << iter << " = " << lhsEq.begin () << "; " << iter << " <= " << lhsEq.end () << "; " << iter
-                            << "++)";
+                    _common->addLocalVar (iter + "0", &_modelDepsVars);
+                    buffer << _writer->indent (indent) << "for(" << iter << "0 = " << lhsEq.begin () << "; " << iter << "0 <= " << lhsEq.end () << "; " << iter
+                            << "0++)";
                     _writer->write (&buffer, s);
                     _writer->write ("{", s);
                     aLhs << "alg[(" << (*eq)->lhs ().print (iter) << ")";
@@ -1386,7 +1385,7 @@ QSS_::_printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equat
         else
         {
             string vn, vm;
-            string varIdx = "j";
+            string varIdx = "j0";
             list<MMO_Equation> eqs = algebraics->equation (*dIdx);
             if (eqs.empty ())
             {
@@ -1406,7 +1405,7 @@ QSS_::_printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equat
                 {
                     if (aux1.empty ())
                     {
-                        aux1 = Util::getInstance ()->newVarName ("j", _model->varTable ());
+                        aux1 = Util::getInstance ()->newVarName ("j0", _model->varTable ());
                         _modelDepsVars["int " + aux1 + " = 0;"] = "int " + aux1 + " = 0;";
                     }
                     vn = aux1;
@@ -1461,13 +1460,13 @@ QSS_::_printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equat
                         }
                         vm = aux2;
                         variableMod = true;
-                        lhs << "alg[(" << (*eq)->lhs ().print (dIdx->definition ("j"), -(*eq)->lhs ().operConstant ()) << ")";
-                        varIdx = vm;
+                        lhs << "alg[(" << (*eq)->lhs ().print (dIdx->definition ("j0"), -(*eq)->lhs ().operConstant (), false) << ")";
+                        varIdx = Util::getInstance ()->getVarName (vm);
                     }
                     else
                     {
-                        lhs << "alg[(" << (*eq)->lhs ().print ("j", -(*eq)->lhs ().operConstant ()) << ")";
-                        varIdx = vn;
+                        lhs << "alg[(" << (*eq)->lhs ().print ("j0", -(*eq)->lhs ().operConstant (), false) << ")";
+                        varIdx = Util::getInstance ()->getVarName (vn);
                     }
                 }
                 if (!constantPrint)
@@ -1476,7 +1475,7 @@ QSS_::_printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equat
                 }
                 if (range)
                 {
-                    _writer->write ((*eq)->printRange ("j", vn, _writer->indent (indent), (*eq)->lhs ()), s);
+                    _writer->write ((*eq)->printRange ("j0", vn, _writer->indent (indent), (*eq)->lhs ()), s);
                 }
                 if (variableMod)
                 {
@@ -1520,7 +1519,7 @@ QSS_::_printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equat
         list<MMO_Equation>::iterator eq;
         for (eq = eqs.begin (); eq != eqs.end (); eq++)
         {
-            string varIdx = "j";
+            string varIdx = "j0";
             if (dIdx->hasRange () && controlRange)
             {
                 _common->addLocalVar (varIdx, &_modelDepsVars);
@@ -1535,7 +1534,7 @@ QSS_::_printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equat
             stringstream varMap;
             if (dIdx->hasRange ())
             {
-                string varIndex = (*eq)->lhs ().print (varIdx);
+                string varIndex = (*eq)->lhs ().print (varIdx,0,false);
                 varMap << _engine->variableMap (varIndex);
                 lhs << "der[(" << varIndex << ")";
                 if (!constantPrint)
@@ -1553,7 +1552,7 @@ QSS_::_printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equat
                 constantOffset = dIdx->constant ();
             }
             _writer->write (varMap.str (), s);
-            _common->print ((*eq)->print (_writer->indent (indent), lhs.str (), varIdx, false,
+            _common->print ((*eq)->print (_writer->indent (indent), lhs.str (),  Util::getInstance ()->getVarName(varIdx), false,
             NULL,
                                           EQ_DEPENDENCIES, order, constantPrint, 0, true, dIdx->low (), constantOffset),
                             s);
@@ -2064,7 +2063,7 @@ Classic_::initializeMatrices ()
             genericEquation = true;
             if (!hasInit)
             {
-                bufferGen << "for(i = " << index.begin () << "; i <= " << index.end () << "; i++)";
+                bufferGen << "for(i0 = " << index.begin () << "; i0 <= " << index.end () << "; i0++)";
             }
         }
         if (deps->hasStates () && !bufferGen.str ().empty ())
@@ -2125,7 +2124,7 @@ Classic_::initializeMatrices ()
         if (evt->beginGenericDefinition ())
         {
             genericEquation = true;
-            bufferGen << "for(i = " << index.begin () << "; i <= " << index.end () << "; i++)";
+            bufferGen << "for(i0 = " << index.begin () << "; i0 <= " << index.end () << "; i0++)";
             _writer->write (&bufferGen, WR_INIT_EVENT, false);
             _writer->write ("{", WR_INIT_EVENT);
         }
@@ -3090,7 +3089,7 @@ SolverCommon_::addAlgebriacDeps (Dependencies deps, Index derivativeIndex, map<I
                 stringstream bufferGen;
                 string eqIdx = derivativeIndex.print ("i");
                 string stIdx = idx.print (variableString);
-                bufferGen << "for ( i = " << eqIndex.begin () << "; i <= " << eqIndex.end () << "; i++) ";
+                bufferGen << "for ( i0 = " << eqIndex.begin () << "; i0 <= " << eqIndex.end () << "; i0++) ";
                 _writer->write (&bufferGen, allocSection, false);
                 _writer->write ("{", allocSection);
                 buffer << indent << alloc;
@@ -3137,7 +3136,7 @@ SolverCommon_::addAlgebriacDeps (Dependencies deps, Index derivativeIndex, map<I
                 stringstream bufferGen;
                 string eqIdx = derivativeIndex.print ("i");
                 string stIdx = idx.print (variableString); // Has to be a constant definition.
-                bufferGen << "for ( i = " << eqIndex.begin () << "; i <= " << eqIndex.end () << "; i++) ";
+                bufferGen << "for ( i0 = " << eqIndex.begin () << "; i0 <= " << eqIndex.end () << "; i0++) ";
                 _writer->write (&bufferGen, allocSection, false);
                 _writer->write ("{", allocSection);
                 buffer << indent << alloc;
@@ -3578,7 +3577,7 @@ SolverCommon_::output (VST_Environment type, map<string, string> *outputVars)
         {
             genericEquation = true;
             stringstream bufferTemp;
-            bufferTemp << "for(i = " << index.begin () << "; i <= " << index.end () << "; i++)";
+            bufferTemp << "for(i0 = " << index.begin () << "; i0 <= " << index.end () << "; i0++)";
             if (!hasInit)
             {
                 bufferGen << bufferTemp.str ();
@@ -3631,13 +3630,13 @@ SolverCommon_::output (VST_Environment type, map<string, string> *outputVars)
                 {
                     eqExpStr.append ("[%d]");
                 }
-                buffer << indent << "sprintf(modelOutput->variable[" << indexStr << "].name,\"" << eqExpStr << "\",i);";
+                buffer << indent << "sprintf(modelOutput->variable[" << indexStr << "].name,\"" << eqExpStr << "\",i0);";
                 _writer->write (&buffer, WR_INIT_OUTPUT);
             }
             else
             {
                 buffer << indent << "sprintf(modelOutput->variable[" << indexStr << "].name,\"" << eqExpStr << "\",";
-                buffer << eq->exp ()->indexes ("i") << ");";
+                buffer << eq->exp ()->indexes ("i0") << ");";
                 _writer->write (&buffer, WR_INIT_OUTPUT);
             }
         }
@@ -3766,7 +3765,7 @@ SolverCommon_::vectorDependencies (Index index, Dependencies deps, WR_Section al
     stringstream buffer;
     string indent = _writer->indent (1);
     bool genericIndex = false;
-    string forIdx = "i";
+    string forIdx = "i0";
     bool eval = false;
     int offset = 0;
     NOD_Type nt = NOD_SD;
@@ -3808,7 +3807,7 @@ SolverCommon_::vectorDependencies (Index index, Dependencies deps, WR_Section al
     for (Index *idx = deps->begin (type); !deps->end (type); idx = deps->next (type))
     {
         Index dIdx (*idx);
-        string sIdx = dIdx.print (forIdx);
+        string sIdx = dIdx.print (forIdx, 0, false);
         buffer << "for(" << forIdx << " = " << idx->begin () << "; " << forIdx << " <= " << idx->end () << "; " << forIdx << "++)";
         _writer->write (&buffer, init, false);
         _writer->write ("{", init);

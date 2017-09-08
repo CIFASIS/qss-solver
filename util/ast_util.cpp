@@ -1237,7 +1237,6 @@ GenerateDeps_::foldTraverseElement (AST_Expression exp)
                 }
                 else
                 {
-                    idx = vi->index ();
                     ret->insert (vi);
                 }
             }

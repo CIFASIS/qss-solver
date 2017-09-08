@@ -60,8 +60,7 @@ MMO_Equation_::MMO_Equation_ (AST_Expression exp, MMO_ModelData data) :
     {
         _initDerivatives ();
     }
-    if (_data->annotation ()->solver () == ANT_DASSL || _data->annotation ()->solver () == ANT_DOPRI || _data->annotation ()->solver () == ANT_CVODE_BDF
-            || _data->annotation ()->solver () == ANT_CVODE_AM || _data->annotation ()->solver () == ANT_IDA)
+    if (_data->annotation()->classic ())
     {
         _generateJacobianExps ();
     }
@@ -226,7 +225,7 @@ MMO_Equation_::print (string indent, string lhs, string idx, bool palgs, MMO_Equ
                             ret.push_back (buffer.str ());
                             ret.push_back (indent + "{");
                             buffer.str ("");
-                            aLhs << algPrefix << "[(" << pIdx.print (iter, offset) << ")";
+                            aLhs << algPrefix << "[(" << pIdx.print (iter, offset, false) << ")";
                             aLhs << " * " << _coeffs;
                         }
                         else
@@ -234,7 +233,7 @@ MMO_Equation_::print (string indent, string lhs, string idx, bool palgs, MMO_Equ
                             int cte = dIdx->mappedValue ((*eq)->lhs ().constant ());
                             aLhs << algPrefix << "[" << cte * _coeffs;
                         }
-                        list<string> a = (*eq)->print (indent + indent, aLhs.str (), iter, false, algs, EQ_ALGEBRAIC, order, false, offset, false, forOffset,
+                        list<string> a = (*eq)->print (indent + indent, aLhs.str (), Util::getInstance ()->getVarName (iter), false, algs, EQ_ALGEBRAIC, order, false, offset, false, forOffset,
                                                        -1);
                         _algebraics.insert (_algebraics.end (), a.begin (), a.end ());
                         ret.insert (ret.end (), a.begin (), a.end ());
@@ -268,7 +267,7 @@ MMO_Equation_::print (string indent, string lhs, string idx, bool palgs, MMO_Equ
                         }
                         else
                         {
-                            vn = idx;
+                            vn = idx + "0";
                         }
                         bool variableMod = false;
                         stringstream aLhs;
@@ -306,8 +305,8 @@ MMO_Equation_::print (string indent, string lhs, string idx, bool palgs, MMO_Equ
                                 }
                                 vm = aux2;
                                 variableMod = true;
-                                aLhs << algPrefix << "[(" << (*eq)->lhs ().print (dIdx->definition (vn), -(*eq)->lhs ().operConstant () + offset) << ")";
-                                strIdx = vm;
+                                aLhs << algPrefix << "[(" << (*eq)->lhs ().print (dIdx->definition (vn), -(*eq)->lhs ().operConstant () + offset, false) << ")";
+                                strIdx = Util::getInstance ()->getVarName (vm);
                             }
                             else
                             {
@@ -317,7 +316,7 @@ MMO_Equation_::print (string indent, string lhs, string idx, bool palgs, MMO_Equ
                                     off -= (*eq)->lhs ().operConstant ();
                                 }
                                 aLhs << algPrefix << "[(" << (*eq)->lhs ().print (idx, off) << ")";
-                                strIdx = vn;
+                                strIdx = Util::getInstance ()->getVarName (vn);
                             }
                         }
                         if (!constantValue)
@@ -326,7 +325,7 @@ MMO_Equation_::print (string indent, string lhs, string idx, bool palgs, MMO_Equ
                         }
                         if (range)
                         {
-                            ret.push_back (printRange (idx, vn, indent, (*eq)->lhs ()));
+                            ret.push_back (printRange (idx + "0", vn, indent, (*eq)->lhs ()));
                         }
                         if (variableMod)
                         {

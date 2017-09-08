@@ -220,7 +220,7 @@ public:
      * @return
      */
     string
-    print (string sub = "", int offset = 0, bool modelica = true) const;
+    print (string sub = "", int offset = 0, bool modelica = true, bool map = false) const;
     /**
      *
      * @param var
