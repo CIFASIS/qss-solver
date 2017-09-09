@@ -1,6 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
-#include "/home/joaquin/PHD/qss-solver/testsuite/microgrid///pkg_fede.h"
+#include "/home/joaquin/work/development/qss-solver/src/test-suite/microgrid///pkg_fede.h"
 
 #include "people.c"
 double __fede__get_nextpeople_qss(double x)

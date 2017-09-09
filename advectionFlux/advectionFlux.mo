@@ -24,7 +24,9 @@ end for;
 	experiment(
 		MMO_Description=" Advection Equation.",
 		MMO_Solver=LIQSS2,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={u[N]},
+		Jacobian=Dense,
 		StartTime= 0.0,
 		StopTime= 1,
 		Tolerance={1e-5},

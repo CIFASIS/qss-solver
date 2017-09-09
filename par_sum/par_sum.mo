@@ -37,7 +37,9 @@ algorithm
 	experiment(
 		MMO_Description="",
 		MMO_Solver=QSS3,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={c},
+		Jacobian=Dense,
 		StartTime=0.0,
 		StopTime=1.0,
 		Tolerance={1e-3},

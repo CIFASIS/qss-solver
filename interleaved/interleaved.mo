@@ -11,7 +11,7 @@ model interleaved
 	    der(iL[i]) = (((U/Rs[i]) - iL[i]) * (Rs[i]*Rd[i]/(Rs[i]+Rd[i])) - uC)/L;
 	end for;
 	   
-	algorithm
+algorithm
 	when time >= nextT then
 		lastT:=nextT;
 		nextT:=nextT+T;
@@ -38,7 +38,9 @@ model interleaved
 	experiment(
 		MMO_Description="",
 		MMO_Solver=LIQSS2,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={uC,iL},
+		Jacobian=Dense,
 		StartTime=0.0,
 		StopTime=0.01,
 		Tolerance={1e-3},

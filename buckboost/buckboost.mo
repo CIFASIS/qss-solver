@@ -31,12 +31,14 @@ model buckboost
 		  Rd := ROff;
 		diodeon:=0;
 	end when;
-
 	annotation(
+
 	experiment(
 		MMO_Description="Buck-Boost Circuit.",
 		MMO_Solver=LIQSS2,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={uC,iL},
+		Jacobian=Dense,
 		StartTime=0,
 		StopTime=0.01,
 		Tolerance={ 1e-3},

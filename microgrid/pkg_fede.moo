@@ -3,10 +3,10 @@ FUNCTION
 __fede__get_nextpeople_qss
 ENDFUNCTION
 INCLUDEDIRECTORY
-/home/joaquin/PHD/qss-solver/usr/include
+/home/joaquin/work/development/qss-solver/src/usr/include
 ENDINCLUDEDIRECTORY
 LIBRARYDIRECTORY
-/home/joaquin/PHD/qss-solver/usr/libs
+/home/joaquin/work/development/qss-solver/lib
 ENDLIBRARYDIRECTORY
 ENDDEFINITION
 DEFINITION
@@ -14,9 +14,9 @@ FUNCTION
 __fede__get_npeople_qss
 ENDFUNCTION
 INCLUDEDIRECTORY
-/home/joaquin/PHD/qss-solver/usr/include
+/home/joaquin/work/development/qss-solver/src/usr/include
 ENDINCLUDEDIRECTORY
 LIBRARYDIRECTORY
-/home/joaquin/PHD/qss-solver/usr/libs
+/home/joaquin/work/development/qss-solver/lib
 ENDLIBRARYDIRECTORY
 ENDDEFINITION

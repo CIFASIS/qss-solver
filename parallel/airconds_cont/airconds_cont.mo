@@ -114,6 +114,7 @@ end for;
 		MMO_DT_Min=1,
 		MMO_Output={ptotal},
 		MMO_OutputType=CI_Sampled,
+		Jacobian=Dense,
 		StartTime=0,
 		StopTime=3000,
 		Tolerance={1e-4},

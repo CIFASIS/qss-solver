@@ -10,7 +10,7 @@ model sisthibgen
 		input Real gitmax;
 		input Real hIpvguess;
 		output Real iIpv;
-		external "C" iIpv=ipvsolver(aVpv,bNp,cNs,dTpv,elambdaph,femax,gitmax,hIpvguess) annotation(Include = "#include <../../testsuite/sisthibgen/ipvsolver.c>");
+		external "C" iIpv=ipvsolver(aVpv,bNp,cNs,dTpv,elambdaph,femax,gitmax,hIpvguess) annotation(Include = "#include <../../src/test-suite/sisthibgen/ipvsolver.c>");
 	end ipvsolver;
 //    import gustavo;
 constant Integer NboostSerie=1;
@@ -256,7 +256,9 @@ end for;
 		MMO_Solver=LIQSS2,
 		MMO_MinStep=1e-12,
 		MMO_SymDiff=false,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={Vpv,VpvRef,PotPanel,Ipv},
+		Jacobian=Dense,
 		StartTime=0.0,
 		StopTime=8,
 		Tolerance={1e-3},

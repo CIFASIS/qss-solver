@@ -4,7 +4,7 @@ model spl_neurons_layers
 		input Real layers;
 		input Real neurons;
 		output Real dest;
-		external "C" dest=layermap(ind,layers,neurons) annotation(Include = "#include <../../testsuite/spl_neurons_layers/layermap.c>");
+		external "C" dest=layermap(ind,layers,neurons) annotation(Include = "#include <../../src/test-suite/spl_neurons_layers/layermap.c>");
 	end laymap;
      import math;
 	constant Integer N=1000;
@@ -127,7 +127,9 @@ algorithm
 		MMO_Description="",
 		MMO_Solver=LIQSS3,
 		MMO_SymDiff=false,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={v[N]},
+		Jacobian=Dense,
 		StartTime=0.0,
 		StopTime=1000,
 		Tolerance={1e-3},

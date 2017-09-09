@@ -2,25 +2,25 @@ model ModeloCompletoFinalEscalado
   function fsolve1
     input Real boost_panel1_capacitor1_v;
     output Real boost_panel1_panel_n_i;
-    external "C"boost_panel1_panel_n_i = fsolve1(boost_panel1_capacitor1_v)    annotation(Library={"m","gsl","blas"},Include="#include \"../../testsuite/ModeloCompletoFinalEscalado/ModeloCompletoFinal.c\"
+    external "C"boost_panel1_panel_n_i = fsolve1(boost_panel1_capacitor1_v)    annotation(Library={"m","gsl","blas"},Include="#include \"../../src/test-suite/ModeloCompletoFinalEscalado/ModeloCompletoFinal.c\"
 ");
   end fsolve1;
   function fsolve2
     input Real boost_panel2_capacitor1_v;
     output Real boost_panel2_panel_n_i;
-    external "C"boost_panel2_panel_n_i = fsolve2(boost_panel2_capacitor1_v)    annotation(Library={"m","gsl","blas"},Include="#include \"../../testsuite/ModeloCompletoFinalEscalado/ModeloCompletoFinal.c\"
+    external "C"boost_panel2_panel_n_i = fsolve2(boost_panel2_capacitor1_v)    annotation(Library={"m","gsl","blas"},Include="#include \"../../src/test-suite/ModeloCompletoFinalEscalado/ModeloCompletoFinal.c\"
 ");
   end fsolve2;
   function fsolve3
     input Real algSuperv_Pref_FC;
     output Real fCellAndElectro_fuellCell_IFC;
-    external "C"fCellAndElectro_fuellCell_IFC = fsolve3(algSuperv_Pref_FC)    annotation(Library={"m","gsl","blas"},Include="#include \"../../testsuite/ModeloCompletoFinalEscalado/ModeloCompletoFinal.c\"
+    external "C"fCellAndElectro_fuellCell_IFC = fsolve3(algSuperv_Pref_FC)    annotation(Library={"m","gsl","blas"},Include="#include \"../../src/test-suite/ModeloCompletoFinalEscalado/ModeloCompletoFinal.c\"
 ");
   end fsolve3;
   function fsolve4
     input Real fCellAndElectro_electComp_electrolizadorAnda1_u;
     output Real fCellAndElectro_electComp_electrolizadorAnda1_Ucell;
-    external "C"fCellAndElectro_electComp_electrolizadorAnda1_Ucell = fsolve4(fCellAndElectro_electComp_electrolizadorAnda1_u)    annotation(Library={"m","gsl","blas"},Include="#include \"../../testsuite/ModeloCompletoFinalEscalado/ModeloCompletoFinal.c\"
+    external "C"fCellAndElectro_electComp_electrolizadorAnda1_Ucell = fsolve4(fCellAndElectro_electComp_electrolizadorAnda1_u)    annotation(Library={"m","gsl","blas"},Include="#include \"../../src/test-suite/ModeloCompletoFinalEscalado/ModeloCompletoFinal.c\"
 ");
   end fsolve4;
   Real ground_p_i;
@@ -717,7 +717,9 @@ algorithm
 		MMO_Description="",
 		MMO_Solver=LIQSS2,
 		MMO_SymDiff=false,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={batteryAndBockBoost_battery_SoC,algSuperv_EB,batteryAndBockBoost_u},
+		Jacobian=Dense,
 		StartTime=0.0,
 		StopTime=3,
 		Tolerance={1e-3},

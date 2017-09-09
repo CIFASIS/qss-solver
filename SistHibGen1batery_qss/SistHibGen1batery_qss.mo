@@ -3,28 +3,28 @@ model SistHibGen1batery_qss
     input Real boost_panel1_capacitor1_v;
     output Real boost_panel1_panel_exponente;
     output Real boost_panel1_panel_n_i;
-    external "C" fsolve1(boost_panel1_capacitor1_v,boost_panel1_panel_exponente,boost_panel1_panel_n_i)    annotation(Library={"m","gsl","blas"},Include="#include \"../../testsuite/SistHibGen1batery_qss/SistHibGen1batery.c\"
+    external "C" fsolve1(boost_panel1_capacitor1_v,boost_panel1_panel_exponente,boost_panel1_panel_n_i)    annotation(Library={"m","gsl","blas"},Include="#include \"../../src/test-suite/SistHibGen1batery_qss/SistHibGen1batery.c\"
 ");
   end fsolve1;
   function fsolve2
     input Real boost_panel2_capacitor1_v;
     output Real boost_panel2_panel_exponente;
     output Real boost_panel2_panel_n_i;
-    external "C" fsolve2(boost_panel2_capacitor1_v,boost_panel2_panel_exponente,boost_panel2_panel_n_i)    annotation(Library={"m","gsl","blas"},Include="#include \"../../testsuite/SistHibGen1batery_qss/SistHibGen1batery.c\"
+    external "C" fsolve2(boost_panel2_capacitor1_v,boost_panel2_panel_exponente,boost_panel2_panel_n_i)    annotation(Library={"m","gsl","blas"},Include="#include \"../../src/test-suite/SistHibGen1batery_qss/SistHibGen1batery.c\"
 ");
   end fsolve2;
   function fsolve3
     input Real boost_panel3_capacitor1_v;
     output Real boost_panel3_panel_exponente;
     output Real boost_panel3_panel_n_i;
-    external "C" fsolve3(boost_panel3_capacitor1_v,boost_panel3_panel_exponente,boost_panel3_panel_n_i)    annotation(Library={"m","gsl","blas"},Include="#include \"../../testsuite/SistHibGen1batery_qss/SistHibGen1batery.c\"
+    external "C" fsolve3(boost_panel3_capacitor1_v,boost_panel3_panel_exponente,boost_panel3_panel_n_i)    annotation(Library={"m","gsl","blas"},Include="#include \"../../src/test-suite/SistHibGen1batery_qss/SistHibGen1batery.c\"
 ");
   end fsolve3;
   function fsolve4
     input Real boost_panel4_capacitor1_v;
     output Real boost_panel4_panel_exponente;
     output Real boost_panel4_panel_n_i;
-    external "C" fsolve4(boost_panel4_capacitor1_v,boost_panel4_panel_exponente,boost_panel4_panel_n_i)    annotation(Library={"m","gsl","blas"},Include="#include \"../../testsuite/SistHibGen1batery_qss/SistHibGen1batery.c\"
+    external "C" fsolve4(boost_panel4_capacitor1_v,boost_panel4_panel_exponente,boost_panel4_panel_n_i)    annotation(Library={"m","gsl","blas"},Include="#include \"../../src/test-suite/SistHibGen1batery_qss/SistHibGen1batery.c\"
 ");
   end fsolve4;
   Real ground_p_i;
@@ -880,7 +880,9 @@ algorithm
 		MMO_Description="",
 		MMO_Solver=LIQSS2,
 		MMO_SymDiff=false,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={boost_panel1_mmt1_potActFiltrada,batteryAndBockBoost1_voltageControl_intErr,batteryAndBockBoost1_battery_Qt,batteryAndBockBoost1_battery1_Qt,batteryAndBockBoost1_battery2_Qt,boost_panel2_mmt1_potActFiltrada,boost_panel3_mmt1_potActFiltrada,boost_panel4_mmt1_potActFiltrada,capacitor2_v,boost_panel4_capacitor1_v,boost_panel4_boost1_inductor_i,boost_panel3_capacitor1_v,boost_panel3_boost1_inductor_i,boost_panel2_capacitor1_v,boost_panel2_boost1_inductor_i,boost_panel1_capacitor1_v,boost_panel1_boost1_inductor_i,batteryAndBockBoost1_bookBoostPWMcontrol1_intErr,batteryAndBockBoost1_bookBoostDB_inductor_i},
+		Jacobian=Dense,
 		StartTime=0.0,
 		StopTime=0.5,
 		Tolerance={1e-5},
