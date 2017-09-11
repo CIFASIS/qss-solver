@@ -104,6 +104,7 @@ update-repos:
 	@cd mmoc && git pull
 	@cd gui && git pull
 	@cd usr && git pull
+	@cd test-suite && git pull
 	@cd interfaces/sbml &&  git pull
 	@cd $(ROOT)/models &&  git pull
 	@cd $(ROOT)/packages &&  git pull
