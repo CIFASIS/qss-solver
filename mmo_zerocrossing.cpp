@@ -133,7 +133,6 @@ MMOZeroCrossing::_parseZeroCrossing (ASTNode *node, ASTNode *cond)
 {
     if (node->getType () == AST_LOGICAL_AND)
     {
-        cout << "Original: " << MMOUtils::getInstance ()->getExp (node) << endl;
         int childs = node->getNumChildren (), i;
         for (i = 0; i < childs; i++)
         {
@@ -143,7 +142,6 @@ MMOZeroCrossing::_parseZeroCrossing (ASTNode *node, ASTNode *cond)
                 cond = new ASTNode (AST_LOGICAL_AND);
             }
             cond->addChild (c);
-            cout << "Condicion: " << MMOUtils::getInstance ()->getExp (c) << endl;
             _parseLogicalOperators (c, cond);
         }
     }
@@ -292,7 +290,6 @@ MMOZeroCrossing::first ()
     if (_it->second != NULL)
     {
         cond = utils->getExp (_it->second);
-        cout << "Busca condicion: " << cond << endl;
     }
     ret = make_pair (utils->getExp (_it->first), cond);
     return (ret);
@@ -312,7 +309,6 @@ MMOZeroCrossing::next ()
     if (_it->second != NULL)
     {
         cond = utils->getExp (_it->second);
-        cout << "Busca condicion: " << cond << endl;
     }
     ret = make_pair (utils->getExp (_it->first), cond);
     return (ret);
