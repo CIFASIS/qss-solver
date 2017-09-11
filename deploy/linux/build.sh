@@ -24,27 +24,27 @@ rm -rf qss-solver-amd64.deb
 cd ../../
 ARCH=`uname -m`
 echo "Retrieving latest from Git";
-git pull
+./deploy/common/update-repos.sh
 head ./doc/version.major -c 4 > vm
 git rev-list --count HEAD > rvn
 cat vm rvn > version
 vversion=`cat version`
 git tag -a ${vversion} -m "Version ${vversion}"
-./gitchangelog.py >> ./doc/ChangeLog
+./gitchangelog.py >> ChangeLog
 REV=`cat rvn`
 ./deploy/linux/setRevision.sh ./deploy/linux/qss-solver.ini $REV
 VER=`cat version`
 echo "Building QSS Solver DEB package for $ARCH version $VER";
 echo "Building Binaries";
 cd ./src
-make clean
-make 
+#make clean
+#make 
 cd ..
 rm -rf tmp_deb
 rm -rf tmp
 mkdir tmp_deb
 mkdir tmp
-git checkout-index --prefix=tmp/ -a
+./deploy/common/deploy-repos.sh tmp
 cp -r ./tmp/deploy/linux/deb/* ./tmp_deb/
 chmod 0755 tmp_deb/DEBIAN/post*
 mkdir ./tmp_deb/opt
@@ -72,10 +72,10 @@ cp src/tools/partitioners/hmetis/khmetis ./tmp_deb/opt/qss-solver/bin/
 cp deploy/linux/qss-solver.ini ./tmp_deb/opt/qss-solver/bin/qss-solver.ini
 cp deploy/images/integrator.svg ./tmp_deb/opt/qss-solver/bin/
 chmod 0755 `find tmp_deb/opt/qss-solver/bin`
-cp doc/COPYING ./tmp_deb/opt/qss-solver/
-cp doc/INSTALL ./tmp_deb/opt/qss-solver/
-cp doc/README.txt ./tmp_deb/opt/qss-solver/
-cp doc/ChangeLog ./tmp_deb/opt/qss-solver/
+cp LICENSE ./tmp_deb/opt/qss-solver/
+cp INSTALL ./tmp_deb/opt/qss-solver/
+cp README.md ./tmp_deb/opt/qss-solver/
+cp ChangeLog ./tmp_deb/opt/qss-solver/
 cp version ./tmp_deb/opt/qss-solver/
 cp -r ./tmp/doc ./tmp_deb/opt/qss-solver/
 cp -r ./tmp/models ./tmp_deb/opt/qss-solver/
