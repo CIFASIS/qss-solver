@@ -30,7 +30,7 @@ git rev-list --count HEAD > rvn
 cat vm rvn > version
 vversion=`cat version`
 git tag -a ${vversion} -m "Version ${vversion}"
-./gitchangelog.py >> ChangeLog
+./gitchangelog.py >> CHANGELOG
 REV=`cat rvn`
 ./deploy/linux/setRevision.sh ./deploy/linux/qss-solver.ini $REV
 VER=`cat version`
@@ -75,28 +75,27 @@ chmod 0755 `find tmp_deb/opt/qss-solver/bin`
 cp LICENSE ./tmp_deb/opt/qss-solver/
 cp INSTALL ./tmp_deb/opt/qss-solver/
 cp README.md ./tmp_deb/opt/qss-solver/
-cp ChangeLog ./tmp_deb/opt/qss-solver/
+cp CHANGELOG ./tmp_deb/opt/qss-solver/
 cp version ./tmp_deb/opt/qss-solver/
 cp -r ./tmp/doc ./tmp_deb/opt/qss-solver/
 cp -r ./tmp/models ./tmp_deb/opt/qss-solver/
 cp -r ./tmp/usr/* ./tmp_deb/opt/qss-solver/usr/
 cp -r ./tmp/packages ./tmp_deb/opt/qss-solver/
 cp -r ./tmp/src ./tmp_deb/opt/qss-solver/
-cp src/libs/*.a ./tmp_deb/opt/qss-solver/src/libs
-cp usr/libs/*.a ./tmp_deb/opt/qss-solver/usr/libs
+cp lib/*.a ./tmp_deb/opt/qss-solver/lib
 if [ "$ARCH" == "i686" ]; then
 	cp /usr/lib/libsbml.so.5.13.0 ./tmp_deb/opt/qss-solver/src/libs/libsbml.so.5
-	cp src/tools/partitioners/patoh/Linux-i386/libpatoh.a ./tmp_deb/opt/qss-solver/src/libs/libpatoh.a
-	cp src/tools/partitioners/metis/Linux-i386/libmetis.a ./tmp_deb/opt/qss-solver/src/libs/libmetis.a
-	cp src/tools/partitioners/scotch/Linux-i386/libscoth.a ./tmp_deb/opt/qss-solver/src/libs/libscotch.a
-	cp src/tools/partitioners/scotch/Linux-i386/libscotherr.a ./tmp_deb/opt/qss-solver/src/libs/libscotcherr.a
+	cp src/engine/3rd-party/partitioners/patoh/Linux-i386/libpatoh.a ./tmp_deb/opt/qss-solver/lib/libpatoh.a
+	cp src/engine/3rd-party/tools/partitioners/metis/Linux-i386/libmetis.a ./tmp_deb/opt/qss-solver/lib/libmetis.a
+	cp src/engine/3rd-party/tools/partitioners/scotch/Linux-i386/libscoth.a ./tmp_deb/opt/qss-solver/lib/libscotch.a
+	cp src/engine/3rd-party/tools/partitioners/scotch/Linux-i386/libscotherr.a ./tmp_deb/opt/qss-solver/lib/libscotcherr.a
 fi
 if [ "$ARCH" == "x86_64" ]; then
-	cp /usr/lib64/libsbml.so.5.10.2 ./tmp_deb/opt/qss-solver/src/libs/libsbml.so.5
-	cp src/tools/partitioners/patoh/Linux-x86_64/libpatoh.a ./tmp_deb/opt/qss-solver/src/libs/libpatoh.a
-	cp src/tools/partitioners/metis/Linux-x86_64/libmetis.a ./tmp_deb/opt/qss-solver/src/libs/libmetis.a
-	cp src/tools/partitioners/scotch/Linux-x86_64/libscotch.a ./tmp_deb/opt/qss-solver/src/libs/libscotch.a
-	cp src/tools/partitioners/scotch/Linux-x86_64/libscotcherr.a ./tmp_deb/opt/qss-solver/src/libs/libscotcherr.a
+	cp /usr/lib/libsbml.so.5.12.0 ./tmp_deb/opt/qss-solver/lib/libsbml.so.5
+	cp src/engine/3rd-party/tools/partitioners/patoh/Linux-x86_64/libpatoh.a ./tmp_deb/opt/qss-solver/lib/libpatoh.a
+	cp src/engine/3rd-party/tools/partitioners/metis/Linux-x86_64/libmetis.a ./tmp_deb/opt/qss-solver/lib/libmetis.a
+	cp src/engine/3rd-party/tools/partitioners/scotch/Linux-x86_64/libscotch.a ./tmp_deb/opt/qss-solver/lib/libscotch.a
+	cp src/engine/3rd-party/tools/partitioners/scotch/Linux-x86_64/libscotcherr.a ./tmp_deb/opt/qss-solver/lib/libscotcherr.a
 fi
 chmod 0644 `find tmp_deb/ -iname *.cpp`
 chmod 0644 `find tmp_deb/ -iname *.c`
@@ -107,7 +106,7 @@ chmod 0644 `find tmp_deb/ -iname *.tex`
 chmod 0644 `find tmp_deb/opt/qss-solver/doc/ -type f`
 chmod 0644 `find tmp_deb/opt/qss-solver/src/ -type f`
 chmod 0644 `find tmp_deb/opt/qss-solver/packages/ -type f`
-chmod 0644 `find tmp_deb/opt/qss-solver/usr/ -type f`
+chmod 0644 `find tmp_deb/opt/qss-solver/src/usr/ -type f`
 chmod 0755 `find tmp_deb/ -type d`
 fakeroot dpkg -b tmp_deb qss-solver.deb
 if [ "$ARCH" == "i686" ]; then
