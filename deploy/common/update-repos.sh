@@ -19,6 +19,8 @@
 # Root folder parameter.
 root=$1
 
+deploy_path=`pwd`
+cd ../../
 base=`pwd`
 engine=src/engine
 mmoc=src/mmoc
@@ -43,3 +45,4 @@ git-pull ${gui}
 git-pull ${usr}
 git-pull ${test_suite}
 git-pull ${interfaces}
+cd ${deploy_path}

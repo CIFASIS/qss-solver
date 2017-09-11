@@ -19,6 +19,8 @@
 # Root folder parameter.
 root=$1
 
+deploy_path=`pwd`
+cd ../../
 base=`pwd`
 root_path=${base}/${root}
 engine=src/engine
@@ -45,3 +47,4 @@ checkout-index ${gui}
 checkout-index ${interfaces}
 checkout-index ${models}
 checkout-index ${packages}
+cd ${deploy_path}
