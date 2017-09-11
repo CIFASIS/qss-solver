@@ -26,7 +26,7 @@ head ./doc/version.major -c 4 > vm
 git rev-list --count HEAD > rvn
 cat vm rvn > version
 REV=`cat rvn`
-./deploy/linux/setRevision.sh ./deploy/mac/qss-solver.ini $REV
+./deploy/linux/setRevision.sh ./deploy/osx/qss-solver.ini $REV
 VER=`cat version`
 echo "Done"
 echo "Building QSS Solver MAC bundle version $VER";
@@ -45,13 +45,13 @@ rm -rf tmp
 mkdir tmp
 git checkout-index --prefix=tmp/ -a
 cd ./src
-make OS=mac  
+make OS=osx  
 cd ..
-cp -r ./tmp/deploy/mac/scripts ./bin/qss-solver.app/Contents/MacOS/
+cp -r ./tmp/deploy/osx/scripts ./bin/qss-solver.app/Contents/MacOS/
 chmod +x ./bin/qss-solver.app/Contents/MacOS/scripts/*
 cp bin/mmoc  ./bin/qss-solver.app/Contents/MacOS/ 
 cp bin/translate-sbml  ./bin/qss-solver.app/Contents/MacOS/ 
-cp deploy/mac/qss-solver.ini ./bin/qss-solver.app/Contents/MacOS/qss-solver.ini
+cp deploy/osx/qss-solver.ini ./bin/qss-solver.app/Contents/MacOS/qss-solver.ini
 cp doc/COPYING  ./bin/qss-solver.app/Contents/MacOS/ 
 cp doc/INSTALL  ./bin/qss-solver.app/Contents/MacOS/ 
 cp doc/README.txt  ./bin/qss-solver.app/Contents/MacOS/ 
@@ -70,5 +70,5 @@ rm -rf qss-solver.app/Contents/Frameworks/*
 rm -rf qss-solver.app/Contents/Resources/qt.conf
 macdeployqt qss-solver.app -verbose=2 -dmg
 cd ..
-mv bin/qss-solver.dmg deploy/mac/
+mv bin/qss-solver.dmg deploy/osx/
 rm rvn vm version
