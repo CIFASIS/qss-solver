@@ -100,6 +100,7 @@ clean-repos:
 	@rm -rf $(ROOT)/packages
 
 update-repos:
+	git pull
 	@cd engine && git pull 
 	@cd mmoc && git pull
 	@cd gui && git pull
