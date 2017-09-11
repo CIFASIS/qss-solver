@@ -22,7 +22,7 @@ LIB 		 		:= -lsbml
 ifeq ($(OS),win32)
 LIB 				:= -L/usr/local/lib -lsbml -lxml2
 endif
-CXXFLAGS 			:= -Wall -Wabi-tag -lm -msse2 -mfpmath=sse -D_GLIBCXX_USE_CXX11_ABI=0
+CXXFLAGS 			:= -Wall -Wabi-tag -lm -msse2 -mfpmath=sse 
 ifeq ($(DEBUG),True)
 CXXFLAGS 			:= -g
 endif
