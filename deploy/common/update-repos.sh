@@ -19,8 +19,6 @@
 # Root folder parameter.
 root=$1
 
-deploy_path=`pwd`
-cd ../../
 base=`pwd`
 engine=src/engine
 mmoc=src/mmoc
@@ -30,7 +28,7 @@ gui=src/gui
 interfaces=src/interfaces/sbml
 models=models
 packages=packages
-
+echo $deploy_path
 function git-pull {
     cd ${base}; cd $1
     git pull  
@@ -45,4 +43,3 @@ git-pull ${gui}
 git-pull ${usr}
 git-pull ${test_suite}
 git-pull ${interfaces}
-cd ${deploy_path}
