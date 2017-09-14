@@ -1,13 +1,11 @@
 # Target OS variables
-OS ?= unix
+OS = $(uname)
 DEBUG ?= False
 CORES ?= 1
+ARCH = $(uname -m)
 
 # The Directories, Source, Includes, Objects, Binary 
 ROOT   	:= ..
-ifeq ($(OS),unix)
-ARCH = $(shell $(ROOT)/deploy/linux/scripts/print-arch.sh)
-endif
 
 # Repositories location.
 
@@ -121,11 +119,11 @@ install:
 	@install $(ROOT)/src/gui/usr/bin/qss-solver $(ROOT)/bin/
 	@echo "Installing user libraries."
 	ln -s $(ROOT)/src/usr/lib/* $(ROOT)/lib/
-ifeq ($(OS),unix)
+ifeq ($(OS),Linux)
 	@install $(ROOT)/deploy/linux/scripts/* $(ROOT)/bin/
 	@install $(ROOT)/deploy/linux/qss-solver.ini $(ROOT)/bin/
 	@install $(ROOT)/src/engine/3rd-party/partitioners/hmetis/khmetis $(ROOT)/bin/
-ifeq ($(AklRCH),i686)
+ifeq ($(ARCH),i686)
 	@install $(ROOT)/src/engine/3rd-party/partitioners/patoh/Linux-i386/libpatoh.a $(ROOT)/lib/
 	@install $(ROOT)/src/engine/3rd-party/partitioners/metis/Linux-i386/libmetis.a $(ROOT)/lib/
 	@install $(ROOT)/src/engine/3rd-party/partitioners/scotch/Linux-i386/libscotch.a $(ROOT)/lib/
@@ -157,9 +155,8 @@ clean:
 	@cd interfaces/sbml && $(MAKE) clean     
 
 help:
-	@echo "make DEBUG=<True|False> OS=<unix|win|osx> CORES=<n>"
+	@echo "make DEBUG=<True|False> CORES=<n>"
 	@echo "Default values:"
 	@echo ""
 	@echo "DEBUG=False"
-	@echo "OS=unix"
 	@echo "CORES=1"
