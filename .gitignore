@@ -10,6 +10,11 @@ lib/
 models/
 packages/
 
+# Generated packages.
+deploy/linux/*.deb
+deploy/osx/*.dmg
+deploy/windows/*.exe
+
 # Solver source code submodules.
 src/usr/
 src/engine/
