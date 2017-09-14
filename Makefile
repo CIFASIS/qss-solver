@@ -1,4 +1,4 @@
-OS ?= unix
+OS = $(uname)
 DEBUG ?= False
 ENGINE ?= .
 
@@ -43,9 +43,8 @@ clean:
 	$(RMS) $(OBJ) $(TARGET)  
 
 help:
-	echo "make DEBUG=<True|False> SO=<unix|win32|osx> ENGINE=<qss-engine-root-dir>"
+	echo "make DEBUG=<True|False> ENGINE=<qss-engine-root-dir>"
 	echo "Default values:"
 	echo ""
-	echo "DEBUG=False"
 	echo "OS=unix"
 	echo "ENGINE=."
