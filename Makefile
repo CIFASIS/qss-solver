@@ -1,6 +1,7 @@
 # Target OS variables
-OS ?= unix
+OS = $(uname)
 DEBUG ?= False
+ARCH= $(uname -m)
 
 # Compiler and Linker
 CC          := gcc
@@ -22,6 +23,7 @@ BUILDDIR    := $(USRDIR)/obj/debug
 endif
 LIBDIR   	:= $(USRDIR)/lib
 INCDIR   	:= $(USRDIR)/include
+KLULIBDIR 	:= /usr/lib/$(ARCH)-linux-gnu/ 
 SRCEXT      := c
 DEPEXT      := d
 OBJEXT      := o
@@ -37,6 +39,7 @@ LIBTIMESTEP := $(LIBDIR)/libtimestepd.a
 endif
 
 # Flags, Libraries and Includes
+ARCH 		:=(uname -m)
 CFLAGS 		:= -Wall -msse2 -mfpmath=sse -O2 
 ifeq ($(DEBUG),True)
 CFLAGS 		:= -Wall -msse2 -mfpmath=sse -g -DDEBUG  
@@ -91,7 +94,7 @@ $(LIBCVODE):
 $(LIBIDA):
 	tar xvzf $(3RDPARTYDIR)/ida/ida-2.9.0.tar.gz
 	mkdir -p ./ida-2.9.0/build
-	cd ./ida-2.9.0/build; cmake .. -DLAPACK_ENABLE=ON -DCMAKE_BUILD_TYPE=Release  -DKLU_ENABLE=ON -DKLU_INCLUDE_DIR=/usr/include/suitesparse -DKLU_LIBRARY_DIR=/usr/lib/x86_64-linux-gnu/ -DCMAKE_INSTALL_PREFIX=/usr
+	cd ./ida-2.9.0/build; cmake .. -DLAPACK_ENABLE=ON -DCMAKE_BUILD_TYPE=Release  -DKLU_ENABLE=ON -DKLU_INCLUDE_DIR=/usr/include/suitesparse -DKLU_LIBRARY_DIR=$(KLULIBDIR) -DCMAKE_INSTALL_PREFIX=/usr
 	make -C ./ida-2.9.0/build install DESTDIR=`pwd`
 	rm -rf ./ida-2.9.0
 
@@ -122,6 +125,7 @@ $(LIBTIMESTEP): $(DASSLOBJ) $(DOPRIOBJ)
 	@ar rvs $(@) $(DASSLOBJ) $(DOPRIOBJ)
 
 $(LIBQSS): $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ) 
+	@echo $ARCH
 	@ar rsc $@ $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ)
 
 $(COMMONOBJ): | $(BUILDDIR)
@@ -151,8 +155,7 @@ clean:
 	$(RMS) $(DEPS) $(TARGET) $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ) $(DASSLOBJ) $(DOPRIOBJ) $(USRDIR)
 
 help:
-	@echo "make DEBUG=<True|False> OS=<unix|win|osx>"
+	@echo "make DEBUG=<True|False>"
 	@echo "Default value:"
 	@echo ""
 	@echo "DEBUG=False"
-	@echo "OS=unix"
