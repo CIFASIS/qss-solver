@@ -1,5 +1,5 @@
 # Target OS variables
-OS ?= unix
+OS = $(uname)
 DEBUG ?= False
 
 # Compiler and Linker
@@ -147,8 +147,7 @@ else
 endif
 
 help:
-	@echo "make DEBUG=<True|False> OS=<unix|win32|osx>"
+	@echo "make DEBUG=<True|False>"
 	@echo "Default values:"
 	@echo ""
 	@echo "DEBUG=False"
-	@echo "OS=unix"
