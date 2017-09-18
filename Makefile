@@ -1,5 +1,7 @@
 # Makefile config variables
+ifneq ($(OS), Windows_NT)
 OS = $(uname)
+endif
 DEBUG ?= False
 
 # Compiler and Linker
@@ -19,7 +21,7 @@ TARGET      := $(BINDIR)/translate-sbml
 
 # Flags, Libraries and Includes
 LIB 		 		:= -lsbml
-ifeq ($(OS),MINGW32_NT-6.1)
+ifeq ($(OS),Windows_NT)
 LIB 				:= -L/usr/local/lib -lsbml -lxml2
 endif
 CXXFLAGS 			:= -Wall -Wabi-tag -lm -msse2 -mfpmath=sse 
@@ -27,7 +29,7 @@ ifeq ($(DEBUG),True)
 CXXFLAGS 			:= -g
 endif
 INC 				:= -I. 
-ifeq ($(OS),MINGW32_NT-6.1)
+ifeq ($(OS),Windows_NT)
 INC 				+= -I/SBML/win32/include
 endif
 RMS 				:= rm -rf
