@@ -80,18 +80,30 @@ cp -r ./tmp/doc ./tmp_deb/opt/qss-solver/
 cp -r ./tmp/models ./tmp_deb/opt/qss-solver/
 cp -r ./tmp/packages ./tmp_deb/opt/qss-solver/
 cp -r ./tmp/src/engine ./tmp_deb/opt/qss-solver/src/
-rm -rf ./tmp_deb/opt/qss-solver/src/engine/3rd-party
 cp -r ./tmp/src/mmoc ./tmp_deb/opt/qss-solver/src/
 cp -r ./tmp/src/gui ./tmp_deb/opt/qss-solver/src/
 cp -r ./tmp/src/interfaces ./tmp_deb/opt/qss-solver/src/
 cp -r ./tmp/src/usr ./tmp_deb/opt/qss-solver/src/
 cp lib/*.a ./tmp_deb/opt/qss-solver/lib
+# Clean generated code.
+rm -rf ./tmp_deb/opt/qss-solver/src/engine/3rd-party
+rm -rf ./tmp_deb/opt/qss-solver/src/engine/usr/obj
+rm -rf ./tmp_deb/opt/qss-solver/src/mmoc/usr/obj
+rm -rf ./tmp_deb/opt/qss-solver/src/mmoc/usr/bin
+rm -rf ./tmp_deb/opt/qss-solver/src/mmoc/usr/share
+rm -rf ./tmp_deb/opt/qss-solver/src/mmoc/usr/lib
+rm -rf ./tmp_deb/opt/qss-solver/src/mmoc/usr/libexec
+rm -rf ./tmp_deb/opt/qss-solver/src/usr/src/*.o
+rm -rf ./tmp_deb/opt/qss-solver/src/usr/lib
+rm -rf ./tmp_deb/opt/qss-solver/src/interfaces/sbml/usr
+rm -rf ./tmp_deb/opt/qss-solver/src/gui/usr
+
 if [ "$ARCH" == "i686" ]; then
-	cp /usr/lib/libsbml.so.5.13.0 ./tmp_deb/opt/qss-solver/src/libs/libsbml.so.5
+	cp /usr/lib/libsbml.so.5.12.0 ./tmp_deb/opt/qss-solver/lib/libsbml.so.5
 	cp src/engine/3rd-party/partitioners/patoh/Linux-i386/libpatoh.a ./tmp_deb/opt/qss-solver/lib/libpatoh.a
 	cp src/engine/3rd-party/partitioners/metis/Linux-i386/libmetis.a ./tmp_deb/opt/qss-solver/lib/libmetis.a
-	cp src/engine/3rd-party/partitioners/scotch/Linux-i386/libscoth.a ./tmp_deb/opt/qss-solver/lib/libscotch.a
-	cp src/engine/3rd-party/partitioners/scotch/Linux-i386/libscotherr.a ./tmp_deb/opt/qss-solver/lib/libscotcherr.a
+	cp src/engine/3rd-party/partitioners/scotch/Linux-i386/libscotch.a ./tmp_deb/opt/qss-solver/lib/libscotch.a
+	cp src/engine/3rd-party/partitioners/scotch/Linux-i386/libscotcherr.a ./tmp_deb/opt/qss-solver/lib/libscotcherr.a
 fi
 if [ "$ARCH" == "x86_64" ]; then
 	cp /usr/lib/libsbml.so.5.12.0 ./tmp_deb/opt/qss-solver/lib/libsbml.so.5
