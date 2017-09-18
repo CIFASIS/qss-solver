@@ -1,6 +1,6 @@
 # Target OS variables
 ifneq ($(OS), Windows_NT)
-OS = $(uname)
+OS = $(shell uname)
 endif
 DEBUG ?= False
 
@@ -32,7 +32,7 @@ TARGET      := $(BINDIR)/mmoc
 
 # Flags, Libraries and Includes
 LIB 		:= -L$(LIBDIR) -lginac -lcln -lgmp 
-ifeq ($(OS), Windows_NTMINGW32_NT-6.1)
+ifeq ($(OS), Windows_NT)
 LIB 		:= -L/local/lib -lginac -lcln -lgmp
 endif
 CXXFLAGS 	:= -Wno-write-strings -Wall -std=c++11
@@ -79,11 +79,16 @@ default: mmoc
 libginac 	:= $(LIBDIR)/libginac.a 
 
 $(libginac):
+ifeq ($(OS), Linux)
 	echo "Building deterministic GiNaC" 
 	cd $(3RDPARTYDIR)/ginac; tar xvjf ginac-1.7.0.tar.bz2
 	cd $(3RDPARTYDIR)/ginac/ginac-1.7.0; ./configure --prefix=`pwd`/../../../usr --disable-shared; make -j 4 install
 	rm -rf $(3RDPARTYDIR)/ginac/ginac-1.7.0
-  
+else
+	echo $(OS)
+	echo "Using system provided GiNaC library"
+endif
+
 $(BUILDDIR)/ast_%.o : $(ASTDIR)/%.cpp $(ASTDIR)/%.h $(PARSERDIR)/mocc_parser.cpp $(PARSERDIR)/mocc_scanner.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS)
