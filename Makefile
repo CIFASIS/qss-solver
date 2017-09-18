@@ -1,5 +1,7 @@
 # Target OS variables
+ifneq ($(OS), Windows_NT)
 OS = $(uname)
+endif
 DEBUG ?= False
 ARCH= $(uname -m)
 
@@ -46,7 +48,7 @@ CFLAGS 		:= -Wall -msse2 -mfpmath=sse -g -DDEBUG
 endif
 LIB         := -lm 
 INC         := -I$(COMMONDIR) -I$(SRCDIR) -I$(INCDIR)
-ifeq ($(OS),win32)
+ifeq ($(OS), Windows_NT)
 INC         += -I/GnuWin32/include
 endif
 RMS 		:= rm -rf
@@ -90,6 +92,7 @@ $(LIBCVODE):
 	cd ./cvode-2.9.0/build; cmake .. -DLAPACK_ENABLE=ON -DCMAKE_BUILD_TYPE=Release  -DKLU_ENABLE=ON -DKLU_INCLUDE_DIR=/usr/include/suitesparse -DKLU_LIBRARY_DIR=/usr/lib/x86_64-linux-gnu/  -DCMAKE_INSTALL_PREFIX=/usr
 	make -C ./cvode-2.9.0/build install DESTDIR=`pwd`
 	rm -rf ./cvode-2.9.0
+	rm -rf ./examples
 
 $(LIBIDA):
 	tar xvzf $(3RDPARTYDIR)/ida/ida-2.9.0.tar.gz
@@ -97,6 +100,7 @@ $(LIBIDA):
 	cd ./ida-2.9.0/build; cmake .. -DLAPACK_ENABLE=ON -DCMAKE_BUILD_TYPE=Release  -DKLU_ENABLE=ON -DKLU_INCLUDE_DIR=/usr/include/suitesparse -DKLU_LIBRARY_DIR=$(KLULIBDIR) -DCMAKE_INSTALL_PREFIX=/usr
 	make -C ./ida-2.9.0/build install DESTDIR=`pwd`
 	rm -rf ./ida-2.9.0
+	rm -rf ./examples
 
 $(BUILDDIR)/%.o : $(COMMONDIR)/%.c
 	$(CC) $(INC) $(CFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
