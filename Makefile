@@ -1,5 +1,7 @@
 # Target OS variables
+ifneq ($(OS), Windows_NT)
 OS = $(uname)
+endif
 DEBUG ?= False
 
 # Compiler and Linker
@@ -30,7 +32,7 @@ TARGET      := $(BINDIR)/mmoc
 
 # Flags, Libraries and Includes
 LIB 		:= -L$(LIBDIR) -lginac -lcln -lgmp 
-ifeq ($(OS),MINGW32_NT-6.1)
+ifeq ($(OS), Windows_NTMINGW32_NT-6.1)
 LIB 		:= -L/local/lib -lginac -lcln -lgmp
 endif
 CXXFLAGS 	:= -Wno-write-strings -Wall -std=c++11
@@ -38,7 +40,7 @@ ifeq ($(DEBUG),True)
 CXXFLAGS 	+= -DYY_MCC_Parser_DEBUG -g  
 endif
 INC         := -I$(SRCDIR) -I$(INCDIR)
-ifeq ($(OS),MINGW32_NT-6.1)
+ifeq ($(OS), Windows_NT)
 INC 		+= -I/local/include -I/GnuWin32/include
 endif
 RMS 		:= rm -rf
@@ -105,7 +107,7 @@ $(BUILDDIR)/util_%.o : $(UTILDIR)/%.cpp
 mmoc: | $(libginac) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) 
 	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(LIB) 
 
-ifneq ($(OS),MINGW32_NT-6.1)
+ifneq ($(OS), Windows_NT)
 $(PARSERDIR)/mocc_parser.cpp: parser/mocc.y
 	$(BISON) -t -d -v -hparser/mocc_parser.h -o parser/mocc_parser.cpp parser/mocc.y
 
@@ -140,7 +142,7 @@ doc:
 .PHONY: clean
 
 clean:
-ifeq ($(OS),MINGW32_NT-6.1)
+ifeq ($(OS), Windows_NT)
 	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ)
 else
 	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h usr
