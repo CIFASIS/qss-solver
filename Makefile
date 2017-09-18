@@ -1,5 +1,5 @@
 # Makefile config variables
-OS ?= unix
+OS = $(uname)
 DEBUG ?= False
 
 # Compiler and Linker
@@ -70,8 +70,7 @@ clean:
 	$(RMS) $(OBJ) $(TARGET)
 
 help:
-	@echo "make DEBUG=<True|False> OS=<unix|win32|osx>"
+	@echo "make DEBUG=<True|False>"
 	@echo "Default values:"
 	@echo ""
 	@echo "DEBUG=False"
-	@echo "OS=unix"
