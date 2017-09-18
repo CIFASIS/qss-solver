@@ -19,7 +19,7 @@ TARGET      := $(BINDIR)/translate-sbml
 
 # Flags, Libraries and Includes
 LIB 		 		:= -lsbml
-ifeq ($(OS),win32)
+ifeq ($(OS),MINGW32_NT-6.1)
 LIB 				:= -L/usr/local/lib -lsbml -lxml2
 endif
 CXXFLAGS 			:= -Wall -Wabi-tag -lm -msse2 -mfpmath=sse 
@@ -27,7 +27,7 @@ ifeq ($(DEBUG),True)
 CXXFLAGS 			:= -g
 endif
 INC 				:= -I. 
-ifeq ($(OS),win32)
+ifeq ($(OS),MINGW32_NT-6.1)
 INC 				+= -I/SBML/win32/include
 endif
 RMS 				:= rm -rf
