@@ -17,7 +17,7 @@
 
 # Parameters.
 GIT_COMMAND=$1
-DEPLOY_PATH=$MMO_PATH/$2
+DEPLOY_PATH=$MMOC_PATH/$2
 
 # QSS Solver repositories.
 BASE_REPO=$MMOC_PATH
@@ -32,7 +32,7 @@ PACKAGES_REPO=$MMOC_PATH/packages
 
 # QSS Solver repositories relative paths to base repo.
 
-BASE_REPO_REL=
+BASE_REPO_REL=.
 ENGINE_REPO_REL=src/engine
 MMOC_REPO_REL=src/mmoc
 TESTSUITE_REPO_REL=src/test-suite
@@ -43,9 +43,10 @@ MODELS_REPO_REL=models
 PACKAGES_REPO_REL=packages
 
 function checkout-index {
-    mkdir -p $DEPLOY_PATH/$1
+    CHECKOUT_PATH=$DEPLOY_PATH/$1
+    mkdir -p $CHECKOUT_PATH
     cd $2
-    git checkout-index --prefix=$DEPLOY_PATH/$1/ -a 
+    git checkout-index --prefix=$CHECKOUT_PATH/ -a 
 }
 
 function color-echo ()
@@ -53,13 +54,13 @@ function color-echo ()
     echo -e "$(tput setaf $2)$1$(tput setaf 7)\n"
 }
 
-REPOS=(${BASE_REPO} ${ENGINE_REPO} ${MMOC_REPO} ${TESTSUITE_REPO} ${USR_REPO} ${GUI_REPO} ${INTERFACES_REPO} ${MODELS_REPO} ${PACKAGES_REPO} );
+REPOS=( ${BASE_REPO} ${ENGINE_REPO} ${MMOC_REPO} ${TESTSUITE_REPO} ${USR_REPO} ${GUI_REPO} ${INTERFACES_REPO} ${MODELS_REPO} ${PACKAGES_REPO} );
 
-REPOS_REL=(${BASE_REPO_REL} ${ENGINE_REPO_REL} ${MMOC_REPO_REL} ${TESTSUITE_REPO_REL} ${USR_REPO_REL} ${GUI_REPO_REL} ${INTERFACES_REPO_REL} ${MODELS_REPO_REL} ${PACKAGES_REPO_REL} );
+REPOS_REL=( ${BASE_REPO_REL} ${ENGINE_REPO_REL} ${MMOC_REPO_REL} ${TESTSUITE_REPO_REL} ${USR_REPO_REL} ${GUI_REPO_REL} ${INTERFACES_REPO_REL} ${MODELS_REPO_REL} ${PACKAGES_REPO_REL} );
 
 if [ "$GIT_COMMAND" = "deploy" ]; then 
     for i in ${!REPOS[*]}; do
-        color-echo "Running git command: $GIT_COMMAND Repository: ${REPOS[$i]}" 2
+        color-echo "Running git command: $GIT_COMMAND Repository: ${REPOS_REL[$i]}" 2
         checkout-index ${REPOS_REL[$i]} ${REPOS[$i]}
         color-echo "\nDone" 2
     done
