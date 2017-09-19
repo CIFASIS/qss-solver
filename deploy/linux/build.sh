@@ -24,7 +24,7 @@ rm -rf qss-solver-amd64.deb
 cd ../../
 ARCH=`uname -m`
 echo "Retrieving latest from Git";
-./deploy/common/update-repos.sh
+./deploy/common/repos.sh pull
 head ./doc/version.major -c 4 > vm
 git rev-list --count HEAD > rvn
 cat vm rvn > version

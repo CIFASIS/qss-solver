@@ -5,7 +5,7 @@
 #
 # 				USAGE: setRevision.sh <FILE> <REV> 
 #
-# 	DESCRIPTION: Set the revision number in the qss-solverconfiguration file. 
+# 	DESCRIPTION: Set the revision number in the qss-solver configuration file. 
 #
 #    PARAMETERS: ---
 #       OPTIONS: ---
