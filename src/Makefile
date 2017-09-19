@@ -1,5 +1,7 @@
 # Target OS variables
-OS = $(uname)
+ifneq ($(OS), Windows_NT)
+OS = $(shell uname)
+endif
 DEBUG ?= False
 CORES ?= 1
 ARCH = $(uname -m)
@@ -48,25 +50,25 @@ $(qss-user-libs-repo):
 
 mmo-interfaces: create-dirs | $(mmo-interfaces-repo)
 	@echo BUILDING MMO-SBML INTERFACE
-	@cd interfaces/sbml &&  $(MAKE) OS=$(OS) DEBUG=$(DEBUG) -j $(CORES)
+	@cd interfaces/sbml &&  $(MAKE) DEBUG=$(DEBUG) -j $(CORES)
 	@echo Done
 
 qss-engine: create-dirs | $(qss-engine-repo) $(qss-test-suite-repo) 
 	@echo BUILDING QSS LIBRARY
-	@cd engine && $(MAKE) OS=$(OS) -j $(CORES)
+	@cd engine && $(MAKE) -j $(CORES)
 	@echo Done
 	@echo BUILDING QSS DEBUG LIBRARY
-	@cd engine && $(MAKE) DEBUG=True OS=$(OS) -j $(CORES)
+	@cd engine && $(MAKE) DEBUG=True -j $(CORES)
 	@echo Done
 
 qss-user-libs: create-dirs qss-engine | $(qss-user-libs-repo)
 	@echo BUILDING USER LIBS
-	@cd usr && $(MAKE) OS=$(OS) DEBUG=$(DEBUG) -j $(CORES) ENGINE=../engine     
+	@cd usr && $(MAKE) DEBUG=$(DEBUG) -j $(CORES) ENGINE=../engine     
 	@echo Done
 
 mmo-compiler: create-dirs | $(mmo-compiler-repo) 
 	@echo BUILDING MICROMODELICA C COMPILER
-	@cd mmoc && $(MAKE) OS=$(OS) DEBUG=$(DEBUG) -j $(CORES) 
+	@cd mmoc && $(MAKE) DEBUG=$(DEBUG) -j $(CORES) 
 	@echo Done
 
 qss-solver-gui: create-dirs | $(qss-solver-gui-repo) $(mmo-models-repo) $(mmo-packages-repo)
@@ -135,7 +137,7 @@ else
 	@install $(ROOT)/src/engine/3rd-party/partitioners/scotch/Linux-x86_64/libscotcherr.a $(ROOT)/lib/
 endif
 else
-ifeq ($(OS),win)
+ifeq ($(OS),Windows_NT)
 	@cp $(ROOT)/deploy/windows/scripts/* $(ROOT)/bin/
 	@cp $(ROOT)/deploy/windows/qss-solver.ini $(ROOT)/bin/
 else
