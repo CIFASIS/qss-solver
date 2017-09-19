@@ -1,17 +1,24 @@
 # The Directories, Source, Includes, Objects, Binary 
 SRCDIR 		:= .
 USRDIR 		:= $(SRCDIR)/usr
+DOCDIR 		:= $(SRCDIR)/doc
+BINDIR 		:= $(SRCDIR)/bin
+OBJDIR 		:= $(SRCDIR)/obj
 
 # Simple rules used to run qmake before make and build the documentation.
 default: build
 
-build:
+build: | $(BUILDDIR)
 	qmake
 	$(MAKE)
 
+$(BUILDDIR):
+	@mkdir -p $(OBJDIR) 
+	@mkdir -p $(BINDIR) 
+
 doc:
-	@mkdir -p $(USRDIR)/doc
-	@mkdir -p $(USRDIR)/doc/html
-	@mkdir -p $(USRDIR)/doc/latex
+	@mkdir -p $(DOCDIR)
+	@mkdir -p $(DOCDIR)/html
+	@mkdir -p $(DOCDIR)/latex
 	doxygen QSSSolverGUI.doxyfile
 
