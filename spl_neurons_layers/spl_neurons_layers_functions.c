@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "spl_neurons_layers_functions.h"
 
-#include <../../testsuite/spl_neurons_layers/layermap.c>
+#include <../../src/test-suite/spl_neurons_layers/layermap.c>
 double __laymap(double ind,double layers,double neurons)
 {
 double dest;

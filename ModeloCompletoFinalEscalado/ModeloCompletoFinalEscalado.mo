@@ -721,7 +721,7 @@ algorithm
 		MMO_Output={batteryAndBockBoost_battery_SoC,algSuperv_EB,batteryAndBockBoost_u},
 		Jacobian=Dense,
 		StartTime=0.0,
-		StopTime=3,
+		StopTime=0.3,
 		Tolerance={1e-3},
 		AbsTolerance={1e-4}
 	));

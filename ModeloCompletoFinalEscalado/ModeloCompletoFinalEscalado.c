@@ -619,6 +619,7 @@ MOD_dependencies(int i, double *x, double *d, double *alg, double t, double *der
 void
 MOD_zeroCrossing(int i, double *x, double *d, double *alg, double t, double *zc)
 {
+	int i0 = i;
 	switch(i)
 	{
 		case 0:
@@ -812,6 +813,7 @@ MOD_zeroCrossing(int i, double *x, double *d, double *alg, double t, double *zc)
 void
 MOD_handlerPos(int i, double *x, double *d, double *alg, double t)
 {
+	int i0 = i;
 	switch(i)
 	{
 		case 0:
@@ -1014,6 +1016,7 @@ MOD_handlerPos(int i, double *x, double *d, double *alg, double t)
 void
 MOD_handlerNeg(int i, double *x, double *d, double *alg, double t)
 {
+	int i0 = i;
 	switch(i)
 	{
 		case 6:
@@ -1125,7 +1128,7 @@ QSS_initializeDataStructs(QSS_simulator simulator)
 	int *events = (int*)malloc(43*sizeof(int));
 	int *outputs = (int*)malloc(3*sizeof(int));
 	int *states = (int*)malloc(16*sizeof(int));
-	int i;
+	int i0;
 	simulator->data = QSS_Data(16,55,43,0,96,"ModeloCompletoFinalEscalado");
   QSS_data modelData = simulator->data;
   const double t = 0;

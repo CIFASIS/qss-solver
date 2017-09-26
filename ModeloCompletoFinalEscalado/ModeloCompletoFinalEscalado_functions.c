@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "ModeloCompletoFinalEscalado_functions.h"
 
-#include "../../testsuite/ModeloCompletoFinalEscalado/ModeloCompletoFinal.c"
+#include "../../src/test-suite/ModeloCompletoFinalEscalado/ModeloCompletoFinal.c"
 double __fsolve1(double boost_panel1_capacitor1_v)
 {
 double boost_panel1_panel_n_i;

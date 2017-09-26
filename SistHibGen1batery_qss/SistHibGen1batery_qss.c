@@ -582,6 +582,7 @@ MOD_dependencies(int i, double *x, double *d, double *alg, double t, double *der
 void
 MOD_zeroCrossing(int i, double *x, double *d, double *alg, double t, double *zc)
 {
+	int i0 = i;
 	switch(i)
 	{
 		case 0:
@@ -776,6 +777,7 @@ MOD_zeroCrossing(int i, double *x, double *d, double *alg, double t, double *zc)
 void
 MOD_handlerPos(int i, double *x, double *d, double *alg, double t)
 {
+	int i0 = i;
 	switch(i)
 	{
 		case 0:
@@ -1068,6 +1070,7 @@ MOD_handlerPos(int i, double *x, double *d, double *alg, double t)
 void
 MOD_handlerNeg(int i, double *x, double *d, double *alg, double t)
 {
+	int i0 = i;
 	switch(i)
 	{
 		case 6:
@@ -1243,7 +1246,7 @@ QSS_initializeDataStructs(QSS_simulator simulator)
 	int *events = (int*)malloc(48*sizeof(int));
 	int *outputs = (int*)malloc(19*sizeof(int));
 	int *states = (int*)malloc(19*sizeof(int));
-	int i;
+	int i0;
 	simulator->data = QSS_Data(19,84,48,0,109,"SistHibGen1batery_qss");
   QSS_data modelData = simulator->data;
   const double t = 0;

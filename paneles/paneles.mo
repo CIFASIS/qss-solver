@@ -72,7 +72,7 @@ Tpv:=273+50.0;                       //Debe ingresarce la Temperatura de los pan
 for i in 1:Npaneles loop
   TContMaxPot:=0.5;
   nextTContMaxPot[i]:=0;
-  nextTboost[i]:=0.0;
+  nextTboost[i]:=1e-4;
   Rsboost[i]:=1e5;
   Rdboost[i]:=1e5;
   Tboost[i]:=1e-4;
@@ -84,8 +84,8 @@ for i in 1:Npaneles loop
 //  VpvRef[i]:=1;
 end for;
 
-DCboost[1]:=0.7;
-DCboost[2]:=0.3;
+//DCboost[1]:=0.7;
+//DCboost[2]:=0.3;
 VpvRef[1]:=1;
 VpvRef[2]:=2;
 //DCboost[3]:=0.7;
