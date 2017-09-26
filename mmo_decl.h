@@ -31,243 +31,243 @@ using namespace std;
  */
 typedef enum
 {
-    DEC_CONSTANT,
-    DEC_PARAMETER,
-    DEC_STATE,
-    DEC_DISCRETE,
-    DEC_ALGEBRAIC,
-    DEC_DERIVATIVE,
-    DEC_ASSIGNMENT,
-    DEC_CONDITIONAL_ASSIGNMENT,
-    DEC_INITIAL_ASSIGNMENT,
-    DEC_ZC_RELATION,
-    DEC_ZC_OPPOSITE_RELATION,
-    DEC_ALGEBRAIC_EQUATION,
-    DEC_IMPLICIT_EQUATION,
-    DEC_REINIT,
-    DEC_CONDITION,
-    DEC_FUNCTION_INPUT,
-    DEC_FUNCTION_OUTPUT,
-    DEC_FUNCTION_DEFINITION,
-    DEC_FUNCTION_FORMULA,
-    DEC_IMPORT
+  DEC_CONSTANT,
+  DEC_PARAMETER,
+  DEC_STATE,
+  DEC_DISCRETE,
+  DEC_ALGEBRAIC,
+  DEC_DERIVATIVE,
+  DEC_ASSIGNMENT,
+  DEC_CONDITIONAL_ASSIGNMENT,
+  DEC_INITIAL_ASSIGNMENT,
+  DEC_ZC_RELATION,
+  DEC_ZC_OPPOSITE_RELATION,
+  DEC_ALGEBRAIC_EQUATION,
+  DEC_IMPLICIT_EQUATION,
+  DEC_REINIT,
+  DEC_CONDITION,
+  DEC_FUNCTION_INPUT,
+  DEC_FUNCTION_OUTPUT,
+  DEC_FUNCTION_DEFINITION,
+  DEC_FUNCTION_FORMULA,
+  DEC_IMPORT
 } MMODeclType;
 
 /**
  *
  */
-class MMODecl : public MMOExp
+class MMODecl: public MMOExp
 {
-public:
+  public:
     /**
      *
      * @param id
      * @param value
      * @param type
      */
-    MMODecl (string id, double value, MMODeclType type);
+    MMODecl(string id, double value, MMODeclType type);
     /**
      *
      * @param id
      * @param exp
      * @param type
      */
-    MMODecl (string id, string exp, MMODeclType type, bool conditional = false);
+    MMODecl(string id, string exp, MMODeclType type, bool conditional = false);
     /**
      *
      * @param exp
      * @param type
      */
-    MMODecl (string exp, MMODeclType type);
+    MMODecl(string exp, MMODeclType type);
     /**
      *
      */
-    MMODecl ();
+    MMODecl();
     /**
      *
      */
-    ~MMODecl ();
+    ~MMODecl();
     /**
      *
      * @param visitor
      */
     void
-    accept (MMOVisitor *visitor);
+    accept(MMOVisitor *visitor);
     /**
      *
      * @return
      */
     string
-    getId ();
+    getId();
     /**
      *
      * @param i
      */
     void
-    id (string i);
+    id(string i);
     /**
      *
      * @param type
      */
     void
-    setType (MMODeclType type);
+    setType(MMODeclType type);
     /**
      *
      * @return
      */
     string
-    getExp ();
+    getExp();
     /**
      *
      * @param i
      */
     void
-    exp (string i);
+    exp(string i);
     /**
      *
      * @param i
      */
     void
-    value (double i);
+    value(double i);
     /**
      *
      * @return
      */
     double
-    getValue ();
+    getValue();
     /**
      *
      * @return
      */
     bool
-    hasExp ();
+    hasExp();
     /**
      *
      * @return
      */
     bool
-    hasValue ();
+    hasValue();
     /**
      *
      * @return
      */
     bool
-    isAlgebraicEquation ();
+    isAlgebraicEquation();
     /**
      *
      * @return
      */
     bool
-    isInitialAssignment ();
+    isInitialAssignment();
     /**
      *
      * @return
      */
     bool
-    isAssignment ();
+    isAssignment();
     /**
      *
      * @return
      */
     bool
-    isZeroCrossing ();
+    isZeroCrossing();
     /**
      *
      * @return
      */
     bool
-    isOppositeZeroCrossing ();
+    isOppositeZeroCrossing();
     /**
      *
      * @return
      */
     bool
-    isDerivative ();
+    isDerivative();
     /**
      *
      * @return
      */
     bool
-    isParameter ();
+    isParameter();
     /**
      *
      * @return
      */
     bool
-    isConstant ();
+    isConstant();
     /**
      *
      * @return
      */
     bool
-    isState ();
+    isState();
     /**
      *
      * @return
      */
     bool
-    isDiscrete ();
+    isDiscrete();
     /**
      *
      * @return
      */
     bool
-    isAlgebraic ();
+    isAlgebraic();
     /**
      *
      * @return
      */
     bool
-    isCondition ();
+    isCondition();
     /**
      *
      * @return
      */
     bool
-    isFunctionInput ();
+    isFunctionInput();
     /**
      *
      * @return
      */
     bool
-    isFunctionOutput ();
+    isFunctionOutput();
     /**
      *
      * @return
      */
     bool
-    isFunctionDefinition ();
+    isFunctionDefinition();
     /**
      *
      * @return
      */
     bool
-    isFunctionFormula ();
+    isFunctionFormula();
     /**
      *
      * @return
      */
     bool
-    isReinit ();
+    isReinit();
     /**
      *
      * @return
      */
     bool
-    isImport ();
+    isImport();
     /**
      *
      * @return
      */
     bool
-    isImplicit ();
+    isImplicit();
     /**
      *
      * @return
      */
     bool
-    isConditionalAssignment ();
-private:
+    isConditionalAssignment();
+    private:
     string _id;
     string _exp;
     double _value;

@@ -40,103 +40,103 @@ class MMOSection;
 
 using namespace std;
 
-class BioRicaWriter : public MMOVisitor
+class BioRicaWriter: public MMOVisitor
 {
-public:
+  public:
     /**
      *
      * @param file
      */
-    BioRicaWriter (string file);
+    BioRicaWriter(string file);
     /**
      *
      */
-    ~BioRicaWriter ();
-    /**
-     *
-     * @param x
-     */
-    void
-    visit (MMOExp *x);
+    ~BioRicaWriter();
     /**
      *
      * @param x
      */
     void
-    visit (MMODecl *x);
+    visit(MMOExp *x);
     /**
      *
      * @param x
      */
     void
-    visit (MMODecl x);
+    visit(MMODecl *x);
     /**
      *
      * @param x
      */
     void
-    leave (MMODecl *x);
+    visit(MMODecl x);
     /**
      *
      * @param x
      */
     void
-    visit (MMOEvent *x);
+    leave(MMODecl *x);
     /**
      *
      * @param x
      */
     void
-    visit (MMOEvent x);
+    visit(MMOEvent *x);
     /**
      *
      * @param x
      */
     void
-    leave (MMOEvent *x);
+    visit(MMOEvent x);
     /**
      *
      * @param x
      */
     void
-    visit (MMOFunction *x);
+    leave(MMOEvent *x);
     /**
      *
      * @param x
      */
     void
-    visit (MMOFunction x);
+    visit(MMOFunction *x);
     /**
      *
      * @param x
      */
     void
-    leave (MMOFunction *x);
+    visit(MMOFunction x);
     /**
      *
      * @param x
      */
     void
-    visit (MMOSection *x);
+    leave(MMOFunction *x);
     /**
      *
      * @param x
      */
     void
-    visit (MMOSection x);
+    visit(MMOSection *x);
     /**
      *
      * @param x
      */
     void
-    leave (MMOSection *x);
-private:
+    visit(MMOSection x);
+    /**
+     *
+     * @param x
+     */
+    void
+    leave(MMOSection *x);
+    private:
     string
-    _flatId (MMODecl *x);
+    _flatId(MMODecl *x);
     void
-    _print (list<string> *l, string sep = "\n", string finalSep = "");
+    _print(list<string> *l, string sep = "\n", string finalSep = "");
     list<string>
-    _getList (map<string, string> m);
+    _getList(map<string, string> m);
     int _indent;
     string _modelName;
     fstream _out;

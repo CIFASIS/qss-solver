@@ -21,38 +21,38 @@
 
 #include "mmo_visitor.h"
 
-MMOFunction::MMOFunction (string id) :
-        _id (id), _definition (NULL), _inputs (), _output (NULL)
+MMOFunction::MMOFunction(string id) :
+    _id(id), _definition(NULL), _inputs(), _output(NULL)
 {
 }
 
-MMOFunction::~MMOFunction ()
+MMOFunction::~MMOFunction()
 {
-}
-
-void
-MMOFunction::accept (MMOVisitor *visitor)
-{
-    visitor->visit (this);
-    for (list<MMODecl*>::iterator it = _inputs.begin (); it != _inputs.end (); it++)
-    {
-        visitor->visit (*it);
-    }
-    visitor->visit (_output);
-    visitor->visit (_definition);
-    visitor->leave (this);
 }
 
 void
-MMOFunction::add (MMODecl *decl)
+MMOFunction::accept(MMOVisitor *visitor)
 {
-    if (decl->isFunctionInput ())
-    {
-        _inputs.push_back (decl);
-    }
-    else if (decl->isFunctionDefinition ())
-    {
-        _definition = decl;
-        _output = new MMODecl (decl->getId (), DEC_FUNCTION_OUTPUT);
-    }
+  visitor->visit(this);
+  for(list<MMODecl*>::iterator it = _inputs.begin(); it != _inputs.end(); it++)
+  {
+    visitor->visit(*it);
+  }
+  visitor->visit(_output);
+  visitor->visit(_definition);
+  visitor->leave(this);
+}
+
+void
+MMOFunction::add(MMODecl *decl)
+{
+  if(decl->isFunctionInput())
+  {
+    _inputs.push_back(decl);
+  }
+  else if(decl->isFunctionDefinition())
+  {
+    _definition = decl;
+    _output = new MMODecl(decl->getId(), DEC_FUNCTION_OUTPUT);
+  }
 }

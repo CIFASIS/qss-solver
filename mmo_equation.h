@@ -36,73 +36,73 @@ LIBSBML_CPP_NAMESPACE_USE
  */
 class MMOEquation
 {
-public:
+  public:
     /**
      *
      */
-    MMOEquation ();
+    MMOEquation();
     /**
      *
      * @param node
      */
-    MMOEquation (const ASTNode *node);
+    MMOEquation(const ASTNode *node);
     /**
      *
      */
-    ~MMOEquation ();
-    /**
-     *
-     * @return
-     */
-    ASTNode *
-    getEquation ();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasEquation ();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasZeroCrossing ();
-    pair<ASTNode *, list<pair<string, ASTNode *> > >
-    /**
-     *
-     * @return
-     */
-    first ();
-    /**
-     *
-     * @return
-     */
-    pair<ASTNode *, list<pair<string, ASTNode *> > >
-    next ();
-    /**
-     *
-     * @return
-     */
-    bool
-    end ();
+    ~MMOEquation();
     /**
      *
      * @return
      */
     ASTNode *
-    ASTExpression ();
+    getEquation();
+    /**
+     *
+     * @return
+     */
+    bool
+    hasEquation();
+    /**
+     *
+     * @return
+     */
+    bool
+    hasZeroCrossing();
+    pair<ASTNode *, list<pair<string, ASTNode *> > >
+    /**
+     *
+     * @return
+     */
+    first();
+    /**
+     *
+     * @return
+     */
+    pair<ASTNode *, list<pair<string, ASTNode *> > >
+    next();
+    /**
+     *
+     * @return
+     */
+    bool
+    end();
+    /**
+     *
+     * @return
+     */
+    ASTNode *
+    ASTExpression();
     /**
      *
      * @param b
      */
     void
-    joinEvents (MMOEquation *b);
-private:
+    joinEvents(MMOEquation *b);
+    private:
     void
-    _parseEquation (ASTNode *node);
+    _parseEquation(ASTNode *node);
     pair<ASTNode *, list<pair<string, ASTNode *> > >
-    _make_pair ();
+    _make_pair();
     ASTNode *_equation;
     bool _hasEquation;
     list<pair<ASTNode *, list<pair<string, ASTNode*> > > > _events;

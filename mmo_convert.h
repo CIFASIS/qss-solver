@@ -59,28 +59,28 @@ using namespace std;
 
 LIBSBML_CPP_NAMESPACE_USE
 
-class MMOConvert : public SBMLVisitor
+class MMOConvert: public SBMLVisitor
 {
-public:
+  public:
     /**
      *
      * @param name
      * @param replace
      * @param type
      */
-    MMOConvert (string prefix, bool replace = false, WR_Type type = WR_MMO);
+    MMOConvert(string prefix, bool replace = false, WR_Type type = WR_MMO);
     /**
      *
      */
-    ~MMOConvert ();
+    ~MMOConvert();
     /**
      *
      * @return
      */
     MMOModel
-    model ()
+    model()
     {
-        return (_model);
+      return _model;
     }
     ;
     /**
@@ -88,237 +88,237 @@ public:
      * @param x
      */
     void
-    visit (const SBMLDocument &x);
+    visit(const SBMLDocument &x);
     /**
      *
      * @param x
      */
     void
-    visit (const Model &x);
+    visit(const Model &x);
     /**
      *
      * @param x
      */
     void
-    visit (const KineticLaw &x);
+    visit(const KineticLaw &x);
     /**
      *
      * @param x
      * @param type
      */
     void
-    visit (const ListOf &x, int type);
+    visit(const ListOf &x, int type);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const SBase &x);
+    visit(const SBase &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const FunctionDefinition &x);
+    visit(const FunctionDefinition &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const UnitDefinition &x);
+    visit(const UnitDefinition &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const Unit &x);
+    visit(const Unit &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const CompartmentType &x);
+    visit(const CompartmentType &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const SpeciesType &x);
+    visit(const SpeciesType &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const Compartment &x);
+    visit(const Compartment &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const Species &x);
+    visit(const Species &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const Parameter &x);
+    visit(const Parameter &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const InitialAssignment &x);
+    visit(const InitialAssignment &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const Rule &x);
+    visit(const Rule &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const AlgebraicRule &x);
+    visit(const AlgebraicRule &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const AssignmentRule &x);
+    visit(const AssignmentRule &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const RateRule &x);
+    visit(const RateRule &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const Constraint &x);
+    visit(const Constraint &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const Reaction &x);
+    visit(const Reaction &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const SimpleSpeciesReference &x);
+    visit(const SimpleSpeciesReference &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const SpeciesReference &x);
+    visit(const SpeciesReference &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const ModifierSpeciesReference &x);
+    visit(const ModifierSpeciesReference &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const Event &x);
+    visit(const Event &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const EventAssignment &x);
+    visit(const EventAssignment &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const Trigger &x);
+    visit(const Trigger &x);
     /**
      *
      * @param x
      * @return
      */
     bool
-    visit (const Delay &x);
+    visit(const Delay &x);
     /**
      *
      * @param x
      */
     void
-    visit (const Priority &x);
+    visit(const Priority &x);
     /**
      *
      * @param x
      */
     void
-    leave (const SBMLDocument &x);
+    leave(const SBMLDocument &x);
     /**
      *
      * @param x
      */
     void
-    leave (const Model &x);
+    leave(const Model &x);
     /**
      *
      * @param x
      */
     void
-    leave (const KineticLaw &x);
+    leave(const KineticLaw &x);
     /**
      *
      * @param x
      */
     void
-    leave (const Priority &x);
+    leave(const Priority &x);
     /**
      *
      * @param x
      */
     void
-    leave (const Reaction &x);
+    leave(const Reaction &x);
     /**
      *
      * @param x
      */
     void
-    leave (const SBase &x);
+    leave(const SBase &x);
     /**
      *
      * @param x
      * @param type
      */
     void
-    leave (const ListOf &x, int type);
-private:
+    leave(const ListOf &x, int type);
+    private:
     map<string, ASTNode *> _reaction_def;
     list<Event> _events;
     bool _in_reaction;

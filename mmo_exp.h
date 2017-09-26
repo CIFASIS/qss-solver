@@ -31,12 +31,12 @@ using namespace std;
  */
 class MMOExp
 {
-public:
+  public:
     /**
      *
      */
     virtual
-    ~MMOExp ()
+    ~MMOExp()
     {
     }
     ;
@@ -45,13 +45,13 @@ public:
      * @param visitor
      */
     virtual void
-    accept (MMOVisitor *visitor) = 0;
+    accept(MMOVisitor *visitor) = 0;
     /**
      *
      * @return
      */
     virtual string
-    getId () = 0;
+    getId() = 0;
 };
 
 #endif  /* MMO_EXP_H_ */

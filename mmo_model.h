@@ -42,40 +42,40 @@ LIBSBML_CPP_NAMESPACE_USE
  */
 class MMOModel
 {
-public:
+  public:
     /**
      *
      */
-    ~MMOModel ();
+    ~MMOModel();
     /**
      *
      * @param replace
      * @param type
      */
-    MMOModel (string prefix = "", bool replace = false, WR_Type type = WR_MMO);
+    MMOModel(string prefix = "", bool replace = false, WR_Type type = WR_MMO);
     /**
      *
      * @param name
      */
-    MMOModel (string name);
+    MMOModel(string name);
     /**
      *
      * @return
      */
     string
-    id ();
+    id();
     /**
      *
      * @param x
      */
     void
-    add (const Event &x);
+    add(const Event &x);
     /**
      *
      * @param f
      */
     void
-    add (const FunctionDefinition &f);
+    add(const FunctionDefinition &f);
     /**
      *
      * @param id
@@ -84,7 +84,8 @@ public:
      * @param type
      */
     void
-    add (string id, bool isDerivative, const ASTNode *value, MMOSectionType type);
+    add(string id, bool isDerivative, const ASTNode *value,
+        MMOSectionType type);
     /**
      *
      * @param id
@@ -93,7 +94,7 @@ public:
      * @param type
      */
     void
-    add (string id, bool isVar, double value, MMOSectionType type);
+    add(string id, bool isVar, double value, MMOSectionType type);
     /**
      *
      * @param id
@@ -101,34 +102,35 @@ public:
      * @param type
      */
     void
-    add (string id, bool isVar, MMOSectionType type);
+    add(string id, bool isVar, MMOSectionType type);
     /**
      *
      * @param file
      */
     void
-    write (string file);
-private:
+    write(string file);
+    private:
     bool
-    _delayValue (const ASTNode *n);
+    _delayValue(const ASTNode *n);
     bool
-    _searchAlg (string f, list<string> *s);
+    _searchAlg(string f, list<string> *s);
     void
-    _addAlgs (list<string> algs, list<string> *equations);
+    _addAlgs(list<string> algs, list<string> *equations);
     void
-    _add (MMOExp *exp, MMOSectionType type);
+    _add(MMOExp *exp, MMOSectionType type);
     void
-    _addAsgs (const Event &x, MMOMath zc, int pos, MMOEvent *ev);
+    _addAsgs(const Event &x, MMOMath zc, int pos, MMOEvent *ev);
     void
-    _parseEquation (string id, const ASTNode *node, MMODeclType tydec, MMOSectionType type);
+    _parseEquation(string id, const ASTNode *node, MMODeclType tydec,
+        MMOSectionType type);
     void
-    _reorder ();
+    _reorder();
     void
-    _addAlgebraicReplacement (MMOMath& eq);
+    _addAlgebraicReplacement(MMOMath& eq);
     void
-    addExpressionZeroCrossings (MMOMath eq, const string& id);
+    addExpressionZeroCrossings(MMOMath eq, const string& id);
     void
-    _addConstantAlgebraics ();
+    _addConstantAlgebraics();
     bool _replace;
     WR_Type _type;
     map<string, string> _imports;

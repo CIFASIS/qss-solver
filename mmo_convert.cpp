@@ -31,351 +31,353 @@
 
 #include "mmo_section.h"
 
-MMOConvert::MMOConvert (string prefix, bool replace, WR_Type type) :
-        _reaction_def (), _events (), _in_reaction (false), _type (type), _reaction_name ()
+MMOConvert::MMOConvert(string prefix, bool replace, WR_Type type) :
+    _reaction_def(), _events(), _in_reaction(false), _type(type), _reaction_name()
 {
-    _model = MMOModel (prefix, replace, type);
+  _model = MMOModel(prefix, replace, type);
 }
 
-MMOConvert::~MMOConvert ()
+MMOConvert::~MMOConvert()
 {
-}
-
-void
-MMOConvert::visit (const SBMLDocument &x)
-{
-    cout << "Visit SBMLDocument" << endl;
 }
 
 void
-MMOConvert::visit (const Model &x)
+MMOConvert::visit(const SBMLDocument &x)
 {
-    cout << "Visit Model" << endl;
+  cout << "Visit SBMLDocument" << endl;
 }
 
 void
-MMOConvert::visit (const KineticLaw &x)
+MMOConvert::visit(const Model &x)
 {
-    cout << "Visit KineticLaw" << endl;
+  cout << "Visit Model" << endl;
 }
 
 void
-MMOConvert::visit (const ListOf &x, int type)
+MMOConvert::visit(const KineticLaw &x)
 {
-    cout << "Visit ListOf" << endl;
+  cout << "Visit KineticLaw" << endl;
+}
+
+void
+MMOConvert::visit(const ListOf &x, int type)
+{
+  cout << "Visit ListOf" << endl;
 }
 
 bool
-MMOConvert::visit (const SBase &x)
+MMOConvert::visit(const SBase &x)
 {
-    cout << "Visit SBase" << endl;
-    return (true);
+  cout << "Visit SBase" << endl;
+  return true;
 }
 
 bool
-MMOConvert::visit (const FunctionDefinition &x)
+MMOConvert::visit(const FunctionDefinition &x)
 {
-    cout << "Visit FunctionDefinition " << endl;
-    _model.add (x);
-    return (true);
+  cout << "Visit FunctionDefinition " << endl;
+  _model.add(x);
+  return true;
 }
 
 bool
-MMOConvert::visit (const UnitDefinition &x)
+MMOConvert::visit(const UnitDefinition &x)
 {
-    cout << "Visit UnitDefinition" << endl;
-    return (true);
+  cout << "Visit UnitDefinition" << endl;
+  return true;
 }
 
 bool
-MMOConvert::visit (const Unit &x)
+MMOConvert::visit(const Unit &x)
 {
-    cout << "Visit Unit" << endl;
-    return (true);
+  cout << "Visit Unit" << endl;
+  return true;
 }
 
 bool
-MMOConvert::visit (const CompartmentType &x)
+MMOConvert::visit(const CompartmentType &x)
 {
-    cout << "Visit CompartmentType" << endl;
-    return (true);
+  cout << "Visit CompartmentType" << endl;
+  return true;
 }
 
 bool
-MMOConvert::visit (const SpeciesType &x)
+MMOConvert::visit(const SpeciesType &x)
 {
-    cout << "Visit SpeciesType" << endl;
-    return (true);
+  cout << "Visit SpeciesType" << endl;
+  return true;
 }
 
 bool
-MMOConvert::visit (const Compartment &x)
+MMOConvert::visit(const Compartment &x)
 {
-    cout << "Visit Compartment " << x.getId () << endl;
-    if (x.isSetSize ())
+  cout << "Visit Compartment " << x.getId() << endl;
+  if(x.isSetSize())
+  {
+    _model.add(x.getId(), x.isSetConstant(), x.getSize(), SEC_DECLARATIONS);
+  }
+  else
+  {
+    _model.add(x.getId(), x.isSetConstant(), SEC_DECLARATIONS);
+  }
+  return true;
+}
+
+bool
+MMOConvert::visit(const Species &x)
+{
+  if(x.isSetInitialAmount())
+  {
+    _model.add(x.getId(), x.getConstant(), x.getInitialAmount(),
+        SEC_DECLARATIONS);
+  }
+  else if(x.isSetInitialConcentration())
+  {
+    _model.add(x.getId(), x.getConstant(), x.getInitialConcentration(),
+        SEC_DECLARATIONS);
+  }
+  else
+  {
+    _model.add(x.getId(), x.getConstant(), SEC_DECLARATIONS);
+  }
+  cout << "Visit Species " << x.getId() << endl;
+  return true;
+}
+
+bool
+MMOConvert::visit(const Parameter &x)
+{
+  cout << "Visit Parameter " << x.getId() << endl;
+  if(x.isSetValue())
+  {
+    _model.add(x.getId(), x.getConstant(), x.getValue(), SEC_DECLARATIONS);
+  }
+  else
+  {
+    _model.add(x.getId(), x.getConstant(), SEC_DECLARATIONS);
+  }
+  return true;
+}
+
+bool
+MMOConvert::visit(const InitialAssignment &x)
+{
+  cout << "Visit InitialAssignment" << endl;
+  _model.add(x.getId(), false, x.getMath(), SEC_INITIAL_ALGORITHM);
+  return true;
+}
+
+bool
+MMOConvert::visit(const Rule &x)
+{
+  cout << "Visit Rule" << x.getId() << endl;
+  return true;
+}
+
+bool
+MMOConvert::visit(const AlgebraicRule &x)
+{
+  cout << "Visit AlgebraicRule " << x.getId() << endl;
+  _model.add(x.getVariable(), false, x.getMath(), SEC_EQUATION);
+  return true;
+}
+
+bool
+MMOConvert::visit(const AssignmentRule &x)
+{
+  cout << "Visit AssignmentRule " << x.getId() << endl;
+  _model.add(x.getVariable(), false, x.getMath(), SEC_EQUATION);
+  return true;
+}
+
+bool
+MMOConvert::visit(const RateRule &x)
+{
+  cout << "Visit RateRule " << x.getId() << endl;
+  _model.add(x.getVariable(), true, x.getMath(), SEC_EQUATION);
+  return true;
+}
+
+bool
+MMOConvert::visit(const Constraint &x)
+{
+  return true;
+}
+
+bool
+MMOConvert::visit(const Reaction &x)
+{
+  KineticLaw *kl = new KineticLaw(*x.getKineticLaw());
+  // TODO: Parse local parameters, find examples.
+  const ListOfSpeciesReferences *ref = x.getListOfReactants();
+  int s = ref->size();
+  for(int i = 0; i < s; i++)
+  {
+    const SimpleSpeciesReference *sp = ref->get(i);
+    string sName = sp->getSpecies();
+    const Model *model = x.getModel();
+    const Species *spe = model->getSpecies(sName);
+    if(spe->getBoundaryCondition() == false && spe->getConstant() == false)
     {
-        _model.add (x.getId (), x.isSetConstant (), x.getSize (), SEC_DECLARATIONS);
+      map<string, ASTNode*>::iterator reac = _reaction_def.find(sName);
+      if(reac == _reaction_def.end())
+      {
+        ASTNode *min = new ASTNode(AST_TIMES);
+        ASTNode *ft = new ASTNode(AST_MINUS);
+        ASTNode *constant = new ASTNode(AST_INTEGER);
+        constant->setValue(1);
+        ft->addChild(constant);
+        min->addChild(ft);
+        min->addChild(new ASTNode(*kl->getMath()));
+        _reaction_def[sName] = min;
+      }
+      else
+      {
+        ASTNode *min = new ASTNode(AST_PLUS);
+        min->addChild(reac->second);
+        ASTNode *pt = new ASTNode(AST_TIMES);
+        ASTNode *ft = new ASTNode(AST_MINUS);
+        ASTNode *constant = new ASTNode(AST_INTEGER);
+        constant->setValue(1);
+        ft->addChild(constant);
+        pt->addChild(ft);
+        pt->addChild(new ASTNode(*kl->getMath()));
+        min->addChild(pt);
+        _reaction_def[sName] = min;
+      }
     }
-    else
+  }
+  ref = x.getListOfProducts();
+  s = ref->size();
+  for(int i = 0; i < s; i++)
+  {
+    const SimpleSpeciesReference *sp = ref->get(i);
+    string sName = sp->getSpecies();
+    const Model *model = x.getModel();
+    const Species *spe = model->getSpecies(sName);
+    if(spe->getBoundaryCondition() == false && spe->getConstant() == false)
     {
-        _model.add (x.getId (), x.isSetConstant (), SEC_DECLARATIONS);
+      map<string, ASTNode*>::iterator reac = _reaction_def.find(sName);
+      if(reac == _reaction_def.end())
+      {
+        _reaction_def[sName] = new ASTNode(*kl->getMath());
+      }
+      else
+      {
+        ASTNode *min = new ASTNode(AST_PLUS);
+        min->addChild(reac->second);
+        min->addChild(new ASTNode(*kl->getMath()));
+        _reaction_def[sName] = min;
+      }
     }
-    return (true);
+  }
+  return true;
 }
 
 bool
-MMOConvert::visit (const Species &x)
+MMOConvert::visit(const SimpleSpeciesReference &x)
 {
-    if (x.isSetInitialAmount ())
-    {
-        _model.add (x.getId (), x.getConstant (), x.getInitialAmount (), SEC_DECLARATIONS);
-    }
-    else if (x.isSetInitialConcentration ())
-    {
-        _model.add (x.getId (), x.getConstant (), x.getInitialConcentration (), SEC_DECLARATIONS);
-    }
-    else
-    {
-        _model.add (x.getId (), x.getConstant (), SEC_DECLARATIONS);
-    }
-    cout << "Visit Species " << x.getId () << endl;
-    return (true);
+  cout << "Visit SimpleSpeciesReference" << endl;
+  return true;
 }
 
 bool
-MMOConvert::visit (const Parameter &x)
+MMOConvert::visit(const SpeciesReference &x)
 {
-    cout << "Visit Parameter " << x.getId () << endl;
-    if (x.isSetValue ())
-    {
-        _model.add (x.getId (), x.getConstant (), x.getValue (), SEC_DECLARATIONS);
-    }
-    else
-    {
-        _model.add (x.getId (), x.getConstant (), SEC_DECLARATIONS);
-    }
-    return (true);
+  cout << "Visit SpeciesReference" << endl;
+  return true;
 }
 
 bool
-MMOConvert::visit (const InitialAssignment &x)
+MMOConvert::visit(const ModifierSpeciesReference &x)
 {
-    cout << "Visit InitialAssignment" << endl;
-    _model.add (x.getId (), false, x.getMath (), SEC_INITIAL_ALGORITHM);
-    return (true);
+  cout << "Visit ModifierSpeciesReference" << endl;
+  return true;
 }
 
 bool
-MMOConvert::visit (const Rule &x)
+MMOConvert::visit(const Event &x)
 {
-    cout << "Visit Rule" << x.getId () << endl;
-    return (true);
+  cout << "Visit Event" << endl;
+  _events.push_back(x);
+  return true;
 }
 
 bool
-MMOConvert::visit (const AlgebraicRule &x)
+MMOConvert::visit(const EventAssignment &x)
 {
-    cout << "Visit AlgebraicRule " << x.getId () << endl;
-    _model.add (x.getVariable (), false, x.getMath (), SEC_EQUATION);
-    return (true);
+  cout << "Visit EventAssignment" << endl;
+  return true;
 }
 
 bool
-MMOConvert::visit (const AssignmentRule &x)
+MMOConvert::visit(const Trigger &x)
 {
-    cout << "Visit AssignmentRule " << x.getId () << endl;
-    _model.add (x.getVariable (), false, x.getMath (), SEC_EQUATION);
-    return (true);
+  cout << "Visit Trigger" << endl;
+  return true;
 }
 
 bool
-MMOConvert::visit (const RateRule &x)
+MMOConvert::visit(const Delay &x)
 {
-    cout << "Visit RateRule " << x.getId () << endl;
-    _model.add (x.getVariable (), true, x.getMath (), SEC_EQUATION);
-    return (true);
-}
-
-bool
-MMOConvert::visit (const Constraint &x)
-{
-    return (true);
-}
-
-bool
-MMOConvert::visit (const Reaction &x)
-{
-    KineticLaw *kl = new KineticLaw (*x.getKineticLaw ());
-    // TODO: Parse local parameters, find examples.
-    const ListOfSpeciesReferences *ref = x.getListOfReactants ();
-    int s = ref->size ();
-    for (int i = 0; i < s; i++)
-    {
-        const SimpleSpeciesReference *sp = ref->get (i);
-        string sName = sp->getSpecies ();
-        const Model *model = x.getModel ();
-        const Species *spe = model->getSpecies (sName);
-        if (spe->getBoundaryCondition () == false && spe->getConstant () == false)
-        {
-            map<string, ASTNode*>::iterator reac = _reaction_def.find (sName);
-            if (reac == _reaction_def.end ())
-            {
-                ASTNode *min = new ASTNode (AST_TIMES);
-                ASTNode *ft = new ASTNode (AST_MINUS);
-                ASTNode *constant = new ASTNode (AST_INTEGER);
-                constant->setValue (1);
-                ft->addChild (constant);
-                min->addChild (ft);
-                min->addChild (new ASTNode (*kl->getMath ()));
-                _reaction_def[sName] = min;
-            }
-            else
-            {
-                ASTNode *min = new ASTNode (AST_PLUS);
-                min->addChild (reac->second);
-                ASTNode *pt = new ASTNode (AST_TIMES);
-                ASTNode *ft = new ASTNode (AST_MINUS);
-                ASTNode *constant = new ASTNode (AST_INTEGER);
-                constant->setValue (1);
-                ft->addChild (constant);
-                pt->addChild (ft);
-                pt->addChild (new ASTNode (*kl->getMath ()));
-                min->addChild (pt);
-                _reaction_def[sName] = min;
-            }
-        }
-    }
-    ref = x.getListOfProducts ();
-    s = ref->size ();
-    for (int i = 0; i < s; i++)
-    {
-        const SimpleSpeciesReference *sp = ref->get (i);
-        string sName = sp->getSpecies ();
-        const Model *model = x.getModel ();
-        const Species *spe = model->getSpecies (sName);
-        if (spe->getBoundaryCondition () == false && spe->getConstant () == false)
-        {
-            map<string, ASTNode*>::iterator reac = _reaction_def.find (sName);
-            if (reac == _reaction_def.end ())
-            {
-                _reaction_def[sName] = new ASTNode (*kl->getMath ());
-            }
-            else
-            {
-                ASTNode *min = new ASTNode (AST_PLUS);
-                min->addChild (reac->second);
-                min->addChild (new ASTNode (*kl->getMath ()));
-                _reaction_def[sName] = min;
-            }
-        }
-    }
-    return (true);
-}
-
-bool
-MMOConvert::visit (const SimpleSpeciesReference &x)
-{
-    cout << "Visit SimpleSpeciesReference" << endl;
-    return (true);
-}
-
-bool
-MMOConvert::visit (const SpeciesReference &x)
-{
-    cout << "Visit SpeciesReference" << endl;
-    return (true);
-}
-
-bool
-MMOConvert::visit (const ModifierSpeciesReference &x)
-{
-    cout << "Visit ModifierSpeciesReference" << endl;
-    return (true);
-}
-
-bool
-MMOConvert::visit (const Event &x)
-{
-    cout << "Visit Event" << endl;
-    _events.push_back (x);
-    return (true);
-}
-
-bool
-MMOConvert::visit (const EventAssignment &x)
-{
-    cout << "Visit EventAssignment" << endl;
-    return (true);
-}
-
-bool
-MMOConvert::visit (const Trigger &x)
-{
-    cout << "Visit Trigger" << endl;
-    return (true);
-}
-
-bool
-MMOConvert::visit (const Delay &x)
-{
-    cout << "Visit Delay" << endl;
-    return (true);
+  cout << "Visit Delay" << endl;
+  return true;
 }
 
 void
-MMOConvert::visit (const Priority &x)
+MMOConvert::visit(const Priority &x)
 {
-    cout << "Visit Priority" << endl;
+  cout << "Visit Priority" << endl;
 }
 
 void
-MMOConvert::leave (const SBMLDocument &x)
+MMOConvert::leave(const SBMLDocument &x)
 {
-    cout << "Leave SBMLDocument" << endl;
+  cout << "Leave SBMLDocument" << endl;
 }
 
 void
-MMOConvert::leave (const Model &x)
+MMOConvert::leave(const Model &x)
 {
-    map<string, ASTNode*>::iterator it;
-    for (it = _reaction_def.begin (); it != _reaction_def.end (); it++)
-    {
-        _model.add (it->first, true, it->second, SEC_EQUATION);
-    }
-    list<Event>::iterator i;
-    for (i = _events.begin (); i != _events.end (); i++)
-    {
-        _model.add (*i);
-    }
-    cout << "Leave Model" << endl;
+  map<string, ASTNode*>::iterator it;
+  for(it = _reaction_def.begin(); it != _reaction_def.end(); it++)
+  {
+    _model.add(it->first, true, it->second, SEC_EQUATION);
+  }
+  list<Event>::iterator i;
+  for(i = _events.begin(); i != _events.end(); i++)
+  {
+    _model.add(*i);
+  }
+  cout << "Leave Model" << endl;
 }
 
 void
-MMOConvert::leave (const KineticLaw &x)
+MMOConvert::leave(const KineticLaw &x)
 {
-    cout << "Leave KineticLaw" << endl;
+  cout << "Leave KineticLaw" << endl;
 }
 
 void
-MMOConvert::leave (const Priority &x)
+MMOConvert::leave(const Priority &x)
 {
-    cout << "Leave Priority" << endl;
+  cout << "Leave Priority" << endl;
 }
 
 void
-MMOConvert::leave (const Reaction &x)
+MMOConvert::leave(const Reaction &x)
 {
-    cout << "Leave Reaction" << endl;
+  cout << "Leave Reaction" << endl;
 }
 
 void
-MMOConvert::leave (const SBase &x)
+MMOConvert::leave(const SBase &x)
 {
-    cout << "Leave SBase" << endl;
+  cout << "Leave SBase" << endl;
 }
 
 void
-MMOConvert::leave (const ListOf &x, int type)
+MMOConvert::leave(const ListOf &x, int type)
 {
-    cout << "Leave ListOf " << type << endl;
+  cout << "Leave ListOf " << type << endl;
 }

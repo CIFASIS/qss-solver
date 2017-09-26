@@ -35,25 +35,25 @@ using namespace std;
  */
 typedef enum
 {
-    SEC_EQUATION,
-    SEC_ALGORITHM,
-    SEC_INITIAL_ALGORITHM,
-    SEC_EXTERNAL_FUNCTIONS,
-    SEC_DECLARATIONS,
-    SEC_IMPORTS
+  SEC_EQUATION,
+  SEC_ALGORITHM,
+  SEC_INITIAL_ALGORITHM,
+  SEC_EXTERNAL_FUNCTIONS,
+  SEC_DECLARATIONS,
+  SEC_IMPORTS
 } MMOSectionType;
 
 /**
  *
  */
-class MMOSection : public MMOExp
+class MMOSection: public MMOExp
 {
-public:
+  public:
     /**
      *
      */
-    MMOSection () :
-            _type ()
+    MMOSection() :
+        _type()
     {
     }
     ;
@@ -61,25 +61,25 @@ public:
      *
      * @param type
      */
-    MMOSection (MMOSectionType type);
+    MMOSection(MMOSectionType type);
     /**
      *
      */
-    ~MMOSection ();
+    ~MMOSection();
     /**
      *
      * @param visitor
      */
     void
-    accept (MMOVisitor *visitor);
+    accept(MMOVisitor *visitor);
     /**
      *
      * @return
      */
     string
-    getId ()
+    getId()
     {
-        return (_id);
+      return _id;
     }
     ;
     /**
@@ -87,29 +87,29 @@ public:
      * @param exp
      */
     void
-    add (MMOExp *exp);
+    add(MMOExp *exp);
     /**
      *
      * @param id
      * @return
      */
     MMOExp*
-    find (string id);
+    find(string id);
     /**
      *
      * @param id
      * @return
      */
     MMODecl*
-    findDec (string id);
+    findDec(string id);
     /**
      *
      * @return
      */
     bool
-    isEquation ()
+    isEquation()
     {
-        return (_type == SEC_EQUATION);
+      return _type == SEC_EQUATION;
     }
     ;
     /**
@@ -117,9 +117,9 @@ public:
      * @return
      */
     bool
-    isAlgorithm ()
+    isAlgorithm()
     {
-        return (_type == SEC_ALGORITHM);
+      return _type == SEC_ALGORITHM;
     }
     ;
     /**
@@ -127,9 +127,9 @@ public:
      * @return
      */
     bool
-    isInitialAlgorithm ()
+    isInitialAlgorithm()
     {
-        return (_type == SEC_INITIAL_ALGORITHM);
+      return _type == SEC_INITIAL_ALGORITHM;
     }
     ;
     /**
@@ -137,9 +137,9 @@ public:
      * @return
      */
     bool
-    isExternalFunctions ()
+    isExternalFunctions()
     {
-        return (_type == SEC_EXTERNAL_FUNCTIONS);
+      return _type == SEC_EXTERNAL_FUNCTIONS;
     }
     ;
     /**
@@ -147,9 +147,9 @@ public:
      * @return
      */
     bool
-    isDeclarations ()
+    isDeclarations()
     {
-        return (_type == SEC_DECLARATIONS);
+      return _type == SEC_DECLARATIONS;
     }
     ;
     /**
@@ -157,9 +157,9 @@ public:
      * @return
      */
     bool
-    isEmpty ()
+    isEmpty()
     {
-        return (_exps.size () == 0);
+      return _exps.size() == 0;
     }
     ;
     /**
@@ -167,32 +167,32 @@ public:
      * @param algebraics
      */
     void
-    setAlgebraics (list<string> algebraics);
+    setAlgebraics(list<string> algebraics);
     /**
      *
      * @return
      */
     MMODecl *
-    first ();
+    first();
     /**
      *
      * @return
      */
     MMODecl *
-    next ();
+    next();
     /**
      *
      * @return
      */
     bool
-    end ();
+    end();
     /**
      *
      * @param iv
      */
     void
-    setInitialValues (bool iv);
-private:
+    setInitialValues(bool iv);
+    private:
     unsigned int _expIt;
     string _id;
     MMOSectionType _type;

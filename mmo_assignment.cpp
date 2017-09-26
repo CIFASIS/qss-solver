@@ -21,23 +21,23 @@
 
 #include <sbml/math/ASTNode.h>
 
-MMOAssignment::MMOAssignment (ASTNode *node)
+MMOAssignment::MMOAssignment(ASTNode *node)
 {
-    _exp = new ASTNode (*node);
+  _exp = new ASTNode(*node);
 }
 
-MMOAssignment::MMOAssignment (const ASTNode *node)
+MMOAssignment::MMOAssignment(const ASTNode *node)
 {
-    _exp = new ASTNode (*node);
+  _exp = new ASTNode(*node);
 }
 
-MMOAssignment::~MMOAssignment ()
+MMOAssignment::~MMOAssignment()
 {
-    delete _exp;
+  delete _exp;
 }
 
 ASTNode *
-MMOAssignment::getAssignment ()
+MMOAssignment::getAssignment()
 {
-    return (_exp);
+  return _exp;
 }

@@ -40,191 +40,193 @@ LIBSBML_CPP_NAMESPACE_USE
  */
 class MMOMath
 {
-public:
+  public:
     /**
      *
      */
-    ~MMOMath ();
-    /**
-     *
-     * @return
-     */
-    bool
-    endAlgebraic ();
+    ~MMOMath();
     /**
      *
      * @return
      */
     bool
-    endAsg ();
+    endAlgebraic();
     /**
      *
      * @return
      */
     bool
-    endEvent ();
+    endAsg();
     /**
      *
      * @return
      */
     bool
-    endZC ();
+    endEvent();
     /**
      *
      * @return
      */
     bool
-    hasAssignment ();
+    endZC();
     /**
      *
      * @return
      */
     bool
-    hasEquation ();
+    hasAssignment();
     /**
      *
      * @return
      */
     bool
-    hasZeroCrossing ();
+    hasEquation();
+    /**
+     *
+     * @return
+     */
+    bool
+    hasZeroCrossing();
     /**
      *
      * @param i
      * @return
      */
     bool
-    isPositive (int i);
+    isPositive(int i);
     /**
      *
      * @return
      */
     list<string>
-    getVariables ();
+    getVariables();
     /**
      *
      * @param replace
      * @param functions
      */
-    MMOMath (bool replace, map<string, pair<list<string>, ASTNode*> > *functions, string prefix = "");
+    MMOMath(bool replace, map<string, pair<list<string>, ASTNode*> > *functions,
+        string prefix = "");
     /**
      *
      * @return
      */
     pair<ASTNode *, list<pair<string, ASTNode *> > >
-    firstEvent ();
+    firstEvent();
     /**
      *
      * @return
      */
     pair<ASTNode *, list<pair<string, ASTNode *> > >
-    nextEvent ();
+    nextEvent();
     /**
      *
      * @return
      */
     pair<string, pair<string, list<string> > >
-    firstAlgebraic ();
+    firstAlgebraic();
     /**
      *
      * @return
      */
     pair<string, string>
-    firstZC ();
+    firstZC();
     /**
      *
      * @return
      */
     pair<string, pair<string, list<string> > >
-    nextAlgebraic ();
+    nextAlgebraic();
     /**
      *
      * @return
      */
     pair<string, string>
-    nextZC ();
+    nextZC();
     /**
      *
      * @return
      */
     string
-    firstAsg ();
+    firstAsg();
     /**
      *
      * @return
      */
     string
-    getExp ();
+    getExp();
     /**
      *
      * @return
      */
     string
-    nextAsg ();
+    nextAsg();
     /**
      *
      * @return
      */
     bool
-    hasImports ();
+    hasImports();
     /**
      *
      * @return
      */
     string
-    firstImport ();
+    firstImport();
     /**
      *
      * @return
      */
     string
-    nextImport ();
+    nextImport();
     /**
      *
      * @return
      */
     bool
-    endImport ();
+    endImport();
     /**
      *
      * @param node
      * @param asgVariable
      */
     void
-    parseAssignment (ASTNode *node, string asgVariable);
+    parseAssignment(ASTNode *node, string asgVariable);
     /**
      *
      * @param node
      */
     void
-    parseEquation (const ASTNode *node);
+    parseEquation(const ASTNode *node);
     /**
      *
      * @param node
      */
     void
-    parseZeroCrossing (ASTNode *node);
+    parseZeroCrossing(ASTNode *node);
     /**
      *
      * @return
      */
     bool
-    isConditional ();
-private:
+    isConditional();
+    private:
     /**
      *
      */
     typedef enum
     {
-        MATH_EQUATION, MATH_ZERO_CROSSING, MATH_ASSIGNMENT
+      MATH_EQUATION, MATH_ZERO_CROSSING, MATH_ASSIGNMENT
     } MATH_type;
     void
-    _processNode (ASTNode *node);
+    _processNode(ASTNode *node);
     pair<string, list<string> >
-    _generateAlgebraic (pair<list<string>, ASTNode*> function, list<string> args, ASTNode *node);
+    _generateAlgebraic(pair<list<string>, ASTNode*> function, list<string> args,
+        ASTNode *node);
     void
-    _getVariables (const ASTNode *node, list<string> *ret);
+    _getVariables(const ASTNode *node, list<string> *ret);
     void
-    _replaceFunctions (ASTNode *node);
+    _replaceFunctions(ASTNode *node);
     MMOEquation *_equation;
     MMOZeroCrossing *_zerocrossing;
     MMOAssignment *_assignment;

@@ -34,40 +34,40 @@ LIBSBML_CPP_NAMESPACE_USE
  */
 class MMOUtils
 {
-protected:
+  protected:
     /**
      *
      */
-    MMOUtils ();
+    MMOUtils();
     /**
      *
      * @param copy
      */
-    MMOUtils (MMOUtils const& copy);
+    MMOUtils(MMOUtils const& copy);
     /**
      *
      * @param copy
      * @return
      */
     MMOUtils&
-    operator= (MMOUtils const& copy);
-private:
+    operator=(MMOUtils const& copy);
+    private:
     int _varnum;
     map<string, map<string, string> > _predefinedFunctions;
     static bool _instance;
     static MMOUtils *_utils;
     bool _bioricaLanguage;
     string
-    _applyList (ASTNode *node, string oper);
+    _applyList(ASTNode *node, string oper);
     bool
-    _controlOperation (ASTNodeType_t type);
-public:
+    _controlOperation(ASTNodeType_t type);
+    public:
     /**
      *
      */
-    ~MMOUtils ()
+    ~MMOUtils()
     {
-        _instance = false;
+      _instance = false;
     }
     ;
     /**
@@ -75,20 +75,20 @@ public:
      * @return
      */
     static MMOUtils *
-    getInstance ();
+    getInstance();
     /**
      *
      * @param vstr
      * @return
      */
     const char*
-    getVar (string vstr = "tmpVar_");
+    getVar(string vstr = "tmpVar_");
     /**
      *
      * @param f
      */
     void
-    bioricaLanguage (bool f);
+    bioricaLanguage(bool f);
     /**
      *
      * @param node
@@ -96,21 +96,21 @@ public:
      * @return
      */
     string
-    getExp (ASTNode *node, string asgVariable = "");
+    getExp(ASTNode *node, string asgVariable = "");
     /**
      *
      * @param n
      * @return
      */
     string
-    indent (int n);
+    indent(int n);
     /**
      *
      * @param node
      * @return
      */
     string
-    checkPredefinedFunctions (ASTNode *node);
+    checkPredefinedFunctions(ASTNode *node);
 };
 
 #endif /* MMO_UTILS_H_ */

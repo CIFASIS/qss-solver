@@ -34,34 +34,34 @@ LIBSBML_CPP_NAMESPACE_USE
  */
 class MMOAssignment
 {
-public:
+  public:
     /**
      *
      * @param node
      */
-    MMOAssignment (ASTNode *node);
+    MMOAssignment(ASTNode *node);
     /**
      *
      * @param node
      */
-    MMOAssignment (const ASTNode *node);
+    MMOAssignment(const ASTNode *node);
     /**
      *
      */
-    ~MMOAssignment ();
+    ~MMOAssignment();
     /**
      *
      * @return
      */
     ASTNode *
-    getAssignment ();
+    getAssignment();
     /**
      *
      * @return
      */
     list<string>
-    replacedVars ();
-private:
+    replacedVars();
+    private:
     ASTNode *_exp;
 };
 

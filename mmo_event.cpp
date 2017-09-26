@@ -21,81 +21,84 @@
 
 #include "mmo_visitor.h"
 
-MMOEvent::MMOEvent (string id, bool generateInitialAsignment) :
-        _id (), _zero_crossing (), _condition (), _handler_pos (), _handler_neg (), _generateInitialAsignment (generateInitialAsignment), _initialAlgorithm (
-                false)
+MMOEvent::MMOEvent(string id, bool generateInitialAsignment) :
+    _id(), _zero_crossing(), _condition(), _handler_pos(), _handler_neg(), _generateInitialAsignment(
+        generateInitialAsignment), _initialAlgorithm(
+        false)
 {
-    _id = id;
+  _id = id;
 }
 
-MMOEvent::~MMOEvent ()
+MMOEvent::~MMOEvent()
 {
-}
-
-void
-MMOEvent::accept (MMOVisitor *visitor)
-{
-    if (_initialAlgorithm && !_generateInitialAsignment)
-    {
-        return;
-    }
-    visitor->visit (this);
-    visitor->visit (&_zero_crossing);
-    if (_condition.isCondition ())
-    {
-        visitor->visit (&_condition);
-    }
-    for (std::list<MMODecl>::iterator it = _handler_pos.begin (); it != _handler_pos.end (); ++it)
-    {
-        visitor->visit (*it);
-    }
-    for (std::list<MMODecl>::iterator it = _handler_neg.begin (); it != _handler_neg.end (); ++it)
-    {
-        visitor->visit (*it);
-    }
-    visitor->leave (this);
 }
 
 void
-MMOEvent::add (MMODecl decl)
+MMOEvent::accept(MMOVisitor *visitor)
 {
-    if (decl.isZeroCrossing ())
-    {
-        _zero_crossing = decl;
-    }
-    else if (decl.isCondition ())
-    {
-        _condition = decl;
-    }
+  if(_initialAlgorithm && !_generateInitialAsignment)
+  {
+    return;
+  }
+  visitor->visit(this);
+  visitor->visit(&_zero_crossing);
+  if(_condition.isCondition())
+  {
+    visitor->visit(&_condition);
+  }
+  for(std::list<MMODecl>::iterator it = _handler_pos.begin();
+      it != _handler_pos.end(); ++it)
+  {
+    visitor->visit(*it);
+  }
+  for(std::list<MMODecl>::iterator it = _handler_neg.begin();
+      it != _handler_neg.end(); ++it)
+  {
+    visitor->visit(*it);
+  }
+  visitor->leave(this);
 }
 
 void
-MMOEvent::add (MMODecl decl, MMOHandlerType type)
+MMOEvent::add(MMODecl decl)
 {
-    if (type == positive)
-    {
-        _handler_pos.push_back (decl);
-    }
-    else
-    {
-        _handler_neg.push_back (decl);
-    }
+  if(decl.isZeroCrossing())
+  {
+    _zero_crossing = decl;
+  }
+  else if(decl.isCondition())
+  {
+    _condition = decl;
+  }
+}
+
+void
+MMOEvent::add(MMODecl decl, MMOHandlerType type)
+{
+  if(type == positive)
+  {
+    _handler_pos.push_back(decl);
+  }
+  else
+  {
+    _handler_neg.push_back(decl);
+  }
 }
 
 bool
-MMOEvent::generateInitialAsignments ()
+MMOEvent::generateInitialAsignments()
 {
-    return (_generateInitialAsignment);
+  return _generateInitialAsignment;
 }
 
 void
-MMOEvent::setInitialAlgorithm (bool ia)
+MMOEvent::setInitialAlgorithm(bool ia)
 {
-    _initialAlgorithm = ia;
+  _initialAlgorithm = ia;
 }
 
 bool
-MMOEvent::initialAlgorithm ()
+MMOEvent::initialAlgorithm()
 {
-    return (_initialAlgorithm);
+  return _initialAlgorithm;
 }

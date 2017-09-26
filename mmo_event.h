@@ -32,52 +32,52 @@ using namespace std;
  */
 typedef enum
 {
-    positive, //!< positive
-    negative //!< negative
+  positive, //!< positive
+  negative //!< negative
 } MMOHandlerType;
 
 /**
  *
  */
-class MMOEvent : public MMOExp
+class MMOEvent: public MMOExp
 {
-public:
+  public:
     /**
      *
      * @param id
      */
-    MMOEvent (string id, bool generateInitialAsignment = false);
+    MMOEvent(string id, bool generateInitialAsignment = false);
     /**
      *
      */
-    ~MMOEvent ();
+    ~MMOEvent();
     /**
      *
      * @param visitor
      */
     void
-    accept (MMOVisitor *visitor);
+    accept(MMOVisitor *visitor);
     /**
      *
      * @param decl
      * @param type
      */
     void
-    add (MMODecl decl, MMOHandlerType type);
+    add(MMODecl decl, MMOHandlerType type);
     /**
      *
      * @param decl
      */
     void
-    add (MMODecl decl);
+    add(MMODecl decl);
     /**
      *
      * @return
      */
     string
-    getId ()
+    getId()
     {
-        return (_id);
+      return _id;
     }
     ;
     /**
@@ -85,20 +85,20 @@ public:
      * @return
      */
     bool
-    generateInitialAsignments ();
+    generateInitialAsignments();
     /**
      *
      * @param ia
      */
     void
-    setInitialAlgorithm (bool ia);
+    setInitialAlgorithm(bool ia);
     /**
      *
      * @return
      */
     bool
-    initialAlgorithm ();
-private:
+    initialAlgorithm();
+    private:
     string _id;
     MMODecl _zero_crossing;
     MMODecl _condition;

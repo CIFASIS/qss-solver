@@ -30,41 +30,41 @@ using namespace std;
 /**
  *
  */
-class MMOFunction : public MMOExp
+class MMOFunction: public MMOExp
 {
-public:
+  public:
     /**
      *
      * @param id
      */
-    MMOFunction (string id);
+    MMOFunction(string id);
     /**
      *
      */
-    ~MMOFunction ();
+    ~MMOFunction();
     /**
      *
      * @param visitor
      */
     void
-    accept (MMOVisitor *visitor);
+    accept(MMOVisitor *visitor);
     /**
      *
      * @param decl
      */
     void
-    add (MMODecl *decl);
+    add(MMODecl *decl);
     /**
      *
      * @return
      */
     string
-    getId ()
+    getId()
     {
-        return (_id);
+      return _id;
     }
     ;
-private:
+    private:
     string _id;
     MMODecl *_definition;
     list<MMODecl*> _inputs;

@@ -36,62 +36,62 @@ LIBSBML_CPP_NAMESPACE_USE
  */
 class MMOZeroCrossing
 {
-public:
+  public:
     /**
      *
      */
-    MMOZeroCrossing ();
+    MMOZeroCrossing();
     /**
      *
      * @param math
      */
-    MMOZeroCrossing (ASTNode *math);
+    MMOZeroCrossing(ASTNode *math);
     /**
      *
      */
-    ~MMOZeroCrossing ();
+    ~MMOZeroCrossing();
     /**
      *
      * @return
      */
     string
-    getReverseRelation ();
+    getReverseRelation();
     /**
      *
      * @return
      */
     pair<string, string>
-    first ();
+    first();
     /**
      *
      * @return
      */
     pair<string, string>
-    next ();
+    next();
     /**
      *
      * @return
      */
     bool
-    end ();
+    end();
     /**
      *
      * @param i
      * @return
      */
     bool
-    isPositive (int i);
-private:
+    isPositive(int i);
+    private:
     void
-    _parseLogicalOperators (ASTNode *node, ASTNode *cond);
+    _parseLogicalOperators(ASTNode *node, ASTNode *cond);
     void
-    _parseZeroCrossing (ASTNode *node, ASTNode *cond);
+    _parseZeroCrossing(ASTNode *node, ASTNode *cond);
     ASTNode *
-    _reverseRelation (ASTNode *node);
+    _reverseRelation(ASTNode *node);
     ASTNode *
-    _addCond (ASTNode *cond, ASTNode *node);
+    _addCond(ASTNode *cond, ASTNode *node);
     void
-    _negateNode (ASTNode *node, ASTNode *cond);
+    _negateNode(ASTNode *node, ASTNode *cond);
     list<pair<ASTNode *, ASTNode *> > _zero_crossings;
     vector<bool> _types;
     ASTNode *_zero_crossing;
