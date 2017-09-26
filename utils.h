@@ -82,87 +82,87 @@ typedef enum
  */
 class Utils
 {
-public:
-  /**
-   *
-   */
-  Utils ()
-  {
-  }
-  ;
-  /**
-   *
-   */
-  ~Utils ()
-  {
-  }
-  ;
-  /**
-   *
-   * @param c
-   * @return
-   */
-  QString
-  appCommand (AppCmds c);
-  /**
-   *
-   * @param d
-   * @return
-   */
-  QString
-  appDir (AppDirs d);
-  /**
-   *
-   * @param f
-   * @return
-   */
-  QString
-  appFlag (AppFlags f);
-  /**
-   *
-   * @param tok
-   * @return
-   */
-  QString
-  defaultValue (QString tok);
-  /**
-   *
-   * @param f
-   * @return
-   */
-  bool
-  isSet (AppFlags f);
-  /**
-   *
-   * @param d
-   * @return
-   */
-  QString
-  relativePath (AppDirs d);
-  /**
-   *
-   * @param c
-   * @param value
-   */
-  void
-  setCommand (AppCmds c, QString value);
-  /**
-   *
-   * @param d
-   * @param value
-   */
-  void
-  setDir (AppDirs d, QString value);
-  /**
-   *
-   * @param f
-   * @param value
-   */
-  void
-  setFlag (AppFlags f, QString value);
-private:
-  QString
-  _getDir (AppDirs d);
+  public:
+    /**
+     *
+     */
+    Utils()
+    {
+    }
+    ;
+    /**
+     *
+     */
+    ~Utils()
+    {
+    }
+    ;
+    /**
+     *
+     * @param c
+     * @return
+     */
+    QString
+    appCommand(AppCmds c);
+    /**
+     *
+     * @param d
+     * @return
+     */
+    QString
+    appDir(AppDirs d);
+    /**
+     *
+     * @param f
+     * @return
+     */
+    QString
+    appFlag(AppFlags f);
+    /**
+     *
+     * @param tok
+     * @return
+     */
+    QString
+    defaultValue(QString tok);
+    /**
+     *
+     * @param f
+     * @return
+     */
+    bool
+    isSet(AppFlags f);
+    /**
+     *
+     * @param d
+     * @return
+     */
+    QString
+    relativePath(AppDirs d);
+    /**
+     *
+     * @param c
+     * @param value
+     */
+    void
+    setCommand(AppCmds c, QString value);
+    /**
+     *
+     * @param d
+     * @param value
+     */
+    void
+    setDir(AppDirs d, QString value);
+    /**
+     *
+     * @param f
+     * @param value
+     */
+    void
+    setFlag(AppFlags f, QString value);
+    private:
+    QString
+    _getDir(AppDirs d);
 };
 
 #endif  /* UTILS_H_ */

@@ -27,28 +27,29 @@
 /**
  *
  */
-class SettingsDlg : public QDialog, public Ui::Settings
+class SettingsDlg: public QDialog, public Ui::Settings
 {
-    Q_OBJECT
-public:
+  Q_OBJECT
+    public:
     /**
      *
      * @param parent
      */
-    SettingsDlg (QWidget *parent = NULL);
+    SettingsDlg(QWidget *parent = NULL);
     /**
      *
      */
-    ~SettingsDlg ();private slots:
+    ~SettingsDlg();
+    private slots:
     void
-    _save ();
+    _save();
     QString
-    _getCheckBoxValue (QCheckBox *chkBox);
+    _getCheckBoxValue(QCheckBox *chkBox);
     void
-    _setCheckBoxValue (QCheckBox *chkBox, QString value);
+    _setCheckBoxValue(QCheckBox *chkBox, QString value);
     QString
-    _getDebugValue ();
-private:
+    _getDebugValue();
+    private:
     Utils *_utils;
 };
 

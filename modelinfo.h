@@ -27,30 +27,30 @@
  */
 class ModelInfo
 {
-public:
+  public:
     /**
      *
      * @param fullname
      */
-    ModelInfo (QString fullname = QString ());
+    ModelInfo(QString fullname = QString());
     /**
      *
      */
-    ~ModelInfo ();
+    ~ModelInfo();
     /**
      *
      * @return
      */
     QString
-    baseName ();
+    baseName();
     /**
      *
      * @return
      */
     bool
-    dirty ()
+    dirty()
     {
-        return (_dirty);
+      return _dirty;
     }
     ;
     /**
@@ -58,9 +58,9 @@ public:
      * @return
      */
     QString
-    fullname ()
+    fullname()
     {
-        return (_fullname);
+      return _fullname;
     }
     ;
     /**
@@ -68,9 +68,9 @@ public:
      * @return
      */
     bool
-    init ()
+    init()
     {
-        return (_init);
+      return _init;
     }
     ;
     /**
@@ -78,21 +78,21 @@ public:
      * @return
      */
     QString
-    name ();
+    name();
     /**
      *
      * @return
      */
     QString
-    path ();
+    path();
     /**
      *
      * @param d
      */
     void
-    setDirty (bool d)
+    setDirty(bool d)
     {
-        _dirty = d;
+      _dirty = d;
     }
     ;
     /**
@@ -100,9 +100,9 @@ public:
      * @param fn
      */
     void
-    setFullname (QString fn)
+    setFullname(QString fn)
     {
-        _fullname = fn;
+      _fullname = fn;
     }
     ;
     /**
@@ -110,12 +110,12 @@ public:
      * @param d
      */
     void
-    setInit (bool d)
+    setInit(bool d)
     {
-        _init = d;
+      _init = d;
     }
     ;
-private:
+    private:
     bool _dirty;
     QString _fullname;
     bool _init;

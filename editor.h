@@ -28,7 +28,7 @@
  */
 class Editor
 {
-public:
+  public:
     /**
      *
      * @param parent
@@ -36,31 +36,31 @@ public:
      * @return
      */
     static ModelEditor*
-    instance (QWidget *parent = NULL, QString name = QString ())
+    instance(QWidget *parent = NULL, QString name = QString())
     {
-        if (!_instance)
-            {
-                _instance = new ModelEditor (parent, name);
-            }
-        return (_instance);
+      if(!_instance)
+      {
+        _instance = new ModelEditor(parent, name);
+      }
+      return _instance;
     }
     /**
      *
      */
     static void
-    drop ()
+    drop()
     {
-        if (!_instance)
-            delete _instance;
-        _instance = NULL;
+      if(!_instance)
+        delete _instance;
+      _instance = NULL;
     }
-private:
-    Editor ()
+  private:
+    Editor()
     {
     }
-    Editor (const Editor &); // hide copy constructor
+    Editor(const Editor &); // hide copy constructor
     Editor&
-    operator= (const Editor &); // hide assign op
+    operator=(const Editor &); // hide assign op
     static ModelEditor* _instance;
 };
 #endif  /* EDITOR_H_ */

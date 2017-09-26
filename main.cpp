@@ -23,13 +23,13 @@
 #include <mmomegui.h>
 
 int
-main (int argc, char *argv[])
+main(int argc, char *argv[])
 {
-  QApplication app (argc, argv);
+  QApplication app(argc, argv);
   QDir d;
-  d.setCurrent (QCoreApplication::applicationDirPath ());
+  d.setCurrent(QCoreApplication::applicationDirPath());
   MmomeGui mmome;
-  mmome.show ();
-  int ret = app.exec ();
-  return (ret);
+  mmome.show();
+  int ret = app.exec();
+  return ret;
 }

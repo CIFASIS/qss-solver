@@ -31,88 +31,88 @@ class MmoHighlighter;
 /**
  *
  */
-class ModelEditor : public QDialog, public Ui::ModelEditorForm
+class ModelEditor: public QDialog, public Ui::ModelEditorForm
 {
-    Q_OBJECT
-public:
+  Q_OBJECT
+    public:
     /**
      *
      * @param parent
      * @param name
      */
-    ModelEditor (QWidget *parent = NULL, QString name = QString ());
+    ModelEditor(QWidget *parent = NULL, QString name = QString());
     /**
      *
      */
-    ~ModelEditor ();
-    /**
-     *
-     * @return
-     */
-    QString
-    absTolerance ();
+    ~ModelEditor();
     /**
      *
      * @return
      */
     QString
-    activeBaseFileName ();
+    absTolerance();
+    /**
+     *
+     * @return
+     */
+    QString
+    activeBaseFileName();
     /**
      *
      * @return
      */
     bool
-    activeDirty ();
+    activeDirty();
     /**
      *
      * @return
      */
     QString
-    activeFileName ();
+    activeFileName();
     /**
      *
      * @return
      */
     int
-    activeFileIndex ();
+    activeFileIndex();
     /**
      *
      * @return
      */
     QString
-    activeFullFileName ();
+    activeFullFileName();
     /**
      *
      * @param idx
      * @return
      */
     QString
-    baseFileName (int idx);
+    baseFileName(int idx);
     /**
      *
      * @return
      */
     bool
-    checkModel ();
+    checkModel();
     /**
      *
      * @return
      */
     bool
-    checkPackage ();
+    checkPackage();
     /**
      *
      */
     void
-    closeFiles ();
+    closeFiles();
     /**
      *
      * @return
      */
     int
-    count ()
+    count()
     {
-        return (_model_editor_tab->count ());
+      return _model_editor_tab->count();
     }
     ;
     /**
@@ -120,137 +120,137 @@ public:
      * @return
      */
     QString
-    derDelta ();
+    derDelta();
     /**
      *
      * @return
      */
     QString
-    description ();
+    description();
     /**
      *
      * @param name
      */
     void
-    editModel (QString name = QString ());
+    editModel(QString name = QString());
     /**
      *
      * @param idx
      * @return
      */
     QString
-    fileName (int idx);
+    fileName(int idx);
     /**
      *
      * @return
      */
     QStringList
-    fileNames ();
+    fileNames();
     /**
      *
      * @param idx
      * @return
      */
     QString
-    fullFileName (int idx);
+    fullFileName(int idx);
     /**
      *
      * @return
      */
     QString
-    minStep ();
+    minStep();
     /**
      *
      * @return
      */
     QString
-    modelName ();
+    modelName();
     /**
      *
      * @return
      */
     QString
-    newFileName ();
+    newFileName();
     /**
      *
      * @return
      */
     QString
-    output ();
+    output();
     /**
      *
      * @return
      */
     QString
-    outputType ();
+    outputType();
     /**
      *
      * @return
      */
     QString
-    period ();
+    period();
     /**
      *
      * @return
      */
     QString
-    scheduler ();
+    scheduler();
     /**
      *
      * @return
      */
     QString
-    solver ();
+    solver();
     /**
      *
      * @return
      */
     QString
-    startTime ();
+    startTime();
     /**
      *
      * @return
      */
     QString
-    stopTime ();
+    stopTime();
     /**
      *
      * @return
      */
     QString
-    symDiff ();
+    symDiff();
     /**
      *
      * @return
      */
     QString
-    parallel ();
+    parallel();
     /**
      *
      * @return
      */
     QString
-    partitionMethod ();
+    partitionMethod();
     /**
      *
      * @return
      */
     QString
-    DT ();
+    DT();
     /**
      *
      * @return
      */
     QString
-    tolerance ();
+    tolerance();
     /**
      *
      * @param str
      */
     void
-    setAbsTolerance (QString str)
+    setAbsTolerance(QString str)
     {
-        _absTolerance = str;
+      _absTolerance = str;
     }
     ;
     /**
@@ -258,9 +258,9 @@ public:
      * @param str
      */
     void
-    setDerDelta (QString str)
+    setDerDelta(QString str)
     {
-        _derdelta = _findValue ("MMO_DerDelta", str);
+      _derdelta = _findValue("MMO_DerDelta", str);
     }
     ;
     /**
@@ -268,10 +268,10 @@ public:
      * @param str
      */
     void
-    setDescription (QString str)
+    setDescription(QString str)
     {
-        _description.clear ();
-        _description.append ("\"").append (str).append ("\"");
+      _description.clear();
+      _description.append("\"").append(str).append("\"");
     }
     ;
     /**
@@ -279,9 +279,9 @@ public:
      * @param str
      */
     void
-    setMinStep (QString str)
+    setMinStep(QString str)
     {
-        _minstep = _findValue ("MMO_MinStep", str);
+      _minstep = _findValue("MMO_MinStep", str);
     }
     ;
     /**
@@ -289,9 +289,9 @@ public:
      * @param str
      */
     void
-    setOutput (QString str)
+    setOutput(QString str)
     {
-        _output = str;
+      _output = str;
     }
     ;
     /**
@@ -299,9 +299,9 @@ public:
      * @param str
      */
     void
-    setOutputType (QString str)
+    setOutputType(QString str)
     {
-        _outputType = _findValue ("MMO_OutputType", str);
+      _outputType = _findValue("MMO_OutputType", str);
     }
     ;
     /**
@@ -309,9 +309,9 @@ public:
      * @param str
      */
     void
-    setPeriod (QString str)
+    setPeriod(QString str)
     {
-        _period = _findValue ("MMO_Period", str);
+      _period = _findValue("MMO_Period", str);
     }
     ;
     /**
@@ -319,9 +319,9 @@ public:
      * @param str
      */
     void
-    setScheduler (QString str)
+    setScheduler(QString str)
     {
-        _scheduler = _findValue ("MMO_Scheduler", str);
+      _scheduler = _findValue("MMO_Scheduler", str);
     }
     ;
     /**
@@ -329,9 +329,9 @@ public:
      * @param str
      */
     void
-    setSolver (QString str)
+    setSolver(QString str)
     {
-        _solver = str;
+      _solver = str;
     }
     ;
     /**
@@ -339,9 +339,9 @@ public:
      * @param str
      */
     void
-    setStartTime (QString str)
+    setStartTime(QString str)
     {
-        _startTime = str;
+      _startTime = str;
     }
     ;
     /**
@@ -349,9 +349,9 @@ public:
      * @param str
      */
     void
-    setStopTime (QString str)
+    setStopTime(QString str)
     {
-        _stopTime = str;
+      _stopTime = str;
     }
     ;
     /**
@@ -359,9 +359,9 @@ public:
      * @param str
      */
     void
-    setSymDiff (QString str)
+    setSymDiff(QString str)
     {
-        _symdiff = _findValue ("MMO_SymDiff", str);
+      _symdiff = _findValue("MMO_SymDiff", str);
     }
     ;
     /**
@@ -369,9 +369,9 @@ public:
      * @param str
      */
     void
-    setTolerance (QString str)
+    setTolerance(QString str)
     {
-        _tolerance = str;
+      _tolerance = str;
     }
     ;
     /**
@@ -379,9 +379,9 @@ public:
      * @param str
      */
     void
-    setZcHyst (QString str)
+    setZcHyst(QString str)
     {
-        _zchyst = _findValue ("MMO_ZCHyst", str);
+      _zchyst = _findValue("MMO_ZCHyst", str);
     }
     ;
     /**
@@ -389,36 +389,36 @@ public:
      * @param str
      */
     void
-    setLPS (QString str)
+    setLPS(QString str)
     {
-        _lps = _findValue ("MMO_LPS", str);
+      _lps = _findValue("MMO_LPS", str);
     }
     ;
     /**
      *
      */
     void
-    writeAnnotations ();
+    writeAnnotations();
     /**
      *
      * @return
      */
     QString
-    zcHyst ();
+    zcHyst();
     /**
      *
      * @return
      */
     QString
-    LPS ();
+    LPS();
     /**
      *
      * @param str
      */
     void
-    setParallel (QString str)
+    setParallel(QString str)
     {
-        _parallel = _findValue ("MMO_Parallel", str);
+      _parallel = _findValue("MMO_Parallel", str);
     }
     ;
     /**
@@ -426,9 +426,9 @@ public:
      * @return
      */
     bool
-    isParallel ()
+    isParallel()
     {
-        return (_parallel.compare ("true") == 0);
+      return _parallel.compare("true") == 0;
     }
     ;
     /**
@@ -436,9 +436,9 @@ public:
      * @param str
      */
     void
-    setPartitionMethod (QString str)
+    setPartitionMethod(QString str)
     {
-        _partitionMethod = _findValue ("MMO_PartitionMethod", str);
+      _partitionMethod = _findValue("MMO_PartitionMethod", str);
     }
     ;
     /**
@@ -446,15 +446,15 @@ public:
      * @param str
      */
     void
-    setJacobian (QString str)
+    setJacobian(QString str)
     {
-        _jacobian = _findValue ("Jacobian", str);
+      _jacobian = _findValue("Jacobian", str);
     }
     ;
     QString
-    jacobian ()
+    jacobian()
     {
-        return _jacobian;
+      return _jacobian;
     }
     ;
 
@@ -463,9 +463,9 @@ public:
      * @param str
      */
     void
-    setDT (QString str)
+    setDT(QString str)
     {
-        _dt = _findValue ("MMO_DT_Min", str);
+      _dt = _findValue("MMO_DT_Min", str);
     }
     ;
     /**
@@ -473,9 +473,9 @@ public:
      * @param str
      */
     void
-    setDtSynch (QString str)
+    setDtSynch(QString str)
     {
-        _dtSynch = _findValue ("MMO_DT_Synch", str);
+      _dtSynch = _findValue("MMO_DT_Synch", str);
     }
     ;
     /**
@@ -483,9 +483,9 @@ public:
      * @return
      */
     QString
-    dtSynch ()
+    dtSynch()
     {
-        return (_getAnnotations ("MMO_DT_Synch"));
+      return _getAnnotations("MMO_DT_Synch");
     }
     ;
     /**
@@ -493,15 +493,15 @@ public:
      * @param str
      */
     void
-    setDtPeriod (QString str)
+    setDtPeriod(QString str)
     {
-        _dtPeriod = _findValue ("MMO_DT_SynchPeriod", str);
+      _dtPeriod = _findValue("MMO_DT_SynchPeriod", str);
     }
     ;
     QString
-    dtPeriod ()
+    dtPeriod()
     {
-        return (_getAnnotations ("MMO_DT_SynchPeriod"));
+      return _getAnnotations("MMO_DT_SynchPeriod");
     }
     ;
     /**
@@ -509,9 +509,9 @@ public:
      * @param str
      */
     void
-    setDtStepLog (QString str)
+    setDtStepLog(QString str)
     {
-        _dtStepLog = _findValue ("MMO_DT_StepLog", str);
+      _dtStepLog = _findValue("MMO_DT_StepLog", str);
     }
     ;
     /**
@@ -519,106 +519,108 @@ public:
      * @return
      */
     QString
-    dtStepLog ()
+    dtStepLog()
     {
-        return (_getAnnotations ("MMO_DT_StepLog"));
+      return _getAnnotations("MMO_DT_StepLog");
     }
     ;
     void
-    setPatohSettings (QString str)
+    setPatohSettings(QString str)
     {
-        _patohSettings = str;
+      _patohSettings = str;
     }
     ;
     void
-    setScotchSettings (QString str)
+    setScotchSettings(QString str)
     {
-        _scotchSettings = str;
+      _scotchSettings = str;
     }
     ;
     void
-    setMetisSettings (QString str)
+    setMetisSettings(QString str)
     {
-        _metisSettings = str;
+      _metisSettings = str;
     }
     ;
     QString
-    patohSettings ();
+    patohSettings();
     QString
-    scotchSettings ();
+    scotchSettings();
     QString
-    metisSettings ();
+    metisSettings();
     void
-    setSemiStaticPartitioning (bool st);
+    setSemiStaticPartitioning(bool st);
     bool
-    semiStaticPartitioning ();
-protected:
+    semiStaticPartitioning();
+    protected:
     void
-    reject ()
+    reject()
     {
     }
-    ;public slots:
+    ;
+    public slots:
     void
-    keyReleaseEvent (QKeyEvent *event);
+    keyReleaseEvent(QKeyEvent *event);
     void
-    save (void);
+    save(void);
     void
-    saveAll (void);
+    saveAll(void);
     void
-    saveAs (QString name = QString ());private slots:
+    saveAs(QString name = QString());
+  private slots:
     void
-    on__model_editor_tab_currentChanged (int index);
+    on__model_editor_tab_currentChanged(int index);
     void
-    on__model_editor_tab_tabCloseRequested (int index);
+    on__model_editor_tab_tabCloseRequested(int index);
     void
-    on__textEditor_textChanged (bool changed);signals:
+    on__textEditor_textChanged(bool changed);signals:
     /**
      *
      */
     void
-    clean (int);
+    clean(int);
     /**
      *
      * @param name
      * @param ext
      */
     void
-    done (QString name, QString ext);
-private:
+    done(QString name, QString ext);
+    private:
     void
-    _addLine (QString str);
+    _addLine(QString str);
     int
-    _beginModel ();
+    _beginModel();
     int
-    _endModel ();
+    _endModel();
     int
-    _controlEmptyLines (int position);
+    _controlEmptyLines(int position);
     bool
-    _checkToken (QString str);
+    _checkToken(QString str);
     bool
-    _checkAnnotations ();
+    _checkAnnotations();
     int
-    _checkFunctions (int modelInit, int modelEnd);
+    _checkFunctions(int modelInit, int modelEnd);
     void
-    _delete (int tab);
+    _delete(int tab);
     void
-    _deleteAnnotations ();
+    _deleteAnnotations();
     void
-    _deletePackageFiles (int idx);
+    _deletePackageFiles(int idx);
     QString
-    _findValue (QString token, QString str);
+    _findValue(QString token, QString str);
     QString
-    _getAnnotations (QString str);
+    _getAnnotations(QString str);
     QString
-    _getAnnotationValue (QString value, QString token);
+    _getAnnotationValue(QString value, QString token);
     bool
-    _lineEmpty ();
+    _lineEmpty();
     void
-    _setAnnotations (QString str, QString value, bool separator);
+    _setAnnotations(QString str, QString value, bool separator);
     void
-    _save (int tab);
+    _save(int tab);
     int
-    _tokenPosition (QString token);
+    _tokenPosition(QString token);
     QStringList _annotations;
     QMap<QString, QString> _defaultValues;
     QString _startTime;

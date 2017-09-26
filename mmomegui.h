@@ -33,118 +33,119 @@ class Utils;
 /**
  *
  */
-class MmomeGui : public QMainWindow, public Ui::MmomeGuiForm
+class MmomeGui: public QMainWindow, public Ui::MmomeGuiForm
 {
-    Q_OBJECT
-public:
+  Q_OBJECT
+    public:
     /**
      *
      */
-    MmomeGui ();
+    MmomeGui();
     /**
      *
      */
-    ~MmomeGui ();private slots:
+    ~MmomeGui();
+    private slots:
     void
-    cleanBuildDir (int);
+    cleanBuildDir(int);
     void
-    done (QString name, QString ext);
+    done(QString name, QString ext);
     void
-    on_actionClear_Log_triggered ();
+    on_actionClear_Log_triggered();
     void
-    on_actionClear_Messages_triggered ();
+    on_actionClear_Messages_triggered();
     void
-    on_actionCompile_triggered ();
+    on_actionCompile_triggered();
     void
-    on_actionDebug_triggered ();
+    on_actionDebug_triggered();
     void
-    on_actionExit_triggered ();
+    on_actionExit_triggered();
     void
-    on_actionGraphics_triggered ();
+    on_actionGraphics_triggered();
     void
-    on_actionImport_triggered ();
+    on_actionImport_triggered();
     void
-    on_action_Load_triggered ();
+    on_action_Load_triggered();
     void
-    on_actionLog_triggered ();
+    on_actionLog_triggered();
     void
-    on_action_New_triggered ();
+    on_action_New_triggered();
     void
-    on_actionRun_triggered ();
+    on_actionRun_triggered();
     void
-    on_actionRun_2_triggered ();
+    on_actionRun_2_triggered();
     void
-    on_action_Save_As_triggered ();
+    on_action_Save_As_triggered();
     void
-    on_actionSettings_triggered ();
+    on_actionSettings_triggered();
     void
-    on_actionMicroModelica_Language_Scpefication_triggered ();
+    on_actionMicroModelica_Language_Scpefication_triggered();
     void
-    on_actionQSS_Solver_Engine_Documentation_triggered ();
+    on_actionQSS_Solver_Engine_Documentation_triggered();
     void
-    on_actionMicroModelica_Compiler_Documentation_triggered ();
+    on_actionMicroModelica_Compiler_Documentation_triggered();
     void
-    on_actionSBML_Translator_Documentation_triggered ();
+    on_actionSBML_Translator_Documentation_triggered();
     void
-    on_actionAbout_triggered ();
+    on_actionAbout_triggered();
     void
-    runDlgClose ();
+    runDlgClose();
     void
-    runDlgRejected ();
+    runDlgRejected();
     void
-    _comp_finished (int exitCode, QProcess::ExitStatus exitStatus);
+    _comp_finished(int exitCode, QProcess::ExitStatus exitStatus);
     void
-    _importFinished (int exitCode, QProcess::ExitStatus exitStatus);
+    _importFinished(int exitCode, QProcess::ExitStatus exitStatus);
     void
-    _make_finished (int exitCode, QProcess::ExitStatus exitStatus);
+    _make_finished(int exitCode, QProcess::ExitStatus exitStatus);
     void
-    _plot_finished (int exitCode, QProcess::ExitStatus exitStatus);
+    _plot_finished(int exitCode, QProcess::ExitStatus exitStatus);
     void
-    _run_finished (int exitCode, QProcess::ExitStatus exitStatus);
+    _run_finished(int exitCode, QProcess::ExitStatus exitStatus);
     void
-    _settingsDlgClosed ();
+    _settingsDlgClosed();
     void
-    _simulation_message ();
+    _simulation_message();
     void
-    _openRecentFiles ();
+    _openRecentFiles();
     void
-    _log_finished (int exitCode, QProcess::ExitStatus exitStatus);
-protected:
+    _log_finished(int exitCode, QProcess::ExitStatus exitStatus);
+    protected:
     void
-    closeEvent (QCloseEvent * event);
-private:
+    closeEvent(QCloseEvent * event);
+    private:
     QString
-    _strippedName (const QString &fullFileName);
+    _strippedName(const QString &fullFileName);
     void
-    _setCurrentFile (const QString fileName);
+    _setCurrentFile(const QString fileName);
     void
-    _loadFile (QString fileName);
+    _loadFile(QString fileName);
     void
-    _updateRecentFileActions ();
+    _updateRecentFileActions();
     void
-    _createActions ();
+    _createActions();
     void
-    _addMenuBarItems ();
+    _addMenuBarItems();
     void
-    _addToolBarItems ();
+    _addToolBarItems();
     void
-    _addVariables ();
+    _addVariables();
     bool
-    _compile (bool dbg);
+    _compile(bool dbg);
     void
-    _deleteVariables (QString name);
+    _deleteVariables(QString name);
     void
-    _editModel (QString name);
+    _editModel(QString name);
     void
-    _enableActions (bool f);
+    _enableActions(bool f);
     void
-    _loadGraphics ();
+    _loadGraphics();
     bool
-    _plotScript ();
+    _plotScript();
     void
-    _run (QString name);
+    _run(QString name);
     void
-    _selectVariables ();
+    _selectVariables();
     ComboBoxDelegate *_cboxd;
     QString _iniFile;
     TreeModel *_model;
@@ -159,7 +160,7 @@ private:
     Utils *_utils;
     enum
     {
-        MaxRecentFiles = 5
+      MaxRecentFiles = 5
     };
     QAction *recentFileActs[MaxRecentFiles];
     QString _curFile;

@@ -77,80 +77,78 @@ class LineNumberArea;
 /**
  *
  */
-class CodeEditor : public QPlainTextEdit
+class CodeEditor: public QPlainTextEdit
 {
   Q_OBJECT
 
-public:
-  /**
-   *
-   * @param parent
-   */
-  CodeEditor (QWidget *parent = 0);
-  /**
-   *
-   * @param event
-   */
-  void
-  lineNumberAreaPaintEvent (QPaintEvent *event);
-  /**
-   *
-   * @return
-   */
-  int
-  lineNumberAreaWidth ();
-protected:
-  /**
-   *
-   * @param event
-   */
-  void
-  resizeEvent (QResizeEvent *event);
+  public:
+    /**
+     *
+     * @param parent
+     */
+    CodeEditor(QWidget *parent = 0);
+    /**
+     *
+     * @param event
+     */
+    void
+    lineNumberAreaPaintEvent(QPaintEvent *event);
+    /**
+     *
+     * @return
+     */
+    int
+    lineNumberAreaWidth();
+    protected:
+    /**
+     *
+     * @param event
+     */
+    void
+    resizeEvent(QResizeEvent *event);
 
-private slots:
-  void updateLineNumberAreaWidth(int newBlockCount);
-  void
-  highlightCurrentLine ();
-  void
-  updateLineNumberArea (const QRect &, int);
-
-private:
-  QWidget *lineNumberArea;
+  private slots:
+    void updateLineNumberAreaWidth(int newBlockCount);
+    void
+    highlightCurrentLine();
+    void
+    updateLineNumberArea(const QRect &, int);
+  private:
+    QWidget *lineNumberArea;
 };
 
 /**
  *
  */
-class LineNumberArea : public QWidget
+class LineNumberArea: public QWidget
 {
-public:
-  /**
-   *
-   * @param editor
-   */
-  LineNumberArea (CodeEditor *editor) :
-      QWidget (editor)
-  {
-    codeEditor = editor;
-  }
-  /**
-   *
-   * @return
-   */
-  QSize
-  sizeHint () const
-  {
-    return (QSize (codeEditor->lineNumberAreaWidth (), 0));
-  }
-protected:
-  void
-  paintEvent (QPaintEvent *event)
-  {
-    codeEditor->lineNumberAreaPaintEvent (event);
-  }
-
-private:
-  CodeEditor *codeEditor;
+  public:
+    /**
+     *
+     * @param editor
+     */
+    LineNumberArea(CodeEditor *editor) :
+        QWidget(editor)
+    {
+      codeEditor = editor;
+    }
+    /**
+     *
+     * @return
+     */
+    QSize
+    sizeHint() const
+    {
+      return QSize(codeEditor->lineNumberAreaWidth(), 0);
+    }
+  protected:
+    void
+    paintEvent(QPaintEvent *event)
+    {
+      codeEditor->lineNumberAreaPaintEvent(event);
+    }
+  private:
+    CodeEditor *codeEditor;
 };
 
 #endif  /* CODEEDITOR_H_ */

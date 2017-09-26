@@ -29,43 +29,43 @@
  */
 class TreeItem
 {
-public:
+  public:
     /**
      *
      * @param data
      * @param parent
      */
-    TreeItem (const QVector<QVariant> &data, TreeItem *parent = 0);
+    TreeItem(const QVector<QVariant> &data, TreeItem *parent = 0);
     /**
      *
      */
-    ~TreeItem ();
+    ~TreeItem();
     /**
      *
      * @param number
      * @return
      */
     TreeItem *
-    child (int number);
+    child(int number);
     /**
      *
      * @return
      */
     int
-    childCount () const;
+    childCount() const;
     /**
      *
      * @return
      */
     int
-    columnCount () const;
+    columnCount() const;
     /**
      *
      * @param column
      * @return
      */
     QVariant
-    data (int column) const;
+    data(int column) const;
     /**
      *
      * @param position
@@ -74,7 +74,7 @@ public:
      * @return
      */
     bool
-    insertChildren (int position, int count, int columns);
+    insertChildren(int position, int count, int columns);
     /**
      *
      * @param position
@@ -82,13 +82,13 @@ public:
      * @return
      */
     bool
-    insertColumns (int position, int columns);
+    insertColumns(int position, int columns);
     /**
      *
      * @return
      */
     TreeItem *
-    parent ();
+    parent();
     /**
      *
      * @param position
@@ -96,7 +96,7 @@ public:
      * @return
      */
     bool
-    removeChildren (int position, int count);
+    removeChildren(int position, int count);
     /**
      *
      * @param position
@@ -104,13 +104,13 @@ public:
      * @return
      */
     bool
-    removeColumns (int position, int columns);
+    removeColumns(int position, int columns);
     /**
      *
      * @return
      */
     int
-    childNumber () const;
+    childNumber() const;
     /**
      *
      * @param column
@@ -118,8 +118,8 @@ public:
      * @return
      */
     bool
-    setData (int column, const QVariant &value);
-private:
+    setData(int column, const QVariant &value);
+    private:
     QList<TreeItem*> childItems;
     QVector<QVariant> itemData;
     TreeItem *parentItem;
@@ -130,11 +130,11 @@ private:
  */
 class FileItem
 {
-public:
+  public:
     /**
      *
      */
-    FileItem ();
+    FileItem();
     /**
      *
      * @param v
@@ -144,17 +144,17 @@ public:
      * @param i
      * @param output
      */
-    FileItem (QString v, bool l, bool s, bool p, bool i, QString output);
+    FileItem(QString v, bool l, bool s, bool p, bool i, QString output);
     /**
      *
      */
-    ~FileItem ();
+    ~FileItem();
     /**
      *
      * @return
      */
     QString
-    plotStr ();
+    plotStr();
     /**
      *
      */
@@ -186,23 +186,23 @@ public:
  */
 class MapFiles
 {
-public:
+  public:
     /**
      *
      * @param output
      */
-    MapFiles (QString output = QString ());
+    MapFiles(QString output = QString());
     /**
      *
      */
-    ~MapFiles ();
+    ~MapFiles();
     /**
      *
      * @param file
      * @return
      */
     QList<FileItem>
-    files (QString file);
+    files(QString file);
     /**
      *
      * @param dir
@@ -210,7 +210,7 @@ public:
      * @return
      */
     FileItem
-    fileItem (QString dir, QString name);
+    fileItem(QString dir, QString name);
     /**
      *
      * @param it
@@ -218,60 +218,60 @@ public:
      * @param name
      */
     void
-    setFileItem (FileItem it, QString dir, QString name);
+    setFileItem(FileItem it, QString dir, QString name);
     /**
      *
      * @param dir
      * @param init
      */
     void
-    addFiles (QString dir, bool init = true);
+    addFiles(QString dir, bool init = true);
     /**
      *
      * @param dir
      */
     void
-    clearFiles (QString dir);
+    clearFiles(QString dir);
     /**
      *
      * @param dir
      */
     void
-    setFiles (QString dir);
+    setFiles(QString dir);
     /**
      *
      */
     void
-    clearAllFiles ();
+    clearAllFiles();
     /**
      *
      */
     void
-    setAllFiles ();
+    setAllFiles();
     /**
      *
      */
     void
-    clear ();
+    clear();
     /**
      *
      * @param dir
      */
     void
-    removeFiles (QString dir);
+    removeFiles(QString dir);
     /**
      *
      * @return
      */
     QMap<QString, QList<FileItem> >
-    map ()
+    map()
     {
-        return (*_files);
+      return *_files;
     }
     ;
-private:
+    private:
     void
-    _changeFiles (QString file, bool st);
+    _changeFiles(QString file, bool st);
     QMap<QString, QList<FileItem> > *_files;
     QString _output;
 };

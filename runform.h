@@ -27,27 +27,27 @@
 /**
  *
  */
-class RunDlg : public QDialog, public Ui::RunForm
+class RunDlg: public QDialog, public Ui::RunForm
 {
-    Q_OBJECT
-public:
+  Q_OBJECT
+    public:
     /**
      *
      * @param parent
      */
-    RunDlg (QWidget *parent = NULL);
+    RunDlg(QWidget *parent = NULL);
     /**
      *
      */
-    ~RunDlg ();
+    ~RunDlg();
     /**
      *
      * @return
      */
     QString
-    absTolerance ()
+    absTolerance()
     {
-        return (_absTolerance->text ());
+      return _absTolerance->text();
     }
     ;
     /**
@@ -55,9 +55,9 @@ public:
      * @return
      */
     QString
-    derDelta ()
+    derDelta()
     {
-        return (_derDelta->text ());
+      return _derDelta->text();
     }
     ;
     /**
@@ -65,9 +65,9 @@ public:
      * @return
      */
     QString
-    DT ()
+    DT()
     {
-        return (_dt->text ());
+      return _dt->text();
     }
     ;
     /**
@@ -75,9 +75,9 @@ public:
      * @return
      */
     QString
-    description ()
+    description()
     {
-        return (_description->toPlainText ());
+      return _description->toPlainText();
     }
     ;
     /**
@@ -85,9 +85,9 @@ public:
      * @return
      */
     QString
-    minStep ()
+    minStep()
     {
-        return (_minStep->text ());
+      return _minStep->text();
     }
     ;
     /**
@@ -95,9 +95,9 @@ public:
      * @return
      */
     QString
-    output ()
+    output()
     {
-        return (_output->text ());
+      return _output->text();
     }
     ;
     /**
@@ -105,9 +105,9 @@ public:
      * @return
      */
     QString
-    outputType ()
+    outputType()
     {
-        return (_getOutputTypeString (_commInterval->currentIndex ()));
+      return _getOutputTypeString(_commInterval->currentIndex());
     }
     ;
     /**
@@ -115,9 +115,9 @@ public:
      * @return
      */
     QString
-    period ()
+    period()
     {
-        return (_period->text ());
+      return _period->text();
     }
     ;
     /**
@@ -125,9 +125,9 @@ public:
      * @return
      */
     QString
-    scheduler ()
+    scheduler()
     {
-        return (_getSchedulerString (_scheduler->currentIndex ()));
+      return _getSchedulerString(_scheduler->currentIndex());
     }
     ;
     /**
@@ -135,9 +135,9 @@ public:
      * @return
      */
     QString
-    solver ()
+    solver()
     {
-        return (_getSolverString (_solver->currentIndex ()));
+      return _getSolverString(_solver->currentIndex());
     }
     ;
     /**
@@ -145,9 +145,9 @@ public:
      * @return
      */
     QString
-    startTime ()
+    startTime()
     {
-        return (_startTime->text ());
+      return _startTime->text();
     }
     ;
     /**
@@ -155,9 +155,9 @@ public:
      * @return
      */
     QString
-    stopTime ()
+    stopTime()
     {
-        return (_stopTime->text ());
+      return _stopTime->text();
     }
     ;
     /**
@@ -165,9 +165,9 @@ public:
      * @return
      */
     QString
-    symDiff ()
+    symDiff()
     {
-        return (_getSymDiffString (_symDiff->currentIndex ()));
+      return _getSymDiffString(_symDiff->currentIndex());
     }
     ;
     /**
@@ -175,9 +175,9 @@ public:
      * @return
      */
     QString
-    jacobian ()
+    jacobian()
     {
-        return (_getJacobianString (_jacobian->currentIndex ()));
+      return _getJacobianString(_jacobian->currentIndex());
     }
     ;
     /**
@@ -185,9 +185,9 @@ public:
      * @return
      */
     QString
-    tolerance ()
+    tolerance()
     {
-        return (_tolerance->text ());
+      return _tolerance->text();
     }
     ;
     /**
@@ -195,9 +195,9 @@ public:
      * @return
      */
     QString
-    zcHyst ()
+    zcHyst()
     {
-        return (_zcHyst->text ());
+      return _zcHyst->text();
     }
     ;
     /**
@@ -205,9 +205,9 @@ public:
      * @return
      */
     QString
-    LPS ()
+    LPS()
     {
-        return (_lps->text ());
+      return _lps->text();
     }
     ;
     /**
@@ -215,9 +215,9 @@ public:
      * @param str
      */
     void
-    setAbsTolerance (QString str)
+    setAbsTolerance(QString str)
     {
-        _absTolerance->setText (str.remove ("{").remove ("}"));
+      _absTolerance->setText(str.remove("{").remove("}"));
     }
     ;
     /**
@@ -225,9 +225,9 @@ public:
      * @param str
      */
     void
-    setDerDelta (QString str)
+    setDerDelta(QString str)
     {
-        _derDelta->setText (str);
+      _derDelta->setText(str);
     }
     ;
     /**
@@ -235,9 +235,9 @@ public:
      * @param str
      */
     void
-    setDescription (QString str)
+    setDescription(QString str)
     {
-        _description->setText (str);
+      _description->setText(str);
     }
     ;
     /**
@@ -245,9 +245,9 @@ public:
      * @param str
      */
     void
-    setMinStep (QString str)
+    setMinStep(QString str)
     {
-        _minStep->setText (str);
+      _minStep->setText(str);
     }
     ;
     /**
@@ -255,9 +255,9 @@ public:
      * @param str
      */
     void
-    setDT (QString str)
+    setDT(QString str)
     {
-        _dt->setText (str);
+      _dt->setText(str);
     }
     ;
     /**
@@ -265,9 +265,9 @@ public:
      * @param str
      */
     void
-    setOutput (QString str)
+    setOutput(QString str)
     {
-        _output->setText (str.remove ("{").remove ("}"));
+      _output->setText(str.remove("{").remove("}"));
     }
     ;
     /**
@@ -275,9 +275,9 @@ public:
      * @param str
      */
     void
-    setOutputType (QString str)
+    setOutputType(QString str)
     {
-        _commInterval->setCurrentIndex (_getOutputTypeIdx (str));
+      _commInterval->setCurrentIndex(_getOutputTypeIdx(str));
     }
     ;
     /**
@@ -285,9 +285,9 @@ public:
      * @param str
      */
     void
-    setPeriod (QString str)
+    setPeriod(QString str)
     {
-        _period->setText (str);
+      _period->setText(str);
     }
     ;
     /**
@@ -295,9 +295,9 @@ public:
      * @param str
      */
     void
-    setScheduler (QString str)
+    setScheduler(QString str)
     {
-        _scheduler->setCurrentIndex (_getSchedulerIdx (str));
+      _scheduler->setCurrentIndex(_getSchedulerIdx(str));
     }
     ;
     /**
@@ -305,9 +305,9 @@ public:
      * @param str
      */
     void
-    setSolver (QString str)
+    setSolver(QString str)
     {
-        _solver->setCurrentIndex (_getSolverIdx (str));
+      _solver->setCurrentIndex(_getSolverIdx(str));
     }
     ;
     /**
@@ -315,9 +315,9 @@ public:
      * @param str
      */
     void
-    setStartTime (QString str)
+    setStartTime(QString str)
     {
-        _startTime->setText (str);
+      _startTime->setText(str);
     }
     ;
     /**
@@ -325,9 +325,9 @@ public:
      * @param str
      */
     void
-    setStopTime (QString str)
+    setStopTime(QString str)
     {
-        _stopTime->setText (str);
+      _stopTime->setText(str);
     }
     ;
     /**
@@ -335,9 +335,9 @@ public:
      * @param str
      */
     void
-    setSymDiff (QString str)
+    setSymDiff(QString str)
     {
-        _symDiff->setCurrentIndex (_getSymDiffIdx (str));
+      _symDiff->setCurrentIndex(_getSymDiffIdx(str));
     }
     ;
     /**
@@ -345,9 +345,9 @@ public:
      * @param str
      */
     void
-    setTolerance (QString str)
+    setTolerance(QString str)
     {
-        _tolerance->setText (str.remove ("{").remove ("}"));
+      _tolerance->setText(str.remove("{").remove("}"));
     }
     ;
     /**
@@ -355,9 +355,9 @@ public:
      * @param str
      */
     void
-    setZcHyst (QString str)
+    setZcHyst(QString str)
     {
-        _zcHyst->setText (str);
+      _zcHyst->setText(str);
     }
     ;
     /**
@@ -365,15 +365,15 @@ public:
      * @param str
      */
     void
-    setLPS (QString str)
+    setLPS(QString str)
     {
-        _lps->setText (str);
+      _lps->setText(str);
     }
     ;
     void
-    setJacobian (QString str)
+    setJacobian(QString str)
     {
-        _jacobian->setCurrentIndex (str == "Sparse" ? 0 : 1);
+      _jacobian->setCurrentIndex(str == "Sparse" ? 0 : 1);
     }
     ;
 
@@ -382,9 +382,9 @@ public:
      * @return
      */
     QString
-    parallel ()
+    parallel()
     {
-        return (_getParallelString (_parallel->currentIndex ()));
+      return _getParallelString(_parallel->currentIndex());
     }
     ;
     /**
@@ -392,9 +392,9 @@ public:
      * @return
      */
     QString
-    partitionMethod ()
+    partitionMethod()
     {
-        return (_getPartitionMethodString (_partitionMethod->currentIndex ()));
+      return _getPartitionMethodString(_partitionMethod->currentIndex());
     }
     ;
     /**
@@ -402,9 +402,9 @@ public:
      * @param str
      */
     void
-    setParallel (QString str)
+    setParallel(QString str)
     {
-        _parallel->setCurrentIndex (_getParallelIdx (str));
+      _parallel->setCurrentIndex(_getParallelIdx(str));
     }
     ;
     /**
@@ -412,9 +412,9 @@ public:
      * @param str
      */
     void
-    setPartitionMethod (QString str)
+    setPartitionMethod(QString str)
     {
-        _partitionMethod->setCurrentIndex (_getPartitionMethodIdx (str));
+      _partitionMethod->setCurrentIndex(_getPartitionMethodIdx(str));
     }
     ;
     /**
@@ -422,9 +422,9 @@ public:
      * @return
      */
     QString
-    dtSynch ()
+    dtSynch()
     {
-        return (_getDtSynchString (_dtSynch->currentIndex ()));
+      return _getDtSynchString(_dtSynch->currentIndex());
     }
     ;
     /**
@@ -432,9 +432,9 @@ public:
      * @param str
      */
     void
-    setDtSynch (QString str)
+    setDtSynch(QString str)
     {
-        _dtSynch->setCurrentIndex (_getDtSynchIdx (str));
+      _dtSynch->setCurrentIndex(_getDtSynchIdx(str));
     }
     ;
     /**
@@ -442,88 +442,89 @@ public:
      * @return
      */
     bool
-    enableDebug ();
+    enableDebug();
     QString
-    patohSettings ()
+    patohSettings()
     {
-        return (_patohSettings->text ());
+      return _patohSettings->text();
     }
     ;
     void
-    setPatohSettings (QString str)
+    setPatohSettings(QString str)
     {
-        _patohSettings->setText (str.remove ("{").remove ("}"));
+      _patohSettings->setText(str.remove("{").remove("}"));
     }
     ;
     QString
-    scotchSettings ()
+    scotchSettings()
     {
-        return (_scotchSettings->text ());
+      return _scotchSettings->text();
     }
     ;
     void
-    setScotchSettings (QString str)
+    setScotchSettings(QString str)
     {
-        _scotchSettings->setText (str.remove ("{").remove ("}"));
+      _scotchSettings->setText(str.remove("{").remove("}"));
     }
     ;
     QString
-    metisSettings ()
+    metisSettings()
     {
-        return (_metisSettings->text ());
+      return _metisSettings->text();
     }
     ;
     void
-    setMetisSettings (QString str)
+    setMetisSettings(QString str)
     {
-        _metisSettings->setText (str.remove ("{").remove ("}"));
+      _metisSettings->setText(str.remove("{").remove("}"));
     }
     ;
     bool
-    semiStaticPartitioning ();
+    semiStaticPartitioning();
     void
-    setSemiStaticPartitioning (bool st);private slots:
+    setSemiStaticPartitioning(bool st);
+    private slots:
     void
-    on__commInterval_currentIndexChanged (int index);
+    on__commInterval_currentIndexChanged(int index);
     void
-    on__parallel_currentIndexChanged (int index);
+    on__parallel_currentIndexChanged(int index);
     void
-    on__showAll_stateChanged (int state);
+    on__showAll_stateChanged(int state);
     void
-    on__dtSynch_currentIndexChanged (int index);
-private:
+    on__dtSynch_currentIndexChanged(int index);
+    private:
     int
-    _getOutputTypeIdx (QString str);
+    _getOutputTypeIdx(QString str);
     QString
-    _getOutputTypeString (int idx);
+    _getOutputTypeString(int idx);
     int
-    _getSchedulerIdx (QString str);
+    _getSchedulerIdx(QString str);
     QString
-    _getSchedulerString (int idx);
+    _getSchedulerString(int idx);
     int
-    _getSolverIdx (QString str);
+    _getSolverIdx(QString str);
     QString
-    _getSolverString (int idx);
+    _getSolverString(int idx);
     int
-    _getSymDiffIdx (QString str);
+    _getSymDiffIdx(QString str);
     QString
-    _getSymDiffString (int idx);
+    _getSymDiffString(int idx);
     QString
-    _getJacobianString (int idx);
+    _getJacobianString(int idx);
     int
-    _getParallelIdx (QString str);
+    _getParallelIdx(QString str);
     QString
-    _getParallelString (int idx);
+    _getParallelString(int idx);
     int
-    _getPartitionMethodIdx (QString str);
+    _getPartitionMethodIdx(QString str);
     QString
-    _getPartitionMethodString (int idx);
+    _getPartitionMethodString(int idx);
     int
-    _getDtSynchIdx (QString str);
+    _getDtSynchIdx(QString str);
     int
-    _getJacobianIdx (QString str);
+    _getJacobianIdx(QString str);
     QString
-    _getDtSynchString (int idx);
+    _getDtSynchString(int idx);
     Utils *_utils;
     QDoubleValidator *_validate;
     QIntValidator *_validateInt;

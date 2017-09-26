@@ -25,15 +25,15 @@
 /**
  *
  */
-class ComboBoxDelegate : public QItemDelegate
+class ComboBoxDelegate: public QItemDelegate
 {
-    Q_OBJECT
-public:
+  Q_OBJECT
+    public:
     /**
      *
      * @param parent
      */
-    ComboBoxDelegate (QObject *parent = 0);
+    ComboBoxDelegate(QObject *parent = 0);
     /**
      *
      * @param parent
@@ -42,14 +42,15 @@ public:
      * @return
      */
     QWidget *
-    createEditor (QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+        const QModelIndex &index) const;
     /**
      *
      * @param editor
      * @param index
      */
     void
-    setEditorData (QWidget *editor, const QModelIndex &index) const;
+    setEditorData(QWidget *editor, const QModelIndex &index) const;
     /**
      *
      * @param editor
@@ -57,7 +58,8 @@ public:
      * @param index
      */
     void
-    setModelData (QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+    setModelData(QWidget *editor, QAbstractItemModel *model,
+        const QModelIndex &index) const;
     /**
      *
      * @param editor
@@ -65,12 +67,12 @@ public:
      * @param index
      */
     void
-    updateEditorGeometry (QWidget *editor,
-    /**
-     *
-     */
-    const QStyleOptionViewItem &option,
-                          const QModelIndex &index) const;
+    updateEditorGeometry(QWidget *editor,
+        /**
+         *
+         */
+        const QStyleOptionViewItem &option,
+        const QModelIndex &index) const;
 };
 
 #endif  /* CODEEDITOR_H_ */
