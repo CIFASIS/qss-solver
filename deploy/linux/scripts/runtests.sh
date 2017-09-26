@@ -60,10 +60,11 @@ for fol in `(ls -d */ | grep -v parallel | sed 's/\/$//')`; do
 	fi
 	cd $MMOC_OUTPUT/$fol
 	for m in `ls *.dat`; do
+		diff $MMOC_OUTPUT/$fol/$m $MMOC_TESTS/$fol/$m > /dev/null 
 		if [ $? -ne 0 ]; then
 			echo "ERROR Test: "$fol "Different output values in file: "$m  >> $MMOC_BIN/test.log
 			echo "ERROR Test: "$fol "Different output values in file: "$m  
-		    diff $MMOC_BUILD/$fol/$fol.c $MMOC_TESTS/$fol/$fol.c >> $MMOC_BIN/test.log
+		    diff $MMOC_OUTPUT/$fol/$m $MMOC_TESTS/$fol/$m >> $MMOC_BIN/test.log
 		else
 			echo  >> $MMOC_BIN/test.log
 			echo  
