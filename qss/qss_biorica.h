@@ -27,6 +27,6 @@
  * @return
  */
 double
-root (int sq, double value);
+root(int sq, double value);
 
 #endif  /* QSS_BIORICA_H_ */

@@ -48,7 +48,7 @@ typedef int *QSS_idxMap;
  *
  */
 typedef void *
-(QSS_sim) (void *);
+(QSS_sim)(void *);
 
 /**
  *
@@ -70,20 +70,20 @@ struct QSS_reinit_
  * @return
  */
 QSS_reinit
-QSS_Reinit ();
+QSS_Reinit();
 
 /**
  *
  * @param reinit
  */
 void
-QSS_freeReinit (QSS_reinit reinit);
+QSS_freeReinit(QSS_reinit reinit);
 
 /**
  *
  */
 typedef void
-(*QSS_fp) (void);
+(*QSS_fp)(void);
 
 /**
  *
@@ -91,38 +91,14 @@ typedef void
  * @return
  */
 typedef int
-(*QSS_fpr) (int);
+(*QSS_fpr)(int);
 
 /**
  *
  * @param
  */
 typedef void
-(*QSS_fpa) (int);
-
-/**
- *
- * @param
- * @param
- * @param
- * @param
- * @param
- */
-typedef void
-(*QSS_eq) (int, double*, double*, double*, double, double*);
-
-/**
- *
- * @param
- * @param
- * @param
- * @param
- * @param
- * @param
- * @param
- */
-typedef void
-(*QSS_dep) (int, double*, double*, double*, double, double*, int*);
+(*QSS_fpa)(int);
 
 /**
  *
@@ -133,7 +109,31 @@ typedef void
  * @param
  */
 typedef void
-(*QSS_zc) (int, double*, double*, double*, double, double*);
+(*QSS_eq)(int, double*, double*, double*, double, double*);
+
+/**
+ *
+ * @param
+ * @param
+ * @param
+ * @param
+ * @param
+ * @param
+ * @param
+ */
+typedef void
+(*QSS_dep)(int, double*, double*, double*, double, double*, int*);
+
+/**
+ *
+ * @param
+ * @param
+ * @param
+ * @param
+ * @param
+ */
+typedef void
+(*QSS_zc)(int, double*, double*, double*, double, double*);
 
 /**
  *
@@ -143,7 +143,7 @@ typedef void
  * @param
  */
 typedef void
-(*QSS_hnd) (int, double*, double*, double*, double);
+(*QSS_hnd)(int, double*, double*, double*, double);
 
 /**
  *
@@ -151,7 +151,7 @@ typedef void
  * @param
  */
 typedef void
-(*QSS_input) (double, double*);
+(*QSS_input)(double, double*);
 
 /**
  * @enum QSS_SchedulerType
@@ -169,7 +169,7 @@ typedef void
  */
 typedef enum
 {
-    ST_Linear, ST_Binary, ST_Random
+  ST_Linear, ST_Binary, ST_Random
 } QSS_SchedulerType;
 
 /**
@@ -188,7 +188,7 @@ typedef enum
  */
 typedef enum
 {
-    ST_State, ST_Event, ST_Input
+  ST_State, ST_Event, ST_Input
 } QSS_StepType;
 
 /**
@@ -248,39 +248,41 @@ struct QSS_LP_data_
  *
  */
 QSS_LP_data
-QSS_LP_Data (int states, int events, int inputs, int outputs, int inStates, int inEvents, int totalStates, int totalEvents, int totalOutputs, int nLPS, int lps,
-             int id);
+QSS_LP_Data(int states, int events, int inputs, int outputs, int inStates,
+    int inEvents, int totalStates, int totalEvents, int totalOutputs, int nLPS,
+    int lps,
+    int id);
 
 /**
  *
  */
 QSS_LP_dataArray
-QSS_LP_DataArray (int size);
+QSS_LP_DataArray(int size);
 
 /**
  *
  * @param array
  */
 void
-QSS_LP_freeDataArray (QSS_LP_dataArray array);
+QSS_LP_freeDataArray(QSS_LP_dataArray array);
 
 /**
  *
  */
 QSS_LP_data
-QSS_LP_copyData (QSS_LP_data data);
+QSS_LP_copyData(QSS_LP_data data);
 
 /**
  *
  */
 void
-QSS_LP_clean (QSS_LP_data data);
+QSS_LP_clean(QSS_LP_data data);
 
 /**
  *
  */
 void
-QSS_LP_freeData (QSS_LP_data data);
+QSS_LP_freeData(QSS_LP_data data);
 
 /**
  *
@@ -305,14 +307,14 @@ struct QSS_event_
  * @return
  */
 QSS_event
-SD_Event (QSS_zc zeroCrossing, QSS_hnd handlerPos, QSS_hnd handlerNeg);
+SD_Event(QSS_zc zeroCrossing, QSS_hnd handlerPos, QSS_hnd handlerNeg);
 
 /**
  *
  * @param events
  */
 void
-QSS_freeEvent (QSS_event events);
+QSS_freeEvent(QSS_event events);
 
 /**
  *
@@ -375,38 +377,39 @@ struct QSS_data_
  * @return
  */
 QSS_data
-QSS_Data (int states, int discretes, int events, int inputs, int algs, string name);
+QSS_Data(int states, int discretes, int events, int inputs, int algs,
+    string name);
 
 /**
  *
  * @return
  */
 QSS_data
-QSS_copyData (QSS_data data);
+QSS_copyData(QSS_data data);
 
 /**
  *
  * @param data
  */
 void
-QSS_orderDataMatrix (QSS_data data);
+QSS_orderDataMatrix(QSS_data data);
 
 /**
  *
  * @param data
  */
 void
-QSS_freeData (QSS_data data);
+QSS_freeData(QSS_data data);
 
 void
-QSS_cleanData (QSS_data data);
+QSS_cleanData(QSS_data data);
 
 /**
  *
  * @param data
  */
 void
-QSS_allocDataMatrix (QSS_data data);
+QSS_allocDataMatrix(QSS_data data);
 
 /**
  * 
@@ -486,7 +489,8 @@ struct QSS_time_
  * @return
  */
 QSS_time
-QSS_Time (int states, int events, int inputs, double it, QSS_SchedulerType scheduler, double *weights);
+QSS_Time(int states, int events, int inputs, double it,
+    QSS_SchedulerType scheduler, double *weights);
 
 /**
  *
@@ -495,7 +499,7 @@ QSS_Time (int states, int events, int inputs, double it, QSS_SchedulerType sched
  * @param inputs
  */
 void
-QSS_freeTime (QSS_time simTime, int events, int inputs);
+QSS_freeTime(QSS_time simTime, int events, int inputs);
 
 /**
  *
@@ -522,14 +526,15 @@ struct QSS_model_
  * @return
  */
 QSS_model
-QSS_Model (QSS_eq f, QSS_dep deps, QSS_zc zeroCrossing, QSS_hnd handlerPos, QSS_hnd handlerNeg);
+QSS_Model(QSS_eq f, QSS_dep deps, QSS_zc zeroCrossing, QSS_hnd handlerPos,
+    QSS_hnd handlerNeg);
 
 /**
  *
  * @param model
  */
 void
-QSS_freeModel (QSS_model model);
+QSS_freeModel(QSS_model model);
 
 /*! \brief Callback function prototype, used to initialize data structures.	*/
 /**
@@ -541,7 +546,7 @@ QSS_freeModel (QSS_model model);
  * @param SD_simulationSettings
  */
 typedef void
-(*QSS_setData) (QSS_data, QSS_time, SD_output, QSS_model, SD_simulationSettings);
+(*QSS_setData)(QSS_data, QSS_time, SD_output, QSS_model, SD_simulationSettings);
 
 /**
  *
@@ -552,6 +557,6 @@ typedef void
  * @return
  */
 bool
-QSS_influenced (QSS_data data, int variable, int inf, QSS_StepType type);
+QSS_influenced(QSS_data data, int variable, int inf, QSS_StepType type);
 
 #endif /* QSS_DATA_H_ */

@@ -23,19 +23,19 @@
 #include "data.h"
 
 typedef void
-(*CMD_terminateFn) (void);
+(*CMD_terminateFn)(void);
 
 /**
  *
  * @param settings
  */
 void
-CMD_init (SD_simulationSettings settings);
+CMD_init(SD_simulationSettings settings);
 
 /**
  *
  */
 void
-CMD_terminate ();
+CMD_terminate();
 
 #endif /* COMMANDS_H_ */

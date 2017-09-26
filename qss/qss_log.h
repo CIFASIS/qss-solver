@@ -53,7 +53,7 @@ typedef struct LG_logState_ *LG_logState;
  * @param
  */
 typedef void
-(*LG_writeFn) (LG_log, int, double, double);
+(*LG_writeFn)(LG_log, int, double, double);
 
 /**
  *
@@ -62,13 +62,13 @@ typedef void
  * @param
  */
 typedef void
-(*LG_writeLineFn) (LG_log, int, double, double*);
+(*LG_writeLineFn)(LG_log, int, double, double*);
 
 /**
  *
  */
 typedef void
-(*LG_toFileFn) ();
+(*LG_toFileFn)();
 
 /**
  *
@@ -109,14 +109,14 @@ struct LG_logOps_
  * @return
  */
 LG_logState
-LG_LogState ();
+LG_LogState();
 
 /**
  *
  * @return
  */
 LG_logOps
-LG_LogOps ();
+LG_LogOps();
 
 /**
  *
@@ -125,28 +125,28 @@ LG_LogOps ();
  * @return
  */
 LG_log
-LG_Log (QSS_data simData, SD_output simOutput);
+LG_Log(QSS_data simData, SD_output simOutput);
 
 /**
  *
  * @param v
  */
 void
-LG_freeLog (LG_log v);
+LG_freeLog(LG_log v);
 
 /**
  *
  * @param v
  */
 void
-LG_freeLogState (LG_logState v);
+LG_freeLogState(LG_logState v);
 
 /**
  *
  * @param v
  */
 void
-LG_freeLogOps (LG_logOps v);
+LG_freeLogOps(LG_logOps v);
 
 /**
  *
@@ -155,7 +155,7 @@ LG_freeLogOps (LG_logOps v);
  * @param
  */
 void
-LG_write (LG_log log, int i, double time, double value);
+LG_write(LG_log log, int i, double time, double value);
 
 /**
  *
@@ -164,12 +164,12 @@ LG_write (LG_log log, int i, double time, double value);
  * @param
  */
 void
-LG_writeLine (LG_log log, int i, double time, double *value);
+LG_writeLine(LG_log log, int i, double time, double *value);
 
 /**
  *
  */
 void
-LG_toFile (LG_log log);
+LG_toFile(LG_log log);
 
 #endif  /* QSS_LOG_H_ */

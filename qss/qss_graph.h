@@ -32,13 +32,16 @@ typedef int grp_t;
 
 typedef enum
 {
-    GRP_ReadError, GRP_Success
+  GRP_ReadError, GRP_Success
 } GRP_Status;
 
 int
-GRP_readGraph (char *name, QSS_data data, grp_t **xadj, grp_t **adjncy, grp_t *edges, int rwgt, grp_t **vwgt, grp_t **ewgt, int rhe, grp_t **hevars);
+GRP_readGraph(char *name, QSS_data data, grp_t **xadj, grp_t **adjncy,
+    grp_t *edges, int rwgt, grp_t **vwgt, grp_t **ewgt, int rhe,
+    grp_t **hevars);
 
 int
-GRP_createGraph (QSS_data data, grp_t **xadj, grp_t **adjncy, int rwgt, FILE *wFile, grp_t **ewgt, int rhe, grp_t **hevars);
+GRP_createGraph(QSS_data data, grp_t **xadj, grp_t **adjncy, int rwgt,
+    FILE *wFile, grp_t **ewgt, int rhe, grp_t **hevars);
 
 #endif /* QSS_GRAPH_H_ */

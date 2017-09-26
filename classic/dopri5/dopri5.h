@@ -176,58 +176,58 @@
 #include <limits.h>
 
 typedef void
-(*FcnEqDiff) (unsigned n, double x, double *y, double *f);
+(*FcnEqDiff)(unsigned n, double x, double *y, double *f);
 typedef void
-(*SolTrait) (long nr, double xold, double x, double* y, unsigned n, int* irtrn,
-	     int *jroot);
+(*SolTrait)(long nr, double xold, double x, double* y, unsigned n, int* irtrn,
+    int *jroot);
 typedef void
-(*ZeroCrossing) (int n, double x, const double *y, double *g);
+(*ZeroCrossing)(int n, double x, const double *y, double *g);
 
 int
-dopri5 (unsigned n, /* dimension of the system <= UINT_MAX-1*/
-	FcnEqDiff fcn, /* function computing the value of f(x,y) */
-	double x, /* initial x-value */
-	double* y, /* initial values for y */
-	double xend, /* final x-value (xend-x may be positive or negative) */
-	double* rtoler, /* relative error tolerance */
-	double* atoler, /* absolute error tolerance */
-	int itoler, /* switch for rtoler and atoler */
-	SolTrait solout, /* function providing the numerical solution during integration */
-	int iout, /* switch for calling solout */
-	FILE* fileout, /* messages stream */
-	double uround, /* rounding unit */
-	double safe, /* safety factor */
-	double fac1, /* parameters for step size selection */
-	double fac2, double beta, /* for stabilized step size control */
-	double hmax, /* maximal step size */
-	double h, /* initial step size */
-	long nmax, /* maximal number of allowed steps */
-	int meth, /* switch for the choice of the coefficients */
-	long nstiff, /* test for stiffness */
-	unsigned nrdens, /* number of components for which dense outpout is required */
-	unsigned* icont, /* indexes of components for which dense output is required, >= nrdens */
-	unsigned licont, /* declared length of icon */
-	ZeroCrossing g, /* function to evaluate the roots */
-	int nzc, /* number of roots functions */
-	int *jroot, /* array of size nzc to store the sign of the roots found */
-	double *troot /* time of the root(s) found */
-	);
+dopri5(unsigned n, /* dimension of the system <= UINT_MAX-1*/
+FcnEqDiff fcn, /* function computing the value of f(x,y) */
+double x, /* initial x-value */
+double* y, /* initial values for y */
+double xend, /* final x-value (xend-x may be positive or negative) */
+double* rtoler, /* relative error tolerance */
+double* atoler, /* absolute error tolerance */
+int itoler, /* switch for rtoler and atoler */
+SolTrait solout, /* function providing the numerical solution during integration */
+int iout, /* switch for calling solout */
+FILE* fileout, /* messages stream */
+double uround, /* rounding unit */
+double safe, /* safety factor */
+double fac1, /* parameters for step size selection */
+double fac2, double beta, /* for stabilized step size control */
+double hmax, /* maximal step size */
+double h, /* initial step size */
+long nmax, /* maximal number of allowed steps */
+int meth, /* switch for the choice of the coefficients */
+long nstiff, /* test for stiffness */
+unsigned nrdens, /* number of components for which dense outpout is required */
+unsigned* icont, /* indexes of components for which dense output is required, >= nrdens */
+unsigned licont, /* declared length of icon */
+ZeroCrossing g, /* function to evaluate the roots */
+int nzc, /* number of roots functions */
+int *jroot, /* array of size nzc to store the sign of the roots found */
+double *troot /* time of the root(s) found */
+);
 
 double
-contd5 (unsigned ii, /* index of desired component */
-	double x /* approximation at x */
-	);
+contd5(unsigned ii, /* index of desired component */
+double x /* approximation at x */
+);
 
 long
-nfcnRead (void); /* encapsulation of statistical data */
+nfcnRead(void); /* encapsulation of statistical data */
 long
-nstepRead (void);
+nstepRead(void);
 long
-naccptRead (void);
+naccptRead(void);
 long
-nrejctRead (void);
+nrejctRead(void);
 double
-hRead (void);
+hRead(void);
 double
-xRead (void);
+xRead(void);
 

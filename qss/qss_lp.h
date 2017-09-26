@@ -56,7 +56,7 @@ struct LP_partitionInfo_
  * @return
  */
 LP_partitionInfo
-LP_PartitionInfo (int states, int events, int out);
+LP_PartitionInfo(int states, int events, int out);
 
 /**
  *
@@ -64,6 +64,6 @@ LP_PartitionInfo (int states, int events, int out);
  * @param partitions
  */
 void
-LP_initializeDataStructs (QSS_simulator simulator, PRT_partition partitions);
+LP_initializeDataStructs(QSS_simulator simulator, PRT_partition partitions);
 
 #endif /* QSS_LP_H_ */

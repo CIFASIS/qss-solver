@@ -27,39 +27,20 @@
  *
  */
 typedef void
-(*CLC_fp) (void);
+(*CLC_fp)(void);
 /**
  *
  * @param
  * @return
  */
 typedef int
-(*CLC_fpr) (int);
+(*CLC_fpr)(int);
 /**
  *
  * @param
  */
 typedef void
-(*CLC_fpa) (int);
-/**
- *
- * @param
- * @param
- * @param
- * @param
- */
-typedef void
-(*CLC_eq) (double*, double*, double*, double, double*);
-/**
- *
- * @param
- * @param
- * @param
- * @param
- * @param
- */
-typedef void
-(*CLC_zc) (int, double*, double*, double*, double, double*);
+(*CLC_fpa)(int);
 /**
  *
  * @param
@@ -68,14 +49,33 @@ typedef void
  * @param
  */
 typedef void
-(*CLC_hnd) (int, double*, double*, double*, double);
+(*CLC_eq)(double*, double*, double*, double, double*);
+/**
+ *
+ * @param
+ * @param
+ * @param
+ * @param
+ * @param
+ */
+typedef void
+(*CLC_zc)(int, double*, double*, double*, double, double*);
+/**
+ *
+ * @param
+ * @param
+ * @param
+ * @param
+ */
+typedef void
+(*CLC_hnd)(int, double*, double*, double*, double);
 /**
  *
  * @param
  * @param
  */
 typedef void
-(*CLC_input) (double, double*);
+(*CLC_input)(double, double*);
 /**
  *
  */
@@ -91,7 +91,7 @@ struct CLC_event_
 };
 
 typedef void
-(*CLC_jac) (double *x, double *d, double *alg, double t, double *j);
+(*CLC_jac)(double *x, double *d, double *alg, double t, double *j);
 /**
  *
  * @param zeroCrossing
@@ -100,13 +100,13 @@ typedef void
  * @return
  */
 CLC_event
-CLC_Event (CLC_zc zeroCrossing, CLC_hnd handlerPos, CLC_hnd handlerNeg);
+CLC_Event(CLC_zc zeroCrossing, CLC_hnd handlerPos, CLC_hnd handlerNeg);
 /**
  *
  * @param events
  */
 void
-CLC_freeEvent (CLC_event events);
+CLC_freeEvent(CLC_event events);
 /**
  *
  */
@@ -157,19 +157,20 @@ struct CLC_data_
  * @return
  */
 CLC_data
-CLC_Data (int states, int discretes, int events, int inputs, int algebraics, string name);
+CLC_Data(int states, int discretes, int events, int inputs, int algebraics,
+    string name);
 /**
  *
  * @param data
  */
 void
-CLC_freeData (CLC_data data);
+CLC_freeData(CLC_data data);
 /**
  *
  * @param data
  */
 void
-CLC_allocDataMatrix (CLC_data data);
+CLC_allocDataMatrix(CLC_data data);
 /**
  *
  */
@@ -192,13 +193,14 @@ struct CLC_model_
  * @return
  */
 CLC_model
-CLC_Model (CLC_eq f, CLC_zc zeroCrossing, CLC_hnd handlerPos, CLC_hnd handlerNeg, CLC_jac);
+CLC_Model(CLC_eq f, CLC_zc zeroCrossing, CLC_hnd handlerPos, CLC_hnd handlerNeg,
+    CLC_jac);
 /**
  *
  * @param model
  */
 void
-CLC_freeModel (CLC_model model);
+CLC_freeModel(CLC_model model);
 /**
  *
  * @param
@@ -207,8 +209,8 @@ CLC_freeModel (CLC_model model);
  * @param SD_simulationSettings
  */
 typedef void
-(*CLC_setData) (CLC_data, SD_output, CLC_model, SD_simulationSettings);
+(*CLC_setData)(CLC_data, SD_output, CLC_model, SD_simulationSettings);
 
 void
-CLC_allocDataMatrix (CLC_data data);
+CLC_allocDataMatrix(CLC_data data);
 #endif /* CLASSIC_DATA_H_ */

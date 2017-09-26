@@ -22,123 +22,123 @@
 #include <stdlib.h>
 
 QSS_simStepsState
-QSS_SimStepsState ()
+QSS_SimStepsState()
 {
-    QSS_simStepsState p = checkedMalloc (sizeof(*p));
-    p->current = 0;
-    p->it = 0;
-    p->size = 0;
-    int i;
-    for (i = 0; i < SIM_STEPS_BUFFER; i++)
-        {
-            p->steps[i].synch = NOT_ASSIGNED;
-        }
-    return (p);
+  QSS_simStepsState p = checkedMalloc(sizeof(*p));
+  p->current = 0;
+  p->it = 0;
+  p->size = 0;
+  int i;
+  for(i = 0; i < SIM_STEPS_BUFFER; i++)
+  {
+    p->steps[i].synch = NOT_ASSIGNED;
+  }
+  return p;
 }
 
 void
-QSS_freeSimStepsState (QSS_simStepsState state)
+QSS_freeSimStepsState(QSS_simStepsState state)
 {
-    free (state);
+  free(state);
 }
 
 void
-QSS_SimStepsAdd (QSS_simSteps steps, IBX_message msg, int synch)
+QSS_SimStepsAdd(QSS_simSteps steps, IBX_message msg, int synch)
 {
-    steps->state->steps[steps->state->current].msg = msg;
-    steps->state->steps[steps->state->current++].synch = synch;
-    steps->state->size++;
+  steps->state->steps[steps->state->current].msg = msg;
+  steps->state->steps[steps->state->current++].synch = synch;
+  steps->state->size++;
 }
 
 bool
-QSS_SimStepsEmpty (QSS_simSteps steps)
+QSS_SimStepsEmpty(QSS_simSteps steps)
 {
-    return (steps->state->size <= 0);
+  return steps->state->size <= 0;
 }
 
 void
-QSS_SimStepsReset (QSS_simSteps steps)
+QSS_SimStepsReset(QSS_simSteps steps)
 {
-    steps->state->current = 0;
-    steps->state->it = 0;
-    steps->state->size = 0;
+  steps->state->current = 0;
+  steps->state->it = 0;
+  steps->state->size = 0;
 }
 
 QSS_stepInfo
-QSS_SimStepsFirst (QSS_simSteps steps)
+QSS_SimStepsFirst(QSS_simSteps steps)
 {
-    steps->state->size--;
-    return (steps->state->steps[steps->state->it++]);
+  steps->state->size--;
+  return steps->state->steps[steps->state->it++];
 }
 
 QSS_stepInfo
-QSS_SimStepsNext (QSS_simSteps steps)
+QSS_SimStepsNext(QSS_simSteps steps)
 {
-    steps->state->size--;
-    return (steps->state->steps[steps->state->it++]);
+  steps->state->size--;
+  return steps->state->steps[steps->state->it++];
 }
 
 QSS_simStepsOps
-QSS_SimStepsOps ()
+QSS_SimStepsOps()
 {
-    QSS_simStepsOps p = checkedMalloc (sizeof(*p));
-    p->add = QSS_SimStepsAdd;
-    p->reset = QSS_SimStepsReset;
-    p->empty = QSS_SimStepsEmpty;
-    p->first = QSS_SimStepsFirst;
-    p->next = QSS_SimStepsNext;
-    return (p);
+  QSS_simStepsOps p = checkedMalloc(sizeof(*p));
+  p->add = QSS_SimStepsAdd;
+  p->reset = QSS_SimStepsReset;
+  p->empty = QSS_SimStepsEmpty;
+  p->first = QSS_SimStepsFirst;
+  p->next = QSS_SimStepsNext;
+  return p;
 }
 
 void
-QSS_freeSimStepsOps (QSS_simStepsOps ops)
+QSS_freeSimStepsOps(QSS_simStepsOps ops)
 {
-    free (ops);
+  free(ops);
 }
 
 QSS_simSteps
-QSS_SimSteps ()
+QSS_SimSteps()
 {
-    QSS_simSteps p = checkedMalloc (sizeof(*p));
-    p->ops = QSS_SimStepsOps ();
-    p->state = QSS_SimStepsState ();
-    return (p);
+  QSS_simSteps p = checkedMalloc(sizeof(*p));
+  p->ops = QSS_SimStepsOps();
+  p->state = QSS_SimStepsState();
+  return p;
 }
 
 void
-QSS_freeSimSteps (QSS_simSteps s)
+QSS_freeSimSteps(QSS_simSteps s)
 {
-    QSS_freeSimStepsOps (s->ops);
-    QSS_freeSimStepsState (s->state);
-    free (s);
+  QSS_freeSimStepsOps(s->ops);
+  QSS_freeSimStepsState(s->state);
+  free(s);
 }
 
 void
-QSS_SIS_add (QSS_simSteps steps, IBX_message msg, int synch)
+QSS_SIS_add(QSS_simSteps steps, IBX_message msg, int synch)
 {
-    return (steps->ops->add (steps, msg, synch));
+  return steps->ops->add(steps, msg, synch);
 }
 
 void
-QSS_SIS_reset (QSS_simSteps steps)
+QSS_SIS_reset(QSS_simSteps steps)
 {
-    return (steps->ops->reset (steps));
+  return steps->ops->reset(steps);
 }
 
 bool
-QSS_SIS_empty (QSS_simSteps steps)
+QSS_SIS_empty(QSS_simSteps steps)
 {
-    return (steps->ops->empty (steps));
+  return steps->ops->empty(steps);
 }
 
 QSS_stepInfo
-QSS_SIS_first (QSS_simSteps steps)
+QSS_SIS_first(QSS_simSteps steps)
 {
-    return (steps->ops->first (steps));
+  return steps->ops->first(steps);
 }
 
 QSS_stepInfo
-QSS_SIS_next (QSS_simSteps steps)
+QSS_SIS_next(QSS_simSteps steps)
 {
-    return (steps->ops->next (steps));
+  return steps->ops->next(steps);
 }

@@ -51,13 +51,13 @@ struct PRT_partition_
  * @return
  */
 PRT_partition
-PRT_Partition (QSS_data data, char *name);
+PRT_Partition(QSS_data data, char *name);
 
 /**
  *
  * @param partition
  */
 void
-PRT_freePartition (PRT_partition partition);
+PRT_freePartition(PRT_partition partition);
 
 #endif /* QSS_PARTITION_H_ */

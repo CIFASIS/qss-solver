@@ -22,7 +22,7 @@
 #include <stdlib.h>
 
 void
-CLC_CMD_terminate ()
+CLC_CMD_terminate()
 {
-    abort ();
+  abort();
 }

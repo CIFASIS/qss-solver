@@ -48,59 +48,59 @@
  * @param
  */
 typedef void
-(*QSS_externaEventHandler) (QSS_simulator, IBX_message);
+(*QSS_externaEventHandler)(QSS_simulator, IBX_message);
 
 typedef void
-(*QSS_internalEventHandler) (QSS_simulator);
+(*QSS_internalEventHandler)(QSS_simulator);
 
 /**
  *
  * @param
  */
 typedef void
-(*QSS_parallelIntegrator) (QSS_simulator);
+(*QSS_parallelIntegrator)(QSS_simulator);
 
 /**
  *
  * @param simulator
  */
 void
-QSS_SEQ_saveLog (QSS_simulator simulator);
+QSS_SEQ_saveLog(QSS_simulator simulator);
 
 /**
  *
  * @param simulator
  */
 void
-QSS_SEQ_printSimulationLog (QSS_simulator simulator);
+QSS_SEQ_printSimulationLog(QSS_simulator simulator);
 
 /**
  *
  * @param simulator
  */
 void
-QSS_SEQ_logMemory (QSS_simulator simulator);
+QSS_SEQ_logMemory(QSS_simulator simulator);
 
 /**
  *
  * @param simulate
  */
 void
-QSS_SEQ_initialize (SIM_simulator simulate);
+QSS_SEQ_initialize(SIM_simulator simulate);
 
 /**
  *
  * @param simulator
  */
 void
-QSS_PAR_saveLog (QSS_simulator simulator);
+QSS_PAR_saveLog(QSS_simulator simulator);
 
 /**
  *
  * @param simulator
  */
 void
-QSS_PAR_printSimulationLog (QSS_simulator simulator);
+QSS_PAR_printSimulationLog(QSS_simulator simulator);
 
 /**
  *
@@ -108,21 +108,21 @@ QSS_PAR_printSimulationLog (QSS_simulator simulator);
  * @param code
  */
 void
-QSS_PAR_printParallelLog (QSS_simulator simulator, int code);
+QSS_PAR_printParallelLog(QSS_simulator simulator, int code);
 
 /**
  *
  * @param simulator
  */
 void
-QSS_PAR_statistics (QSS_simulator simulator);
+QSS_PAR_statistics(QSS_simulator simulator);
 
 /**
  *
  * @param simulator
  */
 void
-QSS_PAR_allocRootSimulatorData (QSS_simulator simulator);
+QSS_PAR_allocRootSimulatorData(QSS_simulator simulator);
 
 /**
  *
@@ -130,7 +130,7 @@ QSS_PAR_allocRootSimulatorData (QSS_simulator simulator);
  * @return
  */
 QSS_simulator
-QSS_PAR_copySimulator (QSS_simulatorInstance *instance);
+QSS_PAR_copySimulator(QSS_simulatorInstance *instance);
 
 /**
  *
@@ -138,42 +138,42 @@ QSS_PAR_copySimulator (QSS_simulatorInstance *instance);
  * @return
  */
 double
-QSS_PAR_GVT (QSS_simulator simulator);
+QSS_PAR_GVT(QSS_simulator simulator);
 
 /**
  *
  * @param simulator
  */
 void
-QSS_PAR_removePendingMessages (QSS_simulator simulator);
+QSS_PAR_removePendingMessages(QSS_simulator simulator);
 
 /**
  *
  * @param simulator
  */
 void
-QSS_PAR_controlPassiveLPS (QSS_simulator simulator);
+QSS_PAR_controlPassiveLPS(QSS_simulator simulator);
 
 /**
  *
  * @param simulator
  */
 void
-QSS_PAR_initializeSimulation (QSS_simulator simulator);
+QSS_PAR_initializeSimulation(QSS_simulator simulator);
 
 /**
  *
  * @param simulator
  */
 void
-QSS_PAR_logMemory (QSS_simulator simulator);
+QSS_PAR_logMemory(QSS_simulator simulator);
 
 /**
  *
  * @param simulate
  */
 void
-QSS_PAR_initialize (SIM_simulator simulate);
+QSS_PAR_initialize(SIM_simulator simulate);
 
 /**
  *
@@ -182,7 +182,9 @@ QSS_PAR_initialize (SIM_simulator simulate);
  * @param externalEvent
  */
 void
-QSS_PAR_synchronize (QSS_simulator simulator, int synchronize, QSS_externaEventHandler externalEvent, QSS_internalEventHandler internalEvent);
+QSS_PAR_synchronize(QSS_simulator simulator, int synchronize,
+    QSS_externaEventHandler externalEvent,
+    QSS_internalEventHandler internalEvent);
 
 /**
  *
@@ -190,7 +192,8 @@ QSS_PAR_synchronize (QSS_simulator simulator, int synchronize, QSS_externaEventH
  * @param externalEvent
  */
 double
-QSS_PAR_passiveInitialization (QSS_simulator simulator, QSS_externaEventHandler externalEvent);
+QSS_PAR_passiveInitialization(QSS_simulator simulator,
+    QSS_externaEventHandler externalEvent);
 
 /**
  *
@@ -199,13 +202,14 @@ QSS_PAR_passiveInitialization (QSS_simulator simulator, QSS_externaEventHandler 
  * @return
  */
 double
-QSS_PAR_passiveLP (QSS_simulator simulator, QSS_externaEventHandler externalEvent);
+QSS_PAR_passiveLP(QSS_simulator simulator,
+    QSS_externaEventHandler externalEvent);
 
 /**
  *
  * @param simulator
  */
 void
-QSS_PAR_waitFor (QSS_simulator simulator);
+QSS_PAR_waitFor(QSS_simulator simulator);
 
 #endif /* QSS_INTEGRATOR_H_ */

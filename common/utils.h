@@ -116,7 +116,7 @@ typedef char *string;
  * @param len
  */
 void *
-checkedMalloc (unsigned long long len);
+checkedMalloc(unsigned long long len);
 
 /**
  *
@@ -125,7 +125,7 @@ checkedMalloc (unsigned long long len);
  * @return
  */
 double
-minPosRoot (double *coeff, int order) __attribute__((hot));
+minPosRoot(double *coeff, int order) __attribute__((hot));
 
 /*! \brief Advances the time of \f$ p(t) = a_0 + a_1 t + ... + a_{n} t^{n} \f$ 
  *
@@ -137,7 +137,7 @@ minPosRoot (double *coeff, int order) __attribute__((hot));
  * As a side effect, changes the values of the coefficient matrix.
  */
 void
-integrateState (int, double, double*, int) __attribute__((hot));
+integrateState(int, double, double*, int) __attribute__((hot));
 
 /*! \brief Evaluates \f$ p(t) = a_0 + a_1 t + ... + a_{n-1} t^{n-1} \f$ 
  *
@@ -148,7 +148,7 @@ integrateState (int, double, double*, int) __attribute__((hot));
  * \return \f$ p(t+\Delta t) \f$ 
  */
 double
-evaluatePoly (int, double, double*, int) __attribute__((hot));
+evaluatePoly(int, double, double*, int) __attribute__((hot));
 
 /**
  *
@@ -158,7 +158,7 @@ evaluatePoly (int, double, double*, int) __attribute__((hot));
  * @return
  */
 double
-evaluateVectorPoly (double dt, double *p, int order);
+evaluateVectorPoly(double dt, double *p, int order);
 
 /**
  *
@@ -169,7 +169,7 @@ double
 getTimeValue (struct timeval *te);
 #else
 double
-getTimeValue (struct timespec *te);
+getTimeValue(struct timespec *te);
 #endif
 
 /**
@@ -181,7 +181,7 @@ void
 getTime (struct timeval *te);
 #else
 void
-getTime (struct timespec *te);
+getTime(struct timespec *te);
 #endif
 
 /**
@@ -193,7 +193,7 @@ void
 getTimeRes (struct timeval *te);
 #else
 void
-getTimeRes (struct timespec *te);
+getTimeRes(struct timespec *te);
 #endif
 
 /**
@@ -206,7 +206,7 @@ void
 subTime (struct timeval *v, struct timeval *u);
 #else
 void
-subTime (struct timespec *v, struct timespec *u);
+subTime(struct timespec *v, struct timespec *u);
 #endif
 
 /*! \brief Sign function.
@@ -214,7 +214,7 @@ subTime (struct timespec *v, struct timespec *u);
  * If the value is 0, the function returns 1.
  */
 int
-sign (double x);
+sign(double x);
 
 /** List data structures */
 
@@ -267,7 +267,7 @@ struct list_
  * @return Pointer to an allocated list.
  */
 list
-List (int ns, int ord);
+List(int ns, int ord);
 
 /** \brief Adds a new element at the end of the given list.
  *
@@ -276,7 +276,7 @@ List (int ns, int ord);
  * @param add Value of the simulation output.
  */
 void
-append (list l, double t, double *add);
+append(list l, double t, double *add);
 
 /**
  *
@@ -302,14 +302,14 @@ struct vector_
  * @return
  */
 vector
-Vector (int cant);
+Vector(int cant);
 
 /**
  *
  * @param v
  */
 void
-freeVector (vector v);
+freeVector(vector v);
 
 /**
  *
@@ -317,7 +317,7 @@ freeVector (vector v);
  * @param value
  */
 void
-insert (vector v, int value);
+insert(vector v, int value);
 
 /**
  *
@@ -325,7 +325,7 @@ insert (vector v, int value);
  * @return
  */
 int
-vectorFirst (vector v);
+vectorFirst(vector v);
 
 /**
  *
@@ -333,7 +333,7 @@ vectorFirst (vector v);
  * @return
  */
 int
-vectorNext (vector v);
+vectorNext(vector v);
 
 /**
  *
@@ -341,7 +341,7 @@ vectorNext (vector v);
  * @return
  */
 bool
-vectorEnd (vector v);
+vectorEnd(vector v);
 
 /**
  *
@@ -355,7 +355,7 @@ typedef vector *vMatrix;
  * @return
  */
 vMatrix
-VMatrix (int rows, int cols);
+VMatrix(int rows, int cols);
 
 /**
  *
@@ -363,7 +363,7 @@ VMatrix (int rows, int cols);
  * @param rows
  */
 void
-freeVMatrix (vMatrix m, int rows);
+freeVMatrix(vMatrix m, int rows);
 
 /**
  *
@@ -417,7 +417,7 @@ typedef uint32_t word_t;
  */
 enum
 {
-    BITS_PER_WORD = 32 //!< BITS_PER_WORD
+  BITS_PER_WORD = 32 //!< BITS_PER_WORD
 };
 
 /**
@@ -444,7 +444,7 @@ struct BIT_vector_
  * @return
  */
 BIT_vector
-BIT_Vector (int bits);
+BIT_Vector(int bits);
 
 /**
  *
@@ -452,7 +452,7 @@ BIT_Vector (int bits);
  * @param bit
  */
 void
-BIT_set (BIT_vector b, int bit);
+BIT_set(BIT_vector b, int bit);
 
 /**
  *
@@ -460,7 +460,7 @@ BIT_set (BIT_vector b, int bit);
  * @param bit
  */
 void
-BIT_clear (BIT_vector b, int bit);
+BIT_clear(BIT_vector b, int bit);
 
 /**
  *
@@ -468,35 +468,35 @@ BIT_clear (BIT_vector b, int bit);
  * @param bit
  */
 unsigned long
-BIT_isSet (BIT_vector b, int bit);
+BIT_isSet(BIT_vector b, int bit);
 
 /**
  *
  * @param b
  */
 void
-BIT_freeVector (BIT_vector b);
+BIT_freeVector(BIT_vector b);
 
 /**
  *
  * @param b
  */
 void
-BIT_print (BIT_vector b);
+BIT_print(BIT_vector b);
 
 /**
  *
  * @param b
  */
 void
-BIT_clearAll (BIT_vector b);
+BIT_clearAll(BIT_vector b);
 
 /**
  *
  * @param b
  */
 void
-BIT_setAll (BIT_vector b);
+BIT_setAll(BIT_vector b);
 
 /**
  *
@@ -504,7 +504,7 @@ BIT_setAll (BIT_vector b);
  * @return
  */
 word_t
-BIT_isAnySet (BIT_vector b);
+BIT_isAnySet(BIT_vector b);
 
 /**
  *
@@ -512,7 +512,7 @@ BIT_isAnySet (BIT_vector b);
  * @return
  */
 word_t
-BIT_numberOfSetBits (word_t i);
+BIT_numberOfSetBits(word_t i);
 
 /**
  *
@@ -520,7 +520,7 @@ BIT_numberOfSetBits (word_t i);
  * @return
  */
 word_t
-BIT_setBits (BIT_vector b);
+BIT_setBits(BIT_vector b);
 
 /**
  *
@@ -528,7 +528,7 @@ BIT_setBits (BIT_vector b);
  * @param bit
  */
 void
-BIT_setMask (BIT_vector b, int bit);
+BIT_setMask(BIT_vector b, int bit);
 
 /**
  *
@@ -542,7 +542,7 @@ typedef BIT_vector *BIT_matrix;
  * @return
  */
 BIT_matrix
-BIT_Matrix (int rows, int cols);
+BIT_Matrix(int rows, int cols);
 
 /**
  *
@@ -550,7 +550,7 @@ BIT_Matrix (int rows, int cols);
  * @param rows
  */
 void
-BIT_freeMatrix (BIT_matrix matrix, int rows);
+BIT_freeMatrix(BIT_matrix matrix, int rows);
 
 /**
  *
@@ -558,7 +558,7 @@ BIT_freeMatrix (BIT_matrix matrix, int rows);
  * @return
  */
 int
-BIT_first (BIT_vector v);
+BIT_first(BIT_vector v);
 
 /**
  *
@@ -566,7 +566,7 @@ BIT_first (BIT_vector v);
  * @return
  */
 int
-BIT_next (BIT_vector v);
+BIT_next(BIT_vector v);
 
 #ifdef __linux__
 
@@ -589,8 +589,8 @@ BIT_next (BIT_vector v);
  */
 typedef enum
 {
-    MSG_EVENT, //!< MSG_EVENT
-    MSG_ACK   //!< MSG_ACK
+  MSG_EVENT, //!< MSG_EVENT
+  MSG_ACK   //!< MSG_ACK
 } MSG_Type;
 
 /**
@@ -656,14 +656,14 @@ struct MLB_mailbox_
  * @return
  */
 IBX_inbox
-IBX_Inbox (int states, int ack, int *qMap);
+IBX_Inbox(int states, int ack, int *qMap);
 
 /**
  *
  * @param inbox
  */
 void
-IBX_freeInbox (IBX_inbox inbox);
+IBX_freeInbox(IBX_inbox inbox);
 
 /**
  *
@@ -672,7 +672,8 @@ IBX_freeInbox (IBX_inbox inbox);
  * @param message
  */
 void
-IBX_add (MLB_mailbox mailbox, IBX_inbox inbox, int from, int to, IBX_message message);
+IBX_add(MLB_mailbox mailbox, IBX_inbox inbox, int from, int to,
+    IBX_message message);
 
 /**
  *
@@ -680,7 +681,7 @@ IBX_add (MLB_mailbox mailbox, IBX_inbox inbox, int from, int to, IBX_message mes
  * @param from
  */
 void
-IBX_ack (IBX_inbox inbox, int from);
+IBX_ack(IBX_inbox inbox, int from);
 
 /**
  *
@@ -688,20 +689,20 @@ IBX_ack (IBX_inbox inbox, int from);
  * @return
  */
 word_t
-IBX_checkMail (IBX_inbox inbox);
+IBX_checkMail(IBX_inbox inbox);
 
 void
-IBX_receiveMessages (IBX_inbox inbox);
+IBX_receiveMessages(IBX_inbox inbox);
 
 void
-IBX_receiveAndAckMessages (IBX_inbox inbox, MLB_mailbox mailbox, int id);
+IBX_receiveAndAckMessages(IBX_inbox inbox, MLB_mailbox mailbox, int id);
 
 /**
  *
  * @param inbox
  */
 void
-IBX_checkInbox (IBX_inbox inbox);
+IBX_checkInbox(IBX_inbox inbox);
 
 /**
  *
@@ -710,7 +711,7 @@ IBX_checkInbox (IBX_inbox inbox);
  * @param id
  */
 void
-IBX_checkAckInbox (IBX_inbox inbox, MLB_mailbox mailbox, int id);
+IBX_checkAckInbox(IBX_inbox inbox, MLB_mailbox mailbox, int id);
 
 /**
  *
@@ -718,7 +719,7 @@ IBX_checkAckInbox (IBX_inbox inbox, MLB_mailbox mailbox, int id);
  * @return
  */
 word_t
-IBX_ackMessages (IBX_inbox inbox);
+IBX_ackMessages(IBX_inbox inbox);
 
 /**
  *
@@ -726,14 +727,14 @@ IBX_ackMessages (IBX_inbox inbox);
  * @return
  */
 double
-IBX_nextMessageTime (IBX_inbox inbox);
+IBX_nextMessageTime(IBX_inbox inbox);
 
 /**
  *
  * @param inbox
  */
 void
-IBX_reset (IBX_inbox inbox);
+IBX_reset(IBX_inbox inbox);
 
 /**
  *
@@ -741,7 +742,7 @@ IBX_reset (IBX_inbox inbox);
  * @return
  */
 IBX_message
-IBX_nextMessage (IBX_inbox);
+IBX_nextMessage(IBX_inbox);
 
 /**
  *
@@ -749,7 +750,7 @@ IBX_nextMessage (IBX_inbox);
  * @param dir
  */
 void
-IBX_close (IBX_inbox inbox, int dir);
+IBX_close(IBX_inbox inbox, int dir);
 
 /**
  *
@@ -757,14 +758,14 @@ IBX_close (IBX_inbox inbox, int dir);
  * @return
  */
 MLB_mailbox
-MLB_Mailbox (int lps);
+MLB_Mailbox(int lps);
 
 /**
  *
  * @param mailbox
  */
 void
-MLB_freeMailbox (MLB_mailbox mailbox);
+MLB_freeMailbox(MLB_mailbox mailbox);
 
 /**
  *
@@ -774,7 +775,7 @@ MLB_freeMailbox (MLB_mailbox mailbox);
  * @param message
  */
 void
-MLB_send (MLB_mailbox mailbox, int to, int from, IBX_message message);
+MLB_send(MLB_mailbox mailbox, int to, int from, IBX_message message);
 
 /**
  *
@@ -783,7 +784,7 @@ MLB_send (MLB_mailbox mailbox, int to, int from, IBX_message message);
  * @param from
  */
 void
-MLB_ack (MLB_mailbox mailbox, int to, int from);
+MLB_ack(MLB_mailbox mailbox, int to, int from);
 
 /**
  *
@@ -792,7 +793,7 @@ MLB_ack (MLB_mailbox mailbox, int to, int from);
  * @param dir
  */
 void
-MLB_close (MLB_mailbox mailbox, int to, int dir);
+MLB_close(MLB_mailbox mailbox, int to, int dir);
 
 #else
 
@@ -802,9 +803,9 @@ typedef struct IBX_message_ IBX_message;
  *
  */
 struct IBX_message_
-    {
-        double dummy;
-    };
+{
+  double dummy;
+};
 
 /**
  *
@@ -815,9 +816,9 @@ typedef struct IBX_inbox_ *IBX_inbox;
  *
  */
 struct IBX_inbox_
-    {
-        int dummy;
-    };
+{
+  int dummy;
+};
 
 /**
  *
@@ -828,9 +829,9 @@ typedef struct MLB_mailbox_ *MLB_mailbox;
  *
  */
 struct MLB_mailbox_
-    {
-        int dummy;
-    };
+{
+  int dummy;
+};
 
 MLB_mailbox
 MLB_Mailbox(int lps);
@@ -879,7 +880,7 @@ MLB_close(MLB_mailbox mailbox, int to, int dir);
  * @param size
  */
 void
-cleanVector (int *vector, int value, int size);
+cleanVector(int *vector, int value, int size);
 
 /**
  *
@@ -888,7 +889,7 @@ cleanVector (int *vector, int value, int size);
  * @param size
  */
 void
-cleanDoubleVector (double *vector, int value, int size);
+cleanDoubleVector(double *vector, int value, int size);
 
 #ifdef SYNC_RT
 

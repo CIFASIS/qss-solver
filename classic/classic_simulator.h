@@ -37,12 +37,12 @@ struct CLC_simulator_
 };
 
 CLC_simulator
-CLC_Simulator ();
+CLC_Simulator();
 
 void
-CLC_freeSimulator (CLC_simulator simulator);
+CLC_freeSimulator(CLC_simulator simulator);
 
 void
-CLC_initSimulator (SIM_simulator simulator);
+CLC_initSimulator(SIM_simulator simulator);
 
 #endif /* CLASSIC_SIMULATOR_H_ */

@@ -32,7 +32,8 @@
  * @param index
  */
 void
-SYM_PAR_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+SYM_PAR_recomputeDerivatives(FRW_framework f, QSS_model simModel,
+    QSS_data simData, QSS_time simTime, int index);
 
 /**
  *
@@ -43,7 +44,8 @@ SYM_PAR_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simD
  * @param index
  */
 void
-SYM_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+SYM_recomputeDerivatives(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -54,7 +56,8 @@ SYM_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simData,
  * @param index
  */
 void
-FO_PAR_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+FO_PAR_recomputeDerivatives(FRW_framework f, QSS_model simModel,
+    QSS_data simData, QSS_time simTime, int index);
 
 /**
  *
@@ -65,7 +68,8 @@ FO_PAR_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simDa
  * @param index
  */
 void
-FO_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+FO_recomputeDerivatives(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -76,7 +80,8 @@ FO_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simData, 
  * @param index
  */
 void
-SO_PAR_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+SO_PAR_recomputeDerivatives(FRW_framework f, QSS_model simModel,
+    QSS_data simData, QSS_time simTime, int index);
 
 /**
  *
@@ -87,7 +92,8 @@ SO_PAR_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simDa
  * @param index
  */
 void
-SO_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+SO_recomputeDerivatives(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -98,7 +104,8 @@ SO_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simData, 
  * @param index
  */
 void
-TO_PAR_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+TO_PAR_recomputeDerivatives(FRW_framework f, QSS_model simModel,
+    QSS_data simData, QSS_time simTime, int index);
 
 /**
  *
@@ -109,7 +116,8 @@ TO_PAR_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simDa
  * @param index
  */
 void
-TO_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+TO_recomputeDerivatives(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -120,7 +128,8 @@ TO_recomputeDerivatives (FRW_framework f, QSS_model simModel, QSS_data simData, 
  * @param index
  */
 void
-TO_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+TO_recomputeDerivative(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -131,7 +140,8 @@ TO_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simData, Q
  * @param index
  */
 void
-TO_PAR_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+TO_PAR_recomputeDerivative(FRW_framework f, QSS_model simModel,
+    QSS_data simData, QSS_time simTime, int index);
 
 /**
  *
@@ -142,7 +152,8 @@ TO_PAR_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simDat
  * @param index
  */
 void
-SO_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+SO_recomputeDerivative(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -153,7 +164,8 @@ SO_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simData, Q
  * @param index
  */
 void
-SO_PAR_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+SO_PAR_recomputeDerivative(FRW_framework f, QSS_model simModel,
+    QSS_data simData, QSS_time simTime, int index);
 
 /**
  *
@@ -164,7 +176,8 @@ SO_PAR_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simDat
  * @param index
  */
 void
-FO_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+FO_recomputeDerivative(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -175,7 +188,8 @@ FO_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simData, Q
  * @param index
  */
 void
-FO_PAR_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+FO_PAR_recomputeDerivative(FRW_framework f, QSS_model simModel,
+    QSS_data simData, QSS_time simTime, int index);
 
 /**
  *
@@ -186,7 +200,8 @@ FO_PAR_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simDat
  * @param index
  */
 void
-SYM_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+SYM_recomputeDerivative(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -197,7 +212,8 @@ SYM_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simData, 
  * @param index
  */
 void
-SYM_PAR_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+SYM_PAR_recomputeDerivative(FRW_framework f, QSS_model simModel,
+    QSS_data simData, QSS_time simTime, int index);
 
 /**
  *
@@ -208,7 +224,8 @@ SYM_PAR_recomputeDerivative (FRW_framework f, QSS_model simModel, QSS_data simDa
  * @param index
  */
 void
-SYM_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+SYM_nextEventTime(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -219,7 +236,8 @@ SYM_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_ti
  * @param index
  */
 void
-SYM_PAR_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+SYM_PAR_nextEventTime(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -230,7 +248,8 @@ SYM_PAR_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QS
  * @param index
  */
 void
-FO_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+FO_nextEventTime(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -241,7 +260,8 @@ FO_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_tim
  * @param index
  */
 void
-FO_PAR_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+FO_PAR_nextEventTime(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -252,7 +272,8 @@ FO_PAR_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS
  * @param index
  */
 void
-SO_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+SO_nextEventTime(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -263,7 +284,8 @@ SO_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_tim
  * @param index
  */
 void
-SO_PAR_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+SO_PAR_nextEventTime(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -274,7 +296,8 @@ SO_PAR_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS
  * @param index
  */
 void
-TO_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
+TO_nextEventTime(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -285,46 +308,8 @@ TO_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_tim
  * @param index
  */
 void
-TO_PAR_nextEventTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index);
-
-/**
- *
- * @param f
- * @param simModel
- * @param simData
- * @param simTime
- * @param elapsed
- * @param var
- * @param index
- */
-void
-FO_PAR_nextInputTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, double elapsed, int var, int index);
-
-/**
- *
- * @param f
- * @param simModel
- * @param simData
- * @param simTime
- * @param elapsed
- * @param var
- * @param index
- */
-void
-FO_nextInputTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, double elapsed, int var, int index);
-
-/**
- *
- * @param f
- * @param simModel
- * @param simData
- * @param simTime
- * @param elapsed
- * @param var
- * @param index
- */
-void
-SO_PAR_nextInputTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, double elapsed, int var, int index);
+TO_PAR_nextEventTime(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, int index);
 
 /**
  *
@@ -337,7 +322,8 @@ SO_PAR_nextInputTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS
  * @param index
  */
 void
-SO_nextInputTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, double elapsed, int var, int index);
+FO_PAR_nextInputTime(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, double elapsed, int var, int index);
 
 /**
  *
@@ -350,7 +336,8 @@ SO_nextInputTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_tim
  * @param index
  */
 void
-TO_PAR_nextInputTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, double elapsed, int var, int index);
+FO_nextInputTime(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, double elapsed, int var, int index);
 
 /**
  *
@@ -363,6 +350,49 @@ TO_PAR_nextInputTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS
  * @param index
  */
 void
-TO_nextInputTime (FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, double elapsed, int var, int index);
+SO_PAR_nextInputTime(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, double elapsed, int var, int index);
+
+/**
+ *
+ * @param f
+ * @param simModel
+ * @param simData
+ * @param simTime
+ * @param elapsed
+ * @param var
+ * @param index
+ */
+void
+SO_nextInputTime(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, double elapsed, int var, int index);
+
+/**
+ *
+ * @param f
+ * @param simModel
+ * @param simData
+ * @param simTime
+ * @param elapsed
+ * @param var
+ * @param index
+ */
+void
+TO_PAR_nextInputTime(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, double elapsed, int var, int index);
+
+/**
+ *
+ * @param f
+ * @param simModel
+ * @param simData
+ * @param simTime
+ * @param elapsed
+ * @param var
+ * @param index
+ */
+void
+TO_nextInputTime(FRW_framework f, QSS_model simModel, QSS_data simData,
+    QSS_time simTime, double elapsed, int var, int index);
 
 #endif /* QSS_FRW_IMP_H_ */

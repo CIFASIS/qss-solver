@@ -83,20 +83,20 @@ struct QSS_simulatorInstance_
  * @return
  */
 QSS_simulator
-QSS_Simulator ();
+QSS_Simulator();
 
 /**
  *
  * @param simulator
  */
 void
-QSS_initSimulator (SIM_simulator simulator);
+QSS_initSimulator(SIM_simulator simulator);
 
 /**
  *
  * @param simulator
  */
 void
-QSS_freeSimulator (QSS_simulator simulator);
+QSS_freeSimulator(QSS_simulator simulator);
 
 #endif /* QSS_SIMULATOR_H_ */

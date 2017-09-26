@@ -50,7 +50,7 @@
  * @return
  */
 int
-PAR_createLPTasks (QSS_sim simulate, QSS_simulator simulator);
+PAR_createLPTasks(QSS_sim simulate, QSS_simulator simulator);
 
 /**
  *
@@ -58,7 +58,7 @@ PAR_createLPTasks (QSS_sim simulate, QSS_simulator simulator);
  * @return
  */
 int
-PAR_cleanLPTask (int lp);
+PAR_cleanLPTask(int lp);
 
 /**
  *
@@ -66,6 +66,6 @@ PAR_cleanLPTask (int lp);
  * @return
  */
 int
-PAR_initLPTasks (int lp);
+PAR_initLPTasks(int lp);
 
 #endif /* QSS_PARALLEL_H_ */

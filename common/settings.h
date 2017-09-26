@@ -58,12 +58,12 @@ struct SET_settings_
  * @return
  */
 SET_settings
-SET_Settings (char *fname);
+SET_Settings(char *fname);
 /**
  *
  * @param settings
  */
 void
-freeSettings (SET_settings settings);
+freeSettings(SET_settings settings);
 
 #endif  /* SETTINGS_H_ */

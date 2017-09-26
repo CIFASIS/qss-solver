@@ -30,49 +30,49 @@
 static QSS_simulator *_simulator = NULL;
 
 void
-QSS_terminate (SC_scheduler scheduler, QSS_data simData, QSS_time simTime)
+QSS_terminate(SC_scheduler scheduler, QSS_data simData, QSS_time simTime)
 {
-    simData->ft = simTime->time;
-    simTime->time = INF;
+  simData->ft = simTime->time;
+  simTime->time = INF;
 }
 
 void
-QSS_CMD_alloc (QSS_simulator simulator)
+QSS_CMD_alloc(QSS_simulator simulator)
 {
-    int lps = simulator->data->params->lps;
-    if (lps == 0)
-        {
-            lps = 1;
-        }
-    _simulator = checkedMalloc (lps * sizeof(QSS_simulator *));
+  int lps = simulator->data->params->lps;
+  if(lps == 0)
+  {
+    lps = 1;
+  }
+  _simulator = checkedMalloc(lps * sizeof(QSS_simulator *));
 }
 
 void
-QSS_CMD_terminate ()
+QSS_CMD_terminate()
 {
-    int i, lps = _simulator[0]->data->params->lps;
-    if (lps == 0)
-        {
-            lps = 1;
-        }
-    for (i = 0; i < lps; i++)
-        {
-            SC_setUpdate (_simulator[i]->scheduler, QSS_terminate);
-        }
+  int i, lps = _simulator[0]->data->params->lps;
+  if(lps == 0)
+  {
+    lps = 1;
+  }
+  for(i = 0; i < lps; i++)
+  {
+    SC_setUpdate(_simulator[i]->scheduler, QSS_terminate);
+  }
 }
 
 void
-QSS_CMD_init (QSS_simulator simulator)
+QSS_CMD_init(QSS_simulator simulator)
 {
-    _simulator[simulator->id] = simulator;
+  _simulator[simulator->id] = simulator;
 }
 
 void
-QSS_CMD_free ()
+QSS_CMD_free()
 {
-    if (_simulator != NULL)
-        {
-            free (_simulator);
-        }
+  if(_simulator != NULL)
+  {
+    free(_simulator);
+  }
 }
 

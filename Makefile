@@ -1,9 +1,9 @@
 # Target OS variables
 ifneq ($(OS), Windows_NT)
-OS = $(uname)
+OS = $(shell uname)
 endif
 DEBUG ?= False
-ARCH= $(uname -m)
+ARCH= $(shell uname -m)
 
 # Compiler and Linker
 CC          := gcc
@@ -62,7 +62,7 @@ SEQSRC = $(QSSDIR)/qss_graph.c $(QSSDIR)/qss_biorica.c $(QSSDIR)/qss_data.c $(QS
 
 PARSRC = $(QSSDIR)/qss_file.c $(QSSDIR)/qss_memory.c $(QSSDIR)/qss_sampled.c $(QSSDIR)/qss_step.c $(QSSDIR)/qss_binary.c $(QSSDIR)/qss_linear.c $(QSSDIR)/qss_frw_imp.c $(METHODSDIR)/qss.c $(METHODSDIR)/cqss.c $(METHODSDIR)/qss2.c $(METHODSDIR)/qss3.c $(METHODSDIR)/qss4.c $(METHODSDIR)/liqss.c $(METHODSDIR)/liqss2.c $(METHODSDIR)/liqss3.c $(METHODSDIR)/cqss.c $(QSSDIR)/qss_dt.c $(QSSDIR)/qss_lp.c $(QSSDIR)/qss_partition.c  $(QSSDIR)/qss_parallel.c $(QSSDIR)/qss_sim_steps.c $(QSSDIR)/qss_par_integrator.c  
 
-CLASSICSRC = $(CLASSICDIR)/classic_data.c $(CLASSICDIR)/classic_integrator.c $(CLASSICDIR)/classic_dopri_integrator.c $(CLASSICDIR)/classic_dassl_integrator.c $(CLASSICDIR)/classic_simulator.c $(CLASSICDIR)/classic_commands.c
+CLASSICSRC = $(CLASSICDIR)/classic_data.c $(CLASSICDIR)/classic_integrator.c $(CLASSICDIR)/classic_dopri_integrator.c $(CLASSICDIR)/classic_dassl_integrator.c $(CLASSICDIR)/classic_cvode_integrator.c $(CLASSICDIR)/classic_ida_integrator.c $(CLASSICDIR)/classic_simulator.c $(CLASSICDIR)/classic_commands.c
 
 DASSLSRC = $(DASSLDIR)/daux.f $(DASSLDIR)/ddaskr.f $(DASSLDIR)/dlinpk.f
 

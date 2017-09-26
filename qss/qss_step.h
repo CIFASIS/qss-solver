@@ -31,7 +31,8 @@
  * @param SD_output
  */
 void
-ST_write (OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
+ST_write(OUT_output output, QSS_data simData, QSS_time simTime,
+    SD_output simOutput);
 
 /**
  *
@@ -39,13 +40,13 @@ ST_write (OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOu
  * @return
  */
 int
-ST_getSteps (OUT_output output, int var);
+ST_getSteps(OUT_output output, int var);
 
 /**
  *
  */
 void
-ST_save (OUT_output output);
+ST_save(OUT_output output);
 
 /**
  *
@@ -54,7 +55,8 @@ ST_save (OUT_output output);
  * @param simOutput
  */
 void
-ST_init (OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
+ST_init(OUT_output output, QSS_data simData, QSS_time simTime,
+    SD_output simOutput);
 
 /**
  *
@@ -63,7 +65,8 @@ ST_init (OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOut
  * @param SD_output
  */
 void
-ST_PAR_write (OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
+ST_PAR_write(OUT_output output, QSS_data simData, QSS_time simTime,
+    SD_output simOutput);
 
 /**
  *
@@ -71,13 +74,13 @@ ST_PAR_write (OUT_output output, QSS_data simData, QSS_time simTime, SD_output s
  * @return
  */
 int
-ST_PAR_getSteps (OUT_output output, int var);
+ST_PAR_getSteps(OUT_output output, int var);
 
 /**
  *
  */
 void
-ST_PAR_save (OUT_output output);
+ST_PAR_save(OUT_output output);
 
 /**
  *
@@ -86,6 +89,7 @@ ST_PAR_save (OUT_output output);
  * @param simOutput
  */
 void
-ST_PAR_init (OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
+ST_PAR_init(OUT_output output, QSS_data simData, QSS_time simTime,
+    SD_output simOutput);
 
 #endif  /* QSS_STEP_H_ */

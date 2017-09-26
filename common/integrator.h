@@ -27,10 +27,10 @@ typedef struct INT_integrator_ *INT_integrator;
 typedef struct INT_integratorOps_ *INT_integratorOps;
 
 typedef void
-(*INT_initializeFn) (SIM_simulator);
+(*INT_initializeFn)(SIM_simulator);
 
 typedef void
-(*INT_integrateFn) (SIM_simulator);
+(*INT_integrateFn)(SIM_simulator);
 
 struct INT_integratorOps_
 {
@@ -44,21 +44,21 @@ struct INT_integrator_
 };
 
 INT_integrator
-INT_Integrator (SIM_simulator simulator);
+INT_Integrator(SIM_simulator simulator);
 
 void
-INT_freeIntegrator (INT_integrator integrator);
+INT_freeIntegrator(INT_integrator integrator);
 
 INT_integratorOps
-INT_IntegratorOps ();
+INT_IntegratorOps();
 
 void
-INT_freeIntegratorOps (INT_integratorOps ops);
+INT_freeIntegratorOps(INT_integratorOps ops);
 
 void
-INT_initialize (INT_integrator integrator, SIM_simulator simulator);
+INT_initialize(INT_integrator integrator, SIM_simulator simulator);
 
 void
-INT_integrate (INT_integrator integrator, SIM_simulator simulator);
+INT_integrate(INT_integrator integrator, SIM_simulator simulator);
 
 #endif /* INTEGRATOR_H_ */

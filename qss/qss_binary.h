@@ -29,14 +29,14 @@
  * @param simTime
  */
 void
-BT_update (SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
+BT_update(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
 /**
  *
  * @param simData
  * @param simTime
  */
 void
-BT_init (SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
+BT_init(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
 
 /**
  *
@@ -44,13 +44,13 @@ BT_init (SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
  * @param simTime
  */
 void
-BT_PAR_update (SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
+BT_PAR_update(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
 /**
  *
  * @param simData
  * @param simTime
  */
 void
-BT_PAR_init (SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
+BT_PAR_init(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
 
 #endif  /* QSS_BINARY_H_ */

@@ -33,7 +33,7 @@
  * @param
  */
 typedef void
-(*SD_eq) (int, double*, double*, double*, double, double*);
+(*SD_eq)(int, double*, double*, double*, double, double*);
 
 /**
  *
@@ -82,8 +82,8 @@ typedef void
  */
 typedef enum
 {
-    SD_File, //!< SD_File
-    SD_Memory  //!< SD_Memory
+  SD_File, //!< SD_File
+  SD_Memory  //!< SD_Memory
 } SD_StoreData;
 
 /**
@@ -91,9 +91,9 @@ typedef enum
  */
 typedef enum
 {
-    CI_Step,   //!< CI_Step
-    CI_Dense,  //!< CI_Dense
-    CI_Sampled //!< CI_Sampled
+  CI_Step,   //!< CI_Step
+  CI_Dense,  //!< CI_Dense
+  CI_Sampled //!< CI_Sampled
 } SD_CommInterval;
 
 /**
@@ -101,19 +101,19 @@ typedef enum
  */
 typedef enum
 {
-    SD_QSS,   //!< SD_QSS
-    SD_CQSS,  //!< SD_CQSS
-    SD_LIQSS, //!< SD_LIQSS
-    SD_QSS2,  //!< SD_QSS2
-    SD_LIQSS2,  //!< SD_LIQSS2
-    SD_QSS3,  //!< SD_QSS3
-    SD_LIQSS3,  //!< SD_LIQSS3
-    SD_QSS4,   //!< SD_QSS4
-    SD_DASSL, //!< SD_DASSL
-    SD_DOPRI, //!< SD_DOPRI
-    SD_CVODE_BDF,  //!< SD_CVODE_BDF
-    SD_CVODE_AM,  //!< SD_CVODE_
-    SD_IDA //!< SD_IDA
+  SD_QSS,   //!< SD_QSS
+  SD_CQSS,  //!< SD_CQSS
+  SD_LIQSS, //!< SD_LIQSS
+  SD_QSS2,  //!< SD_QSS2
+  SD_LIQSS2,  //!< SD_LIQSS2
+  SD_QSS3,  //!< SD_QSS3
+  SD_LIQSS3,  //!< SD_LIQSS3
+  SD_QSS4,   //!< SD_QSS4
+  SD_DASSL, //!< SD_DASSL
+  SD_DOPRI, //!< SD_DOPRI
+  SD_CVODE_BDF,  //!< SD_CVODE_BDF
+  SD_CVODE_AM,  //!< SD_CVODE_
+  SD_IDA //!< SD_IDA
 } SD_Solver;
 
 /**
@@ -121,16 +121,16 @@ typedef enum
  */
 typedef enum
 {
-    SD_DBG_NoDebug = 0, //!< SD_DBG_NoDebug
-    SD_DBG_VarChanges = 1 << 0, //!< SD_DBG_VarSteps
-    SD_DBG_InitValues = 1 << 1, //!< SD_DBG_InitValues
-    SD_DBG_StepInfo = 1 << 2,   //!< SD_DBG_StepInfo
-    SD_DBG_Weights = 1 << 3,    //!< SD_DBG_Weights
-    SD_DBG_Memory = 1 << 4,     //!< SD_DBG_Memory
-    SD_DBG_ExternalEvent = 1 << 5,     //!< SD_DBG_ExternalEvent
-    SD_DBG_Synchronize = 1 << 6,     //!< SD_DBG_Synchronize
-    SD_DBG_WaitFor = 1 << 7,     //!< SD_DBG_WaitFor
-    SD_DBG_Dt = 1 << 8           //!< SD_DBG_Dt
+  SD_DBG_NoDebug = 0, //!< SD_DBG_NoDebug
+  SD_DBG_VarChanges = 1 << 0, //!< SD_DBG_VarSteps
+  SD_DBG_InitValues = 1 << 1, //!< SD_DBG_InitValues
+  SD_DBG_StepInfo = 1 << 2,   //!< SD_DBG_StepInfo
+  SD_DBG_Weights = 1 << 3,    //!< SD_DBG_Weights
+  SD_DBG_Memory = 1 << 4,     //!< SD_DBG_Memory
+  SD_DBG_ExternalEvent = 1 << 5,     //!< SD_DBG_ExternalEvent
+  SD_DBG_Synchronize = 1 << 6,     //!< SD_DBG_Synchronize
+  SD_DBG_WaitFor = 1 << 7,     //!< SD_DBG_WaitFor
+  SD_DBG_Dt = 1 << 8           //!< SD_DBG_Dt
 } SD_Debug;
 
 /**
@@ -138,11 +138,11 @@ typedef enum
  */
 typedef enum
 {
-    SD_Metis, //!< SD_Metis
-    SD_HMetis,   //!< SD_HMetis
-    SD_Scotch,   //!< SD_Scotch
-    SD_Patoh,     //!< SD_Patoh
-    SD_Manual
+  SD_Metis, //!< SD_Metis
+  SD_HMetis,   //!< SD_HMetis
+  SD_Scotch,   //!< SD_Scotch
+  SD_Patoh,     //!< SD_Patoh
+  SD_Manual
 } SD_PartitionMethod;
 
 /**
@@ -150,9 +150,9 @@ typedef enum
  */
 typedef enum
 {
-    SD_DT_Fixed,       //!<
-    SD_DT_Adaptive, //!<
-    SD_DT_AdaptiveDiscrete
+  SD_DT_Fixed,       //!<
+  SD_DT_Adaptive, //!<
+  SD_DT_AdaptiveDiscrete
 } SD_DtSynch;
 
 typedef struct
@@ -193,21 +193,21 @@ struct SD_simulationSettings_
  * @return
  */
 SD_simulationSettings
-SD_SimulationSettings ();
+SD_SimulationSettings();
 
 /**
  *
  * @return
  */
 SD_simulationSettings
-SD_copySimulationSettings (SD_simulationSettings settings);
+SD_copySimulationSettings(SD_simulationSettings settings);
 
 /**
  *
  * @param settings
  */
 void
-SD_freeSimulationSettings (SD_simulationSettings settings);
+SD_freeSimulationSettings(SD_simulationSettings settings);
 
 /**
  *
@@ -232,7 +232,7 @@ struct SD_simulationLog_
  * @return
  */
 SD_simulationLog
-SD_SimulationLog (char *name);
+SD_SimulationLog(char *name);
 
 /**
  *
@@ -241,7 +241,7 @@ SD_SimulationLog (char *name);
  * @param events
  */
 void
-SD_setSimulationLogVariables (SD_simulationLog log, int states, int events);
+SD_setSimulationLogVariables(SD_simulationLog log, int states, int events);
 
 /**
  *
@@ -249,7 +249,7 @@ SD_setSimulationLogVariables (SD_simulationLog log, int states, int events);
  * @param orig
  */
 void
-SD_copySimulationLogVariables (SD_simulationLog log, SD_simulationLog orig);
+SD_copySimulationLogVariables(SD_simulationLog log, SD_simulationLog orig);
 
 /**
  *
@@ -257,14 +257,14 @@ SD_copySimulationLogVariables (SD_simulationLog log, SD_simulationLog orig);
  * @param message
  */
 void
-SD_print (SD_simulationLog log, const char *message, ...);
+SD_print(SD_simulationLog log, const char *message, ...);
 
 /**
  *
  * @param log
  */
 void
-SD_freeSimulationLog (SD_simulationLog log);
+SD_freeSimulationLog(SD_simulationLog log);
 
 /**
  *
@@ -300,7 +300,7 @@ struct SD_eventData_
  * @return
  */
 SD_eventData
-SD_EventData (int size);
+SD_EventData(int size);
 
 /**
  *
@@ -308,7 +308,7 @@ SD_EventData (int size);
  * @param events
  */
 SD_eventData
-SD_copyEventData (int size, SD_eventData events);
+SD_copyEventData(int size, SD_eventData events);
 
 /**
  *
@@ -316,10 +316,10 @@ SD_copyEventData (int size, SD_eventData events);
  * @param size
  */
 void
-SD_freeEventData (SD_eventData events, int size);
+SD_freeEventData(SD_eventData events, int size);
 
 void
-SD_cleanEventData (SD_eventData events, int size);
+SD_cleanEventData(SD_eventData events, int size);
 
 /**
  *
@@ -353,8 +353,9 @@ struct SD_parameters_
  * @return
  */
 SD_parameters
-SD_Parameters (double derDelta, double zcHyst, double minStep, int symDiff, int lps, int nodeSize, SD_PartitionMethod pm, double dt, SD_DtSynch synch,
-               SD_partitionerOptions partitionerOptions, int jacobian);
+SD_Parameters(double derDelta, double zcHyst, double minStep, int symDiff,
+    int lps, int nodeSize, SD_PartitionMethod pm, double dt, SD_DtSynch synch,
+    SD_partitionerOptions partitionerOptions, int jacobian);
 
 /**
  *
@@ -362,14 +363,14 @@ SD_Parameters (double derDelta, double zcHyst, double minStep, int symDiff, int 
  * @return
  */
 SD_parameters
-SD_copyParameters (SD_parameters parameters);
+SD_copyParameters(SD_parameters parameters);
 
 /**
  *
  * @param params
  */
 void
-SD_freeParameters (SD_parameters params);
+SD_freeParameters(SD_parameters params);
 
 /**
  *
@@ -399,14 +400,14 @@ struct SD_sampledOutput_
  * @return
  */
 SD_sampledOutput
-SD_SampledOutput (int outputs, double it, double *period, int nperiod);
+SD_SampledOutput(int outputs, double it, double *period, int nperiod);
 
 /**
  *
  * @param output
  */
 void
-SD_freeSampledOutput (SD_sampledOutput output);
+SD_freeSampledOutput(SD_sampledOutput output);
 
 /**
  *
@@ -427,14 +428,14 @@ struct SD_outputVariable_
  * @return
  */
 SD_outputVariable
-SD_OutputVariable (int outputs);
+SD_OutputVariable(int outputs);
 
 /**
  *
  * @param variable
  */
 void
-SD_freeOutputVariable (SD_outputVariable variable);
+SD_freeOutputVariable(SD_outputVariable variable);
 
 /**
  *
@@ -478,8 +479,9 @@ struct SD_output_
  * @return
  */
 SD_output
-SD_Output (string name, int outputs, int discretes, int states, double *period, int nPeriod, double it, SD_CommInterval commInterval, SD_StoreData store,
-           SD_eq value);
+SD_Output(string name, int outputs, int discretes, int states, double *period,
+    int nPeriod, double it, SD_CommInterval commInterval, SD_StoreData store,
+    SD_eq value);
 
 /**
  *
@@ -488,7 +490,7 @@ SD_Output (string name, int outputs, int discretes, int states, double *period, 
  * @param discretes
  */
 void
-SD_allocOutputMatrix (SD_output output, int states, int discretes);
+SD_allocOutputMatrix(SD_output output, int states, int discretes);
 
 /**
  *
@@ -497,7 +499,7 @@ SD_allocOutputMatrix (SD_output output, int states, int discretes);
  * @param discretes
  */
 void
-SD_freeOutput (SD_output output, int states, int discretes);
+SD_freeOutput(SD_output output, int states, int discretes);
 
 /**
  *
@@ -526,7 +528,7 @@ struct SD_statistics_
     unsigned long messages;
     unsigned long extTrans;
     unsigned int pastEvents;
-#ifdef _WIN32
+    #ifdef _WIN32
     struct timeval *iTime;
     struct timeval *sTime;
     struct timeval *sdTime;
@@ -543,16 +545,16 @@ struct SD_statistics_
  * @return
  */
 SD_statistics
-SD_Statistics ();
+SD_Statistics();
 
 /**
  *
  * @param stats
  */
 void
-SD_freeStatistics (SD_statistics stats);
+SD_freeStatistics(SD_statistics stats);
 
 void
-SD_setStatisticsLPS (SD_statistics stats, int lps);
+SD_setStatisticsLPS(SD_statistics stats, int lps);
 
 #endif /* DATA_H_ */

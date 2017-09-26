@@ -23,6 +23,6 @@
 #include "data.h"
 
 void
-MOD_settings (SD_simulationSettings settings);
+MOD_settings(SD_simulationSettings settings);
 
 #endif /* MODEL_H_ */

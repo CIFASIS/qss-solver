@@ -26,6 +26,6 @@
  * @todo finde
  */
 void
-CLC_CMD_terminate ();
+CLC_CMD_terminate();
 
 #endif /* CLASSIC_COMMANDS_H_ */

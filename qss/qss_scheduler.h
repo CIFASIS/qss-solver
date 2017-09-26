@@ -44,7 +44,7 @@ typedef struct SC_scheduler_ *SC_scheduler;
  * @param QSS_time
  */
 typedef void
-(*SC_updateFn) (SC_scheduler, QSS_data, QSS_time);
+(*SC_updateFn)(SC_scheduler, QSS_data, QSS_time);
 
 /**
  *
@@ -52,7 +52,7 @@ typedef void
  * @param QSS_time
  */
 typedef void
-(*BT_upd) (SC_scheduler, QSS_data, QSS_time);
+(*BT_upd)(SC_scheduler, QSS_data, QSS_time);
 
 /**
  *
@@ -100,28 +100,28 @@ struct SC_scheduler_
  * @return
  */
 SC_schedulerState
-SC_SchedulerState ();
+SC_SchedulerState();
 
 /**
  *
  * @param scheduler
  */
 void
-SC_freeSchedulerState (SC_schedulerState scheduler);
+SC_freeSchedulerState(SC_schedulerState scheduler);
 
 /**
  *
  * @return
  */
 SC_schedulerOps
-SC_SchedulerOps ();
+SC_SchedulerOps();
 
 /**
  *
  * @param scheduler
  */
 void
-SC_freeSchedulerOps (SC_schedulerOps scheduler);
+SC_freeSchedulerOps(SC_schedulerOps scheduler);
 
 /**
  *
@@ -130,23 +130,14 @@ SC_freeSchedulerOps (SC_schedulerOps scheduler);
  * @return
  */
 SC_scheduler
-SC_Scheduler (QSS_data simData, QSS_time simTime);
+SC_Scheduler(QSS_data simData, QSS_time simTime);
 
 /**
  *
  * @param scheduler
  */
 void
-SC_freeScheduler (SC_scheduler scheduler);
-
-/**
- *
- * @param scheduler
- * @param simData
- * @param simTime
- */
-void
-SC_update (SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
+SC_freeScheduler(SC_scheduler scheduler);
 
 /**
  *
@@ -155,6 +146,15 @@ SC_update (SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
  * @param simTime
  */
 void
-SC_setUpdate (SC_scheduler scheduler, BT_upd updFunction);
+SC_update(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
+
+/**
+ *
+ * @param scheduler
+ * @param simData
+ * @param simTime
+ */
+void
+SC_setUpdate(SC_scheduler scheduler, BT_upd updFunction);
 
 #endif  /* QSS_SCHEDULER_H_ */

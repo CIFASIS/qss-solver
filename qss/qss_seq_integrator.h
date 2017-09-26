@@ -27,6 +27,6 @@
  * @param simulator
  */
 void
-QSS_SEQ_integrate (SIM_simulator simulator);
+QSS_SEQ_integrate(SIM_simulator simulator);
 
 #endif /* QSS_SEQ_INTEGRATOR_H_ */

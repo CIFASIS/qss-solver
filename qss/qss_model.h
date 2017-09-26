@@ -27,6 +27,6 @@
  * @param simulator
  */
 void
-QSS_initializeDataStructs (QSS_simulator simulator);
+QSS_initializeDataStructs(QSS_simulator simulator);
 
 #endif  /* QSS_MODEL_H_ */

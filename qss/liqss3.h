@@ -35,7 +35,8 @@
  * @param q
  */
 extern void
-LIQSS3_recomputeNextTimes (QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q) __attribute__((hot));
+LIQSS3_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t,
+    double *nTime, double *x, double *lqu, double *q) __attribute__((hot));
 /**
  *
  * @param quantizer
@@ -47,7 +48,8 @@ LIQSS3_recomputeNextTimes (QA_quantizer quantizer, int vars, int *inf, double t,
  * @param q
  */
 extern void
-LIQSS3_recomputeNextTime (QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double*q) __attribute__((hot));
+LIQSS3_recomputeNextTime(QA_quantizer quantizer, int var, double t,
+    double *nTime, double *x, double *lqu, double*q) __attribute__((hot));
 /**
  *
  * @param quantizer
@@ -58,7 +60,8 @@ LIQSS3_recomputeNextTime (QA_quantizer quantizer, int var, double t, double *nTi
  * @param lqu
  */
 extern void
-LIQSS3_nextTime (QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu) __attribute__((hot));
+LIQSS3_nextTime(QA_quantizer quantizer, int var, double t, double *nTime,
+    double *x, double *lqu) __attribute__((hot));
 /**
  *
  * @param quantizer
@@ -68,7 +71,8 @@ LIQSS3_nextTime (QA_quantizer quantizer, int var, double t, double *nTime, doubl
  * @param lqu
  */
 extern void
-LIQSS3_updateQuantizedState (QA_quantizer quantizer, int var, double *q, double *x, double *lqu) __attribute__((hot));
+LIQSS3_updateQuantizedState(QA_quantizer quantizer, int var, double *q,
+    double *x, double *lqu) __attribute__((hot));
 /**
  *
  * @param quantizer
@@ -76,7 +80,7 @@ LIQSS3_updateQuantizedState (QA_quantizer quantizer, int var, double *q, double 
  * @param simTime
  */
 extern void
-LIQSS3_init (QA_quantizer quantizer, QSS_data simData, QSS_time simTime);
+LIQSS3_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime);
 
 /**
  *
@@ -90,7 +94,9 @@ LIQSS3_init (QA_quantizer quantizer, QSS_data simData, QSS_time simTime);
  * @param q
  */
 extern void
-LIQSS3_PAR_recomputeNextTimes (QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q) __attribute__((hot));
+LIQSS3_PAR_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf,
+    double t, double *nTime, double *x, double *lqu, double *q)
+        __attribute__((hot));
 /**
  *
  * @param quantizer
@@ -102,7 +108,8 @@ LIQSS3_PAR_recomputeNextTimes (QA_quantizer quantizer, int vars, int *inf, doubl
  * @param q
  */
 extern void
-LIQSS3_PAR_recomputeNextTime (QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double*q) __attribute__((hot));
+LIQSS3_PAR_recomputeNextTime(QA_quantizer quantizer, int var, double t,
+    double *nTime, double *x, double *lqu, double*q) __attribute__((hot));
 /**
  *
  * @param quantizer
@@ -113,7 +120,8 @@ LIQSS3_PAR_recomputeNextTime (QA_quantizer quantizer, int var, double t, double 
  * @param lqu
  */
 extern void
-LIQSS3_PAR_nextTime (QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu) __attribute__((hot));
+LIQSS3_PAR_nextTime(QA_quantizer quantizer, int var, double t, double *nTime,
+    double *x, double *lqu) __attribute__((hot));
 /**
  *
  * @param quantizer
@@ -123,7 +131,8 @@ LIQSS3_PAR_nextTime (QA_quantizer quantizer, int var, double t, double *nTime, d
  * @param lqu
  */
 extern void
-LIQSS3_PAR_updateQuantizedState (QA_quantizer quantizer, int var, double *q, double *x, double *lqu) __attribute__((hot));
+LIQSS3_PAR_updateQuantizedState(QA_quantizer quantizer, int var, double *q,
+    double *x, double *lqu) __attribute__((hot));
 /**
  *
  * @param quantizer
@@ -131,6 +140,6 @@ LIQSS3_PAR_updateQuantizedState (QA_quantizer quantizer, int var, double *q, dou
  * @param simTime
  */
 extern void
-LIQSS3_PAR_init (QA_quantizer quantizer, QSS_data simData, QSS_time simTime);
+LIQSS3_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime);
 
 #endif  /* LIQSS3_H_ */

@@ -42,7 +42,7 @@ struct QSS_dtSynch_
     int activeLPS;  //!< Number of active LPs in the simulation.
     double t;
     double elapsed;
-#ifdef __linux__
+    #ifdef __linux__
     pthread_mutex_t activeMutex; //!< Active LPS mutex.
     pthread_barrier_t b; //!< \f $ \delta t $ \f synchronization barrier.
 #endif
@@ -55,7 +55,7 @@ struct QSS_dtSynch_
  * @return New \f $ \delta t $ \f synchronization object.
  */
 QSS_dtSynch
-QSS_DtSynch (int lps);
+QSS_DtSynch(int lps);
 
 /**
  * @brief \f $ \delta t $ \f Synchronization destructor.
@@ -63,7 +63,7 @@ QSS_DtSynch (int lps);
  * @param dtSynch Object to destroy.
  */
 void
-QSS_freeDtSynch (QSS_dtSynch dtSynch);
+QSS_freeDtSynch(QSS_dtSynch dtSynch);
 
 /**
  *
@@ -89,10 +89,10 @@ typedef struct QSS_dt_ *QSS_dt;
  * @param
  */
 typedef bool
-(*QSS_dtLogOutputFn) (QSS_dt, double, double, double, int);
+(*QSS_dtLogOutputFn)(QSS_dt, double, double, double, int);
 
 typedef bool
-(*QSS_dtLogStepFn) (QSS_dt, double, double, double);
+(*QSS_dtLogStepFn)(QSS_dt, double, double, double);
 
 /**
  *
@@ -134,7 +134,7 @@ struct QSS_dtState_
     SD_simulationLog log;
     SD_Debug debug;
     QSS_time time;
-#ifdef __linux__
+    #ifdef __linux__
     pthread_barrier_t *b; //!< Barrier used for synchronization.
 #endif
 };
@@ -159,45 +159,46 @@ struct QSS_dt_
  * @return
  */
 QSS_dt
-QSS_Dt (double *gblDtMin, int id, QSS_dtSynch dtSynch, char *file, SD_Debug debug, QSS_data data, QSS_time time);
+QSS_Dt(double *gblDtMin, int id, QSS_dtSynch dtSynch, char *file,
+    SD_Debug debug, QSS_data data, QSS_time time);
 
 /**
  *
  * @param dt
  */
 void
-QSS_freeDt (QSS_dt dt);
+QSS_freeDt(QSS_dt dt);
 
 /**
  *
  * @return
  */
 QSS_dtOps
-QSS_DtOps ();
+QSS_DtOps();
 
 /**
  *
  * @param ops
  */
 void
-QSS_freeDtOps (QSS_dtOps ops);
+QSS_freeDtOps(QSS_dtOps ops);
 
 /**
  *
  * @return
  */
 QSS_dtState
-QSS_DtState ();
+QSS_DtState();
 
 /**
  *
  * @param state
  */
 void
-QSS_freeDtState (QSS_dtState state);
+QSS_freeDtState(QSS_dtState state);
 
 bool
-QSS_dtLogOutput (QSS_dt dt, double Dq, double Dx, double Dt, int variable);
+QSS_dtLogOutput(QSS_dt dt, double Dq, double Dx, double Dt, int variable);
 
 /**
  * @brief \f $ \delta t $ \f value wrapper.
@@ -206,17 +207,17 @@ QSS_dtLogOutput (QSS_dt dt, double Dq, double Dx, double Dt, int variable);
  * @return \f $ \delta t $ \f value.
  */
 double
-QSS_dtValue (QSS_dt dt);
+QSS_dtValue(QSS_dt dt);
 
 /**
  *
  * @param dt
  */
 void
-QSS_dtFinish (QSS_dt dt);
+QSS_dtFinish(QSS_dt dt);
 
 void
-QSS_dtUpdate (QSS_dt dt);
+QSS_dtUpdate(QSS_dt dt);
 
 /**
  *
@@ -224,9 +225,9 @@ QSS_dtUpdate (QSS_dt dt);
  * @return
  */
 bool
-QSS_dtLogStep (QSS_dt dt, double Dq, double Dx, double Dt);
+QSS_dtLogStep(QSS_dt dt, double Dq, double Dx, double Dt);
 
 void
-QSS_dtCheck (QSS_dt dt);
+QSS_dtCheck(QSS_dt dt);
 
 #endif /* QSS_DT_H_ */

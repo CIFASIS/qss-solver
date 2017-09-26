@@ -42,7 +42,7 @@ struct BT_node_
  * @return
  */
 BT_node
-BT_Node (void);
+BT_Node(void);
 /**
  *
  */
@@ -66,10 +66,10 @@ struct BT_tree_
  * @return
  */
 BT_tree
-BT_Tree (int dim, leave leaves, int leavesNumber, int *map);
+BT_Tree(int dim, leave leaves, int leavesNumber, int *map);
 
 void
-BT_freeTree (BT_tree tree);
+BT_freeTree(BT_tree tree);
 /**
  *
  */
@@ -89,10 +89,10 @@ struct BT_info_
  * @return
  */
 BT_info
-BT_Info (int mh, int mn);
+BT_Info(int mh, int mn);
 
 void
-BT_freeInfo (BT_info info);
+BT_freeInfo(BT_info info);
 
 /** Random binary tree structures */
 
@@ -117,7 +117,7 @@ struct BTR_node_
  * @return
  */
 BTR_node
-BTR_Node (void);
+BTR_Node(void);
 
 /**
  *
@@ -149,6 +149,6 @@ struct BTR_tree_
  * @return
  */
 BTR_tree
-BTR_Tree (int dim, leave leaves, double *weights);
+BTR_Tree(int dim, leave leaves, double *weights);
 
 #endif /* TREE_H_ */
