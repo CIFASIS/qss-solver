@@ -31,7 +31,7 @@
  */
 class EquationDerivator
 {
-public:
+  public:
     /**
      *
      * @param eq
@@ -39,7 +39,7 @@ public:
      * @return
      */
     static AST_Equation_Equality
-    derivate (AST_Equation_Equality eq, VarSymbolTable varEnv);
+    derivate(AST_Equation_Equality eq, VarSymbolTable varEnv);
 };
 
 /**
@@ -47,7 +47,7 @@ public:
  */
 class ExpressionDerivator
 {
-public:
+  public:
     /**
      *
      * @param exp
@@ -56,9 +56,9 @@ public:
      * @return
      */
     static AST_Expression
-    derivate (AST_Expression exp, VarSymbolTable varEnv, MMO_Expression e);
+    derivate(AST_Expression exp, VarSymbolTable varEnv, MMO_Expression e);
     map<string, MMO_Expression>
-    generateJacobianExps (AST_Expression exp, MMO_ModelData data);
+    generateJacobianExps(AST_Expression exp, MMO_ModelData data);
 };
 
 #endif  /* DERIVATIVE_H_ */

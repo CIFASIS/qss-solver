@@ -34,81 +34,81 @@
 
 typedef enum
 {
-    EQ_DERIVATIVE,
-    EQ_DEPENDENCIES,
-    EQ_CLASSIC,
-    EQ_ALGEBRAIC,
-    EQ_OUTPUT,
-    EQ_ZC,
-    EQ_HANDLER,
-    EQ_HANDLER_IF,
-    EQ_JACOBIAN
+  EQ_DERIVATIVE,
+  EQ_DEPENDENCIES,
+  EQ_CLASSIC,
+  EQ_ALGEBRAIC,
+  EQ_OUTPUT,
+  EQ_ZC,
+  EQ_HANDLER,
+  EQ_HANDLER_IF,
+  EQ_JACOBIAN
 } EQ_Type;
 
 /**
  *
  */
-class MMO_Equation_ : public MMO_Base_
+class MMO_Equation_: public MMO_Base_
 {
-public:
+  public:
     /**
      *
      * @param exp
      * @param data
      */
-    MMO_Equation_ (AST_Expression exp, MMO_ModelData data);
+    MMO_Equation_(AST_Expression exp, MMO_ModelData data);
     /**
      *
      * @param exp
      * @param data
      */
-    MMO_Equation_ (MMO_Expression exp, MMO_ModelData data);
+    MMO_Equation_(MMO_Expression exp, MMO_ModelData data);
     /**
      *
      */
-    ~MMO_Equation_ ();
+    ~MMO_Equation_();
     /**
      *
      * @return
      */
     MMO_Expression
-    exp ();
+    exp();
     /**
      *
      * @return
      */
     int
-    end ();
+    end();
     /**
      *
      * @return
      */
     list<string>
-    getVariables ();
+    getVariables();
     /**
      *
      * @return
      */
     bool
-    hasRange ();
+    hasRange();
     /**
      *
      * @return
      */
     int
-    init ();
+    init();
     /**
      *
      * @return
      */
     Index
-    lhs ();
+    lhs();
     /**
      *
      * @return
      */
     string
-    print ();
+    print();
     /**
      *
      * @param indent
@@ -126,8 +126,11 @@ public:
      * @return
      */
     list<string>
-    print (string indent, string lhs = "", string idx = "", bool palgs = false, MMO_EquationTable algs = NULL, EQ_Type type = EQ_DERIVATIVE, int order = 1,
-           bool constant = false, int offset = 0, bool dereq = true, int forOffset = 0, int constantOffset = 0);
+    print(string indent, string lhs = "", string idx = "", bool palgs = false,
+        MMO_EquationTable algs = NULL, EQ_Type type = EQ_DERIVATIVE, int order =
+            1,
+        bool constant = false, int offset = 0, bool dereq = true,
+        int forOffset = 0, int constantOffset = 0);
     /**
      *
      * @param variable
@@ -138,49 +141,51 @@ public:
      * @return
      */
     string
-    printRange (string variable, string idx, string indent, Index lhs, bool variableChange = false);
+    printRange(string variable, string idx, string indent, Index lhs,
+        bool variableChange = false);
     /**
      *
      * @return
      */
     list<string>
-    getCode ();
+    getCode();
     /**
      *
      * @return
      */
     list<string>
-    getEquation ();
+    getEquation();
     /**
      *
      * @return
      */
     list<string>
-    getAlgebraics ();
+    getAlgebraics();
     /**
      *
      */
     void
-    controlAlgebraicDefinition ();
+    controlAlgebraicDefinition();
     /**
      *
      * @return
      */
     set<Index>
-    algebraicArguments ();
+    algebraicArguments();
     MMO_Equation
-    jacobianExp (Index idx, DEP_Type type = DEP_STATE);
+    jacobianExp(Index idx, DEP_Type type = DEP_STATE);
     bool
-    controlAlgebraicArguments (set<Index> *algs, set<Index> eqAlgs);
-private:
+    controlAlgebraicArguments(set<Index> *algs, set<Index> eqAlgs);
+    private:
     void
-    _initDerivatives ();
+    _initDerivatives();
     MMO_Expression
-    _generateChainRule (Index idx);
+    _generateChainRule(Index idx);
     void
-    _generateJacobianExps ();
+    _generateJacobianExps();
     string
-    _printArguments (int i, string idx, int offset, int cte, int order, int forOffset);
+    _printArguments(int i, string idx, int offset, int cte, int order,
+        int forOffset);
     MMO_ModelData _data;
     int _end;
     MMO_Expression _exp[4];
@@ -202,7 +207,7 @@ private:
  * @return
  */
 MMO_Equation
-newMMO_Equation (AST_Expression exp, MMO_ModelData data);
+newMMO_Equation(AST_Expression exp, MMO_ModelData data);
 /**
  *
  * @param exp
@@ -210,12 +215,12 @@ newMMO_Equation (AST_Expression exp, MMO_ModelData data);
  * @return
  */
 MMO_Equation
-newMMO_Equation (MMO_Expression exp, MMO_ModelData data);
+newMMO_Equation(MMO_Expression exp, MMO_ModelData data);
 /**
  *
  * @param m
  */
 void
-deleteMMO_Equation (MMO_Equation m);
+deleteMMO_Equation(MMO_Equation m);
 
 #endif  /* MMO_EQUATION_H_ */

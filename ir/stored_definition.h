@@ -32,54 +32,54 @@ using namespace std;
 /**
  *
  */
-class MMO_StoredDefinition_ : public MMO_Base_
+class MMO_StoredDefinition_: public MMO_Base_
 {
-public:
+  public:
     /**
      *
      */
-    MMO_StoredDefinition_ ();
+    MMO_StoredDefinition_();
     /**
      *
      */
-    ~MMO_StoredDefinition_ ();
+    ~MMO_StoredDefinition_();
     /**
      *
      * @return
      */
     string
-    print ();
+    print();
     /**
      *
      * @return
      */
     list<MMO_Class>
-    classes () const;
+    classes() const;
     /**
      *
      * @param c
      */
     void
-    addClass (MMO_Class c);
+    addClass(MMO_Class c);
     /**
      *
      * @return
      */
     MMO_Class
-    begin ();
+    begin();
     /**
      *
      * @return
      */
     MMO_Class
-    next ();
+    next();
     /**
      *
      * @return
      */
     bool
-    end ();
-private:
+    end();
+    private:
     list<MMO_Class> _classList;
     list<MMO_Class>::iterator _it;
 };
@@ -88,12 +88,12 @@ private:
  * @return
  */
 MMO_StoredDefinition
-newMMO_StoredDefinition ();
+newMMO_StoredDefinition();
 /**
  *
  * @param m
  */
 void
-deleteMMO_StoredDefinition (MMO_StoredDefinition m);
+deleteMMO_StoredDefinition(MMO_StoredDefinition m);
 
 #endif  /* STORED_DEFINITION_H_ */

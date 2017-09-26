@@ -28,19 +28,19 @@
 /**
  *
  */
-class AST_Class_ : public AST_Node_
+class AST_Class_: public AST_Node_
 {
-public:
+  public:
     /**
      *
      * @param n
      * @param comp
      */
-    AST_Class_ (AST_String n, AST_Composition comp);
+    AST_Class_(AST_String n, AST_Composition comp);
     /**
      *
      */
-    ~AST_Class_ ();
+    ~AST_Class_();
     /**
      *
      */
@@ -51,137 +51,137 @@ public:
      * @param c
      */
     void
-    setComposition (AST_Composition c);
+    setComposition(AST_Composition c);
     /**
      *
      * @return
      */
     AST_Composition
-    composition () const;
+    composition() const;
     /**
      *
      * @return
      */
     AST_String
-    name () const;
+    name() const;
     /**
      *
      * @return
      */
     AST_Element_ComponentList
-    getComponents ();
+    getComponents();
     /**
      *
      * @return
      */
     bool
-    hasElementComponentList ();
+    hasElementComponentList();
     /**
      *
      * @param c
      */
     void
-    addComponent (AST_Element_Component c);
+    addComponent(AST_Element_Component c);
     /**
      *
      * @param c
      */
     void
-    addClass (AST_Class c);
+    addClass(AST_Class c);
     /**
      *
      * @return
      */
     AST_ClassList
-    getClasses ();
+    getClasses();
     /**
      *
      * @param c
      */
     void
-    setFather (AST_Class c);
+    setFather(AST_Class c);
     /**
      *
      * @return
      */
     bool
-    hasFather ();
+    hasFather();
     /**
      *
      * @return
      */
     AST_Class
-    father () const;
+    father() const;
     /**
      *
      * @param e
      */
     void
-    addExtends (AST_String e);
+    addExtends(AST_String e);
     /**
      *
      * @return
      */
     AST_StringList
-    getExtends ();
+    getExtends();
     /**
      *
      * @return
      */
     bool
-    isBasic ();
+    isBasic();
     /**
      *
      */
     void
-    setBasic ();
+    setBasic();
     /**
      *
      */
     void
-    setFinal ();
+    setFinal();
     /**
      *
      * @return
      */
     bool
-    isFinal ();
+    isFinal();
     /**
      *
      */
     void
-    setEncapsulated ();
+    setEncapsulated();
     /**
      *
      * @return
      */
     bool
-    isEncapsulated ();
+    isEncapsulated();
     /**
      *
      * @return
      */
     bool
-    hasExtends ();
+    hasExtends();
     /**
      *
      * @param cp
      */
     void
-    setPrefixes (AST_ClassPrefix cp);
+    setPrefixes(AST_ClassPrefix cp);
     /**
      *
      * @return
      */
     AST_ClassPrefix
-    prefix () const;
+    prefix() const;
     /**
      *
      * @param visitor
      */
     void
-    accept (AST_Visitor visitor);
-private:
+    accept(AST_Visitor visitor);
+    private:
     AST_Element_ComponentList _components;
     AST_StringList _extends_list;
     AST_String _name;

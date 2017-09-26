@@ -33,217 +33,217 @@
  */
 class MMO_ModelData_
 {
-public:
+  public:
     /**
      *
      */
-    MMO_ModelData_ ();
+    MMO_ModelData_();
     /**
      *
      */
-    ~MMO_ModelData_ ();
+    ~MMO_ModelData_();
     /**
      *
      * @return
      */
     MMO_EquationTable
-    algebraics ();
+    algebraics();
     /**
      *
      * @param algs
      */
     void
-    setAlgebraics (MMO_EquationTable algs);
+    setAlgebraics(MMO_EquationTable algs);
     /**
      *
      * @param algs
      */
     void
-    setSymbols (VarSymbolTable algs);
+    setSymbols(VarSymbolTable algs);
     /**
      *
      * @return
      */
     VarSymbolTable
-    symbols ();
+    symbols();
     /**
      *
      * @param f
      */
     void
-    setCalledFunctions (MMO_SymbolRefTable f);
+    setCalledFunctions(MMO_SymbolRefTable f);
     /**
      *
      * @return
      */
     MMO_SymbolRefTable
-    calledFunctions ();
+    calledFunctions();
     /**
      *
      * @param p
      */
     void
-    setPackages (MMO_PackageTable p);
+    setPackages(MMO_PackageTable p);
     /**
      *
      * @return
      */
     MMO_PackageTable
-    packages ();
+    packages();
     /**
      *
      * @param f
      */
     void
-    setExternalFunctions (MMO_FunctionTable f);
+    setExternalFunctions(MMO_FunctionTable f);
     /**
      *
      * @return
      */
     MMO_FunctionTable
-    externalFunctions ();
+    externalFunctions();
     /**
      *
      * @return
      */
     bool
-    hasExternalFunctions ();
+    hasExternalFunctions();
     /**
      *
      * @param f
      */
     void
-    setFunctions (MMO_FunctionTable f);
+    setFunctions(MMO_FunctionTable f);
     /**
      *
      * @return
      */
     MMO_FunctionTable
-    functions ();
+    functions();
     /**
      *
      * @param s
      */
     void
-    setInitialCode (bool s);
+    setInitialCode(bool s);
     /**
      *
      * @return
      */
     bool
-    initialCode ();
+    initialCode();
     /**
      *
      * @return
      */
     bool
-    generateDerivatives ();
+    generateDerivatives();
     /**
      *
      * @param gd
      */
     void
-    setGenerateDerivatives (bool gd);
+    setGenerateDerivatives(bool gd);
     /**
      *
      * @return
      */
     int
-    begin ();
+    begin();
     void
-    setBegin (int begin, int dim = 0);
+    setBegin(int begin, int dim = 0);
     /**
      *
      * @return
      */
     int
-    end ();
+    end();
     void
-    setEnd (int end, int dim = 0);
+    setEnd(int end, int dim = 0);
     /**
      *
      * @param range
      */
     void
-    setRange (Range range);
+    setRange(Range range);
     Range
-    range ();
+    range();
     /**
      *
      * @return
      */
     Index
-    lhs ();
+    lhs();
     /**
      *
      * @param idx
      */
     void
-    setLHS (Index idx);
+    setLHS(Index idx);
     /**
      *
      */
     void
-    clear ();
+    clear();
     /**
      *
      * @param ws
      */
     void
-    setWhenStatement (bool ws);
+    setWhenStatement(bool ws);
     /**
      *
      * @return
      */
     bool
-    whenStatement ();
+    whenStatement();
     /**
      *
      * @param w
      */
     void
-    setWeight (double w);
+    setWeight(double w);
     /**
      *
      * @return
      */
     double
-    weight ();
+    weight();
     /**
      *
      * @return
      */
     bool
-    hasWeight ();
+    hasWeight();
     /**
      *
      * @param ca
      */
     void
-    setCalculateAlgegraics (bool ca);
+    setCalculateAlgegraics(bool ca);
     /**
      *
      * @return
      */
     bool
-    calculateAlgebraics ();
+    calculateAlgebraics();
     void
-    setArguments (AST_Expression arguments);
+    setArguments(AST_Expression arguments);
     bool
-    hasArguments ();
+    hasArguments();
     AST_Expression
-    arguments ();
+    arguments();
     void
-    setAnnotation (MMO_Annotation annotation);
+    setAnnotation(MMO_Annotation annotation);
     MMO_Annotation
-    annotation ();
+    annotation();
     bool
-    hasAnnotation ();
+    hasAnnotation();
     void
-    setDisableSymDiff (bool d);
+    setDisableSymDiff(bool d);
     bool
-    disableSymDiff ();
-private:
+    disableSymDiff();
+    private:
     VarSymbolTable _symbols;
     MMO_EquationTable _algebraics;
     MMO_FunctionTable _functions;
@@ -266,20 +266,20 @@ private:
  * @return
  */
 MMO_ModelData
-newMMO_ModelData ();
+newMMO_ModelData();
 /**
  *
  * @param m
  */
 void
-deleteMMO_ModelData (MMO_ModelData m);
+deleteMMO_ModelData(MMO_ModelData m);
 
 /**
  *
  */
 class MMO_FunctionData_
 {
-public:
+  public:
     /**
      *
      * @param var
@@ -287,19 +287,20 @@ public:
      * @param args
      * @param data
      */
-    MMO_FunctionData_ (string var, string name, AST_ExpressionList args, MMO_ModelData data);
+    MMO_FunctionData_(string var, string name, AST_ExpressionList args,
+        MMO_ModelData data);
     /**
      *
      */
-    ~MMO_FunctionData_ ();
+    ~MMO_FunctionData_();
     /**
      *
      * @param indent
      * @return
      */
     list<string>
-    print (string indent);
-private:
+    print(string indent);
+    private:
     string _var;
     string _name;
     AST_ExpressionList _args;
@@ -314,74 +315,76 @@ private:
  * @return
  */
 MMO_FunctionData
-newMMO_FunctionData (string var, string name, AST_ExpressionList args, MMO_ModelData data);
+newMMO_FunctionData(string var, string name, AST_ExpressionList args,
+    MMO_ModelData data);
 /**
  *
  * @param m
  */
 void
-deleteMMO_FunctionData (MMO_FunctionData m);
+deleteMMO_FunctionData(MMO_FunctionData m);
 
 /**
  *
  */
 class MMO_PackageData_
 {
-public:
+  public:
     /**
      *
      * @param name
      * @param fit
      * @param objects
      */
-    MMO_PackageData_ (string name, MMO_FunctionDefinitionTable fit, MMO_ImportTable objects);
+    MMO_PackageData_(string name, MMO_FunctionDefinitionTable fit,
+        MMO_ImportTable objects);
     /**
      *
      */
-    ~MMO_PackageData_ ();
-    /**
-     *
-     * @return
-     */
-    string
-    name ();
+    ~MMO_PackageData_();
     /**
      *
      * @return
      */
     string
-    prefix ();
+    name();
+    /**
+     *
+     * @return
+     */
+    string
+    prefix();
     /**
      *
      * @return
      */
     list<string>
-    includeDirectories ();
+    includeDirectories();
     /**
      *
      * @return
      */
     list<string>
-    libraryDirectories ();
+    libraryDirectories();
     /**
      *
      * @return
      */
     list<string>
-    linkLibraries ();
+    linkLibraries();
     /**
      *
      * @return
      */
     MMO_FunctionDefinitionTable
-    functions ();
+    functions();
     /**
      *
      * @return
      */
     MMO_ImportTable
-    objects ();
-private:
+    objects();
+    private:
     string _name;
     MMO_FunctionDefinitionTable _fit;
     MMO_ImportTable _objects;
@@ -394,20 +397,21 @@ private:
  * @return
  */
 MMO_PackageData
-newMMO_PackageData (string name, MMO_FunctionDefinitionTable fit, MMO_ImportTable objects);
+newMMO_PackageData(string name, MMO_FunctionDefinitionTable fit,
+    MMO_ImportTable objects);
 /**
  *
  * @param m
  */
 void
-deleteMMO_PackageData (MMO_PackageData m);
+deleteMMO_PackageData(MMO_PackageData m);
 
 /**
  *
  */
 class MMO_FunctionDefinition_
 {
-public:
+  public:
     /**
      *
      * @param name
@@ -415,66 +419,67 @@ public:
      * @param libraryDir
      * @param libraries
      */
-    MMO_FunctionDefinition_ (string name, string includeDir, string libraryDir, list<string> libraries);
+    MMO_FunctionDefinition_(string name, string includeDir, string libraryDir,
+        list<string> libraries);
     /**
      *
      */
-    ~MMO_FunctionDefinition_ ();
-    /**
-     *
-     * @return
-     */
-    list<string>
-    def ();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasIncludeDirectory ();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasLibraryDirectory ();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasLibraries ();
-    /**
-     *
-     * @return
-     */
-    string
-    includeDirectory ();
-    /**
-     *
-     * @return
-     */
-    string
-    libraryDirectory ();
+    ~MMO_FunctionDefinition_();
     /**
      *
      * @return
      */
     list<string>
-    libraries ();
+    def();
+    /**
+     *
+     * @return
+     */
+    bool
+    hasIncludeDirectory();
+    /**
+     *
+     * @return
+     */
+    bool
+    hasLibraryDirectory();
+    /**
+     *
+     * @return
+     */
+    bool
+    hasLibraries();
     /**
      *
      * @return
      */
     string
-    name ();
+    includeDirectory();
     /**
      *
      * @return
      */
     string
-    prototype ();
-private:
+    libraryDirectory();
+    /**
+     *
+     * @return
+     */
+    list<string>
+    libraries();
+    /**
+     *
+     * @return
+     */
+    string
+    name();
+    /**
+     *
+     * @return
+     */
+    string
+    prototype();
+    private:
     list<string> _def;
     string _name;
     string _prototype;
@@ -491,59 +496,60 @@ private:
  * @return
  */
 MMO_FunctionDefinition
-newMMO_FunctionDefinition (string name, string includeDir, string libraryDir, list<string> libraries);
+newMMO_FunctionDefinition(string name, string includeDir, string libraryDir,
+    list<string> libraries);
 /**
  *
  * @param m
  */
 void
-deleteMMO_FunctionDefinition (MMO_FunctionDefinition m);
+deleteMMO_FunctionDefinition(MMO_FunctionDefinition m);
 
 /**
  *
  */
 class MMO_FunctionInfo
 {
-public:
+  public:
     /**
      *
      * @param fd
      */
-    MMO_FunctionInfo (MMO_FunctionDefinition fd);
+    MMO_FunctionInfo(MMO_FunctionDefinition fd);
     /**
      *
      * @param f
      */
-    MMO_FunctionInfo (MMO_Function f);
+    MMO_FunctionInfo(MMO_Function f);
     /**
      *
      */
-    ~MMO_FunctionInfo ();
-    /**
-     *
-     * @return
-     */
-    bool
-    isFunction ();
+    ~MMO_FunctionInfo();
     /**
      *
      * @return
      */
     bool
-    isFunctionDefinition ();
+    isFunction();
+    /**
+     *
+     * @return
+     */
+    bool
+    isFunctionDefinition();
     /**
      *
      * @return
      */
     MMO_Function
-    function ();
+    function();
     /**
      *
      * @return
      */
     MMO_FunctionDefinition
-    functionDefinition ();
-private:
+    functionDefinition();
+    private:
     MMO_Function _f;
     MMO_FunctionDefinition _fd;
 };

@@ -22,7 +22,7 @@
 
 typedef enum
 {
-    GRP_CONT, GRP_DSC, GRP_VIRT
+  GRP_CONT, GRP_DSC, GRP_VIRT
 } GRP_EdgeType;
 
 /**
@@ -47,7 +47,7 @@ typedef struct GRP_graphProfile_ *GRP_graphProfile;
  * @param
  */
 typedef double
-(*GRP_graphProfileWeight) (GRP_graphProfile, GRP_EdgeType);
+(*GRP_graphProfileWeight)(GRP_graphProfile, GRP_EdgeType);
 
 /**
  *
@@ -84,44 +84,44 @@ struct GRP_graphProfile_
  */
 
 GRP_graphProfile
-GRP_GraphProfile ();
+GRP_GraphProfile();
 
 /**
  *
  * @param g
  */
 void
-GRP_freeGraphProfile (GRP_graphProfile g);
+GRP_freeGraphProfile(GRP_graphProfile g);
 
 /**
  *
  * @return
  */
 GRP_graphProfileOps
-GRP_GraphProfileOps ();
+GRP_GraphProfileOps();
 
 /**
  *
  * @param ops
  */
 void
-GRP_freeGraphProfileOps (GRP_graphProfileOps ops);
+GRP_freeGraphProfileOps(GRP_graphProfileOps ops);
 
 /**
  *
  * @return
  */
 GRP_graphProfileState
-GRP_GraphProfileState ();
+GRP_GraphProfileState();
 
 /**
  *
  * @param state
  */
 void
-GRP_freeGraphProfileState (GRP_graphProfileState state);
+GRP_freeGraphProfileState(GRP_graphProfileState state);
 
 double
-GRP_Weight (GRP_graphProfile g, GRP_EdgeType type);
+GRP_Weight(GRP_graphProfile g, GRP_EdgeType type);
 
 #endif /* GRAPH_GRAPH_PROFILE_H_ */

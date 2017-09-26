@@ -30,20 +30,20 @@ class AST_Imports;
 /**
  *
  */
-class AST_StoredDefinition_ : public AST_Node_
+class AST_StoredDefinition_: public AST_Node_
 {
-public:
+  public:
     /**
      *
      * @param ml
      * @param within
      */
-    AST_StoredDefinition_ (AST_ClassList ml, AST_String within);
+    AST_StoredDefinition_(AST_ClassList ml, AST_String within);
     /**
      *
      */
     virtual
-    ~AST_StoredDefinition_ ()
+    ~AST_StoredDefinition_()
     {
     }
     ;
@@ -57,32 +57,32 @@ public:
      * @return
      */
     AST_ClassList
-    models () const;
+    models() const;
     /**
      *
      * @return
      */
     AST_String
-    within () const;
+    within() const;
     /**
      *
      * @param visitor
      */
     void
-    accept (AST_Visitor visitor);
+    accept(AST_Visitor visitor);
     /**
      *
      * @return
      */
     bool
-    hasWithin ();
+    hasWithin();
     /**
      *
      * @return
      */
     AST_StringList
-    imports ();
-private:
+    imports();
+    private:
     AST_ClassList _model_list;
     AST_String _within;
     AST_Imports *_imports;

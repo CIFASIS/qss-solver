@@ -35,13 +35,13 @@ using namespace std;
  */
 enum TypesType
 {
-    TYREAL,    //!< TYREAL
-    TYINTEGER,  //!< TYINTEGER
-    TYBOOLEAN, //!< TYBOOLEAN
-    TYSTRING,  //!< TYSTRING
-    TYARRAY,   //!< TYARRAY
-    TYTUPLA,   //!< TYTUPLA
-    TYFUNCTION  //!< TYFUNCTION
+  TYREAL,    //!< TYREAL
+  TYINTEGER,  //!< TYINTEGER
+  TYBOOLEAN, //!< TYBOOLEAN
+  TYSTRING,  //!< TYSTRING
+  TYARRAY,   //!< TYARRAY
+  TYTUPLA,   //!< TYTUPLA
+  TYFUNCTION  //!< TYFUNCTION
 };
 
 /**
@@ -86,12 +86,12 @@ DEFINE_LIST(Type);
  */
 class Type_
 {
-public:
+  public:
     /**
      *
      */
     virtual
-    ~Type_ ()
+    ~Type_()
     {
     }
     ;
@@ -100,13 +100,13 @@ public:
      * @return
      */
     virtual TypesType
-    getType () = 0;
+    getType() = 0;
     /**
      *
      * @return
      */
     virtual string
-    print () const =0;
+    print() const =0;
     /**
      *
      * @param os
@@ -114,7 +114,7 @@ public:
      * @return
      */
     friend ostream &
-    operator<< (ostream &os, const Type_ &e);
+    operator<<(ostream &os, const Type_ &e);
     /**
      *
      * @param os
@@ -122,7 +122,7 @@ public:
      * @return
      */
     friend ostream &
-    operator<< (ostream &os, const Type &e);
+    operator<<(ostream &os, const Type &e);
     /**
      *
      * @param e1
@@ -130,7 +130,7 @@ public:
      * @return
      */
     friend int
-    operator== (Type_ &e1, Type_ &e2);
+    operator==(Type_ &e1, Type_ &e2);
     /**
      *
      * @param e1
@@ -138,7 +138,7 @@ public:
      * @return
      */
     friend int
-    operator== (Type_ &e1, Type e2);
+    operator==(Type_ &e1, Type e2);
     /**
      *
      * @param e1
@@ -146,7 +146,7 @@ public:
      * @return
      */
     friend int
-    operator!= (Type_ &e1, Type_ &e2);
+    operator!=(Type_ &e1, Type_ &e2);
     /**
      *
      * @param e1
@@ -154,94 +154,94 @@ public:
      * @return
      */
     friend int
-    operator!= (Type_ &e1, Type e2);
+    operator!=(Type_ &e1, Type e2);
     /**
      *
      * @return
      */
     Type_Array
-    getAsArray ();
+    getAsArray();
     /**
      *
      * @return
      */
     Type_Tupla
-    getAsTupla ();
+    getAsTupla();
     /**
      *
      * @return
      */
     Type_Function
-    getAsFunction ();
+    getAsFunction();
 };
 
 /**
  *
  */
-class Type_Real_ : public Type_
+class Type_Real_: public Type_
 {
-public:
+  public:
     /**
      *
      */
-    Type_Real_ ();
+    Type_Real_();
     /**
      *
      */
     virtual
-    ~Type_Real_ ();
+    ~Type_Real_();
     /**
      *
      * @return
      */
     TypesType
-    getType ()
+    getType()
     {
-        return (TYREAL);
+      return TYREAL;
     }
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
 };
 /**
  *
  * @return
  */
 Type_Real
-newType_Real ();
+newType_Real();
 /**
  *
  * @param m
  */
 void
-deleteType_Real (Type_Real m);
+deleteType_Real(Type_Real m);
 
 /**
  *
  */
-class Type_Integer_ : public Type_
+class Type_Integer_: public Type_
 {
-public:
+  public:
     /**
      *
      */
-    Type_Integer_ ();
+    Type_Integer_();
     /**
      *
      */
     virtual
-    ~Type_Integer_ ();
+    ~Type_Integer_();
     /**
      *
      * @return
      */
     TypesType
-    getType ()
+    getType()
     {
-        return (TYINTEGER);
+      return TYINTEGER;
     }
     ;
     /**
@@ -249,32 +249,32 @@ public:
      * @return
      */
     string
-    print () const;
+    print() const;
 };
 /**
  *
  * @return
  */
 Type_Integer
-newType_Integer ();
+newType_Integer();
 /**
  *
  * @param m
  */
 void
-deleteType_Integer (Type_Integer m);
+deleteType_Integer(Type_Integer m);
 
 /**
  *
  */
-class Type_Boolean_ : public Type_
+class Type_Boolean_: public Type_
 {
-public:
+  public:
     /**
      *
      */
     virtual
-    ~Type_Boolean_ ()
+    ~Type_Boolean_()
     {
     }
     ;
@@ -283,9 +283,9 @@ public:
      * @return
      */
     TypesType
-    getType ()
+    getType()
     {
-        return (TYBOOLEAN);
+      return TYBOOLEAN;
     }
     ;
     /**
@@ -293,28 +293,28 @@ public:
      * @return
      */
     string
-    print () const;
+    print() const;
 };
 
 /**
  *
  */
-class Type_String_ : public Type_
+class Type_String_: public Type_
 {
-public:
+  public:
     /**
      *
      */
     virtual
-    ~Type_String_ ();
+    ~Type_String_();
     /**
      *
      * @return
      */
     TypesType
-    getType ()
+    getType()
     {
-        return (TYSTRING);
+      return TYSTRING;
     }
     ;
     /**
@@ -322,58 +322,58 @@ public:
      * @return
      */
     string
-    print () const;
+    print() const;
 };
 
 /**
  *
  */
-class Type_Array_ : public Type_
+class Type_Array_: public Type_
 {
-public:
+  public:
     /**
      *
      * @param t
      * @param dim
      */
-    Type_Array_ (Type t, AST_Expression dim);
+    Type_Array_(Type t, AST_Expression dim);
     /**
      *
      */
     virtual
-    ~Type_Array_ ();
+    ~Type_Array_();
     /**
      *
      * @return
      */
     TypesType
-    getType ()
+    getType()
     {
-        return (TYARRAY);
+      return TYARRAY;
     }
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     Type
-    arrayOf ();
+    arrayOf();
     /**
      *
      * @return
      */
     AST_Expression
-    dimension ()
+    dimension()
     {
-        return (_dim);
+      return _dim;
     }
     ;
-private:
+    private:
     Type _t;
     AST_Expression _dim;
 };
@@ -381,33 +381,33 @@ private:
 /**
  *
  */
-class Type_Tupla_ : public Type_
+class Type_Tupla_: public Type_
 {
-public:
+  public:
     /**
      *
      * @param tyl
      */
-    Type_Tupla_ (TypeList tyl);
+    Type_Tupla_(TypeList tyl);
     /**
      *
      */
     virtual
-    ~Type_Tupla_ ();
+    ~Type_Tupla_();
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     TypeList
-    tupla ()
+    tupla()
     {
-        return (_tyl);
+      return _tyl;
     }
     ;
     /**
@@ -415,45 +415,45 @@ public:
      * @return
      */
     TypesType
-    getType ()
+    getType()
     {
-        return (TYTUPLA);
+      return TYTUPLA;
     }
-private:
+  private:
     TypeList _tyl;
 };
 
 /**
  *
  */
-class Type_Function_ : public Type_
+class Type_Function_: public Type_
 {
-public:
+  public:
     /**
      *
      * @param output
      * @param input
      */
-    Type_Function_ (Type output, TypeList input);
+    Type_Function_(Type output, TypeList input);
     /**
      *
      */
     virtual
-    ~Type_Function_ ();
+    ~Type_Function_();
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     TypeList
-    input ()
+    input()
     {
-        return (_input);
+      return _input;
     }
     ;
     /**
@@ -461,9 +461,9 @@ public:
      * @return
      */
     Type
-    output ()
+    output()
     {
-        return (_output);
+      return _output;
     }
     ;
     /**
@@ -471,12 +471,12 @@ public:
      * @return
      */
     TypesType
-    getType ()
+    getType()
     {
-        return (TYFUNCTION);
+      return TYFUNCTION;
     }
     ;
-private:
+    private:
     TypeList _input;
     Type _output;
 };

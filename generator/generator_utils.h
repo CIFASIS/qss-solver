@@ -37,92 +37,92 @@ using namespace std;
  */
 typedef enum
 {
-    WR_ALLOC_LD,           //!< WR_ALLOC_LD
-    WR_ALLOC_LD_SD,        //!< WR_ALLOC_LD_SD
-    WR_ALLOC_LD_ALG_SD,        //!< WR_ALLOC_LD_ALG_SD
-    WR_ALLOC_LD_SZ,        //!< WR_ALLOC_LD_SZ
-    WR_ALLOC_LD_ALG_SZ,        //!< WR_ALLOC_LD_ALG_SZ
-    WR_ALLOC_LD_ZS,        //!< WR_ALLOC_LD_ZS
-    WR_ALLOC_LD_ALG_ZS,        //!< WR_ALLOC_LD_ALG_ZS
-    WR_ALLOC_LD_DS,        //!< WR_ALLOC_LD_DS
-    WR_ALLOC_LD_ALG_DS,        //!< WR_ALLOC_LD_ALG_DS
-    WR_ALLOC_LD_HD,        //!< WR_ALLOC_LD_HD
-    WR_ALLOC_LD_HZ,        //!< WR_ALLOC_LD_HZ
-    WR_ALLOC_LD_DD,        //!< WR_ALLOC_LD_DD
-    WR_ALLOC_LD_DH,        //!< WR_ALLOC_LD_DH
-    WR_ALLOC_STATE_HANDLERS,  //!< WR_ALLOC_STATE_HANDLERS
-    WR_ALLOC_EVENT_LHSST,  //!< WR_ALLOC_EVENT_LHSST
-    WR_ALLOC_EVENT_RHSST,  //!< WR_ALLOC_EVENT_RHSST
-    WR_ALLOC_EVENT_ALG_RHSST,  //!< WR_ALLOC_EVENT_ALG_RHSST
-    WR_ALLOC_EVENT_DSC,    //!< WR_ALLOC_EVENT_DSC
-    WR_ALLOC_OUTPUT_STATES,       //!< WR_ALLOC_OUTPUT_STATES
-    WR_ALLOC_OUTPUT_ALG_STATES,       //!< WR_ALLOC_OUTPUT_ALG_STATES
-    WR_ALLOC_OUTPUT_DSC,       //!< WR_ALLOC_OUTPUT_DSC
-    WR_ALLOC_OUTPUT_ALG_DSC,       //!< WR_ALLOC_OUTPUT_ALG_DSC
-    WR_GLOBAL_VARS,        //!< WR_GLOBAL_VARS
-    WR_HEADER,             //!< WR_HEADER
-    WR_INIT_LD,            //!< WR_INIT_LD
-    WR_INIT_LD_SD,         //!< WR_INIT_LD_SD
-    WR_INIT_LD_ALG_SD,         //!< WR_INIT_LD_ALG_SD
-    WR_INIT_LD_SZ,         //!< WR_INIT_LD_SZ
-    WR_INIT_LD_ALG_SZ,         //!< WR_INIT_LD_ALG_SZ
-    WR_INIT_LD_ZS,         //!< WR_INIT_LD_ZS
-    WR_INIT_LD_ALG_ZS,         //!< WR_INIT_LD_ALG_ZS
-    WR_INIT_LD_DS,         //!< WR_INIT_LD_DS
-    WR_INIT_LD_ALG_DS,         //!< WR_INIT_LD_ALG_DS
-    WR_INIT_LD_HD,         //!< WR_INIT_LD_HD
-    WR_INIT_LD_HZ,         //!< WR_INIT_LD_HZ
-    WR_INIT_LD_DD,         //!< WR_INIT_LD_DD
-    WR_INIT_LD_DH,         //!< WR_INIT_LD_DH
-    WR_INIT_EVENT,         //!< WR_INIT_EVENT
-    WR_INIT_STATE_HANDLERS,   //!< WR_INIT_STATE_HANDLERS
-    WR_INIT_EVENT_LHSST,   //!< WR_INIT_EVENT_LHSST
-    WR_INIT_EVENT_RHSST,   //!< WR_INIT_EVENT_RHSST
-    WR_INIT_EVENT_ALG_RHSST,   //!< WR_INIT_EVENT_ALG_RHSST
-    WR_INIT_EVENT_DSC,     //!< WR_INIT_EVENT_DSC
-    WR_INIT_OUTPUT,       //!< WR_INIT_OUTPUT
-    WR_INIT_OUTPUT_STATES, //!< WR_INIT_OUTPUT_STATES
-    WR_INIT_OUTPUT_ALG_STATES, //!< WR_INIT_OUTPUT_ALG_STATES
-    WR_INIT_OUTPUT_DSC,    //!< WR_INIT_OUTPUT_DSC
-    WR_INIT_OUTPUT_ALG_DSC,    //!< WR_INIT_OUTPUT_ALG_DSC
-    WR_INIT_TIME,          //!< WR_INIT_TIME
-    WR_INIT_TIME_STRUCT,   //!< WR_INIT_TIME_STRUCT
-    WR_INIT_CODE,          //!< WR_INIT_CODE
-    WR_START_CODE,          //!< WR_START_CODE
-    WR_INIT_VARS,          //!< WR_INIT_VARS
-    WR_MODEL_SIMPLE,       //!< WR_MODEL_SIMPLE
-    WR_MODEL_GENERIC,      //!< WR_MODEL_GENERIC
-    WR_MODEL_DEPS_SIMPLE,  //!< WR_MODEL_DEPS_SIMPLE
-    WR_MODEL_DEPS_GENERIC, //!< WR_MODEL_DEPS_GENERIC
-    WR_ZC_SIMPLE,          //!< WR_ZC_SIMPLE
-    WR_ZC_GENERIC,         //!< WR_ZC_GENERIC
-    WR_HANDLER_POS_SIMPLE, //!< WR_HANDLER_POS_SIMPLE
-    WR_HANDLER_POS_GENERIC, //!< WR_HANDLER_POS_GENERIC
-    WR_HANDLER_NEG_SIMPLE, //!< WR_HANDLER_NEG_SIMPLE
-    WR_HANDLER_NEG_GENERIC, //!< WR_HANDLER_NEG_GENERIC
-    WR_OUTPUT_SIMPLE,      //!< WR_OUTPUT_SIMPLE
-    WR_MODEL_JACOBIAN,      //!< WR_MODEL_JACOBIAN
-    WR_OUTPUT_GENERIC,     //!< WR_OUTPUT_GENERIC
-    WR_FUNCTION_HEADER,    //!< WR_FUNCTION_HEADER
-    WR_FUNCTION_CODE,      //!< WR_FUNCTION_CODE
-    WR_NULL                //!< WR_NULL
+  WR_ALLOC_LD,           //!< WR_ALLOC_LD
+  WR_ALLOC_LD_SD,        //!< WR_ALLOC_LD_SD
+  WR_ALLOC_LD_ALG_SD,        //!< WR_ALLOC_LD_ALG_SD
+  WR_ALLOC_LD_SZ,        //!< WR_ALLOC_LD_SZ
+  WR_ALLOC_LD_ALG_SZ,        //!< WR_ALLOC_LD_ALG_SZ
+  WR_ALLOC_LD_ZS,        //!< WR_ALLOC_LD_ZS
+  WR_ALLOC_LD_ALG_ZS,        //!< WR_ALLOC_LD_ALG_ZS
+  WR_ALLOC_LD_DS,        //!< WR_ALLOC_LD_DS
+  WR_ALLOC_LD_ALG_DS,        //!< WR_ALLOC_LD_ALG_DS
+  WR_ALLOC_LD_HD,        //!< WR_ALLOC_LD_HD
+  WR_ALLOC_LD_HZ,        //!< WR_ALLOC_LD_HZ
+  WR_ALLOC_LD_DD,        //!< WR_ALLOC_LD_DD
+  WR_ALLOC_LD_DH,        //!< WR_ALLOC_LD_DH
+  WR_ALLOC_STATE_HANDLERS,  //!< WR_ALLOC_STATE_HANDLERS
+  WR_ALLOC_EVENT_LHSST,  //!< WR_ALLOC_EVENT_LHSST
+  WR_ALLOC_EVENT_RHSST,  //!< WR_ALLOC_EVENT_RHSST
+  WR_ALLOC_EVENT_ALG_RHSST,  //!< WR_ALLOC_EVENT_ALG_RHSST
+  WR_ALLOC_EVENT_DSC,    //!< WR_ALLOC_EVENT_DSC
+  WR_ALLOC_OUTPUT_STATES,       //!< WR_ALLOC_OUTPUT_STATES
+  WR_ALLOC_OUTPUT_ALG_STATES,       //!< WR_ALLOC_OUTPUT_ALG_STATES
+  WR_ALLOC_OUTPUT_DSC,       //!< WR_ALLOC_OUTPUT_DSC
+  WR_ALLOC_OUTPUT_ALG_DSC,       //!< WR_ALLOC_OUTPUT_ALG_DSC
+  WR_GLOBAL_VARS,        //!< WR_GLOBAL_VARS
+  WR_HEADER,             //!< WR_HEADER
+  WR_INIT_LD,            //!< WR_INIT_LD
+  WR_INIT_LD_SD,         //!< WR_INIT_LD_SD
+  WR_INIT_LD_ALG_SD,         //!< WR_INIT_LD_ALG_SD
+  WR_INIT_LD_SZ,         //!< WR_INIT_LD_SZ
+  WR_INIT_LD_ALG_SZ,         //!< WR_INIT_LD_ALG_SZ
+  WR_INIT_LD_ZS,         //!< WR_INIT_LD_ZS
+  WR_INIT_LD_ALG_ZS,         //!< WR_INIT_LD_ALG_ZS
+  WR_INIT_LD_DS,         //!< WR_INIT_LD_DS
+  WR_INIT_LD_ALG_DS,         //!< WR_INIT_LD_ALG_DS
+  WR_INIT_LD_HD,         //!< WR_INIT_LD_HD
+  WR_INIT_LD_HZ,         //!< WR_INIT_LD_HZ
+  WR_INIT_LD_DD,         //!< WR_INIT_LD_DD
+  WR_INIT_LD_DH,         //!< WR_INIT_LD_DH
+  WR_INIT_EVENT,         //!< WR_INIT_EVENT
+  WR_INIT_STATE_HANDLERS,   //!< WR_INIT_STATE_HANDLERS
+  WR_INIT_EVENT_LHSST,   //!< WR_INIT_EVENT_LHSST
+  WR_INIT_EVENT_RHSST,   //!< WR_INIT_EVENT_RHSST
+  WR_INIT_EVENT_ALG_RHSST,   //!< WR_INIT_EVENT_ALG_RHSST
+  WR_INIT_EVENT_DSC,     //!< WR_INIT_EVENT_DSC
+  WR_INIT_OUTPUT,       //!< WR_INIT_OUTPUT
+  WR_INIT_OUTPUT_STATES, //!< WR_INIT_OUTPUT_STATES
+  WR_INIT_OUTPUT_ALG_STATES, //!< WR_INIT_OUTPUT_ALG_STATES
+  WR_INIT_OUTPUT_DSC,    //!< WR_INIT_OUTPUT_DSC
+  WR_INIT_OUTPUT_ALG_DSC,    //!< WR_INIT_OUTPUT_ALG_DSC
+  WR_INIT_TIME,          //!< WR_INIT_TIME
+  WR_INIT_TIME_STRUCT,   //!< WR_INIT_TIME_STRUCT
+  WR_INIT_CODE,          //!< WR_INIT_CODE
+  WR_START_CODE,          //!< WR_START_CODE
+  WR_INIT_VARS,          //!< WR_INIT_VARS
+  WR_MODEL_SIMPLE,       //!< WR_MODEL_SIMPLE
+  WR_MODEL_GENERIC,      //!< WR_MODEL_GENERIC
+  WR_MODEL_DEPS_SIMPLE,  //!< WR_MODEL_DEPS_SIMPLE
+  WR_MODEL_DEPS_GENERIC, //!< WR_MODEL_DEPS_GENERIC
+  WR_ZC_SIMPLE,          //!< WR_ZC_SIMPLE
+  WR_ZC_GENERIC,         //!< WR_ZC_GENERIC
+  WR_HANDLER_POS_SIMPLE, //!< WR_HANDLER_POS_SIMPLE
+  WR_HANDLER_POS_GENERIC, //!< WR_HANDLER_POS_GENERIC
+  WR_HANDLER_NEG_SIMPLE, //!< WR_HANDLER_NEG_SIMPLE
+  WR_HANDLER_NEG_GENERIC, //!< WR_HANDLER_NEG_GENERIC
+  WR_OUTPUT_SIMPLE,      //!< WR_OUTPUT_SIMPLE
+  WR_MODEL_JACOBIAN,      //!< WR_MODEL_JACOBIAN
+  WR_OUTPUT_GENERIC,     //!< WR_OUTPUT_GENERIC
+  WR_FUNCTION_HEADER,    //!< WR_FUNCTION_HEADER
+  WR_FUNCTION_CODE,      //!< WR_FUNCTION_CODE
+  WR_NULL                //!< WR_NULL
 } WR_Section;
 
 typedef enum
 {
-    WR_APPEND_SIMPLE,
-    WR_APPEND_GENERIC,
-    WR_PREPEND
+  WR_APPEND_SIMPLE,
+  WR_APPEND_GENERIC,
+  WR_PREPEND
 } WR_InsertType;
 
 class MMO_Writer_
 {
-public:
+  public:
     /**
      *
      */
     virtual
-    ~MMO_Writer_ ()
+    ~MMO_Writer_()
     {
     }
     ;
@@ -131,19 +131,19 @@ public:
      * @param fname
      */
     virtual void
-    setFile (string fname) = 0;
+    setFile(string fname) = 0;
     /**
      *
      */
     virtual void
-    clearFile () = 0;
+    clearFile() = 0;
     /**
      *
      * @param str
      * @param section
      */
     virtual void
-    write (string str, WR_Section section, WR_InsertType it = WR_PREPEND) = 0;
+    write(string str, WR_Section section, WR_InsertType it = WR_PREPEND) = 0;
     /**
      *
      * @param s
@@ -151,128 +151,129 @@ public:
      * @param clean
      */
     virtual void
-    write (stringstream *s, WR_Section section, bool clean = true, WR_InsertType it = WR_PREPEND) = 0;
+    write(stringstream *s, WR_Section section, bool clean = true,
+        WR_InsertType it = WR_PREPEND) = 0;
     virtual void
-    removeFromSection (string str, WR_Section section) = 0;
+    removeFromSection(string str, WR_Section section) = 0;
     /**
      *
      * @param block
      * @param section
      */
     virtual void
-    writeBlock (list<string> block, WR_Section section) = 0;
+    writeBlock(list<string> block, WR_Section section) = 0;
     /**
      *
      * @param section
      */
     virtual void
-    print (WR_Section section) = 0;
+    print(WR_Section section) = 0;
     /**
      *
      * @param s
      */
     virtual void
-    print (stringstream *s) = 0;
+    print(stringstream *s) = 0;
     /**
      *
      * @param s
      */
     virtual void
-    print (string s) = 0;
+    print(string s) = 0;
     /**
      *
      * @param section
      * @return
      */
     virtual bool
-    isEmpty (WR_Section section) = 0;
+    isEmpty(WR_Section section) = 0;
     /**
      *
      * @param block
      */
     virtual void
-    printBlock (list<string> block) = 0;
+    printBlock(list<string> block) = 0;
     /**
      *
      * @param n
      */
     virtual void
-    setIndent (int n) = 0;
+    setIndent(int n) = 0;
     /**
      *
      * @return
      */
     virtual string
-    indent () = 0;
+    indent() = 0;
     /**
      *
      * @param n
      * @return
      */
     virtual string
-    indent (int n) = 0;
+    indent(int n) = 0;
     /**
      *
      */
     virtual void
-    beginBlock () = 0;
+    beginBlock() = 0;
     /**
      *
      */
     virtual void
-    endBlock () = 0;
+    endBlock() = 0;
     /**
      *
      * @return
      */
     virtual string
-    block () = 0;
+    block() = 0;
     /**
      *
      * @param section
      */
     virtual void
-    clear (WR_Section section) = 0;
+    clear(WR_Section section) = 0;
     /**
      *
      * @param section
      */
     virtual void
-    newLine (WR_Section section) = 0;
+    newLine(WR_Section section) = 0;
 };
 
 /**
  *
  */
-class MMO_MemoryWriter_ : public MMO_Writer_
+class MMO_MemoryWriter_: public MMO_Writer_
 {
-public:
+  public:
     /**
      *
      */
-    MMO_MemoryWriter_ ();
+    MMO_MemoryWriter_();
     /**
      *
      */
-    ~MMO_MemoryWriter_ ();
+    ~MMO_MemoryWriter_();
     /**
      *
      * @param fname
      */
     void
-    setFile (string fname);
+    setFile(string fname);
     /**
      *
      */
     void
-    clearFile ();
+    clearFile();
     /**
      *
      * @param str
      * @param section
      */
     void
-    write (string str, WR_Section section, WR_InsertType it = WR_PREPEND);
+    write(string str, WR_Section section, WR_InsertType it = WR_PREPEND);
     /**
      *
      * @param s
@@ -280,95 +281,96 @@ public:
      * @param clean
      */
     void
-    write (stringstream *s, WR_Section section, bool clean = true, WR_InsertType it = WR_PREPEND);
+    write(stringstream *s, WR_Section section, bool clean = true,
+        WR_InsertType it = WR_PREPEND);
     void
-    removeFromSection (string str, WR_Section section);
+    removeFromSection(string str, WR_Section section);
     /**
      *
      * @param block
      * @param section
      */
     void
-    writeBlock (list<string> block, WR_Section section);
+    writeBlock(list<string> block, WR_Section section);
     /**
      *
      * @param section
      */
     void
-    print (WR_Section section);
+    print(WR_Section section);
     /**
      *
      * @param s
      */
     void
-    print (stringstream *s);
+    print(stringstream *s);
     /**
      *
      * @param s
      */
     void
-    print (string s);
+    print(string s);
     /**
      *
      * @param section
      * @return
      */
     bool
-    isEmpty (WR_Section section);
+    isEmpty(WR_Section section);
     /**
      *
      * @param block
      */
     void
-    printBlock (list<string> block);
+    printBlock(list<string> block);
     /**
      *
      * @param n
      */
     void
-    setIndent (int n);
+    setIndent(int n);
     /**
      *
      * @return
      */
     string
-    indent ();
+    indent();
     /**
      *
      * @param n
      * @return
      */
     string
-    indent (int n);
+    indent(int n);
     /**
      *
      */
     void
-    beginBlock ();
+    beginBlock();
     /**
      *
      */
     void
-    endBlock ();
+    endBlock();
     /**
      *
      * @return
      */
     string
-    block ();
+    block();
     /**
      *
      * @param section
      */
     void
-    newLine (WR_Section section);
+    newLine(WR_Section section);
     /**
      *
      * @param section
      */
     void
-    clear (WR_Section section);
-private:
+    clear(WR_Section section);
+    private:
     list<string> _sections[SECTIONS];
     ofstream _file;
     string _indentStr;
@@ -382,46 +384,46 @@ private:
  * @return
  */
 MMO_MemoryWriter
-newMMO_MemoryWriter ();
+newMMO_MemoryWriter();
 /**
  *
  * @param m
  */
 void
-deleteMMO_MemoryWriter (MMO_MemoryWriter m);
+deleteMMO_MemoryWriter(MMO_MemoryWriter m);
 
 /**
  *
  */
-class MMO_FileWriter_ : public MMO_Writer_
+class MMO_FileWriter_: public MMO_Writer_
 {
-public:
+  public:
     /**
      *
      */
-    MMO_FileWriter_ ();
+    MMO_FileWriter_();
     /**
      *
      */
-    ~MMO_FileWriter_ ();
+    ~MMO_FileWriter_();
     /**
      *
      * @param fname
      */
     void
-    setFile (string fname);
+    setFile(string fname);
     /**
      *
      */
     void
-    clearFile ();
+    clearFile();
     /**
      *
      * @param str
      * @param section
      */
     void
-    write (string str, WR_Section section, WR_InsertType it = WR_PREPEND);
+    write(string str, WR_Section section, WR_InsertType it = WR_PREPEND);
     /**
      *
      * @param s
@@ -429,95 +431,96 @@ public:
      * @param clean
      */
     void
-    write (stringstream *s, WR_Section section, bool clean = true, WR_InsertType it = WR_PREPEND);
+    write(stringstream *s, WR_Section section, bool clean = true,
+        WR_InsertType it = WR_PREPEND);
     void
-    removeFromSection (string str, WR_Section section);
+    removeFromSection(string str, WR_Section section);
     /**
      *
      * @param block
      * @param section
      */
     void
-    writeBlock (list<string> block, WR_Section section);
+    writeBlock(list<string> block, WR_Section section);
     /**
      *
      * @param section
      */
     void
-    print (WR_Section section);
+    print(WR_Section section);
     /**
      *
      * @param s
      */
     void
-    print (stringstream *s);
+    print(stringstream *s);
     /**
      *
      * @param s
      */
     void
-    print (string s);
+    print(string s);
     /**
      *
      * @param section
      * @return
      */
     bool
-    isEmpty (WR_Section section);
+    isEmpty(WR_Section section);
     /**
      *
      * @param block
      */
     void
-    printBlock (list<string> block);
+    printBlock(list<string> block);
     /**
      *
      * @param n
      */
     void
-    setIndent (int n);
+    setIndent(int n);
     /**
      *
      * @return
      */
     string
-    indent ();
+    indent();
     /**
      *
      * @param n
      * @return
      */
     string
-    indent (int n);
+    indent(int n);
     /**
      *
      */
     void
-    beginBlock ();
+    beginBlock();
     /**
      *
      */
     void
-    endBlock ();
+    endBlock();
     /**
      *
      * @return
      */
     string
-    block ();
+    block();
     /**
      *
      * @param section
      */
     void
-    newLine (WR_Section section);
+    newLine(WR_Section section);
     /**
      *
      * @param section
      */
     void
-    clear (WR_Section section);
-private:
+    clear(WR_Section section);
+    private:
     ofstream _sections[SECTIONS];
     ofstream _file;
     string _indentStr;
@@ -530,12 +533,12 @@ private:
  * @return
  */
 MMO_FileWriter
-newMMO_FileWriter ();
+newMMO_FileWriter();
 /**
  *
  * @param m
  */
 void
-deleteMMO_FileWriter (MMO_FileWriter m);
+deleteMMO_FileWriter(MMO_FileWriter m);
 
 #endif  /* MMO_WRITER_H_ */

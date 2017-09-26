@@ -26,74 +26,75 @@
 static const char *enableFlags = NULL; // controls which DEBUG messages are printed
 
 void
-debugInit (const char *flagList)
+debugInit(const char *flagList)
 {
-    enableFlags = flagList;
+  enableFlags = flagList;
 }
 
 bool
-debugIsEnabled (char flag)
+debugIsEnabled(char flag)
 {
-    if (enableFlags != NULL)
-        return ((strchr (enableFlags, flag) != 0) || (strchr (enableFlags, '+') != 0));
-    else
-        return (false);
+  if(enableFlags != NULL)
+    return (strchr(enableFlags, flag) != 0) || (strchr(enableFlags, '+') != 0);
+  else
+    return false;
 }
 
 void
-DEBUG (char flag, const char *format, ...)
+DEBUG(char flag, const char *format, ...)
 {
-    if (debugIsEnabled (flag))
-    {
-        va_list ap;
-        va_start(ap, format);
-        vfprintf (stdout, format, ap);
-        fflush (stdout);
-        va_end(ap);
-    }
-}
-
-bool
-isDebugParam (char *param)
-{
-    if (strcmp (param, "c") == 0)
-    {
-        return (true);
-    }
-    if (strcmp (param, "a") == 0)
-    {
-        return (true);
-    }
-    if (strcmp (param, "s") == 0)
-    {
-        return (true);
-    }
-    return (false);
-}
-
-void
-ERROR (const char *format, ...)
-{
+  if(debugIsEnabled(flag))
+  {
     va_list ap;
     va_start(ap, format);
-    char *error_string = "Error: ";
-    char *new_format = (char *) malloc (sizeof(char) * strlen (error_string) + (strlen (format)));
-    strcpy (new_format, error_string);
-    strcat (new_format, format);
-    vfprintf (stderr, new_format, ap);
-    fflush (stderr);
+    vfprintf(stdout, format, ap);
+    fflush(stdout);
     va_end(ap);
-    exit (EXIT_FAILURE);
+  }
+}
+
+bool
+isDebugParam(char *param)
+{
+  if(strcmp(param, "c") == 0)
+  {
+    return true;
+  }
+  if(strcmp(param, "a") == 0)
+  {
+    return true;
+  }
+  if(strcmp(param, "s") == 0)
+  {
+    return true;
+  }
+  return false;
 }
 
 void
-ERROR_UNLESS (bool condition, const char *format, ...)
+ERROR(const char *format, ...)
 {
-    if (!condition)
-    {
-        va_list ap;
-        va_start(ap, format);
-        ERROR (format, ap);
-        va_end(ap);
-    }
+  va_list ap;
+  va_start(ap, format);
+  char *error_string = "Error: ";
+  char *new_format = (char *) malloc(
+      sizeof(char) * strlen(error_string) + (strlen(format)));
+  strcpy(new_format, error_string);
+  strcat(new_format, format);
+  vfprintf(stderr, new_format, ap);
+  fflush(stderr);
+  va_end(ap);
+  exit(EXIT_FAILURE);
+}
+
+void
+ERROR_UNLESS(bool condition, const char *format, ...)
+{
+  if(!condition)
+  {
+    va_list ap;
+    va_start(ap, format);
+    ERROR(format, ap);
+    va_end(ap);
+  }
 }

@@ -30,14 +30,14 @@
 /**
  *
  */
-class AST_Expression_ : public AST_Node_
+class AST_Expression_: public AST_Node_
 {
-public:
+  public:
     /**
      *
      */
     virtual
-    ~AST_Expression_ ();
+    ~AST_Expression_();
     /**
      *
      */
@@ -48,19 +48,19 @@ public:
      * @return
      */
     virtual string
-    print () const =0;
+    print() const =0;
     /**
      *
      * @return
      */
     virtual ExpressionType
-    expressionType ();
+    expressionType();
     /**
      *
      * @param visitor
      */
     void
-    accept (AST_Visitor visitor);
+    accept(AST_Visitor visitor);
     /**
      *
      */
@@ -151,281 +151,281 @@ public:
      * @return
      */
     AST_Expression_If_ElseIf
-    getAsElseIf ();
+    getAsElseIf();
 };
 
 /**
  *
  */
-class AST_Expression_Integer_ : public AST_Expression_
+class AST_Expression_Integer_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param i
      */
-    AST_Expression_Integer_ (AST_Integer i);
+    AST_Expression_Integer_(AST_Integer i);
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     AST_Integer
-    val ();
+    val();
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
-private:
+    expressionType();
+    private:
     AST_Integer _i;
 };
 
 /**
  *
  */
-class AST_Expression_Real_ : public AST_Expression_
+class AST_Expression_Real_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param d
      */
-    AST_Expression_Real_ (double d);
+    AST_Expression_Real_(double d);
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
+    expressionType();
     /**
      *
      * @return
      */
     double
-    val ()
+    val()
     {
-        return (_d);
+      return _d;
     }
     ;
-private:
+    private:
     double _d;
 };
 
 /**
  *
  */
-class AST_Expression_String_ : public AST_Expression_
+class AST_Expression_String_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param s
      */
-    AST_Expression_String_ (string s);
+    AST_Expression_String_(string s);
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     string
-    str () const;
+    str() const;
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
-private:
+    expressionType();
+    private:
     string _s;
 };
 
 /**
  *
  */
-class AST_Expression_Boolean_ : public AST_Expression_
+class AST_Expression_Boolean_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param b
      */
-    AST_Expression_Boolean_ (bool b);
+    AST_Expression_Boolean_(bool b);
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     bool
-    value ();
+    value();
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
-private:
+    expressionType();
+    private:
     bool _b;
 };
 
 /**
  *
  */
-class AST_Expression_Derivative_ : public AST_Expression_
+class AST_Expression_Derivative_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param el
      */
-    AST_Expression_Derivative_ (AST_ExpressionList el);
+    AST_Expression_Derivative_(AST_ExpressionList el);
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
+    expressionType();
     /**
      *
      * @return
      */
     AST_ExpressionList
-    arguments ();
+    arguments();
     /**
      *
      * @return
      */
     string
-    print () const;
-private:
+    print() const;
+    private:
     AST_ExpressionList _el;
 };
 
 /**
  *
  */
-class AST_Expression_UMinus_ : public AST_Expression_
+class AST_Expression_UMinus_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param e
      */
-    AST_Expression_UMinus_ (AST_Expression e);
+    AST_Expression_UMinus_(AST_Expression e);
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     AST_Expression
-    exp () const;
+    exp() const;
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
-private:
+    expressionType();
+    private:
     AST_Expression _e;
 };
 
 /**
  *
  */
-class AST_Expression_BooleanNot_ : public AST_Expression_
+class AST_Expression_BooleanNot_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param e
      */
-    AST_Expression_BooleanNot_ (AST_Expression e);
+    AST_Expression_BooleanNot_(AST_Expression e);
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
+    expressionType();
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     AST_Expression
-    exp () const;
-private:
+    exp() const;
+    private:
     AST_Expression _e;
 };
 
 /**
  *
  */
-class AST_Expression_Call_ : public AST_Expression_
+class AST_Expression_Call_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param name
      * @param args
      */
-    AST_Expression_Call_ (AST_String name, AST_ExpressionList args);
+    AST_Expression_Call_(AST_String name, AST_ExpressionList args);
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     AST_String
-    name () const;
+    name() const;
     /**
      *
      * @return
      */
     AST_ExpressionList
-    arguments () const;
+    arguments() const;
     /**
      *
      * @return
      */
     virtual ExpressionType
-    expressionType ();
-private:
+    expressionType();
+    private:
     AST_String _name;
     AST_ExpressionList _args;
 };
@@ -433,144 +433,144 @@ private:
 /**
  *
  */
-class AST_Expression_CallArgs_ : public AST_Expression_
+class AST_Expression_CallArgs_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param args
      */
-    AST_Expression_CallArgs_ (AST_ExpressionList args);
+    AST_Expression_CallArgs_(AST_ExpressionList args);
     /**
      *
      * @return
      */
     AST_ExpressionList
-    arguments () const;
+    arguments() const;
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
+    expressionType();
     /**
      *
      * @return
      */
     string
-    print () const;
-private:
+    print() const;
+    private:
     AST_ExpressionList _args;
 };
 
 /**
  *
  */
-class AST_Expression_Brace_ : public AST_Expression_
+class AST_Expression_Brace_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param args
      */
-    AST_Expression_Brace_ (AST_ExpressionList args);
+    AST_Expression_Brace_(AST_ExpressionList args);
     /**
      *
      * @return
      */
     AST_ExpressionList
-    arguments () const;
+    arguments() const;
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
+    expressionType();
     /**
      *
      * @return
      */
     string
-    print () const;
-private:
+    print() const;
+    private:
     AST_ExpressionList _args;
 };
 
 /**
  *
  */
-class AST_Expression_ComponentReference_ : public AST_Expression_
+class AST_Expression_ComponentReference_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param name
      * @param
      */
-    AST_Expression_ComponentReference_ (AST_String name, AST_ExpressionList);
+    AST_Expression_ComponentReference_(AST_String name, AST_ExpressionList);
     /**
      *
      */
-    AST_Expression_ComponentReference_ ();
+    AST_Expression_ComponentReference_();
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @param
      * @param
      */
     void
-    append (AST_String, AST_ExpressionList);
+    append(AST_String, AST_ExpressionList);
     /**
      *
      * @param
      * @param
      */
     void
-    prepend (AST_String, AST_ExpressionList);
+    prepend(AST_String, AST_ExpressionList);
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
+    expressionType();
     /**
      *
      * @return
      */
     AST_StringList
-    names () const;
+    names() const;
     /**
      *
      * @return
      */
     string
-    name ();
+    name();
     /**
      *
      * @return
      */
     const char *
-    cname ();
+    cname();
     /**
      *
      * @return
      */
     bool
-    hasIndexes () const;
+    hasIndexes() const;
     /**
      *
      * @return
      */
     AST_ExpressionListList
-    indexes () const;
+    indexes() const;
     AST_ExpressionList
-    firstIndex ();
-private:
+    firstIndex();
+    private:
     AST_StringList _name;
     AST_ExpressionListList _indexes;
 };
@@ -578,47 +578,47 @@ private:
 /**
  *
  */
-class AST_Expression_BinOp_ : public AST_Expression_
+class AST_Expression_BinOp_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param e1
      * @param e2
      * @param t
      */
-    AST_Expression_BinOp_ (AST_Expression e1, AST_Expression e2, BinOpType t);
+    AST_Expression_BinOp_(AST_Expression e1, AST_Expression e2, BinOpType t);
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
+    expressionType();
     /**
      *
      * @return
      */
     AST_Expression
-    left () const;
+    left() const;
     /**
      *
      * @return
      */
     AST_Expression
-    right () const;
+    right() const;
     /**
      *
      * @return
      */
     BinOpType
-    binopType () const;
-private:
+    binopType() const;
+    private:
     AST_Expression _e1, _e2;
     BinOpType _t;
 };
@@ -626,9 +626,9 @@ private:
 /**
  *
  */
-class AST_Expression_If_ : public AST_Expression_
+class AST_Expression_If_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param cond
@@ -636,40 +636,41 @@ public:
      * @param else_exp
      * @param elseif_list
      */
-    AST_Expression_If_ (AST_Expression cond, AST_Expression then, AST_Expression else_exp, AST_ExpressionList elseif_list);
+    AST_Expression_If_(AST_Expression cond, AST_Expression then,
+        AST_Expression else_exp, AST_ExpressionList elseif_list);
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     AST_Expression
-    condition () const;
+    condition() const;
     /**
      *
      * @return
      */
     AST_Expression
-    then () const;
+    then() const;
     /**
      *
      * @return
      */
     AST_Expression
-    else_exp () const;
+    else_exp() const;
     /**
      *
      * @return
      */
     AST_ExpressionList
-    elseif_list () const;
+    elseif_list() const;
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
-private:
+    expressionType();
+    private:
     AST_Expression _cond, _then, _else_exp;
     AST_ExpressionList _elseif_list;
 };
@@ -677,80 +678,80 @@ private:
 /**
  *
  */
-class AST_Expression_End_ : public AST_Expression_
+class AST_Expression_End_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
+    expressionType();
 };
 
 /**
  *
  */
-class AST_Expression_Null_ : public AST_Expression_
+class AST_Expression_Null_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
+    expressionType();
 };
 
 /**
  *
  */
-class AST_Expression_If_ElseIf_ : public AST_Expression_
+class AST_Expression_If_ElseIf_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param
      * @param
      */
-    AST_Expression_If_ElseIf_ (AST_Expression, AST_Expression);
+    AST_Expression_If_ElseIf_(AST_Expression, AST_Expression);
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
+    expressionType();
     /**
      *
      * @return
      */
     AST_Expression
-    condition ();
+    condition();
     /**
      *
      * @return
      */
     AST_Expression
-    then ();
-private:
+    then();
+    private:
     AST_Expression _cond;
     AST_Expression _then;
 };
@@ -758,124 +759,124 @@ private:
 /**
  *
  */
-class AST_Expression_Colon_ : public AST_Expression_
+class AST_Expression_Colon_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
+    expressionType();
 };
 
 /**
  *
  */
-class AST_Expression_Output_ : public AST_Expression_
+class AST_Expression_Output_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      */
-    AST_Expression_Output_ (AST_ExpressionList);
+    AST_Expression_Output_(AST_ExpressionList);
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
+    expressionType();
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     AST_ExpressionList
-    expressionList ();
-private:
+    expressionList();
+    private:
     AST_ExpressionList _list;
 };
 
 /**
  *
  */
-class AST_Expression_Range_ : public AST_Expression_
+class AST_Expression_Range_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      */
-    AST_Expression_Range_ (AST_ExpressionList);
+    AST_Expression_Range_(AST_ExpressionList);
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
+    expressionType();
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     AST_ExpressionList
-    expressionList ();
-private:
+    expressionList();
+    private:
     AST_ExpressionList _list;
 };
 
 /**
  *
  */
-class AST_Expression_NamedArgument_ : public AST_Expression_
+class AST_Expression_NamedArgument_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param name
      * @param exp
      */
-    AST_Expression_NamedArgument_ (AST_String name, AST_Expression exp);
+    AST_Expression_NamedArgument_(AST_String name, AST_Expression exp);
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
+    expressionType();
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     AST_Expression
-    expression ();
+    expression();
     /**
      *
      * @return
      */
     AST_String
-    name ();
-private:
+    name();
+    private:
     AST_Expression _exp;
     AST_String _name;
 };
@@ -883,40 +884,40 @@ private:
 /**
  *
  */
-class AST_Expression_ArrayIndex_ : public AST_Expression_
+class AST_Expression_ArrayIndex_: public AST_Expression_
 {
-public:
+  public:
     /**
      *
      * @param name
      * @param exp
      */
-    AST_Expression_ArrayIndex_ (AST_Expression exp, int size);
+    AST_Expression_ArrayIndex_(AST_Expression exp, int size);
     /**
      *
      * @return
      */
     ExpressionType
-    expressionType ();
+    expressionType();
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     AST_Expression
-    expression ();
+    expression();
     /**
      *
      * @return
      */
     int
-    size ();
-private:
+    size();
+    private:
     AST_Expression _exp;
     int _size;
 };

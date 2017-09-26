@@ -32,34 +32,34 @@
 /**
  *
  */
-class MMO_Statement_ : public MMO_Base_
+class MMO_Statement_: public MMO_Base_
 {
-public:
+  public:
     /**
      *
      * @param stm
      * @param data
      */
-    MMO_Statement_ (AST_Statement stm, MMO_ModelData data);
+    MMO_Statement_(AST_Statement stm, MMO_ModelData data);
     /**
      *
      * @param stm
      */
-    MMO_Statement_ (AST_Statement stm);
+    MMO_Statement_(AST_Statement stm);
     /**
      *
      */
-    MMO_Statement_ ();
+    MMO_Statement_();
     /**
      *
      */
-    ~MMO_Statement_ ();
+    ~MMO_Statement_();
     /**
      *
      * @return
      */
     string
-    print ();
+    print();
     /**
      *
      * @param indent
@@ -70,49 +70,56 @@ public:
      * @return
      */
     list<string>
-    print (string indent, string idx = "", int offset = 0, int order = 1, int forOffset = 0);
+    print(string indent, string idx = "", int offset = 0, int order = 1,
+        int forOffset = 0);
     /**
      *
      * @return
      */
     list<string>
-    getVariables ();
+    getVariables();
     /**
      *
      * @return
      */
     Dependencies
-    deps ();
+    deps();
     /**
      *
      * @return
      */
     Dependencies
-    lhs ();
-private:
+    lhs();
+    private:
     void
-    _getIndexList (AST_Expression_ComponentReference cr, Index index, list<Index> *idxs);
+    _getIndexList(AST_Expression_ComponentReference cr, Index index,
+        list<Index> *idxs);
     void
-    _init ();
+    _init();
     void
-    _setInitialCode (AST_Statement stm);
+    _setInitialCode(AST_Statement stm);
     void
-    _insertDeps (AST_Expression exp);
+    _insertDeps(AST_Expression exp);
     void
-    _insertDeps (AST_Statement stm, Range range = Range());
+    _insertDeps(AST_Statement stm, Range range = Range());
     void
-    _insertVectorDeps (Dependencies deps, Dependencies in, DEP_Type type, DEP_Type insert, Range range);
+    _insertVectorDeps(Dependencies deps, Dependencies in, DEP_Type type,
+        DEP_Type insert, Range range);
     Index
-    _getIndex (AST_Expression_ComponentReference cr, VarInfo vi);
+    _getIndex(AST_Expression_ComponentReference cr, VarInfo vi);
     void
-    _printAssignment (const string& name, AST_Expression_ComponentReference cr, AST_Expression e, const string& indent, const string& idx, int offset,
-                      int order, int forOffset, list<string>& ret);
+    _printAssignment(const string& name, AST_Expression_ComponentReference cr,
+        AST_Expression e, const string& indent, const string& idx, int offset,
+        int order, int forOffset, list<string>& ret);
     void
-    _printList (AST_StatementListIterator it, AST_StatementList stl, const string& indent, const string& idx, int offset, int order, int forOffset,
-                list<string>& ret);
+    _printList(AST_StatementListIterator it, AST_StatementList stl,
+        const string& indent, const string& idx, int offset, int order,
+        int forOffset,
+        list<string>& ret);
     void
-    _printIfExpression (AST_Expression e, string lhs, const string& indent, const string& idx, int order, int offset, int forOffset,
-                        list<string>& ret, list<string>& code);
+    _printIfExpression(AST_Expression e, string lhs, const string& indent,
+        const string& idx, int order, int offset, int forOffset,
+        list<string>& ret, list<string>& code);
 
     AST_Statement _stm;
     MMO_ModelData _data;
@@ -129,25 +136,25 @@ private:
  * @return
  */
 MMO_Statement
-newMMO_Statement (AST_Statement stm, MMO_ModelData data);
+newMMO_Statement(AST_Statement stm, MMO_ModelData data);
 /**
  *
  * @param stm
  * @return
  */
 MMO_Statement
-newMMO_Statement (AST_Statement stm);
+newMMO_Statement(AST_Statement stm);
 /**
  *
  * @return
  */
 MMO_Statement
-newMMO_Statement ();
+newMMO_Statement();
 /**
  *
  * @param m
  */
 void
-deleteMMO_Statement (MMO_Statement m);
+deleteMMO_Statement(MMO_Statement m);
 
 #endif  /* MMO_STATEMENT_H_ */

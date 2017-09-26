@@ -30,9 +30,9 @@
 /**
  *
  */
-class AST_Element_ : public AST_Node_
+class AST_Element_: public AST_Node_
 {
-public:
+  public:
     /**
      *
      */
@@ -43,19 +43,19 @@ public:
      * @return
      */
     virtual string
-    print () const =0;
+    print() const =0;
     /**
      *
      * @return
      */
     virtual ElementType
-    elementType ();
+    elementType();
     /**
      *
      * @param visitor
      */
     void
-    accept (AST_Visitor visitor);
+    accept(AST_Visitor visitor);
     /**
      *
      */
@@ -81,131 +81,131 @@ public:
 /**
  *
  */
-class AST_Element_ExtendsClause_ : public AST_Element_
+class AST_Element_ExtendsClause_: public AST_Element_
 {
-public:
+  public:
     /**
      *
      * @param name
      */
-    AST_Element_ExtendsClause_ (string name);
+    AST_Element_ExtendsClause_(string name);
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     virtual ElementType
-    elementType ();
+    elementType();
     /**
      *
      * @return
      */
     AST_String
-    name ();
-private:
+    name();
+    private:
     string _name;
 };
 
 /**
  *
  */
-class AST_Element_ImportClause_ : public AST_Element_
+class AST_Element_ImportClause_: public AST_Element_
 {
-public:
+  public:
     /**
      *
      * @param name
      */
-    AST_Element_ImportClause_ (string name);
+    AST_Element_ImportClause_(string name);
     /**
      *
      * @return
      */
     virtual ElementType
-    elementType ();
+    elementType();
     /**
      *
      * @return
      */
     string
-    name () const;
+    name() const;
     /**
      *
      * @return
      */
     string
-    print () const;
-private:
+    print() const;
+    private:
     string _name;
 };
 
 /**
  *
  */
-class AST_Declaration_ : public AST_Element_
+class AST_Declaration_: public AST_Element_
 {
-public:
+  public:
     /**
      *
      * @param name
      * @param indexes
      * @param
      */
-    AST_Declaration_ (string name, AST_ExpressionList indexes, AST_Modification);
+    AST_Declaration_(string name, AST_ExpressionList indexes, AST_Modification);
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     string
-    name () const;
+    name() const;
     /**
      *
      * @return
      */
     AST_ExpressionList
-    indexes () const;
+    indexes() const;
     /**
      *
      * @return
      */
     bool
-    hasIndexes ();
+    hasIndexes();
     /**
      *
      * @return
      */
     AST_Modification
-    modification () const;
+    modification() const;
     /**
      *
      * @return
      */
     bool
-    hasModification ();
+    hasModification();
     /**
      *
      * @param c
      */
     void
-    setComment (AST_Comment c);
+    setComment(AST_Comment c);
     /**
      *
      * @return
      */
     AST_Comment
-    comment () const;
-private:
+    comment() const;
+    private:
     string _name;
     AST_ExpressionList _indexes;
     AST_Modification _mod;
@@ -215,9 +215,9 @@ private:
 /**
  *
  */
-class AST_Element_Component_ : public AST_Element_
+class AST_Element_Component_: public AST_Element_
 {
-public:
+  public:
     /**
      *
      * @param decl_list
@@ -225,114 +225,115 @@ public:
      * @param tp
      * @param index
      */
-    AST_Element_Component_ (AST_DeclarationList decl_list, string type, AST_TypePrefix tp, AST_ExpressionList index);
+    AST_Element_Component_(AST_DeclarationList decl_list, string type,
+        AST_TypePrefix tp, AST_ExpressionList index);
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     bool
-    isParameter () const;
+    isParameter() const;
     /**
      *
      * @return
      */
     bool
-    isInput () const;
+    isInput() const;
     /**
      *
      * @return
      */
     bool
-    isOutput () const;
+    isOutput() const;
     /**
      *
      * @return
      */
     bool
-    isDiscrete () const;
+    isDiscrete() const;
     /**
      *
      * @return
      */
     bool
-    isFlow () const;
+    isFlow() const;
     /**
      *
      * @return
      */
     bool
-    isStream () const;
+    isStream() const;
     /**
      *
      * @return
      */
     bool
-    isConstant () const;
+    isConstant() const;
     /**
      *
      * @return
      */
     string
-    type ();
+    type();
     /**
      *
      * @return
      */
     virtual ElementType
-    elementType ();
+    elementType();
     /**
      *
      * @return
      */
     string
-    name ();
+    name();
     /**
      *
      * @return
      */
     AST_DeclarationList
-    nameList ();
+    nameList();
     /**
      *
      * @return
      */
     AST_Class
-    origin ();
+    origin();
     /**
      *
      * @param c
      */
     void
-    setOrigin (AST_Class c);
+    setOrigin(AST_Class c);
     /**
      *
      * @return
      */
     AST_TypePrefix
-    typePrefix ();
+    typePrefix();
     /**
      *
      * @return
      */
     AST_ExpressionList
-    indexes () const;
+    indexes() const;
     /**
      *
      * @return
      */
     bool
-    hasIndexes ();
+    hasIndexes();
     bool
-    isReal ();
+    isReal();
     bool
-    isInteger ();
-private:
+    isInteger();
+    private:
     AST_DeclarationList _decl_list;
     string _type;
     AST_ExpressionList _indexes;
@@ -343,66 +344,66 @@ private:
 /**
  *
  */
-class AST_Element_ClassWrapper_ : public AST_Element_
+class AST_Element_ClassWrapper_: public AST_Element_
 {
-public:
+  public:
     /**
      *
      * @param c
      */
-    AST_Element_ClassWrapper_ (AST_Class c);
+    AST_Element_ClassWrapper_(AST_Class c);
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     virtual ElementType
-    elementType ();
+    elementType();
     /**
      *
      * @return
      */
     AST_Class
-    getClass ();
-private:
+    getClass();
+    private:
     AST_Class _c;
 };
 
 /**
  *
  */
-class AST_Comment_ : public AST_Node_
+class AST_Comment_: public AST_Node_
 {
-public:
+  public:
     /**
      *
      * @param st
      * @param al
      */
-    AST_Comment_ (AST_String st, AST_ArgumentList al);
+    AST_Comment_(AST_String st, AST_ArgumentList al);
     /**
      *
      * @return
      */
     AST_ArgumentList
-    arguments () const;
+    arguments() const;
     /**
      *
      * @return
      */
     AST_String
-    string () const;
+    string() const;
     /**
      *
      * @param al
      */
     void
-    setAnnotation (AST_ArgumentList al);
+    setAnnotation(AST_ArgumentList al);
     /**
      *
      */
@@ -413,8 +414,8 @@ public:
      * @param visitor
      */
     void
-    accept (AST_Visitor visitor);
-private:
+    accept(AST_Visitor visitor);
+    private:
     AST_String _st;
     AST_ArgumentList _al;
 };

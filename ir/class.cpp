@@ -45,286 +45,288 @@
 
 /* MMO_Class class. */
 
-MMO_Class_::MMO_Class_ () :
-        _father (NULL)
+MMO_Class_::MMO_Class_() :
+    _father(NULL)
 {
 }
 
-MMO_Class_::~MMO_Class_ ()
+MMO_Class_::~MMO_Class_()
 {
 }
 
 MMO_Package
-MMO_Class_::getAsPackage ()
+MMO_Class_::getAsPackage()
 {
-    return (dynamic_cast<MMO_Package> (this));
+  return dynamic_cast<MMO_Package>(this);
 }
 
 MMO_Model
-MMO_Class_::getAsModel ()
+MMO_Class_::getAsModel()
 {
-    return (dynamic_cast<MMO_Model> (this));
+  return dynamic_cast<MMO_Model>(this);
 }
 
 MMO_Function
-MMO_Class_::getAsFunction ()
+MMO_Class_::getAsFunction()
 {
-    return (dynamic_cast<MMO_Function> (this));
+  return dynamic_cast<MMO_Function>(this);
 }
 
 void
-MMO_Class_::setFather (MMO_Class c)
+MMO_Class_::setFather(MMO_Class c)
 {
-    _father = c;
+  _father = c;
 }
 
 bool
-MMO_Class_::hasFather ()
+MMO_Class_::hasFather()
 {
-    return (_father != NULL);
+  return _father != NULL;
 }
 
 MMO_Class
-MMO_Class_::father () const
+MMO_Class_::father() const
 {
-    return (_father);
+  return _father;
 }
 
 string
-MMO_Class_::print ()
+MMO_Class_::print()
 {
-    string ret;
-    return (ret);
+  string ret;
+  return ret;
 }
 
 /* MMO_Model class. */
 
-MMO_Model_::MMO_Model_ (string name) :
-        _initialCode (), _states (0), _discretes (0), _evs (0), _algs (0), _parameters (0), _funcs (), _inputs (0), _output (0), _stateEquations (0), _algebraicEquations (
-                0), _externalFunctions (
-        NULL), _name (name), _eqs (), _stms (), _outputIndexes (), _includeDirectories (), _libraryDirectories (), _linkLibraries (), _symbolicDerivatives (), _algebraicOffset (), _algebraicCurrentOffset ()
+MMO_Model_::MMO_Model_(string name) :
+    _initialCode(), _states(0), _discretes(0), _evs(0), _algs(0), _parameters(
+        0), _funcs(), _inputs(0), _output(0), _stateEquations(0), _algebraicEquations(
+        0), _externalFunctions(
+    NULL), _name(name), _eqs(), _stms(), _outputIndexes(), _includeDirectories(), _libraryDirectories(), _linkLibraries(), _symbolicDerivatives(), _algebraicOffset(), _algebraicCurrentOffset()
 {
-    _types = newTypeSymbolTable ();
-    _declarations = newVarSymbolTable ();
-    _declarations->initialize (_types);
-    _derivatives = newMMO_EquationTable ();
-    _algebraics = newMMO_EquationTable ();
-    _outputs = newMMO_EquationTable ();
-    _events = newMMO_EventTable ();
-    _imports = newMMO_ImportTable ();
-    _functions = newMMO_FunctionTable ();
-    _calledFunctions = newMMO_SymbolRefTable ();
-    _initialCode = newMMO_StatementTable ();
-    _packages = newMMO_PackageTable ();
-    _data = newMMO_ModelData ();
-    _data->setSymbols (_declarations);
-    _data->setPackages (_packages);
-    _data->setAlgebraics (_algebraics);
-    _data->setCalledFunctions (_calledFunctions);
-    _data->setFunctions (_functions);
-    _annotations = newMMO_ModelAnnotation (_data);
-    _data->setAnnotation (_annotations);
+  _types = newTypeSymbolTable();
+  _declarations = newVarSymbolTable();
+  _declarations->initialize(_types);
+  _derivatives = newMMO_EquationTable();
+  _algebraics = newMMO_EquationTable();
+  _outputs = newMMO_EquationTable();
+  _events = newMMO_EventTable();
+  _imports = newMMO_ImportTable();
+  _functions = newMMO_FunctionTable();
+  _calledFunctions = newMMO_SymbolRefTable();
+  _initialCode = newMMO_StatementTable();
+  _packages = newMMO_PackageTable();
+  _data = newMMO_ModelData();
+  _data->setSymbols(_declarations);
+  _data->setPackages(_packages);
+  _data->setAlgebraics(_algebraics);
+  _data->setCalledFunctions(_calledFunctions);
+  _data->setFunctions(_functions);
+  _annotations = newMMO_ModelAnnotation(_data);
+  _data->setAnnotation(_annotations);
 }
 
-MMO_Model_::~MMO_Model_ ()
+MMO_Model_::~MMO_Model_()
 {
 }
 
 CL_Type
-MMO_Model_::classType ()
+MMO_Model_::classType()
 {
-    return (CL_MODEL);
+  return CL_MODEL;
 }
 
 void
-MMO_Model_::setExternalFunctions (MMO_FunctionTable ft)
+MMO_Model_::setExternalFunctions(MMO_FunctionTable ft)
 {
-    _externalFunctions = ft;
-    _data->setExternalFunctions (ft);
-    for (MMO_Function f = ft->begin (); !ft->end (); f = ft->next ())
-    {
-        _getFunctionInfo (f);
-    }
+  _externalFunctions = ft;
+  _data->setExternalFunctions(ft);
+  for(MMO_Function f = ft->begin(); !ft->end(); f = ft->next())
+  {
+    _getFunctionInfo(f);
+  }
 }
 
 string
-MMO_Model_::printInitialAssignment (VarInfo vi, string indent, string localVar)
+MMO_Model_::printInitialAssignment(VarInfo vi, string indent, string localVar)
 {
-    Util::getInstance ()->setData (_data);
-    return (Util::getInstance ()->printInitialAssignment (vi, indent));
+  Util::getInstance()->setData(_data);
+  return Util::getInstance()->printInitialAssignment(vi, indent);
 }
 
 void
-MMO_Model_::insert (VarName n, VarInfo vi, DEC_Type type)
+MMO_Model_::insert(VarName n, VarInfo vi, DEC_Type type)
 {
-    insert (n, vi);
+  insert(n, vi);
 }
 
 int
-MMO_Model_::_evalExp (AST_Expression exp)
+MMO_Model_::_evalExp(AST_Expression exp)
 {
-    MMO_EvalInitExp_ e (_declarations);
-    return (e.foldTraverse (exp));
+  MMO_EvalInitExp_ e(_declarations);
+  return e.foldTraverse(exp);
 }
 
 void
-MMO_Model_::insert (VarName n, VarInfo vi)
+MMO_Model_::insert(VarName n, VarInfo vi)
 {
-    vi->setName (n);
-    if (vi->typePrefix () & TP_CONSTANT)
+  vi->setName(n);
+  if(vi->typePrefix() & TP_CONSTANT)
+  {
+    vi->setValue(_evalExp(vi->exp()));
+  }
+  else if(vi->typePrefix() & TP_DISCRETE)
+  {
+    Index idx;
+    idx.setOffset(_discretes);
+    if(vi->isArray())
     {
-        vi->setValue (_evalExp (vi->exp ()));
+      idx.setLow(1);
+      idx.setHi(vi->size());
     }
-    else if (vi->typePrefix () & TP_DISCRETE)
-    {
-        Index idx;
-        idx.setOffset (_discretes);
-        if (vi->isArray ())
-        {
-            idx.setLow (1);
-            idx.setHi (vi->size ());
-        }
-        _discretes += vi->size ();
-        vi->setIndex (idx);
-    }
-    _declarations->insert (n, vi);
+    _discretes += vi->size();
+    vi->setIndex(idx);
+  }
+  _declarations->insert(n, vi);
 }
 
 list<string>
-MMO_Model_::includeDirectories ()
+MMO_Model_::includeDirectories()
 {
-    return (_getFunctionDependencies (_includeDirectories));
+  return _getFunctionDependencies(_includeDirectories);
 }
 
 list<string>
-MMO_Model_::libraryDirectories ()
+MMO_Model_::libraryDirectories()
 {
-    return (_getFunctionDependencies (_libraryDirectories));
+  return _getFunctionDependencies(_libraryDirectories);
 }
 
 list<string>
-MMO_Model_::linkLibraries ()
+MMO_Model_::linkLibraries()
 {
-    return (_getFunctionDependencies (_linkLibraries));
+  return _getFunctionDependencies(_linkLibraries);
 }
 
 string
-MMO_Model_::_getComponentName (AST_Expression exp)
+MMO_Model_::_getComponentName(AST_Expression exp)
 {
-    string ret;
-    if (exp->expressionType () == EXPCOMPREF)
-    {
-        AST_Expression_ComponentReference ecr = exp->getAsComponentReference ();
-        ret = *AST_ListFirst (ecr->names ());
-    }
-    return (ret);
+  string ret;
+  if(exp->expressionType() == EXPCOMPREF)
+  {
+    AST_Expression_ComponentReference ecr = exp->getAsComponentReference();
+    ret = *AST_ListFirst(ecr->names());
+  }
+  return ret;
 }
 
 list<string>
-MMO_Model_::_getFunctionDependencies (map<string, string> mdeps)
+MMO_Model_::_getFunctionDependencies(map<string, string> mdeps)
 {
-    list<string> ret;
-    for (map<string, string>::iterator it = mdeps.begin (); it != mdeps.end (); it++)
-    {
-        ret.push_back (it->second);
-    }
-    return (ret);
+  list<string> ret;
+  for(map<string, string>::iterator it = mdeps.begin(); it != mdeps.end(); it++)
+  {
+    ret.push_back(it->second);
+  }
+  return ret;
 }
 
 Index
-MMO_Model_::_getAlgebraicIndex (AST_Expression left, Range range)
+MMO_Model_::_getAlgebraicIndex(AST_Expression left, Range range)
 {
-    AST_Expression_ComponentReference cr = left->getAsComponentReference ();
-    string varName = _getComponentName (cr);
-    VarInfo vi = _declarations->lookup (varName);
-    Index lhs;
-    if (vi == NULL)
+  AST_Expression_ComponentReference cr = left->getAsComponentReference();
+  string varName = _getComponentName(cr);
+  VarInfo vi = _declarations->lookup(varName);
+  Index lhs;
+  if(vi == NULL)
+  {
+    Error::getInstance()->add(left->lineNum(),
+    EM_IR | EM_VARIABLE_NOT_FOUND,
+        ER_Error, "%s", varName.c_str());
+    return lhs;
+  }
+  if(cr->hasIndexes())
+  {
+    lhs.setDimension(AST_ListFirst(cr->indexes())->size());
+    AST_ExpressionList el = AST_ListFirst(cr->indexes());
+    AST_ExpressionListIterator elit;
+    ExpressionIndex_ ei(_declarations);
+    int dim = 0;
+    foreach (elit, el)
     {
-        Error::getInstance ()->add (left->lineNum (),
-        EM_IR | EM_VARIABLE_NOT_FOUND,
-                                    ER_Error, "%s", varName.c_str ());
-        return (lhs);
+      lhs.setIndex(ei.index(AST_ListFirst(el)), dim, vi->size(dim));
+      if(lhs.factor(dim) != 0)
+      {
+        lhs.setLow(range.begin(dim), dim);
+        lhs.setHi(range.end(dim), dim);
+      }
+      dim++;
     }
-    if (cr->hasIndexes ())
-    {
-        lhs.setDimension(AST_ListFirst (cr->indexes ())->size());
-        AST_ExpressionList el = AST_ListFirst (cr->indexes ());
-        AST_ExpressionListIterator elit;
-        ExpressionIndex_ ei (_declarations);
-        int dim = 0;
-        foreach (elit, el)
-        {
-            lhs.setIndex(ei.index (AST_ListFirst (el)), dim, vi->size(dim));
-            if (lhs.factor (dim) != 0)
-            {
-                lhs.setLow (range.begin (dim), dim);
-                lhs.setHi (range.end (dim), dim);
-            }
-            dim++;
-        }
-        lhs.setArray ();
-    }
-    lhs.setOffset (_algebraicOffset[varName]);
-    Index viIndex = vi->index ();
-    viIndex.setOffset (_algebraicOffset[varName]);
-    vi->setIndex (viIndex);
-    return (lhs);
+    lhs.setArray();
+  }
+  lhs.setOffset(_algebraicOffset[varName]);
+  Index viIndex = vi->index();
+  viIndex.setOffset(_algebraicOffset[varName]);
+  vi->setIndex(viIndex);
+  return lhs;
 }
 
 void
-MMO_Model_::_setAlgebraicOffset (AST_Expression left, Range range)
+MMO_Model_::_setAlgebraicOffset(AST_Expression left, Range range)
 {
-    AST_Expression_ComponentReference cr = left->getAsComponentReference ();
-    string varName = _getComponentName (cr);
-    VarInfo vi = _declarations->lookup (varName);
-    if (vi == NULL)
+  AST_Expression_ComponentReference cr = left->getAsComponentReference();
+  string varName = _getComponentName(cr);
+  VarInfo vi = _declarations->lookup(varName);
+  if(vi == NULL)
+  {
+    Error::getInstance()->add(left->lineNum(),
+    EM_IR | EM_VARIABLE_NOT_FOUND,
+        ER_Error, "%s", varName.c_str());
+    return;
+  }
+  if(cr->hasIndexes())
+  {
+    int r = range.size();
+    if(vi->index().range() == _algebraicCurrentOffset[varName] + r)
     {
-        Error::getInstance ()->add (left->lineNum (),
-        EM_IR | EM_VARIABLE_NOT_FOUND,
-                                    ER_Error, "%s", varName.c_str ());
-        return;
-    }
-    if (cr->hasIndexes ())
-    {
-        int r = range.size ();
-        if (vi->index ().range () == _algebraicCurrentOffset[varName] + r)
-        {
-            _algebraicOffset[varName] = _algebraicEquations;
-            _algebraicEquations += _algebraicCurrentOffset[varName] + r;
-        }
-        else
-        {
-            _algebraicCurrentOffset[varName] += r;
-        }
+      _algebraicOffset[varName] = _algebraicEquations;
+      _algebraicEquations += _algebraicCurrentOffset[varName] + r;
     }
     else
     {
-        _algebraicOffset[varName] = _algebraicEquations;
-        _algebraicEquations++;
+      _algebraicCurrentOffset[varName] += r;
     }
-    return;
+  }
+  else
+  {
+    _algebraicOffset[varName] = _algebraicEquations;
+    _algebraicEquations++;
+  }
+  return;
 }
 
 void
-MMO_Model_::_setAlgebraic (AST_Expression left, AST_Expression right, Range range, AST_Expression arguments)
+MMO_Model_::_setAlgebraic(AST_Expression left, AST_Expression right,
+    Range range, AST_Expression arguments)
 {
-    _data->clear ();
-    AST_Expression_ComponentReference cr = left->getAsComponentReference ();
-    string varName = _getComponentName (cr);
-    Index lhs = _getAlgebraicIndex (left, range);
-    Index idx;
-    idx.setConstant (_algebraicEquations);
-    range.setIndex (&lhs);
-    _data->setLHS (lhs);
-    _data->setRange (range);
-    _data->setArguments (arguments);
-    _data->setDisableSymDiff (true);
-    MMO_Equation mse = newMMO_Equation (right, _data);
-    _data->setDisableSymDiff (false);
-    mse->controlAlgebraicDefinition ();
-    _data->setArguments (NULL);
-    _algebraics->insert (idx, mse);
-    _algebraicEquations += range.size ();
+  _data->clear();
+  AST_Expression_ComponentReference cr = left->getAsComponentReference();
+  string varName = _getComponentName(cr);
+  Index lhs = _getAlgebraicIndex(left, range);
+  Index idx;
+  idx.setConstant(_algebraicEquations);
+  range.setIndex(&lhs);
+  _data->setLHS(lhs);
+  _data->setRange(range);
+  _data->setArguments(arguments);
+  _data->setDisableSymDiff(true);
+  MMO_Equation mse = newMMO_Equation(right, _data);
+  _data->setDisableSymDiff(false);
+  mse->controlAlgebraicDefinition();
+  _data->setArguments(NULL);
+  _algebraics->insert(idx, mse);
+  _algebraicEquations += range.size();
 }
 
 /*! \brief Insert an equation defined in the equation section of the model.
@@ -347,531 +349,570 @@ MMO_Model_::_setAlgebraic (AST_Expression left, AST_Expression right, Range rang
  */
 
 void
-MMO_Model_::_insertEquation (AST_Equation eq, Range range)
+MMO_Model_::_insertEquation(AST_Equation eq, Range range)
 {
-    if (range.check ())
+  if(range.check())
+  {
+    Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+        "Wrong equation range.");
+  }
+  _controlEquation(eq);
+  int r = range.size();
+  if(eq->equationType() == EQEQUALITY)
+  {
+    ExpressionIndex_ ei(_declarations);
+    AST_Equation_Equality eqe = eq->getAsEquality();
+    if(eqe->left()->expressionType() == EXPDERIVATIVE)
     {
-        Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong equation range.");
+      AST_Expression_Derivative ed = eqe->left()->getAsDerivative();
+      string varName = _getComponentName(AST_ListFirst(ed->arguments()));
+      VarInfo vi = _declarations->lookup(varName);
+      if(vi == NULL)
+      {
+        Error::getInstance()->add(eqe->left()->lineNum(),
+        EM_IR | EM_VARIABLE_NOT_FOUND,
+            ER_Error, "%s", varName.c_str());
+        return;
+      }
+      AST_Expression_ComponentReference edcr =
+          AST_ListFirst(ed->arguments())->getAsComponentReference();
+      Index idx, lhs;
+      if(edcr->hasIndexes())
+      {
+        AST_ExpressionList el = edcr->firstIndex();
+        lhs.setDimension(el->size());
+        idx.setDimension(el->size());
+        AST_ExpressionListIterator elit;
+        int dim = 0, rg = 0;
+        foreach (elit, el)
+        {
+          lhs.setIndex(ei.index(current_element(elit)), dim, vi->size(dim));
+          if(lhs.factor(dim) != 0)
+          {
+            lhs.setLow(range.begin(rg), dim);
+            lhs.setHi(range.end(rg), dim);
+            idx.setLow(range.begin(rg), dim);
+            idx.setHi(range.end(rg), dim);
+            idx.setFactor(lhs.factor(), dim);
+            lhs.setRange(dim);
+            idx.setRange(dim);
+            rg++;
+          }
+          lhs.setArray();
+          idx.setArray();
+          dim++;
+        }
+      }
+      else
+      {
+        idx.setFactor(lhs.factor());
+        idx.setLow(range.begin(0));
+        idx.setHi(range.end(0));
+      }
+      lhs.setOffset(vi->index().offset());
+      idx.setOffset(_stateEquations);
+      _data->clear();
+      _data->setRange(range);
+      _data->setLHS(lhs);
+      _data->setCalculateAlgegraics(true);
+      _data->setDisableSymDiff(true);
+      MMO_Equation mse = newMMO_Equation(eqe->right(), _data);
+      _data->setCalculateAlgegraics(false);
+      _data->setDisableSymDiff(false);
+      if(!mse->exp()->deps()->autonomous())
+      {
+        _inputs += r;
+      }
+      _derivatives->insert(idx, mse);
+      _stateEquations += r;
     }
-    _controlEquation (eq);
-    int r = range.size ();
-    if (eq->equationType () == EQEQUALITY)
+    else if(eqe->left()->expressionType() == EXPCOMPREF)
     {
-        ExpressionIndex_ ei (_declarations);
-        AST_Equation_Equality eqe = eq->getAsEquality ();
-        if (eqe->left ()->expressionType () == EXPDERIVATIVE)
-        {
-            AST_Expression_Derivative ed = eqe->left ()->getAsDerivative ();
-            string varName = _getComponentName (AST_ListFirst (ed->arguments ()));
-            VarInfo vi = _declarations->lookup (varName);
-            if (vi == NULL)
-            {
-                Error::getInstance ()->add (eqe->left ()->lineNum (),
-                EM_IR | EM_VARIABLE_NOT_FOUND,
-                                            ER_Error, "%s", varName.c_str ());
-                return;
-            }
-            AST_Expression_ComponentReference edcr = AST_ListFirst (ed->arguments ())->getAsComponentReference ();
-            Index idx, lhs;
-            if (edcr->hasIndexes ())
-            {
-                AST_ExpressionList el = edcr->firstIndex();
-                lhs.setDimension(el->size ());
-                idx.setDimension(el->size ());
-                AST_ExpressionListIterator elit;
-                int dim = 0, rg = 0;
-                foreach (elit, el)
-                {
-                    lhs.setIndex(ei.index (current_element(elit)), dim, vi->size(dim));
-                    if (lhs.factor (dim) != 0)
-                    {
-                        lhs.setLow (range.begin (rg),dim);
-                        lhs.setHi (range.end (rg), dim);
-                        idx.setLow (range.begin (rg), dim);
-                        idx.setHi (range.end (rg), dim);
-                        idx.setFactor (lhs.factor (), dim);
-                        lhs.setRange(dim);
-                        idx.setRange(dim);
-                        rg++;
-                    }
-                    lhs.setArray ();
-                    idx.setArray ();
-                    dim++;
-                }
-            }
-            else
-            {
-                idx.setFactor (lhs.factor ());
-                idx.setLow (range.begin(0));
-                idx.setHi (range.end (0));
-            }
-            lhs.setOffset (vi->index ().offset ());
-            idx.setOffset (_stateEquations);
-            _data->clear ();
-            _data->setRange (range);
-            _data->setLHS (lhs);
-            _data->setCalculateAlgegraics (true);
-            _data->setDisableSymDiff (true);
-            MMO_Equation mse = newMMO_Equation (eqe->right (), _data);
-            _data->setCalculateAlgegraics (false);
-            _data->setDisableSymDiff (false);
-            if (!mse->exp ()->deps ()->autonomous ())
-            {
-                _inputs += r;
-            }
-            _derivatives->insert (idx, mse);
-            _stateEquations += r;
-        }
-        else if (eqe->left ()->expressionType () == EXPCOMPREF)
-        {
-            return;
-        }
-        else if (eqe->left ()->expressionType () == EXPOUTPUT)
-        {
-            return;
-        }
-        else
-        {
-            Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Insert model equation.");
-        }
+      return;
+    }
+    else if(eqe->left()->expressionType() == EXPOUTPUT)
+    {
+      return;
     }
     else
     {
-        Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Equation type not recognized.");
+      Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+          "Insert model equation.");
     }
+  }
+  else
+  {
+    Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+        "Equation type not recognized.");
+  }
 }
 
 void
-MMO_Model_::_insertAlgebraicEquation (AST_Equation eq, Range range)
+MMO_Model_::_insertAlgebraicEquation(AST_Equation eq, Range range)
 {
-    if (range.check ())
+  if(range.check())
+  {
+    Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+        "Wrong equation range.");
+  }
+  _controlEquation(eq);
+  if(eq->equationType() == EQEQUALITY)
+  {
+    ExpressionIndex_ ei(_declarations);
+    AST_Equation_Equality eqe = eq->getAsEquality();
+    if(eqe->left()->expressionType() == EXPDERIVATIVE)
     {
-        Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong equation range.");
+      return;
     }
-    _controlEquation (eq);
-    if (eq->equationType () == EQEQUALITY)
+    else if(eqe->left()->expressionType() == EXPCOMPREF)
     {
-        ExpressionIndex_ ei (_declarations);
-        AST_Equation_Equality eqe = eq->getAsEquality ();
-        if (eqe->left ()->expressionType () == EXPDERIVATIVE)
-        {
-            return;
-        }
-        else if (eqe->left ()->expressionType () == EXPCOMPREF)
-        {
-            _setAlgebraic (eqe->left (), eqe->right (), range);
-        }
-        else if (eqe->left ()->expressionType () == EXPOUTPUT)
-        {
-            if (eqe->right ()->expressionType () != EXPCALL)
-            {
-                Error::getInstance ()->add (eqe->lineNum (),
-                EM_IR | EM_UNKNOWN_ODE,
-                                            ER_Error, "Insert model equation.");
-            }
-            AST_Expression_Output eout = eqe->left ()->getAsOutput ();
-            AST_ExpressionList el = eout->expressionList ();
-            AST_ExpressionListIterator it;
-            foreach(it,el)
-            {
-                _setAlgebraic (current_element(it), eqe->right (), range, eqe->left ());
-            }
-        }
-        else
-        {
-            Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Insert model equation.");
-        }
+      _setAlgebraic(eqe->left(), eqe->right(), range);
+    }
+    else if(eqe->left()->expressionType() == EXPOUTPUT)
+    {
+      if(eqe->right()->expressionType() != EXPCALL)
+      {
+        Error::getInstance()->add(eqe->lineNum(),
+        EM_IR | EM_UNKNOWN_ODE,
+            ER_Error, "Insert model equation.");
+      }
+      AST_Expression_Output eout = eqe->left()->getAsOutput();
+      AST_ExpressionList el = eout->expressionList();
+      AST_ExpressionListIterator it;
+      foreach(it,el)
+      {
+        _setAlgebraic(current_element(it), eqe->right(), range, eqe->left());
+      }
     }
     else
     {
-        Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Equation type not recognized.");
+      Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+          "Insert model equation.");
     }
+  }
+  else
+  {
+    Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+        "Equation type not recognized.");
+  }
 }
 
 void
-MMO_Model_::_insertFunctionDependencies (list<string> deps, map<string, string> *mdeps)
+MMO_Model_::_insertFunctionDependencies(list<string> deps,
+    map<string, string> *mdeps)
 {
-    for (list<string>::iterator it = deps.begin (); it != deps.end (); it++)
-    {
-        mdeps->insert (pair<string, string> (*it, *it));
-    }
+  for(list<string>::iterator it = deps.begin(); it != deps.end(); it++)
+  {
+    mdeps->insert(pair<string, string>(*it, *it));
+  }
 }
 
 int
-MMO_Model_::outputIndexes (Index idx)
+MMO_Model_::outputIndexes(Index idx)
 {
-    return (_outputIndexes[idx]);
+  return _outputIndexes[idx];
 }
 
 AST_Statement_ElseList
-MMO_Model_::_transformStatementElse (AST_Statement_ElseList stel)
+MMO_Model_::_transformStatementElse(AST_Statement_ElseList stel)
 {
-    AST_Statement_ElseList stelt = newAST_Statement_ElseList ();
-    AST_Statement_ElseListIterator stelit;
-    foreach(stelit,stel)
+  AST_Statement_ElseList stelt = newAST_Statement_ElseList();
+  AST_Statement_ElseListIterator stelit;
+  foreach(stelit,stel)
+  {
+    AST_Statement_Else ceif = current_element(stelit);
+    AST_StatementList newElseIfSts = newAST_StatementList();
+    AST_StatementList elseIfSts = ceif->statements();
+    AST_StatementListIterator elseIfStIt;
+    foreach(elseIfStIt,elseIfSts)
     {
-        AST_Statement_Else ceif = current_element(stelit);
-        AST_StatementList newElseIfSts = newAST_StatementList ();
-        AST_StatementList elseIfSts = ceif->statements ();
-        AST_StatementListIterator elseIfStIt;
-        foreach(elseIfStIt,elseIfSts)
-        {
-            AST_ListAppend (newElseIfSts, _transformStatement (current_element(elseIfStIt)));
-        }
-        AST_Statement_Else newStElse = newAST_Statement_Else (ceif->condition (), newElseIfSts);
-        AST_ListAppend (stelt, newStElse);
+      AST_ListAppend(newElseIfSts,
+          _transformStatement(current_element(elseIfStIt)));
     }
-    return (stelt);
+    AST_Statement_Else newStElse = newAST_Statement_Else(ceif->condition(),
+        newElseIfSts);
+    AST_ListAppend(stelt, newStElse);
+  }
+  return stelt;
 }
 
 AST_StatementList
-MMO_Model_::_transformStatementList (AST_StatementList sts)
+MMO_Model_::_transformStatementList(AST_StatementList sts)
 {
-    AST_StatementList stt = newAST_StatementList ();
-    AST_StatementListIterator stit;
-    foreach(stit,sts)
-    {
-        AST_ListAppend (stt, _transformStatement (current_element(stit)));
-    }
-    return (stt);
+  AST_StatementList stt = newAST_StatementList();
+  AST_StatementListIterator stit;
+  foreach(stit,sts)
+  {
+    AST_ListAppend(stt, _transformStatement(current_element(stit)));
+  }
+  return stt;
 }
 
 AST_Statement
-MMO_Model_::_transformStatement (AST_Statement st)
+MMO_Model_::_transformStatement(AST_Statement st)
 {
-    if (st->statementType () == STASSING)
+  if(st->statementType() == STASSING)
+  {
+    MMO_ReplaceInnerProduct rip(_declarations);
+    AST_Expression l = st->getAsAssign()->lhs();
+    AST_Expression r = rip.foldTraverse(st->getAsAssign()->exp());
+    string transform = _transformExpression(l, r);
+    if(transform.empty())
     {
-        MMO_ReplaceInnerProduct rip (_declarations);
-        AST_Expression l = st->getAsAssign ()->lhs ();
-        AST_Expression r = rip.foldTraverse (st->getAsAssign ()->exp ());
-        string transform = _transformExpression (l, r);
-        if (transform.empty ())
-        {
-            AST_Statement retSt = newAST_Statement_Assign (st->getAsAssign ()->lhs (), r);
-            return (retSt);
-        }
-        int rValue;
-        AST_Statement retSt = parseStatement (transform, &rValue);
-        return (retSt);
+      AST_Statement retSt = newAST_Statement_Assign(st->getAsAssign()->lhs(),
+          r);
+      return retSt;
     }
-    else if (st->statementType () == STFOR)
-    {
-        AST_Statement_For stf = st->getAsFor ();
-        AST_ForIndexList fil = stf->forIndexList ();
-        AST_StatementList sts = stf->statements ();
-        AST_StatementList stt = _transformStatementList (sts);
-        AST_Statement retFor = newAST_Statement_For (fil, stt);
-        return (retFor);
-    }
-    else if (st->statementType () == STIF)
-    {
-        AST_Statement_If sti = st->getAsIf ();
-        AST_StatementList stt = _transformStatementList (sti->statements ());
-        AST_StatementList stet = _transformStatementList (sti->else_statements ());
-        AST_Statement_ElseList stel = sti->else_if ();
-        AST_Statement_ElseList stelt = _transformStatementElse (stel);
-        AST_Statement retIf = newAST_Statement_If (sti->condition (), stt, stelt, stet);
-        return (retIf);
-    }
-    else if (st->statementType () == STWHEN)
-    {
-        AST_Statement_When stWhen = st->getAsWhen ();
-        AST_StatementList stList = _transformStatementList (stWhen->statements ());
-        AST_Statement_ElseList stElseList = _transformStatementElse (stWhen->else_when ());
-        AST_Statement retWhen = newAST_Statement_When (stWhen->condition (), stList, stElseList, stWhen->comment ());
-        return (retWhen);
-    }
-    return (st);
+    int rValue;
+    AST_Statement retSt = parseStatement(transform, &rValue);
+    return retSt;
+  }
+  else if(st->statementType() == STFOR)
+  {
+    AST_Statement_For stf = st->getAsFor();
+    AST_ForIndexList fil = stf->forIndexList();
+    AST_StatementList sts = stf->statements();
+    AST_StatementList stt = _transformStatementList(sts);
+    AST_Statement retFor = newAST_Statement_For(fil, stt);
+    return retFor;
+  }
+  else if(st->statementType() == STIF)
+  {
+    AST_Statement_If sti = st->getAsIf();
+    AST_StatementList stt = _transformStatementList(sti->statements());
+    AST_StatementList stet = _transformStatementList(sti->else_statements());
+    AST_Statement_ElseList stel = sti->else_if();
+    AST_Statement_ElseList stelt = _transformStatementElse(stel);
+    AST_Statement retIf = newAST_Statement_If(sti->condition(), stt, stelt,
+        stet);
+    return retIf;
+  }
+  else if(st->statementType() == STWHEN)
+  {
+    AST_Statement_When stWhen = st->getAsWhen();
+    AST_StatementList stList = _transformStatementList(stWhen->statements());
+    AST_Statement_ElseList stElseList = _transformStatementElse(
+        stWhen->else_when());
+    AST_Statement retWhen = newAST_Statement_When(stWhen->condition(), stList,
+        stElseList, stWhen->comment());
+    return retWhen;
+  }
+  return st;
 }
 
 string
-MMO_Model_::_transformExpression (AST_Expression l, AST_Expression r)
+MMO_Model_::_transformExpression(AST_Expression l, AST_Expression r)
 {
-    AST_Expression_ComponentReference eleft = _getComponentReference (l);
-    if (eleft == NULL)
+  AST_Expression_ComponentReference eleft = _getComponentReference(l);
+  if(eleft == NULL)
+  {
+    return "";
+  }
+  string prefix = "";
+  string postfix = "";
+  if(l->expressionType() == EXPDERIVATIVE)
+  {
+    prefix = "der(";
+    postfix = ")";
+  }
+  if(r->expressionType() == EXPBINOP)
+  {
+    AST_Expression_BinOp bo = r->getAsBinOp();
+    if(bo->binopType() == BINOPELADD || bo->binopType() == BINOPELSUB
+        || bo->binopType() == BINOPELDIV || bo->binopType() == BINOPELMULT
+        || bo->binopType() == BINOPELEXP)
     {
-        return ("");
-    }
-    string prefix = "";
-    string postfix = "";
-    if (l->expressionType () == EXPDERIVATIVE)
-    {
-        prefix = "der(";
-        postfix = ")";
-    }
-    if (r->expressionType () == EXPBINOP)
-    {
-        AST_Expression_BinOp bo = r->getAsBinOp ();
-        if (bo->binopType () == BINOPELADD || bo->binopType () == BINOPELSUB || bo->binopType () == BINOPELDIV || bo->binopType () == BINOPELMULT
-                || bo->binopType () == BINOPELEXP)
+      AST_Expression left = bo->left();
+      AST_Expression right = bo->right();
+      if(right->expressionType() == EXPCOMPREF
+          && left->expressionType() == EXPCOMPREF)
+      {
+        AST_Expression_ComponentReference cleft =
+            left->getAsComponentReference();
+        AST_Expression_ComponentReference cright =
+            right->getAsComponentReference();
+        if(!cleft->hasIndexes() && !cright->hasIndexes())
         {
-            AST_Expression left = bo->left ();
-            AST_Expression right = bo->right ();
-            if (right->expressionType () == EXPCOMPREF && left->expressionType () == EXPCOMPREF)
+          VarInfo lvi = _variableLookup(cleft->name(), cleft, ER_Fatal);
+          VarInfo rvi = _variableLookup(cright->name(), cright, ER_Fatal);
+          if(rvi->size() != lvi->size() && rvi->isArray() && lvi->isArray())
+          {
+            Error::getInstance()->add(cright->lineNum(),
+            EM_IR | EM_VARIABLE_NOT_FOUND,
+                ER_Fatal, "Different array size in element-wise operation");
+          }
+          VarInfo elvi = _variableLookup(eleft->name(), eleft, ER_Fatal);
+          if(lvi->isArray() > 1 && rvi->isArray())
+          {
+            if(rvi->size() != elvi->size())
             {
-                AST_Expression_ComponentReference cleft = left->getAsComponentReference ();
-                AST_Expression_ComponentReference cright = right->getAsComponentReference ();
-                if (!cleft->hasIndexes () && !cright->hasIndexes ())
-                {
-                    VarInfo lvi = _variableLookup (cleft->name (), cleft, ER_Fatal);
-                    VarInfo rvi = _variableLookup (cright->name (), cright, ER_Fatal);
-                    if (rvi->size () != lvi->size () && rvi->isArray () && lvi->isArray ())
-                    {
-                        Error::getInstance ()->add (cright->lineNum (),
-                        EM_IR | EM_VARIABLE_NOT_FOUND,
-                                                    ER_Fatal, "Different array size in element-wise operation");
-                    }
-                    VarInfo elvi = _variableLookup (eleft->name (), eleft, ER_Fatal);
-                    if (lvi->isArray () > 1 && rvi->isArray ())
-                    {
-                        if (rvi->size () != elvi->size ())
-                        {
-                            Error::getInstance ()->add (cright->lineNum (),
-                            EM_IR | EM_VARIABLE_NOT_FOUND,
-                                                        ER_Fatal, "Different array size in element-wise operation");
-                        }
-                        _declarations->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, vector<int> (1,1), false));
-                        stringstream buffer;
-                        buffer << "for i in 1:" << elvi->size () << " loop" << endl;
-                        buffer << prefix << eleft->name () << "[i]" << postfix << " = " << cleft->name () << "[i] "
-                                << Util::getInstance ()->opString (bo->binopType ());
-                        buffer << cright->name () << "[i];" << endl;
-                        buffer << "end for" << endl;
-                        return (buffer.str ());
-                    }
-                    else if (lvi->size () == 1 && rvi->size () > 1)
-                    {
-                        if (rvi->size () != elvi->size ())
-                        {
-                            Error::getInstance ()->add (cright->lineNum (),
-                            EM_IR | EM_VARIABLE_NOT_FOUND,
-                                                        ER_Fatal, "Different array size in element-wise operation");
-                        }
-                        _declarations->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, vector<int> (1,1), false));
-                        stringstream buffer;
-                        buffer << "for i in 1:" << elvi->size () << " loop" << endl;
-                        buffer << prefix << eleft->name () << "[i]" << postfix << " = " << cleft->name ()
-                                << Util::getInstance ()->opString (bo->binopType ());
-                        buffer << cright->name () << "[i];" << endl;
-                        buffer << "end for" << endl;
-                        return (buffer.str ());
-                    }
-                    else if (lvi->size () > 1 && rvi->size () == 1)
-                    {
-                        if (lvi->size () != elvi->size ())
-                        {
-                            Error::getInstance ()->add (cleft->lineNum (),
-                            EM_IR | EM_VARIABLE_NOT_FOUND,
-                                                        ER_Error, "Different array size in element-wise operation");
-                        }
-                        _declarations->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, vector<int> (1,1), false));
-                        stringstream buffer;
-                        buffer << "for i in 1:" << elvi->size () << " loop" << endl;
-                        buffer << prefix << eleft->name () << "[i]" << postfix << " = " << cleft->name () << "[i]"
-                                << Util::getInstance ()->opString (bo->binopType ());
-                        buffer << cright->name () << ";" << endl;
-                        buffer << "end for" << endl;
-                        return (buffer.str ());
-                    }
-                }
+              Error::getInstance()->add(cright->lineNum(),
+              EM_IR | EM_VARIABLE_NOT_FOUND,
+                  ER_Fatal, "Different array size in element-wise operation");
             }
-            else if (left->expressionType () == EXPCOMPREF && _controlScalarExpression (right))
+            _declarations->insert("i",
+                newVarInfo(newType_Integer(), TP_FOR, NULL, NULL,
+                    vector<int>(1, 1), false));
+            stringstream buffer;
+            buffer << "for i in 1:" << elvi->size() << " loop" << endl;
+            buffer << prefix << eleft->name() << "[i]" << postfix << " = "
+                << cleft->name() << "[i] "
+                << Util::getInstance()->opString(bo->binopType());
+            buffer << cright->name() << "[i];" << endl;
+            buffer << "end for" << endl;
+            return buffer.str();
+          }
+          else if(lvi->size() == 1 && rvi->size() > 1)
+          {
+            if(rvi->size() != elvi->size())
             {
-                AST_Expression_ComponentReference cleft = left->getAsComponentReference ();
-                if (!cleft->hasIndexes ())
-                {
-                    VarInfo lvi = _variableLookup (cleft->name (), cleft, ER_Fatal);
-                    VarInfo elvi = _variableLookup (eleft->name (), eleft, ER_Fatal);
-                    if (lvi->size () != elvi->size ())
-                    {
-                        Error::getInstance ()->add (cleft->lineNum (),
-                        EM_IR | EM_VARIABLE_NOT_FOUND,
-                                                    ER_Error, "Different array size in element-wise operation");
-                    }
-                    _declarations->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, vector<int> (1,1), false));
-                    stringstream buffer;
-                    buffer << "for i in 1:" << elvi->size () << " loop" << endl;
-                    buffer << prefix << eleft->name () << "[i]" << postfix << " = " << cleft->name () << "[i]"
-                            << Util::getInstance ()->opString (bo->binopType ());
-                    buffer << _scalarValue (right) << ";" << endl;
-                    buffer << "end for" << endl;
-                    return (buffer.str ());
-
-                }
+              Error::getInstance()->add(cright->lineNum(),
+              EM_IR | EM_VARIABLE_NOT_FOUND,
+                  ER_Fatal, "Different array size in element-wise operation");
             }
-            else if (right->expressionType () == EXPCOMPREF && _controlScalarExpression (left))
+            _declarations->insert("i",
+                newVarInfo(newType_Integer(), TP_FOR, NULL, NULL,
+                    vector<int>(1, 1), false));
+            stringstream buffer;
+            buffer << "for i in 1:" << elvi->size() << " loop" << endl;
+            buffer << prefix << eleft->name() << "[i]" << postfix << " = "
+                << cleft->name()
+                << Util::getInstance()->opString(bo->binopType());
+            buffer << cright->name() << "[i];" << endl;
+            buffer << "end for" << endl;
+            return buffer.str();
+          }
+          else if(lvi->size() > 1 && rvi->size() == 1)
+          {
+            if(lvi->size() != elvi->size())
             {
-                AST_Expression_ComponentReference cright = right->getAsComponentReference ();
-                if (!cright->hasIndexes ())
-                {
-                    VarInfo lvi = _variableLookup (cright->name (), cright, ER_Fatal);
-                    VarInfo elvi = _variableLookup (eleft->name (), eleft, ER_Fatal);
-                    if (lvi->size () != elvi->size ())
-                    {
-                        Error::getInstance ()->add (cright->lineNum (),
-                        EM_IR | EM_VARIABLE_NOT_FOUND,
-                                                    ER_Error, "Different array size in element-wise operation");
-                    }
-                    _declarations->insert ("i", newVarInfo (newType_Integer (), TP_FOR, NULL, NULL, vector<int> (1,1), false));
-                    stringstream buffer;
-                    buffer << "for i in 1:" << elvi->size () << " loop" << endl;
-                    buffer << prefix << eleft->name () << "[i]" << postfix << " = " << _scalarValue (left)
-                            << Util::getInstance ()->opString (bo->binopType ());
-                    buffer << cright->name () << "[i]" << ";" << endl;
-                    buffer << "end for" << endl;
-                    return (buffer.str ());
-                }
+              Error::getInstance()->add(cleft->lineNum(),
+              EM_IR | EM_VARIABLE_NOT_FOUND,
+                  ER_Error, "Different array size in element-wise operation");
             }
+            _declarations->insert("i",
+                newVarInfo(newType_Integer(), TP_FOR, NULL, NULL,
+                    vector<int>(1, 1), false));
+            stringstream buffer;
+            buffer << "for i in 1:" << elvi->size() << " loop" << endl;
+            buffer << prefix << eleft->name() << "[i]" << postfix << " = "
+                << cleft->name() << "[i]"
+                << Util::getInstance()->opString(bo->binopType());
+            buffer << cright->name() << ";" << endl;
+            buffer << "end for" << endl;
+            return buffer.str();
+          }
         }
+      }
+      else if(left->expressionType() == EXPCOMPREF
+          && _controlScalarExpression(right))
+      {
+        AST_Expression_ComponentReference cleft =
+            left->getAsComponentReference();
+        if(!cleft->hasIndexes())
+        {
+          VarInfo lvi = _variableLookup(cleft->name(), cleft, ER_Fatal);
+          VarInfo elvi = _variableLookup(eleft->name(), eleft, ER_Fatal);
+          if(lvi->size() != elvi->size())
+          {
+            Error::getInstance()->add(cleft->lineNum(),
+            EM_IR | EM_VARIABLE_NOT_FOUND,
+                ER_Error, "Different array size in element-wise operation");
+          }
+          _declarations->insert("i",
+              newVarInfo(newType_Integer(), TP_FOR, NULL, NULL,
+                  vector<int>(1, 1), false));
+          stringstream buffer;
+          buffer << "for i in 1:" << elvi->size() << " loop" << endl;
+          buffer << prefix << eleft->name() << "[i]" << postfix << " = "
+              << cleft->name() << "[i]"
+              << Util::getInstance()->opString(bo->binopType());
+          buffer << _scalarValue(right) << ";" << endl;
+          buffer << "end for" << endl;
+          return buffer.str();
+
+        }
+      }
+      else if(right->expressionType() == EXPCOMPREF
+          && _controlScalarExpression(left))
+      {
+        AST_Expression_ComponentReference cright =
+            right->getAsComponentReference();
+        if(!cright->hasIndexes())
+        {
+          VarInfo lvi = _variableLookup(cright->name(), cright, ER_Fatal);
+          VarInfo elvi = _variableLookup(eleft->name(), eleft, ER_Fatal);
+          if(lvi->size() != elvi->size())
+          {
+            Error::getInstance()->add(cright->lineNum(),
+            EM_IR | EM_VARIABLE_NOT_FOUND,
+                ER_Error, "Different array size in element-wise operation");
+          }
+          _declarations->insert("i",
+              newVarInfo(newType_Integer(), TP_FOR, NULL, NULL,
+                  vector<int>(1, 1), false));
+          stringstream buffer;
+          buffer << "for i in 1:" << elvi->size() << " loop" << endl;
+          buffer << prefix << eleft->name() << "[i]" << postfix << " = "
+              << _scalarValue(left)
+              << Util::getInstance()->opString(bo->binopType());
+          buffer << cright->name() << "[i]" << ";" << endl;
+          buffer << "end for" << endl;
+          return buffer.str();
+        }
+      }
     }
-    return ("");
+  }
+  return "";
 }
 
 bool
-MMO_Model_::_controlScalarExpression (AST_Expression exp)
+MMO_Model_::_controlScalarExpression(AST_Expression exp)
 {
-    if (exp->expressionType () == EXPREAL || exp->expressionType () == EXPINTEGER)
-    {
-        return (true);
-    }
-    return (false);
+  if(exp->expressionType() == EXPREAL || exp->expressionType() == EXPINTEGER)
+  {
+    return true;
+  }
+  return false;
 }
 
 VarInfo
-MMO_Model_::_variableLookup (string name, AST_Expression exp, ER_Type type)
+MMO_Model_::_variableLookup(string name, AST_Expression exp, ER_Type type)
 {
-    VarInfo rvi = _declarations->lookup (name);
-    int lineNum = 0;
-    if (exp != NULL)
-    {
-        lineNum = exp->lineNum ();
-    }
-    if (rvi == NULL)
-    {
-        Error::getInstance ()->add (lineNum,
-        EM_IR | EM_VARIABLE_NOT_FOUND,
-                                    type, "%s", name.c_str ());
-    }
-    return (rvi);
+  VarInfo rvi = _declarations->lookup(name);
+  int lineNum = 0;
+  if(exp != NULL)
+  {
+    lineNum = exp->lineNum();
+  }
+  if(rvi == NULL)
+  {
+    Error::getInstance()->add(lineNum,
+    EM_IR | EM_VARIABLE_NOT_FOUND,
+        type, "%s", name.c_str());
+  }
+  return rvi;
 }
 
 AST_Expression_ComponentReference
-MMO_Model_::_getComponentReference (AST_Expression exp)
+MMO_Model_::_getComponentReference(AST_Expression exp)
 {
-    if (exp->expressionType () == EXPDERIVATIVE)
-    {
-        AST_Expression_Derivative ed = exp->getAsDerivative ();
-        return (AST_ListFirst (ed->arguments ())->getAsComponentReference ());
-    }
-    else if (exp->expressionType () == EXPCOMPREF)
-    {
-        return (exp->getAsComponentReference ());
-    }
-    return (NULL);
+  if(exp->expressionType() == EXPDERIVATIVE)
+  {
+    AST_Expression_Derivative ed = exp->getAsDerivative();
+    return AST_ListFirst(ed->arguments())->getAsComponentReference();
+  }
+  else if(exp->expressionType() == EXPCOMPREF)
+  {
+    return exp->getAsComponentReference();
+  }
+  return NULL;
 }
 
 double
-MMO_Model_::_scalarValue (AST_Expression exp)
+MMO_Model_::_scalarValue(AST_Expression exp)
 {
-    if (exp->expressionType () == EXPINTEGER)
-    {
-        return (exp->getAsInteger ()->val ());
-    }
-    else if (exp->expressionType () == EXPREAL)
-    {
-        return (exp->getAsReal ()->val ());
-    }
-    return (0);
+  if(exp->expressionType() == EXPINTEGER)
+  {
+    return exp->getAsInteger()->val();
+  }
+  else if(exp->expressionType() == EXPREAL)
+  {
+    return exp->getAsReal()->val();
+  }
+  return 0;
 }
 
 void
-MMO_Model_::_setEvents ()
+MMO_Model_::_setEvents()
 {
-    for (list<AST_Statement>::iterator st = _stms.begin (); st != _stms.end (); st++)
+  for(list<AST_Statement>::iterator st = _stms.begin(); st != _stms.end(); st++)
+  {
+    AST_Statement stm = *st;
+    Range range;
+    if(stm->statementType() == STWHEN)
     {
-        AST_Statement stm = *st;
-        Range range;
-        if (stm->statementType () == STWHEN)
-        {
-            _insertEvent (stm, range);
-        }
-        else if (stm->statementType () == STFOR)
-        {
-            AST_Statement_For stf = stm->getAsFor ();
-            range.get (stf, _declarations);
-            AST_StatementList sts = stf->statements ();
-            AST_StatementListIterator stit;
-            foreach(stit,sts)
-            {
-                _insertEvent (current_element(stit), range);
-            }
-        }
+      _insertEvent(stm, range);
     }
+    else if(stm->statementType() == STFOR)
+    {
+      AST_Statement_For stf = stm->getAsFor();
+      range.get(stf, _declarations);
+      AST_StatementList sts = stf->statements();
+      AST_StatementListIterator stit;
+      foreach(stit,sts)
+      {
+        _insertEvent(current_element(stit), range);
+      }
+    }
+  }
 }
 
 void
-MMO_Model_::_insertAlgebraic (AST_Equation eq, Range range)
+MMO_Model_::_insertAlgebraic(AST_Equation eq, Range range)
 {
-    if (eq->equationType () == EQEQUALITY)
+  if(eq->equationType() == EQEQUALITY)
+  {
+    ExpressionIndex_ ei(_declarations);
+    AST_Equation_Equality eqe = eq->getAsEquality();
+    if(eqe->left()->expressionType() == EXPDERIVATIVE)
     {
-        ExpressionIndex_ ei (_declarations);
-        AST_Equation_Equality eqe = eq->getAsEquality ();
-        if (eqe->left ()->expressionType () == EXPDERIVATIVE)
-        {
-            return;
-        }
-        if (eqe->left ()->expressionType () == EXPCOMPREF)
-        {
-            _setAlgebraicOffset (eqe->left (), range);
-        }
-        else if (eqe->left ()->expressionType () == EXPOUTPUT)
-        {
-            AST_Expression_Output eout = eqe->left ()->getAsOutput ();
-            AST_ExpressionList el = eout->expressionList ();
-            AST_ExpressionListIterator it;
-            list<Index> lidx;
-            foreach(it,el)
-            {
-                _setAlgebraicOffset (current_element(it), range);
-            }
-        }
-        else
-        {
-            Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Insert model equation.");
-        }
+      return;
+    }
+    if(eqe->left()->expressionType() == EXPCOMPREF)
+    {
+      _setAlgebraicOffset(eqe->left(), range);
+    }
+    else if(eqe->left()->expressionType() == EXPOUTPUT)
+    {
+      AST_Expression_Output eout = eqe->left()->getAsOutput();
+      AST_ExpressionList el = eout->expressionList();
+      AST_ExpressionListIterator it;
+      list<Index> lidx;
+      foreach(it,el)
+      {
+        _setAlgebraicOffset(current_element(it), range);
+      }
     }
     else
     {
-        Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Equation type not recognized.");
+      Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+          "Insert model equation.");
     }
+  }
+  else
+  {
+    Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+        "Equation type not recognized.");
+  }
 }
 
 void
-MMO_Model_::_equationTraverse (void
-(MMO_Model_::*tr) (AST_Equation, Range range))
+MMO_Model_::_equationTraverse(void
+    (MMO_Model_::*tr)(AST_Equation, Range range))
 {
-    list<AST_Equation>::iterator it;
-    for (it = _eqs.begin (); it != _eqs.end (); it++)
+  list<AST_Equation>::iterator it;
+  for(it = _eqs.begin(); it != _eqs.end(); it++)
+  {
+    Range range;
+    AST_Equation eq = current_element(it);
+    if(eq->equationType() == EQEQUALITY)
     {
-        Range range;
-        AST_Equation eq = current_element(it);
-        if (eq->equationType () == EQEQUALITY)
-        {
-            (this->*tr) (eq, range);
-        }
-        else if (eq->equationType () == EQFOR)
-        {
-            vector<int> begin, end;
-            AST_Equation_For eqf = eq->getAsFor ();
-            range.get(eqf, _declarations);
-            AST_EquationList eqs = eqf->equationList ();
-            AST_EquationListIterator it;
-            foreach(it,eqs)
-            {
-                (this->*tr) (current_element(it), range);
-            }
-        }
+      (this->*tr)(eq, range);
     }
+    else if(eq->equationType() == EQFOR)
+    {
+      vector<int> begin, end;
+      AST_Equation_For eqf = eq->getAsFor();
+      range.get(eqf, _declarations);
+      AST_EquationList eqs = eqf->equationList();
+      AST_EquationListIterator it;
+      foreach(it,eqs)
+      {
+        (this->*tr)(current_element(it), range);
+      }
+    }
+  }
 }
 
 /*! \brief Set all the equations defined in the model.
@@ -883,112 +924,115 @@ MMO_Model_::_equationTraverse (void
  */
 
 void
-MMO_Model_::setEquations ()
+MMO_Model_::setEquations()
 {
-    _equationTraverse (&MMO_Model_::_insertAlgebraic);
-    _algebraicEquations = 1;
-    _equationTraverse (&MMO_Model_::_insertAlgebraicEquation);
-    _equationTraverse (&MMO_Model_::_insertEquation);
+  _equationTraverse(&MMO_Model_::_insertAlgebraic);
+  _algebraicEquations = 1;
+  _equationTraverse(&MMO_Model_::_insertAlgebraicEquation);
+  _equationTraverse(&MMO_Model_::_insertEquation);
 }
 
 MMO_SymbolRefTable
-MMO_Model_::calledFunctions ()
+MMO_Model_::calledFunctions()
 {
-    return (_calledFunctions);
+  return _calledFunctions;
 }
 
 MMO_FunctionTable
-MMO_Model_::functions ()
+MMO_Model_::functions()
 {
-    return (_functions);
+  return _functions;
 }
 
 MMO_ImportTable
-MMO_Model_::imports ()
+MMO_Model_::imports()
 {
-    return (_imports);
+  return _imports;
 }
 
 bool
-MMO_Model_::hasExternalFunctions ()
+MMO_Model_::hasExternalFunctions()
 {
-    return (_calledFunctions->count () > 0);
+  return _calledFunctions->count() > 0;
 }
 
 void
-MMO_Model_::_controlDiscreteVariables (AST_Expression expEq)
+MMO_Model_::_controlDiscreteVariables(AST_Expression expEq)
 {
-    AST_Expression_ComponentReference cr = expEq->getAsComponentReference ();
-    string varName = _getComponentName (cr);
-    VarInfo vi = _declarations->lookup (varName);
-    if (vi == NULL)
-    {
-        Error::getInstance ()->add (expEq->lineNum (),
-        EM_IR | EM_VARIABLE_NOT_FOUND,
-                                    ER_Error, "%s", varName.c_str ());
-    }
-    else if (vi->isDiscrete ())
-    {
-        Error::getInstance ()->add (expEq->lineNum (),
-        EM_IR | EM_WRONG_VARIABLE_TYPE,
-                                    ER_Error, "Discrete variable %s assigned in equation section", varName.c_str ());
-    }
+  AST_Expression_ComponentReference cr = expEq->getAsComponentReference();
+  string varName = _getComponentName(cr);
+  VarInfo vi = _declarations->lookup(varName);
+  if(vi == NULL)
+  {
+    Error::getInstance()->add(expEq->lineNum(),
+    EM_IR | EM_VARIABLE_NOT_FOUND,
+        ER_Error, "%s", varName.c_str());
+  }
+  else if(vi->isDiscrete())
+  {
+    Error::getInstance()->add(expEq->lineNum(),
+    EM_IR | EM_WRONG_VARIABLE_TYPE,
+        ER_Error, "Discrete variable %s assigned in equation section",
+        varName.c_str());
+  }
 }
 
 void
-MMO_Model_::_controlEquation (AST_Equation eq)
+MMO_Model_::_controlEquation(AST_Equation eq)
 {
-    if (eq->equationType () == EQEQUALITY)
+  if(eq->equationType() == EQEQUALITY)
+  {
+    AST_Equation_Equality eqe = eq->getAsEquality();
+    if(eqe->left()->expressionType() == EXPDERIVATIVE)
     {
-        AST_Equation_Equality eqe = eq->getAsEquality ();
-        if (eqe->left ()->expressionType () == EXPDERIVATIVE)
-        {
-            AST_Expression_Derivative ed = eqe->left ()->getAsDerivative ();
-            AST_Expression expEq = AST_ListFirst (ed->arguments ());
-            _controlDiscreteVariables (expEq);
-        }
-        else if (eqe->left ()->expressionType () == EXPCOMPREF)
-        {
-            AST_Expression expEq = eqe->left ();
-            _controlDiscreteVariables (expEq);
-        }
-        else if (eqe->left ()->expressionType () == EXPOUTPUT)
-        {
-            AST_Expression_Output eout = eqe->left ()->getAsOutput ();
-            AST_ExpressionList el = eout->expressionList ();
-            AST_ExpressionListIterator it;
-            list<Index> lidx;
-            foreach(it,el)
-            {
-                _controlDiscreteVariables (current_element(it));
-            }
-        }
-        else
-        {
-            Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Insert model equation.");
-        }
+      AST_Expression_Derivative ed = eqe->left()->getAsDerivative();
+      AST_Expression expEq = AST_ListFirst(ed->arguments());
+      _controlDiscreteVariables(expEq);
+    }
+    else if(eqe->left()->expressionType() == EXPCOMPREF)
+    {
+      AST_Expression expEq = eqe->left();
+      _controlDiscreteVariables(expEq);
+    }
+    else if(eqe->left()->expressionType() == EXPOUTPUT)
+    {
+      AST_Expression_Output eout = eqe->left()->getAsOutput();
+      AST_ExpressionList el = eout->expressionList();
+      AST_ExpressionListIterator it;
+      list<Index> lidx;
+      foreach(it,el)
+      {
+        _controlDiscreteVariables(current_element(it));
+      }
     }
     else
     {
-        Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Equation type not recognized.");
+      Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+          "Insert model equation.");
     }
+  }
+  else
+  {
+    Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+        "Equation type not recognized.");
+  }
 }
 
 void
-MMO_Model_::_setIndex (AST_Expression derArg, VarInfo vi, Index *idx)
+MMO_Model_::_setIndex(AST_Expression derArg, VarInfo vi, Index *idx)
 {
-    if (_isArray (derArg))
+  if(_isArray(derArg))
+  {
+    idx->setLow(1);
+    idx->setHi(vi->size(0));
+    idx->setArray();
+    for(int i = 1; i < vi->dimensions(); i++)
     {
-        idx->setLow (1);
-        idx->setHi (vi->size (0));
-        idx->setArray ();
-        for (int i = 1; i < vi->dimensions(); i++)
-        {
-            idx->addIndex(idx->constant (), idx->factor ());
-            idx->setLow (1,i);
-            idx->setHi (vi->size (i),i);
-        }
+      idx->addIndex(idx->constant(), idx->factor());
+      idx->setLow(1, i);
+      idx->setHi(vi->size(i), i);
     }
+  }
 }
 
 /*! \brief Set the type of the Real variables defined in the model.
@@ -1004,125 +1048,127 @@ MMO_Model_::_setIndex (AST_Expression derArg, VarInfo vi, Index *idx)
  */
 
 void
-MMO_Model_::_setRealVariables (AST_Equation eq, Range range)
+MMO_Model_::_setRealVariables(AST_Equation eq, Range range)
 {
-    if (range.check ())
+  if(range.check())
+  {
+    Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+        "Wrong equation range.");
+  }
+  AST_Equation_Equality eqe = eq->getAsEquality();
+  if(eqe->left()->expressionType() == EXPDERIVATIVE)
+  {
+    AST_Expression_Derivative ed = eqe->left()->getAsDerivative();
+    AST_Expression derArg = AST_ListFirst(ed->arguments());
+    string varName = _getComponentName(derArg);
+    VarInfo vi = _declarations->lookup(varName);
+    if(vi == NULL)
     {
-        Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong equation range.");
+      Error::getInstance()->add(eqe->left()->lineNum(),
+      EM_IR | EM_VARIABLE_NOT_FOUND,
+          ER_Error, "%s", varName.c_str());
+      return;
     }
-    AST_Equation_Equality eqe = eq->getAsEquality ();
-    if (eqe->left ()->expressionType () == EXPDERIVATIVE)
+    if(!vi->hasIndex())
     {
-        AST_Expression_Derivative ed = eqe->left ()->getAsDerivative ();
-        AST_Expression derArg = AST_ListFirst (ed->arguments ());
-        string varName = _getComponentName (derArg);
-        VarInfo vi = _declarations->lookup (varName);
-        if (vi == NULL)
-        {
-            Error::getInstance ()->add (eqe->left ()->lineNum (),
-            EM_IR | EM_VARIABLE_NOT_FOUND,
-                                        ER_Error, "%s", varName.c_str ());
-            return;
-        }
-        if (!vi->hasIndex ())
-        {
-            Index idx;
-            idx.setOffset (_states);
-            _setIndex (derArg, vi, &idx);
-            vi->setIndex (idx);
-            vi->setState ();
-            _states += vi->size ();
-        }
+      Index idx;
+      idx.setOffset(_states);
+      _setIndex(derArg, vi, &idx);
+      vi->setIndex(idx);
+      vi->setState();
+      _states += vi->size();
     }
-    else if (eqe->left ()->expressionType () == EXPCOMPREF)
+  }
+  else if(eqe->left()->expressionType() == EXPCOMPREF)
+  {
+    string varName = _getComponentName(eqe->left());
+    VarInfo vi = _declarations->lookup(varName);
+    if(vi == NULL)
     {
-        string varName = _getComponentName (eqe->left ());
-        VarInfo vi = _declarations->lookup (varName);
-        if (vi == NULL)
-        {
-            Error::getInstance ()->add (eqe->left ()->lineNum (),
-            EM_IR | EM_VARIABLE_NOT_FOUND,
-                                        ER_Error, "%s", varName.c_str ());
-            return;
-        }
-        if (!vi->hasIndex ())
-        {
-            Index idx;
-            idx.setOffset (_algs);
-            _setIndex (eqe->left (), vi, &idx);
-            vi->setIndex (idx);
-            vi->setAlgebraic ();
-            _algs += vi->size ();
-        }
+      Error::getInstance()->add(eqe->left()->lineNum(),
+      EM_IR | EM_VARIABLE_NOT_FOUND,
+          ER_Error, "%s", varName.c_str());
+      return;
     }
-    else if (eqe->left ()->expressionType () == EXPOUTPUT)
+    if(!vi->hasIndex())
     {
-        AST_Expression_Output eout = eqe->left ()->getAsOutput ();
-        AST_ExpressionList el = eout->expressionList ();
-        AST_ExpressionListIterator it;
-        list<string> lvars;
-        list<Index> lidx;
-        foreach(it,el)
-        {
-            string varName = _getComponentName (current_element(it));
-            VarInfo vi = _declarations->lookup (varName);
-            if (vi == NULL)
-            {
-                Error::getInstance ()->add (eqe->left ()->lineNum (),
-                EM_IR | EM_VARIABLE_NOT_FOUND,
-                                            ER_Error, "%s", varName.c_str ());
-                return;
-            }
-            if (!vi->hasIndex ())
-            {
-                Index idx;
-                idx.setOffset (_algs);
-                _setIndex (current_element(it), vi, &idx);
-                vi->setIndex (idx);
-            }
-            vi->setAlgebraic ();
-            _algs += vi->size ();
-        }
+      Index idx;
+      idx.setOffset(_algs);
+      _setIndex(eqe->left(), vi, &idx);
+      vi->setIndex(idx);
+      vi->setAlgebraic();
+      _algs += vi->size();
     }
-    else
+  }
+  else if(eqe->left()->expressionType() == EXPOUTPUT)
+  {
+    AST_Expression_Output eout = eqe->left()->getAsOutput();
+    AST_ExpressionList el = eout->expressionList();
+    AST_ExpressionListIterator it;
+    list<string> lvars;
+    list<Index> lidx;
+    foreach(it,el)
     {
-        Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Insert model equation.");
+      string varName = _getComponentName(current_element(it));
+      VarInfo vi = _declarations->lookup(varName);
+      if(vi == NULL)
+      {
+        Error::getInstance()->add(eqe->left()->lineNum(),
+        EM_IR | EM_VARIABLE_NOT_FOUND,
+            ER_Error, "%s", varName.c_str());
+        return;
+      }
+      if(!vi->hasIndex())
+      {
+        Index idx;
+        idx.setOffset(_algs);
+        _setIndex(current_element(it), vi, &idx);
+        vi->setIndex(idx);
+      }
+      vi->setAlgebraic();
+      _algs += vi->size();
     }
+  }
+  else
+  {
+    Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+        "Insert model equation.");
+  }
 }
 
 AST_Equation
-MMO_Model_::_transformEquation (AST_Equation eq)
+MMO_Model_::_transformEquation(AST_Equation eq)
 {
-    if (eq->equationType () == EQEQUALITY)
+  if(eq->equationType() == EQEQUALITY)
+  {
+    MMO_ReplaceInnerProduct rip(_declarations);
+    AST_Expression l = eq->getAsEquality()->left();
+    AST_Expression r = rip.foldTraverse(eq->getAsEquality()->right());
+    string transform = _transformExpression(l, r);
+    if(transform.empty())
     {
-        MMO_ReplaceInnerProduct rip (_declarations);
-        AST_Expression l = eq->getAsEquality ()->left ();
-        AST_Expression r = rip.foldTraverse (eq->getAsEquality ()->right ());
-        string transform = _transformExpression (l, r);
-        if (transform.empty ())
-        {
-            AST_Equation ret = newAST_Equation_Equality (l, r);
-            return (ret);
-        }
-        int rValue;
-        AST_Equation retEq = parseEquation (transform, &rValue);
-        return (retEq);
+      AST_Equation ret = newAST_Equation_Equality(l, r);
+      return ret;
     }
-    else if (eq->equationType () == EQFOR)
+    int rValue;
+    AST_Equation retEq = parseEquation(transform, &rValue);
+    return retEq;
+  }
+  else if(eq->equationType() == EQFOR)
+  {
+    AST_Equation_For eqf = eq->getAsFor();
+    AST_ForIndexList fil = eqf->forIndexList();
+    AST_EquationList eqs = eqf->equationList();
+    AST_EquationListIterator it;
+    AST_EquationList tel = newAST_EquationList();
+    foreach(it,eqs)
     {
-        AST_Equation_For eqf = eq->getAsFor ();
-        AST_ForIndexList fil = eqf->forIndexList ();
-        AST_EquationList eqs = eqf->equationList ();
-        AST_EquationListIterator it;
-        AST_EquationList tel = newAST_EquationList ();
-        foreach(it,eqs)
-        {
-            AST_ListAppend (tel, _transformEquation (current_element(it)));
-        }
-        AST_Equation eqFor = newAST_Equation_For (fil, tel);
-        return (eqFor);
+      AST_ListAppend(tel, _transformEquation(current_element(it)));
     }
-    return (eq);
+    AST_Equation eqFor = newAST_Equation_For(fil, tel);
+    return eqFor;
+  }
+  return eq;
 }
 
 /*! \brief Set the variable information for the equation.
@@ -1146,37 +1192,38 @@ MMO_Model_::_transformEquation (AST_Equation eq)
  */
 
 void
-MMO_Model_::insert (AST_Equation eq)
+MMO_Model_::insert(AST_Equation eq)
 {
-    AST_Equation teq = _transformEquation (eq);
-    _eqs.push_back (teq);
-    Range range;
-    if (teq->equationType () == EQEQUALITY)
+  AST_Equation teq = _transformEquation(eq);
+  _eqs.push_back(teq);
+  Range range;
+  if(teq->equationType() == EQEQUALITY)
+  {
+    _setRealVariables(teq, range);
+  }
+  else if(teq->equationType() == EQFOR)
+  {
+    AST_Equation_For eqf = teq->getAsFor();
+    range.get(eqf, _declarations);
+    AST_EquationList eqs = eqf->equationList();
+    AST_EquationListIterator it;
+    foreach(it,eqs)
     {
-        _setRealVariables (teq, range);
+      if(current_element(it)->equationType() == EQFOR)
+      {
+        insert(current_element(it));
+      }
+      else
+      {
+        _setRealVariables(current_element(it), range);
+      }
     }
-    else if (teq->equationType () == EQFOR)
-    {
-        AST_Equation_For eqf = teq->getAsFor ();
-        range.get (eqf, _declarations);
-        AST_EquationList eqs = eqf->equationList ();
-        AST_EquationListIterator it;
-        foreach(it,eqs)
-        {
-            if (current_element(it)->equationType () == EQFOR)
-            {
-                insert (current_element(it));
-            }
-            else
-            {
-                _setRealVariables (current_element(it), range);
-            }
-        }
-    }
-    else
-    {
-        Error::getInstance ()->add (eq->lineNum (), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Equation type not recognized.");
-    }
+  }
+  else
+  {
+    Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+        "Equation type not recognized.");
+  }
 }
 
 /*! \brief Given a when statement, generate the appropriate model event.
@@ -1190,828 +1237,836 @@ MMO_Model_::insert (AST_Equation eq)
  */
 
 void
-MMO_Model_::_insertEvent (AST_Statement stm, Range range)
+MMO_Model_::_insertEvent(AST_Statement stm, Range range)
 {
-    if (stm->statementType () == STWHEN)
+  if(stm->statementType() == STWHEN)
+  {
+    Index idx(0, range);
+    idx.setOffset(_evs);
+    range.setIndex(&idx);
+    _evs += range.size();
+    AST_Statement_When sw = stm->getAsWhen();
+    _data->setLHS(idx);
+    if(sw->hasComment())
     {
-        Index idx (0, range);
-        idx.setOffset (_evs);
-        range.setIndex(&idx);
-        _evs += range.size();
-        AST_Statement_When sw = stm->getAsWhen ();
-        _data->setLHS (idx);
-        if (sw->hasComment ())
+      _annotations->eventComment(sw->comment());
+    }
+    _data->setWeight(_annotations->weight());
+    _data->setDisableSymDiff(true);
+    MMO_Event ev = newMMO_Event(sw->condition(), _data);
+    _data->setDisableSymDiff(false);
+    _data->setRange(range);
+    AST_StatementList stl = sw->statements();
+    AST_StatementListIterator it;
+    foreach(it,stl)
+    {
+      ev->insert(current_element(it));
+    }
+    if(sw->hasElsewhen())
+    {
+      int newEvent = false;
+      AST_Statement_ElseList ewl = sw->else_when();
+      AST_Statement_ElseListIterator ewit;
+      foreach(ewit,ewl)
+      {
+        AST_Statement_Else se = current_element(ewit);
+        MMO_Event eve;
+        Index idxe(0, range);
+        range.setIndex(&idxe);
+        idxe.setOffset(_evs);
+        if(ev->compareCondition(se->condition()))
         {
-            _annotations->eventComment (sw->comment ());
+          eve = ev;
         }
-        _data->setWeight (_annotations->weight ());
-        _data->setDisableSymDiff (true);
-        MMO_Event ev = newMMO_Event (sw->condition (), _data);
-        _data->setDisableSymDiff (false);
-        _data->setRange (range);
-        AST_StatementList stl = sw->statements ();
-        AST_StatementListIterator it;
-        foreach(it,stl)
+        else
         {
-            ev->insert (current_element(it));
+          _data->setLHS(idxe);
+          eve = newMMO_Event(se->condition(), _data);
+          _evs += range.size();
+          newEvent = true;
+          eve->setIndex(idxe);
         }
-        if (sw->hasElsewhen ())
+        AST_StatementList stel = se->statements();
+        AST_StatementListIterator steit;
+        foreach(steit,stel)
         {
-            int newEvent = false;
-            AST_Statement_ElseList ewl = sw->else_when ();
-            AST_Statement_ElseListIterator ewit;
-            foreach(ewit,ewl)
-            {
-                AST_Statement_Else se = current_element(ewit);
-                MMO_Event eve;
-                Index idxe (0, range);
-                range.setIndex(&idxe);
-                idxe.setOffset (_evs);
-                if (ev->compareCondition (se->condition ()))
-                {
-                    eve = ev;
-                }
-                else
-                {
-                    _data->setLHS (idxe);
-                    eve = newMMO_Event (se->condition (), _data);
-                    _evs += range.size ();
-                    newEvent = true;
-                    eve->setIndex (idxe);
-                }
-                AST_StatementList stel = se->statements ();
-                AST_StatementListIterator steit;
-                foreach(steit,stel)
-                {
-                    eve->insert (current_element(steit));
-                }
-                if (newEvent)
-                {
-                    _events->insert (idxe, eve);
-                }
-            }
+          eve->insert(current_element(steit));
         }
-        _events->insert (idx, ev);
-    }
-}
-
-void
-MMO_Model_::insert (AST_Statement stm)
-{
-    insert (stm, false);
-}
-
-void
-MMO_Model_::insert (AST_External_Function_Call efc)
-{
-    return;
-}
-
-void
-MMO_Model_::insert (AST_Statement stm, bool initial)
-{
-    AST_Statement st = _transformStatement (stm);
-    if (initial)
-    {
-        _data->setInitialCode (true);
-        _initialCode->insert (newMMO_Statement (st, _data));
-        _data->setInitialCode (false);
-    }
-    else
-    {
-        _stms.push_back (st);
-    }
-}
-
-void
-MMO_Model_::_getFunctionInfo (MMO_Function f)
-{
-    MMO_Annotation fa = f->annotation ();
-    if (fa->hasIncludeDirectory ())
-    {
-        string in = fa->includeDirectory ();
-        _includeDirectories.insert (pair<string, string> (in, in));
-    }
-    if (fa->hasLibraryDirectory ())
-    {
-        string in = fa->libraryDirectory ();
-        _libraryDirectories.insert (pair<string, string> (in, in));
-    }
-    if (fa->hasLibraries ())
-    {
-        list<string> in = fa->libraries ();
-        _insertFunctionDependencies (in, &_linkLibraries);
-    }
-    MMO_ImportTable imt = f->imports ();
-    for (string name = imt->begin (); !imt->end (); name = imt->next ())
-    {
-        MMO_PackageData pd = Util::getInstance ()->readPackage (name);
-        if (pd == NULL)
+        if(newEvent)
         {
-            Error::getInstance ()->add (0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo", name.c_str ());
-            return;
+          _events->insert(idxe, eve);
         }
-        list<string> tmp = pd->includeDirectories ();
-        _insertFunctionDependencies (tmp, &_includeDirectories);
-        tmp = pd->libraryDirectories ();
-        _insertFunctionDependencies (tmp, &_libraryDirectories);
-        tmp = pd->linkLibraries ();
-        _insertFunctionDependencies (tmp, &_linkLibraries);
+      }
     }
+    _events->insert(idx, ev);
+  }
 }
 
 void
-MMO_Model_::insert (MMO_Function f)
+MMO_Model_::insert(AST_Statement stm)
 {
-    Index i;
-    i.setOffset (_funcs++);
-    _functions->insert (i, f);
-    _getFunctionInfo (f);
+  insert(stm, false);
 }
 
 void
-MMO_Model_::insert (AST_Argument_Modification x)
+MMO_Model_::insert(AST_External_Function_Call efc)
 {
-    if (!_annotations->insert (x))
+  return;
+}
+
+void
+MMO_Model_::insert(AST_Statement stm, bool initial)
+{
+  AST_Statement st = _transformStatement(stm);
+  if(initial)
+  {
+    _data->setInitialCode(true);
+    _initialCode->insert(newMMO_Statement(st, _data));
+    _data->setInitialCode(false);
+  }
+  else
+  {
+    _stms.push_back(st);
+  }
+}
+
+void
+MMO_Model_::_getFunctionInfo(MMO_Function f)
+{
+  MMO_Annotation fa = f->annotation();
+  if(fa->hasIncludeDirectory())
+  {
+    string in = fa->includeDirectory();
+    _includeDirectories.insert(pair<string, string>(in, in));
+  }
+  if(fa->hasLibraryDirectory())
+  {
+    string in = fa->libraryDirectory();
+    _libraryDirectories.insert(pair<string, string>(in, in));
+  }
+  if(fa->hasLibraries())
+  {
+    list<string> in = fa->libraries();
+    _insertFunctionDependencies(in, &_linkLibraries);
+  }
+  MMO_ImportTable imt = f->imports();
+  for(string name = imt->begin(); !imt->end(); name = imt->next())
+  {
+    MMO_PackageData pd = Util::getInstance()->readPackage(name);
+    if(pd == NULL)
     {
-        Error::getInstance ()->add (x->lineNum (),
-        EM_IR | EM_ANNOTATION_NOT_FOUND,
-                                    ER_Error, "%s", x->name ()->c_str ());
+      Error::getInstance()->add(0, EM_IR | EM_CANT_OPEN_FILE, ER_Error,
+          "%s.moo", name.c_str());
+      return;
     }
+    list<string> tmp = pd->includeDirectories();
+    _insertFunctionDependencies(tmp, &_includeDirectories);
+    tmp = pd->libraryDirectories();
+    _insertFunctionDependencies(tmp, &_libraryDirectories);
+    tmp = pd->linkLibraries();
+    _insertFunctionDependencies(tmp, &_linkLibraries);
+  }
+}
+
+void
+MMO_Model_::insert(MMO_Function f)
+{
+  Index i;
+  i.setOffset(_funcs++);
+  _functions->insert(i, f);
+  _getFunctionInfo(f);
+}
+
+void
+MMO_Model_::insert(AST_Argument_Modification x)
+{
+  if(!_annotations->insert(x))
+  {
+    Error::getInstance()->add(x->lineNum(),
+    EM_IR | EM_ANNOTATION_NOT_FOUND,
+        ER_Error, "%s", x->name()->c_str());
+  }
 }
 
 VarSymbolTable
-MMO_Model_::varTable ()
+MMO_Model_::varTable()
 {
-    return (_declarations);
+  return _declarations;
 }
 
 void
-MMO_Model_::insert (string n)
+MMO_Model_::insert(string n)
 {
-    _imports->insert (n);
-    if (!Util::getInstance ()->readPackage (n, _packages))
-    {
-        Error::getInstance ()->add (0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo", n.c_str ());
-        return;
-    }
-    MMO_PackageData pd = _packages->last ();
-    list<string> tmp = pd->includeDirectories ();
-    _insertFunctionDependencies (tmp, &_includeDirectories);
-    tmp = pd->libraryDirectories ();
-    _insertFunctionDependencies (tmp, &_libraryDirectories);
-    tmp = pd->linkLibraries ();
-    _insertFunctionDependencies (tmp, &_linkLibraries);
+  _imports->insert(n);
+  if(!Util::getInstance()->readPackage(n, _packages))
+  {
+    Error::getInstance()->add(0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo",
+        n.c_str());
+    return;
+  }
+  MMO_PackageData pd = _packages->last();
+  list<string> tmp = pd->includeDirectories();
+  _insertFunctionDependencies(tmp, &_includeDirectories);
+  tmp = pd->libraryDirectories();
+  _insertFunctionDependencies(tmp, &_libraryDirectories);
+  tmp = pd->linkLibraries();
+  _insertFunctionDependencies(tmp, &_linkLibraries);
 }
 
 MMO_Annotation
-MMO_Model_::annotation ()
+MMO_Model_::annotation()
 {
-    return (_annotations);
+  return _annotations;
 }
 
 string
-MMO_Model_::name () const
+MMO_Model_::name() const
 {
-    return (_name);
+  return _name;
 }
 
 MMO_EquationTable
-MMO_Model_::algebraics ()
+MMO_Model_::algebraics()
 {
-    return (_algebraics);
+  return _algebraics;
 }
 
 MMO_EquationTable
-MMO_Model_::derivatives ()
+MMO_Model_::derivatives()
 {
-    return (_derivatives);
+  return _derivatives;
 }
 
 MMO_EventTable
-MMO_Model_::events ()
+MMO_Model_::events()
 {
-    return (_events);
+  return _events;
 }
 
 unsigned int
-MMO_Model_::states ()
+MMO_Model_::states()
 {
-    return (_states);
+  return _states;
 }
 
 unsigned int
-MMO_Model_::discretes ()
+MMO_Model_::discretes()
 {
-    return (_discretes);
+  return _discretes;
 }
 
 unsigned int
-MMO_Model_::algs ()
+MMO_Model_::algs()
 {
-    return (_algs);
+  return _algs;
 }
 
 unsigned int
-MMO_Model_::evs ()
+MMO_Model_::evs()
 {
-    return (_evs);
+  return _evs;
 }
 
 unsigned int
-MMO_Model_::funcs ()
+MMO_Model_::funcs()
 {
-    return (_funcs);
+  return _funcs;
 }
 
 unsigned int
-MMO_Model_::inputs ()
+MMO_Model_::inputs()
 {
-    return (_inputs);
+  return _inputs;
 }
 
 int
-MMO_Model_::imps ()
+MMO_Model_::imps()
 {
-    return (_imports->count ());
+  return _imports->count();
 }
 
 void
-MMO_Model_::initOutput ()
+MMO_Model_::initOutput()
 {
-    list<AST_Expression> outputs = _annotations->output ();
-    for (list<AST_Expression>::iterator it = outputs.begin (); it != outputs.end (); it++)
+  list<AST_Expression> outputs = _annotations->output();
+  for(list<AST_Expression>::iterator it = outputs.begin(); it != outputs.end();
+      it++)
+  {
+    MMO_ReplaceInterval_ oe(_declarations);
+    AST_Expression exp = oe.foldTraverse(current_element(it));
+    VariableInterval vi = oe.first();
+    Index idx(vi.index());
+    idx.setOffset(_output);
+    if(idx.hasRange())
     {
-        MMO_ReplaceInterval_ oe (_declarations);
-        AST_Expression exp = oe.foldTraverse (current_element(it));
-        VariableInterval vi = oe.first ();
-        Index idx (vi.index ());
-        idx.setOffset (_output);
-        if (idx.hasRange ())
-        {
-            idx.setFactor (1);
-            idx.setConstant (0);
-            idx.setArray ();
-        }
-        if (!vi.isEmpty ())
-        {
-            VarInfo v = _declarations->lookup (vi.name ());
-            if (v != NULL)
-            {
-                if (v->isAlgebraic ())
-                {
-                    idx.setRangeOp (true);
-                }
-            }
-        }
-        _data->setLHS (idx);
-        _data->setGenerateDerivatives (false);
-        _data->setCalculateAlgegraics (true);
-        MMO_Equation mse = newMMO_Equation (exp, _data);
-        _data->setCalculateAlgegraics (false);
-        _data->clear ();
-        _outputs->insert (idx, mse);
-        _outputIndexes[idx] = oe.indexes ();
-        _output += idx.range ();
+      idx.setFactor(1);
+      idx.setConstant(0);
+      idx.setArray();
     }
+    if(!vi.isEmpty())
+    {
+      VarInfo v = _declarations->lookup(vi.name());
+      if(v != NULL)
+      {
+        if(v->isAlgebraic())
+        {
+          idx.setRangeOp(true);
+        }
+      }
+    }
+    _data->setLHS(idx);
+    _data->setGenerateDerivatives(false);
+    _data->setCalculateAlgegraics(true);
+    MMO_Equation mse = newMMO_Equation(exp, _data);
+    _data->setCalculateAlgegraics(false);
+    _data->clear();
+    _outputs->insert(idx, mse);
+    _outputIndexes[idx] = oe.indexes();
+    _output += idx.range();
+  }
 }
 
 unsigned int
-MMO_Model_::outs ()
+MMO_Model_::outs()
 {
-    return (_output);
+  return _output;
 }
 
 MMO_EquationTable
-MMO_Model_::outputs ()
+MMO_Model_::outputs()
 {
-    return (_outputs);
+  return _outputs;
 }
 
 MMO_StatementTable
-MMO_Model_::initialCode ()
+MMO_Model_::initialCode()
 {
-    return (_initialCode);
+  return _initialCode;
 }
 
 MMO_Model
-newMMO_Model (string name)
+newMMO_Model(string name)
 {
-    return (new MMO_Model_ (name));
+  return new MMO_Model_(name);
 }
 
 void
-deleteMMO_Model (MMO_Model m)
+deleteMMO_Model(MMO_Model m)
 {
-    delete m;
+  delete m;
 }
 
 /* MMO_Function class */
 
-MMO_Function_::MMO_Function_ (string name) :
-        _name (name), _externalFuncs (0), _outputs (0), _outputName (), _externalFunctions (
-        NULL), _prefix ("__"), _arguments ()
+MMO_Function_::MMO_Function_(string name) :
+    _name(name), _externalFuncs(0), _outputs(0), _outputName(), _externalFunctions(
+    NULL), _prefix("__"), _arguments()
 {
-    _types = newTypeSymbolTable ();
-    _annotations = newMMO_FunctionAnnotation ();
-    _externalFunctionCalls = newMMO_ArgumentsTable ();
-    _calledFunctions = newMMO_SymbolRefTable ();
-    _declarations = newVarSymbolTable ();
-    _declarations->initialize (_types);
-    _localDeclarations = newVarSymbolTable ();
-    _statements = newMMO_StatementTable ();
-    _packages = newMMO_PackageTable ();
-    _imports = newMMO_ImportTable ();
-    _data = newMMO_ModelData ();
-    _functions = newMMO_FunctionTable ();
-    _data->setAnnotation (_annotations);
-    _data->setInitialCode (true);
-    _data->setPackages (_packages);
-    _data->setCalledFunctions (_calledFunctions);
-    _data->setFunctions (_functions);
-    _data->setSymbols (_declarations);
+  _types = newTypeSymbolTable();
+  _annotations = newMMO_FunctionAnnotation();
+  _externalFunctionCalls = newMMO_ArgumentsTable();
+  _calledFunctions = newMMO_SymbolRefTable();
+  _declarations = newVarSymbolTable();
+  _declarations->initialize(_types);
+  _localDeclarations = newVarSymbolTable();
+  _statements = newMMO_StatementTable();
+  _packages = newMMO_PackageTable();
+  _imports = newMMO_ImportTable();
+  _data = newMMO_ModelData();
+  _functions = newMMO_FunctionTable();
+  _data->setAnnotation(_annotations);
+  _data->setInitialCode(true);
+  _data->setPackages(_packages);
+  _data->setCalledFunctions(_calledFunctions);
+  _data->setFunctions(_functions);
+  _data->setSymbols(_declarations);
 }
 
-MMO_Function_::~MMO_Function_ ()
+MMO_Function_::~MMO_Function_()
 {
 }
 
 CL_Type
-MMO_Function_::classType ()
+MMO_Function_::classType()
 {
-    return (CL_FUNCTION);
+  return CL_FUNCTION;
 }
 
 MMO_ImportTable
-MMO_Function_::imports ()
+MMO_Function_::imports()
 {
-    return (_imports);
+  return _imports;
 }
 
 VarSymbolTable
-MMO_Function_::varTable ()
+MMO_Function_::varTable()
 {
-    return (_declarations);
+  return _declarations;
 }
 
 void
-MMO_Function_::setImports (MMO_ImportTable it)
+MMO_Function_::setImports(MMO_ImportTable it)
 {
-    for (string i = it->begin (); !it->end (); i = it->next ())
-    {
-        insert (i);
-    }
+  for(string i = it->begin(); !it->end(); i = it->next())
+  {
+    insert(i);
+  }
 }
 
 MMO_Annotation
-MMO_Function_::annotation ()
+MMO_Function_::annotation()
 {
-    return (_annotations);
+  return _annotations;
 }
 
 void
-MMO_Function_::insert (string n)
+MMO_Function_::insert(string n)
 {
-    _imports->insert (n);
-    if (!Util::getInstance ()->readPackage (n, _packages))
-    {
-        Error::getInstance ()->add (0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo", n.c_str ());
-    }
+  _imports->insert(n);
+  if(!Util::getInstance()->readPackage(n, _packages))
+  {
+    Error::getInstance()->add(0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo",
+        n.c_str());
+  }
 }
 
 void
-MMO_Function_::insert (AST_Equation eq)
+MMO_Function_::insert(AST_Equation eq)
 {
-    return;
+  return;
 }
 
 void
-MMO_Function_::insert (AST_Statement stm)
+MMO_Function_::insert(AST_Statement stm)
 {
-    MMO_Statement s = newMMO_Statement (stm, _data);
-    _statements->insert (s);
+  MMO_Statement s = newMMO_Statement(stm, _data);
+  _statements->insert(s);
 }
 
 void
-MMO_Function_::insert (AST_Statement stm, bool initial)
+MMO_Function_::insert(AST_Statement stm, bool initial)
 {
-    insert (stm);
+  insert(stm);
 }
 
 void
-MMO_Function_::insert (MMO_Function f)
+MMO_Function_::insert(MMO_Function f)
 {
-    return;
+  return;
 }
 
 MMO_StatementTable
-MMO_Function_::statements ()
+MMO_Function_::statements()
 {
-    return (_statements);
+  return _statements;
 }
 
 void
-MMO_Function_::insert (AST_External_Function_Call efc)
+MMO_Function_::insert(AST_External_Function_Call efc)
 {
-    string crName;
-    if (efc->hasComponentReference ())
+  string crName;
+  if(efc->hasComponentReference())
+  {
+    AST_Expression_ComponentReference cr = efc->componentReference();
+    VarInfo vi = _declarations->lookup(cr->name());
+    if(vi == NULL)
     {
-        AST_Expression_ComponentReference cr = efc->componentReference ();
-        VarInfo vi = _declarations->lookup (cr->name ());
-        if (vi == NULL)
-        {
-            vi = _localDeclarations->lookup (cr->name ());
-            if (vi == NULL)
-            {
-                Error::getInstance ()->add (efc->lineNum (),
-                EM_IR | EM_VARIABLE_NOT_FOUND,
-                                            ER_Error, "%s", cr->name ().c_str ());
-                return;
-            }
-        }
-        crName = cr->name ();
+      vi = _localDeclarations->lookup(cr->name());
+      if(vi == NULL)
+      {
+        Error::getInstance()->add(efc->lineNum(),
+        EM_IR | EM_VARIABLE_NOT_FOUND,
+            ER_Error, "%s", cr->name().c_str());
+        return;
+      }
     }
-    AST_ExpressionListIterator eli;
-    ControlVars cv = newControlVars (_declarations, _localDeclarations);
-    if (efc->args () != NULL)
+    crName = cr->name();
+  }
+  AST_ExpressionListIterator eli;
+  ControlVars cv = newControlVars(_declarations, _localDeclarations);
+  if(efc->args() != NULL)
+  {
+    foreach(eli,efc->args())
     {
-        foreach(eli,efc->args())
-        {
-            if (!cv->foldTraverse (current_element(eli)))
-            {
-                Error::getInstance ()->add (efc->lineNum (),
-                EM_IR | EM_VARIABLE_NOT_FOUND,
-                                            ER_Error, "External function call.");
-                return;
-            }
-        }
+      if(!cv->foldTraverse(current_element(eli)))
+      {
+        Error::getInstance()->add(efc->lineNum(),
+        EM_IR | EM_VARIABLE_NOT_FOUND,
+            ER_Error, "External function call.");
+        return;
+      }
     }
-    deleteControlVars (cv);
-    Index i (_externalFuncs++, 0);
-    MMO_FunctionData fd = newMMO_FunctionData (crName, efc->name (), efc->args (), _data);
-    _externalFunctionCalls->insert (i, fd);
+  }
+  deleteControlVars(cv);
+  Index i(_externalFuncs++, 0);
+  MMO_FunctionData fd = newMMO_FunctionData(crName, efc->name(), efc->args(),
+      _data);
+  _externalFunctionCalls->insert(i, fd);
 }
 
 MMO_ArgumentsTable
-MMO_Function_::externalFunctionCalls ()
+MMO_Function_::externalFunctionCalls()
 {
-    return (_externalFunctionCalls);
+  return _externalFunctionCalls;
 }
 
 void
-MMO_Function_::insert (VarName n, VarInfo vi, DEC_Type type)
+MMO_Function_::insert(VarName n, VarInfo vi, DEC_Type type)
 {
-    Index idx;
-    idx.setHi (vi->size ());
-    MMO_EvalInitExp_ e (_declarations);
-    vi->setName (n);
-    vi->setIndex (idx);
-    if (vi->typePrefix () & TP_CONSTANT)
+  Index idx;
+  idx.setHi(vi->size());
+  MMO_EvalInitExp_ e(_declarations);
+  vi->setName(n);
+  vi->setIndex(idx);
+  if(vi->typePrefix() & TP_CONSTANT)
+  {
+    vi->setValue(e.foldTraverse(vi->modification()->getAsEqual()->exp()));
+  }
+  _declarations->insert(n, vi);
+  if(type == DEC_PUBLIC)
+  {
+    if(vi->isOutput())
     {
-        vi->setValue (e.foldTraverse (vi->modification ()->getAsEqual ()->exp ()));
+      _outputs++;
     }
-    _declarations->insert (n, vi);
-    if (type == DEC_PUBLIC)
-    {
-        if (vi->isOutput ())
-        {
-            _outputs++;
-        }
-        _arguments.push_back (vi);
-    }
-    else
-    {
-        _localDeclarations->insert (n, vi);
-    }
+    _arguments.push_back(vi);
+  }
+  else
+  {
+    _localDeclarations->insert(n, vi);
+  }
 }
 
 void
-MMO_Function_::insert (VarName n, VarInfo vi)
+MMO_Function_::insert(VarName n, VarInfo vi)
 {
-    insert (n, vi, DEC_PUBLIC);
+  insert(n, vi, DEC_PUBLIC);
 }
 
 void
-MMO_Function_::insert (AST_Argument_Modification x)
+MMO_Function_::insert(AST_Argument_Modification x)
 {
-    if (!_annotations->insert (x))
-    {
-        Error::getInstance ()->add (x->lineNum (),
-        EM_IR | EM_ANNOTATION_NOT_FOUND,
-                                    ER_Error, "%s", x->name ()->c_str ());
-    }
+  if(!_annotations->insert(x))
+  {
+    Error::getInstance()->add(x->lineNum(),
+    EM_IR | EM_ANNOTATION_NOT_FOUND,
+        ER_Error, "%s", x->name()->c_str());
+  }
 }
 
 string
-MMO_Function_::name () const
+MMO_Function_::name() const
 {
-    return (_name);
+  return _name;
 }
 
 list<string>
-MMO_Function_::localDeclarations ()
+MMO_Function_::localDeclarations()
 {
-    list<string> ret;
-    stringstream buffer;
-    _localDeclarations->setPrintEnvironment (VST_FUNCTION);
-    for (VarInfo vi = _localDeclarations->begin (); !_localDeclarations->end (); vi = _localDeclarations->next ())
+  list<string> ret;
+  stringstream buffer;
+  _localDeclarations->setPrintEnvironment(VST_FUNCTION);
+  for(VarInfo vi = _localDeclarations->begin(); !_localDeclarations->end(); vi =
+      _localDeclarations->next())
+  {
+    if(vi->isConstant())
     {
-        if (vi->isConstant ())
-        {
-            continue;
-        }
-        Index idx = vi->index ();
-        buffer << "double " << vi->name ();
-        if (vi->isArray ())
-        {
-            buffer << "[" << vi->size () << "]";
-        }
-        buffer << ";";
-        ret.push_back (buffer.str ());
-        buffer.str ("");
-        string indexVar;
-        if (vi->hasEachModifier ())
-        {
-            indexVar = Util::getInstance ()->newVarName ("i", _declarations);
-            ret.push_back ("int " + indexVar + ";");
-        }
-        if (vi->hasAssignment () || vi->hasStartModifier () || vi->hasEachModifier ())
-        {
-            _data->setSymbols (_localDeclarations);
-            Util::getInstance ()->setData (_data);
-            buffer << Util::getInstance ()->printInitialAssignment (vi, "", indexVar);
-            ret.push_back (buffer.str ());
-            buffer.str ("");
-            _data->setSymbols (_declarations);
-        }
+      continue;
     }
-    if (_outputs == 1)
+    Index idx = vi->index();
+    buffer << "double " << vi->name();
+    if(vi->isArray())
     {
-        _declarations->setPrintEnvironment (VST_FUNCTION);
-        for (VarInfo vi = _declarations->begin (); !_declarations->end (); vi = _declarations->next ())
-        {
-            if (!vi->isOutput ())
-            {
-                continue;
-            }
-            Index idx = vi->index ();
-            buffer << "double " << vi->name ();
-            if (vi->isArray ())
-            {
-                buffer << "[" << vi->size () << "]";
-            }
-            buffer << ";";
-            ret.push_back (buffer.str ());
-            buffer.str ("");
-            if (vi->hasAssignment () || vi->hasStartModifier () || vi->hasEachModifier ())
-            {
-                _data->setSymbols (_localDeclarations);
-                Util::getInstance ()->setData (_data);
-                buffer << Util::getInstance ()->printInitialAssignment (vi, "");
-                ret.push_back (buffer.str ());
-                buffer.str ("");
-                _data->setSymbols (_declarations);
-            }
-        }
+      buffer << "[" << vi->size() << "]";
     }
-    return (ret);
+    buffer << ";";
+    ret.push_back(buffer.str());
+    buffer.str("");
+    string indexVar;
+    if(vi->hasEachModifier())
+    {
+      indexVar = Util::getInstance()->newVarName("i", _declarations);
+      ret.push_back("int " + indexVar + ";");
+    }
+    if(vi->hasAssignment() || vi->hasStartModifier() || vi->hasEachModifier())
+    {
+      _data->setSymbols(_localDeclarations);
+      Util::getInstance()->setData(_data);
+      buffer << Util::getInstance()->printInitialAssignment(vi, "", indexVar);
+      ret.push_back(buffer.str());
+      buffer.str("");
+      _data->setSymbols(_declarations);
+    }
+  }
+  if(_outputs == 1)
+  {
+    _declarations->setPrintEnvironment(VST_FUNCTION);
+    for(VarInfo vi = _declarations->begin(); !_declarations->end(); vi =
+        _declarations->next())
+    {
+      if(!vi->isOutput())
+      {
+        continue;
+      }
+      Index idx = vi->index();
+      buffer << "double " << vi->name();
+      if(vi->isArray())
+      {
+        buffer << "[" << vi->size() << "]";
+      }
+      buffer << ";";
+      ret.push_back(buffer.str());
+      buffer.str("");
+      if(vi->hasAssignment() || vi->hasStartModifier() || vi->hasEachModifier())
+      {
+        _data->setSymbols(_localDeclarations);
+        Util::getInstance()->setData(_data);
+        buffer << Util::getInstance()->printInitialAssignment(vi, "");
+        ret.push_back(buffer.str());
+        buffer.str("");
+        _data->setSymbols(_declarations);
+      }
+    }
+  }
+  return ret;
 }
 
 void
-MMO_Function_::setPrefix (string prefix)
+MMO_Function_::setPrefix(string prefix)
 {
-    _prefix = prefix;
+  _prefix = prefix;
 }
 
 string
-MMO_Function_::prototype ()
+MMO_Function_::prototype()
 {
-    stringstream input;
-    stringstream output;
-    stringstream func;
-    list<VarInfo>::iterator it;
-    for (it = _arguments.begin (); it != _arguments.end (); it++)
+  stringstream input;
+  stringstream output;
+  stringstream func;
+  list<VarInfo>::iterator it;
+  for(it = _arguments.begin(); it != _arguments.end(); it++)
+  {
+    VarInfo vi = *it;
+    if(vi->isInput())
     {
-        VarInfo vi = *it;
-        if (vi->isInput ())
-        {
-            input << "double ";
-            if (vi->isArray ())
-            {
-                input << "*";
-            }
-            input << vi->name () << ",";
-        }
-        else if (vi->isOutput ())
-        {
-            output << "double *" << vi->name () << ",";
-            _outputName = vi->name ();
-        }
+      input << "double ";
+      if(vi->isArray())
+      {
+        input << "*";
+      }
+      input << vi->name() << ",";
     }
-    if (_outputs == 0)
+    else if(vi->isOutput())
     {
-        string in = input.str ();
-        if (!in.empty ())
-        {
-            in.erase (in.end () - 1, in.end ());
-        }
-        func << "void " << _prefix << _name << "(" << in << ")";
+      output << "double *" << vi->name() << ",";
+      _outputName = vi->name();
     }
-    else if (_outputs == 1)
+  }
+  if(_outputs == 0)
+  {
+    string in = input.str();
+    if(!in.empty())
     {
-        string in = input.str ();
-        if (!in.empty ())
-        {
-            in.erase (in.end () - 1, in.end ());
-        }
-        func << "double " << _prefix << _name << "(" << in << ")";
+      in.erase(in.end() - 1, in.end());
     }
-    else
+    func << "void " << _prefix << _name << "(" << in << ")";
+  }
+  else if(_outputs == 1)
+  {
+    string in = input.str();
+    if(!in.empty())
     {
-        string out = output.str ();
-        out.erase (out.end () - 1, out.end ());
-        func << "void " << _prefix << _name << "(" << input.str () << out << ")";
+      in.erase(in.end() - 1, in.end());
     }
-    return (func.str ());
+    func << "double " << _prefix << _name << "(" << in << ")";
+  }
+  else
+  {
+    string out = output.str();
+    out.erase(out.end() - 1, out.end());
+    func << "void " << _prefix << _name << "(" << input.str() << out << ")";
+  }
+  return func.str();
 }
 
 string
-MMO_Function_::returnStatement ()
+MMO_Function_::returnStatement()
 {
-    if (_outputs == 1)
-    {
-        return ("return " + _outputName + ";");
-    }
-    return ("");
+  if(_outputs == 1)
+  {
+    return "return " + _outputName + ";";
+  }
+  return "";
 }
 
 MMO_Function
-newMMO_Function (string name)
+newMMO_Function(string name)
 {
-    return (new MMO_Function_ (name));
+  return new MMO_Function_(name);
 }
 
 void
-deleteMMO_Function (MMO_Function m)
+deleteMMO_Function(MMO_Function m)
 {
-    delete m;
+  delete m;
 }
 
 /* MMO_Package class. */
 
-MMO_Package_::MMO_Package_ (string name) :
-        _name (name), _funcs (0), _packages ()
+MMO_Package_::MMO_Package_(string name) :
+    _name(name), _funcs(0), _packages()
 {
-    _imports = newMMO_ImportTable ();
-    _functions = newMMO_FunctionTable ();
+  _imports = newMMO_ImportTable();
+  _functions = newMMO_FunctionTable();
 }
 
-MMO_Package_::~MMO_Package_ ()
+MMO_Package_::~MMO_Package_()
 {
 }
 
 CL_Type
-MMO_Package_::classType ()
+MMO_Package_::classType()
 {
-    return (CL_PACKAGE);
+  return CL_PACKAGE;
 }
 
 MMO_ImportTable
-MMO_Package_::imports ()
+MMO_Package_::imports()
 {
-    return (_imports);
+  return _imports;
 }
 
 VarSymbolTable
-MMO_Package_::varTable ()
+MMO_Package_::varTable()
 {
-    return (NULL);
+  return NULL;
 }
 
 void
-MMO_Package_::insert (string n)
+MMO_Package_::insert(string n)
 {
-    _imports->insert (n);
+  _imports->insert(n);
 }
 
 void
-MMO_Package_::insert (AST_Equation eq)
+MMO_Package_::insert(AST_Equation eq)
 {
-    return;
+  return;
 }
 
 void
-MMO_Package_::insert (AST_Statement stm)
+MMO_Package_::insert(AST_Statement stm)
 {
-    return;
+  return;
 }
 
 void
-MMO_Package_::insert (AST_Statement stm, bool initial)
+MMO_Package_::insert(AST_Statement stm, bool initial)
 {
-    return;
+  return;
 }
 
 void
-MMO_Package_::insert (MMO_Function f)
+MMO_Package_::insert(MMO_Function f)
 {
-    Index i;
-    i.setOffset (_funcs++);
-    _functions->insert (i, f);
-    return;
+  Index i;
+  i.setOffset(_funcs++);
+  _functions->insert(i, f);
+  return;
 }
 
 MMO_FunctionTable
-MMO_Package_::functions ()
+MMO_Package_::functions()
 {
-    return (_functions);
+  return _functions;
 }
 
 void
-MMO_Package_::insert (AST_External_Function_Call efc)
+MMO_Package_::insert(AST_External_Function_Call efc)
 {
-    return;
+  return;
 }
 
 void
-MMO_Package_::insert (VarName n, VarInfo vi, DEC_Type type)
+MMO_Package_::insert(VarName n, VarInfo vi, DEC_Type type)
 {
-    return;
+  return;
 }
 
 void
-MMO_Package_::insert (VarName n, VarInfo vi)
+MMO_Package_::insert(VarName n, VarInfo vi)
 {
-    return;
+  return;
 }
 
 void
-MMO_Package_::insert (AST_Argument_Modification x)
+MMO_Package_::insert(AST_Argument_Modification x)
 {
 }
 
 string
-MMO_Package_::fileName () const
+MMO_Package_::fileName() const
 {
-    return (Util::getInstance ()->packageName (_name));
+  return Util::getInstance()->packageName(_name);
 }
 
 string
-MMO_Package_::name () const
+MMO_Package_::name() const
 {
-    return (_name);
+  return _name;
 }
 
 string
-MMO_Package_::prefix ()
+MMO_Package_::prefix()
 {
-    return ("__" + _name + "__");
+  return "__" + _name + "__";
 }
 
 MMO_Package
-newMMO_Package (string name)
+newMMO_Package(string name)
 {
-    return (new MMO_Package_ (name));
+  return new MMO_Package_(name);
 }
 
 void
-deleteMMO_Package (MMO_Package m)
+deleteMMO_Package(MMO_Package m)
 {
-    delete m;
+  delete m;
 }
 
 bool
-MMO_Model_::_isArray (AST_Expression exp)
+MMO_Model_::_isArray(AST_Expression exp)
 {
-    if (exp->expressionType () == EXPCOMPREF)
-    {
-        AST_Expression_ComponentReference ecr = exp->getAsComponentReference ();
-        return (ecr->hasIndexes ());
-    }
-    return (false);
+  if(exp->expressionType() == EXPCOMPREF)
+  {
+    AST_Expression_ComponentReference ecr = exp->getAsComponentReference();
+    return ecr->hasIndexes();
+  }
+  return false;
 }
 
 void
-MMO_Model_::setEvents ()
+MMO_Model_::setEvents()
 {
-    _setEvents ();
+  _setEvents();
 }
 
 void
-MMO_Function_::setFunctions (MMO_FunctionTable functions, MMO_FunctionTable externalFunctions, MMO_SymbolRefTable calledFunctions)
+MMO_Function_::setFunctions(MMO_FunctionTable functions,
+    MMO_FunctionTable externalFunctions, MMO_SymbolRefTable calledFunctions)
 {
-    _externalFunctions = externalFunctions;
-    if (_functions != NULL)
-    {
-        deleteMMO_FunctionTable (_functions);
-    }
-    if (_calledFunctions != NULL)
-    {
-        deleteMMO_SymbolRefTable (_calledFunctions);
-    }
-    _calledFunctions = calledFunctions;
-    _functions = functions;
-    _data->setExternalFunctions (_externalFunctions);
-    _data->setFunctions (_functions);
-    _data->setCalledFunctions (_calledFunctions);
+  _externalFunctions = externalFunctions;
+  if(_functions != NULL)
+  {
+    deleteMMO_FunctionTable(_functions);
+  }
+  if(_calledFunctions != NULL)
+  {
+    deleteMMO_SymbolRefTable(_calledFunctions);
+  }
+  _calledFunctions = calledFunctions;
+  _functions = functions;
+  _data->setExternalFunctions(_externalFunctions);
+  _data->setFunctions(_functions);
+  _data->setCalledFunctions(_calledFunctions);
 }

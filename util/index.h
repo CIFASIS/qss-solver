@@ -64,79 +64,79 @@ using namespace std;
  */
 class Intersection
 {
-public:
+  public:
     /**
      *
      */
-    Intersection ();
+    Intersection();
     /**
      *
      */
-    ~Intersection ();
-    /**
-     *
-     * @return
-     */
-    int
-    begin ();
+    ~Intersection();
     /**
      *
      * @return
      */
     int
-    end ();
+    begin();
+    /**
+     *
+     * @return
+     */
+    int
+    end();
     /**
      *
      * @param b
      * @return
      */
     bool
-    equal (Intersection b);
+    equal(Intersection b);
     /**
      *
      * @param type
      */
     void
-    setType (int type);
+    setType(int type);
     /**
      *
      * @param value
      */
     void
-    setValue (int value);
+    setValue(int value);
     /**
      *
      * @return
      */
     int
-    modelicaValue ();
+    modelicaValue();
     /**
      *
      * @return
      */
     int
-    type ();
+    type();
     /**
      *
      * @return
      */
     int
-    value ();
+    value();
     void
-    setLow (int l);
+    setLow(int l);
     int
-    low ();
+    low();
     void
-    setHi (int h);
+    setHi(int h);
     int
-    hi ();
+    hi();
     bool
-    hasRange ();
+    hasRange();
     void
-    setRange (bool range);
+    setRange(bool range);
     int
-    range ();
-private:
+    range();
+    private:
     int _low;
     int _hi;
     int _type;
@@ -149,17 +149,17 @@ private:
  */
 class Index_
 {
-public:
+  public:
     /**
      *
      */
-    Index_ ();
+    Index_();
     /**
      *
      * @param constant
      * @param factor
      */
-    Index_ (int constant, int factor);
+    Index_(int constant, int factor);
     /**
      *
      * @param constant
@@ -167,90 +167,90 @@ public:
      * @param low
      * @param high
      */
-    Index_ (int constant, int factor, int low, int high);
+    Index_(int constant, int factor, int low, int high);
     /**
      *
      */
-    ~Index_ ();
+    ~Index_();
     /**
      *
      * @param val
      * @return
      */
     bool
-    checkReverseValue (int val);
+    checkReverseValue(int val);
     /**
      *
      * @param l
      */
     void
-    setLow (int l);
+    setLow(int l);
     /**
      *
      * @return
      */
     int
-    low () const;
+    low() const;
     /**
      *
      * @param h
      */
     void
-    setHi (int h);
+    setHi(int h);
     /**
      *
      * @return
      */
     int
-    hi () const;
+    hi() const;
     /**
      *
      * @param c
      */
     void
-    setConstant (int c);
+    setConstant(int c);
     /**
      *
      * @return
      */
     int
-    mappedConstant () const;
+    mappedConstant() const;
     /**
      *
      * @return
      */
     int
-    operConstant () const;
+    operConstant() const;
     /**
      *
      * @return
      */
     int
-    constant () const;
+    constant() const;
     /**
      *
      * @param f
      */
     void
-    setFactor (int f);
+    setFactor(int f);
     /**
      *
      * @return
      */
     int
-    factor () const;
+    factor() const;
     /**
      *
      * @param o
      */
     void
-    setOffset (int o);
+    setOffset(int o);
     /**
      *
      * @return
      */
     int
-    offset () const;
+    offset() const;
     /**
      *
      * @param val
@@ -258,7 +258,7 @@ public:
      * @return
      */
     int
-    value (int val = 0, int offset = 0);
+    value(int val = 0, int offset = 0);
     /**
      * Generates an index copy with the corresponding parameters
      * and the value indicated by val (no factor).
@@ -266,7 +266,7 @@ public:
      * @return
      */
     Index_
-    indexValue (int val);
+    indexValue(int val);
     /**
      *
      * @param val
@@ -274,57 +274,57 @@ public:
      * @return
      */
     int
-    mappedValue (int val = 0, int offset = 0);
+    mappedValue(int val = 0, int offset = 0);
     /**
      *
      * @param val
      * @return
      */
     int
-    modelicaValue (int val);
+    modelicaValue(int val);
     /**
      *
      * @param val
      * @return
      */
     int
-    reverseValue (int val);
+    reverseValue(int val);
     /**
      *
      * @return
      */
     int
-    mappedBegin () const;
+    mappedBegin() const;
     /**
      *
      * @return
      */
     int
-    mappedEnd () const;
+    mappedEnd() const;
     /**
      *
      * @return
      */
     int
-    begin () const;
+    begin() const;
     /**
      *
      * @return
      */
     int
-    end () const;
+    end() const;
     /**
      *
      * @return
      */
     int
-    reverseBegin () const;
+    reverseBegin() const;
     /**
      *
      * @return
      */
     int
-    reverseEnd () const;
+    reverseEnd() const;
     /**
      *
      * @param sub
@@ -332,7 +332,7 @@ public:
      * @return
      */
     string
-    print (string sub = "", int offset = 0, bool solver = true) const;
+    print(string sub = "", int offset = 0, bool solver = true) const;
     /**
      *
      * @param var
@@ -340,127 +340,127 @@ public:
      * @return
      */
     string
-    printReverse (string variable, int offset = 0);
+    printReverse(string variable, int offset = 0);
     /**
      *
      * @param other
      * @return
      */
     bool
-    operator< (const Index_& other) const;
+    operator<(const Index_& other) const;
     /**
      *
      * @return
      */
     bool
-    isSet () const;
+    isSet() const;
     /**
      *
      * @return
      */
     bool
-    hasRange () const;
+    hasRange() const;
     void
-    setRange ();
+    setRange();
     /**
      *
      * @return
      */
     int
-    range () const;
+    range() const;
     /**
      *
      * @param b
      * @return
      */
     Intersection
-    intersection (Index_ b) const;
+    intersection(Index_ b) const;
     /**
      *
      * @return
      */
     int
-    lowValue () const;
+    lowValue() const;
     /**
      *
      * @return
      */
     int
-    hiValue () const;
+    hiValue() const;
     /**
      *
      */
     void
-    setArray ();
+    setArray();
     /**
      *
      * @return
      */
     bool
-    isArray () const;
+    isArray() const;
     /**
      *
      */
     void
-    clear ();
+    clear();
     /**
      *
      * @param map
      * @param variable
      */
     void
-    setMap (Index_ map, string variable);
+    setMap(Index_ map, string variable);
     /**
      *
      * @return
      */
     bool
-    hasMap () const;
+    hasMap() const;
     /**
      *
      * @return
      */
     string
-    parameter () const;
+    parameter() const;
     /**
      *
      * @return
      */
     Index_
-    map () const;
+    map() const;
     /**
      *
      * @param map
      */
     void
-    setMap (Index_ map);
+    setMap(Index_ map);
     /**
      *
      * @return
      */
     bool
-    hasRangeOp ();
+    hasRangeOp();
     /**
      *
      * @param rangeOp
      */
     void
-    setRangeOp (bool rangeOp);
+    setRangeOp(bool rangeOp);
     /**
      *
      * @param idx
      * @return
      */
     string
-    definition (string idx);
+    definition(string idx);
     string
-    variable (Index_ index, string var);
+    variable(Index_ index, string var);
     Index_
-    variableIndex (Index_ index);
+    variableIndex(Index_ index);
     Index_
-    applyVariableChange (Index_ index);
+    applyVariableChange(Index_ index);
     bool
-    variableChange (Index_ index);
+    variableChange(Index_ index);
     /**
      *
      * @param variable
@@ -468,25 +468,25 @@ public:
      * @return
      */
     string
-    printReverseDefinition (string variable, int offset = 0);
+    printReverseDefinition(string variable, int offset = 0);
     /**
      *
      * @param other
      * @return
      */
     bool
-    operator== (const Index_ &other) const;
+    operator==(const Index_ &other) const;
     bool
-    equalExp (const Index_ &other) const;
+    equalExp(const Index_ &other) const;
     bool
-    getIntersection (const Index_ &other) const;
+    getIntersection(const Index_ &other) const;
     bool
-    odd () const;
+    odd() const;
     bool
-    even () const;
-private:
+    even() const;
+    private:
     void
-    _setIndex ();
+    _setIndex();
     int _constant;
     int _factor;
     int _offset;
@@ -506,7 +506,7 @@ private:
  */
 class Compare
 {
-public:
+  public:
     /**
      *
      * @param x
@@ -514,57 +514,57 @@ public:
      * @return
      */
     bool
-    operator() (const Index_ *x, const Index_ *y) const
-    {
-        if (x->hasMap () && y->hasMap ())
+    operator()(const Index_ *x, const Index_ *y) const
         {
-            if (x->offset () != y->offset ())
-            {
-                return (x->offset () < y->offset ());
-            }
-            else if (x->parameter () == y->parameter ())
-            {
-                if (x->map () < y->map ())
-                {
-                    return (true);
-                }
-                else
-                {
-                    return (x->operConstant () < y->operConstant ());
-                }
-            }
-            else
-            {
-                return (x->parameter () < y->parameter ());
-            }
-        }
-        else if (x->hasMap () && !y->hasMap ())
+      if(x->hasMap() && y->hasMap())
+      {
+        if(x->offset() != y->offset())
         {
-            return (true);
+          return x->offset() < y->offset();
         }
-        else if (!x->hasMap () && y->hasMap ())
+        else if(x->parameter() == y->parameter())
         {
-            return (false);
+          if(x->map() < y->map())
+          {
+            return true;
+          }
+          else
+          {
+            return x->operConstant() < y->operConstant();
+          }
         }
-        if (x->factor () != 0 && y->factor () == 0)
+        else
         {
-            if (x->lowValue () == y->lowValue ())
-            {
-                return (true);
-            }
+          return x->parameter() < y->parameter();
         }
-        if (x->factor () != 0 && y->factor () != 0)
+      }
+      else if(x->hasMap() && !y->hasMap())
+      {
+        return true;
+      }
+      else if(!x->hasMap() && y->hasMap())
+      {
+        return false;
+      }
+      if(x->factor() != 0 && y->factor() == 0)
+      {
+        if(x->lowValue() == y->lowValue())
         {
-            if (x->lowValue () == y->lowValue ())
-            {
-                if (x->offset () != y->offset ())
-                {
-                    return (x->low () < y->low ());
-                }
-                return (x->range () < y->range ());
-            }
+          return true;
         }
-        return (x->lowValue () < y->lowValue ());
+      }
+      if(x->factor() != 0 && y->factor() != 0)
+      {
+        if(x->lowValue() == y->lowValue())
+        {
+          if(x->offset() != y->offset())
+          {
+            return x->low() < y->low();
+          }
+          return x->range() < y->range();
+        }
+      }
+      return x->lowValue() < y->lowValue();
     }
 };
 
@@ -574,45 +574,44 @@ public:
 //class VariableInterval_
 //{
 //public:
-    /**
-     *
-     */
+/**
+ *
+ */
 //    VariableInterval_ ();
-    /**
-     *
-     * @param index
-     * @param name
-     */
+/**
+ *
+ * @param index
+ * @param name
+ */
 //    VariableInterval_ (Index_ index, string name);
-    /**
-     *
-     */
+/**
+ *
+ */
 //    ~VariableInterval_ ();
-    /**
-     *
-     * @return
-     */
+/**
+ *
+ * @return
+ */
 //    Index_
 //    index ();
-    /**
-     *
-     */
+/**
+ *
+ */
 //    string
 //    name ();
-    /**
-     *
-     * @param index
-     */
+/**
+ *
+ * @param index
+ */
 //    void
- //   setIndex (Index_ index);
-    /**
-     *
-     * @param name
-     */
+//   setIndex (Index_ index);
+/**
+ *
+ * @param name
+ */
 //    void
 //    setName (string name);
 //    bool
 //    isEmpty ();
 //};
-
 #endif  /* INDEX_H_ */

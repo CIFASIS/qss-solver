@@ -34,38 +34,39 @@
 /**
  *
  */
-DECLARE_FUNCTION_2P(var)
+DECLARE_FUNCTION_2P (var)
 /**
  *
  */
-DECLARE_FUNCTION_2P(der)
+DECLARE_FUNCTION_2P (der)
 /**
  *
  */
-DECLARE_FUNCTION_2P(der2)
+DECLARE_FUNCTION_2P (der2)
 /**
  *
  */
-DECLARE_FUNCTION_1P(der3)
+DECLARE_FUNCTION_1P (der3)
 
 /**
  *
  */
-DECLARE_FUNCTION_1P(pre)
+DECLARE_FUNCTION_1P (pre)
 
 /**
  *
  */
-class ConvertToGiNaC : public AST_Expression_Visitor<GiNaC::ex>
+class ConvertToGiNaC: public AST_Expression_Visitor<GiNaC::ex>
 {
-public:
+  public:
     /**
      *
      * @param varEnv
      * @param forDerivation
      * @param exp
      */
-    ConvertToGiNaC (VarSymbolTable varEnv, bool forDerivation = false, MMO_Expression exp = NULL);
+    ConvertToGiNaC(VarSymbolTable varEnv, bool forDerivation = false,
+        MMO_Expression exp = NULL);
     /**
      *
      * @param
@@ -74,51 +75,52 @@ public:
      * @return
      */
     GiNaC::ex
-    convert (AST_Expression, bool replaceDer = true, bool generateIndexes = false);
+    convert(AST_Expression, bool replaceDer = true,
+        bool generateIndexes = false);
     /**
      *
      * @param
      * @return
      */
     GiNaC::symbol&
-    getSymbol (AST_Expression_ComponentReference);
+    getSymbol(AST_Expression_ComponentReference);
     /**
      *
      * @param
      * @return
      */
     GiNaC::symbol&
-    getSymbol (string);
+    getSymbol(string);
     /**
      *
      * @param
      * @return
      */
     GiNaC::symbol&
-    getSymbol (AST_Expression_Derivative);
+    getSymbol(AST_Expression_Derivative);
     /**
      *
      * @return
      */
     GiNaC::symbol&
-    getTime ();
+    getTime();
     GiNaC::symbol&
-    first ();
+    first();
     GiNaC::symbol&
-    next ();
+    next();
     bool
-    end ();
+    end();
     map<string, GiNaC::symbol>
-    directory ();
+    directory();
     string
-    identifier (string str);
-private:
+    identifier(string str);
+    private:
     virtual GiNaC::ex
-    foldTraverseElement (AST_Expression);
+    foldTraverseElement(AST_Expression);
     virtual GiNaC::ex
-    foldTraverseElementUMinus (AST_Expression);
+    foldTraverseElementUMinus(AST_Expression);
     virtual GiNaC::ex
-    foldTraverseElement (GiNaC::ex, GiNaC::ex, BinOpType);
+    foldTraverseElement(GiNaC::ex, GiNaC::ex, BinOpType);
     map<string, GiNaC::symbol> _directory;
     bool _forDerivation;
     VarSymbolTable _varEnv;
@@ -132,14 +134,14 @@ private:
  */
 class ConvertToExpression
 {
-public:
+  public:
     /**
      *
      * @param
      * @return
      */
     static AST_Expression
-    convert (GiNaC::ex);
+    convert(GiNaC::ex);
 };
 
 #endif  /* GINAC_INTERFACE_H_ */

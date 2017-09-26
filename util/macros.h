@@ -34,7 +34,7 @@ using namespace std;
 /**
  *
  */
-#define _S(s) newAST_String(s)
+#define _MMOC_S(s) newAST_String(s)
 /**
  *
  */
@@ -42,7 +42,7 @@ using namespace std;
 /**
  *
  */
-#define GET_AS_IMP(X,Y) AST_##X##_##Y AST_##X##_::getAs##Y () { return (dynamic_cast<AST_##X##_##Y > (this)); }
+#define GET_AS_IMP(X,Y) AST_##X##_##Y AST_##X##_::getAs##Y () { return dynamic_cast<AST_##X##_##Y > (this); }
 /* Printers */
 /**
  *
@@ -56,12 +56,12 @@ using namespace std;
  *
  */
 #define CLASSP_PRINTER_IMP(X) ostream & operator<<(ostream &os , const X &e ){ \
-                                os << *e; return (os);  }
+                                os << *e; return os;  }
 /**
  *
  */
 #define CLASS_PRINTER_IMP(X) ostream & operator<<(ostream &os, \
-                                    const X##_ &e ){ os << e.print(); return (os); } \
+                                    const X##_ &e ){ os << e.print(); return os; } \
                              CLASSP_PRINTER_IMP(X)
 
 #endif  /*  DEFINITIONS_H_ */

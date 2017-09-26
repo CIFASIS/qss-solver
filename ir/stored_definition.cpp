@@ -20,70 +20,70 @@
 #include <ir/stored_definition.h>
 #include <ir/class.h>
 
-MMO_StoredDefinition_::MMO_StoredDefinition_ () :
-        _classList ()
+MMO_StoredDefinition_::MMO_StoredDefinition_() :
+    _classList()
 {
 }
 
-MMO_StoredDefinition_::~MMO_StoredDefinition_ ()
+MMO_StoredDefinition_::~MMO_StoredDefinition_()
 {
 }
 
 list<MMO_Class>
-MMO_StoredDefinition_::classes () const
+MMO_StoredDefinition_::classes() const
 {
-    return (_classList);
+  return _classList;
 }
 
 void
-MMO_StoredDefinition_::addClass (MMO_Class c)
+MMO_StoredDefinition_::addClass(MMO_Class c)
 {
-    _classList.push_back (c);
+  _classList.push_back(c);
 }
 
 MMO_Class
-MMO_StoredDefinition_::begin ()
+MMO_StoredDefinition_::begin()
 {
-    _it = _classList.begin ();
-    if (_it == _classList.end ())
-    {
-        return (NULL);
-    }
-    return (*_it);
+  _it = _classList.begin();
+  if(_it == _classList.end())
+  {
+    return NULL;
+  }
+  return *_it;
 }
 
 MMO_Class
-MMO_StoredDefinition_::next ()
+MMO_StoredDefinition_::next()
 {
-    _it++;
-    if (_it == _classList.end ())
-    {
-        return (NULL);
-    }
-    return (*_it);
+  _it++;
+  if(_it == _classList.end())
+  {
+    return NULL;
+  }
+  return *_it;
 }
 
 bool
-MMO_StoredDefinition_::end ()
+MMO_StoredDefinition_::end()
 {
-    return (_it != _classList.end ());
+  return _it != _classList.end();
 }
 
 string
-MMO_StoredDefinition_::print ()
+MMO_StoredDefinition_::print()
 {
-    string ret;
-    return (ret);
+  string ret;
+  return ret;
 }
 
 MMO_StoredDefinition
-newMMO_StoredDefinition ()
+newMMO_StoredDefinition()
 {
-    return (new MMO_StoredDefinition_ ());
+  return new MMO_StoredDefinition_();
 }
 
 void
-deleteMMO_StoredDefinition (MMO_StoredDefinition m)
+deleteMMO_StoredDefinition(MMO_StoredDefinition m)
 {
-    delete m;
+  delete m;
 }

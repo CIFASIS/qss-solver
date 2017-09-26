@@ -35,52 +35,52 @@ using namespace std;
  */
 class MMO_Files_
 {
-public:
+  public:
     /**
      *
      * @param model
      * @param solver
      * @param flags
      */
-    MMO_Files_ (MMO_Model model, MMO_Solver solver, MMO_CompileFlags flags);
+    MMO_Files_(MMO_Model model, MMO_Solver solver, MMO_CompileFlags flags);
     /**
      *
      * @param name
      * @param flags
      */
-    MMO_Files_ (string name, MMO_CompileFlags flags);
+    MMO_Files_(string name, MMO_CompileFlags flags);
     /**
      *
      */
-    ~MMO_Files_ ();
-    /**
-     *
-     */
-    void
-    makefile ();
+    ~MMO_Files_();
     /**
      *
      */
     void
-    run ();
+    makefile();
     /**
      *
      */
     void
-    plot ();
+    run();
+    /**
+     *
+     */
+    void
+    plot();
     /**
      *
      * @param annotation
      */
     void
-    settings (MMO_Annotation annotation);
+    settings(MMO_Annotation annotation);
     void
-    graph ();
-private:
+    graph();
+    private:
     string
-    _variableSettings (Dependencies deps, string varName);
+    _variableSettings(Dependencies deps, string varName);
     void
-    _printList (list<string> ann, string tag, MMO_Annotation annotation);
+    _printList(list<string> ann, string tag, MMO_Annotation annotation);
     string _fname;
     MMO_Model _model;
     MMO_Solver _solver;
@@ -97,7 +97,7 @@ private:
  * @return
  */
 MMO_Files
-newMMO_Files (MMO_Model model, MMO_Solver solver, MMO_CompileFlags flags);
+newMMO_Files(MMO_Model model, MMO_Solver solver, MMO_CompileFlags flags);
 
 /**
  *
@@ -106,13 +106,13 @@ newMMO_Files (MMO_Model model, MMO_Solver solver, MMO_CompileFlags flags);
  * @return
  */
 MMO_Files
-newMMO_Files (string name, MMO_CompileFlags flags);
+newMMO_Files(string name, MMO_CompileFlags flags);
 
 /**
  *
  * @param m
  */
 void
-deleteMMO_Files (MMO_Files m);
+deleteMMO_Files(MMO_Files m);
 
 #endif  /* MMO_FILES_H_ */

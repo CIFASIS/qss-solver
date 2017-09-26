@@ -166,9 +166,9 @@
  */
 class AST_Expression_Traverse
 {
-public:
+  public:
     virtual
-    ~AST_Expression_Traverse ()
+    ~AST_Expression_Traverse()
     {
     }
     ;
@@ -178,122 +178,124 @@ public:
      * @return
      */
     AST_Expression
-    mapTraverse (AST_Expression);
-private:
+    mapTraverse(AST_Expression);
+    private:
     virtual AST_Expression
-    mapTraverseElement (AST_Expression) = 0;
+    mapTraverseElement(AST_Expression) = 0;
 };
 
 /**
  *
  */
 template<class R>
-    class AST_Expression_Visitor
+class AST_Expression_Visitor
+{
+  public:
+    /**
+     *
+     */
+    virtual
+    ~AST_Expression_Visitor()
     {
-    public:
-        /**
-         *
-         */
-        virtual
-        ~AST_Expression_Visitor ()
-        {
+    }
+    ;
+    /**
+     *
+     * @param e
+     * @return
+     */
+    R
+    foldTraverse(AST_Expression e)
+    {
+      switch(e->expressionType())
+      {
+        case EXPBINOP:
+          {
+          AST_Expression_BinOp b = e->getAsBinOp();
+          AST_Expression left = b->left(), right = b->right();
+          return (foldTraverseElement(foldTraverse(left), foldTraverse(right),
+              b->binopType()));
         }
-        ;
-        /**
-         *
-         * @param e
-         * @return
-         */
-        R
-        foldTraverse (AST_Expression e)
-        {
-            switch (e->expressionType ())
-            {
-                case EXPBINOP:
-                {
-                    AST_Expression_BinOp b = e->getAsBinOp ();
-                    AST_Expression left = b->left (), right = b->right ();
-                    return (foldTraverseElement (foldTraverse (left), foldTraverse (right), b->binopType ()));
-                }
-                case EXPUMINUS:
-                    return (foldTraverseElementUMinus (e));
-                default:
-                    return (foldTraverseElement (e));
-            }
-        }
-        ;
+        case EXPUMINUS:
+          return foldTraverseElementUMinus(e);
+        default:
+          return foldTraverseElement(e);
+      }
+    }
+    ;
     private:
-        virtual R
-        foldTraverseElement (AST_Expression) = 0;
-        virtual R
-        foldTraverseElementUMinus (AST_Expression) = 0;
-        virtual R
-        foldTraverseElement (R, R, BinOpType) = 0;
-    };
+    virtual R
+    foldTraverseElement(AST_Expression) = 0;
+    virtual R
+    foldTraverseElementUMinus(AST_Expression) = 0;
+    virtual R
+    foldTraverseElement(R, R, BinOpType) = 0;
+};
 
 /**
  *
  */
 template<class R>
-    class AST_Expression_Fold
+class AST_Expression_Fold
+{
+  public:
+    /**
+     *
+     */
+    virtual
+    ~AST_Expression_Fold()
     {
-    public:
-        /**
-         *
-         */
-        virtual
-        ~AST_Expression_Fold ()
-        {
+    }
+    ;
+    /**
+     *
+     * @param e
+     * @return
+     */
+    R
+    foldTraverse(AST_Expression e)
+    {
+      switch(e->expressionType())
+      {
+        case EXPBINOP:
+          {
+          AST_Expression_BinOp b = e->getAsBinOp();
+          AST_Expression left = b->left(), right = b->right();
+          return (foldTraverseElement(foldTraverse(left), foldTraverse(right),
+              b->binopType()));
         }
-        ;
-        /**
-         *
-         * @param e
-         * @return
-         */
-        R
-        foldTraverse (AST_Expression e)
-        {
-            switch (e->expressionType ())
-            {
-                case EXPBINOP:
-                {
-                    AST_Expression_BinOp b = e->getAsBinOp ();
-                    AST_Expression left = b->left (), right = b->right ();
-                    return (foldTraverseElement (foldTraverse (left), foldTraverse (right), b->binopType ()));
-                }
-                case EXPOUTPUT:
-                {
-                    AST_Expression_Output o = e->getAsOutput ();
-                    return (foldTraverse (AST_ListFirst (o->expressionList ())));
-                }
-                case EXPUMINUS:
-                    return (foldTraverseElementUMinus (e));
-                default:
-                    return (foldTraverseElement (e));
-            }
+        case EXPOUTPUT:
+          {
+          AST_Expression_Output o = e->getAsOutput();
+          return foldTraverse(AST_ListFirst(o->expressionList()));
         }
-        ;
+        case EXPUMINUS:
+          return foldTraverseElementUMinus(e);
+        default:
+          return foldTraverseElement(e);
+      }
+    }
+    ;
     private:
-        virtual R
-        foldTraverseElement (AST_Expression) = 0;
-        virtual R
-        foldTraverseElementUMinus (AST_Expression) = 0;
-        virtual R
-        foldTraverseElement (R, R, BinOpType) = 0;
-    };
+    virtual R
+    foldTraverseElement(AST_Expression) = 0;
+    virtual R
+    foldTraverseElementUMinus(AST_Expression) = 0;
+    virtual R
+    foldTraverseElement(R, R, BinOpType) = 0;
+};
 
 /**
  *
  */
 class EqualExp
 {
-public:
+  public:
     /**
      *
      * @param symbolTable
      */
-    EqualExp (VarSymbolTable symbolTable);
+    EqualExp(VarSymbolTable symbolTable);
     /**
      *
      * @param a
@@ -301,42 +303,43 @@ public:
      * @return
      */
     bool
-    equalTraverse (AST_Expression a, AST_Expression b);
-private:
+    equalTraverse(AST_Expression a, AST_Expression b);
+    private:
     bool
-    _compareList (AST_ExpressionList ael, AST_ExpressionList bel);
+    _compareList(AST_ExpressionList ael, AST_ExpressionList bel);
     bool
-    equalTraverseElement (AST_Expression a, AST_Expression b);
+    equalTraverseElement(AST_Expression a, AST_Expression b);
     VarInfo
-    getVarInfo (AST_Expression_ComponentReference compRef);
+    getVarInfo(AST_Expression_ComponentReference compRef);
     bool
-    compareArrays (AST_Expression_ComponentReference arrayA, AST_Expression_ComponentReference arrayB);
+    compareArrays(AST_Expression_ComponentReference arrayA,
+        AST_Expression_ComponentReference arrayB);
     VarSymbolTable _symbolTable;
 };
 
 /**
  *
  */
-class ControlVars_ : public AST_Expression_Fold<bool>
+class ControlVars_: public AST_Expression_Fold<bool>
 {
-public:
+  public:
     /**
      *
      * @param st
      * @param lst
      */
-    ControlVars_ (VarSymbolTable st, VarSymbolTable lst);
+    ControlVars_(VarSymbolTable st, VarSymbolTable lst);
     /**
      *
      */
-    ~ControlVars_ ();
-private:
+    ~ControlVars_();
+    private:
     bool
-    foldTraverseElement (AST_Expression);
+    foldTraverseElement(AST_Expression);
     bool
-    foldTraverseElement (bool, bool, BinOpType);
+    foldTraverseElement(bool, bool, BinOpType);
     bool
-    foldTraverseElementUMinus (AST_Expression);
+    foldTraverseElementUMinus(AST_Expression);
     VarSymbolTable _st;
     VarSymbolTable _lst;
 };
@@ -347,45 +350,45 @@ private:
  * @return
  */
 ControlVars
-newControlVars (VarSymbolTable st, VarSymbolTable lst);
+newControlVars(VarSymbolTable st, VarSymbolTable lst);
 /**
  *
  * @param m
  */
 void
-deleteControlVars (ControlVars m);
+deleteControlVars(ControlVars m);
 
 /**
  *
  */
-class IsConstant : public AST_Expression_Fold<bool>
+class IsConstant: public AST_Expression_Fold<bool>
 {
-public:
+  public:
     /**
      *
      * @param st
      */
-    IsConstant (VarSymbolTable st) :
-            _st (st)
+    IsConstant(VarSymbolTable st) :
+        _st(st)
     {
     }
     ;
-private:
+    private:
     bool
-    foldTraverseElement (AST_Expression);
+    foldTraverseElement(AST_Expression);
     bool
-    foldTraverseElement (bool, bool, BinOpType);
+    foldTraverseElement(bool, bool, BinOpType);
     bool
-    foldTraverseElementUMinus (AST_Expression);
+    foldTraverseElementUMinus(AST_Expression);
     VarSymbolTable _st;
 };
 
 /**
  *
  */
-class ReplaceExp : public AST_Expression_Traverse
+class ReplaceExp: public AST_Expression_Traverse
 {
-public:
+  public:
     /**
      *
      * @param rep
@@ -395,10 +398,11 @@ public:
      * @return
      */
     AST_Expression
-    replaceExp (AST_Expression rep, AST_Expression for_exp, AST_Expression in, VarSymbolTable symbol_table);
-private:
+    replaceExp(AST_Expression rep, AST_Expression for_exp, AST_Expression in,
+        VarSymbolTable symbol_table);
+    private:
     AST_Expression
-    mapTraverseElement (AST_Expression);
+    mapTraverseElement(AST_Expression);
     AST_Expression _rep, _for_exp, _in;
     VarSymbolTable _symbol_table;
 };
@@ -406,20 +410,20 @@ private:
 /**
  * 
  */
-class ReplaceBoolean : public AST_Expression_Fold<AST_Expression>
+class ReplaceBoolean: public AST_Expression_Fold<AST_Expression>
 {
-public:
+  public:
     /**
      *
      */
-    ReplaceBoolean ();
-private:
+    ReplaceBoolean();
+    private:
     AST_Expression
-    foldTraverseElement (AST_Expression);
+    foldTraverseElement(AST_Expression);
     AST_Expression
-    foldTraverseElement (AST_Expression, AST_Expression, BinOpType);
+    foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
     AST_Expression
-    foldTraverseElementUMinus (AST_Expression);
+    foldTraverseElementUMinus(AST_Expression);
 };
 
 /* WhenEqualityTrasforms: Realiza los cambios necesarios a los 
@@ -430,40 +434,40 @@ private:
 /**
  *
  */
-class WhenEqualityTrasforms : public AST_Expression_Fold<AST_Expression>
+class WhenEqualityTrasforms: public AST_Expression_Fold<AST_Expression>
 {
-public:
+  public:
     /**
      *
      */
-    WhenEqualityTrasforms ();
-private:
+    WhenEqualityTrasforms();
+    private:
     AST_Expression
-    foldTraverseElement (AST_Expression);
+    foldTraverseElement(AST_Expression);
     AST_Expression
-    foldTraverseElement (AST_Expression, AST_Expression, BinOpType);
+    foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
     AST_Expression
-    foldTraverseElementUMinus (AST_Expression);
+    foldTraverseElementUMinus(AST_Expression);
 };
 
 /**
  * 
  */
-class PreChange : public AST_Expression_Fold<AST_Expression>
+class PreChange: public AST_Expression_Fold<AST_Expression>
 {
-public:
+  public:
     /**
      *
      */
-    PreChange (PreSet);
-private:
+    PreChange(PreSet);
+    private:
     PreSet _pre;
     AST_Expression
-    foldTraverseElement (AST_Expression);
+    foldTraverseElement(AST_Expression);
     AST_Expression
-    foldTraverseElement (AST_Expression, AST_Expression, BinOpType);
+    foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
     AST_Expression
-    foldTraverseElementUMinus (AST_Expression);
+    foldTraverseElementUMinus(AST_Expression);
 };
 
 /* FindReference: Devuelve si hay referencia de una variable en una expresion
@@ -472,21 +476,21 @@ private:
 /**
  *
  */
-class FindReference : public AST_Expression_Fold<bool>
+class FindReference: public AST_Expression_Fold<bool>
 {
-public:
+  public:
     /**
      *
      */
-    FindReference (AST_String);
-private:
+    FindReference(AST_String);
+    private:
     AST_String _var;
     bool
-    foldTraverseElement (AST_Expression);
+    foldTraverseElement(AST_Expression);
     bool
-    foldTraverseElement (bool, bool, BinOpType);
+    foldTraverseElement(bool, bool, BinOpType);
     bool
-    foldTraverseElementUMinus (AST_Expression);
+    foldTraverseElementUMinus(AST_Expression);
 };
 
 /* ReplaceReference: Cambia las referencias de una variable por otra
@@ -496,24 +500,24 @@ private:
 /**
  *
  */
-class ReplaceReference : public AST_Expression_Fold<AST_Expression>
+class ReplaceReference: public AST_Expression_Fold<AST_Expression>
 {
-public:
+  public:
     /**
      *
      * @param
      * @param
      */
-    ReplaceReference (AST_String, AST_String);
-private:
+    ReplaceReference(AST_String, AST_String);
+    private:
     AST_String _pre;
     AST_String _post;
     AST_Expression
-    foldTraverseElement (AST_Expression);
+    foldTraverseElement(AST_Expression);
     AST_Expression
-    foldTraverseElement (AST_Expression, AST_Expression, BinOpType);
+    foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
     AST_Expression
-    foldTraverseElementUMinus (AST_Expression);
+    foldTraverseElementUMinus(AST_Expression);
 };
 
 /**
@@ -523,14 +527,14 @@ private:
 /**
  *
  */
-class EvalExp : public AST_Expression_Fold<AST_Expression>
+class EvalExp: public AST_Expression_Fold<AST_Expression>
 {
-public:
+  public:
     /**
      *
      * @param symbolTable
      */
-    EvalExp (VarSymbolTable symbolTable);
+    EvalExp(VarSymbolTable symbolTable);
     /**
      * Evaluates an arithmetic expression.
      */
@@ -540,7 +544,7 @@ public:
      * @return
      */
     AST_Expression
-    eval (AST_Expression exp);
+    eval(AST_Expression exp);
     /**
      * Evaluates an arithmetic expression replacing the occurrences of compRef with the value provided (compRefValue).
      */
@@ -552,24 +556,25 @@ public:
      * @return
      */
     AST_Expression
-    eval (AST_Expression_ComponentReference compRef, AST_Expression compRefValue, AST_Expression exp);
-private:
+    eval(AST_Expression_ComponentReference compRef, AST_Expression compRefValue,
+        AST_Expression exp);
+    private:
     AST_Expression
-    foldTraverseElement (AST_Expression);
+    foldTraverseElement(AST_Expression);
     AST_Expression
-    foldTraverseElementUMinus (AST_Expression);
+    foldTraverseElementUMinus(AST_Expression);
     AST_Expression
-    foldTraverseElement (AST_Expression, AST_Expression, BinOpType);
+    foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
     AST_Expression
-    evalCompRef (AST_Expression_ComponentReference compRef);
+    evalCompRef(AST_Expression_ComponentReference compRef);
     AST_Expression
-    evalArray (AST_Expression_ComponentReference exp);
+    evalArray(AST_Expression_ComponentReference exp);
     bool
-    shouldReturnInteger (AST_Expression left, AST_Expression right);
+    shouldReturnInteger(AST_Expression left, AST_Expression right);
     bool
-    shouldReturnReal (AST_Expression left, AST_Expression right);
+    shouldReturnReal(AST_Expression left, AST_Expression right);
     AST_Real
-    getRealVal (AST_Expression exp);
+    getRealVal(AST_Expression exp);
     AST_Expression_ComponentReference _compRef;
     AST_Expression _compRefVal;
     VarSymbolTable _symbolTable;
@@ -580,195 +585,195 @@ private:
  */
 class AST_Visitor_
 {
-public:
+  public:
     /**
      *
      */
     virtual
-    ~AST_Visitor_ ();
+    ~AST_Visitor_();
     /**
      *
      * @param x
      */
     virtual void
-    visit (AST_Class x) = 0;
+    visit(AST_Class x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    leave (AST_Class x) = 0;
+    leave(AST_Class x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    visit (AST_Composition x) = 0;
+    visit(AST_Composition x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    leave (AST_Composition x) = 0;
+    leave(AST_Composition x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    visit (AST_CompositionElement x) = 0;
+    visit(AST_CompositionElement x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    leave (AST_CompositionElement x) = 0;
+    leave(AST_CompositionElement x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    visit (AST_CompositionEqsAlgs x) = 0;
+    visit(AST_CompositionEqsAlgs x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    leave (AST_CompositionEqsAlgs x) = 0;
+    leave(AST_CompositionEqsAlgs x) = 0;
     /**
      *
      * @param
      */
     virtual void
-    visit (AST_External_Function_Call) = 0;
+    visit(AST_External_Function_Call) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    visit (AST_Element x) = 0;
+    visit(AST_Element x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    visit (AST_Modification x) = 0;
+    visit(AST_Modification x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    leave (AST_Modification x) = 0;
+    leave(AST_Modification x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    visit (AST_Comment x) = 0;
+    visit(AST_Comment x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    visit (AST_Equation x) = 0;
+    visit(AST_Equation x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    visit (AST_ForIndex x) = 0;
+    visit(AST_ForIndex x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    visit (AST_Equation_Else x) = 0;
+    visit(AST_Equation_Else x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    visit (AST_Expression x) = 0;
+    visit(AST_Expression x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    visit (AST_Argument x) = 0;
+    visit(AST_Argument x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    visit (AST_Statement x) = 0;
+    visit(AST_Statement x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    leave (AST_Statement x) = 0;
+    leave(AST_Statement x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    visit (AST_Statement_Else x) = 0;
+    visit(AST_Statement_Else x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    visit (AST_StoredDefinition x) = 0;
+    visit(AST_StoredDefinition x) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    leave (AST_StoredDefinition x) = 0;
+    leave(AST_StoredDefinition x) = 0;
     /**
      *
      * @param x
      * @return
      */
     virtual int
-    apply (AST_Node x) = 0;
+    apply(AST_Node x) = 0;
 };
 
 /**
  *
  */
-class ExpressionIndex_ : public AST_Expression_Fold<Index>
+class ExpressionIndex_: public AST_Expression_Fold<Index>
 {
-public:
+  public:
     /**
      *
      * @param vt
      */
-    ExpressionIndex_ (VarSymbolTable vt);
+    ExpressionIndex_(VarSymbolTable vt);
     /**
      *
      */
-    ~ExpressionIndex_ ();
+    ~ExpressionIndex_();
     Index
     /**
      *
      * @param exp
      * @return
      */
-    index (AST_Expression exp);
+    index(AST_Expression exp);
     /**
      *
      * @param idx
      * @param index
      */
     void
-    setIndex (Index *idx, Index index, int dim = 0);
-private:
+    setIndex(Index *idx, Index index, int dim = 0);
+    private:
     Index
-    foldTraverseElement (AST_Expression);
+    foldTraverseElement(AST_Expression);
     Index
-    foldTraverseElementUMinus (AST_Expression);
+    foldTraverseElementUMinus(AST_Expression);
     Index
-    foldTraverseElement (Index, Index, BinOpType);
+    foldTraverseElement(Index, Index, BinOpType);
     VarSymbolTable _vt;
 };
 /**
@@ -777,42 +782,43 @@ private:
  * @return
  */
 ExpressionIndex
-newExpressionIndex (VarSymbolTable vt);
+newExpressionIndex(VarSymbolTable vt);
 /**
  *
  * @param m
  */
 void
-deleteExpressionIndex (ExpressionIndex m);
+deleteExpressionIndex(ExpressionIndex m);
 
 /**
  *
  */
-class GenerateDeps_ : public AST_Expression_Fold<Dependencies>
+class GenerateDeps_: public AST_Expression_Fold<Dependencies>
 {
-public:
+  public:
     /**
      *
      * @param data
      */
-    GenerateDeps_ (MMO_ModelData data);
+    GenerateDeps_(MMO_ModelData data);
     /**
      *
      */
-    ~GenerateDeps_ ();
-private:
+    ~GenerateDeps_();
+    private:
     VarSymbolTable _vt;
     MMO_EquationTable _algs;
     MMO_ModelData _data;
     Index _idx;
     Dependencies
-    foldTraverseElement (AST_Expression exp);
+    foldTraverseElement(AST_Expression exp);
     Dependencies
-    foldTraverseElementUMinus (AST_Expression exp);
+    foldTraverseElementUMinus(AST_Expression exp);
     Dependencies
-    foldTraverseElement (Dependencies l, Dependencies r, BinOpType bot);
+    foldTraverseElement(Dependencies l, Dependencies r, BinOpType bot);
     void
-    _algebraicsDeps (AST_Expression_ComponentReference cr, Index idx, VarInfo vi, Dependencies ret);
+    _algebraicsDeps(AST_Expression_ComponentReference cr, Index idx, VarInfo vi,
+        Dependencies ret);
 };
 /**
  *
@@ -820,29 +826,29 @@ private:
  * @return
  */
 GenerateDeps
-newGenerateDeps (MMO_ModelData data);
+newGenerateDeps(MMO_ModelData data);
 /**
  *
  * @param m
  */
 void
-deleteGenerateDeps (GenerateDeps m);
+deleteGenerateDeps(GenerateDeps m);
 
 /**
  *
  */
-class ExpIndexes_ : public AST_Expression_Fold<string>
+class ExpIndexes_: public AST_Expression_Fold<string>
 {
-public:
+  public:
     /**
      *
      * @param vt
      */
-    ExpIndexes_ (VarSymbolTable vt);
+    ExpIndexes_(VarSymbolTable vt);
     /**
      *
      */
-    ~ExpIndexes_ ();
+    ~ExpIndexes_();
     /**
      *
      * @param idx
@@ -850,14 +856,14 @@ public:
      * @param offset
      */
     void
-    setEnvironment (string idx, bool modelica = false, int offset = 1);
-private:
+    setEnvironment(string idx, bool modelica = false, int offset = 1);
+    private:
     string
-    foldTraverseElement (AST_Expression exp);
+    foldTraverseElement(AST_Expression exp);
     string
-    foldTraverseElementUMinus (AST_Expression exp);
+    foldTraverseElementUMinus(AST_Expression exp);
     string
-    foldTraverseElement (string l, string r, BinOpType bot);
+    foldTraverseElement(string l, string r, BinOpType bot);
     VarSymbolTable _vt;
     string _idx;
     int _offset;
@@ -869,36 +875,36 @@ private:
  * @return
  */
 ExpIndexes
-newExpIndexes (VarSymbolTable vt);
+newExpIndexes(VarSymbolTable vt);
 /**
  *
  * @param m
  */
 void
-deleteExpIndexes (ExpIndexes m);
+deleteExpIndexes(ExpIndexes m);
 
 /**
  *
  */
-class ReplaceDer_ : public AST_Expression_Visitor<AST_Expression>
+class ReplaceDer_: public AST_Expression_Visitor<AST_Expression>
 {
-public:
+  public:
     /**
      *
      * @param vt
      */
-    ReplaceDer_ (VarSymbolTable vt);
+    ReplaceDer_(VarSymbolTable vt);
     /**
      *
      */
-    ~ReplaceDer_ ();
-private:
+    ~ReplaceDer_();
+    private:
     AST_Expression
-    foldTraverseElement (AST_Expression exp);
+    foldTraverseElement(AST_Expression exp);
     AST_Expression
-    foldTraverseElementUMinus (AST_Expression exp);
+    foldTraverseElementUMinus(AST_Expression exp);
     AST_Expression
-    foldTraverseElement (AST_Expression l, AST_Expression r, BinOpType bot);
+    foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
     VarSymbolTable _vt;
 };
 /**
@@ -907,12 +913,12 @@ private:
  * @return
  */
 ReplaceDer
-newReplaceDer (VarSymbolTable vt);
+newReplaceDer(VarSymbolTable vt);
 /**
  *
  * @param m
  */
 void
-deleteReplaceDer (ReplaceDer m);
+deleteReplaceDer(ReplaceDer m);
 
 #endif  /* AST_UTIL_H_ */

@@ -36,9 +36,9 @@
  */
 typedef enum
 {
-    CL_MODEL,  //!< CL_MODEL
-    CL_PACKAGE,  //!< CL_PACKAGE
-    CL_FUNCTION  //!< CL_FUNCTION
+  CL_MODEL,  //!< CL_MODEL
+  CL_PACKAGE,  //!< CL_PACKAGE
+  CL_FUNCTION  //!< CL_FUNCTION
 } CL_Type;
 
 /**
@@ -46,115 +46,115 @@ typedef enum
  */
 typedef enum
 {
-    DEC_PUBLIC,  //!< DEC_PUBLIC
-    DEC_LOCAL  //!< DEC_LOCAL
+  DEC_PUBLIC,  //!< DEC_PUBLIC
+  DEC_LOCAL  //!< DEC_LOCAL
 } DEC_Type;
 
 /**
  *
  */
-class MMO_Class_ : public MMO_Base_
+class MMO_Class_: public MMO_Base_
 {
-public:
+  public:
     /**
      *
      */
-    MMO_Class_ ();
+    MMO_Class_();
     /**
      *
      */
-    ~MMO_Class_ ();
+    ~MMO_Class_();
     /**
      *
      * @return
      */
     MMO_Package
-    getAsPackage ();
+    getAsPackage();
     /**
      *
      * @return
      */
     MMO_Model
-    getAsModel ();
+    getAsModel();
     /**
      *
      * @return
      */
     MMO_Function
-    getAsFunction ();
+    getAsFunction();
     /**
      *
      * @param c
      */
     void
-    setFather (MMO_Class c);
+    setFather(MMO_Class c);
     /**
      *
      * @return
      */
     bool
-    hasFather ();
+    hasFather();
     /**
      *
      * @return
      */
     MMO_Class
-    father () const;
+    father() const;
     /**
      *
      * @return
      */
     string
-    print ();
+    print();
     /**
      *
      * @return
      */
     virtual string
-    name () const = 0;
+    name() const = 0;
     /**
      *
      * @return
      */
     virtual CL_Type
-    classType () = 0;
+    classType() = 0;
     /**
      *
      * @param n
      */
     virtual void
-    insert (string n) = 0;
+    insert(string n) = 0;
     /**
      *
      * @param eq
      */
     virtual void
-    insert (AST_Equation eq) = 0;
+    insert(AST_Equation eq) = 0;
     /**
      *
      * @param stm
      * @param initial
      */
     virtual void
-    insert (AST_Statement stm, bool initial) = 0;
+    insert(AST_Statement stm, bool initial) = 0;
     /**
      *
      * @param stm
      */
     virtual void
-    insert (AST_Statement stm) = 0;
+    insert(AST_Statement stm) = 0;
     /**
      *
      * @param f
      */
     virtual void
-    insert (MMO_Function f) = 0;
+    insert(MMO_Function f) = 0;
     /**
      *
      * @param efc
      */
     virtual void
-    insert (AST_External_Function_Call efc) = 0;
+    insert(AST_External_Function_Call efc) = 0;
     /**
      *
      * @param n
@@ -162,69 +162,69 @@ public:
      * @param type
      */
     virtual void
-    insert (VarName n, VarInfo vi, DEC_Type type) = 0;
+    insert(VarName n, VarInfo vi, DEC_Type type) = 0;
     /**
      *
      * @param n
      * @param vi
      */
     virtual void
-    insert (VarName n, VarInfo vi) = 0;
+    insert(VarName n, VarInfo vi) = 0;
     /**
      *
      * @param x
      */
     virtual void
-    insert (AST_Argument_Modification x) = 0;
+    insert(AST_Argument_Modification x) = 0;
     /**
      *
      * @return
      */
     virtual VarSymbolTable
-    varTable () = 0;
+    varTable() = 0;
     /**
      *
      * @return
      */
     virtual MMO_ImportTable
-    imports () = 0;
-private:
+    imports() = 0;
+    private:
     MMO_Class _father;
 };
 
 /**
  *
  */
-class MMO_Model_ : public MMO_Class_
+class MMO_Model_: public MMO_Class_
 {
-public:
+  public:
     /**
      *
      * @param name
      */
-    MMO_Model_ (string name);
+    MMO_Model_(string name);
     /**
      *
      */
-    ~MMO_Model_ ();
+    ~MMO_Model_();
     /**
      *
      * @return
      */
     string
-    name () const;
+    name() const;
     /**
      *
      * @return
      */
     CL_Type
-    classType ();
+    classType();
     /**
      *
      * @param n
      */
     void
-    insert (string n);
+    insert(string n);
     /**
      *
      * @param n
@@ -232,205 +232,205 @@ public:
      * @param type
      */
     void
-    insert (VarName n, VarInfo vi, DEC_Type type);
+    insert(VarName n, VarInfo vi, DEC_Type type);
     /**
      *
      * @param n
      * @param vi
      */
     void
-    insert (VarName n, VarInfo vi);
+    insert(VarName n, VarInfo vi);
     /**
      *
      * @param eq
      */
     void
-    insert (AST_Equation eq);
+    insert(AST_Equation eq);
     /**
      *
      * @param stm
      * @param initial
      */
     void
-    insert (AST_Statement stm, bool initial);
+    insert(AST_Statement stm, bool initial);
     /**
      *
      * @param stm
      */
     void
-    insert (AST_Statement stm);
+    insert(AST_Statement stm);
     /**
      *
      * @param f
      */
     void
-    insert (MMO_Function f);
+    insert(MMO_Function f);
     /**
      *
      * @param efc
      */
     void
-    insert (AST_External_Function_Call efc);
+    insert(AST_External_Function_Call efc);
     /**
      *
      * @param x
      */
     void
-    insert (AST_Argument_Modification x);
+    insert(AST_Argument_Modification x);
     /**
      *
      * @return
      */
     VarSymbolTable
-    varTable ();
+    varTable();
     /**
      *
      * @return
      */
     MMO_EquationTable
-    derivatives ();
+    derivatives();
     /**
      *
      * @return
      */
     MMO_EquationTable
-    algebraics ();
+    algebraics();
     /**
      *
      * @return
      */
     MMO_EquationTable
-    outputs ();
+    outputs();
     /**
      *
      * @return
      */
     MMO_Annotation
-    annotation ();
+    annotation();
     /**
      *
      * @return
      */
     MMO_StatementTable
-    initialCode ();
+    initialCode();
     /**
      *
      * @return
      */
     MMO_EventTable
-    events ();
+    events();
     /**
      *
      * @return
      */
     MMO_ImportTable
-    imports ();
+    imports();
     /**
      *
      * @return
      */
     MMO_FunctionTable
-    functions ();
+    functions();
     /**
      *
      * @return
      */
     MMO_SymbolRefTable
-    calledFunctions ();
+    calledFunctions();
     /**
      *
      * @return
      */
     bool
-    hasExternalFunctions ();
+    hasExternalFunctions();
     /**
      *
      */
     void
-    setEquations ();
+    setEquations();
     /**
      *
      */
     void
-    setEvents ();
+    setEvents();
     /**
      *
      */
     void
-    initOutput ();
+    initOutput();
     /**
      *
      * @return
      */
     unsigned int
-    states ();
+    states();
     /**
      *
      * @return
      */
     unsigned int
-    discretes ();
+    discretes();
     /**
      *
      * @return
      */
     unsigned int
-    algs ();
+    algs();
     /**
      *
      * @return
      */
     unsigned int
-    evs ();
+    evs();
     /**
      *
      * @return
      */
     unsigned int
-    funcs ();
+    funcs();
     /**
      *
      * @return
      */
     unsigned int
-    inputs ();
+    inputs();
     /**
      *
      * @return
      */
     unsigned int
-    outs ();
+    outs();
     /**
      *
      * @return
      */
     int
-    imps ();
+    imps();
     /**
      *
      * @param idx
      * @return
      */
     int
-    outputIndexes (Index idx);
+    outputIndexes(Index idx);
     /**
      *
      * @return
      */
     list<string>
-    includeDirectories ();
+    includeDirectories();
     /**
      *
      * @return
      */
     list<string>
-    libraryDirectories ();
+    libraryDirectories();
     /**
      *
      * @return
      */
     list<string>
-    linkLibraries ();
+    linkLibraries();
     /**
      *
      * @param vi
@@ -439,71 +439,73 @@ public:
      * @return
      */
     string
-    printInitialAssignment (VarInfo vi, string indent, string localVar = "i");
+    printInitialAssignment(VarInfo vi, string indent, string localVar = "i");
     /**
      *
      * @param ft
      */
     void
-    setExternalFunctions (MMO_FunctionTable ft);
-private:
+    setExternalFunctions(MMO_FunctionTable ft);
+    private:
     double
-    _scalarValue (AST_Expression exp);
+    _scalarValue(AST_Expression exp);
     AST_Expression_ComponentReference
-    _getComponentReference (AST_Expression exp);
+    _getComponentReference(AST_Expression exp);
     VarInfo
-    _variableLookup (string name, AST_Expression exp = NULL, ER_Type type = ER_Error);
+    _variableLookup(string name, AST_Expression exp = NULL, ER_Type type =
+        ER_Error);
     bool
-    _controlScalarExpression (AST_Expression exp);
+    _controlScalarExpression(AST_Expression exp);
     string
-    _transformExpression (AST_Expression left, AST_Expression right);
+    _transformExpression(AST_Expression left, AST_Expression right);
     AST_Statement
-    _transformStatement (AST_Statement st);
+    _transformStatement(AST_Statement st);
     AST_Equation
-    _transformEquation (AST_Equation eq);
+    _transformEquation(AST_Equation eq);
     int
-    _evalExp (AST_Expression exp);
+    _evalExp(AST_Expression exp);
     Index
-    _getAlgebraicIndex (AST_Expression left, Range range);
+    _getAlgebraicIndex(AST_Expression left, Range range);
     string
-    _getComponentName (AST_Expression exp);
+    _getComponentName(AST_Expression exp);
     bool
-    _isArray (AST_Expression exp);
+    _isArray(AST_Expression exp);
     list<string>
-    _getFunctionDependencies (map<string, string> mdeps);
+    _getFunctionDependencies(map<string, string> mdeps);
     void
-    _getFunctionInfo (MMO_Function f);
+    _getFunctionInfo(MMO_Function f);
     void
-    _setAlgebraic (AST_Expression left, AST_Expression right, Range range, AST_Expression arguments = NULL);
+    _setAlgebraic(AST_Expression left, AST_Expression right, Range range,
+        AST_Expression arguments = NULL);
     void
-    _insertEvent (AST_Statement stm, Range range);
+    _insertEvent(AST_Statement stm, Range range);
     void
-    _insertEquation (AST_Equation eq, Range range);
+    _insertEquation(AST_Equation eq, Range range);
     void
-    _insertAlgebraicEquation (AST_Equation eq, Range range);
+    _insertAlgebraicEquation(AST_Equation eq, Range range);
     void
-    _equationTraverse (void
-    (MMO_Model_::*tr) (AST_Equation, Range range));
+    _equationTraverse(void
+        (MMO_Model_::*tr)(AST_Equation, Range range));
     void
-    _controlEquation (AST_Equation eq);
+    _controlEquation(AST_Equation eq);
     void
-    _insertFunctionDependencies (list<string> deps, map<string, string> *mdeps);
+    _insertFunctionDependencies(list<string> deps, map<string, string> *mdeps);
     void
-    _setRealVariables (AST_Equation eq, Range range);
+    _setRealVariables(AST_Equation eq, Range range);
     void
-    _setEvents ();
+    _setEvents();
     AST_Statement_ElseList
-    _transformStatementElse (AST_Statement_ElseList stel);
+    _transformStatementElse(AST_Statement_ElseList stel);
     AST_StatementList
-    _transformStatementList (AST_StatementList sts);
+    _transformStatementList(AST_StatementList sts);
     void
-    _setIndex (AST_Expression derArg, VarInfo vi, Index *idx);
+    _setIndex(AST_Expression derArg, VarInfo vi, Index *idx);
     void
-    _controlDiscreteVariables (AST_Expression expEq);
+    _controlDiscreteVariables(AST_Expression expEq);
     void
-    _setAlgebraicOffset (AST_Expression left, Range range);
+    _setAlgebraicOffset(AST_Expression left, Range range);
     void
-    _insertAlgebraic (AST_Equation eq, Range range);
+    _insertAlgebraic(AST_Equation eq, Range range);
     MMO_EquationTable _derivatives;
     MMO_EquationTable _algebraics;
     MMO_EquationTable _outputs;
@@ -545,41 +547,41 @@ private:
  * @return
  */
 MMO_Model
-newMMO_Model (string name);
+newMMO_Model(string name);
 /**
  *
  * @param m
  */
 void
-deleteMMO_Model (MMO_Model m);
+deleteMMO_Model(MMO_Model m);
 
 /**
  *
  */
-class MMO_Function_ : public MMO_Class_
+class MMO_Function_: public MMO_Class_
 {
-public:
+  public:
     /**
      *
      * @param name
      */
-    MMO_Function_ (string name);
+    MMO_Function_(string name);
     /**
      *
      */
-    ~MMO_Function_ ();
+    ~MMO_Function_();
     /**
      *
      * @return
      */
     string
-    name () const;
+    name() const;
     /**
      *
      * @param efc
      */
     void
-    insert (AST_External_Function_Call efc);
+    insert(AST_External_Function_Call efc);
     /**
      *
      * @param n
@@ -587,120 +589,122 @@ public:
      * @param type
      */
     void
-    insert (VarName n, VarInfo vi, DEC_Type type);
+    insert(VarName n, VarInfo vi, DEC_Type type);
     /**
      *
      * @param n
      * @param vi
      */
     void
-    insert (VarName n, VarInfo vi);
+    insert(VarName n, VarInfo vi);
     /**
      *
      * @param eq
      */
     void
-    insert (AST_Equation eq);
+    insert(AST_Equation eq);
     /**
      *
      * @param stm
      * @param initial
      */
     void
-    insert (AST_Statement stm, bool initial);
+    insert(AST_Statement stm, bool initial);
     /**
      *
      * @param stm
      */
     void
-    insert (AST_Statement stm);
+    insert(AST_Statement stm);
     /**
      *
      * @param f
      */
     void
-    insert (MMO_Function f);
+    insert(MMO_Function f);
     /**
      *
      * @param n
      */
     void
-    insert (string n);
+    insert(string n);
     /**
      *
      * @param x
      */
     void
-    insert (AST_Argument_Modification x);
+    insert(AST_Argument_Modification x);
     /**
      *
      * @return
      */
     VarSymbolTable
-    varTable ();
+    varTable();
     /**
      *
      * @return
      */
     CL_Type
-    classType ();
+    classType();
     /**
      *
      * @return
      */
     string
-    prototype ();
+    prototype();
     /**
      *
      * @return
      */
     list<string>
-    localDeclarations ();
+    localDeclarations();
     /**
      *
      * @return
      */
     MMO_StatementTable
-    statements ();
+    statements();
     /**
      *
      * @return
      */
     string
-    returnStatement ();
+    returnStatement();
     /**
      *
      * @return
      */
     MMO_ArgumentsTable
-    externalFunctionCalls ();
+    externalFunctionCalls();
     /**
      *
      * @return
      */
     MMO_ImportTable
-    imports ();
+    imports();
     /**
      *
      * @param it
      */
     void
-    setImports (MMO_ImportTable it);
+    setImports(MMO_ImportTable it);
     /**
      *
      * @param prefix
      */
     void
-    setPrefix (string prefix);
+    setPrefix(string prefix);
     /**
      *
      * @return
      */
     MMO_Annotation
-    annotation ();
+    annotation();
     void
-    setFunctions (MMO_FunctionTable functions, MMO_FunctionTable externalFunctions, MMO_SymbolRefTable calledFunctions);
-private:
+    setFunctions(MMO_FunctionTable functions,
+        MMO_FunctionTable externalFunctions,
+        MMO_SymbolRefTable calledFunctions);
+    private:
     string _name;
     VarSymbolTable _declarations;
     VarSymbolTable _localDeclarations;
@@ -726,90 +730,90 @@ private:
  * @return
  */
 MMO_Function
-newMMO_Function (string name);
+newMMO_Function(string name);
 /**
  *
  * @param m
  */
 void
-deleteMMO_Function (MMO_Function m);
+deleteMMO_Function(MMO_Function m);
 
 /**
  *
  */
-class MMO_Package_ : public MMO_Class_
+class MMO_Package_: public MMO_Class_
 {
-public:
+  public:
     /**
      *
      * @param name
      */
-    MMO_Package_ (string name);
+    MMO_Package_(string name);
     /**
      *
      */
-    ~MMO_Package_ ();
+    ~MMO_Package_();
     /**
      *
      * @return
      */
     VarSymbolTable
-    varTable ();
+    varTable();
     /**
      *
      * @return
      */
     CL_Type
-    classType ();
+    classType();
     /**
      *
      * @return
      */
     string
-    name () const;
+    name() const;
     /**
      *
      * @return
      */
     string
-    fileName () const;
+    fileName() const;
     /**
      *
      * @param n
      */
     void
-    insert (string n);
+    insert(string n);
     /**
      *
      * @param eq
      */
     void
-    insert (AST_Equation eq);
+    insert(AST_Equation eq);
     /**
      *
      * @param stm
      * @param initial
      */
     void
-    insert (AST_Statement stm, bool initial);
+    insert(AST_Statement stm, bool initial);
     /**
      *
      * @param stm
      */
     void
-    insert (AST_Statement stm);
+    insert(AST_Statement stm);
     /**
      *
      * @param f
      */
     void
-    insert (MMO_Function f);
+    insert(MMO_Function f);
     /**
      *
      * @param efc
      */
     void
-    insert (AST_External_Function_Call efc);
+    insert(AST_External_Function_Call efc);
     /**
      *
      * @param n
@@ -817,39 +821,39 @@ public:
      * @param type
      */
     void
-    insert (VarName n, VarInfo vi, DEC_Type type);
+    insert(VarName n, VarInfo vi, DEC_Type type);
     /**
      *
      * @param n
      * @param vi
      */
     void
-    insert (VarName n, VarInfo vi);
+    insert(VarName n, VarInfo vi);
     /**
      *
      * @param x
      */
     void
-    insert (AST_Argument_Modification x);
+    insert(AST_Argument_Modification x);
     /**
      *
      * @return
      */
     MMO_FunctionTable
-    functions ();
+    functions();
     /**
      *
      * @return
      */
     MMO_ImportTable
-    imports ();
+    imports();
     /**
      *
      * @return
      */
     string
-    prefix ();
-private:
+    prefix();
+    private:
     MMO_FunctionTable _functions;
     string _name;
     unsigned int _funcs;
@@ -862,12 +866,12 @@ private:
  * @return
  */
 MMO_Package
-newMMO_Package (string name);
+newMMO_Package(string name);
 /**
  *
  * @param m
  */
 void
-deleteMMO_Package (MMO_Package m);
+deleteMMO_Package(MMO_Package m);
 
 #endif  /* MMO_CLASS_H_ */

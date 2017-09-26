@@ -39,15 +39,15 @@
  */
 typedef enum
 {
-    SOL_MODEL_SETTINGS,
-    SOL_MODEL,
-    SOL_DEPS,
-    SOL_ZC,
-    SOL_HANDLER_POS,
-    SOL_HANDLER_NEG,
-    SOL_OUTPUT,
-    SOL_INIT,
-    SOL_CALLBACK
+  SOL_MODEL_SETTINGS,
+  SOL_MODEL,
+  SOL_DEPS,
+  SOL_ZC,
+  SOL_HANDLER_POS,
+  SOL_HANDLER_NEG,
+  SOL_OUTPUT,
+  SOL_INIT,
+  SOL_CALLBACK
 } SOL_Function;
 
 /**
@@ -55,8 +55,8 @@ typedef enum
  */
 typedef enum
 {
-    SOL_LIBRARIES,
-    SOL_INCLUDES
+  SOL_LIBRARIES,
+  SOL_INCLUDES
 } SOL_Makefile;
 
 /**
@@ -64,17 +64,17 @@ typedef enum
  */
 typedef enum
 {
-    SOL_SERIAL,
-    SOL_PARALLEL
+  SOL_SERIAL,
+  SOL_PARALLEL
 } SOL_Engine;
 
 typedef enum
 {
-    NOD_SD,
-    NOD_SZ,
-    NOD_HD,
-    NOD_HZ,
-    NOD_DD
+  NOD_SD,
+  NOD_SZ,
+  NOD_HD,
+  NOD_HZ,
+  NOD_DD
 } NOD_Type;
 
 /**
@@ -82,12 +82,12 @@ typedef enum
  */
 class MMO_Solver_
 {
-public:
+  public:
     /**
      *
      */
     virtual
-    ~MMO_Solver_ ()
+    ~MMO_Solver_()
     {
     }
     ;
@@ -96,217 +96,225 @@ public:
      * @return
      */
     virtual string
-    initData () = 0;
+    initData() = 0;
     /**
      *
      * @return
      */
     virtual string
-    initTime () = 0;
+    initTime() = 0;
     /**
      *
      * @return
      */
     virtual string
-    initOutput () = 0;
+    initOutput() = 0;
     /**
      *
      * @return
      */
     virtual string
-    initModel () = 0;
+    initModel() = 0;
     /**
      *
      * @return
      */
     virtual string
-    initHeader () = 0;
+    initHeader() = 0;
     /**
      *
      * @return
      */
     virtual string
-    runCmd () = 0;
+    runCmd() = 0;
     /**
      *
      * @param m
      * @return
      */
     virtual string
-    makefile (SOL_Makefile m) = 0;
+    makefile(SOL_Makefile m) = 0;
     /**
      *
      */
     virtual void
-    initializeMatrices () = 0;
+    initializeMatrices() = 0;
     /**
      *
      */
     virtual void
-    initialCode () = 0;
+    initialCode() = 0;
     /**
      *
      */
     virtual void
-    model () = 0;
+    model() = 0;
     /**
      *
      */
     virtual void
-    modelDeps () = 0;
+    modelDeps() = 0;
     /**
      *
      */
     virtual void
-    zeroCrossing () = 0;
+    zeroCrossing() = 0;
     /**
      *
      */
     virtual void
-    handler () = 0;
+    handler() = 0;
     /**
      *
      */
     virtual void
-    output () = 0;
+    output() = 0;
     /**
      *
      * @param f
      */
     virtual void
-    print (SOL_Function f) = 0;
+    print(SOL_Function f) = 0;
     /**
      *
      * @return
      */
     virtual Graph
-    graph () = 0;
+    graph() = 0;
 };
 
 /**
  *
  */
-class QSS_ : public MMO_Solver_
+class QSS_: public MMO_Solver_
 {
-public:
+  public:
     /**
      *
      * @param model
      * @param flags
      * @param writer
      */
-    QSS_ (MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
+    QSS_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
     /**
      *
      */
-    ~QSS_ ();
-    /**
-     *
-     * @return
-     */
-    string
-    initData ();
+    ~QSS_();
     /**
      *
      * @return
      */
     string
-    initTime ();
+    initData();
     /**
      *
      * @return
      */
     string
-    initOutput ();
+    initTime();
     /**
      *
      * @return
      */
     string
-    initModel ();
+    initOutput();
     /**
      *
      * @return
      */
     string
-    initHeader ();
+    initModel();
     /**
      *
      * @return
      */
     string
-    runCmd ();
+    initHeader();
+    /**
+     *
+     * @return
+     */
+    string
+    runCmd();
     /**
      *
      * @param m
      * @return
      */
     string
-    makefile (SOL_Makefile m);
+    makefile(SOL_Makefile m);
     /**
      *
      */
     void
-    initializeMatrices ();
+    initializeMatrices();
     /**
      *
      */
     void
-    initialCode ();
+    initialCode();
     /**
      *
      */
     void
-    model ();
+    model();
     /**
      *
      */
     void
-    modelDeps ();
+    modelDeps();
     /**
      *
      */
     void
-    zeroCrossing ();
+    zeroCrossing();
     /**
      *
      */
     void
-    handler ();
+    handler();
     /**
      *
      */
     void
-    output ();
+    output();
     /**
      *
      * @param f
      */
     void
-    print (SOL_Function f);
+    print(SOL_Function f);
     Graph
-    graph ();
-private:
+    graph();
+    private:
     bool
-    _controlIntersections (list<Intersection> lis, Intersection is);
+    _controlIntersections(list<Intersection> lis, Intersection is);
     void
-    _eventDeps (MMO_Event e, Index index, MMO_EventTable evt, DEP_Type type, map<Index, Index> events);
+    _eventDeps(MMO_Event e, Index index, MMO_EventTable evt, DEP_Type type,
+        map<Index, Index> events);
     void
-    _print (SOL_Function f, map<string, string> localVars, WR_Section simple, WR_Section generic, bool switchGen);
+    _print(SOL_Function f, map<string, string> localVars, WR_Section simple,
+        WR_Section generic, bool switchGen);
     void
-    _printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equations, MMO_EquationTable algebraics, string idxStr, WR_Section s, int i,
-                bool constant);
+    _printDeps(Dependencies d, Index derivativeIndex,
+        MMO_EquationTable equations, MMO_EquationTable algebraics,
+        string idxStr, WR_Section s, int i,
+        bool constant);
     void
-    _setInterval (Index *i1, Index *i2);
+    _setInterval(Index *i1, Index *i2);
     bool
-    _indexDependencies (Index idx, Index *dIdx, Index infIdx, Index *infDIdx, map<int, int> *simpleMatrixDeps, WR_Section alloc, WR_Section init,
-                        string allocStr, string initStr, string counter, Intersection intersection, int assignments);
+    _indexDependencies(Index idx, Index *dIdx, Index infIdx, Index *infDIdx,
+        map<int, int> *simpleMatrixDeps, WR_Section alloc, WR_Section init,
+        string allocStr, string initStr, string counter,
+        Intersection intersection, int assignments);
     void
-    _eventVectorDependencies (Index index, Dependencies deps, WR_Section alloc, WR_Section init, string allocString, string initString, DEP_Type type);
+    _eventVectorDependencies(Index index, Dependencies deps, WR_Section alloc,
+        WR_Section init, string allocString, string initString, DEP_Type type);
     void
-    _init ();
+    _init();
     void
-    _eventAlgebraicDeps (MMO_Event e, Index index, MMO_EventTable evt, DEP_Type type, map<Index, Index> events);
+    _eventAlgebraicDeps(MMO_Event e, Index index, MMO_EventTable evt,
+        DEP_Type type, map<Index, Index> events);
     MMO_CompileFlags _flags;
     MMO_DependenciesTable _modelDeps;
     MMO_DependenciesTable _modelVectorDeps;
@@ -335,133 +343,137 @@ private:
  * @return
  */
 QSS
-newQSS (MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
+newQSS(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
 /**
  *
  * @param m
  */
 void
-deleteQSS (QSS m);
+deleteQSS(QSS m);
 
 /**
  *
  */
-class Classic_ : public MMO_Solver_
+class Classic_: public MMO_Solver_
 {
-public:
+  public:
     /**
      *
      * @param model
      * @param flags
      * @param writer
      */
-    Classic_ (MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
+    Classic_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
     /**
      *
      */
-    ~Classic_ ();
-    /**
-     *
-     * @return
-     */
-    string
-    initData ();
+    ~Classic_();
     /**
      *
      * @return
      */
     string
-    initTime ();
+    initData();
     /**
      *
      * @return
      */
     string
-    initOutput ();
+    initTime();
     /**
      *
      * @return
      */
     string
-    initModel ();
+    initOutput();
     /**
      *
      * @return
      */
     string
-    initHeader ();
+    initModel();
     /**
      *
      * @return
      */
     string
-    runCmd ();
+    initHeader();
+    /**
+     *
+     * @return
+     */
+    string
+    runCmd();
     /**
      *
      * @param m
      * @return
      */
     string
-    makefile (SOL_Makefile m);
+    makefile(SOL_Makefile m);
     /**
      *
      */
     void
-    initializeMatrices ();
+    initializeMatrices();
     /**
      *
      */
     void
-    initialCode ();
+    initialCode();
     /**
      *
      */
     void
-    model ();
+    model();
     /**
      *
      */
     void
-    modelDeps ();
+    modelDeps();
     /**
      *
      */
     void
-    zeroCrossing ();
+    zeroCrossing();
     /**
      *
      */
     void
-    handler ();
+    handler();
     /**
      *
      */
     void
-    output ();
+    output();
     /**
      *
      * @param f
      */
     void
-    print (SOL_Function f);
+    print(SOL_Function f);
     Graph
-    graph ();
-private:
+    graph();
+    private:
     string
-    _prototype (SOL_Function f);
+    _prototype(SOL_Function f);
     void
-    _print (SOL_Function f, map<string, string> localVars, WR_Section simple, WR_Section generic, bool switchGen);
+    _print(SOL_Function f, map<string, string> localVars, WR_Section simple,
+        WR_Section generic, bool switchGen);
     void
-    _init ();
+    _init();
     void
-    _printDeps (Dependencies d, Index derivativeIndex, MMO_EquationTable equations, MMO_EquationTable algebraics, string idxStr, WR_Section s, int i,
-                bool constant, Index infIdx);
+    _printDeps(Dependencies d, Index derivativeIndex,
+        MMO_EquationTable equations, MMO_EquationTable algebraics,
+        string idxStr, WR_Section s, int i,
+        bool constant, Index infIdx);
     void
-    _jacobian ();
+    _jacobian();
     void
-    _reorderSD (Dependencies d, const Index& idx, const string& indent, stringstream& buffer, WR_InsertType it);
+    _reorderSD(Dependencies d, const Index& idx, const string& indent,
+        stringstream& buffer, WR_InsertType it);
     bool
-    _generateJacobian ();
+    _generateJacobian();
     MMO_CompileFlags _flags;
     MMO_Model _model;
     MMO_Writer _writer;
@@ -485,20 +497,20 @@ private:
  * @return
  */
 Classic
-newClassic (MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
+newClassic(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
 /**
  *
  * @param m
  */
 void
-deleteClassic (Classic m);
+deleteClassic(Classic m);
 
 /**
  *
  */
 class SolverCommon_
 {
-public:
+  public:
     /**
      *
      * @param model
@@ -506,31 +518,32 @@ public:
      * @param writer
      * @param modelVectorDeps
      */
-    SolverCommon_ (MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer, MMO_DependenciesTable modelVectorDeps, Graph *graph = NULL);
+    SolverCommon_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer,
+        MMO_DependenciesTable modelVectorDeps, Graph *graph = NULL);
     /**
      *
      */
-    ~SolverCommon_ ();
+    ~SolverCommon_();
     /**
      *
      * @return
      */
     string
-    initOutput ();
+    initOutput();
     /**
      *
      * @param exps
      * @param section
      */
     void
-    print (list<string> exps, WR_Section section);
+    print(list<string> exps, WR_Section section);
     /**
      *
      * @param local
      * @param vars
      */
     void
-    insertLocalVariables (map<string, string> *local, list<string> vars);
+    insertLocalVariables(map<string, string> *local, list<string> vars);
     /**
      *
      * @param name
@@ -539,9 +552,11 @@ public:
      * @param size
      */
     void
-    addLocalVar (string name, map<string, string> *variables, string type = "", int size = 0, string assign = "0");
+    addLocalVar(string name, map<string, string> *variables, string type = "",
+        int size = 0, string assign = "0");
     void
-    addLocalVar (string name, map<string, string> *variables, int dimensions, string type = "", int size = 0);
+    addLocalVar(string name, map<string, string> *variables, int dimensions,
+        string type = "", int size = 0);
     /**
      *
      * @param idx
@@ -549,7 +564,7 @@ public:
      * @param generic
      */
     void
-    eventPrologue (Index idx, WR_Section simple, WR_Section generic);
+    eventPrologue(Index idx, WR_Section simple, WR_Section generic);
     /**
      *
      * @param idx
@@ -557,7 +572,7 @@ public:
      * @param generic
      */
     void
-    eventEpilogue (Index idx, WR_Section simple, WR_Section generic);
+    eventEpilogue(Index idx, WR_Section simple, WR_Section generic);
     /**
      *
      * @param type
@@ -565,27 +580,28 @@ public:
      * @param handlerNegVars
      */
     void
-    handler (VST_Environment type, map<string, string> *handlerPosVars, map<string, string> *handlerNegVars);
+    handler(VST_Environment type, map<string, string> *handlerPosVars,
+        map<string, string> *handlerNegVars);
     /**
      *
      * @return
      */
     int
-    getOrder ();
+    getOrder();
     /**
      *
      * @param type
      * @param zcVars
      */
     void
-    zeroCrossing (VST_Environment type, map<string, string> *zcVars);
+    zeroCrossing(VST_Environment type, map<string, string> *zcVars);
     /**
      *
      * @param var
      * @param size
      */
     void
-    printCleanVector (string var, int size);
+    printCleanVector(string var, int size);
     /**
      *
      * @param var
@@ -593,20 +609,20 @@ public:
      * @param section
      */
     void
-    printSection (string var, int size, WR_Section section);
+    printSection(string var, int size, WR_Section section);
     /**
      *
      * @param initializeVars
      */
     void
-    initialCode (map<string, string> *initializeVars);
+    initialCode(map<string, string> *initializeVars);
     /**
      *
      * @param type
      * @param outputVars
      */
     void
-    output (VST_Environment type, map<string, string> *outputVars);
+    output(VST_Environment type, map<string, string> *outputVars);
     /**
      *
      * @param eqIdx
@@ -615,7 +631,8 @@ public:
      * @param variables
      */
     void
-    genericDefCondition (Index eqIdx, Index idx, WR_Section section, map<string, string> *variables);
+    genericDefCondition(Index eqIdx, Index idx, WR_Section section,
+        map<string, string> *variables);
     /**
      *
      * @param index
@@ -634,16 +651,21 @@ public:
      * @param type
      */
     void
-    vectorDependencies (Index index, Dependencies deps, WR_Section alloc, WR_Section init, string allocString, string initString, WR_Section allocInverse,
-                        WR_Section initInverse, string allocInverseString, string initInverseString, string count = "states", string countInverse = "states",
-                        bool dependencies = true, DEP_Type type = DEP_STATE_VECTOR, map<string, string> *variables =
-                        NULL);
+    vectorDependencies(Index index, Dependencies deps, WR_Section alloc,
+        WR_Section init, string allocString, string initString,
+        WR_Section allocInverse,
+        WR_Section initInverse, string allocInverseString,
+        string initInverseString, string count = "states", string countInverse =
+            "states",
+        bool dependencies = true, DEP_Type type = DEP_STATE_VECTOR,
+        map<string, string> *variables =
+        NULL);
     /**
      *
      * @return
      */
     map<Index, double>
-    weights ();
+    weights();
     /**
      *
      * @param deps
@@ -663,9 +685,13 @@ public:
      * @param modelDeps
      */
     void
-    addAlgebriacDeps (Dependencies deps, Index derivativeIndex, map<Index, Index> states, string alloc, string allocInverse, string init, string initInverse,
-                      WR_Section allocSection, WR_Section allocInverseSection, WR_Section initSection, WR_Section initInverseSection, string type,
-                      string inverseType, DEP_Type depType = DEP_ALGEBRAIC_STATE, MMO_DependenciesTable modelDeps = NULL);
+    addAlgebriacDeps(Dependencies deps, Index derivativeIndex,
+        map<Index, Index> states, string alloc, string allocInverse,
+        string init, string initInverse,
+        WR_Section allocSection, WR_Section allocInverseSection,
+        WR_Section initSection, WR_Section initInverseSection, string type,
+        string inverseType, DEP_Type depType = DEP_ALGEBRAIC_STATE,
+        MMO_DependenciesTable modelDeps = NULL);
     /**
      *
      * @param deps
@@ -675,7 +701,8 @@ public:
      * @param index
      */
     void
-    addModelDeps (Dependencies deps, Index state, Index infIndex, MMO_DependenciesTable modelDeps = NULL, int index = 0);
+    addModelDeps(Dependencies deps, Index state, Index infIndex,
+        MMO_DependenciesTable modelDeps = NULL, int index = 0);
     /**
      *
      * @param row
@@ -684,24 +711,25 @@ public:
      * @param type
      */
     void
-    graphInsert (Index row, Index col, int offset = 0, NOD_Type type = NOD_SD, int assignments = 0);
+    graphInsert(Index row, Index col, int offset = 0, NOD_Type type = NOD_SD,
+        int assignments = 0);
     /**
      *
      * @return
      */
     bool
-    hasGraph ();
+    hasGraph();
     /**
      *
      * @param section
      */
     void
-    settings ();
+    settings();
     int
-    beginForLoops (Index idx, WR_Section section);
+    beginForLoops(Index idx, WR_Section section);
     void
-    endForLoops (Index idx, WR_Section section);
-private:
+    endForLoops(Index idx, WR_Section section);
+    private:
     MMO_Model _model;
     MMO_CompileFlags _flags;
     MMO_Writer _writer;
@@ -721,25 +749,26 @@ private:
  * @return
  */
 SolverCommon
-newSolverCommon (MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer, MMO_DependenciesTable modelVectorDeps = NULL, Graph *graph = NULL);
+newSolverCommon(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer,
+    MMO_DependenciesTable modelVectorDeps = NULL, Graph *graph = NULL);
 /**
  *
  * @param m
  */
 void
-deleteSolverCommon (SolverCommon m);
+deleteSolverCommon(SolverCommon m);
 
 /***
  *
  */
 class MMO_Engine_
 {
-public:
+  public:
     /**
      *
      */
     virtual
-    ~MMO_Engine_ ()
+    ~MMO_Engine_()
     {
     }
     ;
@@ -749,80 +778,80 @@ public:
      * @return
      */
     virtual string
-    prototype (SOL_Function f) = 0;
+    prototype(SOL_Function f) = 0;
     /**
      *
      * @param m
      * @return
      */
     virtual string
-    makefile (SOL_Makefile m) = 0;
+    makefile(SOL_Makefile m) = 0;
     /**
      *
      */
     virtual string
-    variableMap (string index) = 0;
+    variableMap(string index) = 0;
     /**
      *
      */
     virtual string
-    endMap () = 0;
+    endMap() = 0;
     /**
      *
      */
     virtual void
-    eventTemp () = 0;
+    eventTemp() = 0;
 };
 
 /**
  *
  */
-class MMO_SerialEngine_ : public MMO_Engine_
+class MMO_SerialEngine_: public MMO_Engine_
 {
-public:
+  public:
     /**
      *
      * @param flags
      * @param hybrid
      */
-    MMO_SerialEngine_ (MMO_CompileFlags flags, bool hybrid);
+    MMO_SerialEngine_(MMO_CompileFlags flags, bool hybrid);
     /**
      *
      */
-    ~MMO_SerialEngine_ ();
+    ~MMO_SerialEngine_();
     /**
      *
      * @param f
      * @return
      */
     string
-    prototype (SOL_Function f);
+    prototype(SOL_Function f);
     /**
      *
      * @param m
      * @return
      */
     string
-    makefile (SOL_Makefile m);
+    makefile(SOL_Makefile m);
     /**
      *
      * @param index
      * @return
      */
     string
-    variableMap (string index);
+    variableMap(string index);
     /**
      *
      * @return
      */
     string
-    endMap ();
+    endMap();
     /**
      *
      */
     void
-    eventTemp ();
-private:
+    eventTemp();
+    private:
     MMO_CompileFlags _flags;
     bool _hybrid;
 };
@@ -833,61 +862,61 @@ private:
  * @return
  */
 MMO_SerialEngine
-newMMO_SerialEngine (MMO_CompileFlags flags, bool hybrid);
+newMMO_SerialEngine(MMO_CompileFlags flags, bool hybrid);
 /**
  *
  * @param m
  */
 void
-deleteMMO_SerialEngine (MMO_SerialEngine m);
+deleteMMO_SerialEngine(MMO_SerialEngine m);
 
 /**
  *
  */
-class MMO_ParallelEngine_ : public MMO_Engine_
+class MMO_ParallelEngine_: public MMO_Engine_
 {
-public:
+  public:
     /**
      *
      */
-    MMO_ParallelEngine_ (MMO_CompileFlags flags, bool hybrid);
+    MMO_ParallelEngine_(MMO_CompileFlags flags, bool hybrid);
     /**
      *
      */
-    ~MMO_ParallelEngine_ ();
+    ~MMO_ParallelEngine_();
     /**
      *
      * @param f
      * @return
      */
     string
-    prototype (SOL_Function f);
+    prototype(SOL_Function f);
     /**
      *
      * @param m
      * @return
      */
     string
-    makefile (SOL_Makefile m);
+    makefile(SOL_Makefile m);
     /**
      *
      * @param index
      * @return
      */
     string
-    variableMap (string index);
+    variableMap(string index);
     /**
      *
      * @return
      */
     string
-    endMap ();
+    endMap();
     /**
      *
      */
     void
-    eventTemp ();
-private:
+    eventTemp();
+    private:
     MMO_CompileFlags _flags;
     bool _hybrid;
 };
@@ -898,13 +927,13 @@ private:
  * @return
  */
 MMO_ParallelEngine
-newMMO_ParallelEngine (MMO_CompileFlags flags, bool hybrid);
+newMMO_ParallelEngine(MMO_CompileFlags flags, bool hybrid);
 /**
  *
  * @param m
  */
 void
-deleteMMO_ParallelEngine (MMO_ParallelEngine m);
+deleteMMO_ParallelEngine(MMO_ParallelEngine m);
 
 #endif  /* MMO_SOLVER_H_ */
 

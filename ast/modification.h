@@ -30,9 +30,9 @@
 /**
  *
  */
-class AST_Argument_ : public AST_Node_
+class AST_Argument_: public AST_Node_
 {
-public:
+  public:
     /**
      *
      */
@@ -41,47 +41,47 @@ public:
     /**
      *
      */
-    AST_Argument_ ();
+    AST_Argument_();
     /**
      *
      * @return
      */
     virtual string
-    print () const =0;
+    print() const =0;
     /**
      *
      * @return
      */
     virtual ArgumentType
-    argumentType () const =0;
+    argumentType() const =0;
     /**
      *
      */
     void
-    setFinal ();
+    setFinal();
     /**
      *
      */
     void
-    setEach ();
+    setEach();
     /**
      *
      * @return
      */
     bool
-    isFinal () const;
+    isFinal() const;
     /**
      *
      * @return
      */
     bool
-    hasEach () const;
+    hasEach() const;
     /**
      *
      * @param visitor
      */
     void
-    accept (AST_Visitor visitor);
+    accept(AST_Visitor visitor);
     /**
      *
      */
@@ -92,7 +92,7 @@ public:
      */
     GET_AS(Argument,Redeclaration)
     ;
-private:
+    private:
     bool _final;
     bool _each;
 };
@@ -100,46 +100,46 @@ private:
 /**
  *
  */
-class AST_Argument_Modification_ : public AST_Argument_
+class AST_Argument_Modification_: public AST_Argument_
 {
-public:
+  public:
     /**
      *
      * @param name
      * @param m
      */
-    AST_Argument_Modification_ (AST_String name, AST_Modification m);
+    AST_Argument_Modification_(AST_String name, AST_Modification m);
     /**
      *
      * @return
      */
     AST_String
-    name () const;
+    name() const;
     /**
      *
      * @return
      */
     AST_Modification
-    modification () const;
+    modification() const;
     /**
      *
      * @return
      */
     bool
-    hasModification ();
+    hasModification();
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     ArgumentType
-    argumentType () const;
-private:
+    argumentType() const;
+    private:
     AST_String _name;
     AST_Modification _mod;
 };
@@ -147,28 +147,28 @@ private:
 /**
  *
  */
-class AST_Argument_Redeclaration_ : public AST_Argument_
+class AST_Argument_Redeclaration_: public AST_Argument_
 {
     /**
      *
      */
-    AST_Argument_Redeclaration_ ();
+    AST_Argument_Redeclaration_();
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     ArgumentType
-    argumentType () const;
+    argumentType() const;
 };
 
 /**
  *
  */
-class AST_Modification_ : public AST_Node_
+class AST_Modification_: public AST_Node_
 {
-public:
+  public:
     /**
      *
      */
@@ -179,19 +179,19 @@ public:
      * @return
      */
     virtual ModificationType
-    modificationType ();
+    modificationType();
     /**
      *
      * @return
      */
     virtual string
-    print () const =0;
+    print() const =0;
     /**
      *
      * @param visitor
      */
     void
-    accept (AST_Visitor visitor);
+    accept(AST_Visitor visitor);
     /**
      *
      */
@@ -212,118 +212,118 @@ public:
 /**
  *
  */
-class AST_Modification_Equal_ : public AST_Modification_
+class AST_Modification_Equal_: public AST_Modification_
 {
-public:
+  public:
     /**
      *
      * @param e
      */
-    AST_Modification_Equal_ (AST_Expression e);
+    AST_Modification_Equal_(AST_Expression e);
     /**
      *
      * @return
      */
     AST_Expression
-    exp ();
+    exp();
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     virtual ModificationType
-    modificationType ();
-private:
+    modificationType();
+    private:
     AST_Expression _e;
 };
 
 /**
  *
  */
-class AST_Modification_Assign_ : public AST_Modification_
+class AST_Modification_Assign_: public AST_Modification_
 {
-public:
+  public:
     /**
      *
      * @param e
      */
-    AST_Modification_Assign_ (AST_Expression e);
+    AST_Modification_Assign_(AST_Expression e);
     /**
      *
      * @return
      */
     AST_Expression
-    exp ();
+    exp();
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @return
      */
     virtual ModificationType
-    modificationType ();
-private:
+    modificationType();
+    private:
     AST_Expression _e;
 };
 
 /**
  *
  */
-class AST_Modification_Class_ : public AST_Modification_
+class AST_Modification_Class_: public AST_Modification_
 {
-public:
+  public:
     /**
      *
      * @param al
      * @param e
      */
-    AST_Modification_Class_ (AST_ArgumentList al, AST_Expression e);
+    AST_Modification_Class_(AST_ArgumentList al, AST_Expression e);
     /**
      *
      * @return
      */
     AST_Expression
-    exp () const;
+    exp() const;
     /**
      *
      * @return
      */
     bool
-    hasExpression ();
+    hasExpression();
     /**
      *
      * @return
      */
     AST_ArgumentList
-    arguments () const;
+    arguments() const;
     /**
      *
      * @return
      */
     string
-    print () const;
+    print() const;
     /**
      *
      * @param al
      */
     void
-    setArguments (AST_ArgumentList al);
+    setArguments(AST_ArgumentList al);
     /**
      *
      * @return
      */
     virtual ModificationType
-    modificationType ();
-private:
+    modificationType();
+    private:
     AST_Expression _e;
     AST_ArgumentList _al;
 };

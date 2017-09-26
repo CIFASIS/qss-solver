@@ -29,170 +29,170 @@
 /**
  *
  */
-class AST_MicroModelica_ : public AST_Visitor_
+class AST_MicroModelica_: public AST_Visitor_
 {
-public:
+  public:
     /**
      *
      * @param name
      */
-    AST_MicroModelica_ (string name);
+    AST_MicroModelica_(string name);
     /**
      *
      */
-    ~AST_MicroModelica_ ();
-    /**
-     *
-     * @param x
-     */
-    void
-    visit (AST_Class x);
+    ~AST_MicroModelica_();
     /**
      *
      * @param x
      */
     void
-    leave (AST_Class x);
+    visit(AST_Class x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Composition x);
+    leave(AST_Class x);
     /**
      *
      * @param x
      */
     void
-    leave (AST_Composition x);
+    visit(AST_Composition x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_CompositionElement x);
+    leave(AST_Composition x);
     /**
      *
      * @param x
      */
     void
-    leave (AST_CompositionElement x);
+    visit(AST_CompositionElement x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_CompositionEqsAlgs x);
+    leave(AST_CompositionElement x);
     /**
      *
      * @param x
      */
     void
-    leave (AST_CompositionEqsAlgs x);
+    visit(AST_CompositionEqsAlgs x);
+    /**
+     *
+     * @param x
+     */
+    void
+    leave(AST_CompositionEqsAlgs x);
     /**
      *
      * @param
      */
     void
-    visit (AST_External_Function_Call);
+    visit(AST_External_Function_Call);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Element x);
+    visit(AST_Element x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Modification x);
+    visit(AST_Modification x);
     /**
      *
      * @param x
      */
     void
-    leave (AST_Modification x);
+    leave(AST_Modification x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Comment x);
+    visit(AST_Comment x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Equation x);
+    visit(AST_Equation x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_ForIndex x);
+    visit(AST_ForIndex x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Equation_Else x);
+    visit(AST_Equation_Else x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Expression x);
+    visit(AST_Expression x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Argument x);
+    visit(AST_Argument x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Statement x);
+    visit(AST_Statement x);
     /**
      *
      * @param x
      */
     void
-    leave (AST_Statement x);
+    leave(AST_Statement x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Statement_Else x);
+    visit(AST_Statement_Else x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_StoredDefinition x);
+    visit(AST_StoredDefinition x);
     /**
      *
      * @param x
      */
     void
-    leave (AST_StoredDefinition x);
+    leave(AST_StoredDefinition x);
     /**
      *
      * @param x
      * @return
      */
     int
-    apply (AST_Node x);
-private:
+    apply(AST_Node x);
+    private:
     void
-    _checkIndex (AST_Expression exp);
+    _checkIndex(AST_Expression exp);
     bool
-    _whenStatement (AST_Expression cond);
+    _whenStatement(AST_Expression cond);
     bool
-    _lValue (AST_Expression left);
+    _lValue(AST_Expression left);
     string *_className;
     string *_fatherName;
     string *_childName;
@@ -209,12 +209,12 @@ private:
  * @return
  */
 AST_MicroModelica
-newAST_MicroModelica (string name);
+newAST_MicroModelica(string name);
 /**
  *
  * @param m
  */
 void
-deleteAST_MicroModelica (AST_MicroModelica m);
+deleteAST_MicroModelica(AST_MicroModelica m);
 
 #endif  /* MMO_MODEL_CHECKER_H_ */

@@ -29,12 +29,12 @@ using namespace std;
  */
 class MMO_Base_
 {
-public:
+  public:
     /**
      *
      */
     virtual
-    ~MMO_Base_ ()
+    ~MMO_Base_()
     {
     }
     ;
@@ -43,7 +43,7 @@ public:
      * @return
      */
     virtual string
-    print () = 0;
+    print() = 0;
 };
 
 #endif  /*  MMO_BASE_H_ */

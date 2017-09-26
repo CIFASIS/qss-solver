@@ -34,15 +34,15 @@ using namespace std;
 /**
  *
  */
-class AST_Composition_ : public AST_Node_
+class AST_Composition_: public AST_Node_
 {
-public:
+  public:
     /**
      *
      * @param el
      * @param cl
      */
-    AST_Composition_ (AST_ElementList el, AST_CompositionElementList cl);
+    AST_Composition_(AST_ElementList el, AST_CompositionElementList cl);
     /**
      *
      */
@@ -53,62 +53,62 @@ public:
      * @return
      */
     AST_CompositionElementList
-    compositionList () const;
+    compositionList() const;
     /**
      *
      * @return
      */
     bool
-    hasCompositionList ();
+    hasCompositionList();
     /**
      *
      * @return
      */
     AST_ElementList
-    elementList () const;
+    elementList() const;
     /**
      *
      * @return
      */
     bool
-    hasElementList ();
+    hasElementList();
     /**
      *
      * @param
      */
     void
-    setExternalFunctionCall (AST_External_Function_Call);
+    setExternalFunctionCall(AST_External_Function_Call);
     /**
      *
      * @return
      */
     AST_External_Function_Call
-    externalCall () const;
+    externalCall() const;
     /**
      *
      * @return
      */
     bool
-    hasExternalFunctionCall ();
+    hasExternalFunctionCall();
     /**
      *
      * @param
      */
     void
-    setAnnotation (AST_ArgumentList);
+    setAnnotation(AST_ArgumentList);
     /**
      *
      * @return
      */
     bool
-    hasAnnotation ();
+    hasAnnotation();
     /**
      *
      * @param visitor
      */
     void
-    accept (AST_Visitor visitor);
-private:
+    accept(AST_Visitor visitor);
+    private:
     AST_CompositionElementList _composition_list;
     AST_ElementList _element_list;
     AST_ArgumentList _annot;
@@ -118,19 +118,19 @@ private:
 /**
  *
  */
-class AST_CompositionElement_ : public AST_Node_
+class AST_CompositionElement_: public AST_Node_
 {
-public:
+  public:
     /**
      *
      * @param eqs_algs
      */
-    AST_CompositionElement_ (AST_CompositionEqsAlgs eqs_algs);
+    AST_CompositionElement_(AST_CompositionEqsAlgs eqs_algs);
     /**
      *
      * @param el
      */
-    AST_CompositionElement_ (AST_ElementList el);
+    AST_CompositionElement_(AST_ElementList el);
     /**
      *
      */
@@ -141,38 +141,38 @@ public:
      * @return
      */
     AST_CompositionEqsAlgs
-    getEquationsAlgs ();
+    getEquationsAlgs();
     /**
      *
      * @return
      */
     AST_ElementList
-    getElementList ();
+    getElementList();
     /**
      *
      * @return
      */
     bool
-    hasEquations ();
+    hasEquations();
     /**
      *
      * @return
      */
     bool
-    hasStatements ();
+    hasStatements();
     /**
      *
      * @return
      */
     bool
-    hasElements ();
+    hasElements();
     /**
      *
      * @param visitor
      */
     void
-    accept (AST_Visitor visitor);
-private:
+    accept(AST_Visitor visitor);
+    private:
     AST_CompositionEqsAlgs _eqs_algs;
     AST_ElementList _el;
 };
@@ -180,67 +180,67 @@ private:
 /**
  *
  */
-class AST_CompositionEqsAlgs_ : public AST_Node_
+class AST_CompositionEqsAlgs_: public AST_Node_
 {
-public:
+  public:
     /**
      *  @param eq
      */
-    AST_CompositionEqsAlgs_ (AST_EquationList eq);
+    AST_CompositionEqsAlgs_(AST_EquationList eq);
     /**
      *
      * @param st
      */
-    AST_CompositionEqsAlgs_ (AST_StatementList st);
+    AST_CompositionEqsAlgs_(AST_StatementList st);
     /**
      *
      * @param st
      * @param initial
      */
-    AST_CompositionEqsAlgs_ (AST_StatementList st, bool initial);
+    AST_CompositionEqsAlgs_(AST_StatementList st, bool initial);
     /**
      *
      * @param eq
      * @param initial
      */
-    AST_CompositionEqsAlgs_ (AST_EquationList eq, bool initial);
+    AST_CompositionEqsAlgs_(AST_EquationList eq, bool initial);
     /**
      *
      * @return
      */
     AST_EquationList
-    getEquations ();
+    getEquations();
     /**
      *
      * @return
      */
     AST_StatementList
-    getAlgorithms ();
+    getAlgorithms();
     /**
      *
      * @return
      */
     bool
-    isInitial ();
+    isInitial();
     /**
      *
      * @return
      */
     bool
-    hasEquations ();
+    hasEquations();
     /**
      *
      * @return
      */
     bool
-    hasStatements ();
+    hasStatements();
     /**
      *
      * @param visitor
      */
     void
-    accept (AST_Visitor visitor);
-private:
+    accept(AST_Visitor visitor);
+    private:
     bool _initial;
     AST_EquationList _eq;
     AST_StatementList _st;
@@ -249,9 +249,9 @@ private:
 /**
  *
  */
-class AST_External_Function_Call_ : public AST_Node_
+class AST_External_Function_Call_: public AST_Node_
 {
-public:
+  public:
     /**
      *
      * @param
@@ -259,62 +259,63 @@ public:
      * @param
      * @param
      */
-    AST_External_Function_Call_ (AST_String, AST_Expression_ComponentReference, AST_Expression, AST_ArgumentList);
+    AST_External_Function_Call_(AST_String, AST_Expression_ComponentReference,
+        AST_Expression, AST_ArgumentList);
     /**
      *
      * @return
      */
     AST_String
-    language ();
+    language();
     /**
      *
      * @return
      */
     string
-    languageString ();
+    languageString();
     /**
      *
      * @return
      */
     AST_ArgumentList
-    annotation ();
+    annotation();
     /**
      *
      * @return
      */
     AST_ExpressionList
-    args ();
+    args();
     /**
      *
      * @return
      */
     string
-    name ();
+    name();
     /**
      *
      * @return
      */
     AST_Expression
-    exp ();
+    exp();
     /**
      *
      * @return
      */
     AST_Expression_ComponentReference
-    componentReference ();
+    componentReference();
     /**
      *
      * @return
      */
     bool
-    hasComponentReference ();
+    hasComponentReference();
     /**
      *
      * @param visitor
      */
     void
-    accept (AST_Visitor visitor);
-private:
+    accept(AST_Visitor visitor);
+    private:
     AST_String _lang;
     AST_ArgumentList _annot;
     AST_Expression_Call _call;

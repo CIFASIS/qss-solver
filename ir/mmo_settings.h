@@ -29,170 +29,170 @@
 /**
  *
  */
-class MMO_Settings_ : public AST_Visitor_
+class MMO_Settings_: public AST_Visitor_
 {
-public:
+  public:
     /**
      *
      * @param name
      */
-    MMO_Settings_ (string name);
+    MMO_Settings_(string name);
     /**
      *
      */
-    ~MMO_Settings_ ();
+    ~MMO_Settings_();
     /**
      *
      * @return
      */
     MMO_Annotation
-    annotations ();
+    annotations();
     /**
      *
      * @param x
      */
     void
-    visit (AST_Class x);
+    visit(AST_Class x);
     /**
      *
      * @param x
      */
     void
-    leave (AST_Class x);
+    leave(AST_Class x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Composition x);
+    visit(AST_Composition x);
     /**
      *
      * @param x
      */
     void
-    leave (AST_Composition x);
+    leave(AST_Composition x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_CompositionElement x);
+    visit(AST_CompositionElement x);
     /**
      *
      * @param x
      */
     void
-    leave (AST_CompositionElement x);
+    leave(AST_CompositionElement x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_CompositionEqsAlgs x);
+    visit(AST_CompositionEqsAlgs x);
     /**
      *
      * @param x
      */
     void
-    leave (AST_CompositionEqsAlgs x);
+    leave(AST_CompositionEqsAlgs x);
     /**
      *
      * @param
      */
     void
-    visit (AST_External_Function_Call);
+    visit(AST_External_Function_Call);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Element x);
+    visit(AST_Element x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Modification x);
+    visit(AST_Modification x);
     /**
      *
      * @param x
      */
     void
-    leave (AST_Modification x);
+    leave(AST_Modification x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Comment x);
+    visit(AST_Comment x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Equation x);
+    visit(AST_Equation x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_ForIndex x);
+    visit(AST_ForIndex x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Equation_Else x);
+    visit(AST_Equation_Else x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Expression x);
+    visit(AST_Expression x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Argument x);
+    visit(AST_Argument x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Statement x);
+    visit(AST_Statement x);
     /**
      *
      * @param x
      */
     void
-    leave (AST_Statement x);
+    leave(AST_Statement x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_Statement_Else x);
+    visit(AST_Statement_Else x);
     /**
      *
      * @param x
      */
     void
-    visit (AST_StoredDefinition x);
+    visit(AST_StoredDefinition x);
     /**
      *
      * @param x
      */
     void
-    leave (AST_StoredDefinition x);
+    leave(AST_StoredDefinition x);
     /**
      *
      * @param x
      * @return
      */
     int
-    apply (AST_Node x);
-private:
+    apply(AST_Node x);
+    private:
     MMO_Class _class;
     bool _classModification;
     bool _insertAnnotation;
@@ -206,12 +206,12 @@ private:
  * @return
  */
 MMO_Settings
-newMMO_Settings (string name);
+newMMO_Settings(string name);
 /**
  *
  * @param m
  */
 void
-deleteMMO_Settings (MMO_Settings m);
+deleteMMO_Settings(MMO_Settings m);
 
 #endif  /* MMO_SETTINGS_H_ */

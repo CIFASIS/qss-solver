@@ -34,9 +34,9 @@
  */
 typedef enum
 {
-    HND_POSITIVE, //!< HND_POSITIVE
-    HND_NEGATIVE, //!< HND_NEGATIVE
-    HND_ZERO     //!< HND_ZERO
+  HND_POSITIVE, //!< HND_POSITIVE
+  HND_NEGATIVE, //!< HND_NEGATIVE
+  HND_ZERO     //!< HND_ZERO
 } HND_Type;
 
 /**
@@ -45,155 +45,155 @@ typedef enum
  */
 typedef enum
 {
-    ZC_LT,     //!< ZC_LT
-    ZC_LE,     //!< ZC_LE
-    ZC_GT,     //!< ZC_GT
-    ZC_GE //!< ZC_GE
+  ZC_LT,     //!< ZC_LT
+  ZC_LE,     //!< ZC_LE
+  ZC_GT,     //!< ZC_GT
+  ZC_GE //!< ZC_GE
 } ZC_REL;
 
 /**
  *
  */
-class MMO_Event_ : public MMO_Base_
+class MMO_Event_: public MMO_Base_
 {
-public:
+  public:
     /**
      *
      * @param cond
      * @param data
      */
-    MMO_Event_ (AST_Expression cond, MMO_ModelData data);
+    MMO_Event_(AST_Expression cond, MMO_ModelData data);
     /**
      *
      */
-    ~MMO_Event_ ();
+    ~MMO_Event_();
     /**
      *
      * @return
      */
     string
-    print ();
+    print();
     /**
      *
      * @return
      */
     MMO_Equation
-    condition ();
+    condition();
     /**
      *
      * @param cond
      */
     void
-    setCondition (MMO_Expression cond);
+    setCondition(MMO_Expression cond);
     /**
      *
      * @param cond
      * @return
      */
     bool
-    compareCondition (AST_Expression cond);
+    compareCondition(AST_Expression cond);
     /**
      *
      * @param stm
      */
     void
-    insert (AST_Statement stm);
+    insert(AST_Statement stm);
     /**
      *
      * @param h
      * @return
      */
     MMO_Statement
-    begin (HND_Type h);
+    begin(HND_Type h);
     /**
      *
      * @return
      */
     MMO_Statement
-    next ();
+    next();
     /**
      *
      * @return
      */
     bool
-    end ();
+    end();
     /**
      *
      * @return
      */
     Index
-    index ();
+    index();
     /**
      *
      * @param idx
      */
     void
-    setIndex (Index idx);
+    setIndex(Index idx);
     /**
      *
      * @return
      */
     int
-    beginRange ();
+    beginRange();
     /**
      *
      * @return
      */
     int
-    endRange ();
+    endRange();
     /**
      *
      * @return
      */
     bool
-    hasPositiveHandler ();
+    hasPositiveHandler();
     /**
      *
      * @return
      */
     bool
-    hasNegativeHandler ();
+    hasNegativeHandler();
     /**
      *
      * @return
      */
     HND_Type
-    handlerType ();
+    handlerType();
     /**
      *
      * @param h
      */
     void
-    setHandlerType (HND_Type h);
+    setHandlerType(HND_Type h);
     /**
      *
      * @return
      */
     Dependencies
-    deps ();
+    deps();
     /**
      *
      * @return
      */
     Dependencies
-    lhs ();
+    lhs();
     /**
      *
      * @return
      */
     bool
-    hasWeight ();
+    hasWeight();
     /**
      *
      * @return
      */
     double
-    weight ();
+    weight();
     ZC_REL
-    zcRelation ();
-private:
+    zcRelation();
+    private:
     AST_Expression
-    _getExpression (AST_Expression exp);
+    _getExpression(AST_Expression exp);
     MMO_Equation _cond;
     list<MMO_Statement> _positiveHandlerStatements;
     list<MMO_Statement> _negativeHandlerStatements;
@@ -217,12 +217,12 @@ private:
  * @return
  */
 MMO_Event
-newMMO_Event (AST_Expression cond, MMO_ModelData data);
+newMMO_Event(AST_Expression cond, MMO_ModelData data);
 /**
  *
  * @param m
  */
 void
-deleteMMO_Event (MMO_Event m);
+deleteMMO_Event(MMO_Event m);
 
 #endif  /*  MMO_EVENT_H_ */

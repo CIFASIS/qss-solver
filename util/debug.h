@@ -29,26 +29,26 @@
  * "flagList" is a string of characters for whose DEBUG messages are to be enabled.
  */
 void
-debugInit (const char* flags);
+debugInit(const char* flags);
 
 /**
  * Print an INFO debug message, if flag is enabled.
  **/
 void
-DEBUG (char flag, const char* format, ...);
+DEBUG(char flag, const char* format, ...);
 
 bool
-isDebugParam (char *param);
+isDebugParam(char *param);
 
 /*
  * Print an ERROR message. Then exits with EXIT_FAILURE status.
  */
 void
-ERROR (const char *format, ...);
+ERROR(const char *format, ...);
 
 /**
  * Print an ERROR message if condition is false.
  * Then exits with EXIT_FAILURE status.
  */
 void
-ERROR_UNLESS (bool condition, const char *format, ...);
+ERROR_UNLESS(bool condition, const char *format, ...);

@@ -30,16 +30,16 @@ using namespace std;
  */
 class AST_Node_
 {
-public:
+  public:
     /**
      *
      */
-    AST_Node_ ();
+    AST_Node_();
     /**
      *
      */
     virtual
-    ~AST_Node_ ()
+    ~AST_Node_()
     {
 
     }
@@ -54,20 +54,20 @@ public:
      * @param linenum
      */
     void
-    setLineNum (int linenum);
+    setLineNum(int linenum);
     /**
      *
      * @return
      */
     int
-    lineNum () const;
+    lineNum() const;
     /**
      *
      * @param visitor
      */
     virtual void
-    accept (AST_Visitor visitor) = 0;
-private:
+    accept(AST_Visitor visitor) = 0;
+    private:
     int _linenum;
 };
 

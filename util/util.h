@@ -51,34 +51,34 @@ typedef int grp_t;
  */
 typedef enum
 {
-    BIF_NONE,  //!< BIF_NONE
-    BIF_REINIT,  //!< BIF_REINIT
-    BIF_TERMINATE, //!< BIF_TERMINATE
-    BIF_SUM,   //!< BIF_SUM
-    BIF_PRODUCT,   //!< BIF_PRODUCT
-    BIF_INNER_PRODUCT,   //!< BIF_INNER_PRODUCT
-    BIF_MIN,   //!< BIF_MIN
-    BIF_MAX,   //!< BIF_MAX
-    BIF_ABS,   //!< BIF_ABS
-    BIF_SIGN,  //!< BIF_SIGN
-    BIF_SQRT,  //!< BIF_SQRT
-    BIF_CEIL,  //!< BIF_CEIL
-    BIF_FLOOR, //!< BIF_FLOOR
-    BIF_SIN,   //!< BIF_SIN
-    BIF_COS,   //!< BIF_COS
-    BIF_TAN,   //!< BIF_TAN
-    BIF_ASIN,  //!< BIF_ASIN
-    BIF_ACOS,  //!< BIF_ACOS
-    BIF_ATAN,  //!< BIF_ATAN
-    BIF_ATAN2, //!< BIF_ATAN2
-    BIF_SINH,  //!< BIF_SINH
-    BIF_COSH,  //!< BIF_COSH
-    BIF_TANH,  //!< BIF_TANH
-    BIF_EXP,   //!< BIF_EXP
-    BIF_LOG,   //!< BIF_LOG
-    BIF_LOG10, //!< BIF_LOG10
-    BIF_PRE,    //!< BIF_PRE
-    BIF_GQLINK  //!< BIF_GQLINK
+  BIF_NONE,  //!< BIF_NONE
+  BIF_REINIT,  //!< BIF_REINIT
+  BIF_TERMINATE, //!< BIF_TERMINATE
+  BIF_SUM,   //!< BIF_SUM
+  BIF_PRODUCT,   //!< BIF_PRODUCT
+  BIF_INNER_PRODUCT,   //!< BIF_INNER_PRODUCT
+  BIF_MIN,   //!< BIF_MIN
+  BIF_MAX,   //!< BIF_MAX
+  BIF_ABS,   //!< BIF_ABS
+  BIF_SIGN,  //!< BIF_SIGN
+  BIF_SQRT,  //!< BIF_SQRT
+  BIF_CEIL,  //!< BIF_CEIL
+  BIF_FLOOR, //!< BIF_FLOOR
+  BIF_SIN,   //!< BIF_SIN
+  BIF_COS,   //!< BIF_COS
+  BIF_TAN,   //!< BIF_TAN
+  BIF_ASIN,  //!< BIF_ASIN
+  BIF_ACOS,  //!< BIF_ACOS
+  BIF_ATAN,  //!< BIF_ATAN
+  BIF_ATAN2, //!< BIF_ATAN2
+  BIF_SINH,  //!< BIF_SINH
+  BIF_COSH,  //!< BIF_COSH
+  BIF_TANH,  //!< BIF_TANH
+  BIF_EXP,   //!< BIF_EXP
+  BIF_LOG,   //!< BIF_LOG
+  BIF_LOG10, //!< BIF_LOG10
+  BIF_PRE,    //!< BIF_PRE
+  BIF_GQLINK  //!< BIF_GQLINK
 } BIF_NAMES;
 
 /**
@@ -86,57 +86,60 @@ typedef enum
  */
 typedef enum
 {
-    BIV_NONE, //!< BIV_NONE
-    BIV_TIME, //!< BIV_TIME
-    BIV_SUM,   //!< BIV_SUM
-    BIV_PRODUCT,   //!< BIV_PRODUCT
-    BIV_INNER_PRODUCT,   //!< BIV_INNER_PRODUCT
-    BIV_MIN,   //!< BIV_MIN
-    BIV_MAX   //!< BIV_MAX
+  BIV_NONE, //!< BIV_NONE
+  BIV_TIME, //!< BIV_TIME
+  BIV_SUM,   //!< BIV_SUM
+  BIV_PRODUCT,   //!< BIV_PRODUCT
+  BIV_INNER_PRODUCT,   //!< BIV_INNER_PRODUCT
+  BIV_MIN,   //!< BIV_MIN
+  BIV_MAX   //!< BIV_MAX
 } BIV_NAMES;
 
 class BIF
 {
-public:
+  public:
     /**
      *
      */
     virtual
-    ~BIF ()
+    ~BIF()
     {
     }
     ;
     list<string>
-    generateCode (string variableMap, string variableIndex, list<VariableInterval> variableInterval, int expOrder);
+    generateCode(string variableMap, string variableIndex,
+        list<VariableInterval> variableInterval, int expOrder);
     void
-    setSymbolTable (VarSymbolTable vt);
+    setSymbolTable(VarSymbolTable vt);
     VarSymbolTable
-    symbolTable (VarSymbolTable vt);
+    symbolTable(VarSymbolTable vt);
     string
-    variableName (VariableInterval vin);
+    variableName(VariableInterval vin);
     string
-    expressionOrderStr (int order, VariableInterval vin);
+    expressionOrderStr(int order, VariableInterval vin);
     bool
-    isState (VariableInterval vin);
+    isState(VariableInterval vin);
     void
-    setExpressionOrder (int expressionOrder);
+    setExpressionOrder(int expressionOrder);
     int
-    expressionOrder ();
+    expressionOrder();
     string
-    print (Index idx, string variableIndex);
-private:
+    print(Index idx, string variableIndex);
+    private:
     VarSymbolTable _vt;
     int _expressionOrder;
     bool
-    _hasStates (list<VariableInterval> variables);
+    _hasStates(list<VariableInterval> variables);
     Index
-    _index (list<VariableInterval> variables);
+    _index(list<VariableInterval> variables);
     VarInfo
-    _variableInfo (VariableInterval vin);
+    _variableInfo(VariableInterval vin);
     virtual string
-    _reduce (string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates) = 0;
+    _reduce(string variableMap, string variableIndex, int variableOrder,
+        list<VariableInterval> variableInterval, bool hasStates) = 0;
     virtual string
-    _init (string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates) = 0;
+    _init(string variableMap, string variableIndex,
+        list<VariableInterval> variableInterval, bool hasStates) = 0;
 };
 
 /**
@@ -144,74 +147,74 @@ private:
  */
 class Util
 {
-public:
+  public:
     /**
      *
      * @return
      */
     static Util *
-    getInstance ();
+    getInstance();
     /**
      *
      */
-    ~Util ();
+    ~Util();
     string
-    trimString (string str);
+    trimString(string str);
     /**
      *
      * @return
      */
     string
-    languageEspecification ();
+    languageEspecification();
     /**
      *
      * @param t
      * @return
      */
     bool
-    checkTypeString (string t);
+    checkTypeString(string t);
     /**
      *
      * @param annotation
      * @return
      */
     bool
-    checkExperimentAnnotations (string *annotation);
+    checkExperimentAnnotations(string *annotation);
     /**
      *
      * @param fname
      * @return
      */
     BIF_NAMES
-    checkBuiltInFunctions (string fname);
+    checkBuiltInFunctions(string fname);
     /**
      *
      * @param fname
      * @return
      */
     BIF_NAMES
-    checkBuiltInReductionFunctions (string fname);
+    checkBuiltInReductionFunctions(string fname);
     /**
      *
      * @param fname
      * @return
      */
     BIV_NAMES
-    checkBuiltInVariables (string fname);
+    checkBuiltInVariables(string fname);
     /**
      *
      * @param fname
      * @param type
      */
     void
-    addBuiltInVariables (string fname, BIV_NAMES type);
+    addBuiltInVariables(string fname, BIV_NAMES type);
     /**
      *
      * @param bot
      * @return
      */
     string
-    opString (BinOpType bot);
+    opString(BinOpType bot);
     /**
      *
      * @param n
@@ -219,14 +222,14 @@ public:
      * @return
      */
     string
-    newVarName (string n, VarSymbolTable vt);
+    newVarName(string n, VarSymbolTable vt);
     /**
      *
      * @param name
      * @return
      */
     string
-    getVarName (string name);
+    getVarName(string name);
     /**
      *
      * @param fileName
@@ -234,14 +237,14 @@ public:
      * @return
      */
     bool
-    readPackage (string fileName, MMO_PackageTable pt);
+    readPackage(string fileName, MMO_PackageTable pt);
     /**
      *
      * @param fileName
      * @return
      */
     MMO_PackageData
-    readPackage (string fileName);
+    readPackage(string fileName);
     /**
      *
      * @param pname
@@ -249,7 +252,7 @@ public:
      * @return
      */
     bool
-    searchCompiledPackage (string pname, MMO_CompileFlags flags);
+    searchCompiledPackage(string pname, MMO_CompileFlags flags);
     /**
      *
      * @param pname
@@ -258,26 +261,26 @@ public:
      * @return
      */
     string
-    packagePath (string pname, MMO_CompileFlags flags, string ext = ".mo");
+    packagePath(string pname, MMO_CompileFlags flags, string ext = ".mo");
     /**
      *
      * @param flags
      */
     void
-    setCompileFlags (MMO_CompileFlags flags);
+    setCompileFlags(MMO_CompileFlags flags);
     /**
      *
      * @param name
      * @return
      */
     string
-    packageName (string name);
+    packageName(string name);
     /**
      *
      * @param data
      */
     void
-    setData (MMO_ModelData data);
+    setData(MMO_ModelData data);
     /**
      *
      * @param vi
@@ -286,41 +289,41 @@ public:
      * @return
      */
     string
-    printInitialAssignment (VarInfo vi, string indent, string localVar = "i0");
+    printInitialAssignment(VarInfo vi, string indent, string localVar = "i0");
     /**
      *
      * @param ev
      * @return
      */
     string
-    environmentVariable (string ev);
+    environmentVariable(string ev);
     /**
      *
      * @param file
      * @return
      */
     string
-    getFilePath (string file);
+    getFilePath(string file);
     /**
      *
      * @param file
      * @return
      */
     string
-    getFileName (string file);
+    getFileName(string file);
     BIF *
-    builtInReductionFunctions (BIF_NAMES fn);
+    builtInReductionFunctions(BIF_NAMES fn);
     bool
-    checkGKLinkFunctions (string name);
-private:
-    Util ();
+    checkGKLinkFunctions(string name);
+    private:
+    Util();
     static Util *_instance;
     bool
-    _checkCodeFiles (string name, string ext);
+    _checkCodeFiles(string name, string ext);
     list<string>
-    _getValue (fstream *package, string token);
+    _getValue(fstream *package, string token);
     string
-    _packagePath (string name);
+    _packagePath(string name);
     string _languageEspecification;
     int _varCounter;
     MMO_CompileFlags _flags;
@@ -332,88 +335,100 @@ private:
     string _binop[BINOPS];
 };
 
-class BuiltInFunction : public BIF
+class BuiltInFunction: public BIF
 {
-public:
+  public:
     /**
      *
      */
-    ~BuiltInFunction ();
-private:
+    ~BuiltInFunction();
+    private:
     string
-    _reduce (string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates);
+    _reduce(string variableMap, string variableIndex, int variableOrder,
+        list<VariableInterval> variableInterval, bool hasStates);
     string
-    _init (string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates);
+    _init(string variableMap, string variableIndex,
+        list<VariableInterval> variableInterval, bool hasStates);
 };
 
-class BuiltInSumFunction : public BIF
+class BuiltInSumFunction: public BIF
 {
-public:
+  public:
     /**
      *
      */
-    ~BuiltInSumFunction ();
-private:
+    ~BuiltInSumFunction();
+    private:
     string
-    _reduce (string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates);
+    _reduce(string variableMap, string variableIndex, int variableOrder,
+        list<VariableInterval> variableInterval, bool hasStates);
     string
-    _init (string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates);
+    _init(string variableMap, string variableIndex,
+        list<VariableInterval> variableInterval, bool hasStates);
 };
 
-class BuiltInProductFunction : public BIF
+class BuiltInProductFunction: public BIF
 {
-public:
+  public:
     /**
      *
      */
-    ~BuiltInProductFunction ();
-private:
+    ~BuiltInProductFunction();
+    private:
     string
-    _reduce (string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates);
+    _reduce(string variableMap, string variableIndex, int variableOrder,
+        list<VariableInterval> variableInterval, bool hasStates);
     string
-    _init (string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates);
+    _init(string variableMap, string variableIndex,
+        list<VariableInterval> variableInterval, bool hasStates);
 };
 
-class BuiltInInnerProductFunction : public BIF
+class BuiltInInnerProductFunction: public BIF
 {
-public:
+  public:
     /**
      *
      */
-    ~BuiltInInnerProductFunction ();
-private:
+    ~BuiltInInnerProductFunction();
+    private:
     string
-    _reduce (string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates);
+    _reduce(string variableMap, string variableIndex, int variableOrder,
+        list<VariableInterval> variableInterval, bool hasStates);
     string
-    _init (string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates);
+    _init(string variableMap, string variableIndex,
+        list<VariableInterval> variableInterval, bool hasStates);
 };
 
-class BuiltInMinFunction : public BIF
+class BuiltInMinFunction: public BIF
 {
-public:
+  public:
     /**
      *
      */
-    ~BuiltInMinFunction ();
-private:
+    ~BuiltInMinFunction();
+    private:
     string
-    _reduce (string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates);
+    _reduce(string variableMap, string variableIndex, int variableOrder,
+        list<VariableInterval> variableInterval, bool hasStates);
     string
-    _init (string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates);
+    _init(string variableMap, string variableIndex,
+        list<VariableInterval> variableInterval, bool hasStates);
 };
 
-class BuiltInMaxFunction : public BIF
+class BuiltInMaxFunction: public BIF
 {
-public:
+  public:
     /**
      *
      */
-    ~BuiltInMaxFunction ();
-private:
+    ~BuiltInMaxFunction();
+    private:
     string
-    _reduce (string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates);
+    _reduce(string variableMap, string variableIndex, int variableOrder,
+        list<VariableInterval> variableInterval, bool hasStates);
     string
-    _init (string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates);
+    _init(string variableMap, string variableIndex,
+        list<VariableInterval> variableInterval, bool hasStates);
 };
 
 #endif  /* UTIL_H_ */

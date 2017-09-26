@@ -31,248 +31,248 @@
  */
 class MMO_CompileFlags_
 {
-public:
+  public:
     /**
      *
      */
-    MMO_CompileFlags_ ();
+    MMO_CompileFlags_();
     /**
      *
      */
-    ~MMO_CompileFlags_ ();
+    ~MMO_CompileFlags_();
     /**
      *
      * @param l
      */
     void
-    addLibraryPath (string l);
+    addLibraryPath(string l);
     /**
      *
      * @param o
      */
     void
-    addObject (string o);
+    addObject(string o);
     /**
      *
      * @return
      */
     int
-    debug ();
+    debug();
     /**
      *
      * @return
      */
     string
-    enginePath ();
+    enginePath();
     /**
      *
      * @return
      */
     string
-    engineLibs ();
+    engineLibs();
     /**
      *
      * @return
      */
     bool
-    externalFunctions ();
+    externalFunctions();
     /**
      *
      * @return
      */
     bool
-    hasObjects ();
+    hasObjects();
     /**
      *
      * @return
      */
     bool
-    hasOutputFile ();
+    hasOutputFile();
     /**
      *
      * @return
      */
     bool
-    incidenceMatrices ();
+    incidenceMatrices();
     /**
      *
      * @return
      */
     list<string>
-    libraryPaths ();
+    libraryPaths();
     /**
      *
      * @return
      */
     list<string>
-    objects ();
+    objects();
     /**
      *
      * @return
      */
     bool
-    optimizeQSS ();
+    optimizeQSS();
     /**
      *
      * @return
      */
     bool
-    externalStructureFile ();
+    externalStructureFile();
     /**
      *
      * @return
      */
     bool
-    output ();
+    output();
     /**
      *
      * @return
      */
     string
-    outputFile ();
+    outputFile();
     /**
      *
      * @return
      */
     string
-    outputFileName ();
+    outputFileName();
     /**
      *
      * @return
      */
     string
-    outputFilePath ();
+    outputFilePath();
     /**
      *
      * @return
      */
     bool
-    parallel ();
+    parallel();
     /**
      *
      * @return
      */
     string
-    path ();
+    path();
     /**
      *
      * @return
      */
     bool
-    store ();
+    store();
     /**
      *
      * @param s
      */
     void
-    setDebug (int s);
+    setDebug(int s);
     /**
      *
      * @param s
      */
     void
-    setDebug (string s);
+    setDebug(string s);
     /**
      *
      * @param p
      */
     void
-    setEngineLibs (string p);
+    setEngineLibs(string p);
     /**
      *
      * @param p
      */
     void
-    setEnginePath (string p);
+    setEnginePath(string p);
     /**
      *
      * @param s
      */
     void
-    setExternalFunctions (bool s);
+    setExternalFunctions(bool s);
     /**
      *
      * @param p
      */
     void
-    setExternalLibs (string p);
+    setExternalLibs(string p);
     /**
      *
      * @param im
      */
     void
-    setIncidenceMatrices (bool im);
+    setIncidenceMatrices(bool im);
     /**
      *
      * @param s
      */
     void
-    setOptimizeQSS (bool s);
+    setOptimizeQSS(bool s);
     /**
      *
      * @param s
      */
     void
-    setOutput (bool s);
+    setOutput(bool s);
     /**
      *
      * @param outputFile
      */
     void
-    setOutputFile (string outputFile);
+    setOutputFile(string outputFile);
     /**
      *
      * @param s
      */
     void
-    setParallel (bool s);
+    setParallel(bool s);
     /**
      *
      * @param s
      */
     void
-    setExternalStructureFile (bool s);
+    setExternalStructureFile(bool s);
     /**
      *
      * @param p
      */
     void
-    setPath (string p);
+    setPath(string p);
     /**
      *
      * @param s
      */
     void
-    setStore (bool s);
+    setStore(bool s);
     /**
      *
      * @return
      */
     string
-    externalLibs ();
+    externalLibs();
     /**
      *
      * @return
      */
     int
-    lps () const
+    lps() const
     {
-        return (_lps);
+      return _lps;
     }
     /**
      *
      * @param lps
      */
     void
-    setLps (int lps)
+    setLps(int lps)
     {
-        _lps = lps;
+      _lps = lps;
     }
     void
-    setGraph (bool g);
+    setGraph(bool g);
     bool
-    graph ();
-private:
+    graph();
+    private:
     bool _store;
     bool _parallel;
     bool _externalStructureFiles;
@@ -294,12 +294,12 @@ private:
  * @return
  */
 MMO_CompileFlags
-newMMO_CompileFlags ();
+newMMO_CompileFlags();
 /**
  *
  * @param m
  */
 void
-deleteMMO_CompileFlags (MMO_CompileFlags m);
+deleteMMO_CompileFlags(MMO_CompileFlags m);
 
 #endif  /* MMO_COMPILE_FLAGS_H_ */

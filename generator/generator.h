@@ -46,74 +46,74 @@ using namespace std;
  */
 class MMO_Generator_
 {
-public:
+  public:
     /**
      *
      * @param std
      * @param flags
      */
-    MMO_Generator_ (MMO_StoredDefinition std, MMO_CompileFlags flags);
+    MMO_Generator_(MMO_StoredDefinition std, MMO_CompileFlags flags);
     /**
      *
      */
-    ~MMO_Generator_ ();
+    ~MMO_Generator_();
     /**
      *
      * @return
      */
     int
-    generate ();
-private:
+    generate();
+    private:
     void
-    _generateFunctionCode (MMO_Function f);
+    _generateFunctionCode(MMO_Function f);
     void
-    _generateHeader (string name);
+    _generateHeader(string name);
     void
-    _printList (list<string> l);
+    _printList(list<string> l);
     void
-    _variablesInitCode ();
+    _variablesInitCode();
     void
-    _variables ();
+    _variables();
     void
-    _generateModel ();
+    _generateModel();
     void
-    _generateFunction (MMO_Function f, string fileName);
+    _generateFunction(MMO_Function f, string fileName);
     void
-    _generateFunction (MMO_FunctionDefinition f, string fileName);
+    _generateFunction(MMO_FunctionDefinition f, string fileName);
     void
-    _generateFunctionHeader (string fileName);
+    _generateFunctionHeader(string fileName);
     void
-    _generatePackage (MMO_Package p);
+    _generatePackage(MMO_Package p);
     void
-    _header ();
+    _header();
     void
-    _parameters ();
+    _parameters();
     void
-    _modelDef ();
+    _modelDef();
     void
-    _modelDeps ();
+    _modelDeps();
     void
-    _zeroCrossing ();
+    _zeroCrossing();
     void
-    _handlerPositive ();
+    _handlerPositive();
     void
-    _handlerNegative ();
+    _handlerNegative();
     void
-    _output ();
+    _output();
     void
-    _initMatrices ();
+    _initMatrices();
     void
-    _functions ();
+    _functions();
     void
-    _initSections ();
+    _initSections();
     void
-    _initEvents ();
+    _initEvents();
     void
-    _initTime ();
+    _initTime();
     void
-    _initOutput ();
+    _initOutput();
     void
-    _initModel ();
+    _initModel();
     MMO_StoredDefinition _std;
     MMO_Model _model;
     MMO_Function _function;
@@ -133,12 +133,12 @@ private:
  * @return
  */
 MMO_Generator
-newMMO_Generator (MMO_StoredDefinition std, MMO_CompileFlags flags);
+newMMO_Generator(MMO_StoredDefinition std, MMO_CompileFlags flags);
 /**
  *
  * @param m
  */
 void
-deleteMMO_Generator (MMO_Generator m);
+deleteMMO_Generator(MMO_Generator m);
 
 #endif  /* GENERATOR_H_ */

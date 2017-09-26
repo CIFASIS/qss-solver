@@ -39,166 +39,166 @@
  *
  */
 template<class Key, class Value, class Compare = std::less<Key> >
-    class SymbolTable
+class SymbolTable
+{
+  public:
+    /**
+     *
+     */
+    ~SymbolTable()
     {
-    public:
-        /**
-         *
-         */
-        ~SymbolTable ()
-        {
-        }
-        ;
-        /**
-         *
-         * @param k
-         * @param v
-         */
-        void
-        insert (Key k, Value v)
-        {
-            _st[k] = v;
-        }
-        ;
-        /**
-         *
-         * @param k
-         * @return
-         */
-        Value
-        lookup (Key k)
-        {
-            typename std::map<Key, Value, Compare>::iterator it;
-            it = _st.find (k);
-            if (it == _st.end ())
-            {
-                return (NULL);
-            }
-            else
-            {
-                return (it->second);
-            }
-        }
-        ;
-        int
-        count ()
-        {
-            return (_st.size ());
-        }
-        ;
-        /**
-         *
-         * @param i
-         * @return
-         */
-        Value
-        val (int i)
-        {
-            typename std::map<Key, Value, Compare>::iterator it;
-            it = _st.begin ();
-            for (int j = 0; j < i; j++)
-            {
-                it++;
-            }
-            return (it->second);
-        }
-        ;
-        /**
-         *
-         * @param i
-         * @return
-         */
-        Key
-        key (int i)
-        {
-            typename std::map<Key, Value, Compare>::iterator it;
-            it = _st.begin ();
-            for (int j = 0; j < i; j++)
-            {
-                it++;
-            }
-            return (it->first);
-        }
-        ;
-        /**
-         *
-         * @param k
-         */
-        void
-        remove (Key k)
-        {
-            _st.erase (k);
-        }
-        ;
-        /**
-         *
-         * @return
-         */
-        Value
-        begin ()
-        {
-            _currentKey = 0;
-            if (_st.empty ())
-            {
-                return (NULL);
-            }
-            return (val (_currentKey));
-        }
-        ;
-        /**
-         *
-         * @return
-         */
-        Value
-        next ()
-        {
-            _currentKey++;
-            if (_currentKey < _st.size ())
-            {
-                return (val (_currentKey));
-            }
-            return (NULL);
-        }
-        ;
-        /**
-         *
-         * @return
-         */
-        bool
-        end ()
-        {
-            if (_st.empty ())
-            {
-                return (true);
-            }
-            return (_currentKey == _st.size ());
-        }
-        ;
-        /**
-         *
-         * @return
-         */
-        Key
-        key ()
-        {
-            if (_currentKey < _st.size ())
-            {
-                return (key (_currentKey));
-            }
-            return (key (0));
-        }
-        ;
+    }
+    ;
+    /**
+     *
+     * @param k
+     * @param v
+     */
+    void
+    insert(Key k, Value v)
+    {
+      _st[k] = v;
+    }
+    ;
+    /**
+     *
+     * @param k
+     * @return
+     */
+    Value
+    lookup(Key k)
+    {
+      typename std::map<Key, Value, Compare>::iterator it;
+      it = _st.find(k);
+      if(it == _st.end())
+      {
+        return NULL;
+      }
+      else
+      {
+        return it->second;
+      }
+    }
+    ;
+    int
+    count()
+    {
+      return _st.size();
+    }
+    ;
+    /**
+     *
+     * @param i
+     * @return
+     */
+    Value
+    val(int i)
+    {
+      typename std::map<Key, Value, Compare>::iterator it;
+      it = _st.begin();
+      for(int j = 0; j < i; j++)
+      {
+        it++;
+      }
+      return it->second;
+    }
+    ;
+    /**
+     *
+     * @param i
+     * @return
+     */
+    Key
+    key(int i)
+    {
+      typename std::map<Key, Value, Compare>::iterator it;
+      it = _st.begin();
+      for(int j = 0; j < i; j++)
+      {
+        it++;
+      }
+      return it->first;
+    }
+    ;
+    /**
+     *
+     * @param k
+     */
+    void
+    remove(Key k)
+    {
+      _st.erase(k);
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    Value
+    begin()
+    {
+      _currentKey = 0;
+      if(_st.empty())
+      {
+        return NULL;
+      }
+      return val(_currentKey);
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    Value
+    next()
+    {
+      _currentKey++;
+      if(_currentKey < _st.size())
+      {
+        return val(_currentKey);
+      }
+      return NULL;
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    bool
+    end()
+    {
+      if(_st.empty())
+      {
+        return true;
+      }
+      return _currentKey == _st.size();
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    Key
+    key()
+    {
+      if(_currentKey < _st.size())
+      {
+        return key(_currentKey);
+      }
+      return key(0);
+    }
+    ;
     protected:
-        std::map<Key, Value, Compare> _st;
-        unsigned int _currentKey;
-    };
+    std::map<Key, Value, Compare> _st;
+    unsigned int _currentKey;
+};
 
 /**
  *
  */
 class VarInfo_
 {
-public:
+  public:
     /**
      *
      * @param t
@@ -206,7 +206,7 @@ public:
      * @param m
      * @param c
      */
-    VarInfo_ (Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c);
+    VarInfo_(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c);
     /**
      *
      * @param t
@@ -214,15 +214,16 @@ public:
      * @param m
      * @param s
      */
-    VarInfo_ (Type t, AST_TypePrefix tp, AST_Modification m, vector<int> s, bool array);
+    VarInfo_(Type t, AST_TypePrefix tp, AST_Modification m, vector<int> s,
+        bool array);
     /**
      *
      * @return
      */
     AST_TypePrefix
-    typePrefix ()
+    typePrefix()
     {
-        return (_tp);
+      return _tp;
     }
     ;
     /**
@@ -230,27 +231,27 @@ public:
      * @return
      */
     AST_Comment
-    comment ()
+    comment()
     {
-        return (_comm);
+      return _comm;
     }
     /**
      *
      * @param c
      */
     void
-    setComment (AST_Comment c)
+    setComment(AST_Comment c)
     {
-        _comm = c;
+      _comm = c;
     }
     /**
      *
      * @return
      */
     AST_Modification
-    modification ()
+    modification()
     {
-        return (_m);
+      return _m;
     }
     ;
     /**
@@ -258,10 +259,10 @@ public:
      * @param m
      */
     void
-    setModification (AST_Modification m)
+    setModification(AST_Modification m)
     {
-        _m = m;
-        _processModification ();
+      _m = m;
+      _processModification();
     }
     ;
     /**
@@ -269,71 +270,61 @@ public:
      * @return
      */
     Type
-    type ();
+    type();
     /**
      *
      * @param t
      */
     void
-    setType (Type t)
+    setType(Type t)
     {
-        _t = t;
+      _t = t;
     }
     ;
     /**
      *
      */
     void
-    setParameter ();
+    setParameter();
     /**
      *
      * @return
      */
     bool
-    isParameter () const
+    isParameter() const
     {
-        return (_tp & TP_PARAMETER);
+      return _tp & TP_PARAMETER;
     }
     /**
      *
      * @return
      */
     bool
-    isDiscrete () const
+    isDiscrete() const
     {
-        return ((_tp & TP_DISCRETE) || _discrete);
+      return (_tp & TP_DISCRETE) || _discrete;
     }
     /**
      *
      * @return
      */
     bool
-    builtIn () const
+    builtIn() const
     {
-        return (_builtin);
+      return _builtin;
     }
     /**
      *
      */
     void
-    setDiscrete ();
+    setDiscrete();
     /**
      *
      */
     void
-    setBuiltIn ()
+    setBuiltIn()
     {
-        _builtin = true;
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    bool
-    isConstant () const
-    {
-        return (_tp & TP_CONSTANT);
+      _builtin = true;
     }
     ;
     /**
@@ -341,9 +332,9 @@ public:
      * @return
      */
     bool
-    isInput () const
+    isConstant() const
     {
-        return (_tp & TP_INPUT);
+      return _tp & TP_CONSTANT;
     }
     ;
     /**
@@ -351,9 +342,9 @@ public:
      * @return
      */
     bool
-    isOutput () const
+    isInput() const
     {
-        return (_tp & TP_OUTPUT);
+      return _tp & TP_INPUT;
     }
     ;
     /**
@@ -361,129 +352,139 @@ public:
      * @return
      */
     bool
-    isForType () const
+    isOutput() const
     {
-        return (_tp & TP_FOR);
+      return _tp & TP_OUTPUT;
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    bool
+    isForType() const
+    {
+      return _tp & TP_FOR;
     }
     /**
      *
      * @return
      */
     bool
-    isState ();
+    isState();
     /**
      *
      */
     void
-    setState ();
+    setState();
     /**
      *
      * @return
      */
     bool
-    isUnknown ();
+    isUnknown();
     /**
      *
      */
     void
-    setUnknown ();
+    setUnknown();
     /**
      *
      * @return
      */
     bool
-    isTime ();
+    isTime();
     /**
      *
      * @return
      */
     bool
-    isAlgebraic ();
+    isAlgebraic();
     /**
      *
      */
     void
-    setAlgebraic ();
+    setAlgebraic();
     /**
      *
      * @return
      */
     bool
-    hasIndex ();
+    hasIndex();
     /**
      *
      * @param idx
      */
     void
-    setIndex (Index idx);
+    setIndex(Index idx);
     /**
      *
      * @return
      */
     Index
-    index ();
+    index();
     /**
      *
      * @param val
      */
     void
-    setValue (int val);
+    setValue(int val);
     /**
      *
      * @return
      */
     int
-    value ();
+    value();
     /**
      *
      * @return
      */
     int
-    size ();
+    size();
     /**
      *
      * @return
      */
     bool
-    hasAssignment ();
+    hasAssignment();
     /**
      *
      * @return
      */
     bool
-    hasStartModifier ();
+    hasStartModifier();
     /**
      *
      * @return
      */
     bool
-    hasEachModifier ();
+    hasEachModifier();
     void
-    setEachModifier (bool each);
+    setEachModifier(bool each);
     /**
      *
      * @return
      */
     string
-    name ();
+    name();
     /**
      *
      * @param n
      */
     void
-    setName (string n);
+    setName(string n);
     /**
      *
      * @return
      */
     AST_Expression
-    exp ();
+    exp();
     /**
      *
      * @return
      */
     bool
-    isArray ();
+    isArray();
     /**
      *
      * @param os
@@ -491,27 +492,27 @@ public:
      * @return
      */
     friend ostream &
-    operator<< (ostream &os, const VarInfo_ &e);
+    operator<<(ostream &os, const VarInfo_ &e);
     /**
      *
      * @param dim
      * @return
      */
     int
-    size (int dim);
+    size(int dim);
     /**
      *
      * @return
      */
     int
-    dimensions ();
-private:
+    dimensions();
+    private:
     void
-    _processModification ();
+    _processModification();
     void
-    _unsetAssignment ();
+    _unsetAssignment();
     void
-    _unsetStartEach ();
+    _unsetStartEach();
     bool _state;
     bool _unknown;
     bool _discrete;
@@ -537,40 +538,40 @@ private:
  */
 typedef enum
 {
-    VST_CLASSIC_INIT,           //!< VST_CLASSIC_INIT
-        VST_INIT,                   //!< VST_INIT
-        VST_MODEL_FUNCTIONS,        //!< VST_MODEL_FUNCTIONS
-        VST_MODEL_OUTPUT_FUNCTIONS,        //!< VST_MODEL_OUTPUT_FUNCTIONS
-        VST_CLASSIC_MODEL_FUNCTIONS,        //!< VST_CLASSIC_MODEL_FUNCTIONS
-        VST_FUNCTION,               //!< VST_FUNCTION
-        VST_OUTPUT                  //!< VST_OUTPUT
+  VST_CLASSIC_INIT,           //!< VST_CLASSIC_INIT
+  VST_INIT,                   //!< VST_INIT
+  VST_MODEL_FUNCTIONS,        //!< VST_MODEL_FUNCTIONS
+  VST_MODEL_OUTPUT_FUNCTIONS,        //!< VST_MODEL_OUTPUT_FUNCTIONS
+  VST_CLASSIC_MODEL_FUNCTIONS,        //!< VST_CLASSIC_MODEL_FUNCTIONS
+  VST_FUNCTION,               //!< VST_FUNCTION
+  VST_OUTPUT                  //!< VST_OUTPUT
 } VST_Environment;
 
 /**
  *
  */
-class VarSymbolTable_ : public SymbolTable<VarName, VarInfo>
+class VarSymbolTable_: public SymbolTable<VarName, VarInfo>
 {
-public:
+  public:
     /**
      *
      */
-    VarSymbolTable_ ();
+    VarSymbolTable_();
     /**
      *
      * @param
      */
     void
-    initialize (TypeSymbolTable);
+    initialize(TypeSymbolTable);
     /**
      *
      * @param i
      * @return
      */
     VarInfo
-    varInfo (int i)
+    varInfo(int i)
     {
-        return (val (i));
+      return val(i);
     }
     ;
     /**
@@ -579,22 +580,22 @@ public:
      * @return
      */
     VarName
-    varName (int i)
+    varName(int i)
     {
-        return (key (i));
+      return key(i);
     }
     /**
      *
      * @param vse
      */
     void
-    setPrintEnvironment (VST_Environment vse);
+    setPrintEnvironment(VST_Environment vse);
     /**
      *
      * @return
      */
     VST_Environment
-    printEnvironment ();
+    printEnvironment();
     /**
      *
      * @param vi
@@ -607,18 +608,20 @@ public:
      * @return
      */
     string
-    print (VarInfo vi, string idx = "", int offset = 0, int order = 0, list<Index> idxs = list<Index> (), int constant = -1, int forOffset = 0);
+    print(VarInfo vi, string idx = "", int offset = 0, int order = 0,
+        list<Index> idxs = list<Index>(), int constant = -1, int forOffset = 0);
     string
-    printIndex (Index idx, list<Index> idxs, string sub, int offset, int constant, VarInfo vi, int order);
+    printIndex(Index idx, list<Index> idxs, string sub, int offset,
+        int constant, VarInfo vi, int order);
     void
-    setPolyCoeffs (int order);
+    setPolyCoeffs(int order);
     void
-    insert (VarName n, VarInfo vi);
+    insert(VarName n, VarInfo vi);
     list<VarInfo>
-    parameters ();
+    parameters();
     string
-    getTypePrefix ();
-private:
+    getTypePrefix();
+    private:
     VST_Environment _vste;
     int _coeffs;
     list<VarInfo> _parameters;
@@ -627,13 +630,13 @@ private:
 /**
  *
  */
-class TypeSymbolTable_ : public SymbolTable<TypeName, Type>
+class TypeSymbolTable_: public SymbolTable<TypeName, Type>
 {
-public:
+  public:
     /**
      *
      */
-    TypeSymbolTable_ ();
+    TypeSymbolTable_();
 };
 
 /**
@@ -646,608 +649,609 @@ public:
  * @return
  */
 VarInfo
-newVarInfo (Type t, AST_TypePrefix tp, AST_Modification, AST_Comment, vector<int> s = vector<int>(), bool array = false);
+newVarInfo(Type t, AST_TypePrefix tp, AST_Modification, AST_Comment,
+    vector<int> s = vector<int>(), bool array = false);
 /**
  *
  * @return
  */
 VarSymbolTable
-newVarSymbolTable ();
+newVarSymbolTable();
 /**
  *
  * @return
  */
 TypeSymbolTable
-newTypeSymbolTable ();
+newTypeSymbolTable();
 
 /**
  *
  */
 template<class Value>
-    class IndexTable : public SymbolTable<Index, Value>
+class IndexTable: public SymbolTable<Index, Value>
+{
+  public:
+    /**
+     *
+     * @return
+     */
+    Value
+    begin()
     {
-    public:
-        /**
-         *
-         * @return
-         */
-        Value
-        begin ()
+      Value e = SymbolTable<Index, Value>::begin();
+      if(e == NULL)
+      {
+        return NULL;
+      }
+      Index i = SymbolTable<Index, Value>::key();
+      if(i.hasRange())
+      {
+        _beginRange = true;
+        _endRange = false;
+        _range = i.range();
+        _begin = i.begin();
+        _end = i.end();
+      }
+      else
+      {
+        _beginRange = false;
+        _endRange = false;
+        _range = 0;
+        _begin = 0;
+        _end = 0;
+      }
+      return e;
+    }
+    ;
+    /** @brief Returns an iterator to the next equation of the table.
+     *
+     * 	@return Next MMO_Equation in the table.
+     *
+     * 		The \emph{beginRange} and \emph{endRange} flags are set in the following way:
+     * 			-# If the next equation is a generic then:
+     * 				+# If the range is the same as the previous equation, then set
+     * 				   \emph{beginRange} to false.
+     * 				+# Otherwise if the previous equation had a range defined, then set
+     * 			       \emph{endRange} to true.
+     * 			    +# Finally, if there was no previous range defined, set \emph{beginRange}
+     * 			       to true.
+     * 			-# If the next equation is a simple equation, then:
+     *				+# If the there was a previous range defined, then set \emph{endRange} to true.
+     *				+# Otherwise set \emph{endRange} to false.
+     *				+# Set \emph{beginRange} to false.
+     *
+     */
+    Value
+    next()
+    {
+      Value e = SymbolTable<Index, Value>::next();
+      Index i = SymbolTable<Index, Value>::key();
+      if(e == NULL)
+      {
+        return NULL;
+      }
+      if(i.hasRange())
+      {
+        int range = i.range();
+        int begin = i.begin();
+        int end = i.end();
+        if(range == _range && _begin == begin && _end == end)
         {
-            Value e = SymbolTable<Index, Value>::begin ();
-            if (e == NULL)
-            {
-                return (NULL);
-            }
-            Index i = SymbolTable<Index, Value>::key ();
-            if (i.hasRange ())
-            {
-                _beginRange = true;
-                _endRange = false;
-                _range = i.range ();
-                _begin = i.begin ();
-                _end = i.end ();
-            }
-            else
-            {
-                _beginRange = false;
-                _endRange = false;
-                _range = 0;
-                _begin = 0;
-                _end = 0;
-            }
-            return (e);
+          _beginRange = false;
+          _endRange = false;
         }
-        ;
-        /** @brief Returns an iterator to the next equation of the table.
-         *
-         * 	@return Next MMO_Equation in the table.
-         *
-         * 		The \emph{beginRange} and \emph{endRange} flags are set in the following way:
-         * 			-# If the next equation is a generic then:
-         * 				+# If the range is the same as the previous equation, then set
-         * 				   \emph{beginRange} to false.
-         * 				+# Otherwise if the previous equation had a range defined, then set
-         * 			       \emph{endRange} to true.
-         * 			    +# Finally, if there was no previous range defined, set \emph{beginRange}
-         * 			       to true.
-         * 			-# If the next equation is a simple equation, then:
-         *				+# If the there was a previous range defined, then set \emph{endRange} to true.
-         *				+# Otherwise set \emph{endRange} to false.
-         *				+# Set \emph{beginRange} to false.
-         *
-         */
-        Value
-        next ()
+        else if(_range > 0)
         {
-            Value e = SymbolTable<Index, Value>::next ();
-            Index i = SymbolTable<Index, Value>::key ();
-            if (e == NULL)
-            {
-                return (NULL);
-            }
-            if (i.hasRange ())
-            {
-                int range = i.range ();
-                int begin = i.begin ();
-                int end = i.end ();
-                if (range == _range && _begin == begin && _end == end)
-                {
-                    _beginRange = false;
-                    _endRange = false;
-                }
-                else if (_range > 0)
-                {
-                    _endRange = true;
-                    _beginRange = true;
-                    _range = range;
-                    _begin = begin;
-                    _end = end;
-                }
-                else if (_range == 0)
-                {
-                    _beginRange = true;
-                    _endRange = false;
-                    _range = range;
-                    _begin = begin;
-                    _end = end;
-                }
-            }
-            else
-            {
-                if (_range > 0)
-                {
-                    _endRange = true;
-                }
-                else
-                {
-                    _endRange = false;
-                }
-                _beginRange = false;
-                _range = 0;
-                _begin = 0;
-                _end = 0;
-            }
-            return (e);
+          _endRange = true;
+          _beginRange = true;
+          _range = range;
+          _begin = begin;
+          _end = end;
         }
-        ;
+        else if(_range == 0)
+        {
+          _beginRange = true;
+          _endRange = false;
+          _range = range;
+          _begin = begin;
+          _end = end;
+        }
+      }
+      else
+      {
+        if(_range > 0)
+        {
+          _endRange = true;
+        }
+        else
+        {
+          _endRange = false;
+        }
+        _beginRange = false;
+        _range = 0;
+        _begin = 0;
+        _end = 0;
+      }
+      return e;
+    }
+    ;
 
-        /** @brief Returns true if the end of the table is reached.
-         *
-         * 	@return True if the end of the table is reached, false otherwise.
-         *
-         * 	@note{As a size effect, the \emph{beginRange} and \emph{endRange} flags
-         * 		  are cleared.}
-         *
-         */
-        bool
-        end ()
+    /** @brief Returns true if the end of the table is reached.
+     *
+     * 	@return True if the end of the table is reached, false otherwise.
+     *
+     * 	@note{As a size effect, the \emph{beginRange} and \emph{endRange} flags
+     * 		  are cleared.}
+     *
+     */
+    bool
+    end()
+    {
+      bool ret = SymbolTable<Index, Value>::end();
+      if(ret)
+      {
+        _beginRange = false;
+        _endRange = false;
+        _range = 0;
+      }
+      return ret;
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    bool
+    beginGenericDefinition()
+    {
+      return _beginRange;
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    bool
+    endGenericDefinition()
+    {
+      return _endRange;
+    }
+    ;
+    /**
+     *
+     * @param val
+     * @return
+     */
+    bool
+    find(int val)
+    {
+      int s = SymbolTable<Index, Value>::count();
+      for(int i = 0; i < s; i++)
+      {
+        Index idx = SymbolTable<Index, Value>::key(i);
+        if(idx.factor() != 0)
         {
-            bool ret = SymbolTable<Index, Value>::end ();
-            if (ret)
-            {
-                _beginRange = false;
-                _endRange = false;
-                _range = 0;
-            }
-            return (ret);
+          if(idx.checkReverseValue(val))
+          {
+            return true;
+          }
         }
-        ;
-        /**
-         *
-         * @return
-         */
-        bool
-        beginGenericDefinition ()
-        {
-            return (_beginRange);
-        }
-        ;
-        /**
-         *
-         * @return
-         */
-        bool
-        endGenericDefinition ()
-        {
-            return (_endRange);
-        }
-        ;
-        /**
-         *
-         * @param val
-         * @return
-         */
-        bool
-        find (int val)
-        {
-            int s = SymbolTable<Index, Value>::count ();
-            for (int i = 0; i < s; i++)
-            {
-                Index idx = SymbolTable<Index, Value>::key (i);
-                if (idx.factor () != 0)
-                {
-                    if (idx.checkReverseValue (val))
-                    {
-                        return (true);
-                    }
-                }
-            }
-            return (false);
-        }
-    private:
-        int _range;
-        int _begin;
-        int _end;
-        bool _beginRange;
-        bool _endRange;
-    };
+      }
+      return false;
+    }
+  private:
+    int _range;
+    int _begin;
+    int _end;
+    bool _beginRange;
+    bool _endRange;
+};
 
 /**
  *
  */
-class MMO_EquationTable_ : public IndexTable<MMO_Equation>
+class MMO_EquationTable_: public IndexTable<MMO_Equation>
 {
-public:
+  public:
     /**
      *
      */
-    MMO_EquationTable_ ();
+    MMO_EquationTable_();
     /**
      *
      * @param index
      * @return
      */
     list<MMO_Equation>
-    equation (Index index);
+    equation(Index index);
     /**
      *
      * @param index
      * @return
      */
     Index
-    equationIndex (Index index);
+    equationIndex(Index index);
     bool
-    equations (Index index);
+    equations(Index index);
     bool
-    findGenericDependencies (int val);
-private:
+    findGenericDependencies(int val);
+    private:
     MMO_Equation
-    _equation (Index index);
+    _equation(Index index);
 };
 /**
  *
  * @return
  */
 MMO_EquationTable
-newMMO_EquationTable ();
+newMMO_EquationTable();
 /**
  *
  * @param m
  */
 void
-deleteMMO_EquationTable (MMO_EquationTable m);
+deleteMMO_EquationTable(MMO_EquationTable m);
 
 /**
  *
  */
-class MMO_EventTable_ : public IndexTable<MMO_Event>
+class MMO_EventTable_: public IndexTable<MMO_Event>
 {
-public:
+  public:
     /**
      *
      */
-    MMO_EventTable_ ();
+    MMO_EventTable_();
 };
 /**
  *
  * @return
  */
 MMO_EventTable
-newMMO_EventTable ();
+newMMO_EventTable();
 /**
  *
  * @param m
  */
 void
-deleteMMO_EventTable (MMO_EventTable m);
+deleteMMO_EventTable(MMO_EventTable m);
 
 /**
  *
  */
-class MMO_FunctionTable_ : public IndexTable<MMO_Function>
+class MMO_FunctionTable_: public IndexTable<MMO_Function>
 {
-public:
+  public:
     /**
      *
      */
-    MMO_FunctionTable_ ();
+    MMO_FunctionTable_();
 };
 /**
  *
  * @return
  */
 MMO_FunctionTable
-newMMO_FunctionTable ();
+newMMO_FunctionTable();
 /**
  *
  * @param m
  */
 void
-deleteMMO_FunctionTable (MMO_FunctionTable m);
+deleteMMO_FunctionTable(MMO_FunctionTable m);
 
 /**
  *
  */
-class MMO_DependenciesTable_ : public IndexTable<Dependencies>
+class MMO_DependenciesTable_: public IndexTable<Dependencies>
 {
-public:
+  public:
     /**
      *
      */
-    MMO_DependenciesTable_ ();
+    MMO_DependenciesTable_();
     bool
-    find (int val);
+    find(int val);
 };
 /**
  *
  * @return
  */
 MMO_DependenciesTable
-newMMO_DependenciesTable ();
+newMMO_DependenciesTable();
 /**
  *
  * @param m
  */
 void
-deleteMMO_DependenciesTable (MMO_DependenciesTable m);
+deleteMMO_DependenciesTable(MMO_DependenciesTable m);
 
 /**
  *
  */
-class MMO_ArgumentsTable_ : public IndexTable<MMO_FunctionData>
+class MMO_ArgumentsTable_: public IndexTable<MMO_FunctionData>
 {
-public:
+  public:
     /**
      *
      */
-    MMO_ArgumentsTable_ ();
+    MMO_ArgumentsTable_();
 };
 /**
  *
  * @return
  */
 MMO_ArgumentsTable
-newMMO_ArgumentsTable ();
+newMMO_ArgumentsTable();
 /**
  *
  * @param m
  */
 void
-deleteMMO_ArgumentsTable (MMO_ArgumentsTable m);
+deleteMMO_ArgumentsTable(MMO_ArgumentsTable m);
 
 /**
  *
  */
-class MMO_IndexTable_ : public SymbolTable<Index, Index*>
+class MMO_IndexTable_: public SymbolTable<Index, Index*>
 {
-public:
+  public:
     /**
      *
      */
-    MMO_IndexTable_ ();
+    MMO_IndexTable_();
 };
 /**
  *
  * @return
  */
 MMO_IndexTable
-newMMO_IndexTable ();
+newMMO_IndexTable();
 /**
  *
  * @param m
  */
 void
-deleteMMO_IndexTable (MMO_IndexTable m);
+deleteMMO_IndexTable(MMO_IndexTable m);
 
 /**
  *
  */
 template<class R>
-    class ListTable_
+class ListTable_
+{
+  public:
+    /**
+     *
+     * @param i
+     */
+    void
+    insert(R i)
     {
-    public:
-        /**
-         *
-         * @param i
-         */
-        void
-        insert (R i)
-        {
-            _ls.push_back (i);
-        }
-        ;
-        /**
-         *
-         * @return
-         */
-        R
-        begin ()
-        {
-            _currentKey = 0;
-            if (_ls.empty ())
-            {
-                return (R ());
-            }
-            return (_val (_currentKey));
-        }
-        ;
-        /**
-         *
-         * @return
-         */
-        R
-        next ()
-        {
-            _currentKey++;
-            if (_currentKey < _ls.size ())
-            {
-                return (_val (_currentKey));
-            }
-            return (R ());
-        }
-        ;
-        /**
-         *
-         * @return
-         */
-        bool
-        end ()
-        {
-            if (_ls.empty ())
-            {
-                return (true);
-            }
-            return (_currentKey == _ls.size ());
-        }
-        ;
-        /**
-         *
-         * @return
-         */
-        R
-        last ()
-        {
-            return (_ls.back ());
-        }
-        /**
-         *
-         * @return
-         */
-        int
-        count ()
-        {
-            return (_ls.size ());
-        }
-        ;
+      _ls.push_back(i);
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    R
+    begin()
+    {
+      _currentKey = 0;
+      if(_ls.empty())
+      {
+        return R();
+      }
+      return _val(_currentKey);
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    R
+    next()
+    {
+      _currentKey++;
+      if(_currentKey < _ls.size())
+      {
+        return _val(_currentKey);
+      }
+      return R();
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    bool
+    end()
+    {
+      if(_ls.empty())
+      {
+        return true;
+      }
+      return _currentKey == _ls.size();
+    }
+    ;
+    /**
+     *
+     * @return
+     */
+    R
+    last()
+    {
+      return _ls.back();
+    }
+    /**
+     *
+     * @return
+     */
+    int
+    count()
+    {
+      return _ls.size();
+    }
+    ;
     private:
-        R
-        _val (int i)
-        {
-            typename std::list<R>::iterator it;
-            it = _ls.begin ();
-            for (int j = 0; j < i; j++)
-            {
-                it++;
-            }
-            return (*it);
-        }
-        ;
-        list<R> _ls;
-        unsigned int _currentKey;
-    };
+    R
+    _val(int i)
+    {
+      typename std::list<R>::iterator it;
+      it = _ls.begin();
+      for(int j = 0; j < i; j++)
+      {
+        it++;
+      }
+      return *it;
+    }
+    ;
+    list<R> _ls;
+    unsigned int _currentKey;
+};
 
 /**
  *
  */
-class MMO_StatementTable_ : public ListTable_<MMO_Statement>
+class MMO_StatementTable_: public ListTable_<MMO_Statement>
 {
-public:
+  public:
     /**
      *
      */
-    MMO_StatementTable_ ();
+    MMO_StatementTable_();
     /**
      *
      */
-    ~MMO_StatementTable_ ();
+    ~MMO_StatementTable_();
 };
 /**
  *
  * @return
  */
 MMO_StatementTable
-newMMO_StatementTable ();
+newMMO_StatementTable();
 /**
  *
  * @param m
  */
 void
-deleteMMO_StatementTable (MMO_StatementTable m);
+deleteMMO_StatementTable(MMO_StatementTable m);
 
 /**
  *
  */
-class MMO_ImportTable_ : public ListTable_<string>
+class MMO_ImportTable_: public ListTable_<string>
 {
-public:
+  public:
     /**
      *
      */
-    MMO_ImportTable_ ();
+    MMO_ImportTable_();
     /**
      *
      */
-    ~MMO_ImportTable_ ();
+    ~MMO_ImportTable_();
 };
 /**
  *
  * @return
  */
 MMO_ImportTable
-newMMO_ImportTable ();
+newMMO_ImportTable();
 /**
  *
  * @param m
  */
 void
-deleteMMO_ImportTable (MMO_ImportTable m);
+deleteMMO_ImportTable(MMO_ImportTable m);
 
 /**
  *
  */
-class MMO_FunctionDefinitionTable_ : public ListTable_<MMO_FunctionDefinition>
+class MMO_FunctionDefinitionTable_: public ListTable_<MMO_FunctionDefinition>
 {
-public:
+  public:
     /**
      *
      */
-    MMO_FunctionDefinitionTable_ ();
+    MMO_FunctionDefinitionTable_();
     /**
      *
      */
-    ~MMO_FunctionDefinitionTable_ ();
+    ~MMO_FunctionDefinitionTable_();
 };
 /**
  *
  * @return
  */
 MMO_FunctionDefinitionTable
-newMMO_FunctionDefinitionTable ();
+newMMO_FunctionDefinitionTable();
 /**
  *
  * @param m
  */
 void
-deleteMMO_FunctionDefinitionTable (MMO_FunctionDefinitionTable m);
+deleteMMO_FunctionDefinitionTable(MMO_FunctionDefinitionTable m);
 
 /**
  *
  */
-class MMO_SymbolRefTable_ : public SymbolTable<string, MMO_FunctionInfo *>
+class MMO_SymbolRefTable_: public SymbolTable<string, MMO_FunctionInfo *>
 {
-public:
+  public:
     /**
      *
      */
-    MMO_SymbolRefTable_ ();
+    MMO_SymbolRefTable_();
     /**
      *
      */
-    ~MMO_SymbolRefTable_ ();
+    ~MMO_SymbolRefTable_();
 };
 /**
  *
  * @return
  */
 MMO_SymbolRefTable
-newMMO_SymbolRefTable ();
+newMMO_SymbolRefTable();
 /**
  *
  * @param m
  */
 void
-deleteMMO_SymbolRefTable (MMO_SymbolRefTable m);
+deleteMMO_SymbolRefTable(MMO_SymbolRefTable m);
 
 /**
  *
  */
-class MMO_PackageTable_ : public ListTable_<MMO_PackageData>
+class MMO_PackageTable_: public ListTable_<MMO_PackageData>
 {
-public:
+  public:
     /**
      *
      */
-    MMO_PackageTable_ ();
+    MMO_PackageTable_();
     /**
      *
      * @param name
      * @return
      */
     string
-    functionPrefix (string name);
+    functionPrefix(string name);
 };
 /**
  *
  * @return
  */
 MMO_PackageTable
-newMMO_PackageTable ();
+newMMO_PackageTable();
 /**
  *
  * @param m
  */
 void
-deleteMMO_PackageTable (MMO_PackageTable m);
+deleteMMO_PackageTable(MMO_PackageTable m);
 
 #endif /* SYMBOL_TABLE_H_ */

@@ -35,115 +35,115 @@
 using namespace std;
 
 AST_StoredDefinition
-parseFile (string filename, int *r)
+parseFile(string filename, int *r)
 {
   fstream in;
   int ret;
-  MCC_Parser parser (false);
-  if (filename.size ())
+  MCC_Parser parser(false);
+  if(filename.size())
+  {
+    in.open(filename.c_str(), fstream::in);
+    if(in.fail())
     {
-      in.open (filename.c_str (), fstream::in);
-      if (in.fail ())
-	{
-	  cerr << "Could not open file " << filename.c_str () << endl;
-	  exit (-1);
-	}
-      ret = parser.parseFile (&in);
+      cerr << "Could not open file " << filename.c_str() << endl;
+      exit(-1);
     }
+    ret = parser.parseFile(&in);
+  }
   else
-    { // read from stdin
-      ret = parser.parseFile (&cin);
-    }
-  if (ret == 0)
-    {
-      *r = 0;
-      in.close ();
-      return (parser.root ());
-    }
+  { // read from stdin
+    ret = parser.parseFile(&cin);
+  }
+  if(ret == 0)
+  {
+    *r = 0;
+    in.close();
+    return parser.root();
+  }
   *r = -1;
-  in.close ();
-  return (NULL);
+  in.close();
+  return NULL;
 }
 
 AST_Expression
-parseExpression (string exp, int *r)
+parseExpression(string exp, int *r)
 {
   fstream in;
-	string tmpFile;
+  string tmpFile;
 #ifndef _WIN32
-	tmpFile = "/tmp/t";
+  tmpFile = "/tmp/t";
 #else
   tmpFile = "t";
 #endif
-  in.open (tmpFile.c_str(), fstream::out);
+  in.open(tmpFile.c_str(), fstream::out);
   in << "model A equation x = " << exp << "; end A;";
-  in.close ();
+  in.close();
   int ret;
-  AST_Class c = parseClass (tmpFile.c_str(), &ret);
-  if (ret == 0)
-    {
-      *r = 0;
-      return (c->composition ()->compositionList ()->front ()->getEquationsAlgs ()->getEquations ()->front ()->getAsEquality ()->right ());
-    }
+  AST_Class c = parseClass(tmpFile.c_str(), &ret);
+  if(ret == 0)
+  {
+    *r = 0;
+    return c->composition()->compositionList()->front()->getEquationsAlgs()->getEquations()->front()->getAsEquality()->right();
+  }
   *r = -1;
-  return (NULL);
+  return NULL;
 }
 
 AST_Equation
-parseEquation (string exp, int *r)
+parseEquation(string exp, int *r)
 {
   fstream in;
-	string tmpFile;
+  string tmpFile;
 #ifndef _WIN32
-	tmpFile = "/tmp/t";
+  tmpFile = "/tmp/t";
 #else
   tmpFile = "t";
 #endif
-  in.open (tmpFile.c_str(), fstream::out);
+  in.open(tmpFile.c_str(), fstream::out);
   in << "model A equation " << exp << "; end A;";
-  in.close ();
+  in.close();
   int ret;
-  AST_Class c = parseClass (tmpFile.c_str(), &ret);
-  if (ret == 0)
-    {
-      *r = 0;
-      return (c->composition ()->compositionList ()->front ()->getEquationsAlgs ()->getEquations ()->front ());
-    }
+  AST_Class c = parseClass(tmpFile.c_str(), &ret);
+  if(ret == 0)
+  {
+    *r = 0;
+    return c->composition()->compositionList()->front()->getEquationsAlgs()->getEquations()->front();
+  }
   *r = -1;
-  return (NULL);
+  return NULL;
 }
 
 AST_Statement
-parseStatement (string exp, int *r)
+parseStatement(string exp, int *r)
 {
   fstream in;
-	string tmpFile;
+  string tmpFile;
 #ifndef _WIN32
-	tmpFile = "/tmp/t";
+  tmpFile = "/tmp/t";
 #else
   tmpFile = "t";
 #endif
-  in.open (tmpFile.c_str(), fstream::out);
+  in.open(tmpFile.c_str(), fstream::out);
   in << "model A initial algorithm " << exp << "; end A;";
-  in.close ();
+  in.close();
   int ret;
-  AST_Class c = parseClass (tmpFile.c_str(), &ret);
-  if (ret == 0)
-    {
-      *r = 0;
-      return (c->composition ()->compositionList ()->front ()->getEquationsAlgs ()->getAlgorithms ()->front ());
-    }
+  AST_Class c = parseClass(tmpFile.c_str(), &ret);
+  if(ret == 0)
+  {
+    *r = 0;
+    return c->composition()->compositionList()->front()->getEquationsAlgs()->getAlgorithms()->front();
+  }
   *r = -1;
-  return (NULL);
+  return NULL;
 }
 
 AST_Class
-parseClass (string filename, int *r)
+parseClass(string filename, int *r)
 {
-  AST_StoredDefinition sd = parseFile (filename, r);
-  if (r[0] == 0)
-    {
-      return (sd->models ()->front ());
-    }
-  return (NULL);
+  AST_StoredDefinition sd = parseFile(filename, r);
+  if(r[0] == 0)
+  {
+    return sd->models()->front();
+  }
+  return NULL;
 }

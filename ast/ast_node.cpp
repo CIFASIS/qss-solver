@@ -25,27 +25,27 @@
 
 using namespace std;
 
-AST_Node_::AST_Node_ ()
+AST_Node_::AST_Node_()
 {
-    _linenum = MCC_Parser::lineno ();
+  _linenum = MCC_Parser::lineno();
 }
 
 ostream &
-operator<< (ostream &os, const AST_Node_ &n)
+operator<<(ostream &os, const AST_Node_ &n)
 {
-    os << "Printing not implemented!!" << endl;
-    return (os);
+  os << "Printing not implemented!!" << endl;
+  return os;
 }
 ;
 
 void
-AST_Node_::setLineNum (int linenum)
+AST_Node_::setLineNum(int linenum)
 {
-    _linenum = linenum;
+  _linenum = linenum;
 }
 
 int
-AST_Node_::lineNum () const
+AST_Node_::lineNum() const
 {
-    return (_linenum);
+  return _linenum;
 }

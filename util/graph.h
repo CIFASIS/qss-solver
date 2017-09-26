@@ -29,43 +29,43 @@ using namespace std;
 
 class Graph
 {
-public:
+  public:
     /**
      *
      * @param states
      * @param events
      */
-    Graph (int states, int events);
+    Graph(int states, int events);
     /**
      *
      */
-    ~Graph ();
-    /**
-     *
-     * @return
-     */
-    map<int, set<int> >
-    graph ();
+    ~Graph();
     /**
      *
      * @return
      */
     map<int, set<int> >
-    hyperGraph ();
+    graph();
+    /**
+     *
+     * @return
+     */
+    map<int, set<int> >
+    hyperGraph();
     /**
      *
      * @param orig
      * @param dest
      */
     void
-    addGraphEdge (int orig, int dest);
+    addGraphEdge(int orig, int dest);
     /**
      *
      * @param orig
      * @param dest
      */
     void
-    addHyperGraphEdge (int orig, int dest);
+    addHyperGraphEdge(int orig, int dest);
     /**
      *
      * @param node
@@ -73,7 +73,7 @@ public:
      * @return
      */
     int
-    graphEdgeWeight (int node, int inf);
+    graphEdgeWeight(int node, int inf);
     /**
      *
      * @param node
@@ -81,50 +81,50 @@ public:
      * @return
      */
     int
-    hyperGraphEdgeWeight (int node);
+    hyperGraphEdgeWeight(int node);
     /**
      *
      */
     void
-    connectGraphs ();
+    connectGraphs();
     /**
      *
      * @return
      */
     int
-    graphEdges ();
+    graphEdges();
     /**
      *
      * @param node
      * @return
      */
     int
-    graphNodeEdges (int node);
+    graphNodeEdges(int node);
     /**
      *
      * @return
      */
     bool
-    empty ();
+    empty();
     /**
      *
      * @return
      */
     int
-    hyperGraphEdges ();
+    hyperGraphEdges();
     /**
      *
      */
     int
-    nodeWeight (int node);
+    nodeWeight(int node);
     /**
      *
      */
     void
-    addNodeWeight (int node, int weight);
-private:
+    addNodeWeight(int node, int weight);
+    private:
     int
-    edgeWeight (int node);
+    edgeWeight(int node);
     int _states;
     int _events;
     int _nvtxs;

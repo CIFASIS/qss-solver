@@ -34,59 +34,59 @@
 /**
  *
  */
-class MMO_Expression_ : public MMO_Base_
+class MMO_Expression_: public MMO_Base_
 {
-public:
+  public:
     /**
      *
      */
-    MMO_Expression_ ();
+    MMO_Expression_();
     /**
      *
      * @param exp
      * @param data
      */
-    MMO_Expression_ (AST_Expression exp, MMO_ModelData data);
+    MMO_Expression_(AST_Expression exp, MMO_ModelData data);
     /**
      *
      * @param exp
      */
-    MMO_Expression_ (AST_Expression exp);
+    MMO_Expression_(AST_Expression exp);
     /**
      *
      */
-    ~MMO_Expression_ ();
+    ~MMO_Expression_();
     /**
      *
      * @return
      */
     Dependencies
-    deps ();
+    deps();
     /**
      *
      * @return
      */
     AST_Expression
-    exp ();
+    exp();
     /**
      *
      * @param exp
      * @return
      */
     string
-    findVar (AST_Expression exp);
+    findVar(AST_Expression exp);
     /**
      *
      * @return
      */
     list<string>
-    getCode ();
+    getCode();
     /**
      *
      * @return
      */
     list<string>
-    getVariables ();
+    getVariables();
     /**
      *
      * @param idx
@@ -94,19 +94,19 @@ public:
      * @return
      */
     string
-    indexes (string idx, int offset = 0);
+    indexes(string idx, int offset = 0);
     /**
      *
      * @return
      */
     bool
-    hasIndexes ();
+    hasIndexes();
     /**
      *
      * @return
      */
     string
-    print ();
+    print();
     /**
      *
      * @param idx
@@ -118,24 +118,29 @@ public:
      * @return
      */
     string
-    print (string idx, int offset = 0, int order = 0, int constant = -1, int expressionOrder = 1, int forOffset = 0);
+    print(string idx, int offset = 0, int order = 0, int constant = -1,
+        int expressionOrder = 1, int forOffset = 0);
     /**
      *
      * @param exp
      */
     void
-    setExpression (AST_Expression exp);
-private:
+    setExpression(AST_Expression exp);
+    private:
     void
-    _addDeps (Dependencies deps, DEP_Type type, Index index);
+    _addDeps(Dependencies deps, DEP_Type type, Index index);
     void
-    _addVectorDeps (MMO_Equation eq, Index index);
+    _addVectorDeps(MMO_Equation eq, Index index);
     void
-    _addAlgebriacDeps (Index algIndex, MMO_Equation equation, Index equationIndex, Index derivativeIndex, Dependencies derivativeDeps,
-                       map<Index, Index> *states, map<Index, Index> *discretes, Index variableChange, int value);
+    _addAlgebriacDeps(Index algIndex, MMO_Equation equation,
+        Index equationIndex, Index derivativeIndex, Dependencies derivativeDeps,
+        map<Index, Index> *states, map<Index, Index> *discretes,
+        Index variableChange, int value);
     void
-    _traverseAlgebraics (Dependencies deps, Index derivativeIndex, Dependencies derivativeDeps, map<Index, Index> *states,
-                         map<Index, Index> *discretes, Index variableChange, DEP_Type type, int value);
+    _traverseAlgebraics(Dependencies deps, Index derivativeIndex,
+        Dependencies derivativeDeps, map<Index, Index> *states,
+        map<Index, Index> *discretes, Index variableChange, DEP_Type type,
+        int value);
     AST_Expression _exp;
     MMO_ModelData _data;
     string _str;
@@ -154,49 +159,49 @@ private:
  * @return
  */
 MMO_Expression
-newMMO_Expression (AST_Expression exp, MMO_ModelData data);
+newMMO_Expression(AST_Expression exp, MMO_ModelData data);
 /**
  *
  * @param exp
  * @return
  */
 MMO_Expression
-newMMO_Expression (AST_Expression exp);
+newMMO_Expression(AST_Expression exp);
 /**
  *
  * @return
  */
 MMO_Expression
-newMMO_Expression ();
+newMMO_Expression();
 /**
  *
  * @param m
  */
 void
-deleteMMO_Expression (MMO_Expression m);
+deleteMMO_Expression(MMO_Expression m);
 
 /**
  *
  */
-class MMO_EvalInitExp_ : public AST_Expression_Fold<int>
+class MMO_EvalInitExp_: public AST_Expression_Fold<int>
 {
-public:
+  public:
     /**
      *
      * @param vt
      */
-    MMO_EvalInitExp_ (VarSymbolTable vt);
+    MMO_EvalInitExp_(VarSymbolTable vt);
     /**
      *
      */
-    ~MMO_EvalInitExp_ ();
-private:
+    ~MMO_EvalInitExp_();
+    private:
     int
-    foldTraverseElement (AST_Expression exp);
+    foldTraverseElement(AST_Expression exp);
     int
-    foldTraverseElement (int l, int r, BinOpType bot);
+    foldTraverseElement(int l, int r, BinOpType bot);
     int
-    foldTraverseElementUMinus (AST_Expression exp);
+    foldTraverseElementUMinus(AST_Expression exp);
     VarSymbolTable _vt;
 };
 /**
@@ -205,44 +210,44 @@ private:
  * @return
  */
 MMO_EvalInitExp
-newMMO_EvalInitExp (VarSymbolTable vt);
+newMMO_EvalInitExp(VarSymbolTable vt);
 /**
  *
  * @param m
  */
 void
-deleteMMO_EvalInitExp (MMO_EvalInitExp m);
+deleteMMO_EvalInitExp(MMO_EvalInitExp m);
 
 /**
  *
  */
-class MMO_ConvertCondition_ : public AST_Expression_Visitor<AST_Expression>
+class MMO_ConvertCondition_: public AST_Expression_Visitor<AST_Expression>
 {
-public:
+  public:
     /**
      *
      * @param data
      */
-    MMO_ConvertCondition_ (MMO_ModelData data);
+    MMO_ConvertCondition_(MMO_ModelData data);
     /**
      *
      */
-    ~MMO_ConvertCondition_ ();
+    ~MMO_ConvertCondition_();
     /**
      *
      * @return
      */
     int
-    zeroCrossing ();
+    zeroCrossing();
     int
-    zeroCrossingRelation ();
-private:
+    zeroCrossingRelation();
+    private:
     AST_Expression
-    foldTraverseElement (AST_Expression exp);
+    foldTraverseElement(AST_Expression exp);
     AST_Expression
-    foldTraverseElement (AST_Expression l, AST_Expression r, BinOpType bot);
+    foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
     AST_Expression
-    foldTraverseElementUMinus (AST_Expression exp);
+    foldTraverseElementUMinus(AST_Expression exp);
     MMO_ModelData _data;
     int _zc;
     int _zcRelation;
@@ -253,43 +258,44 @@ private:
  * @return
  */
 MMO_ConvertCondition
-newMMO_ConvertCondition (MMO_ModelData data);
+newMMO_ConvertCondition(MMO_ModelData data);
 /**
  *
  * @param m
  */
 void
-deleteMMO_ConvertCondition (MMO_ConvertCondition m);
+deleteMMO_ConvertCondition(MMO_ConvertCondition m);
 
 /**
  *
  */
-class MMO_PrintExp_ : public AST_Expression_Visitor<string>
+class MMO_PrintExp_: public AST_Expression_Visitor<string>
 {
-public:
+  public:
     /**
      *
      * @param vt
      * @param ri
      * @param pt
      */
-    MMO_PrintExp_ (VarSymbolTable vt, MMO_ReplaceInterval ri, MMO_PackageTable pt);
+    MMO_PrintExp_(VarSymbolTable vt, MMO_ReplaceInterval ri,
+        MMO_PackageTable pt);
     /**
      *
      */
-    ~MMO_PrintExp_ ();
-    /**
-     *
-     * @return
-     */
-    list<string>
-    getCode ();
+    ~MMO_PrintExp_();
     /**
      *
      * @return
      */
     list<string>
-    getVariables ();
+    getCode();
+    /**
+     *
+     * @return
+     */
+    list<string>
+    getVariables();
     /**
      *
      * @param idx
@@ -300,20 +306,23 @@ public:
      * @param forOffset
      */
     void
-    setEnvironment (string idx, int offset = 0, int order = 0, int constant = -1, int expressionOrder = 1, int forOffset = 0);
-private:
+    setEnvironment(string idx, int offset = 0, int order = 0, int constant = -1,
+        int expressionOrder = 1, int forOffset = 0);
+    private:
     string
-    foldTraverseElement (AST_Expression exp);
+    foldTraverseElement(AST_Expression exp);
     string
-    foldTraverseElement (string l, string r, BinOpType bot);
+    foldTraverseElement(string l, string r, BinOpType bot);
     string
-    foldTraverseElementUMinus (AST_Expression exp);
+    foldTraverseElementUMinus(AST_Expression exp);
     bool
-    _findExpression (AST_ExpressionList el, AST_Expression exp);
+    _findExpression(AST_ExpressionList el, AST_Expression exp);
     void
-    _getIndexList (AST_Expression_ComponentReference cr, Index index, list<Index> *idxs);
+    _getIndexList(AST_Expression_ComponentReference cr, Index index,
+        list<Index> *idxs);
     string
-    _printIndex (Index idx, list<Index> idxs, string sub, int offset, int constant);
+    _printIndex(Index idx, list<Index> idxs, string sub, int offset,
+        int constant);
     VarSymbolTable _vt;
     string _idx;
     int _offset;
@@ -335,85 +344,85 @@ private:
  * @return
  */
 MMO_PrintExp
-newMMO_PrintExp (VarSymbolTable vt, MMO_ReplaceInterval ri, MMO_PackageTable pt);
+newMMO_PrintExp(VarSymbolTable vt, MMO_ReplaceInterval ri, MMO_PackageTable pt);
 /**
  *
  * @param m
  */
 void
-deleteMMO_PrintExp (MMO_PrintExp m);
+deleteMMO_PrintExp(MMO_PrintExp m);
 
 /**
  *
  */
-class MMO_ReplaceInterval_ : public AST_Expression_Visitor<AST_Expression>
+class MMO_ReplaceInterval_: public AST_Expression_Visitor<AST_Expression>
 {
-public:
+  public:
     /**
      *
      * @param vt
      */
-    MMO_ReplaceInterval_ (VarSymbolTable vt);
+    MMO_ReplaceInterval_(VarSymbolTable vt);
     /**
      *
      */
-    ~MMO_ReplaceInterval_ ();
+    ~MMO_ReplaceInterval_();
     /**
      *
      * @return
      */
     int
-    indexes ();
+    indexes();
     /**
      *
      * @return
      */
     bool
-    end ();
+    end();
     /**
      *
      * @param exp
      * @return
      */
     string
-    find (AST_Expression exp);
+    find(AST_Expression exp);
     /**
      *
      * @return
      */
     VariableInterval
-    first ();
+    first();
     /**
      *
      * @param var
      * @return
      */
     bool
-    fixedInterval (string var);
+    fixedInterval(string var);
     /**
      *
      * @return
      */
     VariableInterval
-    next ();
+    next();
     /**
      *
      * @param exp
      * @return
      */
     list<VariableInterval>
-    variables (AST_Expression exp);
-private:
+    variables(AST_Expression exp);
+    private:
     AST_Expression
-    foldTraverseElement (AST_Expression exp);
+    foldTraverseElement(AST_Expression exp);
     AST_Expression
-    foldTraverseElement (AST_Expression l, AST_Expression r, BinOpType bot);
+    foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
     AST_Expression
-    foldTraverseElementUMinus (AST_Expression exp);
+    foldTraverseElementUMinus(AST_Expression exp);
     AST_Expression
-    _indexExp (int constant = 0, int factor = 1);
+    _indexExp(int constant = 0, int factor = 1);
     void
-    _setIndex (int constant, int factor, int range, VarInfo vi);
+    _setIndex(int constant, int factor, int range, VarInfo vi);
     VarSymbolTable _vt;
     unsigned int _indexes;
     list<VariableInterval> _replacedVars;
@@ -427,38 +436,38 @@ private:
  * @return
  */
 MMO_ReplaceInterval
-newMMO_ReplaceInterval (VarSymbolTable vt);
+newMMO_ReplaceInterval(VarSymbolTable vt);
 /**
  *
  * @param m
  */
 void
-deleteMMO_ReplaceInterval (MMO_ReplaceInterval m);
+deleteMMO_ReplaceInterval(MMO_ReplaceInterval m);
 
 /**
  *
  */
-class MMO_ReplaceInnerProduct : public AST_Expression_Visitor<AST_Expression>
+class MMO_ReplaceInnerProduct: public AST_Expression_Visitor<AST_Expression>
 {
-public:
+  public:
     /**
      *
      * @param vt
      */
-    MMO_ReplaceInnerProduct (VarSymbolTable vt);
+    MMO_ReplaceInnerProduct(VarSymbolTable vt);
     /**
      *
      */
-    ~MMO_ReplaceInnerProduct ();
-private:
+    ~MMO_ReplaceInnerProduct();
+    private:
     bool
-    _controlArray (AST_Expression exp);
+    _controlArray(AST_Expression exp);
     AST_Expression
-    foldTraverseElement (AST_Expression exp);
+    foldTraverseElement(AST_Expression exp);
     AST_Expression
-    foldTraverseElement (AST_Expression l, AST_Expression r, BinOpType bot);
+    foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
     AST_Expression
-    foldTraverseElementUMinus (AST_Expression exp);
+    foldTraverseElementUMinus(AST_Expression exp);
     VarSymbolTable _vt;
 };
 
