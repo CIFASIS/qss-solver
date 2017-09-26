@@ -32,14 +32,16 @@ model cukDASSL
 	when iD<0 then
 		  Rd := ROff;
 	end when;
-
 	annotation(
+
 	experiment(
 		MMO_Description="Cuk converter with non-solved stiffness.",
 		MMO_Solver=DASSL,
 		MMO_Period={0.01/5000},
+		MMO_PartitionMethod=Metis,
 		MMO_Output={uC,iL,uC1,iL1},
 		MMO_OutputType=CI_Sampled,
+		Jacobian=Dense,
 		StartTime=0,
 		StopTime=0.01,
 		Tolerance={ 1e-3},

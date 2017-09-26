@@ -12,13 +12,15 @@ model advection
 		for j in 2:N loop
 		  der(u[j])=(-u[j]+u[j-1])*N-mu*u[j]*(u[j]-alpha)*(u[j]-1);
 	end for;
-
 	annotation(
+
 	experiment(
 		MMO_Description="Advection Reaction Equation.",
 		MMO_Solver=LIQSS2,
 		MMO_SymDiff=false,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={u[N]},
+		Jacobian=Dense,
 		StartTime=0.0,
 		StopTime=1.0,
 		Tolerance={1e-3},

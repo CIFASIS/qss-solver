@@ -26,7 +26,9 @@ model acoustics
 	experiment(
 		MMO_Description="Linear acoustics.",
 		MMO_Solver=LIQSS2,
-		MMO_Output={p[1:N/5:N],p[250]},
+		MMO_PartitionMethod=Metis,
+		MMO_Output={p[1:N/5:N],u[100]},
+		Jacobian=Dense,
 		StartTime=0.0,
 		StopTime=1,
 		Tolerance={1e-5},

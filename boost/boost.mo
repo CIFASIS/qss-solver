@@ -36,8 +36,9 @@ model boost
 	experiment(
 		MMO_Description="Boost Circuit.",
 		MMO_Solver=LIQSS2,
-		MMO_SymDiff=false,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={uC,iL},
+		Jacobian=Dense,
 		StartTime=0,
 		StopTime=0.01,
 		Tolerance={ 1e-3},

@@ -32,13 +32,15 @@ model buck_circuit
 	when iL<0 then
 		  Rd := ROff;
 	end when;
-
 	annotation(
+
 	experiment(
 		MMO_Description="Buck converter working in discontinuous mode.",
 		MMO_Solver=LIQSS2,
 		MMO_SymDiff=false,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={uC,iL},
+		Jacobian=Dense,
 		StartTime=0,
 		StopTime=0.01,
 		Tolerance={ 1e-3},

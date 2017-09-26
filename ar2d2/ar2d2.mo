@@ -49,8 +49,9 @@ equation
 	experiment(
 		MMO_Description="",
 		MMO_Solver=LIQSS2,
-		MMO_SymDiff=false,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={u5[1:N/5:N]},
+		Jacobian=Dense,
 		StartTime=0.0,
 		StopTime=5,
 		Tolerance={1e-3},

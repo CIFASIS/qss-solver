@@ -258,7 +258,9 @@ algorithm
 	experiment(
 		MMO_Description="",
 		MMO_Solver=LIQSS3,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={QSSIntegrator_1_y[1],QSSIntegrator_2_y[1]},
+		Jacobian=Dense,
 		StartTime=0.0,
 		StopTime=0.01,
 		Tolerance={1e-3},

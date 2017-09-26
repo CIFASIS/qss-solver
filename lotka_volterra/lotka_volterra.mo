@@ -11,7 +11,9 @@ model lotka_volterra
 	experiment(
 		MMO_Description="Lotka Volterra model",
 		MMO_Solver=QSS3,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={x[:]},
+		Jacobian=Dense,
 		StartTime= 0.0,
 		StopTime= 300.0,
 		Tolerance={ 1e-3},

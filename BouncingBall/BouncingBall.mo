@@ -55,8 +55,10 @@ algorithm
 	experiment(
 		MMO_Description="",
 		MMO_Solver=QSS3,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={ball1_y},
 		MMO_OutputType=CI_Sampled,
+		Jacobian=Dense,
 		StartTime=0.0,
 		StopTime=10,
 		Tolerance={1e-3},

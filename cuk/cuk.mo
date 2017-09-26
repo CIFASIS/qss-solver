@@ -37,7 +37,9 @@ model cuk
 	experiment(
 		MMO_Description="Cuk converter with non-solved stiffness.",
 		MMO_Solver=LIQSS2,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={uC,iL,uC1,iL1},
+		Jacobian=Dense,
 		StartTime=0,
 		StopTime=0.001,
 		Tolerance={ 1e-3},
