@@ -4,7 +4,7 @@ OS = $(shell uname)
 endif
 DEBUG ?= False
 CORES ?= 1
-ARCH = $(uname -m)
+ARCH = $(shell uname -m)
 
 # The Directories, Source, Includes, Objects, Binary 
 ROOT   	:= ..
@@ -149,7 +149,7 @@ endif
 .PHONY: clean all 
 
 clean: 
-	@cd mmoc && $(MAKE) OS=$(OS) clean 
+	@cd mmoc && $(MAKE) clean 
 	@cd engine && $(MAKE) clean 
 	@cd engine && $(MAKE) DEBUG=True clean 
 	@cd usr && $(MAKE) clean
