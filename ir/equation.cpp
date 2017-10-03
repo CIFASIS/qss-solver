@@ -63,7 +63,6 @@ MMO_Equation_::MMO_Equation_(AST_Expression exp, MMO_ModelData data) :
   }
   if(_data->annotation()->classic())
   {
-    cout << "Genera las expresiones" << endl;
     _generateJacobianExps();
   }
 }

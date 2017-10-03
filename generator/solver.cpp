@@ -2658,10 +2658,6 @@ Classic_::_printDeps(Dependencies d, Index derivativeIndex,
             s);
         _common->insertLocalVariables(&_modelDepsVars, (*eq)->getVariables());
       }
-      else
-      {
-        cout << "No encuentra la expresion del jacobiano" << endl;
-      }
       if(dIdx->hasRange() && controlRange)
       {
         buffer << _writer->indent(--indent) << "}";

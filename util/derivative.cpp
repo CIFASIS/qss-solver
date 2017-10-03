@@ -76,16 +76,13 @@ ExpressionDerivator::generateJacobianExps(AST_Expression exp,
   for(it = dir.begin(); it != dir.end(); it++)
   {
     VarInfo v = data->symbols()->lookup(tog.identifier(it->first));
-    cout << "Busca: " << it->first << " " << tog.identifier(it->first) << endl;
     if(v != NULL)
     {
       if(v->isState() || v->isAlgebraic())
       {
-        cout << "Genera: " << it->second << endl;
         GiNaC::ex der_exp =
             dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff(
                 it->second);
-        cout << "Expresion: " << der_exp << endl;
         bool algState = data->calculateAlgebraics();
         data->setCalculateAlgegraics(true);
         jacobianExps[it->first] = newMMO_Expression(
@@ -94,6 +91,5 @@ ExpressionDerivator::generateJacobianExps(AST_Expression exp,
       }
     }
   }
-  cout << "TAM: " << jacobianExps.size() << endl;
   return jacobianExps;
 }
