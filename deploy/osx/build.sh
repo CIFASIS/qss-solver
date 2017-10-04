@@ -21,7 +21,7 @@
 
 cd ../../
 echo "Retrieving latest from Git";
-./deploy/common/update-repos.sh
+./deploy/common/repos.sh pull
 head ./doc/version.major -c 4 > vm
 git rev-list --count HEAD > rvn
 cat vm rvn > version
@@ -39,16 +39,18 @@ mkdir ./bin/qss-solver.app/Contents/Resources
 mkdir ./bin/qss-solver.app/Contents/Resources/output
 mkdir ./bin/qss-solver.app/Contents/Resources/build
 mkdir ./bin/qss-solver.app/Contents/Resources/lib
+mkdir ./bin/qss-solver.app/Contents/Resources/src
 
 rm -rf tmp
 mkdir tmp
-./deploy/common/deploy-repos.sh tmp
+./deploy/common/repos.sh deploy tmp
 cd ./src
 make  
 cd ..
 cp -r ./tmp/deploy/osx/scripts ./bin/qss-solver.app/Contents/MacOS/
 chmod +x ./bin/qss-solver.app/Contents/MacOS/scripts/*
 cp src/mmoc/usr/bin/mmoc  ./bin/qss-solver.app/Contents/MacOS/ 
+cp src/gui/usr/bin/qss-solver.app/Contents/MacOS/qss-solver ./bin/qss-solver.app/Contents/MacOS/ 
 cp src/interfaces/sbml/usr/bin/translate-sbml  ./bin/qss-solver.app/Contents/MacOS/ 
 cp deploy/osx/qss-solver.ini ./bin/qss-solver.app/Contents/MacOS/qss-solver.ini
 cp LICENSE  ./bin/qss-solver.app/Contents/MacOS/ 
@@ -59,8 +61,25 @@ cp -r ./tmp/doc ./bin/qss-solver.app/Contents/Resources/
 cp -r ./tmp/models ./bin/qss-solver.app/Contents/Resources/
 cp -r ./tmp/packages ./bin/qss-solver.app/Contents/Resources/
 cp -r ./tmp/src ./bin/qss-solver.app/Contents/Resources/
+cp -r ./tmp/src/engine ./bin/qss-solver.app/Contents/Resources/src/
+cp -r ./tmp/src/mmoc ./bin/qss-solver.app/Contents/Resources/src/
+cp -r ./tmp/src/gui ./bin/qss-solver.app/Contents/Resources/src/
+cp -r ./tmp/src/interfaces ./bin/qss-solver.app/Contents/Resources/src/
+cp -r ./tmp/src/usr ./bin/qss-solver.app/Contents/Resources/src/
 cp lib/*.a ./bin/qss-solver.app/Contents/Resources/lib
-cp /usr/local/lib/libsbml.5.11.4.dylib ./bin/qss-solver.app/Contents/Resources/usr/libs/libsbml.5.dylib
+cp /usr/local/lib/libsbml.5.11.4.dylib ./bin/qss-solver.app/Contents/Resources/lib/libsbml.5.dylib
+# Clean generated code.
+rm -rf ./bin/qss-solver.app/Contents/Resources/src/engine/3rd-party
+rm -rf ./bin/qss-solver.app/Contents/Resources/src/engine/usr/obj
+rm -rf ./bin/qss-solver.app/Contents/Resources/src/mmoc/usr/obj
+rm -rf ./bin/qss-solver.app/Contents/Resources/src/mmoc/usr/bin
+rm -rf ./bin/qss-solver.app/Contents/Resources/src/mmoc/usr/share
+rm -rf ./bin/qss-solver.app/Contents/Resources/src/mmoc/usr/lib
+rm -rf ./bin/qss-solver.app/Contents/Resources/src/mmoc/usr/libexec
+rm -rf ./bin/qss-solver.app/Contents/Resources/src/usr/src/*.o
+rm -rf ./bin/qss-solver.app/Contents/Resources/src/usr/lib
+rm -rf ./bin/qss-solver.app/Contents/Resources/src/interfaces/sbml/usr
+rm -rf ./bin/qss-solver.app/Contents/Resources/src/gui/usr
 cd ./bin
 rm -rf qss-solver.dmg
 rm -rf qss-solver.app/Contents/Frameworks/*
