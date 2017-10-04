@@ -26,7 +26,7 @@ head ./doc/version.major -c 4 > vm
 git rev-list --count HEAD > rvn
 cat vm rvn > version
 REV=`cat rvn`
-cat ./deploy/osx/qss-solver.ini.in ./deploy/osx/qss-solver.ini 
+cat ./deploy/osx/qss-solver.ini.in > ./deploy/osx/qss-solver.ini 
 ./deploy/common/setRevision.sh ./deploy/osx/qss-solver.ini $REV
 VER=`cat version`
 echo "Done"
@@ -90,3 +90,4 @@ macdeployqt qss-solver.app -verbose=2 -dmg
 cd ..
 mv bin/qss-solver.dmg deploy/osx/
 rm rvn vm version
+rm -rf tmp
