@@ -26,6 +26,7 @@ head ./doc/version.major -c 4 > vm
 git rev-list --count HEAD > rvn
 cat vm rvn > version
 REV=`cat rvn`
+cat ./deploy/osx/qss-solver.ini.in ./deploy/osx/qss-solver.ini 
 ./deploy/common/setRevision.sh ./deploy/osx/qss-solver.ini $REV
 VER=`cat version`
 echo "Done"
@@ -80,6 +81,7 @@ rm -rf ./bin/qss-solver.app/Contents/Resources/src/usr/src/*.o
 rm -rf ./bin/qss-solver.app/Contents/Resources/src/usr/lib
 rm -rf ./bin/qss-solver.app/Contents/Resources/src/interfaces/sbml/usr
 rm -rf ./bin/qss-solver.app/Contents/Resources/src/gui/usr
+rm -rf deploy/osx/qss-solver.ini
 cd ./bin
 rm -rf qss-solver.dmg
 rm -rf qss-solver.app/Contents/Frameworks/*
