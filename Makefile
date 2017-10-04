@@ -1,6 +1,6 @@
 # Makefile config variables
 ifneq ($(OS), Windows_NT)
-OS = $(uname)
+OS = $(shell uname)
 endif
 DEBUG ?= False
 
