@@ -99,17 +99,6 @@ clean-repos:
 	@rm -rf $(ROOT)/models
 	@rm -rf $(ROOT)/packages
 
-update-repos:
-	git pull
-	@cd engine && git pull 
-	@cd mmoc && git pull
-	@cd gui && git pull
-	@cd usr && git pull
-	@cd test-suite && git pull
-	@cd interfaces/sbml &&  git pull
-	@cd $(ROOT)/models &&  git pull
-	@cd $(ROOT)/packages &&  git pull
-
 install:	
 	@echo "Installing engine libraries."
 	ln -s $(ROOT)/src/engine/usr/lib/* $(ROOT)/lib/
@@ -123,7 +112,7 @@ install:
 	ln -s $(ROOT)/src/usr/lib/* $(ROOT)/lib/
 ifeq ($(OS),Linux)
 	@install $(ROOT)/deploy/linux/scripts/* $(ROOT)/bin/
-	@install $(ROOT)/deploy/linux/qss-solver.ini $(ROOT)/bin/
+	@install $(ROOT)/deploy/linux/qss-solver.ini.in $(ROOT)/bin/qss-solver.ini
 	@install $(ROOT)/src/engine/3rd-party/partitioners/hmetis/khmetis $(ROOT)/bin/
 ifeq ($(ARCH),i686)
 	@install $(ROOT)/src/engine/3rd-party/partitioners/patoh/Linux-i386/libpatoh.a $(ROOT)/lib/
@@ -139,10 +128,10 @@ endif
 else
 ifeq ($(OS),Windows_NT)
 	@cp $(ROOT)/deploy/windows/scripts/* $(ROOT)/bin/
-	@cp $(ROOT)/deploy/windows/qss-solver.ini $(ROOT)/bin/
+	@cp $(ROOT)/deploy/windows/qss-solver.ini.in $(ROOT)/bin/qss-solver.ini
 else
 	@cp $(ROOT)/deploy/osx/scripts/* $(ROOT)/bin/
-	@cp $(ROOT)/deploy/osx/qss-solver.ini $(ROOT)/bin/
+	@cp $(ROOT)/deploy/osx/qss-solver.ini.in $(ROOT)/bin/qss-solver.ini
 endif
 endif
 	

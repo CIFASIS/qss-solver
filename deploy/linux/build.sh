@@ -32,6 +32,7 @@ vversion=`cat version`
 git tag -a ${vversion} -m "Version ${vversion}"
 ./gitchangelog.py >> CHANGELOG
 REV=`cat rvn`
+cat ./deploy/linux/qss-solver.ini.in > ./deploy/linux/qss-solver.ini
 ./deploy/common/setRevision.sh ./deploy/linux/qss-solver.ini $REV
 VER=`cat version`
 echo "Building QSS Solver DEB package for $ARCH version $VER";
@@ -44,7 +45,7 @@ rm -rf tmp_deb
 rm -rf tmp
 mkdir tmp_deb
 mkdir tmp
-./deploy/common/deploy-repos.sh tmp
+./deploy/common/repos.sh deploy tmp
 cp -r ./tmp/deploy/linux/deb/* ./tmp_deb/
 chmod 0755 tmp_deb/DEBIAN/post*
 mkdir ./tmp_deb/opt
@@ -86,6 +87,7 @@ cp -r ./tmp/src/interfaces ./tmp_deb/opt/qss-solver/src/
 cp -r ./tmp/src/usr ./tmp_deb/opt/qss-solver/src/
 cp lib/*.a ./tmp_deb/opt/qss-solver/lib
 # Clean generated code.
+rm -rf ./deploy/linux/qss-solver.ini
 rm -rf ./tmp_deb/opt/qss-solver/src/engine/3rd-party
 rm -rf ./tmp_deb/opt/qss-solver/src/engine/usr/obj
 rm -rf ./tmp_deb/opt/qss-solver/src/mmoc/usr/obj

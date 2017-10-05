@@ -21,16 +21,16 @@ cd ../../
 echo Export environment variables...
 sed -i.bak '/MMOC/d' ~/.profile
 echo 'export MMOC_PATH='`pwd`'' >> ~/.profile
-echo 'export MMOC_ENGINE=$MMOC_PATH/Resources/src/engine/' >> ~/.profile
-echo 'export MMOC_LIBS=$MMOC_PATH/Resources/src/libs' >> ~/.profile
+echo 'export MMOC_SRC=$MMOC_PATH/Resources/src' >> ~/.profile
+echo 'export MMOC_LIBS=$MMOC_PATH/Resources/lib' >> ~/.profile
 echo 'export MMOC_BUILD=$MMOC_PATH/Resources/build' >> ~/.profile
 echo 'export MMOC_MODELS=$MMOC_PATH/Resources/models' >> ~/.profile
 echo 'export MMOC_OUTPUT=$MMOC_PATH/Resources/output' >> ~/.profile
 echo 'export MMOC_BIN=$MMOC_PATH/MacOS' >> ~/.profile
-echo 'export MMOC_TESTS=$MMOC_PATH/Resources/testsuite' >> ~/.profile
 echo 'export MMOC_PACKAGES=$MMOC_PATH/Resources/packages' >> ~/.profile
-echo 'export MMOC_LIBRARIES=$MMOC_PATH/Resources/usr/libs' >> ~/.profile
-echo 'export MMOC_INCLUDE=$MMOC_PATH/Resources/usr/include' >> ~/.profile
-echo 'export MMOC_SRC=$MMOC_PATH/Resources/src' >> ~/.profile
+echo 'export MMOC_LIBRARIES=$MMOC_PATH/Resources/lib' >> ~/.profile
+echo 'export MMOC_TESTS=$MMOC_SRC/test-suite' >> ~/.profile
+echo 'export MMOC_INCLUDE=$MMOC_SRC/usr/include' >> ~/.profile
+echo 'export MMOC_ENGINE=$MMOC_SRC/engine/' >> ~/.profile
 cd ./MacOS/scripts
 echo Done.
