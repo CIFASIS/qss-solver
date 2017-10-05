@@ -30,7 +30,7 @@ CXXFLAGS 			:= -g
 endif
 INC 				:= -I. 
 ifeq ($(OS),Windows_NT)
-INC 				+= -I/SBML/win32/include
+INC 				+= -I/usr/local/include
 endif
 RMS 				:= rm -rf
 
@@ -69,7 +69,7 @@ doc:
 .PHONY: clean
 
 clean:
-	$(RMS) $(OBJ) $(TARGET)
+	$(RMS) $(OBJ) $(TARGET) usr
 
 help:
 	@echo "make DEBUG=<True|False>"
