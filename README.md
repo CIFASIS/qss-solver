@@ -8,8 +8,8 @@ the simulated models can contain time and state discontinuities.
 Simulations can be performed using one of the following integration methods:
 
   * QSS methods (the entire family is supported)
-	* DASSL
-	* DOPRI
+  * DASSL
+  * DOPRI
   * CVODE
   * IDA
 
