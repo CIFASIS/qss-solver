@@ -20,7 +20,7 @@ The simplest way to compile this package is:
      `make -f gui.makefile'. 
      The qss-solver GUI executable is located in the usr/bin folder.
 	
-  2. You can remove the generated libraries and object files from the
+  2. You can remove the generated binaries and object files from the
      source code directory by typing `make clean'.  
 
 
