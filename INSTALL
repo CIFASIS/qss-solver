@@ -9,8 +9,8 @@ Dependences
 In order to be able to install and compile the MicroModelica compiler, 
 the following packages has to installed on your system: 
     
-    * g++
     * bison++
+    * g++
     * libcln-dev 
  
 Basic Installation
@@ -21,7 +21,7 @@ The simplest way to compile this package is:
   1. `cd' to the directory containing the compiler source code and type
      `make '. The mmoc binary is located in the usr/bin folder.
 	
-  2. You can remove the generated libraries and object files from the
+  2. You can remove the generated binaries and object files from the
      source code directory by typing `make clean'.  
 
 
