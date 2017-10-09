@@ -1,4 +1,4 @@
-QSS Solver 3.1
+        QSS Solver 3.1
 --------------
 
 The QSS Solver is a modeling and simulation environment for 
