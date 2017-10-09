@@ -6,7 +6,8 @@ These are generic installation instructions.
 Dependences
 ===========
 
-In order to be able to install and compile the QSS Solver, the following packages has to installed on your system: 
+In order to be able to install and compile the QSS Solver, 
+the following packages has to installed on your system: 
    
     * cmake 
     * g++
@@ -47,7 +48,7 @@ Makefile targets
 
 The makefile script accepts the following targets:
     
-    * default:  Build QSS solver libraries.
-    * doc:      Build solver documentation.
+    * default:  Builds the QSS solver libraries.
+    * doc:      Builds the QSS solver documentation.
     * clean:    Clean up generated files.
 
