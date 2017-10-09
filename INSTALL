@@ -7,12 +7,13 @@ Dependences
 ===========
 
 In order to be able to install and compile the QSS Solver, the following packages has to installed on your system: 
-    
+   
     * cmake 
+    * g++
     * gfortran 
     * libatlas-base-dev
     * libcln-dev
-    * libconfig-del
+    * libconfig-dev
     * libgsl-dev
     * libsuitesparse-dev
     * pkgconf
@@ -24,7 +25,7 @@ Basic Installation
 The simplest way to compile this package is:
 
   1. `cd' to the directory containing the package's source code and type
-     `make '. The qss-solver libraries are located in the usr/lib folder
+     `make '. The qss-solver libraries are located in the usr/lib folder.
 	
   2. You can remove the generated libraries and object files from the
      source code directory by typing `make clean'.  
