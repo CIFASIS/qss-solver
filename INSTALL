@@ -5,6 +5,35 @@ Installation
 
 Dependences
 ===========
+In order to be able to install and compile the SBML-MicroModelica translator, 
+the following packages has to installed: 
+   
+    * g++
+    * libsbml5-dev
+    
+Basic Installation
+==================
+
+The simplest way to compile this package is:
+
+  1. `cd' to the directory containing the GUI source code and type
+     `make'. 
+     The translate-sbml executable is located in the usr/bin folder.
+    
+  2. You can remove the generated binaries and object files from the
+     source code directory by typing `make clean'.  
+
+Makefile targets
+================
+
+The gui.makefile script accepts the following targets:
+    
+    * default:  Builds the qss-solver GUI.
+    * doc:      Builds the GUI documentation.
+    * clean:    Clean up generated files.
+
+Dependences
+===========
 
 
 Basic Installation
