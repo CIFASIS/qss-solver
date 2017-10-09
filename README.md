@@ -9,8 +9,9 @@ the compiler extracts all the structural information needed and
 automatically generates the plain C code that contains an appropiate 
 model definition needed by the 
 QSS Solver engine (https://github.com/CIFASIS/qss-solver-engine)
-together with all the configuration files (makefiles, config, etc.). 
-
+together with all the configuration files (makefiles, config, etc.).
+The compiler documentation can be found at: 
+http://www.cifasis-conicet.gov.ar/jfernandez/mmoc/
 
 Installation
 ------------
