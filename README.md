@@ -1,7 +1,16 @@
-MicroModelica Compiler 3.1
+MicroModelica Compiler 3.2
 --------------------------
 
-MicroModelica Compiler 3.1
+The MicroModelica compiler allows the user to describe models 
+using a subset of the standard Modelica language called μ–Modelica 
+(the language specification can be found in 
+http://www.fceia.unr.edu.ar/control/modelica/micromodelicaspec.pdf), 
+the compiler extracts all the structural information needed and
+automatically generates the plain C code that contains an appropiate 
+model definition needed by the 
+QSS Solver engine (https://github.com/CIFASIS/qss-solver-engine)
+together with all the configuration files (makefiles, config, etc.). 
+
 
 Installation
 ------------
