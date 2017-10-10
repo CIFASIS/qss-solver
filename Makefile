@@ -1,4 +1,3 @@
-OS = $(uname)
 DEBUG ?= False
 ENGINE ?= .
 
@@ -22,10 +21,6 @@ ifeq ($(DEBUG),True)
 	CFLAGS += -g   
 endif
 
-ifeq ($(OS),win32)
-	CFLAGS += -I/GnuWin32/include   
-endif
-
 CC=gcc
 
 .SUFFIXES: .c
@@ -46,5 +41,4 @@ help:
 	echo "make DEBUG=<True|False> ENGINE=<qss-engine-root-dir>"
 	echo "Default values:"
 	echo ""
-	echo "OS=unix"
 	echo "ENGINE=."
