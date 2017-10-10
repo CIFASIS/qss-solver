@@ -1,7 +1,7 @@
 Installation
 ============
 
-   These are generic installation instructions.
+These are generic installation instructions.
 
 Dependences
 ===========
@@ -31,16 +31,3 @@ The gui.makefile script accepts the following targets:
     * default:  Builds the qss-solver GUI.
     * doc:      Builds the GUI documentation.
     * clean:    Clean up generated files.
-
-Dependences
-===========
-
-
-Basic Installation
-==================
-
-Makefile options
-================
-
-Makefile targets
-================
