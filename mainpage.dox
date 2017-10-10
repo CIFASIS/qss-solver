@@ -1,4 +1,45 @@
 /** 
  *   @mainpage SBML MicroModelica/Biorica translator Developer's Guide
  * 
+ * @section intro Introduction
+ 
+ * The SBML-MicroModelica Translator translates models described using the SBML
+ * (Systems Biology Markup Language) into a MicroModelica model.  
+ * The generated models can then be compiled by the MicroModelica compiler and 
+ * simulate them using the QSS Solver Engine.
+ *
+ * @section install Installation
+ * 
+ * These are generic installation instructions.
+ *
+ * @subsection deps Dependencies
+ *
+ * In order to be able to install and compile the QSS Solver, 
+ * the following dependencies must be installed: 
+ *  
+ *  - g++
+ *  - libsbml5-dev
+ *   
+ * @subsection inst Basic Intallation
+ *
+ * The simplest way to compile this package is:
+ *
+ *  1.`cd' to the directory containing the translator source code and type
+ *    `make '. The translate-sbml executable is located in the usr/bin folder.
+ *   
+ *  2.You can remove the generated binaries and object files from the
+ *    source code directory by typing `make clean'.  
+ * 
+ * @subsection mktgs Makefile targets
+ *
+ * The makefile script accepts the following targets:
+ *   
+ *   - default:  Builds the SBML-MicroModelica translator.
+ *   - doc:      Builds the trasnlator documentation.
+ *   - clean:    Clean up generated files.
+ *
+ * @section br Bug Reporting
+ *
+ *  Report bugs to: fernandez@cifasis-conicet.gov.ar
+ * 
  */

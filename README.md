@@ -6,7 +6,6 @@ The SBML-MicroModelica Translator translates models described using the SBML
 The generated models can then be compiled by the MicroModelica compiler and 
 simulate them using the QSS Solver Engine.
 
-
 Installation
 ------------
 
