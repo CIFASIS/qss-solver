@@ -1,13 +1,13 @@
 Installation
 ============
 
-   These are generic installation instructions.
+These are generic installation instructions.
 
 Dependences
 ===========
 
 In order to be able to install and compile the MicroModelica compiler, 
-the following packages has to installed on your system: 
+the following dependencies must be installed: 
     
     * bison++
     * g++
