@@ -21,7 +21,7 @@
  * @subsection deps Dependencies
  *
  * In order to be able to install and compile the QSS Solver, 
- * the following packages has to installed on your system: 
+ * the following dependencies must be installed: 
  *  
  *  - gnuplot 
  *  - qt4-default (or higher)
@@ -41,8 +41,8 @@
  *
  * The makefile script accepts the following targets:
  *   
- *   - default:  Builds the MicroModelica compiler.
- *   - doc:      Builds the compiler documentation.
+ *   - default:  Builds the qss-solver GUI.
+ *   - doc:      Builds the GUI documentation.
  *   - clean:    Clean up generated files.
  *
  * @section br Bug Reporting

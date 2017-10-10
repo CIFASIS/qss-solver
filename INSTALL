@@ -1,12 +1,12 @@
 Installation
 ============
 
-   These are generic installation instructions.
+These are generic installation instructions.
 
 Dependences
 ===========
 In order to be able to install and compile the QSS Solver GUI, 
-the following packages has to installed on your system: 
+the following dependencies must be installed: 
    
     * qt4-default or higher. 
     * gnuplot
