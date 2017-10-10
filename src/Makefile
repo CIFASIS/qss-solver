@@ -5,6 +5,12 @@ endif
 DEBUG ?= False
 CORES ?= 1
 ARCH = $(shell uname -m)
+ACCESS ?= HTTPS
+ifeq ($(ACCESS), HTTPS)
+ACCESS_PATH = https://github.com/
+else
+ACCESS_PATH = git@github.com:
+endif
 
 # The Directories, Source, Includes, Objects, Binary 
 ROOT   	:= ..
@@ -25,28 +31,28 @@ all: mmo-compiler mmo-interfaces qss-engine qss-solver-gui qss-user-libs
 # Repositories rules.
 
 $(mmo-compiler-repo):
-	$(shell git clone https://github.com/CIFASIS/qss-solver-mmoc.git mmoc)
+	$(shell git clone $(ACCESS_PATH)CIFASIS/qss-solver-mmoc.git mmoc)
 
 $(mmo-interfaces-repo):
-	$(shell git clone https://github.com/CIFASIS/sbml-mmo.git interfaces/sbml)
+	$(shell git clone $(ACCESS_PATH)CIFASIS/sbml-mmo.git interfaces/sbml)
 
 $(mmo-models-repo):
-	$(shell git clone https://github.com/CIFASIS/qss-solver-models.git $(ROOT)/models)
+	$(shell git clone $(ACCESS_PATH)CIFASIS/qss-solver-models.git $(ROOT)/models)
 
 $(mmo-packages-repo):
-	$(shell git clone https://github.com/CIFASIS/qss-solver-packages.git $(ROOT)/packages)
+	$(shell git clone $(ACCESS_PATH)CIFASIS/qss-solver-packages.git $(ROOT)/packages)
 
 $(qss-engine-repo):
-	$(shell git clone https://github.com/CIFASIS/qss-solver-engine.git engine)
+	$(shell git clone $(ACCESS_PATH)CIFASIS/qss-solver-engine.git engine)
 
 $(qss-test-suite-repo):
-	$(shell git clone https://github.com/CIFASIS/qss-solver-test-suite.git test-suite)
+	$(shell git clone $(ACCESS_PATH)CIFASIS/qss-solver-test-suite.git test-suite)
 
 $(qss-solver-gui-repo):
-	$(shell git clone https://github.com/CIFASIS/qss-solver-gui.git gui)
+	$(shell git clone $(ACCESS_PATH)CIFASIS/qss-solver-gui.git gui)
 
 $(qss-user-libs-repo):
-	$(shell git clone https://github.com/CIFASIS/qss-solver-user-libs.git usr)
+	$(shell git clone $(ACCESS_PATH)CIFASIS/qss-solver-user-libs.git usr)
 
 mmo-interfaces: create-dirs | $(mmo-interfaces-repo)
 	@echo BUILDING MMO-SBML INTERFACE
@@ -146,8 +152,9 @@ clean:
 	@cd interfaces/sbml && $(MAKE) clean     
 
 help:
-	@echo "make DEBUG=<True|False> CORES=<n>"
+	@echo "make DEBUG=<True|False> CORES=<n> ACCESS=<HTTPS|SSH>"
 	@echo "Default values:"
 	@echo ""
 	@echo "DEBUG=False"
 	@echo "CORES=1"
+	@echo "ACCESS=HTTPS"

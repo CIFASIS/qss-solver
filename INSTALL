@@ -1,22 +1,29 @@
 Installation
 ============
 
-   These are generic installation instructions.
+These are generic installation instructions.
 
 Dependences
 ===========
 
-	In order to be able to install and compile the QSS Solver, the following packages has to installed on your system: 
+In order to be able to install and compile the QSS Solver, 
+the following  dependencies must be installed: 
 
-	* libsctoch-5.1
-	* libmetis5
-	* libconfig-dev
-	* libsbml5-dev
-	* libgsl0-dev
-	* gfortran
-	* g++
-	* bison++
-	* qt4-dev-tools or higher.
+    * bison++
+    * cmake 
+    * g++
+    * gfortran 
+    * gnuplot
+    * libatlas-base-dev
+    * libcln-dev
+    * libconfig-dev
+    * libgsl-dev
+    * libsbml5-dev
+    * libsuitesparse-dev
+    * pkgconf
+    * python
+    * qt4-default or higher.
+     
 
 Basic Installation
 ==================
@@ -24,8 +31,13 @@ Basic Installation
 The simplest way to compile this package is:
 
   1. `cd' to the directory containing the package's source code and type
-     `make ' to install the programs and any data files and
-     documentation.  
+     `make ' to compile the binaries and libraries.
+  
+  2. Type `make install' to install all the binary files and the libraries.
+     The binaries are located in the bin folder and the libraries are located
+     in the lib folder. 
+  
+  3. 
 	
   2. You can remove the program binaries and object files from the
      source code directory by typing `make clean'.  
