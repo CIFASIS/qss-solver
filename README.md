@@ -1,7 +1,7 @@
 QSS Engine 3.2
 --------------
 
-The QSS Engine is a library that allows the simulations of continuous and hybrid 
+The QSS Engine is a library that allows the simulation of continuous and hybrid 
 systems and it's optimized for large scale model simulation. 
 The solver is implemented as a set of modules coded in plain C language, where
 the simulated models can contain time and state discontinuities.

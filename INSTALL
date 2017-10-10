@@ -7,7 +7,7 @@ Dependences
 ===========
 
 In order to be able to install and compile the QSS Solver, 
-the following packages has to installed on your system: 
+the following dependencies must be installed: 
    
     * cmake 
     * g++
