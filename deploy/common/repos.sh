@@ -49,10 +49,25 @@ function checkout-index {
     git checkout-index --prefix=$CHECKOUT_PATH/ -a 
 }
 
+function gen-changelog {
+    cd $1
+    ./gitchangelog.py > CHANGELOG
+
+    if [ "${2}" != "QSS Solver" ]; then 
+      cat CHANGELOG | awk -f $MMOC_PATH/deploy/common/repo-change.awk -v REPO="$2" -v SUB="$3" >> $MMOC_PATH/CHANGELOG
+    fi
+}
+
+
 function color-echo ()
 {
     echo -e "$(tput setaf $2)$1$(tput setaf 7)\n"
 }
+
+
+REPO_NAMES=( "QSS Solver" "QSS Solver Engine" "MicroModelica Compiler" "QSS Solver GUI" "SBML-MicroModelica Translator" "User Libraries" "Test Suite" "Models" "Packages" );
+
+REPO_SUBS=( "==========" "=================" "======================" "==============" "=============================" "==============" "==========" "======" "========" );
 
 REPOS=( ${BASE_REPO} ${ENGINE_REPO} ${MMOC_REPO} ${TESTSUITE_REPO} ${USR_REPO} ${GUI_REPO} ${INTERFACES_REPO} ${MODELS_REPO} ${PACKAGES_REPO} );
 
@@ -62,6 +77,12 @@ if [ "$GIT_COMMAND" = "deploy" ]; then
     for i in ${!REPOS[*]}; do
         color-echo "Running git command: $GIT_COMMAND Repository: ${REPOS_REL[$i]}" 2
         checkout-index ${REPOS_REL[$i]} ${REPOS[$i]}
+        color-echo "\nDone" 2
+    done
+elif [ "$GIT_COMMAND" = "changelog" ]; then 
+    for i in ${!REPOS[*]}; do
+        color-echo "Running git command: $GIT_COMMAND Repository: ${REPOS[$i]}" 2
+        gen-changelog ${REPOS[$i]} "${REPO_NAMES[$i]}" "${REPO_SUBS[$i]}"
         color-echo "\nDone" 2
     done
 else
