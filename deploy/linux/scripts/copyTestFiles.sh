@@ -18,7 +18,7 @@
 # 							 symbolic derivatives and only for the Lunix version.
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 3.1
+#       VERSION: 3.2
 #===================================================================================
 
 cd $MMOC_TESTS 

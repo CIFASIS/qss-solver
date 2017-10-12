@@ -15,19 +15,18 @@
 #         NOTES: --- 
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 3.1
+#       VERSION: 3.2
 #===================================================================================
 
 cd ../../
 echo "Retrieving latest from Git";
 ./deploy/common/repos.sh pull
-head ./doc/version.major -c 4 > vm
-git rev-list --count HEAD > rvn
-cat vm rvn > version
-REV=`cat rvn`
+VM=`head ./doc/version.major -c 4`
+VMC=`head ./doc/version.major -c 3`
+REV=`./deploy/common/repos.sh version`
+VER=$VM$REV
 cat ./deploy/windows/qss-solver.ini.in > ./deploy/windows/qss-solver.ini
-./deploy/common/setRevision.sh ./deploy/windows/qss-solver.ini $REV 
-VER=`cat version`
+./deploy/common/setRevision.sh ./deploy/windows/qss-solver.ini $REV $VMC 
 echo Building Windows Package version $VER
 echo Creating directories
 rm -rf tmp-win-installer 
@@ -88,9 +87,6 @@ echo Done.
 echo Copying libraries
 cp src/engine/usr/lib/*.a tmp-win-installer/qss-solver/lib/
 cp src/usr/lib/*.a tmp-win-installer/qss-solver/lib/
-rm -rf rvn
-rm -rf version
-rm -rf vm
 cd tmp-win-installer
 mv ./qss-solver/bin/*.a ./qss-solver/lib/
 echo Done.

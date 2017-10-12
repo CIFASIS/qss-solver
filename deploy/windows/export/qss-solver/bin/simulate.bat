@@ -18,7 +18,7 @@
 ::        NOTES: ---
 ::       AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 ::      PROJECT: QSS Solver
-::      VERSION: 3.0
+::      VERSION: 3.2
 ::===================================================================================
 
 set FILE=%~1

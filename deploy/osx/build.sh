@@ -16,21 +16,20 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 3.1
+#       VERSION: 3.2
 #===================================================================================
 
 cd ../../
 echo "Retrieving latest from Git";
 ./deploy/common/repos.sh pull
-head ./doc/version.major -c 4 > vm
-git rev-list --count HEAD > rvn
-cat vm rvn > version
-REV=`cat rvn`
+VM=`head ./doc/version.major -c 4`
+VMC=`head ./doc/version.major -c 3`
+REV=`./deploy/common/repos.sh version`
+VER=$VM$REV
 cat ./deploy/osx/qss-solver.ini.in > ./deploy/osx/qss-solver.ini 
-./deploy/common/setRevision.sh ./deploy/osx/qss-solver.ini $REV
-VER=`cat version`
+./deploy/common/setRevision.sh ./deploy/osx/qss-solver.ini $REV $VMC
 echo "Done"
-echo "Building QSS Solver MAC bundle version $VER";
+echo "Building QSS Solver OSX bundle version $VER";
 echo "Building Binaries";
 rm -rf ./bin/qss-solver.app
 mkdir ./bin/qss-solver.app
@@ -89,5 +88,4 @@ rm -rf qss-solver.app/Contents/Resources/qt.conf
 macdeployqt qss-solver.app -verbose=2 -dmg
 cd ..
 mv bin/qss-solver.dmg deploy/osx/
-rm rvn vm version
 rm -rf tmp

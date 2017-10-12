@@ -13,7 +13,7 @@
 #         NOTES: -persist is the default option used by the QSS Solver GUI.
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 3.1
+#       VERSION: 3.2
 #===================================================================================
 
 OPTIONS=$1
