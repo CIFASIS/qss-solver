@@ -19,12 +19,17 @@
 cd ../../
 ARCH=`uname -m`
 echo "Retrieving latest from Git";
+./deploy/common/repos.sh pull
 git pull
 head ./doc/version.major -c 4 > vm
 git rev-list --count HEAD > rvn
 cat vm rvn > version
 VER=`cat version`
 echo "Building QSS Solver tarball file version $VER";
-git archive --format=tar.gz --prefix=qss-solver-${VER}/ HEAD > qss-solver-${VER}.tar.gz 
+rm -rf qss-solver-${VER}
+mkdir qss-solver-${VER}
+./deploy/common/repos.sh deploy qss-solver-${VER}
+tar -zcvf qss-solver-${VER}.tar.gz qss-solver-${VER}
 mv qss-solver-${VER}.tar.gz ./deploy/src/
+rm -rf qss-solver-${VER}
 rm version vm rvn
