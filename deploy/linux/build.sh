@@ -48,6 +48,7 @@ chmod 0755 tmp_deb/DEBIAN/post*
 mkdir ./tmp_deb/opt
 mkdir ./tmp_deb/opt/qss-solver
 mkdir ./tmp_deb/opt/qss-solver/bin
+mkdir ./tmp_deb/opt/qss-solver/src
 mkdir ./tmp_deb/opt/qss-solver/build
 mkdir ./tmp_deb/opt/qss-solver/output
 mkdir ./tmp_deb/opt/qss-solver/lib/
