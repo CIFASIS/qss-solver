@@ -1,2 +1,26 @@
-Changelog
-=========
+MicroModelica Compiler Changelog
+================================
+
+%%version%% (unreleased)
+------------------------
+
+New
+~~~
+
+- Add MD output variables.
+
+Fix
+~~~
+
+- MD index dimension.
+
+- Print C for loops indexes.
+
+- Generate jacobian function and data structures for IDA and CVODE
+  solvers only.
+
+- Allow MD definitions in VariableInfo class.
+
+- Calculate size for MD arrays in Variable Info.
+
+
