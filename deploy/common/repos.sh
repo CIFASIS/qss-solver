@@ -12,7 +12,7 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 3.1
+#       VERSION: 3.2
 #===================================================================================
 
 # Parameters.
@@ -30,8 +30,10 @@ INTERFACES_REPO=$MMOC_SRC/interfaces/sbml
 MODELS_REPO=$MMOC_PATH/models
 PACKAGES_REPO=$MMOC_PATH/packages
 
-# QSS Solver repositories relative paths to base repo.
+# Global variables.
+VERSION=0
 
+# QSS Solver repositories relative paths to base repo.
 BASE_REPO_REL=.
 ENGINE_REPO_REL=src/engine
 MMOC_REPO_REL=src/mmoc
@@ -42,14 +44,16 @@ INTERFACES_REPO_REL=src/interfaces/sbml
 MODELS_REPO_REL=models
 PACKAGES_REPO_REL=packages
 
-function checkout-index {
+function checkout-index 
+{
     CHECKOUT_PATH=$DEPLOY_PATH/$1
     mkdir -p $CHECKOUT_PATH
     cd $2
     git checkout-index --prefix=$CHECKOUT_PATH/ -a 
 }
 
-function gen-changelog {
+function gen-changelog 
+{
     cd $1
     ./gitchangelog.py > CHANGELOG
 
@@ -58,6 +62,29 @@ function gen-changelog {
     fi
 }
 
+function commit-changelog 
+{
+    cd $1
+    git add CHANGELOG
+    git commit -m "Modified Changelog."
+    git push
+}
+
+function tag
+{
+    cd $1
+    vversion=`git rev-list --count HEAD`
+    vversion=$2$vversion
+    echo $vversion
+    git tag -a ${vversion} -m "Version ${vversion}"
+}
+
+function version
+{
+    cd $1
+    n=`git rev-list --count HEAD`
+    VERSION=$(( VERSION + n ))
+}
 
 function color-echo ()
 {
@@ -79,12 +106,29 @@ if [ "$GIT_COMMAND" = "deploy" ]; then
         checkout-index ${REPOS_REL[$i]} ${REPOS[$i]}
         color-echo "\nDone" 2
     done
+elif [ "$GIT_COMMAND" = "tag" ]; then 
+    for i in ${!REPOS[*]}; do
+        color-echo "Running git command: $GIT_COMMAND Repository: ${REPOS[$i]}" 2
+        tag ${REPOS[$i]} $2 
+        color-echo "\nDone" 2
+    done
 elif [ "$GIT_COMMAND" = "changelog" ]; then 
     for i in ${!REPOS[*]}; do
         color-echo "Running git command: $GIT_COMMAND Repository: ${REPOS[$i]}" 2
         gen-changelog ${REPOS[$i]} "${REPO_NAMES[$i]}" "${REPO_SUBS[$i]}"
         color-echo "\nDone" 2
     done
+elif [ "$GIT_COMMAND" = "commit-changelog" ]; then 
+    for i in ${!REPOS[*]}; do
+        color-echo "Running git command: $GIT_COMMAND Repository: ${REPOS[$i]}" 2
+        commit-changelog ${REPOS[$i]} 
+        color-echo "\nDone" 2
+    done
+elif [ "$GIT_COMMAND" = "version" ]; then 
+    for i in ${!REPOS[*]}; do
+        version ${REPOS[$i]} 
+    done
+    echo $VERSION
 else
     for i in ${REPOS[@]}; do
         color-echo "Running git command: $GIT_COMMAND Repository: $i" 2
