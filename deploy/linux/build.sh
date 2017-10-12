@@ -15,7 +15,7 @@
 #         NOTES: --- 
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 3.1
+#       VERSION: 3.2
 #===================================================================================
 
 rm -rf qss-solver-i386.deb
@@ -25,16 +25,13 @@ cd ../../
 ARCH=`uname -m`
 echo "Retrieving latest from Git";
 ./deploy/common/repos.sh pull
-head ./doc/version.major -c 4 > vm
-git rev-list --count HEAD > rvn
-cat vm rvn > version
-vversion=`cat version`
-git tag -a ${vversion} -m "Version ${vversion}"
-./gitchangelog.py >> CHANGELOG
-REV=`cat rvn`
+VM=`head ./doc/version.major -c 4`
+VMC=`head ./doc/version.major -c 3`
+./deploy/common/repos.sh tag ${VM} 
+REV=`./deploy/common/repos.sh version`
 cat ./deploy/linux/qss-solver.ini.in > ./deploy/linux/qss-solver.ini
-./deploy/common/setRevision.sh ./deploy/linux/qss-solver.ini $REV
-VER=`cat version`
+./deploy/common/setRevision.sh ./deploy/linux/qss-solver.ini $REV $VMC
+VER=$VM$REV
 echo "Building QSS Solver DEB package for $ARCH version $VER";
 echo "Building Binaries";
 cd ./src
@@ -76,7 +73,6 @@ cp LICENSE ./tmp_deb/opt/qss-solver/
 cp INSTALL ./tmp_deb/opt/qss-solver/
 cp README.md ./tmp_deb/opt/qss-solver/
 cp CHANGELOG ./tmp_deb/opt/qss-solver/
-cp version ./tmp_deb/opt/qss-solver/
 cp -r ./tmp/doc ./tmp_deb/opt/qss-solver/
 cp -r ./tmp/models ./tmp_deb/opt/qss-solver/
 cp -r ./tmp/packages ./tmp_deb/opt/qss-solver/
@@ -132,7 +128,6 @@ fi
 if [ "$ARCH" == "x86_64" ]; then
   mv qss-solver.deb ./deploy/linux/qss-solver-amd64.deb
 fi
-rm rvn version vm
 rm -rf tmp_deb
 rm -rf tmp
 cd deploy/linux
