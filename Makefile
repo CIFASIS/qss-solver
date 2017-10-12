@@ -4,7 +4,9 @@ OS = $(shell uname)
 endif
 DEBUG ?= False
 ARCH= $(shell uname -m)
-
+ifeq ($(ARCH), i686)
+ARCH= i386
+endif
 # Compiler and Linker
 CC          := gcc
 FC 			:= gfortran
