@@ -1,41 +1,36 @@
-        QSS Solver 3.1
+QSS Solver 3.2
 --------------
 
 The QSS Solver is a modeling and simulation environment for 
-continuous and hybrid systems.
+continuous and hybrid systems and it's optimized for large scale model simulation.
+The solver is implemented as a set of modules coded in plain C language, 
+simulations can be performed using one of the following integration methods:
 
-Models are described using a subset of the Modelica language 
-called MicroMoledica (http://www.fceia.unr.edu.ar/
-control/modelica/micromodelicaspec.pdf).
+  * QSS methods (the entire family is supported)
+  * DASSL
+  * DOPRI
+  * CVODE
+  * IDA
 
-Simulations can be performed using one of the following integration methods:
+Models are described using a subset of the standard Modelica language called μ–Modelica 
+(the language specification can be found in 
+http://www.cifasis-conicet.gov.ar/jfernandez/micromodelica/micromodelicaspec.pdf), 
+the compiler extracts all the structural information needed and
+automatically generates the plain C code that contains an appropiate 
+model definition needed by the 
+QSS Solver engine together with all the configuration files (makefiles, config, etc.).
 
-	* QSS methods (the entire family is supported)
-	* DASSL
-	* DOPRI
+The QSS Solver has a simple GUI interface that allows the end-user
+to access all the developed tools in a unified way.
 
-New Features
-------------
+The GUI has the following features:
 
-	* Parallel simulation is supported for Linux platform.
-
-	* Modelica User Defined Functions (UDF) are now supported (including external C functions).
-	
-	* The Modelica Package class containing UDF's is now supported.
-	
-	* 'for' statements can be used in "event handler" definitions, i.e. inside 'when' and
-	  'elsewhen' statements.
-	
-	* Modelica array element-wise operations are supported (.+,.-,.*,./).
-	
-	* Modelica reduction operations for arrays are supported:
-			- sum
-			- product
-			- min
-			- max
-			- *
-	
-	* Classic numerical integration methods DASSL and DOPRI can be used to run simulations.
+  * It has a text editor, where models in μ-Modelica can be defined.
+  * It invokes the corresponding tools to compile and run simulations.
+  * It provides debug information in case of errors during the model generation.
+  * It invokes GnuPlot to plot the simulation output trajectories.
+  * It shows statistics about simulations (number of steps, simulation time,
+etc.).
 
 Installation
 ------------
