@@ -22,8 +22,8 @@
 cd ../../
 echo "Retrieving latest from Git";
 ./deploy/common/repos.sh pull
-VM=`head ./doc/version.major -c 4`
-VMC=`head ./doc/version.major -c 3`
+VM=`head -c 4 ./doc/version.major`
+VMC=`head -c 3 ./doc/version.major`
 REV=`./deploy/common/repos.sh version`
 VER=$VM$REV
 cat ./deploy/osx/qss-solver.ini.in > ./deploy/osx/qss-solver.ini 
@@ -60,14 +60,15 @@ cp ChangeLog  ./bin/qss-solver.app/Contents/MacOS/
 cp -r ./tmp/doc ./bin/qss-solver.app/Contents/Resources/
 cp -r ./tmp/models ./bin/qss-solver.app/Contents/Resources/
 cp -r ./tmp/packages ./bin/qss-solver.app/Contents/Resources/
-cp -r ./tmp/src ./bin/qss-solver.app/Contents/Resources/
 cp -r ./tmp/src/engine ./bin/qss-solver.app/Contents/Resources/src/
 cp -r ./tmp/src/mmoc ./bin/qss-solver.app/Contents/Resources/src/
 cp -r ./tmp/src/gui ./bin/qss-solver.app/Contents/Resources/src/
 cp -r ./tmp/src/interfaces ./bin/qss-solver.app/Contents/Resources/src/
 cp -r ./tmp/src/usr ./bin/qss-solver.app/Contents/Resources/src/
-cp lib/*.a ./bin/qss-solver.app/Contents/Resources/lib
+cp src/engine/usr/lib/*.a ./bin/qss-solver.app/Contents/Resources/lib
+cp src/usr/lib/*.a ./bin/qss-solver.app/Contents/Resources/lib
 cp /usr/local/lib/libsbml.5.11.4.dylib ./bin/qss-solver.app/Contents/Resources/lib/libsbml.5.dylib
+chmod 644 ./bin/qss-solver.app/Contents/Resources/lib/libsbml.5.dylib
 # Clean generated code.
 rm -rf ./bin/qss-solver.app/Contents/Resources/src/engine/3rd-party
 rm -rf ./bin/qss-solver.app/Contents/Resources/src/engine/usr/obj
