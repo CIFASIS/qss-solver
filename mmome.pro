@@ -47,6 +47,5 @@ RESOURCES += mmome.qrc
 
 OBJECTS_DIR = usr/obj
 MOC_DIR = usr/moc
-unix: TARGET= usr/bin/qss-solver
-mac: TARGET= usr/bin/qss-solver
-win32: TARGET= usr/bin/qss-solver
+Release:DESTDIR = usr
+TARGET= usr/bin/qss-solver
