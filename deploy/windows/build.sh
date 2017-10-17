@@ -61,17 +61,17 @@ cp deploy/windows/qss-solver.ini ./tmp-win-installer/qss-solver/bin
 cp deploy/windows/qss-solver.gpr ./tmp-win-installer
 # Code cleanup.
 rm -rf ./deploy/windows/qss-solver.ini
-rm -rf ./tmp_deb/opt/qss-solver/src/engine/3rd-party
-rm -rf ./tmp_deb/opt/qss-solver/src/engine/usr/obj
-rm -rf ./tmp_deb/opt/qss-solver/src/mmoc/usr/obj
-rm -rf ./tmp_deb/opt/qss-solver/src/mmoc/usr/bin
-rm -rf ./tmp_deb/opt/qss-solver/src/mmoc/usr/share
-rm -rf ./tmp_deb/opt/qss-solver/src/mmoc/usr/lib
-rm -rf ./tmp_deb/opt/qss-solver/src/mmoc/usr/libexec
-rm -rf ./tmp_deb/opt/qss-solver/src/usr/src/*.o
-rm -rf ./tmp_deb/opt/qss-solver/src/usr/lib
-rm -rf ./tmp_deb/opt/qss-solver/src/interfaces/sbml/usr
-rm -rf ./tmp_deb/opt/qss-solver/src/gui/usr
+rm -rf ./tmp-win-installer/qss-solver/src/engine/3rd-party
+rm -rf ./tmp-win-installer/qss-solver/src/engine/usr/obj
+rm -rf ./tmp-win-installer/qss-solver/src/mmoc/usr/obj
+rm -rf ./tmp-win-installer/qss-solver/src/mmoc/usr/bin
+rm -rf ./tmp-win-installer/qss-solver/src/mmoc/usr/share
+rm -rf ./tmp-win-installer/qss-solver/src/mmoc/usr/lib
+rm -rf ./tmp-win-installer/qss-solver/src/mmoc/usr/libexec
+rm -rf ./tmp-win-installer/qss-solver/src/usr/src/*.o
+rm -rf ./tmp-win-installer/qss-solver/src/usr/lib
+rm -rf ./tmp-win-installer/qss-solver/src/interfaces/sbml/usr
+rm -rf ./tmp-win-installer/qss-solver/src/gui/usr
 echo Done.
 echo Building binaries
 cd src
