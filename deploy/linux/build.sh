@@ -27,7 +27,9 @@ echo "Retrieving latest from Git";
 ./deploy/common/repos.sh pull
 VM=`head ./doc/version.major -c 4`
 VMC=`head ./doc/version.major -c 3`
-./deploy/common/repos.sh tag ${VM} 
+if [ "$ARCH" == "x86_64" ]; then
+  ./deploy/common/repos.sh tag ${VM} 
+fi
 REV=`./deploy/common/repos.sh version`
 cat ./deploy/linux/qss-solver.ini.in > ./deploy/linux/qss-solver.ini
 ./deploy/common/setRevision.sh ./deploy/linux/qss-solver.ini $REV $VMC

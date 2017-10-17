@@ -77,6 +77,7 @@ function tag
     vversion=$2$vversion
     echo $vversion
     git tag -a ${vversion} -m "Version ${vversion}"
+    git push origin ${vversion}
 }
 
 function version
