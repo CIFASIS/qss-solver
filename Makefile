@@ -6,9 +6,10 @@ DEBUG ?= False
 
 # Compiler and Linker
 CXX         := g++
+ifneq ($(OS), Windows_NT)
 BISON 		:= bison++
 FLEX 		:= flex++
-
+endif
 
 # The Directories, Source, Includes, Objects, Binary 
 SRCDIR      := .
@@ -31,17 +32,17 @@ OBJEXT      := o
 TARGET      := $(BINDIR)/mmoc
 
 # Flags, Libraries and Includes
-LIB 		:= -L$(LIBDIR) -lginac -lcln -lgmp 
 ifeq ($(OS), Windows_NT)
-LIB 		:= -L/local/lib -lginac -lcln -lgmp
+LIB 		:= -L/usr/lib
 endif
+LIB 		+= -L$(LIBDIR) -lginac -lcln -lgmp 
 CXXFLAGS 	:= -Wno-write-strings -Wall -std=c++11
 ifeq ($(DEBUG),True)
 CXXFLAGS 	+= -DYY_MCC_Parser_DEBUG -g  
 endif
 INC         := -I$(SRCDIR) -I$(INCDIR)
 ifeq ($(OS), Windows_NT)
-INC 		+= -I/local/include -I/GnuWin32/include
+INC 		+= -I/usr/include
 endif
 RMS 		:= rm -rf
 
@@ -79,7 +80,7 @@ default: mmoc
 libginac 	:= $(LIBDIR)/libginac.a 
 
 $(libginac):
-ifeq ($(OS), Linux)
+ifneq ($(OS), Darwin)
 	echo "Building deterministic GiNaC" 
 	cd $(3RDPARTYDIR)/ginac; tar xvjf ginac-1.7.0.tar.bz2
 	cd $(3RDPARTYDIR)/ginac/ginac-1.7.0; ./configure --prefix=`pwd`/../../../usr --disable-shared; make -j 4 install
