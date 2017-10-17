@@ -14,6 +14,7 @@ packages/
 deploy/linux/*.deb
 deploy/osx/*.dmg
 deploy/windows/*.exe
+deploy/src/*.tar.gz
 
 # Solver source code submodules.
 src/usr/
