@@ -176,7 +176,7 @@ doc:
 .PHONY: clean
 
 clean:
-	$(RMS) $(DEPS) $(TARGET) $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ) $(DASSLOBJ) $(DOPRIOBJ) $(USRDIR)
+	$(RMS) $(DEPS) $(TARGET) $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ) $(DASSLOBJ) $(DOPRIOBJ) 
 
 help:
 	@echo "make DEBUG=<True|False>"
