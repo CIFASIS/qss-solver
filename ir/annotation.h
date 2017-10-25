@@ -217,6 +217,10 @@ class MMO_Annotation_: public MMO_Base_
     jacobian() = 0;
     virtual bool
     classic() = 0;
+    virtual bool
+    hasJacobian() = 0;
+    virtual bool
+    LIQSS() = 0;
 };
 
 /**
@@ -317,6 +321,16 @@ class MMO_FunctionAnnotation_: public MMO_Annotation_
       return false;
     }
     ;
+    bool
+    hasJacobian()
+    {
+      return false;
+    };
+    bool 
+    LIQSS()
+    {
+      return false;
+    };
     private:
     /**
      *
@@ -679,6 +693,10 @@ class MMO_ModelAnnotation_: public MMO_Annotation_
     jacobian();
     bool
     classic();
+    bool 
+    hasJacobian();
+    bool 
+    LIQSS();
     private:
     /**
      *

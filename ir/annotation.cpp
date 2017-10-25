@@ -897,6 +897,20 @@ MMO_ModelAnnotation_::classic()
       || _solver == ANT_IDA || _solver == ANT_CVODE_AM;
 }
 
+bool 
+MMO_ModelAnnotation_::hasJacobian()
+{
+  return _solver == ANT_LIQSS || _solver == ANT_LIQSS2 
+      || _solver == ANT_LIQSS3 || classic();
+}
+
+bool 
+MMO_ModelAnnotation_::LIQSS()
+{
+  return _solver == ANT_LIQSS || _solver == ANT_LIQSS2 
+      || _solver == ANT_LIQSS3;
+}
+    
 int
 MMO_ModelAnnotation_::lps()
 {
