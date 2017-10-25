@@ -163,6 +163,7 @@ MMO_Generator_::_generateModel()
   _solver->print(SOL_MODEL_SETTINGS);
   _solver->print(SOL_MODEL);
   _solver->print(SOL_DEPS);
+  _solver->print(SOL_JAC);
   if(!_writer->isEmpty(WR_ZC_SIMPLE) || !_writer->isEmpty(WR_ZC_GENERIC))
   {
     _solver->print(SOL_ZC);
