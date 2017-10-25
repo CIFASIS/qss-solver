@@ -413,6 +413,7 @@ QSS_Data(int states, int discretes, int events, int inputs, int algs,
   {
     p->alg = NULL;
   }
+  p->jac = NULL;
   p->it = settings->it;
   p->ft = settings->ft;
   p->nSD = (int*) malloc(states * sizeof(int));
@@ -830,7 +831,8 @@ QSS_copyData(QSS_data data)
 void
 QSS_allocDataMatrix(QSS_data data)
 {
-  int i, states = data->states, events = data->events, mRHS = 0;
+  int i, states = data->states, events = data->events, 
+      mRHS = 0, deps = 0;
   for(i = 0; i < states; i++)
   {
     data->SD[i] =
@@ -853,6 +855,11 @@ QSS_allocDataMatrix(QSS_data data)
                                  NULL;
       }
     }
+    deps += data->nSD[i];
+  }
+  if(deps > 0)
+  {
+    data->jac = (double*) malloc(deps * sizeof(double));
   }
   for(i = 0; i < events; i++)
   {
@@ -1217,12 +1224,13 @@ QSS_freeTime(QSS_time simTime, int events, int inputs)
 
 QSS_model
 QSS_Model(QSS_eq f, QSS_dep deps, QSS_zc zeroCrossing, QSS_hnd handlerPos,
-    QSS_hnd handlerNeg)
+    QSS_hnd handlerNeg, QSS_jac jac)
 {
   QSS_model p = checkedMalloc(sizeof(*p));
   p->f = f;
   p->deps = deps;
   p->events = QSS_Event(zeroCrossing, handlerPos, handlerNeg);
+  p->jac = jac;
   return p;
 }
 
