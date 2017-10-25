@@ -61,7 +61,7 @@ MMO_Equation_::MMO_Equation_(AST_Expression exp, MMO_ModelData data) :
   {
     _initDerivatives();
   }
-  if(_data->annotation()->classic())
+  if(_data->annotation()->hasJacobian())
   {
     _generateJacobianExps();
   }
