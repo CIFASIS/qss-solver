@@ -31,7 +31,7 @@ using namespace std;
 /**
  *
  */
-#define SECTIONS 	69
+#define SECTIONS 	71
 /**
  *
  */
@@ -105,6 +105,8 @@ typedef enum
   WR_OUTPUT_GENERIC,     //!< WR_OUTPUT_GENERIC
   WR_FUNCTION_HEADER,    //!< WR_FUNCTION_HEADER
   WR_FUNCTION_CODE,      //!< WR_FUNCTION_CODE
+  WR_MODEL_JAC_SIMPLE,  //!< WR_MODEL_JAC_SIMPLE
+  WR_MODEL_JAC_GENERIC, //!< WR_MODEL_JAC_GENERIC
   WR_NULL                //!< WR_NULL
 } WR_Section;
 
