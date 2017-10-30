@@ -2445,7 +2445,21 @@ SolverCommon_::_reorderSD(Dependencies d, const Index& idx, const string& indent
     buffer << indent << "modelData->SD[" << sIdx << "][states[" << sIdx
         << "]++] = " << eqsIdx << ";";
     _writer->removeFromSection(buffer.str(), WR_INIT_LD_SD);
-    _writer->write(&buffer, WR_INIT_LD_SD, true, it);
+    if(idx.factor() == 0 && stateDep.factor() != 0)
+    {
+      stringstream generic;
+      generic << "}";
+      _writer->write(&generic, WR_INIT_LD_SD, true, it);
+      _writer->write(&buffer, WR_INIT_LD_SD, true, it);
+      generic << "{";
+      _writer->write(&generic, WR_INIT_LD_SD, true, it);
+      generic << "for(i0 = " << stateDep.begin() << "; i0 <= " << stateDep.end() << "; i0++)";
+      _writer->write(&generic, WR_INIT_LD_SD, true, it);
+    }
+    else 
+    {
+      _writer->write(&buffer, WR_INIT_LD_SD, true, it);
+    }
   }
 }
 
@@ -4056,7 +4070,7 @@ SolverCommon_::_generateJacobianExps(Dependencies d, Index derivativeIndex,
 {
   stringstream buffer;
   int indent = i;
-  bool controlRange = (s == WR_MODEL_DEPS_SIMPLE);
+  bool controlRange = (s == WR_MODEL_JAC_SIMPLE);
   //int order = getOrder();
   int order = 1;
   int xCoeff = _model->annotation()->polyCoeffs();
