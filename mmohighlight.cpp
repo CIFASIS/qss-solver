@@ -95,6 +95,7 @@ MmoHighlighter::MmoHighlighter(QTextDocument *parent, h_type file) :
     << "\\bST_Random\\b"
     << "\\bQSS\\b" << "\\bCQSS\\b" << "\\bLIQSS\\b" << "\\bQSS2\\b"
     << "\\bLIQSS2\\b" << "\\bQSS3\\b" << "\\bLIQSS3\\b"
+    << "\\bCVODE_AM\\b" << "\\bCVODE_BDF\\b" << "\\bIDA\\b"
     << "\\bCI_Sampled\\b" << "\\bCI_Step\\b" << "\\bCI_Dense\\b"
     << "\\bSD_DT_Fixed\\b" << "\\bSD_DT_Asynchronous\\b"
     << "\\bMetis\\b" << "\\bHMetis\\b" << "\\bDense\\b" << "\\bSparse\\b"

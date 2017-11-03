@@ -11,3 +11,11 @@ usr/*
 
 # Local ChangeLog.
 ChangeLog
+
+# Tmp VIM files.
+/**/*.swp
+
+# Vim config files.
+tags
+compile_commands.json
+
