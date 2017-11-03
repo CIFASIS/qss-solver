@@ -6,3 +6,6 @@
 
 # Local ChangeLog.
 ChangeLog
+
+# Experimental tests.
+/new-experiments/*
