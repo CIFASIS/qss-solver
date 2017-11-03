@@ -62,7 +62,9 @@ model airconds
 	experiment(
 		MMO_Description="Power consumption  in a large population of air conditioners.",
 		MMO_Solver=QSS3,
+		MMO_PartitionMethod=Metis,
 		MMO_Output={ptotal},
+		Jacobian=Dense,
 		StartTime=0,
 		StopTime=3000,
 		Tolerance={1e-3},
