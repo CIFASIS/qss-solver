@@ -4,5 +4,9 @@ usr/*
 # Local Changelog
 ChangeLog
 
-# Local tags file.
+# Tmp VIM files.
+/**/*.swp
+
+# Vim config files.
 tags
+compile_commands.json
