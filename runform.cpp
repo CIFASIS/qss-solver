@@ -105,6 +105,10 @@ RunDlg::on__parallel_currentIndexChanged(int index)
     _partitionMethod->setEnabled(true);
     _dt->setEnabled(true);
     _dtSynch->setEnabled(true);
+    _scotchSettings->setEnabled(true);
+    _metisSettings->setEnabled(true);
+    _patohSettings->setEnabled(true);
+    _semiStaticChk->setEnabled(true);
   }
   else
   {
@@ -112,6 +116,10 @@ RunDlg::on__parallel_currentIndexChanged(int index)
     _partitionMethod->setEnabled(false);
     _dt->setEnabled(false);
     _dtSynch->setEnabled(false);
+    _scotchSettings->setEnabled(false);
+    _metisSettings->setEnabled(false);
+    _patohSettings->setEnabled(false);
+    _semiStaticChk->setEnabled(false);
   }
 }
 
