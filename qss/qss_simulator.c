@@ -143,7 +143,7 @@ QSS_simulate(SIM_simulator simulate)
    #endif*/
   getTime(simulator->stats->iTime);
   QSS_initializeDataStructs(simulator);
-  QSS_orderDataMatrix(simulator->data);
+  //QSS_orderDataMatrix(simulator->data);
   getTime(simulator->stats->sdTime);
   subTime(simulator->stats->sdTime, simulator->stats->iTime);
   simulator->stats->initTime = getTimeValue(simulator->stats->sdTime);
