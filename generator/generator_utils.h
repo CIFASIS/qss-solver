@@ -31,7 +31,7 @@ using namespace std;
 /**
  *
  */
-#define SECTIONS 	71
+#define SECTIONS 	72
 /**
  *
  */
@@ -92,6 +92,7 @@ typedef enum
   WR_INIT_VARS,          //!< WR_INIT_VARS
   WR_MODEL_SIMPLE,       //!< WR_MODEL_SIMPLE
   WR_MODEL_GENERIC,      //!< WR_MODEL_GENERIC
+  WR_MODEL_FULL,         //!< WR_MODEL_FULL
   WR_MODEL_DEPS_SIMPLE,  //!< WR_MODEL_DEPS_SIMPLE
   WR_MODEL_DEPS_GENERIC, //!< WR_MODEL_DEPS_GENERIC
   WR_ZC_SIMPLE,          //!< WR_ZC_SIMPLE
