@@ -36,7 +36,7 @@
 /* QSS Solver class. */
 
 QSS_::QSS_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer) :
-    _flags(flags), _writer(writer), _modelVars(), _modelDepsVars(), _zcVars(), _handlerPosVars(), _handlerNegVars(), _outputVars(), _initializeVars(), _freeVars(), _model(
+    _flags(flags), _writer(writer), _modelVars(), _modelFullVars(), _modelDepsVars(), _zcVars(), _handlerPosVars(), _handlerNegVars(), _outputVars(), _initializeVars(), _freeVars(), _model(
         model), _name(model->name()), _graph(model->states(), model->evs()), _parallel(
         flags->graph()), _hasDD(false)
 {
@@ -139,7 +139,7 @@ QSS_::initModel()
 {
   stringstream buffer;
   string zeroCrossing = "NULL", handlerPos = "NULL", handlerNeg = "NULL",
-         jacobian = "NULL";
+         jacobian = "NULL", full_model = NULL;
   if(!_writer->isEmpty(WR_ZC_SIMPLE) || !_writer->isEmpty(WR_ZC_GENERIC))
   {
     zeroCrossing = "MOD_zeroCrossing";
@@ -157,10 +157,11 @@ QSS_::initModel()
   if(_model->annotation()->LIQSS())
   {
     jacobian = "MOD_jacobian";
+    full_model = "MOD_BDF_definition";
   }
   buffer << "simulator->model = QSS_Model(MOD_definition,MOD_dependencies,"
       << zeroCrossing << "," << handlerPos << "," << handlerNeg << "," 
-      << jacobian << ");";
+      << jacobian << "," << full_model << ");";
   return buffer.str();
 }
 
@@ -1411,6 +1412,74 @@ QSS_::initializeMatrices()
   }
 }
 
+void 
+QSS_::_fullModel()
+{
+  MMO_EquationTable equations = _model->derivatives();
+  MMO_EquationTable algebraics = _model->algebraics();
+  stringstream buffer;
+  string indent = _writer->indent(1);
+  int order = _model->annotation()->order(), idt = 0;
+  _model->varTable()->setPrintEnvironment(VST_MODEL_FUNCTIONS);
+  for(MMO_Equation eq = algebraics->begin(); !algebraics->end();
+      eq = algebraics->next())
+  {
+    Index idx = algebraics->key();
+    Index lhs = eq->lhs();
+    if(lhs.hasRange())
+    {
+      _common->addLocalVar("i0", &_modelFullVars, lhs.dimension());
+      idt = _common->beginForLoops(lhs, WR_MODEL_FULL);
+      _common->print(
+          eq->print(_writer->indent(idt), "alg[" + lhs.print("i") + "]", "i",
+              false, algebraics, EQ_ALGEBRAIC, order), WR_MODEL_FULL);
+      _common->endForLoops(lhs, WR_MODEL_FULL);
+      _common->insertLocalVariables(&_modelFullVars, eq->getVariables());
+    }
+    else
+    {
+      _common->print(
+          eq->print(indent, "alg[" + lhs.print("i") + "]", "", false,
+              algebraics, EQ_ALGEBRAIC, order, true), WR_MODEL_FULL);
+      _common->insertLocalVariables(&_modelFullVars, eq->getVariables());
+    }
+  }
+  for(MMO_Equation eq = equations->begin(); !equations->end();
+      eq = equations->next())
+  {
+    Index idx = equations->key();
+    Index lhs = eq->lhs();
+    if(idx.hasRange())
+    {
+      _common->addLocalVar("i", &_modelFullVars, idx.dimension());
+      idt = _common->beginForLoops(idx, WR_MODEL_FULL);
+      _common->print(
+          eq->print(_writer->indent(idt), "dx[" + lhs.print("i"), "i",
+              false, algebraics, EQ_DEPENDENCIES, order), WR_MODEL_FULL);
+      _common->endForLoops(lhs, WR_MODEL_FULL);
+      _common->insertLocalVariables(&_modelFullVars, eq->getVariables());
+    }
+    else
+    {
+      _common->print(
+          eq->print(indent, "dx[" + lhs.print("i"), "", false, algebraics,
+              EQ_DEPENDENCIES, order, true), WR_MODEL_FULL);
+      _common->insertLocalVariables(&_modelFullVars, eq->getVariables());
+    }
+  }
+  _writer->print("void\nMOD_BDF_definition(double *x, double *d, double *alg, double t, double *dx)\n{");
+  _writer->beginBlock();
+  for(map<string, string>::iterator it = _modelFullVars.begin();
+      it != _modelFullVars.end(); it++)
+  {
+    _writer->print(it->second);
+  }
+  _writer->print(WR_MODEL_FULL);
+  _writer->endBlock();
+  buffer << "}" << endl;
+  _writer->print(&buffer);
+}
+
 void
 QSS_::model()
 {
@@ -2015,6 +2084,9 @@ QSS_::print(SOL_Function f)
       break;
     case SOL_MODEL:
       _print(f, _modelVars, WR_MODEL_SIMPLE, WR_MODEL_GENERIC, true);
+      if(_model->annotation()->LIQSS()) {
+        _fullModel();  
+      }
       break;
     case SOL_DEPS:
       _print(f, _modelDepsVars, WR_MODEL_DEPS_SIMPLE, WR_MODEL_DEPS_GENERIC,

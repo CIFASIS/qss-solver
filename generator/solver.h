@@ -287,7 +287,9 @@ class QSS_: public MMO_Solver_
     print(SOL_Function f);
     Graph
     graph();
-    private:
+  private:
+    void 
+    _fullModel();
     bool
     _controlIntersections(list<Intersection> lis, Intersection is);
     void
@@ -322,6 +324,7 @@ class QSS_: public MMO_Solver_
     MMO_Writer _writer;
     MMO_Engine _engine;
     map<string, string> _modelVars;
+    map<string, string> _modelFullVars;
     map<string, string> _modelDepsVars;
     map<string, string> _zcVars;
     map<string, string> _handlerPosVars;
