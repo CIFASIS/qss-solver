@@ -22,7 +22,9 @@
 
 typedef enum
 {
-  GRP_CONT, GRP_DSC, GRP_VIRT
+  GRP_CONT, 
+  GRP_DSC, 
+  GRP_VIRT
 } GRP_EdgeType;
 
 /**
