@@ -61,15 +61,80 @@ vpath %.c $(SRCDIR)
 .SUFFIXES: .c
 
 # Source files.
-COMMONSRC = $(COMMONDIR)/data.c $(COMMONDIR)/utils.c $(COMMONDIR)/tree.c $(COMMONDIR)/settings.c $(COMMONDIR)/random.c $(COMMONDIR)/simulator.c $(COMMONDIR)/integrator.c $(COMMONDIR)/engine.c $(COMMONDIR)/commands.c
+COMMONSRC = $(COMMONDIR)/data.c \
+						$(COMMONDIR)/utils.c \
+						$(COMMONDIR)/tree.c \
+						$(COMMONDIR)/settings.c \
+						$(COMMONDIR)/random.c \
+						$(COMMONDIR)/simulator.c \
+						$(COMMONDIR)/integrator.c \
+						$(COMMONDIR)/engine.c \
+						$(COMMONDIR)/commands.c
 
-SEQSRC = $(QSSDIR)/qss_graph.c $(QSSDIR)/qss_biorica.c $(QSSDIR)/qss_data.c $(QSSDIR)/qss_file.c $(QSSDIR)/qss_memory.c $(QSSDIR)/qss_log.c $(QSSDIR)/qss_sampled.c $(QSSDIR)/qss_step.c $(QSSDIR)/qss_binary_random.c $(QSSDIR)/qss_binary.c $(QSSDIR)/qss_linear.c $(QSSDIR)/qss_frw.c  $(QSSDIR)/qss_frw_imp.c $(METHODSDIR)/qss.c $(METHODSDIR)/qss2.c $(METHODSDIR)/qss3.c $(METHODSDIR)/qss4.c $(METHODSDIR)/liqss.c $(METHODSDIR)/liqss2.c $(METHODSDIR)/liqss3.c $(METHODSDIR)/cqss.c $(QSSDIR)/qss_output.c $(QSSDIR)/qss_scheduler.c $(QSSDIR)/qss_quantizer.c $(QSSDIR)/qss_integrator.c $(QSSDIR)/qss_seq_integrator.c  $(QSSDIR)/qss_simulator.c $(QSSDIR)/qss_commands.c
+SEQSRC = $(QSSDIR)/qss_graph.c \
+				 $(QSSDIR)/qss_biorica.c \
+				 $(QSSDIR)/qss_data.c \
+				 $(QSSDIR)/qss_file.c \
+				 $(QSSDIR)/qss_memory.c \
+				 $(QSSDIR)/qss_log.c \
+				 $(QSSDIR)/qss_sampled.c \
+				 $(QSSDIR)/qss_step.c \
+				 $(QSSDIR)/qss_binary_random.c \
+				 $(QSSDIR)/qss_binary.c \
+				 $(QSSDIR)/qss_linear.c \
+				 $(QSSDIR)/qss_frw.c  \
+				 $(QSSDIR)/qss_frw_imp.c \
+				 $(METHODSDIR)/qss.c \
+				 $(METHODSDIR)/qss2.c \
+				 $(METHODSDIR)/qss3.c \
+				 $(METHODSDIR)/qss4.c \
+				 $(METHODSDIR)/liqss.c \
+				 $(METHODSDIR)/liqss2.c \
+				 $(METHODSDIR)/liqss3.c \
+				 $(METHODSDIR)/cqss.c \
+				 $(QSSDIR)/qss_output.c \
+				 $(QSSDIR)/qss_scheduler.c \
+				 $(QSSDIR)/qss_quantizer.c \
+				 $(QSSDIR)/qss_integrator.c \
+				 $(QSSDIR)/qss_seq_integrator.c  \
+				 $(QSSDIR)/qss_simulator.c \
+				 $(QSSDIR)/qss_commands.c
 
-PARSRC = $(QSSDIR)/qss_file.c $(QSSDIR)/qss_memory.c $(QSSDIR)/qss_sampled.c $(QSSDIR)/qss_step.c $(QSSDIR)/qss_binary.c $(QSSDIR)/qss_linear.c $(QSSDIR)/qss_frw_imp.c $(METHODSDIR)/qss.c $(METHODSDIR)/cqss.c $(METHODSDIR)/qss2.c $(METHODSDIR)/qss3.c $(METHODSDIR)/qss4.c $(METHODSDIR)/liqss.c $(METHODSDIR)/liqss2.c $(METHODSDIR)/liqss3.c $(METHODSDIR)/cqss.c $(QSSDIR)/qss_dt.c $(QSSDIR)/qss_lp.c $(QSSDIR)/qss_partition.c  $(QSSDIR)/qss_parallel.c $(QSSDIR)/qss_sim_steps.c $(QSSDIR)/qss_par_integrator.c
+PARSRC = $(QSSDIR)/qss_file.c \
+				 $(QSSDIR)/qss_memory.c \
+				 $(QSSDIR)/qss_sampled.c \
+				 $(QSSDIR)/qss_step.c \
+				 $(QSSDIR)/qss_binary.c \
+				 $(QSSDIR)/qss_linear.c \
+				 $(QSSDIR)/qss_frw_imp.c \
+				 $(METHODSDIR)/qss.c \
+				 $(METHODSDIR)/cqss.c \
+				 $(METHODSDIR)/qss2.c \
+				 $(METHODSDIR)/qss3.c \
+				 $(METHODSDIR)/qss4.c \
+				 $(METHODSDIR)/liqss.c \
+				 $(METHODSDIR)/liqss2.c \
+				 $(METHODSDIR)/liqss3.c \
+				 $(METHODSDIR)/cqss.c \
+				 $(QSSDIR)/qss_dt.c \
+				 $(QSSDIR)/qss_lp.c \
+				 $(QSSDIR)/qss_partition.c  \
+				 $(QSSDIR)/qss_parallel.c \
+				 $(QSSDIR)/qss_sim_steps.c \
+				 $(QSSDIR)/qss_par_integrator.c
 
-CLASSICSRC = $(CLASSICDIR)/classic_data.c $(CLASSICDIR)/classic_integrator.c $(CLASSICDIR)/classic_cvode_integrator.c $(CLASSICDIR)/classic_ida_integrator.c $(CLASSICDIR)/classic_dopri_integrator.c $(CLASSICDIR)/classic_dassl_integrator.c $(CLASSICDIR)/classic_simulator.c $(CLASSICDIR)/classic_commands.c
+CLASSICSRC = $(CLASSICDIR)/classic_data.c \
+						 $(CLASSICDIR)/classic_integrator.c \
+						 $(CLASSICDIR)/classic_cvode_integrator.c \
+						 $(CLASSICDIR)/classic_ida_integrator.c \
+						 $(CLASSICDIR)/classic_dopri_integrator.c \
+						 $(CLASSICDIR)/classic_dassl_integrator.c \
+						 $(CLASSICDIR)/classic_simulator.c \
+						 $(CLASSICDIR)/classic_commands.c
 
-DASSLSRC = $(DASSLDIR)/daux.f $(DASSLDIR)/ddaskr.f $(DASSLDIR)/dlinpk.f
+DASSLSRC = $(DASSLDIR)/daux.f \
+					 $(DASSLDIR)/ddaskr.f \
+					 $(DASSLDIR)/dlinpk.f
 
 DOPRISRC = $(DOPRIDIR)/dopri5.c
 
