@@ -1419,19 +1419,21 @@ QSS_::_fullModel()
   MMO_EquationTable algebraics = _model->algebraics();
   stringstream buffer;
   string indent = _writer->indent(1);
-  int order = _model->annotation()->order(), idt = 0;
+  int order = _model->annotation()->order(), coeff = order + 1, idt = 0;
   _model->varTable()->setPrintEnvironment(VST_MODEL_FUNCTIONS);
+  stringstream lhsValue;
   for(MMO_Equation eq = algebraics->begin(); !algebraics->end();
       eq = algebraics->next())
   {
     Index idx = algebraics->key();
     Index lhs = eq->lhs();
+    lhsValue << "alg[(" + lhs.print("i") << "*" << coeff << ")";
     if(lhs.hasRange())
     {
       _common->addLocalVar("i0", &_modelFullVars, lhs.dimension());
       idt = _common->beginForLoops(lhs, WR_MODEL_FULL);
       _common->print(
-          eq->print(_writer->indent(idt), "alg[" + lhs.print("i") + "]", "i",
+          eq->print(_writer->indent(idt), lhsValue.str(), "i",
               false, algebraics, EQ_ALGEBRAIC, order), WR_MODEL_FULL);
       _common->endForLoops(lhs, WR_MODEL_FULL);
       _common->insertLocalVariables(&_modelFullVars, eq->getVariables());
@@ -1439,22 +1441,24 @@ QSS_::_fullModel()
     else
     {
       _common->print(
-          eq->print(indent, "alg[" + lhs.print("i") + "]", "", false,
+          eq->print(indent, lhsValue.str(), "", false,
               algebraics, EQ_ALGEBRAIC, order, true), WR_MODEL_FULL);
       _common->insertLocalVariables(&_modelFullVars, eq->getVariables());
     }
+    lhsValue.str("");
   }
   for(MMO_Equation eq = equations->begin(); !equations->end();
       eq = equations->next())
   {
     Index idx = equations->key();
     Index lhs = eq->lhs();
+    lhsValue << "dx[(" + lhs.print("i") << "*" << coeff << ")";
     if(idx.hasRange())
     {
       _common->addLocalVar("i", &_modelFullVars, idx.dimension());
       idt = _common->beginForLoops(idx, WR_MODEL_FULL);
       _common->print(
-          eq->print(_writer->indent(idt), "dx[" + lhs.print("i"), "i",
+          eq->print(_writer->indent(idt),lhsValue.str() , "i",
               false, algebraics, EQ_DEPENDENCIES, order), WR_MODEL_FULL);
       _common->endForLoops(lhs, WR_MODEL_FULL);
       _common->insertLocalVariables(&_modelFullVars, eq->getVariables());
@@ -1462,10 +1466,11 @@ QSS_::_fullModel()
     else
     {
       _common->print(
-          eq->print(indent, "dx[" + lhs.print("i"), "", false, algebraics,
+          eq->print(indent, lhsValue.str(), "", false, algebraics,
               EQ_DEPENDENCIES, order, true), WR_MODEL_FULL);
       _common->insertLocalVariables(&_modelFullVars, eq->getVariables());
     }
+    lhsValue.str("");
   }
   _writer->print("void\nMOD_BDF_definition(double *x, double *d, double *alg, double t, double *dx)\n{");
   _writer->beginBlock();
