@@ -213,7 +213,7 @@ MMO_ModelAnnotation_::MMO_ModelAnnotation_(MMO_ModelData data) :
         10000), _ZCHyst(1e-12), _order(1), _scheduler("ST_Binary"), _storeData(
         "SD_Memory"), _annotations(), _data(data), _DQMin(), _DQRel(), _weight(
         -1), _sample(), _output(), _initialTime(0), _finalTime(0), _partitionMethod(
-        ANT_Metis), _partitionMethodString("MetisCut"), _parallel(
+        ANT_Metis), _partitionMethodString("Metis"), _parallel(
         false), _dt(0), _polyCoeffs(1), _dtSynch(ANT_DT_Fixed), _dtSynchString(
         "SD_DT_Asynchronous"), _desc(), _patohSettings(), _scotchSettings(), _metisSettings(), _jacobian(
         0)
