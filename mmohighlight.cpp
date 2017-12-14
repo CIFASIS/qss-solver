@@ -100,6 +100,7 @@ MmoHighlighter::MmoHighlighter(QTextDocument *parent, h_type file) :
     << "\\bSD_DT_Fixed\\b" << "\\bSD_DT_Asynchronous\\b"
     << "\\bMetis\\b" << "\\bHMetis\\b" << "\\bDense\\b" << "\\bSparse\\b"
     << "\\bScotch\\b" << "\\bPatoh\\b" << "\\bManual\\b"
+    << "\\bMTPL\\b" << "\\bMTPL_IT\\b"
     << "\\btrue\\b" << "\\bfalse\\b" << "\\bDOPRI\\b" << "\\bDASSL\\b";
 
     foreach (const QString &pattern, qssTagsPatterns)

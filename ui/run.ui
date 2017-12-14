@@ -402,6 +402,16 @@
         </item>
         <item>
          <property name="text">
+          <string>MTPL</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>MTPL_IT</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
           <string>MANUAL</string>
          </property>
         </item>

@@ -314,8 +314,12 @@ RunDlg::_getPartitionMethodIdx(QString str)
     return 2;
   if(str.trimmed() == "Patoh")
     return 3;
-  if(str.trimmed() == "Manual")
+  if(str.trimmed() == "MTPL")
     return 4;
+  if(str.trimmed() == "MTPL_IT")
+    return 5;
+  if(str.trimmed() == "Manual")
+    return 6;
   return 0;
 }
 
@@ -351,6 +355,10 @@ RunDlg::_getPartitionMethodString(int idx)
     case 3:
       return "Patoh";
     case 4:
+      return "MTPL";
+    case 5:
+      return "MTPL_IT";
+    case 6:
       return "Manual";
   }
   return "Metis";
