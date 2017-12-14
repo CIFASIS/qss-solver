@@ -488,6 +488,14 @@ MMO_ModelAnnotation_::_getPartitionMethod(string s)
   {
     return ANT_Patoh;
   }
+  else if(!s.compare("MTPL"))
+  {
+    return ANT_MTPL;
+  }
+  else if(!s.compare("MTPL_IT"))
+  {
+    return ANT_MTPL_IT;
+  }
   else if(!s.compare("Manual"))
   {
     return ANT_Manual;
@@ -1100,6 +1108,8 @@ MMO_EvalAnnotation_::MMO_EvalAnnotation_(VarSymbolTable st) :
   _tokens.insert(pair<string, string>("HMetis", "HMetis"));
   _tokens.insert(pair<string, string>("Scotch", "Scotch"));
   _tokens.insert(pair<string, string>("Patoh", "Patoh"));
+  _tokens.insert(pair<string, string>("MTPL", "MTPL"));
+  _tokens.insert(pair<string, string>("MTPL_IT", "MTPL_IT"));
   _tokens.insert(pair<string, string>("Manual", "Manual"));
   _tokens.insert(pair<string, string>("SD_DT_Fixed", "SD_DT_Fixed"));
   _tokens.insert(pair<string, string>("Sparse", "Sparse"));

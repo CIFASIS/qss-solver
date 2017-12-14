@@ -60,6 +60,8 @@ typedef enum
   ANT_HMetis, //!< ANT_HMetis
   ANT_Scotch, //!< ANT_Scoth
   ANT_Patoh, //!< ANT_Patoh
+  ANT_MTPL, //!< ANT_MTPL
+  ANT_MTPL_IT, //!< ANT_MTPL_IT
   ANT_Manual
 } ANT_PartitionMethod;
 
