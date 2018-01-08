@@ -517,6 +517,10 @@ VarSymbolTable_::print(VarInfo vi, string idx, int offset, int order,
       }
       else
       {
+        if(vi->isOutput())
+        {
+          ret << "*";
+        }
         ret << vi->name();
         if(vi->isArray())
         {
