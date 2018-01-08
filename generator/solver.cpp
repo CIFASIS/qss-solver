@@ -571,7 +571,7 @@ QSS_::_eventDeps(MMO_Event e, Index index, MMO_EventTable evt, DEP_Type type,
             string fi = Util::getInstance()->newVarName("tmp",
                 _model->varTable());
             _common->addLocalVar(fi, &_initializeVars);
-            string sIdx = e->index().print(fi);
+            string sIdx = e->index().print(fi, 0, false);
             string hhIdx = ev->index().print(fi);
             buffer << "for(" << fi << " = " << is.begin() << "; " << fi
                 << " <= " << is.end() << "; " << fi << "++)";
