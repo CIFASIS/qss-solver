@@ -24,6 +24,7 @@
 #include <string>
 
 #include "../ast/ast_types.h"
+#include "../util/idx.h"
 #include "../util/md_index.h"
 #include "../util/util_types.h"
 #include "mmo_base.h"
@@ -36,7 +37,7 @@ typedef enum
 {
   HND_POSITIVE, //!< HND_POSITIVE
   HND_NEGATIVE, //!< HND_NEGATIVE
-  HND_ZERO     //!< HND_ZERO
+  HND_ZERO      //!< HND_ZERO
 } HND_Type;
 
 /**
@@ -45,10 +46,10 @@ typedef enum
  */
 typedef enum
 {
-  ZC_LT,     //!< ZC_LT
-  ZC_LE,     //!< ZC_LE
-  ZC_GT,     //!< ZC_GT
-  ZC_GE //!< ZC_GE
+  ZC_LT,    //!< ZC_LT
+  ZC_LE,    //!< ZC_LE
+  ZC_GT,    //!< ZC_GT
+  ZC_GE     //!< ZC_GE
 } ZC_REL;
 
 /**
@@ -224,5 +225,14 @@ newMMO_Event(AST_Expression cond, MMO_ModelData data);
  */
 void
 deleteMMO_Event(MMO_Event m);
+
+class EventDefinition
+{
+  public:
+    EventDefinition();
+    ~EventDefinition();
+  private:
+    map<Rgx,list<MMO_Event_> > _definition;
+};
 
 #endif  /*  MMO_EVENT_H_ */

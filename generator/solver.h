@@ -186,103 +186,103 @@ class MMO_Solver_
 /**
  *
  */
-class QSS_: public MMO_Solver_
+/*class QSS_: public MMO_Solver_
 {
-  public:
+  public:*/
     /**
      *
      * @param model
      * @param flags
      * @param writer
      */
-    QSS_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
+   // QSS_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
     /**
      *
      */
-    ~QSS_();
-    /**
-     *
-     * @return
-     */
-    string
-    initData();
+  //  ~QSS_();
     /**
      *
      * @return
      */
-    string
-    initTime();
+ //   string
+ //   initData();
     /**
      *
      * @return
      */
-    string
-    initOutput();
+ //   string
+ //   initTime();
     /**
      *
      * @return
      */
-    string
-    initModel();
+ //   string
+ //   initOutput();
     /**
      *
      * @return
      */
-    string
-    initHeader();
+ //   string
+ //   initModel();
     /**
      *
      * @return
      */
-    string
-    runCmd();
+ //   string
+ //   initHeader();
+    /**
+     *
+     * @return
+     */
+ //   string
+ //   runCmd();
     /**
      *
      * @param m
      * @return
      */
-    string
-    makefile(SOL_Makefile m);
+ //   string
+ //   makefile(SOL_Makefile m);
     /**
      *
      */
-    void
-    initializeMatrices();
+ //   void
+ //   initializeMatrices();
     /**
      *
      */
-    void
-    initialCode();
+ //   void
+ //   initialCode();
     /**
      *
      */
-    void
-    model();
+ //   void
+ //   model();
     /**
      *
      */
-    void
-    modelDeps();
+ //   void
+ //   modelDeps();
     /**
      *
      */
-    void
-    zeroCrossing();
+ //   void
+ //   zeroCrossing();
     /**
      *
      */
-    void
-    handler();
+//    void
+//    handler();
     /**
      *
      */
-    void
-    output();
+//    void
+//    output();
     /**
      *
      * @param f
      */
-    void
+/*    void
     print(SOL_Function f);
     Graph
     graph();
@@ -334,7 +334,7 @@ class QSS_: public MMO_Solver_
     Graph _graph;
     bool _parallel;
     bool _hasDD;
-};
+};*/
 /**
  *
  * @param model
@@ -342,14 +342,14 @@ class QSS_: public MMO_Solver_
  * @param writer
  * @return
  */
-QSS
-newQSS(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
+//QSS
+//newQSS(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
 /**
  *
  * @param m
  */
-void
-deleteQSS(QSS m);
+//void
+//deleteQSS(QSS m);
 
 /**
  *

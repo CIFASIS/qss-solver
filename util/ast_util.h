@@ -26,6 +26,7 @@
 #include "../ast/expression.h"
 #include "../ir/mmo_types.h"
 #include "util_types.h"
+#include "model_tables.h"
 #include "md_index.h"
 
 /**

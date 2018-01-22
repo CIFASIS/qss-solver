@@ -81,7 +81,8 @@ MMO_Generator_::generate()
             _solver = newClassic(_model, _flags, _writer);
             break;
           default:
-            _solver = newQSS(_model, _flags, _writer);
+            break;
+//            _solver = newQSS(_model, _flags, _writer);
         }
         _files = newMMO_Files(_model, _solver, _flags);
         _generateModel();

@@ -34,8 +34,13 @@
 #include "mmo_util.h"
 
 MMO_Statement_::MMO_Statement_(AST_Statement stm, MMO_ModelData data) :
-    _stm(stm), _data(data), _deps(NULL), _lhs(NULL), _initialCode(
-        data->initialCode()), _variables(), _eventLhs(_data->lhs())
+    _stm(stm), 
+    _data(data), 
+    _deps(NULL), 
+    _lhs(NULL), 
+    _initialCode(data->initialCode()), 
+    _variables(), 
+    _eventLhs(_data->lhs())
 {
   if(_initialCode)
   {
@@ -48,12 +53,22 @@ MMO_Statement_::MMO_Statement_(AST_Statement stm, MMO_ModelData data) :
 }
 
 MMO_Statement_::MMO_Statement_(AST_Statement stm) :
-    _stm(stm), _data(NULL), _deps(NULL), _lhs(NULL), _initialCode(false), _variables()
+    _stm(stm), 
+    _data(NULL), 
+    _deps(NULL), 
+    _lhs(NULL), 
+    _initialCode(false), 
+    _variables()
 {
 }
 
 MMO_Statement_::MMO_Statement_() :
-    _stm(NULL), _data(NULL), _deps(NULL), _lhs(NULL), _initialCode(false), _variables()
+    _stm(NULL), 
+    _data(NULL), 
+    _deps(NULL), 
+    _lhs(NULL), 
+    _initialCode(false), 
+    _variables()
 {
 }
 

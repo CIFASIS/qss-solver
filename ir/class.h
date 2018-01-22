@@ -28,6 +28,7 @@
 #include "../ast/ast_types.h"
 #include "../util/error.h"
 #include "../util/util_types.h"
+#include "../util/model_tables.h"
 #include "mmo_base.h"
 #include "mmo_types.h"
 

@@ -26,7 +26,8 @@
 #include <map>
 
 #include "../ast/ast_types.h"
-#include "../util/index.h"
+#include "../util/idx.h"
+#include "../util/md_index.h"
 #include "../util/util_types.h"
 #include "../util/dependencies.h"
 #include "mmo_base.h"
@@ -222,5 +223,14 @@ newMMO_Equation(MMO_Expression exp, MMO_ModelData data);
  */
 void
 deleteMMO_Equation(MMO_Equation m);
+
+class EquationDefinition
+{
+  public:
+    EquationDefinition();
+    ~EquationDefinition();
+  private:
+    map<Rgx,list<MMO_Equation_> > _definition;
+};
 
 #endif  /* MMO_EQUATION_H_ */

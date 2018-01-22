@@ -27,7 +27,11 @@
 /* MicroModelica Intermediate Representation */
 
 MMO_Settings_::MMO_Settings_(string name) :
-    _class(NULL), _classModification(false), _insertAnnotation(false), _className(), _classPrefix(), _insideFunction()
+    _class(NULL), 
+    _classModification(false), 
+    _insertAnnotation(false), 
+    _className(), _classPrefix(), 
+    _insideFunction()
 {
 }
 

@@ -35,9 +35,15 @@
 /* MicroModelica model checker interface */
 
 AST_MicroModelica_::AST_MicroModelica_(string name) :
-    _className(NULL), _fatherName(NULL), _childName(NULL), _classModification(
-        false),
-        _elseWhen(false), _inWhen(false), _childPrefix(), _classPrefix(), _fatherPrefix()
+    _className(NULL), 
+    _fatherName(NULL), 
+    _childName(NULL), 
+    _classModification(false),
+    _elseWhen(false), 
+    _inWhen(false), 
+    _childPrefix(), 
+    _classPrefix(), 
+    _fatherPrefix()
 {
 }
 

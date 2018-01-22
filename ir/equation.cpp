@@ -36,8 +36,15 @@
 #include "mmo_util.h"
 
 MMO_Equation_::MMO_Equation_(AST_Expression exp, MMO_ModelData data) :
-    _data(data), _end(data->end()), _init(data->begin()), _lhs(_data->lhs()), _variables(), _arguments(
-    NULL), _code(), _equation(), _algebraics()
+    _data(data), 
+    _end(data->end()), 
+    _init(data->begin()), 
+    _lhs(_data->lhs()), 
+    _variables(), 
+    _arguments(NULL), 
+    _code(), 
+    _equation(), 
+    _algebraics()
 {
   _exp[0] = newMMO_Expression(exp, data);
   _coeffs = data->annotation()->polyCoeffs();
@@ -68,8 +75,15 @@ MMO_Equation_::MMO_Equation_(AST_Expression exp, MMO_ModelData data) :
 }
 
 MMO_Equation_::MMO_Equation_(MMO_Expression exp, MMO_ModelData data) :
-    _data(data), _end(data->end()), _init(data->begin()), _lhs(data->lhs()), _variables(), _arguments(
-    NULL), _code(), _equation(), _algebraics()
+    _data(data), 
+    _end(data->end()), 
+    _init(data->begin()), 
+    _lhs(data->lhs()), 
+    _variables(), 
+    _arguments(NULL), 
+    _code(), 
+    _equation(), 
+    _algebraics()
 {
   _exp[0] = exp;
   _coeffs = data->annotation()->order() + 1;

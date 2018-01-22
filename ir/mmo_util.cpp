@@ -11,11 +11,22 @@
 /* MMO_ModelData class */
 
 MMO_ModelData_::MMO_ModelData_() :
-    _symbols(NULL), _algebraics(NULL), _functions(NULL), _externalFunctions(
-    NULL), _packages(NULL), _initialCode(false), _generateDerivatives(true), _range(), _lhs(), _whenStatement(
-        false), _weight(
-        -1), _calledFunctions(), _calculateAlgebraics(false), _arguments(NULL), _annotation(
-    NULL), _disableSymDiff(false)
+    _symbols(NULL), 
+    _algebraics(NULL), 
+    _functions(NULL), 
+    _externalFunctions(NULL), 
+    _packages(NULL), 
+    _initialCode(false), 
+    _generateDerivatives(true), 
+    _range(), 
+    _lhs(), 
+    _whenStatement(false), 
+    _weight(-1), 
+    _calledFunctions(), 
+    _calculateAlgebraics(false), 
+    _arguments(NULL), 
+    _annotation(NULL), 
+    _disableSymDiff(false)
 {
 }
 

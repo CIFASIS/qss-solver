@@ -37,8 +37,15 @@
 /* MMO_Expression class. */
 
 MMO_Expression_::MMO_Expression_(AST_Expression exp, MMO_ModelData data) :
-    _exp(NULL), _data(data), _str(), _equationIndex(0), _expressionOrder(2), _deps(
-    NULL), _gen(NULL), _printer(NULL), _ri(NULL)
+    _exp(NULL), 
+    _data(data), 
+    _str(), 
+    _equationIndex(0), 
+    _expressionOrder(2), 
+    _deps(NULL), 
+    _gen(NULL), 
+    _printer(NULL), 
+    _ri(NULL)
 {
   _ri = newMMO_ReplaceInterval(_data->symbols());
   if(_data->hasAnnotation())
@@ -77,14 +84,28 @@ MMO_Expression_::MMO_Expression_(AST_Expression exp, MMO_ModelData data) :
 }
 
 MMO_Expression_::MMO_Expression_(AST_Expression exp) :
-    _exp(exp), _data(NULL), _str(), _equationIndex(0), _expressionOrder(0), _deps(
-    NULL), _gen(NULL), _printer(NULL), _ri(NULL)
+    _exp(exp), 
+    _data(NULL), 
+    _str(), 
+    _equationIndex(0), 
+    _expressionOrder(0), 
+    _deps(NULL), 
+    _gen(NULL), 
+    _printer(NULL), 
+    _ri(NULL)
 {
 }
 
 MMO_Expression_::MMO_Expression_() :
-    _exp(NULL), _data(NULL), _str(), _equationIndex(0), _expressionOrder(0), _deps(
-    NULL), _gen(NULL), _printer(NULL), _ri(NULL)
+    _exp(NULL), 
+    _data(NULL), 
+    _str(), 
+    _equationIndex(0), 
+    _expressionOrder(0), 
+    _deps(NULL), 
+    _gen(NULL), 
+    _printer(NULL), 
+    _ri(NULL)
 {
 }
 

@@ -35,7 +35,7 @@
 
 /* QSS Solver class. */
 
-QSS_::QSS_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer) :
+/*QSS_::QSS_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer) :
     _flags(flags), _writer(writer), _modelVars(), _modelDepsVars(), _zcVars(), _handlerPosVars(), _handlerNegVars(), _outputVars(), _initializeVars(), _freeVars(), _model(
         model), _name(model->name()), _graph(model->states(), model->evs()), _parallel(
         flags->graph()), _hasDD(false)
@@ -180,7 +180,7 @@ QSS_::makefile(SOL_Makefile m)
 {
   return _engine->makefile(m);
 }
-
+*/
 /*! @brief Compares two variable indexes and return the intersection (if any) between them.
  *
  * 	@param idx: Equation index. \f$ a_e*i+b_e \f$ where \f$ i \in [A_e,B_e] \f$
@@ -195,7 +195,7 @@ QSS_::makefile(SOL_Makefile m)
  * 		- IDX_EQUAL: in this case we have \f$ a_ed = a_ied = 0 \wedge b_ed = b_ied \f$, and \f$ A_e = B_e  \vee A_e \neq B_e \f$.
  */
 
-bool
+/*bool
 QSS_::_indexDependencies(Index idx, Index *dIdx, Index infIdx, Index *infDIdx,
     map<int, int> *simpleMatrixDeps, WR_Section alloc, WR_Section init,
     string allocStr, string initStr, string counter, Intersection intersection,
@@ -622,7 +622,7 @@ QSS_::_eventDeps(MMO_Event e, Index index, MMO_EventTable evt, DEP_Type type,
          assignments);
          }
          }*/
-      }
+/*      }
     }
   }
   for(map<int, int>::iterator it = simpleDDDependencies.begin();
@@ -772,7 +772,7 @@ QSS_::_controlIntersections(list<Intersection> lis, Intersection is)
     }
   }
   return false;
-}
+}*/
 
 /*! \brief Initialize model matrices.
  *
@@ -784,7 +784,7 @@ QSS_::_controlIntersections(list<Intersection> lis, Intersection is)
  * 			+# Generate the transpose matrix SD. Flatten algebraic dependencies.
  *
  */
-
+/*
 void
 QSS_::initializeMatrices()
 {
@@ -2089,7 +2089,7 @@ void
 deleteQSS(QSS m)
 {
   delete m;
-}
+}*/
 
 /* Classic Solver class. */
 

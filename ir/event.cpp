@@ -28,9 +28,15 @@
 #include "statement.h"
 
 MMO_Event_::MMO_Event_(AST_Expression cond, MMO_ModelData data) :
-    _positiveHandlerStatements(), _negativeHandlerStatements(),
-        _init(0), _end(0), _handler(HND_ZERO), _handlerType(HND_ZERO), _data(
-            data), _weight(-1), _zcRelation(ZC_GT)
+    _positiveHandlerStatements(), 
+    _negativeHandlerStatements(),
+    _init(0), 
+    _end(0), 
+    _handler(HND_ZERO), 
+    _handlerType(HND_ZERO), 
+    _data(data), 
+    _weight(-1), 
+    _zcRelation(ZC_GT)
 {
   MMO_ConvertCondition_ cc(_data);
   _data->setCalculateAlgegraics(true);

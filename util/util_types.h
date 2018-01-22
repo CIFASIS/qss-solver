@@ -39,10 +39,6 @@ DEFINE_TYPE(VarInfo);
 /**
  *
  */
-DEFINE_TYPE(MMO_EquationTable);
-/**
- *
- */
 DEFINE_TYPE(MMO_EventTable);
 /**
  *

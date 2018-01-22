@@ -38,10 +38,21 @@
 /* MicroModelica Intermediate Representation */
 
 MMO_MicroModelicaIR_::MMO_MicroModelicaIR_(string name) :
-    _class(NULL), _father(NULL), _child(NULL), _classModification(false),
-        _compositionElement(false), _storedDefinition(NULL), _funcs(1), _childPrefix(), _fatherName(),
-        _childName(), _initialCode(), _className(), _fatherPrefix(), _classPrefix(), _elseWhen(
-            false)
+    _class(NULL), 
+    _father(NULL), 
+    _child(NULL), 
+    _classModification(false),
+    _compositionElement(false), 
+    _storedDefinition(NULL), 
+    _funcs(1), 
+    _childPrefix(), 
+    _fatherName(),
+    _childName(), 
+    _initialCode(), 
+    _className(), 
+    _fatherPrefix(), 
+    _classPrefix(), 
+    _elseWhen(false)
 {
   _externalFunctions = newMMO_FunctionTable();
 }

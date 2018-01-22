@@ -100,10 +100,27 @@ MMO_Class_::print()
 /* MMO_Model class. */
 
 MMO_Model_::MMO_Model_(string name) :
-    _initialCode(), _states(0), _discretes(0), _evs(0), _algs(0), _parameters(
-        0), _funcs(), _inputs(0), _output(0), _stateEquations(0), _algebraicEquations(
-        0), _externalFunctions(
-    NULL), _name(name), _eqs(), _stms(), _outputIndexes(), _includeDirectories(), _libraryDirectories(), _linkLibraries(), _symbolicDerivatives(), _algebraicOffset(), _algebraicCurrentOffset()
+    _initialCode(), 
+    _states(0), 
+    _discretes(0), _evs(0), 
+    _algs(0), 
+    _parameters(0), 
+    _funcs(), 
+    _inputs(0), 
+    _output(0), 
+    _stateEquations(0), 
+    _algebraicEquations(0), 
+    _externalFunctions(NULL), 
+    _name(name), 
+    _eqs(), 
+    _stms(), 
+    _outputIndexes(), 
+    _includeDirectories(), 
+    _libraryDirectories(), 
+    _linkLibraries(), 
+    _symbolicDerivatives(), 
+    _algebraicOffset(), 
+    _algebraicCurrentOffset()
 {
   _types = newTypeSymbolTable();
   _declarations = newVarSymbolTable();
@@ -896,7 +913,7 @@ MMO_Model_::_equationTraverse(void
   {
     Range range;
     AST_Equation eq = current_element(it);
-    if(eq->equationType() == EQEQUALITY)
+        if(eq->equationType() == EQEQUALITY)
     {
       (this->*tr)(eq, range);
     }
@@ -1559,8 +1576,13 @@ deleteMMO_Model(MMO_Model m)
 /* MMO_Function class */
 
 MMO_Function_::MMO_Function_(string name) :
-    _name(name), _externalFuncs(0), _outputs(0), _outputName(), _externalFunctions(
-    NULL), _prefix("__"), _arguments()
+    _name(name), 
+    _externalFuncs(0), 
+    _outputs(0), 
+    _outputName(), 
+    _externalFunctions(NULL), 
+    _prefix("__"), 
+    _arguments()
 {
   _types = newTypeSymbolTable();
   _annotations = newMMO_FunctionAnnotation();
@@ -1914,7 +1936,9 @@ deleteMMO_Function(MMO_Function m)
 /* MMO_Package class. */
 
 MMO_Package_::MMO_Package_(string name) :
-    _name(name), _funcs(0), _packages()
+    _name(name), 
+    _funcs(0), 
+    _packages()
 {
   _imports = newMMO_ImportTable();
   _functions = newMMO_FunctionTable();
