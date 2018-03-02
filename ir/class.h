@@ -704,6 +704,8 @@ class MMO_Function_: public MMO_Class_
     setFunctions(MMO_FunctionTable functions,
         MMO_FunctionTable externalFunctions,
         MMO_SymbolRefTable calledFunctions);
+    int 
+    outputs();
     private:
     string _name;
     VarSymbolTable _declarations;

@@ -1899,6 +1899,11 @@ MMO_Function_::returnStatement()
   return "";
 }
 
+int
+MMO_Function_::outputs()
+{
+  return _outputs;
+}
 MMO_Function
 newMMO_Function(string name)
 {
