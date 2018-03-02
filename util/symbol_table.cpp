@@ -511,13 +511,15 @@ VarSymbolTable_::print(VarInfo vi, string idx, int offset, int order,
       }
       break;
     case VST_FUNCTION:
+    case VST_FUNCTION_SO:
       if(vi->isConstant())
       {
         ret << vi->value();
       }
       else
       {
-        if(vi->isOutput())
+        if(vi->isOutput()
+            && _vste == VST_FUNCTION)
         {
           ret << "*";
         }
