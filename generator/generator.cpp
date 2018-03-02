@@ -359,6 +359,10 @@ MMO_Generator_::_generateFunctionCode(MMO_Function f)
   MMO_StatementTable stt = f->statements();
   VarSymbolTable vt = f->varTable();
   vt->setPrintEnvironment(VST_FUNCTION);
+  if(f->outputs() == 1)
+  {
+    vt->setPrintEnvironment(VST_FUNCTION_SO);
+  }
   for(MMO_Statement st = stt->begin(); !stt->end(); st = stt->next())
   {
     list<string> sts = st->print(indent);
