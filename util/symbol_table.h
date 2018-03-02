@@ -544,6 +544,7 @@ typedef enum
   VST_MODEL_OUTPUT_FUNCTIONS,        //!< VST_MODEL_OUTPUT_FUNCTIONS
   VST_CLASSIC_MODEL_FUNCTIONS,        //!< VST_CLASSIC_MODEL_FUNCTIONS
   VST_FUNCTION,               //!< VST_FUNCTION
+  VST_FUNCTION_SO,               //!< VST_FUNCTION_SO
   VST_OUTPUT                  //!< VST_OUTPUT
 } VST_Environment;
 
