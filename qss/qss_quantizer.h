@@ -118,6 +118,22 @@ struct QA_quantizerState_
     double **U1;
     double *tx;
     double cont[10];
+    
+    double *qj;
+    double **U2;
+    int *nSZ;
+    int **SZ;
+		int **S;
+		int infs;
+		double h;
+		double hmin;
+		int achicar;
+		int agrandar;
+		double *xprev;
+		bool *BE;
+		int nBE;
+		int *BES;
+		double *jac;
 };
 /**
  *

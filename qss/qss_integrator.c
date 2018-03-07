@@ -430,6 +430,11 @@ QSS_SEQ_initialize(SIM_simulator simulate)
     SD_print (simulationLog, "Initialize solver...");
   }
 #endif
+  //qssModel->jac(qssData->jac);
+  //printf("Llama a jac\n");
+  if(qssModel->jac != NULL)
+		qssModel->jac(x,qssData->d,qssData->alg,t,qssData->jac);
+  //printf("Vuelve de jac\n");
   simulator->quantizer = QA_Quantizer(qssData, qssTime);
   quantizer = simulator->quantizer;
 #ifdef DEBUG
