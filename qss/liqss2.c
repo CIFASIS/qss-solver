@@ -82,8 +82,6 @@ LIQSS2_recomputeNextTime(QA_quantizer quantizer, int var, double t,
 #endif
 {
   int cf0 = var * 3, cf1 = cf0 + 1, cf2 = cf1 + 1;
-  double diffxq[3];
-  double dt1, nT_prev;
   double *a = quantizer->state->a;
   double *u0 = quantizer->state->u0;
   double *u1 = quantizer->state->u1;
@@ -92,7 +90,6 @@ LIQSS2_recomputeNextTime(QA_quantizer quantizer, int var, double t,
   double diffQ, timeaux;
   double coeff[3];
   double *tu = quantizer->state->tx;
-  double aold = a[var];
   int *flag2 = quantizer->state->flag2;
 
   if(self)
@@ -121,7 +118,8 @@ LIQSS2_recomputeNextTime(QA_quantizer quantizer, int var, double t,
     if((quantizer->state->lSimTime->type == ST_Event) && (a[var] < 0)
         && (quantizer->state->nSD[var] > 0))
     { //we check if var is involved in the zero crossing function that produced the current event
-      for(int i = 0; i < quantizer->state->nSD[var]; i++)
+      int i;
+      for(i = 0; i < quantizer->state->nSD[var]; i++)
       {
         if(quantizer->state->SD[var][i] == quantizer->state->lSimTime->minIndex)
         {
