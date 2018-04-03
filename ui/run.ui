@@ -216,6 +216,23 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="11" column="2">
+       <widget class="QLabel" name="_generateArchLbl">
+        <property name="text">
+         <string>Generate Arch</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="3">
+       <widget class="QLineEdit" name="_imbalance">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>0.01</string>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="2">
        <widget class="QLabel" name="_derDeltaLbl">
         <property name="text">
@@ -254,6 +271,9 @@
         </item>
        </widget>
       </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="_minStep"/>
+      </item>
       <item row="0" column="1">
        <widget class="QComboBox" name="_commInterval">
         <item>
@@ -280,27 +300,10 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="_minStep"/>
-      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="_commIntervalLbl">
         <property name="text">
          <string>Output Type</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="_symDiffLbl">
-        <property name="text">
-         <string>Symbolic Differentiation</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QLineEdit" name="_period">
-        <property name="enabled">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -323,10 +326,17 @@
         </item>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="_minStepLbl">
+      <item row="2" column="0">
+       <widget class="QLabel" name="_symDiffLbl">
         <property name="text">
-         <string>Minimum Step Size</string>
+         <string>Symbolic Differentiation</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="_period">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -344,8 +354,22 @@
         </item>
        </widget>
       </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="_minStepLbl">
+        <property name="text">
+         <string>Minimum Step Size</string>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="3">
        <widget class="QLineEdit" name="_derDelta"/>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="_schedulerLbl">
+        <property name="text">
+         <string>Scheduler</string>
+        </property>
+       </widget>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="_zcHystLbl">
@@ -358,13 +382,6 @@
        <widget class="QLabel" name="_parallelLbl">
         <property name="text">
          <string>Parallel</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="_schedulerLbl">
-        <property name="text">
-         <string>Scheduler</string>
         </property>
        </widget>
       </item>
@@ -479,6 +496,13 @@
         </property>
        </widget>
       </item>
+      <item row="9" column="2">
+       <widget class="QLabel" name="_semiStaticLbl">
+        <property name="text">
+         <string>Semi-static Partitioning</string>
+        </property>
+       </widget>
+      </item>
       <item row="8" column="1">
        <widget class="QLineEdit" name="_scotchSettings">
         <property name="enabled">
@@ -493,10 +517,10 @@
         </property>
        </widget>
       </item>
-      <item row="9" column="2">
-       <widget class="QLabel" name="_semiStaticLbl">
+      <item row="8" column="0">
+       <widget class="QLabel" name="_scotchSettingsLbl">
         <property name="text">
-         <string>Semi-static Partitioning</string>
+         <string>Scotch Settings</string>
         </property>
        </widget>
       </item>
@@ -504,13 +528,6 @@
        <widget class="QLabel" name="_patohSettingsLbl">
         <property name="text">
          <string>Patoh Settings</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="0">
-       <widget class="QLabel" name="_scotchSettingsLbl">
-        <property name="text">
-         <string>Scotch Settings</string>
         </property>
        </widget>
       </item>
@@ -531,6 +548,78 @@
         <item>
          <property name="text">
           <string>Dense</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="11" column="0">
+       <widget class="QLabel" name="_reorderPartitionLbl">
+        <property name="text">
+         <string>Reorder Partition</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="2">
+       <widget class="QLabel" name="_imbalanceLbl">
+        <property name="text">
+         <string>Imbalance</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="0">
+       <widget class="QLabel" name="_debugGraphLbl">
+        <property name="text">
+         <string>Debug Graph</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="1">
+       <widget class="QComboBox" name="_reorderPartitionCbx">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>FALSE</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>TRUE</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="12" column="1">
+       <widget class="QComboBox" name="_debugGraphCbx">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>FALSE</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>TRUE</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="11" column="3">
+       <widget class="QComboBox" name="_generateArchCbx">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>FALSE</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>TRUE</string>
          </property>
         </item>
        </widget>

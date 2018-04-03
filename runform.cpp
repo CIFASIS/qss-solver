@@ -109,6 +109,10 @@ RunDlg::on__parallel_currentIndexChanged(int index)
     _metisSettings->setEnabled(true);
     _patohSettings->setEnabled(true);
     _semiStaticChk->setEnabled(true);
+    _generateArchCbx->setEnabled(true);
+    _debugGraphCbx->setEnabled(true);
+    _reorderPartitionCbx->setEnabled(true);
+    _imbalance->setEnabled(true);
   }
   else
   {
@@ -120,6 +124,10 @@ RunDlg::on__parallel_currentIndexChanged(int index)
     _metisSettings->setEnabled(false);
     _patohSettings->setEnabled(false);
     _semiStaticChk->setEnabled(false);
+    _generateArchCbx->setEnabled(false);
+    _debugGraphCbx->setEnabled(false);
+    _reorderPartitionCbx->setEnabled(false);
+    _imbalance->setEnabled(false);
   }
 }
 
@@ -190,16 +198,6 @@ RunDlg::_getSolverString(int idx)
   return QString();
 }
 
-int
-RunDlg::_getSymDiffIdx(QString str)
-{
-  if(str.trimmed() == "true")
-    return 0;
-  if(str.trimmed() == "false")
-    return 1;
-  return 0;
-}
-
 QString
 RunDlg::_getJacobianString(int idx)
 {
@@ -211,19 +209,6 @@ RunDlg::_getJacobianString(int idx)
       return "Dense";
   }
   return "Sparse";
-}
-
-QString
-RunDlg::_getSymDiffString(int idx)
-{
-  switch(idx)
-  {
-    case 0:
-      return "true";
-    case 1:
-      return "false";
-  }
-  return "true";
 }
 
 int
@@ -281,7 +266,7 @@ RunDlg::_getSchedulerString(int idx)
 }
 
 int
-RunDlg::_getParallelIdx(QString str)
+RunDlg::_getComboBoolIdx(QString str)
 {
   if(str.trimmed() == "false")
     return 0;
@@ -291,7 +276,7 @@ RunDlg::_getParallelIdx(QString str)
 }
 
 QString
-RunDlg::_getParallelString(int idx)
+RunDlg::_getComboBoolString(int idx)
 {
   switch(idx)
   {

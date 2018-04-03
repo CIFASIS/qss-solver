@@ -338,16 +338,13 @@ MmomeGui::_run(QString name)
   QDir outputDir(_utils->appDir(MMOC_OUTPUT));
   outputDir.mkdir(Editor::instance()->activeBaseFileName());
   outputDir.cd(Editor::instance()->activeBaseFileName());
-  _compiler_msg->setPlainText(
-      _compiler_msg->toPlainText() + QString("\nCreating/cleaning directory: ")
+  _compiler_msg->setPlainText( _compiler_msg->toPlainText() + QString("\nCreating/cleaning directory: ")
           + outputDir.absolutePath());
   on_actionClear_Log_triggered();
   _proc = new QProcess(this);
-  connect(_proc, SIGNAL(finished(int,QProcess::ExitStatus)), this,
-      SLOT(_run_finished(int,QProcess::ExitStatus)));
+  connect(_proc, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(_run_finished(int,QProcess::ExitStatus)));
   QStringList args;
   args << name;
-
   if(Editor::instance()->isParallel())
   {
     args << QString("true");
@@ -440,8 +437,11 @@ MmomeGui::runDlgClose()
   Editor::instance()->setPatohSettings(_runDlg->patohSettings());
   Editor::instance()->setScotchSettings(_runDlg->scotchSettings());
   Editor::instance()->setMetisSettings(_runDlg->metisSettings());
-  Editor::instance()->setSemiStaticPartitioning(
-      _runDlg->semiStaticPartitioning());
+  Editor::instance()->setGenerateArch(_runDlg->generateArch());
+  Editor::instance()->setDebugGraph(_runDlg->debugGraph());
+  Editor::instance()->setReorderPartition(_runDlg->reorderPartition());
+  Editor::instance()->setImbalance(_runDlg->imbalance());
+  Editor::instance()->setSemiStaticPartitioning( _runDlg->semiStaticPartitioning());
   Editor::instance()->setDescription(_runDlg->description());
   Editor::instance()->writeAnnotations();
   bool debugFlag = _runDlg->enableDebug();
@@ -511,8 +511,11 @@ MmomeGui::on_actionRun_triggered()
   _runDlg->setPatohSettings(Editor::instance()->patohSettings());
   _runDlg->setScotchSettings(Editor::instance()->scotchSettings());
   _runDlg->setMetisSettings(Editor::instance()->metisSettings());
-  _runDlg->setSemiStaticPartitioning(
-      Editor::instance()->semiStaticPartitioning());
+  _runDlg->setGenerateArch(Editor::instance()->generateArch());
+  _runDlg->setReorderPartition(Editor::instance()->reorderPartition());
+  _runDlg->setDebugGraph(Editor::instance()->debugGraph());
+  _runDlg->setImbalance(Editor::instance()->imbalance());
+  _runDlg->setSemiStaticPartitioning( Editor::instance()->semiStaticPartitioning());
   _runDlg->setDtSynch(Editor::instance()->dtSynch());
   _runDlg->setDescription(Editor::instance()->description());
   _runDlg->setJacobian(Editor::instance()->jacobian());

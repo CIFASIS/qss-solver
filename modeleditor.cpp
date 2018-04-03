@@ -26,8 +26,40 @@
 #include <codeeditor.h>
 
 ModelEditor::ModelEditor(QWidget *parent, QString name) :
-    QDialog(parent), _annotations(), _defaultValues(), _startTime(), _stopTime(), _tolerance(), _absTolerance(), _solver(), _output(), _outputType(), _period(), _lps(), _description(), _minstep(), _zchyst(), _derdelta(), _scheduler(), _symdiff(), _dtSynch(), _dtPeriod(), _dtStepLog(), _dt(), _hl(
-    NULL)
+    QDialog(parent), 
+    _annotations(), 
+    _defaultValues(), 
+    _startTime(), 
+    _stopTime(), 
+    _tolerance(), 
+    _absTolerance(), 
+    _solver(), 
+    _output(), 
+    _outputType(), 
+    _period(), 
+    _lps(), 
+    _description(), 
+    _minstep(), 
+    _zchyst(), 
+    _derdelta(), 
+    _scheduler(), 
+    _symdiff(), 
+    _dtSynch(), 
+    _dtPeriod(), 
+    _dtStepLog(), 
+    _dt(), 
+    _parallel(),
+    _partitionMethod(),
+    _jacobian(),
+    _patohSettings(),
+    _scotchSettings(),
+    _metisSettings(),
+    _generateArch(),
+    _debugGraph(),
+    _reorderPartition(),
+    _imbalance(),
+    _semiStaticPartitioning(false), 
+    _hl(NULL)
 {
   setupUi(this);
   _defaultValues["MMO_Description"] = "";
@@ -51,14 +83,16 @@ ModelEditor::ModelEditor(QWidget *parent, QString name) :
   _defaultValues["MMO_Parallel"] = "false";
   _defaultValues["MMO_PartitionMethod"] = "MetisCut";
   _defaultValues["MMO_DT_Min"] = "0";
+  _defaultValues["MMO_Imbalance"] = "0.01";
+  _defaultValues["MMO_ReorderPartition"] = "false";
+  _defaultValues["MMO_DebugGraph"] = "false";
+  _defaultValues["MMO_GenerateArch"] = "false";
   _model_editor_tab = new QTabWidget(this);
   _model_editor_tab->setTabsClosable(true);
   _models = new QList<ModelInfo>();
   _utils = new Utils();
-  connect(_model_editor_tab, SIGNAL(tabCloseRequested(int)), this,
-      SLOT(on__model_editor_tab_tabCloseRequested(int)));
-  connect(_model_editor_tab, SIGNAL(currentChanged(int)), this,
-      SLOT(on__model_editor_tab_currentChanged(int)));
+  connect(_model_editor_tab, SIGNAL(tabCloseRequested(int)), this, SLOT(on__model_editor_tab_tabCloseRequested(int)));
+  connect(_model_editor_tab, SIGNAL(currentChanged(int)), this, SLOT(on__model_editor_tab_currentChanged(int)));
   _model_editor_hl->addWidget(_model_editor_tab);
   editModel(name);
 }
@@ -80,10 +114,8 @@ ModelEditor::editModel(QString name)
   CodeEditor *_textEditor = new CodeEditor(this);
   QString _mname(tr("New Model"));
   QFile file(name);
-  QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini",
-      QSettings::IniFormat);
-  int _tab = settings.value("Editor/tab",
-      "Value not found in file qss-solver.ini").toInt();
+  QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini", QSettings::IniFormat);
+  int _tab = settings.value("Editor/tab", "Value not found in file qss-solver.ini").toInt();
   _textEditor->setTabStopWidth(_tab);
   if(!file.fileName().isEmpty())
   {
@@ -116,24 +148,20 @@ ModelEditor::editModel(QString name)
       SLOT(on__textEditor_textChanged(bool)));
   setWindowTitle(_mname);
   _models->append(ModelInfo(name));
-  _model_editor_tab->setCurrentIndex(
-      _model_editor_tab->addTab(_textEditor, _mname));
+  _model_editor_tab->setCurrentIndex(_model_editor_tab->addTab(_textEditor, _mname));
 }
 
 void
 ModelEditor::keyReleaseEvent(QKeyEvent * event)
 {
+  int ci = _model_editor_tab->currentIndex();
   if(event->nativeScanCode() == 117 && (event->nativeModifiers() & 4))
   {
-    _model_editor_tab->setCurrentIndex(
-        (_model_editor_tab->currentIndex() + 1) % _model_editor_tab->count());
+    _model_editor_tab->setCurrentIndex((ci + 1) % _model_editor_tab->count());
   }
   else if(event->nativeScanCode() == 112 && (event->nativeModifiers() & 4))
   {
-    _model_editor_tab->setCurrentIndex(
-        _model_editor_tab->currentIndex() > 0 ?
-            _model_editor_tab->currentIndex() - 1 :
-            _model_editor_tab->count() - 1);
+    _model_editor_tab->setCurrentIndex(ci > 0 ?  ci - 1 : _model_editor_tab->count() - 1);
   }
   else
   {
@@ -216,8 +244,7 @@ ModelEditor::on__textEditor_textChanged(bool changed)
       ModelInfo mi = _models->value(idx);
       mi.setDirty(true);
       _models->replace(idx, mi);
-      _model_editor_tab->setTabText(idx,
-          _model_editor_tab->tabText(idx) + QString("*"));
+      _model_editor_tab->setTabText(idx,_model_editor_tab->tabText(idx) + QString("*"));
     }
   }
 }
@@ -275,8 +302,7 @@ ModelEditor::_delete(int tab)
   QString name = baseFileName(tab);
   QString ext = fullFileName(tab);
   _models->removeAt(tab);
-  QTextEdit *_textEditor = qobject_cast<QTextEdit*>(
-      _model_editor_tab->widget(tab));
+  QTextEdit *_textEditor = qobject_cast<QTextEdit*>(_model_editor_tab->widget(tab));
   _model_editor_tab->removeTab(tab);
   delete _textEditor;
   emit done(name, ext);
@@ -1029,6 +1055,14 @@ ModelEditor::writeAnnotations()
     _setAnnotations("MMO_MetisSettings", _metisSettings, true);
   if(!_jacobian.isEmpty())
     _setAnnotations("Jacobian", _jacobian, true);
+  if(!_imbalance.isEmpty())
+    _setAnnotations("MMO_Imbalance", _imbalance, true);
+  if(!_debugGraph.isEmpty())
+    _setAnnotations("MMO_DebugGraph", _debugGraph, true);
+  if(!_reorderPartition.isEmpty())
+    _setAnnotations("MMO_ReorderPartition", _reorderPartition, true);
+  if(!_generateArch.isEmpty())
+    _setAnnotations("MMO_GenerateArch", _generateArch, true);
   _setAnnotations("StartTime", _startTime, true);
   _setAnnotations("StopTime", _stopTime, true);
   _setAnnotations("Tolerance", _tolerance, true);
@@ -1128,4 +1162,28 @@ bool
 ModelEditor::semiStaticPartitioning()
 {
   return _semiStaticPartitioning;
+}
+
+QString
+ModelEditor::imbalance()
+{
+  return _getAnnotations("MMO_Imbalance");
+}
+
+QString
+ModelEditor::generateArch()
+{
+  return _getAnnotations("MMO_GenerateArch");
+}
+
+QString
+ModelEditor::debugGraph()
+{
+  return _getAnnotations("MMO_DebugGraph");
+}
+
+QString
+ModelEditor::reorderPartition()
+{
+  return _getAnnotations("MMO_ReorderPartition");
 }

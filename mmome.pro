@@ -1,6 +1,6 @@
 TEMPLATES = app
 
-CONFIG += release
+CONFIG += release 
 UI_DIR=./ui
 
 message(Qt version: $$QT_VERSION)

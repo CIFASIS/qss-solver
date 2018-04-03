@@ -382,8 +382,7 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     setZcHyst(QString str)
     {
       _zchyst = _findValue("MMO_ZCHyst", str);
-    }
-    ;
+    };
     /**
      *
      * @param str
@@ -392,8 +391,7 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     setLPS(QString str)
     {
       _lps = _findValue("MMO_LPS", str);
-    }
-    ;
+    };
     /**
      *
      */
@@ -429,8 +427,7 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     isParallel()
     {
       return _parallel.compare("true") == 0;
-    }
-    ;
+    };
     /**
      *
      * @param str
@@ -439,8 +436,7 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     setPartitionMethod(QString str)
     {
       _partitionMethod = _findValue("MMO_PartitionMethod", str);
-    }
-    ;
+    };
     /**
      *
      * @param str
@@ -449,15 +445,12 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     setJacobian(QString str)
     {
       _jacobian = _findValue("Jacobian", str);
-    }
-    ;
+    };
     QString
     jacobian()
     {
       return _jacobian;
-    }
-    ;
-
+    };
     /**
      *
      * @param str
@@ -466,8 +459,7 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     setDT(QString str)
     {
       _dt = _findValue("MMO_DT_Min", str);
-    }
-    ;
+    };
     /**
      *
      * @param str
@@ -476,8 +468,7 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     setDtSynch(QString str)
     {
       _dtSynch = _findValue("MMO_DT_Synch", str);
-    }
-    ;
+    };
     /**
      *
      * @return
@@ -486,8 +477,7 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     dtSynch()
     {
       return _getAnnotations("MMO_DT_Synch");
-    }
-    ;
+    };
     /**
      *
      * @param str
@@ -496,14 +486,12 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     setDtPeriod(QString str)
     {
       _dtPeriod = _findValue("MMO_DT_SynchPeriod", str);
-    }
-    ;
+    };
     QString
     dtPeriod()
     {
       return _getAnnotations("MMO_DT_SynchPeriod");
-    }
-    ;
+    };
     /**
      *
      * @param str
@@ -512,8 +500,7 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     setDtStepLog(QString str)
     {
       _dtStepLog = _findValue("MMO_DT_StepLog", str);
-    }
-    ;
+    };
     /**
      *
      * @return
@@ -522,26 +509,22 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     dtStepLog()
     {
       return _getAnnotations("MMO_DT_StepLog");
-    }
-    ;
+    };
     void
     setPatohSettings(QString str)
     {
       _patohSettings = str;
-    }
-    ;
+    };
     void
     setScotchSettings(QString str)
     {
       _scotchSettings = str;
-    }
-    ;
+    };
     void
     setMetisSettings(QString str)
     {
       _metisSettings = str;
-    }
-    ;
+    };
     QString
     patohSettings();
     QString
@@ -552,12 +535,71 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     setSemiStaticPartitioning(bool st);
     bool
     semiStaticPartitioning();
+    /**
+     *
+     * @param str
+     */
+    void
+    setImbalance(QString str)
+    {
+      _imbalance = _findValue("MMO_Imbalance", str);
+    };
+    /**
+     *
+     * @return
+     */
+    QString
+    imbalance();
+    /**
+     *
+     * @param str
+     */
+    void
+    setReorderPartition(QString str)
+    {
+      _reorderPartition = _findValue("MMO_ReorderPartition", str);
+    };
+    /**
+     *
+     * @return
+     */
+    QString
+    reorderPartition();
+    /**
+     *
+     * @param str
+     */
+    void
+    setDebugGraph(QString str)
+    {
+      _debugGraph = _findValue("MMO_DebugGraph", str);
+    };
+    /**
+     *
+     * @return
+     */
+    QString
+    debugGraph();
+    /**
+     *
+     * @param str
+     */
+    void
+    setGenerateArch(QString str)
+    {
+      _generateArch = _findValue("MMO_GenerateArch", str);
+    };
+    /**
+     *
+     * @return
+     */
+    QString
+    generateArch();
     protected:
     void
     reject()
     {
-    }
-    ;
+    };
     public slots:
     void
     keyReleaseEvent(QKeyEvent *event);
@@ -648,6 +690,10 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     QString _patohSettings;
     QString _scotchSettings;
     QString _metisSettings;
+    QString _generateArch;
+    QString _debugGraph;
+    QString _reorderPartition;
+    QString _imbalance;
     bool _semiStaticPartitioning;
     QTabWidget *_model_editor_tab;
     QList<ModelInfo> *_models;
