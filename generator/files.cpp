@@ -318,12 +318,19 @@ MMO_Files_::settings(MMO_Annotation annotation)
   {
     buffer << "lps=" << annotation->lps() << ";";
     _writer->print(&buffer);
-    buffer << "partitionMethod=\"" << annotation->partitionMethodString()
-        << "\";";
+    buffer << "partitionMethod=\"" << annotation->partitionMethodString() << "\";";
     _writer->print(&buffer);
     buffer << "dt=" << annotation->DT() << ";";
     _writer->print(&buffer);
     buffer << "dtSynch=\"" << annotation->dtSynchString() << "\";";
+    _writer->print(&buffer);
+    buffer << "imbalance=" << annotation->imbalance() << ";";
+    _writer->print(&buffer);
+    buffer << "generateArch=" << annotation->generateArch() << ";";
+    _writer->print(&buffer);
+    buffer << "debugGraph=" << annotation->debugGraph() << ";";
+    _writer->print(&buffer);
+    buffer << "reorderPartition=" << annotation->reorderPartition() << ";";
     _writer->print(&buffer);
   }
   else
@@ -424,6 +431,18 @@ MMO_Files_::graph()
   tmp2.seekp(0);
   ofstream tmp3(tmp3FileName.c_str(), ios::out | ios::binary);
   tmp3.seekp(0);
+  ofstream pgraph;
+  ofstream pwgraph;
+  ofstream ewgraph;
+  if(_model->annotation()->debugGraph())
+  {
+    pgraph.open(fileName + ".unpack");
+    pwgraph.open(wFileName + ".unpack");
+    ewgraph.open(nwFileName + ".unpack");
+    pgraph.seekp(0);
+    pwgraph.seekp(0);
+    ewgraph.seekp(0);
+  }
   grp_t nvtxs = _model->evs() + _model->states();
   grp_t w, size = 0;
   g.connectGraphs();
@@ -431,6 +450,10 @@ MMO_Files_::graph()
   for(i = 0; i < nvtxs; i++)
   {
     size += g.graphNodeEdges(i);
+    if(_model->annotation()->debugGraph())
+    {
+      pwgraph << i << " Size: " << size << "\n";
+    }
     matrix.write((char*) &size, sizeof(grp_t));
   }
   grp_t hedges = g.hyperGraphEdges();
@@ -439,14 +462,27 @@ MMO_Files_::graph()
   for(i = 0; i < nvtxs; i++)
   {
     set<int>::iterator it;
+
+    if(_model->annotation()->debugGraph())
+    {
+      pgraph << "Node: " << i << "\n";
+    }
     for(it = graph[i].begin(); it != graph[i].end(); it++)
     {
       grp_t inf = *it;
       matrix.write((char*) &inf, sizeof(grp_t));
+      if(_model->annotation()->debugGraph())
+      {
+        pgraph << inf << "\n";
+      }
       w = g.graphEdgeWeight(i, *it);
       wMatrix.write((char*) &w, sizeof(grp_t));
     }
     w = g.nodeWeight(i);
+    if(_model->annotation()->debugGraph())
+    {
+      ewgraph << i << " Weight: " << w << "\n";
+    }
     nwMatrix.write((char*) &w, sizeof(grp_t));
   }
   size = 0;
@@ -467,6 +503,12 @@ MMO_Files_::graph()
       tmp1.write((char*) &size, sizeof(grp_t));
       tmp3.write((char*) &i, sizeof(grp_t));
     }
+  }
+  if(_model->annotation()->debugGraph())
+  {
+    pgraph.close();
+    ewgraph.close();
+    pwgraph.close();
   }
   matrix.close();
   wMatrix.close();
