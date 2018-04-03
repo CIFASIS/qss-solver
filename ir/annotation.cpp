@@ -208,74 +208,74 @@ deleteMMO_FunctionAnnotation(MMO_FunctionAnnotation m)
 }
 
 MMO_ModelAnnotation_::MMO_ModelAnnotation_(MMO_ModelData data) :
-    _solver(ANT_LIQSS2), _solverString("LIQSS2"), _commInterval("CI_Step"), _symDiff(
-        true), _minStep(1e-14), _lps(1), _derDelta(1e-8), _nodeSize(
-        10000), _ZCHyst(1e-12), _order(1), _scheduler("ST_Binary"), _storeData(
-        "SD_Memory"), _annotations(), _data(data), _DQMin(), _DQRel(), _weight(
-        -1), _sample(), _output(), _initialTime(0), _finalTime(0), _partitionMethod(
-        ANT_Metis), _partitionMethodString("Metis"), _parallel(
-        false), _dt(0), _polyCoeffs(1), _dtSynch(ANT_DT_Fixed), _dtSynchString(
-        "SD_DT_Asynchronous"), _desc(), _patohSettings(), _scotchSettings(), _metisSettings(), _jacobian(
-        0)
+    _solver(ANT_LIQSS2), 
+    _solverString("LIQSS2"), 
+    _commInterval("CI_Step"), 
+    _symDiff(true), 
+    _minStep(1e-14), 
+    _lps(1), 
+    _derDelta(1e-8), 
+    _nodeSize(10000), 
+    _ZCHyst(1e-12), 
+    _order(1), 
+    _scheduler("ST_Binary"), 
+    _storeData("SD_Memory"), 
+    _annotations(), 
+    _data(data), 
+    _DQMin(), 
+    _DQRel(), 
+    _weight(-1), 
+    _sample(), 
+    _output(), 
+    _initialTime(0), 
+    _finalTime(0), 
+    _partitionMethod(ANT_Metis), 
+    _partitionMethodString("Metis"), 
+    _parallel(false), 
+    _dt(0), 
+    _polyCoeffs(1), 
+    _dtSynch(ANT_DT_Fixed), 
+    _dtSynchString("SD_DT_Asynchronous"), 
+    _desc(), _patohSettings(), 
+    _scotchSettings(), 
+    _metisSettings(), 
+    _jacobian(0),
+    _generateArch(0),
+    _debugGraph(0),
+    _reorderPartition(0),
+    _imbalance(0.01)
 {
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("experiment", EXPERIMENT));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Description", DESC));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("Tolerance", DQREL));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("AbsTolerance", DQMIN));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Weight", WEIGHT));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Solver", SOLVER));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("StartTime", INITIAL_TIME));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("StopTime", FINAL_TIME));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_MinStep", MIN_STEP));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_ZCHyst", ZCHYST));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_DerDelta", DER_DELTA));
-  _annotations.insert(pair<string, MMO_ModelAnnotation_::type>("MMO_LPS", LPS));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_NodeSize", NODE_SIZE));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_OutputType",
-          COMM_INTERVAL));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Period", STEP_SIZE));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("Jacobian", JACOBIAN));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_SymDiff", SYM_DIFF));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Scheduler", SCHEDULER));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Output", OUTPUT));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_StoreData", STORE_DATA));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_PartitionMethod",
-          PARTITION_METHOD));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Parallel", PARALLEL));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_DT_Min", DELTAT));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_DT_Synch", DELTAT_SYNCH));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_PatohSettings",
-          PATOH_SETTINGS));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_MetisSettings",
-          METIS_SETTINGS));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_ScotchSettings",
-          SCOTCH_SETTINGS));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("experiment", EXPERIMENT));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_Description", DESC));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("Tolerance", DQREL));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("AbsTolerance", DQMIN));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_Weight", WEIGHT));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_Solver", SOLVER));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("StartTime", INITIAL_TIME));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("StopTime", FINAL_TIME));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_MinStep", MIN_STEP));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_ZCHyst", ZCHYST));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_DerDelta", DER_DELTA));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_LPS", LPS));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_NodeSize", NODE_SIZE));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_OutputType", COMM_INTERVAL));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_Period", STEP_SIZE));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("Jacobian", JACOBIAN));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_SymDiff", SYM_DIFF));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_Scheduler", SCHEDULER));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_Output", OUTPUT));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_StoreData", STORE_DATA));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_PartitionMethod", PARTITION_METHOD));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_Parallel", PARALLEL));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_DT_Min", DELTAT));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_DT_Synch", DELTAT_SYNCH));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_PatohSettings", PATOH_SETTINGS));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_MetisSettings", METIS_SETTINGS));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_ScotchSettings", SCOTCH_SETTINGS));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_Imbalance", IMBALANCE));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_DebugGraph", DEBUG_GRAPH));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_GenerateArch", GENERATE_ARCH));
+  _annotations.insert( pair<string, MMO_ModelAnnotation_::type>("MMO_ReorderPartition", REORDER_PARTITION));
   _sample.push_back(1e-2);
   _DQMin.push_back(1e-3);
   _DQRel.push_back(1e-3);
@@ -694,6 +694,18 @@ MMO_ModelAnnotation_::_processAnnotation(string annot, AST_Modification_Equal x)
     case METIS_SETTINGS:
       _processList(x->exp(), &_metisSettings);
       break;
+    case GENERATE_ARCH:
+      _generateArch = av.integer();
+      break;
+    case DEBUG_GRAPH:
+      _debugGraph = av.integer();
+      break;
+    case IMBALANCE:
+      _imbalance = av.real();
+      break;
+    case REORDER_PARTITION:
+      _reorderPartition = av.integer();
+      break;
     default:
       break;
   }
@@ -1019,6 +1031,30 @@ MMO_ModelAnnotation_::setMetisSettings(string l)
   _metisSettings.push_back(l);
 }
 
+double 
+MMO_ModelAnnotation_::imbalance()
+{
+  return _imbalance;
+}
+
+int 
+MMO_ModelAnnotation_::debugGraph()
+{
+  return _debugGraph;
+}
+
+int 
+MMO_ModelAnnotation_::generateArch()
+{
+  return _generateArch;
+}
+
+int 
+MMO_ModelAnnotation_::reorderPartition()
+{
+  return _reorderPartition;
+}
+
 MMO_ModelAnnotation
 newMMO_ModelAnnotation(MMO_ModelData data)
 {
@@ -1034,7 +1070,9 @@ deleteMMO_ModelAnnotation(MMO_ModelAnnotation m)
 /* MMO_AnnotationValue class */
 
 MMO_AnnotationValue::MMO_AnnotationValue() :
-    _integer(0), _real(0), _str("")
+    _integer(0), 
+    _real(0), 
+    _str("")
 {
 }
 
@@ -1114,8 +1152,7 @@ MMO_EvalAnnotation_::MMO_EvalAnnotation_(VarSymbolTable st) :
   _tokens.insert(pair<string, string>("SD_DT_Fixed", "SD_DT_Fixed"));
   _tokens.insert(pair<string, string>("Sparse", "Sparse"));
   _tokens.insert(pair<string, string>("Dense", "Dense"));
-  _tokens.insert(
-      pair<string, string>("SD_DT_Asynchronous", "SD_DT_Asynchronous"));
+  _tokens.insert(pair<string, string>("SD_DT_Asynchronous", "SD_DT_Asynchronous"));
 }
 
 MMO_AnnotationValue

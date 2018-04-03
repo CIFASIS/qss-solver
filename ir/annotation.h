@@ -219,6 +219,14 @@ class MMO_Annotation_: public MMO_Base_
     jacobian() = 0;
     virtual bool
     classic() = 0;
+    virtual double
+    imbalance() = 0;
+    virtual int 
+    generateArch() = 0;
+    virtual int 
+    debugGraph() = 0;
+    virtual int 
+    reorderPartition() = 0;
 };
 
 /**
@@ -305,20 +313,37 @@ class MMO_FunctionAnnotation_: public MMO_Annotation_
     void
     setJacobian(int l)
     {
-    }
-    ;
+    };
     int
     jacobian()
     {
       return 0;
-    }
-    ;
+    };
     bool
     classic()
     {
       return false;
-    }
-    ;
+    };
+    double
+    imbalance()
+    {
+      return 0;
+    };
+    int 
+    generateArch()
+    {
+      return 0;
+    };
+    virtual int 
+    debugGraph()
+    {
+      return 0;
+    };
+    int 
+    reorderPartition()
+    {
+      return 0;
+    };
     private:
     /**
      *
@@ -681,6 +706,14 @@ class MMO_ModelAnnotation_: public MMO_Annotation_
     jacobian();
     bool
     classic();
+    int
+    generateArch();
+    int  
+    debugGraph();
+    double 
+    imbalance();
+    int 
+    reorderPartition();
     private:
     /**
      *
@@ -713,6 +746,10 @@ class MMO_ModelAnnotation_: public MMO_Annotation_
       PATOH_SETTINGS, //!< PATOH_SETTINGS
       SCOTCH_SETTINGS, //!< SCOTCH_SETTINGS
       METIS_SETTINGS, //!< METIS_SETTINGS
+      GENERATE_ARCH, //!< GENERATE_ARCH
+      DEBUG_GRAPH, //!< DEBUG_GRAPH
+      IMBALANCE, //!< IMBALANCE
+      REORDER_PARTITION, //!< REORER_PARTITION
       JACOBIAN //!< JACOBIAN
     } type;
     void
@@ -764,6 +801,10 @@ class MMO_ModelAnnotation_: public MMO_Annotation_
     list<string> _scotchSettings;
     list<string> _metisSettings;
     int _jacobian;
+    int _generateArch;
+    int _debugGraph;
+    int _reorderPartition;
+    double _imbalance;
 };
 /**
  *
