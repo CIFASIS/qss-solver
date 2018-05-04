@@ -216,44 +216,34 @@ Utils::_getDir(AppDirs d)
   switch(d)
   {
     case MMOC_SOURCE:
-      path =
-          settings.value("src", "Value not found in file qss-solver.ini").toString();
+      path = settings.value("src", "Value not found in file qss-solver.ini").toString();
       break;
     case MMOC_MODELS:
-      path =
-          settings.value("models", "Value not found in file qss-solver.ini").toString();
+      path = settings.value("models", "Value not found in file qss-solver.ini").toString();
       break;
     case MMOC_OUTPUT:
-      path =
-          settings.value("output", "Value not found in file qss-solver.ini").toString();
+      path = settings.value("output", "Value not found in file qss-solver.ini").toString();
       break;
     case MMOC_BUILD:
-      path =
-          settings.value("build", "Value not found in file qss-solver.ini").toString();
+      path = settings.value("build", "Value not found in file qss-solver.ini").toString();
       break;
     case MMOC_ENGINE:
-      path =
-          settings.value("engine", "Value not found in file qss-solver.ini").toString();
+      path = settings.value("engine", "Value not found in file qss-solver.ini").toString();
       break;
     case MMOC_LIBS:
-      path =
-          settings.value("libs", "Value not found in file qss-solver.ini").toString();
+      path = settings.value("libs", "Value not found in file qss-solver.ini").toString();
       break;
     case MMOC_BIN:
-      path =
-          settings.value("bin", "Value not found in file qss-solver.ini").toString();
+      path = settings.value("bin", "Value not found in file qss-solver.ini").toString();
       break;
     case MMOC_PACKAGES:
-      path =
-          settings.value("packages", "Value not found in file qss-solver.ini").toString();
+      path = settings.value("packages", "Value not found in file qss-solver.ini").toString();
       break;
     case MMOC_LIBRARIES:
-      path =
-          settings.value("libraries", "Value not found in file qss-solver.ini").toString();
+      path = settings.value("libraries", "Value not found in file qss-solver.ini").toString();
       break;
     case MMOC_INCLUDE:
-      path =
-          settings.value("include", "Value not found in file qss-solver.ini").toString();
+      path = settings.value("include", "Value not found in file qss-solver.ini").toString();
       break;
     default:
       return QString();
