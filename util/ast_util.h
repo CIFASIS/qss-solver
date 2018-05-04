@@ -24,10 +24,9 @@
 
 #include "../ast/ast_types.h"
 #include "../ast/expression.h"
-#include "../ir/mmo_types.h"
 #include "util_types.h"
 #include "model_tables.h"
-#include "md_index.h"
+#include "index.h"
 
 /**
  *
@@ -317,47 +316,6 @@ class EqualExp
         AST_Expression_ComponentReference arrayB);
     VarSymbolTable _symbolTable;
 };
-
-/**
- *
- */
-class ControlVars_: public AST_Expression_Fold<bool>
-{
-  public:
-    /**
-     *
-     * @param st
-     * @param lst
-     */
-    ControlVars_(VarSymbolTable st, VarSymbolTable lst);
-    /**
-     *
-     */
-    ~ControlVars_();
-    private:
-    bool
-    foldTraverseElement(AST_Expression);
-    bool
-    foldTraverseElement(bool, bool, BinOpType);
-    bool
-    foldTraverseElementUMinus(AST_Expression);
-    VarSymbolTable _st;
-    VarSymbolTable _lst;
-};
-/**
- *
- * @param st
- * @param lst
- * @return
- */
-ControlVars
-newControlVars(VarSymbolTable st, VarSymbolTable lst);
-/**
- *
- * @param m
- */
-void
-deleteControlVars(ControlVars m);
 
 /**
  *

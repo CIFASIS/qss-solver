@@ -26,12 +26,10 @@
 #include <map>
 
 #include "../ast/ast_types.h"
-#include "../util/idx.h"
-#include "../util/md_index.h"
+#include "../util/index.h"
 #include "../util/util_types.h"
 #include "../util/dependencies.h"
-#include "mmo_base.h"
-#include "mmo_types.h"
+#include "expression.h"
 
 typedef enum
 {
@@ -49,7 +47,7 @@ typedef enum
 /**
  *
  */
-class MMO_Equation_: public MMO_Base_
+class MMO_Equation
 {
   public:
     /**
@@ -57,17 +55,17 @@ class MMO_Equation_: public MMO_Base_
      * @param exp
      * @param data
      */
-    MMO_Equation_(AST_Expression exp, MMO_ModelData data);
+    MMO_Equation(AST_Expression exp, MMO_ModelConfig cfg);
     /**
      *
      * @param exp
      * @param data
      */
-    MMO_Equation_(MMO_Expression exp, MMO_ModelData data);
+    MMO_Equation(MMO_Expression exp, MMO_ModelConfig cfg);
     /**
      *
      */
-    ~MMO_Equation_();
+    ~MMO_Equation();
     /**
      *
      * @return
@@ -100,18 +98,6 @@ class MMO_Equation_: public MMO_Base_
     init();
     /**
      *
-     * @return
-     */
-    Index
-    lhs();
-    /**
-     *
-     * @return
-     */
-    string
-    print();
-    /**
-     *
      * @param indent
      * @param lhs
      * @param idx
@@ -132,18 +118,6 @@ class MMO_Equation_: public MMO_Base_
             1,
         bool constant = false, int offset = 0, bool dereq = true,
         int forOffset = 0, int constantOffset = 0);
-    /**
-     *
-     * @param variable
-     * @param idx
-     * @param indent
-     * @param lhs
-     * @param variableChange
-     * @return
-     */
-    string
-    printRange(string variable, string idx, string indent, Index lhs,
-        bool variableChange = false);
     /**
      *
      * @return
@@ -167,70 +141,25 @@ class MMO_Equation_: public MMO_Base_
      */
     void
     controlAlgebraicDefinition();
-    /**
-     *
-     * @return
-     */
-    set<Index>
-    algebraicArguments();
-    MMO_Equation
-    jacobianExp(Index idx, DEP_Type type = DEP_STATE);
-    bool
-    controlAlgebraicArguments(set<Index> *algs, set<Index> eqAlgs);
     private:
     void
     _initDerivatives();
-    MMO_Expression
-    _generateChainRule(Index idx);
     void
     _generateJacobianExps();
     string
     _printArguments(int i, string idx, int offset, int cte, int order,
         int forOffset);
-    MMO_ModelData _data;
+    MMO_ModelConfig _cfg;
     int _end;
     MMO_Expression _exp[4];
     int _init;
-    Index _lhs;
     list<string> _variables;
     AST_Expression _arguments;
     list<string> _code;
     list<string> _equation;
     list<string> _algebraics;
-    set<Index> _algebraicArguments;
     map<string, MMO_Expression> _jacobianExps;
     int _coeffs;
-};
-/**
- *
- * @param exp
- * @param data
- * @return
- */
-MMO_Equation
-newMMO_Equation(AST_Expression exp, MMO_ModelData data);
-/**
- *
- * @param exp
- * @param data
- * @return
- */
-MMO_Equation
-newMMO_Equation(MMO_Expression exp, MMO_ModelData data);
-/**
- *
- * @param m
- */
-void
-deleteMMO_Equation(MMO_Equation m);
-
-class EquationDefinition
-{
-  public:
-    EquationDefinition();
-    ~EquationDefinition();
-  private:
-    map<Rgx,list<MMO_Equation_> > _definition;
 };
 
 #endif  /* MMO_EQUATION_H_ */

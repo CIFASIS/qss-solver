@@ -608,16 +608,18 @@ MMO_Model::_transformExpression(AST_Expression l, AST_Expression r)
   {
     AST_Expression_BinOp bo = r->getAsBinOp();
     if(bo->binopType() == BINOPELADD || bo->binopType() == BINOPELSUB
-      || bo->binopType() == BINOPELDIV || bo->binopType() == BINOPELMULT
-      || bo->binopType() == BINOPELEXP)
+        || bo->binopType() == BINOPELDIV || bo->binopType() == BINOPELMULT
+        || bo->binopType() == BINOPELEXP)
     {
       AST_Expression left = bo->left();
       AST_Expression right = bo->right();
       if(right->expressionType() == EXPCOMPREF
-        && left->expressionType() == EXPCOMPREF)
+          && left->expressionType() == EXPCOMPREF)
       {
-        AST_Expression_ComponentReference cleft = left->getAsComponentReference();
-        AST_Expression_ComponentReference cright = right->getAsComponentReference();
+        AST_Expression_ComponentReference cleft =
+            left->getAsComponentReference();
+        AST_Expression_ComponentReference cright =
+            right->getAsComponentReference();
         if(!cleft->hasIndexes() && !cright->hasIndexes())
         {
           VarInfo lvi = _variableLookup(cleft->name(), cleft, ER_Fatal);
@@ -625,7 +627,8 @@ MMO_Model::_transformExpression(AST_Expression l, AST_Expression r)
           if(rvi->size() != lvi->size() && rvi->isArray() && lvi->isArray())
           {
             Error::getInstance()->add(cright->lineNum(),
-            EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "Different array size in element-wise operation");
+            EM_IR | EM_VARIABLE_NOT_FOUND,
+                ER_Fatal, "Different array size in element-wise operation");
           }
           VarInfo elvi = _variableLookup(eleft->name(), eleft, ER_Fatal);
           if(lvi->isArray() > 1 && rvi->isArray())
@@ -633,13 +636,17 @@ MMO_Model::_transformExpression(AST_Expression l, AST_Expression r)
             if(rvi->size() != elvi->size())
             {
               Error::getInstance()->add(cright->lineNum(),
-              EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "Different array size in element-wise operation");
+              EM_IR | EM_VARIABLE_NOT_FOUND,
+                  ER_Fatal, "Different array size in element-wise operation");
             }
-            _declarations->insert("i", newVarInfo(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false));
+            _declarations->insert("i",
+                newVarInfo(newType_Integer(), TP_FOR, NULL, NULL,
+                    vector<int>(1, 1), false));
             stringstream buffer;
             buffer << "for i in 1:" << elvi->size() << " loop" << endl;
             buffer << prefix << eleft->name() << "[i]" << postfix << " = "
-                   << cleft->name() << "[i] " << Util::getInstance()->opString(bo->binopType());
+                << cleft->name() << "[i] "
+                << Util::getInstance()->opString(bo->binopType());
             buffer << cright->name() << "[i];" << endl;
             buffer << "end for" << endl;
             return buffer.str();
@@ -652,12 +659,14 @@ MMO_Model::_transformExpression(AST_Expression l, AST_Expression r)
               EM_IR | EM_VARIABLE_NOT_FOUND,
                   ER_Fatal, "Different array size in element-wise operation");
             }
-            _declarations->insert("i", newVarInfo(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false));
+            _declarations->insert("i",
+                newVarInfo(newType_Integer(), TP_FOR, NULL, NULL,
+                    vector<int>(1, 1), false));
             stringstream buffer;
             buffer << "for i in 1:" << elvi->size() << " loop" << endl;
             buffer << prefix << eleft->name() << "[i]" << postfix << " = "
-                   << cleft->name()
-                   << Util::getInstance()->opString(bo->binopType());
+                << cleft->name()
+                << Util::getInstance()->opString(bo->binopType());
             buffer << cright->name() << "[i];" << endl;
             buffer << "end for" << endl;
             return buffer.str();
@@ -670,12 +679,14 @@ MMO_Model::_transformExpression(AST_Expression l, AST_Expression r)
               EM_IR | EM_VARIABLE_NOT_FOUND,
                   ER_Error, "Different array size in element-wise operation");
             }
-            _declarations->insert("i", newVarInfo(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false));
+            _declarations->insert("i",
+                newVarInfo(newType_Integer(), TP_FOR, NULL, NULL,
+                    vector<int>(1, 1), false));
             stringstream buffer;
             buffer << "for i in 1:" << elvi->size() << " loop" << endl;
             buffer << prefix << eleft->name() << "[i]" << postfix << " = "
-                   << cleft->name() << "[i]"
-                   << Util::getInstance()->opString(bo->binopType());
+                << cleft->name() << "[i]"
+                << Util::getInstance()->opString(bo->binopType());
             buffer << cright->name() << ";" << endl;
             buffer << "end for" << endl;
             return buffer.str();
@@ -683,7 +694,7 @@ MMO_Model::_transformExpression(AST_Expression l, AST_Expression r)
         }
       }
       else if(left->expressionType() == EXPCOMPREF
-              && _controlScalarExpression(right))
+          && _controlScalarExpression(right))
       {
         AST_Expression_ComponentReference cleft = left->getAsComponentReference();
         if(!cleft->hasIndexes())
@@ -696,12 +707,14 @@ MMO_Model::_transformExpression(AST_Expression l, AST_Expression r)
             EM_IR | EM_VARIABLE_NOT_FOUND,
                 ER_Error, "Different array size in element-wise operation");
           }
-          _declarations->insert("i", newVarInfo(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false));
+          _declarations->insert("i",
+              newVarInfo(newType_Integer(), TP_FOR, NULL, NULL,
+                  vector<int>(1, 1), false));
           stringstream buffer;
           buffer << "for i in 1:" << elvi->size() << " loop" << endl;
           buffer << prefix << eleft->name() << "[i]" << postfix << " = "
-                 << cleft->name() << "[i]"
-                 << Util::getInstance()->opString(bo->binopType());
+              << cleft->name() << "[i]"
+              << Util::getInstance()->opString(bo->binopType());
           buffer << _scalarValue(right) << ";" << endl;
           buffer << "end for" << endl;
           return buffer.str();
@@ -709,9 +722,10 @@ MMO_Model::_transformExpression(AST_Expression l, AST_Expression r)
         }
       }
       else if(right->expressionType() == EXPCOMPREF
-              && _controlScalarExpression(left))
+          && _controlScalarExpression(left))
       {
-        AST_Expression_ComponentReference cright = right->getAsComponentReference();
+        AST_Expression_ComponentReference cright =
+            right->getAsComponentReference();
         if(!cright->hasIndexes())
         {
           VarInfo lvi = _variableLookup(cright->name(), cright, ER_Fatal);
@@ -719,14 +733,17 @@ MMO_Model::_transformExpression(AST_Expression l, AST_Expression r)
           if(lvi->size() != elvi->size())
           {
             Error::getInstance()->add(cright->lineNum(),
-            EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "Different array size in element-wise operation");
+            EM_IR | EM_VARIABLE_NOT_FOUND,
+                ER_Error, "Different array size in element-wise operation");
           }
-          _declarations->insert("i", newVarInfo(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false));
+          _declarations->insert("i",
+              newVarInfo(newType_Integer(), TP_FOR, NULL, NULL,
+                  vector<int>(1, 1), false));
           stringstream buffer;
           buffer << "for i in 1:" << elvi->size() << " loop" << endl;
           buffer << prefix << eleft->name() << "[i]" << postfix << " = "
-                 << _scalarValue(left)
-                 << Util::getInstance()->opString(bo->binopType());
+              << _scalarValue(left)
+              << Util::getInstance()->opString(bo->binopType());
           buffer << cright->name() << "[i]" << ";" << endl;
           buffer << "end for" << endl;
           return buffer.str();
@@ -758,7 +775,9 @@ MMO_Model::_variableLookup(string name, AST_Expression exp, ER_Type type)
   }
   if(rvi == NULL)
   {
-    Error::getInstance()->add(lineNum, EM_IR | EM_VARIABLE_NOT_FOUND, type, "%s", name.c_str());
+    Error::getInstance()->add(lineNum,
+    EM_IR | EM_VARIABLE_NOT_FOUND,
+        type, "%s", name.c_str());
   }
   return rvi;
 }
@@ -1021,7 +1040,8 @@ MMO_Model::_setRealVariables(AST_Equation eq, Range range)
 {
   if(range.check())
   {
-    Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong equation range.");
+    Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+        "Wrong equation range.");
   }
   AST_Equation_Equality eqe = eq->getAsEquality();
   if(eqe->left()->expressionType() == EXPDERIVATIVE)
@@ -1032,7 +1052,9 @@ MMO_Model::_setRealVariables(AST_Equation eq, Range range)
     VarInfo vi = _declarations->lookup(varName);
     if(vi == NULL)
     {
-      Error::getInstance()->add(eqe->left()->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", varName.c_str());
+      Error::getInstance()->add(eqe->left()->lineNum(),
+      EM_IR | EM_VARIABLE_NOT_FOUND,
+          ER_Error, "%s", varName.c_str());
       return;
     }
     if(!vi->hasIndex())
@@ -1051,7 +1073,9 @@ MMO_Model::_setRealVariables(AST_Equation eq, Range range)
     VarInfo vi = _declarations->lookup(varName);
     if(vi == NULL)
     {
-      Error::getInstance()->add(eqe->left()->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", varName.c_str());
+      Error::getInstance()->add(eqe->left()->lineNum(),
+      EM_IR | EM_VARIABLE_NOT_FOUND,
+          ER_Error, "%s", varName.c_str());
       return;
     }
     if(!vi->hasIndex())
@@ -1095,7 +1119,8 @@ MMO_Model::_setRealVariables(AST_Equation eq, Range range)
   }
   else
   {
-    Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Insert model equation.");
+    Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+        "Insert model equation.");
   }
 }
 
@@ -1318,7 +1343,8 @@ MMO_Model::_getFunctionInfo(MMO_Function f)
     MMO_PackageData pd = Util::getInstance()->readPackage(name);
     if(pd == NULL)
     {
-      Error::getInstance()->add(0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo", name.c_str());
+      Error::getInstance()->add(0, EM_IR | EM_CANT_OPEN_FILE, ER_Error,
+          "%s.moo", name.c_str());
       return;
     }
     list<string> tmp = pd->includeDirectories();
@@ -1344,7 +1370,9 @@ MMO_Model::insert(AST_Argument_Modification x)
 {
   if(!_annotations->insert(x))
   {
-    Error::getInstance()->add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Error, "%s", x->name()->c_str());
+    Error::getInstance()->add(x->lineNum(),
+    EM_IR | EM_ANNOTATION_NOT_FOUND,
+        ER_Error, "%s", x->name()->c_str());
   }
 }
 

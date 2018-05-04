@@ -29,82 +29,64 @@
 #include "../util/util.h"
 #include "mmo_util.h"
 
-MMO_Annotation_::MMO_Annotation_()
+MMO_Annotation::MMO_Annotation()
 {
 
 }
 
-MMO_Annotation_::~MMO_Annotation_()
+MMO_FunctionAnnotation::MMO_FunctionAnnotation() :
+    _annotations(), 
+    _derivative(), 
+    _include()
 {
-}
-
-string
-MMO_Annotation_::print()
-{
-  string ret;
-  return ret;
-}
-
-MMO_FunctionAnnotation_::MMO_FunctionAnnotation_() :
-    _annotations(), _derivative(), _include()
-{
-  _libraryDirectory = Util::getInstance()->environmentVariable(
-      "MMOC_LIBRARIES");
+  _libraryDirectory = Util::getInstance()->environmentVariable( "MMOC_LIBRARIES");
   _includeDirectory = Util::getInstance()->environmentVariable("MMOC_INCLUDE");
-  _annotations.insert(
-      pair<string, MMO_FunctionAnnotation_::type>("derivative", DERIVATIVE));
-  _annotations.insert(
-      pair<string, MMO_FunctionAnnotation_::type>("Include", INCLUDE));
-  _annotations.insert(
-      pair<string, MMO_FunctionAnnotation_::type>("IncludeDirectory",
-          INCLUDE_DIRECTORY));
-  _annotations.insert(
-      pair<string, MMO_FunctionAnnotation_::type>("Library", LIBRARY));
-  _annotations.insert(
-      pair<string, MMO_FunctionAnnotation_::type>("LibraryDirectory",
-          LIBRARY_DIRECTORY));
+  _annotations.insert( pair<string, MMO_FunctionAnnotation::type>("derivative", DERIVATIVE));
+  _annotations.insert( pair<string, MMO_FunctionAnnotation::type>("Include", INCLUDE));
+  _annotations.insert( pair<string, MMO_FunctionAnnotation::type>("IncludeDirectory", INCLUDE_DIRECTORY));
+  _annotations.insert( pair<string, MMO_FunctionAnnotation::type>("Library", LIBRARY));
+  _annotations.insert( pair<string, MMO_FunctionAnnotation::type>("LibraryDirectory", LIBRARY_DIRECTORY));
 }
 
-MMO_FunctionAnnotation_::~MMO_FunctionAnnotation_()
+MMO_FunctionAnnotation::~MMO_FunctionAnnotation()
 {
 }
 
 bool
-MMO_FunctionAnnotation_::hasDerivative()
+MMO_FunctionAnnotation::hasDerivative()
 {
   return !_derivative.empty();
 }
 
 bool
-MMO_FunctionAnnotation_::hasInclude()
+MMO_FunctionAnnotation::hasInclude()
 {
   return !_include.empty();
 }
 
 bool
-MMO_FunctionAnnotation_::hasIncludeDirectory()
+MMO_FunctionAnnotation::hasIncludeDirectory()
 {
   return !_includeDirectory.empty();
 }
 
 bool
-MMO_FunctionAnnotation_::hasLibraries()
+MMO_FunctionAnnotation::hasLibraries()
 {
   return !_libraries.empty();
 }
 
 bool
-MMO_FunctionAnnotation_::hasLibraryDirectory()
+MMO_FunctionAnnotation::hasLibraryDirectory()
 {
   return !_libraryDirectory.empty();
 }
 
 bool
-MMO_FunctionAnnotation_::insert(AST_Argument_Modification x)
+MMO_FunctionAnnotation::insert(AST_Argument_Modification x)
 {
   string annot = *(x->name());
-  map<string, MMO_FunctionAnnotation_::type>::iterator itf = _annotations.find(
-      annot);
+  map<string, MMO_FunctionAnnotation::type>::iterator itf = _annotations.find( annot);
   if(itf == _annotations.end())
   {
     return false;
@@ -166,127 +148,108 @@ MMO_FunctionAnnotation_::insert(AST_Argument_Modification x)
 }
 
 string
-MMO_FunctionAnnotation_::derivative()
+MMO_FunctionAnnotation::derivative()
 {
   return _derivative;
 }
 
 string
-MMO_FunctionAnnotation_::include()
+MMO_FunctionAnnotation::include()
 {
   return _include;
 }
 
 string
-MMO_FunctionAnnotation_::includeDirectory()
+MMO_FunctionAnnotation::includeDirectory()
 {
   return _includeDirectory;
 }
 
 list<string>
-MMO_FunctionAnnotation_::libraries()
+MMO_FunctionAnnotation::libraries()
 {
   return _libraries;
 }
 
 string
-MMO_FunctionAnnotation_::libraryDirectory()
+MMO_FunctionAnnotation::libraryDirectory()
 {
   return _libraryDirectory;
 }
 
-MMO_FunctionAnnotation
-newMMO_FunctionAnnotation()
+MMO_ModelAnnotation::MMO_ModelAnnotation(MMO_ModelConfig cfg) :
+    _solver(ANT_LIQSS2), 
+    _solverString("LIQSS2"), 
+    _commInterval("CI_Step"), 
+    _symDiff(true), 
+    _minStep(1e-14), 
+    _lps(1), 
+    _derDelta(1e-8), 
+    _nodeSize(10000), 
+    _ZCHyst(1e-12), 
+    _order(1), 
+    _scheduler("ST_Binary"), 
+    _storeData("SD_Memory"), 
+    _annotations(), 
+    _cfg(cfg), 
+    _DQMin(), 
+    _DQRel(), 
+    _weight(-1), 
+    _sample(), 
+    _output(), 
+    _initialTime(0), 
+    _finalTime(0), 
+    _partitionMethod(ANT_Metis), 
+    _partitionMethodString("Metis"), 
+    _parallel(false), 
+    _dt(0), 
+    _polyCoeffs(1), 
+    _dtSynch(ANT_DT_Fixed), 
+    _dtSynchString("SD_DT_Asynchronous"), 
+    _desc(), 
+    _patohSettings(), 
+    _scotchSettings(), 
+    _metisSettings(), 
+    _jacobian(0)
 {
-  return new MMO_FunctionAnnotation_();
-}
-
-void
-deleteMMO_FunctionAnnotation(MMO_FunctionAnnotation m)
-{
-  delete m;
-}
-
-MMO_ModelAnnotation_::MMO_ModelAnnotation_(MMO_ModelData data) :
-    _solver(ANT_LIQSS2), _solverString("LIQSS2"), _commInterval("CI_Step"), _symDiff(
-        true), _minStep(1e-14), _lps(1), _derDelta(1e-8), _nodeSize(
-        10000), _ZCHyst(1e-12), _order(1), _scheduler("ST_Binary"), _storeData(
-        "SD_Memory"), _annotations(), _data(data), _DQMin(), _DQRel(), _weight(
-        -1), _sample(), _output(), _initialTime(0), _finalTime(0), _partitionMethod(
-        ANT_Metis), _partitionMethodString("Metis"), _parallel(
-        false), _dt(0), _polyCoeffs(1), _dtSynch(ANT_DT_Fixed), _dtSynchString(
-        "SD_DT_Asynchronous"), _desc(), _patohSettings(), _scotchSettings(), _metisSettings(), _jacobian(
-        0)
-{
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("experiment", EXPERIMENT));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Description", DESC));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("Tolerance", DQREL));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("AbsTolerance", DQMIN));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Weight", WEIGHT));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Solver", SOLVER));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("StartTime", INITIAL_TIME));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("StopTime", FINAL_TIME));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_MinStep", MIN_STEP));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_ZCHyst", ZCHYST));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_DerDelta", DER_DELTA));
-  _annotations.insert(pair<string, MMO_ModelAnnotation_::type>("MMO_LPS", LPS));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_NodeSize", NODE_SIZE));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_OutputType",
-          COMM_INTERVAL));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Period", STEP_SIZE));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("Jacobian", JACOBIAN));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_SymDiff", SYM_DIFF));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Scheduler", SCHEDULER));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Output", OUTPUT));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_StoreData", STORE_DATA));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_PartitionMethod",
-          PARTITION_METHOD));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Parallel", PARALLEL));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_DT_Min", DELTAT));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_DT_Synch", DELTAT_SYNCH));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_PatohSettings",
-          PATOH_SETTINGS));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_MetisSettings",
-          METIS_SETTINGS));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_ScotchSettings",
-          SCOTCH_SETTINGS));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("experiment", EXPERIMENT));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_Description", DESC));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("Tolerance", DQREL));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("AbsTolerance", DQMIN));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_Weight", WEIGHT));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_Solver", SOLVER));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("StartTime", INITIAL_TIME));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("StopTime", FINAL_TIME));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_MinStep", MIN_STEP));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_ZCHyst", ZCHYST));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_DerDelta", DER_DELTA));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_LPS", LPS));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_NodeSize", NODE_SIZE));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_OutputType", COMM_INTERVAL));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_Period", STEP_SIZE));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("Jacobian", JACOBIAN));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_SymDiff", SYM_DIFF));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_Scheduler", SCHEDULER));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_Output", OUTPUT));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_StoreData", STORE_DATA));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_PartitionMethod", PARTITION_METHOD));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_Parallel", PARALLEL));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_DT_Min", DELTAT));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_DT_Synch", DELTAT_SYNCH));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_PatohSettings", PATOH_SETTINGS));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_MetisSettings", METIS_SETTINGS));
+  _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_ScotchSettings", SCOTCH_SETTINGS));
   _sample.push_back(1e-2);
   _DQMin.push_back(1e-3);
   _DQRel.push_back(1e-3);
 }
 
-MMO_ModelAnnotation_::~MMO_ModelAnnotation_()
+MMO_ModelAnnotation::~MMO_ModelAnnotation()
 {
 }
 
 void
-MMO_ModelAnnotation_::eventComment(AST_Comment x)
+MMO_ModelAnnotation::eventComment(AST_Comment x)
 {
   _weight = -1;
   AST_ArgumentList al = x->arguments();
@@ -302,7 +265,7 @@ MMO_ModelAnnotation_::eventComment(AST_Comment x)
 }
 
 void
-MMO_ModelAnnotation_::_processArgument(AST_Argument_Modification arg)
+MMO_ModelAnnotation::_processArgument(AST_Argument_Modification arg)
 {
   if(arg->hasModification())
   {
@@ -325,10 +288,10 @@ MMO_ModelAnnotation_::_processArgument(AST_Argument_Modification arg)
 }
 
 bool
-MMO_ModelAnnotation_::insert(AST_Argument_Modification x)
+MMO_ModelAnnotation::insert(AST_Argument_Modification x)
 {
   string annot = *(x->name());
-  map<string, MMO_ModelAnnotation_::type>::iterator itf = _annotations.find(
+  map<string, MMO_ModelAnnotation::type>::iterator itf = _annotations.find(
       annot);
   if(itf == _annotations.end())
   {
@@ -386,10 +349,10 @@ MMO_ModelAnnotation_::insert(AST_Argument_Modification x)
 }
 
 void
-MMO_ModelAnnotation_::_processList(AST_Expression x, list<double> *l)
+MMO_ModelAnnotation::_processList(AST_Expression x, list<double> *l)
 {
   l->clear();
-  MMO_EvalAnnotation_ ea(_data->symbols());
+  MMO_EvalAnnotation ea(_cfg.symbols());
   MMO_AnnotationValue av;
   if(x->expressionType() == EXPBRACE)
   {
@@ -410,7 +373,7 @@ MMO_ModelAnnotation_::_processList(AST_Expression x, list<double> *l)
 }
 
 void
-MMO_ModelAnnotation_::_processList(AST_Expression x, list<string> *l)
+MMO_ModelAnnotation::_processList(AST_Expression x, list<string> *l)
 {
   l->clear();
   MMO_EvalAnnotation_ ea(_data->symbols());
@@ -434,7 +397,7 @@ MMO_ModelAnnotation_::_processList(AST_Expression x, list<string> *l)
 }
 
 void
-MMO_ModelAnnotation_::_processExpressionList(AST_Expression x,
+MMO_ModelAnnotation::_processExpressionList(AST_Expression x,
     list<AST_Expression> *l)
 {
   if(x->expressionType() == EXPBRACE)
@@ -450,13 +413,13 @@ MMO_ModelAnnotation_::_processExpressionList(AST_Expression x,
 }
 
 ANT_PartitionMethod
-MMO_ModelAnnotation_::partitionMethod()
+MMO_ModelAnnotation::partitionMethod()
 {
   return _partitionMethod;
 }
 
 ANT_DT_Synch
-MMO_ModelAnnotation_::_getDtSynch(string s)
+MMO_ModelAnnotation::_getDtSynch(string s)
 {
   if(!s.compare("SD_DT_Fixed"))
   {
@@ -470,7 +433,7 @@ MMO_ModelAnnotation_::_getDtSynch(string s)
 }
 
 ANT_PartitionMethod
-MMO_ModelAnnotation_::_getPartitionMethod(string s)
+MMO_ModelAnnotation::_getPartitionMethod(string s)
 {
   if(!s.compare("Metis"))
   {
@@ -504,7 +467,7 @@ MMO_ModelAnnotation_::_getPartitionMethod(string s)
 }
 
 ANT_Solver
-MMO_ModelAnnotation_::_getSolver(string s)
+MMO_ModelAnnotation::_getSolver(string s)
 {
   if(!s.compare("QSS"))
   {
@@ -588,9 +551,9 @@ MMO_ModelAnnotation_::_getSolver(string s)
 }
 
 void
-MMO_ModelAnnotation_::_processAnnotation(string annot, AST_Modification_Equal x)
+MMO_ModelAnnotation::_processAnnotation(string annot, AST_Modification_Equal x)
 {
-  map<string, MMO_ModelAnnotation_::type>::iterator itf = _annotations.find(
+  map<string, MMO_ModelAnnotation::type>::iterator itf = _annotations.find(
       annot);
   if(itf == _annotations.end())
   {
@@ -598,7 +561,7 @@ MMO_ModelAnnotation_::_processAnnotation(string annot, AST_Modification_Equal x)
     EM_IR | EM_ANNOTATION_NOT_FOUND,
         ER_Warning, "%s", annot.c_str());
   }
-  MMO_EvalAnnotation_ ea(_data->symbols());
+  MMO_EvalAnnotation ea(_data->symbols());
   MMO_AnnotationValue av;
   if(itf->second != DQMIN && itf->second != DQREL && itf->second != STEP_SIZE)
   {
@@ -700,205 +663,205 @@ MMO_ModelAnnotation_::_processAnnotation(string annot, AST_Modification_Equal x)
 }
 
 void
-MMO_ModelAnnotation_::setDesc(string desc)
+MMO_ModelAnnotation::setDesc(string desc)
 {
   _desc = desc;
 }
 
 string
-MMO_ModelAnnotation_::desc()
+MMO_ModelAnnotation::desc()
 {
   return _desc;
 }
 
 void
-MMO_ModelAnnotation_::setDQMin(double dqmin)
+MMO_ModelAnnotation::setDQMin(double dqmin)
 {
   _DQMin.push_back(dqmin);
 }
 
 list<double>
-MMO_ModelAnnotation_::dqmin()
+MMO_ModelAnnotation::dqmin()
 {
   return _DQMin;
 }
 
 void
-MMO_ModelAnnotation_::setDT(double dt)
+MMO_ModelAnnotation::setDT(double dt)
 {
   _dt = dt;
 }
 
 double
-MMO_ModelAnnotation_::DT()
+MMO_ModelAnnotation::DT()
 {
   return _dt;
 }
 
 list<double>
-MMO_ModelAnnotation_::dqrel()
+MMO_ModelAnnotation::dqrel()
 {
   return _DQRel;
 }
 
 void
-MMO_ModelAnnotation_::setDQRel(double dqrel)
+MMO_ModelAnnotation::setDQRel(double dqrel)
 {
   _DQRel.push_back(dqrel);
 }
 
 void
-MMO_ModelAnnotation_::setWeight(double weight)
+MMO_ModelAnnotation::setWeight(double weight)
 {
   _weight = weight;
 }
 
 double
-MMO_ModelAnnotation_::weight()
+MMO_ModelAnnotation::weight()
 {
   return _weight;
 }
 
 void
-MMO_ModelAnnotation_::setSolver(ANT_Solver solver)
+MMO_ModelAnnotation::setSolver(ANT_Solver solver)
 {
   _solver = solver;
 }
 
 string
-MMO_ModelAnnotation_::solverString()
+MMO_ModelAnnotation::solverString()
 {
   return _solverString;
 }
 
 ANT_Solver
-MMO_ModelAnnotation_::solver()
+MMO_ModelAnnotation::solver()
 {
   return _solver;
 }
 
 void
-MMO_ModelAnnotation_::setPartitionMethod(ANT_PartitionMethod pm)
+MMO_ModelAnnotation::setPartitionMethod(ANT_PartitionMethod pm)
 {
   _partitionMethod = pm;
 }
 
 string
-MMO_ModelAnnotation_::partitionMethodString()
+MMO_ModelAnnotation::partitionMethodString()
 {
   return _partitionMethodString;
 }
 
 ANT_DT_Synch
-MMO_ModelAnnotation_::dtSynch()
+MMO_ModelAnnotation::dtSynch()
 {
   return _dtSynch;
 }
 
 string
-MMO_ModelAnnotation_::dtSynchString()
+MMO_ModelAnnotation::dtSynchString()
 {
   return _dtSynchString;
 }
 
 void
-MMO_ModelAnnotation_::setDtSynch(ANT_DT_Synch synch)
+MMO_ModelAnnotation::setDtSynch(ANT_DT_Synch synch)
 {
   _dtSynch = synch;
 }
 
 void
-MMO_ModelAnnotation_::setInitialTime(double it)
+MMO_ModelAnnotation::setInitialTime(double it)
 {
   _initialTime = it;
 }
 
 double
-MMO_ModelAnnotation_::initialTime()
+MMO_ModelAnnotation::initialTime()
 {
   return _initialTime;
 }
 
 void
-MMO_ModelAnnotation_::setFinalTime(double ft)
+MMO_ModelAnnotation::setFinalTime(double ft)
 {
   _finalTime = ft;
 }
 
 double
-MMO_ModelAnnotation_::finalTime()
+MMO_ModelAnnotation::finalTime()
 {
   return _finalTime;
 }
 
 void
-MMO_ModelAnnotation_::setMinStep(double ms)
+MMO_ModelAnnotation::setMinStep(double ms)
 {
   _minStep = ms;
 }
 
 double
-MMO_ModelAnnotation_::minStep()
+MMO_ModelAnnotation::minStep()
 {
   return _minStep;
 }
 
 void
-MMO_ModelAnnotation_::setZCHyst(double zch)
+MMO_ModelAnnotation::setZCHyst(double zch)
 {
   _ZCHyst = zch;
 }
 
 double
-MMO_ModelAnnotation_::ZCHyst()
+MMO_ModelAnnotation::ZCHyst()
 {
   return _ZCHyst;
 }
 
 void
-MMO_ModelAnnotation_::setDerDelta(double dd)
+MMO_ModelAnnotation::setDerDelta(double dd)
 {
   _derDelta = dd;
 }
 
 double
-MMO_ModelAnnotation_::derDelta()
+MMO_ModelAnnotation::derDelta()
 {
   return _derDelta;
 }
 
 void
-MMO_ModelAnnotation_::setStoreData(string store)
+MMO_ModelAnnotation::setStoreData(string store)
 {
   _storeData = store;
 }
 
 string
-MMO_ModelAnnotation_::storeData()
+MMO_ModelAnnotation::storeData()
 {
   return _storeData;
 }
 
 void
-MMO_ModelAnnotation_::setLps(int lps)
+MMO_ModelAnnotation::setLps(int lps)
 {
   _lps = lps;
 }
 
 void
-MMO_ModelAnnotation_::setJacobian(int jacobian)
+MMO_ModelAnnotation::setJacobian(int jacobian)
 {
   _jacobian = jacobian;
 }
 
 int
-MMO_ModelAnnotation_::jacobian()
+MMO_ModelAnnotation::jacobian()
 {
   return _jacobian;
 }
 
 bool
-MMO_ModelAnnotation_::classic()
+MMO_ModelAnnotation::classic()
 {
   return _solver == ANT_DASSL || _solver == ANT_DOPRI
       || _solver == ANT_CVODE_BDF
@@ -906,115 +869,115 @@ MMO_ModelAnnotation_::classic()
 }
 
 int
-MMO_ModelAnnotation_::lps()
+MMO_ModelAnnotation::lps()
 {
   return _lps;
 }
 
 void
-MMO_ModelAnnotation_::setNodeSize(int ns)
+MMO_ModelAnnotation::setNodeSize(int ns)
 {
   _nodeSize = ns;
 }
 
 int
-MMO_ModelAnnotation_::nodeSize()
+MMO_ModelAnnotation::nodeSize()
 {
   return _nodeSize;
 }
 
 void
-MMO_ModelAnnotation_::setCommInterval(string ci)
+MMO_ModelAnnotation::setCommInterval(string ci)
 {
   _commInterval = ci;
 }
 
 string
-MMO_ModelAnnotation_::commInterval()
+MMO_ModelAnnotation::commInterval()
 {
   return _commInterval;
 }
 
 void
-MMO_ModelAnnotation_::setSample(double s)
+MMO_ModelAnnotation::setSample(double s)
 {
   _sample.push_back(s);
 }
 
 list<double>
-MMO_ModelAnnotation_::sample()
+MMO_ModelAnnotation::sample()
 {
   return _sample;
 }
 
 void
-MMO_ModelAnnotation_::setScheduler(string sched)
+MMO_ModelAnnotation::setScheduler(string sched)
 {
   _scheduler = sched;
 }
 
 string
-MMO_ModelAnnotation_::scheduler()
+MMO_ModelAnnotation::scheduler()
 {
   return _scheduler;
 }
 
 void
-MMO_ModelAnnotation_::setSymDiff(bool sd)
+MMO_ModelAnnotation::setSymDiff(bool sd)
 {
   _symDiff = sd;
 }
 
 bool
-MMO_ModelAnnotation_::symDiff()
+MMO_ModelAnnotation::symDiff()
 {
   return _symDiff;
 }
 
 int
-MMO_ModelAnnotation_::order()
+MMO_ModelAnnotation::order()
 {
   return _order;
 }
 
 list<AST_Expression>
-MMO_ModelAnnotation_::output()
+MMO_ModelAnnotation::output()
 {
   return _output;
 }
 
 list<string>
-MMO_ModelAnnotation_::patohSettings()
+MMO_ModelAnnotation::patohSettings()
 {
   return _patohSettings;
 }
 
 list<string>
-MMO_ModelAnnotation_::scotchSettings()
+MMO_ModelAnnotation::scotchSettings()
 {
   return _scotchSettings;
 }
 
 list<string>
-MMO_ModelAnnotation_::metisSettings()
+MMO_ModelAnnotation::metisSettings()
 {
   return _metisSettings;
 }
 
 void
-MMO_ModelAnnotation_::setPatohSettings(string l)
+MMO_ModelAnnotation::setPatohSettings(string l)
 {
   _patohSettings.push_back(l);
 }
 
 void
-MMO_ModelAnnotation_::setScotchSettings(string l)
+MMO_ModelAnnotation::setScotchSettings(string l)
 {
   _scotchSettings.push_back(l);
 }
 
 void
-MMO_ModelAnnotation_::setMetisSettings(string l)
+MMO_ModelAnnotation::setMetisSettings(string l)
 {
   _metisSettings.push_back(l);
 }
@@ -1022,7 +985,7 @@ MMO_ModelAnnotation_::setMetisSettings(string l)
 MMO_ModelAnnotation
 newMMO_ModelAnnotation(MMO_ModelData data)
 {
-  return new MMO_ModelAnnotation_(data);
+  return new MMO_ModelAnnotation(data);
 }
 
 void
@@ -1080,8 +1043,9 @@ MMO_AnnotationValue::setStr(string s)
 
 /* EvalAnnotation class */
 
-MMO_EvalAnnotation_::MMO_EvalAnnotation_(VarSymbolTable st) :
-    _st(st), _tokens()
+MMO_EvalAnnotation::MMO_EvalAnnotation_(VarSymbolTable st) :
+    _st(st), 
+    _tokens()
 {
   _tokens.insert(pair<string, string>("QSS", "QSS"));
   _tokens.insert(pair<string, string>("CQSS", "CQSS"));
@@ -1119,7 +1083,7 @@ MMO_EvalAnnotation_::MMO_EvalAnnotation_(VarSymbolTable st) :
 }
 
 MMO_AnnotationValue
-MMO_EvalAnnotation_::foldTraverseElement(AST_Expression e)
+MMO_EvalAnnotation::foldTraverseElement(AST_Expression e)
 {
   MMO_AnnotationValue av = MMO_AnnotationValue();
   switch(e->expressionType())
@@ -1186,7 +1150,7 @@ MMO_EvalAnnotation_::foldTraverseElement(AST_Expression e)
 }
 
 void
-MMO_EvalAnnotation_::_setBoolean(bool condition, MMO_AnnotationValue *e)
+MMO_EvalAnnotation::_setBoolean(bool condition, MMO_AnnotationValue *e)
 {
   if(condition)
   {
@@ -1199,8 +1163,7 @@ MMO_EvalAnnotation_::_setBoolean(bool condition, MMO_AnnotationValue *e)
 }
 
 MMO_AnnotationValue
-MMO_EvalAnnotation_::foldTraverseElement(MMO_AnnotationValue e1,
-    MMO_AnnotationValue e2, BinOpType bot)
+MMO_EvalAnnotation::foldTraverseElement(MMO_AnnotationValue e1, MMO_AnnotationValue e2, BinOpType bot)
 {
   MMO_AnnotationValue av = MMO_AnnotationValue();
   switch(bot)
@@ -1264,7 +1227,7 @@ MMO_EvalAnnotation_::foldTraverseElement(MMO_AnnotationValue e1,
 }
 
 MMO_AnnotationValue
-MMO_EvalAnnotation_::foldTraverseElementUMinus(AST_Expression e)
+MMO_EvalAnnotation::foldTraverseElementUMinus(AST_Expression e)
 {
   MMO_AnnotationValue av = foldTraverseElement(e);
   av.setInteger(-1 * av.integer());
@@ -1272,428 +1235,416 @@ MMO_EvalAnnotation_::foldTraverseElementUMinus(AST_Expression e)
   return av;
 }
 
-MMO_EvalAnnotation
-newMMO_EvalAnnotation(VarSymbolTable st)
-{
-  return new MMO_EvalAnnotation_(st);
-}
-
 void
-deleteMMO_EvalAnnotation(MMO_EvalAnnotation m)
-{
-  delete m;
-}
-
-void
-MMO_ModelAnnotation_::setParallel(bool p)
+MMO_ModelAnnotation::setParallel(bool p)
 {
   _parallel = p;
 }
 
 bool
-MMO_ModelAnnotation_::parallel()
+MMO_ModelAnnotation::parallel()
 {
   return _parallel;
 }
 
 int
-MMO_ModelAnnotation_::polyCoeffs()
+MMO_ModelAnnotation::polyCoeffs()
 {
   return _polyCoeffs;
 }
 
 bool
-MMO_Annotation_::hasDerivative()
+MMO_Annotation::hasDerivative()
 {
   return true;
 }
 
 bool
-MMO_Annotation_::hasInclude()
+MMO_Annotation::hasInclude()
 {
   return true;
 }
 
 bool
-MMO_Annotation_::hasIncludeDirectory()
+MMO_Annotation::hasIncludeDirectory()
 {
   return true;
 }
 
 bool
-MMO_Annotation_::hasLibraries()
+MMO_Annotation::hasLibraries()
 {
   return true;
 }
 
 bool
-MMO_Annotation_::hasLibraryDirectory()
+MMO_Annotation::hasLibraryDirectory()
 {
   return true;
 }
 
 string
-MMO_Annotation_::derivative()
+MMO_Annotation::derivative()
 {
   return "";
 }
 
 string
-MMO_Annotation_::include()
+MMO_Annotation::include()
 {
   return "";
 }
 
 string
-MMO_Annotation_::includeDirectory()
+MMO_Annotation::includeDirectory()
 {
   return "";
 }
 
 list<string>
-MMO_Annotation_::libraries()
+MMO_Annotation::libraries()
 {
   return list<string>();
 }
 
 string
-MMO_Annotation_::libraryDirectory()
+MMO_Annotation::libraryDirectory()
 {
   return "";
 }
 
 void
-MMO_Annotation_::eventComment(AST_Comment x)
+MMO_Annotation::eventComment(AST_Comment x)
 {
   return;
 }
 
 bool
-MMO_Annotation_::insert(AST_Argument_Modification x)
+MMO_Annotation::insert(AST_Argument_Modification x)
 {
   return true;
 }
 
 void
-MMO_Annotation_::setDesc(string desc)
+MMO_Annotation::setDesc(string desc)
 {
   return;
 }
 
 string
-MMO_Annotation_::desc()
+MMO_Annotation::desc()
 {
   return "";
 }
 
 void
-MMO_Annotation_::setDQMin(double dqmin)
+MMO_Annotation::setDQMin(double dqmin)
 {
   return;
 }
 
 list<double>
-MMO_Annotation_::dqmin()
+MMO_Annotation::dqmin()
 {
   return list<double>();
 }
 
 list<double>
-MMO_Annotation_::dqrel()
+MMO_Annotation::dqrel()
 {
   return list<double>();
 }
 
 void
-MMO_Annotation_::setDQRel(double dqrel)
+MMO_Annotation::setDQRel(double dqrel)
 {
   return;
 }
 
 void
-MMO_Annotation_::setWeight(double weight)
+MMO_Annotation::setWeight(double weight)
 {
   return;
 }
 
 double
-MMO_Annotation_::weight()
+MMO_Annotation::weight()
 {
   return 0;
 }
 
 void
-MMO_Annotation_::setSolver(ANT_Solver solver)
+MMO_Annotation::setSolver(ANT_Solver solver)
 {
   return;
 }
 
 ANT_Solver
-MMO_Annotation_::solver()
+MMO_Annotation::solver()
 {
   return ANT_QSS;
 }
 
 string
-MMO_Annotation_::solverString()
+MMO_Annotation::solverString()
 {
   return "";
 }
 
 void
-MMO_Annotation_::setInitialTime(double it)
+MMO_Annotation::setInitialTime(double it)
 {
   return;
 }
 
 double
-MMO_Annotation_::initialTime()
+MMO_Annotation::initialTime()
 {
   return 0;
 }
 
 void
-MMO_Annotation_::setFinalTime(double ft)
+MMO_Annotation::setFinalTime(double ft)
 {
   return;
 }
 
 double
-MMO_Annotation_::finalTime()
+MMO_Annotation::finalTime()
 {
   return 0;
 }
 
 void
-MMO_Annotation_::setMinStep(double ms)
+MMO_Annotation::setMinStep(double ms)
 {
   return;
 }
 
 double
-MMO_Annotation_::minStep()
+MMO_Annotation::minStep()
 {
   return 0;
 }
 
 void
-MMO_Annotation_::setZCHyst(double zch)
+MMO_Annotation::setZCHyst(double zch)
 {
   return;
 }
 
 double
-MMO_Annotation_::ZCHyst()
+MMO_Annotation::ZCHyst()
 {
   return 0;
 }
 
 void
-MMO_Annotation_::setDerDelta(double dd)
+MMO_Annotation::setDerDelta(double dd)
 {
   return;
 }
 
 double
-MMO_Annotation_::derDelta()
+MMO_Annotation::derDelta()
 {
   return 0;
 }
 
 void
-MMO_Annotation_::setLps(int lps)
+MMO_Annotation::setLps(int lps)
 {
   return;
 }
 
 void
-MMO_Annotation_::setDT(double dt)
+MMO_Annotation::setDT(double dt)
 {
   return;
 }
 
 double
-MMO_Annotation_::DT()
+MMO_Annotation::DT()
 {
   return 0;
 }
 
 int
-MMO_Annotation_::lps()
+MMO_Annotation::lps()
 {
   return 0;
 }
 
 void
-MMO_Annotation_::setNodeSize(int ns)
+MMO_Annotation::setNodeSize(int ns)
 {
   return;
 }
 
 int
-MMO_Annotation_::nodeSize()
+MMO_Annotation::nodeSize()
 {
   return 0;
 }
 
 void
-MMO_Annotation_::setCommInterval(string ci)
+MMO_Annotation::setCommInterval(string ci)
 {
   return;
 }
 
 string
-MMO_Annotation_::commInterval()
+MMO_Annotation::commInterval()
 {
   return "";
 }
 
 void
-MMO_Annotation_::setSample(double s)
+MMO_Annotation::setSample(double s)
 {
   return;
 }
 
 list<double>
-MMO_Annotation_::sample()
+MMO_Annotation::sample()
 {
   return list<double>();
 }
 
 void
-MMO_Annotation_::setSymDiff(bool sd)
+MMO_Annotation::setSymDiff(bool sd)
 {
   return;
 }
 
 bool
-MMO_Annotation_::symDiff()
+MMO_Annotation::symDiff()
 {
   return true;
 }
 
 int
-MMO_Annotation_::order()
+MMO_Annotation::order()
 {
   return 1;
 }
 
 string
-MMO_Annotation_::scheduler()
+MMO_Annotation::scheduler()
 {
   return "";
 }
 
 void
-MMO_Annotation_::setScheduler(string sched)
+MMO_Annotation::setScheduler(string sched)
 {
   return;
 }
 
 list<AST_Expression>
-MMO_Annotation_::output()
+MMO_Annotation::output()
 {
   return list<AST_Expression>();
 }
 
 void
-MMO_Annotation_::setStoreData(string save)
+MMO_Annotation::setStoreData(string save)
 {
   return;
 }
 
 string
-MMO_Annotation_::storeData()
+MMO_Annotation::storeData()
 {
   return "";
 }
 
 void
-MMO_Annotation_::setPartitionMethod(ANT_PartitionMethod pm)
+MMO_Annotation::setPartitionMethod(ANT_PartitionMethod pm)
 {
   return;
 }
 
 string
-MMO_Annotation_::partitionMethodString()
+MMO_Annotation::partitionMethodString()
 {
   return "";
 }
 
 ANT_PartitionMethod
-MMO_Annotation_::partitionMethod()
+MMO_Annotation::partitionMethod()
 {
   return ANT_Metis;
 }
 
 void
-MMO_Annotation_::setParallel(bool p)
+MMO_Annotation::setParallel(bool p)
 {
   return;
 }
 
 bool
-MMO_Annotation_::parallel()
+MMO_Annotation::parallel()
 {
   return true;
 }
 
 int
-MMO_Annotation_::polyCoeffs()
+MMO_Annotation::polyCoeffs()
 {
   return 2;
 }
 
 void
-MMO_Annotation_::setDtSynch(ANT_DT_Synch synch)
+MMO_Annotation::setDtSynch(ANT_DT_Synch synch)
 {
   return;
 }
 
 string
-MMO_Annotation_::dtSynchString()
+MMO_Annotation::dtSynchString()
 {
   return "";
 }
 
 ANT_DT_Synch
-MMO_Annotation_::dtSynch()
+MMO_Annotation::dtSynch()
 {
   return ANT_DT_Asynchronous;
 }
 
 list<string>
-MMO_Annotation_::patohSettings()
+MMO_Annotation::patohSettings()
 {
   return list<string>();
 }
 
 list<string>
-MMO_Annotation_::scotchSettings()
+MMO_Annotation::scotchSettings()
 {
   return list<string>();
 }
 
 list<string>
-MMO_Annotation_::metisSettings()
+MMO_Annotation::metisSettings()
 {
   return list<string>();
 }
 
 void
-MMO_Annotation_::setPatohSettings(string l)
+MMO_Annotation::setPatohSettings(string l)
 {
   return;
 }
 
 void
-MMO_Annotation_::setScotchSettings(string l)
+MMO_Annotation::setScotchSettings(string l)
 {
   return;
 }
 
 void
-MMO_Annotation_::setMetisSettings(string l)
+MMO_Annotation::setMetisSettings(string l)
 {
   return;
 }

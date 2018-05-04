@@ -25,24 +25,22 @@
 using namespace std;
 
 #include <list>
-
-#include <ir/mmo_base.h>
-#include <ir/mmo_types.h>
+#include "../ir/class.h"
 
 /**
  *
  */
-class MMO_StoredDefinition_: public MMO_Base_
+class MMO_StoredDefinition
 {
   public:
     /**
      *
      */
-    MMO_StoredDefinition_();
+    MMO_StoredDefinition();
     /**
      *
      */
-    ~MMO_StoredDefinition_();
+    ~MMO_StoredDefinition();
     /**
      *
      * @return
@@ -79,21 +77,9 @@ class MMO_StoredDefinition_: public MMO_Base_
      */
     bool
     end();
-    private:
+  private:
     list<MMO_Class> _classList;
     list<MMO_Class>::iterator _it;
 };
-/**
- *
- * @return
- */
-MMO_StoredDefinition
-newMMO_StoredDefinition();
-/**
- *
- * @param m
- */
-void
-deleteMMO_StoredDefinition(MMO_StoredDefinition m);
 
 #endif  /* STORED_DEFINITION_H_ */

@@ -35,7 +35,7 @@
 #include "expression.h"
 #include "mmo_util.h"
 
-MMO_Equation_::MMO_Equation_(AST_Expression exp, MMO_ModelData data) :
+MMO_Equation::MMO_Equation_(AST_Expression exp, MMO_ModelData data) :
     _data(data), 
     _end(data->end()), 
     _init(data->begin()), 
@@ -74,7 +74,7 @@ MMO_Equation_::MMO_Equation_(AST_Expression exp, MMO_ModelData data) :
   }
 }
 
-MMO_Equation_::MMO_Equation_(MMO_Expression exp, MMO_ModelData data) :
+MMO_Equation::MMO_Equation_(MMO_Expression exp, MMO_ModelData data) :
     _data(data), 
     _end(data->end()), 
     _init(data->begin()), 
@@ -97,12 +97,12 @@ MMO_Equation_::MMO_Equation_(MMO_Expression exp, MMO_ModelData data) :
   }
 }
 
-MMO_Equation_::~MMO_Equation_()
+MMO_Equation::~MMO_Equation_()
 {
 }
 
 void
-MMO_Equation_::_initDerivatives()
+MMO_Equation::_initDerivatives()
 {
   ExpressionDerivator ed;
   ReplaceDer_ rd(_data->symbols());
@@ -115,14 +115,14 @@ MMO_Equation_::_initDerivatives()
 }
 
 void
-MMO_Equation_::_generateJacobianExps()
+MMO_Equation::_generateJacobianExps()
 {
   ExpressionDerivator ed;
   _jacobianExps = ed.generateJacobianExps(_exp[0]->exp(), _data);
 }
 
 MMO_Equation
-MMO_Equation_::jacobianExp(Index idx, DEP_Type type)
+MMO_Equation::jacobianExp(Index idx, DEP_Type type)
 {
   MMO_Expression chExp = _generateChainRule(idx);
   map<string, MMO_Expression>::iterator f = _jacobianExps.find(
@@ -151,37 +151,37 @@ MMO_Equation_::jacobianExp(Index idx, DEP_Type type)
 }
 
 MMO_Expression
-MMO_Equation_::exp()
+MMO_Equation::exp()
 {
   return _exp[0];
 }
 
 bool
-MMO_Equation_::hasRange()
+MMO_Equation::hasRange()
 {
   return _init != _end;
 }
 
 int
-MMO_Equation_::init()
+MMO_Equation::init()
 {
   return _init;
 }
 
 int
-MMO_Equation_::end()
+MMO_Equation::end()
 {
   return _end;
 }
 
 string
-MMO_Equation_::print()
+MMO_Equation::print()
 {
   return "";
 }
 
 string
-MMO_Equation_::printRange(string variable, string idx, string indent, Index lhs,
+MMO_Equation::printRange(string variable, string idx, string indent, Index lhs,
     bool variableChange)
 {
   stringstream buffer;
@@ -211,7 +211,7 @@ MMO_Equation_::printRange(string variable, string idx, string indent, Index lhs,
 }
 
 list<string>
-MMO_Equation_::print(string indent, string lhs, string idx, bool palgs,
+MMO_Equation::print(string indent, string lhs, string idx, bool palgs,
     MMO_EquationTable algs, EQ_Type type, int order, bool constant, int offset,
     bool dereq,
     int forOffset, int constantOffset)
@@ -474,13 +474,13 @@ MMO_Equation_::print(string indent, string lhs, string idx, bool palgs,
 }
 
 list<string>
-MMO_Equation_::getVariables()
+MMO_Equation::getVariables()
 {
   return _variables;
 }
 
 Index
-MMO_Equation_::lhs()
+MMO_Equation::lhs()
 {
   return _lhs;
 }
@@ -488,13 +488,13 @@ MMO_Equation_::lhs()
 MMO_Equation
 newMMO_Equation(AST_Expression exp, MMO_ModelData data)
 {
-  return new MMO_Equation_(exp, data);
+  return new MMO_Equation(exp, data);
 }
 
 MMO_Equation
 newMMO_Equation(MMO_Expression exp, MMO_ModelData data)
 {
-  return new MMO_Equation_(exp, data);
+  return new MMO_Equation(exp, data);
 }
 
 void
@@ -504,7 +504,7 @@ deleteMMO_Equation(MMO_Equation m)
 }
 
 void
-MMO_Equation_::controlAlgebraicDefinition()
+MMO_Equation::controlAlgebraicDefinition()
 {
   Dependencies deps = _exp[0]->deps();
   list<MMO_Equation> eqs;
@@ -532,7 +532,7 @@ MMO_Equation_::controlAlgebraicDefinition()
 }
 
 bool
-MMO_Equation_::controlAlgebraicArguments(set<Index> *algs, set<Index> eqAlgs)
+MMO_Equation::controlAlgebraicArguments(set<Index> *algs, set<Index> eqAlgs)
 {
   if(eqAlgs.empty())
   {
@@ -551,7 +551,7 @@ MMO_Equation_::controlAlgebraicArguments(set<Index> *algs, set<Index> eqAlgs)
 }
 
 string
-MMO_Equation_::_printArguments(int i, string idx, int offset, int cte,
+MMO_Equation::_printArguments(int i, string idx, int offset, int cte,
     int order, int forOffset)
 {
   stringstream buffer;
@@ -580,31 +580,31 @@ MMO_Equation_::_printArguments(int i, string idx, int offset, int cte,
 }
 
 list<string>
-MMO_Equation_::getCode()
+MMO_Equation::getCode()
 {
   return _code;
 }
 
 list<string>
-MMO_Equation_::getEquation()
+MMO_Equation::getEquation()
 {
   return _equation;
 }
 
 list<string>
-MMO_Equation_::getAlgebraics()
+MMO_Equation::getAlgebraics()
 {
   return _algebraics;
 }
 
 set<Index>
-MMO_Equation_::algebraicArguments()
+MMO_Equation::algebraicArguments()
 {
   return _algebraicArguments;
 }
 
 MMO_Expression
-MMO_Equation_::_generateChainRule(Index idx)
+MMO_Equation::_generateChainRule(Index idx)
 {
   Dependencies deps = _exp[0]->deps();
   MMO_Expression exp = NULL;

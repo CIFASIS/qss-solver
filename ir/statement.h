@@ -26,13 +26,11 @@
 #include "../ast/ast_types.h"
 #include "../util/dependencies.h"
 #include "../util/util_types.h"
-#include "mmo_base.h"
-#include "mmo_types.h"
 
 /**
  *
  */
-class MMO_Statement_: public MMO_Base_
+class MMO_Statement
 {
   public:
     /**
@@ -40,26 +38,20 @@ class MMO_Statement_: public MMO_Base_
      * @param stm
      * @param data
      */
-    MMO_Statement_(AST_Statement stm, MMO_ModelData data);
+    MMO_Statement(AST_Statement stm, MMO_ModelConfig cfg);
     /**
      *
      * @param stm
      */
-    MMO_Statement_(AST_Statement stm);
+    MMO_Statement(AST_Statement stm);
     /**
      *
      */
-    MMO_Statement_();
+    MMO_Statement();
     /**
      *
      */
-    ~MMO_Statement_();
-    /**
-     *
-     * @return
-     */
-    string
-    print();
+    ~MMO_Statement();
     /**
      *
      * @param indent
@@ -78,35 +70,11 @@ class MMO_Statement_: public MMO_Base_
      */
     list<string>
     getVariables();
-    /**
-     *
-     * @return
-     */
-    Dependencies
-    deps();
-    /**
-     *
-     * @return
-     */
-    Dependencies
-    lhs();
     private:
-    void
-    _getIndexList(AST_Expression_ComponentReference cr, Index index,
-        list<Index> *idxs);
     void
     _init();
     void
     _setInitialCode(AST_Statement stm);
-    void
-    _insertDeps(AST_Expression exp);
-    void
-    _insertDeps(AST_Statement stm, Range range = Range());
-    void
-    _insertVectorDeps(Dependencies deps, Dependencies in, DEP_Type type,
-        DEP_Type insert, Range range);
-    Index
-    _getIndex(AST_Expression_ComponentReference cr, VarInfo vi);
     void
     _printAssignment(const string& name, AST_Expression_ComponentReference cr,
         AST_Expression e, const string& indent, const string& idx, int offset,
@@ -122,39 +90,9 @@ class MMO_Statement_: public MMO_Base_
         list<string>& ret, list<string>& code);
 
     AST_Statement _stm;
-    MMO_ModelData _data;
-    Dependencies _deps;
-    Dependencies _lhs;
+    MMO_ModelConfig _cfg;
     bool _initialCode;
     list<string> _variables;
-    Index _eventLhs;
 };
-/**
- *
- * @param stm
- * @param data
- * @return
- */
-MMO_Statement
-newMMO_Statement(AST_Statement stm, MMO_ModelData data);
-/**
- *
- * @param stm
- * @return
- */
-MMO_Statement
-newMMO_Statement(AST_Statement stm);
-/**
- *
- * @return
- */
-MMO_Statement
-newMMO_Statement();
-/**
- *
- * @param m
- */
-void
-deleteMMO_Statement(MMO_Statement m);
 
 #endif  /* MMO_STATEMENT_H_ */

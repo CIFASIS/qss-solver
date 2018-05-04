@@ -27,8 +27,6 @@
 #include "../ast/ast_types.h"
 #include "../util/ast_util.h"
 #include "../util/util_types.h"
-#include "mmo_base.h"
-#include "mmo_types.h"
 
 /**
  * @enum ANT_solver
@@ -74,13 +72,11 @@ typedef enum
 /**
  *
  */
-class MMO_Annotation_: public MMO_Base_
+class MMO_Annotation
 {
   public:
-    MMO_Annotation_();
-    ~MMO_Annotation_();
-    string
-    print();
+    MMO_Annotation();
+    ~MMO_Annotation();
     virtual bool
     hasDerivative();
     virtual bool
@@ -224,17 +220,17 @@ class MMO_Annotation_: public MMO_Base_
 /**
  *
  */
-class MMO_FunctionAnnotation_: public MMO_Annotation_
+class MMO_FunctionAnnotation: public MMO_Annotation
 {
   public:
     /**
      *
      */
-    MMO_FunctionAnnotation_();
+    MMO_FunctionAnnotation();
     /**
      *
      */
-    ~MMO_FunctionAnnotation_();
+    ~MMO_FunctionAnnotation();
     /**
      *
      * @return
@@ -331,41 +327,29 @@ class MMO_FunctionAnnotation_: public MMO_Annotation_
       LIBRARY_DIRECTORY,          //!< LIBRARY_DIRECTORY
       DERIVATIVE        //!< DERIVATIVE
     } type;
-    map<string, MMO_FunctionAnnotation_::type> _annotations;
+    map<string, MMO_FunctionAnnotation::type> _annotations;
     string _derivative;
     string _include;
     string _includeDirectory;
     list<string> _libraries;
     string _libraryDirectory;
 };
-/**
- *
- * @return
- */
-MMO_FunctionAnnotation
-newMMO_FunctionAnnotation();
-/**
- *
- * @param m
- */
-void
-deleteMMO_FunctionAnnotation(MMO_FunctionAnnotation m);
 
 /**
  *
  */
-class MMO_ModelAnnotation_: public MMO_Annotation_
+class MMO_ModelAnnotation: public MMO_Annotation
 {
   public:
     /**
      *
      * @param data
      */
-    MMO_ModelAnnotation_(MMO_ModelData data);
+    MMO_ModelAnnotation(MMO_ModelConfig cfg);
     /**
      *
      */
-    ~MMO_ModelAnnotation_();
+    ~MMO_ModelAnnotation();
     /**
      *
      * @param x
@@ -681,7 +665,7 @@ class MMO_ModelAnnotation_: public MMO_Annotation_
     jacobian();
     bool
     classic();
-    private:
+  private:
     /**
      *
      */
@@ -743,8 +727,8 @@ class MMO_ModelAnnotation_: public MMO_Annotation_
     int _order;
     string _scheduler;
     string _storeData;
-    map<string, MMO_ModelAnnotation_::type> _annotations;
-    MMO_ModelData _data;
+    map<string, MMO_ModelAnnotation::type> _annotations;
+    MMO_ModelConfig _cfg;
     list<double> _DQMin;
     list<double> _DQRel;
     double _weight;
@@ -765,19 +749,6 @@ class MMO_ModelAnnotation_: public MMO_Annotation_
     list<string> _metisSettings;
     int _jacobian;
 };
-/**
- *
- * @param data
- * @return
- */
-MMO_ModelAnnotation
-newMMO_ModelAnnotation(MMO_ModelData data);
-/**
- *
- * @param m
- */
-void
-deleteMMO_ModelAnnotation(MMO_ModelAnnotation m);
 
 /**
  *
@@ -838,46 +809,31 @@ class MMO_AnnotationValue
 /**
  *
  */
-class MMO_EvalAnnotation_: public AST_Expression_Fold<MMO_AnnotationValue>
+class MMO_EvalAnnotation: public AST_Expression_Fold<MMO_AnnotationValue>
 {
   public:
     /**
      *
      * @param st
      */
-    MMO_EvalAnnotation_(VarSymbolTable st);
+    MMO_EvalAnnotation(VarSymbolTable st);
     /**
      *
      */
-    ~MMO_EvalAnnotation_()
+    ~MMO_EvalAnnotation()
     {
     }
-    ;
-    private:
+  private:
     void
     _setBoolean(bool condition, MMO_AnnotationValue *e);
     MMO_AnnotationValue
     foldTraverseElement(AST_Expression);
     MMO_AnnotationValue
-    foldTraverseElement(MMO_AnnotationValue, MMO_AnnotationValue,
-        BinOpType);
+    foldTraverseElement(MMO_AnnotationValue, MMO_AnnotationValue, BinOpType);
     MMO_AnnotationValue
     foldTraverseElementUMinus(AST_Expression);
     VarSymbolTable _st;
     map<string, string> _tokens;
 };
-/**
- *
- * @param st
- * @return
- */
-MMO_EvalAnnotation
-newMMO_EvalAnnotation(VarSymbolTable st);
-/**
- *
- * @param m
- */
-void
-deleteMMO_EvalAnnotation(MMO_EvalAnnotation m);
 
 #endif  /* MMO_ANNOTATION_H_ */

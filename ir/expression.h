@@ -28,40 +28,32 @@
 #include "../util/ast_util.h"
 #include "../util/dependencies.h"
 #include "../util/util_types.h"
-#include "mmo_base.h"
-#include "mmo_types.h"
 
 /**
  *
  */
-class MMO_Expression_: public MMO_Base_
+class MMO_Expression
 {
   public:
     /**
      *
      */
-    MMO_Expression_();
+    MMO_Expression();
     /**
      *
      * @param exp
      * @param data
      */
-    MMO_Expression_(AST_Expression exp, MMO_ModelData data);
+    MMO_Expression(AST_Expression exp, MMO_ModelData data);
     /**
      *
      * @param exp
      */
-    MMO_Expression_(AST_Expression exp);
+    MMO_Expression(AST_Expression exp);
     /**
      *
      */
-    ~MMO_Expression_();
-    /**
-     *
-     * @return
-     */
-    Dependencies
-    deps();
+    ~MMO_Expression();
     /**
      *
      * @return
@@ -127,74 +119,30 @@ class MMO_Expression_: public MMO_Base_
     void
     setExpression(AST_Expression exp);
     private:
-    void
-    _addDeps(Dependencies deps, DEP_Type type, Index index);
-    void
-    _addVectorDeps(MMO_Equation eq, Index index);
-    void
-    _addAlgebriacDeps(Index algIndex, MMO_Equation equation,
-        Index equationIndex, Index derivativeIndex, Dependencies derivativeDeps,
-        map<Index, Index> *states, map<Index, Index> *discretes,
-        Index variableChange, int value);
-    void
-    _traverseAlgebraics(Dependencies deps, Index derivativeIndex,
-        Dependencies derivativeDeps, map<Index, Index> *states,
-        map<Index, Index> *discretes, Index variableChange, DEP_Type type,
-        int value);
     AST_Expression _exp;
     MMO_ModelData _data;
     string _str;
     int _equationIndex;
     int _expressionOrder;
-    Dependencies _deps;
-    GenerateDeps _gen;
     MMO_PrintExp _printer;
     MMO_ReplaceInterval _ri;
 };
 
 /**
  *
- * @param exp
- * @param data
- * @return
  */
-MMO_Expression
-newMMO_Expression(AST_Expression exp, MMO_ModelData data);
-/**
- *
- * @param exp
- * @return
- */
-MMO_Expression
-newMMO_Expression(AST_Expression exp);
-/**
- *
- * @return
- */
-MMO_Expression
-newMMO_Expression();
-/**
- *
- * @param m
- */
-void
-deleteMMO_Expression(MMO_Expression m);
-
-/**
- *
- */
-class MMO_EvalInitExp_: public AST_Expression_Fold<int>
+class MMO_EvalInitExp: public AST_Expression_Fold<int>
 {
   public:
     /**
      *
      * @param vt
      */
-    MMO_EvalInitExp_(VarSymbolTable vt);
+    MMO_EvalInitExp(VarSymbolTable vt);
     /**
      *
      */
-    ~MMO_EvalInitExp_();
+    ~MMO_EvalInitExp();
     private:
     int
     foldTraverseElement(AST_Expression exp);
@@ -204,35 +152,22 @@ class MMO_EvalInitExp_: public AST_Expression_Fold<int>
     foldTraverseElementUMinus(AST_Expression exp);
     VarSymbolTable _vt;
 };
-/**
- *
- * @param vt
- * @return
- */
-MMO_EvalInitExp
-newMMO_EvalInitExp(VarSymbolTable vt);
-/**
- *
- * @param m
- */
-void
-deleteMMO_EvalInitExp(MMO_EvalInitExp m);
 
 /**
  *
  */
-class MMO_ConvertCondition_: public AST_Expression_Visitor<AST_Expression>
+class MMO_ConvertCondition: public AST_Expression_Visitor<AST_Expression>
 {
   public:
     /**
      *
      * @param data
      */
-    MMO_ConvertCondition_(MMO_ModelData data);
+    MMO_ConvertCondition(MMO_ModelData data);
     /**
      *
      */
-    ~MMO_ConvertCondition_();
+    ~MMO_ConvertCondition();
     /**
      *
      * @return
@@ -252,24 +187,11 @@ class MMO_ConvertCondition_: public AST_Expression_Visitor<AST_Expression>
     int _zc;
     int _zcRelation;
 };
-/**
- *
- * @param data
- * @return
- */
-MMO_ConvertCondition
-newMMO_ConvertCondition(MMO_ModelData data);
-/**
- *
- * @param m
- */
-void
-deleteMMO_ConvertCondition(MMO_ConvertCondition m);
 
 /**
  *
  */
-class MMO_PrintExp_: public AST_Expression_Visitor<string>
+class MMO_PrintExp: public AST_Expression_Visitor<string>
 {
   public:
     /**
@@ -278,12 +200,11 @@ class MMO_PrintExp_: public AST_Expression_Visitor<string>
      * @param ri
      * @param pt
      */
-    MMO_PrintExp_(VarSymbolTable vt, MMO_ReplaceInterval ri,
-        MMO_PackageTable pt);
+    MMO_PrintExp(VarSymbolTable vt, MMO_ReplaceInterval ri, MMO_PackageTable pt);
     /**
      *
      */
-    ~MMO_PrintExp_();
+    ~MMO_PrintExp();
     /**
      *
      * @return
@@ -338,35 +259,19 @@ class MMO_PrintExp_: public AST_Expression_Visitor<string>
 
 /**
  *
- * @param vt
- * @param ri
- * @param pt
- * @return
  */
-MMO_PrintExp
-newMMO_PrintExp(VarSymbolTable vt, MMO_ReplaceInterval ri, MMO_PackageTable pt);
-/**
- *
- * @param m
- */
-void
-deleteMMO_PrintExp(MMO_PrintExp m);
-
-/**
- *
- */
-class MMO_ReplaceInterval_: public AST_Expression_Visitor<AST_Expression>
+class MMO_ReplaceInterval: public AST_Expression_Visitor<AST_Expression>
 {
   public:
     /**
      *
      * @param vt
      */
-    MMO_ReplaceInterval_(VarSymbolTable vt);
+    MMO_ReplaceInterval(VarSymbolTable vt);
     /**
      *
      */
-    ~MMO_ReplaceInterval_();
+    ~MMO_ReplaceInterval();
     /**
      *
      * @return
@@ -430,19 +335,6 @@ class MMO_ReplaceInterval_: public AST_Expression_Visitor<AST_Expression>
     map<string, AST_Expression> _replacedExps;
     string _currentVar;
 };
-/**
- *
- * @param vt
- * @return
- */
-MMO_ReplaceInterval
-newMMO_ReplaceInterval(VarSymbolTable vt);
-/**
- *
- * @param m
- */
-void
-deleteMMO_ReplaceInterval(MMO_ReplaceInterval m);
 
 /**
  *
@@ -459,7 +351,7 @@ class MMO_ReplaceInnerProduct: public AST_Expression_Visitor<AST_Expression>
      *
      */
     ~MMO_ReplaceInnerProduct();
-    private:
+  private:
     bool
     _controlArray(AST_Expression exp);
     AST_Expression

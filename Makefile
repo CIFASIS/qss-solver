@@ -90,8 +90,8 @@ UTILSRC = $(UTILDIR)/util.cpp \
 					$(UTILDIR)/derivative.cpp \
 					$(UTILDIR)/ginac_interface.cpp \
 					$(UTILDIR)/index.cpp \
-					$(UTILDIR)/md_index.cpp \
-					$(UTILDIR)/dependencies.cpp  \
+					$(UTILDIR)/model_dependencies.cpp  \
+					$(UTILDIR)/model_tables.cpp  \
 					$(UTILDIR)/graph.cpp \
 					$(UTILDIR)/graph_profile.cpp 
 
@@ -188,8 +188,10 @@ clean:
 ifeq ($(OS), Windows_NT)
 	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ)
 else
-	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h usr
+	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h 
 endif
+
+#	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h usr
 
 help:
 	@echo "make DEBUG=<True|False>"

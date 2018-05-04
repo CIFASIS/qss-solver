@@ -24,24 +24,23 @@
 #include <string>
 
 #include "../ast/ast_types.h"
-#include "../util/md_index.h"
-#include "../util/util_types.h"
-#include "mmo_types.h"
+#include "../util/index.h"
+#include "../util/model_tables.h"
 
 /**
  *
  */
-class MMO_ModelData_
+class MMO_ModelConfig
 {
   public:
     /**
      *
      */
-    MMO_ModelData_();
+    MMO_ModelConfig();
     /**
      *
      */
-    ~MMO_ModelData_();
+    ~MMO_ModelConfig();
     /**
      *
      * @return

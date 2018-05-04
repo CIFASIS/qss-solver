@@ -24,11 +24,8 @@
 #include <string>
 
 #include "../ast/ast_types.h"
-#include "../util/idx.h"
-#include "../util/md_index.h"
+#include "../util/index.h"
 #include "../util/util_types.h"
-#include "mmo_base.h"
-#include "mmo_types.h"
 
 /**
  *
@@ -55,7 +52,7 @@ typedef enum
 /**
  *
  */
-class MMO_Event_: public MMO_Base_
+class MMO_Event
 {
   public:
     /**
@@ -63,11 +60,11 @@ class MMO_Event_: public MMO_Base_
      * @param cond
      * @param data
      */
-    MMO_Event_(AST_Expression cond, MMO_ModelData data);
+    MMO_Event(AST_Expression cond, MMO_ModelConfig data);
     /**
      *
      */
-    ~MMO_Event_();
+    ~MMO_Event();
     /**
      *
      * @return
@@ -122,18 +119,6 @@ class MMO_Event_: public MMO_Base_
      *
      * @return
      */
-    Index
-    index();
-    /**
-     *
-     * @param idx
-     */
-    void
-    setIndex(Index idx);
-    /**
-     *
-     * @return
-     */
     int
     beginRange();
     /**
@@ -170,18 +155,6 @@ class MMO_Event_: public MMO_Base_
      *
      * @return
      */
-    Dependencies
-    deps();
-    /**
-     *
-     * @return
-     */
-    Dependencies
-    lhs();
-    /**
-     *
-     * @return
-     */
     bool
     hasWeight();
     /**
@@ -198,41 +171,15 @@ class MMO_Event_: public MMO_Base_
     MMO_Equation _cond;
     list<MMO_Statement> _positiveHandlerStatements;
     list<MMO_Statement> _negativeHandlerStatements;
-    Index _index;
     int _init;
     int _end;
     HND_Type _handler;
     HND_Type _handlerType;
     list<MMO_Statement>::iterator _it;
-    MMO_ModelData _data;
-    Dependencies _deps;
-    Dependencies _lhs;
+    MMO_ModelConfig _data;
     VarSymbolTable _lhsVars;
     double _weight;
     ZC_REL _zcRelation;
-};
-/**
- *
- * @param cond
- * @param data
- * @return
- */
-MMO_Event
-newMMO_Event(AST_Expression cond, MMO_ModelData data);
-/**
- *
- * @param m
- */
-void
-deleteMMO_Event(MMO_Event m);
-
-class EventDefinition
-{
-  public:
-    EventDefinition();
-    ~EventDefinition();
-  private:
-    map<Rgx,list<MMO_Event_> > _definition;
 };
 
 #endif  /*  MMO_EVENT_H_ */

@@ -26,23 +26,24 @@
 #include "../ast/ast_types.h"
 #include "../util/ast_util.h"
 #include "../util/util_types.h"
-#include "mmo_types.h"
+#include "../ir/stored_definition.h"
+#include "../ir/class.h"
 
 /**
  *
  */
-class MMO_MicroModelicaIR_: public AST_Visitor_
+class MMO_MicroModelicaIR: public AST_Visitor_
 {
   public:
     /**
      *
      * @param name
      */
-    MMO_MicroModelicaIR_(string name);
+    MMO_MicroModelicaIR(string name);
     /**
      *
      */
-    ~MMO_MicroModelicaIR_();
+    ~MMO_MicroModelicaIR();
     /**
      *
      * @return
@@ -224,18 +225,5 @@ class MMO_MicroModelicaIR_: public AST_Visitor_
     bool _elseWhen;
     MMO_FunctionTable _externalFunctions;
 };
-/**
- *
- * @param name
- * @return
- */
-MMO_MicroModelicaIR
-newMMO_MicroModelicaIR(string name);
-/**
- *
- * @param m
- */
-void
-deleteMMO_MicroModelicaIR(MMO_MicroModelicaIR m);
 
 #endif  /* MMO_MICROMODELICA_IR_H_ */

@@ -31,27 +31,48 @@
 /* VarInfo class. */
 
 VarInfo_::VarInfo_(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c) :
-    _state(false), _discrete(false), _t(t), _tp(tp), _m(m), _comm(c), _builtin(
-        false), _index(), _size(), _value(0), _algebraic(
-        false), _exp(
-    NULL), _hasStart(false), _hasEach(false), _hasAssigment(false), _name(), _isArray(
-        false)
+    _state(false), 
+    _discrete(false), 
+    _t(t), 
+    _tp(tp), 
+    _m(m), 
+    _comm(c), 
+    _builtin(false), 
+    _index(), 
+    _size(), 
+    _value(0), 
+    _algebraic(false), 
+    _exp(NULL), 
+    _hasStart(false), 
+    _hasEach(false), 
+    _hasAssigment(false), 
+    _name(), 
+    _isArray(false)
 {
   _processModification();
 }
-;
 
-VarInfo_::VarInfo_(Type t, AST_TypePrefix tp, AST_Modification m, vector<int> s,
-    bool array) :
-    _state(false), _discrete(false), _t(t), _tp(tp), _m(m), _comm(NULL), _builtin(
-        false), _index(), _size(s), _value(0), _algebraic(
-        false), _exp(
-    NULL), _hasStart(false), _hasEach(false), _hasAssigment(false), _name(), _isArray(
-        array)
+VarInfo_::VarInfo_(Type t, AST_TypePrefix tp, AST_Modification m, vector<int> s, bool array) :
+    _state(false), 
+    _discrete(false), 
+    _t(t), 
+    _tp(tp), 
+    _m(m), 
+    _comm(NULL), 
+    _builtin(false), 
+    _index(), 
+    _size(s), 
+    _value(0), 
+    _algebraic(false), 
+    _exp(NULL), 
+    _hasStart(false), 
+    _hasEach(false), 
+    _hasAssigment(false), 
+    _name(), 
+    _isArray(array)
 {
   _processModification();
 }
-;
 
 /*! \brief Process the argument modification to determine the variable modifiers if any.
  *
@@ -274,8 +295,7 @@ VarInfo_::isArray()
 }
 
 VarInfo
-newVarInfo(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c,
-    vector<int> s, bool array)
+newVarInfo(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array)
 {
   if(s.empty())
   {
@@ -306,367 +326,19 @@ newTypeSymbolTable()
 /* VarSymbolTable_ class */
 
 VarSymbolTable_::VarSymbolTable_() :
-    _vste(), _coeffs(1), _parameters()
+    _vste(), 
+    _coeffs(1), 
+    _parameters()
 {
 }
 
 void
 VarSymbolTable_::initialize(TypeSymbolTable ty)
 {
-  VarInfo v = newVarInfo(ty->lookup("Real"), 0, NULL, NULL, vector<int>(1, 0),
-      false);
+  VarInfo v = newVarInfo(ty->lookup("Real"), 0, NULL, NULL, vector<int>(1, 0), false);
   v->setBuiltIn();
   v->setName("time");
   insert("time", v);
-}
-
-VST_Environment
-VarSymbolTable_::printEnvironment()
-{
-  return _vste;
-}
-
-void
-VarSymbolTable_::setPrintEnvironment(VST_Environment vse)
-{
-  _vste = vse;
-}
-
-/*! \brief Print the symbol name and the corresponding index.
- *
- * 	\param vi: Variable info to be printed.
- * 	\param idx: String that that represents the index variable, if needed.
- * 	\param offset: Offset used to print the index, if needed. 
- * 	\param order: order used in the state and algebraic variables arrays.
- *	\return String with the proper variable representation.
- *
- * 	Description:
- * 		Prints the variable name according to the environment provided:
- * 		-# VST_INIT: returns _localData->x[idx][0] or _localData->d[idx], for the parameters return the parameter name prefixed with an underscore.
- * 		-# VST_MODEL_FUNCTIONS: _x[idx][order] or _d[0], for the algebraics variables always return _algvars[idx][order], parameters are printed in the same way as before.  
- * 		-# VST_FUNCTION: returns the variable name as defined in the model.
- *		-# The constants are printed since they are replaced everywhere in the model.
- *
- * 	\note{Algebraics variables are only printed in models}
- */
-
-string
-VarSymbolTable_::print(VarInfo vi, string idx, int offset, int order,
-    list<Index> idxs, int constant, int forOffset)
-{
-  stringstream ret;
-  string idxStr;
-  if(vi->isForType())
-  {
-    int fo = offset + forOffset;
-    if(fo != 0)
-    {
-      ret << "(";
-    }
-    // TODO: Remove this when the indexes are printed using ranges.
-    ret << idx << "0"; // Temporal hack source
-    if(fo > 0)
-    {
-      ret << "+" << fo << ")";
-    }
-    else if(fo < 0)
-    {
-      ret << fo << ")";
-    }
-    return ret.str();
-  }
-  if(vi->hasEachModifier() && (_vste == VST_INIT || _vste == VST_CLASSIC_INIT))
-  {
-    stringstream tmp;
-    tmp << "[" << idx;
-    if(!vi->isParameter())
-    {
-      int cte = vi->index().mappedConstant();
-      if(cte)
-      {
-        tmp.str("");
-        tmp << "[(" << idx << "+" << cte << ")";
-      }
-    }
-    if(vi->isState() || vi->isAlgebraic())
-    {
-      tmp << " * " << _coeffs;
-    }
-    tmp << "]";
-    idxStr = tmp.str();
-  }
-  else if(!vi->isConstant() && !vi->isParameter())
-  {
-    idxStr = printIndex(vi->index(), idxs, idx, offset, constant, vi, order);
-  }
-  else if(vi->isParameter() && !idxs.empty())
-  {
-    idxStr = printIndex(Index(), idxs, idx, offset, constant, vi, order);
-  }
-  switch(_vste)
-  {
-    case VST_CLASSIC_INIT:
-      if(vi->isState())
-      {
-        ret << "modelData->x" << idxStr;
-      }
-      else if(vi->isDiscrete())
-      {
-        ret << "modelData->d" << idxStr;
-      }
-      else if(vi->isAlgebraic())
-      {
-        ret << "modelData->alg" << idxStr;
-      }
-      else if(vi->isParameter())
-      {
-        ret << "__PAR_";
-        ret << vi->name();
-        ret << idxStr;
-      }
-      else if(vi->isConstant())
-      {
-        ret << vi->value();
-      }
-      break;
-    case VST_INIT:
-      if(vi->isState())
-      {
-        ret << "modelData->x" << idxStr;
-      }
-      else if(vi->isDiscrete())
-      {
-        ret << "modelData->d" << idxStr;
-      }
-      else if(vi->isAlgebraic())
-      {
-        ret << "modelData->alg" << idxStr;
-      }
-      else if(vi->isParameter())
-      {
-        ret << "__PAR_";
-        ret << vi->name();
-        ret << idxStr;
-      }
-      else if(vi->isConstant())
-      {
-        ret << vi->value();
-      }
-      break;
-    case VST_MODEL_FUNCTIONS:
-    case VST_MODEL_OUTPUT_FUNCTIONS:
-      if(vi->isState())
-      {
-        ret << "x" << idxStr;
-        if(order == 2)
-        {
-          ret << "*2";
-        }
-        else if(order == 3)
-        {
-          ret << "*6";
-        }
-      }
-      else if(vi->isDiscrete())
-      {
-        ret << "d" << idxStr;
-      }
-      else if(vi->isAlgebraic() && _vste)
-      {
-        ret << "alg" << idxStr;
-      }
-      else if(vi->isParameter())
-      {
-        ret << "__PAR_";
-        ret << vi->name();
-        ret << idxStr;
-      }
-      else if(vi->isConstant())
-      {
-        ret << vi->value();
-      }
-      break;
-    case VST_CLASSIC_MODEL_FUNCTIONS:
-      if(vi->isState())
-      {
-        ret << "x" << idxStr;
-      }
-      else if(vi->isDiscrete())
-      {
-        ret << "d" << idxStr;
-      }
-      else if(vi->isAlgebraic() && _vste)
-      {
-        ret << "alg" << idxStr;
-      }
-      else if(vi->isParameter())
-      {
-        ret << "__PAR_";
-        ret << vi->name();
-        ret << idxStr;
-      }
-      else if(vi->isConstant())
-      {
-        ret << vi->value();
-      }
-      break;
-    case VST_FUNCTION:
-      if(vi->isConstant())
-      {
-        ret << vi->value();
-      }
-      else
-      {
-        if(vi->isOutput())
-        {
-          ret << "*";
-        }
-        ret << vi->name();
-        if(vi->isArray())
-        {
-          ret << idxStr;
-        }
-      }
-      break;
-    case VST_OUTPUT:
-      ret << vi->name();
-      if(vi->isArray())
-      {
-        ret << idxStr;
-      }
-      break;
-  }
-  if(vi->builtIn())
-  {
-    switch(Util::getInstance()->checkBuiltInVariables(vi->name()))
-    {
-      case BIV_TIME:
-        ret << "t";
-        break;
-      case BIV_SUM:
-      case BIV_PRODUCT:
-      case BIV_MIN:
-      case BIV_MAX:
-      case BIV_INNER_PRODUCT:
-        ret << vi->name() << "[" << order << "]";
-        break;
-      default:
-        break;
-    }
-  }
-  return ret.str();
-}
-
-string
-VarSymbolTable_::printIndex(Index idx, list<Index> idxs, string sub, int offset,
-    int constant, VarInfo vi, int order)
-{
-  stringstream buffer;
-  stringstream varOffset;
-  bool printOffset = false;
-  if(vi->isState() || vi->isAlgebraic())
-  {
-    varOffset << " * " << _coeffs;
-    if(order > 0)
-    {
-      varOffset << " + " << order;
-    }
-    printOffset = true;
-  }
-  if(idxs.empty())
-  {
-    if(constant >= 0 && idx.isArray())
-    {
-      if(printOffset)
-      {
-        buffer << "[" << idx.mappedValue(constant) * _coeffs + order << "]";
-      }
-      else
-      {
-        buffer << "[" << idx.mappedValue(constant) << "]";
-      }
-    }
-    else
-    {
-      if(idx.factor() == 0 && (vi->isState() || vi->isAlgebraic()))
-      {
-        buffer << "[" << idx.mappedConstant() * _coeffs + order << "]";
-      }
-      else
-      {
-        buffer << "[(" << idx.print(sub, offset) << ")" << varOffset.str()
-            << "]";
-      }
-    }
-  }
-  else
-  {
-    buffer << "[";
-    int idxIt = 0;
-    stringstream s;
-    for(list<Index>::iterator it = idxs.begin(); it != idxs.end(); it++)
-    {
-      if(idxIt > 0)
-      {
-        buffer << " + ";
-      }
-      s << sub;
-      // TODO: Remove index string formation from here.
-      if(sub.find("%") == string::npos)
-      {
-        s << idxIt;
-      }
-      if(_vste == VST_OUTPUT)
-      {
-        if(constant >= 0 && it->isArray())
-        {
-          buffer << it->mappedValue(constant);
-        }
-        else if(sub.empty())
-        {
-          buffer << it->operConstant();
-        }
-        else
-        {
-          buffer << s.str();
-        }
-      }
-      else
-      {
-        if(constant >= 0)
-        {
-          if(printOffset)
-          {
-            buffer << it->mappedValue(constant) * _coeffs + order;
-          }
-          else
-          {
-            buffer << it->mappedValue(constant);
-          }
-        }
-        else
-        {
-          if(it->factor() == 0 && (vi->isState() || vi->isAlgebraic()))
-          {
-            buffer << it->mappedConstant() * _coeffs + order;
-          }
-          else
-          {
-            buffer << "(" << it->print(s.str(), offset, false, true) << ")"
-                << varOffset.str();
-          }
-        }
-      }
-      if(idxIt < (vi->dimensions() - 1))
-      {
-        buffer << " * " << pow(vi->size(idxIt), vi->dimensions() - idxIt - 1);
-      }
-      idxIt++;
-      s.str("");
-    }
-    buffer << "]";
-  }
-  return buffer.str();
 }
 
 VarSymbolTable
@@ -733,14 +405,4 @@ list<VarInfo>
 VarSymbolTable_::parameters()
 {
   return _parameters;
-}
-
-string
-VarSymbolTable_::getTypePrefix()
-{
-  if(_vste == VST_CLASSIC_INIT || _vste == VST_INIT)
-  {
-    return "modelData->";
-  }
-  return "";
 }

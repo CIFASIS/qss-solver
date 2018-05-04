@@ -96,31 +96,7 @@ class MMO_Solver_
      * @return
      */
     virtual string
-    initData() = 0;
-    /**
-     *
-     * @return
-     */
-    virtual string
-    initTime() = 0;
-    /**
-     *
-     * @return
-     */
-    virtual string
-    initOutput() = 0;
-    /**
-     *
-     * @return
-     */
-    virtual string
-    initModel() = 0;
-    /**
-     *
-     * @return
-     */
-    virtual string
-    initHeader() = 0;
+    modelHeader() = 0;
     /**
      *
      * @return
@@ -138,22 +114,17 @@ class MMO_Solver_
      *
      */
     virtual void
-    initializeMatrices() = 0;
+    initializeDataStructures() = 0;
     /**
      *
      */
     virtual void
-    initialCode() = 0;
+    modelDefinition() = 0;
     /**
      *
      */
     virtual void
-    model() = 0;
-    /**
-     *
-     */
-    virtual void
-    modelDeps() = 0;
+    modelDependencies() = 0;
     /**
      *
      */
@@ -171,170 +142,91 @@ class MMO_Solver_
     output() = 0;
     /**
      *
-     * @param f
-     */
-    virtual void
-    print(SOL_Function f) = 0;
-    /**
-     *
      * @return
      */
     virtual Graph
-    graph() = 0;
+    computationalGraph() = 0;
 };
 
 /**
  *
  */
-/*class QSS_: public MMO_Solver_
+class QSS_: public MMO_Solver_
 {
-  public:*/
+  public:
     /**
      *
      * @param model
      * @param flags
      * @param writer
      */
-   // QSS_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
+    QSS_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
     /**
      *
      */
-  //  ~QSS_();
-    /**
-     *
-     * @return
-     */
- //   string
- //   initData();
+    ~QSS_();
     /**
      *
      * @return
      */
- //   string
- //   initTime();
+    string
+    modelHeader();
     /**
      *
      * @return
      */
- //   string
- //   initOutput();
-    /**
-     *
-     * @return
-     */
- //   string
- //   initModel();
-    /**
-     *
-     * @return
-     */
- //   string
- //   initHeader();
-    /**
-     *
-     * @return
-     */
- //   string
- //   runCmd();
+    string
+    runCmd();
     /**
      *
      * @param m
      * @return
      */
- //   string
- //   makefile(SOL_Makefile m);
+    string
+    makefile(SOL_Makefile m);
     /**
      *
      */
- //   void
- //   initializeMatrices();
+    void
+    initializeDataStructures();
     /**
      *
      */
- //   void
- //   initialCode();
+    void
+    modelDefinition();
     /**
      *
      */
- //   void
- //   model();
+    void
+    modelDependencies();
     /**
      *
      */
- //   void
- //   modelDeps();
+    void
+    zeroCrossing();
     /**
      *
      */
- //   void
- //   zeroCrossing();
+    void
+    handler();
     /**
      *
      */
-//    void
-//    handler();
+    void
+    output();
     /**
      *
+     * @return
      */
-//    void
-//    output();
-    /**
-     *
-     * @param f
-     */
-/*    void
-    print(SOL_Function f);
     Graph
-    graph();
-    private:
-    bool
-    _controlIntersections(list<Intersection> lis, Intersection is);
-    void
-    _eventDeps(MMO_Event e, Index index, MMO_EventTable evt, DEP_Type type,
-        map<Index, Index> events);
-    void
-    _print(SOL_Function f, map<string, string> localVars, WR_Section simple,
-        WR_Section generic, bool switchGen);
-    void
-    _printDeps(Dependencies d, Index derivativeIndex,
-        MMO_EquationTable equations, MMO_EquationTable algebraics,
-        string idxStr, WR_Section s, int i,
-        bool constant);
-    void
-    _setInterval(Index *i1, Index *i2);
-    bool
-    _indexDependencies(Index idx, Index *dIdx, Index infIdx, Index *infDIdx,
-        map<int, int> *simpleMatrixDeps, WR_Section alloc, WR_Section init,
-        string allocStr, string initStr, string counter,
-        Intersection intersection, int assignments);
-    void
-    _eventVectorDependencies(Index index, Dependencies deps, WR_Section alloc,
-        WR_Section init, string allocString, string initString, DEP_Type type);
-    void
-    _init();
-    void
-    _eventAlgebraicDeps(MMO_Event e, Index index, MMO_EventTable evt,
-        DEP_Type type, map<Index, Index> events);
-    MMO_CompileFlags _flags;
-    MMO_DependenciesTable _modelDeps;
-    MMO_DependenciesTable _modelVectorDeps;
-    MMO_Writer _writer;
-    MMO_Engine _engine;
-    map<string, string> _modelVars;
-    map<string, string> _modelDepsVars;
-    map<string, string> _zcVars;
-    map<string, string> _handlerPosVars;
-    map<string, string> _handlerNegVars;
-    map<string, string> _outputVars;
-    map<string, string> _initializeVars;
-    map<string, string> _freeVars;
-    MMO_Model _model;
-    SolverCommon _common;
-    string _name;
-    Graph _graph;
-    bool _parallel;
-    bool _hasDD;
-};*/
+    computationalGraph();
+  private:
+    MMO_CompileFlags  _flags;
+    MMO_Writer        _writer;
+    MMO_Model         _model;
+    string            _name;
+};
+
 /**
  *
  * @param model
@@ -342,14 +234,14 @@ class MMO_Solver_
  * @param writer
  * @return
  */
-//QSS
-//newQSS(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
+QSS
+newQSS(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
 /**
  *
  * @param m
  */
-//void
-//deleteQSS(QSS m);
+void
+deleteQSS(QSS m);
 
 /**
  *
@@ -373,31 +265,7 @@ class Classic_: public MMO_Solver_
      * @return
      */
     string
-    initData();
-    /**
-     *
-     * @return
-     */
-    string
-    initTime();
-    /**
-     *
-     * @return
-     */
-    string
-    initOutput();
-    /**
-     *
-     * @return
-     */
-    string
-    initModel();
-    /**
-     *
-     * @return
-     */
-    string
-    initHeader();
+    modelHeader();
     /**
      *
      * @return
@@ -415,22 +283,17 @@ class Classic_: public MMO_Solver_
      *
      */
     void
-    initializeMatrices();
+    initializeDataStructures();
     /**
      *
      */
     void
-    initialCode();
+    modelDefinition();
     /**
      *
      */
     void
-    model();
-    /**
-     *
-     */
-    void
-    modelDeps();
+    modelDependencies();
     /**
      *
      */
@@ -448,46 +311,15 @@ class Classic_: public MMO_Solver_
     output();
     /**
      *
-     * @param f
+     * @return
      */
-    void
-    print(SOL_Function f);
     Graph
-    graph();
-    private:
-    string
-    _prototype(SOL_Function f);
-    void
-    _print(SOL_Function f, map<string, string> localVars, WR_Section simple,
-        WR_Section generic, bool switchGen);
-    void
-    _init();
-    void
-    _printDeps(Dependencies d, Index derivativeIndex,
-        MMO_EquationTable equations, MMO_EquationTable algebraics,
-        string idxStr, WR_Section s, int i,
-        bool constant, Index infIdx);
-    void
-    _jacobian();
-    void
-    _reorderSD(Dependencies d, const Index& idx, const string& indent,
-        stringstream& buffer, WR_InsertType it);
-    bool
-    _generateJacobian();
-    MMO_CompileFlags _flags;
-    MMO_Model _model;
-    MMO_Writer _writer;
-    map<string, string> _modelVars;
-    map<string, string> _modelDepsVars;
-    map<string, string> _zcVars;
-    map<string, string> _handlerPosVars;
-    map<string, string> _handlerNegVars;
-    map<string, string> _outputVars;
-    map<string, string> _initializeVars;
-    SolverCommon _common;
-    string _name;
-    map<string, string> _freeVars;
-    MMO_DependenciesTable _modelDeps;
+    computationalGraph();
+  private:
+    MMO_CompileFlags  _flags;
+    MMO_Model         _model;
+    MMO_Writer        _writer;
+    string            _name;
 };
 /**
  *
@@ -757,183 +589,6 @@ newSolverCommon(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer,
  */
 void
 deleteSolverCommon(SolverCommon m);
-
-/***
- *
- */
-class MMO_Engine_
-{
-  public:
-    /**
-     *
-     */
-    virtual
-    ~MMO_Engine_()
-    {
-    }
-    ;
-    /**
-     *
-     * @param f
-     * @return
-     */
-    virtual string
-    prototype(SOL_Function f) = 0;
-    /**
-     *
-     * @param m
-     * @return
-     */
-    virtual string
-    makefile(SOL_Makefile m) = 0;
-    /**
-     *
-     */
-    virtual string
-    variableMap(string index) = 0;
-    /**
-     *
-     */
-    virtual string
-    endMap() = 0;
-    /**
-     *
-     */
-    virtual void
-    eventTemp() = 0;
-};
-
-/**
- *
- */
-class MMO_SerialEngine_: public MMO_Engine_
-{
-  public:
-    /**
-     *
-     * @param flags
-     * @param hybrid
-     */
-    MMO_SerialEngine_(MMO_CompileFlags flags, bool hybrid);
-    /**
-     *
-     */
-    ~MMO_SerialEngine_();
-    /**
-     *
-     * @param f
-     * @return
-     */
-    string
-    prototype(SOL_Function f);
-    /**
-     *
-     * @param m
-     * @return
-     */
-    string
-    makefile(SOL_Makefile m);
-    /**
-     *
-     * @param index
-     * @return
-     */
-    string
-    variableMap(string index);
-    /**
-     *
-     * @return
-     */
-    string
-    endMap();
-    /**
-     *
-     */
-    void
-    eventTemp();
-    private:
-    MMO_CompileFlags _flags;
-    bool _hybrid;
-};
-/**
- *
- * @param flags
- * @param hybrid
- * @return
- */
-MMO_SerialEngine
-newMMO_SerialEngine(MMO_CompileFlags flags, bool hybrid);
-/**
- *
- * @param m
- */
-void
-deleteMMO_SerialEngine(MMO_SerialEngine m);
-
-/**
- *
- */
-class MMO_ParallelEngine_: public MMO_Engine_
-{
-  public:
-    /**
-     *
-     */
-    MMO_ParallelEngine_(MMO_CompileFlags flags, bool hybrid);
-    /**
-     *
-     */
-    ~MMO_ParallelEngine_();
-    /**
-     *
-     * @param f
-     * @return
-     */
-    string
-    prototype(SOL_Function f);
-    /**
-     *
-     * @param m
-     * @return
-     */
-    string
-    makefile(SOL_Makefile m);
-    /**
-     *
-     * @param index
-     * @return
-     */
-    string
-    variableMap(string index);
-    /**
-     *
-     * @return
-     */
-    string
-    endMap();
-    /**
-     *
-     */
-    void
-    eventTemp();
-    private:
-    MMO_CompileFlags _flags;
-    bool _hybrid;
-};
-/**
- *
- * @param flags
- * @param hybrid
- * @return
- */
-MMO_ParallelEngine
-newMMO_ParallelEngine(MMO_CompileFlags flags, bool hybrid);
-/**
- *
- * @param m
- */
-void
-deleteMMO_ParallelEngine(MMO_ParallelEngine m);
 
 #endif  /* MMO_SOLVER_H_ */
 

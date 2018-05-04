@@ -35,8 +35,16 @@
 #include "solver.h"
 
 MMO_Generator_::MMO_Generator_(MMO_StoredDefinition std, MMO_CompileFlags flags) :
-    _std(std), _model(NULL), _function(NULL), _package(NULL), _flags(flags), _solver(
-    NULL), _files(NULL), _writer(NULL), _includes(), _fheader()
+  _std(std), 
+  _model(NULL), 
+  _function(NULL), 
+  _package(NULL), 
+  _flags(flags), 
+  _solver(NULL), 
+  _files(NULL), 
+  _writer(NULL), 
+  _includes(), 
+  _fheader()
 {
   if(_flags->output())
   {
@@ -81,8 +89,7 @@ MMO_Generator_::generate()
             _solver = newClassic(_model, _flags, _writer);
             break;
           default:
-            break;
-//            _solver = newQSS(_model, _flags, _writer);
+            _solver = newQSS(_model, _flags, _writer);
         }
         _files = newMMO_Files(_model, _solver, _flags);
         _generateModel();
@@ -148,177 +155,16 @@ MMO_Generator_::_generateHeader(string name)
 void
 MMO_Generator_::_generateModel()
 {
-  _initSections();
-  _variables();
-  _header();
-  _initMatrices();
-  _solver->model();
-  _solver->modelDeps();
+  _solver->modelHeader();
+  _solver->modelDefinition();
+  _solver->modelDependencies();
   _solver->zeroCrossing();
   _solver->handler();
   _solver->output();
-  _solver->initialCode();
-  _variablesInitCode();
-  _writer->print(WR_HEADER);
-  _writer->print(WR_GLOBAL_VARS);
-  _solver->print(SOL_MODEL_SETTINGS);
-  _solver->print(SOL_MODEL);
-  _solver->print(SOL_DEPS);
-  if(!_writer->isEmpty(WR_ZC_SIMPLE) || !_writer->isEmpty(WR_ZC_GENERIC))
-  {
-    _solver->print(SOL_ZC);
-    if(!_writer->isEmpty(WR_HANDLER_POS_SIMPLE)
-        || !_writer->isEmpty(WR_HANDLER_POS_GENERIC))
-    {
-      _solver->print(SOL_HANDLER_POS);
-    }
-    if(!_writer->isEmpty(WR_HANDLER_NEG_SIMPLE)
-        || !_writer->isEmpty(WR_HANDLER_NEG_GENERIC))
-    {
-      _solver->print(SOL_HANDLER_NEG);
-    }
-  }
-  if(!_writer->isEmpty(WR_OUTPUT_SIMPLE)
-      || !_writer->isEmpty(WR_OUTPUT_GENERIC))
-  {
-    _solver->print(SOL_OUTPUT);
-  }
-  _solver->print(SOL_INIT);
+  _solver->initializeDataStructures();
 }
 
-/*! \brief Generate the code needed by the header files.
- *
- */
-
-void
-MMO_Generator_::_header()
-{
-  stringstream buffer;
-  buffer << "#include <stdlib.h>" << endl;
-  buffer << "#include <stdio.h>" << endl;
-  buffer << "#include <string.h>" << endl;
-  buffer << "#include <math.h>" << endl;
-  buffer << endl;
-  if(_model->hasExternalFunctions())
-  {
-    buffer << "#include \"" << _model->name() << "_functions.h\"" << endl;
-  }
-  if(_model->imps())
-  {
-    MMO_ImportTable it = _model->imports();
-    for(string i = it->begin(); !it->end(); i = it->next())
-    {
-      buffer << "#include \"" << Util::getInstance()->packageName(i) << ".h\""
-          << endl;
-    }
-  }
-  buffer << "#include <common/utils.h>" << endl;
-  buffer << endl;
-  _writer->write(&buffer, WR_HEADER);
-  _writer->write(_solver->initHeader(), WR_HEADER);
-}
-
-/*! \brief Generate code for the model variables.
- *
- * 	Description:
- * 		Iterate over all the symbol table and look for the variables defined in the model, generate the  
- * code and store the result in the corresponding section. We consider the following situations:  
- * 		-# Parameters: Declare the global variables for each parameter. 
- * 		-# Initial expression: For states, discretes and parameters generate the initial code if the variables have initial expressions. We identify three different initial conditions:
- * 			+# Initial assignments of the form: \f$ Real \ x = value\f$.
- * 			+# Start modifier: \f$ Real \ x(start = value) \f$.
- * 			+# Each modifier: \f$ Real \ x[N](each start = value) \f$.
- *
- * 	\note{All the parameters and the algebraic variables array are declared global in the C file}
- */
-
-void
-MMO_Generator_::_variables()
-{
-  stringstream buffer;
-  VarSymbolTable vt = _model->varTable();
-  vt->setPrintEnvironment(VST_INIT);
-  if(_model->annotation()->classic())
-  {
-    vt->setPrintEnvironment(VST_CLASSIC_INIT);
-  }
-  string indent = _writer->indent(1);
-  list<VarInfo>::iterator it;
-  list<VarInfo> parameters = vt->parameters();
-  for(it = parameters.begin(); it != parameters.end(); it++)
-  {
-    VarInfo vi = *it;
-    Index idx = vi->index();
-    stringstream reverse;
-    if(vi->type()->getType() == TYREAL)
-    {
-      buffer << "double " << vt->print(vi);
-    }
-    else if(vi->type()->getType() == TYINTEGER)
-    {
-      buffer << "int " << vt->print(vi);
-      reverse << "int __reverse" << vt->print(vi);
-    }
-    if(vi->isArray())
-    {
-      buffer << "[" << vi->size() << "]";
-      reverse << "[" << vi->size() << "]";
-    }
-    else
-    {
-      buffer << " = 0";
-      reverse << " = 0";
-    }
-    buffer << ";";
-    if(vi->type()->getType() == TYINTEGER)
-    {
-      reverse << ";";
-      _writer->write(&reverse, WR_GLOBAL_VARS);
-    }
-    _writer->write(&buffer, WR_GLOBAL_VARS);
-    if(vi->hasAssignment() || vi->hasStartModifier() || vi->hasEachModifier())
-    {
-      buffer << _model->printInitialAssignment(vi, indent);
-      _writer->write(&buffer, WR_START_CODE);
-    }
-  }
-  _writer->newLine(WR_GLOBAL_VARS);
-}
-
-/*! \brief Write the prologue of each writer section of the model.
- *
- */
-
-void
-MMO_Generator_::_initSections()
-{
-  _writer->write("// Allocate main data structures.", WR_ALLOC_LD);
-  _writer->write("// Initialize model data.", WR_INIT_LD);
-  _writer->write("// Initialize model time.", WR_INIT_TIME);
-  _writer->write("// Initialize model code.", WR_INIT_CODE);
-}
-
-/*! \brief Generate code to allocate and initialize model variables.
- *
- *  Description:
- *  	-# Generate code to allocate auxiliary arrays used to count the number of dependencies.
- *  	-# Generate code to allocate global algebraic variables if neccesary.
- *  	-# Call the solver to generate the incidence matrices according to the method selected.
- *
- */
-
-void
-MMO_Generator_::_initMatrices()
-{
-  _solver->initializeMatrices();
-}
-
-void
-MMO_Generator_::_functions()
-{
-}
-
-void
+void 
 MMO_Generator_::_printList(list<string> l)
 {
   for(list<string>::iterator it = l.begin(); it != l.end(); it++)

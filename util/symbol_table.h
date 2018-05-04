@@ -29,9 +29,8 @@
 #include "../ast/ast_types.h"
 #include "../ast/element.h"
 #include "../ast/modification.h"
-#include "../ir/mmo_types.h"
 #include "../ir/mmo_util.h"
-#include "md_index.h"
+#include "index.h"
 #include "type.h"
 #include "util_types.h"
 
@@ -214,8 +213,7 @@ class VarInfo_
      * @param m
      * @param s
      */
-    VarInfo_(Type t, AST_TypePrefix tp, AST_Modification m, vector<int> s,
-        bool array);
+    VarInfo_(Type t, AST_TypePrefix tp, AST_Modification m, vector<int> s, bool array);
     /**
      *
      * @return
@@ -225,7 +223,6 @@ class VarInfo_
     {
       return _tp;
     }
-    ;
     /**
      *
      * @return
@@ -253,7 +250,6 @@ class VarInfo_
     {
       return _m;
     }
-    ;
     /**
      *
      * @param m
@@ -264,7 +260,6 @@ class VarInfo_
       _m = m;
       _processModification();
     }
-    ;
     /**
      *
      * @return
@@ -280,7 +275,6 @@ class VarInfo_
     {
       _t = t;
     }
-    ;
     /**
      *
      */
@@ -346,7 +340,6 @@ class VarInfo_
     {
       return _tp & TP_INPUT;
     }
-    ;
     /**
      *
      * @return
@@ -356,7 +349,6 @@ class VarInfo_
     {
       return _tp & TP_OUTPUT;
     }
-    ;
     /**
      *
      * @return
@@ -411,18 +403,6 @@ class VarInfo_
      */
     bool
     hasIndex();
-    /**
-     *
-     * @param idx
-     */
-    void
-    setIndex(Index idx);
-    /**
-     *
-     * @return
-     */
-    Index
-    index();
     /**
      *
      * @param val
@@ -492,7 +472,7 @@ class VarInfo_
      * @return
      */
     friend ostream &
-    operator<<(ostream &os, const VarInfo_ &e);
+    operator<<(ostream &os, const VarInfo &e);
     /**
      *
      * @param dim
@@ -521,7 +501,6 @@ class VarInfo_
     AST_Modification _m;
     AST_Comment _comm;
     bool _builtin;
-    Index _index;
     vector<int> _size;
     int _value;
     bool _algebraic;
@@ -573,55 +552,32 @@ class VarSymbolTable_: public SymbolTable<VarName, VarInfo>
     {
       return val(i);
     }
-    ;
     /**
      *
      * @param i
      * @return
      */
-    VarName
+    MMO_VarName
     varName(int i)
     {
       return key(i);
     }
     /**
      *
-     * @param vse
      */
-    void
-    setPrintEnvironment(VST_Environment vse);
-    /**
-     *
-     * @return
-     */
-    VST_Environment
-    printEnvironment();
-    /**
-     *
-     * @param vi
-     * @param idx
-     * @param offset
-     * @param order
-     * @param idxs
-     * @param constant
-     * @param forOffset
-     * @return
-     */
-    string
-    print(VarInfo vi, string idx = "", int offset = 0, int order = 0,
-        list<Index> idxs = list<Index>(), int constant = -1, int forOffset = 0);
-    string
-    printIndex(Index idx, list<Index> idxs, string sub, int offset,
-        int constant, VarInfo vi, int order);
     void
     setPolyCoeffs(int order);
+    /**
+     *
+     */
     void
-    insert(VarName n, VarInfo vi);
+    insert(MMO_VarName n, VarInfo vi);
+    /**
+     *
+     */
     list<VarInfo>
     parameters();
-    string
-    getTypePrefix();
-    private:
+  private:
     VST_Environment _vste;
     int _coeffs;
     list<VarInfo> _parameters;
@@ -638,30 +594,5 @@ class TypeSymbolTable_: public SymbolTable<TypeName, Type>
      */
     TypeSymbolTable_();
 };
-
-/**
- *
- * @param t
- * @param tp
- * @param
- * @param
- * @param s
- * @return
- */
-VarInfo
-newVarInfo(Type t, AST_TypePrefix tp, AST_Modification, AST_Comment,
-    vector<int> s = vector<int>(), bool array = false);
-/**
- *
- * @return
- */
-VarSymbolTable
-newVarSymbolTable();
-/**
- *
- * @return
- */
-TypeSymbolTable
-newTypeSymbolTable();
 
 #endif /* SYMBOL_TABLE_H_ */

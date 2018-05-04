@@ -86,34 +86,6 @@ class MMO_Generator_
     _generatePackage(MMO_Package p);
     void
     _header();
-    void
-    _parameters();
-    void
-    _modelDef();
-    void
-    _modelDeps();
-    void
-    _zeroCrossing();
-    void
-    _handlerPositive();
-    void
-    _handlerNegative();
-    void
-    _output();
-    void
-    _initMatrices();
-    void
-    _functions();
-    void
-    _initSections();
-    void
-    _initEvents();
-    void
-    _initTime();
-    void
-    _initOutput();
-    void
-    _initModel();
     MMO_StoredDefinition _std;
     MMO_Model _model;
     MMO_Function _function;

@@ -24,11 +24,16 @@
 #include <map>
 #include <string>
 
-#include "../ir/equation.h"
-#include "../ir/mmo_util.h"
 #include "util_types.h"
+#include "../ir/equation.h"
+#include "../ir/statement.h"
+#include "../ir/event.h"
 
-typedef map<int,EquationDefinition> MMO_EquationTable;
-
+typedef map<int,MMO_Equation> MMO_EquationTable;
+typedef map<int,MMO_Event> MMO_EventTable;
+typedef map<int,MMO_Statement> MMO_StatementTable;
+typedef map<int,MMO_identifier> MMO_ImportTable;
+typedef map<int,MMO_identifier> MMO_SymbolRefTable;
+typedef map<int,MMO_identifier> MMO_PackageTable;
 
 #endif /* MODEL_TABLES_H_ */
