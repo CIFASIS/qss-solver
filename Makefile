@@ -61,7 +61,7 @@ ASTSRC = $(ASTDIR)/ast_builder.cpp \
 
 GENERATORSRC = $(GENERATORDIR)/files.cpp  \
 							 $(GENERATORDIR)/solver.cpp  \
-							 $(GENERATORDIR)/generator_utils.cpp  \
+							 $(GENERATORDIR)/writer.cpp  \
 							 $(GENERATORDIR)/generator.cpp 
 
 IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
