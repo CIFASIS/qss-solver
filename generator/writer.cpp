@@ -20,15 +20,18 @@
 #include <sstream>
 #include <iostream>
 
-#include <generator/generator_utils.h>
+#include <generator/writer.h>
 #include "../util/util.h"
 
 #define TAB "\t"
 
 /* MMO_MemoryWriter class. */
 
-MMO_MemoryWriter_::MMO_MemoryWriter_() :
-    _indentStr(), _block(), _indent(0), _blockIndent(0)
+MMO_MemoryWriter::MMO_MemoryWriter() :
+    _indentStr(), 
+    _block(), 
+    _indent(0), 
+    _blockIndent(0)
 {
   for(int i = 0; i < SECTIONS; i++)
   {
@@ -37,7 +40,7 @@ MMO_MemoryWriter_::MMO_MemoryWriter_() :
 }
 
 void
-MMO_MemoryWriter_::setFile(string fname)
+MMO_MemoryWriter::setFile(string fname)
 {
   _file.open(fname.c_str());
   if(!_file.good())
@@ -47,7 +50,7 @@ MMO_MemoryWriter_::setFile(string fname)
 }
 
 void
-MMO_MemoryWriter_::removeFromSection(string str, WR_Section section)
+MMO_MemoryWriter::removeFromSection(string str, WR_Section section)
 {
   list<string>::iterator it;
   list<string> rmv;
@@ -73,30 +76,30 @@ MMO_MemoryWriter_::removeFromSection(string str, WR_Section section)
 }
 
 void
-MMO_MemoryWriter_::clear(WR_Section section)
+MMO_MemoryWriter::clear(WR_Section section)
 {
   _sections[section].clear();
 }
 
 void
-MMO_MemoryWriter_::clearFile()
+MMO_MemoryWriter::clearFile()
 {
   _file.close();
 }
 
-MMO_MemoryWriter_::~MMO_MemoryWriter_()
+MMO_MemoryWriter::~MMO_MemoryWriter()
 {
   _file.close();
 }
 
 void
-MMO_MemoryWriter_::newLine(WR_Section section)
+MMO_MemoryWriter::newLine(WR_Section section)
 {
   _sections[section].push_back("");
 }
 
 void
-MMO_MemoryWriter_::write(string str, WR_Section section, WR_InsertType it)
+MMO_MemoryWriter::write(string str, WR_Section section, WR_InsertType it)
 {
   if(!str.empty())
   {
@@ -116,7 +119,7 @@ MMO_MemoryWriter_::write(string str, WR_Section section, WR_InsertType it)
 }
 
 void
-MMO_MemoryWriter_::write(stringstream *s, WR_Section section, bool clean,
+MMO_MemoryWriter::write(stringstream *s, WR_Section section, bool clean,
     WR_InsertType it)
 {
   if(!s->str().empty())
@@ -142,7 +145,7 @@ MMO_MemoryWriter_::write(stringstream *s, WR_Section section, bool clean,
 }
 
 void
-MMO_MemoryWriter_::writeBlock(list<string> block, WR_Section section)
+MMO_MemoryWriter::writeBlock(list<string> block, WR_Section section)
 {
   list<string>::iterator it;
   for(it = block.begin(); it != block.end(); it++)
@@ -152,7 +155,7 @@ MMO_MemoryWriter_::writeBlock(list<string> block, WR_Section section)
 }
 
 void
-MMO_MemoryWriter_::print(WR_Section section)
+MMO_MemoryWriter::print(WR_Section section)
 {
   list<string>::iterator it;
   for(it = _sections[section].begin(); it != _sections[section].end(); it++)
@@ -162,26 +165,26 @@ MMO_MemoryWriter_::print(WR_Section section)
 }
 
 void
-MMO_MemoryWriter_::print(stringstream *s)
+MMO_MemoryWriter::print(stringstream *s)
 {
   _file << _block << _indentStr << s->str() << endl;
   s->str("");
 }
 
 void
-MMO_MemoryWriter_::print(string s)
+MMO_MemoryWriter::print(string s)
 {
   _file << _block << _indentStr << s << endl;
 }
 
 bool
-MMO_MemoryWriter_::isEmpty(WR_Section section)
+MMO_MemoryWriter::isEmpty(WR_Section section)
 {
   return _sections[section].empty();
 }
 
 void
-MMO_MemoryWriter_::printBlock(list<string> block)
+MMO_MemoryWriter::printBlock(list<string> block)
 {
   list<string>::iterator it;
   for(it = block.begin(); it != block.end(); it++)
@@ -191,7 +194,7 @@ MMO_MemoryWriter_::printBlock(list<string> block)
 }
 
 void
-MMO_MemoryWriter_::setIndent(int n)
+MMO_MemoryWriter::setIndent(int n)
 {
   stringstream s;
   _indent = n;
@@ -203,13 +206,13 @@ MMO_MemoryWriter_::setIndent(int n)
 }
 
 string
-MMO_MemoryWriter_::indent()
+MMO_MemoryWriter::indent()
 {
   return _indentStr;
 }
 
 string
-MMO_MemoryWriter_::indent(int n)
+MMO_MemoryWriter::indent(int n)
 {
   stringstream s;
   for(int i = 0; i < n; i++)
@@ -220,38 +223,29 @@ MMO_MemoryWriter_::indent(int n)
 }
 
 void
-MMO_MemoryWriter_::beginBlock()
+MMO_MemoryWriter::beginBlock()
 {
   _block = indent(++_blockIndent);
 }
 
 void
-MMO_MemoryWriter_::endBlock()
+MMO_MemoryWriter::endBlock()
 {
   _block = indent(--_blockIndent);
 }
 
 string
-MMO_MemoryWriter_::block()
+MMO_MemoryWriter::block()
 {
   return _block;
 }
 
-MMO_MemoryWriter
-newMMO_MemoryWriter()
-{
-  return new MMO_MemoryWriter_();
-}
-
-void
-deleteMMO_MemoryWriter(MMO_MemoryWriter m)
-{
-  delete m;
-}
 /* MMO_FileWriter class. */
 
-MMO_FileWriter_::MMO_FileWriter_() :
-    _indentStr(), _indent(0), _blockIndent(0)
+MMO_FileWriter::MMO_FileWriter() :
+    _indentStr(), 
+    _indent(0), 
+    _blockIndent(0)
 {
   for(int i = 0; i < SECTIONS; i++)
   {
@@ -261,7 +255,7 @@ MMO_FileWriter_::MMO_FileWriter_() :
   }
 }
 
-MMO_FileWriter_::~MMO_FileWriter_()
+MMO_FileWriter::~MMO_FileWriter()
 {
   for(int i = 0; i < SECTIONS; i++)
   {
@@ -273,43 +267,43 @@ MMO_FileWriter_::~MMO_FileWriter_()
 }
 
 void
-MMO_FileWriter_::removeFromSection(string str, WR_Section section)
+MMO_FileWriter::removeFromSection(string str, WR_Section section)
 {
   return;
 }
 
 void
-MMO_FileWriter_::clear(WR_Section section)
+MMO_FileWriter::clear(WR_Section section)
 {
   return;
 }
 
 void
-MMO_FileWriter_::setFile(string fname)
+MMO_FileWriter::setFile(string fname)
 {
   _file.open(fname.c_str());
 }
 
 void
-MMO_FileWriter_::clearFile()
+MMO_FileWriter::clearFile()
 {
   _file.close();
 }
 
 void
-MMO_FileWriter_::newLine(WR_Section section)
+MMO_FileWriter::newLine(WR_Section section)
 {
   _sections[section] << endl;
 }
 
 void
-MMO_FileWriter_::write(string str, WR_Section section, WR_InsertType it)
+MMO_FileWriter::write(string str, WR_Section section, WR_InsertType it)
 {
   _sections[section] << str << endl;
 }
 
 void
-MMO_FileWriter_::write(stringstream *s, WR_Section section, bool clean,
+MMO_FileWriter::write(stringstream *s, WR_Section section, bool clean,
     WR_InsertType it)
 {
   _sections[section] << s->str() << endl;
@@ -320,7 +314,7 @@ MMO_FileWriter_::write(stringstream *s, WR_Section section, bool clean,
 }
 
 void
-MMO_FileWriter_::writeBlock(list<string> block, WR_Section section)
+MMO_FileWriter::writeBlock(list<string> block, WR_Section section)
 {
   list<string>::iterator it;
   for(it = block.begin(); it != block.end(); it++)
@@ -330,32 +324,32 @@ MMO_FileWriter_::writeBlock(list<string> block, WR_Section section)
 }
 
 void
-MMO_FileWriter_::print(WR_Section section)
+MMO_FileWriter::print(WR_Section section)
 {
   _file << _sections[section].rdbuf();
 }
 
 void
-MMO_FileWriter_::print(stringstream *s)
+MMO_FileWriter::print(stringstream *s)
 {
   _file << s->str() << endl;
   s->str("");
 }
 
 void
-MMO_FileWriter_::print(string s)
+MMO_FileWriter::print(string s)
 {
   _file << s << endl;
 }
 
 bool
-MMO_FileWriter_::isEmpty(WR_Section section)
+MMO_FileWriter::isEmpty(WR_Section section)
 {
   return false;
 }
 
 void
-MMO_FileWriter_::printBlock(list<string> block)
+MMO_FileWriter::printBlock(list<string> block)
 {
   list<string>::iterator it;
   for(it = block.begin(); it != block.end(); it++)
@@ -365,7 +359,7 @@ MMO_FileWriter_::printBlock(list<string> block)
 }
 
 void
-MMO_FileWriter_::setIndent(int n)
+MMO_FileWriter::setIndent(int n)
 {
   stringstream s;
   _indent = n;
@@ -377,13 +371,13 @@ MMO_FileWriter_::setIndent(int n)
 }
 
 string
-MMO_FileWriter_::indent()
+MMO_FileWriter::indent()
 {
   return _indentStr;
 }
 
 string
-MMO_FileWriter_::indent(int n)
+MMO_FileWriter::indent(int n)
 {
   stringstream s;
   for(int i = 0; i < n; i++)
@@ -394,31 +388,19 @@ MMO_FileWriter_::indent(int n)
 }
 
 void
-MMO_FileWriter_::beginBlock()
+MMO_FileWriter::beginBlock()
 {
   _block = indent(++_blockIndent);
 }
 
 void
-MMO_FileWriter_::endBlock()
+MMO_FileWriter::endBlock()
 {
   _block = indent(--_blockIndent);
 }
 
 string
-MMO_FileWriter_::block()
+MMO_FileWriter::block()
 {
   return _block;
-}
-
-MMO_FileWriter
-newMMO_FileWriter()
-{
-  return new MMO_FileWriter_();
-}
-
-void
-deleteMMO_FileWriter(MMO_FileWriter m)
-{
-  delete m;
 }

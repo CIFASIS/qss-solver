@@ -38,7 +38,7 @@ class MMO_Statement
      * @param stm
      * @param data
      */
-    MMO_Statement(AST_Statement stm, MMO_ModelConfig cfg);
+    MMO_Statement(AST_Statement stm, MMO_ModelConfig &config);
     /**
      *
      * @param stm
@@ -70,7 +70,7 @@ class MMO_Statement
      */
     list<string>
     getVariables();
-    private:
+  private:
     void
     _init();
     void
@@ -90,7 +90,7 @@ class MMO_Statement
         list<string>& ret, list<string>& code);
 
     AST_Statement _stm;
-    MMO_ModelConfig _cfg;
+    MMO_ModelConfig _config;
     bool _initialCode;
     list<string> _variables;
 };

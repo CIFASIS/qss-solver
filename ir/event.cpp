@@ -27,21 +27,21 @@
 #include "mmo_util.h"
 #include "statement.h"
 
-MMO_Event_::MMO_Event_(AST_Expression cond, MMO_ModelData data) :
+MMO_Event::MMO_Event(AST_Expression cond, MMO_ModelConfig &config) :
     _positiveHandlerStatements(), 
     _negativeHandlerStatements(),
     _init(0), 
     _end(0), 
     _handler(HND_ZERO), 
     _handlerType(HND_ZERO), 
-    _data(data), 
+    _config(config), 
     _weight(-1), 
     _zcRelation(ZC_GT)
 {
-  MMO_ConvertCondition_ cc(_data);
-  _data->setCalculateAlgegraics(true);
-  _cond = newMMO_Equation(cc.foldTraverse(_getExpression(cond)), _data);
-  _data->setCalculateAlgegraics(false);
+  MMO_ConvertCondition cc(_config);
+  _config->setCalculateAlgegraics(true);
+  _cond = newMMO_Equation(cc.foldTraverse(_getExpression(cond)), _config);
+  _config->setCalculateAlgegraics(false);
   if(cc.zeroCrossing() > 0)
   {
     _handler = HND_POSITIVE;
@@ -68,46 +68,37 @@ MMO_Event_::MMO_Event_(AST_Expression cond, MMO_ModelData data) :
   {
     _zcRelation = ZC_GE;
   }
-  _weight = data->weight();
-  _deps = newDependencies();
-  _lhs = newDependencies();
-  _index = data->lhs();
-  _end = _index.hi();
-  _init = _index.low();
-  _data = data;
+  _weight = config.weight();
 }
 
-MMO_Event_::~MMO_Event_()
+MMO_Event::~MMO_Event()
 {
-  delete _cond;
-  delete _deps;
-  delete _lhs;
 }
 
 MMO_Equation
-MMO_Event_::condition()
+MMO_Event::condition()
 {
   return _cond;
 }
 
 bool
-MMO_Event_::hasWeight()
+MMO_Event::hasWeight()
 {
   return _weight >= 0;
 }
 
 double
-MMO_Event_::weight()
+MMO_Event::weight()
 {
   return _weight;
 }
 
 void
-MMO_Event_::setCondition(MMO_Expression cond)
+MMO_Event::setCondition(MMO_Expression cond)
 {
-  _data->setCalculateAlgegraics(true);
-  _cond = newMMO_Equation(cond, _data);
-  _data->setCalculateAlgegraics(false);
+  _config->setCalculateAlgegraics(true);
+  _cond = newMMO_Equation(cond, _config);
+  _config->setCalculateAlgegraics(false);
 }
 
 /*! \brief Evaluates the eslewhen statement condition and sets the appropiate handler.
@@ -122,11 +113,11 @@ MMO_Event_::setCondition(MMO_Expression cond)
  */
 
 bool
-MMO_Event_::compareCondition(AST_Expression cond)
+MMO_Event::compareCondition(AST_Expression cond)
 {
-  MMO_ConvertCondition_ cc(_data);
+  MMO_ConvertCondition_ cc(_config);
   AST_Expression c = cc.foldTraverse(_getExpression(cond));
-  EqualExp ee(_data->symbols());
+  EqualExp ee(_config->symbols());
   bool cr = ee.equalTraverse(c, _cond->exp()->exp());
   if(cr)
   {
@@ -145,16 +136,14 @@ MMO_Event_::compareCondition(AST_Expression cond)
 }
 
 void
-MMO_Event_::insert(AST_Statement stm)
+MMO_Event::insert(AST_Statement stm)
 {
-  _data->setWhenStatement(true);
-  Index tmp = _data->lhs();
-  _data->setLHS(_index);
-  MMO_Statement s = newMMO_Statement(stm, _data);
-  _data->setLHS(tmp);
-  _data->setWhenStatement(false);
-  _deps->join(s->deps());
-  _lhs->join(s->lhs());
+  _config->setWhenStatement(true);
+  Index tmp = _config->lhs();
+  _config->setLHS(_index);
+  MMO_Statement s = newMMO_Statement(stm, _config);
+  _config->setLHS(tmp);
+  _config->setWhenStatement(false);
   if(_handler == HND_POSITIVE)
   {
     _positiveHandlerStatements.push_back(s);
@@ -166,7 +155,7 @@ MMO_Event_::insert(AST_Statement stm)
 }
 
 MMO_Statement
-MMO_Event_::begin(HND_Type h)
+MMO_Event::begin(HND_Type h)
 {
   _handler = h;
   if(h == HND_POSITIVE)
@@ -183,14 +172,14 @@ MMO_Event_::begin(HND_Type h)
 }
 
 MMO_Statement
-MMO_Event_::next()
+MMO_Event::next()
 {
   _it++;
   return *_it;
 }
 
 bool
-MMO_Event_::end()
+MMO_Event::end()
 {
   if(_handler == HND_POSITIVE)
   {
@@ -203,93 +192,45 @@ MMO_Event_::end()
   return false;
 }
 
-Index
-MMO_Event_::index()
-{
-  return _index;
-}
-
-void
-MMO_Event_::setIndex(Index idx)
-{
-  _index = idx;
-}
-
-int
-MMO_Event_::beginRange()
-{
-  return _init;
-}
-
-int
-MMO_Event_::endRange()
-{
-  return _end;
-}
-
 HND_Type
-MMO_Event_::handlerType()
+MMO_Event::handlerType()
 {
   return _handlerType;
 }
 
 void
-MMO_Event_::setHandlerType(HND_Type h)
+MMO_Event::setHandlerType(HND_Type h)
 {
   _handlerType = h;
 }
 
 string
-MMO_Event_::print()
+MMO_Event::print()
 {
   string ret;
   return ret;
 }
 
-Dependencies
-MMO_Event_::deps()
-{
-  return _deps;
-}
-
-Dependencies
-MMO_Event_::lhs()
-{
-  return _lhs;
-}
-
 bool
-MMO_Event_::hasPositiveHandler()
+MMO_Event::hasPositiveHandler()
 {
   return !_positiveHandlerStatements.empty();
 }
 
 bool
-MMO_Event_::hasNegativeHandler()
+MMO_Event::hasNegativeHandler()
 {
   return !_negativeHandlerStatements.empty();
 }
 
-MMO_Event
-newMMO_Event(AST_Expression cond, MMO_ModelData data)
-{
-  return new MMO_Event_(cond, data);
-}
-
-void
-deleteMMO_Event(MMO_Event m)
-{
-  delete m;
-}
-
 ZC_REL
-MMO_Event_::zcRelation()
+MMO_Event::zcRelation()
 {
   return _zcRelation;
 }
 
 AST_Expression
-MMO_Event_::_getExpression(AST_Expression exp)
+MMO_Event::_getExpression(AST_Expression exp)
 {
   if(exp->expressionType() == EXPOUTPUT)
   {

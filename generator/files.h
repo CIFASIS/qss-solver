@@ -24,16 +24,13 @@
 #include <string>
 #include <list>
 
-#include "../ir/mmo_types.h"
-#include "../util/util_types.h"
-#include "generator_types.h"
 
 using namespace std;
 
 /**
  *
  */
-class MMO_Files_
+class MMO_Files
 {
   public:
     /**
@@ -42,17 +39,17 @@ class MMO_Files_
      * @param solver
      * @param flags
      */
-    MMO_Files_(MMO_Model model, MMO_Solver solver, MMO_CompileFlags flags);
+    MMO_Files(MMO_Model &model, MMO_Solver &solver, MMO_CompileFlags &flags);
     /**
      *
      * @param name
      * @param flags
      */
-    MMO_Files_(string name, MMO_CompileFlags flags);
+    MMO_Files(string name, MMO_CompileFlags &flags);
     /**
      *
      */
-    ~MMO_Files_();
+    ~MMO_Files();
     /**
      *
      */
@@ -88,31 +85,5 @@ class MMO_Files_
     MMO_CompileFlags _flags;
     ofstream _file;
 };
-
-/**
- *
- * @param model
- * @param solver
- * @param flags
- * @return
- */
-MMO_Files
-newMMO_Files(MMO_Model model, MMO_Solver solver, MMO_CompileFlags flags);
-
-/**
- *
- * @param name
- * @param flags
- * @return
- */
-MMO_Files
-newMMO_Files(string name, MMO_CompileFlags flags);
-
-/**
- *
- * @param m
- */
-void
-deleteMMO_Files(MMO_Files m);
 
 #endif  /* MMO_FILES_H_ */

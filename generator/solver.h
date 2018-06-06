@@ -25,14 +25,13 @@
 #include <set>
 #include <string>
 
-#include "../ir/mmo_types.h"
+#include "../ir/model.h"
+#include "../util/compile_flags.h"
 #include "../util/dependencies.h"
-#include "../util/md_index.h"
 #include "../util/graph.h"
 #include "../util/symbol_table.h"
 #include "../util/util_types.h"
-#include "generator_types.h"
-#include "generator_utils.h"
+#include "writer.h"
 
 /**
  *
@@ -80,17 +79,16 @@ typedef enum
 /**
  *
  */
-class MMO_Solver_
+class MMO_Solver
 {
   public:
     /**
      *
      */
     virtual
-    ~MMO_Solver_()
+    ~MMO_Solver()
     {
-    }
-    ;
+    };
     /**
      *
      * @return
@@ -151,7 +149,7 @@ class MMO_Solver_
 /**
  *
  */
-class QSS_: public MMO_Solver_
+class QSS: public MMO_Solver
 {
   public:
     /**
@@ -160,11 +158,11 @@ class QSS_: public MMO_Solver_
      * @param flags
      * @param writer
      */
-    QSS_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
+    QSS(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
     /**
      *
      */
-    ~QSS_();
+    ~QSS();
     /**
      *
      * @return
@@ -229,24 +227,8 @@ class QSS_: public MMO_Solver_
 
 /**
  *
- * @param model
- * @param flags
- * @param writer
- * @return
  */
-QSS
-newQSS(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
-/**
- *
- * @param m
- */
-void
-deleteQSS(QSS m);
-
-/**
- *
- */
-class Classic_: public MMO_Solver_
+class Classic: public MMO_Solver
 {
   public:
     /**
@@ -255,11 +237,11 @@ class Classic_: public MMO_Solver_
      * @param flags
      * @param writer
      */
-    Classic_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
+    Classic(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
     /**
      *
      */
-    ~Classic_();
+    ~Classic();
     /**
      *
      * @return
@@ -321,26 +303,11 @@ class Classic_: public MMO_Solver_
     MMO_Writer        _writer;
     string            _name;
 };
-/**
- *
- * @param model
- * @param flags
- * @param writer
- * @return
- */
-Classic
-newClassic(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
-/**
- *
- * @param m
- */
-void
-deleteClassic(Classic m);
 
 /**
  *
  */
-class SolverCommon_
+class SolverCommon
 {
   public:
     /**
@@ -350,12 +317,11 @@ class SolverCommon_
      * @param writer
      * @param modelVectorDeps
      */
-    SolverCommon_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer,
-        MMO_DependenciesTable modelVectorDeps, Graph *graph = NULL);
+    SolverCommon(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer);
     /**
      *
      */
-    ~SolverCommon_();
+    ~SolverCommon();
     /**
      *
      * @return
@@ -561,7 +527,7 @@ class SolverCommon_
     beginForLoops(Index idx, WR_Section section);
     void
     endForLoops(Index idx, WR_Section section);
-    private:
+  private:
     MMO_Model _model;
     MMO_CompileFlags _flags;
     MMO_Writer _writer;
@@ -572,23 +538,6 @@ class SolverCommon_
     bool _generateGraph;
     bool _parallel;
 };
-/**
- *
- * @param model
- * @param flags
- * @param writer
- * @param modelVectorDeps
- * @return
- */
-SolverCommon
-newSolverCommon(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer,
-    MMO_DependenciesTable modelVectorDeps = NULL, Graph *graph = NULL);
-/**
- *
- * @param m
- */
-void
-deleteSolverCommon(SolverCommon m);
 
 #endif  /* MMO_SOLVER_H_ */
 

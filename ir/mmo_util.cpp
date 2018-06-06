@@ -8,9 +8,9 @@
 #include "class.h"
 #include "expression.h"
 
-/* MMO_ModelData class */
+/* MMO_ModelConfig class */
 
-MMO_ModelData_::MMO_ModelData_() :
+MMO_ModelConfig::MMO_ModelConfig() :
     _symbols(NULL), 
     _algebraics(NULL), 
     _functions(NULL), 
@@ -30,174 +30,174 @@ MMO_ModelData_::MMO_ModelData_() :
 {
 }
 
-MMO_ModelData_::~MMO_ModelData_()
+MMO_ModelConfig::~MMO_ModelConfig()
 {
 }
 
 bool
-MMO_ModelData_::hasExternalFunctions()
+MMO_ModelConfig::hasExternalFunctions()
 {
   return _externalFunctions != NULL;
 }
 
 void
-MMO_ModelData_::setCalledFunctions(MMO_SymbolRefTable f)
+MMO_ModelConfig::setCalledFunctions(MMO_SymbolRefTable f)
 {
   _calledFunctions = f;
 }
 
 void
-MMO_ModelData_::setCalculateAlgegraics(bool ca)
+MMO_ModelConfig::setCalculateAlgegraics(bool ca)
 {
   _calculateAlgebraics = ca;
 }
 
 bool
-MMO_ModelData_::calculateAlgebraics()
+MMO_ModelConfig::calculateAlgebraics()
 {
   return _calculateAlgebraics;
 }
 
 MMO_SymbolRefTable
-MMO_ModelData_::calledFunctions()
+MMO_ModelConfig::calledFunctions()
 {
   return _calledFunctions;
 }
 
 void
-MMO_ModelData_::setFunctions(MMO_FunctionTable f)
+MMO_ModelConfig::setFunctions(MMO_FunctionTable f)
 {
   _functions = f;
 }
 
 MMO_FunctionTable
-MMO_ModelData_::functions()
+MMO_ModelConfig::functions()
 {
   return _functions;
 }
 
 void
-MMO_ModelData_::setPackages(MMO_PackageTable p)
+MMO_ModelConfig::setPackages(MMO_PackageTable p)
 {
   _packages = p;
 }
 
 MMO_PackageTable
-MMO_ModelData_::packages()
+MMO_ModelConfig::packages()
 {
   return _packages;
 }
 
 void
-MMO_ModelData_::setExternalFunctions(MMO_FunctionTable ef)
+MMO_ModelConfig::setExternalFunctions(MMO_FunctionTable ef)
 {
   _externalFunctions = ef;
 }
 
 MMO_FunctionTable
-MMO_ModelData_::externalFunctions()
+MMO_ModelConfig::externalFunctions()
 {
   return _externalFunctions;
 }
 
 void
-MMO_ModelData_::setAlgebraics(MMO_EquationTable algs)
+MMO_ModelConfig::setAlgebraics(MMO_EquationTable algs)
 {
   _algebraics = algs;
 }
 
 MMO_EquationTable
-MMO_ModelData_::algebraics()
+MMO_ModelConfig::algebraics()
 {
   return _algebraics;
 }
 
 void
-MMO_ModelData_::setSymbols(VarSymbolTable symbols)
+MMO_ModelConfig::setSymbols(VarSymbolTable symbols)
 {
   _symbols = symbols;
 }
 
 VarSymbolTable
-MMO_ModelData_::symbols()
+MMO_ModelConfig::symbols()
 {
   return _symbols;
 }
 
 void
-MMO_ModelData_::setInitialCode(bool s)
+MMO_ModelConfig::setInitialCode(bool s)
 {
   _initialCode = s;
 }
 
 bool
-MMO_ModelData_::initialCode()
+MMO_ModelConfig::initialCode()
 {
   return _initialCode;
 }
 
 bool
-MMO_ModelData_::generateDerivatives()
+MMO_ModelConfig::generateDerivatives()
 {
   return _generateDerivatives;
 }
 
 void
-MMO_ModelData_::setGenerateDerivatives(bool gd)
+MMO_ModelConfig::setGenerateDerivatives(bool gd)
 {
   _generateDerivatives = gd;
 }
 
 int
-MMO_ModelData_::begin()
+MMO_ModelConfig::begin()
 {
   return _range.begin(0);
 }
 
 void
-MMO_ModelData_::setBegin(int begin, int dim)
+MMO_ModelConfig::setBegin(int begin, int dim)
 {
   _range.setBegin(begin, dim);
 }
 
 int
-MMO_ModelData_::end()
+MMO_ModelConfig::end()
 {
   return _range.end(0);
 }
 
 void
-MMO_ModelData_::setRange(Range range)
+MMO_ModelConfig::setRange(Range range)
 {
   _range = range;
 }
 
 Range
-MMO_ModelData_::range()
+MMO_ModelConfig::range()
 {
   return _range;
 }
 
 void
-MMO_ModelData_::setEnd(int end, int dim)
+MMO_ModelConfig::setEnd(int end, int dim)
 {
   _range.setEnd(end, dim);
 }
 
 void
-MMO_ModelData_::setLHS(Index idx)
+MMO_ModelConfig::setLHS(Index idx)
 {
   _lhs = idx;
 }
 
 Index
-MMO_ModelData_::lhs()
+MMO_ModelConfig::lhs()
 {
   return _lhs;
 }
 
 void
-MMO_ModelData_::clear()
+MMO_ModelConfig::clear()
 {
   _initialCode = false;
   _range.clear();
@@ -207,59 +207,49 @@ MMO_ModelData_::clear()
 }
 
 void
-MMO_ModelData_::setWhenStatement(bool ws)
+MMO_ModelConfig::setWhenStatement(bool ws)
 {
   _whenStatement = ws;
 }
 
 bool
-MMO_ModelData_::whenStatement()
+MMO_ModelConfig::whenStatement()
 {
   return _whenStatement;
 }
 
 bool
-MMO_ModelData_::hasWeight()
+MMO_ModelConfig::hasWeight()
 {
   return _weight >= 0;
 }
 
 void
-MMO_ModelData_::setWeight(double w)
+MMO_ModelConfig::setWeight(double w)
 {
   _weight = w;
 }
 
 double
-MMO_ModelData_::weight()
+MMO_ModelConfig::weight()
 {
   return _weight;
 }
 
-MMO_ModelData
-newMMO_ModelData()
-{
-  return new MMO_ModelData_();
-}
-
-void
-deleteMMO_ModelData(MMO_ModelData m)
-{
-  delete m;
-}
-
-MMO_FunctionData_::MMO_FunctionData_(string var, string name,
-    AST_ExpressionList args, MMO_ModelData data) :
-    _var(var), _name(name), _args(args), _data(data)
+MMO_FunctionConfig::MMO_FunctionConfig(string var, string name, AST_ExpressionList args, MMO_ModelConfig cfg) :
+    _var(var), 
+    _name(name), 
+    _args(args), 
+    _config(cfg)
 {
 }
 
-MMO_FunctionData_::~MMO_FunctionData_()
+MMO_FunctionConfig::~MMO_FunctionConfig()
 {
 }
 
 list<string>
-MMO_FunctionData_::print(string indent)
+MMO_FunctionConfig::print(string indent)
 {
   list<string> ret;
   stringstream buffer;
@@ -289,19 +279,6 @@ MMO_FunctionData_::print(string indent)
   buffer << ");";
   ret.push_back(buffer.str());
   return ret;
-}
-
-MMO_FunctionData
-newMMO_FunctionData(string var, string name, AST_ExpressionList args,
-    MMO_ModelData data)
-{
-  return new MMO_FunctionData_(var, name, args, data);
-}
-
-void
-deleteMMO_FunctionData(MMO_FunctionData m)
-{
-  delete m;
 }
 
 MMO_FunctionInfo::MMO_FunctionInfo(MMO_Function f) :
@@ -342,42 +319,42 @@ MMO_FunctionInfo::functionDefinition()
   return _fd;
 }
 
-MMO_PackageData_::MMO_PackageData_(string name, MMO_FunctionDefinitionTable fit,
+MMO_PackageConfig::MMO_PackageConfig(string name, MMO_FunctionDefinitionTable fit,
     MMO_ImportTable objects) :
     _name(name), _fit(fit), _objects(objects)
 {
 }
 
-MMO_PackageData_::~MMO_PackageData_()
+MMO_PackageConfig::~MMO_PackageConfig()
 {
 }
 
 string
-MMO_PackageData_::name()
+MMO_PackageConfig::name()
 {
   return _name;
 }
 
 string
-MMO_PackageData_::prefix()
+MMO_PackageConfig::prefix()
 {
   return "__" + _name + "__";
 }
 
 MMO_FunctionDefinitionTable
-MMO_PackageData_::functions()
+MMO_PackageConfig::functions()
 {
   return _fit;
 }
 
 MMO_ImportTable
-MMO_PackageData_::objects()
+MMO_PackageConfig::objects()
 {
   return _objects;
 }
 
 list<string>
-MMO_PackageData_::linkLibraries()
+MMO_PackageConfig::linkLibraries()
 {
   list<string> ret;
   for(MMO_FunctionDefinition fd = _fit->begin(); !_fit->end(); fd =
@@ -393,7 +370,7 @@ MMO_PackageData_::linkLibraries()
 }
 
 list<string>
-MMO_PackageData_::libraryDirectories()
+MMO_PackageConfig::libraryDirectories()
 {
   list<string> ret;
   for(MMO_FunctionDefinition fd = _fit->begin(); !_fit->end(); fd =
@@ -408,7 +385,7 @@ MMO_PackageData_::libraryDirectories()
 }
 
 list<string>
-MMO_PackageData_::includeDirectories()
+MMO_PackageConfig::includeDirectories()
 {
   list<string> ret;
   for(MMO_FunctionDefinition fd = _fit->begin(); !_fit->end(); fd =
@@ -426,7 +403,7 @@ MMO_PackageData
 newMMO_PackageData(string name, MMO_FunctionDefinitionTable fit,
     MMO_ImportTable objects)
 {
-  return new MMO_PackageData_(name, fit, objects);
+  return new MMO_PackageConfig(name, fit, objects);
 }
 
 void
@@ -435,128 +412,118 @@ deleteMMO_PackageData(MMO_PackageData m)
   delete m;
 }
 
-MMO_FunctionDefinition_::MMO_FunctionDefinition_(string name, string includeDir,
-    string libraryDir, list<string> libraries) :
-    _def(), _name(name), _prototype(), _includeDirectory(includeDir), _libraryDirectory(
-        libraryDir), _libraries(libraries)
+MMO_FunctionDefinition::MMO_FunctionDefinition(string name, string includeDir, string libraryDir, list<string> libraries) :
+  _def(), 
+  _name(name), 
+  _prototype(), 
+  _includeDirectory(includeDir), 
+  _libraryDirectory(libraryDir), 
+  _libraries(libraries)
 {
 }
 
-MMO_FunctionDefinition_::~MMO_FunctionDefinition_()
+MMO_FunctionDefinition::~MMO_FunctionDefinition()
 {
 }
 
 bool
-MMO_FunctionDefinition_::hasIncludeDirectory()
+MMO_FunctionDefinition::hasIncludeDirectory()
 {
   return !_includeDirectory.empty();
 }
 
 bool
-MMO_FunctionDefinition_::hasLibraryDirectory()
+MMO_FunctionDefinition::hasLibraryDirectory()
 {
   return !_libraryDirectory.empty();
 }
 
 bool
-MMO_FunctionDefinition_::hasLibraries()
+MMO_FunctionDefinition::hasLibraries()
 {
   return _libraries.size() > 0;
 }
 
 string
-MMO_FunctionDefinition_::includeDirectory()
+MMO_FunctionDefinition::includeDirectory()
 {
   return _includeDirectory;
 }
 
 string
-MMO_FunctionDefinition_::libraryDirectory()
+MMO_FunctionDefinition::libraryDirectory()
 {
   return _libraryDirectory;
 }
 
 list<string>
-MMO_FunctionDefinition_::libraries()
+MMO_FunctionDefinition::libraries()
 {
   return _libraries;
 }
 
 string
-MMO_FunctionDefinition_::name()
+MMO_FunctionDefinition::name()
 {
   return _name;
 }
 
 list<string>
-MMO_FunctionDefinition_::def()
+MMO_FunctionDefinition::def()
 {
   return _def;
 }
 
 string
-MMO_FunctionDefinition_::prototype()
+MMO_FunctionDefinition::prototype()
 {
   return _prototype;
 }
 
-MMO_FunctionDefinition
-newMMO_FunctionDefinition(string name, string includeDir, string libraryDir,
-    list<string> libraries)
-{
-  return new MMO_FunctionDefinition_(name, includeDir, libraryDir, libraries);
-}
-
 void
-deleteMMO_FunctionDefinition(MMO_FunctionDefinition m)
-{
-  delete m;
-}
-
-void
-MMO_ModelData_::setArguments(AST_Expression arguments)
+MMO_ModelConfig::setArguments(AST_Expression arguments)
 {
   _arguments = arguments;
 }
 
 bool
-MMO_ModelData_::hasArguments()
+MMO_ModelConfig::hasArguments()
 {
   return _arguments != NULL;
 }
 
 AST_Expression
-MMO_ModelData_::arguments()
+MMO_ModelConfig::arguments()
 {
   return _arguments;
 }
 
 void
-MMO_ModelData_::setAnnotation(MMO_Annotation annotation)
+MMO_ModelConfig::setAnnotation(MMO_Annotation annotation)
 {
   _annotation = annotation;
 }
 
 MMO_Annotation
-MMO_ModelData_::annotation()
+MMO_ModelConfig::annotation()
 {
   return _annotation;
 }
 
 bool
-MMO_ModelData_::hasAnnotation()
+MMO_ModelConfig::hasAnnotation()
 {
   return _annotation != NULL;
 }
 
 void
-MMO_ModelData_::setDisableSymDiff(bool d)
+MMO_ModelConfig::setDisableSymDiff(bool d)
 {
   _disableSymDiff = d;
 }
 
 bool
-MMO_ModelData_::disableSymDiff()
+MMO_ModelConfig::disableSymDiff()
 {
   return _disableSymDiff;
 }

@@ -33,14 +33,11 @@
 #include "expression.h"
 #include "mmo_util.h"
 
-MMO_Statement_::MMO_Statement_(AST_Statement stm, MMO_ModelData data) :
+MMO_Statement::MMO_Statement(AST_Statement stm, MMO_ModelConfig &config) :
     _stm(stm), 
-    _data(data), 
-    _deps(NULL), 
-    _lhs(NULL), 
-    _initialCode(data->initialCode()), 
-    _variables(), 
-    _eventLhs(_data->lhs())
+    _config(config), 
+    _initialCode(config.initialCode()), 
+    _variables() 
 {
   if(_initialCode)
   {
@@ -52,34 +49,28 @@ MMO_Statement_::MMO_Statement_(AST_Statement stm, MMO_ModelData data) :
   }
 }
 
-MMO_Statement_::MMO_Statement_(AST_Statement stm) :
+MMO_Statement::MMO_Statement(AST_Statement stm) :
     _stm(stm), 
-    _data(NULL), 
-    _deps(NULL), 
-    _lhs(NULL), 
     _initialCode(false), 
     _variables()
 {
 }
 
-MMO_Statement_::MMO_Statement_() :
+MMO_Statement::MMO_Statement() :
     _stm(NULL), 
-    _data(NULL), 
-    _deps(NULL), 
-    _lhs(NULL), 
     _initialCode(false), 
     _variables()
 {
 }
 
-MMO_Statement_::~MMO_Statement_()
+MMO_Statement::~MMO_Statement()
 {
 }
 
 void
-MMO_Statement_::_setInitialCode(AST_Statement stm)
+MMO_Statement::_setInitialCode(AST_Statement stm)
 {
-  GenerateDeps_ de(_data);
+  GenerateDeps_ de(_config);
   switch(stm->statementType())
   {
     case STIF:
@@ -141,10 +132,8 @@ MMO_Statement_::_setInitialCode(AST_Statement stm)
  */
 
 void
-MMO_Statement_::_init()
+MMO_Statement::_init()
 {
-  _deps = newDependencies();
-  _lhs = newDependencies();
   switch(_stm->statementType())
   {
     case STIF:
@@ -312,7 +301,7 @@ MMO_Statement_::_init()
 }
 
 Index
-MMO_Statement_::_getIndex(AST_Expression_ComponentReference cr, VarInfo vi)
+MMO_Statement::_getIndex(AST_Expression_ComponentReference cr, VarInfo vi)
 {
   Index idx;
   if(cr->hasIndexes())
@@ -358,7 +347,7 @@ MMO_Statement_::_getIndex(AST_Expression_ComponentReference cr, VarInfo vi)
  */
 
 void
-MMO_Statement_::_insertDeps(AST_Expression exp)
+MMO_Statement::_insertDeps(AST_Expression exp)
 {
   Index tmp = _data->lhs();
   _data->setCalculateAlgegraics(true);
@@ -371,7 +360,7 @@ MMO_Statement_::_insertDeps(AST_Expression exp)
 }
 
 void
-MMO_Statement_::_insertVectorDeps(Dependencies deps, Dependencies in,
+MMO_Statement::_insertVectorDeps(Dependencies deps, Dependencies in,
     DEP_Type type, DEP_Type insert, Range range)
 {
   for(Index *idx = deps->begin(type); !deps->end(type); idx = deps->next(type))
@@ -396,7 +385,7 @@ MMO_Statement_::_insertVectorDeps(Dependencies deps, Dependencies in,
  */
 
 void
-MMO_Statement_::_insertDeps(AST_Statement stm, Range range)
+MMO_Statement::_insertDeps(AST_Statement stm, Range range)
 {
   MMO_Statement ls = newMMO_Statement(stm, _data);
   if(!range.empty())
@@ -420,26 +409,26 @@ MMO_Statement_::_insertDeps(AST_Statement stm, Range range)
 }
 
 Dependencies
-MMO_Statement_::deps()
+MMO_Statement::deps()
 {
   return _deps;
 }
 
 Dependencies
-MMO_Statement_::lhs()
+MMO_Statement::lhs()
 {
   return _lhs;
 }
 
 string
-MMO_Statement_::print()
+MMO_Statement::print()
 {
   string ret;
   return ret;
 }
 
 void
-MMO_Statement_::_getIndexList(AST_Expression_ComponentReference cr, Index index,
+MMO_Statement::_getIndexList(AST_Expression_ComponentReference cr, Index index,
     list<Index> *idxs)
 {
   AST_ExpressionListList ell = cr->indexes();
@@ -460,7 +449,7 @@ MMO_Statement_::_getIndexList(AST_Expression_ComponentReference cr, Index index,
 }
 
 void
-MMO_Statement_::_printAssignment(const string& name,
+MMO_Statement::_printAssignment(const string& name,
     AST_Expression_ComponentReference cr, AST_Expression e,
     const string& indent, const string& idx,
     int offset, int order, int forOffset, list<string>& ret)
@@ -499,7 +488,7 @@ MMO_Statement_::_printAssignment(const string& name,
 }
 
 void
-MMO_Statement_::_printList(AST_StatementListIterator it, AST_StatementList stl,
+MMO_Statement::_printList(AST_StatementListIterator it, AST_StatementList stl,
     const string& indent, const string& idx, int offset, int order,
     int forOffset, list<string>& ret)
 {
@@ -518,7 +507,7 @@ MMO_Statement_::_printList(AST_StatementListIterator it, AST_StatementList stl,
 }
 
 void
-MMO_Statement_::_printIfExpression(AST_Expression e, string lhs,
+MMO_Statement::_printIfExpression(AST_Expression e, string lhs,
     const string& indent, const string& idx, int order, int offset,
     int forOffset,
     list<string>& ret, list<string>& code)
@@ -543,7 +532,7 @@ MMO_Statement_::_printIfExpression(AST_Expression e, string lhs,
 }
 
 list<string>
-MMO_Statement_::print(string indent, string idx, int offset, int order,
+MMO_Statement::print(string indent, string idx, int offset, int order,
     int forOffset)
 {
   list<string> ret;
@@ -662,7 +651,7 @@ MMO_Statement_::print(string indent, string idx, int offset, int order,
       {
         _data->setInitialCode(_initialCode);
         _data->setRange(range);
-        MMO_Statement_ s(current_element(it), _data);
+        MMO_Statement s(current_element(it), _data);
         list<string> stms = s.print(indent, "i", offset, order, -offset + 1);
         _data->setInitialCode(false);
         list<string> vars = s.getVariables();
@@ -682,31 +671,7 @@ MMO_Statement_::print(string indent, string idx, int offset, int order,
 }
 
 list<string>
-MMO_Statement_::getVariables()
+MMO_Statement::getVariables()
 {
   return _variables;
-}
-
-MMO_Statement
-newMMO_Statement(AST_Statement stm, MMO_ModelData data)
-{
-  return new MMO_Statement_(stm, data);
-}
-
-MMO_Statement
-newMMO_Statement(AST_Statement stm)
-{
-  return new MMO_Statement_(stm);
-}
-
-MMO_Statement
-newMMO_Statement()
-{
-  return new MMO_Statement_();
-}
-
-void
-deleteMMO_Statement(MMO_Statement m)
-{
-  delete m;
 }

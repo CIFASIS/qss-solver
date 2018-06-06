@@ -29,17 +29,17 @@
 /**
  *
  */
-class MMO_CompileFlags_
+class MMO_CompileFlags
 {
   public:
     /**
      *
      */
-    MMO_CompileFlags_();
+    MMO_CompileFlags();
     /**
      *
      */
-    ~MMO_CompileFlags_();
+    ~MMO_CompileFlags();
     /**
      *
      * @param l
@@ -289,17 +289,5 @@ class MMO_CompileFlags_
     map<string, int> _debugOptions;
     bool _graph;
 };
-/**
- *
- * @return
- */
-MMO_CompileFlags
-newMMO_CompileFlags();
-/**
- *
- * @param m
- */
-void
-deleteMMO_CompileFlags(MMO_CompileFlags m);
 
 #endif  /* MMO_COMPILE_FLAGS_H_ */

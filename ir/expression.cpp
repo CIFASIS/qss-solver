@@ -26,7 +26,6 @@
 
 #include "../ast/ast_builder.h"
 #include "../util/error.h"
-#include "../util/md_index.h"
 #include "../util/symbol_table.h"
 #include "../util/type.h"
 #include "../util/util.h"
@@ -36,86 +35,53 @@
 
 /* MMO_Expression class. */
 
-MMO_Expression_::MMO_Expression_(AST_Expression exp, MMO_ModelData data) :
+MMO_Expression::MMO_Expression(AST_Expression exp, MMO_ModelConfig &config) :
     _exp(NULL), 
-    _data(data), 
+    _config(config), 
     _str(), 
     _equationIndex(0), 
     _expressionOrder(2), 
-    _deps(NULL), 
-    _gen(NULL), 
     _printer(NULL), 
     _ri(NULL)
 {
-  _ri = newMMO_ReplaceInterval(_data->symbols());
-  if(_data->hasAnnotation())
+  _ri = newMMO_ReplaceInterval(_config->symbols());
+  if(_config->hasAnnotation())
   {
-    _expressionOrder = _data->annotation()->polyCoeffs();
+    _expressionOrder = _config->annotation()->polyCoeffs();
   }
   AST_Expression e = _ri->foldTraverse(exp);
   _exp = e;
-  _gen = newGenerateDeps(_data);
-  _deps = _gen->foldTraverse(exp);
-  for(VariableInterval vi = _ri->first(); !_ri->end(); vi = _ri->next())
-  {
-    VarInfo v = _data->symbols()->lookup(vi.name());
-    if(v->isState())
-    {
-      _deps->insert(vi.index(), DEP_STATE_VECTOR);
-    }
-    else if(v->isAlgebraic())
-    {
-      _deps->insert(vi.index(), DEP_ALGEBRAIC_VECTOR_DEF);
-    }
-    else if(v->isDiscrete())
-    {
-      _deps->insert(vi.index(), DEP_DISCRETE_VECTOR);
-    }
-  }
-  if(_data->calculateAlgebraics())
-  {
-    map<Index, Index> states, discretes;
-    _traverseAlgebraics(_deps, _data->lhs(), _deps, &states, &discretes,
-        Index(), DEP_ALGEBRAIC_DEF, -1);
-    _traverseAlgebraics(_deps, _data->lhs(), _deps, &states, &discretes,
-        Index(), DEP_ALGEBRAIC_VECTOR_DEF, -1);
-  }
-  _printer = newMMO_PrintExp(_data->symbols(), _ri, data->packages());
+  _printer = newMMO_PrintExp(_config->symbols(), _ri, _config->packages());
 }
 
-MMO_Expression_::MMO_Expression_(AST_Expression exp) :
+MMO_Expression::MMO_Expression(AST_Expression exp) :
     _exp(exp), 
-    _data(NULL), 
+    _config(NULL), 
     _str(), 
     _equationIndex(0), 
     _expressionOrder(0), 
-    _deps(NULL), 
-    _gen(NULL), 
     _printer(NULL), 
     _ri(NULL)
 {
 }
 
-MMO_Expression_::MMO_Expression_() :
+MMO_Expression::MMO_Expression() :
     _exp(NULL), 
-    _data(NULL), 
+    _config(NULL), 
     _str(), 
     _equationIndex(0), 
     _expressionOrder(0), 
-    _deps(NULL), 
-    _gen(NULL), 
     _printer(NULL), 
     _ri(NULL)
 {
 }
 
-MMO_Expression_::~MMO_Expression_()
+MMO_Expression::~MMO_Expression()
 {
-  deleteGenerateDeps(_gen);
 }
 
 void
-MMO_Expression_::_addVectorDeps(MMO_Equation eq, Index index)
+MMO_Expression::_addVectorDeps(MMO_Equation eq, Index index)
 {
   Dependencies deps = eq->exp()->deps();
   _deps->join(deps, DEP_STATE_VECTOR);
@@ -127,7 +93,7 @@ MMO_Expression_::_addVectorDeps(MMO_Equation eq, Index index)
 }
 
 void
-MMO_Expression_::_addAlgebriacDeps(Index algIndex, MMO_Equation equation,
+MMO_Expression::_addAlgebriacDeps(Index algIndex, MMO_Equation equation,
     Index equationIndex, Index derivativeIndex, Dependencies derivativeDeps,
     map<Index, Index> *states, map<Index, Index> *discretes,
     Index variableChange, int value)
@@ -250,7 +216,7 @@ MMO_Expression_::_addAlgebriacDeps(Index algIndex, MMO_Equation equation,
 }
 
 void
-MMO_Expression_::_traverseAlgebraics(Dependencies deps, Index derivativeIndex,
+MMO_Expression::_traverseAlgebraics(Dependencies deps, Index derivativeIndex,
     Dependencies derivativeDeps, map<Index, Index> *states,
     map<Index, Index> *discretes, Index variableChange, DEP_Type type,
     int value)
@@ -258,7 +224,7 @@ MMO_Expression_::_traverseAlgebraics(Dependencies deps, Index derivativeIndex,
   for(Index *idx = deps->begin(type); !deps->end(type); idx = deps->next(type))
   {
 
-    list<MMO_Equation> algEqs = _data->algebraics()->equation(*idx);
+    list<MMO_Equation> algEqs = _config->algebraics()->equation(*idx);
     list<MMO_Equation>::iterator algEq;
     if(type == DEP_ALGEBRAIC_VECTOR_DEF)
     {
@@ -345,7 +311,7 @@ MMO_Expression_::_traverseAlgebraics(Dependencies deps, Index derivativeIndex,
 }
 
 void
-MMO_Expression_::_addDeps(Dependencies deps, DEP_Type type, Index index)
+MMO_Expression::_addDeps(Dependencies deps, DEP_Type type, Index index)
 {
   DEP_Type vectorType = DEP_STATE_VECTOR;
   if(type == DEP_DISCRETE)
@@ -375,38 +341,38 @@ MMO_Expression_::_addDeps(Dependencies deps, DEP_Type type, Index index)
 }
 
 AST_Expression
-MMO_Expression_::exp()
+MMO_Expression::exp()
 {
   return _exp;
 }
 
 Dependencies
-MMO_Expression_::deps()
+MMO_Expression::deps()
 {
   return _deps;
 }
 
 string
-MMO_Expression_::print()
+MMO_Expression::print()
 {
   string ret;
   return ret;
 }
 
 list<string>
-MMO_Expression_::getVariables()
+MMO_Expression::getVariables()
 {
   return _printer->getVariables();
 }
 
 list<string>
-MMO_Expression_::getCode()
+MMO_Expression::getCode()
 {
   return _printer->getCode();
 }
 
 string
-MMO_Expression_::print(string idx, int offset, int order, int constant,
+MMO_Expression::print(string idx, int offset, int order, int constant,
     int expressionOrder, int forOffset)
 {
   _printer->setEnvironment(idx, offset, order, constant, _expressionOrder,
@@ -415,21 +381,21 @@ MMO_Expression_::print(string idx, int offset, int order, int constant,
 }
 
 string
-MMO_Expression_::indexes(string idx, int offset)
+MMO_Expression::indexes(string idx, int offset)
 {
-  ExpIndexes_ ie(_data->symbols());
+  ExpIndexes_ ie(_config->symbols());
   ie.setEnvironment(idx, offset);
   return ie.foldTraverse(_exp);
 }
 
 bool
-MMO_Expression_::hasIndexes()
+MMO_Expression::hasIndexes()
 {
   return !indexes("i").empty();
 }
 
 string
-MMO_Expression_::findVar(AST_Expression exp)
+MMO_Expression::findVar(AST_Expression exp)
 {
   return _ri->find(exp);
 }
@@ -437,19 +403,19 @@ MMO_Expression_::findVar(AST_Expression exp)
 MMO_Expression
 newMMO_Expression(AST_Expression exp, MMO_ModelData data)
 {
-  return new MMO_Expression_(exp, data);
+  return new MMO_Expression(exp, data);
 }
 
 MMO_Expression
 newMMO_Expression(AST_Expression exp)
 {
-  return new MMO_Expression_(exp);
+  return new MMO_Expression(exp);
 }
 
 MMO_Expression
 newMMO_Expression()
 {
-  return new MMO_Expression_();
+  return new MMO_Expression();
 }
 
 void
@@ -658,29 +624,31 @@ deleteMMO_EvalInitExp(MMO_EvalInitExp m)
 
 /* MMO_ConvertCondition class */
 
-MMO_ConvertCondition_::MMO_ConvertCondition_(MMO_ModelData data) :
-    _data(data), _zc(0), _zcRelation(0)
+MMO_ConvertCondition::MMO_ConvertCondition(MMO_ModelConfig &config) :
+    _config(config), 
+    _zc(0), 
+    _zcRelation(0)
 {
 }
 
-MMO_ConvertCondition_::~MMO_ConvertCondition_()
+MMO_ConvertCondition::~MMO_ConvertCondition()
 {
 }
 
 AST_Expression
-MMO_ConvertCondition_::foldTraverseElement(AST_Expression exp)
+MMO_ConvertCondition::foldTraverseElement(AST_Expression exp)
 {
   return exp;
 }
 
 AST_Expression
-MMO_ConvertCondition_::foldTraverseElementUMinus(AST_Expression exp)
+MMO_ConvertCondition::foldTraverseElementUMinus(AST_Expression exp)
 {
   return foldTraverse(exp->getAsUMinus()->exp());
 }
 
 AST_Expression
-MMO_ConvertCondition_::foldTraverseElement(AST_Expression l, AST_Expression r,
+MMO_ConvertCondition::foldTraverseElement(AST_Expression l, AST_Expression r,
     BinOpType bot)
 {
   switch(bot)
@@ -729,7 +697,7 @@ MMO_ConvertCondition_::foldTraverseElement(AST_Expression l, AST_Expression r,
 }
 
 int
-MMO_ConvertCondition_::zeroCrossing()
+MMO_ConvertCondition::zeroCrossing()
 {
   return _zc;
 }
@@ -737,7 +705,7 @@ MMO_ConvertCondition_::zeroCrossing()
 MMO_ConvertCondition
 newMMO_ConvertCondition(MMO_ModelData data)
 {
-  return new MMO_ConvertCondition_(data);
+  return new MMO_ConvertCondition(data);
 }
 
 void
@@ -1590,7 +1558,7 @@ MMO_ReplaceInnerProduct::_controlArray(AST_Expression exp)
 }
 
 int
-MMO_ConvertCondition_::zeroCrossingRelation()
+MMO_ConvertCondition::zeroCrossingRelation()
 {
   return _zcRelation;
 }

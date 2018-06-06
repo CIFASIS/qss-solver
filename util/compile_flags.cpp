@@ -23,11 +23,22 @@
 
 #include "util.h"
 
-MMO_CompileFlags_::MMO_CompileFlags_() :
-    _store(true), _parallel(false), _externalStructureFiles(false), _output(
-        true), _debug(0), _outputFile(), _path(), _libraryPaths(), _objects(), _optimizeQSS(
-        false), _incidenceMatrices(false), _externalFunctions(false), _lps(0), _debugOptions(), _graph(
-        false)
+MMO_CompileFlags::MMO_CompileFlags() :
+    _store(true), 
+    _parallel(false), 
+    _externalStructureFiles(false), 
+    _output(true), 
+    _debug(0), 
+    _outputFile(), 
+    _path(), 
+    _libraryPaths(), 
+    _objects(), 
+    _optimizeQSS(false), 
+    _incidenceMatrices(false), 
+    _externalFunctions(false), 
+    _lps(0), 
+    _debugOptions(), 
+    _graph(false)
 {
   _debugOptions["SD_DBG_VarChanges"] = 1 << 0;
   _debugOptions["SD_DBG_InitValues"] = 1 << 1;
@@ -40,162 +51,151 @@ MMO_CompileFlags_::MMO_CompileFlags_() :
   _debugOptions["SD_DBG_Dt"] = 1 << 8;
 }
 
-MMO_CompileFlags_::~MMO_CompileFlags_()
+MMO_CompileFlags::~MMO_CompileFlags()
 {
 }
 
 bool
-MMO_CompileFlags_::store()
+MMO_CompileFlags::store()
 {
   return _store;
 }
 
 void
-MMO_CompileFlags_::setStore(bool s)
+MMO_CompileFlags::setStore(bool s)
 {
   _store = s;
 }
 
 void
-MMO_CompileFlags_::setIncidenceMatrices(bool im)
+MMO_CompileFlags::setIncidenceMatrices(bool im)
 {
   _incidenceMatrices = im;
 }
 
 void
-MMO_CompileFlags_::setOptimizeQSS(bool s)
+MMO_CompileFlags::setOptimizeQSS(bool s)
 {
   _optimizeQSS = s;
 }
 
 bool
-MMO_CompileFlags_::incidenceMatrices()
+MMO_CompileFlags::incidenceMatrices()
 {
   return _incidenceMatrices;
 }
 
 bool
-MMO_CompileFlags_::parallel()
+MMO_CompileFlags::parallel()
 {
   return _parallel;
 }
 
 void
-MMO_CompileFlags_::setParallel(bool s)
+MMO_CompileFlags::setParallel(bool s)
 {
   _parallel = s;
   setGraph(true);
 }
 
 bool
-MMO_CompileFlags_::output()
+MMO_CompileFlags::output()
 {
   return _output;
 }
 
 void
-MMO_CompileFlags_::setOutput(bool s)
+MMO_CompileFlags::setOutput(bool s)
 {
   _output = s;
 }
 
 bool
-MMO_CompileFlags_::externalFunctions()
+MMO_CompileFlags::externalFunctions()
 {
   return _externalFunctions;
 }
 
 void
-MMO_CompileFlags_::setExternalFunctions(bool s)
+MMO_CompileFlags::setExternalFunctions(bool s)
 {
   _externalFunctions = s;
 }
 
 int
-MMO_CompileFlags_::debug()
+MMO_CompileFlags::debug()
 {
   return _debug;
 }
 
 void
-MMO_CompileFlags_::setDebug(int s)
+MMO_CompileFlags::setDebug(int s)
 {
   _debug |= s;
 }
 
 void
-MMO_CompileFlags_::setOutputFile(string outputFile)
+MMO_CompileFlags::setOutputFile(string outputFile)
 {
   _outputFile = outputFile;
 }
 
 string
-MMO_CompileFlags_::outputFileName()
+MMO_CompileFlags::outputFileName()
 {
   return Util::getInstance()->getFileName(_outputFile);
 }
 
 string
-MMO_CompileFlags_::outputFilePath()
+MMO_CompileFlags::outputFilePath()
 {
   return Util::getInstance()->getFilePath(_outputFile);
 }
 
 string
-MMO_CompileFlags_::outputFile()
+MMO_CompileFlags::outputFile()
 {
   return _outputFile;
 }
 
 bool
-MMO_CompileFlags_::hasOutputFile()
+MMO_CompileFlags::hasOutputFile()
 {
   return !_outputFile.empty();
 }
 
 void
-MMO_CompileFlags_::setPath(string p)
+MMO_CompileFlags::setPath(string p)
 {
   _path = p;
 }
 
 string
-MMO_CompileFlags_::path()
+MMO_CompileFlags::path()
 {
   return _path;
 }
-MMO_CompileFlags
-newMMO_CompileFlags()
-{
-  return new MMO_CompileFlags_();
-}
-
-void
-deleteMMO_CompileFlags(MMO_CompileFlags m)
-{
-  delete m;
-}
 
 list<string>
-MMO_CompileFlags_::libraryPaths()
+MMO_CompileFlags::libraryPaths()
 {
   return _libraryPaths;
 }
 
 void
-MMO_CompileFlags_::addLibraryPath(string l)
+MMO_CompileFlags::addLibraryPath(string l)
 {
   _libraryPaths.push_back(l);
 }
 
 void
-MMO_CompileFlags_::addObject(string o)
+MMO_CompileFlags::addObject(string o)
 {
   _objects.insert(pair<string, string>(o, o));
 }
 
 list<string>
-MMO_CompileFlags_::objects()
+MMO_CompileFlags::objects()
 {
   list<string> ret;
   for(map<string, string>::iterator it = _objects.begin(); it != _objects.end();
@@ -207,31 +207,31 @@ MMO_CompileFlags_::objects()
 }
 
 bool
-MMO_CompileFlags_::optimizeQSS()
+MMO_CompileFlags::optimizeQSS()
 {
   return _optimizeQSS;
 }
 
 bool
-MMO_CompileFlags_::hasObjects()
+MMO_CompileFlags::hasObjects()
 {
   return !_objects.empty();
 }
 
 bool
-MMO_CompileFlags_::externalStructureFile()
+MMO_CompileFlags::externalStructureFile()
 {
   return _externalStructureFiles;
 }
 
 void
-MMO_CompileFlags_::setExternalStructureFile(bool s)
+MMO_CompileFlags::setExternalStructureFile(bool s)
 {
   _externalStructureFiles = s;
 }
 
 void
-MMO_CompileFlags_::setDebug(string s)
+MMO_CompileFlags::setDebug(string s)
 {
   if(_debugOptions.find(s) != _debugOptions.end())
   {
@@ -245,13 +245,13 @@ MMO_CompileFlags_::setDebug(string s)
 }
 
 void
-MMO_CompileFlags_::setGraph(bool g)
+MMO_CompileFlags::setGraph(bool g)
 {
   _graph = g;
 }
 
 bool
-MMO_CompileFlags_::graph()
+MMO_CompileFlags::graph()
 {
   return _graph;
 }

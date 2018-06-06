@@ -26,7 +26,6 @@
 #include <string>
 
 #include "../ast/ast_types.h"
-#include "../ir/mmo_types.h"
 #include "util_types.h"
 
 using namespace std;
@@ -104,11 +103,9 @@ class BIF
     virtual
     ~BIF()
     {
-    }
-    ;
+    };
     list<string>
-    generateCode(string variableMap, string variableIndex,
-        list<VariableInterval> variableInterval, int expOrder);
+    generateCode(string variableMap, string variableIndex, list<VariableInterval> variableInterval, int expOrder);
     void
     setSymbolTable(VarSymbolTable vt);
     VarSymbolTable
@@ -125,7 +122,7 @@ class BIF
     expressionOrder();
     string
     print(Index idx, string variableIndex);
-    private:
+  private:
     VarSymbolTable _vt;
     int _expressionOrder;
     bool
@@ -138,8 +135,7 @@ class BIF
     _reduce(string variableMap, string variableIndex, int variableOrder,
         list<VariableInterval> variableInterval, bool hasStates) = 0;
     virtual string
-    _init(string variableMap, string variableIndex,
-        list<VariableInterval> variableInterval, bool hasStates) = 0;
+    _init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates) = 0;
 };
 
 /**
@@ -315,7 +311,7 @@ class Util
     builtInReductionFunctions(BIF_NAMES fn);
     bool
     checkGKLinkFunctions(string name);
-    private:
+  private:
     Util();
     static Util *_instance;
     bool
@@ -342,7 +338,7 @@ class BuiltInFunction: public BIF
      *
      */
     ~BuiltInFunction();
-    private:
+  private:
     string
     _reduce(string variableMap, string variableIndex, int variableOrder,
         list<VariableInterval> variableInterval, bool hasStates);
@@ -358,7 +354,7 @@ class BuiltInSumFunction: public BIF
      *
      */
     ~BuiltInSumFunction();
-    private:
+  private:
     string
     _reduce(string variableMap, string variableIndex, int variableOrder,
         list<VariableInterval> variableInterval, bool hasStates);
@@ -374,7 +370,7 @@ class BuiltInProductFunction: public BIF
      *
      */
     ~BuiltInProductFunction();
-    private:
+  private:
     string
     _reduce(string variableMap, string variableIndex, int variableOrder,
         list<VariableInterval> variableInterval, bool hasStates);
@@ -390,7 +386,7 @@ class BuiltInInnerProductFunction: public BIF
      *
      */
     ~BuiltInInnerProductFunction();
-    private:
+  private:
     string
     _reduce(string variableMap, string variableIndex, int variableOrder,
         list<VariableInterval> variableInterval, bool hasStates);
@@ -406,7 +402,7 @@ class BuiltInMinFunction: public BIF
      *
      */
     ~BuiltInMinFunction();
-    private:
+  private:
     string
     _reduce(string variableMap, string variableIndex, int variableOrder,
         list<VariableInterval> variableInterval, bool hasStates);
@@ -422,7 +418,7 @@ class BuiltInMaxFunction: public BIF
      *
      */
     ~BuiltInMaxFunction();
-    private:
+  private:
     string
     _reduce(string variableMap, string variableIndex, int variableOrder,
         list<VariableInterval> variableInterval, bool hasStates);

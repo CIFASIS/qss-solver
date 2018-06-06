@@ -320,7 +320,7 @@ class Error
      */
     int
     errors();
-    private:
+  private:
     Error();
     static Error *_instance;
     string

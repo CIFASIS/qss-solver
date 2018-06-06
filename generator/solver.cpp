@@ -29,99 +29,86 @@
 #include "../ir/event.h"
 #include "../ir/expression.h"
 #include "../ir/statement.h"
-#include "../util/compile_flags.h"
 #include "../util/error.h"
 #include "../util/util.h"
 
 /* QSS Solver class. */
 
-QSS_::QSS_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer) :
+QSS::QSS(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer) :
     _flags(flags), 
     _writer(writer), 
     _model(model), 
-    _name(model->name())
+    _name(model.name())
 {
 }
 
-QSS_::~QSS_()
+QSS::~QSS()
 {
 }
 
 string
-QSS_::modelHeader()
+QSS::modelHeader()
 {
   return "";
 }
 
 string
-QSS_::runCmd()
+QSS::runCmd()
 {
   return "";
 }
 
 string
-QSS_::makefile(SOL_Makefile m)
+QSS::makefile(SOL_Makefile m)
 {
   return "";
 }
 
 void
-QSS_::initializeDataStructures()
+QSS::initializeDataStructures()
 {
   return;
 }
 
 void
-QSS_::modelDefinition()
+QSS::modelDefinition()
 {
   return;
 }
 
 void
-QSS_::modelDependencies()
+QSS::modelDependencies()
 {
   return;
 }
 
 void
-QSS_::zeroCrossing()
+QSS::zeroCrossing()
 {
   return;
 }
 
 void
-QSS_::handler()
+QSS::handler()
 {
   return;
 }
 
 void
-QSS_::output()
+QSS::output()
 {
   return;
 }
     
 Graph
-QSS_::computationalGraph()
+QSS::computationalGraph()
 {
   return Graph(0, 0);
 }
 
-QSS
-newQSS(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer)
-{
-  return new QSS_(model, flags, writer);
-}
-
-void
-deleteQSS(QSS m)
-{
-  delete m;
-}
-
 /* Classic Solver class. */
 
-Classic_::Classic_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer) :
+Classic::Classic(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer) :
   _flags(flags), 
   _model(model), 
   _writer(writer),
@@ -133,77 +120,65 @@ Classic_::Classic_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer) :
   }
 }
 
-Classic_::~Classic_()
+Classic::~Classic()
 {
 }
 
 string
-Classic_::modelHeader()
+Classic::modelHeader()
 {
   return "";
 }
 
 string
-Classic_::runCmd()
+Classic::runCmd()
 {
   return "";
 }
     
 string
-Classic_::makefile(SOL_Makefile m)
+Classic::makefile(SOL_Makefile m)
 {
   return "";
 }
     
 void
-Classic_::initializeDataStructures()
+Classic::initializeDataStructures()
 {
 }
     
 void
-Classic_::modelDefinition()
+Classic::modelDefinition()
 {
 }
     
 void
-Classic_::modelDependencies()
+Classic::modelDependencies()
 {
 }
     
 void
-Classic_::zeroCrossing()
+Classic::zeroCrossing()
 {
 }
     
 void
-Classic_::handler()
+Classic::handler()
 {
 }
     
 void
-Classic_::output()
+Classic::output()
 {
 }
  
 Graph
-Classic_::computationalGraph()
+Classic::computationalGraph()
 {
   return Graph(0,0);
 }
 
-Classic
-newClassic(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer)
-{
-  return new Classic_(model, flags, writer);
-}
-
-void
-deleteClassic(Classic m)
-{
-  delete m;
-}
-
-SolverCommon_::SolverCommon_(MMO_Model model, MMO_CompileFlags flags,
+SolverCommon::SolverCommon(MMO_Model model, MMO_CompileFlags flags,
     MMO_Writer writer, MMO_DependenciesTable modelVectorDeps, Graph *graph) :
     _model(model), _flags(flags), _writer(writer), _modelVectorDeps(
         modelVectorDeps), _name(model->name()), _weights(), _graph(*graph), _generateGraph(
@@ -215,12 +190,12 @@ SolverCommon_::SolverCommon_(MMO_Model model, MMO_CompileFlags flags,
   }
 }
 
-SolverCommon_::~SolverCommon_()
+SolverCommon::~SolverCommon()
 {
 }
 
 void
-SolverCommon_::addModelDeps(Dependencies deps, Index state, Index infIndex,
+SolverCommon::addModelDeps(Dependencies deps, Index state, Index infIndex,
     MMO_DependenciesTable modelDeps, int index)
 {
   Dependencies d = modelDeps->lookup(state);
@@ -242,7 +217,7 @@ SolverCommon_::addModelDeps(Dependencies deps, Index state, Index infIndex,
 }
 
 void
-SolverCommon_::graphInsert(Index row, Index col, int offset, NOD_Type type,
+SolverCommon::graphInsert(Index row, Index col, int offset, NOD_Type type,
     int assignments)
 {
   if(_model->annotation()->partitionMethod() == ANT_Manual
@@ -308,7 +283,7 @@ SolverCommon_::graphInsert(Index row, Index col, int offset, NOD_Type type,
 }
 
 void
-SolverCommon_::addAlgebriacDeps(Dependencies deps, Index derivativeIndex,
+SolverCommon::addAlgebriacDeps(Dependencies deps, Index derivativeIndex,
     map<Index, Index> states, string alloc, string allocInverse, string init,
     string initInverse, WR_Section allocSection, WR_Section allocInverseSection,
     WR_Section initSection,
@@ -492,7 +467,7 @@ SolverCommon_::addAlgebriacDeps(Dependencies deps, Index derivativeIndex,
 }
 
 string
-SolverCommon_::initOutput()
+SolverCommon::initOutput()
 {
   stringstream buffer;
   MMO_Annotation annot = _model->annotation();
@@ -529,7 +504,7 @@ SolverCommon_::initOutput()
 }
 
 void
-SolverCommon_::print(list<string> exps, WR_Section section)
+SolverCommon::print(list<string> exps, WR_Section section)
 {
   for(list<string>::iterator it = exps.begin(); it != exps.end(); it++)
   {
@@ -538,7 +513,7 @@ SolverCommon_::print(list<string> exps, WR_Section section)
 }
 
 void
-SolverCommon_::insertLocalVariables(map<string, string> *local,
+SolverCommon::insertLocalVariables(map<string, string> *local,
     list<string> vars)
 {
   for(list<string>::iterator it = vars.begin(); it != vars.end(); it++)
@@ -548,7 +523,7 @@ SolverCommon_::insertLocalVariables(map<string, string> *local,
 }
 
 void
-SolverCommon_::addLocalVar(string name, map<string, string> *variables,
+SolverCommon::addLocalVar(string name, map<string, string> *variables,
     int dimensions, string type, int size)
 {
   for(int i = 0; i < dimensions; i++)
@@ -561,7 +536,7 @@ SolverCommon_::addLocalVar(string name, map<string, string> *variables,
 }
 
 int
-SolverCommon_::beginForLoops(Index idx, WR_Section section)
+SolverCommon::beginForLoops(Index idx, WR_Section section)
 {
   stringstream buffer;
   int dim = idx.dimension(), idt = 0;
@@ -582,7 +557,7 @@ SolverCommon_::beginForLoops(Index idx, WR_Section section)
 }
 
 void
-SolverCommon_::endForLoops(Index idx, WR_Section section)
+SolverCommon::endForLoops(Index idx, WR_Section section)
 {
   stringstream buffer;
   int dim = idx.dimension(), idt = dim - 1;
@@ -599,7 +574,7 @@ SolverCommon_::endForLoops(Index idx, WR_Section section)
 }
 
 void
-SolverCommon_::addLocalVar(string name, map<string, string> *variables,
+SolverCommon::addLocalVar(string name, map<string, string> *variables,
     string type, int size, string assign)
 {
   string var;
@@ -630,7 +605,7 @@ SolverCommon_::addLocalVar(string name, map<string, string> *variables,
 }
 
 void
-SolverCommon_::eventPrologue(Index idx, WR_Section simple, WR_Section generic)
+SolverCommon::eventPrologue(Index idx, WR_Section simple, WR_Section generic)
 {
   stringstream buffer;
   string indent = _writer->indent(1);
@@ -650,7 +625,7 @@ SolverCommon_::eventPrologue(Index idx, WR_Section simple, WR_Section generic)
 }
 
 void
-SolverCommon_::eventEpilogue(Index idx, WR_Section simple, WR_Section generic)
+SolverCommon::eventEpilogue(Index idx, WR_Section simple, WR_Section generic)
 {
   stringstream buffer;
   string indent = _writer->indent(2);
@@ -667,7 +642,7 @@ SolverCommon_::eventEpilogue(Index idx, WR_Section simple, WR_Section generic)
 }
 
 void
-SolverCommon_::handler(VST_Environment type,
+SolverCommon::handler(VST_Environment type,
     map<string, string> *handlerPosVars, map<string, string> *handlerNegVars)
 {
   MMO_EventTable events = _model->events();
@@ -728,7 +703,7 @@ SolverCommon_::handler(VST_Environment type,
 }
 
 void
-SolverCommon_::zeroCrossing(VST_Environment type, map<string, string> *zcVars)
+SolverCommon::zeroCrossing(VST_Environment type, map<string, string> *zcVars)
 {
   MMO_EventTable events = _model->events();
   VarSymbolTable vt = _model->varTable();
@@ -771,13 +746,13 @@ SolverCommon_::zeroCrossing(VST_Environment type, map<string, string> *zcVars)
 }
 
 map<Index, double>
-SolverCommon_::weights()
+SolverCommon::weights()
 {
   return _weights;
 }
 
 int
-SolverCommon_::getOrder()
+SolverCommon::getOrder()
 {
   MMO_Annotation annot = _model->annotation();
   int order = 1;
@@ -789,7 +764,7 @@ SolverCommon_::getOrder()
 }
 
 void
-SolverCommon_::printCleanVector(string var, int size)
+SolverCommon::printCleanVector(string var, int size)
 {
   stringstream buffer;
   string indent = _writer->indent(1);
@@ -799,7 +774,7 @@ SolverCommon_::printCleanVector(string var, int size)
 }
 
 void
-SolverCommon_::printSection(string var, int size, WR_Section section)
+SolverCommon::printSection(string var, int size, WR_Section section)
 {
   if(!_writer->isEmpty(section))
   {
@@ -809,7 +784,7 @@ SolverCommon_::printSection(string var, int size, WR_Section section)
 }
 
 void
-SolverCommon_::initialCode(map<string, string> *initializeVars)
+SolverCommon::initialCode(map<string, string> *initializeVars)
 {
   string indent = _writer->indent(1);
   MMO_StatementTable st = _model->initialCode();
@@ -830,7 +805,7 @@ SolverCommon_::initialCode(map<string, string> *initializeVars)
 }
 
 void
-SolverCommon_::output(VST_Environment type, map<string, string> *outputVars)
+SolverCommon::output(VST_Environment type, map<string, string> *outputVars)
 {
   MMO_EquationTable outputs = _model->outputs();
   VarSymbolTable vt = _model->varTable();
@@ -1043,7 +1018,7 @@ SolverCommon_::output(VST_Environment type, map<string, string> *outputVars)
 }
 
 void
-SolverCommon_::genericDefCondition(Index eqIdx, Index idx, WR_Section section,
+SolverCommon::genericDefCondition(Index eqIdx, Index idx, WR_Section section,
     map<string, string> *variables)
 {
   stringstream buffer;
@@ -1088,7 +1063,7 @@ SolverCommon_::genericDefCondition(Index eqIdx, Index idx, WR_Section section,
 }
 
 void
-SolverCommon_::vectorDependencies(Index index, Dependencies deps,
+SolverCommon::vectorDependencies(Index index, Dependencies deps,
     WR_Section alloc, WR_Section init, string allocString, string initString,
     WR_Section allocInverse, WR_Section initInverse, string allocInverseString,
     string initInverseString, string count,
@@ -1209,27 +1184,14 @@ SolverCommon_::vectorDependencies(Index index, Dependencies deps,
   }
 }
 
-SolverCommon
-newSolverCommon(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer,
-    MMO_DependenciesTable modelVectorDeps, Graph *graph)
-{
-  return new SolverCommon_(model, flags, writer, modelVectorDeps, graph);
-}
-
-void
-deleteSolverCommon(SolverCommon m)
-{
-  delete m;
-}
-
 bool
-SolverCommon_::hasGraph()
+SolverCommon::hasGraph()
 {
   return _generateGraph;
 }
 
 void
-SolverCommon_::settings()
+SolverCommon::settings()
 {
   stringstream buffer;
   buffer << "void\nMOD_settings(SD_simulationSettings settings)\n{";

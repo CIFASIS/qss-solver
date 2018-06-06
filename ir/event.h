@@ -60,7 +60,7 @@ class MMO_Event
      * @param cond
      * @param data
      */
-    MMO_Event(AST_Expression cond, MMO_ModelConfig data);
+    MMO_Event(AST_Expression cond, MMO_ModelConfig &config);
     /**
      *
      */
@@ -165,7 +165,7 @@ class MMO_Event
     weight();
     ZC_REL
     zcRelation();
-    private:
+ private:
     AST_Expression
     _getExpression(AST_Expression exp);
     MMO_Equation _cond;
@@ -176,7 +176,7 @@ class MMO_Event
     HND_Type _handler;
     HND_Type _handlerType;
     list<MMO_Statement>::iterator _it;
-    MMO_ModelConfig _data;
+    MMO_ModelConfig _config;
     VarSymbolTable _lhsVars;
     double _weight;
     ZC_REL _zcRelation;

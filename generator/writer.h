@@ -24,8 +24,6 @@
 #include <list>
 #include <string>
 
-#include "generator_types.h"
-
 using namespace std;
 
 /**
@@ -115,14 +113,14 @@ typedef enum
   WR_PREPEND
 } WR_InsertType;
 
-class MMO_Writer_
+class MMO_Writer
 {
   public:
     /**
      *
      */
     virtual
-    ~MMO_Writer_()
+    ~MMO_Writer()
     {
     }
     ;
@@ -245,17 +243,17 @@ class MMO_Writer_
 /**
  *
  */
-class MMO_MemoryWriter_: public MMO_Writer_
+class MMO_MemoryWriter: public MMO_Writer
 {
   public:
     /**
      *
      */
-    MMO_MemoryWriter_();
+    MMO_MemoryWriter();
     /**
      *
      */
-    ~MMO_MemoryWriter_();
+    ~MMO_MemoryWriter();
     /**
      *
      * @param fname
@@ -370,7 +368,7 @@ class MMO_MemoryWriter_: public MMO_Writer_
      */
     void
     clear(WR_Section section);
-    private:
+  private:
     list<string> _sections[SECTIONS];
     ofstream _file;
     string _indentStr;
@@ -379,33 +377,21 @@ class MMO_MemoryWriter_: public MMO_Writer_
     int _blockIndent;
     list<string>::iterator _removeIt;
 };
-/**
- *
- * @return
- */
-MMO_MemoryWriter
-newMMO_MemoryWriter();
-/**
- *
- * @param m
- */
-void
-deleteMMO_MemoryWriter(MMO_MemoryWriter m);
 
 /**
  *
  */
-class MMO_FileWriter_: public MMO_Writer_
+class MMO_FileWriter: public MMO_Writer
 {
   public:
     /**
      *
      */
-    MMO_FileWriter_();
+    MMO_FileWriter();
     /**
      *
      */
-    ~MMO_FileWriter_();
+    ~MMO_FileWriter();
     /**
      *
      * @param fname
@@ -520,7 +506,7 @@ class MMO_FileWriter_: public MMO_Writer_
      */
     void
     clear(WR_Section section);
-    private:
+  private:
     ofstream _sections[SECTIONS];
     ofstream _file;
     string _indentStr;
@@ -528,17 +514,5 @@ class MMO_FileWriter_: public MMO_Writer_
     int _indent;
     int _blockIndent;
 };
-/**
- *
- * @return
- */
-MMO_FileWriter
-newMMO_FileWriter();
-/**
- *
- * @param m
- */
-void
-deleteMMO_FileWriter(MMO_FileWriter m);
 
 #endif  /* MMO_WRITER_H_ */

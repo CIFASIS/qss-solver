@@ -31,47 +31,53 @@
 
 #include "../ir/annotation.h"
 #include "../ir/class.h"
+#include "../ir/model.h"
 #include "../ir/equation.h"
 #include "../ir/expression.h"
 #include "../util/compile_flags.h"
 #include "../util/dependencies.h"
 #include "../util/symbol_table.h"
 #include "../util/util.h"
-#include "generator_utils.h"
+#include "writer.h"
 #include "solver.h"
 
 #ifdef	__linux__
 #include <sys/stat.h>
 #endif
 
-MMO_Files_::MMO_Files_(MMO_Model model, MMO_Solver solver,
-    MMO_CompileFlags flags) :
-    _fname(model->name()), _model(model), _solver(solver), _flags(flags)
+MMO_Files::MMO_Files(MMO_Model &model, MMO_Solver &solver, MMO_CompileFlags &flags) :
+    _fname(model->name()), 
+    _model(model), 
+    _solver(solver), 
+    _flags(flags)
 {
-  _writer = newMMO_FileWriter();
+  _writer = MMO_FileWriter();
   if(_flags->hasOutputFile())
   {
     _fname = _flags->outputFile();
   }
 }
 
-MMO_Files_::MMO_Files_(string name, MMO_CompileFlags flags) :
-    _fname(name), _model(NULL), _solver(NULL), _flags(flags)
+MMO_Files::MMO_Files(string name, MMO_CompileFlags flags) :
+    _fname(name), 
+    _model(NULL), 
+    _solver(NULL), 
+    _flags(flags)
 {
-  _writer = newMMO_FileWriter();
+  _writer = MMO_FileWriter();
   if(_flags->hasOutputFile())
   {
     _fname = _flags->outputFile();
   }
 }
 
-MMO_Files_::~MMO_Files_()
+MMO_Files::~MMO_Files()
 {
   delete _writer;
 }
 
 void
-MMO_Files_::makefile()
+MMO_Files::makefile()
 {
   stringstream buffer;
   stringstream includes;
@@ -203,7 +209,7 @@ MMO_Files_::makefile()
 }
 
 void
-MMO_Files_::run()
+MMO_Files::run()
 {
   string fname = _fname;
   fname.append(".sh");
@@ -229,7 +235,7 @@ MMO_Files_::run()
 }
 
 string
-MMO_Files_::_variableSettings(Dependencies deps, string varName)
+MMO_Files::_variableSettings(Dependencies deps, string varName)
 {
   stringstream buffer;
   if(deps->hasStates())
@@ -244,7 +250,7 @@ MMO_Files_::_variableSettings(Dependencies deps, string varName)
 }
 
 void
-MMO_Files_::plot()
+MMO_Files::plot()
 {
   if(!_model->outs())
   {
@@ -299,7 +305,7 @@ MMO_Files_::plot()
 }
 
 void
-MMO_Files_::settings(MMO_Annotation annotation)
+MMO_Files::settings(MMO_Annotation annotation)
 {
   stringstream buffer;
   string fname = _fname;
@@ -373,7 +379,7 @@ MMO_Files_::settings(MMO_Annotation annotation)
 }
 
 void
-MMO_Files_::_printList(list<string> ann, string tag, MMO_Annotation annotation)
+MMO_Files::_printList(list<string> ann, string tag, MMO_Annotation annotation)
 {
   stringstream buffer;
   if(ann.empty())
@@ -395,7 +401,7 @@ MMO_Files_::_printList(list<string> ann, string tag, MMO_Annotation annotation)
 }
 
 void
-MMO_Files_::graph()
+MMO_Files::graph()
 {
   Graph g = _solver->graph();
   if(g.empty())
@@ -480,22 +486,4 @@ MMO_Files_::graph()
   remove(tmp1FileName.c_str());
   remove(tmp2FileName.c_str());
   remove(tmp3FileName.c_str());
-}
-
-MMO_Files
-newMMO_Files(MMO_Model model, MMO_Solver solver, MMO_CompileFlags flags)
-{
-  return new MMO_Files_(model, solver, flags);
-}
-
-MMO_Files
-newMMO_Files(string name, MMO_CompileFlags flags)
-{
-  return new MMO_Files_(name, flags);
-}
-
-void
-deleteMMO_Files(MMO_Files m)
-{
-  delete m;
 }

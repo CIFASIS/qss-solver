@@ -260,23 +260,11 @@ class MMO_ModelConfig
     MMO_Annotation _annotation;
     bool _disableSymDiff;
 };
-/**
- *
- * @return
- */
-MMO_ModelData
-newMMO_ModelData();
-/**
- *
- * @param m
- */
-void
-deleteMMO_ModelData(MMO_ModelData m);
 
 /**
  *
  */
-class MMO_FunctionData_
+class MMO_FunctionConfig
 {
   public:
     /**
@@ -286,12 +274,11 @@ class MMO_FunctionData_
      * @param args
      * @param data
      */
-    MMO_FunctionData_(string var, string name, AST_ExpressionList args,
-        MMO_ModelData data);
+    MMO_FunctionConfig(string var, string name, AST_ExpressionList args, MMO_ModelData data);
     /**
      *
      */
-    ~MMO_FunctionData_();
+    ~MMO_FunctionConfig();
     /**
      *
      * @param indent
@@ -305,28 +292,11 @@ class MMO_FunctionData_
     AST_ExpressionList _args;
     MMO_ModelData _data;
 };
-/**
- *
- * @param var
- * @param name
- * @param args
- * @param data
- * @return
- */
-MMO_FunctionData
-newMMO_FunctionData(string var, string name, AST_ExpressionList args,
-    MMO_ModelData data);
-/**
- *
- * @param m
- */
-void
-deleteMMO_FunctionData(MMO_FunctionData m);
 
 /**
  *
  */
-class MMO_PackageData_
+class MMO_PackageConfig
 {
   public:
     /**
@@ -335,12 +305,11 @@ class MMO_PackageData_
      * @param fit
      * @param objects
      */
-    MMO_PackageData_(string name, MMO_FunctionDefinitionTable fit,
-        MMO_ImportTable objects);
+    MMO_PackageConfig(string name, MMO_FunctionDefinitionTable fit, MMO_ImportTable objects);
     /**
      *
      */
-    ~MMO_PackageData_();
+    ~MMO_PackageConfig();
     /**
      *
      * @return
@@ -388,27 +357,11 @@ class MMO_PackageData_
     MMO_FunctionDefinitionTable _fit;
     MMO_ImportTable _objects;
 };
-/**
- *
- * @param name
- * @param fit
- * @param objects
- * @return
- */
-MMO_PackageData
-newMMO_PackageData(string name, MMO_FunctionDefinitionTable fit,
-    MMO_ImportTable objects);
-/**
- *
- * @param m
- */
-void
-deleteMMO_PackageData(MMO_PackageData m);
 
 /**
  *
  */
-class MMO_FunctionDefinition_
+class MMO_FunctionDefinition
 {
   public:
     /**
@@ -418,12 +371,11 @@ class MMO_FunctionDefinition_
      * @param libraryDir
      * @param libraries
      */
-    MMO_FunctionDefinition_(string name, string includeDir, string libraryDir,
-        list<string> libraries);
+    MMO_FunctionDefinition(string name, string includeDir, string libraryDir, list<string> libraries);
     /**
      *
      */
-    ~MMO_FunctionDefinition_();
+    ~MMO_FunctionDefinition();
     /**
      *
      * @return
@@ -478,7 +430,7 @@ class MMO_FunctionDefinition_
      */
     string
     prototype();
-    private:
+  private:
     list<string> _def;
     string _name;
     string _prototype;
@@ -486,23 +438,6 @@ class MMO_FunctionDefinition_
     string _libraryDirectory;
     list<string> _libraries;
 };
-/**
- *
- * @param name
- * @param includeDir
- * @param libraryDir
- * @param libraries
- * @return
- */
-MMO_FunctionDefinition
-newMMO_FunctionDefinition(string name, string includeDir, string libraryDir,
-    list<string> libraries);
-/**
- *
- * @param m
- */
-void
-deleteMMO_FunctionDefinition(MMO_FunctionDefinition m);
 
 /**
  *

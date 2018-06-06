@@ -44,7 +44,7 @@ class MMO_Expression
      * @param exp
      * @param data
      */
-    MMO_Expression(AST_Expression exp, MMO_ModelData data);
+    MMO_Expression(AST_Expression exp, MMO_ModelConfig &config);
     /**
      *
      * @param exp
@@ -118,9 +118,9 @@ class MMO_Expression
      */
     void
     setExpression(AST_Expression exp);
-    private:
+  private:
     AST_Expression _exp;
-    MMO_ModelData _data;
+    MMO_ModelConfig _config;
     string _str;
     int _equationIndex;
     int _expressionOrder;
@@ -163,7 +163,7 @@ class MMO_ConvertCondition: public AST_Expression_Visitor<AST_Expression>
      *
      * @param data
      */
-    MMO_ConvertCondition(MMO_ModelData data);
+    MMO_ConvertCondition(MMO_ModelConfig &config);
     /**
      *
      */
@@ -176,17 +176,97 @@ class MMO_ConvertCondition: public AST_Expression_Visitor<AST_Expression>
     zeroCrossing();
     int
     zeroCrossingRelation();
-    private:
+  private:
     AST_Expression
     foldTraverseElement(AST_Expression exp);
     AST_Expression
     foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
     AST_Expression
     foldTraverseElementUMinus(AST_Expression exp);
-    MMO_ModelData _data;
+    MMO_ModelConfig _config;
     int _zc;
     int _zcRelation;
 };
+
+/**
+ *
+ */
+class MMO_ReplaceInterval: public AST_Expression_Visitor<AST_Expression>
+{
+  public:
+    /**
+     *
+     * @param vt
+     */
+    MMO_ReplaceInterval(VarSymbolTable vt);
+    /**
+     *
+     */
+    ~MMO_ReplaceInterval();
+    /**
+     *
+     * @return
+     */
+    int
+    indexes();
+    /**
+     *
+     * @return
+     */
+    bool
+    end();
+    /**
+     *
+     * @param exp
+     * @return
+     */
+    string
+    find(AST_Expression exp);
+    /**
+     *
+     * @return
+     */
+    VariableInterval
+    first();
+    /**
+     *
+     * @param var
+     * @return
+     */
+    bool
+    fixedInterval(string var);
+    /**
+     *
+     * @return
+     */
+    VariableInterval
+    next();
+    /**
+     *
+     * @param exp
+     * @return
+     */
+    list<VariableInterval>
+    variables(AST_Expression exp);
+  private:
+    AST_Expression
+    foldTraverseElement(AST_Expression exp);
+    AST_Expression
+    foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+    AST_Expression
+    foldTraverseElementUMinus(AST_Expression exp);
+    AST_Expression
+    _indexExp(int constant = 0, int factor = 1);
+    void
+    _setIndex(int constant, int factor, int range, VarInfo vi);
+    VarSymbolTable _vt;
+    unsigned int _indexes;
+    list<VariableInterval> _replacedVars;
+    map<string, list<VariableInterval> > _replacedExpsVars;
+    map<string, AST_Expression> _replacedExps;
+    string _currentVar;
+};
+
 
 /**
  *
@@ -255,85 +335,6 @@ class MMO_PrintExp: public AST_Expression_Visitor<string>
     MMO_ReplaceInterval _ri;
     MMO_PackageTable _pt;
     int _forOffset;
-};
-
-/**
- *
- */
-class MMO_ReplaceInterval: public AST_Expression_Visitor<AST_Expression>
-{
-  public:
-    /**
-     *
-     * @param vt
-     */
-    MMO_ReplaceInterval(VarSymbolTable vt);
-    /**
-     *
-     */
-    ~MMO_ReplaceInterval();
-    /**
-     *
-     * @return
-     */
-    int
-    indexes();
-    /**
-     *
-     * @return
-     */
-    bool
-    end();
-    /**
-     *
-     * @param exp
-     * @return
-     */
-    string
-    find(AST_Expression exp);
-    /**
-     *
-     * @return
-     */
-    VariableInterval
-    first();
-    /**
-     *
-     * @param var
-     * @return
-     */
-    bool
-    fixedInterval(string var);
-    /**
-     *
-     * @return
-     */
-    VariableInterval
-    next();
-    /**
-     *
-     * @param exp
-     * @return
-     */
-    list<VariableInterval>
-    variables(AST_Expression exp);
-    private:
-    AST_Expression
-    foldTraverseElement(AST_Expression exp);
-    AST_Expression
-    foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
-    AST_Expression
-    foldTraverseElementUMinus(AST_Expression exp);
-    AST_Expression
-    _indexExp(int constant = 0, int factor = 1);
-    void
-    _setIndex(int constant, int factor, int range, VarInfo vi);
-    VarSymbolTable _vt;
-    unsigned int _indexes;
-    list<VariableInterval> _replacedVars;
-    map<string, list<VariableInterval> > _replacedExpsVars;
-    map<string, AST_Expression> _replacedExps;
-    string _currentVar;
 };
 
 /**

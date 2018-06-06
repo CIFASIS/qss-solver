@@ -26,25 +26,21 @@
 #include <map>
 #include <string>
 
-#include "../ir/mmo_types.h"
 #include "../util/compile_flags.h"
-#include "../util/util_types.h"
-#include "generator_types.h"
+#include "../ir/stored_definition.h"
+#include "../ir/function.h"
+#include "../ir/model.h"
+#include "../ir/package.h"
+#include "solver.h"
+#include "files.h"
+#include "writer.h"
 
 using namespace std;
 
-/*
-
- #include <map>
-
- #include <generator/generator_types.h>
- #include <ir/mmo_types.h>
- #include <util/compile_flags.h>
- */
 /**
  *
  */
-class MMO_Generator_
+class MMO_Generator
 {
   public:
     /**
@@ -52,18 +48,18 @@ class MMO_Generator_
      * @param std
      * @param flags
      */
-    MMO_Generator_(MMO_StoredDefinition std, MMO_CompileFlags flags);
+    MMO_Generator(MMO_StoredDefinition std, MMO_CompileFlags &flags);
     /**
      *
      */
-    ~MMO_Generator_();
+    ~MMO_Generator();
     /**
      *
      * @return
      */
     int
     generate();
-    private:
+  private:
     void
     _generateFunctionCode(MMO_Function f);
     void
@@ -98,19 +94,5 @@ class MMO_Generator_
     map<string, string> _includes;
     list<string> _fheader;
 };
-/**
- *
- * @param std
- * @param flags
- * @return
- */
-MMO_Generator
-newMMO_Generator(MMO_StoredDefinition std, MMO_CompileFlags flags);
-/**
- *
- * @param m
- */
-void
-deleteMMO_Generator(MMO_Generator m);
 
 #endif  /* GENERATOR_H_ */

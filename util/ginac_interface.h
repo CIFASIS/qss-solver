@@ -27,7 +27,6 @@
 #include <string>
 
 #include "../ast/ast_types.h"
-#include "../ir/mmo_types.h"
 #include "ast_util.h"
 #include "util_types.h"
 
@@ -114,7 +113,7 @@ class ConvertToGiNaC: public AST_Expression_Visitor<GiNaC::ex>
     directory();
     string
     identifier(string str);
-    private:
+  private:
     virtual GiNaC::ex
     foldTraverseElement(AST_Expression);
     virtual GiNaC::ex

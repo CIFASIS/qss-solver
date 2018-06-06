@@ -52,9 +52,5 @@ typedef std::string VarName;
  *
  */
 typedef std::string TypeName;
-/**
- *
- */
-typedef std::string MMO_identifier;
 
 #endif  /*  UTIL_TYPES_H_ */

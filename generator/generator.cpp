@@ -31,10 +31,10 @@
 #include "../util/type.h"
 #include "../util/util.h"
 #include "files.h"
-#include "generator_utils.h"
+#include "writer.h"
 #include "solver.h"
 
-MMO_Generator_::MMO_Generator_(MMO_StoredDefinition std, MMO_CompileFlags flags) :
+MMO_Generator::MMO_Generator(MMO_StoredDefinition std, MMO_CompileFlags &flags) :
   _std(std), 
   _model(NULL), 
   _function(NULL), 
@@ -46,29 +46,29 @@ MMO_Generator_::MMO_Generator_(MMO_StoredDefinition std, MMO_CompileFlags flags)
   _includes(), 
   _fheader()
 {
-  if(_flags->output())
+  if(_flags.output())
   {
-    _writer = newMMO_MemoryWriter();
+    _writer = MMO_MemoryWriter();
   }
   else
   {
-    _writer = newMMO_FileWriter();
+    _writer = MMO_FileWriter();
   }
 }
 
-MMO_Generator_::~MMO_Generator_()
+MMO_Generator::~MMO_Generator()
 {
   delete _writer;
   delete _files;
 }
 
 int
-MMO_Generator_::generate()
+MMO_Generator::generate()
 {
-  for(MMO_Class c = _std->begin(); _std->end(); c = _std->next())
+  for(MMO_Class &c = _std->begin(); _std->end(); c = _std->next())
   {
-    string fname = c->name();
-    switch(c->classType())
+    string fname = c.name();
+    switch(c.classType())
     {
       case CL_MODEL:
         {
@@ -78,7 +78,7 @@ MMO_Generator_::generate()
         }
         fname.append(".c");
         _writer->setFile(fname);
-        _model = c->getAsModel();
+        _model = c.getAsModel();
         switch(_model->annotation()->solver())
         {
           case ANT_DOPRI:
@@ -104,7 +104,7 @@ MMO_Generator_::generate()
         }
         if(_model->calledFunctions()->count())
         {
-          string ffname = c->name();
+          string ffname = c.name();
           if(_flags->hasOutputFile())
           {
             ffname = _flags->outputFileName();
@@ -143,7 +143,7 @@ MMO_Generator_::generate()
 }
 
 void
-MMO_Generator_::_generateHeader(string name)
+MMO_Generator::_generateHeader(string name)
 {
   stringstream buffer;
   buffer << "#include <math.h>" << endl;
@@ -153,7 +153,7 @@ MMO_Generator_::_generateHeader(string name)
 }
 
 void
-MMO_Generator_::_generateModel()
+MMO_Generator::_generateModel()
 {
   _solver->modelHeader();
   _solver->modelDefinition();
@@ -165,7 +165,7 @@ MMO_Generator_::_generateModel()
 }
 
 void 
-MMO_Generator_::_printList(list<string> l)
+MMO_Generator::_printList(list<string> l)
 {
   for(list<string>::iterator it = l.begin(); it != l.end(); it++)
   {
@@ -174,7 +174,7 @@ MMO_Generator_::_printList(list<string> l)
 }
 
 void
-MMO_Generator_::_generateFunctionCode(MMO_Function f)
+MMO_Generator::_generateFunctionCode(MMO_Function f)
 {
   list<string> code;
   MMO_ImportTable it = f->imports();
@@ -224,7 +224,7 @@ MMO_Generator_::_generateFunctionCode(MMO_Function f)
 }
 
 void
-MMO_Generator_::_generateFunctionHeader(string fileName)
+MMO_Generator::_generateFunctionHeader(string fileName)
 {
   string indent = _writer->indent(1);
   string file = fileName;
@@ -238,20 +238,20 @@ MMO_Generator_::_generateFunctionHeader(string fileName)
 }
 
 void
-MMO_Generator_::_generateFunction(MMO_FunctionDefinition f, string fileName)
+MMO_Generator::_generateFunction(MMO_FunctionDefinition f, string fileName)
 {
   _printList(f->def());
 }
 
 void
-MMO_Generator_::_generateFunction(MMO_Function f, string fileName)
+MMO_Generator::_generateFunction(MMO_Function f, string fileName)
 {
   _fheader.push_back(f->prototype() + ";");
   _generateFunctionCode(f);
 }
 
 void
-MMO_Generator_::_generatePackage(MMO_Package p)
+MMO_Generator::_generatePackage(MMO_Package p)
 {
   string indent = _writer->indent(1);
   string name;
@@ -357,7 +357,7 @@ MMO_Generator_::_generatePackage(MMO_Package p)
 MMO_Generator
 newMMO_Generator(MMO_StoredDefinition std, MMO_CompileFlags flags)
 {
-  return new MMO_Generator_(std, flags);
+  return new MMO_Generator(std, flags);
 }
 
 void
@@ -367,7 +367,7 @@ deleteMMO_Generator(MMO_Generator m)
 }
 
 void
-MMO_Generator_::_variablesInitCode()
+MMO_Generator::_variablesInitCode()
 {
   stringstream buffer;
   VarSymbolTable vt = _model->varTable();
