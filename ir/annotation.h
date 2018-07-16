@@ -345,7 +345,7 @@ class MMO_ModelAnnotation: public MMO_Annotation
      *
      * @param data
      */
-    MMO_ModelAnnotation(MMO_ModelConfig cfg);
+    MMO_ModelAnnotation();
     /**
      *
      */
@@ -728,7 +728,6 @@ class MMO_ModelAnnotation: public MMO_Annotation
     string _scheduler;
     string _storeData;
     map<string, MMO_ModelAnnotation::type> _annotations;
-    MMO_ModelConfig _cfg;
     list<double> _DQMin;
     list<double> _DQRel;
     double _weight;

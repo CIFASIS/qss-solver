@@ -81,18 +81,16 @@ class AST_Argument_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
+    accept(AST_Visitor *visitor);
     /**
      *
      */
-    GET_AS(Argument,Modification)
-    ;
+    GET_AS(Argument,Modification);
     /**
      *
      */
-    GET_AS(Argument,Redeclaration)
-    ;
-    private:
+    GET_AS(Argument,Redeclaration);
+  private:
     bool _final;
     bool _each;
 };
@@ -139,7 +137,7 @@ class AST_Argument_Modification_: public AST_Argument_
      */
     ArgumentType
     argumentType() const;
-    private:
+  private:
     AST_String _name;
     AST_Modification _mod;
 };
@@ -172,8 +170,7 @@ class AST_Modification_: public AST_Node_
     /**
      *
      */
-    DEFINE_CLASS_PRINTER(AST_Modification)
-    ;
+    DEFINE_CLASS_PRINTER(AST_Modification);
     /**
      *
      * @return
@@ -191,22 +188,19 @@ class AST_Modification_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
+    accept(AST_Visitor *visitor);
     /**
      *
      */
-    GET_AS(Modification,Equal)
-    ;
+    GET_AS(Modification,Equal);
     /**
      *
      */
-    GET_AS(Modification,Class)
-    ;
+    GET_AS(Modification,Class);
     /**
      *
      */
-    GET_AS(Modification,Assign)
-    ;
+    GET_AS(Modification,Assign);
 };
 
 /**
@@ -238,7 +232,7 @@ class AST_Modification_Equal_: public AST_Modification_
      */
     virtual ModificationType
     modificationType();
-    private:
+  private:
     AST_Expression _e;
 };
 
@@ -271,7 +265,7 @@ class AST_Modification_Assign_: public AST_Modification_
      */
     virtual ModificationType
     modificationType();
-    private:
+  private:
     AST_Expression _e;
 };
 
@@ -323,7 +317,7 @@ class AST_Modification_Class_: public AST_Modification_
      */
     virtual ModificationType
     modificationType();
-    private:
+  private:
     AST_Expression _e;
     AST_ArgumentList _al;
 };

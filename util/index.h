@@ -23,9 +23,8 @@
 #include <string>
 #include <map>
 
-#include "../ast/ast_types.h"
-#include "util_types.h"
 #include "../ir/expression.h"
+#include "../util/symbol_table.h"
 
 using namespace std;
 
@@ -36,7 +35,7 @@ class IndexDefinition
     ~IndexDefinition();
   private:
     string _variable;
-    MMO_expression _exp;
+    MMO_Expression _exp;
 };
 
 class RangeDefinition
@@ -70,8 +69,6 @@ class Range
     int
     size();
     void
-    setIndex(Index *lhs);
-    void
     clear();
     bool
     check();
@@ -91,7 +88,7 @@ class Range
     localVariable(string v);
     private:
     map<string,RangeDefinition> _ranges;
-}
+};
 
 class Index
 {
@@ -110,7 +107,7 @@ class Index
     void
     setRange(Range r);
     void
-    setMap(MMO_expresion exp);
+    setMap(MMO_Expression exp);
     bool
     hasMap() const;
     bool
@@ -119,7 +116,7 @@ class Index
     addIndex(IndexDefinition id);
     int
     dimension();
-    private:
+  private:
     map<int,IndexDefinition> _indexes;
 };
 

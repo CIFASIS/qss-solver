@@ -37,7 +37,7 @@ GET_AS_IMP(Statement, Assign);
 CLASS_PRINTER_IMP(AST_Statement);
 
 void
-AST_Statement_::accept(AST_Visitor visitor)
+AST_Statement_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
   visitor->leave(this);
@@ -478,7 +478,7 @@ AST_Statement_Else_::statements() const
 }
 
 void
-AST_Statement_Else_::accept(AST_Visitor visitor)
+AST_Statement_Else_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
   _cond->accept(visitor);

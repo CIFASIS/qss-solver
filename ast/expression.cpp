@@ -61,7 +61,7 @@ AST_Expression_::expressionType()
 CLASS_PRINTER_IMP(AST_Expression);
 
 void
-AST_Expression_::accept(AST_Visitor visitor)
+AST_Expression_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
 }

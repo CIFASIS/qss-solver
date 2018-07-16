@@ -20,17 +20,9 @@
 #ifndef MMO_PACKAGE_H_
 #define MMO_PACKAGE_H_
 
-#include <list>
-#include <map>
-#include <string>
-#include <vector>
+#include "class.h"
 
 #include "../ast/ast_types.h"
-#include "../util/error.h"
-#include "../util/model_dependencies.h"
-#include "../util/model_tables.h"
-#include "../util/util_types.h"
-#include "class.h"
 
 /**
  *
@@ -67,12 +59,6 @@ class MMO_Package: public MMO_Class
     name() const;
     /**
      *
-     * @return
-     */
-    string
-    fileName() const;
-    /**
-     *
      * @param n
      */
     void
@@ -101,7 +87,7 @@ class MMO_Package: public MMO_Class
      * @param f
      */
     void
-    insert(MMO_Function f);
+    insert(MMO_Function &f);
     /**
      *
      * @param efc
@@ -129,30 +115,6 @@ class MMO_Package: public MMO_Class
      */
     void
     insert(AST_Argument_Modification x);
-    /**
-     *
-     * @return
-     */
-    MMO_FunctionTable
-    functions();
-    /**
-     *
-     * @return
-     */
-    MMO_ImportTable
-    imports();
-    /**
-     *
-     * @return
-     */
-    string
-    prefix();
-    private:
-    MMO_FunctionTable _functions;
-    string _name;
-    unsigned int _funcs;
-    MMO_ImportTable _imports;
-    MMO_PackageTable _packages;
 };
 
-#endif  /* MMO_CLASS_H_ */
+#endif  /* MMO_PACKAGE_H_ */

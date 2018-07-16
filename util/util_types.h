@@ -39,10 +39,6 @@ DEFINE_TYPE(VarInfo);
 /**
  *
  */
-DEFINE_TYPE(AST_Visitor);
-/**
- *
- */
 DEFINE_TYPE(AST_MicroModelica);
 /**
  *

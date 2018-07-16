@@ -55,37 +55,31 @@ class AST_Equation_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
+    accept(AST_Visitor *visitor);
     /**
      *
      */
-    GET_AS(Equation,Call)
-    ;
+    GET_AS(Equation,Call);
     /**
      *
      */
-    GET_AS(Equation,Connect)
-    ;
+    GET_AS(Equation,Connect);
     /**
      *
      */
-    GET_AS(Equation,Equality)
-    ;
+    GET_AS(Equation,Equality);
     /**
      *
      */
-    GET_AS(Equation,For)
-    ;
+    GET_AS(Equation,For);
     /**
      *
      */
-    GET_AS(Equation,If)
-    ;
+    GET_AS(Equation,If);
     /**
      *
      */
-    GET_AS(Equation,When)
-    ;
+    GET_AS(Equation,When);
 };
 
 /**
@@ -136,7 +130,7 @@ class AST_Equation_Equality_: public AST_Equation_
      */
     void
     setRight(AST_Expression);
-    private:
+  private:
     AST_Expression _left, _right;
 };
 
@@ -177,7 +171,7 @@ class AST_Equation_Connect_: public AST_Equation_
      */
     virtual EquationType
     equationType();
-    private:
+  private:
     AST_Expression_ComponentReference _cr1, _cr2;
 };
 
@@ -210,7 +204,7 @@ class AST_Equation_Call_: public AST_Equation_
      */
     AST_Expression
     call() const;
-    private:
+  private:
     AST_Expression _call;
 };
 
@@ -271,7 +265,7 @@ class AST_Equation_If_: public AST_Equation_
      */
     EquationType
     equationType();
-    private:
+  private:
     AST_Expression _cond;
     AST_EquationList _eql;
     AST_EquationList _else;
@@ -314,7 +308,7 @@ class AST_Equation_For_: public AST_Equation_
      */
     EquationType
     equationType();
-    private:
+  private:
     AST_EquationList _eql;
     AST_ForIndexList _ind;
 };
@@ -359,8 +353,8 @@ class AST_ForIndex_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
-    private:
+    accept(AST_Visitor *visitor);
+  private:
     AST_String _var;
     AST_Expression _in;
 };
@@ -400,8 +394,8 @@ class AST_Equation_Else_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
-    private:
+    accept(AST_Visitor *visitor);
+  private:
     AST_Expression _cond;
     AST_EquationList _eqs;
 };
@@ -456,7 +450,7 @@ class AST_Equation_When_: public AST_Equation_
      */
     void
     setCondition(AST_Expression e);
-    private:
+  private:
     AST_Expression _cond;
     AST_EquationList _eql;
     AST_Equation_ElseList _else_when;

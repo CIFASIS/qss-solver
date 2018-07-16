@@ -132,8 +132,7 @@ class BIF
     VarInfo
     _variableInfo(VariableInterval vin);
     virtual string
-    _reduce(string variableMap, string variableIndex, int variableOrder,
-        list<VariableInterval> variableInterval, bool hasStates) = 0;
+    _reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates) = 0;
     virtual string
     _init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates) = 0;
 };

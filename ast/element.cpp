@@ -22,9 +22,9 @@
 #include <list>
 #include <sstream>
 
-#include "../util/ast_util.h"
 #include "class.h"
 #include "modification.h"
+#include "../util/ast_util.h"
 
 using namespace std;
 
@@ -56,7 +56,7 @@ AST_Element_::elementType()
 }
 
 void
-AST_Element_::accept(AST_Visitor visitor)
+AST_Element_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
 }
@@ -278,7 +278,7 @@ operator<<(ostream &os, const AST_Comment &c)
 }
 
 void
-AST_Comment_::accept(AST_Visitor visitor)
+AST_Comment_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
 }

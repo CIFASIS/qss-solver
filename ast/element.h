@@ -36,8 +36,7 @@ class AST_Element_: public AST_Node_
     /**
      *
      */
-    DEFINE_CLASS_PRINTER(AST_Element)
-    ;
+    DEFINE_CLASS_PRINTER(AST_Element);
     /**
      *
      * @return
@@ -55,27 +54,23 @@ class AST_Element_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
+    accept(AST_Visitor *visitor);
     /**
      *
      */
-    GET_AS(Element,Component)
-    ;
+    GET_AS(Element,Component);
     /**
      *
      */
-    GET_AS(Element,ExtendsClause)
-    ;
+    GET_AS(Element,ExtendsClause);
     /**
      *
      */
-    GET_AS(Element,ImportClause)
-    ;
+    GET_AS(Element,ImportClause);
     /**
      *
      */
-    GET_AS(Element,ClassWrapper)
-    ;
+    GET_AS(Element,ClassWrapper);
 };
 
 /**
@@ -107,7 +102,7 @@ class AST_Element_ExtendsClause_: public AST_Element_
      */
     AST_String
     name();
-    private:
+  private:
     string _name;
 };
 
@@ -140,7 +135,7 @@ class AST_Element_ImportClause_: public AST_Element_
      */
     string
     print() const;
-    private:
+  private:
     string _name;
 };
 
@@ -205,7 +200,7 @@ class AST_Declaration_: public AST_Element_
      */
     AST_Comment
     comment() const;
-    private:
+  private:
     string _name;
     AST_ExpressionList _indexes;
     AST_Modification _mod;
@@ -333,7 +328,7 @@ class AST_Element_Component_: public AST_Element_
     isReal();
     bool
     isInteger();
-    private:
+  private:
     AST_DeclarationList _decl_list;
     string _type;
     AST_ExpressionList _indexes;
@@ -370,7 +365,7 @@ class AST_Element_ClassWrapper_: public AST_Element_
      */
     AST_Class
     getClass();
-    private:
+  private:
     AST_Class _c;
 };
 
@@ -414,8 +409,8 @@ class AST_Comment_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
-    private:
+    accept(AST_Visitor *visitor);
+  private:
     AST_String _st;
     AST_ArgumentList _al;
 };

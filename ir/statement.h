@@ -20,12 +20,7 @@
 #ifndef MMO_STATEMENT_H_
 #define MMO_STATEMENT_H_
 
-#include <list>
-#include <string>
-
 #include "../ast/ast_types.h"
-#include "../util/dependencies.h"
-#include "../util/util_types.h"
 
 /**
  *
@@ -33,12 +28,6 @@
 class MMO_Statement
 {
   public:
-    /**
-     *
-     * @param stm
-     * @param data
-     */
-    MMO_Statement(AST_Statement stm, MMO_ModelConfig &config);
     /**
      *
      * @param stm
@@ -52,47 +41,6 @@ class MMO_Statement
      *
      */
     ~MMO_Statement();
-    /**
-     *
-     * @param indent
-     * @param idx
-     * @param offset
-     * @param order
-     * @param forOffset
-     * @return
-     */
-    list<string>
-    print(string indent, string idx = "", int offset = 0, int order = 1,
-        int forOffset = 0);
-    /**
-     *
-     * @return
-     */
-    list<string>
-    getVariables();
-  private:
-    void
-    _init();
-    void
-    _setInitialCode(AST_Statement stm);
-    void
-    _printAssignment(const string& name, AST_Expression_ComponentReference cr,
-        AST_Expression e, const string& indent, const string& idx, int offset,
-        int order, int forOffset, list<string>& ret);
-    void
-    _printList(AST_StatementListIterator it, AST_StatementList stl,
-        const string& indent, const string& idx, int offset, int order,
-        int forOffset,
-        list<string>& ret);
-    void
-    _printIfExpression(AST_Expression e, string lhs, const string& indent,
-        const string& idx, int order, int offset, int forOffset,
-        list<string>& ret, list<string>& code);
-
-    AST_Statement _stm;
-    MMO_ModelConfig _config;
-    bool _initialCode;
-    list<string> _variables;
 };
 
 #endif  /* MMO_STATEMENT_H_ */

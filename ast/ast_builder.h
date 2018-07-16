@@ -23,6 +23,7 @@
 #include <string>
 
 #include "ast_types.h"
+#include "../util/ast_util.h"
 
 /* Constructors */
 /**

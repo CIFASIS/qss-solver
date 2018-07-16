@@ -46,8 +46,7 @@ class AST_Composition_: public AST_Node_
     /**
      *
      */
-    DEFINE_CLASS_PRINTER(AST_Composition)
-    ;
+    DEFINE_CLASS_PRINTER(AST_Composition);
     /**
      *
      * @return
@@ -107,8 +106,8 @@ class AST_Composition_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
-    private:
+    accept(AST_Visitor *visitor);
+  private:
     AST_CompositionElementList _composition_list;
     AST_ElementList _element_list;
     AST_ArgumentList _annot;
@@ -171,8 +170,8 @@ class AST_CompositionElement_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
-    private:
+    accept(AST_Visitor *visitor);
+  private:
     AST_CompositionEqsAlgs _eqs_algs;
     AST_ElementList _el;
 };
@@ -239,8 +238,8 @@ class AST_CompositionEqsAlgs_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
-    private:
+    accept(AST_Visitor *visitor);
+  private:
     bool _initial;
     AST_EquationList _eq;
     AST_StatementList _st;
@@ -314,8 +313,8 @@ class AST_External_Function_Call_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
-    private:
+    accept(AST_Visitor *visitor);
+  private:
     AST_String _lang;
     AST_ArgumentList _annot;
     AST_Expression_Call _call;

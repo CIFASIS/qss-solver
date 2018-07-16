@@ -20,12 +20,7 @@
 #ifndef MMO_EVENT_H_
 #define MMO_EVENT_H_
 
-#include <list>
-#include <string>
-
 #include "../ast/ast_types.h"
-#include "../util/index.h"
-#include "../util/util_types.h"
 
 /**
  *
@@ -60,126 +55,11 @@ class MMO_Event
      * @param cond
      * @param data
      */
-    MMO_Event(AST_Expression cond, MMO_ModelConfig &config);
+    MMO_Event(AST_Expression cond);
     /**
      *
      */
     ~MMO_Event();
-    /**
-     *
-     * @return
-     */
-    string
-    print();
-    /**
-     *
-     * @return
-     */
-    MMO_Equation
-    condition();
-    /**
-     *
-     * @param cond
-     */
-    void
-    setCondition(MMO_Expression cond);
-    /**
-     *
-     * @param cond
-     * @return
-     */
-    bool
-    compareCondition(AST_Expression cond);
-    /**
-     *
-     * @param stm
-     */
-    void
-    insert(AST_Statement stm);
-    /**
-     *
-     * @param h
-     * @return
-     */
-    MMO_Statement
-    begin(HND_Type h);
-    /**
-     *
-     * @return
-     */
-    MMO_Statement
-    next();
-    /**
-     *
-     * @return
-     */
-    bool
-    end();
-    /**
-     *
-     * @return
-     */
-    int
-    beginRange();
-    /**
-     *
-     * @return
-     */
-    int
-    endRange();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasPositiveHandler();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasNegativeHandler();
-    /**
-     *
-     * @return
-     */
-    HND_Type
-    handlerType();
-    /**
-     *
-     * @param h
-     */
-    void
-    setHandlerType(HND_Type h);
-    /**
-     *
-     * @return
-     */
-    bool
-    hasWeight();
-    /**
-     *
-     * @return
-     */
-    double
-    weight();
-    ZC_REL
-    zcRelation();
- private:
-    AST_Expression
-    _getExpression(AST_Expression exp);
-    MMO_Equation _cond;
-    list<MMO_Statement> _positiveHandlerStatements;
-    list<MMO_Statement> _negativeHandlerStatements;
-    int _init;
-    int _end;
-    HND_Type _handler;
-    HND_Type _handlerType;
-    list<MMO_Statement>::iterator _it;
-    MMO_ModelConfig _config;
-    VarSymbolTable _lhsVars;
-    double _weight;
-    ZC_REL _zcRelation;
 };
 
 #endif  /*  MMO_EVENT_H_ */

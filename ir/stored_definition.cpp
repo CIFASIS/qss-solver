@@ -17,62 +17,12 @@
 
  ******************************************************************************/
 
-#include <ir/stored_definition.h>
-#include <ir/class.h>
+#include "stored_definition.h"
 
-MMO_StoredDefinition::MMO_StoredDefinition() :
-    _classList()
+MMO_StoredDefinition::MMO_StoredDefinition() 
 {
 }
 
 MMO_StoredDefinition::~MMO_StoredDefinition()
 {
 }
-
-list<MMO_Class>
-MMO_StoredDefinition::classes() const
-{
-  return _classList;
-}
-
-void
-MMO_StoredDefinition::addClass(MMO_Class c)
-{
-  _classList.push_back(c);
-}
-
-MMO_Class
-MMO_StoredDefinition::begin()
-{
-  _it = _classList.begin();
-  if(_it == _classList.end())
-  {
-    return NULL;
-  }
-  return *_it;
-}
-
-MMO_Class
-MMO_StoredDefinition::next()
-{
-  _it++;
-  if(_it == _classList.end())
-  {
-    return NULL;
-  }
-  return *_it;
-}
-
-bool
-MMO_StoredDefinition::end()
-{
-  return _it != _classList.end();
-}
-
-string
-MMO_StoredDefinition::print()
-{
-  string ret;
-  return ret;
-}
-

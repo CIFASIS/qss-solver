@@ -25,7 +25,6 @@
 #include "../ast/ast_types.h"
 #include "../ast/expression.h"
 #include "util_types.h"
-#include "model_tables.h"
 #include "index.h"
 
 /**
@@ -481,7 +480,6 @@ class ReplaceReference: public AST_Expression_Fold<AST_Expression>
 
 /**
  * Evaluates an arithmetic expression.
- * TODO Ver el calculo del tipo de la expression de retorno en el caso en el que se llega a obtener un número.
  */
 /**
  *
@@ -517,7 +515,7 @@ class EvalExp: public AST_Expression_Fold<AST_Expression>
     AST_Expression
     eval(AST_Expression_ComponentReference compRef, AST_Expression compRefValue,
         AST_Expression exp);
-    private:
+  private:
     AST_Expression
     foldTraverseElement(AST_Expression);
     AST_Expression
@@ -542,14 +540,14 @@ class EvalExp: public AST_Expression_Fold<AST_Expression>
 /**
  *
  */
-class AST_Visitor_
+class AST_Visitor
 {
   public:
     /**
      *
      */
     virtual
-    ~AST_Visitor_();
+    ~AST_Visitor();
     /**
      *
      * @param x
@@ -696,188 +694,5 @@ class AST_Visitor_
     virtual int
     apply(AST_Node x) = 0;
 };
-
-/**
- *
- */
-class ExpressionIndex_: public AST_Expression_Fold<Index>
-{
-  public:
-    /**
-     *
-     * @param vt
-     */
-    ExpressionIndex_(VarSymbolTable vt);
-    /**
-     *
-     */
-    ~ExpressionIndex_();
-    Index
-    /**
-     *
-     * @param exp
-     * @return
-     */
-    index(AST_Expression exp);
-    /**
-     *
-     * @param idx
-     * @param index
-     */
-    void
-    setIndex(Index *idx, Index index, int dim = 0);
-    private:
-    Index
-    foldTraverseElement(AST_Expression);
-    Index
-    foldTraverseElementUMinus(AST_Expression);
-    Index
-    foldTraverseElement(Index, Index, BinOpType);
-    VarSymbolTable _vt;
-};
-/**
- *
- * @param vt
- * @return
- */
-ExpressionIndex
-newExpressionIndex(VarSymbolTable vt);
-/**
- *
- * @param m
- */
-void
-deleteExpressionIndex(ExpressionIndex m);
-
-/**
- *
- */
-class GenerateDeps_: public AST_Expression_Fold<Dependencies>
-{
-  public:
-    /**
-     *
-     * @param data
-     */
-    GenerateDeps_(MMO_ModelData data);
-    /**
-     *
-     */
-    ~GenerateDeps_();
-    private:
-    VarSymbolTable _vt;
-    MMO_EquationTable _algs;
-    MMO_ModelData _data;
-    Index _idx;
-    Dependencies
-    foldTraverseElement(AST_Expression exp);
-    Dependencies
-    foldTraverseElementUMinus(AST_Expression exp);
-    Dependencies
-    foldTraverseElement(Dependencies l, Dependencies r, BinOpType bot);
-    void
-    _algebraicsDeps(AST_Expression_ComponentReference cr, Index idx, VarInfo vi,
-        Dependencies ret);
-};
-/**
- *
- * @param data
- * @return
- */
-GenerateDeps
-newGenerateDeps(MMO_ModelData data);
-/**
- *
- * @param m
- */
-void
-deleteGenerateDeps(GenerateDeps m);
-
-/**
- *
- */
-class ExpIndexes_: public AST_Expression_Fold<string>
-{
-  public:
-    /**
-     *
-     * @param vt
-     */
-    ExpIndexes_(VarSymbolTable vt);
-    /**
-     *
-     */
-    ~ExpIndexes_();
-    /**
-     *
-     * @param idx
-     * @param modelica
-     * @param offset
-     */
-    void
-    setEnvironment(string idx, bool modelica = false, int offset = 1);
-    private:
-    string
-    foldTraverseElement(AST_Expression exp);
-    string
-    foldTraverseElementUMinus(AST_Expression exp);
-    string
-    foldTraverseElement(string l, string r, BinOpType bot);
-    VarSymbolTable _vt;
-    string _idx;
-    int _offset;
-    bool _modelica;
-};
-/**
- *
- * @param vt
- * @return
- */
-ExpIndexes
-newExpIndexes(VarSymbolTable vt);
-/**
- *
- * @param m
- */
-void
-deleteExpIndexes(ExpIndexes m);
-
-/**
- *
- */
-class ReplaceDer_: public AST_Expression_Visitor<AST_Expression>
-{
-  public:
-    /**
-     *
-     * @param vt
-     */
-    ReplaceDer_(VarSymbolTable vt);
-    /**
-     *
-     */
-    ~ReplaceDer_();
-    private:
-    AST_Expression
-    foldTraverseElement(AST_Expression exp);
-    AST_Expression
-    foldTraverseElementUMinus(AST_Expression exp);
-    AST_Expression
-    foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
-    VarSymbolTable _vt;
-};
-/**
- *
- * @param vt
- * @return
- */
-ReplaceDer
-newReplaceDer(VarSymbolTable vt);
-/**
- *
- * @param m
- */
-void
-deleteReplaceDer(ReplaceDer m);
 
 #endif  /* AST_UTIL_H_ */

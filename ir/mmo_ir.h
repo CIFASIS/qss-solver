@@ -25,14 +25,12 @@
 
 #include "../ast/ast_types.h"
 #include "../util/ast_util.h"
-#include "../util/util_types.h"
 #include "../ir/stored_definition.h"
-#include "../ir/class.h"
 
 /**
  *
  */
-class MMO_MicroModelicaIR: public AST_Visitor_
+class MMO_MicroModelicaIR: public AST_Visitor
 {
   public:
     /**
@@ -201,29 +199,6 @@ class MMO_MicroModelicaIR: public AST_Visitor_
      */
     int
     apply(AST_Node x);
-    private:
-    void
-    _insertComponent(AST_Element_Component x);
-    bool
-    _whenStatement(AST_Expression cond);
-    bool
-    _lValue(AST_Expression left);
-    MMO_Class _class;
-    MMO_Class _father;
-    MMO_Class _child;
-    bool _classModification;
-    bool _compositionElement;
-    MMO_StoredDefinition _storedDefinition;
-    int _funcs;
-    AST_ClassPrefix _childPrefix;
-    string *_fatherName;
-    string *_childName;
-    bool _initialCode;
-    string *_className;
-    AST_ClassPrefix _fatherPrefix;
-    AST_ClassPrefix _classPrefix;
-    bool _elseWhen;
-    MMO_FunctionTable _externalFunctions;
 };
 
 #endif  /* MMO_MICROMODELICA_IR_H_ */

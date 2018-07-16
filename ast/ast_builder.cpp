@@ -27,6 +27,7 @@
 
 #include "../parser/mocc_parser.h"
 #include "ast_types.h"
+#include "../util/ast_util.h"
 #include "class.h"
 #include "composition.h"
 #include "element.h"

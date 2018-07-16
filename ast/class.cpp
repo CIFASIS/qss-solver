@@ -215,7 +215,7 @@ AST_Class_::hasExtends()
 }
 
 void
-AST_Class_::accept(AST_Visitor visitor)
+AST_Class_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
   AST_ClassListIterator class_it;

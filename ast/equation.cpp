@@ -30,7 +30,7 @@
 CLASS_PRINTER_IMP(AST_Equation);
 
 void
-AST_Equation_::accept(AST_Visitor visitor)
+AST_Equation_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
 }
@@ -328,7 +328,7 @@ operator<<(ostream &os, const AST_ForIndex_ &f)
 GET_AS_IMP(Equation, For);
 
 void
-AST_ForIndex_::accept(AST_Visitor visitor)
+AST_ForIndex_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
   _in->accept(visitor);
@@ -437,7 +437,7 @@ AST_Equation_Else_::equations() const
 }
 
 void
-AST_Equation_Else_::accept(AST_Visitor visitor)
+AST_Equation_Else_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
   _cond->accept(visitor);

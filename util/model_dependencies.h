@@ -25,6 +25,7 @@
 
 #include "../ast/ast_types.h"
 #include "util_types.h"
+#include "incidence_matrix.h"
 
 using namespace std;
 
@@ -33,6 +34,11 @@ class ModelDependencies
   public:
     ModelDependencies();
     ~ModelDependencies();
+  private:
+    IncidenceMatrix _SD;
+    IncidenceMatrix _DS;
+    IncidenceMatrix _ZS;
+    IncidenceMatrix _SZ;
 };
 
 #endif /* MODEL_DEPENDENCIES_H_ */

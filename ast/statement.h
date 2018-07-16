@@ -36,8 +36,7 @@ class AST_Statement_: public AST_Node_
     /**
      *
      */
-    DEFINE_CLASS_PRINTER(AST_Statement)
-    ;
+    DEFINE_CLASS_PRINTER(AST_Statement);
     /**
      *
      * @return
@@ -55,32 +54,27 @@ class AST_Statement_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
+    accept(AST_Visitor *visitor);
     /**
      *
      */
-    GET_AS(Statement,While)
-    ;
+    GET_AS(Statement,While);
     /**
      *
      */
-    GET_AS(Statement,If)
-    ;
+    GET_AS(Statement,If);
     /**
      *
      */
-    GET_AS(Statement,For)
-    ;
+    GET_AS(Statement,For);
     /**
      *
      */
-    GET_AS(Statement,When)
-    ;
+    GET_AS(Statement,When);
     /**
      *
      */
-    GET_AS(Statement,Assign)
-    ;
+    GET_AS(Statement,Assign);
 };
 
 /**
@@ -186,7 +180,7 @@ class AST_Statement_When_: public AST_Statement_
      */
     virtual StatementType
     statementType();
-    private:
+  private:
     AST_Expression _cond;
     AST_StatementList _sts;
     AST_Statement_ElseList _else_list;
@@ -230,7 +224,7 @@ class AST_Statement_Assign_: public AST_Statement_
      */
     virtual StatementType
     statementType();
-    private:
+  private:
     AST_Expression_ComponentReference _lhs;
     AST_Expression _exp;
 };
@@ -286,7 +280,7 @@ class AST_Statement_If_: public AST_Statement_
      */
     virtual StatementType
     statementType();
-    private:
+  private:
     AST_Expression _cond;
     AST_StatementList _true_st, _false_st;
     AST_Statement_ElseList _else_list;
@@ -328,7 +322,7 @@ class AST_Statement_While_: public AST_Statement_
      */
     virtual StatementType
     statementType();
-    private:
+  private:
     AST_Expression _cond;
     AST_StatementList _sts;
 };
@@ -369,7 +363,7 @@ class AST_Statement_For_: public AST_Statement_
      */
     virtual StatementType
     statementType();
-    private:
+  private:
     AST_StatementList _sts;
     AST_ForIndexList _ind;
 };
@@ -418,7 +412,7 @@ class AST_Statement_OutputAssigment_: public AST_Statement_
      */
     virtual StatementType
     statementType();
-    private:
+  private:
     AST_ExpressionList _out_exps;
     AST_Expression_ComponentReference _func;
     AST_ExpressionList _args;
@@ -453,8 +447,8 @@ class AST_Statement_Else_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
-    private:
+    accept(AST_Visitor *visitor);
+  private:
     AST_Expression _cond;
     AST_StatementList _sts;
 };

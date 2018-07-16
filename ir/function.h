@@ -27,9 +27,8 @@
 
 #include "class.h"
 #include "../ast/ast_types.h"
+#include "../ir/mmo_util.h"
 #include "../util/error.h"
-#include "../util/model_dependencies.h"
-#include "../util/model_tables.h"
 #include "../util/util_types.h"
 
 /**
@@ -116,7 +115,7 @@ class MMO_Function: public MMO_Class
      * @param f
      */
     void
-    insert(MMO_Function f);
+    insert(MMO_Function &f);
     /**
      *
      * @param n
@@ -141,81 +140,6 @@ class MMO_Function: public MMO_Class
      */
     CL_Type
     classType();
-    /**
-     *
-     * @return
-     */
-    string
-    prototype();
-    /**
-     *
-     * @return
-     */
-    list<string>
-    localDeclarations();
-    /**
-     *
-     * @return
-     */
-    MMO_StatementTable
-    statements();
-    /**
-     *
-     * @return
-     */
-    string
-    returnStatement();
-    /**
-     *
-     * @return
-     */
-    MMO_ArgumentsTable
-    externalFunctionCalls();
-    /**
-     *
-     * @return
-     */
-    MMO_ImportTable
-    imports();
-    /**
-     *
-     * @param it
-     */
-    void
-    setImports(MMO_ImportTable it);
-    /**
-     *
-     * @param prefix
-     */
-    void
-    setPrefix(string prefix);
-    /**
-     *
-     * @return
-     */
-    MMO_Annotation
-    annotation();
-    void
-    setFunctions(MMO_FunctionTable functions, MMO_FunctionTable externalFunctions, MMO_SymbolRefTable calledFunctions);
-  private:
-    string _name;
-    VarSymbolTable _declarations;
-    VarSymbolTable _localDeclarations;
-    MMO_StatementTable _statements;
-    MMO_FunctionAnnotation _annotations;
-    MMO_ArgumentsTable _externalFunctionCalls;
-    MMO_SymbolRefTable _calledFunctions;
-    MMO_ImportTable _imports;
-    unsigned int _externalFuncs;
-    int _outputs;
-    string _outputName;
-    MMO_ModelConfig _cfg;
-    MMO_PackageTable _packages;
-    MMO_FunctionTable _functions;
-    MMO_FunctionTable _externalFunctions;
-    string _prefix;
-    list<VarInfo> _arguments;
-    TypeSymbolTable _types;
 };
 
 #endif  /* MMO_FUNCTION_H_ */

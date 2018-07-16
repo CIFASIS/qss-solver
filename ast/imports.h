@@ -26,7 +26,7 @@
 /**
  *
  */
-class AST_Imports: public AST_Visitor_
+class AST_Imports: public AST_Visitor
 {
   public:
     /**

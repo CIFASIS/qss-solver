@@ -57,7 +57,7 @@ AST_Argument_::isFinal() const
 }
 
 void
-AST_Argument_::accept(AST_Visitor visitor)
+AST_Argument_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
 }
@@ -74,7 +74,7 @@ AST_Modification_::modificationType()
 }
 
 void
-AST_Modification_::accept(AST_Visitor visitor)
+AST_Modification_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
   visitor->leave(this);

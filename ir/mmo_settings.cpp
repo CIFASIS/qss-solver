@@ -26,197 +26,130 @@
 
 /* MicroModelica Intermediate Representation */
 
-MMO_Settings_::MMO_Settings_(string name) :
-    _class(NULL), 
-    _classModification(false), 
-    _insertAnnotation(false), 
-    _className(), _classPrefix(), 
-    _insideFunction()
+MMO_Settings::MMO_Settings(string name) 
 {
 }
 
-MMO_Settings_::~MMO_Settings_()
+MMO_Settings::~MMO_Settings_()
 {
 }
 
 void
-MMO_Settings_::visit(AST_Class x)
-{
-  Error::getInstance()->setClassName(*(x->name()));
-  AST_TypePrefix p = x->prefix();
-  if(_class != NULL)
-  {
-    if((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE))
-    {
-      _insertAnnotation = false;
-      _insideFunction = true;
-    }
-  }
-  else
-  {
-    if(p & CP_MODEL)
-    {
-      _class = newMMO_Model(*x->name());
-      _insertAnnotation = true;
-    }
-  }
-}
-
-void
-MMO_Settings_::leave(AST_Class x)
-{
-  if(_insideFunction)
-  {
-    _insertAnnotation = true;
-    _insideFunction = false;
-  }
-}
-
-void
-MMO_Settings_::visit(AST_Composition x)
+MMO_Settings::visit(AST_Class x)
 {
 }
 
 void
-MMO_Settings_::leave(AST_Composition x)
+MMO_Settings::leave(AST_Class x)
 {
 }
 
 void
-MMO_Settings_::visit(AST_CompositionElement x)
+MMO_Settings::visit(AST_Composition x)
 {
 }
 
 void
-MMO_Settings_::leave(AST_CompositionElement x)
+MMO_Settings::leave(AST_Composition x)
 {
 }
 
 void
-MMO_Settings_::visit(AST_CompositionEqsAlgs x)
+MMO_Settings::visit(AST_CompositionElement x)
 {
 }
 
 void
-MMO_Settings_::leave(AST_CompositionEqsAlgs x)
+MMO_Settings::leave(AST_CompositionElement x)
 {
 }
 
 void
-MMO_Settings_::visit(AST_External_Function_Call x)
+MMO_Settings::visit(AST_CompositionEqsAlgs x)
 {
 }
 
 void
-MMO_Settings_::visit(AST_Element x)
+MMO_Settings::leave(AST_CompositionEqsAlgs x)
 {
 }
 
 void
-MMO_Settings_::visit(AST_Modification x)
-{
-  if(x->modificationType() == MODCLASS)
-  {
-    _classModification = true;
-  }
-}
-
-void
-MMO_Settings_::leave(AST_Modification x)
-{
-  if(x->modificationType() == MODCLASS)
-  {
-    _classModification = false;
-  }
-}
-
-void
-MMO_Settings_::visit(AST_Comment x)
+MMO_Settings::visit(AST_External_Function_Call x)
 {
 }
 
 void
-MMO_Settings_::visit(AST_Equation x)
+MMO_Settings::visit(AST_Element x)
 {
 }
 
 void
-MMO_Settings_::visit(AST_ForIndex x)
+MMO_Settings::visit(AST_Modification x)
 {
 }
 
 void
-MMO_Settings_::visit(AST_Equation_Else x)
+MMO_Settings::leave(AST_Modification x)
 {
 }
 
 void
-MMO_Settings_::visit(AST_Expression x)
+MMO_Settings::visit(AST_Comment x)
 {
 }
 
 void
-MMO_Settings_::visit(AST_Argument x)
-{
-  if(_insertAnnotation)
-  {
-    if(x->argumentType() == AR_MODIFICATION)
-    {
-      AST_Argument_Modification am = x->getAsModification();
-      if(am->hasModification() && _classModification == false)
-      {
-        _class->insert(am);
-      }
-    }
-  }
-}
-
-void
-MMO_Settings_::visit(AST_Statement x)
+MMO_Settings::visit(AST_Equation x)
 {
 }
 
 void
-MMO_Settings_::leave(AST_Statement x)
+MMO_Settings::visit(AST_ForIndex x)
 {
 }
 
 void
-MMO_Settings_::visit(AST_Statement_Else x)
+MMO_Settings::visit(AST_Equation_Else x)
 {
 }
 
 void
-MMO_Settings_::visit(AST_StoredDefinition x)
+MMO_Settings::visit(AST_Expression x)
 {
 }
 
 void
-MMO_Settings_::leave(AST_StoredDefinition x)
+MMO_Settings::visit(AST_Argument x)
+{
+}
+
+void
+MMO_Settings::visit(AST_Statement x)
+{
+}
+
+void
+MMO_Settings::leave(AST_Statement x)
+{
+}
+
+void
+MMO_Settings::visit(AST_Statement_Else x)
+{
+}
+
+void
+MMO_Settings::visit(AST_StoredDefinition x)
+{
+}
+
+void
+MMO_Settings::leave(AST_StoredDefinition x)
 {
 }
 
 int
-MMO_Settings_::apply(AST_Node x)
+MMO_Settings::apply(AST_Node x)
 {
-  x->accept(this);
-  return Error::getInstance()->errors();
-}
-
-MMO_Annotation
-MMO_Settings_::annotations()
-{
-  return _class->getAsModel()->annotation();
-}
-
-MMO_Settings
-newMMO_Settings(string name)
-{
-  return new MMO_Settings_(name);
-}
-
-void
-deleteMMO_Settings(MMO_Settings m)
-{
-  delete m;
 }

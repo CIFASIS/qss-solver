@@ -180,8 +180,8 @@ class AST_Class_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
-    private:
+    accept(AST_Visitor *visitor);
+  private:
     AST_Element_ComponentList _components;
     AST_StringList _extends_list;
     AST_String _name;

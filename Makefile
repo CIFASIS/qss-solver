@@ -60,7 +60,7 @@ ASTSRC = $(ASTDIR)/ast_builder.cpp \
 				 $(ASTDIR)/stored_definition.cpp
 
 GENERATORSRC = $(GENERATORDIR)/files.cpp  \
-							 $(GENERATORDIR)/solver.cpp  \
+							 $(GENERATORDIR)/model_instance.cpp  \
 							 $(GENERATORDIR)/writer.cpp  \
 							 $(GENERATORDIR)/generator.cpp 
 
@@ -91,7 +91,6 @@ UTILSRC = $(UTILDIR)/util.cpp \
 					$(UTILDIR)/ginac_interface.cpp \
 					$(UTILDIR)/index.cpp \
 					$(UTILDIR)/model_dependencies.cpp  \
-					$(UTILDIR)/model_tables.cpp  \
 					$(UTILDIR)/graph.cpp \
 					$(UTILDIR)/graph_profile.cpp 
 

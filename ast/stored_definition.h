@@ -45,13 +45,11 @@ class AST_StoredDefinition_: public AST_Node_
     virtual
     ~AST_StoredDefinition_()
     {
-    }
-    ;
+    };
     /**
      *
      */
-    DEFINE_CLASS_PRINTER(AST_StoredDefinition)
-    ;
+    DEFINE_CLASS_PRINTER(AST_StoredDefinition);
     /**
      *
      * @return
@@ -69,7 +67,7 @@ class AST_StoredDefinition_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
+    accept(AST_Visitor *visitor);
     /**
      *
      * @return
@@ -82,7 +80,7 @@ class AST_StoredDefinition_: public AST_Node_
      */
     AST_StringList
     imports();
-    private:
+  private:
     AST_ClassList _model_list;
     AST_String _within;
     AST_Imports *_imports;

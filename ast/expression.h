@@ -41,8 +41,7 @@ class AST_Expression_: public AST_Node_
     /**
      *
      */
-    DEFINE_CLASS_PRINTER(AST_Expression)
-    ;
+    DEFINE_CLASS_PRINTER(AST_Expression);
     /**
      *
      * @return
@@ -60,92 +59,75 @@ class AST_Expression_: public AST_Node_
      * @param visitor
      */
     void
-    accept(AST_Visitor visitor);
+    accept(AST_Visitor *visitor);
     /**
      *
      */
-    GET_AS(Expression,BinOp)
-    ;
+    GET_AS(Expression,BinOp);
     /**
      *
      */
-    GET_AS(Expression,Boolean)
-    ;
+    GET_AS(Expression,Boolean);
     /**
      *
      */
-    GET_AS(Expression,BooleanNot)
-    ;
+    GET_AS(Expression,BooleanNot);
     /**
      *
      */
-    GET_AS(Expression,Brace)
-    ;
+    GET_AS(Expression,Brace);
     /**
      *
      */
-    GET_AS(Expression,Call)
-    ;
+    GET_AS(Expression,Call);
     /**
      *
      */
-    GET_AS(Expression,CallArgs)
-    ;
+    GET_AS(Expression,CallArgs);
     /**
      *
      */
-    GET_AS(Expression,ComponentReference)
-    ;
+    GET_AS(Expression,ComponentReference);
     /**
      *
      */
-    GET_AS(Expression,Derivative)
-    ;
+    GET_AS(Expression,Derivative);
     /**
      *
      */
-    GET_AS(Expression,If)
-    ;
+    GET_AS(Expression,If);
     /**
      *
      */
-    GET_AS(Expression,Integer)
-    ;
+    GET_AS(Expression,Integer);
     /**
      *
      */
-    GET_AS(Expression,Output)
-    ;
+    GET_AS(Expression,Output);
     /**
      *
      */
-    GET_AS(Expression,Range)
-    ;
+    GET_AS(Expression,Range);
     /**
      *
      */
-    GET_AS(Expression,Real)
-    ;
+    GET_AS(Expression,Real);
     /**
      *
      */
-    GET_AS(Expression,UMinus)
-    ;
+    GET_AS(Expression,UMinus);
     /**
      *
      */
-    GET_AS(Expression,String)
-    ;
+    GET_AS(Expression,String);
     /**
      *
      */
-    GET_AS(Expression,NamedArgument)
-    ;
+    GET_AS(Expression,NamedArgument);
     /**
      *
      */
-    GET_AS(Expression,ArrayIndex)
-    ;
+    GET_AS(Expression,ArrayIndex);
     /**
      *
      * @return
@@ -183,7 +165,7 @@ class AST_Expression_Integer_: public AST_Expression_
      */
     ExpressionType
     expressionType();
-    private:
+  private:
     AST_Integer _i;
 };
 
@@ -218,9 +200,8 @@ class AST_Expression_Real_: public AST_Expression_
     val()
     {
       return _d;
-    }
-    ;
-    private:
+    };
+  private:
     double _d;
 };
 
@@ -253,7 +234,7 @@ class AST_Expression_String_: public AST_Expression_
      */
     ExpressionType
     expressionType();
-    private:
+  private:
     string _s;
 };
 
@@ -286,7 +267,7 @@ class AST_Expression_Boolean_: public AST_Expression_
      */
     ExpressionType
     expressionType();
-    private:
+  private:
     bool _b;
 };
 
@@ -319,7 +300,7 @@ class AST_Expression_Derivative_: public AST_Expression_
      */
     string
     print() const;
-    private:
+  private:
     AST_ExpressionList _el;
 };
 
@@ -352,7 +333,7 @@ class AST_Expression_UMinus_: public AST_Expression_
      */
     ExpressionType
     expressionType();
-    private:
+  private:
     AST_Expression _e;
 };
 
@@ -385,7 +366,7 @@ class AST_Expression_BooleanNot_: public AST_Expression_
      */
     AST_Expression
     exp() const;
-    private:
+  private:
     AST_Expression _e;
 };
 
@@ -425,7 +406,7 @@ class AST_Expression_Call_: public AST_Expression_
      */
     virtual ExpressionType
     expressionType();
-    private:
+  private:
     AST_String _name;
     AST_ExpressionList _args;
 };
@@ -459,7 +440,7 @@ class AST_Expression_CallArgs_: public AST_Expression_
      */
     string
     print() const;
-    private:
+  private:
     AST_ExpressionList _args;
 };
 
@@ -492,7 +473,7 @@ class AST_Expression_Brace_: public AST_Expression_
      */
     string
     print() const;
-    private:
+  private:
     AST_ExpressionList _args;
 };
 
@@ -570,7 +551,7 @@ class AST_Expression_ComponentReference_: public AST_Expression_
     indexes() const;
     AST_ExpressionList
     firstIndex();
-    private:
+  private:
     AST_StringList _name;
     AST_ExpressionListList _indexes;
 };
@@ -618,7 +599,7 @@ class AST_Expression_BinOp_: public AST_Expression_
      */
     BinOpType
     binopType() const;
-    private:
+  private:
     AST_Expression _e1, _e2;
     BinOpType _t;
 };
@@ -670,7 +651,7 @@ class AST_Expression_If_: public AST_Expression_
      */
     ExpressionType
     expressionType();
-    private:
+  private:
     AST_Expression _cond, _then, _else_exp;
     AST_ExpressionList _elseif_list;
 };
@@ -751,7 +732,7 @@ class AST_Expression_If_ElseIf_: public AST_Expression_
      */
     AST_Expression
     then();
-    private:
+  private:
     AST_Expression _cond;
     AST_Expression _then;
 };
@@ -804,7 +785,7 @@ class AST_Expression_Output_: public AST_Expression_
      */
     AST_ExpressionList
     expressionList();
-    private:
+  private:
     AST_ExpressionList _list;
 };
 
@@ -836,7 +817,7 @@ class AST_Expression_Range_: public AST_Expression_
      */
     AST_ExpressionList
     expressionList();
-    private:
+  private:
     AST_ExpressionList _list;
 };
 
@@ -876,7 +857,7 @@ class AST_Expression_NamedArgument_: public AST_Expression_
      */
     AST_String
     name();
-    private:
+  private:
     AST_Expression _exp;
     AST_String _name;
 };
@@ -917,7 +898,7 @@ class AST_Expression_ArrayIndex_: public AST_Expression_
      */
     int
     size();
-    private:
+  private:
     AST_Expression _exp;
     int _size;
 };

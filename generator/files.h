@@ -24,6 +24,10 @@
 #include <string>
 #include <list>
 
+#include "model_instance.h"
+#include "../ir/model.h"
+#include "../util/compile_flags.h"
+
 
 using namespace std;
 
@@ -39,7 +43,7 @@ class MMO_Files
      * @param solver
      * @param flags
      */
-    MMO_Files(MMO_Model &model, MMO_Solver &solver, MMO_CompileFlags &flags);
+    MMO_Files(MMO_Model &model, MMO_ModelInstance &solver, MMO_CompileFlags &flags);
     /**
      *
      * @param name
@@ -70,20 +74,18 @@ class MMO_Files
      * @param annotation
      */
     void
-    settings(MMO_Annotation annotation);
+    settings(MMO_Annotation &annotation);
     void
     graph();
-    private:
-    string
-    _variableSettings(Dependencies deps, string varName);
+  private:
     void
-    _printList(list<string> ann, string tag, MMO_Annotation annotation);
-    string _fname;
-    MMO_Model _model;
-    MMO_Solver _solver;
-    MMO_Writer _writer;
-    MMO_CompileFlags _flags;
-    ofstream _file;
+    _printList(list<string> ann, string tag, MMO_Annotation &annotation);
+    string             _fname;
+    MMO_Model&         _model;
+    MMO_ModelInstance& _solver;
+    MMO_Writer*        _writer;
+    MMO_CompileFlags   _flags;
+    ofstream           _file;
 };
 
 #endif  /* MMO_FILES_H_ */

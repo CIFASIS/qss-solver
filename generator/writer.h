@@ -149,8 +149,7 @@ class MMO_Writer
      * @param clean
      */
     virtual void
-    write(stringstream *s, WR_Section section, bool clean = true,
-        WR_InsertType it = WR_PREPEND) = 0;
+    write(stringstream *s, WR_Section section, bool clean = true, WR_InsertType it = WR_PREPEND) = 0;
     virtual void
     removeFromSection(string str, WR_Section section) = 0;
     /**

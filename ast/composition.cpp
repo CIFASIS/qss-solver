@@ -99,7 +99,7 @@ AST_Composition_::setAnnotation(AST_ArgumentList al)
 }
 
 void
-AST_Composition_::accept(AST_Visitor visitor)
+AST_Composition_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
   AST_ElementListIterator _element_list_it;
@@ -252,7 +252,7 @@ operator<<(ostream &ret, const AST_CompositionElement_ &ce)
 }
 
 void
-AST_CompositionElement_::accept(AST_Visitor visitor)
+AST_CompositionElement_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
   if(_eqs_algs != NULL)
@@ -338,7 +338,7 @@ AST_CompositionEqsAlgs_::isInitial()
 }
 
 void
-AST_CompositionEqsAlgs_::accept(AST_Visitor visitor)
+AST_CompositionEqsAlgs_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
   AST_EquationListIterator _eq_it;
@@ -427,7 +427,7 @@ AST_External_Function_Call_::hasComponentReference()
 }
 
 void
-AST_External_Function_Call_::accept(AST_Visitor visitor)
+AST_External_Function_Call_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
   AST_ArgumentListIterator _annot_it;

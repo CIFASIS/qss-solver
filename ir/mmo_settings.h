@@ -24,29 +24,22 @@
 
 #include "../ast/ast_types.h"
 #include "../util/ast_util.h"
-#include "mmo_types.h"
 
 /**
  *
  */
-class MMO_Settings_: public AST_Visitor_
+class MMO_Settings: public AST_Visitor
 {
   public:
     /**
      *
      * @param name
      */
-    MMO_Settings_(string name);
+    MMO_Settings(string name);
     /**
      *
      */
-    ~MMO_Settings_();
-    /**
-     *
-     * @return
-     */
-    MMO_Annotation
-    annotations();
+    ~MMO_Settings();
     /**
      *
      * @param x
@@ -192,26 +185,6 @@ class MMO_Settings_: public AST_Visitor_
      */
     int
     apply(AST_Node x);
-    private:
-    MMO_Class _class;
-    bool _classModification;
-    bool _insertAnnotation;
-    string *_className;
-    AST_ClassPrefix _classPrefix;
-    bool _insideFunction;
 };
-/**
- *
- * @param name
- * @return
- */
-MMO_Settings
-newMMO_Settings(string name);
-/**
- *
- * @param m
- */
-void
-deleteMMO_Settings(MMO_Settings m);
 
 #endif  /* MMO_SETTINGS_H_ */

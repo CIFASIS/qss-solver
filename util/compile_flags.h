@@ -272,7 +272,7 @@ class MMO_CompileFlags
     setGraph(bool g);
     bool
     graph();
-    private:
+  private:
     bool _store;
     bool _parallel;
     bool _externalStructureFiles;

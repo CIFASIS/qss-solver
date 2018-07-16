@@ -25,6 +25,7 @@
 #include <list>
 #include <map>
 #include <string>
+#include <vector>
 
 #include "../ast/ast_types.h"
 #include "../ast/element.h"
@@ -46,8 +47,7 @@ class SymbolTable
      */
     ~SymbolTable()
     {
-    }
-    ;
+    };
     /**
      *
      * @param k
@@ -57,8 +57,7 @@ class SymbolTable
     insert(Key k, Value v)
     {
       _st[k] = v;
-    }
-    ;
+    };
     /**
      *
      * @param k
@@ -77,14 +76,12 @@ class SymbolTable
       {
         return it->second;
       }
-    }
-    ;
+    };
     int
     count()
     {
       return _st.size();
-    }
-    ;
+    };
     /**
      *
      * @param i
@@ -100,8 +97,7 @@ class SymbolTable
         it++;
       }
       return it->second;
-    }
-    ;
+    };
     /**
      *
      * @param i
@@ -117,8 +113,7 @@ class SymbolTable
         it++;
       }
       return it->first;
-    }
-    ;
+    };
     /**
      *
      * @param k
@@ -127,8 +122,7 @@ class SymbolTable
     remove(Key k)
     {
       _st.erase(k);
-    }
-    ;
+    };
     /**
      *
      * @return
@@ -142,8 +136,7 @@ class SymbolTable
         return NULL;
       }
       return val(_currentKey);
-    }
-    ;
+    };
     /**
      *
      * @return
@@ -157,8 +150,7 @@ class SymbolTable
         return val(_currentKey);
       }
       return NULL;
-    }
-    ;
+    };
     /**
      *
      * @return
@@ -171,8 +163,7 @@ class SymbolTable
         return true;
       }
       return _currentKey == _st.size();
-    }
-    ;
+    };
     /**
      *
      * @return
@@ -185,9 +176,8 @@ class SymbolTable
         return key(_currentKey);
       }
       return key(0);
-    }
-    ;
-    protected:
+    };
+  protected:
     std::map<Key, Value, Compare> _st;
     unsigned int _currentKey;
 };
@@ -222,7 +212,7 @@ class VarInfo_
     typePrefix()
     {
       return _tp;
-    }
+    };
     /**
      *
      * @return
@@ -231,7 +221,7 @@ class VarInfo_
     comment()
     {
       return _comm;
-    }
+    };
     /**
      *
      * @param c
@@ -240,7 +230,7 @@ class VarInfo_
     setComment(AST_Comment c)
     {
       _comm = c;
-    }
+    };
     /**
      *
      * @return
@@ -249,7 +239,7 @@ class VarInfo_
     modification()
     {
       return _m;
-    }
+    };
     /**
      *
      * @param m
@@ -259,7 +249,7 @@ class VarInfo_
     {
       _m = m;
       _processModification();
-    }
+    };
     /**
      *
      * @return
@@ -274,7 +264,7 @@ class VarInfo_
     setType(Type t)
     {
       _t = t;
-    }
+    };
     /**
      *
      */
@@ -288,7 +278,7 @@ class VarInfo_
     isParameter() const
     {
       return _tp & TP_PARAMETER;
-    }
+    };
     /**
      *
      * @return
@@ -297,7 +287,7 @@ class VarInfo_
     isDiscrete() const
     {
       return (_tp & TP_DISCRETE) || _discrete;
-    }
+    };
     /**
      *
      * @return
@@ -306,7 +296,7 @@ class VarInfo_
     builtIn() const
     {
       return _builtin;
-    }
+    };
     /**
      *
      */
@@ -319,8 +309,7 @@ class VarInfo_
     setBuiltIn()
     {
       _builtin = true;
-    }
-    ;
+    };
     /**
      *
      * @return
@@ -329,8 +318,7 @@ class VarInfo_
     isConstant() const
     {
       return _tp & TP_CONSTANT;
-    }
-    ;
+    };
     /**
      *
      * @return
@@ -339,7 +327,7 @@ class VarInfo_
     isInput() const
     {
       return _tp & TP_INPUT;
-    }
+    };
     /**
      *
      * @return
@@ -348,7 +336,7 @@ class VarInfo_
     isOutput() const
     {
       return _tp & TP_OUTPUT;
-    }
+    };
     /**
      *
      * @return
@@ -357,7 +345,7 @@ class VarInfo_
     isForType() const
     {
       return _tp & TP_FOR;
-    }
+    };
     /**
      *
      * @return
@@ -486,7 +474,7 @@ class VarInfo_
      */
     int
     dimensions();
-    private:
+  private:
     void
     _processModification();
     void
@@ -557,7 +545,7 @@ class VarSymbolTable_: public SymbolTable<VarName, VarInfo>
      * @param i
      * @return
      */
-    MMO_VarName
+    VarName
     varName(int i)
     {
       return key(i);
@@ -571,7 +559,7 @@ class VarSymbolTable_: public SymbolTable<VarName, VarInfo>
      *
      */
     void
-    insert(MMO_VarName n, VarInfo vi);
+    insert(VarName n, VarInfo vi);
     /**
      *
      */

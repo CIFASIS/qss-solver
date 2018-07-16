@@ -20,16 +20,7 @@
 #ifndef MMO_EQUATION_H_
 #define MMO_EQUATION_H_
 
-#include <list>
-#include <set>
-#include <string>
-#include <map>
-
 #include "../ast/ast_types.h"
-#include "../util/index.h"
-#include "../util/util_types.h"
-#include "../util/dependencies.h"
-#include "expression.h"
 
 typedef enum
 {
@@ -53,113 +44,12 @@ class MMO_Equation
     /**
      *
      * @param exp
-     * @param data
      */
-    MMO_Equation(AST_Expression exp, MMO_ModelConfig cfg);
-    /**
-     *
-     * @param exp
-     * @param data
-     */
-    MMO_Equation(MMO_Expression exp, MMO_ModelConfig cfg);
+    MMO_Equation(AST_Expression exp);
     /**
      *
      */
     ~MMO_Equation();
-    /**
-     *
-     * @return
-     */
-    MMO_Expression
-    exp();
-    /**
-     *
-     * @return
-     */
-    int
-    end();
-    /**
-     *
-     * @return
-     */
-    list<string>
-    getVariables();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasRange();
-    /**
-     *
-     * @return
-     */
-    int
-    init();
-    /**
-     *
-     * @param indent
-     * @param lhs
-     * @param idx
-     * @param palgs
-     * @param algs
-     * @param type
-     * @param order
-     * @param constant
-     * @param offset
-     * @param dereq
-     * @param forOffset
-     * @param constantOffset
-     * @return
-     */
-    list<string>
-    print(string indent, string lhs = "", string idx = "", bool palgs = false,
-        MMO_EquationTable algs = NULL, EQ_Type type = EQ_DERIVATIVE, int order =
-            1,
-        bool constant = false, int offset = 0, bool dereq = true,
-        int forOffset = 0, int constantOffset = 0);
-    /**
-     *
-     * @return
-     */
-    list<string>
-    getCode();
-    /**
-     *
-     * @return
-     */
-    list<string>
-    getEquation();
-    /**
-     *
-     * @return
-     */
-    list<string>
-    getAlgebraics();
-    /**
-     *
-     */
-    void
-    controlAlgebraicDefinition();
-    private:
-    void
-    _initDerivatives();
-    void
-    _generateJacobianExps();
-    string
-    _printArguments(int i, string idx, int offset, int cte, int order,
-        int forOffset);
-    MMO_ModelConfig _cfg;
-    int _end;
-    MMO_Expression _exp[4];
-    int _init;
-    list<string> _variables;
-    AST_Expression _arguments;
-    list<string> _code;
-    list<string> _equation;
-    list<string> _algebraics;
-    map<string, MMO_Expression> _jacobianExps;
-    int _coeffs;
 };
 
 #endif  /* MMO_EQUATION_H_ */

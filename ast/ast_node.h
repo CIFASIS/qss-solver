@@ -23,6 +23,8 @@
 #include "../util/macros.h"
 #include "../util/util_types.h"
 
+class AST_Visitor;
+
 using namespace std;
 
 /**
@@ -42,13 +44,11 @@ class AST_Node_
     ~AST_Node_()
     {
 
-    }
-    ;
+    };
     /**
      *
      */
-    DEFINE_CLASS_PRINTER(AST_Node)
-    ;
+    DEFINE_CLASS_PRINTER(AST_Node);
     /**
      *
      * @param linenum
@@ -66,8 +66,8 @@ class AST_Node_
      * @param visitor
      */
     virtual void
-    accept(AST_Visitor visitor) = 0;
-    private:
+    accept(AST_Visitor *visitor) = 0;
+  private:
     int _linenum;
 };
 

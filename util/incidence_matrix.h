@@ -25,12 +25,29 @@
 
 #include "../ast/ast_types.h"
 #include "util_types.h"
+#include "index.h"
 
 using namespace std;
 
+typedef int mapId;
+
+class Incidence 
+{
+  public:
+    Incidence();
+    ~Incidence();
+  private:
+    Index _lhs;
+    Index _rhs;
+};
 
 class IncidenceMatrix
 {
+  public:
+    IncidenceMatrix();
+    ~IncidenceMatrix();
+  private:
+    map<mapId,Incidence> _matrix;
 };
 
 #endif /* INCIDENCE_MATRIX_H_ */

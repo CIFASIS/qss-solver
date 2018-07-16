@@ -23,26 +23,9 @@
 #include <sstream>
 #include <utility>
 
-#include "../ast/ast_builder.h"
-#include "../ast/composition.h"
-#include "../ast/equation.h"
-#include "../ast/expression.h"
-#include "../ast/modification.h"
-#include "../ast/statement.h"
-#include "../parser/parse.h"
-#include "../util/ast_util.h"
-#include "../util/dependencies.h"
-#include "../util/md_index.h"
-#include "../util/symbol_table.h"
-#include "../util/model_tables.h"
-#include "../util/type.h"
-#include "../util/util.h"
-#include "annotation.h"
-#include "equation.h"
-#include "event.h"
-#include "expression.h"
-#include "mmo_util.h"
-#include "statement.h"
+#include "model.h"
+#include "function.h"
+#include "package.h"
 
 /* MMO_Class class. */
 

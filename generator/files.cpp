@@ -35,39 +35,36 @@
 #include "../ir/equation.h"
 #include "../ir/expression.h"
 #include "../util/compile_flags.h"
-#include "../util/dependencies.h"
 #include "../util/symbol_table.h"
 #include "../util/util.h"
 #include "writer.h"
-#include "solver.h"
+#include "model_instance.h"
 
 #ifdef	__linux__
 #include <sys/stat.h>
 #endif
 
-MMO_Files::MMO_Files(MMO_Model &model, MMO_Solver &solver, MMO_CompileFlags &flags) :
-    _fname(model->name()), 
+MMO_Files::MMO_Files(MMO_Model &model, MMO_ModelInstance &solver, MMO_CompileFlags &flags) :
+    _fname(model.name()), 
     _model(model), 
     _solver(solver), 
     _flags(flags)
 {
-  _writer = MMO_FileWriter();
-  if(_flags->hasOutputFile())
+  _writer = new MMO_FileWriter();
+  if(_flags.hasOutputFile())
   {
-    _fname = _flags->outputFile();
+    _fname = _flags.outputFile();
   }
 }
 
-MMO_Files::MMO_Files(string name, MMO_CompileFlags flags) :
+MMO_Files::MMO_Files(string name, MMO_CompileFlags &flags) :
     _fname(name), 
-    _model(NULL), 
-    _solver(NULL), 
     _flags(flags)
 {
-  _writer = MMO_FileWriter();
-  if(_flags->hasOutputFile())
+  _writer = new MMO_FileWriter();
+  if(_flags.hasOutputFile())
   {
-    _fname = _flags->outputFile();
+    _fname = _flags.outputFile();
   }
 }
 

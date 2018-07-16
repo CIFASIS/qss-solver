@@ -29,18 +29,18 @@
 /**
  *
  */
-class AST_MicroModelica_: public AST_Visitor_
+class MMO_ModelChecker: public AST_Visitor
 {
   public:
     /**
      *
      * @param name
      */
-    AST_MicroModelica_(string name);
+    MMO_ModelChecker(string name);
     /**
      *
      */
-    ~AST_MicroModelica_();
+    ~MMO_ModelChecker();
     /**
      *
      * @param x
@@ -186,35 +186,6 @@ class AST_MicroModelica_: public AST_Visitor_
      */
     int
     apply(AST_Node x);
-    private:
-    void
-    _checkIndex(AST_Expression exp);
-    bool
-    _whenStatement(AST_Expression cond);
-    bool
-    _lValue(AST_Expression left);
-    string *_className;
-    string *_fatherName;
-    string *_childName;
-    bool _classModification;
-    bool _elseWhen;
-    bool _inWhen;
-    AST_ClassPrefix _childPrefix;
-    AST_ClassPrefix _classPrefix;
-    AST_ClassPrefix _fatherPrefix;
 };
-/**
- *
- * @param name
- * @return
- */
-AST_MicroModelica
-newAST_MicroModelica(string name);
-/**
- *
- * @param m
- */
-void
-deleteAST_MicroModelica(AST_MicroModelica m);
 
 #endif  /* MMO_MODEL_CHECKER_H_ */

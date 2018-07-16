@@ -26,9 +26,6 @@
 #include <vector>
 
 #include "../ast/ast_types.h"
-#include "../util/error.h"
-#include "../util/model_dependencies.h"
-#include "../util/model_tables.h"
 #include "../util/util_types.h"
 
 /**
@@ -60,6 +57,8 @@ class MMO_Package;
 class MMO_Annotation;
 
 class MMO_ModelAnnotation;
+
+class MMO_ImportTable;
 
 /**
  *
@@ -135,7 +134,7 @@ class MMO_Class
      * @param f
      */
     virtual void
-    insert(MMO_Function f) = 0;
+    insert(MMO_Function &f) = 0;
     /**
      *
      * @param efc

@@ -17,8 +17,8 @@
 
  ******************************************************************************/
 
-#ifndef STORED_DEFINITION_H_
-#define STORED_DEFINITION_H_
+#ifndef MMO_STORED_DEFINITION_H_
+#define MMO_STORED_DEFINITION_H_
 
 #include <string>
 
@@ -41,45 +41,6 @@ class MMO_StoredDefinition
      *
      */
     ~MMO_StoredDefinition();
-    /**
-     *
-     * @return
-     */
-    string
-    print();
-    /**
-     *
-     * @return
-     */
-    list<MMO_Class>
-    classes() const;
-    /**
-     *
-     * @param c
-     */
-    void
-    addClass(MMO_Class c);
-    /**
-     *
-     * @return
-     */
-    MMO_Class
-    begin();
-    /**
-     *
-     * @return
-     */
-    MMO_Class
-    next();
-    /**
-     *
-     * @return
-     */
-    bool
-    end();
-  private:
-    list<MMO_Class> _classList;
-    list<MMO_Class>::iterator _it;
 };
 
-#endif  /* STORED_DEFINITION_H_ */
+#endif  /* MMO_STORED_DEFINITION_H_ */

@@ -62,7 +62,7 @@ operator<<(ostream &os, const AST_StoredDefinition_ &sd)
 }
 
 void
-AST_StoredDefinition_::accept(AST_Visitor visitor)
+AST_StoredDefinition_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
   AST_ClassListIterator it;
