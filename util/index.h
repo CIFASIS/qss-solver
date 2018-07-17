@@ -120,4 +120,12 @@ class Index
     map<int,IndexDefinition> _indexes;
 };
 
+
+class VariableInterval 
+{
+  public:
+    VariableInterval();
+    ~VariableInterval();
+};
+
 #endif /* INDEX_H_ */

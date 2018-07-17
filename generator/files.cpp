@@ -44,10 +44,19 @@
 #include <sys/stat.h>
 #endif
 
-MMO_Files::MMO_Files(MMO_Model &model, MMO_ModelInstance &solver, MMO_CompileFlags &flags) :
-    _fname(model.name()), 
+MMO_Files::MMO_Files() :
+    _fname(), 
+    _model(NULL),
+    _modelInstance(NULL), 
+    _writer(NULL),
+    _flags()
+{
+}
+
+MMO_Files::MMO_Files(MMO_Model* model, MMO_ModelInstance* modelInstance, MMO_CompileFlags flags) :
+    _fname(model->name()), 
     _model(model), 
-    _solver(solver), 
+    _modelInstance(modelInstance), 
     _flags(flags)
 {
   _writer = new MMO_FileWriter();
@@ -57,8 +66,9 @@ MMO_Files::MMO_Files(MMO_Model &model, MMO_ModelInstance &solver, MMO_CompileFla
   }
 }
 
-MMO_Files::MMO_Files(string name, MMO_CompileFlags &flags) :
+MMO_Files::MMO_Files(string name, MMO_CompileFlags flags) :
     _fname(name), 
+    _model(NULL),
     _flags(flags)
 {
   _writer = new MMO_FileWriter();
@@ -76,7 +86,7 @@ MMO_Files::~MMO_Files()
 void
 MMO_Files::makefile()
 {
-  stringstream buffer;
+/*  stringstream buffer;
   stringstream includes;
   string fname = _fname;
   map<string, string> include;
@@ -99,8 +109,8 @@ MMO_Files::makefile()
   includes << " -L " << Util::getInstance()->environmentVariable("MMOC_PATH")
       << "/usr/lib";
   _writer->print(&includes);
-  _writer->print(_solver->makefile(SOL_LIBRARIES));
-  buffer << _solver->makefile(SOL_INCLUDES);
+  _writer->print(_modelInstance->makefile(SOL_LIBRARIES));
+  buffer << _modelInstance->makefile(SOL_INCLUDES);
   tmp = _model->includeDirectories();
   for(list<string>::iterator it = tmp.begin(); it != tmp.end(); it++)
   {
@@ -202,13 +212,13 @@ MMO_Files::makefile()
   _writer->print("");
   _writer->print("clean:");
   _writer->print(_writer->indent(1) + "$(RMS) $(TARGET) *.dat *.log");
-  _writer->clearFile();
+  _writer->clearFile();*/
 }
 
 void
 MMO_Files::run()
 {
-  string fname = _fname;
+/*  string fname = _fname;
   fname.append(".sh");
   stringstream buffer;
   _writer->setFile(fname);
@@ -217,7 +227,7 @@ MMO_Files::run()
   _writer->print("make -f " + _fname + ".makefile clean");
   buffer << "make -f " + _fname + ".makefile";
   _writer->print(&buffer);
-  _writer->print(_solver->runCmd() + Util::getInstance()->getFileName(_fname));
+  _writer->print(_modelInstance->runCmd() + Util::getInstance()->getFileName(_fname));
   if(_model->outs())
   {
     _writer->print("echo");
@@ -228,28 +238,13 @@ MMO_Files::run()
 #ifdef	__linux__
   chmod(fname.c_str(),
   S_IRUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-#endif
-}
-
-string
-MMO_Files::_variableSettings(Dependencies deps, string varName)
-{
-  stringstream buffer;
-  if(deps->hasStates())
-  {
-    buffer << " with lines title \"" << varName << "\"";
-  }
-  else
-  {
-    buffer << " with steps title \"" << varName << "\"";
-  }
-  return buffer.str();
+#endif*/
 }
 
 void
 MMO_Files::plot()
 {
-  if(!_model->outs())
+/*  if(!_model->outs())
   {
     return;
   }
@@ -298,11 +293,11 @@ MMO_Files::plot()
   }
   _writer->print(&buffer);
   _writer->print("pause mouse close");
-  _writer->clearFile();
+  _writer->clearFile();*/
 }
 
 void
-MMO_Files::settings(MMO_Annotation annotation)
+MMO_Files::settings(MMO_Annotation* annotation)
 {
   stringstream buffer;
   string fname = _fname;
@@ -376,7 +371,7 @@ MMO_Files::settings(MMO_Annotation annotation)
 }
 
 void
-MMO_Files::_printList(list<string> ann, string tag, MMO_Annotation annotation)
+MMO_Files::_printList(list<string> ann, string tag, MMO_Annotation* annotation)
 {
   stringstream buffer;
   if(ann.empty())
@@ -400,7 +395,7 @@ MMO_Files::_printList(list<string> ann, string tag, MMO_Annotation annotation)
 void
 MMO_Files::graph()
 {
-  Graph g = _solver->graph();
+/*  Graph g = _modelInstance->graph();
   if(g.empty())
   {
     return;
@@ -482,5 +477,5 @@ MMO_Files::graph()
   system(command.c_str());
   remove(tmp1FileName.c_str());
   remove(tmp2FileName.c_str());
-  remove(tmp3FileName.c_str());
+  remove(tmp3FileName.c_str());*/
 }

@@ -104,3 +104,8 @@ MMO_Model::name() const
 {
   return "";
 }
+
+MMO_ImportTable
+MMO_Model::imports()
+{
+}

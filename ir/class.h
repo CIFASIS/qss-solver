@@ -27,16 +27,7 @@
 
 #include "../ast/ast_types.h"
 #include "../util/util_types.h"
-
-/**
- *
- */
-typedef enum
-{
-  CL_MODEL,  //!< CL_MODEL
-  CL_PACKAGE,  //!< CL_PACKAGE
-  CL_FUNCTION  //!< CL_FUNCTION
-} CL_Type;
+#include "../util/util.h"
 
 /**
  *
@@ -58,8 +49,6 @@ class MMO_Annotation;
 
 class MMO_ModelAnnotation;
 
-class MMO_ImportTable;
-
 /**
  *
  */
@@ -78,32 +67,8 @@ class MMO_Class
      *
      * @return
      */
-    MMO_Package*
-    getAsPackage() const;
-    /**
-     *
-     * @return
-     */
-    MMO_Model*
-    getAsModel() const;
-    /**
-     *
-     * @return
-     */
-    MMO_Function*
-    getAsFunction() const;
-    /**
-     *
-     * @return
-     */
     virtual string
     name() const = 0;
-    /**
-     *
-     * @return
-     */
-    virtual CL_Type
-    classType() = 0;
     /**
      *
      * @param n

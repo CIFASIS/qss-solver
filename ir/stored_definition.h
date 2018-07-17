@@ -25,7 +25,8 @@
 using namespace std;
 
 #include <list>
-#include "../ir/class.h"
+#include "../ir/model.h"
+#include "../ir/package.h"
 
 /**
  *
@@ -41,6 +42,15 @@ class MMO_StoredDefinition
      *
      */
     ~MMO_StoredDefinition();
+    MMO_Class*
+    begin();
+    MMO_Class*
+    next();
+    bool 
+    end();
+  private:
+    list<MMO_Model>   _stdModel;
+    list<MMO_Package> _stdPackage;
 };
 
 #endif  /* MMO_STORED_DEFINITION_H_ */

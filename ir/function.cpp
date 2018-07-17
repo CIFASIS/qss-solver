@@ -31,7 +31,6 @@
 #include "../ast/statement.h"
 #include "../parser/parse.h"
 #include "../util/ast_util.h"
-#include "../util/dependencies.h"
 #include "../util/symbol_table.h"
 #include "../util/type.h"
 #include "../util/util.h"
@@ -115,4 +114,96 @@ string
 MMO_Function::name() const
 {
   return ""; 
+}
+
+MMO_ImportTable 
+MMO_Function::imports()
+{
+}
+
+MMO_FunctionDefinition::MMO_FunctionDefinition() :
+  _def(), 
+  _name(), 
+  _prototype(), 
+  _includeDirectory(), 
+  _libraryDirectory(), 
+  _libraries()
+{
+}
+
+
+MMO_FunctionDefinition::MMO_FunctionDefinition(string name, string includeDir, string libraryDir, list<string> libraries) :
+  _def(), 
+  _name(name), 
+  _prototype(), 
+  _includeDirectory(includeDir), 
+  _libraryDirectory(libraryDir), 
+  _libraries(libraries)
+{
+}
+
+MMO_FunctionDefinition::~MMO_FunctionDefinition()
+{
+}
+
+bool
+MMO_FunctionDefinition::hasIncludeDirectory()
+{
+  return !_includeDirectory.empty();
+}
+
+bool
+MMO_FunctionDefinition::hasLibraryDirectory()
+{
+  return !_libraryDirectory.empty();
+}
+
+bool
+MMO_FunctionDefinition::hasLibraries()
+{
+  return _libraries.size() > 0;
+}
+
+string
+MMO_FunctionDefinition::includeDirectory()
+{
+  return _includeDirectory;
+}
+
+string
+MMO_FunctionDefinition::libraryDirectory()
+{
+  return _libraryDirectory;
+}
+
+list<string>
+MMO_FunctionDefinition::libraries()
+{
+  return _libraries;
+}
+
+string
+MMO_FunctionDefinition::name()
+{
+  return _name;
+}
+
+list<string>
+MMO_FunctionDefinition::def()
+{
+  return _def;
+}
+
+string
+MMO_FunctionDefinition::prototype()
+{
+  return _prototype;
+}
+
+MMO_FunctionTable::MMO_FunctionTable()
+{
+}
+    
+MMO_FunctionTable::~MMO_FunctionTable()
+{
 }

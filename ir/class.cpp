@@ -43,10 +43,10 @@ MMO_Class::getAsPackage() const
   return (MMO_Package*)(this);
 }
 
-MMO_Model*
+const MMO_Model*
 MMO_Class::getAsModel() const
 {
-  return (MMO_Model*)(this);
+  return dynamic_cast<MMO_Model*>(this);
 }
 
 MMO_Function*

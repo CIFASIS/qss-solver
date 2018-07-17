@@ -31,7 +31,7 @@
 #include "../ir/function.h"
 #include "../ir/model.h"
 #include "../ir/package.h"
-#include "solver.h"
+#include "model_instance.h"
 #include "files.h"
 #include "writer.h"
 
@@ -48,7 +48,7 @@ class MMO_Generator
      * @param std
      * @param flags
      */
-    MMO_Generator(MMO_StoredDefinition std, MMO_CompileFlags &flags);
+    MMO_Generator(MMO_StoredDefinition std, MMO_CompileFlags flags);
     /**
      *
      */
@@ -82,17 +82,17 @@ class MMO_Generator
     _generatePackage(MMO_Package p);
     void
     _header();
-    MMO_StoredDefinition _std;
-    MMO_Model _model;
-    MMO_Function _function;
-    MMO_Package _package;
-    MMO_CompileFlags _flags;
-    MMO_Solver _solver;
-    MMO_Files _files;
-    MMO_Writer _writer;
-    ofstream _file;
-    map<string, string> _includes;
-    list<string> _fheader;
+    MMO_StoredDefinition  _std;
+    MMO_Model             _model;
+    MMO_Function          _function;
+    MMO_Package           _package;
+    MMO_CompileFlags      _flags;
+    MMO_ModelInstance*    _modelInstance;
+    MMO_Files             _files;
+    MMO_Writer*           _writer;
+    ofstream              _file;
+    map<string, string>   _includes;
+    list<string>          _fheader;
 };
 
 #endif  /* GENERATOR_H_ */

@@ -32,53 +32,51 @@
 #include "../util/util.h"
 #include "files.h"
 #include "writer.h"
-#include "solver.h"
 
-MMO_Generator::MMO_Generator(MMO_StoredDefinition std, MMO_CompileFlags &flags) :
+MMO_Generator::MMO_Generator(MMO_StoredDefinition std, MMO_CompileFlags flags) :
   _std(std), 
   _model(NULL), 
   _function(NULL), 
   _package(NULL), 
   _flags(flags), 
-  _solver(NULL), 
-  _files(NULL), 
+  _modelInstance(NULL), 
+  _files(), 
   _writer(NULL), 
   _includes(), 
   _fheader()
 {
   if(_flags.output())
   {
-    _writer = MMO_MemoryWriter();
+    _writer = new MMO_MemoryWriter();
   }
   else
   {
-    _writer = MMO_FileWriter();
+    _writer = new MMO_FileWriter();
   }
 }
 
 MMO_Generator::~MMO_Generator()
 {
   delete _writer;
-  delete _files;
 }
 
 int
 MMO_Generator::generate()
 {
-  for(MMO_Class &c = _std->begin(); _std->end(); c = _std->next())
+  for(MMO_Class* c = _std.begin(); _std.end(); c = _std.next())
   {
-    string fname = c.name();
-    switch(c.classType())
+    string fname = c->name();
+    switch(c->classType())
     {
       case CL_MODEL:
         {
-        if(_flags->hasOutputFile())
+        if(_flags.hasOutputFile())
         {
-          fname = _flags->outputFile();
+          fname = _flags.outputFile();
         }
         fname.append(".c");
         _writer->setFile(fname);
-        _model = c.getAsModel();
+        _model = c->getAsModel();
         switch(_model->annotation()->solver())
         {
           case ANT_DOPRI:
@@ -86,12 +84,12 @@ MMO_Generator::generate()
           case ANT_CVODE_BDF:
           case ANT_IDA:
           case ANT_CVODE_AM:
-            _solver = newClassic(_model, _flags, _writer);
+            _modelInstance = newClassic(_model, _flags, _writer);
             break;
           default:
-            _solver = newQSS(_model, _flags, _writer);
+            _modelInstance = newQSS(_model, _flags, _writer);
         }
-        _files = newMMO_Files(_model, _solver, _flags);
+        _files = MMO_Files(_model, _modelInstance, _flags);
         _generateModel();
         _writer->clearFile();
         _files->makefile();
@@ -105,9 +103,9 @@ MMO_Generator::generate()
         if(_model->calledFunctions()->count())
         {
           string ffname = c.name();
-          if(_flags->hasOutputFile())
+          if(_flags.hasOutputFile())
           {
-            ffname = _flags->outputFileName();
+            ffname = _flags.outputFileName();
           }
           ffname.append("_functions");
           _generateHeader(ffname);
@@ -155,13 +153,13 @@ MMO_Generator::_generateHeader(string name)
 void
 MMO_Generator::_generateModel()
 {
-  _solver->modelHeader();
-  _solver->modelDefinition();
-  _solver->modelDependencies();
-  _solver->zeroCrossing();
-  _solver->handler();
-  _solver->output();
-  _solver->initializeDataStructures();
+  _modelInstance->modelHeader();
+  _modelInstance->modelDefinition();
+  _modelInstance->modelDependencies();
+  _modelInstance->zeroCrossing();
+  _modelInstance->handler();
+  _modelInstance->output();
+  _modelInstance->initializeDataStructures();
 }
 
 void 

@@ -39,17 +39,21 @@ class MMO_Files
   public:
     /**
      *
+     */
+    MMO_Files();
+    /**
+     *
      * @param model
      * @param solver
      * @param flags
      */
-    MMO_Files(MMO_Model &model, MMO_ModelInstance &solver, MMO_CompileFlags &flags);
+    MMO_Files(MMO_Model* model, MMO_ModelInstance* modelInstance, MMO_CompileFlags flags);
     /**
      *
      * @param name
      * @param flags
      */
-    MMO_Files(string name, MMO_CompileFlags &flags);
+    MMO_Files(string name, MMO_CompileFlags flags);
     /**
      *
      */
@@ -74,15 +78,15 @@ class MMO_Files
      * @param annotation
      */
     void
-    settings(MMO_Annotation &annotation);
+    settings(MMO_Annotation* annotation);
     void
     graph();
   private:
     void
-    _printList(list<string> ann, string tag, MMO_Annotation &annotation);
+    _printList(list<string> ann, string tag, MMO_Annotation* annotation);
     string             _fname;
-    MMO_Model&         _model;
-    MMO_ModelInstance& _solver;
+    MMO_Model*         _model;
+    MMO_ModelInstance* _modelInstance;
     MMO_Writer*        _writer;
     MMO_CompileFlags   _flags;
     ofstream           _file;

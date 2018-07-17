@@ -151,7 +151,7 @@ class QSSModelInstance: public MMO_ModelInstance
      * @param flags
      * @param writer
      */
-    QSSModelInstance(MMO_Model &model, MMO_CompileFlags &flags, MMO_Writer &writer);
+    QSSModelInstance(MMO_Model* model, MMO_CompileFlags* flags, MMO_Writer* writer);
     /**
      *
      */
@@ -219,7 +219,7 @@ class ClassicModelInstance: public MMO_ModelInstance
      * @param flags
      * @param writer
      */
-    ClassicModelInstance(MMO_Model &model, MMO_CompileFlags &flags, MMO_Writer &writer);
+    ClassicModelInstance(MMO_Model* model, MMO_CompileFlags* flags, MMO_Writer* writer);
     /**
      *
      */

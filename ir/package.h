@@ -23,6 +23,7 @@
 #include "class.h"
 
 #include "../ast/ast_types.h"
+#include "../util/table.h"
 
 /**
  *
@@ -115,6 +116,25 @@ class MMO_Package: public MMO_Class
      */
     void
     insert(AST_Argument_Modification x);
+    /**
+     *
+     * @return
+     */
+    MMO_ImportTable
+    imports();
+};
+
+/**
+ *
+ */
+class MMO_PackageTable: public ModelTable<MMO_Package>
+{
+  public:
+    /**
+     *
+     */
+    MMO_PackageTable();
+    ~MMO_PackageTable();
 };
 
 #endif  /* MMO_PACKAGE_H_ */

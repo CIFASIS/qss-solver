@@ -27,8 +27,15 @@
 
 #include "../ast/ast_types.h"
 #include "util_types.h"
+#include "index.h"
+#include "compile_flags.h"
+#include "table.h"
+
+class MMO_PackageTable;
 
 using namespace std;
+
+typedef ModelTable<string> MMO_ImportTable;
 
 /**
  *
@@ -238,7 +245,7 @@ class Util
      * @param fileName
      * @return
      */
-    MMO_PackageData
+    MMO_PackageConfig
     readPackage(string fileName);
     /**
      *
@@ -275,7 +282,7 @@ class Util
      * @param data
      */
     void
-    setData(MMO_ModelData data);
+    setData(MMO_ModelConfig config);
     /**
      *
      * @param vi
@@ -322,7 +329,7 @@ class Util
     string _languageEspecification;
     int _varCounter;
     MMO_CompileFlags _flags;
-    MMO_ModelData _data;
+    MMO_ModelConfig _config;
     map<string, BIF_NAMES> _builtInFunctions;
     map<string, BIV_NAMES> _builtInVariables;
     map<BIF_NAMES, BIF*> _builtInFunctionImp;

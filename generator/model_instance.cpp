@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#include "solver.h"
+#include "model_instance.h"
 
 #include <sstream>
 #include <utility>
@@ -34,7 +34,7 @@
 
 /* QSSModelInstance Model Instance class. */
 
-QSSModelInstance::QSSModelInstance(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer) 
+QSSModelInstance::QSSModelInstance(MMO_Model* model, MMO_CompileFlags* flags, MMO_Writer* writer) 
 {
 }
 
@@ -98,7 +98,7 @@ QSSModelInstance::computationalGraph()
 
 /* ClassicModelInstance Model Instance class. */
 
-ClassicModelInstance::ClassicModelInstance(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer) 
+ClassicModelInstance::ClassicModelInstance(MMO_Model* model, MMO_CompileFlags* flags, MMO_Writer* writer) 
 {
 }
 

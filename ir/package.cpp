@@ -29,6 +29,7 @@
 #include "../ast/expression.h"
 #include "../ast/modification.h"
 #include "../ast/statement.h"
+#include "../util/util.h"
 
 MMO_Package::MMO_Package(string name) 
 {
@@ -107,4 +108,19 @@ string
 MMO_Package::name() const
 {
   return "";
+}
+
+MMO_ImportTable 
+MMO_Package::imports()
+{
+  return ImportTable();
+}
+
+
+MMO_PackageTable::MMO_PackageTable()
+{
+}
+    
+MMO_PackageTable::~MMO_PackageTable()
+{
 }

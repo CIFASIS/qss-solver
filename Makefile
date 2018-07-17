@@ -49,7 +49,6 @@ RMS 		:= rm -rf
 # Source files.
 ASTSRC = $(ASTDIR)/ast_builder.cpp \
 				 $(ASTDIR)/ast_node.cpp \
-				 $(ASTDIR)/class.cpp \
 				 $(ASTDIR)/composition.cpp \
 				 $(ASTDIR)/element.cpp \
 				 $(ASTDIR)/imports.cpp \

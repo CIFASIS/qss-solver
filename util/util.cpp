@@ -27,6 +27,7 @@
 
 #include "../ir/expression.h"
 #include "../ir/mmo_util.h"
+#include "../ir/package.h"
 #include "compile_flags.h"
 #include "error.h"
 #include "symbol_table.h"

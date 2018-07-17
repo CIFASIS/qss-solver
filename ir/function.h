@@ -51,7 +51,7 @@ class MMO_Function: public MMO_Class
      * @param c
      */
     void
-    setFather(MMO_Class c);
+    setFather(MMO_Class* c);
     /**
      *
      * @return
@@ -62,7 +62,7 @@ class MMO_Function: public MMO_Class
      *
      * @return
      */
-    MMO_Class
+    MMO_Class*
     father() const;
     /**
      *
@@ -140,6 +140,109 @@ class MMO_Function: public MMO_Class
      */
     CL_Type
     classType();
+    /**
+     *
+     * @return
+     */
+    MMO_ImportTable
+    imports();
 };
 
+/**
+ *
+ */
+class MMO_FunctionDefinition
+{
+  public:
+    /**
+     *
+     */
+    MMO_FunctionDefinition();
+    /**
+     *
+     * @param name
+     * @param includeDir
+     * @param libraryDir
+     * @param libraries
+     */
+    MMO_FunctionDefinition(string name, string includeDir, string libraryDir, list<string> libraries);
+    /**
+     *
+     */
+    ~MMO_FunctionDefinition();
+    /**
+     *
+     * @return
+     */
+    list<string>
+    def();
+    /**
+     *
+     * @return
+     */
+    bool
+    hasIncludeDirectory();
+    /**
+     *
+     * @return
+     */
+    bool
+    hasLibraryDirectory();
+    /**
+     *
+     * @return
+     */
+    bool
+    hasLibraries();
+    /**
+     *
+     * @return
+     */
+    string
+    includeDirectory();
+    /**
+     *
+     * @return
+     */
+    string
+    libraryDirectory();
+    /**
+     *
+     * @return
+     */
+    list<string>
+    libraries();
+    /**
+     *
+     * @return
+     */
+    string
+    name();
+    /**
+     *
+     * @return
+     */
+    string
+    prototype();
+  private:
+    list<string> _def;
+    string _name;
+    string _prototype;
+    string _includeDirectory;
+    string _libraryDirectory;
+    list<string> _libraries;
+};
+
+/**
+ *
+ */
+class MMO_FunctionTable: public ModelTable<MMO_Function>
+{
+  public:
+    /**
+     *
+     */
+    MMO_FunctionTable();
+    ~MMO_FunctionTable();
+};
 #endif  /* MMO_FUNCTION_H_ */
