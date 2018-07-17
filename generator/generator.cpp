@@ -63,7 +63,7 @@ MMO_Generator::~MMO_Generator()
 int
 MMO_Generator::generate()
 {
-  for(MMO_Class* c = _std.begin(); _std.end(); c = _std.next())
+ /* for(MMO_Class* c = _std.begin(); _std.end(); c = _std.next())
   {
     string fname = c->name();
     switch(c->classType())
@@ -136,7 +136,7 @@ MMO_Generator::generate()
       default:
         break;
     }
-  }
+  }*/
   return Error::getInstance()->errors();
 }
 
@@ -153,9 +153,9 @@ MMO_Generator::_generateHeader(string name)
 void
 MMO_Generator::_generateModel()
 {
-  _modelInstance->modelHeader();
-  _modelInstance->modelDefinition();
-  _modelInstance->modelDependencies();
+  _modelInstance->header();
+  _modelInstance->definition();
+  _modelInstance->dependencies();
   _modelInstance->zeroCrossing();
   _modelInstance->handler();
   _modelInstance->output();
@@ -174,7 +174,7 @@ MMO_Generator::_printList(list<string> l)
 void
 MMO_Generator::_generateFunctionCode(MMO_Function f)
 {
-  list<string> code;
+  /*list<string> code;
   MMO_ImportTable it = f->imports();
   for(string i = it->begin(); !it->end(); i = it->next())
   {
@@ -218,7 +218,7 @@ MMO_Generator::_generateFunctionCode(MMO_Function f)
   }
   _writer->write(f->returnStatement(), WR_FUNCTION_CODE);
   _writer->endBlock();
-  _writer->write("}", WR_FUNCTION_CODE);
+  _writer->write("}", WR_FUNCTION_CODE);*/
 }
 
 void
@@ -238,20 +238,20 @@ MMO_Generator::_generateFunctionHeader(string fileName)
 void
 MMO_Generator::_generateFunction(MMO_FunctionDefinition f, string fileName)
 {
-  _printList(f->def());
+  _printList(f.def());
 }
 
 void
 MMO_Generator::_generateFunction(MMO_Function f, string fileName)
 {
-  _fheader.push_back(f->prototype() + ";");
-  _generateFunctionCode(f);
+  /*_fheader.push_back(f.prototype() + ";");
+  _generateFunctionCode(f);*/
 }
 
 void
 MMO_Generator::_generatePackage(MMO_Package p)
 {
-  string indent = _writer->indent(1);
+ /* string indent = _writer->indent(1);
   string name;
   if(_flags->hasOutputFile())
   {
@@ -349,25 +349,13 @@ MMO_Generator::_generatePackage(MMO_Package p)
   }
   _writer->print(WR_FUNCTION_HEADER);
   _writer->print(WR_FUNCTION_CODE);
-  _writer->clearFile();
-}
-
-MMO_Generator
-newMMO_Generator(MMO_StoredDefinition std, MMO_CompileFlags flags)
-{
-  return new MMO_Generator(std, flags);
-}
-
-void
-deleteMMO_Generator(MMO_Generator m)
-{
-  delete m;
+  _writer->clearFile();*/
 }
 
 void
 MMO_Generator::_variablesInitCode()
 {
-  stringstream buffer;
+  /*stringstream buffer;
   VarSymbolTable vt = _model->varTable();
   vt->setPrintEnvironment(VST_INIT);
   if(_model->annotation()->classic())
@@ -385,5 +373,5 @@ MMO_Generator::_variablesInitCode()
       buffer << _model->printInitialAssignment(vi, indent);
       _writer->write(&buffer, WR_START_CODE);
     }
-  }
+  }*/
 }

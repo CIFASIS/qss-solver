@@ -113,6 +113,7 @@ typedef enum
   WR_PREPEND
 } WR_InsertType;
 
+
 class MMO_Writer
 {
   public:

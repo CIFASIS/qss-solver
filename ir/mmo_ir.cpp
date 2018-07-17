@@ -175,6 +175,7 @@ MMO_MicroModelicaIR::apply(AST_Node x)
 {
 }
 
+/*
 MMO_StoredDefinition
 MMO_MicroModelicaIR::storedDefinition()
 {
@@ -184,5 +185,6 @@ MMO_MicroModelicaIR::storedDefinition()
 list<MMO_Class>
 MMO_MicroModelicaIR::classes() const
 {
+
   return _storedDefinition->classes();
-}
+}*/

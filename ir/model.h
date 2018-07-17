@@ -52,12 +52,6 @@ class MMO_Model: public MMO_Class
     name() const;
     /**
      *
-     * @return
-     */
-    CL_Type
-    classType();
-    /**
-     *
      * @param n
      */
     void

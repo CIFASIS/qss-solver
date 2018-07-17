@@ -238,15 +238,15 @@ class Util
      * @param pt
      * @return
      */
-    bool
-    readPackage(string fileName, MMO_PackageTable pt);
+   // bool
+   // readPackage(string fileName, MMO_PackageTable pt);
     /**
      *
      * @param fileName
      * @return
      */
-    MMO_PackageConfig
-    readPackage(string fileName);
+   // MMO_PackageConfig
+   // readPackage(string fileName);
     /**
      *
      * @param pname
@@ -277,12 +277,6 @@ class Util
      */
     string
     packageName(string name);
-    /**
-     *
-     * @param data
-     */
-    void
-    setData(MMO_ModelConfig config);
     /**
      *
      * @param vi
@@ -327,14 +321,14 @@ class Util
     string
     _packagePath(string name);
     string _languageEspecification;
-    int _varCounter;
-    MMO_CompileFlags _flags;
-    MMO_ModelConfig _config;
-    map<string, BIF_NAMES> _builtInFunctions;
-    map<string, BIV_NAMES> _builtInVariables;
-    map<BIF_NAMES, BIF*> _builtInFunctionImp;
-    map<string, int> _annotations;
-    string _binop[BINOPS];
+    int                     _varCounter;
+    MMO_CompileFlags        _flags;
+    MMO_ModelConfig         _config;
+    map<string, BIF_NAMES>  _builtInFunctions;
+    map<string, BIV_NAMES>  _builtInVariables;
+    map<BIF_NAMES, BIF*>    _builtInFunctionImp;
+    map<string, int>        _annotations;
+    string                  _binop[BINOPS];
 };
 
 class BuiltInFunction: public BIF

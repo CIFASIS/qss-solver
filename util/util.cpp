@@ -29,6 +29,7 @@
 #include "../ir/mmo_util.h"
 #include "../ir/package.h"
 #include "compile_flags.h"
+#include "index.h"
 #include "error.h"
 #include "symbol_table.h"
 
@@ -37,7 +38,12 @@
 Util *Util::_instance = NULL;
 
 Util::Util() :
-    _languageEspecification("C"), _varCounter(1), _flags(NULL), _data(), _builtInFunctions(), _builtInVariables(), _builtInFunctionImp()
+    _languageEspecification("C"), 
+    _varCounter(1), 
+    _flags(), 
+    _builtInFunctions(), 
+    _builtInVariables(), 
+    _builtInFunctionImp()
 {
   _annotations.insert(pair<string, int>("StartTime", 0));
   _annotations.insert(pair<string, int>("StopTime", 1));
@@ -245,7 +251,7 @@ Util::_getValue(fstream *package, string token)
   return ret;
 }
 
-MMO_PackageData
+/*MMO_PackageData
 Util::readPackage(string fileName)
 {
   fstream package;
@@ -317,7 +323,7 @@ Util::readPackage(string fileName, MMO_PackageTable pt)
   }
   pt->insert(pd);
   return true;
-}
+}*/
 
 bool
 Util::searchCompiledPackage(string pname, MMO_CompileFlags flags)
@@ -346,7 +352,7 @@ Util::_checkCodeFiles(string name, string ext)
 string
 Util::_packagePath(string name)
 {
-  list<string> objs = _flags->objects();
+  list<string> objs = _flags.objects();
   for(list<string>::iterator it = objs.begin(); it != objs.end(); it++)
   {
     string i = *it;
@@ -368,31 +374,31 @@ Util::_packagePath(string name)
 string
 Util::packagePath(string pname, MMO_CompileFlags flags, string ext)
 {
-  string fname = flags->path();
+  string fname = flags.path();
   fname.append(pname + ext);
   ifstream f(fname.c_str());
-  if(f.good() && _checkCodeFiles(flags->path() + pname, ext))
+  if(f.good() && _checkCodeFiles(flags.path() + pname, ext))
   {
     f.close();
-    return flags->path();
+    return flags.path();
   }
   else
   {
     f.close();
-    if(flags->hasOutputFile())
+    if(flags.hasOutputFile())
     {
-      fname = flags->outputFilePath();
+      fname = flags.outputFilePath();
       fname.append(SLASH + pname + ext);
       f.open(fname.c_str());
       if(f.good()
-          && _checkCodeFiles(flags->outputFilePath() + SLASH + pname, ext))
+          && _checkCodeFiles(flags.outputFilePath() + SLASH + pname, ext))
       {
         f.close();
-        return flags->outputFilePath();
+        return flags.outputFilePath();
       }
       f.close();
     }
-    list<string> paths = flags->libraryPaths();
+    list<string> paths = flags.libraryPaths();
     for(list<string>::iterator it = paths.begin(); it != paths.end(); it++)
     {
       fname = *it;
@@ -423,7 +429,7 @@ Util::packageName(string name)
 string
 Util::printInitialAssignment(VarInfo vi, string indent, string localVar)
 {
-  bool ic = _data->initialCode();
+/*  bool ic = _data->initialCode();
   _data->setInitialCode(true);
   VarSymbolTable vt = _data->symbols();
   MMO_Expression exp = newMMO_Expression(vi->exp(), _data);
@@ -444,13 +450,8 @@ Util::printInitialAssignment(VarInfo vi, string indent, string localVar)
   }
   _data->setInitialCode(ic);
   delete exp;
-  return buffer.str();
-}
-
-void
-Util::setData(MMO_ModelData data)
-{
-  _data = data;
+  return buffer.str();*/
+  return "";
 }
 
 string
@@ -505,7 +506,7 @@ list<string>
 BIF::generateCode(string variableMap, string variableIndex,
     list<VariableInterval> variableInterval, int expOrder)
 {
-  stringstream buffer;
+/*  stringstream buffer;
   list<string> code;
   bool states = _hasStates(variableInterval);
   Index idx = _index(variableInterval);
@@ -544,14 +545,15 @@ BIF::generateCode(string variableMap, string variableIndex,
     code.push_back(
         _reduce(variableMap, variableIndex, 0, variableInterval, states));
     code.push_back("}");
-  }
+  }*/
+  list<string> code;
   return code;
 }
 
 bool
 BIF::_hasStates(list<VariableInterval> variables)
 {
-  list<VariableInterval>::iterator it;
+ /* list<VariableInterval>::iterator it;
   for(it = variables.begin(); it != variables.end(); it++)
   {
     VarInfo vi = _vt->lookup(it->name());
@@ -566,7 +568,7 @@ BIF::_hasStates(list<VariableInterval> variables)
     {
       return true;
     }
-  }
+  }*/
   return false;
 }
 
@@ -579,14 +581,14 @@ BIF::setSymbolTable(VarSymbolTable vt)
 Index
 BIF::_index(list<VariableInterval> variables)
 {
-  VariableInterval vi = variables.front();
-  return vi.index();
+  //VariableInterval vi = variables.front();
+  return Index();
 }
 
 string
 BIF::variableName(VariableInterval vin)
 {
-  VarInfo vi = _variableInfo(vin);
+ /* VarInfo vi = _variableInfo(vin);
   string varStr = _vt->getTypePrefix();
   if(vi->isState())
   {
@@ -603,14 +605,14 @@ BIF::variableName(VariableInterval vin)
   else
   {
     varStr = "__PAR_" + vi->name();
-  }
-  return varStr;
+  }*/
+  return "";
 }
 
 string
 BIF::expressionOrderStr(int order, VariableInterval vin)
 {
-  VarInfo vi = _variableInfo(vin);
+/*  VarInfo vi = _variableInfo(vin);
   stringstream expOrder;
   if(_vt->printEnvironment() != VST_CLASSIC_MODEL_FUNCTIONS)
   {
@@ -625,7 +627,8 @@ BIF::expressionOrderStr(int order, VariableInterval vin)
     }
     varStr = _vt->getTypePrefix() + "alg";
   }
-  return expOrder.str();
+  return expOrder.str();*/
+  return "";
 }
 
 VarSymbolTable
@@ -637,7 +640,8 @@ BIF::symbolTable(VarSymbolTable vt)
 string
 BIF::print(Index idx, string variableIndex)
 {
-  return idx.print(variableIndex, 0, false);
+  //return idx.print(variableIndex, 0, false);
+  return "";
 }
 
 BuiltInFunction::~BuiltInFunction()
@@ -666,7 +670,7 @@ string
 BuiltInSumFunction::_reduce(string variableMap, string variableIndex,
     int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
 {
-  VariableInterval vin = variableInterval.front();
+ /* VariableInterval vin = variableInterval.front();
   string variablePrefix = BIF::variableName(vin);
   stringstream buffer;
   Index idx = vin.index();
@@ -682,7 +686,8 @@ BuiltInSumFunction::_reduce(string variableMap, string variableIndex,
     buffer << "\t" << variableMap << "[0] += " << variablePrefix << "["
         << print(idx, variableIndex) << "];";
   }
-  return buffer.str();
+  return buffer.str();*/
+  return "";
 }
 
 string
@@ -709,7 +714,7 @@ string
 BuiltInProductFunction::_reduce(string variableMap, string variableIndex,
     int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
 {
-  VariableInterval vin = variableInterval.front();
+/*  VariableInterval vin = variableInterval.front();
   string variablePrefix = BIF::variableName(vin);
   stringstream buffer;
   Index idx = vin.index();
@@ -725,7 +730,8 @@ BuiltInProductFunction::_reduce(string variableMap, string variableIndex,
     buffer << "\t" << variableMap << "[0] *= " << variablePrefix << "["
         << print(idx, variableIndex) << "];";
   }
-  return buffer.str();
+  return buffer.str();*/
+  return "";
 }
 
 string
@@ -752,7 +758,7 @@ string
 BuiltInInnerProductFunction::_reduce(string variableMap, string variableIndex,
     int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
 {
-  if(variableInterval.size() != 2)
+ /* if(variableInterval.size() != 2)
   {
     Error::getInstance()->add(0,
     EM_IR | EM_ARGUMENTS,
@@ -897,7 +903,8 @@ BuiltInInnerProductFunction::_reduce(string variableMap, string variableIndex,
         << print(idx0, variableIndex) << "] * " << variable1Prefix << "["
         << print(idx1, variableIndex) << "];";
   }
-  return buffer.str();
+  return buffer.str();*/
+    return "";
 }
 
 string
@@ -924,7 +931,7 @@ string
 BuiltInMinFunction::_reduce(string variableMap, string variableIndex,
     int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
 {
-  stringstream buffer;
+  /*stringstream buffer;
   VariableInterval vin = variableInterval.front();
   string expOrder = BIF::expressionOrderStr(0, vin);
   string variablePrefix = BIF::variableName(vin);
@@ -946,14 +953,15 @@ BuiltInMinFunction::_reduce(string variableMap, string variableIndex,
     buffer << "\t \t" << variableMap << "[0] = " << variablePrefix << "["
         << print(idx, variableIndex) << "];";
   }
-  return buffer.str();
+  return buffer.str();*/
+  return "";
 }
 
 string
 BuiltInMinFunction::_init(string variableMap, string variableIndex,
     list<VariableInterval> variableInterval, bool hasStates)
 {
-  stringstream buffer;
+  /*stringstream buffer;
   VariableInterval vin = variableInterval.front();
   string expOrder = BIF::expressionOrderStr(0, vin);
   string variablePrefix = BIF::variableName(vin);
@@ -967,7 +975,8 @@ BuiltInMinFunction::_init(string variableMap, string variableIndex,
   {
     buffer << "\t" << variableMap << "[0] = " << variablePrefix << "[0];";
   }
-  return buffer.str();
+  return buffer.str();*/
+  return "";
 }
 
 BuiltInMaxFunction::~BuiltInMaxFunction()
@@ -978,7 +987,7 @@ string
 BuiltInMaxFunction::_reduce(string variableMap, string variableIndex,
     int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
 {
-  stringstream buffer;
+  /*stringstream buffer;
   VariableInterval vin = variableInterval.front();
   string expOrder = BIF::expressionOrderStr(0, vin);
   string variablePrefix = BIF::variableName(vin);
@@ -1000,14 +1009,15 @@ BuiltInMaxFunction::_reduce(string variableMap, string variableIndex,
     buffer << "\t \t" << variableMap << "[0] = " << variablePrefix << "["
         << print(idx, variableIndex) << "];";
   }
-  return buffer.str();
+  return buffer.str();*/
+  return "";
 }
 
 string
 BuiltInMaxFunction::_init(string variableMap, string variableIndex,
     list<VariableInterval> variableInterval, bool hasStates)
 {
-  stringstream buffer;
+ /* stringstream buffer;
   VariableInterval vin = variableInterval.front();
   string expOrder = BIF::expressionOrderStr(0, vin);
   string variablePrefix = BIF::variableName(vin);
@@ -1022,6 +1032,8 @@ BuiltInMaxFunction::_init(string variableMap, string variableIndex,
     buffer << "\t" << variableMap << "[0] = " << variablePrefix << "[0];";
   }
   return buffer.str();
+  */
+  return "";
 }
 
 void
@@ -1039,7 +1051,7 @@ BIF::expressionOrder()
 VarInfo
 BIF::_variableInfo(VariableInterval vin)
 {
-  VarInfo vi = _vt->lookup(vin.name());
+  /*VarInfo vi = _vt->lookup(vin.name());
   if(vi == NULL)
   {
     Error::getInstance()->add(0,
@@ -1047,7 +1059,8 @@ BIF::_variableInfo(VariableInterval vin)
         ER_Fatal, "%s", vin.name().c_str());
     return NULL;
   }
-  return vi;
+  return vi;*/
+  return NULL;
 }
 
 bool

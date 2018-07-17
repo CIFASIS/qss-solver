@@ -62,10 +62,9 @@ ExpressionDerivator::derivate(AST_Expression exp, VarSymbolTable varEnv,
 }
 
 map<string, MMO_Expression>
-ExpressionDerivator::generateJacobianExps(AST_Expression exp,
-    MMO_ModelData data)
+ExpressionDerivator::generateJacobianExps(AST_Expression exp)
 {
-  ConvertToGiNaC tog(data->symbols(), true);
+ /* ConvertToGiNaC tog(data->symbols(), true);
   ConvertToExpression toe;
   ReplaceDer_ rd(data->symbols());
   GiNaC::ex dexp = tog.convert(exp, false, true);
@@ -91,5 +90,7 @@ ExpressionDerivator::generateJacobianExps(AST_Expression exp,
       }
     }
   }
+*/
+  map<string, MMO_Expression> jacobianExps;
   return jacobianExps;
 }

@@ -301,21 +301,18 @@ class MMO_FunctionAnnotation: public MMO_Annotation
     void
     setJacobian(int l)
     {
-    }
-    ;
+    };
     int
     jacobian()
     {
       return 0;
-    }
-    ;
+    };
     bool
     classic()
     {
       return false;
-    }
-    ;
-    private:
+    };
+  private:
     /**
      *
      */
@@ -345,7 +342,7 @@ class MMO_ModelAnnotation: public MMO_Annotation
      *
      * @param data
      */
-    MMO_ModelAnnotation();
+    MMO_ModelAnnotation(VarSymbolTable symbolTable);
     /**
      *
      */
@@ -715,38 +712,39 @@ class MMO_ModelAnnotation: public MMO_Annotation
     _getPartitionMethod(string s);
     ANT_DT_Synch
     _getDtSynch(string s);
-    ANT_Solver _solver;
-    string _solverString;
-    string _commInterval;
-    bool _symDiff;
-    double _minStep;
-    int _lps;
-    double _derDelta;
-    int _nodeSize;
-    double _ZCHyst;
-    int _order;
-    string _scheduler;
-    string _storeData;
+    ANT_Solver            _solver;
+    string                _solverString;
+    string                _commInterval;
+    bool                  _symDiff;
+    double                _minStep;
+    int                   _lps;
+    double                _derDelta;
+    int                   _nodeSize;
+    double                _ZCHyst;
+    int                   _order;
+    string                _scheduler;
+    string                _storeData;
     map<string, MMO_ModelAnnotation::type> _annotations;
-    list<double> _DQMin;
-    list<double> _DQRel;
-    double _weight;
-    list<double> _sample;
-    list<AST_Expression> _output;
-    double _initialTime;
-    double _finalTime;
-    ANT_PartitionMethod _partitionMethod;
-    string _partitionMethodString;
-    bool _parallel;
-    double _dt;
-    int _polyCoeffs;
-    ANT_DT_Synch _dtSynch;
-    string _dtSynchString;
-    string _desc;
-    list<string> _patohSettings;
-    list<string> _scotchSettings;
-    list<string> _metisSettings;
-    int _jacobian;
+    list<double>          _DQMin;
+    list<double>          _DQRel;
+    double                _weight;
+    list<double>          _sample;
+    list<AST_Expression>  _output;
+    double                _initialTime;
+    double                _finalTime;
+    ANT_PartitionMethod   _partitionMethod;
+    string                _partitionMethodString;
+    bool                  _parallel;
+    double                _dt;
+    int                   _polyCoeffs;
+    ANT_DT_Synch          _dtSynch;
+    string                _dtSynchString;
+    string                _desc;
+    list<string>          _patohSettings;
+    list<string>          _scotchSettings;
+    list<string>          _metisSettings;
+    int                   _jacobian;
+    VarSymbolTable        _symbolTable;
 };
 
 /**

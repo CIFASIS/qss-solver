@@ -25,7 +25,6 @@
 #include "../ast/expression.h"
 #include "../ir/equation.h"
 #include "../ir/expression.h"
-#include "dependencies.h"
 #include "util.h"
 
 /* VarInfo class. */
@@ -38,7 +37,6 @@ VarInfo_::VarInfo_(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c)
     _m(m), 
     _comm(c), 
     _builtin(false), 
-    _index(), 
     _size(), 
     _value(0), 
     _algebraic(false), 
@@ -60,7 +58,6 @@ VarInfo_::VarInfo_(Type t, AST_TypePrefix tp, AST_Modification m, vector<int> s,
     _m(m), 
     _comm(NULL), 
     _builtin(false), 
-    _index(), 
     _size(s), 
     _value(0), 
     _algebraic(false), 
@@ -184,19 +181,8 @@ VarInfo_::setAlgebraic()
 bool
 VarInfo_::hasIndex()
 {
-  return _index.isSet();
-}
-
-void
-VarInfo_::setIndex(Index idx)
-{
-  _index = idx;
-}
-
-Index
-VarInfo_::index()
-{
-  return _index;
+  //return _index.isSet();
+  return false;
 }
 
 void

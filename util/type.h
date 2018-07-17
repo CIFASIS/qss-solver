@@ -93,8 +93,7 @@ class Type_
     virtual
     ~Type_()
     {
-    }
-    ;
+    };
     /**
      *
      * @return
@@ -198,7 +197,7 @@ class Type_Real_: public Type_
     getType()
     {
       return TYREAL;
-    }
+    };
     /**
      *
      * @return

@@ -70,7 +70,6 @@ IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
 				$(IRDIR)/statement.cpp  \
 				$(IRDIR)/annotation.cpp  \
 				$(IRDIR)/event.cpp  \
-				$(IRDIR)/class.cpp \
 				$(IRDIR)/stored_definition.cpp  \
 				$(IRDIR)/mmo_ir.cpp  \
 				$(IRDIR)/mmo_settings.cpp 

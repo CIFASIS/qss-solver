@@ -50,12 +50,6 @@ class MMO_Package: public MMO_Class
      *
      * @return
      */
-    CL_Type
-    classType();
-    /**
-     *
-     * @return
-     */
     string
     name() const;
     /**

@@ -177,7 +177,7 @@ MMO_FunctionAnnotation::libraryDirectory()
   return _libraryDirectory;
 }
 
-MMO_ModelAnnotation::MMO_ModelAnnotation(MMO_ModelConfig cfg) :
+MMO_ModelAnnotation::MMO_ModelAnnotation(VarSymbolTable symbolTable) :
     _solver(ANT_LIQSS2), 
     _solverString("LIQSS2"), 
     _commInterval("CI_Step"), 
@@ -191,7 +191,6 @@ MMO_ModelAnnotation::MMO_ModelAnnotation(MMO_ModelConfig cfg) :
     _scheduler("ST_Binary"), 
     _storeData("SD_Memory"), 
     _annotations(), 
-    _cfg(cfg), 
     _DQMin(), 
     _DQRel(), 
     _weight(-1), 
@@ -210,7 +209,8 @@ MMO_ModelAnnotation::MMO_ModelAnnotation(MMO_ModelConfig cfg) :
     _patohSettings(), 
     _scotchSettings(), 
     _metisSettings(), 
-    _jacobian(0)
+    _jacobian(0),
+    _symbolTable(symbolTable) 
 {
   _annotations.insert(pair<string, MMO_ModelAnnotation::type>("experiment", EXPERIMENT));
   _annotations.insert(pair<string, MMO_ModelAnnotation::type>("MMO_Description", DESC));
@@ -352,7 +352,7 @@ void
 MMO_ModelAnnotation::_processList(AST_Expression x, list<double> *l)
 {
   l->clear();
-  MMO_EvalAnnotation ea(_cfg.symbols());
+  MMO_EvalAnnotation ea(_symbolTable);
   MMO_AnnotationValue av;
   if(x->expressionType() == EXPBRACE)
   {
@@ -376,7 +376,7 @@ void
 MMO_ModelAnnotation::_processList(AST_Expression x, list<string> *l)
 {
   l->clear();
-  MMO_EvalAnnotation_ ea(_data->symbols());
+  MMO_EvalAnnotation ea(_symbolTable);
   MMO_AnnotationValue av;
   if(x->expressionType() == EXPBRACE)
   {
@@ -561,7 +561,7 @@ MMO_ModelAnnotation::_processAnnotation(string annot, AST_Modification_Equal x)
     EM_IR | EM_ANNOTATION_NOT_FOUND,
         ER_Warning, "%s", annot.c_str());
   }
-  MMO_EvalAnnotation ea(_data->symbols());
+  MMO_EvalAnnotation ea(_symbolTable);
   MMO_AnnotationValue av;
   if(itf->second != DQMIN && itf->second != DQREL && itf->second != STEP_SIZE)
   {
@@ -982,22 +982,12 @@ MMO_ModelAnnotation::setMetisSettings(string l)
   _metisSettings.push_back(l);
 }
 
-MMO_ModelAnnotation
-newMMO_ModelAnnotation(MMO_ModelData data)
-{
-  return new MMO_ModelAnnotation(data);
-}
-
-void
-deleteMMO_ModelAnnotation(MMO_ModelAnnotation m)
-{
-  delete m;
-}
-
 /* MMO_AnnotationValue class */
 
 MMO_AnnotationValue::MMO_AnnotationValue() :
-    _integer(0), _real(0), _str("")
+    _integer(0), 
+    _real(0), 
+    _str("")
 {
 }
 
@@ -1043,7 +1033,7 @@ MMO_AnnotationValue::setStr(string s)
 
 /* EvalAnnotation class */
 
-MMO_EvalAnnotation::MMO_EvalAnnotation_(VarSymbolTable st) :
+MMO_EvalAnnotation::MMO_EvalAnnotation(VarSymbolTable st) :
     _st(st), 
     _tokens()
 {

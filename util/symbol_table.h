@@ -460,7 +460,7 @@ class VarInfo_
      * @return
      */
     friend ostream &
-    operator<<(ostream &os, const VarInfo &e);
+    operator<<(ostream &os, const VarInfo_ &e);
     /**
      *
      * @param dim
@@ -481,23 +481,23 @@ class VarInfo_
     _unsetAssignment();
     void
     _unsetStartEach();
-    bool _state;
-    bool _unknown;
-    bool _discrete;
-    Type _t;
-    AST_TypePrefix _tp;
-    AST_Modification _m;
-    AST_Comment _comm;
-    bool _builtin;
-    vector<int> _size;
-    int _value;
-    bool _algebraic;
-    AST_Expression _exp;
-    bool _hasStart;
-    bool _hasEach;
-    bool _hasAssigment;
-    string _name;
-    bool _isArray;
+    bool              _state;
+    bool              _unknown;
+    bool              _discrete;
+    Type              _t;
+    AST_TypePrefix    _tp;
+    AST_Modification  _m;
+    AST_Comment       _comm;
+    bool              _builtin;
+    vector<int>       _size;
+    int               _value;
+    bool              _algebraic;
+    AST_Expression    _exp;
+    bool              _hasStart;
+    bool              _hasEach;
+    bool              _hasAssigment;
+    string            _name;
+    bool              _isArray;
 };
 
 /**

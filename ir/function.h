@@ -138,12 +138,6 @@ class MMO_Function: public MMO_Class
      *
      * @return
      */
-    CL_Type
-    classType();
-    /**
-     *
-     * @return
-     */
     MMO_ImportTable
     imports();
 };

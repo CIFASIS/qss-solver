@@ -30,7 +30,7 @@ MMO_Settings::MMO_Settings(string name)
 {
 }
 
-MMO_Settings::~MMO_Settings_()
+MMO_Settings::~MMO_Settings()
 {
 }
 

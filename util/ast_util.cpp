@@ -33,7 +33,6 @@
 #include "../ir/expression.h"
 #include "../ir/mmo_util.h"
 #include "debug.h"
-#include "dependencies.h"
 #include "error.h"
 #include "index.h"
 #include "macros.h"
