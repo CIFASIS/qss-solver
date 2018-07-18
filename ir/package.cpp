@@ -39,12 +39,6 @@ MMO_Package::~MMO_Package()
 {
 }
 
-CL_Type
-MMO_Package::classType()
-{
-  return CL_PACKAGE;
-}
-
 VarSymbolTable
 MMO_Package::varTable()
 {
@@ -109,13 +103,11 @@ MMO_Package::name() const
 {
   return "";
 }
-
-MMO_ImportTable 
+ 
+MMO_ImportTable
 MMO_Package::imports()
 {
-  return ImportTable();
 }
-
 
 MMO_PackageTable::MMO_PackageTable()
 {

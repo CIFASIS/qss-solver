@@ -49,6 +49,7 @@ RMS 		:= rm -rf
 # Source files.
 ASTSRC = $(ASTDIR)/ast_builder.cpp \
 				 $(ASTDIR)/ast_node.cpp \
+				 $(ASTDIR)/class.cpp \
 				 $(ASTDIR)/composition.cpp \
 				 $(ASTDIR)/element.cpp \
 				 $(ASTDIR)/imports.cpp \
@@ -68,6 +69,9 @@ IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
 				$(IRDIR)/expression.cpp  \
 				$(IRDIR)/equation.cpp  \
 				$(IRDIR)/statement.cpp  \
+				$(IRDIR)/model.cpp  \
+				$(IRDIR)/function.cpp  \
+				$(IRDIR)/package.cpp  \
 				$(IRDIR)/annotation.cpp  \
 				$(IRDIR)/event.cpp  \
 				$(IRDIR)/stored_definition.cpp  \
@@ -89,6 +93,7 @@ UTILSRC = $(UTILDIR)/util.cpp \
 					$(UTILDIR)/ginac_interface.cpp \
 					$(UTILDIR)/index.cpp \
 					$(UTILDIR)/model_dependencies.cpp  \
+					$(UTILDIR)/incidence_matrix.cpp  \
 					$(UTILDIR)/graph.cpp \
 					$(UTILDIR)/graph_profile.cpp 
 

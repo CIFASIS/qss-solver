@@ -26,9 +26,9 @@
 #include "class.h"
 #include "imports.h"
 
-AST_StoredDefinition_::AST_StoredDefinition_(AST_ClassList ml,
-    AST_String within) :
-    _model_list(ml), _within(within)
+AST_StoredDefinition_::AST_StoredDefinition_(AST_ClassList ml, AST_String within) :
+    _model_list(ml), 
+    _within(within)
 {
   _imports = new AST_Imports();
 }

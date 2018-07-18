@@ -20,14 +20,9 @@
 #ifndef INCIDENCE_MATRIX_H_
 #define INCIDENCE_MATRIX_H_
 
-#include <string>
 #include <map>
 
-#include "../ast/ast_types.h"
-#include "util_types.h"
 #include "index.h"
-
-using namespace std;
 
 typedef int mapId;
 
@@ -47,7 +42,7 @@ class IncidenceMatrix
     IncidenceMatrix();
     ~IncidenceMatrix();
   private:
-    map<mapId,Incidence> _matrix;
+    std::map<mapId,Incidence> _matrix;
 };
 
 #endif /* INCIDENCE_MATRIX_H_ */

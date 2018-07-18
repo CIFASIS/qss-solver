@@ -22,7 +22,6 @@
 
 #include "class.h"
 
-#include "../ast/ast_types.h"
 #include "../util/table.h"
 
 /**
@@ -31,6 +30,10 @@
 class MMO_Package: public MMO_Class
 {
   public:
+    /**
+     *
+     */
+    MMO_Package() {};
     /**
      *
      * @param name

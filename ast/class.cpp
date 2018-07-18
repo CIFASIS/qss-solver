@@ -29,8 +29,13 @@
 #include "element.h"
 
 AST_Class_::AST_Class_(AST_String n, AST_Composition comp) :
-    _name(n), _composition(comp), _father(NULL), _basic(false), _encapsulated(
-        false), _final(false), _prefix()
+    _name(n), 
+    _composition(comp), 
+    _father(NULL), 
+    _basic(false), 
+    _encapsulated(false), 
+    _final(false), 
+    _prefix()
 {
   _extends_list = newAST_StringList();
   _sub_classes = newAST_ClassList();

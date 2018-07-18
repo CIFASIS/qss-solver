@@ -32,10 +32,10 @@ template<class T>
 class ModelTable 
 {
   public:
-    ModelTable();
-    ~ModelTable();
+    ModelTable(){};
+    ~ModelTable() {};
   private:
     map <int,T> _map;
 };
 
-#endif /* MODEL_TABLE_H */
+#endif /* TABLE_H */

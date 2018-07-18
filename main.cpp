@@ -28,11 +28,9 @@
 #include "ast/stored_definition.h"
 #include "generator/files.h"
 #include "generator/generator.h"
-#include "generator/generator_types.h"
 #include "ir/mmo_ir.h"
 #include "ir/mmo_model_checker.h"
 #include "ir/mmo_settings.h"
-#include "ir/mmo_types.h"
 #include "ir/mmo_util.h"
 #include "parser/parse.h"
 #include "util/compile_flags.h"
@@ -132,7 +130,7 @@ version()
 int
 parsePackages(AST_StringList imports, MMO_CompileFlags flags, bool recompile)
 {
-  int r = 0;
+/*  int r = 0;
   MMO_CompileFlags fl = newMMO_CompileFlags();
   AST_StringListIterator it;
   foreach(it,imports)
@@ -202,13 +200,14 @@ parsePackages(AST_StringList imports, MMO_CompileFlags flags, bool recompile)
     }
   }
   delete fl;
-  return r;
+  return r;*/
+  return 0;
 }
 
 int
 main(int argc, char ** argv)
 {
-  int r = 0;
+/*  int r = 0;
   int opt;
   extern char *optarg;
   char strArg[128];
@@ -335,5 +334,6 @@ main(int argc, char ** argv)
   delete flags;
   Error::getInstance()->show();
   cout << "Exit code: " << r << endl;
-  return r;
+  return r;*/
+    return 0;
 }

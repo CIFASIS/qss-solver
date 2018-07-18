@@ -35,9 +35,6 @@
 
 MMO_Generator::MMO_Generator(MMO_StoredDefinition std, MMO_CompileFlags flags) :
   _std(std), 
-  _model(NULL), 
-  _function(NULL), 
-  _package(NULL), 
   _flags(flags), 
   _modelInstance(NULL), 
   _files(), 

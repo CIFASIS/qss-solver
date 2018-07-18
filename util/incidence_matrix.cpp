@@ -17,4 +17,20 @@
 
  ******************************************************************************/
 
-#include "incidence-matrix.h"
+#include "incidence_matrix.h"
+
+Incidence::Incidence()
+{
+}
+ 
+Incidence::~Incidence()
+{
+}
+
+IncidenceMatrix::IncidenceMatrix()
+{
+}
+
+IncidenceMatrix::~IncidenceMatrix()
+{
+}

@@ -17,5 +17,12 @@
 
  ******************************************************************************/
 
-#include "model-dependencies.h"
+#include "model_dependencies.h"
 
+ModelDependencies::ModelDependencies()
+{
+}
+ 
+ModelDependencies::~ModelDependencies()
+{
+}

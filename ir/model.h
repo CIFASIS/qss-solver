@@ -39,6 +39,11 @@ class MMO_Model: public MMO_Class
      *
      * @param name
      */
+    MMO_Model() {};
+    /**
+     *
+     * @param name
+     */
     MMO_Model(string name);
     /**
      *

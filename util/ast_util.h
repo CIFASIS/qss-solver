@@ -546,8 +546,7 @@ class AST_Visitor
     /**
      *
      */
-    virtual
-    ~AST_Visitor();
+    ~AST_Visitor(){};
     /**
      *
      * @param x

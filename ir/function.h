@@ -20,16 +20,9 @@
 #ifndef MMO_FUNCTION_H_
 #define MMO_FUNCTION_H_
 
-#include <list>
-#include <map>
 #include <string>
-#include <vector>
 
 #include "class.h"
-#include "../ast/ast_types.h"
-#include "../ir/mmo_util.h"
-#include "../util/error.h"
-#include "../util/util_types.h"
 
 /**
  *
@@ -37,6 +30,10 @@
 class MMO_Function: public MMO_Class
 {
   public:
+    /**
+     *
+     */
+    MMO_Function() {};
     /**
      *
      * @param name
@@ -239,4 +236,5 @@ class MMO_FunctionTable: public ModelTable<MMO_Function>
     MMO_FunctionTable();
     ~MMO_FunctionTable();
 };
+
 #endif  /* MMO_FUNCTION_H_ */

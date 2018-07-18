@@ -55,14 +55,8 @@ class MMO_ModelAnnotation;
 class MMO_Class
 {
   public:
-    /**
-     *
-     */
-    MMO_Class();
-    /**
-     *
-     */
-    ~MMO_Class();
+    MMO_Class(){};
+    ~MMO_Class(){};
     /**
      *
      * @return

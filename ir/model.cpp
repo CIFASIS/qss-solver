@@ -41,12 +41,6 @@ MMO_Model::~MMO_Model()
 {
 }
 
-CL_Type
-MMO_Model::classType()
-{
-  return CL_MODEL;
-}
-
 void
 MMO_Model::insert(VarName n, VarInfo vi, DEC_Type type)
 {

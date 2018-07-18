@@ -35,8 +35,6 @@
 #include "files.h"
 #include "writer.h"
 
-using namespace std;
-
 /**
  *
  */
@@ -82,17 +80,17 @@ class MMO_Generator
     _generatePackage(MMO_Package p);
     void
     _header();
-    MMO_StoredDefinition  _std;
-    MMO_Model             _model;
-    MMO_Function          _function;
-    MMO_Package           _package;
-    MMO_CompileFlags      _flags;
-    MMO_ModelInstance*    _modelInstance;
-    MMO_Files             _files;
-    MMO_Writer*           _writer;
-    ofstream              _file;
-    map<string, string>   _includes;
-    list<string>          _fheader;
+    MMO_StoredDefinition      _std;
+    MMO_Model                 _model;
+    MMO_Function              _function;
+    MMO_Package               _package;
+    MMO_CompileFlags          _flags;
+    MMO_ModelInstance*        _modelInstance;
+    MMO_Files                 _files;
+    MMO_Writer*               _writer;
+    ofstream                  _file;
+    std::map<string, string>  _includes;
+    list<string>              _fheader;
 };
 
 #endif  /* GENERATOR_H_ */

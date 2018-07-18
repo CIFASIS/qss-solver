@@ -223,7 +223,7 @@ ConvertToGiNaC::getSymbol(AST_Expression_Derivative der)
 symbol&
 ConvertToGiNaC::getSymbol(AST_Expression_ComponentReference cr)
 {
-  string s = cr->name();
+/*  string s = cr->name();
   if(_generateIndexes)
   {
     ExpIndexes_ ei(_varEnv);
@@ -239,7 +239,9 @@ ConvertToGiNaC::getSymbol(AST_Expression_ComponentReference cr)
   {
     symbol c = symbol(s);
     return _directory.insert(make_pair(s, c)).first->second;
-  }
+  }*/
+  symbol c = symbol("");
+  return c; 
 }
 
 symbol&
@@ -276,7 +278,7 @@ ConvertToGiNaC::foldTraverseElementUMinus(AST_Expression e)
 ex
 ConvertToGiNaC::foldTraverseElement(AST_Expression e)
 {
-  switch(e->expressionType())
+/*  switch(e->expressionType())
   {
     case EXPREAL:
       return ex(e->getAsReal()->val());
@@ -478,7 +480,9 @@ ConvertToGiNaC::foldTraverseElement(AST_Expression e)
     default:
       cerr << "Expression: " << e << " not converted to GiNaC" << endl;
       return ex(0);
-  }
+  }*/
+
+          return ex(0);
 }
 
 AST_Expression

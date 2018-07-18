@@ -76,7 +76,7 @@ class MMO_Annotation
 {
   public:
     MMO_Annotation();
-    ~MMO_Annotation();
+    ~MMO_Annotation(){};
     virtual bool
     hasDerivative();
     virtual bool

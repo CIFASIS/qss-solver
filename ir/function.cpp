@@ -51,12 +51,6 @@ MMO_Function::~MMO_Function()
 {
 }
 
-CL_Type
-MMO_Function::classType()
-{
-  return CL_FUNCTION;
-}
-
 VarSymbolTable
 MMO_Function::varTable()
 {
