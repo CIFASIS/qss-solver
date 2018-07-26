@@ -37,8 +37,10 @@
 
 /* MicroModelica Intermediate Representation */
 
-MMO_MicroModelicaIR::MMO_MicroModelicaIR(string name) 
+MMO_MicroModelicaIR::MMO_MicroModelicaIR(string name):
+  _std()
 {
+    
 }
 
 MMO_MicroModelicaIR::~MMO_MicroModelicaIR()
@@ -48,6 +50,53 @@ MMO_MicroModelicaIR::~MMO_MicroModelicaIR()
 void
 MMO_MicroModelicaIR::visit(AST_Class x)
 {
+  Error::getInstance()->setClassName(*(x->name()));
+  _std.addModel();
+/*  AST_TypePrefix p = x->prefix();
+  if(_father != NULL)
+  {
+    if((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE))
+    {
+      _childName = x->name();
+      _childPrefix = x->prefix();
+      _child = newMMO_Function(*x->name());
+      if(_father->classType() == CL_MODEL)
+      {
+        _child->getAsFunction()->setFunctions(
+            _father->getAsModel()->functions(), _externalFunctions,
+            _father->getAsModel()->calledFunctions());
+      }
+      _child->getAsFunction()->setImports(_father->imports());
+      _child->setFather(_father);
+      _class = _child;
+      _className = _childName;
+      _classPrefix = _childPrefix;
+    }
+  }
+  else
+  {
+    _fatherName = x->name();
+    _fatherPrefix = x->prefix();
+    if(p & CP_PACKAGE)
+    {
+      _father = newMMO_Package(*x->name());
+    }
+    else if((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE))
+    {
+      _father = newMMO_Function(*x->name());
+      Index i(_funcs++, 0);
+      i.setOffset(_funcs);
+      _externalFunctions->insert(i, _father->getAsFunction());
+    }
+    else
+    {
+      _father = newMMO_Model(*x->name());
+      _father->getAsModel()->setExternalFunctions(_externalFunctions);
+    }
+    _class = _father;
+    _className = _fatherName;
+    _classPrefix = _fatherPrefix;
+  }*/
 }
 
 /**

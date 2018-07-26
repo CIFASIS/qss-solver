@@ -32,124 +32,134 @@
 #include "../util/error.h"
 #include "../util/util.h"
 
-/* QSSModelInstance Model Instance class. */
+namespace MicroModelica {
+  
+  namespace Generator {
+  
+    using namespace MicroModelica::IR;
+    using namespace MicroModelica::Util;
 
-QSSModelInstance::QSSModelInstance(MMO_Model* model, MMO_CompileFlags* flags, MMO_Writer* writer) 
-{
-}
+    /* QSSModelInstance Model Instance class. */
 
-QSSModelInstance::~QSSModelInstance()
-{
-}
+    QSSModelInstance::QSSModelInstance(Model model, CompileFlags flags, WriterType writer) 
+    {
+    }
 
-string
-QSSModelInstance::header()
-{
-  return "";
-}
+    QSSModelInstance::~QSSModelInstance()
+    {
+    }
 
-string
-QSSModelInstance::makefile(SOL_Makefile m)
-{
-  return "";
-}
+    string
+    QSSModelInstance::header()
+    {
+      return "";
+    }
 
-void
-QSSModelInstance::initializeDataStructures()
-{
-  return;
-}
+    string
+    QSSModelInstance::makefile(Makefile m)
+    {
+      return "";
+    }
 
-void
-QSSModelInstance::definition()
-{
-  return;
-}
+    void
+    QSSModelInstance::initializeDataStructures()
+    {
+      return;
+    }
 
-void
-QSSModelInstance::dependencies()
-{
-  return;
-}
+    void
+    QSSModelInstance::definition()
+    {
+      return;
+    }
 
-void
-QSSModelInstance::zeroCrossing()
-{
-  return;
-}
+    void
+    QSSModelInstance::dependencies()
+    {
+      return;
+    }
 
-void
-QSSModelInstance::handler()
-{
-  return;
-}
+    void
+    QSSModelInstance::zeroCrossing()
+    {
+      return;
+    }
 
-void
-QSSModelInstance::output()
-{
-  return;
-}
+    void
+    QSSModelInstance::handler()
+    {
+      return;
+    }
+
+    void
+    QSSModelInstance::output()
+    {
+      return;
+    }
     
-Graph
-QSSModelInstance::computationalGraph()
-{
-  return Graph(0, 0);
-}
+    Graph
+    QSSModelInstance::computationalGraph()
+    {
+      return Graph(0, 0);
+    }
 
-/* ClassicModelInstance Model Instance class. */
+    /* ClassicModelInstance Model Instance class. */
 
-ClassicModelInstance::ClassicModelInstance(MMO_Model* model, MMO_CompileFlags* flags, MMO_Writer* writer) 
-{
-}
+    ClassicModelInstance::ClassicModelInstance(Model model, CompileFlags flags, WriterType writer) 
+    {
+    }
 
-ClassicModelInstance::~ClassicModelInstance()
-{
-}
+    ClassicModelInstance::~ClassicModelInstance()
+    {
+    }
 
-string
-ClassicModelInstance::header()
-{
-  return "";
-}
+    string
+    ClassicModelInstance::header()
+    {
+      return "";
+    }
 
-string
-ClassicModelInstance::makefile(SOL_Makefile m)
-{
-  return "";
-}
+    string
+    ClassicModelInstance::makefile(Makefile m)
+    {
+      return "";
+    }
     
-void
-ClassicModelInstance::initializeDataStructures()
-{
-}
+    void
+    ClassicModelInstance::initializeDataStructures()
+    {
+    }
     
-void
-ClassicModelInstance::definition()
-{
-}
+    void
+    ClassicModelInstance::definition()
+    {
+    }
     
-void
-ClassicModelInstance::dependencies()
-{
-}
+    void
+    ClassicModelInstance::dependencies()
+    {
+    }
     
-void
-ClassicModelInstance::zeroCrossing()
-{
-}
+    void
+    ClassicModelInstance::zeroCrossing()
+    {
+    }
     
-void
-ClassicModelInstance::handler()
-{
-}
+    void
+    ClassicModelInstance::handler()
+    {
+    }
     
-void
-ClassicModelInstance::output()
-{
-}
+    void
+    ClassicModelInstance::output()
+    {
+    }
  
-Graph
-ClassicModelInstance::computationalGraph()
-{
-  return Graph(0,0);
+    Graph
+    ClassicModelInstance::computationalGraph()
+    {
+      return Graph(0,0);
+    }
+
+  }
 }

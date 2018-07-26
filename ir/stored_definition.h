@@ -22,9 +22,8 @@
 
 #include <string>
 
-using namespace std;
-
-#include <list>
+#include "../ir/class.h"
+#include "../ir/function.h"
 #include "../ir/model.h"
 #include "../ir/package.h"
 
@@ -48,9 +47,17 @@ class MMO_StoredDefinition
     next();
     bool 
     end();
+    void 
+    addModel(string name);
+    void 
+    addPackage(string name);
+    void 
+    addFunction(string name);
   private:
-    list<MMO_Model>   _stdModel;
-    list<MMO_Package> _stdPackage;
+    MMO_Model         _model;
+    MMO_Package       _package;
+    MMO_FunctionTable _functions;
+    MMO_Class*        _current;
 };
 
 #endif  /* MMO_STORED_DEFINITION_H_ */

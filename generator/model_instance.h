@@ -20,266 +20,273 @@
 #ifndef MMO_MODEL_INSTANCE_H_
 #define MMO_MODEL_INSTANCE_H_
 
-#include <list>
-#include <map>
-#include <set>
-#include <string>
+#include <boost/variant/variant.hpp>
 
-#include "../ir/model.h"
+#include "../ir/class.h"
 #include "../util/compile_flags.h"
 #include "../util/graph.h"
 #include "../util/symbol_table.h"
 #include "../util/util_types.h"
 #include "writer.h"
 
-/**
- *
- */
-typedef enum
+namespace MicroModelica 
 {
-  SOL_MODEL_SETTINGS,
-  SOL_MODEL,
-  SOL_DEPS,
-  SOL_ZC,
-  SOL_HANDLER_POS,
-  SOL_HANDLER_NEG,
-  SOL_OUTPUT,
-  SOL_INIT,
-  SOL_CALLBACK
-} SOL_Function;
+  namespace Generator 
+  {
 
-/**
- *
- */
-typedef enum
-{
-  SOL_LIBRARIES,
-  SOL_INCLUDES
-} SOL_Makefile;
-
-/**
- *
- */
-typedef enum
-{
-  SOL_SERIAL,
-  SOL_PARALLEL
-} SOL_Engine;
-
-typedef enum
-{
-  NOD_SD,
-  NOD_SZ,
-  NOD_HD,
-  NOD_HZ,
-  NOD_DD
-} NOD_Type;
-
-/**
- *
- */
-class MMO_ModelInstance
-{
-  public:
     /**
-     *
-     */
-    virtual
-    ~MMO_ModelInstance()
+    *
+    */
+    typedef enum
     {
+      MODEL_SETTINGS,
+      MODEL,
+      DEPS,
+      ZC,
+      HANDLER_POS,
+      HANDLER_NEG,
+      OUTPUT,
+      INIT,
+      CALLBACK
+    } Function;
+
+    /**
+    *
+    */
+    typedef enum
+    {
+      LIBRARIES,
+      INCLUDES
+    } Makefile;
+
+    /**
+     *
+    */
+    typedef enum
+    {
+      SERIAL,
+      PARALLEL
+    } Engine;
+
+    typedef enum
+    {
+      SD,
+      SZ,
+      HD,
+      HZ,
+      DD
+    } NodeType;
+
+    /**
+    *
+    */
+    class ModelInstance
+    {
+      public:
+        /**
+        *
+        */
+        virtual
+        ~ModelInstance()
+        {
+        };
+        /**
+        *
+        * @return
+        */
+        virtual string
+        header() = 0;
+        /**
+        *
+        * @param m
+        * @return
+         */
+        virtual string
+        makefile(Makefile m) = 0;
+        /**
+        *
+        */
+        virtual void
+        initializeDataStructures() = 0;
+        /**
+        *
+        */
+        virtual void
+        definition() = 0;
+        /**
+        *
+        */
+        virtual void
+        dependencies() = 0;
+        /**
+        *
+        */
+        virtual void
+       zeroCrossing() = 0;
+        /**
+        *
+        */
+        virtual void
+        handler() = 0;
+        /**
+        *
+        */
+        virtual void
+        output() = 0;
+        /**
+        *
+        * @return
+        */
+        virtual Graph
+        computationalGraph() = 0;
     };
-    /**
-     *
-     * @return
-     */
-    virtual string
-    header() = 0;
-    /**
-     *
-     * @param m
-     * @return
-     */
-    virtual string
-    makefile(SOL_Makefile m) = 0;
-    /**
-     *
-     */
-    virtual void
-    initializeDataStructures() = 0;
-    /**
-     *
-     */
-    virtual void
-    definition() = 0;
-    /**
-     *
-     */
-    virtual void
-    dependencies() = 0;
-    /**
-     *
-     */
-    virtual void
-    zeroCrossing() = 0;
-    /**
-     *
-     */
-    virtual void
-    handler() = 0;
-    /**
-     *
-     */
-    virtual void
-    output() = 0;
-    /**
-     *
-     * @return
-     */
-    virtual Graph
-    computationalGraph() = 0;
-};
 
-/**
- *
- */
-class QSSModelInstance: public MMO_ModelInstance
-{
-  public:
     /**
-     *
-     * @param model
-     * @param flags
-     * @param writer
-     */
-    QSSModelInstance(MMO_Model* model, MMO_CompileFlags* flags, MMO_Writer* writer);
-    /**
-     *
-     */
-    ~QSSModelInstance();
-    /**
-     *
-     * @return
-     */
-    string
-    header();
-    /**
-     *
-     * @param m
-     * @return
-     */
-    string
-    makefile(SOL_Makefile m);
-    /**
-     *
-     */
-    void
-    initializeDataStructures();
-    /**
-     *
-     */
-    void
-    definition();
-    /**
-     *
-     */
-    void
-    dependencies();
-    /**
-     *
-     */
-    void
-    zeroCrossing();
-    /**
-     *
-     */
-    void
-    handler();
-    /**
-     *
-     */
-    void
-    output();
-    /**
-     *
-     * @return
-     */
-    Graph
-    computationalGraph();
-};
+    *
+    */
+    class QSSModelInstance: public ModelInstance
+    {
+      public:
+        /**
+        *
+        * @param model
+        * @param flags
+        * @param writer
+        */
+        QSSModelInstance(MicroModelica::IR::Model model, MicroModelica::Util::CompileFlags flags, WriterType writer);
+        /**
+        *
+        */
+        ~QSSModelInstance();
+        /**
+        *
+        * @return
+        */
+        string
+        header();
+        /**
+        *
+        * @param m
+        * @return
+         */
+        string
+        makefile(Makefile m);
+        /**
+        *
+        */
+        void
+        initializeDataStructures();
+        /**
+        *
+        */
+        void
+        definition();
+        /**
+        *
+        */
+        void
+        dependencies();
+        /**
+        *
+        */
+        void
+        zeroCrossing();
+        /**
+        *
+        */
+        void
+        handler();
+        /**
+        *
+        */
+        void
+        output();
+        /**
+        *
+        * @return
+        */
+        Graph
+        computationalGraph();
+    };
 
-/**
- *
- */
-class ClassicModelInstance: public MMO_ModelInstance
-{
-  public:
     /**
-     *
-     * @param model
-     * @param flags
-     * @param writer
-     */
-    ClassicModelInstance(MMO_Model* model, MMO_CompileFlags* flags, MMO_Writer* writer);
-    /**
-     *
-     */
-    ~ClassicModelInstance();
-    /**
-     *
-     * @return
-     */
-    string
-    header();
-    /**
-     *
-     * @return
-     */
-    string
-    runCmd();
-    /**
-     *
-     * @param m
-     * @return
-     */
-    string
-    makefile(SOL_Makefile m);
-    /**
-     *
-     */
-    void
-    initializeDataStructures();
-    /**
-     *
-     */
-    void
-    definition();
-    /**
-     *
-     */
-    void
-    dependencies();
-    /**
-     *
-     */
-    void
-    zeroCrossing();
-    /**
-     *
-     */
-    void
-    handler();
-    /**
-     *
-     */
-    void
-    output();
-    /**
-     *
-     * @return
-     */
-    Graph
-    computationalGraph();
-};
-
+    *
+    */
+    class ClassicModelInstance: public ModelInstance
+    {
+      public:
+        /**
+        *
+        * @param model
+        * @param flags
+        * @param writer
+        */
+        ClassicModelInstance(MicroModelica::IR::Model model, MicroModelica::Util::CompileFlags flags, WriterType writer);
+        /**
+        *
+        */
+        ~ClassicModelInstance();
+        /**
+        *
+        * @return
+        */
+        string
+        header();
+        /**
+        *
+        * @return
+        */
+        string
+        runCmd();
+        /**
+        *
+        * @param m
+        * @return
+        */
+        string
+        makefile(Makefile m);
+        /**
+        *
+        */
+        void
+        initializeDataStructures();
+        /**
+        *
+        */
+        void
+        definition();
+        /**
+        *
+        */
+        void
+        dependencies();
+        /**
+        *
+        */
+        void
+        zeroCrossing();
+        /**
+        *
+        */
+        void
+        handler();
+        /**
+        *
+        */
+        void
+        output();
+        /**
+        *
+        * @return
+        */
+        Graph
+        computationalGraph();
+    };
+    typedef boost::variant<
+      QSSModelInstance,
+      ClassicModelInstance 
+      > ModelInstanceType;
+  }
+}
 #endif  /* MMO_MODEL_INSTANCE_H */
 

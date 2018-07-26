@@ -20,387 +20,390 @@
 #include <sstream>
 #include <iostream>
 
-#include <generator/writer.h>
+#include "writer.h"
 #include "../util/util.h"
+
+namespace MicroModelica {
+  namespace Generator {
 
 #define TAB "\t"
 
-/* MMO_MemoryWriter class. */
+    /* MemoryWriter class. */
 
-MMO_MemoryWriter::MMO_MemoryWriter() :
-    _indentStr(), 
-    _block(), 
-    _indent(0), 
-    _blockIndent(0)
-{
-  for(int i = 0; i < SECTIONS; i++)
-  {
-    _sections[i] = list<string>();
-  }
-}
-
-void
-MMO_MemoryWriter::setFile(string fname)
-{
-  _file.open(fname.c_str());
-  if(!_file.good())
-  {
-    cout << "Memory Writer: Can not open file " << fname << endl;
-  }
-}
-
-void
-MMO_MemoryWriter::removeFromSection(string str, WR_Section section)
-{
-  list<string>::iterator it;
-  list<string> rmv;
-  _removeIt = _sections[section].end();
-  for(it = _sections[section].begin(); it != _sections[section].end(); it++)
-  {
-    string fi = Util::getInstance()->trimString(*it);
-    string cmp = Util::getInstance()->trimString(str);
-    if(fi.compare("{") == 0)
+    MemoryWriter::MemoryWriter() :
+        _indentStr(), 
+        _block(), 
+        _indent(0), 
+        _blockIndent(0)
     {
-      _removeIt = it;
-    }
-    if(fi.compare(cmp) == 0)
-    {
-      rmv.push_back(*it);
-      break;
-    }
-  }
-  for(it = rmv.begin(); it != rmv.end(); it++)
-  {
-    _sections[section].remove(*it);
-  }
-}
-
-void
-MMO_MemoryWriter::clear(WR_Section section)
-{
-  _sections[section].clear();
-}
-
-void
-MMO_MemoryWriter::clearFile()
-{
-  _file.close();
-}
-
-MMO_MemoryWriter::~MMO_MemoryWriter()
-{
-  _file.close();
-}
-
-void
-MMO_MemoryWriter::newLine(WR_Section section)
-{
-  _sections[section].push_back("");
-}
-
-void
-MMO_MemoryWriter::write(string str, WR_Section section, WR_InsertType it)
-{
-  if(!str.empty())
-  {
-    if(it == WR_PREPEND)
-    {
-      _sections[section].push_back(str);
-    }
-    else if(it == WR_APPEND_SIMPLE)
-    {
-      _sections[section].push_front(str);
-    }
-    else
-    {
-      _sections[section].insert(++_removeIt, str);
-    }
-  }
-}
-
-void
-MMO_MemoryWriter::write(stringstream *s, WR_Section section, bool clean,
-    WR_InsertType it)
-{
-  if(!s->str().empty())
-  {
-    if(it == WR_PREPEND)
-    {
-      _sections[section].push_back(s->str());
-    }
-    else if(it == WR_APPEND_SIMPLE)
-    {
-      _sections[section].push_front(s->str());
-    }
-    else
-    {
-      _sections[section].insert(++_removeIt, s->str());
+      for(int i = 0; i < SECTIONS; i++)
+      {
+        _sections[i] = list<string>();
+      }
     }
 
-    if(clean)
+    void
+    MemoryWriter::setFile(string fname)
     {
+      _file.open(fname.c_str());
+      if(!_file.good())
+      {
+        cout << "Memory Writer: Can not open file " << fname << endl;
+      }
+    }
+
+    void
+    MemoryWriter::removeFromSection(string str, Section section)
+    {
+      list<string>::iterator it;
+      list<string> rmv;
+      _removeIt = _sections[section].end();
+      for(it = _sections[section].begin(); it != _sections[section].end(); it++)
+      {
+        string fi = MicroModelica::Util::Util::getInstance()->trimString(*it);
+        string cmp = MicroModelica::Util::Util::getInstance()->trimString(str);
+        if(fi.compare("{") == 0)
+        {
+          _removeIt = it;
+        }
+        if(fi.compare(cmp) == 0)
+        {
+          rmv.push_back(*it);
+          break;
+        }
+      }
+      for(it = rmv.begin(); it != rmv.end(); it++)
+      {
+        _sections[section].remove(*it);
+      }
+    }
+
+    void
+    MemoryWriter::clear(Section section)
+    {
+      _sections[section].clear();
+    }
+
+    void
+    MemoryWriter::clearFile()
+    {
+      _file.close();
+    }
+
+    MemoryWriter::~MemoryWriter()
+    {
+      _file.close();
+    }
+
+    void
+    MemoryWriter::newLine(Section section)
+    {
+      _sections[section].push_back("");
+    }
+
+    void
+    MemoryWriter::write(string str, Section section, InsertType it)
+    {
+      if(!str.empty())
+      {
+        if(it == PREPEND)
+        {
+          _sections[section].push_back(str);
+        }
+        else if(it == APPEND_SIMPLE)
+        {
+          _sections[section].push_front(str);
+        }
+        else
+        {
+          _sections[section].insert(++_removeIt, str);
+        }
+      }
+    }
+
+    void
+    MemoryWriter::write(stringstream *s, Section section, bool clean, InsertType it)
+    {
+      if(!s->str().empty())
+      {
+        if(it == PREPEND)
+        {
+          _sections[section].push_back(s->str());
+        }
+        else if(it == APPEND_SIMPLE)
+        {
+          _sections[section].push_front(s->str());
+        }
+        else
+        {
+          _sections[section].insert(++_removeIt, s->str());
+        }
+
+        if(clean)
+        {
+          s->str("");
+        }
+      }
+    }
+
+    void
+    MemoryWriter::writeBlock(list<string> block, Section section)
+    {
+      list<string>::iterator it;
+      for(it = block.begin(); it != block.end(); it++)
+      {
+        _sections[section].push_back(*it);
+      }
+    }
+
+    void
+    MemoryWriter::print(Section section)
+    {
+      list<string>::iterator it;
+      for(it = _sections[section].begin(); it != _sections[section].end(); it++)
+      {
+        _file << _block << _indentStr << *it << endl;
+      }
+    }
+
+    void
+    MemoryWriter::print(stringstream *s)
+    {
+      _file << _block << _indentStr << s->str() << endl;
       s->str("");
     }
+
+    void
+    MemoryWriter::print(string s)
+    {
+      _file << _block << _indentStr << s << endl;
+    }
+
+    bool
+    MemoryWriter::isEmpty(Section section)
+    {
+      return _sections[section].empty();
+    }
+
+    void
+    MemoryWriter::printBlock(list<string> block)
+    {
+      list<string>::iterator it;
+      for(it = block.begin(); it != block.end(); it++)
+      {
+        _file << _block << _indentStr << *it << endl;
+      }
+    }
+
+    void
+    MemoryWriter::setIndent(int n)
+    {
+      stringstream s;
+      _indent = n;
+      for(int i = 0; i < _indent; i++)
+      {
+        s << TAB;
+      }
+      _indentStr = s.str();
+    }
+
+    string
+    MemoryWriter::indent()
+    {
+      return _indentStr;
+    }
+
+    string
+    MemoryWriter::indent(int n)
+    {
+      stringstream s;
+      for(int i = 0; i < n; i++)
+      {
+        s << TAB;
+      }
+      return s.str();
+    }
+
+    void
+    MemoryWriter::beginBlock()
+    {
+      _block = indent(++_blockIndent);
+    }
+
+    void
+    MemoryWriter::endBlock()
+    {
+      _block = indent(--_blockIndent);
+    }
+
+    string
+    MemoryWriter::block()
+    {
+      return _block;
+    }
+
+    /* FileWriter class. */
+
+    FileWriter::FileWriter() :
+        _indentStr(), 
+        _indent(0), 
+        _blockIndent(0)
+    {
+      for(int i = 0; i < SECTIONS; i++)
+      {
+        stringstream name;
+        name << "/tmp/temp" << i;
+        _sections[i].open(name.str().c_str());
+      }
+    }
+
+    FileWriter::~FileWriter()
+    {
+      for(int i = 0; i < SECTIONS; i++)
+      {
+        stringstream name;
+        name << "/tmp/temp" << i;
+        _sections[i].close();
+        remove(name.str().c_str());
+      }
+    }
+
+    void
+    FileWriter::removeFromSection(string str, Section section)
+    {
+      return;
+    }
+
+    void
+    FileWriter::clear(Section section)
+    {
+      return;
+    }
+
+    void
+    FileWriter::setFile(string fname)
+    {
+      _file.open(fname.c_str());
+    }
+
+    void
+    FileWriter::clearFile()
+    {
+      _file.close();
+    }
+
+    void
+    FileWriter::newLine(Section section)
+    {
+      _sections[section] << endl;
+    }
+
+    void
+    FileWriter::write(string str, Section section, InsertType it)
+    {
+      _sections[section] << str << endl;
+    }
+
+    void
+    FileWriter::write(stringstream *s, Section section, bool clean, InsertType it)
+    {
+      _sections[section] << s->str() << endl;
+      if(clean)
+      {
+        s->str("");
+      }
+    }
+
+    void
+    FileWriter::writeBlock(list<string> block, Section section)
+    {
+      list<string>::iterator it;
+      for(it = block.begin(); it != block.end(); it++)
+      {
+        _sections[section] << *it << endl;
+      }
+    }
+
+    void
+    FileWriter::print(Section section)
+    {
+      _file << _sections[section].rdbuf();
+    }
+
+    void
+    FileWriter::print(stringstream *s)
+    {
+      _file << s->str() << endl;
+      s->str("");
+    }
+
+    void
+    FileWriter::print(string s)
+    {
+      _file << s << endl;
+    }
+
+    bool
+    FileWriter::isEmpty(Section section)
+    {
+      return false;
+    }
+
+    void
+    FileWriter::printBlock(list<string> block)
+    {
+      list<string>::iterator it;
+      for(it = block.begin(); it != block.end(); it++)
+      {
+        _file << *it << endl << endl;
+      }
+    }
+
+    void
+    FileWriter::setIndent(int n)
+    {
+      stringstream s;
+      _indent = n;
+      for(int i = 0; i < _indent; i++)
+      {
+        s << TAB;
+      }
+      _indentStr = s.str();
+    }
+
+    string
+    FileWriter::indent()
+    {
+      return _indentStr;
+    }
+
+    string
+    FileWriter::indent(int n)
+    {
+      stringstream s;
+      for(int i = 0; i < n; i++)
+      {
+        s << TAB;
+      }
+      return s.str();
+    }
+
+    void
+    FileWriter::beginBlock()
+    {
+      _block = indent(++_blockIndent);
+    }
+
+    void
+    FileWriter::endBlock()
+    {
+      _block = indent(--_blockIndent);
+    }
+
+    string
+    FileWriter::block()
+    {
+      return _block;
+    }
   }
-}
-
-void
-MMO_MemoryWriter::writeBlock(list<string> block, WR_Section section)
-{
-  list<string>::iterator it;
-  for(it = block.begin(); it != block.end(); it++)
-  {
-    _sections[section].push_back(*it);
-  }
-}
-
-void
-MMO_MemoryWriter::print(WR_Section section)
-{
-  list<string>::iterator it;
-  for(it = _sections[section].begin(); it != _sections[section].end(); it++)
-  {
-    _file << _block << _indentStr << *it << endl;
-  }
-}
-
-void
-MMO_MemoryWriter::print(stringstream *s)
-{
-  _file << _block << _indentStr << s->str() << endl;
-  s->str("");
-}
-
-void
-MMO_MemoryWriter::print(string s)
-{
-  _file << _block << _indentStr << s << endl;
-}
-
-bool
-MMO_MemoryWriter::isEmpty(WR_Section section)
-{
-  return _sections[section].empty();
-}
-
-void
-MMO_MemoryWriter::printBlock(list<string> block)
-{
-  list<string>::iterator it;
-  for(it = block.begin(); it != block.end(); it++)
-  {
-    _file << _block << _indentStr << *it << endl;
-  }
-}
-
-void
-MMO_MemoryWriter::setIndent(int n)
-{
-  stringstream s;
-  _indent = n;
-  for(int i = 0; i < _indent; i++)
-  {
-    s << TAB;
-  }
-  _indentStr = s.str();
-}
-
-string
-MMO_MemoryWriter::indent()
-{
-  return _indentStr;
-}
-
-string
-MMO_MemoryWriter::indent(int n)
-{
-  stringstream s;
-  for(int i = 0; i < n; i++)
-  {
-    s << TAB;
-  }
-  return s.str();
-}
-
-void
-MMO_MemoryWriter::beginBlock()
-{
-  _block = indent(++_blockIndent);
-}
-
-void
-MMO_MemoryWriter::endBlock()
-{
-  _block = indent(--_blockIndent);
-}
-
-string
-MMO_MemoryWriter::block()
-{
-  return _block;
-}
-
-/* MMO_FileWriter class. */
-
-MMO_FileWriter::MMO_FileWriter() :
-    _indentStr(), 
-    _indent(0), 
-    _blockIndent(0)
-{
-  for(int i = 0; i < SECTIONS; i++)
-  {
-    stringstream name;
-    name << "/tmp/temp" << i;
-    _sections[i].open(name.str().c_str());
-  }
-}
-
-MMO_FileWriter::~MMO_FileWriter()
-{
-  for(int i = 0; i < SECTIONS; i++)
-  {
-    stringstream name;
-    name << "/tmp/temp" << i;
-    _sections[i].close();
-    remove(name.str().c_str());
-  }
-}
-
-void
-MMO_FileWriter::removeFromSection(string str, WR_Section section)
-{
-  return;
-}
-
-void
-MMO_FileWriter::clear(WR_Section section)
-{
-  return;
-}
-
-void
-MMO_FileWriter::setFile(string fname)
-{
-  _file.open(fname.c_str());
-}
-
-void
-MMO_FileWriter::clearFile()
-{
-  _file.close();
-}
-
-void
-MMO_FileWriter::newLine(WR_Section section)
-{
-  _sections[section] << endl;
-}
-
-void
-MMO_FileWriter::write(string str, WR_Section section, WR_InsertType it)
-{
-  _sections[section] << str << endl;
-}
-
-void
-MMO_FileWriter::write(stringstream *s, WR_Section section, bool clean,
-    WR_InsertType it)
-{
-  _sections[section] << s->str() << endl;
-  if(clean)
-  {
-    s->str("");
-  }
-}
-
-void
-MMO_FileWriter::writeBlock(list<string> block, WR_Section section)
-{
-  list<string>::iterator it;
-  for(it = block.begin(); it != block.end(); it++)
-  {
-    _sections[section] << *it << endl;
-  }
-}
-
-void
-MMO_FileWriter::print(WR_Section section)
-{
-  _file << _sections[section].rdbuf();
-}
-
-void
-MMO_FileWriter::print(stringstream *s)
-{
-  _file << s->str() << endl;
-  s->str("");
-}
-
-void
-MMO_FileWriter::print(string s)
-{
-  _file << s << endl;
-}
-
-bool
-MMO_FileWriter::isEmpty(WR_Section section)
-{
-  return false;
-}
-
-void
-MMO_FileWriter::printBlock(list<string> block)
-{
-  list<string>::iterator it;
-  for(it = block.begin(); it != block.end(); it++)
-  {
-    _file << *it << endl << endl;
-  }
-}
-
-void
-MMO_FileWriter::setIndent(int n)
-{
-  stringstream s;
-  _indent = n;
-  for(int i = 0; i < _indent; i++)
-  {
-    s << TAB;
-  }
-  _indentStr = s.str();
-}
-
-string
-MMO_FileWriter::indent()
-{
-  return _indentStr;
-}
-
-string
-MMO_FileWriter::indent(int n)
-{
-  stringstream s;
-  for(int i = 0; i < n; i++)
-  {
-    s << TAB;
-  }
-  return s.str();
-}
-
-void
-MMO_FileWriter::beginBlock()
-{
-  _block = indent(++_blockIndent);
-}
-
-void
-MMO_FileWriter::endBlock()
-{
-  _block = indent(--_blockIndent);
-}
-
-string
-MMO_FileWriter::block()
-{
-  return _block;
 }

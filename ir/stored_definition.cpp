@@ -26,3 +26,24 @@ MMO_StoredDefinition::MMO_StoredDefinition()
 MMO_StoredDefinition::~MMO_StoredDefinition()
 {
 }
+
+void 
+MMO_StoredDefinition::addModel(string name)
+{
+  _model = MMO_Model();
+  _current = &_model;
+}
+
+void 
+MMO_StoredDefinition::addModelng name)
+{
+  _model = MMO_Model();
+  _current = &_model;
+}
+
+void 
+MMO_StoredDefinition::addModel(string name)
+{
+  _model = MMO_Model();
+  _current = &_model;
+}

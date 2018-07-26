@@ -26,6 +26,7 @@
 #include "../ast/ast_types.h"
 #include "../util/ast_util.h"
 #include "../ir/stored_definition.h"
+#include "../ir/function.h"
 
 /**
  *
@@ -199,6 +200,9 @@ class MMO_MicroModelicaIR: public AST_Visitor
      */
     int
     apply(AST_Node x);
+  private:
+    MMO_FunctionTable     _functions;
+    MMO_StoredDefinition  _std;
 };
 
 #endif  /* MMO_MICROMODELICA_IR_H_ */

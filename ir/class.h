@@ -24,115 +24,416 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <boost/variant/variant_fwd.hpp>
+
 
 #include "../ast/ast_types.h"
 #include "../util/util_types.h"
 #include "../util/util.h"
 
-/**
- *
- */
-typedef enum
+namespace MicroModelica
 {
-  DEC_PUBLIC,  //!< DEC_PUBLIC
-  DEC_LOCAL  //!< DEC_LOCAL
-} DEC_Type;
+  namespace IR
+  {
+    /**
+    *
+    */
+    typedef enum
+    {
+      DEC_PUBLIC,  //!< DEC_PUBLIC
+      DEC_LOCAL  //!< DEC_LOCAL
+    } DEC_Type;
 
 
-class MMO_Model;
+    /**
+    *
+    */
+    class Class
+    {
+      public:
+        Class(){};
+        ~Class(){};
+        /**
+        *
+        * @return
+        */
+        virtual string
+        name() const = 0;
+        /**
+        *
+        * @param n
+        */
+        virtual void
+        insert(string n) = 0;
+        /**
+        *
+        * @param eq
+        */
+        virtual void
+        insert(AST_Equation eq) = 0;
+        /**
+        *
+        * @param stm
+        * @param initial
+        */
+        virtual void
+        insert(AST_Statement stm, bool initial) = 0;
+        /**
+        *
+        * @param stm
+        */
+        virtual void
+        insert(AST_Statement stm) = 0;
+        /**
+        *
+        * @param efc
+        */
+        virtual void
+        insert(AST_External_Function_Call efc) = 0;
+        /**
+        *
+        * @param n
+        * @param vi
+        * @param type
+        */
+        virtual void
+        insert(VarName n, VarInfo vi, DEC_Type type) = 0;
+        /**
+        *
+        * @param n
+        * @param vi
+        */
+        virtual void
+        insert(VarName n, VarInfo vi) = 0;
+        /**
+        *
+        * @param x
+        */
+        virtual void
+        insert(AST_Argument_Modification x) = 0;
+        /**
+        *
+        * @return
+        */
+        virtual VarSymbolTable
+        varTable() = 0;
+        /**
+        *
+        * @return
+        */
+        virtual MicroModelica::Util::ImportTable
+        imports() = 0;
+      };
+    
+    /**
+    *
+    */
+    class Function: public Class
+    {
+      public:
+        /**
+        *
+        */
+        Function() {};
+        /**
+        *
+        * @param name
+        */
+        Function(string name);
+        /**
+        *
+        */
+        ~Function();
+        /**
+        *
+        * @param c
+        */
+        void
+        setFather(Class* c);
+        /**
+        *
+        * @return
+        */
+        bool
+        hasFather();
+        /**
+        *
+        * @return
+        */
+        Class*
+        father() const;
+        /**
+        *
+        * @return
+        */
+        string
+        name() const;
+        /**
+        *
+        * @param efc
+        */
+        void
+        insert(AST_External_Function_Call efc);
+        /**
+        *
+        * @param n
+        * @param vi
+        * @param type
+        */
+        void
+        insert(VarName n, VarInfo vi, DEC_Type type);
+        /**
+        *
+        * @param n
+        * @param vi
+        */
+        void
+        insert(VarName n, VarInfo vi);
+        /**
+        *
+        * @param eq
+        */
+        void
+        insert(AST_Equation eq);
+        /**
+        *
+        * @param stm
+        * @param initial
+        */
+        void
+        insert(AST_Statement stm, bool initial);
+        /**
+        *
+        * @param stm
+        */
+        void
+        insert(AST_Statement stm);
+        /**
+        *
+        * @param n
+        */
+        void
+        insert(string n);
+        /**
+        *
+        * @param x
+        */
+        void
+        insert(AST_Argument_Modification x);
+        /**
+        *
+        * @return
+        */
+        VarSymbolTable
+        varTable();
+        /**
+        *
+        * @return
+        */
+        MicroModelica::Util::ImportTable
+        imports();
+    };
 
-class MMO_Function;
+    /**
+    *
+    */
+    class Package: public Class
+    {
+      public:
+        /**
+        *
+        */
+        Package() {};
+        /**
+        *
+        * @param name
+        */
+        Package(string name);
+        /**
+        *
+        */
+        ~Package();
+        /**
+        *
+        * @return
+        */
+        VarSymbolTable
+        varTable();
+        /**
+        *
+        * @return
+        */
+        string
+        name() const;
+        /**
+        *
+        * @param n
+        */
+        void
+        insert(string n);
+        /**
+        *
+        * @param eq
+        */
+        void
+        insert(AST_Equation eq);
+        /**
+        *
+        * @param stm
+        * @param initial
+        */
+        void
+        insert(AST_Statement stm, bool initial);
+        /**
+        *
+        * @param stm
+        */
+        void
+        insert(AST_Statement stm);
+        /**
+        *
+        * @param f
+        */
+        void
+        insert(Function &f);
+        /**
+        *
+        * @param efc
+        */
+        void
+        insert(AST_External_Function_Call efc);
+        /**
+        *
+        * @param n
+        * @param vi
+        * @param type
+        */
+        void
+        insert(VarName n, VarInfo vi, DEC_Type type);
+        /**
+        *
+        * @param n
+        * @param vi
+        */
+        void
+        insert(VarName n, VarInfo vi);
+        /**
+        *
+        * @param x
+        */
+        void
+        insert(AST_Argument_Modification x);
+        /**
+        *
+        * @return
+        */
+        MicroModelica::Util::ImportTable
+        imports();
+    };
 
-class MMO_Package;
-
-class MMO_Annotation;
-
-class MMO_ModelAnnotation;
-
-/**
- *
- */
-class MMO_Class
-{
-  public:
-    MMO_Class(){};
-    ~MMO_Class(){};
     /**
-     *
-     * @return
-     */
-    virtual string
-    name() const = 0;
-    /**
-     *
-     * @param n
-     */
-    virtual void
-    insert(string n) = 0;
-    /**
-     *
-     * @param eq
-     */
-    virtual void
-    insert(AST_Equation eq) = 0;
-    /**
-     *
-     * @param stm
-     * @param initial
-     */
-    virtual void
-    insert(AST_Statement stm, bool initial) = 0;
-    /**
-     *
-     * @param stm
-     */
-    virtual void
-    insert(AST_Statement stm) = 0;
-    /**
-     *
-     * @param f
-     */
-    virtual void
-    insert(MMO_Function &f) = 0;
-    /**
-     *
-     * @param efc
-     */
-    virtual void
-    insert(AST_External_Function_Call efc) = 0;
-    /**
-     *
-     * @param n
-     * @param vi
-     * @param type
-     */
-    virtual void
-    insert(VarName n, VarInfo vi, DEC_Type type) = 0;
-    /**
-     *
-     * @param n
-     * @param vi
-     */
-    virtual void
-    insert(VarName n, VarInfo vi) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    insert(AST_Argument_Modification x) = 0;
-    /**
-     *
-     * @return
-     */
-    virtual VarSymbolTable
-    varTable() = 0;
-    /**
-     *
-     * @return
-     */
-    virtual MMO_ImportTable
-    imports() = 0;
-};
-
+    *
+    */
+    class Model: public Class
+    {
+      public:
+        /**
+        *
+        * @param name
+        */
+        Model() {};
+        /**
+        *
+        * @param name
+        */
+        Model(string name);
+        /**
+        *
+        */
+        ~Model();
+        /**
+        *
+        * @return
+        */
+        string
+        name() const;
+        /**
+        *
+        * @param n
+        */
+        void
+        insert(string n);
+        /**
+        *
+        * @param n
+        * @param vi
+        * @param type
+        */
+        void
+        insert(VarName n, VarInfo vi, DEC_Type type);
+        /**
+        *
+        * @param n
+        * @param vi
+        */
+        void
+        insert(VarName n, VarInfo vi);
+        /**
+        *
+        * @param eq
+        */
+        void
+        insert(AST_Equation eq);
+        /**
+        *
+        * @param stm
+        * @param initial
+        */
+        void
+        insert(AST_Statement stm, bool initial);
+        /**
+        *
+        * @param stm
+        */
+        void
+        insert(AST_Statement stm);
+        /**
+        *
+        * @param f
+        */
+        void
+        insert(Function &f);
+        /**
+        *
+        * @param efc
+        */
+        void
+        insert(AST_External_Function_Call efc);
+        /**
+        *
+        * @param x
+        */
+        void
+        insert(AST_Argument_Modification x);
+        /**
+        *
+        * @return
+        */
+        VarSymbolTable
+        varTable();
+        /**
+        *
+        * @return
+        */
+        MicroModelica::Util::ImportTable
+        imports();
+    };
+    
+    typedef boost::variant<
+      Function,
+      Package,
+      Model 
+      > ClassType;
+  }
+}
 #endif  /* MMO_CLASS_H_ */

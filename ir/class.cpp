@@ -23,34 +23,219 @@
 #include <sstream>
 #include <utility>
 
-#include "model.h"
-#include "function.h"
-#include "package.h"
+namespace MicroModelica {
+  namespace IR
+  {
+    /* Function class */
 
-/* MMO_Class class. */
+    Function::Function(string name) 
+    {
+    }
 
-MMO_Class::MMO_Class()
-{
-}
+    Function::~Function()
+    {
+    }
 
-MMO_Class::~MMO_Class()
-{
-}
+    VarSymbolTable
+    Function::varTable()
+    {
+      return NULL;
+    }
 
-MMO_Package*
-MMO_Class::getAsPackage() const
-{
-  return (MMO_Package*)(this);
-}
+    void
+    Function::insert(string n)
+    {
+    }
 
-const MMO_Model*
-MMO_Class::getAsModel() const
-{
-  return dynamic_cast<MMO_Model*>(this);
-}
+    void
+    Function::insert(AST_Equation eq)
+    {
+      return;
+    }
 
-MMO_Function*
-MMO_Class::getAsFunction() const
-{
-  return (MMO_Function*)(this);
+    void
+    Function::insert(AST_Statement stm)
+    {
+    }
+
+    void
+    Function::insert(AST_Statement stm, bool initial)
+    {
+    }
+
+    void
+    Function::insert(AST_External_Function_Call efc)
+    {
+    }
+
+    void
+    Function::insert(VarName n, VarInfo vi, DEC_Type type)
+    {
+    }
+
+    void
+    Function::insert(VarName n, VarInfo vi)
+    {
+    }
+
+    void
+    Function::insert(AST_Argument_Modification x)
+    {
+    }
+
+    string
+    Function::name() const
+    {
+      return ""; 
+    }
+
+    MMO_ImportTable 
+    Function::imports()
+    {
+    }
+
+    Package::Package(string name) 
+    {
+    }
+
+    Package::~Package()
+    {
+    }
+
+    VarSymbolTable
+    Package::varTable()
+    {
+      return NULL;
+    }
+
+    void
+    Package::insert(string n)
+    {
+      return;
+    }
+
+    void
+    Package::insert(AST_Equation eq)
+    {
+      return;
+    }
+
+    void
+    Package::insert(AST_Statement stm)
+    {
+      return;
+    }
+
+    void
+    Package::insert(AST_Statement stm, bool initial)
+    {
+      return;
+    }
+
+    void
+    Package::insert(Function &f)
+    {
+      return;
+    }
+
+    void
+    Package::insert(AST_External_Function_Call efc)
+    {
+      return;
+    }
+
+    void
+    Package::insert(VarName n, VarInfo vi, DEC_Type type)
+    {
+      return;
+    }
+
+    void
+    Package::insert(VarName n, VarInfo vi)
+    {
+      return;
+    }
+
+    void
+    Package::insert(AST_Argument_Modification x)
+    {
+    }
+
+    string
+    Package::name() const
+    {
+      return "";
+    }
+    Model::Model(string name)
+    {
+    }
+
+    Model::~Model()
+    {
+    }
+
+    void
+    Model::insert(VarName n, VarInfo vi, DEC_Type type)
+    {
+    }
+
+    void
+    Model::insert(VarName n, VarInfo vi)
+    {
+    }
+
+    void
+    Model::insert(AST_Equation eq)
+    {
+    }
+
+    void
+    Model::insert(AST_Statement stm)
+    {
+    }
+
+    void
+    Model::insert(AST_External_Function_Call efc)
+    {
+      return;
+    }
+
+    void
+    Model::insert(AST_Statement stm, bool initial)
+    {
+    }
+
+    void
+    Model::insert(Function &f)
+    {
+    }
+
+    void
+    Model::insert(AST_Argument_Modification x)
+    {
+    }
+
+    VarSymbolTable
+    Model::varTable()
+    {
+      return NULL;
+    }
+
+    void
+    Model::insert(string n)
+    {
+    }
+
+    string
+    Model::name() const
+    {
+      return "";
+    }
+
+    MMO_ImportTable
+    Model::imports()
+    {
+    }
+
+  }
 }

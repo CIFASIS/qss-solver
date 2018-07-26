@@ -125,6 +125,7 @@ class MMO_Model: public MMO_Class
      */
     MMO_ImportTable
     imports();
+    
 };
 
 #endif  /* MMO_MODEL_H_ */
