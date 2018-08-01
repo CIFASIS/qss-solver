@@ -242,6 +242,8 @@ namespace MicroModelica {
         newLine(Section section) = 0;
     };
 
+    typedef std::shared_ptr<Writer> WriterPtr;
+
     /**
     *
     */

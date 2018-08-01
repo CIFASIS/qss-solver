@@ -23,41 +23,45 @@
 #include <string>
 
 #include "../ir/class.h"
-#include "../ir/function.h"
-#include "../ir/model.h"
-#include "../ir/package.h"
 
-/**
- *
- */
-class MMO_StoredDefinition
-{
-  public:
+namespace MicroModelica {
+  namespace IR {
+
     /**
      *
      */
-    MMO_StoredDefinition();
-    /**
-     *
-     */
-    ~MMO_StoredDefinition();
-    MMO_Class*
-    begin();
-    MMO_Class*
-    next();
-    bool 
-    end();
-    void 
-    addModel(string name);
-    void 
-    addPackage(string name);
-    void 
-    addFunction(string name);
-  private:
-    MMO_Model         _model;
-    MMO_Package       _package;
-    MMO_FunctionTable _functions;
-    MMO_Class*        _current;
-};
+    class StoredDefinition
+    {
+      public:
+        /**
+         *
+         */
+        StoredDefinition();
+        /**
+         *
+         */
+        ~StoredDefinition();
+        bool 
+        isModel();
+        bool 
+        isPackage();
+        const Model& 
+        model();
+        const Package&
+        package();
+        void 
+        setModel(string name);
+        void 
+        setPackage(string name);
+        void 
+        addFunction(string name);
+        const Function& 
+        function(string name);
+      private:
+        ClassType      _def;
+        FunctionTable  _functions;
+    };
+  }
+}
 
 #endif  /* MMO_STORED_DEFINITION_H_ */

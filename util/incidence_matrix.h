@@ -24,25 +24,30 @@
 
 #include "index.h"
 
-typedef int mapId;
+namespace MicroModelica {
+  namespace Util {
 
-class Incidence 
-{
-  public:
-    Incidence();
-    ~Incidence();
-  private:
-    Index _lhs;
-    Index _rhs;
-};
+    typedef int mapId;
 
-class IncidenceMatrix
-{
-  public:
-    IncidenceMatrix();
-    ~IncidenceMatrix();
-  private:
-    std::map<mapId,Incidence> _matrix;
-};
+    class Incidence 
+    {
+      public:
+        Incidence();
+        ~Incidence();
+      private:
+        Index _lhs;
+        Index _rhs;
+    };
+
+    class IncidenceMatrix
+    {
+      public:
+        IncidenceMatrix();
+        ~IncidenceMatrix();
+      private:
+        std::map<mapId,Incidence> _matrix;
+    };
+  }
+}
 
 #endif /* INCIDENCE_MATRIX_H_ */

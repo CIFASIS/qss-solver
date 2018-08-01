@@ -24,7 +24,7 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <boost/variant/variant_fwd.hpp>
+#include <boost/variant/variant.hpp>
 
 
 #include "../ast/ast_types.h"
@@ -64,32 +64,32 @@ namespace MicroModelica
         * @param n
         */
         virtual void
-        insert(string n) = 0;
+        insert(string n) const = 0;
         /**
         *
         * @param eq
         */
         virtual void
-        insert(AST_Equation eq) = 0;
+        insert(AST_Equation eq) const = 0;
         /**
         *
         * @param stm
         * @param initial
         */
         virtual void
-        insert(AST_Statement stm, bool initial) = 0;
+        insert(AST_Statement stm, bool initial) const = 0;
         /**
         *
         * @param stm
         */
         virtual void
-        insert(AST_Statement stm) = 0;
+        insert(AST_Statement stm) const = 0;
         /**
         *
         * @param efc
         */
         virtual void
-        insert(AST_External_Function_Call efc) = 0;
+        insert(AST_External_Function_Call efc) const = 0;
         /**
         *
         * @param n
@@ -97,25 +97,25 @@ namespace MicroModelica
         * @param type
         */
         virtual void
-        insert(VarName n, VarInfo vi, DEC_Type type) = 0;
+        insert(VarName n, MicroModelica::Util::VarInfo vi, DEC_Type type) const = 0;
         /**
         *
         * @param n
         * @param vi
         */
         virtual void
-        insert(VarName n, VarInfo vi) = 0;
+        insert(VarName n, MicroModelica::Util::VarInfo vi) const = 0;
         /**
         *
         * @param x
         */
         virtual void
-        insert(AST_Argument_Modification x) = 0;
+        insert(AST_Argument_Modification x) const = 0;
         /**
         *
         * @return
         */
-        virtual VarSymbolTable
+        virtual MicroModelica::Util::VarSymbolTable
         varTable() = 0;
         /**
         *
@@ -125,315 +125,435 @@ namespace MicroModelica
         imports() = 0;
       };
     
+      /**
+      *
+      */
+      class Function: public Class
+      {
+        public:
+          /**
+          *
+          */
+          Function() {};
+          /**
+          *
+          * @param name
+          */
+          Function(string name);
+          /**
+          *
+          */
+          ~Function();
+          /**
+          *
+          * @param c
+          */
+          void
+          setFather(Class* c);
+          /**
+          *
+          * @return
+          */
+          bool
+          hasFather();
+          /**
+          *
+          * @return
+          */
+          Class*
+          father() const;
+          /**
+          *
+          * @return
+          */
+          string
+          name() const;
+          /**
+          *
+          * @param efc
+          */
+          void
+          insert(AST_External_Function_Call efc) const;
+          /**
+          *
+          * @param n
+          * @param vi
+          * @param type
+          */
+          void
+          insert(VarName n, MicroModelica::Util::VarInfo vi, DEC_Type type) const;
+          /**
+          *
+          * @param n
+          * @param vi
+          */
+          void
+          insert(VarName n, MicroModelica::Util::VarInfo vi) const;
+          /**
+          *
+          * @param eq
+          */
+          void
+          insert(AST_Equation eq) const;
+          /**
+          *
+          * @param stm
+          * @param initial
+          */
+          void
+          insert(AST_Statement stm, bool initial) const;
+          /**
+          *
+          * @param stm
+          */
+          void
+          insert(AST_Statement stm) const;
+          /**
+          *
+          * @param n
+          */
+          void
+          insert(string n) const;
+          /**
+          *
+          * @param x
+          */
+          void
+          insert(AST_Argument_Modification x) const;
+          /**
+          *
+          * @return
+          */
+          MicroModelica::Util::VarSymbolTable
+          varTable();
+          /**
+          *
+          * @return
+          */
+          MicroModelica::Util::ImportTable
+          imports();
+        private:
+          MicroModelica::Util::ImportTable    _imports;
+          std::string                         _name;
+          MicroModelica::Util::VarSymbolTable _symbols;
+          MicroModelica::Util::VarSymbolTable _localSymbols;
+
+      };
+      
+      typedef ModelTable<std::string,Function> FunctionTable;
+
+      /**
+      *
+      */
+      class Package: public Class
+      {
+        public:
+          /**
+          *
+          */
+          Package() {};
+          /**
+          *
+          * @param name
+          */
+          Package(string name);
+          /**
+          *
+          */
+          ~Package();
+          /**
+          *
+          * @return
+          */
+          MicroModelica::Util::VarSymbolTable
+          varTable();
+          /**
+          *
+          * @return
+          */
+          string
+          name() const;
+          /**
+          *
+          * @param n
+          */
+          void
+          insert(string n) const;
+          /**
+          *
+          * @param eq
+          */
+          void
+          insert(AST_Equation eq) const;
+          /**
+          *
+          * @param stm
+          * @param initial
+          */
+          void
+          insert(AST_Statement stm, bool initial) const;
+          /**
+          *
+          * @param stm
+          */
+          void
+          insert(AST_Statement stm) const;
+          /**
+          *
+          * @param f
+          */
+          void
+          insert(Function &f) const;
+          /**
+          *
+          * @param efc
+          */
+          void
+          insert(AST_External_Function_Call efc) const;
+          /**
+          *
+          * @param n
+          * @param vi
+          * @param type
+          */
+          void
+          insert(VarName n, MicroModelica::Util::VarInfo vi, DEC_Type type) const;
+          /**
+          *
+          * @param n
+          * @param vi
+          */
+          void
+          insert(VarName n, MicroModelica::Util::VarInfo vi) const;
+          /**
+          *
+          * @param x
+          */
+          void
+          insert(AST_Argument_Modification x) const;
+          /**
+          *
+          * @return
+          */
+          MicroModelica::Util::ImportTable
+          imports();
+          /**
+           *
+           * @return
+          */
+          FunctionTable 
+          definitions();
+          /*
+           *
+           * @return
+          */
+          std::string 
+          fileName();
+          /*
+           *
+           * @return 
+          */
+          std::string 
+          prefix();
+        private:
+          MicroModelica::Util::ImportTable _imports;
+          std::string                      _name;
+          FunctionTable                    _functions;
+      };
+
+      /**
+      *
+      */
+      class Model: public Class
+      {
+        public:
+          /**
+          *
+          * @param name
+          */
+          Model() {};
+          /**
+          *
+          * @param name
+          */
+          Model(string name);
+          /**
+          *
+          */
+          ~Model();
+          /**
+          *
+          * @return
+          */
+          string
+          name() const;
+          /**
+          *
+          * @param n
+          */
+          void
+          insert(string n) const;
+          /**
+          *
+          * @param n
+          * @param vi
+          * @param type
+          */
+          void
+          insert(VarName n, MicroModelica::Util::VarInfo vi, DEC_Type type) const;
+          /**
+          *
+          * @param n
+          * @param vi
+          */
+          void
+          insert(VarName n, MicroModelica::Util::VarInfo vi) const;
+          /**
+          *
+          * @param eq
+          */
+          void
+          insert(AST_Equation eq) const;
+          /**
+          *
+          * @param stm
+          * @param initial
+          */
+          void
+          insert(AST_Statement stm, bool initial) const;
+          /**
+          *
+          * @param stm
+          */
+          void
+          insert(AST_Statement stm) const;
+          /**
+          *
+          * @param f
+          */
+          void
+          insert(Function &f) const;
+          /**
+          *
+          * @param efc
+          */
+          void
+          insert(AST_External_Function_Call efc) const;
+          /**
+          *
+          * @param x
+          */
+          void
+          insert(AST_Argument_Modification x) const;
+          /**
+          *
+          * @return
+          */
+          MicroModelica::Util::VarSymbolTable
+          varTable();
+          /**
+          *
+          * @return
+          */
+          MicroModelica::Util::ImportTable
+          imports();
+        private:
+          std::string                        _name;
+          MicroModelica::Util::ImportTable   _imports;
+      };
+      
+      typedef boost::variant<
+        Function,
+        Package,
+        Model 
+        > ClassType;
+
+      typedef const Class* ClassPtr;
     /**
-    *
-    */
-    class Function: public Class
+     *
+     */
+    class FunctionDefinition
     {
       public:
         /**
-        *
-        */
-        Function() {};
+         *
+         */
+        FunctionDefinition();
         /**
-        *
-        * @param name
-        */
-        Function(string name);
+         *
+         * @param name
+         * @param includeDir
+         * @param libraryDir
+         * @param libraries
+         */
+        FunctionDefinition(string name, string includeDir, string libraryDir, list<string> libraries);
         /**
-        *
-        */
-        ~Function();
+         *
+         */
+        ~FunctionDefinition();
         /**
-        *
-        * @param c
-        */
-        void
-        setFather(Class* c);
+         *
+         * @return
+         */
+        list<string>
+        def();
         /**
-        *
-        * @return
-        */
+         *
+         * @return
+         */
         bool
-        hasFather();
+        hasIncludeDirectory();
         /**
-        *
-        * @return
-        */
-        Class*
-        father() const;
+         *
+         * @return
+         */
+        bool
+        hasLibraryDirectory();
         /**
-        *
-        * @return
-        */
+         *
+         * @return
+         */
+        bool
+        hasLibraries();
+        /**
+         *
+         * @return
+         */
         string
-        name() const;
+        includeDirectory();
         /**
-        *
-        * @param efc
-        */
-        void
-        insert(AST_External_Function_Call efc);
+         *
+         * @return
+         */
+        string
+        libraryDirectory();
         /**
-        *
-        * @param n
-        * @param vi
-        * @param type
-        */
-        void
-        insert(VarName n, VarInfo vi, DEC_Type type);
+         *
+         * @return
+         */
+        list<string>
+        libraries();
         /**
-        *
-        * @param n
-        * @param vi
-        */
-        void
-        insert(VarName n, VarInfo vi);
+         *
+         * @return
+         */
+        string
+        name();
         /**
-        *
-        * @param eq
-        */
-        void
-        insert(AST_Equation eq);
-        /**
-        *
-        * @param stm
-        * @param initial
-        */
-        void
-        insert(AST_Statement stm, bool initial);
-        /**
-        *
-        * @param stm
-        */
-        void
-        insert(AST_Statement stm);
-        /**
-        *
-        * @param n
-        */
-        void
-        insert(string n);
-        /**
-        *
-        * @param x
-        */
-        void
-        insert(AST_Argument_Modification x);
-        /**
-        *
-        * @return
-        */
-        VarSymbolTable
-        varTable();
-        /**
-        *
-        * @return
-        */
-        MicroModelica::Util::ImportTable
-        imports();
+         *
+         * @return
+         */
+        string
+        prototype();
+      private:
+        list<string> _def;
+        string _name;
+        string _prototype;
+        string _includeDirectory;
+        string _libraryDirectory;
+        list<string> _libraries;
     };
 
-    /**
-    *
-    */
-    class Package: public Class
-    {
-      public:
-        /**
-        *
-        */
-        Package() {};
-        /**
-        *
-        * @param name
-        */
-        Package(string name);
-        /**
-        *
-        */
-        ~Package();
-        /**
-        *
-        * @return
-        */
-        VarSymbolTable
-        varTable();
-        /**
-        *
-        * @return
-        */
-        string
-        name() const;
-        /**
-        *
-        * @param n
-        */
-        void
-        insert(string n);
-        /**
-        *
-        * @param eq
-        */
-        void
-        insert(AST_Equation eq);
-        /**
-        *
-        * @param stm
-        * @param initial
-        */
-        void
-        insert(AST_Statement stm, bool initial);
-        /**
-        *
-        * @param stm
-        */
-        void
-        insert(AST_Statement stm);
-        /**
-        *
-        * @param f
-        */
-        void
-        insert(Function &f);
-        /**
-        *
-        * @param efc
-        */
-        void
-        insert(AST_External_Function_Call efc);
-        /**
-        *
-        * @param n
-        * @param vi
-        * @param type
-        */
-        void
-        insert(VarName n, VarInfo vi, DEC_Type type);
-        /**
-        *
-        * @param n
-        * @param vi
-        */
-        void
-        insert(VarName n, VarInfo vi);
-        /**
-        *
-        * @param x
-        */
-        void
-        insert(AST_Argument_Modification x);
-        /**
-        *
-        * @return
-        */
-        MicroModelica::Util::ImportTable
-        imports();
-    };
-
-    /**
-    *
-    */
-    class Model: public Class
-    {
-      public:
-        /**
-        *
-        * @param name
-        */
-        Model() {};
-        /**
-        *
-        * @param name
-        */
-        Model(string name);
-        /**
-        *
-        */
-        ~Model();
-        /**
-        *
-        * @return
-        */
-        string
-        name() const;
-        /**
-        *
-        * @param n
-        */
-        void
-        insert(string n);
-        /**
-        *
-        * @param n
-        * @param vi
-        * @param type
-        */
-        void
-        insert(VarName n, VarInfo vi, DEC_Type type);
-        /**
-        *
-        * @param n
-        * @param vi
-        */
-        void
-        insert(VarName n, VarInfo vi);
-        /**
-        *
-        * @param eq
-        */
-        void
-        insert(AST_Equation eq);
-        /**
-        *
-        * @param stm
-        * @param initial
-        */
-        void
-        insert(AST_Statement stm, bool initial);
-        /**
-        *
-        * @param stm
-        */
-        void
-        insert(AST_Statement stm);
-        /**
-        *
-        * @param f
-        */
-        void
-        insert(Function &f);
-        /**
-        *
-        * @param efc
-        */
-        void
-        insert(AST_External_Function_Call efc);
-        /**
-        *
-        * @param x
-        */
-        void
-        insert(AST_Argument_Modification x);
-        /**
-        *
-        * @return
-        */
-        VarSymbolTable
-        varTable();
-        /**
-        *
-        * @return
-        */
-        MicroModelica::Util::ImportTable
-        imports();
-    };
-    
-    typedef boost::variant<
-      Function,
-      Package,
-      Model 
-      > ClassType;
   }
 }
 #endif  /* MMO_CLASS_H_ */

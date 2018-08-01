@@ -28,69 +28,71 @@
 
 #include "../util/compile_flags.h"
 #include "../ir/stored_definition.h"
-#include "../ir/function.h"
-#include "../ir/model.h"
-#include "../ir/package.h"
+#include "../ir/class.h"
 #include "model_instance.h"
 #include "files.h"
 #include "writer.h"
 
-/**
- *
- */
-class MMO_Generator
-{
-  public:
-    /**
-     *
-     * @param std
-     * @param flags
-     */
-    MMO_Generator(MMO_StoredDefinition std, MMO_CompileFlags flags);
-    /**
-     *
-     */
-    ~MMO_Generator();
-    /**
-     *
-     * @return
-     */
-    int
-    generate();
-  private:
-    void
-    _generateFunctionCode(MMO_Function f);
-    void
-    _generateHeader(string name);
-    void
-    _printList(list<string> l);
-    void
-    _variablesInitCode();
-    void
-    _variables();
-    void
-    _generateModel();
-    void
-    _generateFunction(MMO_Function f, string fileName);
-    void
-    _generateFunction(MMO_FunctionDefinition f, string fileName);
-    void
-    _generateFunctionHeader(string fileName);
-    void
-    _generatePackage(MMO_Package p);
-    void
-    _header();
-    MMO_StoredDefinition      _std;
-    MMO_Model                 _model;
-    MMO_Function              _function;
-    MMO_Package               _package;
-    MMO_CompileFlags          _flags;
-    MMO_ModelInstance*        _modelInstance;
-    MMO_Files                 _files;
-    MMO_Writer*               _writer;
-    ofstream                  _file;
-    std::map<string, string>  _includes;
-    list<string>              _fheader;
-};
+namespace MicroModelica {
+  namespace Generator {
 
+    /**
+     *
+     */
+    class Generator
+    {
+      public:
+        /**
+         *
+         * @param std
+         * @param flags
+         */
+        Generator(MicroModelica::IR::StoredDefinition std, MicroModelica::Util::CompileFlags flags);
+        /**
+         *
+         */
+        ~Generator();
+        /**
+         *
+         * @return
+         */
+        int
+        generate();
+      private:
+        void
+        _generateFunctionCode(MicroModelica::IR::Function f);
+        void
+        _generateHeader(string name);
+        void
+        _printList(list<string> l);
+        void
+        _variablesInitCode();
+        void
+        _variables();
+        void
+        _generateModel();
+        void
+        _generateFunction(MicroModelica::IR::Function f, string fileName);
+        void
+        _generateFunction(MicroModelica::IR::FunctionDefinition f, string fileName);
+        void
+        _generateFunctionHeader(string fileName);
+        void
+        _generatePackage(MicroModelica::IR::Package p);
+        void
+        _header();
+        MicroModelica::IR::StoredDefinition      _std;
+        MicroModelica::IR::Model                 _model;
+        MicroModelica::IR::Function              _function;
+        MicroModelica::IR::Package               _package;
+        MicroModelica::Util::CompileFlags        _flags;
+        ModelInstanceType                        _modelInstance;
+        Files                                    _files;
+        WriterPtr                                _writer;
+        ofstream                                 _file;
+        std::map<string, string>                 _includes;
+        list<string>                             _fheader;
+    };
+  }
+}
 #endif  /* GENERATOR_H_ */

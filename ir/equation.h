@@ -17,39 +17,43 @@
 
  ******************************************************************************/
 
-#ifndef MMO_EQUATION_H_
-#define MMO_EQUATION_H_
+#ifndef EQUATION_H_
+#define EQUATION_H_
 
 #include "../ast/ast_types.h"
 
-typedef enum
-{
-  EQ_DERIVATIVE,
-  EQ_DEPENDENCIES,
-  EQ_CLASSIC,
-  EQ_ALGEBRAIC,
-  EQ_OUTPUT,
-  EQ_ZC,
-  EQ_HANDLER,
-  EQ_HANDLER_IF,
-  EQ_JACOBIAN
-} EQ_Type;
+namespace MicroModelica {
+  namespace IR {
 
-/**
- *
- */
-class MMO_Equation
-{
-  public:
-    /**
-     *
-     * @param exp
-     */
-    MMO_Equation(AST_Expression exp);
+    typedef enum
+    {
+      EQ_DERIVATIVE,
+      EQ_DEPENDENCIES,
+      EQ_CLASSIC,
+      EQ_ALGEBRAIC,
+      EQ_OUTPUT,
+      EQ_ZC,
+      EQ_HANDLER,
+      EQ_HANDLER_IF,
+      EQ_JACOBIAN
+    } EQ_Type;
+
     /**
      *
      */
-    ~MMO_Equation();
-};
-
-#endif  /* MMO_EQUATION_H_ */
+    class Equation
+    {
+      public:
+        /**
+         *
+         * @param exp
+         */
+        Equation(AST_Expression exp);
+        /**
+         *
+         */
+        ~Equation();
+    };
+  }
+}
+#endif  /* EQUATION_H_ */

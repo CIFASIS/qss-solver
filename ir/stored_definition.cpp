@@ -17,33 +17,63 @@
 
  ******************************************************************************/
 
+#include <boost/variant/variant.hpp>
+#include <boost/variant/get.hpp>
 #include "stored_definition.h"
 
-MMO_StoredDefinition::MMO_StoredDefinition() 
-{
-}
+namespace MicroModelica {
+  namespace IR {
 
-MMO_StoredDefinition::~MMO_StoredDefinition()
-{
-}
+    StoredDefinition::StoredDefinition() :
+      _def(),
+      _functions()
+    {
+    }
 
-void 
-MMO_StoredDefinition::addModel(string name)
-{
-  _model = MMO_Model();
-  _current = &_model;
-}
+    StoredDefinition::~StoredDefinition()
+    {
+    }
 
-void 
-MMO_StoredDefinition::addModelng name)
-{
-  _model = MMO_Model();
-  _current = &_model;
-}
+    void 
+    StoredDefinition::setModel(string name)
+    {
+      _def = Model(name);
+    }
 
-void 
-MMO_StoredDefinition::addModel(string name)
-{
-  _model = MMO_Model();
-  _current = &_model;
+    void 
+    StoredDefinition::setPackage(string name)
+    {
+      _def = Package(name);
+    }
+
+    void 
+    StoredDefinition::addFunction(string name)
+    {
+      _functions[name] = Function(name);
+    }
+
+    const Function& 
+    StoredDefinition::function(string name) 
+    {
+      Option<Function> f = _functions[name];
+      if (f)
+      {
+        return f.get();
+      }
+      return Function();
+    }
+
+    const Model& 
+    StoredDefinition::model() 
+    {
+      return boost::get<Model>(_def);
+    }
+
+    const Package&
+    StoredDefinition::package()
+    {
+      return boost::get<Package>(_def);
+    }
+
+  }
 }

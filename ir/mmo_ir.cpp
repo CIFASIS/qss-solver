@@ -35,205 +35,292 @@
 #include "expression.h"
 #include "stored_definition.h"
 
-/* MicroModelica Intermediate Representation */
+using namespace MicroModelica::Util;
 
-MMO_MicroModelicaIR::MMO_MicroModelicaIR(string name):
-  _std()
-{
-    
-}
+namespace MicroModelica {
+  namespace IR {
 
-MMO_MicroModelicaIR::~MMO_MicroModelicaIR()
-{
-}
+    /* MicroModelica Intermediate Representation */
 
-void
-MMO_MicroModelicaIR::visit(AST_Class x)
-{
-  Error::getInstance()->setClassName(*(x->name()));
-  _std.addModel();
-/*  AST_TypePrefix p = x->prefix();
-  if(_father != NULL)
-  {
-    if((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE))
+    MicroModelicaIR::MicroModelicaIR(string name):
+      _std(),
+      _class(NULL),
+      _initialCode(false),
+      _classModification(false),
+      _compositionElement(false)
     {
-      _childName = x->name();
-      _childPrefix = x->prefix();
-      _child = newMMO_Function(*x->name());
-      if(_father->classType() == CL_MODEL)
+        
+    }
+
+    MicroModelicaIR::~MicroModelicaIR()
+    {
+    }
+
+    void
+    MicroModelicaIR::visit(AST_Class x)
+    {
+      Error::getInstance()->setClassName(*(x->name()));
+      AST_TypePrefix p = x->prefix();
+        if(p & CP_PACKAGE)
+        {
+          _std.setPackage(*x->name()); 
+          _class = &(_std.package());
+        }
+        else if((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE))
+        {
+          _std.addFunction(*x->name());
+          _class = &(_std.function(*x->name())); 
+        }
+        else
+        {
+          _std.setModel(*x->name());
+          _class = &(_std.model());
+        }
+    }
+
+    void
+    MicroModelicaIR::leave(AST_Class x)
+    {
+    }
+
+    void
+    MicroModelicaIR::visit(AST_Composition x)
+    {
+    }
+
+    void
+    MicroModelicaIR::leave(AST_Composition x)
+    {
+    }
+
+    void
+    MicroModelicaIR::visit(AST_CompositionElement x)
+    {
+      _compositionElement = true;
+    }
+
+    void
+    MicroModelicaIR::leave(AST_CompositionElement x)
+    {
+      _compositionElement = false;
+    }
+
+    void
+    MicroModelicaIR::visit(AST_CompositionEqsAlgs x)
+    {
+      _initialCode = x->isInitial();
+    }
+
+    void
+    MicroModelicaIR::leave(AST_CompositionEqsAlgs x)
+    {
+      _initialCode = false;
+    }
+
+    void
+    MicroModelicaIR::visit(AST_External_Function_Call x)
+    {
+      _class->insert(x);
+    }
+
+    void
+    MicroModelicaIR::visit(AST_Element x)
+    {
+      ElementType e = x->elementType();
+      if(e == IMPORT)
       {
-        _child->getAsFunction()->setFunctions(
-            _father->getAsModel()->functions(), _externalFunctions,
-            _father->getAsModel()->calledFunctions());
+        AST_Element_ImportClause i = x->getAsImportClause();
+        _class->insert(i->name());
       }
-      _child->getAsFunction()->setImports(_father->imports());
-      _child->setFather(_father);
-      _class = _child;
-      _className = _childName;
-      _classPrefix = _childPrefix;
+      else if(e == COMPONENT)
+      {
+        AST_Element_Component c = x->getAsComponent();
+        AST_TypePrefix tp = c->typePrefix();
+        AST_DeclarationListReverseIterator it;
+        AST_DeclarationList dl = c->nameList();
+        foreachReverse(it,dl)
+        {
+          vector<int> size;
+          bool array = current_element(it)->hasIndexes();
+          if(array)
+          {
+/*            MMO_EvalInitExp_ e(_class->varTable());
+            AST_ExpressionList elist = current_element(it)->indexes();
+            AST_ExpressionListIterator elistit;
+            foreach (elistit, elist)
+            {
+              size.push_back(e.foldTraverse(current_element(elistit)));
+            }*/
+          }
+          else
+          {
+            size.push_back(1);
+          }
+
+          DEC_Type t = DEC_PUBLIC;
+          if(_compositionElement)
+          {
+            t = DEC_LOCAL;
+          }
+          if(tp & TP_CONSTANT)
+          {
+            VarInfo vi(newType_Integer(), tp, current_element(it)->modification(), NULL, size, array);
+            _class->insert( current_element(it)->name(), vi, t);
+          }
+          else
+          {
+            if((tp & TP_PARAMETER) && c->isInteger())
+            {
+              VarInfo vi(newType_Integer(), tp, current_element(it)->modification(), NULL, size, array);
+              _class->insert( current_element(it)->name(), vi, t);
+            }
+            else
+            {
+              VarInfo vi(newType_Real(), tp, current_element(it)->modification(), NULL, size, array);
+              _class->insert( current_element(it)->name(), vi, t);
+            }
+          }
+        }
+      }
+      else if(e == ELCLASS)
+      {
+        AST_Class c = x->getAsClassWrapper()->getClass();
+        visit(c);
+      }
     }
+
+    void
+    MicroModelicaIR::visit(AST_Modification x)
+    {
+      if(x->modificationType() == MODASSIGN)
+      {
+        Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Assign modifier.");
+      }
+      if(x->modificationType() == MODCLASS)
+      {
+        _classModification = true;
+      }
+    }
+
+    void
+    MicroModelicaIR::leave(AST_Modification x)
+    {
+      if(x->modificationType() == MODCLASS)
+      {
+        _classModification = false;
+      }
+    }
+
+    void
+    MicroModelicaIR::visit(AST_Comment x)
+    {
+    }
+
+    void
+    MicroModelicaIR::visit(AST_Equation x)
+    {
+      if(x->equationType() == EQFOR)
+      {
+        AST_ForIndexList fil = x->getAsFor()->forIndexList();
+        AST_ForIndexListIterator it;
+        foreach(it, fil)
+        {
+          visit(current_element(it));
+        }
+      }
+      _class->insert(x);
+    }
+
+    void
+    MicroModelicaIR::visit(AST_ForIndex x)
+    {
+      VarInfo vi(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false); 
+      _class->insert(*x->variable(), vi);
+    }
+
+    void
+    MicroModelicaIR::visit(AST_Equation_Else x)
+    {
+    }
+
+    void
+    MicroModelicaIR::visit(AST_Expression x)
+    {
+    }
+
+    void
+    MicroModelicaIR::visit(AST_Argument x)
+    {
+      if(x->argumentType() == AR_MODIFICATION)
+      {
+        AST_Argument_Modification am = x->getAsModification();
+        if(am->hasModification() && _classModification == false)
+        {
+          _class->insert(am);
+        }
+      }
+    }
+
+    void
+    MicroModelicaIR::visit(AST_Statement x)
+    {
+      if(x->statementType() == STFOR)
+      {
+        AST_ForIndexList fil = x->getAsFor()->forIndexList();
+        AST_ForIndexListIterator it;
+        foreach(it, fil)
+        {
+          visit(current_element(it));
+        }
+      }
+      _class->insert(x, _initialCode);
+    }
+
+    void
+    MicroModelicaIR::leave(AST_Statement x)
+    {
+    }
+
+    void
+    MicroModelicaIR::visit(AST_Statement_Else x)
+    {
+      AST_StatementList stl = x->statements();
+      AST_StatementListIterator sti;
+      foreach(sti,stl)
+      {
+        visit(current_element(sti));
+      }
+    }
+
+    void
+    MicroModelicaIR::visit(AST_StoredDefinition x)
+    {
+    }
+
+    void
+    MicroModelicaIR::leave(AST_StoredDefinition x)
+    {
+    }
+
+    int
+    MicroModelicaIR::apply(AST_Node x)
+    {
+      x->accept(this);
+      return Error::getInstance()->errors();
+    }
+
+    /*
+    MMO_StoredDefinition
+    MicroModelicaIR::storedDefinition()
+    {
+      return MMO_StoredDefinition();
+    }
+
+    list<MMO_Class>
+    MicroModelicaIR::classes() const
+    {
+
+      return _storedDefinition->classes();
+    }*/
   }
-  else
-  {
-    _fatherName = x->name();
-    _fatherPrefix = x->prefix();
-    if(p & CP_PACKAGE)
-    {
-      _father = newMMO_Package(*x->name());
-    }
-    else if((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE))
-    {
-      _father = newMMO_Function(*x->name());
-      Index i(_funcs++, 0);
-      i.setOffset(_funcs);
-      _externalFunctions->insert(i, _father->getAsFunction());
-    }
-    else
-    {
-      _father = newMMO_Model(*x->name());
-      _father->getAsModel()->setExternalFunctions(_externalFunctions);
-    }
-    _class = _father;
-    _className = _fatherName;
-    _classPrefix = _fatherPrefix;
-  }*/
 }
-
-/**
- * @brief Leave the class and set the corresponding father and child pointers if needed.
- *
- * When leaving the class, if the class has a father then reset the child pointer and
- * child prefix fields and add the child (that must be a function) into the father's children
- * list.
- *
- * @param x @ref AST_Class to visit.
- *
- */
-void
-MMO_MicroModelicaIR::leave(AST_Class x)
-{
-}
-
-void
-MMO_MicroModelicaIR::visit(AST_Composition x)
-{
-}
-
-void
-MMO_MicroModelicaIR::leave(AST_Composition x)
-{
-}
-
-void
-MMO_MicroModelicaIR::visit(AST_CompositionElement x)
-{
-}
-
-void
-MMO_MicroModelicaIR::leave(AST_CompositionElement x)
-{
-}
-
-void
-MMO_MicroModelicaIR::visit(AST_CompositionEqsAlgs x)
-{
-}
-
-void
-MMO_MicroModelicaIR::leave(AST_CompositionEqsAlgs x)
-{
-}
-
-void
-MMO_MicroModelicaIR::visit(AST_External_Function_Call x)
-{
-}
-
-void
-MMO_MicroModelicaIR::visit(AST_Element x)
-{
-}
-
-void
-MMO_MicroModelicaIR::visit(AST_Modification x)
-{
-}
-
-void
-MMO_MicroModelicaIR::leave(AST_Modification x)
-{
-}
-
-void
-MMO_MicroModelicaIR::visit(AST_Comment x)
-{
-}
-
-void
-MMO_MicroModelicaIR::visit(AST_Equation x)
-{
-}
-
-void
-MMO_MicroModelicaIR::visit(AST_ForIndex x)
-{
-}
-
-void
-MMO_MicroModelicaIR::visit(AST_Equation_Else x)
-{
-}
-
-void
-MMO_MicroModelicaIR::visit(AST_Expression x)
-{
-}
-
-void
-MMO_MicroModelicaIR::visit(AST_Argument x)
-{
-}
-
-void
-MMO_MicroModelicaIR::visit(AST_Statement x)
-{
-}
-
-void
-MMO_MicroModelicaIR::leave(AST_Statement x)
-{
-}
-
-void
-MMO_MicroModelicaIR::visit(AST_Statement_Else x)
-{
-}
-
-void
-MMO_MicroModelicaIR::visit(AST_StoredDefinition x)
-{
-}
-
-void
-MMO_MicroModelicaIR::leave(AST_StoredDefinition x)
-{
-}
-
-int
-MMO_MicroModelicaIR::apply(AST_Node x)
-{
-}
-
-/*
-MMO_StoredDefinition
-MMO_MicroModelicaIR::storedDefinition()
-{
-  return MMO_StoredDefinition();
-}
-
-list<MMO_Class>
-MMO_MicroModelicaIR::classes() const
-{
-
-  return _storedDefinition->classes();
-}*/

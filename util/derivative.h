@@ -24,43 +24,48 @@
 
 #include "../ast/ast_types.h"
 #include "util_types.h"
+#include "symbol_table.h"
 
-class MMO_Expression;
 
-/**
- *
- */
-class EquationDerivator
-{
-  public:
+namespace MicroModelica {
+  namespace Util {
+
+    class MMO_Expression;
+
     /**
      *
-     * @param eq
-     * @param varEnv
-     * @return
      */
-    static AST_Equation_Equality
-    derivate(AST_Equation_Equality eq, VarSymbolTable varEnv);
-};
+    class EquationDerivator
+    {
+      public:
+        /**
+         *
+         * @param eq
+         * @param varEnv
+         * @return
+         */
+        static AST_Equation_Equality
+        derivate(AST_Equation_Equality eq, VarSymbolTable varEnv);
+    };
 
-/**
- *
- */
-class ExpressionDerivator
-{
-  public:
     /**
      *
-     * @param exp
-     * @param varEnv
-     * @param e
-     * @return
      */
-    static AST_Expression
-    derivate(AST_Expression exp, VarSymbolTable varEnv, MMO_Expression e);
-    map<string, MMO_Expression>
-    //generateJacobianExps(AST_Expression exp, MMO_ModelData data);
-    generateJacobianExps(AST_Expression exp);
-};
-
+    class ExpressionDerivator
+    {
+      public:
+        /**
+         *
+         * @param exp
+         * @param varEnv
+         * @param e
+         * @return
+         */
+        static AST_Expression
+        derivate(AST_Expression exp, VarSymbolTable varEnv, MicroModelica::IR::Expression e);
+        map<string, MicroModelica::IR::Expression>
+        generateJacobianExps(AST_Expression exp, VarSymbolTable vt);
+    };
+  }
+}
 #endif  /* DERIVATIVE_H_ */

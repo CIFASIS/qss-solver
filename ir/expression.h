@@ -22,25 +22,29 @@
 
 #include "../ast/ast_types.h"
 
-/**
- *
- */
-class MMO_Expression
-{
-  public:
-    /**
-     *
-     */
-    MMO_Expression();
-    /**
-     *
-     * @param exp
-     */
-    MMO_Expression(AST_Expression exp);
-    /**
-     *
-     */
-    ~MMO_Expression();
-};
+namespace MicroModelica {
+  namespace IR {
 
-#endif /* MMO_EXPRESSION_H_ */
+    /**
+     *
+     */
+    class Expression
+    {
+      public:
+        /**
+         *
+         */
+        Expression();
+        /**
+         *
+         * @param exp
+         */
+        Expression(AST_Expression exp);
+        /**
+         *
+         */
+        ~Expression();
+    };
+  }
+}
+#endif /* EXPRESSION_H_ */

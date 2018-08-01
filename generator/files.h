@@ -89,7 +89,7 @@ namespace MicroModelica {
         string                              _fname;
         MicroModelica::IR::Model            _model;
         ModelInstanceType                   _modelInstance;
-        FileWriter                          _writer;
+        WriterPtr                           _writer;
         MicroModelica::Util::CompileFlags   _flags;
         ofstream                            _file;
     };

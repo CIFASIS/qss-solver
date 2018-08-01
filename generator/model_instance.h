@@ -147,6 +147,7 @@ namespace MicroModelica
     class QSSModelInstance: public ModelInstance
     {
       public:
+        QSSModelInstance(){};
         /**
         *
         * @param model

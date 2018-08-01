@@ -27,7 +27,6 @@
 
 #include "../ir/expression.h"
 #include "../ir/mmo_util.h"
-#include "../ir/package.h"
 #include "compile_flags.h"
 #include "index.h"
 #include "error.h"
@@ -223,10 +222,12 @@ namespace MicroModelica {
     {
       stringstream buffer;
       buffer << n << _varCounter++ << "0";
-      while(vt->lookup(buffer.str()) != NULL)
+      Option<VarInfo> vi = vt[buffer.str()];
+      while(!vi)
       {
         buffer.str("");
         buffer << n << _varCounter++ << "0";
+        vi = vt[buffer.str()];
       }
       return buffer.str();
     }
@@ -1031,25 +1032,21 @@ namespace MicroModelica {
       return _expressionOrder;
     }
 
-    VarInfo
+    Option<VarInfo>
     BIF::_variableInfo(VariableInterval vin)
     {
-      /*VarInfo vi = _vt->lookup(vin.name());
-      if(vi == NULL)
+      Option<VarInfo> vi = _vt[""];
+      if(!vi)
       {
-        Error::getInstance()->add(0,
-        EM_IR | EM_VARIABLE_NOT_FOUND,
-            ER_Fatal, "%s", vin.name().c_str());
-        return NULL;
+        Error::getInstance()->add(0, EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "%s", "Fix Variable interval name");
       }
-      return vi;*/
-      return NULL;
+      return vi;
     }
 
     bool
     BIF::isState(VariableInterval vin)
     {
-      VarInfo vi = _variableInfo(vin);
+      Option<VarInfo> vi = _variableInfo(vin);
       return vi->isState() || vi->isAlgebraic();
     }
 

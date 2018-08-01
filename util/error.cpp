@@ -28,7 +28,11 @@
 Error *Error::_instance = NULL;
 
 Error::Error() :
-    _errors(), _warnings(), _numErrors(0), _numWarnings(0), _stdDef()
+    _errors(), 
+    _warnings(), 
+    _numErrors(0), 
+    _numWarnings(0), 
+    _stdDef()
 {
 }
 
@@ -210,8 +214,7 @@ Error::_printCode(int code)
       message.append("Can not assign initial values to algebraic variables.\n");
       break;
     case EM_ALG_INDEX:
-      message.append(
-          "Algebraic variables definitions must use previously defined variables.\n");
+      message.append("Algebraic variables definitions must use previously defined variables.\n");
       break;
     case EM_OUTPUT_INIT:
       message.append("Can not assign initial values to output variables.\n");
@@ -244,8 +247,7 @@ Error::_printCode(int code)
       message.append("Symbol not recognized.\n");
       break;
     case EM_SYM_DER:
-      message.append(
-          "Symbolic derivative can not be generated (External functions?).\nTry using numerical integration.\n");
+      message.append("Symbolic derivative can not be generated (External functions?).\nTry using numerical integration.\n");
       break;
     case EM_EQ_DEF:
       message.append("Equation not defined.\n");
@@ -272,8 +274,7 @@ Error::_printCode(int code)
       message.append("Function call, wrong number of arguments.\n");
       break;
     case EM_SAMPLED_OUT:
-      message.append(
-          "Sampled output, can not output generic expressions, only state or dicrete variables are allowed.\n");
+      message.append("Sampled output, can not output generic expressions, only state or dicrete variables are allowed.\n");
       break;
     case EM_HANDLER:
       message.append("Handler redefinition.\n");

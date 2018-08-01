@@ -21,16 +21,21 @@
 
 #include "../ast/expression.h"
 
-/* MMO_Expression class. */
+namespace MicroModelica {
+  namespace IR {
 
-MMO_Expression::MMO_Expression(AST_Expression exp) 
-{
-}
+    /* MMO_Expression class. */
 
-MMO_Expression::MMO_Expression() 
-{
-}
+    Expression::Expression(AST_Expression exp) 
+    {
+    }
 
-MMO_Expression::~MMO_Expression()
-{
+    Expression::Expression() 
+    {
+    }
+
+    Expression::~Expression()
+    {
+    }
+  }
 }

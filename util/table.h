@@ -20,22 +20,33 @@
 #ifndef TABLE_H_
 #define TABLE_H_
 
-#include <string>
 #include <map>
 
-#include "../ir/expression.h"
-#include "../util/symbol_table.h"
+#include "util_types.h" 
 
-using namespace std;
-
-template<class T>
-class ModelTable 
+template<typename Key,typename Value>
+class ModelTable : public std::map<Key,Value> 
 {
   public:
     ModelTable(){};
     ~ModelTable() {};
-  private:
-    map <int,T> _map;
+    void insert(Key k, Value v) 
+    {
+	    std::map<Key,Value>::erase(k);
+      std::map<Key,Value>::insert(std::pair<Key,Value>(k,v));
+    }
+    Option<Value> operator[](Key k) const 
+    {
+      if (std::map<Key,Value>::find(k)==std::map<Key,Value>::end())
+      {
+        return Option<Value>();
+      }
+      return std::map<Key,Value>::at(k); 
+    }
+    void remove(Key k) 
+    {
+      std::map<Key,Value>::erase(k);
+    }
 };
 
 #endif /* TABLE_H */

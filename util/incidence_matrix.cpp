@@ -19,18 +19,23 @@
 
 #include "incidence_matrix.h"
 
-Incidence::Incidence()
-{
-}
- 
-Incidence::~Incidence()
-{
-}
+namespace MicroModelica {
+  namespace Util {
 
-IncidenceMatrix::IncidenceMatrix()
-{
-}
+    Incidence::Incidence()
+    {
+    }
+     
+    Incidence::~Incidence()
+    {
+    }
 
-IncidenceMatrix::~IncidenceMatrix()
-{
+    IncidenceMatrix::IncidenceMatrix()
+    {
+    }
+
+    IncidenceMatrix::~IncidenceMatrix()
+    {
+    }
+  }
 }

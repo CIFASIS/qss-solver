@@ -21,10 +21,15 @@
 
 #include "../ast/expression.h"
 
-MMO_Equation::MMO_Equation(AST_Expression exp) 
-{
-}
+namespace MicroModelica {
+  namespace IR {
 
-MMO_Equation::~MMO_Equation()
-{
+    Equation::Equation(AST_Expression exp) 
+    {
+    }
+
+    Equation::~Equation()
+    {
+    }
+  }
 }

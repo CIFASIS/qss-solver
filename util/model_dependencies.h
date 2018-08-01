@@ -20,25 +20,23 @@
 #ifndef MODEL_DEPENDENCIES_H_
 #define MODEL_DEPENDENCIES_H_
 
-#include <string>
-#include <map>
-
-#include "../ast/ast_types.h"
-#include "util_types.h"
 #include "incidence_matrix.h"
 
-using namespace std;
+namespace MicroModelica {
+  namespace Util {
 
-class ModelDependencies 
-{
-  public:
-    ModelDependencies();
-    ~ModelDependencies();
-  private:
-    IncidenceMatrix _SD;
-    IncidenceMatrix _DS;
-    IncidenceMatrix _ZS;
-    IncidenceMatrix _SZ;
-};
+    class ModelDependencies 
+    {
+      public:
+        ModelDependencies();
+        ~ModelDependencies();
+      private:
+        IncidenceMatrix _SD;
+        IncidenceMatrix _DS;
+        IncidenceMatrix _ZS;
+        IncidenceMatrix _SZ;
+    };
+  }
+}
 
 #endif /* MODEL_DEPENDENCIES_H_ */

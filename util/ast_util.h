@@ -169,8 +169,7 @@ class AST_Expression_Traverse
     virtual
     ~AST_Expression_Traverse()
     {
-    }
-    ;
+    };
     /**
      *
      * @param
@@ -178,7 +177,7 @@ class AST_Expression_Traverse
      */
     AST_Expression
     mapTraverse(AST_Expression);
-    private:
+  private:
     virtual AST_Expression
     mapTraverseElement(AST_Expression) = 0;
 };
@@ -222,7 +221,7 @@ class AST_Expression_Visitor
       }
     }
     ;
-    private:
+  private:
     virtual R
     foldTraverseElement(AST_Expression) = 0;
     virtual R
@@ -244,8 +243,7 @@ class AST_Expression_Fold
     virtual
     ~AST_Expression_Fold()
     {
-    }
-    ;
+    };
     /**
      *
      * @param e
@@ -275,7 +273,7 @@ class AST_Expression_Fold
       }
     }
     ;
-    private:
+  private:
     virtual R
     foldTraverseElement(AST_Expression) = 0;
     virtual R
@@ -294,7 +292,7 @@ class EqualExp
      *
      * @param symbolTable
      */
-    EqualExp(VarSymbolTable symbolTable);
+    EqualExp(MicroModelica::Util::VarSymbolTable symbolTable);
     /**
      *
      * @param a
@@ -303,17 +301,16 @@ class EqualExp
      */
     bool
     equalTraverse(AST_Expression a, AST_Expression b);
-    private:
+  private:
     bool
     _compareList(AST_ExpressionList ael, AST_ExpressionList bel);
     bool
     equalTraverseElement(AST_Expression a, AST_Expression b);
-    VarInfo
+    Option<MicroModelica::Util::VarInfo>
     getVarInfo(AST_Expression_ComponentReference compRef);
     bool
-    compareArrays(AST_Expression_ComponentReference arrayA,
-        AST_Expression_ComponentReference arrayB);
-    VarSymbolTable _symbolTable;
+    compareArrays(AST_Expression_ComponentReference arrayA, AST_Expression_ComponentReference arrayB);
+    MicroModelica::Util::VarSymbolTable _symbolTable;
 };
 
 /**
@@ -326,19 +323,18 @@ class IsConstant: public AST_Expression_Fold<bool>
      *
      * @param st
      */
-    IsConstant(VarSymbolTable st) :
+    IsConstant(MicroModelica::Util::VarSymbolTable st) :
         _st(st)
     {
-    }
-    ;
-    private:
+    };
+  private:
     bool
     foldTraverseElement(AST_Expression);
     bool
     foldTraverseElement(bool, bool, BinOpType);
     bool
     foldTraverseElementUMinus(AST_Expression);
-    VarSymbolTable _st;
+    MicroModelica::Util::VarSymbolTable _st;
 };
 
 /**
@@ -356,13 +352,12 @@ class ReplaceExp: public AST_Expression_Traverse
      * @return
      */
     AST_Expression
-    replaceExp(AST_Expression rep, AST_Expression for_exp, AST_Expression in,
-        VarSymbolTable symbol_table);
-    private:
+    replaceExp(AST_Expression rep, AST_Expression for_exp, AST_Expression in, MicroModelica::Util::VarSymbolTable symbol_table);
+  private:
     AST_Expression
     mapTraverseElement(AST_Expression);
     AST_Expression _rep, _for_exp, _in;
-    VarSymbolTable _symbol_table;
+    MicroModelica::Util::VarSymbolTable _symbol_table;
 };
 
 /**
@@ -375,7 +370,7 @@ class ReplaceBoolean: public AST_Expression_Fold<AST_Expression>
      *
      */
     ReplaceBoolean();
-    private:
+  private:
     AST_Expression
     foldTraverseElement(AST_Expression);
     AST_Expression
@@ -399,7 +394,7 @@ class WhenEqualityTrasforms: public AST_Expression_Fold<AST_Expression>
      *
      */
     WhenEqualityTrasforms();
-    private:
+  private:
     AST_Expression
     foldTraverseElement(AST_Expression);
     AST_Expression
@@ -418,7 +413,7 @@ class PreChange: public AST_Expression_Fold<AST_Expression>
      *
      */
     PreChange(PreSet);
-    private:
+  private:
     PreSet _pre;
     AST_Expression
     foldTraverseElement(AST_Expression);
@@ -441,7 +436,7 @@ class FindReference: public AST_Expression_Fold<bool>
      *
      */
     FindReference(AST_String);
-    private:
+  private:
     AST_String _var;
     bool
     foldTraverseElement(AST_Expression);
@@ -451,10 +446,6 @@ class FindReference: public AST_Expression_Fold<bool>
     foldTraverseElementUMinus(AST_Expression);
 };
 
-/* ReplaceReference: Cambia las referencias de una variable por otra
- * 
- * 
- */
 /**
  *
  */
@@ -467,7 +458,7 @@ class ReplaceReference: public AST_Expression_Fold<AST_Expression>
      * @param
      */
     ReplaceReference(AST_String, AST_String);
-    private:
+  private:
     AST_String _pre;
     AST_String _post;
     AST_Expression
@@ -479,10 +470,32 @@ class ReplaceReference: public AST_Expression_Fold<AST_Expression>
 };
 
 /**
- * Evaluates an arithmetic expression.
- */
-/**
  *
+ */
+class ReplaceDer: public AST_Expression_Visitor<AST_Expression>
+{
+  public:
+    /**
+     *
+     * @param vt
+     */
+    ReplaceDer(MicroModelica::Util::VarSymbolTable vt);
+    /**
+     *
+     */
+    ~ReplaceDer();
+  private:
+    AST_Expression
+    foldTraverseElement(AST_Expression exp);
+    AST_Expression
+    foldTraverseElementUMinus(AST_Expression exp);
+    AST_Expression
+    foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+    MicroModelica::Util::VarSymbolTable _vt;
+};
+
+/**
+ * Evaluates an arithmetic expression.
  */
 class EvalExp: public AST_Expression_Fold<AST_Expression>
 {
@@ -491,7 +504,7 @@ class EvalExp: public AST_Expression_Fold<AST_Expression>
      *
      * @param symbolTable
      */
-    EvalExp(VarSymbolTable symbolTable);
+    EvalExp(MicroModelica::Util::VarSymbolTable symbolTable);
     /**
      * Evaluates an arithmetic expression.
      */
@@ -534,7 +547,7 @@ class EvalExp: public AST_Expression_Fold<AST_Expression>
     getRealVal(AST_Expression exp);
     AST_Expression_ComponentReference _compRef;
     AST_Expression _compRefVal;
-    VarSymbolTable _symbolTable;
+    MicroModelica::Util::VarSymbolTable _symbolTable;
 };
 
 /**

@@ -26,106 +26,50 @@
 #include "../ir/expression.h"
 #include "../util/symbol_table.h"
 
-using namespace std;
+namespace MicroModelica {
+  namespace Util {
 
-class IndexDefinition
-{
-  public:
-    IndexDefinition();
-    ~IndexDefinition();
-  private:
-    string _variable;
-    MMO_Expression _exp;
-};
+    class IndexDefinition
+    {
+      public:
+        IndexDefinition();
+        ~IndexDefinition();
+      private:
+        string _variable;
+        MicroModelica::IR::Expression _exp;
+    };
 
-class RangeDefinition
-{
-  public:
-    RangeDefinition();
-    ~RangeDefinition();
-  private:
-    int _init;
-    int _end;
-    int _step;
-};
-
-class Range
-{
-  public:
-    Range();
-    ~Range();
-    int
-    begin(int dim);
-    int
-    end(int dim);
-    void
-    setBegin(int v, int d);
-    void
-    setEnd(int v, int d);
-    int
-    dimension();
-    int
-    size(int dim);
-    int
-    size();
-    void
-    clear();
-    bool
-    check();
-    void
-    get(AST_Equation_For eqf, VarSymbolTable vt);
-    void
-    get(AST_Statement_For stf, VarSymbolTable vt);
-    bool
-    empty();
-    void
-    setVariable(string v, int d);
-    string
-    variable(int dim);
-    void
-    setLocalVariable(string v, int dim);
-    string
-    localVariable(string v);
-    private:
-    map<string,RangeDefinition> _ranges;
-};
-
-class Index
-{
-  public:
-    /**
-     *
-     */
-    Index();
-    ~Index();
-    string
-    print() const;
-    bool
-    hasRange() const;
-    Range
-    range() const;
-    void
-    setRange(Range r);
-    void
-    setMap(MMO_Expression exp);
-    bool
-    hasMap() const;
-    bool
-    operator==(const Index &other) const;
-    void
-    addIndex(IndexDefinition id);
-    int
-    dimension();
-  private:
-    map<int,IndexDefinition> _indexes;
-};
+    class Index
+    {
+      public:
+        /**
+         *
+         */
+        Index();
+        ~Index();
+        string
+        print() const;
+        void
+        setMap(MicroModelica::IR::Expression exp);
+        bool
+        hasMap() const;
+        bool
+        operator==(const Index &other) const;
+        void
+        addIndex(IndexDefinition id);
+        int
+        dimension();
+      private:
+        map<int,IndexDefinition> _indexes;
+    };
 
 
-class VariableInterval 
-{
-  public:
-    VariableInterval();
-    ~VariableInterval();
-};
-
+    class VariableInterval 
+    {
+      public:
+        VariableInterval();
+        ~VariableInterval();
+    };
+  }
+}
 #endif /* INDEX_H_ */

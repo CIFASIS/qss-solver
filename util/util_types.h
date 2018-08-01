@@ -21,21 +21,32 @@
 #define UTIL_TYPES_H_
 
 #include <string>
+#include <boost/optional.hpp>
 
 #include "macros.h"
 
+
+template <typename T>
+struct Option: public boost::optional<T> {
+public:
+  Option(): boost::optional<T>(){};
+  Option(boost::optional<T> t): boost::optional<T>(t){};
+  Option(T const &t ): boost::optional<T>(t){};
+
+};
+
 /**
  *
  */
-DEFINE_TYPE(VarSymbolTable);
+//DEFINE_TYPE(VarSymbolTable);
 /**
  *
  */
-DEFINE_TYPE(TypeSymbolTable);
+//DEFINE_TYPE(TypeSymbolTable);
 /**
  *
  */
-DEFINE_TYPE(VarInfo);
+//DEFINE_TYPE(VarInfo);
 /**
  *
  */

@@ -37,8 +37,8 @@ namespace MicroModelica {
 
     class MMO_PackageTable;
 
-    typedef ModelTable<string> ImportTable;
-
+    typedef ModelTable<string, string> ImportTable;
+    
     /**
      *
      */
@@ -138,7 +138,7 @@ namespace MicroModelica {
         _hasStates(list<VariableInterval> variables);
         Index
         _index(list<VariableInterval> variables);
-        VarInfo
+        Option<VarInfo>
         _variableInfo(VariableInterval vin);
         virtual string
         _reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates) = 0;

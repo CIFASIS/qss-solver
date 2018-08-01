@@ -40,6 +40,8 @@
 #include "type.h"
 #include "util.h"
 
+using namespace MicroModelica::Util;
+
 AST_Expression
 AST_Expression_Traverse::mapTraverse(AST_Expression e)
 {
@@ -149,8 +151,8 @@ EqualExp::equalTraverseElement(AST_Expression a, AST_Expression b)
     case EXPCOMPREF:
       {
       AST_Expression_ComponentReference compRefA = a->getAsComponentReference();
-      VarInfo varInfoA = _symbolTable->lookup(CREF_NAME(compRefA));
-      if(varInfoA != NULL && varInfoA->type()->getType() == TYARRAY)
+      Option<VarInfo> varInfoA = _symbolTable[CREF_NAME(compRefA)];
+      if(varInfoA && varInfoA->type()->getType() == TYARRAY)
       {
         return compareArrays(compRefA, b->getAsComponentReference());
       }
@@ -232,22 +234,21 @@ EqualExp::equalTraverseElement(AST_Expression a, AST_Expression b)
   return true;
 }
 
-VarInfo
+Option<VarInfo>
 EqualExp::getVarInfo(AST_Expression_ComponentReference compRef)
 {
-  VarInfo varInfo;
+  Option<VarInfo> varInfo;
   AST_StringList names = compRef->names();
   if(names->size() > 0)
   {
-    ERROR_UNLESS(names->size() == 1,
-        "EqualExp::getVarInfo\n"
+    ERROR_UNLESS(names->size() == 1, "EqualExp::getVarInfo\n"
             "AST_Component_Reference with names list bigger than 1 are not supported yet.\n");
     AST_String name = names->front();
-    varInfo = _symbolTable->lookup(*name);
+    varInfo = _symbolTable[*name];
   }
   else
   {
-    varInfo = _symbolTable->lookup(compRef->name());
+    varInfo = _symbolTable[compRef->name()];
   }
   return varInfo;
 }
@@ -298,7 +299,7 @@ IsConstant::foldTraverseElement(AST_Expression e)
     case EXPCOMPREF:
       {
       AST_Expression_ComponentReference cr = e->getAsComponentReference();
-      VarInfo v = _st->lookup(cr->name());
+      Option<VarInfo> v = _st[cr->name()];
       if(v->isParameter())
       {
         return true;
@@ -623,6 +624,65 @@ ReplaceReference::foldTraverseElement(AST_Expression e)
   }
 }
 
+
+/* ReplaceDer Class */
+
+ReplaceDer::ReplaceDer(VarSymbolTable vt) :
+    _vt(vt)
+{
+}
+
+ReplaceDer::~ReplaceDer()
+{
+}
+
+AST_Expression
+ReplaceDer::foldTraverseElement(AST_Expression exp)
+{
+  stringstream ret(stringstream::out);
+  switch(exp->expressionType())
+  {
+    case EXPCALL:
+      {
+      AST_Expression_Call ec = exp->getAsCall();
+      string name = *(ec->name());
+      if(!name.compare("der2"))
+      {
+        return (newAST_Expression_Derivative(
+            newAST_ExpressionList(
+                newAST_Expression_Derivative(ec->arguments()))));
+      }
+      else if(!name.compare("der3"))
+      {
+        return (newAST_Expression_Derivative(
+            newAST_ExpressionList(
+                newAST_Expression_Derivative(
+                    newAST_ExpressionList(
+                        newAST_Expression_Derivative(ec->arguments()))))));
+      }
+    }
+      break;
+    case EXPOUTPUT:
+      return (newAST_Expression_OutputExpressions(
+              newAST_ExpressionList(foldTraverse(AST_ListFirst(exp->getAsOutput()->expressionList())))));
+    default:
+      break;
+  }
+  return exp;
+}
+
+AST_Expression
+ReplaceDer::foldTraverseElementUMinus(AST_Expression exp)
+{
+  return newAST_Expression_UnaryMinus(foldTraverse(exp->getAsUMinus()->exp()));
+}
+
+AST_Expression
+ReplaceDer::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
+{
+  return newAST_Expression_BinOp(l, r, bot);
+}
+
 /* Eval Expression class. */
 
 EvalExp::EvalExp(VarSymbolTable symbolTable)
@@ -654,10 +714,9 @@ EvalExp::foldTraverseElement(AST_Expression exp)
   {
     case EXPCOMPREF:
       {
-      AST_Expression_ComponentReference expCompRef =
-          exp->getAsComponentReference();
-      VarInfo varInfo = _symbolTable->lookup(CREF_NAME(expCompRef));
-      if(varInfo != NULL && varInfo->type()->getType() == TYARRAY)
+      AST_Expression_ComponentReference expCompRef = exp->getAsComponentReference();
+      Option<VarInfo> varInfo = _symbolTable[CREF_NAME(expCompRef)];
+      if(varInfo && varInfo->type()->getType() == TYARRAY)
       {
         return evalArray(expCompRef);
       }
@@ -793,8 +852,8 @@ EvalExp::evalCompRef(AST_Expression_ComponentReference compRef)
   {
     return _compRefVal;
   }
-  VarInfo varInfo = _symbolTable->lookup(CREF_NAME(compRef));
-  if(varInfo != NULL && (varInfo->isParameter() || varInfo->isConstant()))
+  Option<VarInfo> varInfo = _symbolTable[CREF_NAME(compRef)];
+  if(varInfo && (varInfo->isParameter() || varInfo->isConstant()))
   {
     AST_Modification mod = varInfo->modification();
     switch(mod->modificationType())

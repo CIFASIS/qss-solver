@@ -346,7 +346,7 @@ namespace MicroModelica {
          *
          * @param data
          */
-        ModelAnnotation(VarSymbolTable symbolTable);
+        ModelAnnotation(MicroModelica::Util::VarSymbolTable symbolTable);
         /**
          *
          */
@@ -748,7 +748,7 @@ namespace MicroModelica {
         list<string>          _scotchSettings;
         list<string>          _metisSettings;
         int                   _jacobian;
-        VarSymbolTable        _symbolTable;
+        MicroModelica::Util::VarSymbolTable        _symbolTable;
     };
 
     typedef boost::variant<
@@ -822,7 +822,7 @@ namespace MicroModelica {
          *
          * @param st
          */
-        EvalAnnotation(VarSymbolTable st);
+        EvalAnnotation(MicroModelica::Util::VarSymbolTable st);
         /**
          *
          */
@@ -838,7 +838,7 @@ namespace MicroModelica {
         foldTraverseElement(AnnotationValue, AnnotationValue, BinOpType);
         AnnotationValue
         foldTraverseElementUMinus(AST_Expression);
-        VarSymbolTable _st;
+        MicroModelica::Util::VarSymbolTable _st;
         map<string, string> _tokens;
     };
   }

@@ -19,10 +19,15 @@
 
 #include "model_dependencies.h"
 
-ModelDependencies::ModelDependencies()
-{
-}
- 
-ModelDependencies::~ModelDependencies()
-{
+namespace MicroModelica {
+  namespace Util {
+
+    ModelDependencies::ModelDependencies()
+    {
+    }
+     
+    ModelDependencies::~ModelDependencies()
+    {
+    }
+  }
 }

@@ -27,101 +27,107 @@
 #include "../ir/expression.h"
 #include "util.h"
 
-/* VarInfo class. */
+namespace MicroModelica {
+  namespace Util {
 
-VarInfo_::VarInfo_(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c) :
-    _state(false), 
-    _discrete(false), 
-    _t(t), 
-    _tp(tp), 
-    _m(m), 
-    _comm(c), 
-    _builtin(false), 
-    _size(), 
-    _value(0), 
-    _algebraic(false), 
-    _exp(NULL), 
-    _hasStart(false), 
-    _hasEach(false), 
-    _hasAssigment(false), 
-    _name(), 
-    _isArray(false)
-{
-  _processModification();
-}
 
-VarInfo_::VarInfo_(Type t, AST_TypePrefix tp, AST_Modification m, vector<int> s, bool array) :
-    _state(false), 
-    _discrete(false), 
-    _t(t), 
-    _tp(tp), 
-    _m(m), 
-    _comm(NULL), 
-    _builtin(false), 
-    _size(s), 
-    _value(0), 
-    _algebraic(false), 
-    _exp(NULL), 
-    _hasStart(false), 
-    _hasEach(false), 
-    _hasAssigment(false), 
-    _name(), 
-    _isArray(array)
-{
-  _processModification();
-}
+    /* VarInfo class. */
 
-/*! \brief Process the argument modification to determine the variable modifiers if any.
- *
- * 	\note{We don't look for errors here, if there's an error in the code, it should be detected in 
- * 	an earlier stage (the model checker and the intermediate code generation.}
- */
-
-void
-VarInfo_::_processModification()
-{
-  _hasAssigment = false;
-  _hasEach = false;
-  _hasStart = false;
-  if(_m != NULL)
-  {
-    ModificationType t = _m->modificationType();
-    if(t == MODEQUAL)
+    VarInfo::VarInfo(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c) :
+        _state(false), 
+        _discrete(false), 
+        _t(t), 
+        _tp(tp), 
+        _m(m), 
+        _comm(c), 
+        _builtin(false), 
+        _size(), 
+        _value(0), 
+        _algebraic(false), 
+        _exp(NULL), 
+        _hasStart(false), 
+        _hasEach(false), 
+        _hasAssigment(false), 
+        _name(), 
+        _isArray(false)
     {
-      _hasAssigment = true;
-      _exp = _m->getAsEqual()->exp();
+      _processModification();
     }
-    else if(t == MODCLASS)
+
+    VarInfo::VarInfo(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array) :
+        _state(false), 
+        _discrete(false), 
+        _t(t), 
+        _tp(tp), 
+        _m(m), 
+        _comm(c), 
+        _builtin(false), 
+        _size(s), 
+        _value(0), 
+        _algebraic(false), 
+        _exp(NULL), 
+        _hasStart(false), 
+        _hasEach(false), 
+        _hasAssigment(false), 
+        _name(), 
+        _isArray(array)
     {
-      AST_ArgumentList al = _m->getAsClass()->arguments();
-      AST_ArgumentListIterator it;
-      AST_Expression asgExp = _m->getAsClass()->exp();
-      if(asgExp->expressionType() != EXPNULL)
+      _processModification();
+    }
+
+    /*! \brief Process the argument modification to determine the variable modifiers if any.
+     *
+     * 	\note{We don't look for errors here, if there's an error in the code, it should be detected in 
+     * 	an earlier stage (the model checker and the intermediate code generation.}
+     */
+
+    void
+    VarInfo::_processModification()
+    {
+      _hasAssigment = false;
+      _hasEach = false;
+      _hasStart = false;
+      if(_m != NULL)
       {
-        _hasAssigment = true;
-        _exp = asgExp;
-      }
-      else
-      {
-        if(!isParameter())
+        ModificationType t = _m->modificationType();
+        if(t == MODEQUAL)
         {
-          foreach(it,al)
+          _hasAssigment = true;
+          _exp = _m->getAsEqual()->exp();
+        }
+        else if(t == MODCLASS)
+        {
+          AST_ArgumentList al = _m->getAsClass()->arguments();
+          AST_ArgumentListIterator it;
+          AST_Expression asgExp = _m->getAsClass()->exp();
+          if(asgExp->expressionType() != EXPNULL)
           {
-            if(current_element(it)->argumentType() == AR_MODIFICATION)
+            _hasAssigment = true;
+            _exp = asgExp;
+          }
+          else
+          {
+            if(!isParameter())
             {
-              AST_Argument_Modification am =
-              current_element(it)->getAsModification();
-              if(am->modification()->modificationType() == MODEQUAL)
+              foreach(it,al)
               {
-                _exp = am->modification()->getAsEqual()->exp();
-                if(current_element(it)->hasEach())
+                if(current_element(it)->argumentType() == AR_MODIFICATION)
                 {
-                  _hasEach = true;
-                }
-                else if(am->name()->compare("start") == 0)
-                {
-                  _hasStart = true;
-                  break;
+                  AST_Argument_Modification am =
+                  current_element(it)->getAsModification();
+                  if(am->modification()->modificationType() == MODEQUAL)
+                  {
+                    _exp = am->modification()->getAsEqual()->exp();
+                    if(current_element(it)->hasEach())
+                    {
+                      _hasEach = true;
+                    }
+                    else if(am->name()->compare("start") == 0)
+                    {
+                      _hasStart = true;
+                      break;
+                    }
+                  }
                 }
               }
             }
@@ -129,266 +135,240 @@ VarInfo_::_processModification()
         }
       }
     }
+
+    bool
+    VarInfo::isState()
+    {
+      return _state;
+    }
+
+    void
+    VarInfo::setState()
+    {
+      _state = true;
+      _unsetAssignment();
+    }
+
+    void
+    VarInfo::setDiscrete()
+    {
+      _discrete = true;
+      _unsetAssignment();
+    }
+
+    Type
+    VarInfo::type()
+    {
+      return _t;
+    }
+
+    bool
+    VarInfo::isTime()
+    {
+      return _name.compare("time") == 0;
+    }
+
+    bool
+    VarInfo::isAlgebraic()
+    {
+      return _algebraic;
+    }
+
+    void
+    VarInfo::setAlgebraic()
+    {
+      _algebraic = true;
+      _unsetAssignment();
+      _unsetStartEach();
+    }
+
+    bool
+    VarInfo::hasIndex()
+    {
+      //return _index.isSet();
+      return false;
+    }
+
+    void
+    VarInfo::setValue(int val)
+    {
+      _value = val;
+    }
+
+    int
+    VarInfo::value()
+    {
+      return _value;
+    }
+
+    int
+    VarInfo::size()
+    {
+      vector<int>::iterator it;
+      int total = 1;
+      for(it = _size.begin(); it != _size.end(); it++)
+      {
+        total *= *it;
+      }
+      return total;
+    }
+
+    bool
+    VarInfo::hasAssignment()
+    {
+      return _hasAssigment;
+    }
+
+    bool
+    VarInfo::hasStartModifier()
+    {
+      return _hasStart;
+    }
+
+    bool
+    VarInfo::hasEachModifier()
+    {
+      return _hasEach;
+    }
+
+    AST_Expression
+    VarInfo::exp()
+    {
+      return _exp;
+    }
+
+    ostream &
+    operator<<(ostream &ret, const VarInfo &e)
+    {
+      if(e.isParameter())
+        ret << "parameter ";
+      if(e.isDiscrete())
+        ret << "discrete ";
+      if(e.isConstant())
+        ret << "constant ";
+      if(e.isInput())
+        ret << "input ";
+      if(e.isOutput())
+        ret << "output ";
+      ret << e._t;
+      return ret;
+    }
+
+    bool
+    VarInfo::isUnknown()
+    {
+      return _unknown;
+    }
+
+    void
+    VarInfo::setUnknown()
+    {
+      _unknown = true;
+    }
+
+    string
+    VarInfo::name()
+    {
+      return _name;
+    }
+
+    void
+    VarInfo::setName(string n)
+    {
+      _name = n;
+    }
+
+    bool
+    VarInfo::isArray()
+    {
+      return _isArray;
+    }
+
+    /* TypeSymbolTable_ class.*/
+
+    TypeSymbolTable::TypeSymbolTable()
+    {
+      insert("String", new Type_String_());
+      insert("Real", new Type_Real_());
+      insert("Integer", new Type_Integer_());
+      insert("Boolean", new Type_Boolean_());
+    }
+
+    /* VarSymbolTable class */
+
+    VarSymbolTable::VarSymbolTable() :
+        _coeffs(1), 
+        _parameters()
+    {
+    }
+
+    void
+    VarSymbolTable::initialize(TypeSymbolTable ty)
+    {
+      VarInfo v(ty["Real"].get(), 0, NULL, NULL, vector<int>(1, 0), false);
+      v.setBuiltIn();
+      v.setName("time");
+      insert("time", v);
+    }
+
+    void
+    VarInfo::setEachModifier(bool each)
+    {
+      _hasEach = each;
+    }
+
+    void
+    VarInfo::_unsetAssignment()
+    {
+      _hasAssigment = false;
+    }
+
+    int
+    VarInfo::size(int dim)
+    {
+      return _size[dim];
+    }
+
+    int
+    VarInfo::dimensions()
+    {
+      return _size.size();
+    }
+
+    void
+    VarInfo::_unsetStartEach()
+    {
+      _hasEach = false;
+      _hasStart = false;
+    }
+
+    void
+    VarInfo::setParameter()
+    {
+      _tp = TP_PARAMETER;
+      _unsetStartEach();
+    }
+
+    void
+    VarSymbolTable::setPolyCoeffs(int coeffs)
+    {
+      _coeffs = coeffs;
+    }
+
+    void
+    VarSymbolTable::insert(VarName n, VarInfo vi)
+    {
+      ModelTable<VarName, VarInfo>::insert(n, vi);
+      if(vi.isParameter())
+      {
+        _parameters.push_back(vi);
+      }
+    }
+
+    list<VarInfo>
+    VarSymbolTable::parameters()
+    {
+      return _parameters;
+    }
   }
-}
-
-bool
-VarInfo_::isState()
-{
-  return _state;
-}
-
-void
-VarInfo_::setState()
-{
-  _state = true;
-  _unsetAssignment();
-}
-
-void
-VarInfo_::setDiscrete()
-{
-  _discrete = true;
-  _unsetAssignment();
-}
-
-Type
-VarInfo_::type()
-{
-  return _t;
-}
-
-bool
-VarInfo_::isTime()
-{
-  return _name.compare("time") == 0;
-}
-
-bool
-VarInfo_::isAlgebraic()
-{
-  return _algebraic;
-}
-
-void
-VarInfo_::setAlgebraic()
-{
-  _algebraic = true;
-  _unsetAssignment();
-  _unsetStartEach();
-}
-
-bool
-VarInfo_::hasIndex()
-{
-  //return _index.isSet();
-  return false;
-}
-
-void
-VarInfo_::setValue(int val)
-{
-  _value = val;
-}
-
-int
-VarInfo_::value()
-{
-  return _value;
-}
-
-int
-VarInfo_::size()
-{
-  vector<int>::iterator it;
-  int total = 1;
-  for(it = _size.begin(); it != _size.end(); it++)
-  {
-    total *= *it;
-  }
-  return total;
-}
-
-bool
-VarInfo_::hasAssignment()
-{
-  return _hasAssigment;
-}
-
-bool
-VarInfo_::hasStartModifier()
-{
-  return _hasStart;
-}
-
-bool
-VarInfo_::hasEachModifier()
-{
-  return _hasEach;
-}
-
-AST_Expression
-VarInfo_::exp()
-{
-  return _exp;
-}
-
-ostream &
-operator<<(ostream &ret, const VarInfo_ &e)
-{
-  if(e.isParameter())
-    ret << "parameter ";
-  if(e.isDiscrete())
-    ret << "discrete ";
-  if(e.isConstant())
-    ret << "constant ";
-  if(e.isInput())
-    ret << "input ";
-  if(e.isOutput())
-    ret << "output ";
-  ret << e._t;
-  return ret;
-}
-
-bool
-VarInfo_::isUnknown()
-{
-  return _unknown;
-}
-
-void
-VarInfo_::setUnknown()
-{
-  _unknown = true;
-}
-
-string
-VarInfo_::name()
-{
-  return _name;
-}
-
-void
-VarInfo_::setName(string n)
-{
-  _name = n;
-}
-
-bool
-VarInfo_::isArray()
-{
-  return _isArray;
-}
-
-VarInfo
-newVarInfo(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array)
-{
-  if(s.empty())
-  {
-    return new VarInfo_(t, tp, m, c);
-  }
-  else
-  {
-    return new VarInfo_(t, tp, m, s, array);
-  }
-}
-
-/* TypeSymbolTable_ class.*/
-
-TypeSymbolTable_::TypeSymbolTable_()
-{
-  insert("String", new Type_String_());
-  insert("Real", new Type_Real_());
-  insert("Integer", new Type_Integer_());
-  insert("Boolean", new Type_Boolean_());
-}
-
-TypeSymbolTable
-newTypeSymbolTable()
-{
-  return new TypeSymbolTable_;
-}
-
-/* VarSymbolTable_ class */
-
-VarSymbolTable_::VarSymbolTable_() :
-    _vste(), 
-    _coeffs(1), 
-    _parameters()
-{
-}
-
-void
-VarSymbolTable_::initialize(TypeSymbolTable ty)
-{
-  VarInfo v = newVarInfo(ty->lookup("Real"), 0, NULL, NULL, vector<int>(1, 0), false);
-  v->setBuiltIn();
-  v->setName("time");
-  insert("time", v);
-}
-
-VarSymbolTable
-newVarSymbolTable()
-{
-  return new VarSymbolTable_;
-}
-
-void
-VarInfo_::setEachModifier(bool each)
-{
-  _hasEach = each;
-}
-
-void
-VarInfo_::_unsetAssignment()
-{
-  _hasAssigment = false;
-}
-
-int
-VarInfo_::size(int dim)
-{
-  return _size[dim];
-}
-
-int
-VarInfo_::dimensions()
-{
-  return _size.size();
-}
-
-void
-VarInfo_::_unsetStartEach()
-{
-  _hasEach = false;
-  _hasStart = false;
-}
-
-void
-VarInfo_::setParameter()
-{
-  _tp = TP_PARAMETER;
-  _unsetStartEach();
-}
-
-void
-VarSymbolTable_::setPolyCoeffs(int coeffs)
-{
-  _coeffs = coeffs;
-}
-
-void
-VarSymbolTable_::insert(VarName n, VarInfo vi)
-{
-  SymbolTable<VarName, VarInfo>::insert(n, vi);
-  if(vi->isParameter())
-  {
-    _parameters.push_back(vi);
-  }
-}
-
-list<VarInfo>
-VarSymbolTable_::parameters()
-{
-  return _parameters;
 }

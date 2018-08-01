@@ -23,12 +23,345 @@
 #include <sstream>
 #include <utility>
 
+using namespace MicroModelica::Util;
+
 namespace MicroModelica {
   namespace IR
   {
-    /* Function class */
+/* MMO_Function class */
 
-    Function::Function(string name) 
+MMO_Function_::MMO_Function_(string name) :
+    _name(name), _externalFuncs(0), _outputs(0), _outputName(), _externalFunctions(
+    NULL), _prefix("__"), _arguments()
+{
+  _types = newTypeSymbolTable();
+  _annotations = newMMO_FunctionAnnotation();
+  _externalFunctionCalls = newMMO_ArgumentsTable();
+  _calledFunctions = newMMO_SymbolRefTable();
+  _declarations = newVarSymbolTable();
+  _declarations->initialize(_types);
+  _localDeclarations = newVarSymbolTable();
+  _statements = newMMO_StatementTable();
+  _packages = newMMO_PackageTable();
+  _imports = newMMO_ImportTable();
+  _data = newMMO_ModelData();
+  _functions = newMMO_FunctionTable();
+  _data->setAnnotation(_annotations);
+  _data->setInitialCode(true);
+  _data->setPackages(_packages);
+  _data->setCalledFunctions(_calledFunctions);
+  _data->setFunctions(_functions);
+  _data->setSymbols(_declarations);
+}
+
+
+VarSymbolTable
+MMO_Function_::varTable()
+{
+  return _declarations;
+}
+
+void
+MMO_Function_::setImports(MMO_ImportTable it)
+{
+  for(string i = it->begin(); !it->end(); i = it->next())
+  {
+    insert(i);
+  }
+}
+
+MMO_Annotation
+MMO_Function_::annotation()
+{
+  return _annotations;
+}
+
+void
+MMO_Function_::insert(string n)
+{
+}
+
+void
+MMO_Function_::insert(AST_Equation eq)
+{
+  return;
+}
+
+void
+MMO_Function_::insert(AST_Statement stm)
+{
+  MMO_Statement s = newMMO_Statement(stm, _data);
+  _statements->insert(s);
+}
+
+void
+MMO_Function_::insert(AST_Statement stm, bool initial)
+{
+  insert(stm);
+}
+
+void
+MMO_Function_::insert(MMO_Function f)
+{
+  return;
+}
+
+MMO_StatementTable
+MMO_Function_::statements()
+{
+  return _statements;
+}
+
+void
+MMO_Function_::insert(AST_External_Function_Call efc)
+{
+  string crName;
+  if(efc->hasComponentReference())
+  {
+    AST_Expression_ComponentReference cr = efc->componentReference();
+    VarInfo vi = _declarations->lookup(cr->name());
+    if(vi == NULL)
+    {
+      vi = _localDeclarations->lookup(cr->name());
+      if(vi == NULL)
+      {
+        Error::getInstance()->add(efc->lineNum(),
+        EM_IR | EM_VARIABLE_NOT_FOUND,
+            ER_Error, "%s", cr->name().c_str());
+        return;
+      }
+    }
+    crName = cr->name();
+  }
+  AST_ExpressionListIterator eli;
+  ControlVars cv = newControlVars(_declarations, _localDeclarations);
+  if(efc->args() != NULL)
+  {
+    foreach(eli,efc->args())
+    {
+      if(!cv->foldTraverse(current_element(eli)))
+      {
+        Error::getInstance()->add(efc->lineNum(),
+        EM_IR | EM_VARIABLE_NOT_FOUND,
+            ER_Error, "External function call.");
+        return;
+      }
+    }
+  }
+  deleteControlVars(cv);
+  Index i(_externalFuncs++, 0);
+  MMO_FunctionData fd = newMMO_FunctionData(crName, efc->name(), efc->args(),
+      _data);
+  _externalFunctionCalls->insert(i, fd);
+}
+
+MMO_ArgumentsTable
+MMO_Function_::externalFunctionCalls()
+{
+  return _externalFunctionCalls;
+}
+
+void
+MMO_Function_::insert(VarName n, VarInfo vi, DEC_Type type)
+{
+  Index idx;
+  idx.setHi(vi->size());
+  MMO_EvalInitExp_ e(_declarations);
+  vi->setName(n);
+  vi->setIndex(idx);
+  if(vi->typePrefix() & TP_CONSTANT)
+  {
+    vi->setValue(e.foldTraverse(vi->modification()->getAsEqual()->exp()));
+  }
+  _declarations->insert(n, vi);
+  if(type == DEC_PUBLIC)
+  {
+    if(vi->isOutput())
+    {
+      _outputs++;
+    }
+    _arguments.push_back(vi);
+  }
+  else
+  {
+    _localDeclarations->insert(n, vi);
+  }
+}
+
+void
+MMO_Function_::insert(VarName n, VarInfo vi)
+{
+  insert(n, vi, DEC_PUBLIC);
+}
+
+void
+MMO_Function_::insert(AST_Argument_Modification x)
+{
+  if(!_annotations->insert(x))
+  {
+    Error::getInstance()->add(x->lineNum(),
+    EM_IR | EM_ANNOTATION_NOT_FOUND,
+        ER_Error, "%s", x->name()->c_str());
+  }
+}
+
+string
+MMO_Function_::name() const
+{
+  return _name;
+}
+
+list<string>
+MMO_Function_::localDeclarations()
+{
+  list<string> ret;
+  stringstream buffer;
+  _localDeclarations->setPrintEnvironment(VST_FUNCTION);
+  for(VarInfo vi = _localDeclarations->begin(); !_localDeclarations->end(); vi =
+      _localDeclarations->next())
+  {
+    if(vi->isConstant())
+    {
+      continue;
+    }
+    Index idx = vi->index();
+    buffer << "double " << vi->name();
+    if(vi->isArray())
+    {
+      buffer << "[" << vi->size() << "]";
+    }
+    buffer << ";";
+    ret.push_back(buffer.str());
+    buffer.str("");
+    string indexVar;
+    if(vi->hasEachModifier())
+    {
+      indexVar = Util::getInstance()->newVarName("i", _declarations);
+      ret.push_back("int " + indexVar + ";");
+    }
+    if(vi->hasAssignment() || vi->hasStartModifier() || vi->hasEachModifier())
+    {
+      _data->setSymbols(_localDeclarations);
+      Util::getInstance()->setData(_data);
+      buffer << Util::getInstance()->printInitialAssignment(vi, "", indexVar);
+      ret.push_back(buffer.str());
+      buffer.str("");
+      _data->setSymbols(_declarations);
+    }
+  }
+  if(_outputs == 1)
+  {
+    _declarations->setPrintEnvironment(VST_FUNCTION);
+    for(VarInfo vi = _declarations->begin(); !_declarations->end(); vi =
+        _declarations->next())
+    {
+      if(!vi->isOutput())
+      {
+        continue;
+      }
+      Index idx = vi->index();
+      buffer << "double " << vi->name();
+      if(vi->isArray())
+      {
+        buffer << "[" << vi->size() << "]";
+      }
+      buffer << ";";
+      ret.push_back(buffer.str());
+      buffer.str("");
+      if(vi->hasAssignment() || vi->hasStartModifier() || vi->hasEachModifier())
+      {
+        _data->setSymbols(_localDeclarations);
+        Util::getInstance()->setData(_data);
+        buffer << Util::getInstance()->printInitialAssignment(vi, "");
+        ret.push_back(buffer.str());
+        buffer.str("");
+        _data->setSymbols(_declarations);
+      }
+    }
+  }
+  return ret;
+}
+
+void
+MMO_Function_::setPrefix(string prefix)
+{
+  _prefix = prefix;
+}
+
+string
+MMO_Function_::prototype()
+{
+  stringstream input;
+  stringstream output;
+  stringstream func;
+  list<VarInfo>::iterator it;
+  for(it = _arguments.begin(); it != _arguments.end(); it++)
+  {
+    VarInfo vi = *it;
+    if(vi->isInput())
+    {
+      input << "double ";
+      if(vi->isArray())
+      {
+        input << "*";
+      }
+      input << vi->name() << ",";
+    }
+    else if(vi->isOutput())
+    {
+      output << "double *" << vi->name() << ",";
+      _outputName = vi->name();
+    }
+  }
+  if(_outputs == 0)
+  {
+    string in = input.str();
+    if(!in.empty())
+    {
+      in.erase(in.end() - 1, in.end());
+    }
+    func << "void " << _prefix << _name << "(" << in << ")";
+  }
+  else if(_outputs == 1)
+  {
+    string in = input.str();
+    if(!in.empty())
+    {
+      in.erase(in.end() - 1, in.end());
+    }
+    func << "double " << _prefix << _name << "(" << in << ")";
+  }
+  else
+  {
+    string out = output.str();
+    out.erase(out.end() - 1, out.end());
+    func << "void " << _prefix << _name << "(" << input.str() << out << ")";
+  }
+  return func.str();
+}
+
+string
+MMO_Function_::returnStatement()
+{
+  if(_outputs == 1)
+  {
+    return "return " + _outputName + ";";
+  }
+  return "";
+}
+
+int
+MMO_Function_::outputs()
+{
+  return _outputs;
+}
+    /* Function Class Implementation*/
+
+    Function::Function(string name) :
+      _imports(),
+      _name(name),
+      _symbols(),
+      _localSymbols()
     {
     }
 
@@ -39,62 +372,74 @@ namespace MicroModelica {
     VarSymbolTable
     Function::varTable()
     {
-      return NULL;
+      return _symbols;
     }
 
     void
-    Function::insert(string n)
+    Function::insert(string n) const 
     {
+      _imports[n] = n;
+      if(!Util::getInstance()->readPackage(n, _packages))
+      {
+        Error::getInstance()->add(0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo", n.c_str());
+      }
     }
 
     void
-    Function::insert(AST_Equation eq)
+    Function::insert(AST_Equation eq) const 
     {
       return;
     }
 
     void
-    Function::insert(AST_Statement stm)
+    Function::insert(AST_Statement stm) const 
     {
     }
 
     void
-    Function::insert(AST_Statement stm, bool initial)
+    Function::insert(AST_Statement stm, bool initial) const
     {
     }
 
     void
-    Function::insert(AST_External_Function_Call efc)
+    Function::insert(AST_External_Function_Call efc) const  
     {
     }
 
     void
-    Function::insert(VarName n, VarInfo vi, DEC_Type type)
+    Function::insert(VarName n, VarInfo vi, DEC_Type type) const 
     {
     }
 
     void
-    Function::insert(VarName n, VarInfo vi)
+    Function::insert(VarName n, VarInfo vi) const 
     {
     }
 
     void
-    Function::insert(AST_Argument_Modification x)
+    Function::insert(AST_Argument_Modification x) const 
     {
     }
 
     string
     Function::name() const
     {
-      return ""; 
+      return _name; 
     }
 
-    MMO_ImportTable 
+    ImportTable 
     Function::imports()
     {
+      return _imports;
     }
 
-    Package::Package(string name) 
+    /* Package Class Implementation */
+
+    
+    Package::Package(string name) :
+      _imports(),
+      _name(),
+      _functions()
     {
     }
 
@@ -105,68 +450,97 @@ namespace MicroModelica {
     VarSymbolTable
     Package::varTable()
     {
-      return NULL;
+      return VarSymbolTable();
     }
 
     void
-    Package::insert(string n)
+    Package::insert(string n) const
+    {
+      _imports[n] = n;
+    }
+
+    void
+    Package::insert(AST_Equation eq) const 
     {
       return;
     }
 
     void
-    Package::insert(AST_Equation eq)
+    Package::insert(AST_Statement stm) const 
     {
       return;
     }
 
     void
-    Package::insert(AST_Statement stm)
+    Package::insert(AST_Statement stm, bool initial) const
     {
       return;
     }
 
     void
-    Package::insert(AST_Statement stm, bool initial)
+    Package::insert(Function &f) const 
+    {
+      _functions[f.name()] = f;
+    }
+
+    void
+    Package::insert(AST_External_Function_Call efc) const 
     {
       return;
     }
 
     void
-    Package::insert(Function &f)
+    Package::insert(VarName n, VarInfo vi, DEC_Type type) const 
     {
       return;
     }
 
     void
-    Package::insert(AST_External_Function_Call efc)
+    Package::insert(VarName n, VarInfo vi) const 
     {
       return;
     }
 
     void
-    Package::insert(VarName n, VarInfo vi, DEC_Type type)
-    {
-      return;
-    }
-
-    void
-    Package::insert(VarName n, VarInfo vi)
-    {
-      return;
-    }
-
-    void
-    Package::insert(AST_Argument_Modification x)
+    Package::insert(AST_Argument_Modification x) const 
     {
     }
 
     string
     Package::name() const
     {
-      return "";
+      return _name;
     }
-    Model::Model(string name)
+
+    ImportTable 
+    Package::imports()
+    {
+      return _imports;
+    }
+    
+    FunctionTable
+    Package::definitions()
+    {
+      return _functions;
+    }
+
+    string
+    Package::fileName() 
+    {
+      return MicroModelica::Util::Util::getInstance()->packageName(_name);
+    }
+
+    string
+    Package::prefix()
+    {
+      return "__" + _name + "__";
+    }
+
+    /* Model Class Implementation */
+
+    Model::Model(string name) :
+      _name(name),
+      _imports()
     {
     }
 
@@ -175,54 +549,54 @@ namespace MicroModelica {
     }
 
     void
-    Model::insert(VarName n, VarInfo vi, DEC_Type type)
+    Model::insert(VarName n, VarInfo vi, DEC_Type type) const 
     {
     }
 
     void
-    Model::insert(VarName n, VarInfo vi)
+    Model::insert(VarName n, VarInfo vi) const
     {
     }
 
     void
-    Model::insert(AST_Equation eq)
+    Model::insert(AST_Equation eq) const 
     {
     }
 
     void
-    Model::insert(AST_Statement stm)
+    Model::insert(AST_Statement stm) const 
     {
     }
 
     void
-    Model::insert(AST_External_Function_Call efc)
+    Model::insert(AST_External_Function_Call efc) const
     {
       return;
     }
 
     void
-    Model::insert(AST_Statement stm, bool initial)
+    Model::insert(AST_Statement stm, bool initial) const
     {
     }
 
     void
-    Model::insert(Function &f)
+    Model::insert(Function &f) const
     {
     }
 
     void
-    Model::insert(AST_Argument_Modification x)
+    Model::insert(AST_Argument_Modification x) const
     {
     }
 
     VarSymbolTable
     Model::varTable()
     {
-      return NULL;
+      return VarSymbolTable();
     }
 
     void
-    Model::insert(string n)
+    Model::insert(string n) const
     {
     }
 
@@ -232,10 +606,91 @@ namespace MicroModelica {
       return "";
     }
 
-    MMO_ImportTable
+    ImportTable
     Model::imports()
+    {
+      return _imports;
+    }
+
+    /* FunctionDefinition Class Implementation */
+
+    FunctionDefinition::FunctionDefinition() :
+      _def(), 
+      _name(), 
+      _prototype(), 
+      _includeDirectory(), 
+      _libraryDirectory(), 
+      _libraries()
     {
     }
 
+
+    FunctionDefinition::FunctionDefinition(string name, string includeDir, string libraryDir, list<string> libraries) :
+      _def(), 
+      _name(name), 
+      _prototype(), 
+      _includeDirectory(includeDir), 
+      _libraryDirectory(libraryDir), 
+      _libraries(libraries)
+    {
+    }
+
+    FunctionDefinition::~FunctionDefinition()
+    {
+    }
+
+    bool
+    FunctionDefinition::hasIncludeDirectory()
+    {
+      return !_includeDirectory.empty();
+    }
+
+    bool
+    FunctionDefinition::hasLibraryDirectory()
+    {
+      return !_libraryDirectory.empty();
+    }
+
+    bool
+    FunctionDefinition::hasLibraries()
+    {
+      return _libraries.size() > 0;
+    }
+
+    string
+    FunctionDefinition::includeDirectory()
+    {
+      return _includeDirectory;
+    }
+
+    string
+    FunctionDefinition::libraryDirectory()
+    {
+      return _libraryDirectory;
+    }
+
+    list<string>
+    FunctionDefinition::libraries()
+    {
+      return _libraries;
+    }
+
+    string
+    FunctionDefinition::name()
+    {
+      return _name;
+    }
+
+    list<string>
+    FunctionDefinition::def()
+    {
+      return _def;
+    }
+
+    string
+    FunctionDefinition::prototype()
+    {
+      return _prototype;
+    }
   }
 }
