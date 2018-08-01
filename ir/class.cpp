@@ -30,7 +30,7 @@ namespace MicroModelica {
   {
 /* MMO_Function class */
 
-MMO_Function_::MMO_Function_(string name) :
+/*MMO_Function_::MMO_Function_(string name) :
     _name(name), _externalFuncs(0), _outputs(0), _outputName(), _externalFunctions(
     NULL), _prefix("__"), _arguments()
 {
@@ -354,7 +354,7 @@ int
 MMO_Function_::outputs()
 {
   return _outputs;
-}
+}*/
     /* Function Class Implementation*/
 
     Function::Function(string name) :
@@ -379,10 +379,10 @@ MMO_Function_::outputs()
     Function::insert(string n) const 
     {
       _imports[n] = n;
-      if(!Util::getInstance()->readPackage(n, _packages))
+      /*if(!MicroModelica::Util::Util::getInstance()->readPackage(n, _packages))
       {
         Error::getInstance()->add(0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo", n.c_str());
-      }
+      }*/
     }
 
     void
@@ -612,9 +612,9 @@ MMO_Function_::outputs()
       return _imports;
     }
 
-    /* FunctionDefinition Class Implementation */
+    /* CompiledFunction Class Implementation */
 
-    FunctionDefinition::FunctionDefinition() :
+    CompiledFunction::CompiledFunction() :
       _def(), 
       _name(), 
       _prototype(), 
@@ -625,7 +625,7 @@ MMO_Function_::outputs()
     }
 
 
-    FunctionDefinition::FunctionDefinition(string name, string includeDir, string libraryDir, list<string> libraries) :
+    CompiledFunction::CompiledFunction(string name, string includeDir, string libraryDir, list<string> libraries) :
       _def(), 
       _name(name), 
       _prototype(), 
@@ -635,62 +635,146 @@ MMO_Function_::outputs()
     {
     }
 
-    FunctionDefinition::~FunctionDefinition()
+    CompiledFunction::~CompiledFunction()
     {
     }
 
     bool
-    FunctionDefinition::hasIncludeDirectory()
+    CompiledFunction::hasIncludeDirectory()
     {
       return !_includeDirectory.empty();
     }
 
     bool
-    FunctionDefinition::hasLibraryDirectory()
+    CompiledFunction::hasLibraryDirectory()
     {
       return !_libraryDirectory.empty();
     }
 
     bool
-    FunctionDefinition::hasLibraries()
+    CompiledFunction::hasLibraries()
     {
       return _libraries.size() > 0;
     }
 
     string
-    FunctionDefinition::includeDirectory()
+    CompiledFunction::includeDirectory()
     {
       return _includeDirectory;
     }
 
     string
-    FunctionDefinition::libraryDirectory()
+    CompiledFunction::libraryDirectory()
     {
       return _libraryDirectory;
     }
 
     list<string>
-    FunctionDefinition::libraries()
+    CompiledFunction::libraries()
     {
       return _libraries;
     }
 
     string
-    FunctionDefinition::name()
+    CompiledFunction::name()
     {
       return _name;
     }
 
     list<string>
-    FunctionDefinition::def()
+    CompiledFunction::def()
     {
       return _def;
     }
 
     string
-    FunctionDefinition::prototype()
+    CompiledFunction::prototype()
     {
       return _prototype;
+    }
+
+    /* CompiledPackage Class Implementation */
+    
+    CompiledPackage::CompiledPackage()
+    {
+    }
+
+    CompiledPackage::CompiledPackage(string name, CompiledFunctionTable cft, ImportTable objects) :
+        _name(name), 
+        _cft(cft), 
+        _objects(objects)
+    {
+    }
+
+    CompiledPackage::~CompiledPackage()
+    {
+    }
+
+    string
+    CompiledPackage::name()
+    {
+      return _name;
+    }
+
+    string
+    CompiledPackage::prefix()
+    {
+      return "__" + _name + "__";
+    }
+
+    CompiledFunctionTable 
+    CompiledPackage::definitions()
+    {
+      return _cft;
+    }
+
+    ImportTable
+    CompiledPackage::objects()
+    {
+      return _objects;
+    }
+
+    list<string>
+    CompiledPackage::linkLibraries()
+    {
+      list<string> ret;
+      for(CompiledFunction cf = _cft->begin(); !_cft->end(); cf = _cft->next())
+      {
+        if(cf->hasLibraries())
+        {
+          list<string> libs = cf->libraries();
+          ret.insert(ret.end(), libs.begin(), libs.end());
+        }
+      }
+      return ret;
+    }
+
+    list<string>
+    CompiledPackage::libraryDirectories()
+    {
+      list<string> ret;
+      for(CompiledFunction cf = _cft->begin(); !_cft->end(); cf = _cft->next())
+      {
+        if(cf->hasLibraryDirectory())
+        {
+          ret.push_back(fd->libraryDirectory());
+        }
+      }
+      return ret;
+    }
+
+    list<string>
+    CompiledPackage::includeDirectories()
+    {
+      list<string> ret;
+      for(CompiledFunction cf = _cft->begin(); !_cft->end(); cf = _cft->next())
+      {
+        if(cf->hasIncludeDirectory())
+        {
+          ret.push_back(fd->includeDirectory());
+        }
+      }
+      return ret;
     }
   }
 }

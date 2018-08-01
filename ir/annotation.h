@@ -76,155 +76,7 @@ namespace MicroModelica {
     /**
      *
      */
-    class Annotation
-    {
-      public:
-        Annotation();
-        ~Annotation(){};
-        virtual bool
-        hasDerivative();
-        virtual bool
-        hasInclude();
-        virtual bool
-        hasIncludeDirectory();
-        virtual bool
-        hasLibraries();
-        virtual bool
-        hasLibraryDirectory();
-        virtual string
-        derivative();
-        virtual string
-        include();
-        virtual string
-        includeDirectory();
-        virtual list<string>
-        libraries();
-        virtual string
-        libraryDirectory();
-        virtual void
-        eventComment(AST_Comment x);
-        virtual bool
-        insert(AST_Argument_Modification x);
-        virtual void
-        setDesc(string desc);
-        virtual string
-        desc();
-        virtual void
-        setDQMin(double dqmin);
-        virtual list<double>
-        dqmin();
-        virtual list<double>
-        dqrel();
-        virtual void
-        setDQRel(double dqrel);
-        virtual void
-        setWeight(double weight);
-        virtual double
-        weight();
-        virtual void
-        setSolver(Solver solver);
-        virtual Solver
-        solver();
-        virtual string
-        solverString();
-        virtual void
-        setInitialTime(double it);
-        virtual double
-        initialTime();
-        virtual void
-        setFinalTime(double ft);
-        virtual double
-        finalTime();
-        virtual void
-        setMinStep(double ms);
-        virtual double
-        minStep();
-        virtual void
-        setZCHyst(double zch);
-        virtual double
-        ZCHyst();
-        virtual void
-        setDerDelta(double dd);
-        virtual double
-        derDelta();
-        virtual void
-        setLps(int lps);
-        virtual void
-        setDT(double dt);
-        virtual double
-        DT();
-        virtual int
-        lps();
-        virtual void
-        setNodeSize(int ns);
-        virtual int
-        nodeSize();
-        virtual void
-        setCommInterval(string ci);
-        virtual string
-        commInterval();
-        virtual void
-        setSample(double s);
-        virtual list<double>
-        sample();
-        virtual void
-        setSymDiff(bool sd);
-        virtual bool
-        symDiff();
-        virtual int
-        order();
-        virtual string
-        scheduler();
-        virtual void
-        setScheduler(string sched);
-        virtual list<AST_Expression>
-        output();
-        virtual void
-        setStoreData(string save);
-        virtual string
-        storeData();
-        virtual void
-        setPartitionMethod(PartitionMethod pm);
-        virtual string
-        partitionMethodString();
-        virtual PartitionMethod
-        partitionMethod();
-        virtual void
-        setParallel(bool p);
-        virtual bool
-        parallel();
-        virtual int
-        polyCoeffs();
-        virtual void
-        setDtSynch(DT_Synch synch);
-        virtual string
-        dtSynchString();
-        virtual DT_Synch
-        dtSynch();
-        virtual list<string>
-        patohSettings();
-        virtual list<string>
-        scotchSettings();
-        virtual list<string>
-        metisSettings();
-        virtual void
-        setPatohSettings(string l);
-        virtual void
-        setScotchSettings(string l);
-        virtual void
-        setMetisSettings(string l);
-        virtual void
-        setJacobian(int l) = 0;
-        virtual int
-        jacobian() = 0;
-        virtual bool
-        classic() = 0;
-    };
-
-    /**
-     *
-     */
-    class FunctionAnnotation: public Annotation
+    class FunctionAnnotation
     {
       public:
         /**
@@ -302,20 +154,6 @@ namespace MicroModelica {
          */
         string
         libraryDirectory();
-        void
-        setJacobian(int l)
-        {
-        };
-        int
-        jacobian()
-        {
-          return 0;
-        };
-        bool
-        classic()
-        {
-          return false;
-        };
       private:
         /**
          *
@@ -339,7 +177,7 @@ namespace MicroModelica {
     /**
      *
      */
-    class ModelAnnotation: public Annotation
+    class ModelAnnotation
     {
       public:
         /**
