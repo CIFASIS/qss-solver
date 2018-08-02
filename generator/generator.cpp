@@ -239,7 +239,7 @@ namespace MicroModelica {
     }
 
     void
-    Generator::_generateFunction(MicroModelica::IR::FunctionDefinition f, string fileName)
+    Generator::_generateFunction(MicroModelica::IR::CompiledFunction f, string fileName)
     {
       _printList(f.def());
     }

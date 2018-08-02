@@ -573,7 +573,7 @@ namespace MicroModelica
          * @param libraryDir
          * @param libraries
          */
-        CompiledPackage(string name, CompiledFunctionTable cft , ImportTable objects);
+        CompiledPackage(string name, CompiledFunctionTable cft , MicroModelica::Util::ImportTable objects);
         /**
          *
          */
@@ -618,12 +618,12 @@ namespace MicroModelica
          *
          * @return
          */
-        ImportTable 
+        MicroModelica::Util::ImportTable 
         objects();
       private:
-        string                _name;
-        CompiledFunctionTable _cft;
-        ImportTable           _objects;
+        string                            _name;
+        CompiledFunctionTable             _cft;
+        MicroModelica::Util::ImportTable  _objects;
     };
 
   }

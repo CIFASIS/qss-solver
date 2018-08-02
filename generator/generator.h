@@ -74,7 +74,7 @@ namespace MicroModelica {
         void
         _generateFunction(MicroModelica::IR::Function f, string fileName);
         void
-        _generateFunction(MicroModelica::IR::FunctionDefinition f, string fileName);
+        _generateFunction(MicroModelica::IR::CompiledFunction f, string fileName);
         void
         _generateFunctionHeader(string fileName);
         void

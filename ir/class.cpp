@@ -738,11 +738,12 @@ MMO_Function_::outputs()
     CompiledPackage::linkLibraries()
     {
       list<string> ret;
-      for(CompiledFunction cf = _cft->begin(); !_cft->end(); cf = _cft->next())
+      for(CompiledFunctionTable::iterator it = _cft.begin(); !_cft.end(it); _cft.next(it))
       {
-        if(cf->hasLibraries())
+        CompiledFunction cf = _cft.value(it);
+        if(cf.hasLibraries())
         {
-          list<string> libs = cf->libraries();
+          list<string> libs = cf.libraries();
           ret.insert(ret.end(), libs.begin(), libs.end());
         }
       }
@@ -753,11 +754,12 @@ MMO_Function_::outputs()
     CompiledPackage::libraryDirectories()
     {
       list<string> ret;
-      for(CompiledFunction cf = _cft->begin(); !_cft->end(); cf = _cft->next())
+      for(CompiledFunctionTable::iterator it = _cft.begin(); !_cft.end(it); _cft.next(it))
       {
-        if(cf->hasLibraryDirectory())
+        CompiledFunction cf = _cft.value(it);
+        if(cf.hasLibraryDirectory())
         {
-          ret.push_back(fd->libraryDirectory());
+          ret.push_back(cf.libraryDirectory());
         }
       }
       return ret;
@@ -767,11 +769,12 @@ MMO_Function_::outputs()
     CompiledPackage::includeDirectories()
     {
       list<string> ret;
-      for(CompiledFunction cf = _cft->begin(); !_cft->end(); cf = _cft->next())
+      for(CompiledFunctionTable::iterator it = _cft.begin(); !_cft.end(it); _cft.next(it))
       {
-        if(cf->hasIncludeDirectory())
+        CompiledFunction cf = _cft.value(it);
+        if(cf.hasIncludeDirectory())
         {
-          ret.push_back(fd->includeDirectory());
+          ret.push_back(cf.includeDirectory());
         }
       }
       return ret;

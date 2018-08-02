@@ -47,6 +47,29 @@ class ModelTable : public std::map<Key,Value>
     {
       std::map<Key,Value>::erase(k);
     }
+    typedef typename std::map<Key,Value>::iterator iterator;
+    iterator 
+    begin()
+    {
+      iterator it = std::map<Key,Value>::begin();
+      return it;
+    };
+    bool 
+    end(iterator it)
+    {
+      return it == std::map<Key,Value>::end();
+    }
+    void 
+    next(iterator it)
+    {
+      it++;
+    }
+    Value 
+    value(iterator it)
+    {
+      return it->second;
+    }
 };
+
 
 #endif /* TABLE_H */
