@@ -23,6 +23,9 @@
 #include <sstream>
 #include <utility>
 
+#include "../util/error.h"
+
+
 using namespace MicroModelica::Util;
 
 namespace MicroModelica {
@@ -361,7 +364,10 @@ MMO_Function_::outputs()
       _imports(),
       _name(name),
       _symbols(),
-      _localSymbols()
+      _localSymbols(),
+      _statements(),
+      _types(),
+      _packages()
     {
     }
 
@@ -370,55 +376,59 @@ MMO_Function_::outputs()
     }
 
     VarSymbolTable
-    Function::varTable()
+    Function::varTable() const
     {
       return _symbols;
     }
 
     void
-    Function::insert(string n) const 
+    Function::insert(string n)
     {
       _imports[n] = n;
-      /*if(!MicroModelica::Util::Util::getInstance()->readPackage(n, _packages))
+      if(!Util::Util::getInstance()->readPackage(n, _packages))
       {
         Error::getInstance()->add(0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo", n.c_str());
-      }*/
+      }
     }
 
     void
-    Function::insert(AST_Equation eq) const 
+    Function::insert(AST_Equation eq)  
     {
       return;
     }
 
     void
-    Function::insert(AST_Statement stm) const 
+    Function::insert(AST_Statement stm) 
     {
     }
 
     void
-    Function::insert(AST_Statement stm, bool initial) const
+    Function::insert(AST_Statement stm, bool initial) 
     {
     }
 
     void
-    Function::insert(AST_External_Function_Call efc) const  
+    Function::insert(AST_External_Function_Call efc)   
     {
     }
 
     void
-    Function::insert(VarName n, VarInfo vi, DEC_Type type) const 
+    Function::insert(VarName n, VarInfo vi, DEC_Type type)  
     {
     }
 
     void
-    Function::insert(VarName n, VarInfo vi) const 
+    Function::insert(VarName n, VarInfo vi)  
     {
     }
 
     void
-    Function::insert(AST_Argument_Modification x) const 
-    {
+    Function::insert(AST_Argument_Modification x)  
+    { 
+      if(!_annotations.insert(x))
+      {
+        Error::getInstance()->add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Error, "%s", x->name()->c_str());
+      }
     }
 
     string
@@ -428,7 +438,7 @@ MMO_Function_::outputs()
     }
 
     ImportTable 
-    Function::imports()
+    Function::imports() const
     {
       return _imports;
     }
@@ -448,61 +458,61 @@ MMO_Function_::outputs()
     }
 
     VarSymbolTable
-    Package::varTable()
+    Package::varTable() const 
     {
       return VarSymbolTable();
     }
 
     void
-    Package::insert(string n) const
+    Package::insert(string n) 
     {
       _imports[n] = n;
     }
 
     void
-    Package::insert(AST_Equation eq) const 
+    Package::insert(AST_Equation eq)  
     {
       return;
     }
 
     void
-    Package::insert(AST_Statement stm) const 
+    Package::insert(AST_Statement stm)  
     {
       return;
     }
 
     void
-    Package::insert(AST_Statement stm, bool initial) const
+    Package::insert(AST_Statement stm, bool initial) 
     {
       return;
     }
 
     void
-    Package::insert(Function &f) const 
+    Package::insert(Function &f)  
     {
       _functions[f.name()] = f;
     }
 
     void
-    Package::insert(AST_External_Function_Call efc) const 
+    Package::insert(AST_External_Function_Call efc)  
     {
       return;
     }
 
     void
-    Package::insert(VarName n, VarInfo vi, DEC_Type type) const 
+    Package::insert(VarName n, VarInfo vi, DEC_Type type)  
     {
       return;
     }
 
     void
-    Package::insert(VarName n, VarInfo vi) const 
+    Package::insert(VarName n, VarInfo vi)  
     {
       return;
     }
 
     void
-    Package::insert(AST_Argument_Modification x) const 
+    Package::insert(AST_Argument_Modification x) 
     {
     }
 
@@ -513,7 +523,7 @@ MMO_Function_::outputs()
     }
 
     ImportTable 
-    Package::imports()
+    Package::imports() const
     {
       return _imports;
     }
@@ -549,54 +559,54 @@ MMO_Function_::outputs()
     }
 
     void
-    Model::insert(VarName n, VarInfo vi, DEC_Type type) const 
+    Model::insert(VarName n, VarInfo vi, DEC_Type type)  
     {
     }
 
     void
-    Model::insert(VarName n, VarInfo vi) const
+    Model::insert(VarName n, VarInfo vi) 
     {
     }
 
     void
-    Model::insert(AST_Equation eq) const 
+    Model::insert(AST_Equation eq)  
     {
     }
 
     void
-    Model::insert(AST_Statement stm) const 
+    Model::insert(AST_Statement stm)  
     {
     }
 
     void
-    Model::insert(AST_External_Function_Call efc) const
+    Model::insert(AST_External_Function_Call efc) 
     {
       return;
     }
 
     void
-    Model::insert(AST_Statement stm, bool initial) const
+    Model::insert(AST_Statement stm, bool initial) 
     {
     }
 
     void
-    Model::insert(Function &f) const
+    Model::insert(Function &f) 
     {
     }
 
     void
-    Model::insert(AST_Argument_Modification x) const
+    Model::insert(AST_Argument_Modification x) 
     {
     }
 
     VarSymbolTable
-    Model::varTable()
+    Model::varTable() const
     {
       return VarSymbolTable();
     }
 
     void
-    Model::insert(string n) const
+    Model::insert(string n) 
     {
     }
 
@@ -607,7 +617,7 @@ MMO_Function_::outputs()
     }
 
     ImportTable
-    Model::imports()
+    Model::imports() const
     {
       return _imports;
     }

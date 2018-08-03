@@ -20,14 +20,19 @@
 #include "../ast/statement.h"
 #include "statement.h"
 
-MMO_Statement::MMO_Statement(AST_Statement stm) 
-{
-}
+namespace MicroModelica {
+  namespace IR {
 
-MMO_Statement::MMO_Statement() 
-{
-}
+    Statement::Statement(AST_Statement stm) 
+    {
+    }
 
-MMO_Statement::~MMO_Statement()
-{
+    Statement::Statement() 
+    {
+    }
+
+    Statement::~Statement()
+    {
+    }
+  }
 }

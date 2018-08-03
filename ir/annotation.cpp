@@ -32,7 +32,7 @@
 namespace MicroModelica {
   namespace IR {
     
-    using namespace MicroModelica::Util; 
+    using namespace Util; 
 
     FunctionAnnotation::FunctionAnnotation() :
         _annotations(), 
@@ -83,10 +83,10 @@ namespace MicroModelica {
     }
 
     bool
-    FunctionAnnotation::insert(AST_Argument_Modification x)
+    FunctionAnnotation::insert(AST_Argument_Modification x)  
     {
       string annot = *(x->name());
-      map<string, FunctionAnnotation::type>::iterator itf = _annotations.find( annot);
+      map<string, FunctionAnnotation::type>::const_iterator itf = _annotations.find(annot);
       if(itf == _annotations.end())
       {
         return false;
@@ -124,8 +124,7 @@ namespace MicroModelica {
             AST_ExpressionListIterator eli;
             foreach(eli,el)
             {
-              _libraries.push_back(
-              current_element(eli)->getAsString()->str());
+              _libraries.push_back(current_element(eli)->getAsString()->str());
             }
           }
           break;
@@ -288,11 +287,10 @@ namespace MicroModelica {
     }
 
     bool
-    ModelAnnotation::insert(AST_Argument_Modification x)
+    ModelAnnotation::insert(AST_Argument_Modification x) 
     {
       string annot = *(x->name());
-      map<string, ModelAnnotation::type>::iterator itf = _annotations.find(
-          annot);
+      map<string, ModelAnnotation::type>::const_iterator itf = _annotations.find(annot);
       if(itf == _annotations.end())
       {
         return false;
@@ -312,30 +310,23 @@ namespace MicroModelica {
               {
                 if(current_element(it)->argumentType() == AR_MODIFICATION)
                 {
-                  _processArgument(
-                  current_element(it)->getAsModification());
+                  _processArgument(current_element(it)->getAsModification());
                 }
                 else
                 {
-                  Error::getInstance()->add(x->lineNum(),
-                  EM_IR | EM_ANNOTATION_TYPE,
-                      ER_Error, "%s", x->name()->c_str());
+                  Error::getInstance()->add(x->lineNum(), EM_IR | EM_ANNOTATION_TYPE, ER_Error, "%s", x->name()->c_str());
                 }
               }
             }
             else
             {
-              Error::getInstance()->add(x->lineNum(),
-              EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Error,
-                  "Missing modification arguments. %s",
+              Error::getInstance()->add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Error, "Missing modification arguments. %s",
                   x->name()->c_str());
             }
           }
           else
           {
-            Error::getInstance()->add(x->lineNum(),
-            EM_IR | EM_ANNOTATION_NOT_FOUND,
-                ER_Warning, "%s", x->name()->c_str());
+            Error::getInstance()->add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Warning, "%s", x->name()->c_str());
           }
         }
           break;
@@ -551,15 +542,12 @@ namespace MicroModelica {
     }
 
     void
-    ModelAnnotation::_processAnnotation(string annot, AST_Modification_Equal x)
+    ModelAnnotation::_processAnnotation(string annot, AST_Modification_Equal x) 
     {
-      map<string, ModelAnnotation::type>::iterator itf = _annotations.find(
-          annot);
+      map<string, ModelAnnotation::type>::const_iterator itf = _annotations.find(annot);
       if(itf == _annotations.end())
       {
-        Error::getInstance()->add(x->lineNum(),
-        EM_IR | EM_ANNOTATION_NOT_FOUND,
-            ER_Warning, "%s", annot.c_str());
+        Error::getInstance()->add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Warning, "%s", annot.c_str());
       }
       EvalAnnotation ea(_symbolTable);
       AnnotationValue av;
@@ -1020,7 +1008,7 @@ namespace MicroModelica {
     }
 
     string
-    AnnotationValue::str()
+    AnnotationValue::str() 
     {
       return _str;
     }

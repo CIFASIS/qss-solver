@@ -166,12 +166,12 @@ namespace MicroModelica {
           LIBRARY_DIRECTORY,  //!< LIBRARY_DIRECTORY
           DERIVATIVE          //!< DERIVATIVE
         } type;
-        map<string, FunctionAnnotation::type> _annotations;
-        string _derivative;
-        string _include;
-        string _includeDirectory;
-        list<string> _libraries;
-        string _libraryDirectory;
+        map<std::string, FunctionAnnotation::type> _annotations;
+        std::string                                _derivative;
+        std::string                                _include;
+        std::string                                _includeDirectory;
+        std::list<std::string>                     _libraries;
+        std::string                                _libraryDirectory;
     };
 
     /**
@@ -586,7 +586,7 @@ namespace MicroModelica {
         list<string>          _scotchSettings;
         list<string>          _metisSettings;
         int                   _jacobian;
-        MicroModelica::Util::VarSymbolTable        _symbolTable;
+        Util::VarSymbolTable  _symbolTable;
     };
 
     typedef boost::variant<

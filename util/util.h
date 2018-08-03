@@ -31,11 +31,13 @@
 #include "compile_flags.h"
 #include "table.h"
 
-
 namespace MicroModelica {
+  namespace IR {
+    class CompiledPackage;
+    typedef ModelTable<std::string,CompiledPackage> CompiledPackageTable;
+  }
   namespace Util {
 
-    class MMO_PackageTable;
 
     typedef ModelTable<string, string> ImportTable;
     
@@ -240,15 +242,15 @@ namespace MicroModelica {
          * @param pt
          * @return
          */
-       // bool
-       // readPackage(string fileName, MMO_PackageTable pt);
+        bool
+        readPackage(string fileName, IR::CompiledPackageTable pt);
         /**
          *
          * @param fileName
          * @return
          */
-       // MMO_PackageConfig
-       // readPackage(string fileName);
+        Option<MicroModelica::IR::CompiledPackage> 
+        readPackage(string fileName);
         /**
          *
          * @param pname

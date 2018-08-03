@@ -52,7 +52,7 @@ namespace MicroModelica {
       _functions[name] = Function(name);
     }
 
-    const Function& 
+    Function 
     StoredDefinition::function(string name) 
     {
       Option<Function> f = _functions[name];
@@ -63,13 +63,13 @@ namespace MicroModelica {
       return Function();
     }
 
-    const Model& 
+    Model 
     StoredDefinition::model() 
     {
       return boost::get<Model>(_def);
     }
 
-    const Package&
+    Package
     StoredDefinition::package()
     {
       return boost::get<Package>(_def);

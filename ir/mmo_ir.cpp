@@ -64,17 +64,20 @@ namespace MicroModelica {
         if(p & CP_PACKAGE)
         {
           _std.setPackage(*x->name()); 
-          _class = &(_std.package());
+          //_class = &(_std.package());
+          _class = new Package(*x->name());
         }
         else if((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE))
         {
           _std.addFunction(*x->name());
-          _class = &(_std.function(*x->name())); 
+          //_class = &(_std.function(*x->name())); 
+          _class = new Function(*x->name());
         }
         else
         {
           _std.setModel(*x->name());
-          _class = &(_std.model());
+          //_class = &(_std.model());
+          _class = new Model(*x->name());
         }
     }
 

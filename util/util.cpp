@@ -26,6 +26,7 @@
 #include <utility>
 
 #include "../ir/expression.h"
+#include "../ir/class.h"
 #include "../ir/mmo_util.h"
 #include "compile_flags.h"
 #include "index.h"
@@ -248,7 +249,7 @@ namespace MicroModelica {
       return ret;
     }
 
-    /*MMO_PackageData
+    Option<MicroModelica::IR::CompiledPackage>
     Util::readPackage(string fileName)
     {
       fstream package;
@@ -259,8 +260,8 @@ namespace MicroModelica {
       if(package.good())
       {
         string line;
-        MMO_FunctionDefinitionTable fit = newMMO_FunctionDefinitionTable();
-        MMO_ImportTable objects = newMMO_ImportTable();
+        IR::CompiledFunctionTable cft;
+        ImportTable objects;
         string fname;
         string derivative;
         string includeDir;
@@ -273,7 +274,7 @@ namespace MicroModelica {
             list<string> objs = _getValue(&package, "ENDDEPENDENCES");
             for(list<string>::iterator it = objs.begin(); it != objs.end(); ++it)
             {
-              objects->insert(*it);
+              objects.insert(*it,*it);
             }
           }
           else if(!line.compare("FUNCTION"))
@@ -298,29 +299,27 @@ namespace MicroModelica {
           }
           else if(!line.compare("ENDDEFINITION"))
           {
-            MMO_FunctionDefinition fi = newMMO_FunctionDefinition(fname, includeDir,
-                libraryDir, libraries);
-            fit->insert(fi);
+            IR::CompiledFunction fi(fname, includeDir, libraryDir, libraries);
+            cft.insert(fname, fi);
           }
         }
-        MMO_PackageData pd = newMMO_PackageData(fileName, fit, objects);
         package.close();
-        return pd;
+        return Option<IR::CompiledPackage>(IR::CompiledPackage (fileName, cft, objects));
       }
-      return NULL;
+      return Option<IR::CompiledPackage>();
     }
 
     bool
-    Util::readPackage(string fileName, MMO_PackageTable pt)
+    Util::readPackage(string fileName, IR::CompiledPackageTable pt)
     {
-      MMO_PackageData pd = readPackage(fileName);
-      if(pd == NULL)
+      Option<IR::CompiledPackage> cp = readPackage(fileName);
+      if(cp)
       {
         return false;
       }
-      pt->insert(pd);
+      pt.insert(cp.get().name(),cp.get());
       return true;
-    }*/
+    }
 
     bool
     Util::searchCompiledPackage(string pname, CompileFlags flags)
