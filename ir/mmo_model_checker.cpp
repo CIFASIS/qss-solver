@@ -203,7 +203,7 @@ namespace MicroModelica {
     void
     ModelChecker::visit(AST_External_Function_Call x)
     {
-      if(x->languageString() != MicroModelica::Util::Util::getInstance()->languageEspecification())
+      if(x->languageString() != Utils::instance().languageEspecification())
       {
         Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION,
             ER_Error, "Language Specification not recognized.");
@@ -226,7 +226,7 @@ namespace MicroModelica {
         AST_DeclarationList dl = c->nameList();
         foreach(it,dl)
         {
-          if(MicroModelica::Util::Util::getInstance()->checkBuiltInFunctions( current_element(it)->name()) != BIF_NONE)
+          if(Utils::instance().checkBuiltInFunctions( current_element(it)->name()) != BIF_NONE)
           {
             Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Reserved word used in variable name: %s.",
                 current_element(it)->name().c_str());
@@ -276,7 +276,7 @@ namespace MicroModelica {
             }
           }
         }
-        if(!MicroModelica::Util::Util::getInstance()->checkTypeString(c->type()))
+        if(!Utils::instance().checkTypeString(c->type()))
         {
           Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Predefined type not recognized.");
         }
@@ -488,7 +488,7 @@ namespace MicroModelica {
         AST_Argument_Modification am = x->getAsModification();
         if(am->hasModification() && _classModification == false)
         {
-          if(MicroModelica::Util::Util::getInstance()->checkExperimentAnnotations(am->name()))
+          if(Utils::instance().checkExperimentAnnotations(am->name()))
           {
             Error::getInstance()->add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Annotation not recognized.");
           }

@@ -49,13 +49,13 @@ namespace MicroModelica {
          * @param solver
          * @param flags
          */
-        Files(MicroModelica::IR::Model model, ModelInstanceType modelInstance, MicroModelica::Util::CompileFlags flags);
+        Files(ModelInstancePtr modelInstance, IR::Model& model, Util::CompileFlags& flags);
         /**
          *
          * @param name
          * @param flags
          */
-        Files(string name, MicroModelica::Util::CompileFlags flags);
+        Files(string name, Util::CompileFlags& flags);
         /**
          *
          */
@@ -80,7 +80,7 @@ namespace MicroModelica {
          * @param annotation
          */
         void
-        settings(MicroModelica::IR::ModelAnnotation annotation);
+        settings(IR::ModelAnnotation annotation);
         void
         graph();
       private:
@@ -88,9 +88,9 @@ namespace MicroModelica {
         _printList(list<string> ann, string tag);
         string                              _fname;
         MicroModelica::IR::Model            _model;
-        ModelInstanceType                   _modelInstance;
+        ModelInstancePtr                    _modelInstance;
         WriterPtr                           _writer;
-        MicroModelica::Util::CompileFlags   _flags;
+        Util::CompileFlags                  _flags;
         ofstream                            _file;
     };
   }

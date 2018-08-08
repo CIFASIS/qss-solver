@@ -62,13 +62,15 @@ ASTSRC = $(ASTDIR)/ast_builder.cpp \
 GENERATORSRC = $(GENERATORDIR)/files.cpp  \
 							 $(GENERATORDIR)/model_instance.cpp  \
 							 $(GENERATORDIR)/writer.cpp  \
+							 $(GENERATORDIR)/function.cpp  \
+							 $(GENERATORDIR)/package.cpp  \
 							 $(GENERATORDIR)/generator.cpp 
 
 IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
-				$(IRDIR)/mmo_util.cpp  \
 				$(IRDIR)/expression.cpp  \
 				$(IRDIR)/equation.cpp  \
 				$(IRDIR)/statement.cpp  \
+				$(IRDIR)/helpers.cpp  \
 				$(IRDIR)/class.cpp  \
 				$(IRDIR)/annotation.cpp  \
 				$(IRDIR)/event.cpp  \

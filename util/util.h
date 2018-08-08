@@ -151,19 +151,23 @@ namespace MicroModelica {
     /**
      *
      */
-    class Util
+    class Utils
     {
       public:
         /**
          *
          * @return
          */
-        static Util *
-        getInstance();
+        static Utils&
+        instance()
+        {
+          static Utils _instance;
+          return _instance;
+        }
         /**
          *
          */
-        ~Util();
+        ~Utils();
         string
         trimString(string str);
         /**
@@ -316,8 +320,7 @@ namespace MicroModelica {
         bool
         checkGKLinkFunctions(string name);
       private:
-        Util();
-        static Util *_instance;
+        Utils();
         bool
         _checkCodeFiles(string name, string ext);
         list<string>

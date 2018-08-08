@@ -23,24 +23,25 @@
 
 #include "../ir/annotation.h"
 #include "../ir/class.h"
-#include "../ir/mmo_util.h"
 #include "../ir/statement.h"
 #include "../ir/stored_definition.h"
 #include "../util/error.h"
 #include "../util/symbol_table.h"
 #include "../util/type.h"
 #include "../util/util.h"
+#include "function.h"
+#include "package.h"
+#include "model_instance.h"
 #include "files.h"
 #include "writer.h"
 
 
 namespace MicroModelica {
+  using namespace IR;
+  using namespace Util;
   namespace Generator {
     
-    using namespace MicroModelica::IR;
-    using namespace MicroModelica::Util;
-    
-    Generator::Generator(StoredDefinition std, CompileFlags flags) :
+    Generator::Generator(StoredDefinition& std, CompileFlags& flags) :
       _std(std), 
       _flags(flags), 
       _modelInstance(), 
@@ -66,6 +67,15 @@ namespace MicroModelica {
     int
     Generator::generate()
     {
+      if(_std.isModel())
+      {
+        Model model = _std.model();
+      }
+      else 
+      {
+        Package pkg(_std.package(), _flags, _writer);
+        pkg.generate();
+      }
      /* for(MMO_Class* c = _std.begin(); _std.end(); c = _std.next())
       {
         string fname = c->name();
@@ -175,53 +185,8 @@ namespace MicroModelica {
     }
 
     void
-    Generator::_generateFunctionCode(MicroModelica::IR::Function f)
+    Generator::_generateFunctionCode(IR::Function f)
     {
-      /*list<string> code;
-      MMO_ImportTable it = f->imports();
-      for(string i = it->begin(); !it->end(); i = it->next())
-      {
-        string addInclude = Util::getInstance()->packageName(i);
-        if(_includes.find(addInclude) == _includes.end())
-        {
-          _includes[addInclude] = addInclude;
-          _writer->write("#include \"" + addInclude + ".h\"", WR_FUNCTION_HEADER);
-        }
-      }
-      if(f->annotation()->hasInclude())
-      {
-        string addInclude = f->annotation()->include();
-        if(_includes.find(addInclude) == _includes.end())
-        {
-          _includes[addInclude] = addInclude;
-          _writer->write(addInclude, WR_FUNCTION_HEADER);
-        }
-      }
-      string indent = _writer->indent(1);
-      stringstream buffer;
-      buffer << f->prototype();
-      _writer->write(&buffer, WR_FUNCTION_CODE);
-      _writer->write("{", WR_FUNCTION_CODE);
-      _writer->beginBlock();
-      _printList(f->localDeclarations());
-      MMO_StatementTable stt = f->statements();
-      VarSymbolTable vt = f->varTable();
-      vt->setPrintEnvironment(VST_FUNCTION);
-      for(MMO_Statement st = stt->begin(); !stt->end(); st = stt->next())
-      {
-        list<string> sts = st->print(indent);
-        _printList(st->getVariables());
-        code.insert(code.end(), sts.begin(), sts.end());
-      }
-      _printList(code);
-      MMO_ArgumentsTable at = f->externalFunctionCalls();
-      for(MMO_FunctionData fd = at->begin(); !at->end(); fd = at->next())
-      {
-        _printList(fd->print(indent));
-      }
-      _writer->write(f->returnStatement(), WR_FUNCTION_CODE);
-      _writer->endBlock();
-      _writer->write("}", WR_FUNCTION_CODE);*/
     }
 
     void
@@ -239,121 +204,18 @@ namespace MicroModelica {
     }
 
     void
-    Generator::_generateFunction(MicroModelica::IR::CompiledFunction f, string fileName)
+    Generator::_generateFunction(IR::CompiledFunction f, string fileName)
     {
       _printList(f.def());
     }
 
     void
-    Generator::_generateFunction(MicroModelica::IR::Function f, string fileName)
+    Generator::_generateFunction(IR::Function f, string fileName)
     {
       /*_fheader.push_back(f.prototype() + ";");
       _generateFunctionCode(f);*/
     }
 
-    void
-    Generator::_generatePackage(Package p)
-    {
-     /* string indent = _writer->indent(1);
-      string name;
-      if(_flags->hasOutputFile())
-      {
-        name = _flags->outputFilePath();
-        name.append(SLASH);
-      }
-      name.append(p->fileName());
-      string fileName;
-      stringstream buffer;
-      fileName = name;
-      fileName.append(".moo");
-      _writer->setFile(fileName);
-      if(_flags->hasObjects())
-      {
-        list<string> objects = _flags->objects();
-        _writer->print("DEPENDENCES");
-        for(list<string>::iterator it = objects.begin(); it != objects.end(); it++)
-        {
-          _writer->print(*it);
-        }
-        _writer->print("ENDDEPENDENCES");
-      }
-      MMO_FunctionTable ft = p->functions();
-      list<string> includes;
-      for(MMO_Function f = ft->begin(); !ft->end(); f = ft->next())
-      {
-        _writer->print("DEFINITION");
-        _writer->print("FUNCTION");
-        _writer->print(p->prefix() + f->name());
-        _writer->print("ENDFUNCTION");
-        MMO_Annotation annot = f->annotation();
-        if(annot->hasInclude())
-        {
-          includes.push_back(annot->include());
-        }
-        if(annot->hasDerivative())
-        {
-          _writer->print("DERIVATIVE");
-          _writer->print(p->prefix() + f->name());
-          _writer->print(annot->derivative());
-          _writer->print("ENDDERIVATIVE");
-        }
-        if(annot->hasIncludeDirectory())
-        {
-          _writer->print("INCLUDEDIRECTORY");
-          _writer->print(annot->includeDirectory());
-          _writer->print("ENDINCLUDEDIRECTORY");
-        }
-        if(annot->hasLibraryDirectory())
-        {
-          _writer->print("LIBRARYDIRECTORY");
-          _writer->print(annot->libraryDirectory());
-          _writer->print("ENDLIBRARYDIRECTORY");
-        }
-        if(annot->hasLibraries())
-        {
-          _writer->print("LIBRARIES");
-          list<string> libs = annot->libraries();
-          for(list<string>::iterator it = libs.begin(); it != libs.end(); it++)
-          {
-            _writer->print(*it);
-          }
-          _writer->print("ENDLIBRARIES");
-        }
-        _writer->print("ENDDEFINITION");
-      }
-      _writer->clearFile();
-      fileName = name;
-      fileName.append(".h");
-      _writer->setFile(fileName);
-      for(MMO_Function f = ft->begin(); !ft->end(); f = ft->next())
-      {
-        f->setPrefix(p->prefix());
-        _writer->print(f->prototype() + ";");
-      }
-      _writer->clearFile();
-      fileName = name;
-      fileName.append(".c");
-      _writer->setFile(fileName);
-      buffer << "#include <math.h>" << endl;
-      buffer << "#include <stdlib.h>" << endl;
-      buffer << "#include \"" << name << ".h\"" << endl;
-      MMO_ImportTable it = p->imports();
-      for(string i = it->begin(); !it->end(); i = it->next())
-      {
-        string addInclude = Util::getInstance()->packageName(i);
-        buffer << "#include \"" << addInclude << ".h\"" << endl;
-        _includes[addInclude] = addInclude;
-      }
-      _writer->write(&buffer, WR_FUNCTION_HEADER);
-      for(MMO_Function f = ft->begin(); !ft->end(); f = ft->next())
-      {
-        f->setPrefix(p->prefix());
-        _generateFunctionCode(f);
-      }
-      _writer->print(WR_FUNCTION_HEADER);
-      _writer->print(WR_FUNCTION_CODE);
-      _writer->clearFile();*/
-    }
 
     void
     Generator::_variablesInitCode()

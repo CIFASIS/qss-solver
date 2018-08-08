@@ -38,9 +38,7 @@
 namespace MicroModelica {
   namespace Util {
 
-    Util *Util::_instance = NULL;
-
-    Util::Util() :
+    Utils::Utils() :
         _languageEspecification("C"), 
         _varCounter(1), 
         _flags(), 
@@ -109,22 +107,12 @@ namespace MicroModelica {
       _binop[BINOPELEXP] = "^";
     }
 
-    Util::~Util()
+    Utils::~Utils()
     {
-    }
-
-    Util *
-    Util::getInstance()
-    {
-      if(!_instance)
-      {
-        _instance = new Util();
-      }
-      return _instance;
     }
 
     string
-    Util::trimString(string str)
+    Utils::trimString(string str)
     {
       // trim trailing spaces
       string ret = str;
@@ -144,19 +132,19 @@ namespace MicroModelica {
     }
 
     string
-    Util::languageEspecification()
+    Utils::languageEspecification()
     {
       return _languageEspecification;
     }
 
     void
-    Util::setCompileFlags(CompileFlags flags)
+    Utils::setCompileFlags(CompileFlags flags)
     {
       _flags = flags;
     }
 
     bool
-    Util::checkTypeString(string t)
+    Utils::checkTypeString(string t)
     {
       if(t != "Integer" && t != "Real" && t != "Boolean")
       {
@@ -166,14 +154,14 @@ namespace MicroModelica {
     }
 
     bool
-    Util::checkExperimentAnnotations(string *annotation)
+    Utils::checkExperimentAnnotations(string *annotation)
     {
       map<string, int>::iterator it = _annotations.find(*annotation);
       return it != _annotations.end();
     }
 
     BIF_NAMES
-    Util::checkBuiltInFunctions(string fname)
+    Utils::checkBuiltInFunctions(string fname)
     {
       map<string, BIF_NAMES>::iterator it = _builtInFunctions.find(fname);
       if(it != _builtInFunctions.end())
@@ -184,7 +172,7 @@ namespace MicroModelica {
     }
 
     BIV_NAMES
-    Util::checkBuiltInVariables(string fname)
+    Utils::checkBuiltInVariables(string fname)
     {
       map<string, BIV_NAMES>::iterator it = _builtInVariables.find(fname);
       if(it != _builtInVariables.end())
@@ -195,19 +183,19 @@ namespace MicroModelica {
     }
 
     void
-    Util::addBuiltInVariables(string fname, BIV_NAMES type)
+    Utils::addBuiltInVariables(string fname, BIV_NAMES type)
     {
       _builtInVariables.insert(pair<string, BIV_NAMES>(fname, type));
     }
 
     string
-    Util::opString(BinOpType bot)
+    Utils::opString(BinOpType bot)
     {
       return _binop[bot];
     }
 
     string
-    Util::getVarName(string name)
+    Utils::getVarName(string name)
     {
       string ret;
       int ub = name.length() - 1;
@@ -219,7 +207,7 @@ namespace MicroModelica {
     }
 
     string
-    Util::newVarName(string n, VarSymbolTable vt)
+    Utils::newVarName(string n, VarSymbolTable vt)
     {
       stringstream buffer;
       buffer << n << _varCounter++ << "0";
@@ -234,7 +222,7 @@ namespace MicroModelica {
     }
 
     list<string>
-    Util::_getValue(fstream *package, string token)
+    Utils::_getValue(fstream *package, string token)
     {
       list<string> ret;
       string line;
@@ -250,7 +238,7 @@ namespace MicroModelica {
     }
 
     Option<MicroModelica::IR::CompiledPackage>
-    Util::readPackage(string fileName)
+    Utils::readPackage(string fileName)
     {
       fstream package;
       string pname = packageName(fileName);
@@ -310,7 +298,7 @@ namespace MicroModelica {
     }
 
     bool
-    Util::readPackage(string fileName, IR::CompiledPackageTable pt)
+    Utils::readPackage(string fileName, IR::CompiledPackageTable pt)
     {
       Option<IR::CompiledPackage> cp = readPackage(fileName);
       if(cp)
@@ -322,13 +310,13 @@ namespace MicroModelica {
     }
 
     bool
-    Util::searchCompiledPackage(string pname, CompileFlags flags)
+    Utils::searchCompiledPackage(string pname, CompileFlags flags)
     {
       return !packagePath(packageName(pname), flags, ".moo").empty();
     }
 
     bool
-    Util::_checkCodeFiles(string name, string ext)
+    Utils::_checkCodeFiles(string name, string ext)
     {
       if(!ext.compare(".mo"))
       {
@@ -346,7 +334,7 @@ namespace MicroModelica {
     }
 
     string
-    Util::_packagePath(string name)
+    Utils::_packagePath(string name)
     {
       list<string> objs = _flags.objects();
       for(list<string>::iterator it = objs.begin(); it != objs.end(); it++)
@@ -368,7 +356,7 @@ namespace MicroModelica {
     }
 
     string
-    Util::packagePath(string pname, CompileFlags flags, string ext)
+    Utils::packagePath(string pname, CompileFlags flags, string ext)
     {
       string fname = flags.path();
       fname.append(pname + ext);
@@ -412,7 +400,7 @@ namespace MicroModelica {
     }
 
     string
-    Util::packageName(string name)
+    Utils::packageName(string name)
     {
       size_t f = name.find("pkg_");
       if(f == string::npos)
@@ -423,7 +411,7 @@ namespace MicroModelica {
     }
 
     string
-    Util::printInitialAssignment(VarInfo vi, string indent, string localVar)
+    Utils::printInitialAssignment(VarInfo vi, string indent, string localVar)
     {
     /*  bool ic = _data->initialCode();
       _data->setInitialCode(true);
@@ -451,7 +439,7 @@ namespace MicroModelica {
     }
 
     string
-    Util::environmentVariable(string ev)
+    Utils::environmentVariable(string ev)
     {
       char *li = getenv(ev.c_str());
       if(li != NULL)
@@ -462,7 +450,7 @@ namespace MicroModelica {
     }
 
     string
-    Util::getFilePath(string file)
+    Utils::getFilePath(string file)
     {
       string path = file;
       size_t found = path.rfind("/");
@@ -474,7 +462,7 @@ namespace MicroModelica {
     }
 
     string
-    Util::getFileName(string file)
+    Utils::getFileName(string file)
     {
       string fn = file;
       size_t f = fn.rfind("/");
@@ -487,7 +475,7 @@ namespace MicroModelica {
     }
 
     BIF_NAMES
-    Util::checkBuiltInReductionFunctions(string fname)
+    Utils::checkBuiltInReductionFunctions(string fname)
     {
       BIF_NAMES ret = checkBuiltInFunctions(fname);
       if(ret == BIF_SUM || ret == BIF_PRODUCT || ret == BIF_MIN || ret == BIF_MAX
@@ -1050,7 +1038,7 @@ namespace MicroModelica {
     }
 
     BIF*
-    Util::builtInReductionFunctions(BIF_NAMES fn)
+    Utils::builtInReductionFunctions(BIF_NAMES fn)
     {
       map<BIF_NAMES, BIF*>::iterator it = _builtInFunctionImp.find(fn);
       if(it != _builtInFunctionImp.end())
@@ -1061,7 +1049,7 @@ namespace MicroModelica {
     }
 
     bool
-    Util::checkGKLinkFunctions(string name)
+    Utils::checkGKLinkFunctions(string name)
     {
       map<string, BIF_NAMES>::iterator it = _builtInFunctions.find(name);
       return it != _builtInFunctions.end();

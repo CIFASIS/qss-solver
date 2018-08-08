@@ -27,9 +27,10 @@
 #include <boost/variant/variant.hpp>
 
 
+#include "annotation.h"
+#include "statement.h"
+#include "helpers.h"
 #include "../ast/ast_types.h"
-#include "../ir/annotation.h"
-#include "../ir/statement.h"
 #include "../util/util_types.h"
 #include "../util/util.h"
 
@@ -118,7 +119,7 @@ namespace MicroModelica
         * @return
         */
         virtual Util::VarSymbolTable
-        varTable() const = 0;
+        symbols() const = 0;
         /**
         *
         * @return
@@ -165,14 +166,14 @@ namespace MicroModelica
         * @param type
         */
         void
-        insert(VarName n, MicroModelica::Util::VarInfo vi, DEC_Type type);
+        insert(VarName n, Util::VarInfo vi, DEC_Type type);
         /**
         *
         * @param n
         * @param vi
         */
         void
-        insert(VarName n, MicroModelica::Util::VarInfo vi);
+        insert(VarName n, Util::VarInfo vi);
         /**
         *
         * @param eq
@@ -208,20 +209,28 @@ namespace MicroModelica
         *
         * @return
         */
-        MicroModelica::Util::VarSymbolTable
-        varTable() const;
+        Util::VarSymbolTable
+        symbols() const;
         /**
         *
         * @return
         */
-        MicroModelica::Util::ImportTable
+        Util::ImportTable
         imports() const;
-        void 
-        definition();
-        void 
-        prototype();
-        FunctionAnnotation
-        annotations();
+        StatementTable 
+        statements() const;
+        ExternalFunctionTable 
+        externalFunctions() const;
+        CompiledPackageTable 
+        packages() const;
+        unsigned int 
+        outputNbr() const;
+        FunctionAnnotation 
+        annotations() const;
+        Util::VarSymbolTable 
+        localSymbols() const;
+        Util::VarSymbolTable 
+        arguments() const;
       private:
         Util::ImportTable     _imports;
         std::string           _name;
@@ -231,6 +240,11 @@ namespace MicroModelica
         StatementTable        _statements;
         Util::TypeSymbolTable _types;
         CompiledPackageTable  _packages;
+        Util::VarSymbolTable  _arguments;
+        unsigned int          _outputNbr;
+        unsigned int          _externalFunctionId;
+        unsigned int          _statementId;
+        ExternalFunctionTable _externalFunctions;
     };
     
     typedef ModelTable<std::string,Function> FunctionTable;
@@ -258,8 +272,8 @@ namespace MicroModelica
         *
         * @return
         */
-        MicroModelica::Util::VarSymbolTable
-        varTable() const;
+        Util::VarSymbolTable
+        symbols() const;
         /**
         *
         * @return
@@ -310,14 +324,14 @@ namespace MicroModelica
         * @param type
         */
         void
-        insert(VarName n, MicroModelica::Util::VarInfo vi, DEC_Type type);
+        insert(VarName n, Util::VarInfo vi, DEC_Type type);
         /**
         *
         * @param n
         * @param vi
         */
         void
-        insert(VarName n, MicroModelica::Util::VarInfo vi);
+        insert(VarName n, Util::VarInfo vi);
         /**
         *
         * @param x
@@ -328,7 +342,7 @@ namespace MicroModelica
         *
         * @return
         */
-        MicroModelica::Util::ImportTable
+        Util::ImportTable
         imports() const;
         /**
           *
@@ -393,14 +407,14 @@ namespace MicroModelica
         * @param type
         */
         void
-        insert(VarName n, MicroModelica::Util::VarInfo vi, DEC_Type type);
+        insert(VarName n, Util::VarInfo vi, DEC_Type type);
         /**
         *
         * @param n
         * @param vi
         */
         void
-        insert(VarName n, MicroModelica::Util::VarInfo vi);
+        insert(VarName n, Util::VarInfo vi);
         /**
         *
         * @param eq
@@ -442,17 +456,17 @@ namespace MicroModelica
         *
         * @return
         */
-        MicroModelica::Util::VarSymbolTable
-        varTable() const;
+        Util::VarSymbolTable
+        symbols() const;
         /**
         *
         * @return
         */
-        MicroModelica::Util::ImportTable
+        Util::ImportTable
         imports() const;
       private:
-        std::string                        _name;
-        MicroModelica::Util::ImportTable   _imports;
+        std::string         _name;
+        Util::ImportTable   _imports;
     };
     
     typedef boost::variant<
@@ -462,164 +476,7 @@ namespace MicroModelica
       > ClassType;
 
     typedef Class* ClassPtr;
-    /**
-     *
-     */
-    class CompiledFunction
-    {
-      public:
-        /**
-         *
-         */
-        CompiledFunction();
-        /**
-         *
-         * @param name
-         * @param includeDir
-         * @param libraryDir
-         * @param libraries
-         */
-        CompiledFunction(string name, string includeDir, string libraryDir, list<string> libraries);
-        /**
-         *
-         */
-        ~CompiledFunction();
-        /**
-         *
-         * @return
-         */
-        list<string>
-        def();
-        /**
-         *
-         * @return
-         */
-        bool
-        hasIncludeDirectory();
-        /**
-         *
-         * @return
-         */
-        bool
-        hasLibraryDirectory();
-        /**
-         *
-         * @return
-         */
-        bool
-        hasLibraries();
-        /**
-         *
-         * @return
-         */
-        string
-        includeDirectory();
-        /**
-         *
-         * @return
-         */
-        string
-        libraryDirectory();
-        /**
-         *
-         * @return
-         */
-        list<string>
-        libraries();
-        /**
-         *
-         * @return
-         */
-        string
-        name();
-        /**
-         *
-         * @return
-         */
-        string
-        prototype();
-      private:
-        list<string> _def;
-        string _name;
-        string _prototype;
-        string _includeDirectory;
-        string _libraryDirectory;
-        list<string> _libraries;
-    };
     
-    typedef ModelTable<std::string,CompiledFunction> CompiledFunctionTable;
-
-    /**
-     *
-     */
-    class CompiledPackage
-    {
-      public:
-        /**
-         *
-         */
-        CompiledPackage();
-        /**
-         *
-         * @param name
-         * @param includeDir
-         * @param libraryDir
-         * @param libraries
-         */
-        CompiledPackage(string name, CompiledFunctionTable cft , MicroModelica::Util::ImportTable objects);
-        /**
-         *
-         */
-        ~CompiledPackage();
-        /**
-         *
-         * @return
-         */
-        string
-        name();
-        /**
-         *
-         * @return
-         */
-        string
-        prefix();
-        /**
-         *
-         * @return
-         */
-        list<string>
-        linkLibraries();
-        /**
-         *
-         * @return
-         */
-        list<string>
-        includeDirectories();
-        /**
-         *
-         * @return
-         */
-        list<string>
-        libraryDirectories();
-        /**
-         *
-         * @return
-         */
-        CompiledFunctionTable 
-        definitions();
-       /**
-         *
-         * @return
-         */
-        MicroModelica::Util::ImportTable 
-        objects();
-      private:
-        string                            _name;
-        CompiledFunctionTable             _cft;
-        MicroModelica::Util::ImportTable  _objects;
-    };
-
-    typedef ModelTable<std::string,CompiledPackage> CompiledPackageTable;
   }
 }
 #endif  /* MMO_CLASS_H_ */

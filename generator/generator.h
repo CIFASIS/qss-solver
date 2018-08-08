@@ -47,7 +47,7 @@ namespace MicroModelica {
          * @param std
          * @param flags
          */
-        Generator(MicroModelica::IR::StoredDefinition std, MicroModelica::Util::CompileFlags flags);
+        Generator(IR::StoredDefinition& std, Util::CompileFlags& flags);
         /**
          *
          */
@@ -60,7 +60,7 @@ namespace MicroModelica {
         generate();
       private:
         void
-        _generateFunctionCode(MicroModelica::IR::Function f);
+        _generateFunctionCode(IR::Function f);
         void
         _generateHeader(string name);
         void
@@ -72,26 +72,26 @@ namespace MicroModelica {
         void
         _generateModel();
         void
-        _generateFunction(MicroModelica::IR::Function f, string fileName);
+        _generateFunction(IR::Function f, string fileName);
         void
-        _generateFunction(MicroModelica::IR::CompiledFunction f, string fileName);
+        _generateFunction(IR::CompiledFunction f, string fileName);
         void
         _generateFunctionHeader(string fileName);
         void
-        _generatePackage(MicroModelica::IR::Package p);
+        _generatePackage(IR::Package p);
         void
         _header();
-        MicroModelica::IR::StoredDefinition      _std;
-        MicroModelica::IR::Model                 _model;
-        MicroModelica::IR::Function              _function;
-        MicroModelica::IR::Package               _package;
-        MicroModelica::Util::CompileFlags        _flags;
-        ModelInstanceType                        _modelInstance;
-        Files                                    _files;
-        WriterPtr                                _writer;
-        ofstream                                 _file;
-        std::map<string, string>                 _includes;
-        list<string>                             _fheader;
+        IR::StoredDefinition      _std;
+        IR::Model                 _model;
+        IR::Function              _function;
+        IR::Package               _package;
+        Util::CompileFlags        _flags;
+        ModelInstancePtr          _modelInstance;
+        Files                     _files;
+        WriterPtr                 _writer;
+        ofstream                  _file;
+        std::map<string, string>  _includes;
+        list<string>              _fheader;
     };
   }
 }

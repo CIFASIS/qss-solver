@@ -146,13 +146,13 @@ namespace MicroModelica {
     string
     CompileFlags::outputFileName()
     {
-      return Util::getInstance()->getFileName(_outputFile);
+      return Utils::instance().getFileName(_outputFile);
     }
 
     string
     CompileFlags::outputFilePath()
     {
-      return Util::getInstance()->getFilePath(_outputFile);
+      return Utils::instance().getFilePath(_outputFile);
     }
 
     string

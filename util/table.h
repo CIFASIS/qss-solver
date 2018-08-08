@@ -48,21 +48,28 @@ class ModelTable : public std::map<Key,Value>
       std::map<Key,Value>::erase(k);
     }
     typedef typename std::map<Key,Value>::iterator iterator;
-    iterator 
-    begin()
+    bool 
+    lookup(Key key)
     {
-      iterator it = std::map<Key,Value>::begin();
-      return it;
+      iterator it = std::map<Key,Value>::find(key);
+      return it == std::map<Key,Value>::end();
+    }
+    Value 
+    begin(iterator it)
+    {
+      it = std::map<Key,Value>::begin();
+      return value(it);
     };
     bool 
     end(iterator it)
     {
       return it == std::map<Key,Value>::end();
     }
-    void 
+    Value 
     next(iterator it)
     {
       it++;
+      return value(it);
     }
     Value 
     value(iterator it)

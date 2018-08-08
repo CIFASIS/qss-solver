@@ -41,7 +41,7 @@ namespace MicroModelica {
 
     /* QSSModelInstance Model Instance class. */
 
-    QSSModelInstance::QSSModelInstance(Model model, CompileFlags flags, WriterType writer) 
+    QSSModelInstance::QSSModelInstance(Model& model, CompileFlags& flags, WriterPtr writer) 
     {
     }
 
@@ -105,7 +105,7 @@ namespace MicroModelica {
 
     /* ClassicModelInstance Model Instance class. */
 
-    ClassicModelInstance::ClassicModelInstance(Model model, CompileFlags flags, WriterType writer) 
+    ClassicModelInstance::ClassicModelInstance(Model& model, CompileFlags& flags, WriterPtr writer) 
     {
     }
 

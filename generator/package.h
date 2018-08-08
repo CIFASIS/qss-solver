@@ -17,38 +17,32 @@
 
  ******************************************************************************/
 
-#ifndef MMO_STATEMENT_H_
-#define MMO_STATEMENT_H_
+#ifndef MMO_GEN_PACKAGE_H_
+#define MMO_GEN_PACKAGE_H_
 
-#include "../ast/ast_types.h"
-#include "../util/table.h"
+#include <boost/variant/variant.hpp>
 
-namespace MicroModelica {
-  namespace IR {
+#include "../ir/class.h"
+#include "../util/compile_flags.h"
+#include "writer.h"
 
-    /**
-     *
-     */
-    class Statement
+namespace MicroModelica 
+{
+  namespace Generator 
+  {
+    class Package 
     {
       public:
-        /**
-         *
-         * @param stm
-         */
-        Statement(AST_Statement stm);
-        /**
-         *
-         */
-        Statement();
-        /**
-         *
-         */
-        ~Statement();
-        friend std::ostream& operator<<(std::ostream& out, const Statement& s);
+        Package(IR::Package& package, Util::CompileFlags& flags, WriterPtr writer);
+        ~Package();
+        void 
+        generate();
+      private:
+        IR::Package            _package;
+        Util::CompileFlags     _flags;
+        WriterPtr              _writer;
+        std::list<std::string> _includes;
     };
-
-    typedef ModelTable<int, Statement> StatementTable;
   }
 }
-#endif  /* MMO_STATEMENT_H_ */
+#endif /* MMO_GEN_PACKAGE_H */

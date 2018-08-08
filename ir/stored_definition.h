@@ -45,9 +45,9 @@ namespace MicroModelica {
         isModel();
         bool 
         isPackage();
-        Model 
+        Model& 
         model();
-        Package
+        Package&
         package();
         void 
         setModel(string name);
@@ -55,7 +55,7 @@ namespace MicroModelica {
         setPackage(string name);
         void 
         addFunction(string name);
-        Function 
+        Option<Function> 
         function(string name);
       private:
         ClassType      _def;

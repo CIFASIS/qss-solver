@@ -48,7 +48,7 @@ namespace MicroModelica
       OUTPUT,
       INIT,
       CALLBACK
-    } Function;
+    } Component;
 
     /**
     *
@@ -154,7 +154,7 @@ namespace MicroModelica
         * @param flags
         * @param writer
         */
-        QSSModelInstance(MicroModelica::IR::Model model, MicroModelica::Util::CompileFlags flags, WriterType writer);
+        QSSModelInstance(IR::Model& model, Util::CompileFlags& flags, WriterPtr writer);
         /**
         *
         */
@@ -222,7 +222,7 @@ namespace MicroModelica
         * @param flags
         * @param writer
         */
-        ClassicModelInstance(MicroModelica::IR::Model model, MicroModelica::Util::CompileFlags flags, WriterType writer);
+        ClassicModelInstance(IR::Model& model, Util::CompileFlags& flags, WriterPtr writer);
         /**
         *
         */
@@ -283,10 +283,8 @@ namespace MicroModelica
         Graph
         computationalGraph();
     };
-    typedef boost::variant<
-      QSSModelInstance,
-      ClassicModelInstance 
-      > ModelInstanceType;
+    
+    typedef std::shared_ptr<ModelInstance> ModelInstancePtr;
   }
 }
 #endif  /* MMO_MODEL_INSTANCE_H */

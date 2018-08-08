@@ -24,6 +24,7 @@
 #include "../util/util.h"
 
 namespace MicroModelica {
+  using namespace Util;
   namespace Generator {
 
 #define TAB "\t"
@@ -60,8 +61,8 @@ namespace MicroModelica {
       _removeIt = _sections[section].end();
       for(it = _sections[section].begin(); it != _sections[section].end(); it++)
       {
-        string fi = MicroModelica::Util::Util::getInstance()->trimString(*it);
-        string cmp = MicroModelica::Util::Util::getInstance()->trimString(str);
+        string fi = Utils::instance().trimString(*it);
+        string cmp = Utils::instance().trimString(str);
         if(fi.compare("{") == 0)
         {
           _removeIt = it;

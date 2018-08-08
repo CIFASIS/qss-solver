@@ -34,5 +34,10 @@ namespace MicroModelica {
     Statement::~Statement()
     {
     }
+
+    std::ostream& operator<<(std::ostream& out, const Statement& s)
+    {
+      return out;
+    }
   }
 }

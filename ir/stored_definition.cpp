@@ -52,27 +52,35 @@ namespace MicroModelica {
       _functions[name] = Function(name);
     }
 
-    Function 
+    Option<Function> 
     StoredDefinition::function(string name) 
     {
       Option<Function> f = _functions[name];
-      if (f)
-      {
-        return f.get();
-      }
-      return Function();
+      return f;
     }
 
-    Model 
+    Model& 
     StoredDefinition::model() 
     {
       return boost::get<Model>(_def);
     }
 
-    Package
+    Package&
     StoredDefinition::package()
     {
       return boost::get<Package>(_def);
+    }
+
+    bool 
+    StoredDefinition::isModel()
+    {
+      return _def.type() == typeid(Model);
+    }
+    
+    bool 
+    StoredDefinition::isPackage()
+    {
+      return _def.type() == typeid(Package);
     }
 
   }

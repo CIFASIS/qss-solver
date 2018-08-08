@@ -59,7 +59,7 @@ namespace MicroModelica {
     {
     }
 
-    Files::Files(Model model, ModelInstanceType modelInstance, CompileFlags flags) :
+    Files::Files(ModelInstancePtr modelInstance, Model& model, CompileFlags& flags) :
         _fname(model.name()), 
         _model(model), 
         _modelInstance(modelInstance), 
@@ -72,7 +72,7 @@ namespace MicroModelica {
       }
     }
 
-    Files::Files(string name, CompileFlags flags) :
+    Files::Files(string name, CompileFlags& flags) :
         _fname(name), 
         _model(),
         _writer(new FileWriter()),

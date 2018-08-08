@@ -47,7 +47,7 @@ namespace MicroModelica {
         /**
          *
          * @param t
-         * @param tp
+          = 0* @param tp
          * @param m
          * @param c
          */
