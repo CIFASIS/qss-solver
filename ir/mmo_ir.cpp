@@ -59,7 +59,7 @@ namespace MicroModelica {
     void
     MicroModelicaIR::visit(AST_Class x)
     {
-      Error::getInstance()->setClassName(*(x->name()));
+      Error::instance().setClassName(*(x->name()));
       AST_TypePrefix p = x->prefix();
         if(p & CP_PACKAGE)
         {
@@ -198,7 +198,7 @@ namespace MicroModelica {
     {
       if(x->modificationType() == MODASSIGN)
       {
-        Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Assign modifier.");
+        Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Assign modifier.");
       }
       if(x->modificationType() == MODCLASS)
       {
@@ -310,7 +310,7 @@ namespace MicroModelica {
     MicroModelicaIR::apply(AST_Node x)
     {
       x->accept(this);
-      return Error::getInstance()->errors();
+      return Error::instance().errors();
     }
 
     /*

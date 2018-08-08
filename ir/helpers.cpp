@@ -48,12 +48,12 @@ namespace MicroModelica {
           Option<VarInfo> vi = _vt[cr->name()];
           if(!vi)
           {
-            Error::getInstance()->add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", cr->name().c_str());
+            Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", cr->name().c_str());
             return ret;
           }
           if(!vi->isConstant())
           {
-            Error::getInstance()->add(exp->lineNum(), EM_IR | EM_INIT_EXP, ER_Error, "Only constants allowed inside initial expressions. %s", cr->name().c_str());
+            Error::instance().add(exp->lineNum(), EM_IR | EM_INIT_EXP, ER_Error, "Only constants allowed inside initial expressions. %s", cr->name().c_str());
             return ret;
           }
           return vi->value();
@@ -84,12 +84,12 @@ namespace MicroModelica {
           }
         }
         case EXPREAL:
-          Error::getInstance()->add(0, EM_IR | EM_INIT_EXP, ER_Warning, "Implicit conversion from Real to Integer, in initial expression.");
+          Error::instance().add(0, EM_IR | EM_INIT_EXP, ER_Warning, "Implicit conversion from Real to Integer, in initial expression.");
           return exp->getAsReal()->val();
         case EXPINTEGER:
           return exp->getAsInteger()->val();
         default:
-          Error::getInstance()->add(0, EM_IR | EM_INIT_EXP, ER_Warning, "Initial expression not recognized, returning zero as default value.");
+          Error::instance().add(0, EM_IR | EM_INIT_EXP, ER_Warning, "Initial expression not recognized, returning zero as default value.");
           break;
       }
       return ret;
@@ -189,7 +189,7 @@ namespace MicroModelica {
           }
           else
           {
-            Error::getInstance()->add(0, EM_IR | EM_INIT_EXP, ER_Warning, "Initial expression zero division, returning zero as default value.");
+            Error::instance().add(0, EM_IR | EM_INIT_EXP, ER_Warning, "Initial expression zero division, returning zero as default value.");
           }
           break;
         case BINOPMULT:

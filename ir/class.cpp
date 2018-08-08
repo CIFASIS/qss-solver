@@ -72,7 +72,7 @@ namespace MicroModelica {
       _imports[n] = n;
       if(!Utils::instance().readPackage(n, _packages))
       {
-        Error::getInstance()->add(0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo", n.c_str());
+        Error::instance().add(0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo", n.c_str());
       }
     }
 
@@ -104,7 +104,7 @@ namespace MicroModelica {
         AST_Expression_ComponentReference cr = efc->componentReference();
         if(!vl.foldTraverse(cr))
         {
-          Error::getInstance()->add(efc->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", cr->name().c_str());
+          Error::instance().add(efc->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", cr->name().c_str());
           return;
         }
         lvalue = cr->name();
@@ -116,7 +116,7 @@ namespace MicroModelica {
         {
           if(!vl.foldTraverse(current_element(eli)))
           {
-            Error::getInstance()->add(efc->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "External function call.");
+            Error::instance().add(efc->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "External function call.");
             return;
           }
         }
@@ -159,7 +159,7 @@ namespace MicroModelica {
     { 
       if(!_annotations.insert(x))
       {
-        Error::getInstance()->add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Error, "%s", x->name()->c_str());
+        Error::instance().add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Error, "%s", x->name()->c_str());
       }
     }
 

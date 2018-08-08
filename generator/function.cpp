@@ -21,8 +21,6 @@
 
 #include "function.h"
 
-#include "printer.h"
-
 namespace MicroModelica {
   using namespace IR;
   using namespace Util;
@@ -191,10 +189,10 @@ namespace MicroModelica {
     void 
     Function::_definition()
     {
-      stringstream buffer;
+      /*stringstream buffer;
       _writer->write("{", FUNCTION_CODE);
       _writer->beginBlock();
-      _printList(f->localDeclarations());
+      _localSymbols();
       StatementTable stms = _function.statements();
       StatementTable::iterator it;
       for(Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it))
@@ -217,17 +215,17 @@ namespace MicroModelica {
       {
         _printList(fd->print(indent));
       }
-      _writer->write(f->returnStatement(), WR_FUNCTION_CODE);
+      _return();
       _writer->endBlock();
-      _writer->write("}", WR_FUNCTION_CODE);*/
+      _writer->write("}", FUNCTION_CODE);
 
-
+*/
     }
    
     void 
     Function::_localSymbols()
     {
-      list<string> ret;
+  /*    list<string> ret;
       stringstream buffer;
       VarSymbolTable localSymbols = _function.localSymbols();
       VarSymbolTable::iterator it;
@@ -254,6 +252,7 @@ namespace MicroModelica {
         }
         if(vi.hasAssignment() || vi.hasStartModifier() || vi.hasEachModifier())
         {
+
           _data->setSymbols(_localDeclarations);
           Util::getInstance()->setData(_data);
           buffer << Util::getInstance()->printInitialAssignment(vi, "", indexVar);
@@ -293,7 +292,7 @@ namespace MicroModelica {
         }
       }
       return ret;
-
+*/
     }
 
     void 

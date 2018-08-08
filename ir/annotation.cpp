@@ -30,17 +30,16 @@
 #include "mmo_util.h"
 
 namespace MicroModelica {
+  using namespace Util; 
   namespace IR {
     
-    using namespace Util; 
-
     FunctionAnnotation::FunctionAnnotation() :
         _annotations(), 
         _derivative(), 
         _include()
     {
-      _libraryDirectory = MicroModelica::Util::Util::getInstance()->environmentVariable("MMOC_LIBRARIES");
-      _includeDirectory = MicroModelica::Util::Util::getInstance()->environmentVariable("MMOC_INCLUDE");
+      _libraryDirectory = Utils::instance().environmentVariable("MMOC_LIBRARIES");
+      _includeDirectory = Utils::instance().environmentVariable("MMOC_INCLUDE");
       _annotations.insert( pair<string, FunctionAnnotation::type>("derivative", DERIVATIVE));
       _annotations.insert( pair<string, FunctionAnnotation::type>("Include", INCLUDE));
       _annotations.insert( pair<string, FunctionAnnotation::type>("IncludeDirectory", INCLUDE_DIRECTORY));
@@ -275,13 +274,13 @@ namespace MicroModelica {
         }
         else
         {
-          Error::getInstance()->add(m->lineNum(), EM_IR | EM_ANNOTATION_TYPE,
+          Error::instance().add(m->lineNum(), EM_IR | EM_ANNOTATION_TYPE,
               ER_Error, "%s", arg->name()->c_str());
         }
       }
       else
       {
-        Error::getInstance()->add(arg->lineNum(), EM_IR | EM_ANNOTATION_TYPE,
+        Error::instance().add(arg->lineNum(), EM_IR | EM_ANNOTATION_TYPE,
             ER_Error, "%s", arg->name()->c_str());
       }
     }
@@ -314,19 +313,19 @@ namespace MicroModelica {
                 }
                 else
                 {
-                  Error::getInstance()->add(x->lineNum(), EM_IR | EM_ANNOTATION_TYPE, ER_Error, "%s", x->name()->c_str());
+                  Error::instance().add(x->lineNum(), EM_IR | EM_ANNOTATION_TYPE, ER_Error, "%s", x->name()->c_str());
                 }
               }
             }
             else
             {
-              Error::getInstance()->add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Error, "Missing modification arguments. %s",
+              Error::instance().add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Error, "Missing modification arguments. %s",
                   x->name()->c_str());
             }
           }
           else
           {
-            Error::getInstance()->add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Warning, "%s", x->name()->c_str());
+            Error::instance().add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Warning, "%s", x->name()->c_str());
           }
         }
           break;
@@ -547,7 +546,7 @@ namespace MicroModelica {
       map<string, ModelAnnotation::type>::const_iterator itf = _annotations.find(annot);
       if(itf == _annotations.end())
       {
-        Error::getInstance()->add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Warning, "%s", annot.c_str());
+        Error::instance().add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Warning, "%s", annot.c_str());
       }
       EvalAnnotation ea(_symbolTable);
       AnnotationValue av;

@@ -52,24 +52,24 @@ namespace MicroModelica {
     void
     ModelChecker::visit(AST_Class x)
     {
-      Error::getInstance()->setClassName(*(x->name()));
+      Error::instance().setClassName(*(x->name()));
       if(x->isFinal())
       {
-        Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Final definition.");
+        Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Final definition.");
       }
       if(x->isEncapsulated())
       {
-        Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Encapsulated definition.");
+        Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Encapsulated definition.");
       }
       if(x->hasExtends())
       {
-        Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Extend modifier to Class definition.");
+        Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Extend modifier to Class definition.");
       }
       if(_isChild)
       {
         if(x->prefix() != CP_FUNCTION || x->prefix() != CP_IMPURE || x->prefix() != CP_PURE)
         {
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Only Function classes allowed.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Only Function classes allowed.");
         }
       }
       else
@@ -78,35 +78,35 @@ namespace MicroModelica {
         switch(_classPrefix)
         {
           case CP_PARTIAL:
-            Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Partial definition.");
+            Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Partial definition.");
             break;
           case CP_CLASS:
-            Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Class definition.");
+            Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Class definition.");
             break;
           case CP_BLOCK:
-            Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Block definition.");
+            Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Block definition.");
             break;
           case CP_RECORD:
-            Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Record definition.");
+            Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Record definition.");
             break;
           case CP_CONNECTOR:
-            Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Connector definition.");
+            Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Connector definition.");
             break;
           case CP_TYPE:
-            Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Type definition.");
+            Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Type definition.");
             break;
           case CP_OPERATOR:
-            Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Operator definition.");
+            Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Operator definition.");
             break;
           case CP_EXPANDABLE:
-            Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Expandable definition.");
+            Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Expandable definition.");
             break;
           default:
             break;
         }
         if(x->hasElementComponentList())
         {
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Class definition.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Class definition.");
         }
       }
     }
@@ -129,7 +129,7 @@ namespace MicroModelica {
           {
             if(current_element(it)->hasEquations())
             {
-              Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Equation section inside function definition.");
+              Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Equation section inside function definition.");
             }
           }
         }
@@ -138,18 +138,18 @@ namespace MicroModelica {
       {
         if(x->hasExternalFunctionCall())
         {
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "External function call inside Model class.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "External function call inside Model class.");
         }
       }
       else if(_classPrefix == CP_PACKAGE)
       {
         if(x->hasCompositionList())
         {
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Composition elements inside Package class.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Composition elements inside Package class.");
         }
         if(x->hasExternalFunctionCall())
         {
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "External function call inside Package class.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "External function call inside Package class.");
         }
       }
     }
@@ -166,7 +166,7 @@ namespace MicroModelica {
       {
         if(x->hasElements())
         {
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Protected element definition inside Model Class.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Protected element definition inside Model Class.");
         }
       }
     }
@@ -183,14 +183,14 @@ namespace MicroModelica {
       {
         if(x->hasEquations() && x->isInitial())
         {
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Initial Equation section inside Model Class.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Initial Equation section inside Model Class.");
         }
       }
       if(_classPrefix == CP_FUNCTION || _classPrefix == CP_PURE || _classPrefix == CP_IMPURE)
       {
         if(x->isInitial())
         {
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Initial section inside function definition.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Initial section inside function definition.");
         }
       }
     }
@@ -205,7 +205,7 @@ namespace MicroModelica {
     {
       if(x->languageString() != Utils::instance().languageEspecification())
       {
-        Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION,
+        Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION,
             ER_Error, "Language Specification not recognized.");
       }
     }
@@ -216,7 +216,7 @@ namespace MicroModelica {
       ElementType e = x->elementType();
       if(e == EXTENDS)
       {
-        Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Extends clause not allowed.");
+        Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Extends clause not allowed.");
       }
       if(e == COMPONENT)
       {
@@ -228,28 +228,28 @@ namespace MicroModelica {
         {
           if(Utils::instance().checkBuiltInFunctions( current_element(it)->name()) != BIF_NONE)
           {
-            Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Reserved word used in variable name: %s.",
+            Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Reserved word used in variable name: %s.",
                 current_element(it)->name().c_str());
           }
           if(current_element(it)->hasModification() && !(tp & TP_PARAMETER) && !(tp & TP_CONSTANT))
           {
             if(current_element(it)->modification()->modificationType() == MODEQUAL)
             {
-              Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Only parameters or constants can be assigned.");
+              Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Only parameters or constants can be assigned.");
             }
           }
         }
         if(c->hasIndexes())
         {
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Array subscripts modifiers in component.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Array subscripts modifiers in component.");
         }
         if(c->isStream())
         {
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Stream type prefixes not allowed.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Stream type prefixes not allowed.");
         }
         if(c->isFlow())
         {
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Flow type prefixes not allowed.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Flow type prefixes not allowed.");
         }
         if(c->isConstant())
         {
@@ -266,19 +266,19 @@ namespace MicroModelica {
                 AST_Expression asgExp = m->getAsClass()->exp();
                 if(asgExp->expressionType() == EXPNULL)
                 {
-                  Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong constant definition %s.", c->name().c_str());
+                  Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong constant definition %s.", c->name().c_str());
                 }
               }
             }
             else
             {
-              Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong constant definition %s.", c->name().c_str());
+              Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong constant definition %s.", c->name().c_str());
             }
           }
         }
         if(!Utils::instance().checkTypeString(c->type()))
         {
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Predefined type not recognized.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Predefined type not recognized.");
         }
       }
       if(_classPrefix == CP_PACKAGE)
@@ -288,7 +288,7 @@ namespace MicroModelica {
           AST_ClassPrefix c = x->getAsClassWrapper()->getClass()->prefix();
           if(!(c & CP_FUNCTION) && !(c & CP_PURE) && !(c & CP_IMPURE))
           {
-            Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Only function class definitions allowed inside Package class.");
+            Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Only function class definitions allowed inside Package class.");
           }
         }
       }
@@ -304,7 +304,7 @@ namespace MicroModelica {
     {
       if(x->modificationType() == MODASSIGN)
       {
-        Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Assign modifier.");
+        Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Assign modifier.");
       }
       if(x->modificationType() == MODCLASS)
       {
@@ -337,13 +337,13 @@ namespace MicroModelica {
           AST_ExpressionList el = left->getAsDerivative()->arguments();
           if(el->size() > 1)
           {
-            Error::getInstance()->add(left->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong LValue expression.");
+            Error::instance().add(left->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong LValue expression.");
             return false;
           }
           AST_Expression e = AST_ListFirst(el);
           if(e->expressionType() != EXPCOMPREF)
           {
-            Error::getInstance()->add(e->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong LValue expression.");
+            Error::instance().add(e->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong LValue expression.");
             return false;
           }
           AST_Expression_ComponentReference cr = e->getAsComponentReference();
@@ -357,7 +357,7 @@ namespace MicroModelica {
               ExpressionType et = exp->expressionType();
               if(et != EXPCOMPREF && et != EXPINTEGER && et != EXPBINOP)
               {
-                Error::getInstance()->add(exp->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong index formula.");
+                Error::instance().add(exp->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong index formula.");
               }
             }
 
@@ -372,7 +372,7 @@ namespace MicroModelica {
           {
             if(current_element(it)->expressionType() != EXPCOMPREF)
             {
-              Error::getInstance()->add(current_element(it)->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong algebraic expression.");
+              Error::instance().add(current_element(it)->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong algebraic expression.");
               return false;
             }
           }
@@ -388,14 +388,14 @@ namespace MicroModelica {
       EquationType e = x->equationType();
       if(e == EQCALL || e == EQCONNECT || e == EQWHEN || e == EQIF)
       {
-        Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Equation type not allowed %d.", e);
+        Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Equation type not allowed %d.", e);
       }
       if(e == EQEQUALITY)
       {
         AST_Equation_Equality ec = x->getAsEquality();
         if(!_lValue(ec->left()))
         {
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION,
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION,
               ER_Error, "Wrong left hand side equation.");
         }
         visit(ec->right());
@@ -405,7 +405,7 @@ namespace MicroModelica {
         AST_Equation_For ef = x->getAsFor();
         if(ef->forIndexList()->size() == 0)
         {
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION,
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION,
               ER_Error, "No index found in For equation.");
         }
         AST_ForIndexList fil = ef->forIndexList();
@@ -428,11 +428,11 @@ namespace MicroModelica {
     {
       if(x->in_exp()->expressionType() != EXPRANGE)
       {
-        Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong For index expression.");
+        Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong For index expression.");
         AST_Expression_Range er = x->in_exp()->getAsRange();
         if(er->expressionList()->size() > 2)
         {
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong For index expression.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong For index expression.");
         }
       }
     }
@@ -440,7 +440,7 @@ namespace MicroModelica {
     void
     ModelChecker::visit(AST_Equation_Else x)
     {
-      Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "If equation.");
+      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "If equation.");
     }
 
     void
@@ -451,14 +451,14 @@ namespace MicroModelica {
       {
         case EXPIF:
           case EXPELSEIF:
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "If equation not allowed.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "If equation not allowed.");
           break;
         case EXPCOMPREF:
           {
           AST_Expression_ComponentReference cr = x->getAsComponentReference();
           if(cr->names()->size() > 1)
           {
-            Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong Component reference.");
+            Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong Component reference.");
           }
           AST_ExpressionList el = cr->indexes()->front();
           if(el->size() > 0)
@@ -477,11 +477,11 @@ namespace MicroModelica {
     {
       if(x->argumentType() == AR_REDECLARATION)
       {
-        Error::getInstance()->add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Argument Re-declaration.");
+        Error::instance().add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Argument Re-declaration.");
       }
       if(x->isFinal())
       {
-        Error::getInstance()->add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Final modifier.");
+        Error::instance().add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Final modifier.");
       }
       if(x->argumentType() == AR_MODIFICATION)
       {
@@ -490,7 +490,7 @@ namespace MicroModelica {
         {
           if(Utils::instance().checkExperimentAnnotations(am->name()))
           {
-            Error::getInstance()->add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Annotation not recognized.");
+            Error::instance().add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Annotation not recognized.");
           }
         }
       }
@@ -524,20 +524,20 @@ namespace MicroModelica {
       switch(st)
       {
         case STWHILE:
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "While statement.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "While statement.");
           break;
         case STBREAK:
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Break statement.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Break statement.");
           break;
         case STOUTASSING:
-          Error::getInstance()->add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Output assignment statement.");
+          Error::instance().add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Output assignment statement.");
           break;
         case STFOR:
           {
             AST_Statement_For ef = x->getAsFor();
             if(ef->forIndexList()->size() == 0)
             {
-              Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "No index found in for statement.");
+              Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "No index found in for statement.");
             }
             AST_ForIndexList fil = ef->forIndexList();
             AST_ForIndexListIterator filit;
@@ -556,7 +556,7 @@ namespace MicroModelica {
         case STRETURN:
           if(_classPrefix != CP_PURE && _classPrefix != CP_IMPURE && _classPrefix != CP_FUNCTION)
           {
-            Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "return statement outside function class.");
+            Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "return statement outside function class.");
           }
           break;
         case STWHEN:
@@ -564,7 +564,7 @@ namespace MicroModelica {
             AST_Statement_When sw = x->getAsWhen();
             if(!_whenStatement(sw->condition()))
             {
-              Error::getInstance()->add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "When condition must be a simple relation.");
+              Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "When condition must be a simple relation.");
             }
             AST_StatementList stl = sw->statements();
             AST_StatementListIterator st;
@@ -621,21 +621,21 @@ namespace MicroModelica {
     {
       if(x->hasWithin())
       {
-        Error::getInstance()->add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Within inside stored definition.");
+        Error::instance().add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Within inside stored definition.");
       }
     }
 
     void
     ModelChecker::leave(AST_StoredDefinition x)
     {
-      Error::getInstance()->show();
+      Error::instance().show();
     }
 
     int
     ModelChecker::apply(AST_Node x)
     {
       x->accept(this);
-      return Error::getInstance()->errors();
+      return Error::instance().errors();
     }
   }
 }

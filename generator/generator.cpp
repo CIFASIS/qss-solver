@@ -150,7 +150,7 @@ namespace MicroModelica {
             break;
         }
       }*/
-      return Error::getInstance()->errors();
+      return Error::instance().errors();
     }
 
     void

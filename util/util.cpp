@@ -542,7 +542,7 @@ namespace MicroModelica {
         VarInfo vi = _vt->lookup(it->name());
         if(vi == NULL)
         {
-          Error::getInstance()->add(0,
+          Error::instance().add(0,
           EM_IR | EM_VARIABLE_NOT_FOUND,
               ER_Fatal, "%s", it->name().c_str());
           return false;
@@ -736,7 +736,7 @@ namespace MicroModelica {
     {
      /* if(variableInterval.size() != 2)
       {
-        Error::getInstance()->add(0,
+        Error::instance().add(0,
         EM_IR | EM_ARGUMENTS,
             ER_Fatal, "");
       }
@@ -1025,7 +1025,7 @@ namespace MicroModelica {
       Option<VarInfo> vi = _vt[""];
       if(!vi)
       {
-        Error::getInstance()->add(0, EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "%s", "Fix Variable interval name");
+        Error::instance().add(0, EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "%s", "Fix Variable interval name");
       }
       return vi;
     }
