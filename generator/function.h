@@ -49,6 +49,8 @@ namespace MicroModelica
         addInclude(std::list<std::string> includes);
       private:
         void 
+        _macros();
+        void 
         _includes();
         void 
         _definition();
@@ -58,12 +60,12 @@ namespace MicroModelica
         _return();
         std::string 
         _prototype();
-        IR::Function                       _function;
-        Util::CompileFlags                 _flags;
-        WriterPtr                          _writer;
-        std::string                        _prefix;
-        Util::ImportTable  _include;
-        std::string                        _returnVariable;
+        IR::Function        _function;
+        Util::CompileFlags  _flags;
+        WriterPtr           _writer;
+        std::string         _prefix;
+        Util::ImportTable   _include;
+        std::string         _returnVariable;
     };
   }
 }

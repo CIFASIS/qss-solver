@@ -73,7 +73,7 @@ namespace MicroModelica {
       GiNaC::symbol time = tog.getTime();
       for(it = dir.begin(); it != dir.end(); it++)
       {
-        Option<VarInfo> v = vt[tog.identifier(it->first)];
+        Option<Variable> v = vt[tog.identifier(it->first)];
         if(v)
         {
           if(v->isState() || v->isAlgebraic())

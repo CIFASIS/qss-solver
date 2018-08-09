@@ -161,26 +161,22 @@ namespace MicroModelica {
             size.push_back(1);
           }
 
-          DEC_Type t = DEC_PUBLIC;
-          if(_compositionElement)
-          {
-            t = DEC_LOCAL;
-          }
+          DEC_Type t = (_compositionElement ? DEC_LOCAL : DEC_PUBLIC);
           if(tp & TP_CONSTANT)
           {
-            VarInfo vi(newType_Integer(), tp, current_element(it)->modification(), NULL, size, array);
+            Variable vi(newType_Integer(), tp, current_element(it)->modification(), NULL, size, array);
             _class->insert( current_element(it)->name(), vi, t);
           }
           else
           {
             if((tp & TP_PARAMETER) && c->isInteger())
             {
-              VarInfo vi(newType_Integer(), tp, current_element(it)->modification(), NULL, size, array);
+              Variable vi(newType_Integer(), tp, current_element(it)->modification(), NULL, size, array);
               _class->insert( current_element(it)->name(), vi, t);
             }
             else
             {
-              VarInfo vi(newType_Real(), tp, current_element(it)->modification(), NULL, size, array);
+              Variable vi(newType_Real(), tp, current_element(it)->modification(), NULL, size, array);
               _class->insert( current_element(it)->name(), vi, t);
             }
           }
@@ -238,7 +234,7 @@ namespace MicroModelica {
     void
     MicroModelicaIR::visit(AST_ForIndex x)
     {
-      VarInfo vi(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false); 
+      Variable vi(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false); 
       _class->insert(*x->variable(), vi);
     }
 

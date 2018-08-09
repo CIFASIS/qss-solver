@@ -37,5 +37,10 @@ namespace MicroModelica {
     Expression::~Expression()
     {
     }
+
+    std::ostream& operator<<(std::ostream& out, const Expression& s)
+    {
+      return out;
+    }
   }
 }

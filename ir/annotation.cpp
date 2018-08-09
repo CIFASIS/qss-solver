@@ -1072,7 +1072,7 @@ namespace MicroModelica {
           {
           AST_Expression_ComponentReference cr = e->getAsComponentReference();
           string name = cr->name();
-          Option<VarInfo> vi = _st[name];
+          Option<Variable> vi = _st[name];
           if(vi)
           {
             if(vi->isConstant())

@@ -306,7 +306,7 @@ class EqualExp
     _compareList(AST_ExpressionList ael, AST_ExpressionList bel);
     bool
     equalTraverseElement(AST_Expression a, AST_Expression b);
-    Option<MicroModelica::Util::VarInfo>
+    Option<MicroModelica::Util::Variable>
     getVarInfo(AST_Expression_ComponentReference compRef);
     bool
     compareArrays(AST_Expression_ComponentReference arrayA, AST_Expression_ComponentReference arrayB);

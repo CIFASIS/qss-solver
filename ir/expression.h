@@ -44,6 +44,8 @@ namespace MicroModelica {
          *
          */
         ~Expression();
+
+        friend std::ostream& operator<<(std::ostream& out, const Expression& s);
     };
   }
 }

@@ -100,14 +100,14 @@ namespace MicroModelica
         * @param type
         */
         virtual void
-        insert(VarName n, Util::VarInfo vi, DEC_Type type) = 0;
+        insert(VarName n, Util::Variable vi, DEC_Type type) = 0;
         /**
         *
         * @param n
         * @param vi
         */
         virtual void
-        insert(VarName n, Util::VarInfo vi) = 0;
+        insert(VarName n, Util::Variable vi) = 0;
         /**
         *
         * @param x
@@ -166,14 +166,14 @@ namespace MicroModelica
         * @param type
         */
         void
-        insert(VarName n, Util::VarInfo vi, DEC_Type type);
+        insert(VarName n, Util::Variable vi, DEC_Type type);
         /**
         *
         * @param n
         * @param vi
         */
         void
-        insert(VarName n, Util::VarInfo vi);
+        insert(VarName n, Util::Variable vi);
         /**
         *
         * @param eq
@@ -324,14 +324,14 @@ namespace MicroModelica
         * @param type
         */
         void
-        insert(VarName n, Util::VarInfo vi, DEC_Type type);
+        insert(VarName n, Util::Variable vi, DEC_Type type);
         /**
         *
         * @param n
         * @param vi
         */
         void
-        insert(VarName n, Util::VarInfo vi);
+        insert(VarName n, Util::Variable vi);
         /**
         *
         * @param x
@@ -407,14 +407,14 @@ namespace MicroModelica
         * @param type
         */
         void
-        insert(VarName n, Util::VarInfo vi, DEC_Type type);
+        insert(VarName n, Util::Variable vi, DEC_Type type);
         /**
         *
         * @param n
         * @param vi
         */
         void
-        insert(VarName n, Util::VarInfo vi);
+        insert(VarName n, Util::Variable vi);
         /**
         *
         * @param eq

@@ -125,7 +125,7 @@ namespace MicroModelica {
     }
 
     void
-    Function::insert(VarName n, VarInfo vi, DEC_Type type)  
+    Function::insert(VarName n, Variable vi, DEC_Type type)  
     {
       EvalInitExp eval(_symbols);
       vi.setName(n);
@@ -149,7 +149,7 @@ namespace MicroModelica {
     }
 
     void
-    Function::insert(VarName n, VarInfo vi)  
+    Function::insert(VarName n, Variable vi)  
     {
       insert(n, vi, DEC_PUBLIC);
     }
@@ -274,13 +274,13 @@ namespace MicroModelica {
     }
 
     void
-    Package::insert(VarName n, VarInfo vi, DEC_Type type)  
+    Package::insert(VarName n, Variable vi, DEC_Type type)  
     {
       return;
     }
 
     void
-    Package::insert(VarName n, VarInfo vi)  
+    Package::insert(VarName n, Variable vi)  
     {
       return;
     }
@@ -333,12 +333,12 @@ namespace MicroModelica {
     }
 
     void
-    Model::insert(VarName n, VarInfo vi, DEC_Type type)  
+    Model::insert(VarName n, Variable vi, DEC_Type type)  
     {
     }
 
     void
-    Model::insert(VarName n, VarInfo vi) 
+    Model::insert(VarName n, Variable vi) 
     {
     }
 

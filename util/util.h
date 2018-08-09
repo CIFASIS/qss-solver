@@ -38,7 +38,6 @@ namespace MicroModelica {
   }
   namespace Util {
 
-
     typedef ModelTable<string, string> ImportTable;
     
     /**
@@ -55,6 +54,8 @@ namespace MicroModelica {
 #else
     typedef int grp_t;
 #endif
+
+#define TAB "  "
 
     /**
      *
@@ -140,7 +141,7 @@ namespace MicroModelica {
         _hasStates(list<VariableInterval> variables);
         Index
         _index(list<VariableInterval> variables);
-        Option<VarInfo>
+        Option<Variable>
         _variableInfo(VariableInterval vin);
         virtual string
         _reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates) = 0;
@@ -232,7 +233,7 @@ namespace MicroModelica {
          * @return
          */
         string
-        newVarName(string n, VarSymbolTable vt);
+        iteratorVar();
         /**
          *
          * @param name
@@ -293,7 +294,7 @@ namespace MicroModelica {
          * @return
          */
         string
-        printInitialAssignment(VarInfo vi, string indent, string localVar = "i0");
+        printInitialAssignment(Variable vi, string indent, string localVar = "i0");
         /**
          *
          * @param ev

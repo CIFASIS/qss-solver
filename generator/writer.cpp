@@ -27,8 +27,6 @@ namespace MicroModelica {
   using namespace Util;
   namespace Generator {
 
-#define TAB "\t"
-
     /* MemoryWriter class. */
 
     MemoryWriter::MemoryWriter() :

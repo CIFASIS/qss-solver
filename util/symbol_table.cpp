@@ -28,12 +28,12 @@
 #include "util.h"
 
 namespace MicroModelica {
+  using namespace IR;
   namespace Util {
+    
+    /* Variable class. */
 
-
-    /* VarInfo class. */
-
-    VarInfo::VarInfo(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c) :
+    Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c) :
         _state(false), 
         _discrete(false), 
         _t(t), 
@@ -54,7 +54,7 @@ namespace MicroModelica {
       _processModification();
     }
 
-    VarInfo::VarInfo(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array) :
+    Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array) :
         _state(false), 
         _discrete(false), 
         _t(t), 
@@ -82,7 +82,7 @@ namespace MicroModelica {
      */
 
     void
-    VarInfo::_processModification()
+    Variable::_processModification()
     {
       _hasAssigment = false;
       _hasEach = false;
@@ -137,72 +137,65 @@ namespace MicroModelica {
     }
 
     bool
-    VarInfo::isState()
+    Variable::isState()
     {
       return _state;
     }
 
     void
-    VarInfo::setState()
+    Variable::setState()
     {
       _state = true;
       _unsetAssignment();
     }
 
     void
-    VarInfo::setDiscrete()
+    Variable::setDiscrete()
     {
       _discrete = true;
       _unsetAssignment();
     }
 
     Type
-    VarInfo::type()
+    Variable::type()
     {
       return _t;
     }
 
     bool
-    VarInfo::isTime()
+    Variable::isTime()
     {
       return _name.compare("time") == 0;
     }
 
     bool
-    VarInfo::isAlgebraic()
+    Variable::isAlgebraic()
     {
       return _algebraic;
     }
 
     void
-    VarInfo::setAlgebraic()
+    Variable::setAlgebraic()
     {
       _algebraic = true;
       _unsetAssignment();
       _unsetStartEach();
     }
 
-    bool
-    VarInfo::hasIndex()
-    {
-      //return _index.isSet();
-      return false;
-    }
-
     void
-    VarInfo::setValue(int val)
+    Variable::setValue(int val)
     {
       _value = val;
     }
 
     int
-    VarInfo::value()
+    Variable::value()
     {
       return _value;
     }
 
     int
-    VarInfo::size()
+    Variable::size()
     {
       vector<int>::iterator it;
       int total = 1;
@@ -214,76 +207,118 @@ namespace MicroModelica {
     }
 
     bool
-    VarInfo::hasAssignment()
+    Variable::hasAssignment()
     {
       return _hasAssigment;
     }
 
     bool
-    VarInfo::hasStartModifier()
+    Variable::hasStartModifier()
     {
       return _hasStart;
     }
 
     bool
-    VarInfo::hasEachModifier()
+    Variable::hasEachModifier()
     {
       return _hasEach;
     }
 
     AST_Expression
-    VarInfo::exp()
+    Variable::exp()
     {
       return _exp;
     }
 
     ostream &
-    operator<<(ostream &ret, const VarInfo &e)
+    operator<<(ostream &ret, const Variable &e)
     {
-      if(e.isParameter())
-        ret << "parameter ";
-      if(e.isDiscrete())
-        ret << "discrete ";
-      if(e.isConstant())
-        ret << "constant ";
-      if(e.isInput())
-        ret << "input ";
-      if(e.isOutput())
-        ret << "output ";
-      ret << e._t;
+      if(e.isForType()) 
+      {
+        ret << e._name;
+      }
+      else if(e.isConstant())
+      {
+        ret << e._value;
+      }
+      else 
+      {
+        ret << "_" << e._name;
+      }
       return ret;
     }
 
     bool
-    VarInfo::isUnknown()
+    Variable::isUnknown()
     {
       return _unknown;
     }
 
     void
-    VarInfo::setUnknown()
+    Variable::setUnknown()
     {
       _unknown = true;
     }
 
     string
-    VarInfo::name()
+    Variable::name()
     {
       return _name;
     }
 
     void
-    VarInfo::setName(string n)
+    Variable::setName(string n)
     {
       _name = n;
     }
 
     bool
-    VarInfo::isArray()
+    Variable::isArray()
     {
       return _isArray;
     }
 
+    string 
+    Variable::declaration()
+    {
+      stringstream buffer;
+      buffer << "double " << name();
+      if(isArray())
+      {
+        buffer << "[" << size() << "]";
+      }
+      buffer << ";";
+      return buffer.str();
+    }
+
+    string 
+    Variable::initialization()
+    {
+      stringstream buffer;
+      string index;
+      if(hasEachModifier())
+      {
+        index = Utils::instance().iteratorVar();
+        buffer << "int " << index << ";" << endl;
+      }
+      if(hasAssignment() || hasStartModifier() || hasEachModifier())
+      {
+        Expression ex(exp());
+        if(hasAssignment() || hasStartModifier())
+        {
+            buffer << this << " = " << ex << ";";
+        }
+        else if(hasEachModifier())
+        {
+          buffer << "for(" << index << " = 0; " << index << " <= " << size() << ";" << index << "++)" << endl;
+          buffer << TAB << "{" << endl;
+          buffer << TAB << TAB << this << "[" << index << "]" << " = " << ex << ";" << endl;
+          buffer << TAB << "}";
+        }
+      }
+      return buffer.str();
+    }
+  
     /* TypeSymbolTable_ class.*/
 
     TypeSymbolTable::TypeSymbolTable()
@@ -305,45 +340,45 @@ namespace MicroModelica {
     void
     VarSymbolTable::initialize(TypeSymbolTable ty)
     {
-      VarInfo v(ty["Real"].get(), 0, NULL, NULL, vector<int>(1, 0), false);
+      Variable v(ty["Real"].get(), 0, NULL, NULL, vector<int>(1, 0), false);
       v.setBuiltIn();
       v.setName("time");
       insert("time", v);
     }
 
     void
-    VarInfo::setEachModifier(bool each)
+    Variable::setEachModifier(bool each)
     {
       _hasEach = each;
     }
 
     void
-    VarInfo::_unsetAssignment()
+    Variable::_unsetAssignment()
     {
       _hasAssigment = false;
     }
 
     int
-    VarInfo::size(int dim)
+    Variable::size(int dim)
     {
       return _size[dim];
     }
 
     int
-    VarInfo::dimensions()
+    Variable::dimensions()
     {
       return _size.size();
     }
 
     void
-    VarInfo::_unsetStartEach()
+    Variable::_unsetStartEach()
     {
       _hasEach = false;
       _hasStart = false;
     }
 
     void
-    VarInfo::setParameter()
+    Variable::setParameter()
     {
       _tp = TP_PARAMETER;
       _unsetStartEach();
@@ -356,16 +391,16 @@ namespace MicroModelica {
     }
 
     void
-    VarSymbolTable::insert(VarName n, VarInfo vi)
+    VarSymbolTable::insert(VarName n, Variable vi)
     {
-      ModelTable<VarName, VarInfo>::insert(n, vi);
+      ModelTable<VarName, Variable>::insert(n, vi);
       if(vi.isParameter())
       {
         _parameters.push_back(vi);
       }
     }
 
-    list<VarInfo>
+    list<Variable>
     VarSymbolTable::parameters()
     {
       return _parameters;

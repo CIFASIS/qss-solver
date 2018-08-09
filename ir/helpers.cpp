@@ -17,6 +17,8 @@
 
  ******************************************************************************/
 
+#include <sstream>
+
 #include "helpers.h"
 #include "../util/error.h"
 
@@ -45,7 +47,7 @@ namespace MicroModelica {
         case EXPCOMPREF:
           {
           AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-          Option<VarInfo> vi = _vt[cr->name()];
+          Option<Variable> vi = _vt[cr->name()];
           if(!vi)
           {
             Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", cr->name().c_str());
@@ -217,7 +219,7 @@ namespace MicroModelica {
       if(e->expressionType() == EXPCOMPREF)
       {
         AST_Expression_ComponentReference cr = e->getAsComponentReference();
-        Option<VarInfo> vi = _st[cr->name()];
+        Option<Variable> vi = _st[cr->name()];
         if(!vi)
         {
           vi = _lst[cr->name()];
@@ -253,6 +255,34 @@ namespace MicroModelica {
     
     ExternalFunction::~ExternalFunction()
     {
+    }
+    
+    std::ostream& operator<<(std::ostream& out, const ExternalFunction& e)
+    {
+      list<string> ret;
+      stringstream buffer;
+      if(!e._lvalue.empty())
+      {
+        buffer << e._lvalue << " = ";
+      }
+      buffer << e._name << "(";
+      if(e._args != NULL)
+      {
+        AST_ExpressionListIterator it;
+        unsigned int count = 0;
+        foreach(it,e._args)
+        {
+          Expression ex(current_element(it));
+          buffer << ex;
+          if(++count < e._args->size())
+          {
+            buffer << ",";
+          }
+        }
+      }
+      buffer << ");";
+      out << buffer.str();
+      return out;
     }
     
     /* CompiledFunction Class Implementation */

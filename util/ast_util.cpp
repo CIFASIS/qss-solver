@@ -151,7 +151,7 @@ EqualExp::equalTraverseElement(AST_Expression a, AST_Expression b)
     case EXPCOMPREF:
       {
       AST_Expression_ComponentReference compRefA = a->getAsComponentReference();
-      Option<VarInfo> varInfoA = _symbolTable[CREF_NAME(compRefA)];
+      Option<Variable> varInfoA = _symbolTable[CREF_NAME(compRefA)];
       if(varInfoA && varInfoA->type()->getType() == TYARRAY)
       {
         return compareArrays(compRefA, b->getAsComponentReference());
@@ -234,14 +234,14 @@ EqualExp::equalTraverseElement(AST_Expression a, AST_Expression b)
   return true;
 }
 
-Option<VarInfo>
+Option<Variable>
 EqualExp::getVarInfo(AST_Expression_ComponentReference compRef)
 {
-  Option<VarInfo> varInfo;
+  Option<Variable> varInfo;
   AST_StringList names = compRef->names();
   if(names->size() > 0)
   {
-    ERROR_UNLESS(names->size() == 1, "EqualExp::getVarInfo\n"
+    ERROR_UNLESS(names->size() == 1, "EqualExp::getVariable\n"
             "AST_Component_Reference with names list bigger than 1 are not supported yet.\n");
     AST_String name = names->front();
     varInfo = _symbolTable[*name];
@@ -299,7 +299,7 @@ IsConstant::foldTraverseElement(AST_Expression e)
     case EXPCOMPREF:
       {
       AST_Expression_ComponentReference cr = e->getAsComponentReference();
-      Option<VarInfo> v = _st[cr->name()];
+      Option<Variable> v = _st[cr->name()];
       if(v->isParameter())
       {
         return true;
@@ -715,7 +715,7 @@ EvalExp::foldTraverseElement(AST_Expression exp)
     case EXPCOMPREF:
       {
       AST_Expression_ComponentReference expCompRef = exp->getAsComponentReference();
-      Option<VarInfo> varInfo = _symbolTable[CREF_NAME(expCompRef)];
+      Option<Variable> varInfo = _symbolTable[CREF_NAME(expCompRef)];
       if(varInfo && varInfo->type()->getType() == TYARRAY)
       {
         return evalArray(expCompRef);
@@ -852,7 +852,7 @@ EvalExp::evalCompRef(AST_Expression_ComponentReference compRef)
   {
     return _compRefVal;
   }
-  Option<VarInfo> varInfo = _symbolTable[CREF_NAME(compRef)];
+  Option<Variable> varInfo = _symbolTable[CREF_NAME(compRef)];
   if(varInfo && (varInfo->isParameter() || varInfo->isConstant()))
   {
     AST_Modification mod = varInfo->modification();

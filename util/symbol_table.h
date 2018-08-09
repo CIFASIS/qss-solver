@@ -38,20 +38,21 @@
 namespace MicroModelica {
   namespace Util {
 
+
     /**
      *
      */
-    class VarInfo
+    class Variable 
     {
       public:
         /**
          *
          * @param t
-          = 0* @param tp
+         * @param tp
          * @param m
          * @param c
          */
-        VarInfo(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c);
+        Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c);
         /**
          *
          * @param t
@@ -59,7 +60,7 @@ namespace MicroModelica {
          * @param m
          * @param s
          */
-        VarInfo(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array);
+        Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array);
         /**
          *
          * @return
@@ -243,12 +244,6 @@ namespace MicroModelica {
         setAlgebraic();
         /**
          *
-         * @return
-         */
-        bool
-        hasIndex();
-        /**
-         *
          * @param val
          */
         void
@@ -316,7 +311,7 @@ namespace MicroModelica {
          * @return
          */
         friend ostream &
-        operator<<(ostream &os, const VarInfo &e);
+        operator<<(ostream &os, const Variable &e);
         /**
          *
          * @param dim
@@ -330,6 +325,10 @@ namespace MicroModelica {
          */
         int
         dimensions();
+        std::string  
+        declaration();
+        std::string 
+        initialization();
       private:
         void
         _processModification();
@@ -371,7 +370,7 @@ namespace MicroModelica {
     /**
      *
      */
-    class VarSymbolTable: public ModelTable<VarName, VarInfo>
+    class VarSymbolTable: public ModelTable<VarName, Variable>
     {
       public:
         /**
@@ -393,15 +392,15 @@ namespace MicroModelica {
          *
          */
         void
-        insert(VarName n, VarInfo vi);
+        insert(VarName n, Variable vi);
         /**
          *
          */
-        list<VarInfo>
+        list<Variable>
         parameters();
       private:
         int _coeffs;
-        list<VarInfo> _parameters;
+        list<Variable> _parameters;
     };
   }
 }

@@ -41,15 +41,11 @@ namespace MicroModelica {
     void
     Function::definition()
     {
+      _macros();
       _includes();
       _prototype();
       _definition();
       _return();
-    }
-
-    void 
-    Function::header()
-    {
     }
 
     void 
@@ -76,55 +72,7 @@ namespace MicroModelica {
           _writer->write(addInclude, FUNCTION_HEADER);
         }
       }
-
     }
-
-          /*list<string> code;
-      MMO_ImportTable it = f->imports();
-      for(string i = it->begin(); !it->end(); i = it->next())
-      {
-        string addInclude = Util::getInstance()->packageName(i);
-        if(_includes.find(addInclude) == _includes.end())
-        {
-          _includes[addInclude] = addInclude;
-          _writer->write("#include \"" + addInclude + ".h\"", WR_FUNCTION_HEADER);
-        }
-      }
-      if(f->annotation()->hasInclude())
-      {
-        string addInclude = f->annotation()->include();
-        if(_includes.find(addInclude) == _includes.end())
-        {
-          _includes[addInclude] = addInclude;
-          _writer->write(addInclude, WR_FUNCTION_HEADER);
-        }
-      }
-      string indent = _writer->indent(1);
-      stringstream buffer;
-      buffer << f->prototype();
-      _writer->write(&buffer, WR_FUNCTION_CODE);
-      _writer->write("{", WR_FUNCTION_CODE);
-      _writer->beginBlock();
-      _printList(f->localDeclarations());
-      MMO_StatementTable stt = f->statements();
-      VarSymbolTable vt = f->varTable();
-      vt->setPrintEnvironment(VST_FUNCTION);
-      for(MMO_Statement st = stt->begin(); !stt->end(); st = stt->next())
-      {
-        list<string> sts = st->print(indent);
-        _printList(st->getVariables());
-        code.insert(code.end(), sts.begin(), sts.end());
-      }
-      _printList(code);
-      MMO_ArgumentsTable at = f->externalFunctionCalls();
-      for(MMO_FunctionData fd = at->begin(); !at->end(); fd = at->next())
-      {
-        _printList(fd->print(indent));
-      }
-      _writer->write(f->returnStatement(), WR_FUNCTION_CODE);
-      _writer->endBlock();
-      _writer->write("}", WR_FUNCTION_CODE);*/
-
 
     string 
     Function::_prototype()
@@ -136,39 +84,29 @@ namespace MicroModelica {
       VarSymbolTable vst = _function.arguments();
       int outputs = _function.outputNbr();
       string name = _function.name();
-      for(VarInfo vi = vst.begin(it); !vst.end(it); vi = vst.next(it))
+      for(Variable var = vst.begin(it); !vst.end(it); var = vst.next(it))
       {
-        if(vi.isInput())
+        if(var.isInput())
         {
-          input << "double ";
-          if(vi.isArray())
-          {
-            input << "*";
-          }
-          input << vi.name() << ",";
+          input << "double " << (var.isArray() ? "*" : "") << var.name() << ",";
         }
-        else if(vi.isOutput())
+        else if(var.isOutput())
         {
-          output << "double *" << vi.name() << ",";
-          _returnVariable = vi.name();
+          output << "double *" << var.name() << ",";
+          _returnVariable = var.name();
         }
+      }
+      string in = input.str();
+      if(outputs <= 1 && !in.empty()) 
+      { 
+        in.erase(in.end() - 1, in.end());
       }
       if(outputs == 0)
       {
-        string in = input.str();
-        if(!in.empty())
-        {
-          in.erase(in.end() - 1, in.end());
-        }
         func << "void " << _prefix << name << "(" << in << ")";
       }
       else if(outputs == 1)
       {
-        string in = input.str();
-        if(!in.empty())
-        {
-          in.erase(in.end() - 1, in.end());
-        }
         func << "double " << _prefix << name << "(" << in << ")";
       }
       else
@@ -189,7 +127,7 @@ namespace MicroModelica {
     void 
     Function::_definition()
     {
-      /*stringstream buffer;
+      stringstream buffer;
       _writer->write("{", FUNCTION_CODE);
       _writer->beginBlock();
       _localSymbols();
@@ -200,99 +138,46 @@ namespace MicroModelica {
         buffer << stm;
       }
       _writer->write(buffer.str(), FUNCTION_CODE);
-      MMO_StatementTable stt = f->statements();
-      VarSymbolTable vt = f->varTable();
-      vt->setPrintEnvironment(VST_FUNCTION);
-      for(MMO_Statement st = stt->begin(); !stt->end(); st = stt->next())
+      ExternalFunctionTable eft = _function.externalFunctions();
+      ExternalFunctionTable::iterator eit;
+      for(ExternalFunction ef = eft.begin(eit); !eft.end(eit); ef = eft.next(eit))
       {
-        list<string> sts = st->print(indent);
-        _printList(st->getVariables());
-        code.insert(code.end(), sts.begin(), sts.end());
+        buffer << ef;
       }
-      _printList(code);
-      MMO_ArgumentsTable at = f->externalFunctionCalls();
-      for(MMO_FunctionData fd = at->begin(); !at->end(); fd = at->next())
-      {
-        _printList(fd->print(indent));
-      }
+      _writer->write(buffer.str(), FUNCTION_CODE);
       _return();
       _writer->endBlock();
       _writer->write("}", FUNCTION_CODE);
-
-*/
     }
    
     void 
     Function::_localSymbols()
     {
-  /*    list<string> ret;
+      list<string> ret;
       stringstream buffer;
       VarSymbolTable localSymbols = _function.localSymbols();
       VarSymbolTable::iterator it;
-      for(VarInfo vi = localSymbols.begin(it); !localSymbols.end(it); vi = localSymbols.next(it))
+      for(Variable var = localSymbols.begin(it); !localSymbols.end(it); var = localSymbols.next(it))
       {
-        if(vi.isConstant())
+        if(var.isConstant())
         {
           continue;
         }
-        Index idx = vi->index();
-        buffer << "double " << vi.name();
-        if(vi.isArray())
-        {
-          buffer << "[" << vi.size() << "]";
-        }
-        buffer << ";";
-        ret.push_back(buffer.str());
-        buffer.str("");
-        string indexVar;
-        if(vi.hasEachModifier())
-        {
-          indexVar = Utils::instance().newVarName("i", _function.symbols());
-          ret.push_back("int " + indexVar + ";");
-        }
-        if(vi.hasAssignment() || vi.hasStartModifier() || vi.hasEachModifier())
-        {
-
-          _data->setSymbols(_localDeclarations);
-          Util::getInstance()->setData(_data);
-          buffer << Util::getInstance()->printInitialAssignment(vi, "", indexVar);
-          ret.push_back(buffer.str());
-          buffer.str("");
-          _data->setSymbols(_declarations);
-        }
+        _writer->write(var.declaration(), FUNCTION_CODE);
+        _writer->write(var.initialization(), FUNCTION_CODE);
       }
-      if(_outputs == 1)
+      if(_function.outputNbr() == 1)
       {
-        _declarations->setPrintEnvironment(VST_FUNCTION);
-        for(VarInfo vi = _declarations->begin(); !_declarations->end(); vi =
-            _declarations->next())
+        VarSymbolTable symbols = _function.symbols();
+        for(Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it))
         {
-          if(!vi->isOutput())
+          if(var.isOutput())
           {
-            continue;
-          }
-          Index idx = vi->index();
-          buffer << "double " << vi->name();
-          if(vi->isArray())
-          {
-            buffer << "[" << vi->size() << "]";
-          }
-          buffer << ";";
-          ret.push_back(buffer.str());
-          buffer.str("");
-          if(vi->hasAssignment() || vi->hasStartModifier() || vi->hasEachModifier())
-          {
-            _data->setSymbols(_localDeclarations);
-            Util::getInstance()->setData(_data);
-            buffer << Util::getInstance()->printInitialAssignment(vi, "");
-            ret.push_back(buffer.str());
-            buffer.str("");
-            _data->setSymbols(_declarations);
+            _writer->write(var.declaration(), FUNCTION_CODE);
+            _writer->write(var.initialization(), FUNCTION_CODE);
           }
         }
       }
-      return ret;
-*/
     }
 
     void 
@@ -323,6 +208,23 @@ namespace MicroModelica {
       for(it = includes.begin(); it != includes.end(); it++)
       {
         _include[*it] = *it;
+      }
+    }
+
+    void 
+    Function::_macros()
+    {
+      stringstream buffer;
+      VarSymbolTable localSymbols = _function.localSymbols();
+      VarSymbolTable::iterator it;
+      for(Variable var = localSymbols.begin(it); !localSymbols.end(it); var = localSymbols.next(it))
+      {
+        if(var.isConstant())
+        {
+          continue;
+        }
+        buffer << "#define " << var << " " << var.name();
+        _writer->write(buffer.str(), FUNCTION_CODE);
       }
     }
   }

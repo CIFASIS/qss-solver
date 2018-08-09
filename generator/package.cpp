@@ -131,7 +131,7 @@ namespace MicroModelica {
       ImportTable::iterator impIt;
       for(string i = imports.begin(impIt); !imports.end(impIt); i = imports.next(impIt))
       {
-        string addInclude = Util::Util::getInstance()->packageName(i);
+        string addInclude = Utils::instance().packageName(i);
         buffer << "#include \"" << addInclude << ".h\"" << endl;
         _includes.push_back(addInclude);
       }

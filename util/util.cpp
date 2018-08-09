@@ -33,8 +33,6 @@
 #include "error.h"
 #include "symbol_table.h"
 
-#define SLASH "/"
-
 namespace MicroModelica {
   namespace Util {
 
@@ -207,17 +205,10 @@ namespace MicroModelica {
     }
 
     string
-    Utils::newVarName(string n, VarSymbolTable vt)
+    Utils::iteratorVar()
     {
       stringstream buffer;
-      buffer << n << _varCounter++ << "0";
-      Option<VarInfo> vi = vt[buffer.str()];
-      while(!vi)
-      {
-        buffer.str("");
-        buffer << n << _varCounter++ << "0";
-        vi = vt[buffer.str()];
-      }
+      buffer << "_it" << _varCounter++;
       return buffer.str();
     }
 
@@ -411,34 +402,6 @@ namespace MicroModelica {
     }
 
     string
-    Utils::printInitialAssignment(VarInfo vi, string indent, string localVar)
-    {
-    /*  bool ic = _data->initialCode();
-      _data->setInitialCode(true);
-      VarSymbolTable vt = _data->symbols();
-      MMO_Expression exp = newMMO_Expression(vi->exp(), _data);
-      stringstream buffer;
-      if(vi->hasAssignment() || vi->hasStartModifier())
-      {
-        buffer << vt->print(vi) << " = " << exp->print("") << ";";
-      }
-      else if(vi->hasEachModifier())
-      {
-        buffer << "for(" << localVar << " = " << vi->index().begin() << "; "
-            << localVar << " <= " << vi->index().end() << ";" << localVar << "++)"
-            << endl;
-        buffer << indent << "{" << endl;
-        buffer << indent << indent << vt->print(vi, localVar) << " = "
-            << exp->print(localVar) << ";" << endl;
-        buffer << indent << "}";
-      }
-      _data->setInitialCode(ic);
-      delete exp;
-      return buffer.str();*/
-      return "";
-    }
-
-    string
     Utils::environmentVariable(string ev)
     {
       char *li = getenv(ev.c_str());
@@ -539,7 +502,7 @@ namespace MicroModelica {
      /* list<VariableInterval>::iterator it;
       for(it = variables.begin(); it != variables.end(); it++)
       {
-        VarInfo vi = _vt->lookup(it->name());
+        Variable vi = _vt->lookup(it->name());
         if(vi == NULL)
         {
           Error::instance().add(0,
@@ -571,7 +534,7 @@ namespace MicroModelica {
     string
     BIF::variableName(VariableInterval vin)
     {
-     /* VarInfo vi = _variableInfo(vin);
+     /* Variable vi = _variableInfo(vin);
       string varStr = _vt->getTypePrefix();
       if(vi->isState())
       {
@@ -595,7 +558,7 @@ namespace MicroModelica {
     string
     BIF::expressionOrderStr(int order, VariableInterval vin)
     {
-    /*  VarInfo vi = _variableInfo(vin);
+    /*  Variable vi = _variableInfo(vin);
       stringstream expOrder;
       if(_vt->printEnvironment() != VST_CLASSIC_MODEL_FUNCTIONS)
       {
@@ -1019,10 +982,10 @@ namespace MicroModelica {
       return _expressionOrder;
     }
 
-    Option<VarInfo>
+    Option<Variable>
     BIF::_variableInfo(VariableInterval vin)
     {
-      Option<VarInfo> vi = _vt[""];
+      Option<Variable> vi = _vt[""];
       if(!vi)
       {
         Error::instance().add(0, EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "%s", "Fix Variable interval name");
@@ -1033,7 +996,7 @@ namespace MicroModelica {
     bool
     BIF::isState(VariableInterval vin)
     {
-      Option<VarInfo> vi = _variableInfo(vin);
+      Option<Variable> vi = _variableInfo(vin);
       return vi->isState() || vi->isAlgebraic();
     }
 
