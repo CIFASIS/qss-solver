@@ -184,7 +184,7 @@ namespace MicroModelica {
          *
          * @param data
          */
-        ModelAnnotation(MicroModelica::Util::VarSymbolTable symbolTable);
+        ModelAnnotation(Util::VarSymbolTable& symbolTable);
         /**
          *
          */

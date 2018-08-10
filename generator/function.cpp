@@ -41,15 +41,13 @@ namespace MicroModelica {
     void
     Function::definition()
     {
-      _macros();
-      _includes();
-      _prototype();
-      _definition();
-      _return();
+      macros();
+      includes();
+      body();
     }
 
     void 
-    Function::_includes()
+    Function::includes()
     {
       list<string> code;
       ImportTable imports = _function.imports();
@@ -75,7 +73,7 @@ namespace MicroModelica {
     }
 
     string 
-    Function::_prototype()
+    Function::prototype()
     {
       stringstream input;
       stringstream output;
@@ -119,18 +117,19 @@ namespace MicroModelica {
     }
 
     string 
-    Function::prototype()
+    Function::header()
     {
-      return _prototype()+";";
+      return prototype()+";";
     }
 
     void 
-    Function::_definition()
+    Function::body()
     {
       stringstream buffer;
+      _writer->write(prototype(), FUNCTION_CODE);
       _writer->write("{", FUNCTION_CODE);
       _writer->beginBlock();
-      _localSymbols();
+      localSymbols();
       StatementTable stms = _function.statements();
       StatementTable::iterator it;
       for(Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it))
@@ -145,13 +144,16 @@ namespace MicroModelica {
         buffer << ef;
       }
       _writer->write(buffer.str(), FUNCTION_CODE);
-      _return();
+      if(_function.outputNbr() == 1)
+      {
+        _writer->write("return " + _returnVariable + ";", FUNCTION_CODE);
+      }
       _writer->endBlock();
       _writer->write("}", FUNCTION_CODE);
     }
    
     void 
-    Function::_localSymbols()
+    Function::localSymbols()
     {
       list<string> ret;
       stringstream buffer;
@@ -181,15 +183,6 @@ namespace MicroModelica {
     }
 
     void 
-    Function::_return()
-    {
-      if(_function.outputNbr() == 1)
-      {
-        _writer->write("return " + _returnVariable + ";", FUNCTION_CODE);
-      }
-    }
-
-    void 
     Function::setPrefix(string prefix)
     {
       _prefix = prefix;
@@ -212,7 +205,7 @@ namespace MicroModelica {
     }
 
     void 
-    Function::_macros()
+    Function::macros()
     {
       stringstream buffer;
       VarSymbolTable localSymbols = _function.localSymbols();

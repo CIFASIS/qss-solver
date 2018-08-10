@@ -40,11 +40,11 @@ namespace MicroModelica {
     {
       _libraryDirectory = Utils::instance().environmentVariable("MMOC_LIBRARIES");
       _includeDirectory = Utils::instance().environmentVariable("MMOC_INCLUDE");
-      _annotations.insert( pair<string, FunctionAnnotation::type>("derivative", DERIVATIVE));
-      _annotations.insert( pair<string, FunctionAnnotation::type>("Include", INCLUDE));
-      _annotations.insert( pair<string, FunctionAnnotation::type>("IncludeDirectory", INCLUDE_DIRECTORY));
-      _annotations.insert( pair<string, FunctionAnnotation::type>("Library", LIBRARY));
-      _annotations.insert( pair<string, FunctionAnnotation::type>("LibraryDirectory", LIBRARY_DIRECTORY));
+      _annotations.insert(pair<string, FunctionAnnotation::type>("derivative", DERIVATIVE));
+      _annotations.insert(pair<string, FunctionAnnotation::type>("Include", INCLUDE));
+      _annotations.insert(pair<string, FunctionAnnotation::type>("IncludeDirectory", INCLUDE_DIRECTORY));
+      _annotations.insert(pair<string, FunctionAnnotation::type>("Library", LIBRARY));
+      _annotations.insert(pair<string, FunctionAnnotation::type>("LibraryDirectory", LIBRARY_DIRECTORY));
     }
 
     FunctionAnnotation::~FunctionAnnotation()
@@ -175,7 +175,7 @@ namespace MicroModelica {
       return _libraryDirectory;
     }
 
-    ModelAnnotation::ModelAnnotation(VarSymbolTable symbolTable) :
+    ModelAnnotation::ModelAnnotation(VarSymbolTable& symbolTable) :
         _solver(LIQSS2), 
         _solverString("LIQSS2"), 
         _commInterval("CI_Step"), 

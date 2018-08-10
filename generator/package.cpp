@@ -118,7 +118,7 @@ namespace MicroModelica {
       {
         Function func(f,_flags, _writer);
         func.setPrefix(_package.prefix());
-        _writer->print(func.prototype());
+        _writer->print(func.header());
       }
       _writer->clearFile();
       fileName = name;

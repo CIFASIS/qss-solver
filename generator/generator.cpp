@@ -44,7 +44,7 @@ namespace MicroModelica {
     Generator::Generator(StoredDefinition& std, CompileFlags& flags) :
       _std(std), 
       _flags(flags), 
-      _modelInstance(), 
+      _modelInstance(NULL), 
       _files(), 
       _writer(NULL), 
       _includes(), 
@@ -70,86 +70,69 @@ namespace MicroModelica {
       if(_std.isModel())
       {
         Model model = _std.model();
+        string fname = model.name();
+        if(_flags.hasOutputFile())
+        {
+          fname = _flags.outputFile();
+        }
+        fname.append(".c");
+        _writer->setFile(fname);
+        switch(model.annotations().solver())
+        {
+          case DOPRI:
+          case DASSL:
+          case CVODE_BDF:
+          case IDA:
+          case CVODE_AM:
+            _modelInstance = ModelInstancePtr(new ClassicModelInstance(model, _flags, _writer));
+            break;
+          default:
+            _modelInstance = ModelInstancePtr(new QSSModelInstance(model, _flags, _writer));
+        }
+        _files = Files(_modelInstance, model, _flags);
+        generateModel();
+        _writer->clearFile();
+        _files.makefile();
+        _files.run();
+        _files.plot();
+        _files.settings(model.annotations());
+        if(_flags.graph())
+        {
+          _files.graph();
+        }
+        if(!model.externalFunctions().empty())
+        {
+          string ffname = model.name();
+          if(_flags.hasOutputFile())
+          {
+            ffname = _flags.outputFileName();
+          }
+          ffname.append("_functions");
+          _generateHeader(ffname);
+          MMO_SymbolRefTable srt = _model->calledFunctions();
+          for(MMO_FunctionInfo *i = srt->begin(); !srt->end(); i = srt->next())
+          {
+            _generateFunction(i->function(), ffname);
+          }
+          if(_flags->hasOutputFile())
+          {
+            ffname.insert(0, _flags.outputFilePath() + SLASH);
+          }
+          _generateFunctionHeader(ffname);
+          ffname.append(".c");
+          _writer->setFile(ffname);
+          _writer->print(WR_FUNCTION_HEADER);
+          _writer->print(WR_FUNCTION_CODE);
+          _writer->clearFile();
+        }
+      }
+
       }
       else 
       {
         Package pkg(_std.package(), _flags, _writer);
         pkg.generate();
       }
-     /* for(MMO_Class* c = _std.begin(); _std.end(); c = _std.next())
-      {
-        string fname = c->name();
-        switch(c->classType())
-        {
-          case CL_MODEL:
-            {
-            if(_flags.hasOutputFile())
-            {
-              fname = _flags.outputFile();
-            }
-            fname.append(".c");
-            _writer->setFile(fname);
-            _model = c->getAsModel();
-            switch(_model->annotation()->solver())
-            {
-              case ANT_DOPRI:
-              case ANT_DASSL:
-              case ANT_CVODE_BDF:
-              case ANT_IDA:
-              case ANT_CVODE_AM:
-                _modelInstance = newClassic(_model, _flags, _writer);
-                break;
-              default:
-                _modelInstance = newQSS(_model, _flags, _writer);
-            }
-            _files = MMO_Files(_model, _modelInstance, _flags);
-            _generateModel();
-            _writer->clearFile();
-            _files->makefile();
-            _files->run();
-            _files->plot();
-            _files->settings(_model->annotation());
-            if(_flags->graph())
-            {
-              _files->graph();
-            }
-            if(_model->calledFunctions()->count())
-            {
-              string ffname = c.name();
-              if(_flags.hasOutputFile())
-              {
-                ffname = _flags.outputFileName();
-              }
-              ffname.append("_functions");
-              _generateHeader(ffname);
-              MMO_SymbolRefTable srt = _model->calledFunctions();
-              for(MMO_FunctionInfo *i = srt->begin(); !srt->end(); i = srt->next())
-              {
-                _generateFunction(i->function(), ffname);
-              }
-              if(_flags->hasOutputFile())
-              {
-                ffname.insert(0, _flags->outputFilePath() + SLASH);
-              }
-              _generateFunctionHeader(ffname);
-              ffname.append(".c");
-              _writer->setFile(ffname);
-              _writer->print(WR_FUNCTION_HEADER);
-              _writer->print(WR_FUNCTION_CODE);
-              _writer->clearFile();
-            }
-          }
-            break;
-          case CL_PACKAGE:
-            {
-              MMO_Package p = c->getAsPackage();
-              _generatePackage(p);
-            }
-            break;
-          default:
-            break;
-        }
-      }*/
       return Error::instance().errors();
     }
 
@@ -182,11 +165,6 @@ namespace MicroModelica {
       {
         _writer->write(*it, FUNCTION_CODE);
       }
-    }
-
-    void
-    Generator::_generateFunctionCode(IR::Function f)
-    {
     }
 
     void

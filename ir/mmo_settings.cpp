@@ -24,132 +24,191 @@
 #include "../util/error.h"
 #include "class.h"
 
-/* MicroModelica Intermediate Representation */
+namespace MicroModelica {
+  using namespace Util;
+  namespace IR {
 
-MMO_Settings::MMO_Settings(string name) 
-{
-}
+    Settings::Settings(string name) : 
+      _model(),
+      _insertAnnotation(false),
+      _processFunction(false),
+      _processModel(false),
+      _classModification(false)
+    {
+    }
 
-MMO_Settings::~MMO_Settings()
-{
-}
+    Settings::~Settings()
+    {
+    }
 
-void
-MMO_Settings::visit(AST_Class x)
-{
-}
+    void
+    Settings::visit(AST_Class x)
+    {
+      Error::instance().setClassName(*(x->name()));
+      AST_TypePrefix p = x->prefix();
+      if(_processModel)
+      {
+        if((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE))
+        {
+          _insertAnnotation = false;
+          _processFunction = true;
+        }
+      }
+      else
+      {
+        if(p & CP_MODEL)
+        {
+          _insertAnnotation = true;
+          _model = Model(*x->name());
+        }
+      }
+    }
 
-void
-MMO_Settings::leave(AST_Class x)
-{
-}
+    void
+    Settings::leave(AST_Class x)
+    {
+      if(_processFunction)
+      {
+        _processFunction = false;
+        _insertAnnotation = true;
+      }
+    }
 
-void
-MMO_Settings::visit(AST_Composition x)
-{
-}
+    void
+    Settings::visit(AST_Composition x)
+    {
+    }
 
-void
-MMO_Settings::leave(AST_Composition x)
-{
-}
+    void
+    Settings::leave(AST_Composition x)
+    {
+    }
 
-void
-MMO_Settings::visit(AST_CompositionElement x)
-{
-}
+    void
+    Settings::visit(AST_CompositionElement x)
+    {
+    }
 
-void
-MMO_Settings::leave(AST_CompositionElement x)
-{
-}
+    void
+    Settings::leave(AST_CompositionElement x)
+    {
+    }
 
-void
-MMO_Settings::visit(AST_CompositionEqsAlgs x)
-{
-}
+    void
+    Settings::visit(AST_CompositionEqsAlgs x)
+    {
+    }
 
-void
-MMO_Settings::leave(AST_CompositionEqsAlgs x)
-{
-}
+    void
+    Settings::leave(AST_CompositionEqsAlgs x)
+    {
+    }
 
-void
-MMO_Settings::visit(AST_External_Function_Call x)
-{
-}
+    void
+    Settings::visit(AST_External_Function_Call x)
+    {
+    }
 
-void
-MMO_Settings::visit(AST_Element x)
-{
-}
+    void
+    Settings::visit(AST_Element x)
+    {
+    }
 
-void
-MMO_Settings::visit(AST_Modification x)
-{
-}
+    void
+    Settings::visit(AST_Modification x)
+    {
+      if(x->modificationType() == MODCLASS)
+      {
+        _classModification = false;
+      }
+    }
 
-void
-MMO_Settings::leave(AST_Modification x)
-{
-}
+    void
+    Settings::leave(AST_Modification x)
+    {
+      if(x->modificationType() == MODCLASS)
+      {
+        _classModification = false;
+      }
+    }
 
-void
-MMO_Settings::visit(AST_Comment x)
-{
-}
+    void
+    Settings::visit(AST_Comment x)
+    {
+    }
 
-void
-MMO_Settings::visit(AST_Equation x)
-{
-}
+    void
+    Settings::visit(AST_Equation x)
+    {
+    }
 
-void
-MMO_Settings::visit(AST_ForIndex x)
-{
-}
+    void
+    Settings::visit(AST_ForIndex x)
+    {
+    }
 
-void
-MMO_Settings::visit(AST_Equation_Else x)
-{
-}
+    void
+    Settings::visit(AST_Equation_Else x)
+    {
+    }
 
-void
-MMO_Settings::visit(AST_Expression x)
-{
-}
+    void
+    Settings::visit(AST_Expression x)
+    {
+    }
 
-void
-MMO_Settings::visit(AST_Argument x)
-{
-}
+    void
+    Settings::visit(AST_Argument x)
+    {
+      if(_insertAnnotation)
+      {
+        if(x->argumentType() == AR_MODIFICATION)
+        {
+          AST_Argument_Modification am = x->getAsModification();
+          if(am->hasModification() && _classModification == false)
+          {
+            _model.insert(am);
+          }
+        }
+      }
+    }
 
-void
-MMO_Settings::visit(AST_Statement x)
-{
-}
+    void
+    Settings::visit(AST_Statement x)
+    {
+    }
 
-void
-MMO_Settings::leave(AST_Statement x)
-{
-}
+    void
+    Settings::leave(AST_Statement x)
+    {
+    }
 
-void
-MMO_Settings::visit(AST_Statement_Else x)
-{
-}
+    void
+    Settings::visit(AST_Statement_Else x)
+    {
+    }
 
-void
-MMO_Settings::visit(AST_StoredDefinition x)
-{
-}
+    void
+    Settings::visit(AST_StoredDefinition x)
+    {
+    }
 
-void
-MMO_Settings::leave(AST_StoredDefinition x)
-{
-}
+    void
+    Settings::leave(AST_StoredDefinition x)
+    {
+    }
 
-int
-MMO_Settings::apply(AST_Node x)
-{
+    int
+    Settings::apply(AST_Node x)
+    {
+      x->accept(this);
+      return Error::instance().errors();
+    }
+
+    ModelAnnotation
+    Settings::annotations()
+    {
+      return _model.annotations();
+    }
+  }
 }

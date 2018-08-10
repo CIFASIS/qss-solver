@@ -321,10 +321,22 @@ namespace MicroModelica {
     }
 
     /* Model Class Implementation */
+    
+    Model::Model() :
+      _name(),
+      _imports(),
+      _symbols(),
+      _annotations(_symbols),
+      _externalFunctions()
+    {
+    }
 
     Model::Model(string name) :
       _name(name),
-      _imports()
+      _imports(),
+      _symbols(),
+      _annotations(_symbols),
+      _externalFunctions()
     {
     }
 
@@ -371,12 +383,16 @@ namespace MicroModelica {
     void
     Model::insert(AST_Argument_Modification x) 
     {
+      if(!_annotations.insert(x))
+      {
+        Error::instance().add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Error, "%s", x->name()->c_str());
+      }
     }
 
     VarSymbolTable
     Model::symbols() const
     {
-      return VarSymbolTable();
+      return _symbols;
     }
 
     void
@@ -396,6 +412,17 @@ namespace MicroModelica {
       return _imports;
     }
 
+    ModelAnnotation 
+    Model::annotations()
+    {
+      return _annotations;        
+    }
+    
+    ExternalFunctionTable 
+    Model::externalFunctions() const 
+    {
+      return _externalFunctions;
+    }
 
   }
 }

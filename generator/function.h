@@ -37,10 +37,8 @@ namespace MicroModelica
         ~Function();
         void 
         definition();
-        void 
-        header();
         std::string 
-        prototype();
+        header();
         void 
         setPrefix(std::string prefix);
         void 
@@ -49,17 +47,15 @@ namespace MicroModelica
         addInclude(std::list<std::string> includes);
       private:
         void 
-        _macros();
+        macros();
         void 
-        _includes();
+        includes();
         void 
-        _definition();
+        body();
         void 
-        _localSymbols();
-        void 
-        _return();
+        localSymbols();
         std::string 
-        _prototype();
+        prototype();
         IR::Function        _function;
         Util::CompileFlags  _flags;
         WriterPtr           _writer;

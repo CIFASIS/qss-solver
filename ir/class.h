@@ -378,7 +378,7 @@ namespace MicroModelica
         *
         * @param name
         */
-        Model() {};
+        Model();
         /**
         *
         * @param name
@@ -464,9 +464,16 @@ namespace MicroModelica
         */
         Util::ImportTable
         imports() const;
+        ModelAnnotation 
+        annotations();
+        ExternalFunctionTable 
+        externalFunctions() const;
       private:
-        std::string         _name;
-        Util::ImportTable   _imports;
+        std::string           _name;
+        Util::ImportTable     _imports;
+        Util::VarSymbolTable  _symbols;
+        ModelAnnotation       _annotations;
+        ExternalFunctionTable _externalFunctions;
     };
     
     typedef boost::variant<
