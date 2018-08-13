@@ -102,7 +102,6 @@ namespace MicroModelica {
         string
         print(Index idx, string variableIndex);
       private:
-        Util::VarSymbolTable _vt;
         bool
         hasStates(list<VariableInterval> variables);
         Index
@@ -113,6 +112,7 @@ namespace MicroModelica {
         reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates) = 0;
         virtual string
         init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates) = 0;
+        Util::VarSymbolTable _vt;
         int _expressionOrder;
     };
 

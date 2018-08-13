@@ -141,64 +141,6 @@ namespace MicroModelica {
       }
     }
 
-    bool
-    Variable::isState()
-    {
-      return _state;
-    }
-
-    void
-    Variable::setState()
-    {
-      _state = true;
-      _unsetAssignment();
-    }
-
-    void
-    Variable::setDiscrete()
-    {
-      _discrete = true;
-      _unsetAssignment();
-    }
-
-    Type
-    Variable::type()
-    {
-      return _t;
-    }
-
-    bool
-    Variable::isTime()
-    {
-      return _name.compare("time") == 0;
-    }
-
-    bool
-    Variable::isAlgebraic()
-    {
-      return _algebraic;
-    }
-
-    void
-    Variable::setAlgebraic()
-    {
-      _algebraic = true;
-      _unsetAssignment();
-      _unsetStartEach();
-    }
-
-    void
-    Variable::setValue(int val)
-    {
-      _value = val;
-    }
-
-    int
-    Variable::value()
-    {
-      return _value;
-    }
-
     int
     Variable::size()
     {
@@ -209,30 +151,6 @@ namespace MicroModelica {
         total *= *it;
       }
       return total;
-    }
-
-    bool
-    Variable::hasAssignment()
-    {
-      return _hasAssigment;
-    }
-
-    bool
-    Variable::hasStartModifier()
-    {
-      return _hasStart;
-    }
-
-    bool
-    Variable::hasEachModifier()
-    {
-      return _hasEach;
-    }
-
-    AST_Expression
-    Variable::exp()
-    {
-      return _exp;
     }
 
     ostream &
@@ -251,36 +169,6 @@ namespace MicroModelica {
         ret << "_" << e._name;
       }
       return ret;
-    }
-
-    bool
-    Variable::isUnknown()
-    {
-      return _unknown;
-    }
-
-    void
-    Variable::setUnknown()
-    {
-      _unknown = true;
-    }
-
-    string
-    Variable::name()
-    {
-      return _name;
-    }
-
-    void
-    Variable::setName(string n)
-    {
-      _name = n;
-    }
-
-    bool
-    Variable::isArray()
-    {
-      return _isArray;
     }
 
     string 
@@ -349,50 +237,6 @@ namespace MicroModelica {
       v.setBuiltIn();
       v.setName("time");
       insert("time", v);
-    }
-
-    void
-    Variable::setEachModifier(bool each)
-    {
-      _hasEach = each;
-    }
-
-    void
-    Variable::_unsetAssignment()
-    {
-      _hasAssigment = false;
-    }
-
-    int
-    Variable::size(int dim)
-    {
-      return _size[dim];
-    }
-
-    int
-    Variable::dimensions()
-    {
-      return _size.size();
-    }
-
-    void
-    Variable::_unsetStartEach()
-    {
-      _hasEach = false;
-      _hasStart = false;
-    }
-
-    void
-    Variable::setParameter()
-    {
-      _tp = TP_PARAMETER;
-      _unsetStartEach();
-    }
-
-    void
-    VarSymbolTable::setPolyCoeffs(int coeffs)
-    {
-      _coeffs = coeffs;
     }
 
     void

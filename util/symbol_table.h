@@ -93,8 +93,8 @@ namespace MicroModelica {
          *
          * @return
          */
-        Type
-        type();
+        inline Type
+        type() { return _t; };
         /**
          *
          * @param t
@@ -104,8 +104,8 @@ namespace MicroModelica {
         /**
          *
          */
-        void
-        setParameter();
+        inline void
+        setParameter() { _tp = TP_PARAMETER; unsetStartEach(); };
         /**
          *
          * @return
@@ -116,7 +116,8 @@ namespace MicroModelica {
          *
          * @return
          */
-        inline bool isDiscrete() const { return (_tp & TP_DISCRETE) || _discrete; };
+        inline bool 
+        isDiscrete() const { return (_tp & TP_DISCRETE) || _discrete; };
         /**
          *
          * @return
@@ -126,8 +127,8 @@ namespace MicroModelica {
         /**
          *
          */
-        void
-        setDiscrete();
+        inline void
+        setDiscrete() { _discrete = true; unsetAssignment(); };
         /**
          *
          */
@@ -161,53 +162,54 @@ namespace MicroModelica {
          *
          * @return
          */
-        bool
-        isState();
+        inline bool
+        isState() { return _state; };
         /**
          *
          */
-        void
-        setState();
-        /**
-         *
-         * @return
-         */
-        bool
-        isUnknown();
-        /**
-         *
-         */
-        void
-        setUnknown();
+        inline void
+        setState() { _state = true; unsetAssignment(); };
         /**
          *
          * @return
          */
-        bool
-        isTime();
+        inline bool
+        isUnknown() { return _unknown; };
+        /**
+         *
+         */
+        inline void
+        setUnknown() { _unknown = true; };
         /**
          *
          * @return
          */
-        bool
-        isAlgebraic();
+        inline bool
+        isTime() { return _name.compare("time") == 0; };
+        /**
+         *
+         * @return
+         */
+        inline bool
+        isAlgebraic() { return _algebraic; };
         /**
          *
          */
-        void
-        setAlgebraic();
+        inline void
+        setAlgebraic() { _algebraic = true; unsetAssignment(); unsetStartEach(); };
+
         /**
          *
          * @param val
          */
-        void
-        setValue(int val);
+        inline void
+        setValue(int val) { _value = val; };
         /**
          *
          * @return
          */
-        int
-        value();
+        inline int
+        value() { return _value; };
         /**
          *
          * @return
@@ -218,46 +220,46 @@ namespace MicroModelica {
          *
          * @return
          */
-        bool
-        hasAssignment();
+        inline bool
+        hasAssignment() { return _hasAssigment; };
         /**
          *
          * @return
          */
-        bool
-        hasStartModifier();
+        inline bool
+        hasStartModifier() { return _hasStart; };
         /**
          *
          * @return
          */
-        bool
-        hasEachModifier();
-        void
-        setEachModifier(bool each);
+        inline bool
+        hasEachModifier() { return _hasEach; };
+        inline void
+        setEachModifier(bool each) { _hasEach = each; }; 
         /**
          *
          * @return
          */
-        string
-        name();
+        inline string
+        name() { return _name; };
         /**
          *
          * @param n
          */
-        void
-        setName(string n);
+        inline void
+        setName(string n) { _name = n; };
         /**
          *
          * @return
          */
-        AST_Expression
-        exp();
+        inline AST_Expression
+        exp() { return _exp; };
         /**
          *
          * @return
          */
-        bool
-        isArray();
+        inline bool
+        isArray() { return _isArray; };
         /**
          *
          * @param os
@@ -270,14 +272,14 @@ namespace MicroModelica {
          * @param dim
          * @return
          */
-        int
-        size(int dim);
+        inline int
+        size(int dim) { return _size[dim]; };
         /**
          *
          * @return
          */
-        int
-        dimensions();
+        inline int
+        dimensions() { return _size.size(); };
         std::string  
         declaration();
         std::string 
@@ -290,9 +292,9 @@ namespace MicroModelica {
         void
         processModification();
         void
-        unsetAssignment();
-        void
-        unsetStartEach();
+        unsetAssignment() { _hasAssigment = false; };
+        inline void
+        unsetStartEach() { _hasEach = false; _hasStart = false; };
         bool              _state;
         bool              _unknown;
         bool              _discrete;
@@ -346,11 +348,6 @@ namespace MicroModelica {
          *
          */
         void
-        setPolyCoeffs(int order);
-        /**
-         *
-         */
-        void
         insert(VarName n, Variable vi);
         /**
          *
@@ -358,8 +355,8 @@ namespace MicroModelica {
         list<Variable>
         parameters();
       private:
-        int _coeffs;
-        list<Variable> _parameters;
+        int             _coeffs;
+        list<Variable>  _parameters;
     };
   }
 }
