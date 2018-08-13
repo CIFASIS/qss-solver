@@ -24,10 +24,18 @@
 namespace MicroModelica {
   namespace IR {
 
-    Equation::Equation(AST_Expression exp) 
+    Equation::Equation(AST_Expression exp) :
+      _eq(exp),
+      _range()
     {
     }
 
+    Equation::Equation(AST_Expression exp, Range r) :
+      _eq(exp),
+      _range(r)
+    {
+    }
+    
     Equation::~Equation()
     {
     }

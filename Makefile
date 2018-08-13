@@ -72,6 +72,7 @@ IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
 				$(IRDIR)/statement.cpp  \
 				$(IRDIR)/helpers.cpp  \
 				$(IRDIR)/class.cpp  \
+				$(IRDIR)/index.cpp  \
 				$(IRDIR)/annotation.cpp  \
 				$(IRDIR)/event.cpp  \
 				$(IRDIR)/stored_definition.cpp  \
@@ -91,7 +92,6 @@ UTILSRC = $(UTILDIR)/util.cpp \
 					$(UTILDIR)/compile_flags.cpp \
 					$(UTILDIR)/derivative.cpp \
 					$(UTILDIR)/ginac_interface.cpp \
-					$(UTILDIR)/index.cpp \
 					$(UTILDIR)/model_dependencies.cpp  \
 					$(UTILDIR)/incidence_matrix.cpp  \
 					$(UTILDIR)/graph.cpp \

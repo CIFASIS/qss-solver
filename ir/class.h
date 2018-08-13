@@ -29,8 +29,11 @@
 
 #include "annotation.h"
 #include "statement.h"
+#include "equation.h"
+#include "event.h"
 #include "helpers.h"
 #include "../ast/ast_types.h"
+#include "../util/model_dependencies.h"
 #include "../util/util_types.h"
 #include "../util/util.h"
 
@@ -469,11 +472,26 @@ namespace MicroModelica
         ExternalFunctionTable 
         externalFunctions() const;
       private:
-        std::string           _name;
-        Util::ImportTable     _imports;
-        Util::VarSymbolTable  _symbols;
-        ModelAnnotation       _annotations;
-        ExternalFunctionTable _externalFunctions;
+        void 
+        setRealVariables(AST_Equation eq, Option<Range> range);
+        std::string               _name;
+        Util::ImportTable         _imports;
+        Util::VarSymbolTable      _symbols;
+        ModelAnnotation           _annotations;
+        ExternalFunctionTable     _externalFunctions;
+        EquationTable             _equations;
+        EquationTable             _algebraics;
+        EventTable                _events;
+        Util::ModelDependencies   _dependecies;
+        CompiledPackageTable      _packages;
+        StatementTable            _initialCode;
+        int                       _stateNbr;
+        int                       _discreteNbr;
+        int                       _algebraicNbr;
+        int                       _outputNbr;
+        int                       _equationId;
+        int                       _algebraicId;
+        int                       _eventId;
     };
     
     typedef boost::variant<

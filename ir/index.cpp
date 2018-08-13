@@ -19,10 +19,14 @@
 
 #include "index.h"
 
-using namespace MicroModelica::IR;
+#include "helpers.h"
+#include "../ast/expression.h"
+#include "../ast/equation.h"
+#include "../ast/statement.h"
 
 namespace MicroModelica {
-  namespace Util {
+  using namespace Util;
+  namespace IR {
 
 
     IndexDefinition::IndexDefinition()
@@ -31,6 +35,11 @@ namespace MicroModelica {
      
     IndexDefinition::~IndexDefinition()
     {
+    }
+    
+    std::ostream& operator<<(std::ostream& out, const IndexDefinition& id)
+    {
+      return out;
     }
 
     Index::Index()
@@ -73,6 +82,73 @@ namespace MicroModelica {
     Index::dimension()
     {
       return 0;
+    }
+    
+    std::ostream& operator<<(std::ostream& out, const Index& i)
+    {
+      return out;
+    }
+
+    RangeDefinition::RangeDefinition(int begin, int end, int step) :
+      _begin(begin),
+      _end(end),
+      _step(step)
+    {
+    }
+
+    RangeDefinition::~RangeDefinition()
+    {
+    }
+
+    std::ostream& operator<<(std::ostream& out, const RangeDefinition& rd)
+    {
+      return out;
+    }
+
+    Range::Range() :
+      _ranges()
+    {
+    }
+    
+    Range::Range(AST_Equation_For eqf, VarSymbolTable symbols) :
+      _ranges()
+    {
+      AST_ForIndexList fil = eqf->forIndexList();
+      setRangeDefinition(fil, symbols);
+    }
+
+    Range::Range(AST_Statement_For stf, VarSymbolTable symbols) :
+      _ranges()
+    {
+      AST_ForIndexList fil = stf->forIndexList();
+      setRangeDefinition(fil, symbols);
+    }
+    void 
+    Range::setRangeDefinition(AST_ForIndexList fil, VarSymbolTable symbols)
+    {
+      AST_ForIndexListIterator filit;
+      foreach (filit, fil)
+      {
+        AST_ForIndex fi = current_element(filit);
+        AST_Expression in = fi->in_exp();
+        AST_ExpressionList el = in->getAsRange()->expressionList();
+        AST_ExpressionListIterator eli;
+        EvalInitExp eval(symbols);
+        int size = el->size();
+        int begin = eval.apply(AST_ListFirst(el));
+        int end = eval.apply(AST_ListAt(el, size - 1));
+        string index = fi->variable()->c_str();
+        _ranges[index] = (size == 2 ? RangeDefinition(begin,end) : RangeDefinition(begin, end, eval.apply(AST_ListAt(el, 1))));
+      }
+    }
+
+    Range::~Range() 
+    {
+    }
+    
+    std::ostream& operator<<(std::ostream& out, const Range& r)
+    {
+      return out;
     }
 
     VariableInterval::VariableInterval()

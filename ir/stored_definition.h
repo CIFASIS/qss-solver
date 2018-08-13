@@ -57,6 +57,8 @@ namespace MicroModelica {
         addFunction(string name);
         Option<Function> 
         function(string name);
+        void 
+        process();
       private:
         ClassType      _def;
         FunctionTable  _functions;

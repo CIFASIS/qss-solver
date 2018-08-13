@@ -22,7 +22,7 @@
 
 #include <map>
 
-#include "index.h"
+#include "../ir/index.h"
 
 namespace MicroModelica {
   namespace Util {
@@ -35,8 +35,8 @@ namespace MicroModelica {
         Incidence();
         ~Incidence();
       private:
-        Index _lhs;
-        Index _rhs;
+        IR::Index _lhs;
+        IR::Index _rhs;
     };
 
     class IncidenceMatrix

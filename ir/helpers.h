@@ -256,8 +256,6 @@ namespace MicroModelica {
 
     typedef ModelTable<std::string,CompiledPackage> CompiledPackageTable;
 
-
-
   }
 }
 

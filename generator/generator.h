@@ -70,7 +70,7 @@ namespace MicroModelica {
         void
         _variables();
         void
-        _generateModel();
+        generateModel();
         void
         _generateFunction(IR::Function f, string fileName);
         void

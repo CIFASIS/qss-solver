@@ -25,6 +25,7 @@
 #include "../ast/expression.h"
 #include "../ir/equation.h"
 #include "../ir/expression.h"
+#include "../ir/helpers.h"
 #include "util.h"
 
 namespace MicroModelica {
@@ -49,9 +50,11 @@ namespace MicroModelica {
         _hasEach(false), 
         _hasAssigment(false), 
         _name(), 
-        _isArray(false)
+        _isArray(false),
+        _hasOffset(false),
+        _offset(0)
     {
-      _processModification();
+      processModification();
     }
 
     Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array) :
@@ -70,9 +73,11 @@ namespace MicroModelica {
         _hasEach(false), 
         _hasAssigment(false), 
         _name(), 
-        _isArray(array)
+        _isArray(array),
+        _hasOffset(false),
+        _offset(0)
     {
-      _processModification();
+      processModification();
     }
 
     /*! \brief Process the argument modification to determine the variable modifiers if any.
@@ -82,7 +87,7 @@ namespace MicroModelica {
      */
 
     void
-    Variable::_processModification()
+    Variable::processModification()
     {
       _hasAssigment = false;
       _hasEach = false;

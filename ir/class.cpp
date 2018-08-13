@@ -102,7 +102,7 @@ namespace MicroModelica {
       if(efc->hasComponentReference())
       {
         AST_Expression_ComponentReference cr = efc->componentReference();
-        if(!vl.foldTraverse(cr))
+        if(!vl.apply(cr))
         {
           Error::instance().add(efc->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", cr->name().c_str());
           return;
@@ -114,7 +114,7 @@ namespace MicroModelica {
       {
         foreach(eli,efc->args())
         {
-          if(!vl.foldTraverse(current_element(eli)))
+          if(!vl.apply(current_element(eli)))
           {
             Error::instance().add(efc->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "External function call.");
             return;
@@ -131,7 +131,7 @@ namespace MicroModelica {
       vi.setName(n);
       if(vi.typePrefix() & TP_CONSTANT)
       {
-        vi.setValue(eval.foldTraverse(vi.modification()->getAsEqual()->exp()));
+        vi.setValue(eval.apply(vi.modification()->getAsEqual()->exp()));
       }
       _symbols.insert(n, vi);
       if(type == DEC_PUBLIC)
@@ -327,7 +327,20 @@ namespace MicroModelica {
       _imports(),
       _symbols(),
       _annotations(_symbols),
-      _externalFunctions()
+      _externalFunctions(),
+      _equations(),
+      _algebraics(),
+      _events(),
+      _dependecies(),
+      _packages(),
+      _initialCode(),
+      _stateNbr(0),
+      _discreteNbr(0),
+      _algebraicNbr(0),
+      _outputNbr(0),
+      _equationId(0),
+      _algebraicId(0),
+      _eventId(0)
     {
     }
 
@@ -336,7 +349,20 @@ namespace MicroModelica {
       _imports(),
       _symbols(),
       _annotations(_symbols),
-      _externalFunctions()
+      _externalFunctions(),
+      _equations(),
+      _algebraics(),
+      _events(),
+      _dependecies(),
+      _packages(),
+      _initialCode(),
+      _stateNbr(0),
+      _discreteNbr(0),
+      _algebraicNbr(0),
+      _outputNbr(0),
+      _equationId(0),
+      _algebraicId(0),
+      _eventId(0)
     {
     }
 
@@ -347,16 +373,143 @@ namespace MicroModelica {
     void
     Model::insert(VarName n, Variable vi, DEC_Type type)  
     {
+      insert(n, vi);
     }
 
     void
     Model::insert(VarName n, Variable vi) 
     {
+      vi.setName(n);
+      if(vi.typePrefix() & TP_CONSTANT)
+      {
+        EvalInitExp eval(_symbols); 
+        vi.setValue(eval.foldTraverse(vi.exp()));
+      }
+      _symbols[n] = vi;
+    }
+
+    void 
+    Model::setRealVariables(AST_Equation eq, Option<Range> range)
+    {
+      if(range.check())
+      {
+        Error::instance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+            "Wrong equation range.");
+      }
+      AST_Equation_Equality eqe = eq->getAsEquality();
+      if(eqe->left()->expressionType() == EXPDERIVATIVE)
+      {
+        AST_Expression_Derivative ed = eqe->left()->getAsDerivative();
+        AST_Expression derArg = AST_ListFirst(ed->arguments());
+        string varName = _getComponentName(derArg);
+        VarInfo vi = _declarations->lookup(varName);
+        if(vi == NULL)
+        {
+          Error::getInstance()->add(eqe->left()->lineNum(),
+          EM_IR | EM_VARIABLE_NOT_FOUND,
+              ER_Error, "%s", varName.c_str());
+          return;
+        }
+        if(!vi->hasIndex())
+        {
+          Index idx;
+          idx.setOffset(_states);
+          _setIndex(derArg, vi, &idx);
+          vi->setIndex(idx);
+          vi->setState();
+          _states += vi->size();
+        }
+      }
+      else if(eqe->left()->expressionType() == EXPCOMPREF)
+      {
+        string varName = _getComponentName(eqe->left());
+        VarInfo vi = _declarations->lookup(varName);
+        if(vi == NULL)
+        {
+          Error::getInstance()->add(eqe->left()->lineNum(),
+          EM_IR | EM_VARIABLE_NOT_FOUND,
+              ER_Error, "%s", varName.c_str());
+          return;
+        }
+        if(!vi->hasIndex())
+        {
+          Index idx;
+          idx.setOffset(_algs);
+          _setIndex(eqe->left(), vi, &idx);
+          vi->setIndex(idx);
+          vi->setAlgebraic();
+          _algs += vi->size();
+        }
+      }
+      else if(eqe->left()->expressionType() == EXPOUTPUT)
+      {
+        AST_Expression_Output eout = eqe->left()->getAsOutput();
+        AST_ExpressionList el = eout->expressionList();
+        AST_ExpressionListIterator it;
+        list<string> lvars;
+        list<Index> lidx;
+        foreach(it,el)
+        {
+          string varName = _getComponentName(current_element(it));
+          VarInfo vi = _declarations->lookup(varName);
+          if(vi == NULL)
+          {
+            Error::getInstance()->add(eqe->left()->lineNum(),
+            EM_IR | EM_VARIABLE_NOT_FOUND,
+                ER_Error, "%s", varName.c_str());
+            return;
+          }
+          if(!vi->hasIndex())
+          {
+            Index idx;
+            idx.setOffset(_algs);
+            _setIndex(current_element(it), vi, &idx);
+            vi->setIndex(idx);
+          }
+          vi->setAlgebraic();
+          _algs += vi->size();
+        }
+      }
+      else
+      {
+        Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
+            "Insert model equation.");
+      }
+
     }
 
     void
     Model::insert(AST_Equation eq)  
     {
+      _equations[_equationId++] = eq;
+      //AST_Equation teq = _transformEquation(eq);
+      Option<Range> range;
+      if(eq->equationType() == EQEQUALITY)
+      {
+        setRealVariables(eq, range);
+      }
+      else if(eq->equationType() == EQFOR)
+      {
+        AST_Equation_For eqf = eq->getAsFor();
+        range = Range(eqf, _symbols);
+        AST_EquationList eqs = eqf->equationList();
+        AST_EquationListIterator it;
+        foreach(it,eqs)
+        {
+          if(current_element(it)->equationType() == EQFOR)
+          {
+            insert(current_element(it));
+          }
+          else
+          {
+            setRealVariables(current_element(it), range);
+          }
+        }
+      }
+      else
+      {
+        Error::instance().add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Equation type not recognized.");
+      }
     }
 
     void
@@ -398,12 +551,17 @@ namespace MicroModelica {
     void
     Model::insert(string n) 
     {
+      _imports[n] = n;
+      if(!Utils::instance().readPackage(n, _packages))
+      {
+        Error::instance().add(0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo", n.c_str());
+      }
     }
 
     string
     Model::name() const
     {
-      return "";
+      return _name;
     }
 
     ImportTable

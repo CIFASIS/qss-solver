@@ -24,8 +24,8 @@
 
 #include "../ast/ast_types.h"
 #include "../ast/expression.h"
+#include "../ir/index.h"
 #include "util_types.h"
-#include "index.h"
 
 /**
  *
@@ -167,16 +167,14 @@ class AST_Expression_Traverse
 {
   public:
     virtual
-    ~AST_Expression_Traverse()
-    {
-    };
+    ~AST_Expression_Traverse() {};
     /**
      *
      * @param
      * @return
      */
     AST_Expression
-    mapTraverse(AST_Expression);
+    apply(AST_Expression);
   private:
     virtual AST_Expression
     mapTraverseElement(AST_Expression) = 0;
@@ -193,17 +191,14 @@ class AST_Expression_Visitor
      *
      */
     virtual
-    ~AST_Expression_Visitor()
-    {
-    }
-    ;
+    ~AST_Expression_Visitor() {};
     /**
      *
      * @param e
      * @return
      */
     R
-    foldTraverse(AST_Expression e)
+    apply(AST_Expression e)
     {
       switch(e->expressionType())
       {
@@ -211,7 +206,7 @@ class AST_Expression_Visitor
           {
           AST_Expression_BinOp b = e->getAsBinOp();
           AST_Expression left = b->left(), right = b->right();
-          return (foldTraverseElement(foldTraverse(left), foldTraverse(right),
+          return (foldTraverseElement(apply(left), apply(right),
               b->binopType()));
         }
         case EXPUMINUS:
@@ -241,38 +236,34 @@ class AST_Expression_Fold
      *
      */
     virtual
-    ~AST_Expression_Fold()
-    {
-    };
+    ~AST_Expression_Fold() {};
     /**
      *
      * @param e
      * @return
      */
     R
-    foldTraverse(AST_Expression e)
+    apply(AST_Expression e)
     {
       switch(e->expressionType())
       {
         case EXPBINOP:
-          {
+        {
           AST_Expression_BinOp b = e->getAsBinOp();
           AST_Expression left = b->left(), right = b->right();
-          return (foldTraverseElement(foldTraverse(left), foldTraverse(right),
-              b->binopType()));
+          return (foldTraverseElement(apply(left), apply(right), b->binopType()));
         }
         case EXPOUTPUT:
-          {
+        {
           AST_Expression_Output o = e->getAsOutput();
-          return foldTraverse(AST_ListFirst(o->expressionList()));
+          return apply(AST_ListFirst(o->expressionList()));
         }
         case EXPUMINUS:
           return foldTraverseElementUMinus(e);
         default:
           return foldTraverseElement(e);
       }
-    }
-    ;
+    };
   private:
     virtual R
     foldTraverseElement(AST_Expression) = 0;

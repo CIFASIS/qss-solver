@@ -23,20 +23,23 @@
 #include <string>
 #include <map>
 
-#include "../ir/expression.h"
+#include "expression.h"
 #include "../util/symbol_table.h"
+#include "../util/table.h"
 
 namespace MicroModelica {
-  namespace Util {
+  namespace IR {
 
     class IndexDefinition
     {
       public:
         IndexDefinition();
         ~IndexDefinition();
+
+        friend std::ostream& operator<<(std::ostream& out, const IndexDefinition& id);
       private:
         string _variable;
-        MicroModelica::IR::Expression _exp;
+        Expression _exp;
     };
 
     class Index
@@ -59,8 +62,44 @@ namespace MicroModelica {
         addIndex(IndexDefinition id);
         int
         dimension();
+
+        friend std::ostream& operator<<(std::ostream& out, const Index& i);
       private:
         map<int,IndexDefinition> _indexes;
+    };
+
+    class RangeDefinition
+    {
+      public:
+        RangeDefinition(int begin, int end, int step = 1);
+        ~RangeDefinition();
+        inline int 
+        begin() { return _begin; };
+        inline int 
+        end() { return _end; };
+        inline int 
+        step() { return _step; };
+        friend std::ostream& operator<<(std::ostream& out, const RangeDefinition& rd);
+      private:
+        int   _begin;
+        int   _end;
+        int   _step;
+        
+    };
+
+    typedef ModelTable<std::string, RangeDefinition> RangeDefinitionTable;
+    class Range 
+    {
+      public:
+        Range();
+        Range(AST_Equation_For eqf, Util::VarSymbolTable symbols);
+        Range(AST_Statement_For stf, Util::VarSymbolTable symbols);
+        ~Range();
+        friend std::ostream& operator<<(std::ostream& out, const Range& r);
+      private:
+        void 
+        setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);
+        RangeDefinitionTable _ranges;
     };
 
 

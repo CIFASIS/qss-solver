@@ -27,13 +27,14 @@
 
 #include "../ir/expression.h"
 #include "../ir/class.h"
-#include "../ir/mmo_util.h"
+#include "../ir/index.h"
+#include "../ir/built_in_functions.h"
 #include "compile_flags.h"
-#include "index.h"
 #include "error.h"
 #include "symbol_table.h"
 
 namespace MicroModelica {
+  using namespace IR;
   namespace Util {
 
     Utils::Utils() :
@@ -49,42 +50,42 @@ namespace MicroModelica {
       _annotations.insert(pair<string, int>("Tolerance", 2));
       _annotations.insert(pair<string, int>("AbsTolerance", 3));
       _annotations.insert(pair<string, int>("StepSize", 4));
-      _builtInVariables.insert(pair<string, BIV_NAMES>("time", BIV_TIME));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("reinit", BIF_REINIT));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("terminate", BIF_TERMINATE));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("sum", BIF_SUM));
-      _builtInFunctions.insert( pair<string, BIF_NAMES>("__INNER_PRODUCT", BIF_INNER_PRODUCT));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("product", BIF_PRODUCT));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("min", BIF_MIN));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("max", BIF_MAX));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("abs", BIF_ABS));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("sign", BIF_SIGN));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("sqrt", BIF_SQRT));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("ceil", BIF_CEIL));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("floor", BIF_FLOOR));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("sin", BIF_SIN));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("cos", BIF_COS));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("tan", BIF_TAN));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("asin", BIF_ASIN));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("acos", BIF_ACOS));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("atan", BIF_ATAN));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("atan2", BIF_ATAN2));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("sinh", BIF_SINH));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("cosh", BIF_COSH));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("tanh", BIF_TANH));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("exp", BIF_EXP));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("log", BIF_LOG));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("log10", BIF_LOG10));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("pre", BIF_PRE));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("GQLink_GetB", BIF_GQLINK));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("GQLink_GetBx", BIF_GQLINK));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("GQLink_GetBy", BIF_GQLINK));
-      _builtInFunctions.insert(pair<string, BIF_NAMES>("GQLink_GetBz", BIF_GQLINK));
-      _builtInFunctionImp.insert(pair<BIF_NAMES, BIF*>(BIF_SUM, new BuiltInSumFunction()));
-      _builtInFunctionImp.insert(pair<BIF_NAMES, BIF*>(BIF_PRODUCT, new BuiltInProductFunction()));
-      _builtInFunctionImp.insert(pair<BIF_NAMES, BIF*>(BIF_INNER_PRODUCT, new BuiltInInnerProductFunction()));
-      _builtInFunctionImp.insert(pair<BIF_NAMES, BIF*>(BIF_MIN, new BuiltInMinFunction())); 
-      _builtInFunctionImp.insert(pair<BIF_NAMES, BIF*>(BIF_MAX, new BuiltInMaxFunction()));
+      _builtInVariables.insert(pair<string, BIF::Variable>("time", BIF::Time));
+      _builtInFunctions.insert(pair<string, BIF::Function>("reinit", BIF::REINIT));
+      _builtInFunctions.insert(pair<string, BIF::Function>("terminate", BIF::TERMINATE));
+      _builtInFunctions.insert(pair<string, BIF::Function>("sum", BIF::SUM));
+      _builtInFunctions.insert( pair<string, BIF::Function>("__INNER_PRODUCT", BIF::INNER_PRODUCT));
+      _builtInFunctions.insert(pair<string, BIF::Function>("product", BIF::PRODUCT));
+      _builtInFunctions.insert(pair<string, BIF::Function>("min", BIF::MIN));
+      _builtInFunctions.insert(pair<string, BIF::Function>("max", BIF::MAX));
+      _builtInFunctions.insert(pair<string, BIF::Function>("abs", BIF::ABS));
+      _builtInFunctions.insert(pair<string, BIF::Function>("sign", BIF::SIGN));
+      _builtInFunctions.insert(pair<string, BIF::Function>("sqrt", BIF::SQRT));
+      _builtInFunctions.insert(pair<string, BIF::Function>("ceil", BIF::CEIL));
+      _builtInFunctions.insert(pair<string, BIF::Function>("floor", BIF::FLOOR));
+      _builtInFunctions.insert(pair<string, BIF::Function>("sin", BIF::SIN));
+      _builtInFunctions.insert(pair<string, BIF::Function>("cos", BIF::COS));
+      _builtInFunctions.insert(pair<string, BIF::Function>("tan", BIF::TAN));
+      _builtInFunctions.insert(pair<string, BIF::Function>("asin", BIF::ASIN));
+      _builtInFunctions.insert(pair<string, BIF::Function>("acos", BIF::ACOS));
+      _builtInFunctions.insert(pair<string, BIF::Function>("atan", BIF::ATAN));
+      _builtInFunctions.insert(pair<string, BIF::Function>("atan2", BIF::ATAN2));
+      _builtInFunctions.insert(pair<string, BIF::Function>("sinh", BIF::SINH));
+      _builtInFunctions.insert(pair<string, BIF::Function>("cosh", BIF::COSH));
+      _builtInFunctions.insert(pair<string, BIF::Function>("tanh", BIF::TANH));
+      _builtInFunctions.insert(pair<string, BIF::Function>("exp", BIF::EXP));
+      _builtInFunctions.insert(pair<string, BIF::Function>("log", BIF::LOG));
+      _builtInFunctions.insert(pair<string, BIF::Function>("log10", BIF::LOG10));
+      _builtInFunctions.insert(pair<string, BIF::Function>("pre", BIF::PRE));
+      _builtInFunctions.insert(pair<string, BIF::Function>("GQLink_GetB", BIF::GQLINK));
+      _builtInFunctions.insert(pair<string, BIF::Function>("GQLink_GetBx", BIF::GQLINK));
+      _builtInFunctions.insert(pair<string, BIF::Function>("GQLink_GetBy", BIF::GQLINK));
+      _builtInFunctions.insert(pair<string, BIF::Function>("GQLink_GetBz", BIF::GQLINK));
+      _builtInFunctionImp.insert(pair<BIF::Function, BIF*>(BIF::SUM, new BuiltInSumFunction()));
+      _builtInFunctionImp.insert(pair<BIF::Function, BIF*>(BIF::PRODUCT, new BuiltInProductFunction()));
+      _builtInFunctionImp.insert(pair<BIF::Function, BIF*>(BIF::INNER_PRODUCT, new BuiltInInnerProductFunction()));
+      _builtInFunctionImp.insert(pair<BIF::Function, BIF*>(BIF::MIN, new BuiltInMinFunction())); 
+      _builtInFunctionImp.insert(pair<BIF::Function, BIF*>(BIF::MAX, new BuiltInMaxFunction()));
       _binop[BINOPOR] = "||";
       _binop[BINOPAND] = "&&";
       _binop[BINOPLOWER] = "<";
@@ -158,32 +159,32 @@ namespace MicroModelica {
       return it != _annotations.end();
     }
 
-    BIF_NAMES
+    BIF::Function
     Utils::checkBuiltInFunctions(string fname)
     {
-      map<string, BIF_NAMES>::iterator it = _builtInFunctions.find(fname);
+      map<string, BIF::Function>::iterator it = _builtInFunctions.find(fname);
       if(it != _builtInFunctions.end())
       {
         return it->second;
       }
-      return BIF_NONE;
+      return BIF::NONE;
     }
 
-    BIV_NAMES
+    BIF::Variable
     Utils::checkBuiltInVariables(string fname)
     {
-      map<string, BIV_NAMES>::iterator it = _builtInVariables.find(fname);
+      map<string, BIF::Variable>::iterator it = _builtInVariables.find(fname);
       if(it != _builtInVariables.end())
       {
         return it->second;
       }
-      return BIV_NONE;
+      return BIF::None;
     }
 
     void
-    Utils::addBuiltInVariables(string fname, BIV_NAMES type)
+    Utils::addBuiltInVariables(string fname, BIF::Variable var)
     {
-      _builtInVariables.insert(pair<string, BIV_NAMES>(fname, type));
+      _builtInVariables.insert(pair<string, BIF::Variable>(fname, var));
     }
 
     string
@@ -213,7 +214,7 @@ namespace MicroModelica {
     }
 
     list<string>
-    Utils::_getValue(fstream *package, string token)
+    Utils::getValue(fstream *package, string token)
     {
       list<string> ret;
       string line;
@@ -233,7 +234,7 @@ namespace MicroModelica {
     {
       fstream package;
       string pname = packageName(fileName);
-      string name = _packagePath(pname + ".c");
+      string name = packagePath(pname + ".c");
       name.append(pname).append(".moo");
       package.open(name.c_str());
       if(package.good())
@@ -250,7 +251,7 @@ namespace MicroModelica {
         {
           if(!line.compare("DEPENDENCES"))
           {
-            list<string> objs = _getValue(&package, "ENDDEPENDENCES");
+            list<string> objs = getValue(&package, "ENDDEPENDENCES");
             for(list<string>::iterator it = objs.begin(); it != objs.end(); ++it)
             {
               objects.insert(*it,*it);
@@ -258,23 +259,23 @@ namespace MicroModelica {
           }
           else if(!line.compare("FUNCTION"))
           {
-            fname = _getValue(&package, "ENDFUNCTION").front();
+            fname = getValue(&package, "ENDFUNCTION").front();
           }
           else if(!line.compare("DERIVATIVE"))
           {
-            derivative = _getValue(&package, "ENDDERIVATIVE").front();
+            derivative = getValue(&package, "ENDDERIVATIVE").front();
           }
           else if(!line.compare("INCLUDEDIRECTORY"))
           {
-            includeDir = _getValue(&package, "ENDINCLUDEDIRECTORY").front();
+            includeDir = getValue(&package, "ENDINCLUDEDIRECTORY").front();
           }
           else if(!line.compare("LIBRARYDIRECTORY"))
           {
-            libraryDir = _getValue(&package, "ENDLIBRARYDIRECTORY").front();
+            libraryDir = getValue(&package, "ENDLIBRARYDIRECTORY").front();
           }
           else if(!line.compare("LIBRARIES"))
           {
-            libraries = _getValue(&package, "ENDLIBRARIES");
+            libraries = getValue(&package, "ENDLIBRARIES");
           }
           else if(!line.compare("ENDDEFINITION"))
           {
@@ -307,7 +308,7 @@ namespace MicroModelica {
     }
 
     bool
-    Utils::_checkCodeFiles(string name, string ext)
+    Utils::checkCodeFiles(string name, string ext)
     {
       if(!ext.compare(".mo"))
       {
@@ -325,7 +326,7 @@ namespace MicroModelica {
     }
 
     string
-    Utils::_packagePath(string name)
+    Utils::packagePath(string name)
     {
       list<string> objs = _flags.objects();
       for(list<string>::iterator it = objs.begin(); it != objs.end(); it++)
@@ -352,7 +353,7 @@ namespace MicroModelica {
       string fname = flags.path();
       fname.append(pname + ext);
       ifstream f(fname.c_str());
-      if(f.good() && _checkCodeFiles(flags.path() + pname, ext))
+      if(f.good() && checkCodeFiles(flags.path() + pname, ext))
       {
         f.close();
         return flags.path();
@@ -365,8 +366,7 @@ namespace MicroModelica {
           fname = flags.outputFilePath();
           fname.append(SLASH + pname + ext);
           f.open(fname.c_str());
-          if(f.good()
-              && _checkCodeFiles(flags.outputFilePath() + SLASH + pname, ext))
+          if(f.good() && checkCodeFiles(flags.outputFilePath() + SLASH + pname, ext))
           {
             f.close();
             return flags.outputFilePath();
@@ -379,7 +379,7 @@ namespace MicroModelica {
           fname = *it;
           fname.append(SLASH + pname + ext);
           f.open(fname.c_str());
-          if(f.good() && _checkCodeFiles(*it + SLASH + pname, ext))
+          if(f.good() && checkCodeFiles(*it + SLASH + pname, ext))
           {
             f.close();
             return *it;
@@ -437,573 +437,23 @@ namespace MicroModelica {
       return fn;
     }
 
-    BIF_NAMES
+    BIF::Function
     Utils::checkBuiltInReductionFunctions(string fname)
     {
-      BIF_NAMES ret = checkBuiltInFunctions(fname);
-      if(ret == BIF_SUM || ret == BIF_PRODUCT || ret == BIF_MIN || ret == BIF_MAX
-          || ret == BIF_INNER_PRODUCT)
+      BIF::Function ret = checkBuiltInFunctions(fname);
+      if(ret == BIF::SUM || ret == BIF::PRODUCT || ret == BIF::MIN || ret == BIF::MAX
+          || ret == BIF::INNER_PRODUCT)
       {
         return ret;
       }
-      return BIF_NONE;
+      return BIF::NONE;
     }
 
-    list<string>
-    BIF::generateCode(string variableMap, string variableIndex, list<VariableInterval> variableInterval, int expOrder)
-    {
-    /*  stringstream buffer;
-      list<string> code;
-      bool states = _hasStates(variableInterval);
-      Index idx = _index(variableInterval);
-      if(states)
-      {
-        buffer << "for(" << variableIndex << " = 0;" << variableIndex << " < "
-            << expOrder << "; " << variableIndex << "++)";
-        code.push_back(buffer.str());
-        buffer.str("");
-        code.push_back("{");
-        code.push_back(_init(variableMap, variableIndex, variableInterval, states));
-        code.push_back("}");
-        buffer << "for(" << variableIndex << " = " << idx.begin() << "; "
-            << variableIndex << " <= " << idx.end() << "; " << variableIndex
-            << "++)";
-        code.push_back(buffer.str());
-        buffer.str("");
-        code.push_back("{");
-        for(int j = 0; j < expOrder; j++)
-        {
-          code.push_back(
-              _reduce(variableMap, variableIndex, j, variableInterval, states));
-        }
-        code.push_back("}");
-
-      }
-      else
-      {
-        code.push_back(_init(variableMap, variableIndex, variableInterval, states));
-        buffer << "for(" << variableIndex << " = " << idx.begin() << "; "
-            << variableIndex << " <= " << idx.end() << "; " << variableIndex
-            << "++)";
-        code.push_back(buffer.str());
-        buffer.str("");
-        code.push_back("{");
-        code.push_back(
-            _reduce(variableMap, variableIndex, 0, variableInterval, states));
-        code.push_back("}");
-      }*/
-      list<string> code;
-      return code;
-    }
-
-    bool
-    BIF::_hasStates(list<VariableInterval> variables)
-    {
-     /* list<VariableInterval>::iterator it;
-      for(it = variables.begin(); it != variables.end(); it++)
-      {
-        Variable vi = _vt->lookup(it->name());
-        if(vi == NULL)
-        {
-          Error::instance().add(0,
-          EM_IR | EM_VARIABLE_NOT_FOUND,
-              ER_Fatal, "%s", it->name().c_str());
-          return false;
-        }
-        if(vi->isState() || vi->isAlgebraic())
-        {
-          return true;
-        }
-      }*/
-      return false;
-    }
-
-    void
-    BIF::setSymbolTable(VarSymbolTable vt)
-    {
-      _vt = vt;
-    }
-
-    Index
-    BIF::_index(list<VariableInterval> variables)
-    {
-      //VariableInterval vi = variables.front();
-      return Index();
-    }
-
-    string
-    BIF::variableName(VariableInterval vin)
-    {
-     /* Variable vi = _variableInfo(vin);
-      string varStr = _vt->getTypePrefix();
-      if(vi->isState())
-      {
-        varStr += "x";
-      }
-      else if(vi->isAlgebraic())
-      {
-        varStr += "alg";
-      }
-      else if(vi->isDiscrete())
-      {
-        varStr += "d";
-      }
-      else
-      {
-        varStr = "__PAR_" + vi->name();
-      }*/
-      return "";
-    }
-
-    string
-    BIF::expressionOrderStr(int order, VariableInterval vin)
-    {
-    /*  Variable vi = _variableInfo(vin);
-      stringstream expOrder;
-      if(_vt->printEnvironment() != VST_CLASSIC_MODEL_FUNCTIONS)
-      {
-        expOrder << " * " << _expressionOrder << " + " << order;
-      }
-      string varStr = _vt->getTypePrefix() + "x";
-      if(vi->isAlgebraic())
-      {
-        if(_vt->printEnvironment() == VST_CLASSIC_MODEL_FUNCTIONS)
-        {
-          expOrder << " * " << _expressionOrder << " + " << order;
-        }
-        varStr = _vt->getTypePrefix() + "alg";
-      }
-      return expOrder.str();*/
-      return "";
-    }
-
-    VarSymbolTable
-    BIF::symbolTable(VarSymbolTable vt)
-    {
-      return _vt;
-    }
-
-    string
-    BIF::print(Index idx, string variableIndex)
-    {
-      //return idx.print(variableIndex, 0, false);
-      return "";
-    }
-
-    BuiltInFunction::~BuiltInFunction()
-    {
-    }
-
-    string
-    BuiltInFunction::_reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
-    {
-      return "";
-    }
-
-    string
-    BuiltInFunction::_init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates)
-    {
-      return "";
-    }
-
-    BuiltInSumFunction::~BuiltInSumFunction()
-    {
-    }
-
-    string
-    BuiltInSumFunction::_reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
-    {
-     /* VariableInterval vin = variableInterval.front();
-      string variablePrefix = BIF::variableName(vin);
-      stringstream buffer;
-      Index idx = vin.index();
-      string expOrderStr = BIF::expressionOrderStr(variableOrder, vin);
-      if(hasStates)
-      {
-        buffer << "\t" << variableMap << "[" << variableOrder << "] += "
-            << variablePrefix << "[(" << print(idx, variableIndex) << ")"
-            << expOrderStr << "];";
-      }
-      else
-      {
-        buffer << "\t" << variableMap << "[0] += " << variablePrefix << "["
-            << print(idx, variableIndex) << "];";
-      }
-      return buffer.str();*/
-      return "";
-    }
-
-    string
-    BuiltInSumFunction::_init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates)
-    {
-      stringstream buffer;
-      if(hasStates)
-      {
-        buffer << "\t" << variableMap << "[" << variableIndex << "] = 0;";
-      }
-      else
-      {
-        buffer << "\t" << variableMap << "[0] = 0;";
-      }
-      return buffer.str();
-    }
-
-    BuiltInProductFunction::~BuiltInProductFunction()
-    {
-    }
-
-    string
-    BuiltInProductFunction::_reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
-    {
-    /*  VariableInterval vin = variableInterval.front();
-      string variablePrefix = BIF::variableName(vin);
-      stringstream buffer;
-      Index idx = vin.index();
-      string expOrderStr = BIF::expressionOrderStr(variableOrder, vin);
-      if(hasStates)
-      {
-        buffer << "\t" << variableMap << "[" << variableOrder << "] *= "
-            << variablePrefix << "[(" << print(idx, variableIndex) << ")"
-            << expOrderStr << "];";
-      }
-      else
-      {
-        buffer << "\t" << variableMap << "[0] *= " << variablePrefix << "["
-            << print(idx, variableIndex) << "];";
-      }
-      return buffer.str();*/
-      return "";
-    }
-
-    string
-    BuiltInProductFunction::_init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates)
-    {
-      stringstream buffer;
-      if(hasStates)
-      {
-        buffer << "\t" << variableMap << "[" << variableIndex << "] = 0;";
-      }
-      else
-      {
-        buffer << "\t" << variableMap << "[0] = 0;";
-      }
-      return buffer.str();
-    }
-
-    BuiltInInnerProductFunction::~BuiltInInnerProductFunction()
-    {
-    }
-
-    string
-    BuiltInInnerProductFunction::_reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
-    {
-     /* if(variableInterval.size() != 2)
-      {
-        Error::instance().add(0,
-        EM_IR | EM_ARGUMENTS,
-            ER_Fatal, "");
-      }
-      VariableInterval vin[2];
-      list<VariableInterval>::iterator it;
-      int i = 0;
-      for(it = variableInterval.begin(); it != variableInterval.end(); it++)
-      {
-        vin[i++] = *it;
-      }
-      Index idx0 = vin[0].index();
-      Index idx1 = vin[1].index();
-      stringstream buffer;
-      string variable0Prefix = BIF::variableName(vin[0]);
-      string variable1Prefix = BIF::variableName(vin[1]);
-      if(hasStates)
-      {
-        if(BIF::isState(vin[0]) && BIF::isState(vin[1]))
-        {
-          if(variableOrder == 0)
-          {
-            string expOrderStr = BIF::expressionOrderStr(variableOrder, vin[0]);
-            buffer << "\t" << variableMap << "[" << variableOrder << "] += "
-                << variable0Prefix << "[(" << print(idx0, variableIndex) << ")"
-                << expOrderStr
-                << "] * " << variable1Prefix << "[(" << print(idx1, variableIndex)
-                << ")" << expOrderStr << "];";
-          }
-          else if(variableOrder == 1)
-          {
-            string expOrder00Str = BIF::expressionOrderStr(0, vin[0]);
-            string expOrder01Str = BIF::expressionOrderStr(variableOrder, vin[0]);
-            string expOrder10Str = BIF::expressionOrderStr(0, vin[1]);
-            string expOrder11Str = BIF::expressionOrderStr(variableOrder, vin[1]);
-            buffer << "\t" << variableMap << "[" << variableOrder << "] += "
-                << variable0Prefix << "[(" << print(idx0, variableIndex) << ")"
-                << expOrder01Str << " ]* " << variable1Prefix << "[("
-                << print(idx1, variableIndex) << ")" << expOrder10Str << " ] + "
-                << variable0Prefix << "[(" << print(idx0, variableIndex) << ")"
-                << expOrder00Str << " ] * " << variable1Prefix << "[("
-                << print(idx1, variableIndex) << ")" << expOrder11Str << "];";
-          }
-          else if(variableOrder == 2)
-          {
-            string expOrder00Str = BIF::expressionOrderStr(0, vin[0]);
-            string expOrder01Str = BIF::expressionOrderStr(1, vin[0]);
-            string expOrder02Str = BIF::expressionOrderStr(2, vin[0]);
-            string expOrder10Str = BIF::expressionOrderStr(0, vin[1]);
-            string expOrder11Str = BIF::expressionOrderStr(1, vin[1]);
-            string expOrder12Str = BIF::expressionOrderStr(2, vin[1]);
-            buffer << "\t" << variableMap << "[" << variableOrder << "] += "
-                << variable0Prefix << "[(" << print(idx0, variableIndex) << ")"
-                << expOrder02Str << "] * " << variable1Prefix << "[("
-                << print(idx1, variableIndex) << ")" << expOrder10Str << "] + 2 * "
-                << variable0Prefix << "[(" << print(idx0, variableIndex) << ")"
-                << expOrder01Str << " ] * " << variable1Prefix << "[("
-                << print(idx1, variableIndex) << ")" << expOrder11Str << "] + "
-                << variable0Prefix << "[(" << print(idx0, variableIndex) << ")"
-                << expOrder00Str << "] * " << variable1Prefix << "[("
-                << print(idx1, variableIndex) << ")" << expOrder12Str << "];";
-          }
-          else if(variableOrder == 3)
-          {
-            string expOrder00Str = BIF::expressionOrderStr(0, vin[0]);
-            string expOrder01Str = BIF::expressionOrderStr(1, vin[0]);
-            string expOrder02Str = BIF::expressionOrderStr(2, vin[0]);
-            string expOrder03Str = BIF::expressionOrderStr(3, vin[0]);
-            string expOrder10Str = BIF::expressionOrderStr(0, vin[1]);
-            string expOrder11Str = BIF::expressionOrderStr(1, vin[1]);
-            string expOrder12Str = BIF::expressionOrderStr(2, vin[1]);
-            string expOrder13Str = BIF::expressionOrderStr(3, vin[1]);
-            buffer << "\t" << variableMap << "[" << variableOrder << "] += "
-                << variable0Prefix << "[(" << print(idx0, variableIndex) << ")"
-                << expOrder03Str << "] * " << variable1Prefix << "[("
-                << print(idx1, variableIndex) << ")" << expOrder10Str << "] + 3 * "
-                << variable0Prefix << "[(" << print(idx0, variableIndex) << ")"
-                << expOrder02Str << "] * " << variable1Prefix << "[("
-                << print(idx1, variableIndex) << ")" << expOrder11Str << "] + 3 * "
-                << variable0Prefix << "[(" << print(idx0, variableIndex) << ")"
-                << expOrder01Str << "] * " << variable1Prefix << "[("
-                << print(idx1, variableIndex) << ")" << expOrder12Str << "] + "
-                << variable0Prefix
-                << "[(" << print(idx0, variableIndex) << ")" << expOrder00Str
-                << "] * " << variable1Prefix << "[(" << print(idx1, variableIndex)
-                << ")"
-                << expOrder13Str << "];";
-          }
-          else if(variableOrder == 4)
-          {
-            string expOrder00Str = BIF::expressionOrderStr(0, vin[0]);
-            string expOrder01Str = BIF::expressionOrderStr(1, vin[0]);
-            string expOrder02Str = BIF::expressionOrderStr(2, vin[0]);
-            string expOrder03Str = BIF::expressionOrderStr(3, vin[0]);
-            string expOrder04Str = BIF::expressionOrderStr(4, vin[0]);
-            string expOrder10Str = BIF::expressionOrderStr(0, vin[1]);
-            string expOrder11Str = BIF::expressionOrderStr(1, vin[1]);
-            string expOrder12Str = BIF::expressionOrderStr(2, vin[1]);
-            string expOrder13Str = BIF::expressionOrderStr(3, vin[1]);
-            string expOrder14Str = BIF::expressionOrderStr(4, vin[1]);
-            buffer << "\t" << variableMap << "[" << variableOrder << "] += "
-                << variable0Prefix << "[(" << print(idx0, variableIndex) << ")"
-                << expOrder04Str << "] * " << variable1Prefix << "[("
-                << print(idx1, variableIndex) << ")" << expOrder10Str << "] + 4 * "
-                << variable0Prefix << "[(" << print(idx0, variableIndex) << ")"
-                << expOrder03Str << "] * " << variable1Prefix << "[("
-                << print(idx1, variableIndex) << ")" << expOrder11Str << "] + 6 * "
-                << variable0Prefix << "[(" << print(idx0, variableIndex) << ")"
-                << expOrder02Str << "] * " << variable1Prefix << "[("
-                << print(idx1, variableIndex) << ")" << expOrder12Str << "] + 4 * "
-                << variable0Prefix << "[(" << print(idx0, variableIndex) << ")"
-                << expOrder01Str << "] * " << variable1Prefix << "[("
-                << print(idx1, variableIndex) << ")" << expOrder13Str << "] + "
-                << variable0Prefix << "[(" << print(idx0, variableIndex) << ")"
-                << expOrder00Str << "] * " << variable1Prefix << "[("
-                << print(idx1, variableIndex) << ")" << expOrder14Str << "];";
-          }
-        }
-        else if(BIF::isState(vin[0]) && !BIF::isState(vin[1]))
-        {
-          string expOrderStr = BIF::expressionOrderStr(variableOrder, vin[0]);
-          buffer << "\t" << variableMap << "[" << variableOrder << "] += "
-              << variable0Prefix << "[(" << print(idx0, variableIndex) << ")"
-              << expOrderStr
-              << "] * " << variable1Prefix << "[" << print(idx1, variableIndex)
-              << "];";
-
-        }
-        else if(!BIF::isState(vin[0]) && BIF::isState(vin[1]))
-        {
-          string expOrderStr = BIF::expressionOrderStr(variableOrder, vin[1]);
-          buffer << "\t" << variableMap << "[" << variableOrder << "] += "
-              << variable0Prefix << "[" << print(idx0, variableIndex) << "]" << "*"
-              << variable1Prefix << "[(" << print(idx1, variableIndex) << ")"
-              << expOrderStr << "];";
-        }
-      }
-      else
-      {
-        buffer << "\t" << variableMap << "[0] += " << variable0Prefix << "["
-            << print(idx0, variableIndex) << "] * " << variable1Prefix << "["
-            << print(idx1, variableIndex) << "];";
-      }
-      return buffer.str();*/
-        return "";
-    }
-
-    string
-    BuiltInInnerProductFunction::_init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates)
-    {
-      stringstream buffer;
-      if(hasStates)
-      {
-        buffer << "\t" << variableMap << "[" << variableIndex << "] = 0;";
-      }
-      else
-      {
-        buffer << "\t" << variableMap << "[0] = 0;";
-      }
-      return buffer.str();
-    }
-
-    BuiltInMinFunction::~BuiltInMinFunction()
-    {
-    }
-
-    string
-    BuiltInMinFunction::_reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
-    {
-      /*stringstream buffer;
-      VariableInterval vin = variableInterval.front();
-      string expOrder = BIF::expressionOrderStr(0, vin);
-      string variablePrefix = BIF::variableName(vin);
-      Index idx = vin.index();
-      if(hasStates)
-      {
-        buffer << "\t if (" << variableMap << "[" << variableOrder << "] > "
-            << variablePrefix << "[(" << print(idx, variableIndex) << ")"
-            << expOrder << "])"
-            << endl;
-        buffer << "\t \t" << variableMap << "[" << variableOrder << "] = "
-            << variablePrefix << "[(" << print(idx, variableIndex) << ")"
-            << expOrder << "];";
-      }
-      else
-      {
-        buffer << "\t if (" << variableMap << "[0] > " << variablePrefix << "["
-            << print(idx, variableIndex) << "])" << endl;
-        buffer << "\t \t" << variableMap << "[0] = " << variablePrefix << "["
-            << print(idx, variableIndex) << "];";
-      }
-      return buffer.str();*/
-      return "";
-    }
-
-    string
-    BuiltInMinFunction::_init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates)
-    {
-      /*stringstream buffer;
-      VariableInterval vin = variableInterval.front();
-      string expOrder = BIF::expressionOrderStr(0, vin);
-      string variablePrefix = BIF::variableName(vin);
-      Index idx = vin.index();
-      if(hasStates)
-      {
-        buffer << "\t" << variableMap << "[" << variableIndex << "] = "
-            << variablePrefix << "[" << idx.offset() << expOrder << "];";
-      }
-      else
-      {
-        buffer << "\t" << variableMap << "[0] = " << variablePrefix << "[0];";
-      }
-      return buffer.str();*/
-      return "";
-    }
-
-    BuiltInMaxFunction::~BuiltInMaxFunction()
-    {
-    }
-
-    string
-    BuiltInMaxFunction::_reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
-    {
-      /*stringstream buffer;
-      VariableInterval vin = variableInterval.front();
-      string expOrder = BIF::expressionOrderStr(0, vin);
-      string variablePrefix = BIF::variableName(vin);
-      Index idx = vin.index();
-      if(hasStates)
-      {
-        buffer << "\t if (" << variableMap << "[" << variableOrder << "] < "
-            << variablePrefix << "[(" << print(idx, variableIndex) << ")"
-            << expOrder << "])"
-            << endl;
-        buffer << "\t \t" << variableMap << "[" << variableOrder << "] = "
-            << variablePrefix << "[(" << print(idx, variableIndex) << ")"
-            << expOrder << "];";
-      }
-      else
-      {
-        buffer << "\t if (" << variableMap << "[0] < " << variablePrefix << "["
-            << print(idx, variableIndex) << "])" << endl;
-        buffer << "\t \t" << variableMap << "[0] = " << variablePrefix << "["
-            << print(idx, variableIndex) << "];";
-      }
-      return buffer.str();*/
-      return "";
-    }
-
-    string
-    BuiltInMaxFunction::_init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates)
-    {
-     /* stringstream buffer;
-      VariableInterval vin = variableInterval.front();
-      string expOrder = BIF::expressionOrderStr(0, vin);
-      string variablePrefix = BIF::variableName(vin);
-      Index idx = vin.index();
-      if(hasStates)
-      {
-        buffer << "\t" << variableMap << "[" << variableIndex << "] = "
-            << variablePrefix << "[" << idx.offset() << expOrder << "];";
-      }
-      else
-      {
-        buffer << "\t" << variableMap << "[0] = " << variablePrefix << "[0];";
-      }
-      return buffer.str();
-      */
-      return "";
-    }
-
-    void
-    BIF::setExpressionOrder(int expressionOrder)
-    {
-      _expressionOrder = expressionOrder;
-    }
-
-    int
-    BIF::expressionOrder()
-    {
-      return _expressionOrder;
-    }
-
-    Option<Variable>
-    BIF::_variableInfo(VariableInterval vin)
-    {
-      Option<Variable> vi = _vt[""];
-      if(!vi)
-      {
-        Error::instance().add(0, EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "%s", "Fix Variable interval name");
-      }
-      return vi;
-    }
-
-    bool
-    BIF::isState(VariableInterval vin)
-    {
-      Option<Variable> vi = _variableInfo(vin);
-      return vi->isState() || vi->isAlgebraic();
-    }
 
     BIF*
-    Utils::builtInReductionFunctions(BIF_NAMES fn)
+    Utils::builtInReductionFunctions(BIF::Function fn)
     {
-      map<BIF_NAMES, BIF*>::iterator it = _builtInFunctionImp.find(fn);
+      map<BIF::Function, BIF*>::iterator it = _builtInFunctionImp.find(fn);
       if(it != _builtInFunctionImp.end())
       {
         return it->second;
@@ -1014,7 +464,7 @@ namespace MicroModelica {
     bool
     Utils::checkGKLinkFunctions(string name)
     {
-      map<string, BIF_NAMES>::iterator it = _builtInFunctions.find(name);
+      map<string, BIF::Function>::iterator it = _builtInFunctions.find(name);
       return it != _builtInFunctions.end();
     }
   }

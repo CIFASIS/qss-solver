@@ -83,5 +83,10 @@ namespace MicroModelica {
       return _def.type() == typeid(Package);
     }
 
+    void 
+    StoredDefinition::process()
+    {
+    }
+
   }
 }

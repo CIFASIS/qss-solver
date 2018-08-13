@@ -121,8 +121,8 @@ namespace MicroModelica {
           _generateFunctionHeader(ffname);
           ffname.append(".c");
           _writer->setFile(ffname);
-          _writer->print(WR_FUNCTION_HEADER);
-          _writer->print(WR_FUNCTION_CODE);
+          _writer->print(FUNCTION_HEADER);
+          _writer->print(FUNCTION_CODE);
           _writer->clearFile();
         }
       }
@@ -147,15 +147,15 @@ namespace MicroModelica {
     }
 
     void
-    Generator::_generateModel()
+    Generator::generateModel()
     {
-      /*_modelInstance->header();
+      _modelInstance->header();
       _modelInstance->definition();
       _modelInstance->dependencies();
       _modelInstance->zeroCrossing();
       _modelInstance->handler();
       _modelInstance->output();
-      _modelInstance->initializeDataStructures();*/
+      _modelInstance->initializeDataStructures();
     }
 
     void 

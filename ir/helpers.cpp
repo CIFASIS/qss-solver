@@ -73,9 +73,9 @@ namespace MicroModelica {
           }
         }
         case EXPBOOLEANNOT:
-          {
+        {
           AST_Expression_BooleanNot ebn = exp->getAsBooleanNot();
-          int res = foldTraverse(ebn->exp());
+          int res = apply(ebn->exp());
           if(res == 0)
           {
             return 1;
@@ -100,7 +100,7 @@ namespace MicroModelica {
     int
     EvalInitExp::foldTraverseElementUMinus(AST_Expression exp)
     {
-      return -1 * foldTraverse(exp->getAsUMinus()->exp());
+      return -1 * apply(exp->getAsUMinus()->exp());
     }
 
     int
@@ -109,77 +109,21 @@ namespace MicroModelica {
       switch(bot)
       {
         case BINOPOR:
-          if(l != 0 || r != 0)
-          {
-            return 1;
-          }
-          else
-          {
-            return 0;
-          }
+          return ((l != 0 || r != 0) ? 1 : 0);
         case BINOPAND:
-          if(l != 0 && r != 0)
-          {
-            return 1;
-          }
-          else
-          {
-            return 0;
-          }
+          return ((l != 0 && r != 0) ? 1 : 0); 
         case BINOPLOWER:
-          if(l < r)
-          {
-            return 1;
-          }
-          else
-          {
-            return 0;
-          }
+          return (l < r ? 1 : 0);
         case BINOPLOWEREQ:
-          if(l <= r)
-          {
-            return 1;
-          }
-          else
-          {
-            return 0;
-          }
+          return (l <= r ? 1 : 0);
         case BINOPGREATER:
-          if(l > r)
-          {
-            return 1;
-          }
-          else
-          {
-            return 0;
-          }
+          return (l > r ? 1 : 0);
         case BINOPGREATEREQ:
-          if(l >= r)
-          {
-            return 1;
-          }
-          else
-          {
-            return 0;
-          }
+          return (l >= r ? 1 : 0);
         case BINOPCOMPNE:
-          if(l != r)
-          {
-            return 1;
-          }
-          else
-          {
-            return 0;
-          }
+          return (l != r ? 1 : 0);
         case BINOPCOMPEQ:
-          if(l == r)
-          {
-            return 1;
-          }
-          else
-          {
-            return 0;
-          }
+          return (l == r ? 1 : 0);
         case BINOPADD:
           return l + r;
         case BINOPSUB:
@@ -201,6 +145,7 @@ namespace MicroModelica {
       }
       return 0;
     }
+
     /* VariableLookup class */
 
     VariableLookup::VariableLookup(VarSymbolTable st, VarSymbolTable lst) :

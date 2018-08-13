@@ -21,22 +21,11 @@
 #define EQUATION_H_
 
 #include "../ast/ast_types.h"
+#include "../util/table.h"
+#include "index.h"
 
 namespace MicroModelica {
   namespace IR {
-
-    typedef enum
-    {
-      EQ_DERIVATIVE,
-      EQ_DEPENDENCIES,
-      EQ_CLASSIC,
-      EQ_ALGEBRAIC,
-      EQ_OUTPUT,
-      EQ_ZC,
-      EQ_HANDLER,
-      EQ_HANDLER_IF,
-      EQ_JACOBIAN
-    } EQ_Type;
 
     /**
      *
@@ -49,11 +38,32 @@ namespace MicroModelica {
          * @param exp
          */
         Equation(AST_Expression exp);
+        Equation(AST_Expression exp, Range r);
         /**
          *
          */
         ~Equation();
+        typedef enum
+        {
+          DERIVATIVE,
+          DEPENDENCIES,
+          CLASSIC,
+          ALGEBRAIC,
+          OUTPUT,
+          ZC,
+          HANDLER,
+          HANDLER_IF,
+          JACOBIAN
+        } Type;
+
+        friend std::ostream& operator<<(std::ostream& out, const Equation& e);
+      private:
+        Option<Range>   _range;
+        AST_Expression  _eq;
+
     };
+
+    typedef ModelTable<int,Equation> EquationTable;
   }
 }
 #endif  /* EQUATION_H_ */

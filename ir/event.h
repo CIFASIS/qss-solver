@@ -21,45 +21,55 @@
 #define MMO_EVENT_H_
 
 #include "../ast/ast_types.h"
+#include "../util/table.h"
 
-/**
- *
- */
-typedef enum
-{
-  HND_POSITIVE, //!< HND_POSITIVE
-  HND_NEGATIVE, //!< HND_NEGATIVE
-  HND_ZERO      //!< HND_ZERO
-} HND_Type;
+namespace MicroModelica {
+  namespace IR {
 
-/**
- * Define the original relation type of the zero-crossing function
- * needed by the initial algorithm.
- */
-typedef enum
-{
-  ZC_LT,    //!< ZC_LT
-  ZC_LE,    //!< ZC_LE
-  ZC_GT,    //!< ZC_GT
-  ZC_GE     //!< ZC_GE
-} ZC_REL;
 
-/**
- *
- */
-class MMO_Event
-{
-  public:
-    /**
-     *
-     * @param cond
-     * @param data
-     */
-    MMO_Event(AST_Expression cond);
     /**
      *
      */
-    ~MMO_Event();
-};
+    class Event
+    {
+      public:
+        /**
+         *
+         * @param cond
+         * @param data
+         */
+        Event(AST_Expression cond);
+        /**
+         *
+         */
+        ~Event();
+        /**
+         *
+         */
+        typedef enum
+        {
+          POSITIVE, //!< HND_POSITIVE
+          NEGATIVE, //!< HND_NEGATIVE
+          ZERO      //!< HND_ZERO
+        } Type;
+
+        /**
+         * Define the original relation type of the zero-crossing function
+         * needed by the initial algorithm.
+         */
+        typedef enum
+        {
+          LT,    //!< ZC_LT
+          LE,    //!< ZC_LE
+          GT,    //!< ZC_GT
+          GE     //!< ZC_GE
+        } Relation;
+        
+        friend std::ostream& operator<<(std::ostream& out, const Event& e);
+    };
+
+    typedef ModelTable<int,Event> EventTable;
+  }
+}
 
 #endif  /*  MMO_EVENT_H_ */

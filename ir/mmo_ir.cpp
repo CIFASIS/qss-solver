@@ -33,11 +33,11 @@
 #include "../util/type.h"
 #include "class.h"
 #include "expression.h"
+#include "helpers.h"
 #include "stored_definition.h"
 
-using namespace MicroModelica::Util;
-
 namespace MicroModelica {
+  using namespace Util;
   namespace IR {
 
     /* MicroModelica Intermediate Representation */
@@ -148,13 +148,13 @@ namespace MicroModelica {
           bool array = current_element(it)->hasIndexes();
           if(array)
           {
-/*            MMO_EvalInitExp_ e(_class->varTable());
+            EvalInitExp eval(_class->symbols());
             AST_ExpressionList elist = current_element(it)->indexes();
             AST_ExpressionListIterator elistit;
             foreach (elistit, elist)
             {
-              size.push_back(e.foldTraverse(current_element(elistit)));
-            }*/
+              size.push_back(eval.foldTraverse(current_element(elistit)));
+            }
           }
           else
           {
@@ -300,6 +300,7 @@ namespace MicroModelica {
     void
     MicroModelicaIR::leave(AST_StoredDefinition x)
     {
+      _std.process();
     }
 
     int
@@ -309,18 +310,10 @@ namespace MicroModelica {
       return Error::instance().errors();
     }
 
-    /*
-    MMO_StoredDefinition
+    StoredDefinition
     MicroModelicaIR::storedDefinition()
     {
-      return MMO_StoredDefinition();
+      return _std;
     }
-
-    list<MMO_Class>
-    MicroModelicaIR::classes() const
-    {
-
-      return _storedDefinition->classes();
-    }*/
   }
 }

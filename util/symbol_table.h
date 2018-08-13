@@ -30,8 +30,7 @@
 #include "../ast/ast_types.h"
 #include "../ast/element.h"
 #include "../ast/modification.h"
-#include "../ir/mmo_util.h"
-#include "index.h"
+#include "../ir/index.h"
 #include "type.h"
 #include "table.h"
 
@@ -65,48 +64,31 @@ namespace MicroModelica {
          *
          * @return
          */
-        AST_TypePrefix
-        typePrefix()
-        {
-          return _tp;
-        };
+        inline AST_TypePrefix
+        typePrefix() { return _tp; };
         /**
          *
          * @return
          */
-        AST_Comment
-        comment()
-        {
-          return _comm;
-        };
+        inline AST_Comment
+        comment() { return _comm; };
         /**
          *
          * @param c
          */
-        void
-        setComment(AST_Comment c)
-        {
-          _comm = c;
-        };
+        inline void
+        setComment(AST_Comment c) { _comm = c; };
         /**
          *
          * @return
          */
-        AST_Modification
-        modification()
-        {
-          return _m;
-        };
+        inline AST_Modification modification() { return _m; };
         /**
          *
          * @param m
          */
-        void
-        setModification(AST_Modification m)
-        {
-          _m = m;
-          _processModification();
-        };
+        inline void
+        setModification(AST_Modification m) { _m = m; processModification(); };
         /**
          *
          * @return
@@ -117,11 +99,8 @@ namespace MicroModelica {
          *
          * @param t
          */
-        void
-        setType(Type t)
-        {
-          _t = t;
-        };
+        inline void
+        setType(Type t) { _t = t; };
         /**
          *
          */
@@ -131,29 +110,19 @@ namespace MicroModelica {
          *
          * @return
          */
-        bool
-        isParameter() const
-        {
-          return _tp & TP_PARAMETER;
-        };
+        inline bool
+        isParameter() const { return _tp & TP_PARAMETER; };
         /**
          *
          * @return
          */
-        bool
-        isDiscrete() const
-        {
-          return (_tp & TP_DISCRETE) || _discrete;
-        };
+        inline bool isDiscrete() const { return (_tp & TP_DISCRETE) || _discrete; };
         /**
          *
          * @return
          */
-        bool
-        builtIn() const
-        {
-          return _builtin;
-        };
+        inline bool
+        builtIn() const { return _builtin; };
         /**
          *
          */
@@ -162,47 +131,32 @@ namespace MicroModelica {
         /**
          *
          */
-        void
-        setBuiltIn()
-        {
-          _builtin = true;
-        };
+        inline void
+        setBuiltIn() { _builtin = true; };
         /**
          *
          * @return
          */
-        bool
-        isConstant() const
-        {
-          return _tp & TP_CONSTANT;
-        };
+        inline bool
+        isConstant() const { return _tp & TP_CONSTANT; };
         /**
          *
          * @return
          */
-        bool
-        isInput() const
-        {
-          return _tp & TP_INPUT;
-        };
+        inline bool
+        isInput() const { return _tp & TP_INPUT; };
         /**
          *
          * @return
          */
-        bool
-        isOutput() const
-        {
-          return _tp & TP_OUTPUT;
-        };
+        inline bool
+        isOutput() const { return _tp & TP_OUTPUT; };
         /**
          *
          * @return
          */
-        bool
-        isForType() const
-        {
-          return _tp & TP_FOR;
-        };
+        inline bool
+        isForType() const { return _tp & TP_FOR; };
         /**
          *
          * @return
@@ -310,8 +264,7 @@ namespace MicroModelica {
          * @param e
          * @return
          */
-        friend ostream &
-        operator<<(ostream &os, const Variable &e);
+        friend ostream& operator<<(ostream &os, const Variable &e);
         /**
          *
          * @param dim
@@ -329,13 +282,17 @@ namespace MicroModelica {
         declaration();
         std::string 
         initialization();
+        inline bool
+        hasOffset() { return _hasOffset; };
+        inline void 
+        setOffset(int offset) { _offset = offset; _hasOffset = true; };
       private:
         void
-        _processModification();
+        processModification();
         void
-        _unsetAssignment();
+        unsetAssignment();
         void
-        _unsetStartEach();
+        unsetStartEach();
         bool              _state;
         bool              _unknown;
         bool              _discrete;
@@ -353,6 +310,8 @@ namespace MicroModelica {
         bool              _hasAssigment;
         string            _name;
         bool              _isArray;
+        bool              _hasOffset;
+        int               _offset;
     };
 
     /**

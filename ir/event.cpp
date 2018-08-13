@@ -21,10 +21,20 @@
 
 #include "../ast/expression.h"
 
-MMO_Event::MMO_Event(AST_Expression cond) 
-{
-}
+namespace MicroModelica {
+  namespace IR {
 
-MMO_Event::~MMO_Event()
-{
+    Event::Event(AST_Expression cond) 
+    {
+    }
+
+    Event::~Event()
+    {
+    }
+    
+    std::ostream& operator<<(std::ostream& out, const Event& e)
+    {
+      return out;
+    }
+  }
 }
