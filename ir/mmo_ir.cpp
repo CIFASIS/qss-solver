@@ -153,7 +153,7 @@ namespace MicroModelica {
             AST_ExpressionListIterator elistit;
             foreach (elistit, elist)
             {
-              size.push_back(eval.foldTraverse(current_element(elistit)));
+              size.push_back(eval.apply(current_element(elistit)));
             }
           }
           else
@@ -165,7 +165,7 @@ namespace MicroModelica {
           if(tp & TP_CONSTANT)
           {
             Variable vi(newType_Integer(), tp, current_element(it)->modification(), NULL, size, array);
-            _class->insert( current_element(it)->name(), vi, t);
+            _class->insert(current_element(it)->name(), vi, t);
           }
           else
           {

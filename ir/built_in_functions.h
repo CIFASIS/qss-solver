@@ -22,10 +22,55 @@
 
 #include "../util/ast_util.h"
 #include "../util/symbol_table.h"
-#include "../util/util.h"
 
 namespace MicroModelica {
   namespace IR {
+    namespace BuiltIn {
+      typedef enum
+      {
+        NONE,  //!< BIF_NONE
+        REINIT,  //!< BIF_REINIT
+        TERMINATE, //!< BIF_TERMINATE
+        SUM,   //!< BIF_SUM
+        PRODUCT,   //!< BIF_PRODUCT
+        INNER_PRODUCT,   //!< BIF_INNER_PRODUCT
+        MIN,   //!< BIF_MIN
+        MAX,   //!< BIF_MAX
+        ABS,   //!< BIF_ABS
+        SIGN,  //!< BIF_SIGN
+        SQRT,  //!< BIF_SQRT
+        CEIL,  //!< BIF_CEIL
+        FLOOR, //!< BIF_FLOOR
+        SIN,   //!< BIF_SIN
+        COS,   //!< BIF_COS
+        TAN,   //!< BIF_TAN
+        ASIN,  //!< BIF_ASIN
+        ACOS,  //!< BIF_ACOS
+        ATAN,  //!< BIF_ATAN
+        ATAN2, //!< BIF_ATAN2
+        SINH,  //!< BIF_SINH
+        COSH,  //!< BIF_COSH
+        TANH,  //!< BIF_TANH
+        EXP,   //!< BIF_EXP
+        LOG,   //!< BIF_LOG
+        LOG10, //!< BIF_LOG10
+        PRE,    //!< BIF_PRE
+        GQLINK  //!< BIF_GQLINK
+      } Function;
+      /**
+       *
+       */
+      typedef enum
+      {
+        None, //!< BIV_NONE
+        Time, //!< BIV_TIME
+        Sum,   //!< BIV_SUM
+        Product,   //!< BIV_PRODUCT
+        Inner_Product,   //!< BIV_INNER_PRODUCT
+        Min,   //!< BIV_MIN
+        Max   //!< BIV_MAX
+      } Variable;
+    }
 
     class BIF
     {
@@ -35,54 +80,6 @@ namespace MicroModelica {
          */
         virtual
         ~BIF() {};
-        /**
-         *
-         */
-        typedef enum
-        {
-          NONE,  //!< BIF_NONE
-          REINIT,  //!< BIF_REINIT
-          TERMINATE, //!< BIF_TERMINATE
-          SUM,   //!< BIF_SUM
-          PRODUCT,   //!< BIF_PRODUCT
-          INNER_PRODUCT,   //!< BIF_INNER_PRODUCT
-          MIN,   //!< BIF_MIN
-          MAX,   //!< BIF_MAX
-          ABS,   //!< BIF_ABS
-          SIGN,  //!< BIF_SIGN
-          SQRT,  //!< BIF_SQRT
-          CEIL,  //!< BIF_CEIL
-          FLOOR, //!< BIF_FLOOR
-          SIN,   //!< BIF_SIN
-          COS,   //!< BIF_COS
-          TAN,   //!< BIF_TAN
-          ASIN,  //!< BIF_ASIN
-          ACOS,  //!< BIF_ACOS
-          ATAN,  //!< BIF_ATAN
-          ATAN2, //!< BIF_ATAN2
-          SINH,  //!< BIF_SINH
-          COSH,  //!< BIF_COSH
-          TANH,  //!< BIF_TANH
-          EXP,   //!< BIF_EXP
-          LOG,   //!< BIF_LOG
-          LOG10, //!< BIF_LOG10
-          PRE,    //!< BIF_PRE
-          GQLINK  //!< BIF_GQLINK
-        } Function;
-        
-        /**
-         *
-         */
-        typedef enum
-        {
-          None, //!< BIV_NONE
-          Time, //!< BIV_TIME
-          Sum,   //!< BIV_SUM
-          Product,   //!< BIV_PRODUCT
-          Inner_Product,   //!< BIV_INNER_PRODUCT
-          Min,   //!< BIV_MIN
-          Max   //!< BIV_MAX
-        } Variable;
         list<string>
         generateCode(string variableMap, string variableIndex, list<VariableInterval> variableInterval, int expOrder);
         void
@@ -106,7 +103,7 @@ namespace MicroModelica {
         hasStates(list<VariableInterval> variables);
         Index
         index(list<VariableInterval> variables);
-        Option<Variable>
+        Option<Util::Variable>
         variableInfo(VariableInterval vin);
         virtual string
         reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates) = 0;

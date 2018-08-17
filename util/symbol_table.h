@@ -30,13 +30,12 @@
 #include "../ast/ast_types.h"
 #include "../ast/element.h"
 #include "../ast/modification.h"
-#include "../ir/index.h"
 #include "type.h"
 #include "table.h"
 
 namespace MicroModelica {
-  namespace Util {
 
+  namespace Util {
 
     /**
      *
@@ -60,6 +59,13 @@ namespace MicroModelica {
          * @param s
          */
         Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array);
+        typedef enum 
+        {
+          State,
+          Algebraic
+        } RealType;
+        inline void 
+        setRealType(RealType type) { _realType = type; };
         /**
          *
          * @return
@@ -163,12 +169,12 @@ namespace MicroModelica {
          * @return
          */
         inline bool
-        isState() { return _state; };
+        isState() { return _realType == State; };
         /**
          *
          */
         inline void
-        setState() { _state = true; unsetAssignment(); };
+        setState() { unsetAssignment(); };
         /**
          *
          * @return
@@ -191,12 +197,12 @@ namespace MicroModelica {
          * @return
          */
         inline bool
-        isAlgebraic() { return _algebraic; };
+        isAlgebraic() { return _realType == Algebraic; };
         /**
          *
          */
         inline void
-        setAlgebraic() { _algebraic = true; unsetAssignment(); unsetStartEach(); };
+        setAlgebraic() { unsetAssignment(); unsetStartEach(); };
 
         /**
          *
@@ -295,7 +301,6 @@ namespace MicroModelica {
         unsetAssignment() { _hasAssigment = false; };
         inline void
         unsetStartEach() { _hasEach = false; _hasStart = false; };
-        bool              _state;
         bool              _unknown;
         bool              _discrete;
         Type              _t;
@@ -305,7 +310,6 @@ namespace MicroModelica {
         bool              _builtin;
         vector<int>       _size;
         int               _value;
-        bool              _algebraic;
         AST_Expression    _exp;
         bool              _hasStart;
         bool              _hasEach;
@@ -314,6 +318,7 @@ namespace MicroModelica {
         bool              _isArray;
         bool              _hasOffset;
         int               _offset;
+        RealType          _realType;
     };
 
     /**

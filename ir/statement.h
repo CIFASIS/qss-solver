@@ -36,7 +36,7 @@ namespace MicroModelica {
          *
          * @param stm
          */
-        Statement(AST_Statement stm);
+        Statement(AST_Statement stm, bool initial = false);
         /**
          *
          */

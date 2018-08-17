@@ -276,6 +276,163 @@ class AST_Expression_Fold
 /**
  *
  */
+class AST_Visitor
+{
+  public:
+    /**
+     *
+     */
+    ~AST_Visitor(){};
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit(AST_Class x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    leave(AST_Class x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit(AST_Composition x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    leave(AST_Composition x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit(AST_CompositionElement x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    leave(AST_CompositionElement x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit(AST_CompositionEqsAlgs x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    leave(AST_CompositionEqsAlgs x) = 0;
+    /**
+     *
+     * @param
+     */
+    virtual void
+    visit(AST_External_Function_Call) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit(AST_Element x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit(AST_Modification x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    leave(AST_Modification x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit(AST_Comment x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit(AST_Equation x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit(AST_ForIndex x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit(AST_Equation_Else x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit(AST_Expression x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit(AST_Argument x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit(AST_Statement x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    leave(AST_Statement x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit(AST_Statement_Else x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    visit(AST_StoredDefinition x) = 0;
+    /**
+     *
+     * @param x
+     */
+    virtual void
+    leave(AST_StoredDefinition x) = 0;
+    /**
+     *
+     * @param x
+     * @return
+     */
+    virtual int
+    apply(AST_Node x) = 0;
+};
+
+/**
+ *
+ */
 class EqualExp
 {
   public:
@@ -517,8 +674,7 @@ class EvalExp: public AST_Expression_Fold<AST_Expression>
      * @return
      */
     AST_Expression
-    eval(AST_Expression_ComponentReference compRef, AST_Expression compRefValue,
-        AST_Expression exp);
+    eval(AST_Expression_ComponentReference compRef, AST_Expression compRefValue, AST_Expression exp);
   private:
     AST_Expression
     foldTraverseElement(AST_Expression);
@@ -541,161 +697,145 @@ class EvalExp: public AST_Expression_Fold<AST_Expression>
     MicroModelica::Util::VarSymbolTable _symbolTable;
 };
 
+
 /**
  *
  */
-class AST_Visitor
+class EvalInitExp: public AST_Expression_Fold<int>
 {
   public:
     /**
      *
+     * @param vt
      */
-    ~AST_Visitor(){};
+    EvalInitExp(MicroModelica::Util::VarSymbolTable vt);
     /**
      *
-     * @param x
      */
-    virtual void
-    visit(AST_Class x) = 0;
+    ~EvalInitExp();
+    private:
+    int
+    foldTraverseElement(AST_Expression exp);
+    int
+    foldTraverseElement(int l, int r, BinOpType bot);
+    int
+    foldTraverseElementUMinus(AST_Expression exp);
+    MicroModelica::Util::VarSymbolTable _vt;
+};
+
+/**
+ * @breif Helper class that looks for a variable 
+ *        definition in more than one symbol table.
+ */
+class VariableLookup: public AST_Expression_Fold<bool>
+{
+  public:
     /**
      *
-     * @param x
+     * @param st
+     * @param lst
      */
-    virtual void
-    leave(AST_Class x) = 0;
+    VariableLookup(MicroModelica::Util::VarSymbolTable st, MicroModelica::Util::VarSymbolTable lst);
     /**
      *
-     * @param x
      */
-    virtual void
-    visit(AST_Composition x) = 0;
+    ~VariableLookup();
+  private:
+    bool
+    foldTraverseElement(AST_Expression);
+    bool
+    foldTraverseElement(bool, bool, BinOpType);
+    bool
+    foldTraverseElementUMinus(AST_Expression);
+    MicroModelica::Util::VarSymbolTable _st;
+    MicroModelica::Util::VarSymbolTable _lst;
+};
+
+/**
+ *
+ */
+class ReplaceInnerProduct: public AST_Expression_Visitor<AST_Expression>
+{
+  public:
     /**
      *
-     * @param x
+     * @param vt
      */
-    virtual void
-    leave(AST_Composition x) = 0;
+    ReplaceInnerProduct(MicroModelica::Util::VarSymbolTable vt);
     /**
      *
-     * @param x
      */
-    virtual void
-    visit(AST_CompositionElement x) = 0;
+    ~ReplaceInnerProduct();
+  private:
+    bool
+    controlArray(AST_Expression exp);
+    AST_Expression
+    foldTraverseElement(AST_Expression exp);
+    AST_Expression
+    foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+    AST_Expression
+    foldTraverseElementUMinus(AST_Expression exp);
+    MicroModelica::Util::VarSymbolTable _symbols;
+};
+
+class ConvertExpression 
+{
+  public:
+    ConvertExpression(AST_Expression left, AST_Expression right, MicroModelica::Util::VarSymbolTable& symbols);
     /**
      *
-     * @param x
      */
-    virtual void
-    leave(AST_CompositionElement x) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    visit(AST_CompositionEqsAlgs x) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    leave(AST_CompositionEqsAlgs x) = 0;
-    /**
-     *
-     * @param
-     */
-    virtual void
-    visit(AST_External_Function_Call) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    visit(AST_Element x) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    visit(AST_Modification x) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    leave(AST_Modification x) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    visit(AST_Comment x) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    visit(AST_Equation x) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    visit(AST_ForIndex x) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    visit(AST_Equation_Else x) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    visit(AST_Expression x) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    visit(AST_Argument x) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    visit(AST_Statement x) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    leave(AST_Statement x) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    visit(AST_Statement_Else x) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    visit(AST_StoredDefinition x) = 0;
-    /**
-     *
-     * @param x
-     */
-    virtual void
-    leave(AST_StoredDefinition x) = 0;
-    /**
-     *
-     * @param x
-     * @return
-     */
-    virtual int
-    apply(AST_Node x) = 0;
+    ~ConvertExpression();
+    inline std::string 
+    get() { return _convert; };
+  private:
+    AST_Expression_ComponentReference 
+    componentReference(AST_Expression exp);
+    MicroModelica::Util::Variable 
+    variable(AST_Expression_ComponentReference exp);
+    bool 
+    scalarExpression(AST_Expression exp);
+    double 
+    scalarValue(AST_Expression exp);
+    void 
+    convert();
+    AST_Expression                       _left;
+    AST_Expression                       _right;
+    MicroModelica::Util::VarSymbolTable  _symbols;
+    std::string                          _convert;
+};
+
+class ConvertEquation
+{
+  public:
+    ConvertEquation(AST_Equation equation, MicroModelica::Util::VarSymbolTable symbols);
+    ~ConvertEquation() {};
+    inline AST_Equation 
+    get() { return _equation; };
+  private:
+    AST_Equation 
+    convert(AST_Equation eq);
+    AST_Equation                        _equation;
+    MicroModelica::Util::VarSymbolTable _symbols;
+
+};
+
+class ConvertStatement 
+{
+  public:
+    ConvertStatement(AST_Statement statement, MicroModelica::Util::VarSymbolTable symbols);
+    ~ConvertStatement() {};
+    inline AST_Statement 
+    get() { return _statement; };
+  private:
+    AST_Statement 
+    convert(AST_Statement st);
+    AST_StatementList 
+    convert(AST_StatementList sts);  
+    AST_Statement_ElseList 
+    convert(AST_Statement_ElseList stel);
+    AST_Statement                       _statement;
+    MicroModelica::Util::VarSymbolTable _symbols;
 };
 
 #endif  /* AST_UTIL_H_ */

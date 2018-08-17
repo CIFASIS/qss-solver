@@ -138,7 +138,7 @@ namespace MicroModelica {
     {
       _replaceDer = replaceDer;
       _generateIndexes = generateIndexes;
-      ex p = foldTraverse(e);
+      ex p = apply(e);
       return p;
     }
 
@@ -215,12 +215,10 @@ namespace MicroModelica {
     symbol&
     ConvertToGiNaC::getSymbol(AST_Expression_Derivative der)
     {
-      AST_Expression_ComponentReference cr =
-          der->arguments()->front()->getAsComponentReference();
+      AST_Expression_ComponentReference cr = der->arguments()->front()->getAsComponentReference();
       string s = cr->name();
       s.insert(0, "__der_");
-      AST_Expression_ComponentReference new_cr =
-          AST_Expression_ComponentReference_Add(
+      AST_Expression_ComponentReference new_cr = AST_Expression_ComponentReference_Add(
               newAST_Expression_ComponentReference(), newAST_String(s),
               newAST_ExpressionList());
       return getSymbol(new_cr);
@@ -229,7 +227,7 @@ namespace MicroModelica {
     symbol&
     ConvertToGiNaC::getSymbol(AST_Expression_ComponentReference cr)
     {
-    /*  string s = cr->name();
+      string s = cr->name();
       if(_generateIndexes)
       {
         ExpIndexes_ ei(_varEnv);
@@ -245,9 +243,7 @@ namespace MicroModelica {
       {
         symbol c = symbol(s);
         return _directory.insert(make_pair(s, c)).first->second;
-      }*/
-      symbol c = symbol("");
-      return c; 
+      }
     }
 
     symbol&
@@ -284,7 +280,7 @@ namespace MicroModelica {
     ex
     ConvertToGiNaC::foldTraverseElement(AST_Expression e)
     {
-    /*  switch(e->expressionType())
+      switch(e->expressionType())
       {
         case EXPREAL:
           return ex(e->getAsReal()->val());
@@ -486,9 +482,7 @@ namespace MicroModelica {
         default:
           cerr << "Expression: " << e << " not converted to GiNaC" << endl;
           return ex(0);
-      }*/
-
-              return ex(0);
+      }
     }
 
     AST_Expression

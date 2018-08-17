@@ -27,7 +27,6 @@
 #include "../util/error.h"
 #include "../util/symbol_table.h"
 #include "../util/util.h"
-#include "mmo_util.h"
 
 namespace MicroModelica {
   using namespace Util; 
@@ -351,13 +350,13 @@ namespace MicroModelica {
         AST_ExpressionListIterator it;
         foreach(it,el)
         {
-          av = ea.foldTraverse(current_element(it));
+          av = ea.apply(current_element(it));
           l->push_back(av.real());
         }
       }
       else
       {
-        av = ea.foldTraverse(x);
+        av = ea.apply(x);
         l->push_back(av.real());
       }
     }
@@ -375,13 +374,13 @@ namespace MicroModelica {
         AST_ExpressionListIterator it;
         foreach(it,el)
         {
-          av = ea.foldTraverse(current_element(it));
+          av = ea.apply(current_element(it));
           l->push_back(av.str());
         }
       }
       else
       {
-        av = ea.foldTraverse(x);
+        av = ea.apply(x);
         l->push_back(av.str());
       }
     }
@@ -552,7 +551,7 @@ namespace MicroModelica {
       AnnotationValue av;
       if(itf->second != DQMIN && itf->second != DQREL && itf->second != STEP_SIZE)
       {
-        av = ea.foldTraverse(x->exp());
+        av = ea.apply(x->exp());
       }
       switch(itf->second)
       {
@@ -1108,8 +1107,8 @@ namespace MicroModelica {
           }
           break;
         case EXPBOOLEANNOT:
-          {
-          AnnotationValue a = foldTraverse(e->getAsBooleanNot()->exp());
+        {
+          AnnotationValue a = apply(e->getAsBooleanNot()->exp());
           if(a.integer() == 1)
           {
             av.setInteger(0);
@@ -1152,28 +1151,22 @@ namespace MicroModelica {
           _setBoolean(e1.integer() && e2.integer(), &av);
           break;
         case BINOPLOWER:
-          _setBoolean((e1.integer() < e2.integer()) || (e1.real() < e2.real()),
-              &av);
+          _setBoolean((e1.integer() < e2.integer()) || (e1.real() < e2.real()), &av);
           break;
         case BINOPLOWEREQ:
-          _setBoolean((e1.integer() <= e2.integer()) || (e1.real() <= e2.real()),
-              &av);
+          _setBoolean((e1.integer() <= e2.integer()) || (e1.real() <= e2.real()), &av);
           break;
         case BINOPGREATER:
-          _setBoolean((e1.integer() > e2.integer()) || (e1.real() > e2.real()),
-              &av);
+          _setBoolean((e1.integer() > e2.integer()) || (e1.real() > e2.real()), &av);
           break;
         case BINOPGREATEREQ:
-          _setBoolean((e1.integer() >= e2.integer()) || (e1.real() >= e2.real()),
-              &av);
+          _setBoolean((e1.integer() >= e2.integer()) || (e1.real() >= e2.real()), &av);
           break;
         case BINOPCOMPNE:
-          _setBoolean((e1.integer() != e2.integer()) || (e1.real() != e2.real()),
-              &av);
+          _setBoolean((e1.integer() != e2.integer()) || (e1.real() != e2.real()), &av);
           break;
         case BINOPCOMPEQ:
-          _setBoolean((e1.integer() == e2.integer()) || (e1.real() == e2.real()),
-              &av);
+          _setBoolean((e1.integer() == e2.integer()) || (e1.real() == e2.real()), &av);
           break;
         case BINOPADD:
           av.setInteger(e1.integer() + e2.integer());

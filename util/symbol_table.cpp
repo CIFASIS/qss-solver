@@ -35,7 +35,6 @@ namespace MicroModelica {
     /* Variable class. */
 
     Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c) :
-        _state(false), 
         _discrete(false), 
         _t(t), 
         _tp(tp), 
@@ -44,7 +43,6 @@ namespace MicroModelica {
         _builtin(false), 
         _size(), 
         _value(0), 
-        _algebraic(false), 
         _exp(NULL), 
         _hasStart(false), 
         _hasEach(false), 
@@ -52,13 +50,13 @@ namespace MicroModelica {
         _name(), 
         _isArray(false),
         _hasOffset(false),
-        _offset(0)
+        _offset(0),
+        _realType(State)
     {
       processModification();
     }
 
     Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array) :
-        _state(false), 
         _discrete(false), 
         _t(t), 
         _tp(tp), 
@@ -67,7 +65,6 @@ namespace MicroModelica {
         _builtin(false), 
         _size(s), 
         _value(0), 
-        _algebraic(false), 
         _exp(NULL), 
         _hasStart(false), 
         _hasEach(false), 
@@ -75,7 +72,8 @@ namespace MicroModelica {
         _name(), 
         _isArray(array),
         _hasOffset(false),
-        _offset(0)
+        _offset(0),
+        _realType(State)
     {
       processModification();
     }

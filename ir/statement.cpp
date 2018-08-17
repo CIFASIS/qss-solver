@@ -23,7 +23,7 @@
 namespace MicroModelica {
   namespace IR {
 
-    Statement::Statement(AST_Statement stm) 
+    Statement::Statement(AST_Statement stm, bool initial) 
     {
     }
 

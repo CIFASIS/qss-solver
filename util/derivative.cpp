@@ -27,13 +27,11 @@
 
 #include "../ast/ast_builder.h"
 #include "../ast/equation.h"
-#include "../ir/mmo_util.h"
 #include "../ir/expression.h"
 #include "ginac_interface.h"
 
-using namespace MicroModelica::IR;
-
 namespace MicroModelica {
+  using namespace IR;
   namespace Util {
 
     AST_Equation_Equality
@@ -78,10 +76,8 @@ namespace MicroModelica {
         {
           if(v->isState() || v->isAlgebraic())
           {
-            GiNaC::ex der_exp =
-                dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff(
-                    it->second);
-            jacobianExps[it->first] = Expression(rd.foldTraverse(toe.convert(der_exp)));
+            GiNaC::ex der_exp = dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff( it->second);
+            jacobianExps[it->first] = Expression(rd.apply(toe.convert(der_exp)));
           }
         }
       }

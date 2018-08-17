@@ -23,6 +23,7 @@
 #include "../ast/expression.h"
 #include "../ast/equation.h"
 #include "../ast/statement.h"
+#include "../util/error.h"
 
 namespace MicroModelica {
   using namespace Util;
@@ -137,6 +138,10 @@ namespace MicroModelica {
         int size = el->size();
         int begin = eval.apply(AST_ListFirst(el));
         int end = eval.apply(AST_ListAt(el, size - 1));
+        if(end < begin)
+        {
+          Error::instance().add(AST_ListFirst(el)->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong equation range.");
+        }
         string index = fi->variable()->c_str();
         _ranges[index] = (size == 2 ? RangeDefinition(begin,end) : RangeDefinition(begin, end, eval.apply(AST_ListAt(el, 1))));
       }

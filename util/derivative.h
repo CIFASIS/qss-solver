@@ -25,6 +25,7 @@
 #include "../ast/ast_types.h"
 #include "util_types.h"
 #include "symbol_table.h"
+#include "../ir/expression.h"
 
 
 namespace MicroModelica {
@@ -62,7 +63,7 @@ namespace MicroModelica {
          * @return
          */
         static AST_Expression
-        derivate(AST_Expression exp, VarSymbolTable varEnv, MicroModelica::IR::Expression e);
+        derivate(AST_Expression exp, VarSymbolTable varEnv, IR::Expression e);
         map<string, MicroModelica::IR::Expression>
         generateJacobianExps(AST_Expression exp, VarSymbolTable vt);
     };

@@ -472,8 +472,12 @@ namespace MicroModelica
         ExternalFunctionTable 
         externalFunctions() const;
       private:
+        string 
+        getComponentName(AST_Expression exp);
         void 
-        setRealVariables(AST_Equation eq, Option<Range> range);
+        setRealVariableOffset(AST_Expression, Util::Variable::RealType type, int& offset);
+        void 
+        setRealVariables(AST_Equation eq);
         std::string               _name;
         Util::ImportTable         _imports;
         Util::VarSymbolTable      _symbols;
@@ -485,12 +489,15 @@ namespace MicroModelica
         Util::ModelDependencies   _dependecies;
         CompiledPackageTable      _packages;
         StatementTable            _initialCode;
+        std::list<AST_Equation>   _astEquations;
+        std::list<AST_Statement>  _astStatements;
         int                       _stateNbr;
         int                       _discreteNbr;
         int                       _algebraicNbr;
         int                       _outputNbr;
         int                       _equationId;
         int                       _algebraicId;
+        int                       _statementId;
         int                       _eventId;
     };
     

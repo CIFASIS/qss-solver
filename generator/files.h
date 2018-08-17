@@ -85,9 +85,9 @@ namespace MicroModelica {
         graph();
       private:
         void
-        _printList(list<string> ann, string tag);
+        printList(list<string> ann, string tag);
         string                              _fname;
-        MicroModelica::IR::Model            _model;
+        IR::Model                           _model;
         ModelInstancePtr                    _modelInstance;
         WriterPtr                           _writer;
         Util::CompileFlags                  _flags;

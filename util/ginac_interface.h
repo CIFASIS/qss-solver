@@ -66,7 +66,7 @@ namespace MicroModelica {
          * @param forDerivation
          * @param exp
          */
-        ConvertToGiNaC(VarSymbolTable varEnv, bool forDerivation = false, MicroModelica::IR::Expression exp = MicroModelica::IR::Expression());
+        ConvertToGiNaC(VarSymbolTable varEnv, bool forDerivation = false, IR::Expression exp = IR::Expression());
         /**
          *
          * @param

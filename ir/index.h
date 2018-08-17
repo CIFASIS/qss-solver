@@ -28,6 +28,7 @@
 #include "../util/table.h"
 
 namespace MicroModelica {
+
   namespace IR {
 
     class IndexDefinition
@@ -93,6 +94,7 @@ namespace MicroModelica {
       public:
         Range();
         Range(AST_Equation_For eqf, Util::VarSymbolTable symbols);
+
         Range(AST_Statement_For stf, Util::VarSymbolTable symbols);
         ~Range();
         friend std::ostream& operator<<(std::ostream& out, const Range& r);

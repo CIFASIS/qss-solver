@@ -45,7 +45,6 @@ namespace MicroModelica {
       _std(std), 
       _flags(flags), 
       _modelInstance(NULL), 
-      _files(), 
       _writer(NULL), 
       _includes(), 
       _fheader()
@@ -89,8 +88,8 @@ namespace MicroModelica {
           default:
             _modelInstance = ModelInstancePtr(new QSSModelInstance(model, _flags, _writer));
         }
-        _files = Files(_modelInstance, model, _flags);
-        generateModel();
+        Files files(_modelInstance, model, _flags);
+        /*generateModel();
         _writer->clearFile();
         _files.makefile();
         _files.run();
@@ -124,9 +123,7 @@ namespace MicroModelica {
           _writer->print(FUNCTION_HEADER);
           _writer->print(FUNCTION_CODE);
           _writer->clearFile();
-        }
-      }
-
+        }*/
       }
       else 
       {

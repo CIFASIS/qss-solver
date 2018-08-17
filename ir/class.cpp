@@ -32,10 +32,8 @@
 #include "../util/error.h"
 #include "helpers.h"
 
-
-using namespace MicroModelica::Util;
-
 namespace MicroModelica {
+  using namespace Util;
   namespace IR
   {
     /* Function Class Implementation*/
@@ -334,6 +332,8 @@ namespace MicroModelica {
       _dependecies(),
       _packages(),
       _initialCode(),
+      _astEquations(),
+      _astStatements(),
       _stateNbr(0),
       _discreteNbr(0),
       _algebraicNbr(0),
@@ -356,6 +356,8 @@ namespace MicroModelica {
       _dependecies(),
       _packages(),
       _initialCode(),
+      _astEquations(),
+      _astStatements(),
       _stateNbr(0),
       _discreteNbr(0),
       _algebraicNbr(0),
@@ -383,63 +385,54 @@ namespace MicroModelica {
       if(vi.typePrefix() & TP_CONSTANT)
       {
         EvalInitExp eval(_symbols); 
-        vi.setValue(eval.foldTraverse(vi.exp()));
+        vi.setValue(eval.apply(vi.exp()));
       }
       _symbols[n] = vi;
     }
 
-    void 
-    Model::setRealVariables(AST_Equation eq, Option<Range> range)
+    string 
+    Model::getComponentName(AST_Expression exp)
     {
-      if(range.check())
+      string ret;
+      if(exp->expressionType() == EXPCOMPREF)
       {
-        Error::instance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
-            "Wrong equation range.");
+        AST_Expression_ComponentReference ecr = exp->getAsComponentReference();
+        ret = *AST_ListFirst(ecr->names());
       }
+      return ret;
+    }
+
+    void 
+    Model::setRealVariableOffset(AST_Expression exp, Util::Variable::RealType type, int& offset)
+    {
+        string varName = getComponentName(exp);
+        Option<Variable> vi = _symbols[varName];
+        if(!vi)
+        {
+          Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", varName.c_str());
+          return;
+        }
+        if(!vi->hasOffset())
+        {
+          vi->setOffset(offset);
+          vi->setRealType(type);
+          offset += vi->size();
+        }
+    }
+
+    void 
+    Model::setRealVariables(AST_Equation eq)
+    {
       AST_Equation_Equality eqe = eq->getAsEquality();
       if(eqe->left()->expressionType() == EXPDERIVATIVE)
       {
         AST_Expression_Derivative ed = eqe->left()->getAsDerivative();
         AST_Expression derArg = AST_ListFirst(ed->arguments());
-        string varName = _getComponentName(derArg);
-        VarInfo vi = _declarations->lookup(varName);
-        if(vi == NULL)
-        {
-          Error::getInstance()->add(eqe->left()->lineNum(),
-          EM_IR | EM_VARIABLE_NOT_FOUND,
-              ER_Error, "%s", varName.c_str());
-          return;
-        }
-        if(!vi->hasIndex())
-        {
-          Index idx;
-          idx.setOffset(_states);
-          _setIndex(derArg, vi, &idx);
-          vi->setIndex(idx);
-          vi->setState();
-          _states += vi->size();
-        }
+        setRealVariableOffset(derArg, Variable::RealType::State, _stateNbr);
       }
       else if(eqe->left()->expressionType() == EXPCOMPREF)
       {
-        string varName = _getComponentName(eqe->left());
-        VarInfo vi = _declarations->lookup(varName);
-        if(vi == NULL)
-        {
-          Error::getInstance()->add(eqe->left()->lineNum(),
-          EM_IR | EM_VARIABLE_NOT_FOUND,
-              ER_Error, "%s", varName.c_str());
-          return;
-        }
-        if(!vi->hasIndex())
-        {
-          Index idx;
-          idx.setOffset(_algs);
-          _setIndex(eqe->left(), vi, &idx);
-          vi->setIndex(idx);
-          vi->setAlgebraic();
-          _algs += vi->size();
-        }
+        setRealVariableOffset(eqe->left(), Variable::RealType::Algebraic, _algebraicNbr);
       }
       else if(eqe->left()->expressionType() == EXPOUTPUT)
       {
@@ -450,48 +443,28 @@ namespace MicroModelica {
         list<Index> lidx;
         foreach(it,el)
         {
-          string varName = _getComponentName(current_element(it));
-          VarInfo vi = _declarations->lookup(varName);
-          if(vi == NULL)
-          {
-            Error::getInstance()->add(eqe->left()->lineNum(),
-            EM_IR | EM_VARIABLE_NOT_FOUND,
-                ER_Error, "%s", varName.c_str());
-            return;
-          }
-          if(!vi->hasIndex())
-          {
-            Index idx;
-            idx.setOffset(_algs);
-            _setIndex(current_element(it), vi, &idx);
-            vi->setIndex(idx);
-          }
-          vi->setAlgebraic();
-          _algs += vi->size();
+
+          setRealVariableOffset(current_element(it), Variable::RealType::Algebraic, _algebraicNbr);
         }
       }
       else
       {
-        Error::getInstance()->add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error,
-            "Insert model equation.");
+        Error::instance().add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Insert model equation.");
       }
-
     }
 
     void
     Model::insert(AST_Equation eq)  
     {
-      _equations[_equationId++] = eq;
-      //AST_Equation teq = _transformEquation(eq);
-      Option<Range> range;
-      if(eq->equationType() == EQEQUALITY)
+      AST_Equation teq = ConvertEquation(eq, _symbols).get();
+      _astEquations.push_back(teq);
+      if(teq->equationType() == EQEQUALITY)
       {
-        setRealVariables(eq, range);
+        setRealVariables(teq);
       }
-      else if(eq->equationType() == EQFOR)
+      else if(teq->equationType() == EQFOR)
       {
-        AST_Equation_For eqf = eq->getAsFor();
-        range = Range(eqf, _symbols);
+        AST_Equation_For eqf = teq->getAsFor();
         AST_EquationList eqs = eqf->equationList();
         AST_EquationListIterator it;
         foreach(it,eqs)
@@ -502,7 +475,7 @@ namespace MicroModelica {
           }
           else
           {
-            setRealVariables(current_element(it), range);
+            setRealVariables(current_element(it));
           }
         }
       }
@@ -515,6 +488,7 @@ namespace MicroModelica {
     void
     Model::insert(AST_Statement stm)  
     {
+      insert(stm, false);
     }
 
     void
@@ -526,6 +500,15 @@ namespace MicroModelica {
     void
     Model::insert(AST_Statement stm, bool initial) 
     {
+      AST_Statement st = ConvertStatement(stm, _symbols).get();
+      if(initial)
+      {
+        _initialCode[_statementId++] = Statement(stm, initial);
+      }
+      else
+      {
+        _astStatements.push_back(st);
+      }
     }
 
     void

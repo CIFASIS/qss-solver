@@ -226,7 +226,7 @@ namespace MicroModelica {
         AST_DeclarationList dl = c->nameList();
         foreach(it,dl)
         {
-          if(Utils::instance().checkBuiltInFunctions( current_element(it)->name()) != BIF_NONE)
+          if(Utils::instance().checkBuiltInFunctions( current_element(it)->name()) != BuiltIn::NONE)
           {
             Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Reserved word used in variable name: %s.",
                 current_element(it)->name().c_str());

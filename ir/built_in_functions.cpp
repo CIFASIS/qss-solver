@@ -29,10 +29,10 @@ namespace MicroModelica {
     list<string>
     BIF::generateCode(string variableMap, string variableIndex, list<VariableInterval> variableInterval, int expOrder)
     {
-    /*  stringstream buffer;
+     /* stringstream buffer;
       list<string> code;
-      bool states = _hasStates(variableInterval);
-      Index idx = _index(variableInterval);
+      bool states = hasStates(variableInterval);
+      Index idx = index(variableInterval);
       if(states)
       {
         buffer << "for(" << variableIndex << " = 0;" << variableIndex << " < "
@@ -40,7 +40,7 @@ namespace MicroModelica {
         code.push_back(buffer.str());
         buffer.str("");
         code.push_back("{");
-        code.push_back(_init(variableMap, variableIndex, variableInterval, states));
+        code.push_back(init(variableMap, variableIndex, variableInterval, states));
         code.push_back("}");
         buffer << "for(" << variableIndex << " = " << idx.begin() << "; "
             << variableIndex << " <= " << idx.end() << "; " << variableIndex
@@ -50,8 +50,7 @@ namespace MicroModelica {
         code.push_back("{");
         for(int j = 0; j < expOrder; j++)
         {
-          code.push_back(
-              _reduce(variableMap, variableIndex, j, variableInterval, states));
+          code.push_back(reduce(variableMap, variableIndex, j, variableInterval, states));
         }
         code.push_back("}");
 

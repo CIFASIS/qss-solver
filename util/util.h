@@ -26,7 +26,6 @@
 #include <string>
 
 #include "../ast/ast_types.h"
-#include "../ir/index.h"
 #include "../ir/built_in_functions.h"
 #include "util_types.h"
 #include "compile_flags.h"
@@ -106,21 +105,21 @@ namespace MicroModelica {
          * @param fname
          * @return
          */
-        IR::BIF::Variable
+        IR::BuiltIn::Function 
         checkBuiltInFunctions(string fname);
         /**
          *
          * @param fname
          * @return
          */
-        IR::BIF::Variable
+        IR::BuiltIn::Function 
         checkBuiltInReductionFunctions(string fname);
         /**
          *
          * @param fname
          * @return
          */
-        IR::BIF::Variable
+        IR::BuiltIn::Variable
         checkBuiltInVariables(string fname);
         /**
          *
@@ -128,7 +127,7 @@ namespace MicroModelica {
          * @param type
          */
         void
-        addBuiltInVariables(string fname, IR::BIF::Variable type);
+        addBuiltInVariables(string fname, IR::BuiltIn::Variable type);
         /**
          *
          * @param bot
@@ -226,8 +225,8 @@ namespace MicroModelica {
          */
         string
         getFileName(string file);
-        IR::BIF *
-        builtInReductionFunctions(IR::BIF::Function fn);
+        IR::BIF*
+        builtInReductionFunctions(IR::BuiltIn::Function fn);
         bool
         checkGKLinkFunctions(string name);
       private:
@@ -241,9 +240,9 @@ namespace MicroModelica {
         string                            _languageEspecification;
         int                               _varCounter;
         CompileFlags                      _flags;
-        map<string, IR::BIF::Function>    _builtInFunctions;
-        map<string, IR::BIF::Variable>    _builtInVariables;
-        map<IR::BIF::Function, IR::BIF*>  _builtInFunctionImp;
+        map<string, IR::BuiltIn::Function>    _builtInFunctions;
+        map<string, IR::BuiltIn::Variable>    _builtInVariables;
+        map<IR::BuiltIn::Function, IR::BIF*>  _builtInFunctionImp;
         map<string, int>                  _annotations;
         string                            _binop[BINOPS];
     };

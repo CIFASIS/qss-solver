@@ -87,7 +87,6 @@ namespace MicroModelica {
         IR::Package               _package;
         Util::CompileFlags        _flags;
         ModelInstancePtr          _modelInstance;
-        Files                     _files;
         WriterPtr                 _writer;
         ofstream                  _file;
         std::map<string, string>  _includes;

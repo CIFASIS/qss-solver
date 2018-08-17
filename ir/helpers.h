@@ -20,64 +20,13 @@
 #ifndef MMO_HELPERS_H
 #define MMO_HELPERS_H 
 
+#include <string>
 #include "../util/ast_util.h"
 #include "../util/symbol_table.h"
 #include "../util/util.h"
 
 namespace MicroModelica {
   namespace IR {
-
-    /**
-     *
-     */
-    class EvalInitExp: public AST_Expression_Fold<int>
-    {
-      public:
-        /**
-         *
-         * @param vt
-         */
-        EvalInitExp(Util::VarSymbolTable vt);
-        /**
-         *
-         */
-        ~EvalInitExp();
-        private:
-        int
-        foldTraverseElement(AST_Expression exp);
-        int
-        foldTraverseElement(int l, int r, BinOpType bot);
-        int
-        foldTraverseElementUMinus(AST_Expression exp);
-        Util::VarSymbolTable _vt;
-    };
-    /**
-     * @breif Helper class that looks for a variable 
-     *        definition in more than one symbol table.
-     */
-    class VariableLookup: public AST_Expression_Fold<bool>
-    {
-      public:
-        /**
-         *
-         * @param st
-         * @param lst
-         */
-        VariableLookup(Util::VarSymbolTable st, Util::VarSymbolTable lst);
-        /**
-         *
-         */
-        ~VariableLookup();
-      private:
-        bool
-        foldTraverseElement(AST_Expression);
-        bool
-        foldTraverseElement(bool, bool, BinOpType);
-        bool
-        foldTraverseElementUMinus(AST_Expression);
-        Util::VarSymbolTable _st;
-        Util::VarSymbolTable _lst;
-    };
     
     /**
      * @breif Wrapper to external function calls inside function or model definitions.
@@ -255,6 +204,7 @@ namespace MicroModelica {
     };
 
     typedef ModelTable<std::string,CompiledPackage> CompiledPackageTable;
+
 
   }
 }

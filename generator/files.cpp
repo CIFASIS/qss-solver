@@ -91,7 +91,7 @@ namespace MicroModelica {
     void
     Files::makefile()
     {
-    /*  stringstream buffer;
+   /*   stringstream buffer;
       stringstream includes;
       string fname = _fname;
       map<string, string> include;
@@ -104,15 +104,13 @@ namespace MicroModelica {
       _writer->print("TARGET    := " + _fname);
       _writer->print("");
       _writer->print("#Flags, Libraries and Includes");
-      includes << "LDFLAGS    :=-L "
-          << Util::getInstance()->environmentVariable("MMOC_LIBS");
+      includes << "LDFLAGS    :=-L " << Utils::instance().environmentVariable("MMOC_LIBS");
       list<string> tmp = _model->libraryDirectories();
       for(list<string>::iterator it = tmp.begin(); it != tmp.end(); it++)
       {
         includes << " -L" << *it;
       }
-      includes << " -L " << Util::getInstance()->environmentVariable("MMOC_PATH")
-          << "/usr/lib";
+      includes << " -L " << Utils::instance().environmentVariable("MMOC_PATH") << "/usr/lib";
       _writer->print(&includes);
       _writer->print(_modelInstance->makefile(SOL_LIBRARIES));
       buffer << _modelInstance->makefile(SOL_INCLUDES);
@@ -121,9 +119,9 @@ namespace MicroModelica {
       {
         include.insert(pair<string, string>(*it, *it));
       }
-      if(_flags->hasObjects())
+      if(_flags.hasObjects())
       {
-        list<string> objects = _flags->objects();
+        list<string> objects = _flags.objects();
         for(list<string>::iterator it = objects.begin(); it != objects.end(); it++)
         {
           string inc = *it;
@@ -132,11 +130,11 @@ namespace MicroModelica {
           include.insert(pair<string, string>(inc, inc));
         }
       }
-      string pinclude = Util::getInstance()->environmentVariable("MMOC_INCLUDE");
+      string pinclude = Utils::instance().environmentVariable("MMOC_INCLUDE");
       include.insert(pair<string, string>(pinclude, pinclude));
-      if(_flags->hasObjects())
+      if(_flags.hasObjects())
       {
-        pinclude = Util::getInstance()->environmentVariable("MMOC_PACKAGES");
+        pinclude = Utils::instance().environmentVariable("MMOC_PACKAGES");
         include.insert(pair<string, string>(pinclude, pinclude));
       }
       for(map<string, string>::iterator inct = include.begin();
@@ -145,15 +143,13 @@ namespace MicroModelica {
         buffer << " -I" << inct->second;
       }
       _writer->print(&buffer);
-      if(_flags->debug())
+      if(_flags.debug())
       {
-        _writer->print(
-            "CFLAGS    := -Wall -g -msse2 -mfpmath=sse $(LDFLAGS) $(LIBS)");
+        _writer->print("CFLAGS    := -Wall -g -msse2 -mfpmath=sse $(LDFLAGS) $(LIBS)");
       }
       else
       {
-        _writer->print(
-            "CFLAGS    := -Wall -msse2 -mfpmath=sse -O2 $(LDFLAGS) $(LIBS)");
+        _writer->print("CFLAGS    := -Wall -msse2 -mfpmath=sse -O2 $(LDFLAGS) $(LIBS)");
       }
       tmp = _model->linkLibraries();
       for(list<string>::iterator it = tmp.begin(); it != tmp.end(); it++)
@@ -169,10 +165,10 @@ namespace MicroModelica {
         buffer << " " << _fname << "_functions.c";
       }
       _writer->print(&buffer);
-      if(_flags->hasObjects())
+      if(_flags.hasObjects())
       {
         buffer << "SRC    := ";
-        list<string> objects = _flags->objects();
+        list<string> objects = _flags.objects();
         for(list<string>::iterator it = objects.begin(); it != objects.end(); it++)
         {
           buffer << *it << " ";
@@ -180,7 +176,7 @@ namespace MicroModelica {
         _writer->print(&buffer);
       }
       _writer->print("");
-      if(_flags->hasObjects())
+      if(_flags.hasObjects())
       {
         _writer->print("#Objects");
         _writer->print("OBJ = $(SRC:.c=.o)");
@@ -191,13 +187,13 @@ namespace MicroModelica {
       _writer->print("default: $(TARGET)");
       _writer->print("");
       buffer << "$(TARGET):";
-      if(_flags->hasObjects())
+      if(_flags.hasObjects())
       {
         buffer << " $(OBJ)";
       }
       _writer->print(&buffer);
       buffer << _writer->indent(1) << "$(CC) $(INC)";
-      if(_flags->hasObjects())
+      if(_flags.hasObjects())
       {
         buffer << " $(OBJ)";
       }
@@ -207,7 +203,7 @@ namespace MicroModelica {
           << " -lpthread -lmetis -lscotch -lscotcherr -lpatoh -lrt -lsundials_cvode -lsundials_ida -lsundials_nvecserial -llapack -latlas -lf77blas -lklu";
 #endif
       buffer << " -lgslcblas" << includes.str();
-      if(_flags->parallel())
+      if(_flags.parallel())
       {
         buffer << " -DQSS_PARALLEL";
       }
@@ -217,13 +213,13 @@ namespace MicroModelica {
       _writer->print("");
       _writer->print("clean:");
       _writer->print(_writer->indent(1) + "$(RMS) $(TARGET) *.dat *.log");
-      _writer->clearFile();*/
+      _writer->clearFile();
     }
 
     void
     Files::run()
     {
-    /*  string fname = _fname;
+      string fname = _fname;
       fname.append(".sh");
       stringstream buffer;
       _writer->setFile(fname);
@@ -243,13 +239,13 @@ namespace MicroModelica {
 #ifdef	__linux__
       chmod(fname.c_str(),
       S_IRUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-#endif*/
+#endif
     }
 
     void
     Files::plot()
     {
-    /*  if(!_model->outs())
+      if(!_model->outs())
       {
         return;
       }
@@ -369,14 +365,14 @@ namespace MicroModelica {
       }
       buffer << ");";
       _writer->print(&buffer);
-      _printList(annotation.patohSettings(), "patohOptions");
-      _printList(annotation.scotchSettings(), "scotchOptions");
-      _printList(annotation.metisSettings(), "metisOptions");
+      printList(annotation.patohSettings(), "patohOptions");
+      printList(annotation.scotchSettings(), "scotchOptions");
+      printList(annotation.metisSettings(), "metisOptions");
       _writer->clearFile();
     }
 
     void
-    Files::_printList(list<string> ann, string tag)
+    Files::printList(list<string> ann, string tag)
     {
       stringstream buffer;
       if(ann.empty())

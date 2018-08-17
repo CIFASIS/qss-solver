@@ -71,6 +71,7 @@ IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
 				$(IRDIR)/equation.cpp  \
 				$(IRDIR)/statement.cpp  \
 				$(IRDIR)/helpers.cpp  \
+				$(IRDIR)/built_in_functions.cpp  \
 				$(IRDIR)/class.cpp  \
 				$(IRDIR)/index.cpp  \
 				$(IRDIR)/annotation.cpp  \
