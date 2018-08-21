@@ -124,9 +124,8 @@ namespace MicroModelica {
         c.s << ')';
     }
 
-    ConvertToGiNaC::ConvertToGiNaC(VarSymbolTable varEnv, bool forDerivation, Expression exp) :
-        _forDerivation(forDerivation), 
-        _varEnv(varEnv), 
+    ConvertToGiNaC::ConvertToGiNaC(VarSymbolTable symbols, Option<Expression> exp) :
+        _symbols(symbols), 
         _replaceDer(true), 
         _generateIndexes(false), 
         _exp(exp)
@@ -230,9 +229,7 @@ namespace MicroModelica {
       string s = cr->name();
       if(_generateIndexes)
       {
-        ExpIndexes_ ei(_varEnv);
-        ei.setEnvironment("i", true);
-        s += ei.foldTraverse(cr);
+        s += cr->print();
       }
       map<string, symbol>::iterator i = _directory.find(s);
       if(i != _directory.end())
@@ -266,15 +263,28 @@ namespace MicroModelica {
     {
       string s = "time";
       map<string, symbol>::iterator i = _directory.find(s);
-      if(i != _directory.end())
-        return i->second;
-      return _directory.insert(make_pair(s, symbol(s))).first->second;
+      return (i == _directory.end() ? _directory.insert(make_pair(s, symbol(s))).first->second : i->second);
     }
 
     ex
     ConvertToGiNaC::foldTraverseElementUMinus(AST_Expression e)
     {
       return -convert(e->getAsUMinus()->exp(), _replaceDer, _generateIndexes);
+    }
+
+    ex 
+    ConvertToGiNaC::expressionVariable(BuiltIn::Variable v)
+    {
+      if(_exp)
+      {
+        string varName = ""; // = _exp->findVar(e);
+        Utils::instance().addBuiltInVariables(varName, v);
+        return var(getSymbol(varName), getTime());
+      }
+      else
+      {
+        return ex(0);
+      }
     }
 
     ex
@@ -287,22 +297,15 @@ namespace MicroModelica {
         case EXPINTEGER:
           return ex(e->getAsInteger()->val());
         case EXPCOMPREF:
-          {
-          if(!_forDerivation)
-          {
+        {
+          Option<Variable> v = _symbols[e->getAsComponentReference()->name()];
+          if(v->isParameter() || v->isDiscrete() 
+             || v->isConstant() || v->isForType())
             return getSymbol(e->getAsComponentReference());
-          }
+          else if(v->builtIn() && !v->name().compare("time"))
+            return getTime();
           else
-          {
-            VarInfo v = _varEnv->lookup(e->getAsComponentReference()->name());
-            if(v->isParameter() || v->isDiscrete() || v->isConstant()
-                || v->isForType())
-              return getSymbol(e->getAsComponentReference());
-            else if(v->builtIn() && !v->name().compare("time"))
-              return getTime();
-            else
-              return var(getSymbol(e->getAsComponentReference()), getTime());
-          }
+            return var(getSymbol(e->getAsComponentReference()), getTime());
         }
         case EXPDERIVATIVE:
           if(_replaceDer)
@@ -315,14 +318,12 @@ namespace MicroModelica {
             switch(ed->expressionType())
             {
               case EXPCOMPREF:
-                {
-                AST_Expression_ComponentReference cr =
-                    ed->getAsComponentReference();
+              {
+                AST_Expression_ComponentReference cr = ed->getAsComponentReference();
                 return der(getSymbol(cr), getTime());
               }
               default:
-                cerr << "Derivate argument " << ed << " not converted to GiNaC"
-                    << endl;
+                cerr << "Derivate argument " << ed << " not converted to GiNaC" << endl;
                 return ex(0);
             }
           }
@@ -332,27 +333,19 @@ namespace MicroModelica {
           AST_Expression_Call c = e->getAsCall();
           if(toStr(c->name()) == "sin")
           {
-            return (sin(
-                convert(AST_ListFirst(c->arguments()), _replaceDer,
-                    _generateIndexes)));
+            return (sin(convert(AST_ListFirst(c->arguments()), _replaceDer, _generateIndexes)));
           }
           else if(toStr(c->name()) == "cos")
           {
-            return (cos(
-                convert(AST_ListFirst(c->arguments()), _replaceDer,
-                    _generateIndexes)));
+            return (cos(convert(AST_ListFirst(c->arguments()), _replaceDer, _generateIndexes)));
           }
           else if(toStr(c->name()) == "log")
           {
-            return (log(
-                convert(AST_ListFirst(c->arguments()), _replaceDer,
-                    _generateIndexes)));
+            return (log(convert(AST_ListFirst(c->arguments()), _replaceDer, _generateIndexes)));
           }
           else if(toStr(c->name()) == "pre")
           {
-            return (pre(
-                convert(AST_ListFirst(c->arguments()), _replaceDer,
-                    _generateIndexes)));
+            return (pre(convert(AST_ListFirst(c->arguments()), _replaceDer, _generateIndexes)));
           }
           else if(toStr(c->name()) == "der2")
           {
@@ -361,94 +354,44 @@ namespace MicroModelica {
             {
               case EXPCOMPREF:
                 {
-                AST_Expression_ComponentReference cr =
-                    ed->getAsComponentReference();
+                AST_Expression_ComponentReference cr = ed->getAsComponentReference();
                 return der2(getSymbol(cr), getTime());
               }
               default:
-                cerr << "Derivate argument " << ed << " not converted to GiNaC"
-                    << endl;
+                cerr << "Derivate argument " << ed << " not converted to GiNaC" << endl;
                 return ex(0);
             }
           }
           else if(toStr(c->name()) == "der3")
           {
-            return (der3(
-                convert(AST_ListFirst(c->arguments()), _replaceDer,
-                    _generateIndexes)));
+            return (der3(convert(AST_ListFirst(c->arguments()), _replaceDer, _generateIndexes)));
           }
           else if(toStr(c->name()) == "sum")
           {
-            if(_exp != NULL)
-            {
-              string varName = _exp->findVar(e);
-              Util::getInstance()->addBuiltInVariables(varName, BIV_SUM);
-              return var(getSymbol(varName), getTime());
-            }
-            else
-            {
-              return ex(0);
-            }
+            return expressionVariable(BuiltIn::Variable::Sum);
           }
           else if(toStr(c->name()) == "product")
           {
-            if(_exp != NULL)
-            {
-              string varName = _exp->findVar(e);
-              Util::getInstance()->addBuiltInVariables(varName, BIV_PRODUCT);
-              return var(getSymbol(varName), getTime());
-            }
-            else
-            {
-              return ex(0);
-            }
+            return expressionVariable(BuiltIn::Variable::Product);
           }
           else if(toStr(c->name()) == "min")
           {
-            if(_exp != NULL)
-            {
-              string varName = _exp->findVar(e);
-              Util::getInstance()->addBuiltInVariables(varName, BIV_MIN);
-              return var(getSymbol(varName), getTime());
-            }
-            else
-            {
-              return ex(0);
-            }
+            return expressionVariable(BuiltIn::Variable::Min);
           }
           else if(toStr(c->name()) == "max")
           {
-            if(_exp != NULL)
-            {
-              string varName = _exp->findVar(e);
-              Util::getInstance()->addBuiltInVariables(varName, BIV_MAX);
-              return var(getSymbol(varName), getTime());
-            }
-            else
-            {
-              return ex(0);
-            }
+            return expressionVariable(BuiltIn::Variable::Max);
           }
           else if(toStr(c->name()) == "__INNER_PRODUCT")
           {
-            if(_exp != NULL)
-            {
-              string varName = _exp->findVar(e);
-              Util::getInstance()->addBuiltInVariables(varName, BIV_INNER_PRODUCT);
-              return var(getSymbol(varName), getTime());
-            }
-            else
-            {
-              return ex(0);
-            }
+            return expressionVariable(BuiltIn::Variable::Inner_Product);
           }
           else if(toStr(c->name()) == "pow")
           {
             AST_ExpressionList el = c->arguments();
             AST_Expression f = AST_ListFirst(el);
             AST_Expression s = AST_ListElement(el, 2);
-            return (pow(convert(f, _replaceDer, _generateIndexes),
-                convert(s, _replaceDer, _generateIndexes)));
+            return (pow(convert(f, _replaceDer, _generateIndexes), convert(s, _replaceDer, _generateIndexes)));
           }
           else if(toStr(c->name()) == "sqrt")
           {
@@ -458,26 +401,22 @@ namespace MicroModelica {
           }
           else if(toStr(c->name()) == "exp")
           {
-            return (exp(
-                convert(AST_ListFirst(c->arguments()), _replaceDer,
-                    _generateIndexes)));
+            return (exp(convert(AST_ListFirst(c->arguments()), _replaceDer, _generateIndexes)));
           }
-          else if(Util::getInstance()->checkGKLinkFunctions(toStr(c->name())))
+          else if(Utils::instance().checkGKLinkFunctions(toStr(c->name())))
           {
             return ex(0);
           }
           else
           {
-            cerr << "Function call : " << c->name()->c_str()
-                << " not converted to GiNaC" << endl;
-            return ex(0);
+            cerr << "Function call : " << c->name()->c_str() << " not converted to GiNaC" << endl; return ex(0);
           }
         }
           break;
         case EXPOUTPUT:
-          {
+        {
           AST_Expression el = AST_ListFirst(e->getAsOutput()->expressionList());
-          return ex((foldTraverse(el)));
+          return ex((apply(el)));
         }
         default:
           cerr << "Expression: " << e << " not converted to GiNaC" << endl;
@@ -491,8 +430,6 @@ namespace MicroModelica {
       stringstream s(ios_base::out), der_s(ios_base::out);
       int r;
       set_print_func<power, print_dflt> (my_print_power_dflt);
-      // set_print_func<mul,print_dflt>(my_print_mul_dflt);
-      // set_print_func<add,print_dflt>(my_print_add_dflt);
       s << exp;
       AST_Expression e;
       if(s.str().find("__der_") == 0)

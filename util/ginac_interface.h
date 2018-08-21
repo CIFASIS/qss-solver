@@ -27,6 +27,7 @@
 #include <string>
 
 #include "../ast/ast_types.h"
+#include "../ir/built_in_functions.h"
 #include "ast_util.h"
 #include "util_types.h"
 
@@ -66,7 +67,7 @@ namespace MicroModelica {
          * @param forDerivation
          * @param exp
          */
-        ConvertToGiNaC(VarSymbolTable varEnv, bool forDerivation = false, IR::Expression exp = IR::Expression());
+        ConvertToGiNaC(VarSymbolTable varEnv, Option<IR::Expression> exp);
         /**
          *
          * @param
@@ -120,12 +121,13 @@ namespace MicroModelica {
         foldTraverseElementUMinus(AST_Expression);
         virtual GiNaC::ex
         foldTraverseElement(GiNaC::ex, GiNaC::ex, BinOpType);
+        GiNaC::ex 
+        expressionVariable(IR::BuiltIn::Variable v);
         map<string, GiNaC::symbol> _directory;
-        bool _forDerivation;
-        VarSymbolTable _varEnv;
-        bool _replaceDer;
-        bool _generateIndexes;
-        MicroModelica::IR::Expression _exp;
+        VarSymbolTable                        _symbols;
+        bool                                  _replaceDer;
+        bool                                  _generateIndexes;
+        Option<MicroModelica::IR::Expression> _exp;
     };
 
     /**
