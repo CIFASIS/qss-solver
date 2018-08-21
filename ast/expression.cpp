@@ -440,13 +440,13 @@ AST_Expression_ComponentReference_::print() const
   foreach (it, names())
   {
     i++;
-    ret << current_element(it);
+    ret << *current_element(it);
     if(current_element(exp_it)->size())
     {
       ret << "[";
       int size2 = current_element(exp_it)->size(), i2 = 0;
       foreach (exp_it2,current_element(exp_it))
-        ret << current_element(exp_it2) << (++i2 < size2 ? "," : "");
+        ret << current_element(exp_it2)->print() << (++i2 < size2 ? "," : "");
       ret << "]";
     }
     ret << (i < size ? "." : "");
