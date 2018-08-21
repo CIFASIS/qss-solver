@@ -50,24 +50,27 @@ namespace MicroModelica {
          *
          */
         Index();
+        Index(IndexDefinition id);
         ~Index();
         string
         print() const;
         void
-        setMap(MicroModelica::IR::Expression exp);
+        setMap(IR::Expression exp);
         bool
         hasMap() const;
         bool
         operator==(const Index &other) const;
         void
-        addIndex(IndexDefinition id);
-        int
-        dimension();
-
+        add(IndexDefinition id);
+        inline int
+        dimension() { return _dim; };
         friend std::ostream& operator<<(std::ostream& out, const Index& i);
       private:
         map<int,IndexDefinition> _indexes;
+        int                      _dim;
     };
+
+    typedef ModelTable<std::string, Index> IndexTable;
 
     class RangeDefinition
     {
@@ -89,6 +92,7 @@ namespace MicroModelica {
     };
 
     typedef ModelTable<std::string, RangeDefinition> RangeDefinitionTable;
+    
     class Range 
     {
       public:
@@ -102,14 +106,6 @@ namespace MicroModelica {
         void 
         setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);
         RangeDefinitionTable _ranges;
-    };
-
-
-    class VariableInterval 
-    {
-      public:
-        VariableInterval();
-        ~VariableInterval();
     };
   }
 }

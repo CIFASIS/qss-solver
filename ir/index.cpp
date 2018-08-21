@@ -43,8 +43,17 @@ namespace MicroModelica {
       return out;
     }
 
-    Index::Index()
+    Index::Index() :
+      _indexes(),
+      _dim(0)
     {
+    }
+
+    Index::Index(IndexDefinition id) :
+      _indexes(),
+      _dim()
+    {
+      _indexes[_dim++] = id;
     }
      
     Index::~Index()
@@ -75,16 +84,10 @@ namespace MicroModelica {
     }
      
     void
-    Index::addIndex(IndexDefinition id)
+    Index::add(IndexDefinition id)
     {
     }
 
-    int
-    Index::dimension()
-    {
-      return 0;
-    }
-    
     std::ostream& operator<<(std::ostream& out, const Index& i)
     {
       return out;
@@ -154,14 +157,6 @@ namespace MicroModelica {
     std::ostream& operator<<(std::ostream& out, const Range& r)
     {
       return out;
-    }
-
-    VariableInterval::VariableInterval()
-    {
-    }
-     
-    VariableInterval::~VariableInterval()
-    {
     }
   }
 }
