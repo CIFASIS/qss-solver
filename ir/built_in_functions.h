@@ -20,6 +20,7 @@
 #ifndef MMO_BUILT_IN_FUNCTIONS_H
 #define MMO_BUILT_IN_FUNCTIONS_H 
 
+#include "../ir/index.h"
 #include "../util/ast_util.h"
 #include "../util/symbol_table.h"
 
@@ -81,17 +82,17 @@ namespace MicroModelica {
         virtual
         ~BIF() {};
         list<string>
-        generateCode(string variableMap, string variableIndex, list<VariableInterval> variableInterval, int expOrder);
+        generateCode(string variableMap, string variableIndex, IndexTable indexes, int expOrder);
         void
         setSymbolTable(Util::VarSymbolTable vt);
         Util::VarSymbolTable
         symbolTable(Util::VarSymbolTable vt);
         string
-        variableName(VariableInterval vin);
+        variableName(IndexTable indexes);
         string
-        expressionOrderStr(int order, VariableInterval vin);
+        expressionOrderStr(int order, IndexTable indexes);
         bool
-        isState(VariableInterval vin);
+        isState(IndexTable indexes);
         void
         setExpressionOrder(int expressionOrder);
         int
@@ -100,17 +101,17 @@ namespace MicroModelica {
         print(Index idx, string variableIndex);
       private:
         bool
-        hasStates(list<VariableInterval> variables);
+        hasStates(IndexTable indexeslist);
         Index
-        index(list<VariableInterval> variables);
+        index(IndexTable indexes);
         Option<Util::Variable>
-        variableInfo(VariableInterval vin);
+        variableInfo(IndexTable indexes);
         virtual string
-        reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates) = 0;
+        reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates) = 0;
         virtual string
-        init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates) = 0;
-        Util::VarSymbolTable _vt;
-        int _expressionOrder;
+        init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates) = 0;
+        Util::VarSymbolTable  _symbols;
+        int                   _expressionOrder;
     };
 
     class BuiltInFunction: public BIF
@@ -122,11 +123,9 @@ namespace MicroModelica {
         ~BuiltInFunction();
       private:
         string
-        reduce(string variableMap, string variableIndex, int variableOrder,
-            list<VariableInterval> variableInterval, bool hasStates);
+        reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates);
         string
-        init(string variableMap, string variableIndex,
-            list<VariableInterval> variableInterval, bool hasStates);
+        init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates);
     };
 
     class BuiltInSumFunction: public BIF
@@ -138,11 +137,9 @@ namespace MicroModelica {
         ~BuiltInSumFunction();
       private:
         string
-        reduce(string variableMap, string variableIndex, int variableOrder,
-            list<VariableInterval> variableInterval, bool hasStates);
+        reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates);
         string
-        init(string variableMap, string variableIndex,
-            list<VariableInterval> variableInterval, bool hasStates);
+        init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates);
     };
 
     class BuiltInProductFunction: public BIF
@@ -154,11 +151,9 @@ namespace MicroModelica {
         ~BuiltInProductFunction();
       private:
         string
-        reduce(string variableMap, string variableIndex, int variableOrder,
-            list<VariableInterval> variableInterval, bool hasStates);
+        reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates);
         string
-        init(string variableMap, string variableIndex,
-            list<VariableInterval> variableInterval, bool hasStates);
+        init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates);
     };
 
     class BuiltInInnerProductFunction: public BIF
@@ -170,11 +165,9 @@ namespace MicroModelica {
         ~BuiltInInnerProductFunction();
       private:
         string
-        reduce(string variableMap, string variableIndex, int variableOrder,
-            list<VariableInterval> variableInterval, bool hasStates);
+        reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates);
         string
-        init(string variableMap, string variableIndex,
-            list<VariableInterval> variableInterval, bool hasStates);
+        init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates);
     };
 
     class BuiltInMinFunction: public BIF
@@ -186,11 +179,9 @@ namespace MicroModelica {
         ~BuiltInMinFunction();
       private:
         string
-        reduce(string variableMap, string variableIndex, int variableOrder,
-            list<VariableInterval> variableInterval, bool hasStates);
+        reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates);
         string
-        init(string variableMap, string variableIndex,
-            list<VariableInterval> variableInterval, bool hasStates);
+        init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates);
     };
 
     class BuiltInMaxFunction: public BIF
@@ -202,11 +193,9 @@ namespace MicroModelica {
         ~BuiltInMaxFunction();
       private:
         string
-        reduce(string variableMap, string variableIndex, int variableOrder,
-            list<VariableInterval> variableInterval, bool hasStates);
+        reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates);
         string
-        init(string variableMap, string variableIndex,
-            list<VariableInterval> variableInterval, bool hasStates);
+        init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates);
     };
 
   }

@@ -443,7 +443,6 @@ namespace MicroModelica {
         list<Index> lidx;
         foreach(it,el)
         {
-
           setRealVariableOffset(current_element(it), Variable::RealType::Algebraic, _algebraicNbr);
         }
       }

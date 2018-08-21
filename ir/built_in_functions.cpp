@@ -27,7 +27,7 @@ namespace MicroModelica {
   namespace IR {
 
     list<string>
-    BIF::generateCode(string variableMap, string variableIndex, list<VariableInterval> variableInterval, int expOrder)
+    BIF::generateCode(string variableMap, string variableIndex, IndexTable indexes, int expOrder)
     {
      /* stringstream buffer;
       list<string> code;
@@ -73,12 +73,12 @@ namespace MicroModelica {
     }
 
     bool
-    BIF::hasStates(list<VariableInterval> variables)
+    BIF::hasStates(IndexTable variables)
     {
-     /* list<VariableInterval>::iterator it;
+     /* IndexTable::iterator it;
       for(it = variables.begin(); it != variables.end(); it++)
       {
-        Variable vi = _vt->lookup(it->name());
+        Variable vi = _symbols->lookup(it->name());
         if(vi == NULL)
         {
           Error::instance().add(0,
@@ -95,23 +95,23 @@ namespace MicroModelica {
     }
 
     void
-    BIF::setSymbolTable(VarSymbolTable vt)
+    BIF::setSymbolTable(VarSymbolTable symbols)
     {
-      _vt = vt;
+      _symbols = symbols;
     }
 
     Index
-    BIF::index(list<VariableInterval> variables)
+    BIF::index(IndexTable indexes)
     {
-      //VariableInterval vi = variables.front();
+      //IndexTable vi = variables.front();
       return Index();
     }
 
     string
-    BIF::variableName(VariableInterval vin)
+    BIF::variableName(IndexTable indexes)
     {
      /* Variable vi = _variableInfo(vin);
-      string varStr = _vt->getTypePrefix();
+      string varStr = _symbols->getTypePrefix();
       if(vi->isState())
       {
         varStr += "x";
@@ -132,22 +132,22 @@ namespace MicroModelica {
     }
 
     string
-    BIF::expressionOrderStr(int order, VariableInterval vin)
+    BIF::expressionOrderStr(int order, IndexTable vin)
     {
     /*  Variable vi = _variableInfo(vin);
       stringstream expOrder;
-      if(_vt->printEnvironment() != VST_CLASSIC_MODEL_FUNCTIONS)
+      if(_symbols->printEnvironment() != VST_CLASSIC_MODEL_FUNCTIONS)
       {
         expOrder << " * " << _expressionOrder << " + " << order;
       }
-      string varStr = _vt->getTypePrefix() + "x";
+      string varStr = _symbols->getTypePrefix() + "x";
       if(vi->isAlgebraic())
       {
-        if(_vt->printEnvironment() == VST_CLASSIC_MODEL_FUNCTIONS)
+        if(_symbols->printEnvironment() == VST_CLASSIC_MODEL_FUNCTIONS)
         {
           expOrder << " * " << _expressionOrder << " + " << order;
         }
-        varStr = _vt->getTypePrefix() + "alg";
+        varStr = _symbols->getTypePrefix() + "alg";
       }
       return expOrder.str();*/
       return "";
@@ -156,7 +156,7 @@ namespace MicroModelica {
     VarSymbolTable
     BIF::symbolTable(VarSymbolTable vt)
     {
-      return _vt;
+      return _symbols;
     }
 
     string
@@ -171,13 +171,13 @@ namespace MicroModelica {
     }
 
     string
-    BuiltInFunction::reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
+    BuiltInFunction::reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates)
     {
       return "";
     }
 
     string
-    BuiltInFunction::init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates)
+    BuiltInFunction::init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates)
     {
       return "";
     }
@@ -187,9 +187,9 @@ namespace MicroModelica {
     }
 
     string
-    BuiltInSumFunction::reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
+    BuiltInSumFunction::reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates)
     {
-     /* VariableInterval vin = variableInterval.front();
+     /* IndexTable vin = variableInterval.front();
       string variablePrefix = BIF::variableName(vin);
       stringstream buffer;
       Index idx = vin.index();
@@ -210,7 +210,7 @@ namespace MicroModelica {
     }
 
     string
-    BuiltInSumFunction::init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates)
+    BuiltInSumFunction::init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates)
     {
       stringstream buffer;
       if(hasStates)
@@ -229,9 +229,9 @@ namespace MicroModelica {
     }
 
     string
-    BuiltInProductFunction::reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
+    BuiltInProductFunction::reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates)
     {
-    /*  VariableInterval vin = variableInterval.front();
+    /*  IndexTable vin = variableInterval.front();
       string variablePrefix = BIF::variableName(vin);
       stringstream buffer;
       Index idx = vin.index();
@@ -252,7 +252,7 @@ namespace MicroModelica {
     }
 
     string
-    BuiltInProductFunction::init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates)
+    BuiltInProductFunction::init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates)
     {
       stringstream buffer;
       if(hasStates)
@@ -271,7 +271,7 @@ namespace MicroModelica {
     }
 
     string
-    BuiltInInnerProductFunction::reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
+    BuiltInInnerProductFunction::reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates)
     {
      /* if(variableInterval.size() != 2)
       {
@@ -279,8 +279,8 @@ namespace MicroModelica {
         EM_IR | EM_ARGUMENTS,
             ER_Fatal, "");
       }
-      VariableInterval vin[2];
-      list<VariableInterval>::iterator it;
+      IndexTable vin[2];
+      IndexTable::iterator it;
       int i = 0;
       for(it = variableInterval.begin(); it != variableInterval.end(); it++)
       {
@@ -423,7 +423,7 @@ namespace MicroModelica {
     }
 
     string
-    BuiltInInnerProductFunction::init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates)
+    BuiltInInnerProductFunction::init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates)
     {
       stringstream buffer;
       if(hasStates)
@@ -442,10 +442,10 @@ namespace MicroModelica {
     }
 
     string
-    BuiltInMinFunction::reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
+    BuiltInMinFunction::reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates)
     {
       /*stringstream buffer;
-      VariableInterval vin = variableInterval.front();
+      IndexTable vin = variableInterval.front();
       string expOrder = BIF::expressionOrderStr(0, vin);
       string variablePrefix = BIF::variableName(vin);
       Index idx = vin.index();
@@ -471,10 +471,10 @@ namespace MicroModelica {
     }
 
     string
-    BuiltInMinFunction::init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates)
+    BuiltInMinFunction::init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates)
     {
       /*stringstream buffer;
-      VariableInterval vin = variableInterval.front();
+      IndexTable vin = variableInterval.front();
       string expOrder = BIF::expressionOrderStr(0, vin);
       string variablePrefix = BIF::variableName(vin);
       Index idx = vin.index();
@@ -496,10 +496,10 @@ namespace MicroModelica {
     }
 
     string
-    BuiltInMaxFunction::reduce(string variableMap, string variableIndex, int variableOrder, list<VariableInterval> variableInterval, bool hasStates)
+    BuiltInMaxFunction::reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates)
     {
       /*stringstream buffer;
-      VariableInterval vin = variableInterval.front();
+      IndexTable vin = variableInterval.front();
       string expOrder = BIF::expressionOrderStr(0, vin);
       string variablePrefix = BIF::variableName(vin);
       Index idx = vin.index();
@@ -525,10 +525,10 @@ namespace MicroModelica {
     }
 
     string
-    BuiltInMaxFunction::init(string variableMap, string variableIndex, list<VariableInterval> variableInterval, bool hasStates)
+    BuiltInMaxFunction::init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates)
     {
      /* stringstream buffer;
-      VariableInterval vin = variableInterval.front();
+      IndexTable vin = variableInterval.front();
       string expOrder = BIF::expressionOrderStr(0, vin);
       string variablePrefix = BIF::variableName(vin);
       Index idx = vin.index();
@@ -559,9 +559,9 @@ namespace MicroModelica {
     }
 
     Option<Variable>
-    BIF::variableInfo(VariableInterval vin)
+    BIF::variableInfo(IndexTable vin)
     {
-      Option<Variable> vi = _vt[""];
+      Option<Variable> vi = _symbols[""];
       if(!vi)
       {
         Error::instance().add(0, EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "%s", "Fix Variable interval name");
@@ -570,7 +570,7 @@ namespace MicroModelica {
     }
 
     bool
-    BIF::isState(VariableInterval vin)
+    BIF::isState(IndexTable vin)
     {
       Option<Variable> vi = variableInfo(vin);
       return vi->isState() || vi->isAlgebraic();
