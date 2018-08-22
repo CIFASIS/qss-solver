@@ -91,10 +91,10 @@ namespace MicroModelica {
     void
     Files::makefile()
     {
-   /*   stringstream buffer;
+      stringstream buffer;
       stringstream includes;
       string fname = _fname;
-      map<string, string> include;
+      SymbolTable include;
       fname.append(".makefile");
       _writer->setFile(fname);
       _writer->print("#Compiler and Linker");
@@ -105,19 +105,20 @@ namespace MicroModelica {
       _writer->print("");
       _writer->print("#Flags, Libraries and Includes");
       includes << "LDFLAGS    :=-L " << Utils::instance().environmentVariable("MMOC_LIBS");
-      list<string> tmp = _model->libraryDirectories();
-      for(list<string>::iterator it = tmp.begin(); it != tmp.end(); it++)
+      SymbolTable tmp = _model.libraryDirectories();
+      SymbolTable::iterator it;
+      for(string l = tmp.begin(it); !tmp.end(it); l = tmp.next(it))
       {
-        includes << " -L" << *it;
+        includes << " -L" << l;
       }
       includes << " -L " << Utils::instance().environmentVariable("MMOC_PATH") << "/usr/lib";
       _writer->print(&includes);
-      _writer->print(_modelInstance->makefile(SOL_LIBRARIES));
-      buffer << _modelInstance->makefile(SOL_INCLUDES);
-      tmp = _model->includeDirectories();
-      for(list<string>::iterator it = tmp.begin(); it != tmp.end(); it++)
+      _writer->print(_modelInstance->makefile(LIBRARIES));
+      buffer << _modelInstance->makefile(INCLUDES);
+      tmp = _model.includeDirectories();
+      for(string i = tmp.begin(it); !tmp.end(it); i = tmp.next(it))
       {
-        include.insert(pair<string, string>(*it, *it));
+        include[i] = i;
       }
       if(_flags.hasObjects())
       {
@@ -127,20 +128,19 @@ namespace MicroModelica {
           string inc = *it;
           unsigned int f = inc.rfind("/");
           inc.erase(inc.begin() + f, inc.end());
-          include.insert(pair<string, string>(inc, inc));
+          include[inc] = inc;
         }
       }
       string pinclude = Utils::instance().environmentVariable("MMOC_INCLUDE");
-      include.insert(pair<string, string>(pinclude, pinclude));
+      include[pinclude] = pinclude;
       if(_flags.hasObjects())
       {
         pinclude = Utils::instance().environmentVariable("MMOC_PACKAGES");
-        include.insert(pair<string, string>(pinclude, pinclude));
+        include[pinclude] = pinclude;
       }
-      for(map<string, string>::iterator inct = include.begin();
-          inct != include.end(); inct++)
+      for(string i = include.begin(it); !include.end(it); i = include.next(it))
       {
-        buffer << " -I" << inct->second;
+        buffer << " -I" << i;
       }
       _writer->print(&buffer);
       if(_flags.debug())
@@ -151,16 +151,16 @@ namespace MicroModelica {
       {
         _writer->print("CFLAGS    := -Wall -msse2 -mfpmath=sse -O2 $(LDFLAGS) $(LIBS)");
       }
-      tmp = _model->linkLibraries();
-      for(list<string>::iterator it = tmp.begin(); it != tmp.end(); it++)
+      tmp = _model.linkLibraries();
+      for(string i = tmp.begin(it); !tmp.end(it); i = tmp.next(it))
       {
-        includes << " -l" << *it;
+        includes << " -l" << i;
       }
       _writer->print("RMS    := rm -rf");
       _writer->print("");
       _writer->print("#Source Files");
       buffer << "TARGET_SRC    := " << _fname << ".c";
-      if(_model->hasExternalFunctions())
+      if(!_model.calledFunctions().empty())
       {
         buffer << " " << _fname << "_functions.c";
       }
@@ -224,12 +224,12 @@ namespace MicroModelica {
       stringstream buffer;
       _writer->setFile(fname);
       _writer->print("cwd=$(pwd)");
-      _writer->print("cd " + Util::getInstance()->getFilePath(_fname));
+      _writer->print("cd " + Utils::instance().getFilePath(_fname));
       _writer->print("make -f " + _fname + ".makefile clean");
       buffer << "make -f " + _fname + ".makefile";
       _writer->print(&buffer);
-      _writer->print(_modelInstance->runCmd() + Util::getInstance()->getFileName(_fname));
-      if(_model->outs())
+      _writer->print(_modelInstance->runCommand() + Utils::instance().getFileName(_fname));
+      if(_model.outputNbr())
       {
         _writer->print("echo");
         _writer->print("gnuplot " + _fname + ".plt");
@@ -245,7 +245,7 @@ namespace MicroModelica {
     void
     Files::plot()
     {
-      if(!_model->outs())
+      /*if(!_model->outs())
       {
         return;
       }
@@ -261,8 +261,7 @@ namespace MicroModelica {
       buffer << "plot ";
       MMO_EquationTable outputs = _model->outputs();
       int outs = 0, total = _model->outs();
-      VarSymbolTable vt = _model->varTable();
-      vt->setPrintEnvironment(VST_OUTPUT);
+      VarSymbolTable vt = _model.symbols();
       for(MMO_Equation eq = outputs->begin(); !outputs->end(); eq = outputs->next())
       {
         Index index = outputs->key();
@@ -473,8 +472,7 @@ namespace MicroModelica {
       tmp1.close();
       tmp2.close();
       tmp3.close();
-      string command = "cat " + tmp1FileName + " " + tmp2FileName + " "
-          + tmp3FileName + " > " + hFileName;
+      string command = "cat " + tmp1FileName + " " + tmp2FileName + " " + tmp3FileName + " > " + hFileName;
       system(command.c_str());
       remove(tmp1FileName.c_str());
       remove(tmp2FileName.c_str());
