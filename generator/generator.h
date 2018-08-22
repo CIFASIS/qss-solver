@@ -60,27 +60,11 @@ namespace MicroModelica {
         generate();
       private:
         void
-        _generateFunctionCode(IR::Function f);
-        void
-        _generateHeader(string name);
-        void
-        _printList(list<string> l);
-        void
-        _variablesInitCode();
-        void
-        _variables();
+        generateIncludes(string name);
         void
         generateModel();
         void
-        _generateFunction(IR::Function f, string fileName);
-        void
-        _generateFunction(IR::CompiledFunction f, string fileName);
-        void
-        _generateFunctionHeader(string fileName);
-        void
-        _generatePackage(IR::Package p);
-        void
-        _header();
+        calledFunctionHeader(string fileName);
         IR::StoredDefinition      _std;
         IR::Model                 _model;
         IR::Function              _function;

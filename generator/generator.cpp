@@ -89,17 +89,17 @@ namespace MicroModelica {
             _modelInstance = ModelInstancePtr(new QSSModelInstance(model, _flags, _writer));
         }
         Files files(_modelInstance, model, _flags);
-        /*generateModel();
+        generateModel();
         _writer->clearFile();
-        _files.makefile();
-        _files.run();
-        _files.plot();
-        _files.settings(model.annotations());
+        files.makefile();
+        files.run();
+        files.plot();
+        files.settings(model.annotations());
         if(_flags.graph())
         {
-          _files.graph();
+          files.graph();
         }
-        if(!model.externalFunctions().empty())
+        if(!model.calledFunctions().empty())
         {
           string ffname = model.name();
           if(_flags.hasOutputFile())
@@ -107,23 +107,26 @@ namespace MicroModelica {
             ffname = _flags.outputFileName();
           }
           ffname.append("_functions");
-          _generateHeader(ffname);
-          MMO_SymbolRefTable srt = _model->calledFunctions();
-          for(MMO_FunctionInfo *i = srt->begin(); !srt->end(); i = srt->next())
+          generateIncludes(ffname);
+          FunctionTable ft = _model.calledFunctions();
+          FunctionTable::iterator it;
+          for(IR::Function f = ft.begin(it); !ft.end(it); f = ft.next(it))
           {
-            _generateFunction(i->function(), ffname);
+            Function func(f,_flags, _writer);
+            func.definition();
+            _fheader.push_back(func.header());
           }
-          if(_flags->hasOutputFile())
+          if(_flags.hasOutputFile())
           {
             ffname.insert(0, _flags.outputFilePath() + SLASH);
           }
-          _generateFunctionHeader(ffname);
+          calledFunctionHeader(ffname);
           ffname.append(".c");
           _writer->setFile(ffname);
           _writer->print(FUNCTION_HEADER);
           _writer->print(FUNCTION_CODE);
           _writer->clearFile();
-        }*/
+        }
       }
       else 
       {
@@ -134,7 +137,7 @@ namespace MicroModelica {
     }
 
     void
-    Generator::_generateHeader(string name)
+    Generator::generateIncludes(string name)
     {
       stringstream buffer;
       buffer << "#include <math.h>" << endl;
@@ -155,17 +158,8 @@ namespace MicroModelica {
       _modelInstance->initializeDataStructures();
     }
 
-    void 
-    Generator::_printList(list<string> l)
-    {
-      for(list<string>::iterator it = l.begin(); it != l.end(); it++)
-      {
-        _writer->write(*it, FUNCTION_CODE);
-      }
-    }
-
     void
-    Generator::_generateFunctionHeader(string fileName)
+    Generator::calledFunctionHeader(string fileName)
     {
       string indent = _writer->indent(1);
       string file = fileName;
@@ -178,42 +172,5 @@ namespace MicroModelica {
       _writer->clearFile();
     }
 
-    void
-    Generator::_generateFunction(IR::CompiledFunction f, string fileName)
-    {
-      _printList(f.def());
-    }
-
-    void
-    Generator::_generateFunction(IR::Function f, string fileName)
-    {
-      /*_fheader.push_back(f.prototype() + ";");
-      _generateFunctionCode(f);*/
-    }
-
-
-    void
-    Generator::_variablesInitCode()
-    {
-      /*stringstream buffer;
-      VarSymbolTable vt = _model->varTable();
-      vt->setPrintEnvironment(VST_INIT);
-      if(_model->annotation()->classic())
-      {
-        vt->setPrintEnvironment(VST_CLASSIC_INIT);
-      }
-      string indent = _writer->indent(1);
-      for(VarInfo vi = vt->begin(); !vt->end(); vi = vt->next())
-      {
-        Index idx = vi->index();
-        if(!vi->isConstant() && !vi->isParameter()
-            && (vi->hasAssignment() || vi->hasStartModifier()
-                || vi->hasEachModifier()))
-        {
-          buffer << _model->printInitialAssignment(vi, indent);
-          _writer->write(&buffer, WR_START_CODE);
-        }
-      }*/
-    }
   }
 }
