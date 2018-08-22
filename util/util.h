@@ -40,6 +40,8 @@ namespace MicroModelica {
 
     typedef ModelTable<string, string> ImportTable;
     
+    typedef ModelTable<string, string> SymbolTable;
+    
     /**
      *
      */
