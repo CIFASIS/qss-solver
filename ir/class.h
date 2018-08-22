@@ -442,7 +442,7 @@ namespace MicroModelica
         * @param f
         */
         void
-        insert(Function &f);
+        setCalledFunctions(FunctionTable &fs);
         /**
         *
         * @param efc
@@ -469,8 +469,16 @@ namespace MicroModelica
         imports() const;
         ModelAnnotation 
         annotations();
-        ExternalFunctionTable 
-        externalFunctions() const;
+        inline FunctionTable 
+        calledFunctions() const { return _calledFunctions; };
+        inline int 
+        outputNbr() { return _outputNbr; };
+        Util::SymbolTable 
+        linkLibraries() const;
+        Util::SymbolTable 
+        includeDirectories() const;
+        Util::SymbolTable 
+        libraryDirectories() const;
       private:
         string 
         getComponentName(AST_Expression exp);
@@ -482,9 +490,10 @@ namespace MicroModelica
         Util::ImportTable         _imports;
         Util::VarSymbolTable      _symbols;
         ModelAnnotation           _annotations;
-        ExternalFunctionTable     _externalFunctions;
+        FunctionTable             _calledFunctions;
         EquationTable             _equations;
         EquationTable             _algebraics;
+        EquationTable             _outputs;
         EventTable                _events;
         Util::ModelDependencies   _dependecies;
         CompiledPackageTable      _packages;

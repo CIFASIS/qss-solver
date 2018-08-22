@@ -325,7 +325,7 @@ namespace MicroModelica {
       _imports(),
       _symbols(),
       _annotations(_symbols),
-      _externalFunctions(),
+      _calledFunctions(),
       _equations(),
       _algebraics(),
       _events(),
@@ -349,7 +349,7 @@ namespace MicroModelica {
       _imports(),
       _symbols(),
       _annotations(_symbols),
-      _externalFunctions(),
+      _calledFunctions(),
       _equations(),
       _algebraics(),
       _events(),
@@ -511,7 +511,7 @@ namespace MicroModelica {
     }
 
     void
-    Model::insert(Function &f) 
+    Model::setCalledFunctions(FunctionTable &fs) 
     {
     }
 
@@ -558,10 +558,22 @@ namespace MicroModelica {
       return _annotations;        
     }
     
-    ExternalFunctionTable 
-    Model::externalFunctions() const 
+    SymbolTable 
+    Model::linkLibraries() const 
     {
-      return _externalFunctions;
+      return SymbolTable();
+    }
+
+    SymbolTable 
+    Model::includeDirectories() const 
+    {
+      return SymbolTable();
+    }
+    
+    SymbolTable 
+    Model::libraryDirectories() const 
+    {
+      return SymbolTable();
     }
 
   }
