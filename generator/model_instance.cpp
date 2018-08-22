@@ -103,6 +103,12 @@ namespace MicroModelica {
       return Graph(0, 0);
     }
 
+    string 
+    QSSModelInstance::runCommand()
+    {
+      return "";
+    }
+
     /* ClassicModelInstance Model Instance class. */
 
     ClassicModelInstance::ClassicModelInstance(Model& model, CompileFlags& flags, WriterPtr writer) 
@@ -159,6 +165,12 @@ namespace MicroModelica {
     ClassicModelInstance::computationalGraph()
     {
       return Graph(0,0);
+    }
+
+    string 
+    ClassicModelInstance::runCommand()
+    {
+      return "";
     }
 
   }

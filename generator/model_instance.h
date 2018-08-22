@@ -139,6 +139,12 @@ namespace MicroModelica
         */
         virtual Graph
         computationalGraph() = 0;
+        /**
+        *
+        * @return
+         */
+        virtual string
+        runCommand() = 0;
     };
 
     /**
@@ -208,6 +214,12 @@ namespace MicroModelica
         */
         Graph
         computationalGraph();
+        /**
+        *
+        * @return
+         */
+        string
+        runCommand();
     };
 
     /**
@@ -282,6 +294,12 @@ namespace MicroModelica
         */
         Graph
         computationalGraph();
+        /**
+        *
+        * @return
+         */
+        string
+        runCommand();
     };
     
     typedef std::shared_ptr<ModelInstance> ModelInstancePtr;
