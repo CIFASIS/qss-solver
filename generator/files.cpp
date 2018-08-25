@@ -113,8 +113,9 @@ namespace MicroModelica {
       }
       includes << " -L " << Utils::instance().environmentVariable("MMOC_PATH") << "/usr/lib";
       _writer->print(&includes);
-      _writer->print(_modelInstance->makefile(LIBRARIES));
-      buffer << _modelInstance->makefile(INCLUDES);
+      buffer << "LIBS   :=" << (_flags.debug()? " -lqssd -ltimestepd" : " -lqss -ltimestep");
+      _writer->print(&buffer);
+      buffer << "INC    := -I" + Utils::instance().environmentVariable("MMOC_ENGINE");
       tmp = _model.includeDirectories();
       for(string i = tmp.begin(it); !tmp.end(it); i = tmp.next(it))
       {
@@ -228,7 +229,7 @@ namespace MicroModelica {
       _writer->print("make -f " + _fname + ".makefile clean");
       buffer << "make -f " + _fname + ".makefile";
       _writer->print(&buffer);
-      _writer->print(_modelInstance->runCommand() + Utils::instance().getFileName(_fname));
+      _writer->print("./" + Utils::instance().getFileName(_fname));
       if(_model.outputNbr())
       {
         _writer->print("echo");
