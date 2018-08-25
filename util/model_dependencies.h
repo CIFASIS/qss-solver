@@ -20,7 +20,7 @@
 #ifndef MODEL_DEPENDENCIES_H_
 #define MODEL_DEPENDENCIES_H_
 
-#include "incidence_matrix.h"
+#include "dependency_matrix.h"
 
 namespace MicroModelica {
   namespace Util {
@@ -30,11 +30,31 @@ namespace MicroModelica {
       public:
         ModelDependencies();
         ~ModelDependencies();
+        inline DependencyMatrix 
+        SD() { return _SD; };
+        inline DependencyMatrix 
+        DS() { return _DS; };
+        inline DependencyMatrix 
+        SZ() { return _SZ; };
+        inline DependencyMatrix 
+        ZS() { return _ZS; };
+        inline DependencyMatrix 
+        SO() { return _SO; };
+        inline DependencyMatrix 
+        OS() { return _OS; };
+        inline DependencyMatrix 
+        DO() { return _DO; };
+        inline DependencyMatrix 
+        OD() { return _OD; };
       private:
-        IncidenceMatrix _SD;
-        IncidenceMatrix _DS;
-        IncidenceMatrix _ZS;
-        IncidenceMatrix _SZ;
+        DependencyMatrix _SD;
+        DependencyMatrix _DS;
+        DependencyMatrix _ZS;
+        DependencyMatrix _SZ;
+        DependencyMatrix _SO;
+        DependencyMatrix _OS;
+        DependencyMatrix _DO;
+        DependencyMatrix _OD;
     };
   }
 }
