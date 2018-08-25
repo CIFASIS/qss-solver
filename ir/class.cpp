@@ -326,7 +326,7 @@ namespace MicroModelica {
       _symbols(),
       _annotations(_symbols),
       _calledFunctions(),
-      _equations(),
+      _derivatives(),
       _algebraics(),
       _events(),
       _dependecies(),
@@ -350,7 +350,7 @@ namespace MicroModelica {
       _symbols(),
       _annotations(_symbols),
       _calledFunctions(),
-      _equations(),
+      _derivatives(),
       _algebraics(),
       _events(),
       _dependecies(),
@@ -386,6 +386,11 @@ namespace MicroModelica {
       {
         EvalInitExp eval(_symbols); 
         vi.setValue(eval.apply(vi.exp()));
+      }
+      if(vi.typePrefix() & TP_DISCRETE)
+      {
+        vi.setOffset(_discreteNbr);
+        _discreteNbr += vi.size();
       }
       _symbols[n] = vi;
     }

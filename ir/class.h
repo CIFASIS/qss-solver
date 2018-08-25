@@ -479,6 +479,16 @@ namespace MicroModelica
         includeDirectories() const;
         Util::SymbolTable 
         libraryDirectories() const;
+        inline EquationTable 
+        derivatives() { return _derivatives; };
+        inline EquationTable 
+        algebraics() { return _algebraics; };
+        inline Util::ModelDependencies
+        dependencies() { return _dependecies; };
+        inline EquationTable 
+        outputs() { return _outputs; };
+        inline EventTable 
+        events() { return _events; };
       private:
         string 
         getComponentName(AST_Expression exp);
@@ -491,7 +501,7 @@ namespace MicroModelica
         Util::VarSymbolTable      _symbols;
         ModelAnnotation           _annotations;
         FunctionTable             _calledFunctions;
-        EquationTable             _equations;
+        EquationTable             _derivatives;
         EquationTable             _algebraics;
         EquationTable             _outputs;
         EventTable                _events;
