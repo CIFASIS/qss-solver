@@ -88,7 +88,6 @@ namespace MicroModelica {
         int   _begin;
         int   _end;
         int   _step;
-        
     };
 
     typedef ModelTable<std::string, RangeDefinition> RangeDefinitionTable;
@@ -98,7 +97,6 @@ namespace MicroModelica {
       public:
         Range();
         Range(AST_Equation_For eqf, Util::VarSymbolTable symbols);
-
         Range(AST_Statement_For stf, Util::VarSymbolTable symbols);
         ~Range();
         friend std::ostream& operator<<(std::ostream& out, const Range& r);
