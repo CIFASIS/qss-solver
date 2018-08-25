@@ -98,13 +98,6 @@ namespace MicroModelica
         header() = 0;
         /**
         *
-        * @param m
-        * @return
-         */
-        virtual string
-        makefile(Makefile m) = 0;
-        /**
-        *
         */
         virtual void
         initializeDataStructures() = 0;
@@ -139,12 +132,6 @@ namespace MicroModelica
         */
         virtual Graph
         computationalGraph() = 0;
-        /**
-        *
-        * @return
-         */
-        virtual string
-        runCommand() = 0;
     };
 
     /**
@@ -173,13 +160,6 @@ namespace MicroModelica
         header();
         /**
         *
-        * @param m
-        * @return
-         */
-        string
-        makefile(Makefile m);
-        /**
-        *
         */
         void
         initializeDataStructures();
@@ -214,12 +194,6 @@ namespace MicroModelica
         */
         Graph
         computationalGraph();
-        /**
-        *
-        * @return
-         */
-        string
-        runCommand();
     };
 
     /**
@@ -247,19 +221,6 @@ namespace MicroModelica
         header();
         /**
         *
-        * @return
-        */
-        string
-        runCmd();
-        /**
-        *
-        * @param m
-        * @return
-        */
-        string
-        makefile(Makefile m);
-        /**
-        *
         */
         void
         initializeDataStructures();
@@ -294,12 +255,10 @@ namespace MicroModelica
         */
         Graph
         computationalGraph();
-        /**
-        *
-        * @return
-         */
-        string
-        runCommand();
+      private:
+        IR::Model               _model;
+        Util::CompileFlags  _flags;
+        WriterPtr           _writer;
     };
     
     typedef std::shared_ptr<ModelInstance> ModelInstancePtr;

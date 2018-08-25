@@ -55,12 +55,6 @@ namespace MicroModelica {
       return "";
     }
 
-    string
-    QSSModelInstance::makefile(Makefile m)
-    {
-      return "";
-    }
-
     void
     QSSModelInstance::initializeDataStructures()
     {
@@ -103,15 +97,13 @@ namespace MicroModelica {
       return Graph(0, 0);
     }
 
-    string 
-    QSSModelInstance::runCommand()
-    {
-      return "";
-    }
 
     /* ClassicModelInstance Model Instance class. */
 
-    ClassicModelInstance::ClassicModelInstance(Model& model, CompileFlags& flags, WriterPtr writer) 
+    ClassicModelInstance::ClassicModelInstance(Model& model, CompileFlags& flags, WriterPtr writer) :
+      _model(model),
+      _flags(flags),
+      _writer(writer)
     {
     }
 
@@ -125,20 +117,35 @@ namespace MicroModelica {
       return "";
     }
 
-    string
-    ClassicModelInstance::makefile(Makefile m)
-    {
-      return "";
-    }
-    
     void
     ClassicModelInstance::initializeDataStructures()
     {
+      ModelDependencies deps = _model.dependencies();
+      // Initialize output data structures.
+      DependencyMatrix OS = deps.OS();
+      
+      DependencyMatrix SD = deps.SD();
+
     }
     
     void
     ClassicModelInstance::definition()
     {
+      EquationTable derivatives = _model.derivatives();
+      EquationTable algebraics = _model.algebraics();
+      EquationTable::iterator it;
+      VarSymbolTable symbols = _model.symbols();
+      stringstream buffer;
+      for(Equation alg = algebraics.begin(it); !algebraics.end(it); alg = algebraics.next(it))
+      {
+         buffer << alg;
+         _writer->write(&buffer, MODEL_SIMPLE);
+      }
+      for(Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it))
+      {
+         buffer << der;
+         _writer->write(&buffer, MODEL_SIMPLE);
+      }
     }
     
     void
@@ -159,18 +166,20 @@ namespace MicroModelica {
     void
     ClassicModelInstance::output()
     {
+      EquationTable outputs = _model.outputs();
+      EquationTable::iterator it;
+      stringstream buffer;
+      for(Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it))
+      {
+        buffer << out;
+        _writer->write(buffer.str(), (out.hasRange() ? OUTPUT_GENERIC : OUTPUT_SIMPLE));
+      }
     }
  
     Graph
     ClassicModelInstance::computationalGraph()
     {
       return Graph(0,0);
-    }
-
-    string 
-    ClassicModelInstance::runCommand()
-    {
-      return "";
     }
 
   }
