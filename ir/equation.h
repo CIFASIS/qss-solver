@@ -55,11 +55,12 @@ namespace MicroModelica {
           HANDLER_IF,
           JACOBIAN
         } Type;
-
+        inline bool 
+        hasRange() { return _range.is_initialized(); }; 
         friend std::ostream& operator<<(std::ostream& out, const Equation& e);
       private:
-        Option<Range>   _range;
         AST_Expression  _eq;
+        Option<Range>   _range;
 
     };
 

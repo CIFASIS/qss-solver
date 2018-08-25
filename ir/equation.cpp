@@ -39,5 +39,10 @@ namespace MicroModelica {
     Equation::~Equation()
     {
     }
+    
+    std::ostream& operator<<(std::ostream& out, const Equation& e)
+    {
+      return out;
+    }
   }
 }
