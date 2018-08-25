@@ -25,7 +25,6 @@
 
 #include "macros.h"
 
-
 template <typename T>
 struct Option: public boost::optional<T> {
 public:
@@ -35,21 +34,6 @@ public:
 
 };
 
-/**
- *
- */
-//DEFINE_TYPE(VarSymbolTable);
-/**
- *
- */
-//DEFINE_TYPE(TypeSymbolTable);
-/**
- *
- */
-//DEFINE_TYPE(VarInfo);
-/**
- *
- */
 DEFINE_TYPE(AST_MicroModelica);
 /**
  *
