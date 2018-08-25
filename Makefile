@@ -94,7 +94,7 @@ UTILSRC = $(UTILDIR)/util.cpp \
 					$(UTILDIR)/derivative.cpp \
 					$(UTILDIR)/ginac_interface.cpp \
 					$(UTILDIR)/model_dependencies.cpp  \
-					$(UTILDIR)/incidence_matrix.cpp  \
+					$(UTILDIR)/dependency_matrix.cpp  \
 					$(UTILDIR)/graph.cpp \
 					$(UTILDIR)/graph_profile.cpp 
 
