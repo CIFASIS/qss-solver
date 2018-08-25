@@ -17,24 +17,24 @@
 
  ******************************************************************************/
 
-#include "incidence_matrix.h"
+#include "dependency_matrix.h"
 
 namespace MicroModelica {
   namespace Util {
 
-    Incidence::Incidence()
+    Dependency::Dependency()
     {
     }
      
-    Incidence::~Incidence()
+    Dependency::~Dependency()
     {
     }
 
-    IncidenceMatrix::IncidenceMatrix()
+    DependencyMatrix::DependencyMatrix()
     {
     }
 
-    IncidenceMatrix::~IncidenceMatrix()
+    DependencyMatrix::~DependencyMatrix()
     {
     }
   }

@@ -17,37 +17,42 @@
 
  ******************************************************************************/
 
-#ifndef INCIDENCE_MATRIX_H_
-#define INCIDENCE_MATRIX_H_
+#ifndef DEPENDENCY_MATRIX_H_
+#define DEPENDENCY_MATRIX_H_
 
 #include <map>
 
 #include "../ir/index.h"
+#include "../util/table.h"
 
 namespace MicroModelica {
   namespace Util {
 
     typedef int mapId;
 
-    class Incidence 
+    class Dependency 
     {
       public:
-        Incidence();
-        ~Incidence();
+        Dependency();
+        ~Dependency();
+        friend std::ostream& operator<<(std::ostream& out, const Dependency& d);
       private:
-        IR::Index _lhs;
-        IR::Index _rhs;
+        IR::Index     _lhs;
+        IR::Index     _rhs;
+        IR::Range     _range;
+        int           _id;
+        std::string   _matrixName;
+        std::string   _vectorName;
+        std::string   _tVectorName;
     };
 
-    class IncidenceMatrix
+    class DependencyMatrix : public ModelTable<mapId,Dependency>
     {
       public:
-        IncidenceMatrix();
-        ~IncidenceMatrix();
-      private:
-        std::map<mapId,Incidence> _matrix;
+        DependencyMatrix();
+        ~DependencyMatrix();
     };
   }
 }
 
-#endif /* INCIDENCE_MATRIX_H_ */
+#endif /* DEPENDENCY_MATRIX_H_ */
