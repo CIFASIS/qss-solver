@@ -22,20 +22,9 @@
 namespace MicroModelica {
   namespace Util {
 
-    Dependency::Dependency()
+    std::ostream& operator<<(std::ostream& out, const VariableDependency& d)
     {
-    }
-     
-    Dependency::~Dependency()
-    {
-    }
-
-    DependencyMatrix::DependencyMatrix()
-    {
-    }
-
-    DependencyMatrix::~DependencyMatrix()
-    {
+      return out;
     }
   }
 }

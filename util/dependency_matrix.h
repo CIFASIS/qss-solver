@@ -28,30 +28,38 @@
 namespace MicroModelica {
   namespace Util {
 
-    typedef int mapId;
+    typedef int depId;
 
-    class Dependency 
+    class VariableDependency 
     {
       public:
-        Dependency();
-        ~Dependency();
-        friend std::ostream& operator<<(std::ostream& out, const Dependency& d);
+        VariableDependency() {};
+        ~VariableDependency() {};
+        inline const VariableDependency& 
+        alloc() const { return *this; };
+        inline const VariableDependency&
+        init() const { return *this; }; 
+        friend std::ostream& operator<<(std::ostream& out, const VariableDependency& d);
       private:
         IR::Index     _lhs;
         IR::Index     _rhs;
         IR::Range     _range;
         int           _id;
         std::string   _matrixName;
-        std::string   _vectorName;
-        std::string   _tVectorName;
+        std::string   _accessVectorName;
+        std::string   _transposeAccessVectorName;
     };
 
-    class DependencyMatrix : public ModelTable<mapId,Dependency>
+    class VariableDependencyMatrix : public ModelTable<depId,VariableDependency>
     {
       public:
-        DependencyMatrix();
-        ~DependencyMatrix();
+        VariableDependencyMatrix() {};
+        ~VariableDependencyMatrix() {};
     };
+
+    typedef std::list<depId> EquationDependency;
+
+    typedef ModelTable<depId,EquationDependency> EquationDependencyMatrix;
   }
 }
 
