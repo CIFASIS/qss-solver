@@ -472,7 +472,17 @@ namespace MicroModelica
         inline FunctionTable 
         calledFunctions() const { return _calledFunctions; };
         inline int 
+        algebraicNbr() { return _algebraicNbr; };
+        inline int 
+        stateNbr() { return _stateNbr; };
+        inline int 
+        discreteNbr() { return _discreteNbr; };
+        inline int 
+        inputNbr() { return _inputNbr; };
+        inline int 
         outputNbr() { return _outputNbr; };
+        inline int 
+        eventNbr() { return _eventNbr; };
         Util::SymbolTable 
         linkLibraries() const;
         Util::SymbolTable 
@@ -489,6 +499,8 @@ namespace MicroModelica
         outputs() { return _outputs; };
         inline EventTable 
         events() { return _events; };
+        inline bool 
+        externalFunctions() { return _externalFunctions; };
       private:
         string 
         getComponentName(AST_Expression exp);
@@ -513,11 +525,14 @@ namespace MicroModelica
         int                       _stateNbr;
         int                       _discreteNbr;
         int                       _algebraicNbr;
+        int                       _eventNbr;
         int                       _outputNbr;
+        int                       _inputNbr;
         int                       _equationId;
         int                       _algebraicId;
         int                       _statementId;
         int                       _eventId;
+        bool                      _externalFunctions;
     };
     
     typedef boost::variant<
