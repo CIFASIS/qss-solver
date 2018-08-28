@@ -143,13 +143,13 @@ namespace MicroModelica {
       buffer << "#include <math.h>" << endl;
       buffer << "#include <stdlib.h>" << endl;
       buffer << "#include \"" << name << ".h\"" << endl;
-      _writer->write(&buffer, FUNCTION_HEADER);
+      _writer->write(buffer, FUNCTION_HEADER);
     }
 
     void
     Generator::generateModel()
     {
-      _modelInstance->header();
+      _modelInstance->include();
       _modelInstance->definition();
       _modelInstance->dependencies();
       _modelInstance->zeroCrossing();
