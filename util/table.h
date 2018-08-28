@@ -54,28 +54,16 @@ class ModelTable : public std::map<Key,Value>
       iterator it = std::map<Key,Value>::find(key);
       return it == std::map<Key,Value>::end();
     }
-    Value 
-    begin(iterator it)
-    {
-      it = std::map<Key,Value>::begin();
-      return value(it);
-    };
-    bool 
-    end(iterator it)
-    {
-      return it == std::map<Key,Value>::end();
-    }
-    Value 
-    next(iterator it)
-    {
-      it++;
-      return value(it);
-    }
-    Value 
-    value(iterator it)
-    {
-      return it->second;
-    }
+    inline Value 
+    begin(iterator it) { it = std::map<Key,Value>::begin(); return value(it); };
+    inline bool 
+    end(iterator it) { return it == std::map<Key,Value>::end(); }
+    inline Value 
+    next(iterator it) { it++; return value(it); }
+    inline Value 
+    value(iterator it) { return it->second; }
+    inline Key 
+    key(iterator it) { return it->first; };
 };
 
 
