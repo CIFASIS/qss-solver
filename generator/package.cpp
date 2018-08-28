@@ -135,7 +135,7 @@ namespace MicroModelica {
         buffer << "#include \"" << addInclude << ".h\"" << endl;
         _includes.push_back(addInclude);
       }
-      _writer->write(&buffer, FUNCTION_HEADER);
+      _writer->write(buffer, FUNCTION_HEADER);
       for(IR::Function f = ft.begin(it); !ft.end(it); f = ft.next(it))
       {
         Function func(f,_flags, _writer);

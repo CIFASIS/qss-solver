@@ -112,9 +112,9 @@ namespace MicroModelica {
         includes << " -L" << l;
       }
       includes << " -L " << Utils::instance().environmentVariable("MMOC_PATH") << "/usr/lib";
-      _writer->print(&includes);
+      _writer->print(includes);
       buffer << "LIBS   :=" << (_flags.debug()? " -lqssd -ltimestepd" : " -lqss -ltimestep");
-      _writer->print(&buffer);
+      _writer->print(buffer);
       buffer << "INC    := -I" + Utils::instance().environmentVariable("MMOC_ENGINE");
       tmp = _model.includeDirectories();
       for(string i = tmp.begin(it); !tmp.end(it); i = tmp.next(it))
@@ -143,7 +143,7 @@ namespace MicroModelica {
       {
         buffer << " -I" << i;
       }
-      _writer->print(&buffer);
+      _writer->print(buffer);
       if(_flags.debug())
       {
         _writer->print("CFLAGS    := -Wall -g -msse2 -mfpmath=sse $(LDFLAGS) $(LIBS)");
@@ -165,7 +165,7 @@ namespace MicroModelica {
       {
         buffer << " " << _fname << "_functions.c";
       }
-      _writer->print(&buffer);
+      _writer->print(buffer);
       if(_flags.hasObjects())
       {
         buffer << "SRC    := ";
@@ -174,7 +174,7 @@ namespace MicroModelica {
         {
           buffer << *it << " ";
         }
-        _writer->print(&buffer);
+        _writer->print(buffer);
       }
       _writer->print("");
       if(_flags.hasObjects())
@@ -192,7 +192,7 @@ namespace MicroModelica {
       {
         buffer << " $(OBJ)";
       }
-      _writer->print(&buffer);
+      _writer->print(buffer);
       buffer << _writer->indent(1) << "$(CC) $(INC)";
       if(_flags.hasObjects())
       {
@@ -208,7 +208,7 @@ namespace MicroModelica {
       {
         buffer << " -DQSS_PARALLEL";
       }
-      _writer->print(&buffer);
+      _writer->print(buffer);
       _writer->print("");
       _writer->print(".PHONY: clean");
       _writer->print("");
@@ -228,7 +228,7 @@ namespace MicroModelica {
       _writer->print("cd " + Utils::instance().getFilePath(_fname));
       _writer->print("make -f " + _fname + ".makefile clean");
       buffer << "make -f " + _fname + ".makefile";
-      _writer->print(&buffer);
+      _writer->print(buffer);
       _writer->print("./" + Utils::instance().getFileName(_fname));
       if(_model.outputNbr())
       {
@@ -306,37 +306,37 @@ namespace MicroModelica {
       _writer->setFile(fname);
       buffer.precision(5);
       buffer << "minstep=" << scientific << annotation.minStep() << ";";
-      _writer->print(&buffer);
+      _writer->print(buffer);
       buffer << "zchyst=" << annotation.ZCHyst() << ";";
-      _writer->print(&buffer);
+      _writer->print(buffer);
       buffer << "derdelta=" << annotation.derDelta() << ";";
-      _writer->print(&buffer);
+      _writer->print(buffer);
       buffer << "symdiff=" << annotation.symDiff() << ";";
-      _writer->print(&buffer);
+      _writer->print(buffer);
       if(annotation.parallel())
       {
         buffer << "lps=" << annotation.lps() << ";";
-        _writer->print(&buffer);
+        _writer->print(buffer);
         buffer << "partitionMethod=\"" << annotation.partitionMethodString()
             << "\";";
-        _writer->print(&buffer);
+        _writer->print(buffer);
         buffer << "dt=" << annotation.DT() << ";";
-        _writer->print(&buffer);
+        _writer->print(buffer);
         buffer << "dtSynch=\"" << annotation.dtSynchString() << "\";";
-        _writer->print(&buffer);
+        _writer->print(buffer);
       }
       else
       {
         _writer->print("lps=0;");
       }
       buffer << "nodesize=" << annotation.nodeSize() << ";";
-      _writer->print(&buffer);
+      _writer->print(buffer);
       buffer << "jacobian=" << (annotation.jacobian()) << ";";
-      _writer->print(&buffer);
+      _writer->print(buffer);
       buffer << "it=" << annotation.initialTime() << ";";
-      _writer->print(&buffer);
+      _writer->print(buffer);
       buffer << "ft=" << annotation.finalTime() << ";";
-      _writer->print(&buffer);
+      _writer->print(buffer);
       _writer->print("sol=\"" + annotation.solverString() + "\";");
       list<double> dq = annotation.dqmin();
       buffer << "dqmin=(";
@@ -350,7 +350,7 @@ namespace MicroModelica {
         }
       }
       buffer << ");";
-      _writer->print(&buffer);
+      _writer->print(buffer);
       dq = annotation.dqrel();
       buffer << "dqrel=(";
       count = 0;
@@ -364,7 +364,7 @@ namespace MicroModelica {
         }
       }
       buffer << ");";
-      _writer->print(&buffer);
+      _writer->print(buffer);
       printList(annotation.patohSettings(), "patohOptions");
       printList(annotation.scotchSettings(), "scotchOptions");
       printList(annotation.metisSettings(), "metisOptions");
@@ -390,7 +390,7 @@ namespace MicroModelica {
         }
       }
       buffer << ");";
-      _writer->print(&buffer);
+      _writer->print(buffer);
     }
 
     void
