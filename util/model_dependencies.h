@@ -30,31 +30,34 @@ namespace MicroModelica {
       public:
         ModelDependencies();
         ~ModelDependencies();
-        inline DependencyMatrix 
+        inline VariableDependencyMatrix 
         SD() { return _SD; };
-        inline DependencyMatrix 
+        inline VariableDependencyMatrix 
         DS() { return _DS; };
-        inline DependencyMatrix 
+        inline VariableDependencyMatrix 
         SZ() { return _SZ; };
-        inline DependencyMatrix 
+        inline VariableDependencyMatrix 
         ZS() { return _ZS; };
-        inline DependencyMatrix 
+        inline VariableDependencyMatrix 
         SO() { return _SO; };
-        inline DependencyMatrix 
+        inline VariableDependencyMatrix 
         OS() { return _OS; };
-        inline DependencyMatrix 
+        inline VariableDependencyMatrix 
         DO() { return _DO; };
-        inline DependencyMatrix 
+        inline VariableDependencyMatrix 
         OD() { return _OD; };
+        inline EquationDependencyMatrix 
+        OA() { return _OA; };
       private:
-        DependencyMatrix _SD;
-        DependencyMatrix _DS;
-        DependencyMatrix _ZS;
-        DependencyMatrix _SZ;
-        DependencyMatrix _SO;
-        DependencyMatrix _OS;
-        DependencyMatrix _DO;
-        DependencyMatrix _OD;
+        VariableDependencyMatrix _SD;
+        VariableDependencyMatrix _DS;
+        VariableDependencyMatrix _ZS;
+        VariableDependencyMatrix _SZ;
+        VariableDependencyMatrix _SO;
+        VariableDependencyMatrix _OS;
+        VariableDependencyMatrix _DO;
+        VariableDependencyMatrix _OD;
+        EquationDependencyMatrix _OA;
     };
   }
 }
