@@ -22,6 +22,7 @@
 
 #include "../ast/ast_types.h"
 #include "../util/table.h"
+#include "index.h"
 
 namespace MicroModelica {
   namespace IR {
@@ -45,7 +46,12 @@ namespace MicroModelica {
          *
          */
         ~Statement();
+        inline bool  
+        hasRange() { return _range.is_initialized(); }; 
         friend std::ostream& operator<<(std::ostream& out, const Statement& s);
+      private:
+        AST_Statement  _stm;
+        Option<Range>  _range;
     };
 
     typedef ModelTable<int, Statement> StatementTable;
