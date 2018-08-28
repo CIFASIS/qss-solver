@@ -47,34 +47,43 @@ namespace MicroModelica {
     {
     }
 
+
+    string
+    ModelInstance::algebraics(EquationDependencyMatrix eqdm, depId key)
+    {
+      stringstream buffer;
+      EquationTable algebraics = _model.algebraics();
+      Option<EquationDependency> eqd = eqdm[key];
+      if(eqd)
+      {
+        EquationDependency::iterator eqIt;
+        for(eqIt = eqd->begin(); eqIt != eqd->end(); eqIt++)
+        {
+          Option<Equation> alg = algebraics[*eqIt];
+          if(alg)
+          {
+            buffer << alg << endl;;
+          }
+          else 
+          {
+            Error::instance().add(0, EM_CG | EM_NO_EQ, ER_Error, "Algebraic equation not found.");
+          }
+        }
+      }
+      return buffer.str();
+    }
+
+
     void
     ModelInstance::output()
     {
       stringstream buffer;
       EquationTable outputs = _model.outputs();
       EquationTable::iterator it;
-      EquationTable algebraics = _model.algebraics();
-      EquationTable::iterator algIt;
       EquationDependencyMatrix eqdm = _model.dependencies().OA();
       for(Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it))
       {
-        Option<EquationDependency> eqd = eqdm[outputs.key(it)];
-        if(eqd)
-        {
-          EquationDependency::iterator eqIt;
-          for(eqIt = eqd->begin(); eqIt != eqd->end(); eqIt++)
-          {
-            Option<Equation> alg = algebraics[*eqIt];
-            if(alg)
-            {
-              buffer << alg;
-            }
-            else 
-            {
-              Error::instance().add(0, EM_CG | EM_NO_EQ, ER_Error, "Algebraic equation not found.");
-            }
-          }
-        }
+        buffer << algebraics(eqdm, outputs.key(it));
         buffer << out;
         _writer->write(buffer.str(), (out.hasRange() ? OUTPUT_GENERIC : OUTPUT_SIMPLE));
       }
@@ -161,7 +170,66 @@ namespace MicroModelica {
       _writer->write(buffer, INIT_OUTPUT);
     }
 
+    void 
+    ModelInstance::zeroCrossing()
+    {
+      EventTable events = _model.events();
+      EventTable::iterator it;
+      stringstream buffer;
+      EquationDependencyMatrix eqdm = _model.dependencies().ZCA();
+      for(Event event = events.begin(it); !events.end(it); event = events.next(it))
+      {
+        stringstream buffer;
+        Equation zc = event.zeroCrossing();
+        buffer << algebraics(eqdm, events.key(it)); 
+        buffer << zc;
+        _writer->write(buffer, (zc.hasRange() ? ZC_GENERIC : ZC_SIMPLE));
+      }
+    }
+ 
+    void 
+    ModelInstance::handlerStatements(StatementTable stms, Section simple, Section generic)
+    {
+      StatementTable::iterator it;
+      for(Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it))
+      {
+        stringstream buffer;
+        buffer << stm;
+        _writer->write(buffer, (stm.hasRange() ? generic : simple));   
+      }
+    }
 
+    void 
+    ModelInstance::handler()
+    {
+      EventTable events = _model.events();
+      EventTable::iterator it;
+      VarSymbolTable symbols = _model.symbols();
+      for(Event event = events.begin(it); !events.end(it); event = events.next(it))
+      {
+        handlerStatements(event.positiveHandler(), HANDLER_POS_SIMPLE, HANDLER_POS_GENERIC);
+        handlerStatements(event.negativeHandler(), HANDLER_NEG_SIMPLE, HANDLER_NEG_GENERIC);
+      }
+    }
+
+    void
+    ModelInstance::settings()
+    {
+      stringstream buffer;
+      buffer << "void\nMOD_settings(SD_simulationSettings settings)\n{";
+      _writer->print(buffer);
+      buffer << "\t settings->debug = " << _flags.debug() << ";";
+      _writer->print(buffer);
+      buffer << "\t settings->parallel = ";
+      buffer << (_flags.parallel() ? "TRUE" : "FALSE");
+      _writer->print(buffer);
+      buffer << "\t settings->hybrid = ";
+      buffer << (_model.eventNbr() ? "TRUE" : "FALSE");
+      buffer << "\t settings->method = " << _model.annotations().solver() << ";";
+      _writer->print(buffer);
+      _writer->print("}\n");
+    }
+    
     /* QSSModelInstance Model Instance class. */
 
     QSSModelInstance::QSSModelInstance(Model& model, CompileFlags& flags, WriterPtr writer) : 
@@ -183,18 +251,6 @@ namespace MicroModelica {
 
     void
     QSSModelInstance::dependencies()
-    {
-      return;
-    }
-
-    void
-    QSSModelInstance::zeroCrossing()
-    {
-      return;
-    }
-
-    void
-    QSSModelInstance::handler()
     {
       return;
     }
@@ -253,16 +309,6 @@ namespace MicroModelica {
     
     void
     ClassicModelInstance::dependencies()
-    {
-    }
-    
-    void
-    ClassicModelInstance::zeroCrossing()
-    {
-    }
-    
-    void
-    ClassicModelInstance::handler()
     {
     }
     

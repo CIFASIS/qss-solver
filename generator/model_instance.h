@@ -114,13 +114,15 @@ namespace MicroModelica
         /**
         *
         */
-        virtual void
-        zeroCrossing() = 0;
+        void
+        zeroCrossing();
         /**
         *
         */
-        virtual void
-        handler() = 0;
+        void
+        handler();
+        void 
+        settings();
         /**
         *
         */
@@ -137,6 +139,10 @@ namespace MicroModelica
         allocateOutput();
         void 
         initializeMatrix(Util::VariableDependencyMatrix vdm, Section alloc, Section init);
+        void 
+        handlerStatements(IR::StatementTable sts, Section simple, Section generic);
+        string
+        algebraics(Util::EquationDependencyMatrix eqdm, Util::depId key);
       private:
         IR::Model           _model;
         Util::CompileFlags  _flags;
@@ -178,16 +184,6 @@ namespace MicroModelica
         dependencies();
         /**
         *
-        */
-        void
-        zeroCrossing();
-        /**
-        *
-        */
-        void
-        handler();
-        /**
-        *
         * @return
         */
         Graph
@@ -226,16 +222,6 @@ namespace MicroModelica
         */
         void
         dependencies();
-        /**
-        *
-        */
-        void
-        zeroCrossing();
-        /**
-        *
-        */
-        void
-        handler();
         /**
         *
         * @return
