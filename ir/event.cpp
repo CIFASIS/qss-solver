@@ -24,14 +24,13 @@
 namespace MicroModelica {
   namespace IR {
 
-    Event::Event(AST_Expression cond) 
+    Event::Event(AST_Expression cond) : 
+      _zeroCrossing(cond),
+      _positiveHandler(),
+      _negativeHandler()
     {
     }
 
-    Event::~Event()
-    {
-    }
-    
     std::ostream& operator<<(std::ostream& out, const Event& e)
     {
       return out;

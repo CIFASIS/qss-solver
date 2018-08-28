@@ -22,6 +22,8 @@
 
 #include "../ast/ast_types.h"
 #include "../util/table.h"
+#include "equation.h"
+#include "statement.h"
 
 namespace MicroModelica {
   namespace IR {
@@ -42,7 +44,7 @@ namespace MicroModelica {
         /**
          *
          */
-        ~Event();
+        ~Event() {};
         /**
          *
          */
@@ -64,8 +66,17 @@ namespace MicroModelica {
           GT,    //!< ZC_GT
           GE     //!< ZC_GE
         } Relation;
-        
+        inline Equation 
+        zeroCrossing() { return _zeroCrossing; };
+        inline StatementTable 
+        positiveHandler() { return _positiveHandler; };
+        inline StatementTable 
+        negativeHandler() { return _negativeHandler; };
         friend std::ostream& operator<<(std::ostream& out, const Event& e);
+      private:
+        Equation _zeroCrossing;
+        StatementTable _positiveHandler;
+        StatementTable _negativeHandler;
     };
 
     typedef ModelTable<int,Event> EventTable;
