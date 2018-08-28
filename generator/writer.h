@@ -61,7 +61,7 @@ namespace MicroModelica {
       ALLOC_OUTPUT_DSC,       //!< WR_ALLOC_OUTPUT_DSC
       ALLOC_OUTPUT_ALG_DSC,       //!< WR_ALLOC_OUTPUT_ALG_DSC
       GLOBAL_VARS,        //!< WR_GLOBAL_VARS
-      HEADER,             //!< WR_HEADER
+      INCLUDE,             //!< INCLUDE_
       INIT_LD,            //!< WR_INIT_LD
       INIT_LD_SD,         //!< WR_INIT_LD_SD
       INIT_LD_ALG_SD,         //!< WR_INIT_LD_ALG_SD
@@ -152,7 +152,7 @@ namespace MicroModelica {
         * @param clean
         */
         virtual void
-        write(std::stringstream *s, Section section, bool clean = true, InsertType it = PREPEND) = 0;
+        write(std::stringstream& s, Section section, bool clean = true, InsertType it = PREPEND) = 0;
         virtual void
         removeFromSection(std::string str, Section section) = 0;
         /**
@@ -173,7 +173,7 @@ namespace MicroModelica {
         * @param s
         */
         virtual void
-        print(std::stringstream *s) = 0;
+        print(std::stringstream& s) = 0;
         /**
         *
         * @param s
@@ -283,7 +283,7 @@ namespace MicroModelica {
         * @param clean
         */
         void
-        write(std::stringstream *s, Section section, bool clean = true, InsertType it = PREPEND);
+        write(std::stringstream& s, Section section, bool clean = true, InsertType it = PREPEND);
         void
         removeFromSection(std::string str, Section section);
         /**
@@ -304,7 +304,7 @@ namespace MicroModelica {
         * @param s
         */
         void
-        print(std::stringstream *s);
+        print(std::stringstream& s);
         /**
         *
         * @param s
@@ -420,7 +420,7 @@ namespace MicroModelica {
         * @param clean
         */
         void
-        write(std::stringstream *s, Section section, bool clean = true, InsertType it = PREPEND);
+        write(std::stringstream& s, Section section, bool clean = true, InsertType it = PREPEND);
         void
         removeFromSection(std::string str, Section section);
         /**
@@ -441,7 +441,7 @@ namespace MicroModelica {
         * @param s
         */
         void
-        print(std::stringstream *s);
+        print(std::stringstream& s);
         /**
         *
         * @param s

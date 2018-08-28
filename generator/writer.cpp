@@ -121,26 +121,25 @@ namespace MicroModelica {
     }
 
     void
-    MemoryWriter::write(stringstream *s, Section section, bool clean, InsertType it)
+    MemoryWriter::write(stringstream& s, Section section, bool clean, InsertType it)
     {
-      if(!s->str().empty())
+      if(!s.str().empty())
       {
         if(it == PREPEND)
         {
-          _sections[section].push_back(s->str());
+          _sections[section].push_back(s.str());
         }
         else if(it == APPEND_SIMPLE)
         {
-          _sections[section].push_front(s->str());
+          _sections[section].push_front(s.str());
         }
         else
         {
-          _sections[section].insert(++_removeIt, s->str());
+          _sections[section].insert(++_removeIt, s.str());
         }
-
         if(clean)
         {
-          s->str("");
+          s.str("");
         }
       }
     }
@@ -166,10 +165,10 @@ namespace MicroModelica {
     }
 
     void
-    MemoryWriter::print(stringstream *s)
+    MemoryWriter::print(stringstream& s)
     {
-      _file << _block << _indentStr << s->str() << endl;
-      s->str("");
+      _file << _block << _indentStr << s.str() << endl;
+      s.str("");
     }
 
     void
@@ -304,12 +303,12 @@ namespace MicroModelica {
     }
 
     void
-    FileWriter::write(stringstream *s, Section section, bool clean, InsertType it)
+    FileWriter::write(stringstream& s, Section section, bool clean, InsertType it)
     {
-      _sections[section] << s->str() << endl;
+      _sections[section] << s.str() << endl;
       if(clean)
       {
-        s->str("");
+        s.str("");
       }
     }
 
@@ -330,10 +329,10 @@ namespace MicroModelica {
     }
 
     void
-    FileWriter::print(stringstream *s)
+    FileWriter::print(stringstream& s)
     {
-      _file << s->str() << endl;
-      s->str("");
+      _file << s.str() << endl;
+      s.str("");
     }
 
     void
