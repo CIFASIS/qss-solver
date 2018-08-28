@@ -83,19 +83,19 @@ namespace MicroModelica
     class ModelInstance
     {
       public:
+        ModelInstance() {};
+        ModelInstance(IR::Model& model, Util::CompileFlags& flags, WriterPtr writer);
         /**
         *
         */
         virtual
-        ~ModelInstance()
-        {
-        };
+        ~ModelInstance() {};
         /**
         *
         * @return
         */
-        virtual string
-        header() = 0;
+        void
+        include();
         /**
         *
         */
@@ -115,7 +115,7 @@ namespace MicroModelica
         *
         */
         virtual void
-       zeroCrossing() = 0;
+        zeroCrossing() = 0;
         /**
         *
         */
@@ -124,14 +124,23 @@ namespace MicroModelica
         /**
         *
         */
-        virtual void
-        output() = 0;
+        void
+        output();
         /**
         *
         * @return
         */
         virtual Graph
         computationalGraph() = 0;
+      protected:
+        void 
+        allocateOutput();
+        void 
+        initializeMatrix(Util::VariableDependencyMatrix vdm, Section alloc, Section init);
+      private:
+        IR::Model           _model;
+        Util::CompileFlags  _flags;
+        WriterPtr           _writer;
     };
 
     /**
@@ -151,13 +160,7 @@ namespace MicroModelica
         /**
         *
         */
-        ~QSSModelInstance();
-        /**
-        *
-        * @return
-        */
-        string
-        header();
+        ~QSSModelInstance() {};
         /**
         *
         */
@@ -183,11 +186,6 @@ namespace MicroModelica
         */
         void
         handler();
-        /**
-        *
-        */
-        void
-        output();
         /**
         *
         * @return
@@ -212,13 +210,7 @@ namespace MicroModelica
         /**
         *
         */
-        ~ClassicModelInstance();
-        /**
-        *
-        * @return
-        */
-        string
-        header();
+        ~ClassicModelInstance() {};
         /**
         *
         */
@@ -246,17 +238,14 @@ namespace MicroModelica
         handler();
         /**
         *
-        */
-        void
-        output();
-        /**
-        *
         * @return
         */
         Graph
         computationalGraph();
       private:
-        IR::Model               _model;
+        void 
+        allocateSolver();
+        IR::Model           _model;
         Util::CompileFlags  _flags;
         WriterPtr           _writer;
     };

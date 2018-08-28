@@ -21,6 +21,7 @@
 
 #include <sstream>
 #include <utility>
+#include <boost/optional/optional_io.hpp>
 
 #include "../ast/expression.h"
 #include "../ir/annotation.h"
@@ -39,20 +40,133 @@ namespace MicroModelica {
     using namespace MicroModelica::IR;
     using namespace MicroModelica::Util;
 
+    ModelInstance::ModelInstance(Model& model, CompileFlags& flags, WriterPtr writer) :
+      _model(model),
+      _flags(flags),
+      _writer(writer)
+    {
+    }
+
+    void
+    ModelInstance::output()
+    {
+      stringstream buffer;
+      EquationTable outputs = _model.outputs();
+      EquationTable::iterator it;
+      EquationTable algebraics = _model.algebraics();
+      EquationTable::iterator algIt;
+      EquationDependencyMatrix eqdm = _model.dependencies().OA();
+      for(Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it))
+      {
+        Option<EquationDependency> eqd = eqdm[outputs.key(it)];
+        if(eqd)
+        {
+          EquationDependency::iterator eqIt;
+          for(eqIt = eqd->begin(); eqIt != eqd->end(); eqIt++)
+          {
+            Option<Equation> alg = algebraics[*eqIt];
+            if(alg)
+            {
+              buffer << alg;
+            }
+            else 
+            {
+              Error::instance().add(0, EM_CG | EM_NO_EQ, ER_Error, "Algebraic equation not found.");
+            }
+          }
+        }
+        buffer << out;
+        _writer->write(buffer.str(), (out.hasRange() ? OUTPUT_GENERIC : OUTPUT_SIMPLE));
+      }
+    }
+    
+    void
+    ModelInstance::include()
+    {
+      stringstream buffer;
+      buffer << "#include <stdlib.h>" << endl;
+      buffer << "#include <stdio.h>" << endl;
+      buffer << "#include <string.h>" << endl;
+      buffer << "#include <math.h>" << endl;
+      buffer << endl;
+      buffer << "#include \"" << _model.name() << ".h\"" << endl;
+      if(_model.externalFunctions())
+      {
+        buffer << "#include \"" << _model.name() << "_functions.h\"" << endl;
+      }
+      ImportTable imports = _model.imports();
+      ImportTable::iterator it;
+      for(string i = imports.begin(it); !imports.end(it); i = imports.next(it))
+      {
+        buffer << "#include \"" << Utils::instance().packageName(i) << ".h\"" << endl;
+      }
+      buffer << "#include <common/utils.h>" << endl;
+      buffer << endl;
+      _writer->write(buffer, INCLUDE);
+      buffer << "#include <common/model.h>" << endl;
+      buffer << "#include <common/commands.h>" << endl;
+      buffer << "#include <qss/qss_model.h>" << endl;
+      buffer << "#include <classic/classic_model.h>" << endl;
+      _writer->write(buffer,INCLUDE); 
+    }
+
+    void 
+    ModelInstance::initializeMatrix(VariableDependencyMatrix vdm, Section alloc, Section init)
+    {
+      stringstream buffer;
+      VariableDependencyMatrix::iterator it;
+      for(VariableDependency vd = vdm.begin(it); !vdm.end(it); vd = vdm.next(it))
+      {
+        buffer << vd.alloc();
+        _writer->write(buffer, alloc);
+        buffer << vd.init();
+        _writer->write(buffer, init);
+      }
+    }
+
+    void 
+    ModelInstance::allocateOutput()
+    {
+      stringstream buffer;
+      ModelAnnotation annot = _model.annotations();
+      string period = "NULL";
+      string indent = "";
+      int ssize = 0;
+      if(annot.commInterval() == "CI_Sampled")
+      {
+        indent = _writer->indent(1);
+        list<double> sample = annot.sample();
+        ssize = sample.size();
+        period = "period";
+        buffer << indent << "double period[" << ssize << "];" << endl;
+        int n = 0;
+        for(list<double>::iterator i = sample.begin(); i != sample.end(); i++)
+        {
+          buffer << indent << "period[" << n << "] = " << *i << ";" << endl;
+        }
+      }
+      string outputFunction = (_model.outputNbr() ? "MOD_output" : "NULL");
+      buffer << indent << "simulator->output = SD_Output(\"";
+      buffer << _model.name() << "\",";
+      buffer << _model.outputNbr() << ",";
+      buffer << _model.discreteNbr() << ",";
+      buffer << _model.stateNbr() << ",";
+      buffer << period << ",";
+      buffer << ssize << ",";
+      buffer << annot.initialTime() << ",";
+      buffer << annot.commInterval() << ",";
+      buffer << annot.storeData() << ",";
+      buffer << outputFunction << ");" << endl;
+      buffer << indent << "SD_output modelOutput = simulator->output;" << endl;
+      _writer->write(buffer, INIT_OUTPUT);
+    }
+
+
     /* QSSModelInstance Model Instance class. */
 
-    QSSModelInstance::QSSModelInstance(Model& model, CompileFlags& flags, WriterPtr writer) 
+    QSSModelInstance::QSSModelInstance(Model& model, CompileFlags& flags, WriterPtr writer) : 
+      ModelInstance(model, flags, writer)
     {
-    }
-
-    QSSModelInstance::~QSSModelInstance()
-    {
-    }
-
-    string
-    QSSModelInstance::header()
-    {
-      return "";
     }
 
     void
@@ -85,12 +199,6 @@ namespace MicroModelica {
       return;
     }
 
-    void
-    QSSModelInstance::output()
-    {
-      return;
-    }
-    
     Graph
     QSSModelInstance::computationalGraph()
     {
@@ -101,30 +209,25 @@ namespace MicroModelica {
     /* ClassicModelInstance Model Instance class. */
 
     ClassicModelInstance::ClassicModelInstance(Model& model, CompileFlags& flags, WriterPtr writer) :
+      ModelInstance(model, flags, writer),
       _model(model),
       _flags(flags),
       _writer(writer)
     {
     }
 
-    ClassicModelInstance::~ClassicModelInstance()
-    {
-    }
-
-    string
-    ClassicModelInstance::header()
-    {
-      return "";
-    }
-
     void
     ClassicModelInstance::initializeDataStructures()
     {
+      stringstream buffer;
       ModelDependencies deps = _model.dependencies();
-      // Initialize output data structures.
-      DependencyMatrix OS = deps.OS();
-      
-      DependencyMatrix SD = deps.SD();
+      // Initialize Solver Data Structures.
+      allocateSolver();
+      initializeMatrix(deps.OS(), ALLOC_OUTPUT_STATES, INIT_OUTPUT_STATES);
+      // Initialize Output Data Structures.
+      allocateOutput();
+      initializeMatrix(deps.OS(), ALLOC_OUTPUT_STATES, INIT_OUTPUT_STATES);
+      initializeMatrix(deps.OD(), ALLOC_OUTPUT_DSC, INIT_OUTPUT_DSC);
 
     }
     
@@ -139,12 +242,12 @@ namespace MicroModelica {
       for(Equation alg = algebraics.begin(it); !algebraics.end(it); alg = algebraics.next(it))
       {
          buffer << alg;
-         _writer->write(&buffer, MODEL_SIMPLE);
+         _writer->write(buffer, MODEL_SIMPLE);
       }
       for(Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it))
       {
          buffer << der;
-         _writer->write(&buffer, MODEL_SIMPLE);
+         _writer->write(buffer, MODEL_SIMPLE);
       }
     }
     
@@ -163,23 +266,26 @@ namespace MicroModelica {
     {
     }
     
-    void
-    ClassicModelInstance::output()
-    {
-      EquationTable outputs = _model.outputs();
-      EquationTable::iterator it;
-      stringstream buffer;
-      for(Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it))
-      {
-        buffer << out;
-        _writer->write(buffer.str(), (out.hasRange() ? OUTPUT_GENERIC : OUTPUT_SIMPLE));
-      }
-    }
- 
     Graph
     ClassicModelInstance::computationalGraph()
     {
       return Graph(0,0);
+    }
+
+    void 
+    ClassicModelInstance::allocateSolver()
+    {
+      ModelAnnotation annot = _model.annotations();
+      stringstream buffer;
+      buffer << "simulator->data = CLC_Data(" << _model.stateNbr() << ",";
+      buffer << _model.discreteNbr() << ",";
+      buffer << _model.eventNbr() << ",";
+      buffer << _model.inputNbr() << ",";
+      buffer << _model.algebraicNbr() << ",\"";
+      buffer << _model.name() << "\");" << endl;
+      buffer << "  modelData = simulator->data;" << endl;
+      buffer << "  const double t = " << annot.initialTime() << ";" << endl;
+      _writer->write(buffer, ALLOC_LD);
     }
 
   }
