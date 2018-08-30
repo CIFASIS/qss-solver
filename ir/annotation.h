@@ -539,21 +539,21 @@ namespace MicroModelica {
           JACOBIAN          //!< JACOBIAN
         } type;
         void
-        _processAnnotation(string annot, AST_Modification_Equal x);
+        processAnnotation(string annot, AST_Modification_Equal x);
         void
-        _processArgument(AST_Argument_Modification arg);
+        processArgument(AST_Argument_Modification arg);
         void
-        _processList(AST_Expression x, list<double> *l);
+        processList(AST_Expression x, list<double> *l);
         void
-        _processList(AST_Expression x, list<string> *l);
+        processList(AST_Expression x, list<string> *l);
         void
-        _processExpressionList(AST_Expression x, list<AST_Expression> *l);
+        processExpressionList(AST_Expression x, list<AST_Expression> *l);
         Solver
-        _getSolver(string s);
+        getSolver(string s);
         PartitionMethod
-        _getPartitionMethod(string s);
+        getPartitionMethod(string s);
         DT_Synch
-        _getDtSynch(string s);
+        getDtSynch(string s);
         Solver                _solver;
         string                _solverString;
         string                _commInterval;
@@ -644,7 +644,7 @@ namespace MicroModelica {
          */
         void
         setStr(string s);
-        private:
+      private:
         int _integer;
         double _real;
         string _str;

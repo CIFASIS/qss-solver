@@ -262,14 +262,14 @@ namespace MicroModelica {
     }
 
     void
-    ModelAnnotation::_processArgument(AST_Argument_Modification arg)
+    ModelAnnotation::processArgument(AST_Argument_Modification arg)
     {
       if(arg->hasModification())
       {
         AST_Modification m = arg->modification();
         if(m->modificationType() == MODEQUAL)
         {
-          _processAnnotation(*(arg->name()), m->getAsEqual());
+          processAnnotation(*(arg->name()), m->getAsEqual());
         }
         else
         {
@@ -308,7 +308,7 @@ namespace MicroModelica {
               {
                 if(current_element(it)->argumentType() == AR_MODIFICATION)
                 {
-                  _processArgument(current_element(it)->getAsModification());
+                  processArgument(current_element(it)->getAsModification());
                 }
                 else
                 {
@@ -329,7 +329,7 @@ namespace MicroModelica {
         }
           break;
         case WEIGHT:
-          _processArgument(x);
+          processArgument(x);
           break;
         default:
           break;
@@ -338,7 +338,7 @@ namespace MicroModelica {
     }
 
     void
-    ModelAnnotation::_processList(AST_Expression x, list<double> *l)
+    ModelAnnotation::processList(AST_Expression x, list<double> *l)
     {
       l->clear();
       EvalAnnotation ea(_symbolTable);
@@ -362,7 +362,7 @@ namespace MicroModelica {
     }
 
     void
-    ModelAnnotation::_processList(AST_Expression x, list<string> *l)
+    ModelAnnotation::processList(AST_Expression x, list<string> *l)
     {
       l->clear();
       EvalAnnotation ea(_symbolTable);
@@ -386,7 +386,7 @@ namespace MicroModelica {
     }
 
     void
-    ModelAnnotation::_processExpressionList(AST_Expression x,
+    ModelAnnotation::processExpressionList(AST_Expression x,
         list<AST_Expression> *l)
     {
       if(x->expressionType() == EXPBRACE)
@@ -408,7 +408,7 @@ namespace MicroModelica {
     }
 
     DT_Synch
-    ModelAnnotation::_getDtSynch(string s)
+    ModelAnnotation::getDtSynch(string s)
     {
       if(!s.compare("SD_DT_Fixed"))
       {
@@ -422,7 +422,7 @@ namespace MicroModelica {
     }
 
     PartitionMethod
-    ModelAnnotation::_getPartitionMethod(string s)
+    ModelAnnotation::getPartitionMethod(string s)
     {
       if(!s.compare("Metis"))
       {
@@ -456,7 +456,7 @@ namespace MicroModelica {
     }
 
     Solver
-    ModelAnnotation::_getSolver(string s)
+    ModelAnnotation::getSolver(string s)
     {
       if(!s.compare("QSS"))
       {
@@ -540,7 +540,7 @@ namespace MicroModelica {
     }
 
     void
-    ModelAnnotation::_processAnnotation(string annot, AST_Modification_Equal x) 
+    ModelAnnotation::processAnnotation(string annot, AST_Modification_Equal x) 
     {
       map<string, ModelAnnotation::type>::const_iterator itf = _annotations.find(annot);
       if(itf == _annotations.end())
@@ -559,16 +559,16 @@ namespace MicroModelica {
           _desc = av.str();
           break;
         case DQMIN:
-          _processList(x->exp(), &_DQMin);
+          processList(x->exp(), &_DQMin);
           break;
         case DQREL:
-          _processList(x->exp(), &_DQRel);
+          processList(x->exp(), &_DQRel);
           break;
         case WEIGHT:
           _weight = av.real();
           break;
         case SOLVER:
-          _solver = _getSolver(av.str());
+          _solver = getSolver(av.str());
           _solverString = av.str();
           break;
         case INITIAL_TIME:
@@ -596,7 +596,7 @@ namespace MicroModelica {
           _commInterval = av.str();
           break;
         case STEP_SIZE:
-          _processList(x->exp(), &_sample);
+          processList(x->exp(), &_sample);
           break;
         case SCHEDULER:
           _scheduler = av.str();
@@ -612,14 +612,14 @@ namespace MicroModelica {
           }
           break;
         case OUTPUT:
-          _processExpressionList(x->exp(), &_output);
+          processExpressionList(x->exp(), &_output);
           break;
         case PARTITION_METHOD:
-          _partitionMethod = _getPartitionMethod(av.str());
+          _partitionMethod = getPartitionMethod(av.str());
           _partitionMethodString = av.str();
           break;
         case DELTAT_SYNCH:
-          _dtSynch = _getDtSynch(av.str());
+          _dtSynch = getDtSynch(av.str());
           _dtSynchString = av.str();
           break;
         case PARALLEL:
@@ -635,13 +635,13 @@ namespace MicroModelica {
         case STORE_DATA:
           break;
         case PATOH_SETTINGS:
-          _processList(x->exp(), &_patohSettings);
+          processList(x->exp(), &_patohSettings);
           break;
         case SCOTCH_SETTINGS:
-          _processList(x->exp(), &_scotchSettings);
+          processList(x->exp(), &_scotchSettings);
           break;
         case METIS_SETTINGS:
-          _processList(x->exp(), &_metisSettings);
+          processList(x->exp(), &_metisSettings);
           break;
         default:
           break;
