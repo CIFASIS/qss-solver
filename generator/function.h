@@ -34,7 +34,7 @@ namespace MicroModelica
     {
       public:
         Function(IR::Function& function, Util::CompileFlags& flags, WriterPtr writer);
-        ~Function();
+        ~Function() {};
         void 
         definition();
         std::string 

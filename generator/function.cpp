@@ -34,10 +34,6 @@ namespace MicroModelica {
     {
     }
 
-    Function::~Function()
-    {
-    }
-    
     void
     Function::definition()
     {
