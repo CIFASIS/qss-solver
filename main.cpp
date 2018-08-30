@@ -39,6 +39,9 @@
 #include "util/util_types.h"
 
 using namespace std;
+using namespace MicroModelica::Generator;
+using namespace MicroModelica::IR;
+using namespace MicroModelica::Util;
 
 void
 usage()
@@ -93,93 +96,84 @@ version()
 }
 
 int
-parsePackages(AST_StringList imports, MicroModelica::Util::CompileFlags flags, bool recompile)
+parsePackages(AST_StringList imports, CompileFlags& flags, bool recompile)
 {
-/*  int r = 0;
-  MMO_CompileFlags fl = newMMO_CompileFlags();
+  int r = 0;
+  CompileFlags flg;
   AST_StringListIterator it;
   foreach(it,imports)
   {
     string i = *current_element(it);
-    string p = Util::getInstance()->packagePath(i, flags);
-    flags->addObject(p + SLASH + Util::getInstance()->packageName(i) + ".c");
-    if(!Util::getInstance()->searchCompiledPackage(i, flags) || recompile)
+    string p = Utils::instance().packagePath(i, flags);
+    flags.addObject(p + SLASH + Utils::instance().packageName(i) + ".c");
+    if(!Utils::instance().searchCompiledPackage(i, flags) || recompile)
     {
       string fileName = p + SLASH + i + ".mo";
       AST_StoredDefinition sd = NULL;
       sd = parseFile(fileName, &r);
-      Error::getInstance()->setFile(fileName);
+      Error::instance().setFile(fileName);
       if(r == 0)
       {
-        AST_MicroModelica mmo = newAST_MicroModelica(fileName);
-        r = mmo->apply(sd);
+        ModelChecker mmo(fileName);
+        r = mmo.apply(sd);
         if(r == 0)
         {
-          fl->setOutputFile(p + SLASH + i);
-          fl->setPath(p);
-          parsePackages(sd->imports(), fl, recompile);
-          list<string> objects = fl->objects();
-          for(list<string>::iterator it = objects.begin(); it != objects.end();
-              it++)
+          flg.setOutputFile(p + SLASH + i);
+          flg.setPath(p);
+          parsePackages(sd->imports(), flg, recompile);
+          list<string> objects = flg.objects();
+          for(list<string>::iterator it = objects.begin(); it != objects.end(); it++)
           {
-            flags->addObject(*it);
+            flags.addObject(*it);
           }
-          Error::getInstance()->setFile(fileName);
-          Util::getInstance()->setCompileFlags(fl);
-          MMO_MicroModelicaIR ir = newMMO_MicroModelicaIR(fileName);
-          r = ir->apply(sd);
+          Error::instance().setFile(fileName);
+          Utils::instance().setCompileFlags(flg);
+          MicroModelicaIR ir(fileName);
+          r = ir.apply(sd);
           if(r == 0)
           {
-            MMO_Generator gen = newMMO_Generator(ir->storedDefinition(), fl);
-            r = gen->generate();
-            delete gen;
+            Generator gen(ir.definition(), flg);
+            r = gen.generate();
           }
-          delete ir;
         }
-        delete mmo;
       }
       else
       {
         delete sd;
-        delete fl;
-        return r;
       }
       delete sd;
     }
     else
     {
-      Util::getInstance()->setCompileFlags(flags);
-      MMO_PackageData pd = Util::getInstance()->readPackage(i);
-      if(pd == NULL)
+      Utils::instance().setCompileFlags(flags);
+      Option<CompiledPackage> pd = Utils::instance().readPackage(i);
+      if(!pd)
       {
-        Error::getInstance()->add(0, EM_CANT_OPEN_FILE, ER_Error, "%s.moo",
-            i.c_str());
-        delete fl;
+        Error::instance().add(0, EM_CANT_OPEN_FILE, ER_Error, "%s.moo", i.c_str());
         return -1;
       }
-      MMO_ImportTable objects = pd->objects();
-      for(string it = objects->begin(); !objects->end(); it = objects->next())
+      ImportTable objects = pd->objects();
+      ImportTable::iterator it;
+      for(string import = objects.begin(it); !objects.end(it); import = objects.next(it))
       {
-        flags->addObject(it);
+        flags.addObject(import);
       }
     }
   }
-  delete fl;
-  return r;*/
-  return 0;
+  return r;
 }
 
 int
 main(int argc, char ** argv)
 {
-/*  int r = 0;
+  int r = 0;
   int opt;
   extern char *optarg;
   char strArg[128];
   bool recompile = false;
   bool settings = false;
-  MMO_CompileFlags flags = newMMO_CompileFlags();
-  while(1)
+  CompileFlags flags;
+  while(true)
   {
     static struct option long_options[] =
         {
@@ -207,23 +201,23 @@ main(int argc, char ** argv)
         usage();
         exit(0);
       case 'm':
-        flags->setIncidenceMatrices(true);
+        flags.setIncidenceMatrices(true);
         break;
       case 'd':
         sscanf(optarg, "%s", strArg);
-        flags->setDebug(strArg);
+        flags.setDebug(strArg);
         break;
       case 'o':
-        flags->setOutputFile(optarg);
+        flags.setOutputFile(optarg);
         break;
       case 'i':
-        flags->addLibraryPath(optarg);
+        flags.addLibraryPath(optarg);
         break;
       case 'p':
-        flags->setParallel(true);
+        flags.setParallel(true);
         break;
       case 'e':
-        flags->setExternalStructureFile(true);
+        flags.setExternalStructureFile(true);
         break;
       case 'f':
         recompile = true;
@@ -232,7 +226,7 @@ main(int argc, char ** argv)
         settings = true;
         break;
       case 'O':
-        flags->setOptimizeQSS(true);
+        flags.setOptimizeQSS(true);
         break;
       case '?':
         usage();
@@ -242,63 +236,54 @@ main(int argc, char ** argv)
         abort();
     }
   }
-  string pack = Util::getInstance()->environmentVariable("MMOC_PACKAGES");
-  if(!pack.empty())
+  string pkg = Utils::instance().environmentVariable("MMOC_PACKAGES");
+  if(!pkg.empty())
   {
-    flags->addLibraryPath(pack);
+    flags.addLibraryPath(pkg);
   }
   AST_StoredDefinition sd;
   string fileName;
   if(argv[optind] != NULL)
   {
     fileName = argv[optind];
-    string path = Util::getInstance()->getFilePath(fileName);
-    flags->setPath(path);
+    string path = Utils::instance().getFilePath(fileName);
+    flags.setPath(path);
     sd = parseFile(fileName, &r);
-    Error::getInstance()->setFile(fileName);
+    Error::instance().setFile(fileName);
     if(r == 0)
     {
-      AST_MicroModelica mmo = newAST_MicroModelica(fileName);
-      r = mmo->apply(sd);
+      ModelChecker mmo(fileName);
+      r = mmo.apply(sd);
       if(r == 0)
       {
         if(settings)
         {
-          MMO_Settings set = newMMO_Settings(fileName);
-          set->apply(sd);
-          MMO_Files sc = newMMO_Files(fileName, flags);
-          sc->settings(set->annotations());
-          delete set;
-          delete sc;
+          Settings set(fileName);
+          set.apply(sd);
+          Files sc(fileName, flags);
+          sc.settings(set.annotations());
           return 0;
         }
         int res = parsePackages(sd->imports(), flags, recompile);
         if(res != 0)
         {
-          Error::getInstance()->show();
+          Error::instance().show();
           cout << "Exit code: " << res << endl;
-          delete flags;
-          delete mmo;
           return res;
         }
-        Util::getInstance()->setCompileFlags(flags);
-        Error::getInstance()->setFile(fileName);
-        MMO_MicroModelicaIR ir = newMMO_MicroModelicaIR(fileName);
-        r = ir->apply(sd);
+        Utils::instance().setCompileFlags(flags);
+        Error::instance().setFile(fileName);
+        MicroModelicaIR ir(fileName);
+        r = ir.apply(sd);
         if(r == 0)
         {
-          MMO_Generator gen = newMMO_Generator(ir->storedDefinition(), flags);
-          r = gen->generate();
-          delete gen;
+          Generator gen(ir.definition(), flags);
+          r = gen.generate();
         }
-        delete ir;
       }
-      delete mmo;
     }
   }
-  delete flags;
-  Error::getInstance()->show();
+  Error::instance().show();
   cout << "Exit code: " << r << endl;
-  return r;*/
-    return 0;
+  return r;
 }
