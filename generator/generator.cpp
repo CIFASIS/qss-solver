@@ -69,13 +69,12 @@ namespace MicroModelica {
       if(_std.isModel())
       {
         Model model = _std.model();
-        string fname = model.name();
+        string baseName = model.name();
         if(_flags.hasOutputFile())
         {
-          fname = _flags.outputFile();
+          baseName = _flags.outputFileName();
         }
-        fname.append(".c");
-        _writer->setFile(fname);
+        _writer->setFile(baseName+".c");
         switch(model.annotations().solver())
         {
           case DOPRI:
@@ -88,25 +87,21 @@ namespace MicroModelica {
           default:
             _modelInstance = ModelInstancePtr(new QSSModelInstance(model, _flags, _writer));
         }
-        Files files(_modelInstance, model, _flags);
         generateModel();
         _writer->clearFile();
+        _writer->setFile(baseName+".h");
+        _modelInstance->header();
+        _writer->print(MODEL_HEADER);
+        _writer->clearFile();
+        Files files(_modelInstance, model, _flags);
         files.makefile();
         files.run();
         files.plot();
         files.settings(model.annotations());
-        if(_flags.graph())
+        if(_flags.graph()) { files.graph(); }
+        if(!model.externalFunctions())
         {
-          files.graph();
-        }
-        if(!model.calledFunctions().empty())
-        {
-          string ffname = model.name();
-          if(_flags.hasOutputFile())
-          {
-            ffname = _flags.outputFileName();
-          }
-          ffname.append("_functions");
+          string ffname = baseName+"_functions";
           generateIncludes(ffname);
           FunctionTable ft = _model.calledFunctions();
           FunctionTable::iterator it;
@@ -121,8 +116,7 @@ namespace MicroModelica {
             ffname.insert(0, _flags.outputFilePath() + SLASH);
           }
           calledFunctionHeader(ffname);
-          ffname.append(".c");
-          _writer->setFile(ffname);
+          _writer->setFile(ffname+".c");
           _writer->print(FUNCTION_HEADER);
           _writer->print(FUNCTION_CODE);
           _writer->clearFile();
@@ -149,13 +143,6 @@ namespace MicroModelica {
     void
     Generator::generateModel()
     {
-      _modelInstance->include();
-      _modelInstance->definition();
-      _modelInstance->dependencies();
-      _modelInstance->zeroCrossing();
-      _modelInstance->handler();
-      _modelInstance->output();
-      _modelInstance->initializeDataStructures();
     }
 
     void
