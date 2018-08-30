@@ -458,7 +458,6 @@ namespace MicroModelica {
       _writer->print(INIT_LD_DS);
       _writer->print(INIT_LD_SD);
       _writer->print(INIT_OUTPUT);
-      
       _writer->endBlock();
       _writer->print(componentDefinition(QSS_INIT));
       _writer->beginBlock();
