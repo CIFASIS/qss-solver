@@ -309,11 +309,5 @@ namespace MicroModelica {
       x->accept(this);
       return Error::instance().errors();
     }
-
-    StoredDefinition
-    MicroModelicaIR::storedDefinition()
-    {
-      return _std;
-    }
   }
 }

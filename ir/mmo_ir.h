@@ -202,6 +202,8 @@ namespace MicroModelica {
          */
         int
         apply(AST_Node x);
+        inline const StoredDefinition 
+        definition() { return _std; };
       private:
         StoredDefinition    _std;
         ClassPtr            _class;
