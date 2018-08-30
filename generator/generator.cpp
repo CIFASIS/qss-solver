@@ -41,7 +41,7 @@ namespace MicroModelica {
   using namespace Util;
   namespace Generator {
     
-    Generator::Generator(StoredDefinition& std, CompileFlags& flags) :
+    Generator::Generator(const StoredDefinition& std, CompileFlags& flags) :
       _std(std), 
       _flags(flags), 
       _modelInstance(NULL), 
@@ -87,7 +87,7 @@ namespace MicroModelica {
           default:
             _modelInstance = ModelInstancePtr(new QSSModelInstance(model, _flags, _writer));
         }
-        generateModel();
+        _modelInstance->generate();
         _writer->clearFile();
         _writer->setFile(baseName+".h");
         _modelInstance->header();

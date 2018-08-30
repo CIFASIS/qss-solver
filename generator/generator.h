@@ -47,7 +47,7 @@ namespace MicroModelica {
          * @param std
          * @param flags
          */
-        Generator(IR::StoredDefinition& std, Util::CompileFlags& flags);
+        Generator(const IR::StoredDefinition& std, Util::CompileFlags& flags);
         /**
          *
          */
