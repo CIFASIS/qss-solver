@@ -46,27 +46,10 @@ namespace MicroModelica
       HANDLER_POS,
       HANDLER_NEG,
       OUTPUT,
-      INIT,
-      CALLBACK
+      JACOBIAN,
+      CLC_INIT,
+      QSS_INIT
     } Component;
-
-    /**
-    *
-    */
-    typedef enum
-    {
-      LIBRARIES,
-      INCLUDES
-    } Makefile;
-
-    /**
-     *
-    */
-    typedef enum
-    {
-      SERIAL,
-      PARALLEL
-    } Engine;
 
     typedef enum
     {
@@ -134,7 +117,13 @@ namespace MicroModelica
         */
         virtual Graph
         computationalGraph() = 0;
+        void 
+        header();
+        virtual void 
+        generate() = 0;
       protected:
+        std::string 
+        componentDefinition(Component c);
         void 
         allocateOutput();
         void 
@@ -143,6 +132,10 @@ namespace MicroModelica
         handlerStatements(IR::StatementTable sts, Section simple, Section generic);
         string
         algebraics(Util::EquationDependencyMatrix eqdm, Util::depId key);
+        void 
+        allocateVectors();
+        void 
+        freeVectors();
       private:
         IR::Model           _model;
         Util::CompileFlags  _flags;
@@ -188,6 +181,8 @@ namespace MicroModelica
         */
         Graph
         computationalGraph();
+        void 
+        generate();
     };
 
     /**
@@ -228,6 +223,8 @@ namespace MicroModelica
         */
         Graph
         computationalGraph();
+        void
+        generate();
       private:
         void 
         allocateSolver();

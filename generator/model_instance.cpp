@@ -111,7 +111,6 @@ namespace MicroModelica {
       }
       buffer << "#include <common/utils.h>" << endl;
       buffer << endl;
-      _writer->write(buffer, INCLUDE);
       buffer << "#include <common/model.h>" << endl;
       buffer << "#include <common/commands.h>" << endl;
       buffer << "#include <qss/qss_model.h>" << endl;
@@ -216,8 +215,6 @@ namespace MicroModelica {
     ModelInstance::settings()
     {
       stringstream buffer;
-      buffer << "void\nMOD_settings(SD_simulationSettings settings)\n{";
-      _writer->print(buffer);
       buffer << "\t settings->debug = " << _flags.debug() << ";";
       _writer->print(buffer);
       buffer << "\t settings->parallel = ";
@@ -227,7 +224,77 @@ namespace MicroModelica {
       buffer << (_model.eventNbr() ? "TRUE" : "FALSE");
       buffer << "\t settings->method = " << _model.annotations().solver() << ";";
       _writer->print(buffer);
-      _writer->print("}\n");
+    }
+    
+    void 
+    ModelInstance::header()
+    {
+      VarSymbolTable symbols = _model.symbols();
+      VarSymbolTable::iterator it;
+      stringstream buffer;
+      for(Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it))
+      {
+        if(var.isConstant()) { continue; }
+        buffer << "#define " << var;
+        int dim = var.dimensions();
+        if(dim) { buffer << "("; }
+        for(int i = 0; i < dim; i++)
+        {
+          buffer << "d" << i+1 << (i == dim-1 ? ")" : ","); 
+        }
+        buffer << " ";
+        if(var.isState()) { buffer << "x"; }
+        if(var.isAlgebraic()) { buffer << "a"; }
+        if(var.isDiscrete()) { buffer << "d"; } 
+        if(var.isParameter()) { buffer << "__PAR__" << var.name(); } 
+        stringstream end;
+        if(!_model.annotations().classic() &&
+            (var.isAlgebraic() || var.isState())) 
+        { 
+          end << "*" << _model.annotations().polyCoeffs(); 
+        }
+        end << "]"; 
+        if(dim)
+        {
+          buffer << "("; 
+          for(int i = 0; i < dim; i++)
+          {
+            stringstream variable;
+            variable << "-1)*" << var.size(i) << "+";
+            buffer << "(d" << i+1 <<  (i == dim-1 ? ")"+end.str() : variable.str()); 
+          }
+        }
+        else if(var.isDiscrete() || var.isState() || var.isAlgebraic())
+        {
+          buffer << "[" << var.offset() << end.str();
+        }
+        buffer << endl;
+        _writer->write(buffer, MODEL_HEADER);
+      }
+      for(Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it))
+      {
+        if(var.isParameter()) { buffer << var.declaration("__PAR__"); }
+        _writer->write(buffer, MODEL_HEADER);
+      }
+    }
+
+    string 
+    ModelInstance::componentDefinition(Component c)
+    {
+      switch(c)
+      {
+        case MODEL_SETTINGS: return "void\n MOD_settings(SD_simulationSettings settings)\n";
+        case MODEL: return "void\n MOD_definition(double *x, double *d, double *a, double t, double *dx)\n";
+        case DEPS: return "void\n MOD_dependencies(int i, double *x, double *d, double *a, double t, double *der, int *map)\n";
+        case ZC: return "void\n MOD_zeroCrossing(int i, double *x, double *d, double *a, double t, double *zc)\n";
+        case HANDLER_POS: return "void\n MOD_handlerPos(int i, double *x, double *d, double *a, double t)\n";
+        case HANDLER_NEG: return "void\n MOD_handlerNeg(int i, double *x, double *d, double *a, double t)\n";
+        case OUTPUT: return "void\n MOD_output(int i, double *x, double *d, double *a, double t, double *out)\n";
+        case JACOBIAN: return "void\n MOD_jacobian(double *x, double *d, double *a, double t, double *jac)\n";
+        case CLC_INIT: return "void\n CLC_initializeDataStructs(CLC_simulator simulator)\n";
+        case QSS_INIT: return "void\n QSS_initializeDataStructs(QSS_simulator simulator)\n";
+      }
+      return "";
     }
     
     /* QSSModelInstance Model Instance class. */
@@ -261,6 +328,10 @@ namespace MicroModelica {
       return Graph(0, 0);
     }
 
+    void
+    QSSModelInstance::generate()
+    {
+    }
 
     /* ClassicModelInstance Model Instance class. */
 
@@ -279,12 +350,12 @@ namespace MicroModelica {
       ModelDependencies deps = _model.dependencies();
       // Initialize Solver Data Structures.
       allocateSolver();
-      initializeMatrix(deps.OS(), ALLOC_OUTPUT_STATES, INIT_OUTPUT_STATES);
+      initializeMatrix(deps.SD(), ALLOC_LD_SD, INIT_LD_SD);
+      initializeMatrix(deps.SD(), ALLOC_LD_DS, INIT_LD_DS);
       // Initialize Output Data Structures.
       allocateOutput();
       initializeMatrix(deps.OS(), ALLOC_OUTPUT_STATES, INIT_OUTPUT_STATES);
       initializeMatrix(deps.OD(), ALLOC_OUTPUT_DSC, INIT_OUTPUT_DSC);
-
     }
     
     void
@@ -334,5 +405,64 @@ namespace MicroModelica {
       _writer->write(buffer, ALLOC_LD);
     }
 
+    void 
+    ClassicModelInstance::generate()
+    {
+      include();
+      definition();
+      dependencies();
+      zeroCrossing();
+      handler();
+      output();
+      initializeDataStructures();
+      // Print generated Model Instance.
+      _writer->print(INCLUDE);
+      _writer->print(componentDefinition(MODEL_SETTINGS));
+      _writer->beginBlock();
+      settings();
+      _writer->endBlock();
+      _writer->print(componentDefinition(MODEL));
+      _writer->beginBlock();
+      _writer->print(MODEL_SIMPLE);
+      _writer->endBlock();
+      _writer->print(componentDefinition(JACOBIAN));
+      _writer->beginBlock();
+      _writer->print(MODEL_JACOBIAN);
+      _writer->endBlock();
+      _writer->print(componentDefinition(ZC));
+      _writer->beginBlock();
+      _writer->print(ZC_SIMPLE);
+      _writer->print(ZC_GENERIC);
+      _writer->endBlock();
+      _writer->print(componentDefinition(HANDLER_POS));
+      _writer->beginBlock();
+      _writer->print(HANDLER_POS_SIMPLE);
+      _writer->print(HANDLER_POS_GENERIC);
+      _writer->endBlock();
+      _writer->print(componentDefinition(HANDLER_NEG));
+      _writer->beginBlock();
+      _writer->print(HANDLER_NEG_SIMPLE);
+      _writer->print(HANDLER_NEG_GENERIC);
+      _writer->endBlock();
+      _writer->print(componentDefinition(OUTPUT));
+      _writer->beginBlock();
+      _writer->print(OUTPUT_SIMPLE);
+      _writer->print(OUTPUT_GENERIC);
+      _writer->endBlock();
+      _writer->print(componentDefinition(CLC_INIT));
+      _writer->beginBlock();
+      _writer->print(ALLOC_LD);
+      _writer->print(ALLOC_LD_SD);
+      _writer->print(ALLOC_LD_DS);
+      _writer->print(INIT_LD);
+      _writer->print(INIT_LD_DS);
+      _writer->print(INIT_LD_SD);
+      _writer->print(INIT_OUTPUT);
+      
+      _writer->endBlock();
+      _writer->print(componentDefinition(QSS_INIT));
+      _writer->beginBlock();
+      _writer->endBlock();
+    }
   }
 }
