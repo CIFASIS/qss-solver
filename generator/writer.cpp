@@ -160,21 +160,21 @@ namespace MicroModelica {
       list<string>::iterator it;
       for(it = _sections[section].begin(); it != _sections[section].end(); it++)
       {
-        _file << _block << _indentStr << *it << endl;
+        _file << _block << *it << endl;
       }
     }
 
     void
     MemoryWriter::print(stringstream& s)
     {
-      _file << _block << _indentStr << s.str() << endl;
+      _file << _block << s.str() << endl;
       s.str("");
     }
 
     void
     MemoryWriter::print(string s)
     {
-      _file << _block << _indentStr << s << endl;
+      _file << _block << s << endl;
     }
 
     bool
@@ -225,12 +225,14 @@ namespace MicroModelica {
     void
     MemoryWriter::beginBlock()
     {
+      _file << "{";
       _block = indent(++_blockIndent);
     }
 
     void
     MemoryWriter::endBlock()
     {
+      _file << "}";
       _block = indent(--_blockIndent);
     }
 

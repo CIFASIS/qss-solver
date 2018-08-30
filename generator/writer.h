@@ -32,7 +32,7 @@ namespace MicroModelica {
     /**
     *
     */
-    #define SECTIONS 	69
+    #define SECTIONS 	70
     /**
     *
     */
@@ -106,6 +106,7 @@ namespace MicroModelica {
       OUTPUT_GENERIC,     //!< WR_OUTPUT_GENERIC
       FUNCTION_HEADER,    //!< WR_FUNCTION_HEADER
       FUNCTION_CODE,      //!< WR_FUNCTION_CODE
+      MODEL_HEADER,
       EMPTY                //!< WR_NULL
     } Section;
 
@@ -372,13 +373,13 @@ namespace MicroModelica {
         void
         clear(Section section);
       private:
-        std::list<std::string> _sections[SECTIONS];
-        std::ofstream _file;
-        std::string _indentStr;
-        std::string _block;
-        int _indent;
-        int _blockIndent;
-        std::list<std::string>::iterator _removeIt;
+        std::list<std::string>            _sections[SECTIONS];
+        std::ofstream                     _file;
+        std::string                       _indentStr;
+        std::string                       _block;
+        int                               _indent;
+        int                               _blockIndent;
+        std::list<std::string>::iterator  _removeIt;
     };
 
     /**
