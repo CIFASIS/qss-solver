@@ -287,13 +287,15 @@ namespace MicroModelica {
         inline int
         dimensions() { return _size.size(); };
         std::string  
-        declaration();
+        declaration(std::string prefix = "");
         std::string 
         initialization();
         inline bool
         hasOffset() { return _hasOffset; };
         inline void 
         setOffset(int offset) { _offset = offset; _hasOffset = true; };
+        inline int  
+        offset() { return _offset; };
       private:
         void
         processModification();

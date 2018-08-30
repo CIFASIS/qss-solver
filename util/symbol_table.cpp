@@ -170,10 +170,10 @@ namespace MicroModelica {
     }
 
     string 
-    Variable::declaration()
+    Variable::declaration(string prefix)
     {
       stringstream buffer;
-      buffer << "double " << name();
+      buffer << "double " << prefix << name();
       if(isArray())
       {
         buffer << "[" << size() << "]";
