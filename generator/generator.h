@@ -51,7 +51,7 @@ namespace MicroModelica {
         /**
          *
          */
-        ~Generator();
+        ~Generator() {};
         /**
          *
          * @return

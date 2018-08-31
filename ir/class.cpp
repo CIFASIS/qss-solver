@@ -67,7 +67,7 @@ namespace MicroModelica {
     void
     Function::insert(string n)
     {
-      _imports[n] = n;
+      _imports.insert(n, n);
       if(!Utils::instance().readPackage(n, _packages))
       {
         Error::instance().add(0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo", n.c_str());
@@ -123,7 +123,7 @@ namespace MicroModelica {
     }
 
     void
-    Function::insert(VarName n, Variable vi, DEC_Type type)  
+    Function::insert(VarName n, Variable& vi, DEC_Type type)  
     {
       EvalInitExp eval(_symbols);
       vi.setName(n);
@@ -147,7 +147,7 @@ namespace MicroModelica {
     }
 
     void
-    Function::insert(VarName n, Variable vi)  
+    Function::insert(VarName n, Variable& vi)  
     {
       insert(n, vi, DEC_PUBLIC);
     }
@@ -272,13 +272,13 @@ namespace MicroModelica {
     }
 
     void
-    Package::insert(VarName n, Variable vi, DEC_Type type)  
+    Package::insert(VarName n, Variable& vi, DEC_Type type)  
     {
       return;
     }
 
     void
-    Package::insert(VarName n, Variable vi)  
+    Package::insert(VarName n, Variable& vi)  
     {
       return;
     }
@@ -338,9 +338,10 @@ namespace MicroModelica {
       _discreteNbr(0),
       _algebraicNbr(0),
       _outputNbr(0),
-      _equationId(0),
+      _derivativeId(0),
       _algebraicId(0),
-      _eventId(0)
+      _eventId(0),
+      _externalFunctions(false)
     {
     }
 
@@ -362,25 +363,23 @@ namespace MicroModelica {
       _discreteNbr(0),
       _algebraicNbr(0),
       _outputNbr(0),
-      _equationId(0),
+      _derivativeId(0),
       _algebraicId(0),
-      _eventId(0)
-    {
-    }
-
-    Model::~Model()
+      _eventId(0),
+      _externalFunctions(false)
     {
     }
 
     void
-    Model::insert(VarName n, Variable vi, DEC_Type type)  
+    Model::insert(VarName n, Variable& vi, DEC_Type type)  
     {
       insert(n, vi);
     }
 
     void
-    Model::insert(VarName n, Variable vi) 
+    Model::insert(VarName n, Variable& vi) 
     {
+      cout << "Inserta " << n << endl;
       vi.setName(n);
       if(vi.typePrefix() & TP_CONSTANT)
       {
@@ -392,36 +391,37 @@ namespace MicroModelica {
         vi.setOffset(_discreteNbr);
         _discreteNbr += vi.size();
       }
-      _symbols[n] = vi;
+      _symbols.insert(n, vi);
     }
 
-    string 
-    Model::getComponentName(AST_Expression exp)
+    Variable  
+    Model::variable(AST_Expression exp)
     {
-      string ret;
+      string varName;
       if(exp->expressionType() == EXPCOMPREF)
       {
         AST_Expression_ComponentReference ecr = exp->getAsComponentReference();
-        ret = *AST_ListFirst(ecr->names());
+        varName = *AST_ListFirst(ecr->names());
       }
-      return ret;
+      Option<Variable> var = _symbols[varName];
+        if(!var)
+        {
+          Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", varName.c_str());
+          return Variable();
+        }
+
+      return var.get();
     }
 
     void 
     Model::setRealVariableOffset(AST_Expression exp, Util::Variable::RealType type, int& offset)
     {
-        string varName = getComponentName(exp);
-        Option<Variable> vi = _symbols[varName];
-        if(!vi)
+        Variable var = variable(exp);
+        if(!var.hasOffset())
         {
-          Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", varName.c_str());
-          return;
-        }
-        if(!vi->hasOffset())
-        {
-          vi->setOffset(offset);
-          vi->setRealType(type);
-          offset += vi->size();
+          var.setOffset(offset);
+          var.setRealType(type);
+          offset += var.size();
         }
     }
 
@@ -529,40 +529,16 @@ namespace MicroModelica {
       }
     }
 
-    VarSymbolTable
-    Model::symbols() const
-    {
-      return _symbols;
-    }
-
     void
     Model::insert(string n) 
     {
-      _imports[n] = n;
+      _imports.insert(n, n);
       if(!Utils::instance().readPackage(n, _packages))
       {
         Error::instance().add(0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo", n.c_str());
       }
     }
 
-    string
-    Model::name() const
-    {
-      return _name;
-    }
-
-    ImportTable
-    Model::imports() const
-    {
-      return _imports;
-    }
-
-    ModelAnnotation 
-    Model::annotations()
-    {
-      return _annotations;        
-    }
-    
     SymbolTable 
     Model::linkLibraries() const 
     {
@@ -579,6 +555,77 @@ namespace MicroModelica {
     Model::libraryDirectories() const 
     {
       return SymbolTable();
+    }
+
+    void 
+    Model::addEquation(AST_Equation eq, Option<Range> range)
+    {
+      assert(eq->equationType() == EQEQUALITY);
+      AST_Equation_Equality eqe = eq->getAsEquality();
+      if(eqe->left()->expressionType() == EXPDERIVATIVE)
+      {
+        AST_Expression_Derivative ed = eqe->left()->getAsDerivative();
+        variable(AST_ListFirst(ed->arguments()));
+        Equation mse(eq, range, EQUATION::Derivative);
+        _derivatives[_derivativeId++] = mse;
+      }
+      else if(eqe->left()->expressionType() == EXPCOMPREF)
+      {
+        variable(eqe->left());
+        Equation mse(eq, range, EQUATION::Algebraic);
+        _algebraics[_algebraicId++] = mse;
+      }
+      else if(eqe->left()->expressionType() == EXPOUTPUT)
+      {
+        if(eqe->right()->expressionType() != EXPCALL)
+        {
+          Error::instance().add(eqe->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Insert model equation.");
+        }
+        AST_Expression_Output eout = eqe->left()->getAsOutput();
+        AST_ExpressionList el = eout->expressionList();
+        AST_ExpressionListIterator it;
+        foreach(it,el)
+        {
+          variable(current_element(it));
+          Equation mse(eq, range, EQUATION::Algebraic);
+          _algebraics[_algebraicId++] = mse;
+        }
+      }
+      else
+      {
+        Error::instance().add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Equation type not recognized.");
+      }
+    }
+
+    void 
+    Model::setEquations()
+    {
+      list<AST_Equation>::iterator it;
+      for(it = _astEquations.begin(); it != _astEquations.end(); it++)
+      {
+        AST_Equation eq = current_element(it);
+        if(eq->equationType() == EQEQUALITY)
+        {
+          addEquation(eq, Option<Range>());
+        }
+        else if(eq->equationType() == EQFOR)
+        {
+          vector<int> begin, end;
+          AST_Equation_For eqf = eq->getAsFor();
+          Range range(eqf, _symbols);
+          AST_EquationList eqs = eqf->equationList();
+          AST_EquationListIterator it;
+          foreach(it,eqs)
+          {
+            addEquation(current_element(it), range);
+          }
+        }
+      }
+    }
+
+    void 
+    Model::setEvents()
+    {
     }
 
   }

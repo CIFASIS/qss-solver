@@ -24,8 +24,8 @@
 namespace MicroModelica {
   namespace IR {
 
-    Event::Event(AST_Expression cond) : 
-      _zeroCrossing(cond),
+    Event::Event(AST_Equation cond) : 
+      _zeroCrossing(cond, EQUATION::ZeroCrossing),
       _positiveHandler(),
       _negativeHandler()
     {

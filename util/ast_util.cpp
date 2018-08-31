@@ -935,12 +935,8 @@ EvalExp::getRealVal(AST_Expression exp)
 
 /* ReplaceInnerProduct Class */
 
-ReplaceInnerProduct::ReplaceInnerProduct(VarSymbolTable symbols) :
+ReplaceInnerProduct::ReplaceInnerProduct(VarSymbolTable& symbols) :
     _symbols(symbols)
-{
-}
-
-ReplaceInnerProduct::~ReplaceInnerProduct()
 {
 }
 
@@ -1002,8 +998,7 @@ ReplaceInnerProduct::foldTraverseElement(AST_Expression exp)
 }
 
 AST_Expression
-ReplaceInnerProduct::foldTraverseElement(AST_Expression l, AST_Expression r,
-    BinOpType bot)
+ReplaceInnerProduct::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
 {
   if(bot == BINOPMULT)
   {
@@ -1217,10 +1212,6 @@ ConvertExpression::ConvertExpression(AST_Expression left, AST_Expression right, 
   convert();
 }
 
-ConvertExpression::~ConvertExpression()
-{
-}
-
 AST_Expression_ComponentReference 
 ConvertExpression::componentReference(AST_Expression exp)
 {
@@ -1415,7 +1406,7 @@ ConvertExpression::convert()
 
 /* ConvertEquation Class */
 
-ConvertEquation::ConvertEquation(AST_Equation equation, VarSymbolTable symbols) :
+ConvertEquation::ConvertEquation(AST_Equation equation, VarSymbolTable& symbols) :
   _symbols(symbols)
 {
   _equation = convert(equation);
@@ -1455,7 +1446,7 @@ ConvertEquation::convert(AST_Equation eq)
 
 /* ConvertStatement Class */
 
-ConvertStatement::ConvertStatement(AST_Statement statement, VarSymbolTable symbols) :
+ConvertStatement::ConvertStatement(AST_Statement statement, VarSymbolTable& symbols) :
   _symbols(symbols)
 {
   _statement = convert(statement);

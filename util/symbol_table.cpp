@@ -51,7 +51,7 @@ namespace MicroModelica {
         _isArray(false),
         _hasOffset(false),
         _offset(0),
-        _realType(State)
+        _realType(NotAsigned)
     {
       processModification();
     }
@@ -73,7 +73,7 @@ namespace MicroModelica {
         _isArray(array),
         _hasOffset(false),
         _offset(0),
-        _realType(State)
+        _realType(NotAsigned)
     {
       processModification();
     }

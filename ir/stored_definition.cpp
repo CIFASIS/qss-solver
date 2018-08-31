@@ -86,6 +86,11 @@ namespace MicroModelica {
     void 
     StoredDefinition::process()
     {
+      if(isModel())
+      {
+        boost::get<Model>(_def).setEquations();
+        boost::get<Model>(_def).setEvents();
+      }
     }
 
   }

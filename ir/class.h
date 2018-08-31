@@ -103,14 +103,14 @@ namespace MicroModelica
         * @param type
         */
         virtual void
-        insert(VarName n, Util::Variable vi, DEC_Type type) = 0;
+        insert(VarName n, Util::Variable& vi, DEC_Type type) = 0;
         /**
         *
         * @param n
         * @param vi
         */
         virtual void
-        insert(VarName n, Util::Variable vi) = 0;
+        insert(VarName n, Util::Variable& vi) = 0;
         /**
         *
         * @param x
@@ -169,14 +169,14 @@ namespace MicroModelica
         * @param type
         */
         void
-        insert(VarName n, Util::Variable vi, DEC_Type type);
+        insert(VarName n, Util::Variable& vi, DEC_Type type);
         /**
         *
         * @param n
         * @param vi
         */
         void
-        insert(VarName n, Util::Variable vi);
+        insert(VarName n, Util::Variable& vi);
         /**
         *
         * @param eq
@@ -327,14 +327,14 @@ namespace MicroModelica
         * @param type
         */
         void
-        insert(VarName n, Util::Variable vi, DEC_Type type);
+        insert(VarName n, Util::Variable& vi, DEC_Type type);
         /**
         *
         * @param n
         * @param vi
         */
         void
-        insert(VarName n, Util::Variable vi);
+        insert(VarName n, Util::Variable& vi);
         /**
         *
         * @param x
@@ -390,13 +390,13 @@ namespace MicroModelica
         /**
         *
         */
-        ~Model();
+        ~Model() {};
         /**
         *
         * @return
         */
-        string
-        name() const;
+        inline string
+        name() const { return _name; };
         /**
         *
         * @param n
@@ -410,14 +410,14 @@ namespace MicroModelica
         * @param type
         */
         void
-        insert(VarName n, Util::Variable vi, DEC_Type type);
+        insert(VarName n, Util::Variable& vi, DEC_Type type);
         /**
         *
         * @param n
         * @param vi
         */
         void
-        insert(VarName n, Util::Variable vi);
+        insert(VarName n, Util::Variable& vi);
         /**
         *
         * @param eq
@@ -459,16 +459,16 @@ namespace MicroModelica
         *
         * @return
         */
-        Util::VarSymbolTable
-        symbols() const;
+        inline Util::VarSymbolTable
+        symbols() const { return _symbols; };
         /**
         *
         * @return
         */
-        Util::ImportTable
-        imports() const;
-        ModelAnnotation 
-        annotations();
+        inline Util::ImportTable
+        imports() const { return _imports; };
+        inline ModelAnnotation 
+        annotations() { return _annotations; };
         inline FunctionTable 
         calledFunctions() const { return _calledFunctions; };
         inline int 
@@ -501,13 +501,19 @@ namespace MicroModelica
         events() { return _events; };
         inline bool 
         externalFunctions() { return _externalFunctions; };
+        void 
+        setEquations();
+        void 
+        setEvents();
       private:
-        string 
-        getComponentName(AST_Expression exp);
+        Util::Variable 
+        variable(AST_Expression exp);
         void 
         setRealVariableOffset(AST_Expression, Util::Variable::RealType type, int& offset);
         void 
         setRealVariables(AST_Equation eq);
+        void 
+        addEquation(AST_Equation eq, Option<Range> range);
         std::string               _name;
         Util::ImportTable         _imports;
         Util::VarSymbolTable      _symbols;
@@ -528,7 +534,7 @@ namespace MicroModelica
         int                       _eventNbr;
         int                       _outputNbr;
         int                       _inputNbr;
-        int                       _equationId;
+        int                       _derivativeId;
         int                       _algebraicId;
         int                       _statementId;
         int                       _eventId;

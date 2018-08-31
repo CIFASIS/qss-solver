@@ -156,10 +156,6 @@ namespace MicroModelica {
               size.push_back(eval.apply(current_element(elistit)));
             }
           }
-          else
-          {
-            size.push_back(1);
-          }
 
           DEC_Type t = (_compositionElement ? DEC_LOCAL : DEC_PUBLIC);
           if(tp & TP_CONSTANT)

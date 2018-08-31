@@ -59,10 +59,6 @@ namespace MicroModelica {
       }
     }
 
-    Generator::~Generator()
-    {
-    }
-
     int
     Generator::generate()
     {
@@ -72,7 +68,7 @@ namespace MicroModelica {
         string baseName = model.name();
         if(_flags.hasOutputFile())
         {
-          baseName = _flags.outputFileName();
+          baseName = _flags.outputFile();
         }
         _writer->setFile(baseName+".c");
         switch(model.annotations().solver())
@@ -99,7 +95,7 @@ namespace MicroModelica {
         files.plot();
         files.settings(model.annotations());
         if(_flags.graph()) { files.graph(); }
-        if(!model.externalFunctions())
+        if(model.externalFunctions())
         {
           string ffname = baseName+"_functions";
           generateIncludes(ffname);

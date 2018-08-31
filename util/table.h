@@ -55,15 +55,15 @@ class ModelTable : public std::map<Key,Value>
       return it == std::map<Key,Value>::end();
     }
     inline Value 
-    begin(iterator it) { it = std::map<Key,Value>::begin(); return value(it); };
+    begin(iterator& it) { it = std::map<Key,Value>::begin(); return (end(it) ? Value() : value(it)); };
     inline bool 
-    end(iterator it) { return it == std::map<Key,Value>::end(); }
+    end(iterator& it) { return it == std::map<Key,Value>::end(); }
     inline Value 
-    next(iterator it) { it++; return value(it); }
+    next(iterator& it) { it++; return (end(it) ? Value() : value(it)); }
     inline Value 
-    value(iterator it) { return it->second; }
+    value(iterator& it) { return it->second; }
     inline Key 
-    key(iterator it) { return it->first; };
+    key(iterator& it) { return it->first; };
 };
 
 

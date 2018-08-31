@@ -27,24 +27,9 @@
 
 namespace MicroModelica {
   namespace IR {
-
-
-    /**
-     *
-     */
-    class Event
+    
+    namespace EVENT 
     {
-      public:
-        /**
-         *
-         * @param cond
-         * @param data
-         */
-        Event(AST_Expression cond);
-        /**
-         *
-         */
-        ~Event() {};
         /**
          *
          */
@@ -66,7 +51,26 @@ namespace MicroModelica {
           GT,    //!< ZC_GT
           GE     //!< ZC_GE
         } Relation;
-        inline Equation 
+    }
+
+    /**
+     *
+     */
+    class Event
+    {
+      public:
+        /**
+         *
+         * @param cond
+         * @param data
+         */
+        Event() {};
+        Event(AST_Equation cond);
+        /**
+         *
+         */
+        ~Event() {};
+            inline Equation 
         zeroCrossing() { return _zeroCrossing; };
         inline StatementTable 
         positiveHandler() { return _positiveHandler; };

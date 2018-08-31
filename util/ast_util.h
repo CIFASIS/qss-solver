@@ -761,11 +761,11 @@ class ReplaceInnerProduct: public AST_Expression_Visitor<AST_Expression>
      *
      * @param vt
      */
-    ReplaceInnerProduct(MicroModelica::Util::VarSymbolTable vt);
+    ReplaceInnerProduct(MicroModelica::Util::VarSymbolTable& vt);
     /**
      *
      */
-    ~ReplaceInnerProduct();
+    ~ReplaceInnerProduct() {};
   private:
     bool
     controlArray(AST_Expression exp);
@@ -785,7 +785,7 @@ class ConvertExpression
     /**
      *
      */
-    ~ConvertExpression();
+    ~ConvertExpression() {};
     inline std::string 
     get() { return _convert; };
   private:
@@ -808,7 +808,7 @@ class ConvertExpression
 class ConvertEquation
 {
   public:
-    ConvertEquation(AST_Equation equation, MicroModelica::Util::VarSymbolTable symbols);
+    ConvertEquation(AST_Equation equation, MicroModelica::Util::VarSymbolTable& symbols);
     ~ConvertEquation() {};
     inline AST_Equation 
     get() { return _equation; };
@@ -823,7 +823,7 @@ class ConvertEquation
 class ConvertStatement 
 {
   public:
-    ConvertStatement(AST_Statement statement, MicroModelica::Util::VarSymbolTable symbols);
+    ConvertStatement(AST_Statement statement, MicroModelica::Util::VarSymbolTable& symbols);
     ~ConvertStatement() {};
     inline AST_Statement 
     get() { return _statement; };

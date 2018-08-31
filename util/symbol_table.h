@@ -43,6 +43,7 @@ namespace MicroModelica {
     class Variable 
     {
       public:
+        Variable() {};
         /**
          *
          * @param t
@@ -62,7 +63,8 @@ namespace MicroModelica {
         typedef enum 
         {
           State,
-          Algebraic
+          Algebraic,
+          NotAsigned
         } RealType;
         inline void 
         setRealType(RealType type) { _realType = type; };

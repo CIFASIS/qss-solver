@@ -24,21 +24,23 @@
 namespace MicroModelica {
   namespace IR {
 
-    Equation::Equation(AST_Expression exp) :
-      _eq(exp),
+    Equation::Equation(AST_Equation eq, EQUATION::Type type) :
+      _eq(eq),
       _range()
     {
     }
 
-    Equation::Equation(AST_Expression exp, Range r) :
-      _eq(exp),
+    Equation::Equation(AST_Equation eq, Range r, EQUATION::Type type) :
+      _eq(eq),
       _range(r)
     {
     }
-    
-    Equation::~Equation()
+ 
+    Equation::Equation(AST_Equation eq, Option<Range> r, EQUATION::Type type) :
+      _eq(eq),
+      _range(r)
     {
-    }
+    }   
     
     std::ostream& operator<<(std::ostream& out, const Equation& e)
     {

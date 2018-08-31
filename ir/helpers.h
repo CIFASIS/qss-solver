@@ -35,6 +35,7 @@ namespace MicroModelica {
     class ExternalFunction 
     {
       public:
+        ExternalFunction() {};
         ExternalFunction(std::string lvalue, std::string name, AST_ExpressionList args);
         ~ExternalFunction();
         friend std::ostream& operator<<(std::ostream& out, const ExternalFunction& e);

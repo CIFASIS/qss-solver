@@ -26,7 +26,20 @@
 
 namespace MicroModelica {
   namespace IR {
-
+    namespace EQUATION 
+    {
+      typedef enum
+      {
+        Derivative,
+        Algebraic,
+        Dependency,
+        CLASSIC,
+        Output,
+        ZeroCrossing,
+        Handler,
+        Jacobian
+      } Type;
+    }
     /**
      *
      */
@@ -37,29 +50,19 @@ namespace MicroModelica {
          *
          * @param exp
          */
-        Equation(AST_Expression exp);
-        Equation(AST_Expression exp, Range r);
+        Equation() {};
+        Equation(AST_Equation eq, EQUATION::Type type);
+        Equation(AST_Equation eq, Range r, EQUATION::Type type);
+        Equation(AST_Equation eq, Option<Range> r, EQUATION::Type type);
         /**
          *
          */
-        ~Equation();
-        typedef enum
-        {
-          DERIVATIVE,
-          DEPENDENCIES,
-          CLASSIC,
-          ALGEBRAIC,
-          OUTPUT,
-          ZC,
-          HANDLER,
-          HANDLER_IF,
-          JACOBIAN
-        } Type;
+        ~Equation() {};
         inline bool 
         hasRange() { return _range.is_initialized(); }; 
         friend std::ostream& operator<<(std::ostream& out, const Equation& e);
       private:
-        AST_Expression  _eq;
+        AST_Equation    _eq;
         Option<Range>   _range;
 
     };
