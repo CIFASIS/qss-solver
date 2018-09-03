@@ -28,7 +28,7 @@ namespace MicroModelica {
     Statement::Statement(AST_Statement stm, VarSymbolTable& symbols, bool initial) : 
       _symbols(symbols)
     {
-      CalledFunctions cf;
+      StatementCalledFunctions cf;
       _calledFunctions = cf.apply(stm);
     }
 
