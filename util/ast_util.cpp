@@ -1649,3 +1649,95 @@ StatementCalledFunctions::foldTraverse(SymbolTable s1, SymbolTable s2)
   return s2;
 }
 
+ExpressionPrinter::ExpressionPrinter(const VarSymbolTable& symbols) :
+  _symbols(symbols)
+{
+}
+
+string 
+ExpressionPrinter::foldTraverseElement(AST_Expression exp)
+{
+  stringstream buffer;
+  switch(exp->expressionType())
+  {
+    case EXPBOOLEAN:
+      buffer << (exp->getAsBoolean()->value() ? 1 : 0); break;
+    case EXPBOOLEANNOT:
+      buffer << "!" << apply(exp->getAsBooleanNot()->exp()); break;
+    case EXPBRACE: break;
+    case EXPCALL:
+    {
+      AST_Expression_Call call = exp->getAsCall();
+      buffer << call->name() << "(";
+      AST_ExpressionListIterator it;
+      int size = call->arguments()->size(), i = 0;
+      foreach(it,call->arguments())
+      {
+        i++;
+        buffer << apply(current_element(it));
+        buffer << (i < size ? "," : "");
+      }
+      buffer << ")";
+      break;
+    }
+    case EXPCALLARG: break;
+    case EXPCOMPREF:
+    {
+      AST_Expression_ComponentReference cr = exp->getAsComponentReference();
+      Option<Variable> var = _symbols[cr->name()];
+      if(!var)
+      {
+        Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", cr->name().c_str());
+      }
+      buffer << var.get();
+      if(cr->hasIndexes())
+      {
+        cr->firstIndex();
+      }
+      break;
+    }
+    default:
+      return "";
+  }
+  return buffer.str();
+}
+
+string 
+ExpressionPrinter::foldTraverseElement(string l, string r, BinOpType bot)
+{
+  stringstream buffer;
+  switch(bot)
+  {
+    case BINOPOR: buffer << l << "||" << r; break;
+    case BINOPAND: buffer << l << "&&" << r; break;
+    case BINOPLOWER: buffer << l << "<" << r; break; 
+    case BINOPLOWEREQ: buffer << l << "<=" << r; break;
+    case BINOPGREATER: buffer << l << ">" << r; break; 
+    case BINOPGREATEREQ: buffer << l << ">=" << r; break;
+    case BINOPCOMPNE: buffer << l << "!=" << r; break;
+    case BINOPCOMPEQ: buffer << l << "==" << r; break; 
+    case BINOPADD: buffer << l << "+" << r; break; 
+    case BINOPELADD: buffer << l << "IMPLEMENT" << r; break;
+    case BINOPSUB: buffer << l << "-" << r; break;  
+    case BINOPELSUB: buffer << l << "IMPLEMENT" << r; break; 
+    case BINOPDIV: buffer << l << "/" << r; break;  
+    case BINOPELDIV: buffer << l << "IMPLEMENT" << r; break; 
+    case BINOPMULT: buffer << l << "*" << r; break;  
+    case BINOPELMULT: buffer << l << "IMPLEMENT" << r; break; 
+    case BINOPEXP: buffer << l << "^" << r; break;     
+    case BINOPELEXP: buffer << l << "IMPLEMENT" << r; break;    
+    default:
+      return "NOT IMPLEMENTED";
+  }
+  return buffer.str();
+}
+ 
+string 
+ExpressionPrinter::foldTraverseElementUMinus(AST_Expression exp)
+{
+  stringstream buffer;
+  buffer << "-" << apply(exp->getAsUMinus()->exp());
+  return buffer.str();
+}
+
+

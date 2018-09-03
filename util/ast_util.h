@@ -293,23 +293,23 @@ class AST_Statement_Visitor
         }
         case STFOR:
         {
-          c;
           AST_StatementListIterator it;
           AST_StatementList l = stm->getAsFor()->statements();
           foreach(it, l)
           {
             c = foldTraverse(c, apply(current_element(it)));
           }
+          return c;
         }
         case STOUTASSING:
         {
-          c;
           AST_ExpressionListIterator it;
           AST_ExpressionList l = stm->getAsOutputAssigment()->arguments();
           foreach(it, l)
           {
             c = foldTraverse(c, foldTraverse(_visitor.apply(current_element(it))));
           }
+          return c;
         }
         default:
           return c;
@@ -1030,4 +1030,24 @@ class StatementCalledFunctions: public AST_Statement_Visitor<MicroModelica::Util
     MicroModelica::Util::SymbolTable  
     foldTraverse(MicroModelica::Util::SymbolTable s1, MicroModelica::Util::SymbolTable s2);
 };
+
+class ExpressionPrinter : public AST_Expression_Visitor<std::string>
+{
+  public:
+    ExpressionPrinter(const MicroModelica::Util::VarSymbolTable& symbols);
+    /**
+     *
+     */
+    ~ExpressionPrinter() {};
+  private:
+    std::string 
+    foldTraverseElement(AST_Expression exp);
+    std::string 
+    foldTraverseElement(std::string l, std::string r, BinOpType bot);
+    std::string 
+    foldTraverseElementUMinus(AST_Expression exp);
+    MicroModelica::Util::VarSymbolTable _symbols;
+    MicroModelica::IR::Expression           _exp;
+};
+
 #endif  /* AST_UTIL_H_ */
