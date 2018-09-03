@@ -19,6 +19,8 @@
 
 #include "equation.h"
 
+#include <sstream>
+
 #include "../ast/expression.h"
 #include "../util/ast_util.h"
 #include "../util/util.h"
@@ -70,9 +72,20 @@ namespace MicroModelica {
       _symbols(symbols)
     {
     }   
-    
+
+    string 
+    Equation::print() const
+    {
+      stringstream buffer;
+      if(_range) { buffer << _range.get(); }
+      buffer << _lhs << " = " << _rhs << endl; 
+      if(_range) { buffer << _range.get().end(); }
+      return buffer.str();
+    }
+
     std::ostream& operator<<(std::ostream& out, const Equation& e)
     {
+      out << e.print();
       return out;
     }
   }

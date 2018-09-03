@@ -65,9 +65,9 @@ namespace MicroModelica {
         ~Equation() {};
         inline bool 
         hasRange() { return _range.is_initialized(); }; 
-        inline AST_Expression 
+        inline Expression 
         lhs() { return _lhs; };
-        inline AST_Expression 
+        inline Expression 
         rhs() { return _rhs; };
         inline AST_Expression
         equation() { return _exp; };
@@ -76,10 +76,12 @@ namespace MicroModelica {
         inline Util::SymbolTable 
         calledFunctions() { return _calledFunctions; };
         friend std::ostream& operator<<(std::ostream& out, const Equation& e);
+        std::string
+        print() const;
       private:
         AST_Equation    _eq;
-        AST_Expression  _lhs;
-        AST_Expression  _rhs;
+        Expression      _lhs;
+        Expression      _rhs;
         AST_Expression  _exp;
         Option<Range>   _range;
         bool            _autonomous;
