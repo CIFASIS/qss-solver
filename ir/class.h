@@ -517,6 +517,8 @@ namespace MicroModelica
         addEquation(AST_Equation eq, Option<Range> range);
         void 
         addEvent(AST_Statement stm, Option<Range> range);
+        void 
+        addFunction(Util::SymbolTable symbols, FunctionTable& fs);
         std::string               _name;
         Util::ImportTable         _imports;
         Util::VarSymbolTable      _symbols;

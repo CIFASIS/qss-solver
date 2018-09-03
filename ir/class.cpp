@@ -83,7 +83,7 @@ namespace MicroModelica {
     void
     Function::insert(AST_Statement stm) 
     {
-      _statements[++_statementId] = Statement(stm);
+      _statements[++_statementId] = Statement(stm, _symbols);
     }
 
     void
@@ -506,7 +506,7 @@ namespace MicroModelica {
       AST_Statement st = ConvertStatement(stm, _symbols).get();
       if(initial)
       {
-        _initialCode[_statementId++] = Statement(stm, initial);
+        _initialCode[_statementId++] = Statement(stm, _symbols, initial);
       }
       else
       {
@@ -514,9 +514,45 @@ namespace MicroModelica {
       }
     }
 
+    void 
+    Model::addFunction(SymbolTable symbols, FunctionTable& fs)
+    {
+      SymbolTable::iterator fit;
+      for(string s = symbols.begin(fit); !symbols.end(fit); s = symbols.next(fit))
+      {
+        Option<Function> ef = fs[s];
+        if(ef) { _calledFunctions[s] = ef; }
+      }
+    }
+
     void
     Model::setCalledFunctions(FunctionTable &fs) 
     {
+      EquationTable::iterator it;
+      for(Equation eq = _derivatives.begin(it); !_derivatives.end(it); eq = _derivatives.next(it))
+      {
+        addFunction(eq.calledFunctions(), fs);
+      }
+      for(Equation eq = _algebraics.begin(it); !_algebraics.end(it); eq = _algebraics.next(it))
+      {
+        addFunction(eq.calledFunctions(), fs);
+      }
+      EventTable::iterator eit;
+      for(Event ev = _events.begin(eit); !_events.end(eit); ev = _events.next(eit))
+      {
+        addFunction(ev.zeroCrossing().calledFunctions(), fs);
+        StatementTable::iterator sit;
+        StatementTable stms = ev.positiveHandler();
+        for(Statement stm = stms.begin(sit); !stms.end(sit); stm = stms.next(sit))
+        {
+          addFunction(stm.calledFunctions(), fs);
+        }
+        stms = ev.negativeHandler();
+        for(Statement stm = stms.begin(sit); !stms.end(sit); stm = stms.next(sit))
+        {
+          addFunction(stm.calledFunctions(), fs);
+        }
+      }
     }
 
     void
@@ -565,13 +601,13 @@ namespace MicroModelica {
       {
         AST_Expression_Derivative ed = eqe->left()->getAsDerivative();
         variable(AST_ListFirst(ed->arguments()));
-        Equation mse(eq, range, EQUATION::Derivative);
+        Equation mse(eq, _symbols, range, EQUATION::Derivative);
         _derivatives[_derivativeId++] = mse;
       }
       else if(eqe->left()->expressionType() == EXPCOMPREF)
       {
         variable(eqe->left());
-        Equation mse(eq, range, EQUATION::Algebraic);
+        Equation mse(eq, _symbols, range, EQUATION::Algebraic);
         _algebraics[_algebraicId++] = mse;
       }
       else if(eqe->left()->expressionType() == EXPOUTPUT)
@@ -586,7 +622,7 @@ namespace MicroModelica {
         foreach(it,el)
         {
           variable(current_element(it));
-          Equation mse(eq, range, EQUATION::Algebraic);
+          Equation mse(eq, _symbols, range, EQUATION::Algebraic);
           _algebraics[_algebraicId++] = mse;
         }
       }
