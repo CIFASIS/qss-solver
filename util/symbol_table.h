@@ -37,6 +37,8 @@ namespace MicroModelica {
 
   namespace Util {
 
+    class VarSymbolTable;
+
     /**
      *
      */
@@ -291,7 +293,7 @@ namespace MicroModelica {
         std::string  
         declaration(std::string prefix = "");
         std::string 
-        initialization();
+        initialization(const VarSymbolTable& symbols);
         inline bool
         hasOffset() { return _hasOffset; };
         inline void 

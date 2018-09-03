@@ -183,7 +183,7 @@ namespace MicroModelica {
     }
 
     string 
-    Variable::initialization()
+    Variable::initialization(const VarSymbolTable& symbols)
     {
       stringstream buffer;
       string index;
@@ -194,7 +194,7 @@ namespace MicroModelica {
       }
       if(hasAssignment() || hasStartModifier() || hasEachModifier())
       {
-        Expression ex(exp());
+        Expression ex(exp(), symbols);
         if(hasAssignment() || hasStartModifier())
         {
             buffer << this << " = " << ex << ";";
