@@ -362,6 +362,7 @@ namespace MicroModelica {
     ClassicModelInstance::initializeDataStructures()
     {
       stringstream buffer;
+      initialCode();
       ModelDependencies deps = _model.dependencies();
       // Initialize Solver Data Structures.
       allocateSolver();
