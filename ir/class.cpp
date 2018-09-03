@@ -119,7 +119,7 @@ namespace MicroModelica {
           }
         }
       }
-      _externalFunctions.insert(++_externalFunctionId, ExternalFunction(lvalue, efc->name(),efc->args()));
+      _externalFunctions.insert(++_externalFunctionId, ExternalFunction(lvalue, efc->name(),efc->args(), _symbols));
     }
 
     void
@@ -503,10 +503,11 @@ namespace MicroModelica {
     void
     Model::insert(AST_Statement stm, bool initial) 
     {
+      cout << "Agrega Stm: " << initial << endl;
       AST_Statement st = ConvertStatement(stm, _symbols).get();
       if(initial)
       {
-        _initialCode[_statementId++] = Statement(stm, _symbols, initial);
+        _initialCode.insert(_statementId++, Statement(stm, _symbols, initial));
       }
       else
       {
