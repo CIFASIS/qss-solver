@@ -162,7 +162,7 @@ namespace MicroModelica {
           continue;
         }
         _writer->write(var.declaration(), FUNCTION_CODE);
-        _writer->write(var.initialization(), FUNCTION_CODE);
+        _writer->write(var.initialization(_function.localSymbols()), FUNCTION_CODE);
       }
       if(_function.outputNbr() == 1)
       {
@@ -172,7 +172,7 @@ namespace MicroModelica {
           if(var.isOutput())
           {
             _writer->write(var.declaration(), FUNCTION_CODE);
-            _writer->write(var.initialization(), FUNCTION_CODE);
+            _writer->write(var.initialization(_function.localSymbols()), FUNCTION_CODE);
           }
         }
       }
