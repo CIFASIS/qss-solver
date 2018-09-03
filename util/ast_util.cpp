@@ -1637,3 +1637,15 @@ CalledFunctions::foldTraverseElement(SymbolTable l, SymbolTable r, BinOpType bot
   }
   return r;
 }
+
+SymbolTable  
+StatementCalledFunctions::foldTraverse(SymbolTable s1, SymbolTable s2)
+{
+  SymbolTable::iterator it;
+  for(string i = s1.begin(it); !s1.end(it); i = s1.next(it))
+  {
+    s2.insert(i,i);
+  }
+  return s2;
+}
+

@@ -24,6 +24,7 @@
 
 #include "../ast/ast_types.h"
 #include "../ast/expression.h"
+#include "../ast/statement.h"
 #include "../ir/index.h"
 #include "../ir/event.h"
 #include "util_types.h"
@@ -229,10 +230,11 @@ class AST_Expression_Visitor
 /**
  *
  */
-template<class R>
+template<class F, class R, class V>
 class AST_Statement_Visitor
 {
   public:
+    AST_Statement_Visitor(V v) : _visitor(v) {};
     /**
      *
      */
@@ -243,30 +245,82 @@ class AST_Statement_Visitor
      * @param e
      * @return
      */
-    R
+    F
     apply(AST_Statement stm)
     {
-      switch(stm->expressionType())
+      F c;
+      switch(stm->statementType())
       {
-        case EXPBINOP:
+        case STWHEN:
         {
-          AST_Expression_BinOp b = e->getAsBinOp();
-          AST_Expression left = b->left(), right = b->right();
-          return (foldTraverseElement(apply(left), apply(right), b->binopType()));
+          c = foldTraverse(_visitor.apply(stm->getAsWhen()->condition()));
+          AST_StatementListIterator it;
+          AST_StatementList l = stm->getAsWhen()->statements();
+          foreach(it, l)
+          {
+            c = foldTraverse(c, apply(current_element(it)));
+          }
+          return c;
         }
-        case EXPUMINUS:
-          return foldTraverseElementUMinus(e);
+        case STASSING:
+          return foldTraverse(_visitor.apply(stm->getAsAssign()->exp()));
+        case STIF:
+        {
+          c = foldTraverse(_visitor.apply(stm->getAsIf()->condition()));
+          AST_StatementListIterator it;
+          AST_StatementList l = stm->getAsIf()->statements();
+          foreach(it, l)
+          {
+            c = foldTraverse(c, apply(current_element(it)));
+          }
+          l = stm->getAsIf()->else_statements();
+          foreach(it, l)
+          {
+            c = foldTraverse(c, apply(current_element(it)));
+          }
+          AST_Statement_ElseListIterator eit;
+          AST_Statement_ElseList el = stm->getAsIf()->else_if();
+          foreach(eit, el)
+          {
+            c = foldTraverse(_visitor.apply(current_element(eit)->condition()));
+            l = current_element(eit)->statements();
+            foreach(it, l)
+            {
+              c = foldTraverse(c, apply(current_element(it)));
+            }
+          }
+          return c;
+        }
+        case STFOR:
+        {
+          c;
+          AST_StatementListIterator it;
+          AST_StatementList l = stm->getAsFor()->statements();
+          foreach(it, l)
+          {
+            c = foldTraverse(c, apply(current_element(it)));
+          }
+        }
+        case STOUTASSING:
+        {
+          c;
+          AST_ExpressionListIterator it;
+          AST_ExpressionList l = stm->getAsOutputAssigment()->arguments();
+          foreach(it, l)
+          {
+            c = foldTraverse(c, foldTraverse(_visitor.apply(current_element(it))));
+          }
+        }
         default:
-          return foldTraverseElement(e);
+          return c;
       }
     };
   private:
-    virtual R
-    foldTraverseElement(AST_Expression) = 0;
-    virtual R
-    foldTraverseElementUMinus(AST_Expression) = 0;
-    virtual R
-    foldTraverseElement(R, R, BinOpType) = 0;
+    V _visitor;
+    virtual F
+    foldTraverse(R) = 0;
+    virtual F
+    foldTraverse(F, F) = 0;
 };
 
 /**
@@ -960,5 +1014,20 @@ class CalledFunctions: public AST_Expression_Visitor<MicroModelica::Util::Symbol
     MicroModelica::Util::SymbolTable
     foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
     MicroModelica::Util::VarSymbolTable _symbols;
+};
+
+/**
+ *
+ */
+class StatementCalledFunctions: public AST_Statement_Visitor<MicroModelica::Util::SymbolTable, MicroModelica::Util::SymbolTable, CalledFunctions>
+{
+  public:
+    StatementCalledFunctions() : AST_Statement_Visitor(CalledFunctions()) {};
+    ~StatementCalledFunctions() {};
+  private:
+    inline MicroModelica::Util::SymbolTable  
+    foldTraverse(MicroModelica::Util::SymbolTable symbols) { return symbols; };
+    MicroModelica::Util::SymbolTable  
+    foldTraverse(MicroModelica::Util::SymbolTable s1, MicroModelica::Util::SymbolTable s2);
 };
 #endif  /* AST_UTIL_H_ */
