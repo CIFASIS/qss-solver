@@ -593,6 +593,15 @@ namespace MicroModelica {
     }
 
     void 
+    Model::addInput(Equation eq, int eqId, EQUATION::Type type)
+    {
+      if(!eq.autonomous())
+      {
+        _inputs[_inputNbr++] = Input(eqId, type);
+      }
+    }
+
+    void 
     Model::addEquation(AST_Equation eq, Option<Range> range)
     {
       assert(eq->equationType() == EQEQUALITY);
@@ -602,12 +611,14 @@ namespace MicroModelica {
         AST_Expression_Derivative ed = eqe->left()->getAsDerivative();
         variable(AST_ListFirst(ed->arguments()));
         Equation mse(eq, _symbols, range, EQUATION::Derivative);
+        addInput(mse, _derivativeId, EQUATION::Derivative);
         _derivatives[_derivativeId++] = mse;
       }
       else if(eqe->left()->expressionType() == EXPCOMPREF)
       {
         variable(eqe->left());
         Equation mse(eq, _symbols, range, EQUATION::Algebraic);
+        addInput(mse, _algebraicId, EQUATION::Algebraic);
         _algebraics[_algebraicId++] = mse;
       }
       else if(eqe->left()->expressionType() == EXPOUTPUT)
@@ -623,6 +634,7 @@ namespace MicroModelica {
         {
           variable(current_element(it));
           Equation mse(eq, _symbols, range, EQUATION::Algebraic);
+          addInput(mse, _algebraicId, EQUATION::Algebraic);
           _algebraics[_algebraicId++] = mse;
         }
       }
