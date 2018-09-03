@@ -342,6 +342,10 @@ DEFINE_TYPE(AST_Statement_Assign);
 /**
  *
  */
+DEFINE_TYPE(AST_Statement_OutputAssigment);
+/**
+ *
+ */
 DEFINE_TYPE(AST_StoredDefinition);
 /**
  *
