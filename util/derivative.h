@@ -46,7 +46,7 @@ namespace MicroModelica {
          * @return
          */
         static AST_Equation_Equality
-        derivate(AST_Equation_Equality eq, VarSymbolTable varEnv);
+        derivate(AST_Equation_Equality eq, const VarSymbolTable& varEnv);
     };
 
     /**
@@ -63,9 +63,9 @@ namespace MicroModelica {
          * @return
          */
         static AST_Expression
-        derivate(AST_Expression exp, VarSymbolTable varEnv, IR::Expression e);
+        derivate(AST_Expression exp, const VarSymbolTable& varEnv, IR::Expression e);
         map<string, MicroModelica::IR::Expression>
-        generateJacobianExps(AST_Expression exp, VarSymbolTable vt);
+        generateJacobianExps(AST_Expression exp, const VarSymbolTable& vt);
     };
   }
 }

@@ -35,7 +35,7 @@ namespace MicroModelica {
   namespace Util {
 
     AST_Equation_Equality
-    EquationDerivator::derivate(AST_Equation_Equality eq, VarSymbolTable varEnv)
+    EquationDerivator::derivate(AST_Equation_Equality eq, const VarSymbolTable& varEnv)
     {
       ConvertToGiNaC tog(varEnv, Option<Expression>());
       ConvertToExpression toe;
@@ -48,7 +48,7 @@ namespace MicroModelica {
     }
 
     AST_Expression
-    ExpressionDerivator::derivate(AST_Expression exp, VarSymbolTable varEnv, Expression e)
+    ExpressionDerivator::derivate(AST_Expression exp, const VarSymbolTable& varEnv, Expression e)
     {
       ConvertToGiNaC tog(varEnv,e);
       ConvertToExpression toe;
@@ -59,7 +59,7 @@ namespace MicroModelica {
     }
 
     map<string, Expression>
-    ExpressionDerivator::generateJacobianExps(AST_Expression exp, VarSymbolTable vt)
+    ExpressionDerivator::generateJacobianExps(AST_Expression exp, const VarSymbolTable& vt)
     {
       ConvertToGiNaC tog(vt, Option<Expression>());
       ConvertToExpression toe;
@@ -77,7 +77,7 @@ namespace MicroModelica {
           if(v->isState() || v->isAlgebraic())
           {
             GiNaC::ex der_exp = dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff( it->second);
-            jacobianExps[it->first] = Expression(rd.apply(toe.convert(der_exp)));
+            jacobianExps[it->first] = Expression(rd.apply(toe.convert(der_exp)), vt);
           }
         }
       }
