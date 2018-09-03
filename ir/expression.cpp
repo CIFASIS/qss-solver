@@ -19,28 +19,41 @@
 
 #include "expression.h"
 
+#include <sstream>
 #include "../ast/expression.h"
+#include "../util/ast_util.h"
+#include "../util/error.h"
 
 namespace MicroModelica {
+  using namespace Util;
   namespace IR {
 
     /* MMO_Expression class. */
 
-    Expression::Expression(AST_Expression exp) 
+    Expression::Expression(AST_Expression exp, const VarSymbolTable& symbols) :
+      _exp(exp),
+      _symbols(symbols)
     {
     }
 
-    Expression::Expression() 
+    Expression::Expression() :
+      _exp(NULL),
+      _symbols()
     {
     }
 
-    Expression::~Expression()
+    string 
+    Expression::print() const 
     {
+      ExpressionPrinter printer(_symbols);
+      return printer.apply(_exp);
     }
 
     std::ostream& operator<<(std::ostream& out, const Expression& s)
     {
+      out << s.print();
       return out;
     }
+    
   }
 }

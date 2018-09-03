@@ -20,7 +20,12 @@
 #ifndef MMO_EXPRESSION_H_
 #define MMO_EXPRESSION_H_
 
+#include <string>
 #include "../ast/ast_types.h"
+#include "../util/symbol_table.h"
+
+template<class R>
+class AST_Expression_Visitor;
 
 namespace MicroModelica {
   namespace IR {
@@ -39,14 +44,20 @@ namespace MicroModelica {
          *
          * @param exp
          */
-        Expression(AST_Expression exp);
+        Expression(AST_Expression exp, const Util::VarSymbolTable &symbols);
         /**
          *
          */
-        ~Expression();
-
+        ~Expression() {};
+        std::string
+        print() const;
         friend std::ostream& operator<<(std::ostream& out, const Expression& s);
+      private:
+        AST_Expression       _exp;
+        Util::VarSymbolTable _symbols;
     };
   }
+    
+
 }
 #endif /* EXPRESSION_H_ */
