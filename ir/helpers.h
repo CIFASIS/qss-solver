@@ -36,13 +36,14 @@ namespace MicroModelica {
     {
       public:
         ExternalFunction() {};
-        ExternalFunction(std::string lvalue, std::string name, AST_ExpressionList args);
+        ExternalFunction(std::string lvalue, std::string name, AST_ExpressionList args, const Util::VarSymbolTable& symbols);
         ~ExternalFunction();
         friend std::ostream& operator<<(std::ostream& out, const ExternalFunction& e);
       private:
-        std::string         _lvalue;
-        std::string         _name;
-        AST_ExpressionList  _args;
+        std::string          _lvalue;
+        std::string          _name;
+        AST_ExpressionList   _args;
+        Util::VarSymbolTable _symbols;
     };
 
     typedef ModelTable<int, ExternalFunction> ExternalFunctionTable;

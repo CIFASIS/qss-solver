@@ -28,10 +28,11 @@ namespace MicroModelica {
    
     /* ExternalFunction Class Implementation */
 
-    ExternalFunction::ExternalFunction(string lvalue, string name, AST_ExpressionList args) :
+    ExternalFunction::ExternalFunction(string lvalue, string name, AST_ExpressionList args, const VarSymbolTable& symbols) :
       _lvalue(lvalue),
       _name(name),
-      _args(args)
+      _args(args),
+      _symbols(symbols)
     {
     }
     
@@ -54,7 +55,7 @@ namespace MicroModelica {
         unsigned int count = 0;
         foreach(it,e._args)
         {
-          Expression ex(current_element(it));
+          Expression ex(current_element(it), e._symbols);
           buffer << ex;
           if(++count < e._args->size())
           {
