@@ -34,7 +34,7 @@
 #include "../ir/class.h"
 #include "../ir/equation.h"
 #include "../ir/expression.h"
-#include "../ir/index.h"
+#include "../ir/event.h"
 #include "debug.h"
 #include "error.h"
 #include "macros.h"
@@ -43,6 +43,7 @@
 #include "util.h"
 
 using namespace MicroModelica::Util;
+using namespace MicroModelica::IR;
 
 AST_Expression
 AST_Expression_Traverse::apply(AST_Expression e)
@@ -1530,4 +1531,109 @@ ConvertStatement::convert(AST_Statement st)
     return retWhen;
   }
   return st;
+}
+
+
+/* ConvertCondition class */
+
+ConvertCondition::ConvertCondition() :
+    _zc(EVENT::Zero), 
+    _zcRelation(EVENT::GT)
+{
+}
+
+AST_Expression
+ConvertCondition::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
+{
+  switch(bot)
+  {
+    case BINOPLOWER:
+    {
+      AST_Expression bo = newAST_Expression_BinOp(l, newAST_Expression_OutputExpressions(newAST_ExpressionList(r)), BINOPSUB);
+      _zc = EVENT::Negative;
+      _zcRelation = EVENT::LT;
+      return bo;
+    }
+    case BINOPLOWEREQ:
+    {
+      AST_Expression bo = newAST_Expression_BinOp(l, newAST_Expression_OutputExpressions(newAST_ExpressionList(r)), BINOPSUB);
+      _zc = EVENT::Negative;
+      _zcRelation = EVENT::LE;
+      return bo;
+    }
+    case BINOPGREATER:
+      {
+      AST_Expression bo = newAST_Expression_BinOp(l, newAST_Expression_OutputExpressions(newAST_ExpressionList(r)), BINOPSUB);
+      _zc = EVENT::Positive;
+      _zcRelation = EVENT::GT;
+      return bo;
+    }
+    case BINOPGREATEREQ:
+      {
+      AST_Expression bo = newAST_Expression_BinOp(l, newAST_Expression_OutputExpressions(newAST_ExpressionList(r)), BINOPSUB);
+      _zc = EVENT::Positive;
+      _zcRelation = EVENT::GE;
+      return bo;
+    }
+    default:
+      break;
+  }
+  AST_Expression bo = newAST_Expression_BinOp(l, r, bot);
+  return bo;
+}
+
+
+bool 
+Autonomous::foldTraverseElement(AST_Expression e)
+{
+  bool autonomous = true;
+  switch(e->expressionType())
+  {
+    case EXPCALL:
+    {
+      AST_Expression_Call call = e->getAsCall();
+      AST_ExpressionListIterator it;
+      foreach(it , call->arguments())
+      {
+        autonomous &= apply(current_element(it));
+      }
+      return autonomous;
+    }
+    case EXPCOMPREF:
+    {
+      AST_Expression_ComponentReference cr = e->getAsComponentReference();
+      Option<Variable> var = _symbols[cr->name()];
+      if(var && var->isTime()) { autonomous = false; }
+    }
+    default:
+      return autonomous;
+  }
+}
+
+SymbolTable 
+CalledFunctions::foldTraverseElement(AST_Expression exp)
+{
+  SymbolTable symbols;
+  switch(exp->expressionType())
+  {
+    case EXPCALL:
+    {
+      AST_Expression_Call call = exp->getAsCall();
+      symbols.insert(*call->name(), *call->name());
+      return symbols;
+    }
+    default:
+      return symbols;
+  }
+}
+
+SymbolTable 
+CalledFunctions::foldTraverseElement(SymbolTable l, SymbolTable r, BinOpType bot)
+{
+  SymbolTable::iterator it;
+  for(string i = l.begin(it); !l.end(it); i = l.next(it))
+  {
+    r.insert(i,i);
+  }
+  return r;
 }

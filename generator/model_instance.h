@@ -118,6 +118,8 @@ namespace MicroModelica
         virtual Graph
         computationalGraph() = 0;
         void 
+        initialCode();
+        void 
         header();
         virtual void 
         generate() = 0;

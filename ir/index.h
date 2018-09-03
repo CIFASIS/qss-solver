@@ -35,7 +35,7 @@ namespace MicroModelica {
     {
       public:
         IndexDefinition();
-        ~IndexDefinition();
+        ~IndexDefinition() {};
 
         friend std::ostream& operator<<(std::ostream& out, const IndexDefinition& id);
       private:
@@ -51,7 +51,7 @@ namespace MicroModelica {
          */
         Index();
         Index(IndexDefinition id);
-        ~Index();
+        ~Index() {};
         string
         print() const;
         void
@@ -76,13 +76,15 @@ namespace MicroModelica {
     {
       public:
         RangeDefinition(int begin, int end, int step = 1);
-        ~RangeDefinition();
+        ~RangeDefinition() {};
         inline int 
         begin() { return _begin; };
         inline int 
         end() { return _end; };
         inline int 
         step() { return _step; };
+        inline int 
+        size() const { return (_end-_begin)/_step; };
         friend std::ostream& operator<<(std::ostream& out, const RangeDefinition& rd);
       private:
         int   _begin;
@@ -98,12 +100,15 @@ namespace MicroModelica {
         Range();
         Range(AST_Equation_For eqf, Util::VarSymbolTable symbols);
         Range(AST_Statement_For stf, Util::VarSymbolTable symbols);
-        ~Range();
+        ~Range() {};
+        inline int 
+        size() const { return _size; };
         friend std::ostream& operator<<(std::ostream& out, const Range& r);
       private:
         void 
         setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);
         RangeDefinitionTable _ranges;
+        int                  _size;
     };
   }
 }

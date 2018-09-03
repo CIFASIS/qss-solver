@@ -20,25 +20,54 @@
 #include "equation.h"
 
 #include "../ast/expression.h"
+#include "../util/ast_util.h"
+#include "../util/util.h"
 
 namespace MicroModelica {
+  using namespace Util;
   namespace IR {
 
-    Equation::Equation(AST_Equation eq, EQUATION::Type type) :
+    Equation::Equation(AST_Expression eq, VarSymbolTable& symbols, EQUATION::Type type) :
+      _eq(),
+      _lhs(),
+      _rhs(),
+      _range(),
+      _autonomous(true),
+      _symbols(symbols)
+    {
+      Autonomous autonomous(_symbols);
+      _autonomous = autonomous.apply(eq);
+      CalledFunctions cf;
+      _calledFunctions = cf.apply(eq);
+    }
+
+    Equation::Equation(AST_Equation eq, VarSymbolTable& symbols, EQUATION::Type type) :
       _eq(eq),
-      _range()
+      _lhs(),
+      _rhs(),
+      _range(),
+      _autonomous(true),
+      _symbols(symbols)
     {
     }
 
-    Equation::Equation(AST_Equation eq, Range r, EQUATION::Type type) :
+    Equation::Equation(AST_Equation eq, VarSymbolTable& symbols, Range r, EQUATION::Type type) :
       _eq(eq),
-      _range(r)
+      _lhs(),
+      _rhs(),
+      _range(r),
+      _autonomous(true),
+      _symbols(symbols)
     {
     }
  
-    Equation::Equation(AST_Equation eq, Option<Range> r, EQUATION::Type type) :
+    Equation::Equation(AST_Equation eq, VarSymbolTable& symbols, Option<Range> r, EQUATION::Type type) :
       _eq(eq),
-      _range(r)
+      _lhs(),
+      _rhs(),
+      _range(r),
+      _autonomous(true),
+      _symbols(symbols)
     {
     }   
     

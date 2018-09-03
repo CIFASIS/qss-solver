@@ -57,7 +57,6 @@ namespace MicroModelica
     class Class
     {
       public:
-        //Class(){};
         ~Class(){};
         /**
         *
@@ -505,8 +504,10 @@ namespace MicroModelica
         setEquations();
         void 
         setEvents();
+        inline StatementTable
+        initialCode() { return _initialCode; };
       private:
-        Util::Variable 
+        Option<Util::Variable>
         variable(AST_Expression exp);
         void 
         setRealVariableOffset(AST_Expression, Util::Variable::RealType type, int& offset);
@@ -514,6 +515,8 @@ namespace MicroModelica
         setRealVariables(AST_Equation eq);
         void 
         addEquation(AST_Equation eq, Option<Range> range);
+        void 
+        addEvent(AST_Statement stm, Option<Range> range);
         std::string               _name;
         Util::ImportTable         _imports;
         Util::VarSymbolTable      _symbols;

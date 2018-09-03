@@ -64,7 +64,7 @@ class ModelTable : public std::map<Key,Value>
     value(iterator& it) { return it->second; }
     inline Key 
     key(iterator& it) { return it->first; };
-};
+  };
 
 
 #endif /* TABLE_H */

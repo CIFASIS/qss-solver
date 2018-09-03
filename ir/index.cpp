@@ -34,10 +34,6 @@ namespace MicroModelica {
     {
     }
      
-    IndexDefinition::~IndexDefinition()
-    {
-    }
-    
     std::ostream& operator<<(std::ostream& out, const IndexDefinition& id)
     {
       return out;
@@ -54,10 +50,6 @@ namespace MicroModelica {
       _dim()
     {
       _indexes[_dim++] = id;
-    }
-     
-    Index::~Index()
-    {
     }
      
     string
@@ -100,10 +92,6 @@ namespace MicroModelica {
     {
     }
 
-    RangeDefinition::~RangeDefinition()
-    {
-    }
-
     std::ostream& operator<<(std::ostream& out, const RangeDefinition& rd)
     {
       return out;
@@ -115,14 +103,16 @@ namespace MicroModelica {
     }
     
     Range::Range(AST_Equation_For eqf, VarSymbolTable symbols) :
-      _ranges()
+      _ranges(),
+      _size(0)
     {
       AST_ForIndexList fil = eqf->forIndexList();
       setRangeDefinition(fil, symbols);
     }
 
     Range::Range(AST_Statement_For stf, VarSymbolTable symbols) :
-      _ranges()
+      _ranges(),
+      _size(0)
     {
       AST_ForIndexList fil = stf->forIndexList();
       setRangeDefinition(fil, symbols);
@@ -147,13 +137,10 @@ namespace MicroModelica {
         }
         string index = fi->variable()->c_str();
         _ranges[index] = (size == 2 ? RangeDefinition(begin,end) : RangeDefinition(begin, end, eval.apply(AST_ListAt(el, 1))));
+        _size += _ranges[index].get().size();
       }
     }
 
-    Range::~Range() 
-    {
-    }
-    
     std::ostream& operator<<(std::ostream& out, const Range& r)
     {
       return out;

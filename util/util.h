@@ -251,4 +251,5 @@ namespace MicroModelica {
 
   }
 }
+
 #endif  /* UTIL_H_ */

@@ -225,14 +225,14 @@ namespace MicroModelica {
     void
     MemoryWriter::beginBlock()
     {
-      _file << "{";
+      _file << "{" << endl;
       _block = indent(++_blockIndent);
     }
 
     void
     MemoryWriter::endBlock()
     {
-      _file << "}";
+      _file << "}" << endl << endl;
       _block = indent(--_blockIndent);
     }
 

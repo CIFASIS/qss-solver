@@ -125,9 +125,7 @@ namespace MicroModelica {
         *
         */
         virtual
-        ~Writer()
-        {
-        };
+        ~Writer() {};
         /**
         *
         * @param fname

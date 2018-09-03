@@ -234,7 +234,7 @@ namespace MicroModelica {
       stringstream buffer;
       for(Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it))
       {
-        if(var.isConstant()) { continue; }
+        if(var.isConstant() || var.isForType()) { continue; }
         buffer << "#define " << var;
         int dim = var.dimensions();
         if(dim) { buffer << "("; }
@@ -256,12 +256,12 @@ namespace MicroModelica {
         end << "]"; 
         if(dim)
         {
-          buffer << "("; 
+          buffer << "[("; 
           for(int i = 0; i < dim; i++)
           {
             stringstream variable;
-            variable << "-1)*" << var.size(i) << "+";
-            buffer << "(d" << i+1 <<  (i == dim-1 ? ")"+end.str() : variable.str()); 
+            variable << "*" << var.size(i) << "+";
+            buffer << "(d" << i+1 <<  "-1)" << (i == dim-1 ? ")"+end.str() : variable.str()); 
           }
         }
         else if(var.isDiscrete() || var.isState() || var.isAlgebraic())
@@ -283,19 +283,34 @@ namespace MicroModelica {
     {
       switch(c)
       {
-        case MODEL_SETTINGS: return "void\n MOD_settings(SD_simulationSettings settings)\n";
-        case MODEL: return "void\n MOD_definition(double *x, double *d, double *a, double t, double *dx)\n";
-        case DEPS: return "void\n MOD_dependencies(int i, double *x, double *d, double *a, double t, double *der, int *map)\n";
-        case ZC: return "void\n MOD_zeroCrossing(int i, double *x, double *d, double *a, double t, double *zc)\n";
-        case HANDLER_POS: return "void\n MOD_handlerPos(int i, double *x, double *d, double *a, double t)\n";
-        case HANDLER_NEG: return "void\n MOD_handlerNeg(int i, double *x, double *d, double *a, double t)\n";
-        case OUTPUT: return "void\n MOD_output(int i, double *x, double *d, double *a, double t, double *out)\n";
-        case JACOBIAN: return "void\n MOD_jacobian(double *x, double *d, double *a, double t, double *jac)\n";
-        case CLC_INIT: return "void\n CLC_initializeDataStructs(CLC_simulator simulator)\n";
-        case QSS_INIT: return "void\n QSS_initializeDataStructs(QSS_simulator simulator)\n";
+        case MODEL_SETTINGS: return "void\nMOD_settings(SD_simulationSettings settings)";
+        case MODEL: return "void\nMOD_definition(double *x, double *d, double *a, double t, double *dx)";
+        case DEPS: return "void\nMOD_dependencies(int i, double *x, double *d, double *a, double t, double *der, int *map)";
+        case ZC: return "void\nMOD_zeroCrossing(int i, double *x, double *d, double *a, double t, double *zc)";
+        case HANDLER_POS: return "void\nMOD_handlerPos(int i, double *x, double *d, double *a, double t)";
+        case HANDLER_NEG: return "void\nMOD_handlerNeg(int i, double *x, double *d, double *a, double t)";
+        case OUTPUT: return "void\nMOD_output(int i, double *x, double *d, double *a, double t, double *out)";
+        case JACOBIAN: return "void\nMOD_jacobian(double *x, double *d, double *a, double t, double *jac)";
+        case CLC_INIT: return "void\nCLC_initializeDataStructs(CLC_simulator simulator)";
+        case QSS_INIT: return "void\nQSS_initializeDataStructs(QSS_simulator simulator)";
       }
       return "";
     }
+
+    void
+    ModelInstance::initialCode()
+    {
+      string indent = _writer->indent(1);
+      StatementTable stms = _model.initialCode();
+      StatementTable::iterator it;
+      stringstream buffer;
+      for(Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it))
+      {
+        buffer << stm;
+        _writer->write(buffer, INIT_CODE);
+      }
+    }
+
     
     /* QSSModelInstance Model Instance class. */
 
@@ -451,6 +466,7 @@ namespace MicroModelica {
       _writer->endBlock();
       _writer->print(componentDefinition(CLC_INIT));
       _writer->beginBlock();
+      _writer->print(INIT_CODE);
       _writer->print(ALLOC_LD);
       _writer->print(ALLOC_LD_SD);
       _writer->print(ALLOC_LD_DS);

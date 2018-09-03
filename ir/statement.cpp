@@ -18,21 +18,18 @@
  ******************************************************************************/
 
 #include "../ast/statement.h"
+#include "../util/util.h"
 #include "statement.h"
 
 namespace MicroModelica {
+  using namespace Util;
   namespace IR {
 
-    Statement::Statement(AST_Statement stm, bool initial) 
+    Statement::Statement(AST_Statement stm, VarSymbolTable& symbols, bool initial) : 
+      _symbols(symbols)
     {
-    }
-
-    Statement::Statement() 
-    {
-    }
-
-    Statement::~Statement()
-    {
+      CalledFunctions cf;
+      _calledFunctions = cf.apply(stm);
     }
 
     std::ostream& operator<<(std::ostream& out, const Statement& s)

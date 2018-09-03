@@ -25,6 +25,10 @@
 #include "index.h"
 
 namespace MicroModelica {
+  namespace Util {
+    typedef ModelTable<std::string,std::string> SymbolTable;
+  }
+
   namespace IR {
     namespace EQUATION 
     {
@@ -51,19 +55,36 @@ namespace MicroModelica {
          * @param exp
          */
         Equation() {};
-        Equation(AST_Equation eq, EQUATION::Type type);
-        Equation(AST_Equation eq, Range r, EQUATION::Type type);
-        Equation(AST_Equation eq, Option<Range> r, EQUATION::Type type);
+        Equation(AST_Expression eq, Util::VarSymbolTable& symbols, EQUATION::Type type);
+        Equation(AST_Equation eq, Util::VarSymbolTable& symbols, EQUATION::Type type);
+        Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Range r, EQUATION::Type type);
+        Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Option<Range> r, EQUATION::Type type);
         /**
          *
          */
         ~Equation() {};
         inline bool 
         hasRange() { return _range.is_initialized(); }; 
+        inline AST_Expression 
+        lhs() { return _lhs; };
+        inline AST_Expression 
+        rhs() { return _rhs; };
+        inline AST_Expression
+        equation() { return _exp; };
+        inline bool
+        autonomous() { return _autonomous; };
+        inline Util::SymbolTable 
+        calledFunctions() { return _calledFunctions; };
         friend std::ostream& operator<<(std::ostream& out, const Equation& e);
       private:
         AST_Equation    _eq;
+        AST_Expression  _lhs;
+        AST_Expression  _rhs;
+        AST_Expression  _exp;
         Option<Range>   _range;
+        bool            _autonomous;
+        Util::VarSymbolTable _symbols;
+        Util::SymbolTable    _calledFunctions;
 
     };
 

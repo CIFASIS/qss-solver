@@ -20,15 +20,73 @@
 #include "event.h"
 
 #include "../ast/expression.h"
+#include "../util/ast_util.h"
 
 namespace MicroModelica {
+  using namespace Util;
   namespace IR {
 
-    Event::Event(AST_Equation cond) : 
-      _zeroCrossing(cond, EQUATION::ZeroCrossing),
+    Event::Event(AST_Expression cond, VarSymbolTable& symbols) : 
+      _zeroCrossing(),
       _positiveHandler(),
-      _negativeHandler()
+      _negativeHandler(),
+      _type(EVENT::Zero),
+      _current(EVENT::Zero),
+      _zcRelation(EVENT::GE),
+      _symbols(symbols)
     {
+      ConvertCondition cc;
+      _zeroCrossing = Equation(cc.apply(getExpression(cond)), symbols, EQUATION::ZeroCrossing);
+      _type = cc.zeroCrossing();
+      _current = _type;
+      _zcRelation = cc.zeroCrossingRelation();
+    }
+
+    void 
+    Event::add(AST_Statement stm)
+    {
+      Statement s(stm, _symbols);
+      if(_current == EVENT::Positive)
+      {
+        _positiveHandler.insert(_positiveHandlerId++, s);
+      }
+      else if(_current == EVENT::Negative)
+      {
+        _negativeHandler.insert(_negativeHandlerId++, s);
+      }
+    }
+
+    bool 
+    Event::compare(AST_Expression zc)
+    {
+      ConvertCondition cc;
+      AST_Expression c = cc.apply(getExpression(zc));
+      EqualExp ee(_symbols);
+      bool cr = ee.equalTraverse(c, _zeroCrossing.equation());
+      if(cr)
+      {
+        if(_current == EVENT::Positive)
+        {
+          _current = EVENT::Negative;
+          _type = EVENT::Zero;
+        }
+        else if(_current == EVENT::Negative)
+        {
+          _current = EVENT::Positive;
+          _type = EVENT::Zero;
+        }
+      }
+      return cr;
+    }
+
+    AST_Expression
+    Event::getExpression(AST_Expression exp)
+    {
+      if(exp->expressionType() == EXPOUTPUT)
+      {
+        return getExpression(AST_ListFirst(exp->getAsOutput()->expressionList()));
+      }
+      return exp;
     }
 
     std::ostream& operator<<(std::ostream& out, const Event& e)

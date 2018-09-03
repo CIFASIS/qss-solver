@@ -394,7 +394,7 @@ namespace MicroModelica {
       _symbols.insert(n, vi);
     }
 
-    Variable  
+    Option<Variable>  
     Model::variable(AST_Expression exp)
     {
       string varName;
@@ -404,25 +404,24 @@ namespace MicroModelica {
         varName = *AST_ListFirst(ecr->names());
       }
       Option<Variable> var = _symbols[varName];
-        if(!var)
-        {
-          Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", varName.c_str());
-          return Variable();
-        }
-
-      return var.get();
+      if(!var)
+      {
+        Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", varName.c_str());
+      }
+      return var;
     }
 
     void 
     Model::setRealVariableOffset(AST_Expression exp, Util::Variable::RealType type, int& offset)
     {
-        Variable var = variable(exp);
-        if(!var.hasOffset())
+        Option<Variable> var = variable(exp);
+        if(!var->hasOffset())
         {
-          var.setOffset(offset);
-          var.setRealType(type);
-          offset += var.size();
+          var->setOffset(offset);
+          var->setRealType(type);
+          offset += var->size();
         }
+        _symbols.insert(var->name(), var.get());
     }
 
     void 
@@ -623,9 +622,78 @@ namespace MicroModelica {
       }
     }
 
+    void
+    Model::addEvent(AST_Statement stm, Option<Range> range)
+    {
+      if(stm->statementType() == STWHEN)
+      {
+        _eventNbr += range->size();
+        AST_Statement_When sw = stm->getAsWhen();
+        if(sw->hasComment())
+        {
+          _annotations.eventComment(sw->comment());
+        }
+        Event event(sw->condition(), _symbols);
+        AST_StatementList stl = sw->statements();
+        AST_StatementListIterator it;
+        foreach(it,stl)
+        {
+          event.add(current_element(it));
+        }
+        if(sw->hasElsewhen())
+        {
+          int newEvent = false;
+          AST_Statement_ElseList ewl = sw->else_when();
+          AST_Statement_ElseListIterator ewit;
+          foreach(ewit,ewl)
+          {
+            AST_Statement_Else se = current_element(ewit);
+            Event event2 = event;
+            if(!event.compare(se->condition()))
+            {
+              event2 = Event(se->condition(), _symbols);
+              _eventNbr += range->size();
+              newEvent = true;
+            }
+            AST_StatementList stel = se->statements();
+            AST_StatementListIterator steit;
+            foreach(steit,stel)
+            {
+              event2.add(current_element(steit));
+            }
+            if(newEvent)
+            {
+              _events.insert(_eventId++, event2);
+            }
+          }
+        }
+        _events.insert(_eventId++, event);
+    }
+
+    }
     void 
     Model::setEvents()
     {
+      list<AST_Statement>::iterator st;
+      for(st = _astStatements.begin(); st != _astStatements.end(); st++)
+      {
+        AST_Statement stm = *st;
+        if(stm->statementType() == STWHEN)
+        {
+          addEvent(stm, Option<Range>());
+        }
+        else if(stm->statementType() == STFOR)
+        {
+          AST_Statement_For stf = stm->getAsFor();
+          Range range(stf, _symbols);
+          AST_StatementList sts = stf->statements();
+          AST_StatementListIterator stit;
+          foreach(stit,sts)
+          {
+            addEvent(current_element(stit), range);
+          }
+        }
+      }
     }
 
   }

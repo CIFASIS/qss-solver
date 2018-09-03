@@ -35,9 +35,9 @@ namespace MicroModelica {
          */
         typedef enum
         {
-          POSITIVE, //!< HND_POSITIVE
-          NEGATIVE, //!< HND_NEGATIVE
-          ZERO      //!< HND_ZERO
+          Positive = 0, //!< HND_POSITIVE
+          Negative = 1, //!< HND_NEGATIVE
+          Zero = 2      //!< HND_ZERO
         } Type;
 
         /**
@@ -65,22 +65,34 @@ namespace MicroModelica {
          * @param data
          */
         Event() {};
-        Event(AST_Equation cond);
+        Event(AST_Expression cond, Util::VarSymbolTable& symbols);
         /**
          *
          */
         ~Event() {};
-            inline Equation 
+        inline Equation 
         zeroCrossing() { return _zeroCrossing; };
         inline StatementTable 
         positiveHandler() { return _positiveHandler; };
         inline StatementTable 
         negativeHandler() { return _negativeHandler; };
+        void 
+        add(AST_Statement);
+        bool 
+        compare(AST_Expression zc);
         friend std::ostream& operator<<(std::ostream& out, const Event& e);
       private:
-        Equation _zeroCrossing;
-        StatementTable _positiveHandler;
-        StatementTable _negativeHandler;
+        AST_Expression
+        getExpression(AST_Expression zc);
+        Equation              _zeroCrossing;
+        StatementTable        _positiveHandler;
+        StatementTable        _negativeHandler;
+        EVENT::Type           _type;
+        EVENT::Type           _current;
+        EVENT::Relation       _zcRelation;
+        Util::VarSymbolTable  _symbols;
+        int                   _positiveHandlerId;
+        int                   _negativeHandlerId;
     };
 
     typedef ModelTable<int,Event> EventTable;

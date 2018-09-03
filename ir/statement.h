@@ -25,6 +25,10 @@
 #include "index.h"
 
 namespace MicroModelica {
+
+  namespace Util {
+    typedef ModelTable<std::string,std::string> SymbolTable;
+  }
   namespace IR {
 
     /**
@@ -37,21 +41,25 @@ namespace MicroModelica {
          *
          * @param stm
          */
-        Statement(AST_Statement stm, bool initial = false);
+        Statement(AST_Statement stm, Util::VarSymbolTable& symbols, bool initial = false);
         /**
          *
          */
-        Statement();
+        Statement() {};
         /**
          *
          */
-        ~Statement();
+        ~Statement() {};
         inline bool  
         hasRange() { return _range.is_initialized(); }; 
+        inline Util::SymbolTable 
+        calledFunctions() { return _calledFunctions; };
         friend std::ostream& operator<<(std::ostream& out, const Statement& s);
       private:
-        AST_Statement  _stm;
-        Option<Range>  _range;
+        AST_Statement        _stm;
+        Option<Range>        _range;
+        Util::VarSymbolTable _symbols;
+        Util::SymbolTable    _calledFunctions;
     };
 
     typedef ModelTable<int, Statement> StatementTable;

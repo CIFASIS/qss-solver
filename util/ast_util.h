@@ -25,6 +25,7 @@
 #include "../ast/ast_types.h"
 #include "../ast/expression.h"
 #include "../ir/index.h"
+#include "../ir/event.h"
 #include "util_types.h"
 
 /**
@@ -160,6 +161,7 @@
  */
 #define EQUAL(l,r)	 	newAST_Expression_BinOp(l, r,  BINOPCOMPEQ)
 
+
 /**
  *
  */
@@ -203,19 +205,61 @@ class AST_Expression_Visitor
       switch(e->expressionType())
       {
         case EXPBINOP:
-          {
+        {
           AST_Expression_BinOp b = e->getAsBinOp();
           AST_Expression left = b->left(), right = b->right();
-          return (foldTraverseElement(apply(left), apply(right),
-              b->binopType()));
+          return (foldTraverseElement(apply(left), apply(right), b->binopType()));
         }
         case EXPUMINUS:
           return foldTraverseElementUMinus(e);
         default:
           return foldTraverseElement(e);
       }
-    }
-    ;
+    };
+  private:
+    virtual R
+    foldTraverseElement(AST_Expression) = 0;
+    virtual R
+    foldTraverseElementUMinus(AST_Expression) = 0;
+    virtual R
+    foldTraverseElement(R, R, BinOpType) = 0;
+};
+
+
+/**
+ *
+ */
+template<class R>
+class AST_Statement_Visitor
+{
+  public:
+    /**
+     *
+     */
+    virtual
+    ~AST_Statement_Visitor() {};
+    /**
+     *
+     * @param e
+     * @return
+     */
+    R
+    apply(AST_Statement stm)
+    {
+      switch(stm->expressionType())
+      {
+        case EXPBINOP:
+        {
+          AST_Expression_BinOp b = e->getAsBinOp();
+          AST_Expression left = b->left(), right = b->right();
+          return (foldTraverseElement(apply(left), apply(right), b->binopType()));
+        }
+        case EXPUMINUS:
+          return foldTraverseElementUMinus(e);
+        default:
+          return foldTraverseElement(e);
+      }
+    };
   private:
     virtual R
     foldTraverseElement(AST_Expression) = 0;
@@ -838,4 +882,83 @@ class ConvertStatement
     MicroModelica::Util::VarSymbolTable _symbols;
 };
 
+/**
+ *
+ */
+class ConvertCondition: public AST_Expression_Visitor<AST_Expression>
+{
+  public:
+    /**
+     *
+     */
+    ConvertCondition();
+    /**
+     *
+     */
+    ~ConvertCondition() {};
+    /**
+     *
+     * @return
+     */
+    inline MicroModelica::IR::EVENT::Type 
+    zeroCrossing() { return _zc; };;
+    inline MicroModelica::IR::EVENT::Relation
+    zeroCrossingRelation() { return _zcRelation; };
+  private:
+    AST_Expression
+    foldTraverseElement(AST_Expression exp) { return exp; };
+    AST_Expression
+    foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+    AST_Expression
+    foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+    MicroModelica::IR::EVENT::Type _zc;
+    MicroModelica::IR::EVENT::Relation _zcRelation;
+};
+
+/**
+ *
+ */
+class Autonomous: public AST_Expression_Visitor<bool>
+{
+  public:
+    /**
+     *
+     */
+    Autonomous(MicroModelica::Util::VarSymbolTable symbols) : _symbols(symbols) {};
+    /**
+     *
+     */
+    ~Autonomous() {};
+  private:
+    bool 
+    foldTraverseElement(AST_Expression exp);
+    bool 
+    foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
+    bool
+    foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+    MicroModelica::Util::VarSymbolTable _symbols;
+};
+
+namespace MicroModelica {
+  namespace Util {
+    typedef ModelTable<std::string,std::string> SymbolTable;
+  }
+}
+/**
+ *
+ */
+class CalledFunctions: public AST_Expression_Visitor<MicroModelica::Util::SymbolTable>
+{
+  public:
+    CalledFunctions() {};
+    ~CalledFunctions() {};
+  private:
+    MicroModelica::Util::SymbolTable  
+    foldTraverseElement(AST_Expression exp);
+    MicroModelica::Util::SymbolTable 
+    foldTraverseElement(MicroModelica::Util::SymbolTable l, MicroModelica::Util::SymbolTable r, BinOpType bot);
+    MicroModelica::Util::SymbolTable
+    foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+    MicroModelica::Util::VarSymbolTable _symbols;
+};
 #endif  /* AST_UTIL_H_ */

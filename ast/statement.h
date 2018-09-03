@@ -242,8 +242,7 @@ class AST_Statement_If_: public AST_Statement_
      * @param
      * @param false_st
      */
-    AST_Statement_If_(AST_Expression cond, AST_StatementList true_st,
-        AST_Statement_ElseList, AST_StatementList false_st);
+    AST_Statement_If_(AST_Expression cond, AST_StatementList true_st, AST_Statement_ElseList, AST_StatementList false_st);
     /**
      *
      * @return
@@ -380,8 +379,7 @@ class AST_Statement_OutputAssigment_: public AST_Statement_
      * @param
      * @param
      */
-    AST_Statement_OutputAssigment_(AST_ExpressionList,
-        AST_Expression_ComponentReference, AST_ExpressionList);
+    AST_Statement_OutputAssigment_(AST_ExpressionList, AST_Expression_ComponentReference, AST_ExpressionList);
     /**
      *
      * @return
