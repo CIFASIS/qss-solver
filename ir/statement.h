@@ -41,7 +41,7 @@ namespace MicroModelica {
          *
          * @param stm
          */
-        Statement(AST_Statement stm, Util::VarSymbolTable& symbols, bool initial = false);
+        Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, bool initial = false);
         /**
          *
          */
@@ -55,6 +55,8 @@ namespace MicroModelica {
         inline Util::SymbolTable 
         calledFunctions() { return _calledFunctions; };
         friend std::ostream& operator<<(std::ostream& out, const Statement& s);
+        string 
+        print() const;
       private:
         AST_Statement        _stm;
         Option<Range>        _range;

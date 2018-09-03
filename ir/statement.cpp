@@ -16,6 +16,7 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
  ******************************************************************************/
+#include <sstream>
 
 #include "../ast/statement.h"
 #include "../util/util.h"
@@ -25,16 +26,94 @@ namespace MicroModelica {
   using namespace Util;
   namespace IR {
 
-    Statement::Statement(AST_Statement stm, VarSymbolTable& symbols, bool initial) : 
+    Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, bool initial) : 
+      _stm(stm),
+      _range(),
       _symbols(symbols)
     {
       StatementCalledFunctions cf;
       _calledFunctions = cf.apply(stm);
     }
 
+    string 
+    Statement::print() const
+    {
+      stringstream buffer;
+      switch(_stm->statementType())
+      {
+        case STIF:
+        {
+          AST_Statement_If sti = _stm->getAsIf();
+          Expression ifcond(sti->condition(), _symbols);
+          buffer << "if(" << ifcond << ")" << endl;
+          buffer << "{";
+          AST_StatementList stl = sti->statements();
+          AST_StatementListIterator stlit;
+          foreach(stlit, stl)
+          {
+            Statement st(current_element(stlit), _symbols);
+            buffer << TAB << st;  
+          }
+          buffer << "}";
+          AST_Statement_ElseList stelsel = sti->else_if();
+          AST_Statement_ElseListIterator stelselit;
+          foreach(stelselit, stelsel)
+          {
+            Expression eifcond(current_element(stelselit)->condition(), _symbols);
+            buffer << "else if(" << eifcond << ")" << endl << "{" << endl;
+            stl = current_element(stelselit)->statements();
+            foreach(stlit, stl)
+            {
+              Statement st(current_element(stlit), _symbols);
+              buffer << TAB << st;  
+            }
+            buffer << "}";
+          }
+          stl = sti->else_statements();
+          if(!stl->empty())
+          {
+            buffer << "else" << endl << "{" << endl;
+            foreach(stlit, stl)
+            {
+              Statement st(current_element(stlit), _symbols);
+              buffer << TAB << st;  
+            }
+            buffer << "}";
+          }
+          break;
+        }
+        case STASSING:
+        {
+          AST_Statement_Assign asg = _stm->getAsAssign();
+          Expression lhs(asg->lhs(), _symbols);
+          Expression rhs(asg->exp(),_symbols);
+          buffer << lhs << " = " << rhs << ";" << endl;
+          break;
+        }
+        case STFOR:
+        {
+          AST_Statement_For stf = _stm->getAsFor();
+          Range range(stf, _symbols);
+          buffer << range;
+          cout << buffer.str();
+          AST_StatementList stms = stf->statements();
+          AST_StatementListIterator stmit;
+          foreach(stmit, stms)
+          {
+            Statement st(current_element(stmit), _symbols);
+            buffer << TAB << st;  
+          }
+          buffer << range.end();
+          break;
+        }
+        default: break;
+      }
+      return buffer.str();
+    }
+
     std::ostream& operator<<(std::ostream& out, const Statement& s)
     {
-      return out;
+      return out << s.print();
     }
   }
 }
