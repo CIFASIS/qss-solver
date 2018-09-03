@@ -31,6 +31,14 @@ namespace MicroModelica {
 
   namespace IR {
 
+    namespace RANGE {
+      typedef enum {
+        For,
+        If 
+      } Type;
+    }
+
+
     class IndexDefinition
     {
       public:
@@ -75,6 +83,7 @@ namespace MicroModelica {
     class RangeDefinition
     {
       public:
+        RangeDefinition() {};
         RangeDefinition(int begin, int end, int step = 1);
         ~RangeDefinition() {};
         inline int 
@@ -98,17 +107,22 @@ namespace MicroModelica {
     {
       public:
         Range();
-        Range(AST_Equation_For eqf, Util::VarSymbolTable symbols);
-        Range(AST_Statement_For stf, Util::VarSymbolTable symbols);
+        Range(AST_Equation_For eqf, Util::VarSymbolTable symbols, RANGE::Type type = RANGE::For);
+        Range(AST_Statement_For stf, Util::VarSymbolTable symbols, RANGE::Type type = RANGE::For);
         ~Range() {};
         inline int 
         size() const { return _size; };
         friend std::ostream& operator<<(std::ostream& out, const Range& r);
+        std::string 
+        print() const;
+        std::string 
+        end() const;
       private:
         void 
         setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);
         RangeDefinitionTable _ranges;
         int                  _size;
+        RANGE::Type          _type;
     };
   }
 }

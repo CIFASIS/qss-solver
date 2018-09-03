@@ -19,6 +19,8 @@
 
 #include "index.h"
 
+#include <sstream>
+
 #include "helpers.h"
 #include "../ast/expression.h"
 #include "../ast/equation.h"
@@ -28,7 +30,6 @@
 namespace MicroModelica {
   using namespace Util;
   namespace IR {
-
 
     IndexDefinition::IndexDefinition()
     {
@@ -102,17 +103,19 @@ namespace MicroModelica {
     {
     }
     
-    Range::Range(AST_Equation_For eqf, VarSymbolTable symbols) :
+    Range::Range(AST_Equation_For eqf, VarSymbolTable symbols, RANGE::Type type) :
       _ranges(),
-      _size(0)
+      _size(0),
+      _type(type)
     {
       AST_ForIndexList fil = eqf->forIndexList();
       setRangeDefinition(fil, symbols);
     }
 
-    Range::Range(AST_Statement_For stf, VarSymbolTable symbols) :
+    Range::Range(AST_Statement_For stf, VarSymbolTable symbols, RANGE::Type type) :
       _ranges(),
-      _size(0)
+      _size(0),
+      _type(type)
     {
       AST_ForIndexList fil = stf->forIndexList();
       setRangeDefinition(fil, symbols);
@@ -136,14 +139,50 @@ namespace MicroModelica {
           Error::instance().add(AST_ListFirst(el)->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong equation range.");
         }
         string index = fi->variable()->c_str();
-        _ranges[index] = (size == 2 ? RangeDefinition(begin,end) : RangeDefinition(begin, end, eval.apply(AST_ListAt(el, 1))));
-        _size += _ranges[index].get().size();
+        cout << "Agrega " << index;
+        _ranges.insert(index,(size == 2 ? RangeDefinition(begin,end) : RangeDefinition(begin, end, eval.apply(AST_ListAt(el, 1)))));
+        Option<RangeDefinition> range = _ranges[index];
+        if(range) { _size += range->size(); }
       }
+    }
+
+    string 
+    Range::end() const 
+    {
+      stringstream buffer;
+      int size = _ranges.size();
+      for(int i = 0; i < size; i++)
+      {
+        buffer << "}" << endl;
+      }
+      return buffer.str();
+    }
+
+    string 
+    Range::print() const
+    {
+      stringstream buffer;
+      string block = "";
+      RangeDefinitionTable ranges = _ranges;
+      RangeDefinitionTable::iterator it;
+      for(RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it))
+      {
+        if(_type == RANGE::For)
+        {
+          string idx = ranges.key(it);
+          buffer << block << "for(" << idx << " = " << r.begin() << "; ";
+          buffer << idx << "<=" << r.end() << "; ";
+          buffer << idx << "+=" << r.step() << ")" << endl;
+          buffer << "{" << endl;
+          block += TAB;
+        }
+      }
+      return buffer.str();
     }
 
     std::ostream& operator<<(std::ostream& out, const Range& r)
     {
-      return out;
+      return out << r.print();
     }
   }
 }
