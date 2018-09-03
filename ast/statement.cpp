@@ -33,6 +33,7 @@ GET_AS_IMP(Statement, If);
 GET_AS_IMP(Statement, For);
 GET_AS_IMP(Statement, When);
 GET_AS_IMP(Statement, Assign);
+GET_AS_IMP(Statement, OutputAssigment);
 
 CLASS_PRINTER_IMP(AST_Statement);
 
@@ -55,8 +56,7 @@ string
 AST_Statement_Return_::print() const
 {
   stringstream ret(stringstream::out);
-  MAKE_SPACE
-  ;
+  MAKE_SPACE;
   ret << "return" << endl;
   return ret.str();
 }
@@ -73,8 +73,7 @@ string
 AST_Statement_Break_::print() const
 {
   stringstream ret(stringstream::out);
-  MAKE_SPACE
-  ;
+  MAKE_SPACE;
   ret << "break" << endl;
   return ret.str();
 }
@@ -110,8 +109,7 @@ AST_Statement_Assign_::print() const
 {
   stringstream ret(stringstream::out);
   AST_ExpressionListIterator it;
-  MAKE_SPACE
-  ;
+  MAKE_SPACE;
   if(exp()->expressionType() != EXPCALLARG)
     ret << lhs() << ":=" << exp() << ";" << endl;
   else if(exp()->expressionType() == EXPCALLARG)
@@ -141,17 +139,13 @@ AST_Statement_For_::print() const
 {
   stringstream ret(stringstream::out);
   AST_StatementListIterator it;
-  MAKE_SPACE
-  ;
+  MAKE_SPACE;
   AST_ListPrint(forIndexList(), ret, "for ", ",", "", " loop\n", false);
-  BEGIN_BLOCK
-  ;
+  BEGIN_BLOCK;
   foreach(it,statements())
     ret << current_element(it);
-  END_BLOCK
-  ;
-  MAKE_SPACE
-  ;
+  END_BLOCK;
+  MAKE_SPACE;
   ret << "end for;" << endl;
   return ret.str();
 }
@@ -231,32 +225,25 @@ AST_Statement_When_::print() const
   AST_StatementListIterator it;
   AST_Statement_ElseListIterator else_it;
 
-  MAKE_SPACE
-  ;
+  MAKE_SPACE;
   ret << "when " << condition() << " then" << endl;
 
-  BEGIN_BLOCK
-  ;
+  BEGIN_BLOCK;
   foreach(it,statements())
     ret << current_element(it);
-  END_BLOCK
-  ;
+  END_BLOCK;
   foreach(else_it,else_when())
   {
-    MAKE_SPACE
-    ;
+    MAKE_SPACE;
     ret << "elsewhen " << current_element(else_it)->condition() << " then"
         << endl;
-    BEGIN_BLOCK
-    ;
+    BEGIN_BLOCK;
     foreach(it, current_element(else_it)->statements())
       ret << current_element(it);
-    END_BLOCK
-    ;
+    END_BLOCK;
   }
 
-  MAKE_SPACE
-  ;
+  MAKE_SPACE;
   ret << "end when;" << endl;
   return ret.str();
 }
@@ -292,17 +279,13 @@ AST_Statement_While_::print() const
 {
   stringstream ret(stringstream::out);
   AST_StatementListIterator it;
-  MAKE_SPACE
-  ;
+  MAKE_SPACE;
   ret << "while " << condition() << " loop" << endl;
-  BEGIN_BLOCK
-  ;
+  BEGIN_BLOCK;
   foreach(it,statements())
     ret << current_element(it);
-  END_BLOCK
-  ;
-  MAKE_SPACE
-  ;
+  END_BLOCK;
+  MAKE_SPACE;
   ret << "end while;" << endl;
   return ret.str();
 }
@@ -352,43 +335,33 @@ AST_Statement_If_::print() const
   stringstream ret(stringstream::out);
   AST_StatementListIterator it;
   AST_Statement_ElseListIterator else_it;
-  MAKE_SPACE
-  ;
+  MAKE_SPACE;
   ret << "if " << condition() << " then" << endl;
-  BEGIN_BLOCK
-  ;
+  BEGIN_BLOCK;
   foreach(it,statements())
     ret << current_element(it);
-  END_BLOCK
-  ;
+  END_BLOCK;
   foreach(else_it,else_if())
   {
-    MAKE_SPACE
-    ;
+    MAKE_SPACE;
     ret << "elseif " << current_element(else_it)->condition() << " then"
         << endl;
-    BEGIN_BLOCK
-    ;
+    BEGIN_BLOCK;
     foreach(it, current_element(else_it)->statements())
       ret << current_element(it);
-    END_BLOCK
-    ;
+    END_BLOCK;
   }
 
   if(else_statements()->size())
   {
-    MAKE_SPACE
-    ;
+    MAKE_SPACE;
     ret << "else" << endl;
   }
-  BEGIN_BLOCK
-  ;
+  BEGIN_BLOCK;
   foreach(it,else_statements())
     ret << current_element(it);
-  END_BLOCK
-  ;
-  MAKE_SPACE
-  ;
+  END_BLOCK;
+  MAKE_SPACE;
   ret << "end if;" << endl;
   return ret.str();
 
@@ -408,8 +381,7 @@ AST_Statement_OutputAssigment_::print() const
 {
   stringstream ret(stringstream::out);
   AST_ExpressionListIterator it;
-  MAKE_SPACE
-  ;
+  MAKE_SPACE;
   ret << "(";
   int size = out_expressions()->size(), i = 0;
   foreach(it,out_expressions())
@@ -459,8 +431,7 @@ AST_Statement_OutputAssigment_::statementType()
 
 /* Else statement Class */
 
-AST_Statement_Else_::AST_Statement_Else_(AST_Expression cond,
-    AST_StatementList sts) :
+AST_Statement_Else_::AST_Statement_Else_(AST_Expression cond, AST_StatementList sts) :
     _cond(cond), _sts(sts)
 {
 }

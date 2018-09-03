@@ -75,6 +75,7 @@ class AST_Statement_: public AST_Node_
      *
      */
     GET_AS(Statement,Assign);
+    GET_AS(Statement,OutputAssigment);
 };
 
 /**
