@@ -37,7 +37,7 @@ namespace MicroModelica {
       public:
         ExternalFunction() {};
         ExternalFunction(std::string lvalue, std::string name, AST_ExpressionList args, const Util::VarSymbolTable& symbols);
-        ~ExternalFunction();
+        ~ExternalFunction() {};
         friend std::ostream& operator<<(std::ostream& out, const ExternalFunction& e);
       private:
         std::string          _lvalue;
@@ -65,72 +65,72 @@ namespace MicroModelica {
          * @param libraryDir
          * @param libraries
          */
-        CompiledFunction(string name, string includeDir, string libraryDir, list<string> libraries);
+        CompiledFunction(string name, string includeDir, string libraryDir, Util::SymbolTable& libraries);
         /**
          *
          */
-        ~CompiledFunction();
-        /**
-         *
-         * @return
-         */
-        list<string>
-        def();
+        ~CompiledFunction() {};
         /**
          *
          * @return
          */
-        bool
-        hasIncludeDirectory();
+        inline list<string>
+        def() const { return _def; };
         /**
          *
          * @return
          */
-        bool
-        hasLibraryDirectory();
+        inline bool
+        hasIncludeDirectory() const { return !_includeDirectory.empty(); };
         /**
          *
          * @return
          */
-        bool
-        hasLibraries();
+        inline bool
+        hasLibraryDirectory() const { return !_libraryDirectory.empty(); };
         /**
          *
          * @return
          */
-        string
-        includeDirectory();
+        inline bool
+        hasLibraries() const { return _libraries.size() > 0; };
         /**
          *
          * @return
          */
-        string
-        libraryDirectory();
+        inline string
+        includeDirectory() const { return _includeDirectory; };
         /**
          *
          * @return
          */
-        list<string>
-        libraries();
+        inline string
+        libraryDirectory() const { return _libraryDirectory; };
         /**
          *
          * @return
          */
-        string
-        name();
+        inline Util::SymbolTable 
+        libraries() { return _libraries; };
         /**
          *
          * @return
          */
-        string
-        prototype();
+        inline string
+        name() const { return _name; };
+        /**
+         *
+         * @return
+         */
+        inline string
+        prototype() const { return _prototype; };
       private:
-        list<string> _def;
-        string _name;
-        string _prototype;
-        string _includeDirectory;
-        string _libraryDirectory;
-        list<string> _libraries;
+        list<string>      _def;
+        string            _name;
+        string            _prototype;
+        string            _includeDirectory;
+        string            _libraryDirectory;
+        Util::SymbolTable _libraries;
     };
     
     typedef ModelTable<std::string,CompiledFunction> CompiledFunctionTable;
@@ -156,7 +156,7 @@ namespace MicroModelica {
         /**
          *
          */
-        ~CompiledPackage();
+        ~CompiledPackage() {};
         /**
          *
          * @return
@@ -173,19 +173,19 @@ namespace MicroModelica {
          *
          * @return
          */
-        list<string>
+        Util::SymbolTable  
         linkLibraries();
         /**
          *
          * @return
          */
-        list<string>
+        Util::SymbolTable  
         includeDirectories();
         /**
          *
          * @return
          */
-        list<string>
+        Util::SymbolTable  
         libraryDirectories();
         /**
          *

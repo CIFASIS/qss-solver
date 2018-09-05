@@ -36,10 +36,6 @@ namespace MicroModelica {
     {
     }
     
-    ExternalFunction::~ExternalFunction()
-    {
-    }
-    
     std::ostream& operator<<(std::ostream& out, const ExternalFunction& e)
     {
       list<string> ret;
@@ -81,7 +77,7 @@ namespace MicroModelica {
     }
 
 
-    CompiledFunction::CompiledFunction(string name, string includeDir, string libraryDir, list<string> libraries) :
+    CompiledFunction::CompiledFunction(string name, string includeDir, string libraryDir, SymbolTable& libraries) :
       _def(), 
       _name(name), 
       _prototype(), 
@@ -89,64 +85,6 @@ namespace MicroModelica {
       _libraryDirectory(libraryDir), 
       _libraries(libraries)
     {
-    }
-
-    CompiledFunction::~CompiledFunction()
-    {
-    }
-
-    bool
-    CompiledFunction::hasIncludeDirectory()
-    {
-      return !_includeDirectory.empty();
-    }
-
-    bool
-    CompiledFunction::hasLibraryDirectory()
-    {
-      return !_libraryDirectory.empty();
-    }
-
-    bool
-    CompiledFunction::hasLibraries()
-    {
-      return _libraries.size() > 0;
-    }
-
-    string
-    CompiledFunction::includeDirectory()
-    {
-      return _includeDirectory;
-    }
-
-    string
-    CompiledFunction::libraryDirectory()
-    {
-      return _libraryDirectory;
-    }
-
-    list<string>
-    CompiledFunction::libraries()
-    {
-      return _libraries;
-    }
-
-    string
-    CompiledFunction::name()
-    {
-      return _name;
-    }
-
-    list<string>
-    CompiledFunction::def()
-    {
-      return _def;
-    }
-
-    string
-    CompiledFunction::prototype()
-    {
-      return _prototype;
     }
 
     /* CompiledPackage Class Implementation */
@@ -159,10 +97,6 @@ namespace MicroModelica {
         _name(name), 
         _cft(cft), 
         _objects(objects)
-    {
-    }
-
-    CompiledPackage::~CompiledPackage()
     {
     }
 
@@ -190,47 +124,48 @@ namespace MicroModelica {
       return _objects;
     }
 
-    list<string>
+    SymbolTable 
     CompiledPackage::linkLibraries()
     {
-      list<string> ret;
+      SymbolTable ret;
       CompiledFunctionTable::iterator it;
       for(CompiledFunction cf = _cft.begin(it); !_cft.end(it); cf = _cft.next(it))
       {
         if(cf.hasLibraries())
         {
-          list<string> libs = cf.libraries();
-          ret.insert(ret.end(), libs.begin(), libs.end());
+          ret.merge(cf.libraries());
         }
       }
       return ret;
     }
 
-    list<string>
+    SymbolTable 
     CompiledPackage::libraryDirectories()
     {
-      list<string> ret;
+      SymbolTable ret;
       CompiledFunctionTable::iterator it;
       for(CompiledFunction cf = _cft.begin(it); !_cft.end(it); cf = _cft.next(it))
       {
         if(cf.hasLibraryDirectory())
         {
-          ret.push_back(cf.libraryDirectory());
+          string ld = cf.libraryDirectory();
+          ret.insert(ld,ld);
         }
       }
       return ret;
     }
 
-    list<string>
+    SymbolTable 
     CompiledPackage::includeDirectories()
     {
-      list<string> ret;
+      SymbolTable ret;
       CompiledFunctionTable::iterator it;
       for(CompiledFunction cf = _cft.begin(it); !_cft.end(it); cf = _cft.next(it))
       {
         if(cf.hasIncludeDirectory())
         {
-          ret.push_back(cf.includeDirectory());
+          string id = cf.includeDirectory();
+          ret.insert(id, id);
         }
       }
       return ret;
