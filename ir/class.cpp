@@ -333,6 +333,9 @@ namespace MicroModelica {
       _dependecies(),
       _packages(),
       _initialCode(),
+      _libraryDirectories(),
+      _linkLibraries(),
+      _includeDirectories(),
       _astEquations(),
       _astStatements(),
       _stateNbr(0),
@@ -360,6 +363,9 @@ namespace MicroModelica {
       _dependecies(),
       _packages(),
       _initialCode(),
+      _libraryDirectories(),
+      _linkLibraries(),
+      _includeDirectories(),
       _astEquations(),
       _astStatements(),
       _stateNbr(0),
@@ -506,7 +512,6 @@ namespace MicroModelica {
     void
     Model::insert(AST_Statement stm, bool initial) 
     {
-      cout << "Agrega Stm: " << initial << endl;
       AST_Statement st = ConvertStatement(stm, _symbols).get();
       if(initial)
       {
@@ -525,7 +530,25 @@ namespace MicroModelica {
       for(string s = symbols.begin(fit); !symbols.end(fit); s = symbols.next(fit))
       {
         Option<Function> ef = fs[s];
-        if(ef) { _calledFunctions[s] = ef; }
+        if(ef) 
+        { 
+          _calledFunctions[s] = ef; 
+          FunctionAnnotation fa = ef->annotations();
+          if(fa.hasIncludeDirectory())
+          {
+            string in = fa.includeDirectory();
+            _includeDirectories.insert(in, in);
+          }
+          if(fa.hasLibraryDirectory())
+          {
+            string in = fa.libraryDirectory();
+            _libraryDirectories.insert(in, in);
+          }
+          if(fa.hasLibraries())
+          {
+            _linkLibraries.merge(fa.libraries());
+          }
+        }
       }
     }
 
@@ -576,24 +599,13 @@ namespace MicroModelica {
       {
         Error::instance().add(0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo", n.c_str());
       }
-    }
-
-    SymbolTable 
-    Model::linkLibraries() const 
-    {
-      return SymbolTable();
-    }
-
-    SymbolTable 
-    Model::includeDirectories() const 
-    {
-      return SymbolTable();
-    }
-    
-    SymbolTable 
-    Model::libraryDirectories() const 
-    {
-      return SymbolTable();
+      Option<CompiledPackage> cp = _packages[n];
+      if(cp)
+      {
+        _linkLibraries.merge(cp->linkLibraries());
+        _libraryDirectories.merge(cp->libraryDirectories());
+        _includeDirectories.merge(cp->includeDirectories());
+      }
     }
 
     void 

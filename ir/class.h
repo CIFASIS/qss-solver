@@ -498,12 +498,12 @@ namespace MicroModelica
         outputNbr() { return _outputNbr; };
         inline int 
         eventNbr() { return _eventNbr; };
-        Util::SymbolTable 
-        linkLibraries() const;
-        Util::SymbolTable 
-        includeDirectories() const;
-        Util::SymbolTable 
-        libraryDirectories() const;
+        inline Util::SymbolTable 
+        linkLibraries() const { return _linkLibraries; };
+        inline Util::SymbolTable 
+        includeDirectories() const { return _includeDirectories; };
+        inline Util::SymbolTable 
+        libraryDirectories() const { return _libraryDirectories; };
         inline EquationTable 
         derivatives() { return _derivatives; };
         inline EquationTable 
@@ -553,6 +553,9 @@ namespace MicroModelica
         Util::ModelDependencies   _dependecies;
         CompiledPackageTable      _packages;
         StatementTable            _initialCode;
+        Util::SymbolTable         _libraryDirectories;
+        Util::SymbolTable         _linkLibraries;
+        Util::SymbolTable         _includeDirectories;
         std::list<AST_Equation>   _astEquations;
         std::list<AST_Statement>  _astStatements;
         int                       _stateNbr;
