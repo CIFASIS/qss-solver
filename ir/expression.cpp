@@ -45,8 +45,12 @@ namespace MicroModelica {
     string 
     Expression::print() const 
     {
-      ExpressionPrinter printer(_symbols);
-      return printer.apply(_exp);
+      if(_exp != NULL)
+      {
+        ExpressionPrinter printer(_symbols);
+        return printer.apply(_exp);
+      }
+      return "";
     }
 
     std::ostream& operator<<(std::ostream& out, const Expression& s)

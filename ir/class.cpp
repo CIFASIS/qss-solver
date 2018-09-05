@@ -324,6 +324,7 @@ namespace MicroModelica {
       _name(),
       _imports(),
       _symbols(),
+      _types(),
       _annotations(_symbols),
       _calledFunctions(),
       _derivatives(),
@@ -343,12 +344,14 @@ namespace MicroModelica {
       _eventId(0),
       _externalFunctions(false)
     {
+      _symbols.initialize(_types);
     }
 
     Model::Model(string name) :
       _name(name),
       _imports(),
       _symbols(),
+      _types(),
       _annotations(_symbols),
       _calledFunctions(),
       _derivatives(),
@@ -368,6 +371,7 @@ namespace MicroModelica {
       _eventId(0),
       _externalFunctions(false)
     {
+      _symbols.initialize(_types);
     }
 
     void
@@ -379,7 +383,6 @@ namespace MicroModelica {
     void
     Model::insert(VarName n, Variable& vi) 
     {
-      cout << "Inserta " << n << endl;
       vi.setName(n);
       if(vi.typePrefix() & TP_CONSTANT)
       {
@@ -613,14 +616,14 @@ namespace MicroModelica {
         variable(AST_ListFirst(ed->arguments()));
         Equation mse(eq, _symbols, range, EQUATION::Derivative);
         addInput(mse, _derivativeId, EQUATION::Derivative);
-        _derivatives[_derivativeId++] = mse;
+        _derivatives.insert(_derivativeId++, mse);
       }
       else if(eqe->left()->expressionType() == EXPCOMPREF)
       {
         variable(eqe->left());
         Equation mse(eq, _symbols, range, EQUATION::Algebraic);
         addInput(mse, _algebraicId, EQUATION::Algebraic);
-        _algebraics[_algebraicId++] = mse;
+        _algebraics.insert(_algebraicId++, mse);
       }
       else if(eqe->left()->expressionType() == EXPOUTPUT)
       {
@@ -636,7 +639,7 @@ namespace MicroModelica {
           variable(current_element(it));
           Equation mse(eq, _symbols, range, EQUATION::Algebraic);
           addInput(mse, _algebraicId, EQUATION::Algebraic);
-          _algebraics[_algebraicId++] = mse;
+          _algebraics.insert(_algebraicId++, mse);
         }
       }
       else
@@ -676,7 +679,7 @@ namespace MicroModelica {
     {
       if(stm->statementType() == STWHEN)
       {
-        _eventNbr += range->size();
+        _eventNbr += (range ? range->size() : 1);
         AST_Statement_When sw = stm->getAsWhen();
         if(sw->hasComment())
         {
@@ -712,14 +715,15 @@ namespace MicroModelica {
             }
             if(newEvent)
             {
+              _eventNbr += (range ? range->size() : 1);
               _events.insert(_eventId++, event2);
             }
           }
         }
         _events.insert(_eventId++, event);
+      }
     }
-
-    }
+    
     void 
     Model::setEvents()
     {
@@ -742,6 +746,17 @@ namespace MicroModelica {
             addEvent(current_element(stit), range);
           }
         }
+      }
+    }
+
+    void 
+    Model::setOutputs()
+    {
+      list<AST_Expression> astOutputs = _annotations.output();
+      list<AST_Expression>::iterator it;
+      for(it = astOutputs.begin(); it != astOutputs.end(); it++)
+      {
+        _outputs.insert(_outputNbr++, Equation(*it, _symbols, EQUATION::Output));
       }
     }
 

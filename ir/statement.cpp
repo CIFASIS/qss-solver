@@ -46,13 +46,13 @@ namespace MicroModelica {
           AST_Statement_If sti = _stm->getAsIf();
           Expression ifcond(sti->condition(), _symbols);
           buffer << "if(" << ifcond << ")" << endl;
-          buffer << "{";
+          buffer << "{" << endl;
           AST_StatementList stl = sti->statements();
           AST_StatementListIterator stlit;
           foreach(stlit, stl)
           {
             Statement st(current_element(stlit), _symbols);
-            buffer << TAB << st;  
+            buffer << TAB << st << endl;  
           }
           buffer << "}";
           AST_Statement_ElseList stelsel = sti->else_if();
@@ -65,7 +65,7 @@ namespace MicroModelica {
             foreach(stlit, stl)
             {
               Statement st(current_element(stlit), _symbols);
-              buffer << TAB << st;  
+              buffer << TAB << st << endl;;  
             }
             buffer << "}";
           }
@@ -76,7 +76,7 @@ namespace MicroModelica {
             foreach(stlit, stl)
             {
               Statement st(current_element(stlit), _symbols);
-              buffer << TAB << st;  
+              buffer << TAB << st << endl;  
             }
             buffer << "}";
           }
@@ -87,7 +87,7 @@ namespace MicroModelica {
           AST_Statement_Assign asg = _stm->getAsAssign();
           Expression lhs(asg->lhs(), _symbols);
           Expression rhs(asg->exp(),_symbols);
-          buffer << lhs << " = " << rhs << ";" << endl;
+          buffer << lhs << " = " << rhs << ";";
           break;
         }
         case STFOR:
@@ -101,7 +101,7 @@ namespace MicroModelica {
           foreach(stmit, stms)
           {
             Statement st(current_element(stmit), _symbols);
-            buffer << TAB << st;  
+            buffer << TAB << st << endl;  
           }
           buffer << range.end();
           break;

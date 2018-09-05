@@ -159,7 +159,7 @@ namespace MicroModelica {
          * @return
          */
         bool
-        readPackage(string fileName, IR::CompiledPackageTable pt);
+        readPackage(string fileName, IR::CompiledPackageTable& pt);
         /**
          *
          * @param fileName

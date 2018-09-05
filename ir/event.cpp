@@ -89,8 +89,14 @@ namespace MicroModelica {
       return exp;
     }
 
+    string 
+    Event::print() const
+    {
+    }
+
     std::ostream& operator<<(std::ostream& out, const Event& e)
     {
+      out << e.print();
       return out;
     }
   }

@@ -22,6 +22,7 @@
 #include <sstream>
 
 #include "../ast/expression.h"
+#include "../ast/equation.h"
 #include "../util/ast_util.h"
 #include "../util/util.h"
 
@@ -37,10 +38,7 @@ namespace MicroModelica {
       _autonomous(true),
       _symbols(symbols)
     {
-      Autonomous autonomous(_symbols);
-      _autonomous = autonomous.apply(eq);
-      CalledFunctions cf;
-      _calledFunctions = cf.apply(eq);
+      process(eq);
     }
 
     Equation::Equation(AST_Equation eq, VarSymbolTable& symbols, EQUATION::Type type) :
@@ -51,6 +49,11 @@ namespace MicroModelica {
       _autonomous(true),
       _symbols(symbols)
     {
+      Autonomous autonomous(_symbols);
+      _autonomous = autonomous.apply(_rhs.expression());
+      CalledFunctions cf;
+      _calledFunctions = cf.apply(_rhs.expression());
+      process(eq);
     }
 
     Equation::Equation(AST_Equation eq, VarSymbolTable& symbols, Range r, EQUATION::Type type) :
@@ -61,6 +64,7 @@ namespace MicroModelica {
       _autonomous(true),
       _symbols(symbols)
     {
+      process(eq);
     }
  
     Equation::Equation(AST_Equation eq, VarSymbolTable& symbols, Option<Range> r, EQUATION::Type type) :
@@ -71,15 +75,62 @@ namespace MicroModelica {
       _autonomous(true),
       _symbols(symbols)
     {
+      process(eq);
     }   
+
+    void
+    Equation::process(AST_Expression exp)
+    {
+      _rhs = Expression(exp, _symbols);
+      Autonomous autonomous(_symbols);
+      _autonomous = autonomous.apply(exp);
+      CalledFunctions cf;
+      _calledFunctions = cf.apply(exp);
+    }
+
+    void 
+    Equation::process(AST_Equation eq)
+    {
+      AST_Equation_Equality eqe = eq->getAsEquality();
+      if(eqe->left()->expressionType() == EXPDERIVATIVE)
+      {
+        _lhs = Expression(AST_ListFirst(eqe->left()->getAsDerivative()->arguments()), _symbols);
+        _rhs = Expression(eqe->right(), _symbols);
+      }
+      else if(eqe->left()->expressionType() == EXPCOMPREF)
+      {
+        _lhs = Expression(eqe->left(), _symbols);
+        _rhs = Expression(eqe->right(), _symbols);
+      }
+      else if(eqe->left()->expressionType() == EXPOUTPUT)
+      {
+        AST_Expression_Output eout = eqe->left()->getAsOutput();
+        AST_ExpressionList el = eout->expressionList();
+        AST_ExpressionListIterator it;
+        foreach(it,el)
+        {
+          _lhs = Expression(eout, _symbols);
+          _rhs = Expression(eqe->right(), _symbols);
+        }
+      }
+      Autonomous autonomous(_symbols);
+      _autonomous = autonomous.apply(_rhs.expression());
+      CalledFunctions cf;
+      _calledFunctions = cf.apply(_rhs.expression());
+    }
 
     string 
     Equation::print() const
     {
       stringstream buffer;
-      if(_range) { buffer << _range.get(); }
-      buffer << _lhs << " = " << _rhs << endl; 
-      if(_range) { buffer << _range.get().end(); }
+      string block = "";
+      if(_range) 
+      { 
+        buffer << _range.get(); 
+        block += TAB;
+      }
+      buffer << block << _lhs << " = " << _rhs << ";"; 
+      if(_range) { buffer << endl << _range.get().end(); }
       return buffer.str();
     }
 

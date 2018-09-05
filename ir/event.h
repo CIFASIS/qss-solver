@@ -81,6 +81,8 @@ namespace MicroModelica {
         bool 
         compare(AST_Expression zc);
         friend std::ostream& operator<<(std::ostream& out, const Event& e);
+        std::string 
+        print() const;
       private:
         AST_Expression
         getExpression(AST_Expression zc);

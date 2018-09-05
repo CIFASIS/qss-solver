@@ -1688,14 +1688,50 @@ ExpressionPrinter::foldTraverseElement(AST_Expression exp)
       if(!var)
       {
         Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", cr->name().c_str());
+        break;
       }
       buffer << var.get();
       if(cr->hasIndexes())
       {
-        cr->firstIndex();
+        AST_ExpressionList indexes = cr->firstIndex();
+        AST_ExpressionListIterator it;
+        int size = indexes->size(), i = 0;
+        foreach(it, indexes)
+        {
+          buffer << "[";
+          buffer << apply(current_element(it)) << (++i < size ? "," : "");
+          buffer << "]";
+        }
       }
       break;
     }
+    case EXPDERIVATIVE:
+    {
+      AST_Expression_Derivative der = exp->getAsDerivative();
+      buffer << apply(AST_ListFirst(der->arguments()));
+      break;
+    }
+    case EXPINTEGER:
+      buffer << exp->getAsInteger()->val();
+      break;
+    case EXPOUTPUT:
+    {
+      AST_Expression_Output out = exp->getAsOutput();
+      AST_ExpressionListIterator it;
+      int size = out->expressionList()->size(), i = 0;
+      foreach (it,out->expressionList())
+      {
+        buffer << apply(current_element(it));
+        buffer << (++i == size ? "" : ",");
+      }
+      break;
+    }
+    case EXPREAL:
+      buffer << exp->getAsReal()->val();
+      break;
+    case EXPSTRING:
+      buffer << exp->getAsString()->str();
+      break;
     default:
       return "";
   }

@@ -290,10 +290,10 @@ namespace MicroModelica {
     }
 
     bool
-    Utils::readPackage(string fileName, IR::CompiledPackageTable pt)
+    Utils::readPackage(string fileName, IR::CompiledPackageTable& pt)
     {
       Option<IR::CompiledPackage> cp = readPackage(fileName);
-      if(cp)
+      if(!cp)
       {
         return false;
       }

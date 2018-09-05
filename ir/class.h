@@ -520,6 +520,8 @@ namespace MicroModelica
         setEquations();
         void 
         setEvents();
+        void 
+        setOutputs();
         inline StatementTable
         initialCode() { return _initialCode; };
       private:
@@ -540,6 +542,7 @@ namespace MicroModelica
         std::string               _name;
         Util::ImportTable         _imports;
         Util::VarSymbolTable      _symbols;
+        Util::TypeSymbolTable     _types;
         ModelAnnotation           _annotations;
         FunctionTable             _calledFunctions;
         EquationTable             _derivatives;

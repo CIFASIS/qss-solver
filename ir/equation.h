@@ -70,7 +70,7 @@ namespace MicroModelica {
         inline Expression 
         rhs() { return _rhs; };
         inline AST_Expression
-        equation() { return _exp; };
+        equation() { return _rhs.expression(); };
         inline bool
         autonomous() { return _autonomous; };
         inline Util::SymbolTable 
@@ -79,15 +79,18 @@ namespace MicroModelica {
         std::string
         print() const;
       private:
-        AST_Equation    _eq;
-        Expression      _lhs;
-        Expression      _rhs;
-        AST_Expression  _exp;
-        Option<Range>   _range;
-        bool            _autonomous;
+        void 
+        process(AST_Equation eq);
+        void 
+        process(AST_Expression exp);
+        AST_Equation         _eq;
+        Expression           _lhs;
+        Expression           _rhs;
+        Option<Range>        _range;
+        bool                 _autonomous;
         Util::VarSymbolTable _symbols;
         Util::SymbolTable    _calledFunctions;
-
+        EQUATION::Type       _type;
     };
 
     typedef ModelTable<int,Equation> EquationTable;
