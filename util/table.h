@@ -64,6 +64,21 @@ class ModelTable : public std::map<Key,Value>
     value(iterator& it) { return it->second; }
     inline Key 
     key(iterator& it) { return it->first; };
+    void 
+    merge(ModelTable<Key,Value> other)
+    {
+      ModelTable<Key,Value>::iterator it;
+      for(Value v = other.begin(it); !other.end(it); v = other.end(it))
+      {
+        insert(other.key(it),v);
+      }
+    }
+    Value 
+    first()
+    {
+      iterator it;
+      return begin(it);
+    }
   };
 
 
