@@ -213,10 +213,10 @@ namespace MicroModelica {
       return buffer.str();
     }
 
-    list<string>
+    SymbolTable  
     Utils::getValue(fstream *package, string token)
     {
-      list<string> ret;
+      SymbolTable ret;
       string line;
       while(getline(*package, line))
       {
@@ -224,7 +224,7 @@ namespace MicroModelica {
         {
           break;
         }
-        ret.push_back(line);
+        ret.insert(line, line);
       }
       return ret;
     }
@@ -246,32 +246,28 @@ namespace MicroModelica {
         string derivative;
         string includeDir;
         string libraryDir;
-        list<string> libraries;
+        SymbolTable libraries;
         while(getline(package, line))
         {
           if(!line.compare("DEPENDENCES"))
           {
-            list<string> objs = getValue(&package, "ENDDEPENDENCES");
-            for(list<string>::iterator it = objs.begin(); it != objs.end(); ++it)
-            {
-              objects.insert(*it,*it);
-            }
+            objects = getValue(&package, "ENDDEPENDENCES");
           }
           else if(!line.compare("FUNCTION"))
           {
-            fname = getValue(&package, "ENDFUNCTION").front();
+            fname = getValue(&package, "ENDFUNCTION").first();
           }
           else if(!line.compare("DERIVATIVE"))
           {
-            derivative = getValue(&package, "ENDDERIVATIVE").front();
+            derivative = getValue(&package, "ENDDERIVATIVE").first();
           }
           else if(!line.compare("INCLUDEDIRECTORY"))
           {
-            includeDir = getValue(&package, "ENDINCLUDEDIRECTORY").front();
+            includeDir = getValue(&package, "ENDINCLUDEDIRECTORY").first();
           }
           else if(!line.compare("LIBRARYDIRECTORY"))
           {
-            libraryDir = getValue(&package, "ENDLIBRARYDIRECTORY").front();
+            libraryDir = getValue(&package, "ENDLIBRARYDIRECTORY").first();
           }
           else if(!line.compare("LIBRARIES"))
           {

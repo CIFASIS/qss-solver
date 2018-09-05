@@ -235,7 +235,7 @@ namespace MicroModelica {
         Utils();
         bool
         checkCodeFiles(string name, string ext);
-        list<string>
+        SymbolTable
         getValue(fstream *package, string token);
         string
         packagePath(string name);
