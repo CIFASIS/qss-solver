@@ -483,7 +483,7 @@ namespace MicroModelica
         inline Util::ImportTable
         imports() const { return _imports; };
         inline ModelAnnotation 
-        annotations() { return _annotations; };
+        annotations() const { return _annotations; };
         inline FunctionTable 
         calledFunctions() const { return _calledFunctions; };
         inline int 
