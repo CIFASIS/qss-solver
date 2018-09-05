@@ -101,10 +101,11 @@ namespace MicroModelica {
         if(annot.hasLibraries())
         {
           _writer->print("LIBRARIES");
-          list<string> libs = annot.libraries();
-          for(list<string>::iterator it = libs.begin(); it != libs.end(); it++)
+          SymbolTable libs = annot.libraries();
+          SymbolTable::iterator it;
+          for(string i = libs.begin(it); !libs.end(it); i = libs.next(it))
           {
-            _writer->print(*it);
+            _writer->print(i);
           }
           _writer->print("ENDLIBRARIES");
         }
