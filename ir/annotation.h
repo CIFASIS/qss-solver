@@ -146,7 +146,7 @@ namespace MicroModelica {
          *
          * @return
          */
-        list<string>
+        Util::SymbolTable 
         libraries();
         /**
          *
@@ -170,7 +170,7 @@ namespace MicroModelica {
         std::string                                _derivative;
         std::string                                _include;
         std::string                                _includeDirectory;
-        std::list<std::string>                     _libraries;
+        Util::SymbolTable                          _libraries;
         std::string                                _libraryDirectory;
     };
 

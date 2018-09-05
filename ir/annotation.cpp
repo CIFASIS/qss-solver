@@ -114,7 +114,8 @@ namespace MicroModelica {
         case LIBRARY:
           if(mod->expressionType() == EXPSTRING)
           {
-            _libraries.push_back(mod->getAsString()->str());
+            string l = mod->getAsString()->str();
+            _libraries.insert(l, l);
           }
           else if(mod->expressionType() == EXPBRACE)
           {
@@ -122,7 +123,8 @@ namespace MicroModelica {
             AST_ExpressionListIterator eli;
             foreach(eli,el)
             {
-              _libraries.push_back(current_element(eli)->getAsString()->str());
+              string l = current_element(eli)->getAsString()->str();
+              _libraries.insert(l, l);
             }
           }
           break;
@@ -162,7 +164,7 @@ namespace MicroModelica {
       return _includeDirectory;
     }
 
-    list<string>
+    SymbolTable 
     FunctionAnnotation::libraries()
     {
       return _libraries;
