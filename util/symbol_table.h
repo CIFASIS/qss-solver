@@ -173,7 +173,7 @@ namespace MicroModelica {
          * @return
          */
         inline bool
-        isState() { return _realType == State; };
+        isState() const { return _realType == State; };
         /**
          *
          */
@@ -201,7 +201,7 @@ namespace MicroModelica {
          * @return
          */
         inline bool
-        isAlgebraic() { return _realType == Algebraic; };
+        isAlgebraic() const { return _realType == Algebraic; };
         /**
          *
          */
@@ -251,7 +251,7 @@ namespace MicroModelica {
          * @return
          */
         inline string
-        name() { return _name; };
+        name() const { return _name; };
         /**
          *
          * @param n
@@ -283,13 +283,13 @@ namespace MicroModelica {
          * @return
          */
         inline int
-        size(int dim) { return _size[dim]; };
+        size(int dim) const { return _size[dim]; };
         /**
          *
          * @return
          */
         inline int
-        dimensions() { return _size.size(); };
+        dimensions() const { return _size.size(); };
         std::string  
         declaration(std::string prefix = "");
         std::string 
@@ -299,7 +299,9 @@ namespace MicroModelica {
         inline void 
         setOffset(int offset) { _offset = offset; _hasOffset = true; };
         inline int  
-        offset() { return _offset; };
+        offset() const { return _offset; };
+        inline bool 
+        isModelVar() const { return isState() || isDiscrete() || isAlgebraic() || isParameter(); };
       private:
         void
         processModification();
