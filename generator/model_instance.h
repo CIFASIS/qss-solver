@@ -119,7 +119,7 @@ namespace MicroModelica
         computationalGraph() = 0;
         void 
         initialCode();
-        void 
+        virtual void 
         header();
         virtual void 
         generate() = 0;
@@ -185,6 +185,8 @@ namespace MicroModelica
         computationalGraph();
         void 
         generate();
+        void 
+        header();
     };
 
     /**
@@ -227,6 +229,8 @@ namespace MicroModelica
         computationalGraph();
         void
         generate();
+        void 
+        header();
       private:
         void 
         allocateSolver();

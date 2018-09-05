@@ -23,6 +23,7 @@
 #include <utility>
 #include <boost/optional/optional_io.hpp>
 
+#include "macros.h"
 #include "../ast/expression.h"
 #include "../ir/annotation.h"
 #include "../ir/class.h"
@@ -218,10 +219,11 @@ namespace MicroModelica {
       buffer << "\t settings->debug = " << _flags.debug() << ";";
       _writer->print(buffer);
       buffer << "\t settings->parallel = ";
-      buffer << (_flags.parallel() ? "TRUE" : "FALSE");
+      buffer << (_flags.parallel() ? "TRUE" : "FALSE") << ";";
       _writer->print(buffer);
       buffer << "\t settings->hybrid = ";
-      buffer << (_model.eventNbr() ? "TRUE" : "FALSE");
+      buffer << (_model.eventNbr() ? "TRUE" : "FALSE") << ";";
+      _writer->print(buffer);
       buffer << "\t settings->method = " << _model.annotations().solver() << ";";
       _writer->print(buffer);
     }
@@ -234,43 +236,13 @@ namespace MicroModelica {
       stringstream buffer;
       for(Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it))
       {
-        if(var.isConstant() || var.isForType()) { continue; }
-        buffer << "#define " << var;
-        int dim = var.dimensions();
-        if(dim) { buffer << "("; }
-        for(int i = 0; i < dim; i++)
-        {
-          buffer << "d" << i+1 << (i == dim-1 ? ")" : ","); 
-        }
-        buffer << " ";
-        if(var.isState()) { buffer << "x"; }
-        if(var.isAlgebraic()) { buffer << "a"; }
-        if(var.isDiscrete()) { buffer << "d"; } 
-        if(var.isParameter()) { buffer << "__PAR__" << var.name(); } 
-        stringstream end;
-        if(!_model.annotations().classic() &&
-            (var.isAlgebraic() || var.isState())) 
+        if(var.isModelVar()) 
         { 
-          end << "*" << _model.annotations().polyCoeffs(); 
+          Macros macros(_model, var);
+          buffer << macros;
         }
-        end << "]"; 
-        if(dim)
-        {
-          buffer << "[("; 
-          for(int i = 0; i < dim; i++)
-          {
-            stringstream variable;
-            variable << "*" << var.size(i) << "+";
-            buffer << "(d" << i+1 <<  "-1)" << (i == dim-1 ? ")"+end.str() : variable.str()); 
-          }
-        }
-        else if(var.isDiscrete() || var.isState() || var.isAlgebraic())
-        {
-          buffer << "[" << var.offset() << end.str();
-        }
-        buffer << endl;
-        _writer->write(buffer, MODEL_HEADER);
       }
+      _writer->write(buffer, MODEL_HEADER);
       for(Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it))
       {
         if(var.isParameter()) { buffer << var.declaration("__PAR__"); }
@@ -345,6 +317,11 @@ namespace MicroModelica {
 
     void
     QSSModelInstance::generate()
+    {
+    }
+
+    void 
+    QSSModelInstance::header()
     {
     }
 
@@ -480,5 +457,30 @@ namespace MicroModelica {
       _writer->beginBlock();
       _writer->endBlock();
     }
+
+    void 
+    ClassicModelInstance::header()
+    {
+      ModelInstance::header();
+      VarSymbolTable symbols = _model.symbols();
+      VarSymbolTable::iterator it;
+      stringstream buffer;
+      buffer << endl;
+      buffer << "// Derivative Macros definition. ";
+      _writer->write(buffer, MODEL_HEADER);
+      for(Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it))
+      {
+        if(!var.isState()) { continue; }
+        stringstream buffer;
+        Macros macros(_model, var);
+        buffer << "#define _der" << var << macros.parameters() << " dx[0]"; 
+        _writer->write(buffer, MODEL_HEADER);
+      }
+      buffer << endl << "// Jacobian Macros definition. ";
+      _writer->write(buffer, MODEL_HEADER);
+      buffer << "#define _jac(i) jac[i++]";
+      _writer->write(buffer, MODEL_HEADER);
+    }
+
   }
 }
