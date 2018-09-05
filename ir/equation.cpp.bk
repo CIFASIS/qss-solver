@@ -47,8 +47,7 @@ namespace MicroModelica {
       _rhs(),
       _range(),
       _autonomous(true),
-      _symbols(symbols),
-      _type(type)
+      _symbols(symbols)
     {
       Autonomous autonomous(_symbols);
       _autonomous = autonomous.apply(_rhs.expression());
@@ -63,8 +62,7 @@ namespace MicroModelica {
       _rhs(),
       _range(r),
       _autonomous(true),
-      _symbols(symbols),
-      _type(type)
+      _symbols(symbols)
     {
       process(eq);
     }
@@ -75,8 +73,7 @@ namespace MicroModelica {
       _rhs(),
       _range(r),
       _autonomous(true),
-      _symbols(symbols),
-      _type(type)
+      _symbols(symbols)
     {
       process(eq);
     }   
@@ -127,7 +124,7 @@ namespace MicroModelica {
     {
       switch(_type)
       {
-        case EQUATION::Derivative: return "_der"; 
+        case EQUATION::Derivative: return "_der_"; 
         default: return "";
       }
       return "";

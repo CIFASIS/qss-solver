@@ -83,6 +83,8 @@ namespace MicroModelica {
         process(AST_Equation eq);
         void 
         process(AST_Expression exp);
+        std::string 
+        prefix() const;
         AST_Equation         _eq;
         Expression           _lhs;
         Expression           _rhs;
