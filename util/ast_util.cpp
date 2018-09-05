@@ -646,21 +646,21 @@ ReplaceDer::foldTraverseElement(AST_Expression exp)
   switch(exp->expressionType())
   {
     case EXPCALL:
-      {
+    {
       AST_Expression_Call ec = exp->getAsCall();
       string name = *(ec->name());
       if(!name.compare("der2"))
       {
         return (newAST_Expression_Derivative(
-            newAST_ExpressionList(
+                newAST_ExpressionList(
                 newAST_Expression_Derivative(ec->arguments()))));
       }
       else if(!name.compare("der3"))
       {
         return (newAST_Expression_Derivative(
-            newAST_ExpressionList(
+                newAST_ExpressionList(
                 newAST_Expression_Derivative(
-                    newAST_ExpressionList(
+                newAST_ExpressionList(
                         newAST_Expression_Derivative(ec->arguments()))))));
       }
     }
@@ -1698,9 +1698,9 @@ ExpressionPrinter::foldTraverseElement(AST_Expression exp)
         int size = indexes->size(), i = 0;
         foreach(it, indexes)
         {
-          buffer << "[";
+          buffer << "(";
           buffer << apply(current_element(it)) << (++i < size ? "," : "");
-          buffer << "]";
+          buffer << ")";
         }
       }
       break;
