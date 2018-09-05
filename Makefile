@@ -64,6 +64,7 @@ GENERATORSRC = $(GENERATORDIR)/files.cpp  \
 							 $(GENERATORDIR)/writer.cpp  \
 							 $(GENERATORDIR)/function.cpp  \
 							 $(GENERATORDIR)/package.cpp  \
+							 $(GENERATORDIR)/macros.cpp  \
 							 $(GENERATORDIR)/generator.cpp 
 
 IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
