@@ -329,7 +329,7 @@ namespace MicroModelica {
           }
           break;
         case EXPCALL:
-          {
+        {
           AST_Expression_Call c = e->getAsCall();
           if(toStr(c->name()) == "sin")
           {
