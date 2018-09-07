@@ -51,18 +51,18 @@ namespace MicroModelica {
       for(string i = imports.begin(it); !imports.end(it); i = imports.next(it))
       {
         string addInclude = Utils::instance().packageName(i);
-        if(_include.lookup(addInclude))
+        if(!_include.lookup(addInclude))
         {
-          _include[addInclude] = addInclude;
+          _include.insert(addInclude, addInclude);
           _writer->write("#include \"" + addInclude + ".h\"", FUNCTION_HEADER);
         }
       }
       if(_function.annotations().hasInclude())
       {
         string addInclude = _function.annotations().include();
-        if(_include.lookup(addInclude))
+        if(!_include.lookup(addInclude))
         {
-          _include[addInclude] = addInclude;
+          _include.insert(addInclude, addInclude);
           _writer->write(addInclude, FUNCTION_HEADER);
         }
       }
@@ -123,8 +123,7 @@ namespace MicroModelica {
     {
       stringstream buffer;
       _writer->write(prototype(), FUNCTION_CODE);
-      _writer->write("{", FUNCTION_CODE);
-      _writer->beginBlock();
+      _writer->beginBlock(FUNCTION_CODE);
       localSymbols();
       StatementTable stms = _function.statements();
       StatementTable::iterator it;
@@ -144,8 +143,7 @@ namespace MicroModelica {
       {
         _writer->write("return " + _returnVariable + ";", FUNCTION_CODE);
       }
-      _writer->endBlock();
-      _writer->write("}", FUNCTION_CODE);
+      _writer->endBlock(FUNCTION_CODE);
     }
    
     void 
@@ -191,13 +189,9 @@ namespace MicroModelica {
     }
 
     void 
-    Function::addInclude(list<string> includes)
+    Function::addInclude(SymbolTable includes)
     {
-      list<string>::iterator it;
-      for(it = includes.begin(); it != includes.end(); it++)
-      {
-        _include[*it] = *it;
-      }
+      _include.merge(includes);
     }
 
     void 

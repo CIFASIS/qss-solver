@@ -24,6 +24,7 @@
 
 #include "../ir/class.h"
 #include "../util/compile_flags.h"
+#include "../util/util.h"
 #include "writer.h"
 
 namespace MicroModelica 
@@ -44,7 +45,7 @@ namespace MicroModelica
         void 
         addInclude(std::string include);
         void 
-        addInclude(std::list<std::string> includes);
+        addInclude(Util::SymbolTable includes);
       private:
         void 
         macros();
@@ -60,7 +61,7 @@ namespace MicroModelica
         Util::CompileFlags  _flags;
         WriterPtr           _writer;
         std::string         _prefix;
-        Util::ImportTable   _include;
+        Util::SymbolTable   _include;
         std::string         _returnVariable;
     };
   }
