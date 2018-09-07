@@ -1668,7 +1668,7 @@ ExpressionPrinter::foldTraverseElement(AST_Expression exp)
     case EXPCALL:
     {
       AST_Expression_Call call = exp->getAsCall();
-      buffer << call->name() << "(";
+      buffer << *call->name() << "(";
       AST_ExpressionListIterator it;
       int size = call->arguments()->size(), i = 0;
       foreach(it,call->arguments())
