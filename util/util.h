@@ -34,7 +34,9 @@
 namespace MicroModelica {
   namespace IR {
     class CompiledPackage;
+    class CompiledFunction;
     typedef ModelTable<std::string,CompiledPackage> CompiledPackageTable;
+    typedef ModelTable<std::string,CompiledFunction> CompiledFunctionTable;
   }
   namespace Util {
 
@@ -231,6 +233,10 @@ namespace MicroModelica {
         builtInReductionFunctions(IR::BuiltIn::Function fn);
         bool
         checkGKLinkFunctions(string name);
+        inline IR::CompiledFunctionTable
+        compiledFunctions();
+        inline void 
+        addCompiledFunctions(IR::CompiledFunctionTable fs);
       private:
         Utils();
         bool
@@ -247,6 +253,7 @@ namespace MicroModelica {
         map<IR::BuiltIn::Function, IR::BIF*>  _builtInFunctionImp;
         map<string, int>                  _annotations;
         string                            _binop[BINOPS];
+        IR::CompiledFunctionTable         _compiledFunctions;
     };
 
   }

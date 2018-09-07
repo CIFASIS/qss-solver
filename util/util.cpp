@@ -29,6 +29,7 @@
 #include "../ir/class.h"
 #include "../ir/index.h"
 #include "../ir/built_in_functions.h"
+#include "../ir/helpers.h"
 #include "compile_flags.h"
 #include "error.h"
 #include "symbol_table.h"
@@ -280,15 +281,15 @@ namespace MicroModelica {
           }
         }
         package.close();
-        return Option<IR::CompiledPackage>(IR::CompiledPackage (fileName, cft, objects));
+        return Option<CompiledPackage>(CompiledPackage (fileName, cft, objects));
       }
-      return Option<IR::CompiledPackage>();
+      return Option<CompiledPackage>();
     }
 
     bool
-    Utils::readPackage(string fileName, IR::CompiledPackageTable& pt)
+    Utils::readPackage(string fileName, CompiledPackageTable& pt)
     {
-      Option<IR::CompiledPackage> cp = readPackage(fileName);
+      Option<CompiledPackage> cp = readPackage(fileName);
       if(!cp)
       {
         return false;
@@ -463,5 +464,6 @@ namespace MicroModelica {
       map<string, BuiltIn::Function>::iterator it = _builtInFunctions.find(name);
       return it != _builtInFunctions.end();
     }
+
   }
 }
