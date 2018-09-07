@@ -210,6 +210,7 @@ namespace MicroModelica {
         bool                _initialCode;
         bool                _classModification;
         bool                _compositionElement;
+        Function            _function;
     };
   }
 }

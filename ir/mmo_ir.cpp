@@ -61,30 +61,31 @@ namespace MicroModelica {
     {
       Error::instance().setClassName(*(x->name()));
       AST_TypePrefix p = x->prefix();
-        if(p & CP_PACKAGE)
-        {
-          _std.setPackage(*x->name()); 
-          _class = &(_std.package());
-        }
-        else if((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE))
-        {
-          _std.addFunction(*x->name());
-          Option<Function> f = _std.function(*x->name());
-          if(f)
-          {
-            _class = &(f.get()); 
-          }
-        }
-        else
-        {
-          _std.setModel(*x->name());
-          _class = &(_std.model());
-        }
+      if(p & CP_PACKAGE)
+      {
+        _std.setPackage(*x->name()); 
+        _class = &(_std.package());
+      }
+      else if((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE))
+      {
+        _function = Function(*x->name());
+        _class = &_function; 
+      }
+      else
+      {
+        _std.setModel(*x->name());
+        _class = &(_std.model());
+      }
     }
 
     void
     MicroModelicaIR::leave(AST_Class x)
     {
+      AST_TypePrefix p = x->prefix();
+      if((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE))
+      {
+        _std.addFunction(_function);
+      }
     }
 
     void
@@ -181,7 +182,7 @@ namespace MicroModelica {
       else if(e == ELCLASS)
       {
         AST_Class c = x->getAsClassWrapper()->getClass();
-        visit(c);
+        c->accept(this);
       }
     }
 
