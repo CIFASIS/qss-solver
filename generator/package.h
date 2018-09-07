@@ -34,14 +34,13 @@ namespace MicroModelica
     {
       public:
         Package(IR::Package& package, Util::CompileFlags& flags, WriterPtr writer);
-        ~Package();
+        ~Package() {};
         void 
         generate();
       private:
         IR::Package            _package;
         Util::CompileFlags     _flags;
         WriterPtr              _writer;
-        std::list<std::string> _includes;
     };
   }
 }

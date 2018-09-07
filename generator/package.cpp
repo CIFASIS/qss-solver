@@ -35,10 +35,6 @@ namespace MicroModelica {
     {
     }
 
-    Package::~Package()
-    {
-    }
-    
     void
     Package::generate()
     {
@@ -47,7 +43,6 @@ namespace MicroModelica {
       if(_flags.hasOutputFile())
       {
         name = _flags.outputFilePath();
-        name.append(SLASH);
       }
       name.append(_package.fileName());
       string fileName;
@@ -66,7 +61,7 @@ namespace MicroModelica {
         _writer->print("ENDDEPENDENCES");
       }
       FunctionTable ft = _package.definitions();
-      list<string> includes;
+      SymbolTable includes;
       FunctionTable::iterator it;
       for(IR::Function f = ft.begin(it); !ft.end(it); f = ft.next(it))
       {
@@ -77,7 +72,8 @@ namespace MicroModelica {
         FunctionAnnotation annot = f.annotations();
         if(annot.hasInclude())
         {
-          includes.push_back(annot.include());
+          string inc = annot.include();
+          includes.insert(inc, inc);
         }
         if(annot.hasDerivative())
         {
@@ -128,20 +124,25 @@ namespace MicroModelica {
       buffer << "#include <math.h>" << endl;
       buffer << "#include <stdlib.h>" << endl;
       buffer << "#include \"" << name << ".h\"" << endl;
+      SymbolTable::iterator incIt;
+      for(string i = includes.begin(incIt); !includes.end(incIt); i = includes.next(incIt))
+      {
+        buffer <<  i;
+      }
       ImportTable imports = _package.imports();
       ImportTable::iterator impIt;
       for(string i = imports.begin(impIt); !imports.end(impIt); i = imports.next(impIt))
       {
         string addInclude = Utils::instance().packageName(i);
         buffer << "#include \"" << addInclude << ".h\"" << endl;
-        _includes.push_back(addInclude);
+        includes.insert(addInclude, addInclude);
       }
       _writer->write(buffer, FUNCTION_HEADER);
       for(IR::Function f = ft.begin(it); !ft.end(it); f = ft.next(it))
       {
         Function func(f,_flags, _writer);
         func.setPrefix(_package.prefix());
-        func.addInclude(_includes);
+        func.addInclude(includes);
         func.definition();
       }
       _writer->print(FUNCTION_HEADER);
