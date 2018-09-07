@@ -52,7 +52,7 @@ class ModelTable : public std::map<Key,Value>
     lookup(Key key)
     {
       iterator it = std::map<Key,Value>::find(key);
-      return it == std::map<Key,Value>::end();
+      return it != std::map<Key,Value>::end();
     }
     inline Value 
     begin(iterator& it) { it = std::map<Key,Value>::begin(); return (end(it) ? Value() : value(it)); };
@@ -68,7 +68,7 @@ class ModelTable : public std::map<Key,Value>
     merge(ModelTable<Key,Value> other)
     {
       ModelTable<Key,Value>::iterator it;
-      for(Value v = other.begin(it); !other.end(it); v = other.end(it))
+      for(Value v = other.begin(it); !other.end(it); v = other.next(it))
       {
         insert(other.key(it),v);
       }
