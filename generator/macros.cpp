@@ -72,6 +72,7 @@ namespace MicroModelica {
         {
           stringstream variable;
           variable << "*" << _variable.size(i) << "+";
+          if(_variable.offset()) { arguments << _variable.offset() << "+"; }
           arguments << "(d" << i+1 <<  "-1)" << (i == dim-1 ? ")"+end.str() : variable.str()); 
         }
       }
