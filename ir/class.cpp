@@ -220,12 +220,8 @@ namespace MicroModelica {
     
     Package::Package(string name) :
       _imports(),
-      _name(),
+      _name(name),
       _functions()
-    {
-    }
-
-    Package::~Package()
     {
     }
 
@@ -260,9 +256,9 @@ namespace MicroModelica {
     }
 
     void
-    Package::insert(Function &f)  
+    Package::setFunctions(FunctionTable& fs) 
     {
-      _functions[f.name()] = f;
+      _functions.merge(fs);
     }
 
     void

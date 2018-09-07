@@ -269,7 +269,7 @@ namespace MicroModelica
         /**
         *
         */
-        ~Package();
+        ~Package() {};
         /**
         *
         * @return
@@ -312,7 +312,7 @@ namespace MicroModelica
         * @param f
         */
         void
-        insert(Function &f);
+        setFunctions(FunctionTable &fs);
         /**
         *
         * @param efc
