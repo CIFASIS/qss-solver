@@ -230,6 +230,20 @@ namespace MicroModelica {
     }
 
     void
+    MemoryWriter::beginBlock(Section s)
+    {
+      write("{",s);
+      _block = indent(++_blockIndent);
+    }
+
+    void
+    MemoryWriter::endBlock(Section s)
+    {
+      write("}",s);
+      _block = indent(--_blockIndent);
+    }
+
+    void
     MemoryWriter::endBlock()
     {
       _file << "}" << endl << endl;
@@ -393,9 +407,21 @@ namespace MicroModelica {
     {
       _block = indent(++_blockIndent);
     }
-
+    
+    void
+    FileWriter::beginBlock(Section s)
+    {
+      _block = indent(++_blockIndent);
+    }
+   
     void
     FileWriter::endBlock()
+    {
+      _block = indent(--_blockIndent);
+    }
+    
+    void
+    FileWriter::endBlock(Section s)
     {
       _block = indent(--_blockIndent);
     }

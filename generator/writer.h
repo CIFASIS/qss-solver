@@ -220,7 +220,17 @@ namespace MicroModelica {
         *
         */
         virtual void
+        beginBlock(Section s) = 0;
+        /**
+        *
+        */
+        virtual void
         endBlock() = 0;
+        /**
+        *
+        */
+        virtual void
+        endBlock(Section s) = 0;
         /**
         *
         * @return
@@ -351,7 +361,17 @@ namespace MicroModelica {
         *
         */
         void
+        beginBlock(Section s);
+        /**
+        *
+        */
+        void
         endBlock();
+        /**
+        *
+        */
+        void
+        endBlock(Section s);
         /**
         *
         * @return
@@ -488,7 +508,17 @@ namespace MicroModelica {
         *
         */
         void
+        beginBlock(Section s);
+        /**
+        *
+        */
+        void
         endBlock();
+        /**
+        *
+        */
+        void
+        endBlock(Section s);
         /**
         *
         * @return
