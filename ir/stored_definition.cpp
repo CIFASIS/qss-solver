@@ -30,10 +30,6 @@ namespace MicroModelica {
     {
     }
 
-    StoredDefinition::~StoredDefinition()
-    {
-    }
-
     void 
     StoredDefinition::setModel(string name)
     {
@@ -47,9 +43,9 @@ namespace MicroModelica {
     }
 
     void 
-    StoredDefinition::addFunction(string name)
+    StoredDefinition::addFunction(Function& f)
     {
-      _functions[name] = Function(name);
+      _functions.insert(f.name(), f);
     }
 
     Option<Function> 
@@ -92,6 +88,10 @@ namespace MicroModelica {
         boost::get<Model>(_def).setEvents();
         boost::get<Model>(_def).setCalledFunctions(_functions);
         boost::get<Model>(_def).setOutputs();
+      }
+      else 
+      {
+        boost::get<Package>(_def).setFunctions(_functions);
       }
     }
 

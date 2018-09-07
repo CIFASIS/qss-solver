@@ -40,7 +40,7 @@ namespace MicroModelica {
         /**
          *
          */
-        ~StoredDefinition();
+        ~StoredDefinition() {};
         bool 
         isModel();
         bool 
@@ -54,7 +54,7 @@ namespace MicroModelica {
         void 
         setPackage(string name);
         void 
-        addFunction(string name);
+        addFunction(Function& f);
         Option<Function> 
         function(string name);
         void 
