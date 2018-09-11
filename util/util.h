@@ -26,8 +26,8 @@
 #include <string>
 
 #include "../ast/ast_types.h"
-#include "../ir/built_in_functions.h"
 #include "util_types.h"
+#include "symbol_table.h"
 #include "compile_flags.h"
 #include "table.h"
 
@@ -106,34 +106,6 @@ namespace MicroModelica {
         checkExperimentAnnotations(string *annotation);
         /**
          *
-         * @param fname
-         * @return
-         */
-        IR::BuiltIn::Function 
-        checkBuiltInFunctions(string fname);
-        /**
-         *
-         * @param fname
-         * @return
-         */
-        IR::BuiltIn::Function 
-        checkBuiltInReductionFunctions(string fname);
-        /**
-         *
-         * @param fname
-         * @return
-         */
-        IR::BuiltIn::Variable
-        checkBuiltInVariables(string fname);
-        /**
-         *
-         * @param fname
-         * @param type
-         */
-        void
-        addBuiltInVariables(string fname, IR::BuiltIn::Variable type);
-        /**
-         *
          * @param bot
          * @return
          */
@@ -201,15 +173,6 @@ namespace MicroModelica {
         packageName(string name);
         /**
          *
-         * @param vi
-         * @param indent
-         * @param localVar
-         * @return
-         */
-        string
-        printInitialAssignment(Variable vi, string indent, string localVar = "i0");
-        /**
-         *
          * @param ev
          * @return
          */
@@ -229,14 +192,24 @@ namespace MicroModelica {
          */
         string
         getFileName(string file);
-        IR::BIF*
-        builtInReductionFunctions(IR::BuiltIn::Function fn);
-        bool
-        checkGKLinkFunctions(string name);
-        inline IR::CompiledFunctionTable
+        bool 
+        checkGKLinkFunctions(std::string name) { return false; };
+        IR::CompiledFunctionTable
         compiledFunctions();
-        inline void 
+        void 
+        addCompiledFunction(IR::CompiledFunction f);
+        void 
         addCompiledFunctions(IR::CompiledFunctionTable fs);
+        bool 
+        checkBuiltInFunctions(std::string name);
+        inline VarSymbolTable 
+        symbols() { return _symbols; };
+        inline VarSymbolTable 
+        localSymbols() { return _localSymbols; };
+        inline void  
+        addLocalSymbol(std::string symbol, Variable v) { _localSymbols.insert(symbol, v); };
+        inline void 
+        setSymbols(const VarSymbolTable& symbols) { _symbols = symbols; };
       private:
         Utils();
         bool
@@ -248,12 +221,11 @@ namespace MicroModelica {
         string                            _languageEspecification;
         int                               _varCounter;
         CompileFlags                      _flags;
-        map<string, IR::BuiltIn::Function>    _builtInFunctions;
-        map<string, IR::BuiltIn::Variable>    _builtInVariables;
-        map<IR::BuiltIn::Function, IR::BIF*>  _builtInFunctionImp;
         map<string, int>                  _annotations;
         string                            _binop[BINOPS];
         IR::CompiledFunctionTable         _compiledFunctions;
+        VarSymbolTable                       _symbols;
+        VarSymbolTable                       _localSymbols;
     };
 
   }

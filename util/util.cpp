@@ -42,51 +42,13 @@ namespace MicroModelica {
         _languageEspecification("C"), 
         _varCounter(1), 
         _flags(), 
-        _builtInFunctions(), 
-        _builtInVariables(), 
-        _builtInFunctionImp()
+        _compiledFunctions() 
     {
       _annotations.insert(pair<string, int>("StartTime", 0));
       _annotations.insert(pair<string, int>("StopTime", 1));
       _annotations.insert(pair<string, int>("Tolerance", 2));
       _annotations.insert(pair<string, int>("AbsTolerance", 3));
       _annotations.insert(pair<string, int>("StepSize", 4));
-      _builtInVariables.insert(pair<string, BuiltIn::Variable>("time", BuiltIn::Time));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("reinit", BuiltIn::REINIT));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("terminate", BuiltIn::TERMINATE));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("sum", BuiltIn::SUM));
-      _builtInFunctions.insert( pair<string, BuiltIn::Function>("__INNER_PRODUCT", BuiltIn::INNER_PRODUCT));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("product", BuiltIn::PRODUCT));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("min", BuiltIn::MIN));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("max", BuiltIn::MAX));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("abs", BuiltIn::ABS));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("sign", BuiltIn::SIGN));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("sqrt", BuiltIn::SQRT));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("ceil", BuiltIn::CEIL));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("floor", BuiltIn::FLOOR));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("sin", BuiltIn::SIN));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("cos", BuiltIn::COS));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("tan", BuiltIn::TAN));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("asin", BuiltIn::ASIN));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("acos", BuiltIn::ACOS));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("atan", BuiltIn::ATAN));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("atan2", BuiltIn::ATAN2));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("sinh", BuiltIn::SINH));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("cosh", BuiltIn::COSH));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("tanh", BuiltIn::TANH));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("exp", BuiltIn::EXP));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("log", BuiltIn::LOG));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("log10", BuiltIn::LOG10));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("pre", BuiltIn::PRE));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("GQLink_GetB", BuiltIn::GQLINK));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("GQLink_GetBx", BuiltIn::GQLINK));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("GQLink_GetBy", BuiltIn::GQLINK));
-      _builtInFunctions.insert(pair<string, BuiltIn::Function>("GQLink_GetBz", BuiltIn::GQLINK));
-      _builtInFunctionImp.insert(pair<BuiltIn::Function, BIF*>(BuiltIn::SUM, new BuiltInSumFunction()));
-      _builtInFunctionImp.insert(pair<BuiltIn::Function, BIF*>(BuiltIn::PRODUCT, new BuiltInProductFunction()));
-      _builtInFunctionImp.insert(pair<BuiltIn::Function, BIF*>(BuiltIn::INNER_PRODUCT, new BuiltInInnerProductFunction()));
-      _builtInFunctionImp.insert(pair<BuiltIn::Function, BIF*>(BuiltIn::MIN, new BuiltInMinFunction())); 
-      _builtInFunctionImp.insert(pair<BuiltIn::Function, BIF*>(BuiltIn::MAX, new BuiltInMaxFunction()));
       _binop[BINOPOR] = "||";
       _binop[BINOPAND] = "&&";
       _binop[BINOPLOWER] = "<";
@@ -105,11 +67,10 @@ namespace MicroModelica {
       _binop[BINOPELMULT] = "*";
       _binop[BINOPEXP] = "^";
       _binop[BINOPELEXP] = "^";
+      addCompiledFunctions(BuiltInFunction::instance().functions());
     }
 
-    Utils::~Utils()
-    {
-    }
+    Utils::~Utils() {}
 
     string
     Utils::trimString(string str)
@@ -158,34 +119,6 @@ namespace MicroModelica {
     {
       map<string, int>::iterator it = _annotations.find(*annotation);
       return it != _annotations.end();
-    }
-
-    BuiltIn::Function
-    Utils::checkBuiltInFunctions(string fname)
-    {
-      map<string, BuiltIn::Function>::iterator it = _builtInFunctions.find(fname);
-      if(it != _builtInFunctions.end())
-      {
-        return it->second;
-      }
-      return BuiltIn::NONE;
-    }
-
-    BuiltIn::Variable
-    Utils::checkBuiltInVariables(string fname)
-    {
-      map<string, BuiltIn::Variable>::iterator it = _builtInVariables.find(fname);
-      if(it != _builtInVariables.end())
-      {
-        return it->second;
-      }
-      return BuiltIn::None;
-    }
-
-    void
-    Utils::addBuiltInVariables(string fname, BuiltIn::Variable var)
-    {
-      _builtInVariables.insert(pair<string, BuiltIn::Variable>(fname, var));
     }
 
     string
@@ -243,7 +176,9 @@ namespace MicroModelica {
         string line;
         IR::CompiledFunctionTable cft;
         ImportTable objects;
+        CompiledPackage cp(fileName);
         string fname;
+        string prefix = cp.prefix();
         string derivative;
         string includeDir;
         string libraryDir;
@@ -276,12 +211,14 @@ namespace MicroModelica {
           }
           else if(!line.compare("ENDDEFINITION"))
           {
-            IR::CompiledFunction fi(fname, includeDir, libraryDir, libraries);
+            IR::CompiledFunction fi(fname, includeDir, libraryDir, libraries, prefix);
             cft.insert(fname, fi);
           }
         }
         package.close();
-        return Option<CompiledPackage>(CompiledPackage (fileName, cft, objects));
+        cp.setObjects(objects);
+        cp.setDefinitions(cft);
+        return Option<CompiledPackage>(cp);
       }
       return Option<CompiledPackage>();
     }
@@ -434,36 +371,29 @@ namespace MicroModelica {
       return fn;
     }
 
-    BuiltIn::Function
-    Utils::checkBuiltInReductionFunctions(string fname)
-    {
-      BuiltIn::Function ret = checkBuiltInFunctions(fname);
-      if(ret == BuiltIn::SUM || ret == BuiltIn::PRODUCT || ret == BuiltIn::MIN || ret == BuiltIn::MAX
-          || ret == BuiltIn::INNER_PRODUCT)
-      {
-        return ret;
-      }
-      return BuiltIn::NONE;
+    CompiledFunctionTable
+    Utils::compiledFunctions() 
+    { 
+      return _compiledFunctions; 
+    }
+    
+    void 
+    Utils::addCompiledFunction(CompiledFunction f) 
+    { 
+      _compiledFunctions.insert(f.name(), f); 
     }
 
-
-    BIF*
-    Utils::builtInReductionFunctions(BuiltIn::Function fn)
-    {
-      map<BuiltIn::Function, BIF*>::iterator it = _builtInFunctionImp.find(fn);
-      if(it != _builtInFunctionImp.end())
-      {
-        return it->second;
-      }
-      return new BuiltInFunction();
+    void 
+    Utils::addCompiledFunctions(CompiledFunctionTable fs)
+    { 
+      _compiledFunctions.merge(fs); 
     }
 
-    bool
-    Utils::checkGKLinkFunctions(string name)
+    bool 
+    Utils::checkBuiltInFunctions(string name)
     {
-      map<string, BuiltIn::Function>::iterator it = _builtInFunctions.find(name);
-      return it != _builtInFunctions.end();
+      Option<CompiledFunction> cf = _compiledFunctions[name];
+      return cf.is_initialized();
     }
-
   }
 }
