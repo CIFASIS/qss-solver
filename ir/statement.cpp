@@ -20,6 +20,7 @@
 
 #include "../ast/statement.h"
 #include "../util/util.h"
+#include "../util/ast_util.h"
 #include "statement.h"
 
 namespace MicroModelica {
@@ -86,7 +87,7 @@ namespace MicroModelica {
         {
           AST_Statement_Assign asg = _stm->getAsAssign();
           Expression lhs(asg->lhs(), _symbols);
-          Expression rhs(asg->exp(),_symbols);
+          Expression rhs(asg->exp(), _symbols);
           buffer << lhs << " = " << rhs << ";";
           break;
         }
