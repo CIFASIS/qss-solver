@@ -226,9 +226,9 @@ namespace MicroModelica {
         AST_DeclarationList dl = c->nameList();
         foreach(it,dl)
         {
-          if(Utils::instance().checkBuiltInFunctions( current_element(it)->name()) != BuiltIn::NONE)
+          if(Utils::instance().checkBuiltInFunctions(current_element(it)->name()))
           {
-            Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Reserved word used in variable name: %s.",
+            Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Redefinition of symbol used in variable name: %s.",
                 current_element(it)->name().c_str());
           }
           if(current_element(it)->hasModification() && !(tp & TP_PARAMETER) && !(tp & TP_CONSTANT))
