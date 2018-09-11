@@ -273,12 +273,11 @@ namespace MicroModelica {
     }
 
     ex 
-    ConvertToGiNaC::expressionVariable(BuiltIn::Variable v)
+    ConvertToGiNaC::expressionVariable()
     {
       if(_exp)
       {
         string varName = ""; // = _exp->findVar(e);
-        Utils::instance().addBuiltInVariables(varName, v);
         return var(getSymbol(varName), getTime());
       }
       else
@@ -353,7 +352,7 @@ namespace MicroModelica {
             switch(ed->expressionType())
             {
               case EXPCOMPREF:
-                {
+              {
                 AST_Expression_ComponentReference cr = ed->getAsComponentReference();
                 return der2(getSymbol(cr), getTime());
               }
@@ -368,23 +367,23 @@ namespace MicroModelica {
           }
           else if(toStr(c->name()) == "sum")
           {
-            return expressionVariable(BuiltIn::Variable::Sum);
+            return expressionVariable();
           }
           else if(toStr(c->name()) == "product")
           {
-            return expressionVariable(BuiltIn::Variable::Product);
+            return expressionVariable();
           }
           else if(toStr(c->name()) == "min")
           {
-            return expressionVariable(BuiltIn::Variable::Min);
+            return expressionVariable();
           }
           else if(toStr(c->name()) == "max")
           {
-            return expressionVariable(BuiltIn::Variable::Max);
+            return expressionVariable();
           }
           else if(toStr(c->name()) == "__INNER_PRODUCT")
           {
-            return expressionVariable(BuiltIn::Variable::Inner_Product);
+            return expressionVariable();
           }
           else if(toStr(c->name()) == "pow")
           {

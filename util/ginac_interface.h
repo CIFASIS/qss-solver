@@ -122,7 +122,7 @@ namespace MicroModelica {
         virtual GiNaC::ex
         foldTraverseElement(GiNaC::ex, GiNaC::ex, BinOpType);
         GiNaC::ex 
-        expressionVariable(IR::BuiltIn::Variable v);
+        expressionVariable();
         map<string, GiNaC::symbol> _directory;
         VarSymbolTable                        _symbols;
         bool                                  _replaceDer;
