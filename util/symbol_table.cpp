@@ -154,7 +154,7 @@ namespace MicroModelica {
     ostream &
     operator<<(ostream &ret, const Variable &e)
     {
-      if(e.isForType()) 
+      if(e.isForType() || e.isInput() || e.isOutput()) 
       {
         ret << e._name;
       }
