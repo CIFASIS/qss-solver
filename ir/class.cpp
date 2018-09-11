@@ -83,7 +83,7 @@ namespace MicroModelica {
     void
     Function::insert(AST_Statement stm) 
     {
-      _statements[++_statementId] = Statement(stm, _symbols);
+      _statements.insert(++_statementId, Statement(stm, _symbols));
     }
 
     void
@@ -665,7 +665,6 @@ namespace MicroModelica {
     Model::setEquations()
     {
       list<AST_Equation>::iterator it;
-      Utils::instance().setSymbols(_symbols);
       for(it = _astEquations.begin(); it != _astEquations.end(); it++)
       {
         AST_Equation eq = current_element(it);
