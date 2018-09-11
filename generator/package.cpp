@@ -67,7 +67,7 @@ namespace MicroModelica {
       {
         _writer->print("DEFINITION");
         _writer->print("FUNCTION");
-        _writer->print(_package.prefix() + f.name());
+        _writer->print(f.name());
         _writer->print("ENDFUNCTION");
         FunctionAnnotation annot = f.annotations();
         if(annot.hasInclude())
