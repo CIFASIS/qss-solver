@@ -44,7 +44,7 @@ namespace MicroModelica {
          *
          * @param exp
          */
-        Expression(AST_Expression exp, const Util::VarSymbolTable &symbols);
+        Expression(AST_Expression exp, const Util::VarSymbolTable& symbols);
         /**
          *
          */
@@ -59,7 +59,5 @@ namespace MicroModelica {
         Util::VarSymbolTable _symbols;
     };
   }
-    
-
 }
 #endif /* EXPRESSION_H_ */

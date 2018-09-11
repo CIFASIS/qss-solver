@@ -22,6 +22,7 @@
 #include <sstream>
 #include "../ast/expression.h"
 #include "../util/ast_util.h"
+#include "../util/util.h"
 #include "../util/error.h"
 
 namespace MicroModelica {
@@ -29,13 +30,12 @@ namespace MicroModelica {
   namespace IR {
 
     /* MMO_Expression class. */
-
     Expression::Expression(AST_Expression exp, const VarSymbolTable& symbols) :
       _exp(exp),
       _symbols(symbols)
     {
     }
-
+    
     Expression::Expression() :
       _exp(NULL),
       _symbols()
@@ -45,10 +45,14 @@ namespace MicroModelica {
     string 
     Expression::print() const 
     {
+      stringstream buffer, exp;
       if(_exp != NULL)
       {
         ExpressionPrinter printer(_symbols);
-        return printer.apply(_exp);
+        exp << printer.apply(_exp);
+        buffer << printer.code();
+        buffer << exp.str();
+        return buffer.str();
       }
       return "";
     }
