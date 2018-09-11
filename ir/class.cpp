@@ -528,7 +528,8 @@ namespace MicroModelica {
         Option<Function> ef = fs[s];
         if(ef) 
         { 
-          _calledFunctions[s] = ef; 
+          SymbolTable libraries;
+          _calledFunctions.insert(s, ef.get()); 
           FunctionAnnotation fa = ef->annotations();
           if(fa.hasIncludeDirectory())
           {
@@ -542,8 +543,11 @@ namespace MicroModelica {
           }
           if(fa.hasLibraries())
           {
-            _linkLibraries.merge(fa.libraries());
+            libraries = fa.libraries();
+            _linkLibraries.merge(libraries);
           }
+          CompiledFunction cf(s, fa.includeDirectory(), fa.libraryDirectory(), libraries);
+          Utils::instance().addCompiledFunction(cf);
         }
       }
     }
@@ -598,6 +602,7 @@ namespace MicroModelica {
       Option<CompiledPackage> cp = _packages[n];
       if(cp)
       {
+        Utils::instance().addCompiledFunctions(cp->definitions());
         _linkLibraries.merge(cp->linkLibraries());
         _libraryDirectories.merge(cp->libraryDirectories());
         _includeDirectories.merge(cp->includeDirectories());
@@ -660,6 +665,7 @@ namespace MicroModelica {
     Model::setEquations()
     {
       list<AST_Equation>::iterator it;
+      Utils::instance().setSymbols(_symbols);
       for(it = _astEquations.begin(); it != _astEquations.end(); it++)
       {
         AST_Equation eq = current_element(it);
@@ -767,6 +773,5 @@ namespace MicroModelica {
         _outputs.insert(_outputNbr++, Equation(*it, _symbols, EQUATION::Output));
       }
     }
-
   }
 }
