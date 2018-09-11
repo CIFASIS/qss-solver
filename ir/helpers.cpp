@@ -20,6 +20,8 @@
 #include <sstream>
 
 #include "helpers.h"
+#include "built_in_functions.h"
+#include "expression.h"
 #include "../util/error.h"
 
 namespace MicroModelica {
@@ -67,7 +69,6 @@ namespace MicroModelica {
     /* CompiledFunction Class Implementation */
 
     CompiledFunction::CompiledFunction() :
-      _def(), 
       _name(), 
       _prototype(), 
       _includeDirectory(), 
@@ -77,9 +78,8 @@ namespace MicroModelica {
     }
 
 
-    CompiledFunction::CompiledFunction(string name, string includeDir, string libraryDir, SymbolTable& libraries) :
-      _def(), 
-      _name(name), 
+    CompiledFunction::CompiledFunction(string name, string includeDir, string libraryDir, SymbolTable& libraries, string prefix) :
+      _name(prefix+name), 
       _prototype(), 
       _includeDirectory(includeDir), 
       _libraryDirectory(libraryDir), 
@@ -87,9 +87,59 @@ namespace MicroModelica {
     {
     }
 
+    std::ostream& operator<<(std::ostream& out, const CompiledFunction& cf)
+    {
+      out << cf.print();
+      return out;
+    }
+
+    string 
+    CompiledFunction::print() const 
+    {
+      stringstream buffer;
+      Option<BuiltInFunctionPrinter> fp = BuiltInFunction::instance().reductionFunctions(_name);
+      if(fp)
+      {
+        buffer << fp.get();
+      }
+      else 
+      {
+        buffer << _name << "(";
+        AST_ExpressionListIterator it;
+        int size = _arguments->size(), i = 0;
+        foreach(it,_arguments)
+        {
+          i++;
+          Expression ex(current_element(it), Utils::instance().symbols());
+          buffer << ex;
+          buffer << (i < size ? "," : "");
+        }
+        buffer << ")";
+      }
+      return buffer.str();
+    }
+
+    string 
+    CompiledFunction::code()
+    {
+      Option<BuiltInFunctionPrinter> fp = BuiltInFunction::instance().reductionFunctions(_name);
+      if(fp)
+      {
+        return fp->code();
+      }
+      return "";
+    }
+
     /* CompiledPackage Class Implementation */
     
     CompiledPackage::CompiledPackage()
+    {
+    }
+    
+    CompiledPackage::CompiledPackage(string name) :
+        _name(name), 
+        _cft(), 
+        _objects()
     {
     }
 

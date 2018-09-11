@@ -21,7 +21,6 @@
 #define MMO_HELPERS_H 
 
 #include <string>
-#include "../util/ast_util.h"
 #include "../util/symbol_table.h"
 #include "../util/util.h"
 
@@ -65,17 +64,11 @@ namespace MicroModelica {
          * @param libraryDir
          * @param libraries
          */
-        CompiledFunction(string name, string includeDir, string libraryDir, Util::SymbolTable& libraries);
+        CompiledFunction(std::string name, std::string includeDir, std::string libraryDir, Util::SymbolTable& libraries, std::string prefix = "");
         /**
          *
          */
         ~CompiledFunction() {};
-        /**
-         *
-         * @return
-         */
-        inline list<string>
-        def() const { return _def; };
         /**
          *
          * @return
@@ -124,13 +117,20 @@ namespace MicroModelica {
          */
         inline string
         prototype() const { return _prototype; };
+        friend std::ostream& operator<<(std::ostream& out, const CompiledFunction& cf);
+        std::string 
+        print() const;
+        void 
+        setArguments(AST_ExpressionList arguments) { _arguments = arguments; };
+        std::string 
+        code();
       private:
-        list<string>      _def;
-        string            _name;
-        string            _prototype;
-        string            _includeDirectory;
-        string            _libraryDirectory;
-        Util::SymbolTable _libraries;
+        string                                _name;
+        string                                _prototype;
+        string                                _includeDirectory;
+        string                                _libraryDirectory;
+        Util::SymbolTable                     _libraries;
+        AST_ExpressionList                    _arguments;
     };
     
     typedef ModelTable<std::string,CompiledFunction> CompiledFunctionTable;
@@ -153,6 +153,7 @@ namespace MicroModelica {
          * @param libraries
          */
         CompiledPackage(string name, CompiledFunctionTable cft , Util::ImportTable objects);
+        CompiledPackage(string name);
         /**
          *
          */
@@ -199,6 +200,10 @@ namespace MicroModelica {
          */
         Util::ImportTable 
         objects();
+        inline void 
+        setObjects(Util::ImportTable& objects) { _objects = objects; };
+        inline void 
+        setDefinitions(CompiledFunctionTable& cft) { _cft = cft; };
       private:
         std::string             _name;
         CompiledFunctionTable   _cft;
