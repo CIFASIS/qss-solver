@@ -1039,6 +1039,8 @@ class ExpressionPrinter : public AST_Expression_Visitor<std::string>
      *
      */
     ~ExpressionPrinter() {};
+    inline std::string 
+    code() const { return _code; };
   private:
     std::string 
     foldTraverseElement(AST_Expression exp);
@@ -1048,6 +1050,7 @@ class ExpressionPrinter : public AST_Expression_Visitor<std::string>
     foldTraverseElementUMinus(AST_Expression exp);
     MicroModelica::Util::VarSymbolTable _symbols;
     MicroModelica::IR::Expression           _exp;
+    std::string                             _code;
 };
 
 #endif  /* AST_UTIL_H_ */

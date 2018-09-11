@@ -1630,27 +1630,20 @@ CalledFunctions::foldTraverseElement(AST_Expression exp)
 SymbolTable 
 CalledFunctions::foldTraverseElement(SymbolTable l, SymbolTable r, BinOpType bot)
 {
-  SymbolTable::iterator it;
-  for(string i = l.begin(it); !l.end(it); i = l.next(it))
-  {
-    r.insert(i,i);
-  }
+  r.merge(l);
   return r;
 }
 
 SymbolTable  
 StatementCalledFunctions::foldTraverse(SymbolTable s1, SymbolTable s2)
 {
-  SymbolTable::iterator it;
-  for(string i = s1.begin(it); !s1.end(it); i = s1.next(it))
-  {
-    s2.insert(i,i);
-  }
+  s2.merge(s1);
   return s2;
 }
 
 ExpressionPrinter::ExpressionPrinter(const VarSymbolTable& symbols) :
-  _symbols(symbols)
+  _symbols(symbols),
+  _code()
 {
 }
 
@@ -1668,16 +1661,17 @@ ExpressionPrinter::foldTraverseElement(AST_Expression exp)
     case EXPCALL:
     {
       AST_Expression_Call call = exp->getAsCall();
-      buffer << *call->name() << "(";
-      AST_ExpressionListIterator it;
-      int size = call->arguments()->size(), i = 0;
-      foreach(it,call->arguments())
+      CompiledFunctionTable fs = Utils::instance().compiledFunctions();
+      Option<CompiledFunction> f = fs[*call->name()];
+      if(!f)
       {
-        i++;
-        buffer << apply(current_element(it));
-        buffer << (i < size ? "," : "");
+        Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", call->name()->c_str());
+        break;
       }
-      buffer << ")";
+      Utils::instance().setSymbols(_symbols);
+      f->setArguments(call->arguments());
+      buffer << f.get();
+      _code = f->code();
       break;
     }
     case EXPCALLARG: break;
