@@ -131,7 +131,7 @@ namespace MicroModelica {
       {
         buffer << stm;
       }
-      _writer->write(buffer.str(), FUNCTION_CODE);
+      _writer->write(buffer, FUNCTION_CODE);
       ExternalFunctionTable eft = _function.externalFunctions();
       ExternalFunctionTable::iterator eit;
       for(ExternalFunction ef = eft.begin(eit); !eft.end(eit); ef = eft.next(eit))
