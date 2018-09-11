@@ -165,7 +165,7 @@ namespace MicroModelica {
     }
 
     SymbolTable 
-    FunctionAnnotation::libraries()
+    FunctionAnnotation::libraries() const
     {
       return _libraries;
     }

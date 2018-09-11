@@ -147,7 +147,7 @@ namespace MicroModelica {
          * @return
          */
         Util::SymbolTable 
-        libraries();
+        libraries() const;
         /**
          *
          * @return
