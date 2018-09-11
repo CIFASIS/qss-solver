@@ -20,184 +20,100 @@
 #ifndef MMO_BUILT_IN_FUNCTIONS_H
 #define MMO_BUILT_IN_FUNCTIONS_H 
 
-#include "../ir/index.h"
-#include "../util/ast_util.h"
-#include "../util/symbol_table.h"
+#include "helpers.h"
+#include "../util/table.h"
 
 namespace MicroModelica {
   namespace IR {
-    namespace BuiltIn {
-      typedef enum
-      {
-        NONE,  //!< BIF_NONE
-        REINIT,  //!< BIF_REINIT
-        TERMINATE, //!< BIF_TERMINATE
-        SUM,   //!< BIF_SUM
-        PRODUCT,   //!< BIF_PRODUCT
-        INNER_PRODUCT,   //!< BIF_INNER_PRODUCT
-        MIN,   //!< BIF_MIN
-        MAX,   //!< BIF_MAX
-        ABS,   //!< BIF_ABS
-        SIGN,  //!< BIF_SIGN
-        SQRT,  //!< BIF_SQRT
-        CEIL,  //!< BIF_CEIL
-        FLOOR, //!< BIF_FLOOR
-        SIN,   //!< BIF_SIN
-        COS,   //!< BIF_COS
-        TAN,   //!< BIF_TAN
-        ASIN,  //!< BIF_ASIN
-        ACOS,  //!< BIF_ACOS
-        ATAN,  //!< BIF_ATAN
-        ATAN2, //!< BIF_ATAN2
-        SINH,  //!< BIF_SINH
-        COSH,  //!< BIF_COSH
-        TANH,  //!< BIF_TANH
-        EXP,   //!< BIF_EXP
-        LOG,   //!< BIF_LOG
-        LOG10, //!< BIF_LOG10
-        PRE,    //!< BIF_PRE
-        GQLINK  //!< BIF_GQLINK
-      } Function;
-      /**
-       *
-       */
-      typedef enum
-      {
-        None, //!< BIV_NONE
-        Time, //!< BIV_TIME
-        Sum,   //!< BIV_SUM
-        Product,   //!< BIV_PRODUCT
-        Inner_Product,   //!< BIV_INNER_PRODUCT
-        Min,   //!< BIV_MIN
-        Max   //!< BIV_MAX
-      } Variable;
-    }
-
-    class BIF
+    
+    class BuiltInFunctionPrinter
     {
-      public:
-        /**
-         *
-         */
-        virtual
-        ~BIF() {};
-        list<string>
-        generateCode(string variableMap, string variableIndex, IndexTable indexes, int expOrder);
-        void
-        setSymbolTable(Util::VarSymbolTable vt);
-        Util::VarSymbolTable
-        symbolTable(Util::VarSymbolTable vt);
-        string
-        variableName(IndexTable indexes);
-        string
-        expressionOrderStr(int order, IndexTable indexes);
-        bool
-        isState(IndexTable indexes);
-        void
-        setExpressionOrder(int expressionOrder);
-        int
-        expressionOrder();
-        string
-        print(Index idx, string variableIndex);
-      private:
-        bool
-        hasStates(IndexTable indexeslist);
-        Index
-        index(IndexTable indexes);
-        Option<Util::Variable>
-        variableInfo(IndexTable indexes);
-        virtual string
-        reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates) = 0;
-        virtual string
-        init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates) = 0;
-        Util::VarSymbolTable  _symbols;
-        int                   _expressionOrder;
+      public:    
+        BuiltInFunctionPrinter() {};
+        ~BuiltInFunctionPrinter() {};
+        friend std::ostream& operator<<(std::ostream& out, const BuiltInFunctionPrinter& b);
+        virtual std::string 
+        print() const { return ""; };
+        virtual std::string  
+        code() { return ""; };
     };
 
-    class BuiltInFunction: public BIF
+    class MaxFunction : public BuiltInFunctionPrinter
     {
-      public:
-        /**
-         *
-         */
-        ~BuiltInFunction();
-      private:
-        string
-        reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates);
-        string
-        init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates);
+      public:    
+        MaxFunction() {};
+        ~MaxFunction() {};
+        std::string 
+        print() const;
+        std::string   
+        code();
     };
 
-    class BuiltInSumFunction: public BIF
+    class MinFunction : public BuiltInFunctionPrinter
     {
-      public:
-        /**
-         *
-         */
-        ~BuiltInSumFunction();
-      private:
-        string
-        reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates);
-        string
-        init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates);
+      public:    
+        MinFunction() {};
+        ~MinFunction() {};
+        std::string 
+        print() const;
+        std::string   
+        code();
+    };
+    
+    class SumFunction : public BuiltInFunctionPrinter
+    {
+      public:    
+        SumFunction() {};
+        ~SumFunction() {};
+        std::string 
+        print() const;
+        std::string   
+        code();
+    };
+    
+    class ProductFunction : public BuiltInFunctionPrinter
+    {
+      public:    
+        ProductFunction() {};
+        ~ProductFunction() {};
+        std::string 
+        print() const;
+        std::string   
+        code();
+    };
+    
+    class InnerProductFunction : public BuiltInFunctionPrinter
+    {
+      public:    
+        InnerProductFunction() {};
+        ~InnerProductFunction() {};
+        std::string 
+        print() const;
+        std::string   
+        code();
     };
 
-    class BuiltInProductFunction: public BIF
-    {
-      public:
-        /**
-         *
-         */
-        ~BuiltInProductFunction();
-      private:
-        string
-        reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates);
-        string
-        init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates);
-    };
+    typedef ModelTable<std::string,BuiltInFunctionPrinter> BuiltInFunctionPrinterTable;
 
-    class BuiltInInnerProductFunction: public BIF
+    class BuiltInFunction 
     {
-      public:
-        /**
-         *
-         */
-        ~BuiltInInnerProductFunction();
+      public:    
+        static BuiltInFunction&
+        instance()
+        {
+          static BuiltInFunction _instance;
+          return _instance;
+        }
+        ~BuiltInFunction() {};
+        inline CompiledFunctionTable 
+        functions() { return _functions; };
+        inline Option<BuiltInFunctionPrinter>  
+        reductionFunctions(string name) { return _reduction[name]; };
       private:
-        string
-        reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates);
-        string
-        init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates);
+        BuiltInFunction();
+        CompiledFunctionTable        _functions;
+        BuiltInFunctionPrinterTable  _reduction;
     };
-
-    class BuiltInMinFunction: public BIF
-    {
-      public:
-        /**
-         *
-         */
-        ~BuiltInMinFunction();
-      private:
-        string
-        reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates);
-        string
-        init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates);
-    };
-
-    class BuiltInMaxFunction: public BIF
-    {
-      public:
-        /**
-         *
-         */
-        ~BuiltInMaxFunction();
-      private:
-        string
-        reduce(string variableMap, string variableIndex, int variableOrder, IndexTable indexes, bool hasStates);
-        string
-        init(string variableMap, string variableIndex, IndexTable indexes, bool hasStates);
-    };
-
   }
 }
 
