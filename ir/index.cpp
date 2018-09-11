@@ -25,6 +25,7 @@
 #include "../ast/expression.h"
 #include "../ast/equation.h"
 #include "../ast/statement.h"
+#include "../util/ast_util.h"
 #include "../util/error.h"
 
 namespace MicroModelica {
