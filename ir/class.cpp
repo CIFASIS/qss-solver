@@ -698,7 +698,7 @@ namespace MicroModelica {
         {
           _annotations.eventComment(sw->comment());
         }
-        Event event(sw->condition(), _symbols);
+        Event event(sw->condition(),_eventId, _eventNbr,  _symbols, range);
         AST_StatementList stl = sw->statements();
         AST_StatementListIterator it;
         foreach(it,stl)
@@ -716,8 +716,8 @@ namespace MicroModelica {
             Event event2 = event;
             if(!event.compare(se->condition()))
             {
-              event2 = Event(se->condition(), _symbols);
-              _eventNbr += range->size();
+              _eventNbr += (range ? range->size() : 1);
+              event2 = Event(se->condition(), _eventId+1, _eventNbr,  _symbols, range);
               newEvent = true;
             }
             AST_StatementList stel = se->statements();
@@ -728,7 +728,6 @@ namespace MicroModelica {
             }
             if(newEvent)
             {
-              _eventNbr += (range ? range->size() : 1);
               _events.insert(_eventId++, event2);
             }
           }
