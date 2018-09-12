@@ -19,24 +19,32 @@
 
 #include "event.h"
 
+#include <sstream>
+
 #include "../ast/expression.h"
 #include "../util/ast_util.h"
+#include "../util/util.h"
 
 namespace MicroModelica {
   using namespace Util;
   namespace IR {
 
-    Event::Event(AST_Expression cond, VarSymbolTable& symbols) : 
+    Event::Event(AST_Expression cond, int id, int offset, VarSymbolTable& symbols, Option<Range> range) : 
       _zeroCrossing(),
       _positiveHandler(),
       _negativeHandler(),
       _type(EVENT::Zero),
       _current(EVENT::Zero),
       _zcRelation(EVENT::GE),
-      _symbols(symbols)
+      _symbols(symbols),
+      _range(range),
+      _positiveHandlerId(0),
+      _negativeHandlerId(0),
+      _id(id),
+      _offset(offset)
     {
       ConvertCondition cc;
-      _zeroCrossing = Equation(cc.apply(getExpression(cond)), symbols, EQUATION::ZeroCrossing);
+      _zeroCrossing = Equation(cc.apply(getExpression(cond)), symbols, range, EQUATION::ZeroCrossing);
       _type = cc.zeroCrossing();
       _current = _type;
       _zcRelation = cc.zeroCrossingRelation();
@@ -45,7 +53,7 @@ namespace MicroModelica {
     void 
     Event::add(AST_Statement stm)
     {
-      Statement s(stm, _symbols);
+      Statement s(stm, _symbols, _range);
       if(_current == EVENT::Positive)
       {
         _positiveHandler.insert(_positiveHandlerId++, s);
@@ -90,14 +98,25 @@ namespace MicroModelica {
     }
 
     string 
-    Event::print() const
+    Event::handler(EVENT::Type type) const 
     {
-    }
-
-    std::ostream& operator<<(std::ostream& out, const Event& e)
-    {
-      out << e.print();
-      return out;
+      StatementTable stms = (type == EVENT::Positive ? _positiveHandler : _negativeHandler);
+      if(stms.empty()) { return ""; };
+      stringstream buffer;
+      string block = "";
+      if(_range) 
+      { 
+        RangeDefinitionTable ranges = _range->definition();
+        buffer << _range.get(); 
+        block += TAB;
+      }
+      StatementTable::iterator it;
+      for(Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it))
+      {
+        buffer << stm << endl;
+      }
+      if(_range) { buffer << endl << _range.get().end(); }
+      return buffer.str();
     }
   }
 }

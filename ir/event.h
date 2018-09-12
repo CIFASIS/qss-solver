@@ -65,24 +65,25 @@ namespace MicroModelica {
          * @param data
          */
         Event() {};
-        Event(AST_Expression cond, Util::VarSymbolTable& symbols);
+        Event(AST_Expression cond, int id, int offset, Util::VarSymbolTable& symbols, Option<Range> range);
         /**
          *
          */
         ~Event() {};
         inline Equation 
         zeroCrossing() { return _zeroCrossing; };
-        inline StatementTable 
+        inline StatementTable    
         positiveHandler() { return _positiveHandler; };
-        inline StatementTable 
+        inline StatementTable  
         negativeHandler() { return _negativeHandler; };
+        std::string 
+        handler(EVENT::Type type) const;
         void 
         add(AST_Statement);
         bool 
         compare(AST_Expression zc);
-        friend std::ostream& operator<<(std::ostream& out, const Event& e);
-        std::string 
-        print() const;
+        inline bool 
+        hasRange() { return _range.is_initialized(); }; 
       private:
         AST_Expression
         getExpression(AST_Expression zc);
@@ -93,8 +94,11 @@ namespace MicroModelica {
         EVENT::Type           _current;
         EVENT::Relation       _zcRelation;
         Util::VarSymbolTable  _symbols;
+        Option<Range>         _range;
         int                   _positiveHandlerId;
         int                   _negativeHandlerId;
+        int                   _id;
+        int                   _offset;
     };
 
     typedef ModelTable<int,Event> EventTable;
