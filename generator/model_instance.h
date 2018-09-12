@@ -130,8 +130,6 @@ namespace MicroModelica
         allocateOutput();
         void 
         initializeMatrix(Util::VariableDependencyMatrix vdm, Section alloc, Section init);
-        void 
-        handlerStatements(IR::StatementTable sts, Section simple, Section generic);
         string
         algebraics(Util::EquationDependencyMatrix eqdm, Util::depId key);
         void 

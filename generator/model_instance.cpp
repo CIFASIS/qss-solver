@@ -188,27 +188,18 @@ namespace MicroModelica {
     }
  
     void 
-    ModelInstance::handlerStatements(StatementTable stms, Section simple, Section generic)
-    {
-      StatementTable::iterator it;
-      for(Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it))
-      {
-        stringstream buffer;
-        buffer << stm;
-        _writer->write(buffer, (stm.hasRange() ? generic : simple));   
-      }
-    }
-
-    void 
     ModelInstance::handler()
     {
       EventTable events = _model.events();
       EventTable::iterator it;
       VarSymbolTable symbols = _model.symbols();
+      stringstream buffer;
       for(Event event = events.begin(it); !events.end(it); event = events.next(it))
       {
-        handlerStatements(event.positiveHandler(), HANDLER_POS_SIMPLE, HANDLER_POS_GENERIC);
-        handlerStatements(event.negativeHandler(), HANDLER_NEG_SIMPLE, HANDLER_NEG_GENERIC);
+        buffer << event.handler(EVENT::Positive);
+        _writer->write(buffer, (event.hasRange() ? HANDLER_POS_GENERIC : HANDLER_POS_SIMPLE)); 
+        buffer << event.handler(EVENT::Negative);
+        _writer->write(buffer, (event.hasRange() ? HANDLER_NEG_GENERIC : HANDLER_NEG_SIMPLE)); 
       }
     }
 
