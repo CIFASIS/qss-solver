@@ -113,6 +113,8 @@ namespace MicroModelica {
         inline int 
         size() const { return _size; };
         friend std::ostream& operator<<(std::ostream& out, const Range& r);
+        inline RangeDefinitionTable 
+        definition() const { return _ranges; };
         std::string 
         print() const;
         std::string 
