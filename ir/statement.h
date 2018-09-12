@@ -42,6 +42,7 @@ namespace MicroModelica {
          * @param stm
          */
         Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, bool initial = false);
+        Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, Option<Range> range, bool initial = false);
         /**
          *
          */

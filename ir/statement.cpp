@@ -27,6 +27,15 @@ namespace MicroModelica {
   using namespace Util;
   namespace IR {
 
+    Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, Option<Range> range, bool initial) : 
+      _stm(stm),
+      _range(range),
+      _symbols(symbols)
+    {
+      StatementCalledFunctions cf;
+      _calledFunctions = cf.apply(stm);
+    }
+
     Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, bool initial) : 
       _stm(stm),
       _range(),
