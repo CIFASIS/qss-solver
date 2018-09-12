@@ -36,7 +36,20 @@ namespace MicroModelica {
       _rhs(),
       _range(),
       _autonomous(true),
-      _symbols(symbols)
+      _symbols(symbols),
+      _type(type)
+    {
+      process(eq);
+    }
+
+    Equation::Equation(AST_Expression eq, VarSymbolTable& symbols, Option<Range> range, EQUATION::Type type) :
+      _eq(),
+      _lhs(),
+      _rhs(),
+      _range(range),
+      _autonomous(true),
+      _symbols(symbols),
+      _type(type)
     {
       process(eq);
     }
@@ -128,6 +141,8 @@ namespace MicroModelica {
       switch(_type)
       {
         case EQUATION::Derivative: return "_der"; 
+        case EQUATION::ZeroCrossing: return "_zc"; 
+        case EQUATION::Output: return "_out"; 
         default: return "";
       }
       return "";

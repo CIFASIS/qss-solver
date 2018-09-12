@@ -56,6 +56,7 @@ namespace MicroModelica {
          */
         Equation() {};
         Equation(AST_Expression eq, Util::VarSymbolTable& symbols, EQUATION::Type type);
+        Equation(AST_Expression eq, Util::VarSymbolTable& symbols, Option<Range> range, EQUATION::Type type);
         Equation(AST_Equation eq, Util::VarSymbolTable& symbols, EQUATION::Type type);
         Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Range r, EQUATION::Type type);
         Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Option<Range> r, EQUATION::Type type);
