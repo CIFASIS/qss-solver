@@ -26,6 +26,7 @@
 #include <utility>
 
 #include "../ir/expression.h"
+#include "../ir/equation.h"
 #include "../ir/class.h"
 #include "../ir/index.h"
 #include "../ir/built_in_functions.h"
@@ -42,7 +43,10 @@ namespace MicroModelica {
         _languageEspecification("C"), 
         _varCounter(1), 
         _flags(), 
-        _compiledFunctions() 
+        _compiledFunctions(),
+        _symbols(),
+        _localSymbols(),
+        _algebraics()
     {
       _annotations.insert(pair<string, int>("StartTime", 0));
       _annotations.insert(pair<string, int>("StopTime", 1));
@@ -394,6 +398,18 @@ namespace MicroModelica {
     {
       Option<CompiledFunction> cf = _compiledFunctions[name];
       return cf.is_initialized();
+    }
+
+    void 
+    Utils::setAlgebraics(EquationTable algebraics)
+    {
+      _algebraics = algebraics;
+    }
+
+    EquationTable 
+    Utils::algebraics()
+    {
+      return _algebraics;
     }
   }
 }

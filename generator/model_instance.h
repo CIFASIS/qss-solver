@@ -129,7 +129,7 @@ namespace MicroModelica
         void 
         allocateOutput();
         void 
-        initializeMatrix(Util::VariableDependencyMatrix vdm, Section alloc, Section init);
+        initializeMatrix(Util::VariableDependencyMatrix vdm, WRITER::Section alloc, WRITER::Section init);
         string
         algebraics(Util::EquationDependencyMatrix eqdm, Util::depId key);
         void 

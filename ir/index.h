@@ -119,6 +119,10 @@ namespace MicroModelica {
         print() const;
         std::string 
         end() const;
+        string 
+        indexes() const; 
+        void 
+        addLocalVariables();
       private:
         void 
         setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);

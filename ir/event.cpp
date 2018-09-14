@@ -21,6 +21,7 @@
 
 #include <sstream>
 
+#include "helpers.h"
 #include "../ast/expression.h"
 #include "../util/ast_util.h"
 #include "../util/util.h"
@@ -102,20 +103,18 @@ namespace MicroModelica {
     {
       StatementTable stms = (type == EVENT::Positive ? _positiveHandler : _negativeHandler);
       if(stms.empty()) { return ""; };
-      stringstream buffer;
+      stringstream buffer, id; 
+      id << "_event_" << _id;
       string block = "";
-      if(_range) 
-      { 
-        RangeDefinitionTable ranges = _range->definition();
-        buffer << _range.get(); 
-        block += TAB;
-      }
+      FunctionPrinter fp;
+      buffer << fp.beginExpression(id.str(),_range);
+      block += TAB;
       StatementTable::iterator it;
       for(Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it))
       {
-        buffer << stm << endl;
+        buffer << block << stm << endl;
       }
-      if(_range) { buffer << endl << _range.get().end(); }
+      buffer << fp.endExpression(_range);
       return buffer.str();
     }
   }

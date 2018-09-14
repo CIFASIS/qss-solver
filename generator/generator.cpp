@@ -87,7 +87,7 @@ namespace MicroModelica {
         _writer->clearFile();
         _writer->setFile(baseName+".h");
         _modelInstance->header();
-        _writer->print(MODEL_HEADER);
+        _writer->print(WRITER::Model_Header);
         _writer->clearFile();
         Files files(_modelInstance, model, _flags);
         files.makefile();
@@ -113,8 +113,8 @@ namespace MicroModelica {
           }
           calledFunctionHeader(ffname);
           _writer->setFile(ffname+".c");
-          _writer->print(FUNCTION_HEADER);
-          _writer->print(FUNCTION_CODE);
+          _writer->print(WRITER::Function_Header);
+          _writer->print(WRITER::Function_Code);
           _writer->clearFile();
         }
       }
@@ -133,7 +133,7 @@ namespace MicroModelica {
       buffer << "#include <math.h>" << endl;
       buffer << "#include <stdlib.h>" << endl;
       buffer << "#include \"" << name << ".h\"" << endl;
-      _writer->write(buffer, FUNCTION_HEADER);
+      _writer->write(buffer, WRITER::Function_Header);
     }
 
     void

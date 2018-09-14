@@ -623,12 +623,13 @@ namespace MicroModelica {
     {
       assert(eq->equationType() == EQEQUALITY);
       AST_Equation_Equality eqe = eq->getAsEquality();
+      EQUATION::Type t = (_annotations.classic() ? EQUATION::ClassicDerivative : EQUATION::QSSDerivative);
       if(eqe->left()->expressionType() == EXPDERIVATIVE)
       {
         AST_Expression_Derivative ed = eqe->left()->getAsDerivative();
         variable(AST_ListFirst(ed->arguments()));
-        Equation mse(eq, _symbols, range, EQUATION::Derivative);
-        addInput(mse, _derivativeId, EQUATION::Derivative);
+        Equation mse(eq, _symbols, range, t);
+        addInput(mse, _derivativeId, t);
         _derivatives.insert(_derivativeId++, mse);
       }
       else if(eqe->left()->expressionType() == EXPCOMPREF)

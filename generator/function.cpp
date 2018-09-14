@@ -54,7 +54,7 @@ namespace MicroModelica {
         if(!_include.lookup(addInclude))
         {
           _include.insert(addInclude, addInclude);
-          _writer->write("#include \"" + addInclude + ".h\"", FUNCTION_HEADER);
+          _writer->write("#include \"" + addInclude + ".h\"", WRITER::Function_Header);
         }
       }
       if(_function.annotations().hasInclude())
@@ -63,7 +63,7 @@ namespace MicroModelica {
         if(!_include.lookup(addInclude))
         {
           _include.insert(addInclude, addInclude);
-          _writer->write(addInclude, FUNCTION_HEADER);
+          _writer->write(addInclude, WRITER::Function_Header);
         }
       }
     }
@@ -122,8 +122,8 @@ namespace MicroModelica {
     Function::body()
     {
       stringstream buffer;
-      _writer->write(prototype(), FUNCTION_CODE);
-      _writer->beginBlock(FUNCTION_CODE);
+      _writer->write(prototype(), WRITER::Function_Code);
+      _writer->beginBlock(WRITER::Function_Code);
       localSymbols();
       StatementTable stms = _function.statements();
       StatementTable::iterator it;
@@ -131,19 +131,19 @@ namespace MicroModelica {
       {
         buffer << stm;
       }
-      _writer->write(buffer, FUNCTION_CODE);
+      _writer->write(buffer, WRITER::Function_Code);
       ExternalFunctionTable eft = _function.externalFunctions();
       ExternalFunctionTable::iterator eit;
       for(ExternalFunction ef = eft.begin(eit); !eft.end(eit); ef = eft.next(eit))
       {
         buffer << ef;
       }
-      _writer->write(buffer.str(), FUNCTION_CODE);
+      _writer->write(buffer.str(), WRITER::Function_Code);
       if(_function.outputNbr() == 1)
       {
-        _writer->write("return " + _returnVariable + ";", FUNCTION_CODE);
+        _writer->write("return " + _returnVariable + ";", WRITER::Function_Code);
       }
-      _writer->endBlock(FUNCTION_CODE);
+      _writer->endBlock(WRITER::Function_Code);
     }
    
     void 
@@ -159,8 +159,8 @@ namespace MicroModelica {
         {
           continue;
         }
-        _writer->write(var.declaration(), FUNCTION_CODE);
-        _writer->write(var.initialization(_function.localSymbols()), FUNCTION_CODE);
+        _writer->write(var.declaration(), WRITER::Function_Code);
+        _writer->write(var.initialization(_function.localSymbols()), WRITER::Function_Code);
       }
       if(_function.outputNbr() == 1)
       {
@@ -169,8 +169,8 @@ namespace MicroModelica {
         {
           if(var.isOutput())
           {
-            _writer->write(var.declaration(), FUNCTION_CODE);
-            _writer->write(var.initialization(_function.localSymbols()), FUNCTION_CODE);
+            _writer->write(var.declaration(), WRITER::Function_Code);
+            _writer->write(var.initialization(_function.localSymbols()), WRITER::Function_Code);
           }
         }
       }
@@ -207,7 +207,7 @@ namespace MicroModelica {
           continue;
         }
         buffer << "#define " << var << " " << var.name();
-        _writer->write(buffer.str(), FUNCTION_CODE);
+        _writer->write(buffer.str(), WRITER::Function_Code);
       }
     }
   }

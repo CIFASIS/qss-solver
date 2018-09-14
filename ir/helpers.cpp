@@ -22,6 +22,7 @@
 #include "helpers.h"
 #include "built_in_functions.h"
 #include "expression.h"
+#include "equation.h"
 #include "../util/error.h"
 
 namespace MicroModelica {
@@ -221,7 +222,85 @@ namespace MicroModelica {
       return ret;
     }
 
+    /* Function Printer implementation */
 
+    string 
+    FunctionPrinter::beginSwitch()  
+    {
+      stringstream buffer;
+      buffer << "switch(idx)" << endl << "{";
+      return buffer.str();
+    }
+
+    string 
+    FunctionPrinter::endSwitch()  
+    {
+      return "}";
+    }
+
+    string 
+    FunctionPrinter::beginExpression(string token, Option<Range> range) const
+    {
+      stringstream buffer;
+      string block = "";
+      if(range) 
+      { 
+        buffer << "if( " << token << "(idx) >= 1 && ";
+        buffer << token << "(idx) <= " << range->size() << ")" << endl;
+      }
+      else 
+      {
+        buffer << "case " << token << ":" << endl;
+      }
+      buffer << "{" << endl;
+      block += TAB;
+      if(range) 
+      { 
+        buffer << block << "_get" << token << "_idxs(idx," << range->indexes() << ");" << endl;
+        range->addLocalVariables();
+      }
+      return buffer.str();
+    }
+    
+    string 
+    FunctionPrinter::endExpression(Option<Range> range) const 
+    {
+      stringstream buffer;
+      if(range)
+      {
+        buffer << "return;" << endl << "}"; 
+      }
+      else 
+      {
+        buffer << "return;" << endl << "}";
+      }
+      return buffer.str();
+    }
+    
+    string
+    FunctionPrinter::algebraics(EquationDependencyMatrix eqdm, depId key)
+    {
+      stringstream buffer;
+      EquationTable algebraics = Utils::instance().algebraics();
+      Option<EquationDependency> eqd = eqdm[key];
+      if(eqd)
+      {
+        EquationDependency::iterator eqIt;
+        for(eqIt = eqd->begin(); eqIt != eqd->end(); eqIt++)
+        {
+          Option<Equation> alg = algebraics[*eqIt];
+          if(alg)
+          {
+            buffer << alg.get() << endl;;
+          }
+          else 
+          {
+            Error::instance().add(0, EM_CG | EM_NO_EQ, ER_Error, "Algebraic equation not found.");
+          }
+        }
+      }
+      return buffer.str();
+    }
 
   }
 }

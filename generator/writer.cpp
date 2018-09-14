@@ -52,7 +52,7 @@ namespace MicroModelica {
     }
 
     void
-    MemoryWriter::removeFromSection(string str, Section section)
+    MemoryWriter::removeFromSection(string str, WRITER::Section section)
     {
       list<string>::iterator it;
       list<string> rmv;
@@ -78,7 +78,7 @@ namespace MicroModelica {
     }
 
     void
-    MemoryWriter::clear(Section section)
+    MemoryWriter::clear(WRITER::Section section)
     {
       _sections[section].clear();
     }
@@ -95,21 +95,21 @@ namespace MicroModelica {
     }
 
     void
-    MemoryWriter::newLine(Section section)
+    MemoryWriter::newLine(WRITER::Section section)
     {
       _sections[section].push_back("");
     }
 
     void
-    MemoryWriter::write(string str, Section section, InsertType it)
+    MemoryWriter::write(string str, WRITER::Section section, WRITER::Insert it)
     {
       if(!str.empty())
       {
-        if(it == PREPEND)
+        if(it == WRITER::Prepend)
         {
           _sections[section].push_back(str);
         }
-        else if(it == APPEND_SIMPLE)
+        else if(it == WRITER::Append_Simple)
         {
           _sections[section].push_front(str);
         }
@@ -121,15 +121,15 @@ namespace MicroModelica {
     }
 
     void
-    MemoryWriter::write(stringstream& s, Section section, bool clean, InsertType it)
+    MemoryWriter::write(stringstream& s, WRITER::Section section, bool clean, WRITER::Insert it)
     {
       if(!s.str().empty())
       {
-        if(it == PREPEND)
+        if(it == WRITER::Prepend)
         {
           _sections[section].push_back(s.str());
         }
-        else if(it == APPEND_SIMPLE)
+        else if(it == WRITER::Append_Simple)
         {
           _sections[section].push_front(s.str());
         }
@@ -145,7 +145,7 @@ namespace MicroModelica {
     }
 
     void
-    MemoryWriter::writeBlock(list<string> block, Section section)
+    MemoryWriter::writeBlock(list<string> block, WRITER::Section section)
     {
       list<string>::iterator it;
       for(it = block.begin(); it != block.end(); it++)
@@ -155,7 +155,7 @@ namespace MicroModelica {
     }
 
     void
-    MemoryWriter::print(Section section)
+    MemoryWriter::print(WRITER::Section section)
     {
       list<string>::iterator it;
       for(it = _sections[section].begin(); it != _sections[section].end(); it++)
@@ -178,7 +178,7 @@ namespace MicroModelica {
     }
 
     bool
-    MemoryWriter::isEmpty(Section section)
+    MemoryWriter::isEmpty(WRITER::Section section)
     {
       return _sections[section].empty();
     }
@@ -230,14 +230,14 @@ namespace MicroModelica {
     }
 
     void
-    MemoryWriter::beginBlock(Section s)
+    MemoryWriter::beginBlock(WRITER::Section s)
     {
       write("{",s);
       _block = indent(++_blockIndent);
     }
 
     void
-    MemoryWriter::endBlock(Section s)
+    MemoryWriter::endBlock(WRITER::Section s)
     {
       write("}",s);
       _block = indent(--_blockIndent);
@@ -254,6 +254,16 @@ namespace MicroModelica {
     MemoryWriter::block()
     {
       return _block;
+    }
+
+    void 
+    MemoryWriter::write(SymbolTable symbols, WRITER::Section s)
+    {
+      SymbolTable::iterator it;
+      for(string i = symbols.begin(it); !symbols.end(it); i = symbols.next(it))
+      {
+        write(i,s);
+      }
     }
 
     /* FileWriter class. */
@@ -283,13 +293,13 @@ namespace MicroModelica {
     }
 
     void
-    FileWriter::removeFromSection(string str, Section section)
+    FileWriter::removeFromSection(string str, WRITER::Section section)
     {
       return;
     }
 
     void
-    FileWriter::clear(Section section)
+    FileWriter::clear(WRITER::Section section)
     {
       return;
     }
@@ -307,19 +317,19 @@ namespace MicroModelica {
     }
 
     void
-    FileWriter::newLine(Section section)
+    FileWriter::newLine(WRITER::Section section)
     {
       _sections[section] << endl;
     }
 
     void
-    FileWriter::write(string str, Section section, InsertType it)
+    FileWriter::write(string str, WRITER::Section section, WRITER::Insert it)
     {
       _sections[section] << str << endl;
     }
 
     void
-    FileWriter::write(stringstream& s, Section section, bool clean, InsertType it)
+    FileWriter::write(stringstream& s, WRITER::Section section, bool clean, WRITER::Insert it)
     {
       _sections[section] << s.str() << endl;
       if(clean)
@@ -329,7 +339,7 @@ namespace MicroModelica {
     }
 
     void
-    FileWriter::writeBlock(list<string> block, Section section)
+    FileWriter::writeBlock(list<string> block, WRITER::Section section)
     {
       list<string>::iterator it;
       for(it = block.begin(); it != block.end(); it++)
@@ -339,7 +349,7 @@ namespace MicroModelica {
     }
 
     void
-    FileWriter::print(Section section)
+    FileWriter::print(WRITER::Section section)
     {
       _file << _sections[section].rdbuf();
     }
@@ -358,7 +368,7 @@ namespace MicroModelica {
     }
 
     bool
-    FileWriter::isEmpty(Section section)
+    FileWriter::isEmpty(WRITER::Section section)
     {
       return false;
     }
@@ -409,7 +419,7 @@ namespace MicroModelica {
     }
     
     void
-    FileWriter::beginBlock(Section s)
+    FileWriter::beginBlock(WRITER::Section s)
     {
       _block = indent(++_blockIndent);
     }
@@ -421,7 +431,7 @@ namespace MicroModelica {
     }
     
     void
-    FileWriter::endBlock(Section s)
+    FileWriter::endBlock(WRITER::Section s)
     {
       _block = indent(--_blockIndent);
     }
@@ -430,6 +440,16 @@ namespace MicroModelica {
     FileWriter::block()
     {
       return _block;
+    }
+
+    void 
+    FileWriter::write(SymbolTable symbols, WRITER::Section s)
+    {
+      SymbolTable::iterator it;
+      for(string i = symbols.begin(it); !symbols.end(it); i = symbols.next(it))
+      {
+        write(i,s);
+      }
     }
   }
 }

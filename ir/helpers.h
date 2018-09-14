@@ -21,8 +21,10 @@
 #define MMO_HELPERS_H 
 
 #include <string>
+#include "index.h"
 #include "../util/symbol_table.h"
 #include "../util/util.h"
+#include "../util/dependency_matrix.h"
 
 namespace MicroModelica {
   namespace IR {
@@ -212,6 +214,22 @@ namespace MicroModelica {
 
     typedef ModelTable<std::string,CompiledPackage> CompiledPackageTable;
 
+    class FunctionPrinter
+    {
+      public:
+        FunctionPrinter() {};
+        ~FunctionPrinter() {};
+        std::string 
+        beginSwitch();
+        std::string 
+        endSwitch();
+        std::string 
+        beginExpression(std::string token, Option<Range> range) const;
+        std::string 
+        endExpression(Option<Range> range) const;
+        string
+        algebraics(Util::EquationDependencyMatrix eqdm, Util::depId key);
+    };
 
   }
 }

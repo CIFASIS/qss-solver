@@ -137,7 +137,7 @@ namespace MicroModelica {
         buffer << "#include \"" << addInclude << ".h\"" << endl;
         includes.insert(addInclude, addInclude);
       }
-      _writer->write(buffer, FUNCTION_HEADER);
+      _writer->write(buffer, WRITER::Function_Header);
       for(IR::Function f = ft.begin(it); !ft.end(it); f = ft.next(it))
       {
         Function func(f,_flags, _writer);
@@ -145,8 +145,8 @@ namespace MicroModelica {
         func.addInclude(includes);
         func.definition();
       }
-      _writer->print(FUNCTION_HEADER);
-      _writer->print(FUNCTION_CODE);
+      _writer->print(WRITER::Function_Header);
+      _writer->print(WRITER::Function_Code);
       _writer->clearFile();
     }
   }

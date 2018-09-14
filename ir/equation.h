@@ -34,7 +34,8 @@ namespace MicroModelica {
     {
       typedef enum
       {
-        Derivative,
+        ClassicDerivative,
+        QSSDerivative,
         Algebraic,
         Dependency,
         CLASSIC,

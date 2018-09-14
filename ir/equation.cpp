@@ -140,7 +140,8 @@ namespace MicroModelica {
     {
       switch(_type)
       {
-        case EQUATION::Derivative: return "_der"; 
+        case EQUATION::ClassicDerivative: return "_der"; 
+        case EQUATION::QSSDerivative: return "_der"; 
         case EQUATION::ZeroCrossing: return "_zc"; 
         case EQUATION::Output: return "_out"; 
         default: return "";

@@ -25,6 +25,7 @@
 #include <string>
 #include <boost/variant/variant.hpp>
 
+#include "../util/util.h"
 
 namespace MicroModelica {
   namespace Generator {
@@ -32,92 +33,95 @@ namespace MicroModelica {
     /**
     *
     */
-    #define SECTIONS 	70
-    /**
-    *
-    */
-    typedef enum
-    {
-      ALLOC_LD,           //!< WR_ALLOC_LD
-      ALLOC_LD_SD,        //!< WR_ALLOC_LD_SD
-      ALLOC_LD_ALG_SD,        //!< WR_ALLOC_LD_ALG_SD
-      ALLOC_LD_SZ,        //!< WR_ALLOC_LD_SZ
-      ALLOC_LD_ALG_SZ,        //!< WR_ALLOC_LD_ALG_SZ
-      ALLOC_LD_ZS,        //!< WR_ALLOC_LD_ZS
-      ALLOC_LD_ALG_ZS,        //!< WR_ALLOC_LD_ALG_ZS
-      ALLOC_LD_DS,        //!< WR_ALLOC_LD_DS
-      ALLOC_LD_ALG_DS,        //!< WR_ALLOC_LD_ALG_DS
-      ALLOC_LD_HD,        //!< WR_ALLOC_LD_HD
-      ALLOC_LD_HZ,        //!< WR_ALLOC_LD_HZ
-      ALLOC_LD_DD,        //!< WR_ALLOC_LD_DD
-      ALLOC_LD_DH,        //!< WR_ALLOC_LD_DH
-      ALLOC_STATE_HANDLERS,  //!< WR_ALLOC_STATE_HANDLERS
-      ALLOC_EVENT_LHSST,  //!< WR_ALLOC_EVENT_LHSST
-      ALLOC_EVENT_RHSST,  //!< WR_ALLOC_EVENT_RHSST
-      ALLOC_EVENT_ALG_RHSST,  //!< WR_ALLOC_EVENT_ALG_RHSST
-      ALLOC_EVENT_DSC,    //!< WR_ALLOC_EVENT_DSC
-      ALLOC_OUTPUT_STATES,       //!< WR_ALLOC_OUTPUT_STATES
-      ALLOC_OUTPUT_ALG_STATES,       //!< WR_ALLOC_OUTPUT_ALG_STATES
-      ALLOC_OUTPUT_DSC,       //!< WR_ALLOC_OUTPUT_DSC
-      ALLOC_OUTPUT_ALG_DSC,       //!< WR_ALLOC_OUTPUT_ALG_DSC
-      GLOBAL_VARS,        //!< WR_GLOBAL_VARS
-      INCLUDE,             //!< INCLUDE_
-      INIT_LD,            //!< WR_INIT_LD
-      INIT_LD_SD,         //!< WR_INIT_LD_SD
-      INIT_LD_ALG_SD,         //!< WR_INIT_LD_ALG_SD
-      INIT_LD_SZ,         //!< WR_INIT_LD_SZ
-      INIT_LD_ALG_SZ,         //!< WR_INIT_LD_ALG_SZ
-      INIT_LD_ZS,         //!< WR_INIT_LD_ZS
-      INIT_LD_ALG_ZS,         //!< WR_INIT_LD_ALG_ZS
-      INIT_LD_DS,         //!< WR_INIT_LD_DS
-      INIT_LD_ALG_DS,         //!< WR_INIT_LD_ALG_DS
-      INIT_LD_HD,         //!< WR_INIT_LD_HD
-      INIT_LD_HZ,         //!< WR_INIT_LD_HZ
-      INIT_LD_DD,         //!< WR_INIT_LD_DD
-      INIT_LD_DH,         //!< WR_INIT_LD_DH
-      INIT_EVENT,         //!< WR_INIT_EVENT
-      INIT_STATE_HANDLERS,   //!< WR_INIT_STATE_HANDLERS
-      INIT_EVENT_LHSST,   //!< WR_INIT_EVENT_LHSST
-      INIT_EVENT_RHSST,   //!< WR_INIT_EVENT_RHSST
-      INIT_EVENT_ALG_RHSST,   //!< WR_INIT_EVENT_ALG_RHSST
-      INIT_EVENT_DSC,     //!< WR_INIT_EVENT_DSC
-      INIT_OUTPUT,       //!< WR_INIT_OUTPUT
-      INIT_OUTPUT_STATES, //!< WR_INIT_OUTPUT_STATES
-      INIT_OUTPUT_ALG_STATES, //!< WR_INIT_OUTPUT_ALG_STATES
-      INIT_OUTPUT_DSC,    //!< WR_INIT_OUTPUT_DSC
-      INIT_OUTPUT_ALG_DSC,    //!< WR_INIT_OUTPUT_ALG_DSC
-      INIT_TIME,          //!< WR_INIT_TIME
-      INIT_TIME_STRUCT,   //!< WR_INIT_TIME_STRUCT
-      INIT_CODE,          //!< WR_INIT_CODE
-      START_CODE,          //!< WR_START_CODE
-      INIT_VARS,          //!< WR_INIT_VARS
-      MODEL_SIMPLE,       //!< WR_MODEL_SIMPLE
-      MODEL_GENERIC,      //!< WR_MODEL_GENERIC
-      MODEL_DEPS_SIMPLE,  //!< WR_MODEL_DEPS_SIMPLE
-      MODEL_DEPS_GENERIC, //!< WR_MODEL_DEPS_GENERIC
-      ZC_SIMPLE,          //!< WR_ZC_SIMPLE
-      ZC_GENERIC,         //!< WR_ZC_GENERIC
-      HANDLER_POS_SIMPLE, //!< WR_HANDLER_POS_SIMPLE
-      HANDLER_POS_GENERIC, //!< WR_HANDLER_POS_GENERIC
-      HANDLER_NEG_SIMPLE, //!< WR_HANDLER_NEG_SIMPLE
-      HANDLER_NEG_GENERIC, //!< WR_HANDLER_NEG_GENERIC
-      OUTPUT_SIMPLE,      //!< WR_OUTPUT_SIMPLE
-      MODEL_JACOBIAN,      //!< WR_MODEL_JACOBIAN
-      OUTPUT_GENERIC,     //!< WR_OUTPUT_GENERIC
-      FUNCTION_HEADER,    //!< WR_FUNCTION_HEADER
-      FUNCTION_CODE,      //!< WR_FUNCTION_CODE
-      MODEL_HEADER,
-      EMPTY                //!< WR_NULL
-    } Section;
+    #define SECTIONS 	72
+    namespace WRITER {
+      /**
+      *
+      */
+      typedef enum
+      {
+        Alloc_Matrix,           //!< WR_Alloc_LD
+        Alloc_Matrix_SD,        //!< WR_Alloc_LD_SD
+        Alloc_Matrix_Alg_SD,        //!< WR_Alloc_LD_ALG_SD
+        Alloc_Matrix_SZ,        //!< WR_Alloc_LD_SZ
+        Alloc_Matrix_Alg_SZ,        //!< WR_Alloc_LD_ALG_SZ
+        Alloc_Matrix_ZS,        //!< WR_Alloc_LD_ZS
+        Alloc_Matrix_Alg_ZS,        //!< WR_Alloc_LD_ALG_ZS
+        Alloc_Matrix_DS,        //!< WR_Alloc_LD_DS
+        Alloc_Matrix_Alg_DS,        //!< WR_Alloc_LD_ALG_DS
+        Alloc_Matrix_HD,        //!< WR_Alloc_LD_HD
+        Alloc_Matrix_HZ,        //!< WR_Alloc_LD_HZ
+        Alloc_Matrix_DD,        //!< WR_Alloc_LD_DD
+        Alloc_Matrix_DH,        //!< WR_Alloc_LD_DH
+        Alloc_State_Handlers,  //!< WR_ALLOC_STATE_HANDLERS
+        Alloc_Event_LHSST,  //!< WR_ALLOC_EVENT_LHSST
+        Alloc_Event_RHSST,  //!< WR_ALLOC_EVENT_RHSST
+        Alloc_Event_Alg_RHSST,  //!< WR_ALLOC_EVENT_ALG_RHSST
+        Alloc_Event_Discretes,    //!< WR_ALLOC_EVENT_DSC
+        Alloc_Output_States,       //!< WR_Alloc_Output_StateS
+        Alloc_Output_Alg_States,       //!< WR_ALLOC_OUTPUT_ALG_StateS
+        Alloc_Output_Discretes,       //!< WR_ALLOC_OUTPUT_Discretes
+        Alloc_Output_Alg_Discretes,       //!< WR_ALLOC_OUTPUT_ALG_Discretes
+        Include,             //!< INCLUDE_
+        Init_Matrix,            //!< WR_Init_LD
+        Init_Matrix_SD,         //!< WR_Init_LD_SD
+        Init_Matrix_Alg_SD,         //!< WR_Init_LD_ALG_SD
+        Init_Matrix_SZ,         //!< WR_Init_LD_SZ
+        Init_Matrix_Alg_SZ,         //!< WR_Init_LD_ALG_SZ
+        Init_Matrix_ZS,         //!< WR_Init_LD_ZS
+        Init_Matrix_Alg_ZS,         //!< WR_Init_LD_ALG_ZS
+        Init_Matrix_DS,         //!< WR_Init_LD_DS
+        Init_Matrix_Alg_DS,         //!< WR_Init_LD_ALG_DS
+        Init_Matrix_HD,         //!< WR_Init_LD_HD
+        Init_Matrix_HZ,         //!< WR_Init_LD_HZ
+        Init_Matrix_DD,         //!< WR_Init_LD_DD
+        Init_Matrix_DH,         //!< WR_Init_LD_DH
+        Init_Event,         //!< WR_INIT_EVENT
+        Init_State_Handlers,   //!< WR_INIT_STATE_HANDLERS
+        Init_Event_LHSST,   //!< WR_INIT_EVENT_LHSST
+        Init_Event_RHSST,   //!< WR_INIT_EVENT_RHSST
+        Init_Event_Alg_RHSST,   //!< WR_INIT_EVENT_ALG_RHSST
+        Init_Event_Discretes,     //!< WR_INIT_EVENT_DSC
+        Init_Output,       //!< WR_INIT_OUTPUT
+        Init_Output_States, //!< WR_INIT_OUTPUT_STATES
+        Init_Output_Alg_States, //!< WR_INIT_OUTPUT_ALG_STATES
+        Init_Output_Discretes,    //!< WR_INIT_OUTPUT_DSC
+        Init_Output_Alg_Discretes,    //!< WR_INIT_OUTPUT_ALG_DSC
+        Init_Time,          //!< WR_INIT_TIME
+        Init_Code,          //!< WR_INIT_CODE
+        Model,       //!< WR_MODEL_SIMPLE
+        Model_Simple,       //!< WR_MODEL_SIMPLE
+        Model_Generic,      //!< WR_MODEL_GENERIC
+        Model_Deps_Simple,  //!< WR_MODEL_DEPS_SIMPLE
+        Model_Deps,  //!< WR_MODEL_DEPS_SIMPLE
+        Model_Deps_Generic, //!< WR_MODEL_DEPS_GENERIC
+        Zero_Crossing,          //!< WR_ZC_SIMPLE
+        ZC_Simple,          //!< WR_ZC_SIMPLE
+        ZC_Generic,         //!< WR_ZC_GENERIC
+        Handler_Pos,
+        Handler_Pos_Simple, //!< WR_HANDLER_POS_SIMPLE
+        Handler_Pos_Generic, //!< WR_HANDLER_POS_GENERIC
+        Handler_Neg,
+        Handler_Neg_Simple, //!< WR_HANDLER_NEG_SIMPLE
+        Handler_Neg_Generic, //!< WR_HANDLER_NEG_GENERIC
+        Jacobian,      //!< WR_MODEL_JACOBIAN
+        Output,      //!< WR_Output_SIMPLE
+        Output_Simple,      //!< WR_Output_SIMPLE
+        Output_Generic,     //!< WR_Output_GENERIC
+        Function_Header,    //!< WR_FUNCTION_HEADER
+        Function_Code,      //!< WR_FUNCTION_CODE
+        Model_Header,
+        Empty                //!< WR_NULL
+      } Section;
 
-    typedef enum
-    {
-      APPEND_SIMPLE,
-      APPEND_GENERIC,
-      PREPEND
-    } InsertType;
-
-
+      typedef enum
+      {
+        Append_Simple,
+        Append_Generic,
+        Prepend
+      } Insert;
+    }
+    
     class Writer
     {
       public:
@@ -143,7 +147,7 @@ namespace MicroModelica {
         * @param section
         */
         virtual void
-        write(std::string str, Section section, InsertType it = PREPEND) = 0;
+        write(std::string str, WRITER::Section section, WRITER::Insert it = WRITER::Prepend) = 0;
         /**
         *
         * @param s
@@ -151,22 +155,22 @@ namespace MicroModelica {
         * @param clean
         */
         virtual void
-        write(std::stringstream& s, Section section, bool clean = true, InsertType it = PREPEND) = 0;
+        write(std::stringstream& s, WRITER::Section section, bool clean = true, WRITER::Insert it = WRITER::Prepend) = 0;
         virtual void
-        removeFromSection(std::string str, Section section) = 0;
+        removeFromSection(std::string str, WRITER::Section section) = 0;
         /**
         *
         * @param block
         * @param section
         */
         virtual void
-        writeBlock(std::list<std::string> block, Section section) = 0;
+        writeBlock(std::list<std::string> block, WRITER::Section section) = 0;
         /**
         *
         * @param section
         */
         virtual void
-        print(Section section) = 0;
+        print(WRITER::Section section) = 0;
         /**
         *
         * @param s
@@ -185,7 +189,7 @@ namespace MicroModelica {
         * @return
         */
         virtual bool
-        isEmpty(Section section) = 0;
+        isEmpty(WRITER::Section section) = 0;
         /**
         *
         * @param block
@@ -220,7 +224,7 @@ namespace MicroModelica {
         *
         */
         virtual void
-        beginBlock(Section s) = 0;
+        beginBlock(WRITER::Section s) = 0;
         /**
         *
         */
@@ -230,7 +234,7 @@ namespace MicroModelica {
         *
         */
         virtual void
-        endBlock(Section s) = 0;
+        endBlock(WRITER::Section s) = 0;
         /**
         *
         * @return
@@ -242,13 +246,15 @@ namespace MicroModelica {
         * @param section
         */
         virtual void
-        clear(Section section) = 0;
+        clear(WRITER::Section section) = 0;
         /**
         *
         * @param section
         */
         virtual void
-        newLine(Section section) = 0;
+        newLine(WRITER::Section section) = 0;
+        virtual void 
+        write(Util::SymbolTable symbols, WRITER::Section s) =  0;
     };
 
     typedef std::shared_ptr<Writer> WriterPtr;
@@ -284,7 +290,7 @@ namespace MicroModelica {
         * @param section
         */
         void
-        write(std::string str, Section section, InsertType it = PREPEND);
+        write(std::string str, WRITER::Section section, WRITER::Insert it = WRITER::Prepend);
         /**
         *
         * @param s
@@ -292,22 +298,22 @@ namespace MicroModelica {
         * @param clean
         */
         void
-        write(std::stringstream& s, Section section, bool clean = true, InsertType it = PREPEND);
+        write(std::stringstream& s, WRITER::Section section, bool clean = true, WRITER::Insert it = WRITER::Prepend);
         void
-        removeFromSection(std::string str, Section section);
+        removeFromSection(std::string str, WRITER::Section section);
         /**
         *
         * @param block
         * @param section
         */
         void
-        writeBlock(std::list<std::string> block, Section section);
+        writeBlock(std::list<std::string> block, WRITER::Section section);
         /**
         *
         * @param section
         */
         void
-        print(Section section);
+        print(WRITER::Section section);
         /**
         *
         * @param s
@@ -326,7 +332,7 @@ namespace MicroModelica {
         * @return
         */
         bool
-        isEmpty(Section section);
+        isEmpty(WRITER::Section section);
         /**
         *
         * @param block
@@ -361,7 +367,7 @@ namespace MicroModelica {
         *
         */
         void
-        beginBlock(Section s);
+        beginBlock(WRITER::Section s);
         /**
         *
         */
@@ -371,7 +377,7 @@ namespace MicroModelica {
         *
         */
         void
-        endBlock(Section s);
+        endBlock(WRITER::Section s);
         /**
         *
         * @return
@@ -383,13 +389,15 @@ namespace MicroModelica {
         * @param section
         */
         void
-        newLine(Section section);
+        newLine(WRITER::Section section);
         /**
         *
         * @param section
         */
         void
-        clear(Section section);
+        clear(WRITER::Section section);
+        void 
+        write(Util::SymbolTable symbols, WRITER::Section s);
       private:
         std::list<std::string>            _sections[SECTIONS];
         std::ofstream                     _file;
@@ -431,7 +439,7 @@ namespace MicroModelica {
         * @param section
         */
         void
-        write(std::string str, Section section, InsertType it = PREPEND);
+        write(std::string str, WRITER::Section section, WRITER::Insert it = WRITER::Prepend);
         /**
         *
         * @param s
@@ -439,22 +447,22 @@ namespace MicroModelica {
         * @param clean
         */
         void
-        write(std::stringstream& s, Section section, bool clean = true, InsertType it = PREPEND);
+        write(std::stringstream& s, WRITER::Section section, bool clean = true, WRITER::Insert it = WRITER::Prepend);
         void
-        removeFromSection(std::string str, Section section);
+        removeFromSection(std::string str, WRITER::Section section);
         /**
         *
         * @param block
         * @param section
          */
         void
-        writeBlock(std::list<std::string> block, Section section);
+        writeBlock(std::list<std::string> block, WRITER::Section section);
         /**
         *
         * @param section
         */
         void
-        print(Section section);
+        print(WRITER::Section section);
         /**
         *
         * @param s
@@ -473,7 +481,7 @@ namespace MicroModelica {
         * @return
         */
         bool
-        isEmpty(Section section);
+        isEmpty(WRITER::Section section);
         /**
         *
         * @param block
@@ -508,7 +516,7 @@ namespace MicroModelica {
         *
         */
         void
-        beginBlock(Section s);
+        beginBlock(WRITER::Section s);
         /**
         *
         */
@@ -518,7 +526,7 @@ namespace MicroModelica {
         *
         */
         void
-        endBlock(Section s);
+        endBlock(WRITER::Section s);
         /**
         *
         * @return
@@ -530,13 +538,15 @@ namespace MicroModelica {
         * @param section
         */
         void
-        newLine(Section section);
+        newLine(WRITER::Section section);
         /**
         *
         * @param section
         */
         void
-        clear(Section section);
+        clear(WRITER::Section section);
+        void 
+        write(Util::SymbolTable symbols, WRITER::Section s);
       private:
         std::ofstream _sections[SECTIONS];
         std::ofstream _file;

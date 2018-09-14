@@ -26,6 +26,7 @@
 #include "../ast/equation.h"
 #include "../ast/statement.h"
 #include "../util/ast_util.h"
+#include "../util/util.h"
 #include "../util/error.h"
 
 namespace MicroModelica {
@@ -140,7 +141,6 @@ namespace MicroModelica {
           Error::instance().add(AST_ListFirst(el)->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong equation range.");
         }
         string index = fi->variable()->c_str();
-        cout << "Agrega " << index;
         _ranges.insert(index,(size == 2 ? RangeDefinition(begin,end) : RangeDefinition(begin, end, eval.apply(AST_ListAt(el, 1)))));
         Option<RangeDefinition> range = _ranges[index];
         if(range) { _size += range->size(); }
@@ -179,6 +179,33 @@ namespace MicroModelica {
         }
       }
       return buffer.str();
+    }
+
+    string 
+    Range::indexes() const 
+    {
+      stringstream buffer;
+      RangeDefinitionTable ranges = _ranges;
+      RangeDefinitionTable::iterator it;
+      int size = ranges.size(), i = 0;
+      for(RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it))
+      {
+        string var = ranges.key(it);
+        buffer << var << (++i < size ? "," : "");
+      }
+      return buffer.str();
+    }
+   
+    void 
+    Range::addLocalVariables()
+    {
+      RangeDefinitionTable ranges = _ranges;
+      RangeDefinitionTable::iterator it;
+      for(RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it))
+      {
+        string var = ranges.key(it);
+        Utils::instance().addLocalSymbol("int "+var+";");
+      }
     }
 
     std::ostream& operator<<(std::ostream& out, const Range& r)

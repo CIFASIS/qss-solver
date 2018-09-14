@@ -33,10 +33,12 @@
 
 namespace MicroModelica {
   namespace IR {
+    class Equation;
     class CompiledPackage;
     class CompiledFunction;
     typedef ModelTable<std::string,CompiledPackage> CompiledPackageTable;
     typedef ModelTable<std::string,CompiledFunction> CompiledFunctionTable;
+    typedef ModelTable<int,Equation> EquationTable;
   }
   namespace Util {
 
@@ -204,12 +206,18 @@ namespace MicroModelica {
         checkBuiltInFunctions(std::string name);
         inline VarSymbolTable 
         symbols() { return _symbols; };
-        inline VarSymbolTable 
+        inline SymbolTable 
         localSymbols() { return _localSymbols; };
         inline void  
-        addLocalSymbol(std::string symbol, Variable v) { _localSymbols.insert(symbol, v); };
+        addLocalSymbol(std::string symbol) { _localSymbols.insert(symbol, symbol); };
         inline void 
         setSymbols(const VarSymbolTable& symbols) { _symbols = symbols; };
+        inline void 
+        setLocalSymbols() { _localSymbols.clear(); };
+        void 
+        setAlgebraics(IR::EquationTable algebraics);
+        IR::EquationTable 
+        algebraics();
       private:
         Utils();
         bool
@@ -224,8 +232,9 @@ namespace MicroModelica {
         map<string, int>                  _annotations;
         string                            _binop[BINOPS];
         IR::CompiledFunctionTable         _compiledFunctions;
-        VarSymbolTable                       _symbols;
-        VarSymbolTable                       _localSymbols;
+        VarSymbolTable                    _symbols;
+        SymbolTable                       _localSymbols;
+        IR::EquationTable                 _algebraics;
     };
 
   }
