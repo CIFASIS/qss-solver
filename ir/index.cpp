@@ -143,6 +143,7 @@ namespace MicroModelica {
         string index = fi->variable()->c_str();
         _ranges.insert(index,(size == 2 ? RangeDefinition(begin,end) : RangeDefinition(begin, end, eval.apply(AST_ListAt(el, 1)))));
         Option<RangeDefinition> range = _ranges[index];
+        cout << "TAMANO " << range->size() << endl; 
         if(range) { _size += range->size(); }
       }
     }
@@ -154,7 +155,7 @@ namespace MicroModelica {
       int size = _ranges.size();
       for(int i = 0; i < size; i++)
       {
-        buffer << "}" << endl;
+        buffer << "}";
       }
       return buffer.str();
     }
@@ -178,6 +179,7 @@ namespace MicroModelica {
           block += TAB;
         }
       }
+      addLocalVariables();
       return buffer.str();
     }
 
@@ -197,7 +199,7 @@ namespace MicroModelica {
     }
    
     void 
-    Range::addLocalVariables()
+    Range::addLocalVariables() const 
     {
       RangeDefinitionTable ranges = _ranges;
       RangeDefinitionTable::iterator it;
@@ -206,6 +208,17 @@ namespace MicroModelica {
         string var = ranges.key(it);
         Utils::instance().addLocalSymbol("int "+var+";");
       }
+    }
+
+    int 
+    Range::size(int dim) const 
+    {
+      int total = 1;
+      for(unsigned int it = _size.size()-1; it > dim; it--)
+      {
+        total *= _size.at(it);
+      }
+      return total;
     }
 
     std::ostream& operator<<(std::ostream& out, const Range& r)

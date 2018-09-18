@@ -84,6 +84,8 @@ namespace MicroModelica {
         compare(AST_Expression zc);
         inline bool 
         hasRange() { return _range.is_initialized(); }; 
+        std::string 
+        macro() const;
       private:
         AST_Expression
         getExpression(AST_Expression zc);

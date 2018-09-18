@@ -151,6 +151,17 @@ namespace MicroModelica {
       return total;
     }
 
+    int 
+    Variable::rowSize(int dim)
+    {
+      int total = 1;
+      for(unsigned int it = _size.size()-1; it > dim; it--)
+      {
+        total *= _size.at(it);
+      }
+      return total;
+    }
+
     ostream &
     operator<<(ostream &ret, const Variable &e)
     {

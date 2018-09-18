@@ -112,6 +112,8 @@ namespace MicroModelica {
         ~Range() {};
         inline int 
         size() const { return _size; };
+        int 
+        size(int dim) const;
         friend std::ostream& operator<<(std::ostream& out, const Range& r);
         inline RangeDefinitionTable 
         definition() const { return _ranges; };
@@ -122,7 +124,7 @@ namespace MicroModelica {
         string 
         indexes() const; 
         void 
-        addLocalVariables();
+        addLocalVariables() const;
       private:
         void 
         setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);

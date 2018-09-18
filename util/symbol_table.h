@@ -284,6 +284,8 @@ namespace MicroModelica {
          */
         inline int
         size(int dim) const { return _size[dim]; };
+        int 
+        rowSize(int dim);
         /**
          *
          * @return

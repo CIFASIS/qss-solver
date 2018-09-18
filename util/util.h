@@ -29,6 +29,7 @@
 #include "util_types.h"
 #include "symbol_table.h"
 #include "compile_flags.h"
+#include "model_dependencies.h"
 #include "table.h"
 
 namespace MicroModelica {
@@ -218,6 +219,10 @@ namespace MicroModelica {
         setAlgebraics(IR::EquationTable algebraics);
         IR::EquationTable 
         algebraics();
+        inline ModelDependencies
+        dependencies() { return _dependecies; };
+        inline void 
+        setDependencies(ModelDependencies dependencies) { _dependecies = dependencies; };
       private:
         Utils();
         bool
@@ -235,6 +240,7 @@ namespace MicroModelica {
         VarSymbolTable                    _symbols;
         SymbolTable                       _localSymbols;
         IR::EquationTable                 _algebraics;
+        ModelDependencies                 _dependecies;
     };
 
   }

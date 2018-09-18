@@ -337,6 +337,7 @@ namespace MicroModelica {
       _stateNbr(0),
       _discreteNbr(0),
       _algebraicNbr(0),
+      _eventNbr(0),
       _outputNbr(0),
       _derivativeId(0),
       _algebraicId(0),
@@ -367,10 +368,11 @@ namespace MicroModelica {
       _stateNbr(0),
       _discreteNbr(0),
       _algebraicNbr(0),
+      _eventNbr(0),
       _outputNbr(0),
-      _derivativeId(0),
-      _algebraicId(0),
-      _eventId(0),
+      _derivativeId(1),
+      _algebraicId(1),
+      _eventId(1),
       _externalFunctions(false)
     {
       _symbols.initialize(_types);
@@ -628,14 +630,14 @@ namespace MicroModelica {
       {
         AST_Expression_Derivative ed = eqe->left()->getAsDerivative();
         variable(AST_ListFirst(ed->arguments()));
-        Equation mse(eq, _symbols, range, t);
+        Equation mse(eq, _symbols, range, t, _derivativeId);
         addInput(mse, _derivativeId, t);
         _derivatives.insert(_derivativeId++, mse);
       }
       else if(eqe->left()->expressionType() == EXPCOMPREF)
       {
         variable(eqe->left());
-        Equation mse(eq, _symbols, range, EQUATION::Algebraic);
+        Equation mse(eq, _symbols, range, EQUATION::Algebraic, _algebraicId);
         addInput(mse, _algebraicId, EQUATION::Algebraic);
         _algebraics.insert(_algebraicId++, mse);
       }
@@ -651,7 +653,7 @@ namespace MicroModelica {
         foreach(it,el)
         {
           variable(current_element(it));
-          Equation mse(eq, _symbols, range, EQUATION::Algebraic);
+          Equation mse(eq, _symbols, range, EQUATION::Algebraic, _algebraicId);
           addInput(mse, _algebraicId, EQUATION::Algebraic);
           _algebraics.insert(_algebraicId++, mse);
         }
@@ -693,13 +695,13 @@ namespace MicroModelica {
     {
       if(stm->statementType() == STWHEN)
       {
-        _eventNbr += (range ? range->size() : 1);
         AST_Statement_When sw = stm->getAsWhen();
         if(sw->hasComment())
         {
           _annotations.eventComment(sw->comment());
         }
         Event event(sw->condition(),_eventId, _eventNbr,  _symbols, range);
+        _eventNbr += (range ? range->size() : 1);
         AST_StatementList stl = sw->statements();
         AST_StatementListIterator it;
         foreach(it,stl)
@@ -717,8 +719,8 @@ namespace MicroModelica {
             Event event2 = event;
             if(!event.compare(se->condition()))
             {
-              _eventNbr += (range ? range->size() : 1);
               event2 = Event(se->condition(), _eventId+1, _eventNbr,  _symbols, range);
+              _eventNbr += (range ? range->size() : 1);
               newEvent = true;
             }
             AST_StatementList stel = se->statements();
@@ -769,8 +771,15 @@ namespace MicroModelica {
       list<AST_Expression>::iterator it;
       for(it = astOutputs.begin(); it != astOutputs.end(); it++)
       {
-        _outputs.insert(_outputNbr++, Equation(*it, _symbols, EQUATION::Output));
+        Equation eq(*it, _symbols, EQUATION::Output, _outputNbr);
+        _outputs.insert(_outputNbr++, eq);
       }
+    }
+
+    void 
+    Model::setDependencies()
+    {
+      Utils::instance().setDependencies(_dependecies);
     }
   }
 }

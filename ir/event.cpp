@@ -45,7 +45,7 @@ namespace MicroModelica {
       _offset(offset)
     {
       ConvertCondition cc;
-      _zeroCrossing = Equation(cc.apply(getExpression(cond)), symbols, range, EQUATION::ZeroCrossing);
+      _zeroCrossing = Equation(cc.apply(getExpression(cond)), symbols, range, EQUATION::ZeroCrossing, id);
       _type = cc.zeroCrossing();
       _current = _type;
       _zcRelation = cc.zeroCrossingRelation();
@@ -115,6 +115,25 @@ namespace MicroModelica {
         buffer << block << stm << endl;
       }
       buffer << fp.endExpression(_range);
+      return buffer.str();
+    }
+
+    string 
+    Event::macro() const 
+    {
+      stringstream buffer;
+      buffer << "#define _event_" << _id;
+      if(_range)
+      {
+        
+        buffer << "(idx) " << "(idx + 1)"<< "-" << _offset << endl;
+        buffer << "#define _get_event_" << _id << "_idxs(idx, " << _range->indexes() << ") \\";
+        buffer << "" << endl; 
+      }
+      else 
+      {
+        buffer << " " << _id - 1; 
+      }
       return buffer.str();
     }
   }

@@ -22,6 +22,7 @@
 
 #include "../ast/ast_types.h"
 #include "../util/table.h"
+#include "../util/dependency_matrix.h"
 #include "index.h"
 
 namespace MicroModelica {
@@ -56,11 +57,11 @@ namespace MicroModelica {
          * @param exp
          */
         Equation() {};
-        Equation(AST_Expression eq, Util::VarSymbolTable& symbols, EQUATION::Type type);
-        Equation(AST_Expression eq, Util::VarSymbolTable& symbols, Option<Range> range, EQUATION::Type type);
-        Equation(AST_Equation eq, Util::VarSymbolTable& symbols, EQUATION::Type type);
-        Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Range r, EQUATION::Type type);
-        Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Option<Range> r, EQUATION::Type type);
+        Equation(AST_Expression eq, Util::VarSymbolTable& symbols, EQUATION::Type type, int id);
+        Equation(AST_Expression eq, Util::VarSymbolTable& symbols, Option<Range> range, EQUATION::Type type, int id);
+        Equation(AST_Equation eq, Util::VarSymbolTable& symbols, EQUATION::Type type, int id);
+        Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Range r, EQUATION::Type type, int id);
+        Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Option<Range> r, EQUATION::Type type, int id);
         /**
          *
          */
@@ -85,6 +86,10 @@ namespace MicroModelica {
         process(AST_Equation eq);
         void 
         process(AST_Expression exp);
+        Util::EquationDependencyMatrix 
+        dependencyMatrix() const;
+        std::string 
+        functionId() const;
         std::string 
         prefix() const;
         AST_Equation         _eq;
@@ -95,6 +100,7 @@ namespace MicroModelica {
         Util::VarSymbolTable _symbols;
         Util::SymbolTable    _calledFunctions;
         EQUATION::Type       _type;
+        int                  _id;
     };
 
     typedef ModelTable<int,Equation> EquationTable;

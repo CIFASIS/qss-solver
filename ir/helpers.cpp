@@ -302,5 +302,50 @@ namespace MicroModelica {
       return buffer.str();
     }
 
+    string 
+    FunctionPrinter::macro(string token, Option<Range> range, int id, int offset) const
+    {
+      stringstream buffer;
+      buffer << "#define " << token;
+      if(range)
+      {
+        _range = range.get();
+        buffer << "(idx) " << "(idx + 1)"<< "-" << offset << endl;
+        string var = Utils::instance().iteratorVar();
+        buffer << "#define _get" << token << "_idxs(idx, " << _range->indexes() << ") \\";
+        buffer << "int " << var << " = " << token << "(idx); \\" << endl;
+        RangeDefinitionTable rdt = _range.definition();
+        RangeDefinitionTable::iterator it;
+        int size = rdt.size();
+        for(RangeDefinition rd = rdt.begin(it), int i = 0, int idx = 0; !rdt.end(it); rd = rdt.next(it), idx++)
+        {
+          buffer << rdt.key(it) << " = " << (++i < size ? div(mod(idx-1),idx) : mod(idx-1)) << "\\" << endl; 
+        }
+        buffer << "" << endl; 
+      }
+      else 
+      {
+        buffer << " " << _id - 1; 
+      }
+      return buffer.str();
+    }
+
+    string 
+    FunctionPrinter::mod(string idx, int dim) const 
+    {
+      if(dim < 0) { return idx; }
+      stringstream buffer;
+
+      buffer << "(" << idx << "%" << dim << ")";
+      return buffer.str();
+    }
+
+    string 
+    FunctionPrinter::div(string idx, int dim) const 
+    {
+      stringstream buffer;
+      buffer << "(" << idx << "/" << dim << ")";  
+      return buffer.str();
+    }
   }
 }

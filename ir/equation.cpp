@@ -21,6 +21,7 @@
 
 #include <sstream>
 
+#include "helpers.h"
 #include "../ast/expression.h"
 #include "../ast/equation.h"
 #include "../util/ast_util.h"
@@ -30,38 +31,41 @@ namespace MicroModelica {
   using namespace Util;
   namespace IR {
 
-    Equation::Equation(AST_Expression eq, VarSymbolTable& symbols, EQUATION::Type type) :
+    Equation::Equation(AST_Expression eq, VarSymbolTable& symbols, EQUATION::Type type, int id) :
       _eq(),
       _lhs(),
       _rhs(),
       _range(),
       _autonomous(true),
       _symbols(symbols),
-      _type(type)
+      _type(type), 
+      _id(id)
     {
       process(eq);
     }
 
-    Equation::Equation(AST_Expression eq, VarSymbolTable& symbols, Option<Range> range, EQUATION::Type type) :
+    Equation::Equation(AST_Expression eq, VarSymbolTable& symbols, Option<Range> range, EQUATION::Type type, int id) :
       _eq(),
       _lhs(),
       _rhs(),
       _range(range),
       _autonomous(true),
       _symbols(symbols),
-      _type(type)
+      _type(type),
+      _id(id)
     {
       process(eq);
     }
 
-    Equation::Equation(AST_Equation eq, VarSymbolTable& symbols, EQUATION::Type type) :
+    Equation::Equation(AST_Equation eq, VarSymbolTable& symbols, EQUATION::Type type, int id) :
       _eq(eq),
       _lhs(),
       _rhs(),
       _range(),
       _autonomous(true),
       _symbols(symbols),
-      _type(type)
+      _type(type),
+      _id(id)
     {
       Autonomous autonomous(_symbols);
       _autonomous = autonomous.apply(_rhs.expression());
@@ -70,26 +74,28 @@ namespace MicroModelica {
       process(eq);
     }
 
-    Equation::Equation(AST_Equation eq, VarSymbolTable& symbols, Range r, EQUATION::Type type) :
+    Equation::Equation(AST_Equation eq, VarSymbolTable& symbols, Range r, EQUATION::Type type, int id) :
       _eq(eq),
       _lhs(),
       _rhs(),
       _range(r),
       _autonomous(true),
       _symbols(symbols),
-      _type(type)
+      _type(type),
+      _id(id)
     {
       process(eq);
     }
  
-    Equation::Equation(AST_Equation eq, VarSymbolTable& symbols, Option<Range> r, EQUATION::Type type) :
+    Equation::Equation(AST_Equation eq, VarSymbolTable& symbols, Option<Range> r, EQUATION::Type type, int id) :
       _eq(eq),
       _lhs(),
       _rhs(),
       _range(r),
       _autonomous(true),
       _symbols(symbols),
-      _type(type)
+      _type(type),
+      _id(id)
     {
       process(eq);
     }   
@@ -149,18 +155,64 @@ namespace MicroModelica {
       return "";
     }
 
+    EquationDependencyMatrix 
+    Equation::dependencyMatrix() const
+    {
+      ModelDependencies deps = Utils::instance().dependencies(); 
+      switch(_type)
+      {
+        case EQUATION::ClassicDerivative:  
+        case EQUATION::QSSDerivative: return deps.DA(); 
+        case EQUATION::ZeroCrossing: return deps.ZCA(); 
+        case EQUATION::Output: return deps.OA(); 
+        default: return EquationDependencyMatrix();
+      }
+      return EquationDependencyMatrix();
+    }
+
+    string 
+    Equation::functionId() const 
+    {
+      stringstream buffer;
+      switch(_type)
+      {
+        case EQUATION::QSSDerivative: buffer << "_der_eq_" << _id; break; 
+        case EQUATION::Dependency: buffer << "_dep_eq_" << _id; break; 
+        case EQUATION::ZeroCrossing: buffer << "_event_" << _id; break;  
+        case EQUATION::Output: buffer << "_out_eq_" << _id; break;  
+        default: return "";
+      }
+      return buffer.str();
+    }
+
     string 
     Equation::print() const
     {
       stringstream buffer;
       string block = "";
-      if(_range) 
-      { 
-        buffer << _range.get(); 
-        block += TAB;
+      FunctionPrinter fp;
+      if(_type == EQUATION::ClassicDerivative)
+      {
+        if(_range) 
+        { 
+          buffer << _range.get(); 
+          block += TAB;
+        }
       }
-      buffer << block << prefix() << _lhs << " = " << _rhs << ";"; 
-      if(_range) { buffer << endl << _range.get().end(); }
+      else 
+      {
+        buffer << fp.beginExpression(functionId(), _range);
+        buffer << fp.algebraics(dependencyMatrix(), _id);
+      }
+      buffer << block << prefix() << _lhs << " = " << _rhs << ";" << endl; 
+      if(_type == EQUATION::ClassicDerivative)
+      {
+        if(_range) { buffer << endl << _range.get().end(); }
+      }
+      else 
+      {
+        buffer << fp.endExpression(_range);
+      }
       return buffer.str();
     }
 

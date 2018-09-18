@@ -188,12 +188,21 @@ namespace MicroModelica {
         buffer << event.handler(EVENT::Negative);
         _writer->write(buffer, (event.hasRange() ? WRITER::Handler_Neg_Generic : WRITER::Handler_Neg_Simple)); 
       }
-      _writer->write(Utils::instance().localSymbols(), WRITER::Handler_Pos);
-      _writer->write(Utils::instance().localSymbols(), WRITER::Handler_Neg);
+      if(!_writer->isEmpty(WRITER::Handler_Pos_Generic))
+      {
+        _writer->write(Utils::instance().localSymbols(), WRITER::Handler_Pos);
+      }
+      if(!_writer->isEmpty(WRITER::Handler_Neg_Generic))
+      { 
+        _writer->write(Utils::instance().localSymbols(), WRITER::Handler_Neg);
+      }
       if(!_writer->isEmpty(WRITER::Handler_Pos_Simple))
       {
         _writer->write(fp.beginSwitch(), WRITER::Handler_Pos);
         _writer->write(fp.endSwitch(), WRITER::Handler_Pos_Simple);
+      }
+      if(!_writer->isEmpty(WRITER::Handler_Neg_Simple))
+      {
         _writer->write(fp.beginSwitch(), WRITER::Handler_Neg);
         _writer->write(fp.endSwitch(), WRITER::Handler_Neg_Simple);
       }
@@ -234,6 +243,12 @@ namespace MicroModelica {
       {
         if(var.isParameter()) { buffer << var.declaration("__PAR__"); }
         _writer->write(buffer, WRITER::Model_Header);
+      }
+      EventTable events = _model.events();
+      EventTable::iterator eit;
+      for(Event e = events.begin(eit); !events.end(eit); e = events.next(eit))
+      {
+        _writer->write(e.macro(), WRITER::Model_Header);
       }
     }
 
@@ -346,6 +361,7 @@ namespace MicroModelica {
       EquationTable::iterator it;
       VarSymbolTable symbols = _model.symbols();
       stringstream buffer;
+      Utils::instance().setLocalSymbols();
       for(Equation alg = algebraics.begin(it); !algebraics.end(it); alg = algebraics.next(it))
       {
          buffer << alg;
@@ -356,6 +372,7 @@ namespace MicroModelica {
          buffer << der;
          _writer->write(buffer, WRITER::Model_Simple);
       }
+      _writer->write(Utils::instance().localSymbols(), WRITER::Model);
     }
     
     void
@@ -403,6 +420,7 @@ namespace MicroModelica {
       _writer->endBlock();
       _writer->print(componentDefinition(MODEL));
       _writer->beginBlock();
+      _writer->print(WRITER::Model);
       _writer->print(WRITER::Model_Simple);
       _writer->endBlock();
       _writer->print(componentDefinition(JACOBIAN));

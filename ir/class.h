@@ -524,6 +524,8 @@ namespace MicroModelica
         setOutputs();
         inline StatementTable
         initialCode() { return _initialCode; };
+        void 
+        setDependencies();
       private:
         Option<Util::Variable>
         variable(AST_Expression exp);

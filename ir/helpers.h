@@ -227,8 +227,16 @@ namespace MicroModelica {
         beginExpression(std::string token, Option<Range> range) const;
         std::string 
         endExpression(Option<Range> range) const;
-        string
+        std::string
         algebraics(Util::EquationDependencyMatrix eqdm, Util::depId key);
+        std::string 
+        macro(std::string token, Option<Range> range, int id, int offset = 0) const;
+      private:
+        Range range;
+        std::string 
+        mod(std::string var, int dim) const;
+        std::string 
+        div(std::string var, int dim) const;
     };
 
   }
