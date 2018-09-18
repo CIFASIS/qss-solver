@@ -122,19 +122,9 @@ namespace MicroModelica {
     Event::macro() const 
     {
       stringstream buffer;
-      buffer << "#define _event_" << _id;
-      if(_range)
-      {
-        
-        buffer << "(idx) " << "(idx + 1)"<< "-" << _offset << endl;
-        buffer << "#define _get_event_" << _id << "_idxs(idx, " << _range->indexes() << ") \\";
-        buffer << "" << endl; 
-      }
-      else 
-      {
-        buffer << " " << _id - 1; 
-      }
-      return buffer.str();
+      buffer << "_event_" << _id;
+      FunctionPrinter fp;
+      return fp.macro(buffer.str(),_range, _id, _offset);
     }
   }
 }

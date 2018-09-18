@@ -152,7 +152,7 @@ namespace MicroModelica {
     }
 
     int 
-    Variable::rowSize(int dim)
+    Variable::rowSize(int dim) const
     {
       int total = 1;
       for(unsigned int it = _size.size()-1; it > dim; it--)

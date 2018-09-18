@@ -143,8 +143,12 @@ namespace MicroModelica {
         string index = fi->variable()->c_str();
         _ranges.insert(index,(size == 2 ? RangeDefinition(begin,end) : RangeDefinition(begin, end, eval.apply(AST_ListAt(el, 1)))));
         Option<RangeDefinition> range = _ranges[index];
-        cout << "TAMANO " << range->size() << endl; 
-        if(range) { _size += range->size(); }
+        if(range) 
+        { 
+          _size += range->size(); 
+          _rowSize.push_back(range->size());
+        }
+        else { _rowSize.push_back(1); }
       }
     }
 
@@ -211,12 +215,12 @@ namespace MicroModelica {
     }
 
     int 
-    Range::size(int dim) const 
+    Range::rowSize(int dim) const 
     {
       int total = 1;
-      for(unsigned int it = _size.size()-1; it > dim; it--)
+      for(int it = _rowSize.size()-1; it > dim; it--)
       {
-        total *= _size.at(it);
+        total *= _rowSize.at(it);
       }
       return total;
     }

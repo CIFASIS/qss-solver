@@ -216,6 +216,15 @@ namespace MicroModelica {
       return buffer.str();
     }
 
+    string 
+    Equation::macro() const 
+    {
+      stringstream buffer;
+      buffer << functionId() << _id;
+      FunctionPrinter fp;
+      return fp.macro(buffer.str(), _range, _id);
+    }
+
     std::ostream& operator<<(std::ostream& out, const Equation& e)
     {
       out << e.print();

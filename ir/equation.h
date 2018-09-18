@@ -81,6 +81,8 @@ namespace MicroModelica {
         friend std::ostream& operator<<(std::ostream& out, const Equation& e);
         std::string
         print() const;
+        std::string 
+        macro() const;
       private:
         void 
         process(AST_Equation eq);

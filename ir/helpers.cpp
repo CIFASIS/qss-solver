@@ -24,6 +24,7 @@
 #include "expression.h"
 #include "equation.h"
 #include "../util/error.h"
+#include "../util/util.h"
 
 namespace MicroModelica {
   using namespace Util;
@@ -309,42 +310,39 @@ namespace MicroModelica {
       buffer << "#define " << token;
       if(range)
       {
-        _range = range.get();
         buffer << "(idx) " << "(idx + 1)"<< "-" << offset << endl;
         string var = Utils::instance().iteratorVar();
-        buffer << "#define _get" << token << "_idxs(idx, " << _range->indexes() << ") \\";
-        buffer << "int " << var << " = " << token << "(idx); \\" << endl;
-        RangeDefinitionTable rdt = _range.definition();
+        buffer << "#define _get" << token << "_idxs(idx, " << range->indexes() << ") \\";
+        buffer << TAB << "int " << var << " = " << token << "(idx); \\" << endl;
+        RangeDefinitionTable rdt = range->definition();
         RangeDefinitionTable::iterator it;
-        int size = rdt.size();
-        for(RangeDefinition rd = rdt.begin(it), int i = 0, int idx = 0; !rdt.end(it); rd = rdt.next(it), idx++)
+        int size = rdt.size(), i = 0, idx = 0;
+        for(RangeDefinition rd = rdt.begin(it); !rdt.end(it); rd = rdt.next(it), idx++)
         {
-          buffer << rdt.key(it) << " = " << (++i < size ? div(mod(idx-1),idx) : mod(idx-1)) << "\\" << endl; 
+          buffer << TAB << rdt.key(it) << " = " << (++i < size ? div(mod(var, idx-1, range),idx, range) : mod(var, idx-1, range)) << "+ 1; \\" << endl; 
         }
-        buffer << "" << endl; 
       }
       else 
       {
-        buffer << " " << _id - 1; 
+        buffer << " " << id - 1; 
       }
       return buffer.str();
     }
 
     string 
-    FunctionPrinter::mod(string idx, int dim) const 
+    FunctionPrinter::mod(string idx, int dim, Option<Range> range) const 
     {
       if(dim < 0) { return idx; }
-      stringstream buffer;
-
-      buffer << "(" << idx << "%" << dim << ")";
+      stringstream buffer; 
+      buffer << "(" << mod(idx,dim-1,range) << "%" << range->rowSize(dim) << ")";
       return buffer.str();
     }
 
     string 
-    FunctionPrinter::div(string idx, int dim) const 
+    FunctionPrinter::div(string idx, int dim, Option<Range> range) const 
     {
       stringstream buffer;
-      buffer << "(" << idx << "/" << dim << ")";  
+      buffer << "(" << idx << "/" << range->rowSize(dim) << ")";  
       return buffer.str();
     }
   }

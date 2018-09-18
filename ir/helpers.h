@@ -232,11 +232,10 @@ namespace MicroModelica {
         std::string 
         macro(std::string token, Option<Range> range, int id, int offset = 0) const;
       private:
-        Range range;
         std::string 
-        mod(std::string var, int dim) const;
+        mod(std::string var, int dim, Option<Range> range) const;
         std::string 
-        div(std::string var, int dim) const;
+        div(std::string var, int dim, Option<Range> range) const;
     };
 
   }
