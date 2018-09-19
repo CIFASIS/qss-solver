@@ -614,15 +614,6 @@ namespace MicroModelica {
     }
 
     void 
-    Model::addInput(Equation eq, int eqId, EQUATION::Type type)
-    {
-      if(!eq.autonomous())
-      {
-        _inputs[_inputNbr++] = Input(eqId, type);
-      }
-    }
-
-    void 
     Model::addEquation(AST_Equation eq, Option<Range> range)
     {
       assert(eq->equationType() == EQEQUALITY);
@@ -633,14 +624,12 @@ namespace MicroModelica {
         AST_Expression_Derivative ed = eqe->left()->getAsDerivative();
         variable(AST_ListFirst(ed->arguments()));
         Equation mse(eq, _symbols, range, t, _derivativeId);
-        addInput(mse, _derivativeId, t);
         _derivatives.insert(_derivativeId++, mse);
       }
       else if(eqe->left()->expressionType() == EXPCOMPREF)
       {
         variable(eqe->left());
         Equation mse(eq, _symbols, range, EQUATION::Algebraic, _algebraicId);
-        addInput(mse, _algebraicId, EQUATION::Algebraic);
         _algebraics.insert(_algebraicId++, mse);
       }
       else if(eqe->left()->expressionType() == EXPOUTPUT)
@@ -656,7 +645,6 @@ namespace MicroModelica {
         {
           variable(current_element(it));
           Equation mse(eq, _symbols, range, EQUATION::Algebraic, _algebraicId);
-          addInput(mse, _algebraicId, EQUATION::Algebraic);
           _algebraics.insert(_algebraicId++, mse);
         }
       }
@@ -776,6 +764,30 @@ namespace MicroModelica {
         Equation eq(*it, _symbols, EQUATION::Output, _outputId, _outputNbr++);
         _outputs.insert(_outputId++, eq);
       }
+    }
+
+    void 
+    Model::setInputs()
+    {
+    /*  EquationTable::iterator it;
+      for(Equation eq = _derivatives.begin(it); !_derivatives.end(it); eq = _derivatives.next(it))
+      {
+        if(!eq.autonomous()) 
+        { 
+          continue;
+        }
+        EquationDependency eqdm = _dependecies.DA();
+        EquationDependencyMatrix::iterator eit;
+        for(EquationDependency ed = eqdm.begin(eit); !eqdm.end(eit); ed = eqdm.next(eit))
+        {
+            if(ed.lookup(i.id()) && _derivatives[eqdm.key(eit)]->autonomous())
+            {
+
+            }
+        }
+
+        }
+      }*/
     }
 
     void 

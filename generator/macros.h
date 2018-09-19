@@ -43,6 +43,8 @@ namespace MicroModelica {
         print() const;
         std::string 
         parameters() const;
+        std::string 
+        arguments() const;
       private:
         IR::Model      _model;
         Util::Variable _variable;

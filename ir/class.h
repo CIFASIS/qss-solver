@@ -370,21 +370,7 @@ namespace MicroModelica
         FunctionTable       _functions;
     };
     
-    class Input 
-    {
-      public:
-        Input(int id, EQUATION::Type type) : _id(id), _type(type) {};
-        ~Input() {};
-        inline int 
-        id() const { return _id;};
-        inline EQUATION::Type 
-        type() const { return _type; };
-      private:
-        int            _id; 
-        EQUATION::Type _type;
-    };
-    
-    typedef ModelTable<int, Input> InputTable;
+    typedef ModelTable<int, Index> InputTable;
 
     /**
     *
@@ -522,6 +508,8 @@ namespace MicroModelica
         setEvents();
         void 
         setOutputs();
+        void 
+        setInputs();
         inline StatementTable
         initialCode() { return _initialCode; };
         void 
@@ -539,8 +527,6 @@ namespace MicroModelica
         addEvent(AST_Statement stm, Option<Range> range);
         void 
         addFunction(Util::SymbolTable symbols, FunctionTable& fs);
-        void 
-        addInput(Equation eq, int eqId, EQUATION::Type type);
         std::string               _name;
         Util::ImportTable         _imports;
         Util::VarSymbolTable      _symbols;

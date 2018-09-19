@@ -43,31 +43,23 @@ namespace MicroModelica {
       {
         buffer << "d" << i+1 << (i == dim-1 ? ")" : ","); 
       }
-      buffer << " ";
       return buffer.str();
     }
 
     string 
-    Macros::print() const 
+    Macros::arguments() const 
     {
-      stringstream buffer, arguments;
-      buffer << "#define " << _variable;
+      stringstream arguments;
       int dim = _variable.dimensions();
-      buffer << parameters();
-      if(_variable.isState()) { buffer << "x"; }
-      if(_variable.isAlgebraic()) { buffer << "a"; }
-      if(_variable.isDiscrete()) { buffer << "d"; } 
-      if(_variable.isParameter()) { buffer << "__PAR__" << _variable.name(); } 
       stringstream end;
       if(!_model.annotations().classic() &&
         (_variable.isAlgebraic() || _variable.isState())) 
       { 
         end << "*" << _model.annotations().polyCoeffs(); 
       }
-      end << "]"; 
       if(dim)
       {
-        arguments << "[("; 
+        arguments << "("; 
         for(int i = 0; i < dim; i++)
         {
           stringstream variable;
@@ -78,10 +70,32 @@ namespace MicroModelica {
       }
       else if(_variable.isDiscrete() || _variable.isState() || _variable.isAlgebraic())
       {
-        arguments << "[" << _variable.offset() << end.str();
+        arguments << _variable.offset() << end.str();
       }
       arguments << endl;
-      buffer << arguments.str();
+      return arguments.str();
+    }
+
+    string 
+    Macros::print() const 
+    {
+      stringstream buffer, index;
+      int dim = _variable.dimensions();
+      bool idx = !_variable.isParameter() || dim;
+      if(idx) 
+      { 
+        index << "_idx" << _variable << parameters();  
+        buffer << "#define " << index.str() << " " << arguments(); 
+      }
+      buffer << "#define " << _variable << parameters() << " ";
+      if(_variable.isState()) { buffer << "x"; }
+      if(_variable.isAlgebraic()) { buffer << "a"; }
+      if(_variable.isDiscrete()) { buffer << "d"; } 
+      if(_variable.isParameter()) { buffer << "__PAR__" << _variable.name(); } 
+      if(idx) { buffer << "["; }
+      buffer << index.str(); 
+      if(idx) { buffer << "]"; }
+      buffer << endl;
       return buffer.str();
     }
 

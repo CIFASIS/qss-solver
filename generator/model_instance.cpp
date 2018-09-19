@@ -355,10 +355,10 @@ namespace MicroModelica {
     ClassicModelInstance::initializeDataStructures()
     {
       stringstream buffer;
+      allocateSolver();
       initialCode();
       ModelDependencies deps = _model.dependencies();
       // Initialize Solver Data Structures.
-      allocateSolver();
       initializeMatrix(deps.SD(), WRITER::Alloc_Matrix_SD, WRITER::Init_Matrix_SD);
       initializeMatrix(deps.SD(), WRITER::Alloc_Matrix_DS, WRITER::Init_Matrix_DS);
       // Initialize Output Data Structures.
@@ -467,8 +467,8 @@ namespace MicroModelica {
       _writer->endBlock();
       _writer->print(componentDefinition(CLC_INIT));
       _writer->beginBlock();
-      _writer->print(WRITER::Init_Code);
       _writer->print(WRITER::Alloc_Matrix);
+      _writer->print(WRITER::Init_Code);
       _writer->print(WRITER::Alloc_Matrix_SD);
       _writer->print(WRITER::Alloc_Matrix_DS);
       _writer->print(WRITER::Init_Matrix);
