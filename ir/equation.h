@@ -57,8 +57,8 @@ namespace MicroModelica {
          * @param exp
          */
         Equation() {};
-        Equation(AST_Expression eq, Util::VarSymbolTable& symbols, EQUATION::Type type, int id);
-        Equation(AST_Expression eq, Util::VarSymbolTable& symbols, Option<Range> range, EQUATION::Type type, int id);
+        Equation(AST_Expression eq, Util::VarSymbolTable& symbols, EQUATION::Type type, int id, int offset);
+        Equation(AST_Expression eq, Util::VarSymbolTable& symbols, Option<Range> range, EQUATION::Type type, int id, int offset);
         Equation(AST_Equation eq, Util::VarSymbolTable& symbols, EQUATION::Type type, int id);
         Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Range r, EQUATION::Type type, int id);
         Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Option<Range> r, EQUATION::Type type, int id);
@@ -103,6 +103,7 @@ namespace MicroModelica {
         Util::SymbolTable    _calledFunctions;
         EQUATION::Type       _type;
         int                  _id;
+        int                  _offset;
     };
 
     typedef ModelTable<int,Equation> EquationTable;

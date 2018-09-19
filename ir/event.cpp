@@ -45,7 +45,7 @@ namespace MicroModelica {
       _offset(offset)
     {
       ConvertCondition cc;
-      _zeroCrossing = Equation(cc.apply(getExpression(cond)), symbols, range, EQUATION::ZeroCrossing, id);
+      _zeroCrossing = Equation(cc.apply(getExpression(cond)), symbols, range, EQUATION::ZeroCrossing, id, offset);
       _type = cc.zeroCrossing();
       _current = _type;
       _zcRelation = cc.zeroCrossingRelation();

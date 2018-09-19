@@ -312,7 +312,7 @@ namespace MicroModelica {
       {
         buffer << "(idx) " << "(idx + 1)"<< "-" << offset << endl;
         string var = Utils::instance().iteratorVar();
-        buffer << "#define _get" << token << "_idxs(idx, " << range->indexes() << ") \\";
+        buffer << "#define _get" << token << "_idxs(idx, " << range->indexes() << ") \\" << endl;
         buffer << TAB << "int " << var << " = " << token << "(idx); \\" << endl;
         RangeDefinitionTable rdt = range->definition();
         RangeDefinitionTable::iterator it;

@@ -244,9 +244,23 @@ namespace MicroModelica {
         if(var.isParameter()) { buffer << var.declaration("__PAR__"); }
         _writer->write(buffer, WRITER::Model_Header);
       }
+      _writer->write("\n// Derivative Equations Macros\n", WRITER::Model_Header);
+      EquationTable derivatives = _model.derivatives();
+      EquationTable::iterator eqit;
+      for(Equation e = derivatives.begin(eqit); !derivatives.end(eqit); e = derivatives.next(eqit))
+      {
+        _writer->write(e.macro(), WRITER::Model_Header);
+      }
+      _writer->write("\n// Event Macros\n", WRITER::Model_Header);
       EventTable events = _model.events();
       EventTable::iterator eit;
       for(Event e = events.begin(eit); !events.end(eit); e = events.next(eit))
+      {
+        _writer->write(e.macro(), WRITER::Model_Header);
+      }
+      _writer->write("\n// Output Equations Macros\n", WRITER::Model_Header);
+      EquationTable outputs = _model.outputs();
+      for(Equation e = outputs.begin(eqit); !outputs.end(eqit); e = outputs.next(eqit))
       {
         _writer->write(e.macro(), WRITER::Model_Header);
       }

@@ -570,6 +570,7 @@ namespace MicroModelica
         int                       _algebraicId;
         int                       _statementId;
         int                       _eventId;
+        int                       _outputId;
         bool                      _externalFunctions;
     };
     

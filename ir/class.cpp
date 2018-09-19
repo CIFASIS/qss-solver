@@ -339,9 +339,10 @@ namespace MicroModelica {
       _algebraicNbr(0),
       _eventNbr(0),
       _outputNbr(0),
-      _derivativeId(0),
-      _algebraicId(0),
-      _eventId(0),
+      _derivativeId(1),
+      _algebraicId(1),
+      _eventId(1),
+      _outputId(1),
       _externalFunctions(false)
     {
       _symbols.initialize(_types);
@@ -373,6 +374,7 @@ namespace MicroModelica {
       _derivativeId(1),
       _algebraicId(1),
       _eventId(1),
+      _outputId(1),
       _externalFunctions(false)
     {
       _symbols.initialize(_types);
@@ -771,8 +773,8 @@ namespace MicroModelica {
       list<AST_Expression>::iterator it;
       for(it = astOutputs.begin(); it != astOutputs.end(); it++)
       {
-        Equation eq(*it, _symbols, EQUATION::Output, _outputNbr);
-        _outputs.insert(_outputNbr++, eq);
+        Equation eq(*it, _symbols, EQUATION::Output, _outputId, _outputNbr++);
+        _outputs.insert(_outputId++, eq);
       }
     }
 

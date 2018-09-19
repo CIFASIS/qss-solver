@@ -31,7 +31,7 @@ namespace MicroModelica {
   using namespace Util;
   namespace IR {
 
-    Equation::Equation(AST_Expression eq, VarSymbolTable& symbols, EQUATION::Type type, int id) :
+    Equation::Equation(AST_Expression eq, VarSymbolTable& symbols, EQUATION::Type type, int id, int offset) :
       _eq(),
       _lhs(),
       _rhs(),
@@ -39,12 +39,13 @@ namespace MicroModelica {
       _autonomous(true),
       _symbols(symbols),
       _type(type), 
-      _id(id)
+      _id(id), 
+      _offset(offset)
     {
       process(eq);
     }
 
-    Equation::Equation(AST_Expression eq, VarSymbolTable& symbols, Option<Range> range, EQUATION::Type type, int id) :
+    Equation::Equation(AST_Expression eq, VarSymbolTable& symbols, Option<Range> range, EQUATION::Type type, int id, int offset) :
       _eq(),
       _lhs(),
       _rhs(),
@@ -52,7 +53,8 @@ namespace MicroModelica {
       _autonomous(true),
       _symbols(symbols),
       _type(type),
-      _id(id)
+      _id(id),
+      _offset(offset)
     {
       process(eq);
     }
@@ -65,7 +67,8 @@ namespace MicroModelica {
       _autonomous(true),
       _symbols(symbols),
       _type(type),
-      _id(id)
+      _id(id),
+      _offset(0)
     {
       Autonomous autonomous(_symbols);
       _autonomous = autonomous.apply(_rhs.expression());
@@ -82,7 +85,8 @@ namespace MicroModelica {
       _autonomous(true),
       _symbols(symbols),
       _type(type),
-      _id(id)
+      _id(id),
+      _offset(0)
     {
       process(eq);
     }
@@ -95,7 +99,8 @@ namespace MicroModelica {
       _autonomous(true),
       _symbols(symbols),
       _type(type),
-      _id(id)
+      _id(id),
+      _offset(0)
     {
       process(eq);
     }   
@@ -219,10 +224,9 @@ namespace MicroModelica {
     string 
     Equation::macro() const 
     {
-      stringstream buffer;
-      buffer << functionId() << _id;
+      if(_type == EQUATION::ClassicDerivative) { return ""; }
       FunctionPrinter fp;
-      return fp.macro(buffer.str(), _range, _id);
+      return fp.macro(functionId(), _range, _id, _offset);
     }
 
     std::ostream& operator<<(std::ostream& out, const Equation& e)
