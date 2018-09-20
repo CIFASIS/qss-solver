@@ -78,11 +78,13 @@ namespace MicroModelica {
         autonomous() { return _autonomous; };
         inline Util::SymbolTable 
         calledFunctions() { return _calledFunctions; };
-        friend std::ostream& operator<<(std::ostream& out, const Equation& e);
         std::string
         print() const;
         std::string 
         macro() const;
+        inline Option<Range>
+        range() { return _range; };
+        friend std::ostream& operator<<(std::ostream& out, const Equation& e);
       private:
         void 
         process(AST_Equation eq);

@@ -38,48 +38,6 @@ namespace MicroModelica {
       } Type;
     }
 
-
-    class IndexDefinition
-    {
-      public:
-        IndexDefinition();
-        ~IndexDefinition() {};
-
-        friend std::ostream& operator<<(std::ostream& out, const IndexDefinition& id);
-      private:
-        string _variable;
-        Expression _exp;
-    };
-
-    class Index
-    {
-      public:
-        /**
-         *
-         */
-        Index();
-        Index(IndexDefinition id);
-        ~Index() {};
-        string
-        print() const;
-        void
-        setMap(IR::Expression exp);
-        bool
-        hasMap() const;
-        bool
-        operator==(const Index &other) const;
-        void
-        add(IndexDefinition id);
-        inline int
-        dimension() { return _dim; };
-        friend std::ostream& operator<<(std::ostream& out, const Index& i);
-      private:
-        map<int,IndexDefinition> _indexes;
-        int                      _dim;
-    };
-
-    typedef ModelTable<std::string, Index> IndexTable;
-
     class RangeDefinition
     {
       public:
@@ -112,7 +70,6 @@ namespace MicroModelica {
         ~Range() {};
         inline int 
         size() const { return _size; };
-        friend std::ostream& operator<<(std::ostream& out, const Range& r);
         inline RangeDefinitionTable 
         definition() const { return _ranges; };
         std::string 
@@ -125,6 +82,7 @@ namespace MicroModelica {
         addLocalVariables() const;
         int 
         rowSize(int dim) const;
+        friend std::ostream& operator<<(std::ostream& out, const Range& r);
       private:
         void 
         setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);
@@ -133,6 +91,50 @@ namespace MicroModelica {
         RANGE::Type          _type;
         std::vector<int>     _rowSize;
     };
+    
+    class IndexDefinition
+    {
+      public:
+        IndexDefinition();
+        ~IndexDefinition() {};
+
+        friend std::ostream& operator<<(std::ostream& out, const IndexDefinition& id);
+      private:
+        string _variable;
+        Expression _exp;
+    };
+
+    class Index
+    {
+      public:
+        /**
+         *
+         */
+        Index() : _indexes(), _dim(0), _exp() {};
+        Index(IndexDefinition id);
+        Index(Expression exp);
+        ~Index() {};
+        void
+        setMap(IR::Expression exp);
+        bool
+        hasMap() const;
+        bool
+        operator==(const Index &other) const;
+        void
+        add(IndexDefinition id);
+        inline int
+        dimension() { return _dim; };
+        std::string 
+        print() const;
+        friend std::ostream& operator<<(std::ostream& out, const Index& i);
+      private:
+        map<int,IndexDefinition> _indexes;
+        int                      _dim;
+        Expression               _exp;
+    };
+
+    typedef ModelTable<std::string, Index> IndexTable;
+
   }
 }
 #endif /* INDEX_H_ */

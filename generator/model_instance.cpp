@@ -288,7 +288,6 @@ namespace MicroModelica {
     void
     ModelInstance::initialCode()
     {
-      string indent = _writer->indent(1);
       StatementTable stms = _model.initialCode();
       StatementTable::iterator it;
       stringstream buffer;
@@ -299,7 +298,19 @@ namespace MicroModelica {
       }
     }
 
-    
+    void
+    ModelInstance::inputs()
+    {
+      InputTable inputs = _model.inputs();
+      InputTable::iterator it;
+      for(Input input = inputs.begin(it); !inputs.end(it); input = inputs.next(it))
+      {
+        stringstream buffer;
+        buffer << input;
+        _writer->write(buffer, WRITER::Input);  
+      }
+    }
+
     /* QSSModelInstance Model Instance class. */
 
     QSSModelInstance::QSSModelInstance(Model& model, CompileFlags& flags, WriterPtr writer) : 
@@ -361,6 +372,7 @@ namespace MicroModelica {
       // Initialize Solver Data Structures.
       initializeMatrix(deps.SD(), WRITER::Alloc_Matrix_SD, WRITER::Init_Matrix_SD);
       initializeMatrix(deps.SD(), WRITER::Alloc_Matrix_DS, WRITER::Init_Matrix_DS);
+      inputs();
       // Initialize Output Data Structures.
       allocateOutput();
       initializeMatrix(deps.OS(), WRITER::Alloc_Output_States, WRITER::Init_Output_States);
@@ -474,6 +486,7 @@ namespace MicroModelica {
       _writer->print(WRITER::Init_Matrix);
       _writer->print(WRITER::Init_Matrix_DS);
       _writer->print(WRITER::Init_Matrix_SD);
+      _writer->print(WRITER::Input);
       _writer->print(WRITER::Init_Output);
       _writer->endBlock();
       _writer->print(componentDefinition(QSS_INIT));

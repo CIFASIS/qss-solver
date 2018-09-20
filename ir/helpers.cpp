@@ -345,5 +345,28 @@ namespace MicroModelica {
       buffer << "(" << idx << "/" << range->rowSize(dim) << ")";  
       return buffer.str();
     }
+
+    Input::Input(Index idx, Option<Range> range, int id) :
+      _idx(idx),
+      _range(range),
+      _id(id)
+    {
+    }
+
+    string 
+    Input::print() const
+    {
+      stringstream buffer;
+      if(_range) { buffer << _range.get(); }
+      buffer << "modelData->IT[" << _id  << "] = " << _idx << ";" << endl;
+      if(_range) { buffer << _range->end(); }
+      return buffer.str();
+    }
+
+    ostream& operator<<(std::ostream& out, const Input& i)
+    {
+      out << i.print();
+      return out;
+    }
   }
 }

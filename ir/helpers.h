@@ -238,6 +238,22 @@ namespace MicroModelica {
         div(std::string var, int dim, Option<Range> range) const;
     };
 
+    class Input
+    {
+      public:
+        Input() {};
+        Input(Index idx, Option<Range> range, int id);
+        ~Input(){};
+        std::string 
+        print() const;
+        friend std::ostream& operator<<(std::ostream& out, const Input& i);
+      private:
+        Index         _idx;
+        Option<Range> _range;
+        int           _id;
+    };
+    
+    typedef ModelTable<int, Input> InputTable;
   }
 }
 

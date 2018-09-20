@@ -33,7 +33,7 @@ namespace MicroModelica {
     /**
     *
     */
-    #define SECTIONS 	72
+    #define SECTIONS 	73
     namespace WRITER {
       /**
       *
@@ -89,6 +89,7 @@ namespace MicroModelica {
         Init_Output_Alg_Discretes,    //!< WR_INIT_OUTPUT_ALG_DSC
         Init_Time,          //!< WR_INIT_TIME
         Init_Code,          //!< WR_INIT_CODE
+        Input,
         Model,       //!< WR_MODEL_SIMPLE
         Model_Simple,       //!< WR_MODEL_SIMPLE
         Model_Generic,      //!< WR_MODEL_GENERIC

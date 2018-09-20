@@ -106,6 +106,8 @@ namespace MicroModelica
         handler();
         void 
         settings();
+        void 
+        inputs();
         /**
         *
         */

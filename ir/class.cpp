@@ -343,6 +343,7 @@ namespace MicroModelica {
       _algebraicId(1),
       _eventId(1),
       _outputId(1),
+      _inputId(1),
       _externalFunctions(false)
     {
       _symbols.initialize(_types);
@@ -375,6 +376,7 @@ namespace MicroModelica {
       _algebraicId(1),
       _eventId(1),
       _outputId(1),
+      _inputId(1),
       _externalFunctions(false)
     {
       _symbols.initialize(_types);
@@ -767,27 +769,43 @@ namespace MicroModelica {
     }
 
     void 
+    Model::addInput(Equation eq)
+    {
+      if(!eq.autonomous()) 
+      { 
+        _inputNbr += (eq.hasRange() ? eq.range()->size() : 1);
+        _inputs.insert(_inputId, Input(Index(eq.lhs()), eq.range(), _inputId));
+        _inputId++;
+      }
+    }
+
+    void 
     Model::setInputs()
     {
-    /*  EquationTable::iterator it;
+      EquationTable::iterator it;
       for(Equation eq = _derivatives.begin(it); !_derivatives.end(it); eq = _derivatives.next(it))
       {
         if(!eq.autonomous()) 
-        { 
-          continue;
-        }
-        EquationDependency eqdm = _dependecies.DA();
-        EquationDependencyMatrix::iterator eit;
-        for(EquationDependency ed = eqdm.begin(eit); !eqdm.end(eit); ed = eqdm.next(eit))
         {
-            if(ed.lookup(i.id()) && _derivatives[eqdm.key(eit)]->autonomous())
+          addInput(eq);
+          continue; 
+        }
+        EquationDependencyMatrix eqdm = _dependecies.DA();
+        Option<EquationDependency> eqd = eqdm[_derivatives.key(it)];
+        if(eqd)
+        {
+          EquationDependency::iterator eit;
+          for(eit = eqd->begin(); eit != eqd->end(); eit++)
+          {
+            Option<Equation> alg = _algebraics[*eit];
+            if(alg && !alg->autonomous())
             {
-
+              addInput(eq);
+              break;
             }
+          }
         }
-
-        }
-      }*/
+      }
     }
 
     void 

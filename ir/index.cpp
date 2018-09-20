@@ -42,23 +42,19 @@ namespace MicroModelica {
       return out;
     }
 
-    Index::Index() :
+    Index::Index(Expression exp) :
       _indexes(),
-      _dim(0)
+      _dim(0),
+      _exp(exp)
     {
     }
 
     Index::Index(IndexDefinition id) :
       _indexes(),
-      _dim()
+      _dim(0),
+      _exp()
     {
       _indexes[_dim++] = id;
-    }
-     
-    string
-    Index::print() const 
-    {
-      return "";
     }
      
     void
@@ -83,8 +79,17 @@ namespace MicroModelica {
     {
     }
 
+    string 
+    Index::print() const
+    {
+      stringstream buffer;
+      buffer << "_idx" << _exp;
+      return buffer.str();
+    }
+
     std::ostream& operator<<(std::ostream& out, const Index& i)
     {
+      out << i.print();
       return out;
     }
 

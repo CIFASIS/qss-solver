@@ -370,8 +370,6 @@ namespace MicroModelica
         FunctionTable       _functions;
     };
     
-    typedef ModelTable<int, Index> InputTable;
-
     /**
     *
     */
@@ -502,6 +500,8 @@ namespace MicroModelica
         events() { return _events; };
         inline bool 
         externalFunctions() { return _externalFunctions; };
+        inline InputTable 
+        inputs() { return _inputs; };
         void 
         setEquations();
         void 
@@ -527,6 +527,8 @@ namespace MicroModelica
         addEvent(AST_Statement stm, Option<Range> range);
         void 
         addFunction(Util::SymbolTable symbols, FunctionTable& fs);
+        void 
+        addInput(Equation eq);
         std::string               _name;
         Util::ImportTable         _imports;
         Util::VarSymbolTable      _symbols;
@@ -557,6 +559,7 @@ namespace MicroModelica
         int                       _statementId;
         int                       _eventId;
         int                       _outputId;
+        int                       _inputId;
         bool                      _externalFunctions;
     };
     
