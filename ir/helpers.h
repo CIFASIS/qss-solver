@@ -246,8 +246,12 @@ namespace MicroModelica {
         ~Input(){};
         std::string 
         print() const;
+        std::string 
+        macro() const;
         friend std::ostream& operator<<(std::ostream& out, const Input& i);
       private:
+        std::string 
+        token() const;
         Index         _idx;
         Option<Range> _range;
         int           _id;

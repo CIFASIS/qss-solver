@@ -23,11 +23,13 @@
 #include "built_in_functions.h"
 #include "expression.h"
 #include "equation.h"
+#include "../generator/macros.h"
 #include "../util/error.h"
 #include "../util/util.h"
 
 namespace MicroModelica {
   using namespace Util;
+  using namespace Generator;
   namespace IR {
    
     /* ExternalFunction Class Implementation */
@@ -310,7 +312,9 @@ namespace MicroModelica {
       buffer << "#define " << token;
       if(range)
       {
-        buffer << "(idx) " << "(idx + 1)"<< "-" << offset << endl;
+        buffer << "(idx) " << "(idx + 1)"; 
+        if(!offset) { buffer << "-" << offset; }
+        buffer << endl;
         string var = Utils::instance().iteratorVar();
         buffer << "#define _get" << token << "_idxs(idx, " << range->indexes() << ") \\" << endl;
         buffer << TAB << "int " << var << " = " << token << "(idx); \\" << endl;
@@ -357,11 +361,28 @@ namespace MicroModelica {
     Input::print() const
     {
       stringstream buffer;
+      Macros m;
       if(_range) { buffer << _range.get(); }
-      buffer << "modelData->IT[" << _id  << "] = " << _idx << ";" << endl;
+      buffer << "modelData->IT[" << m.usage(token(), _range, _id) << "] = " << _idx << ";" << endl;
       if(_range) { buffer << _range->end(); }
       return buffer.str();
     }
+
+    string 
+    Input::token() const
+    {
+      stringstream buffer;
+      buffer << "_input_" << _id;
+      return buffer.str();
+    }
+
+    string 
+    Input::macro() const
+    {
+      Macros m;
+      return m.indexMacro(token(), _range, _id);
+    }
+
 
     ostream& operator<<(std::ostream& out, const Input& i)
     {

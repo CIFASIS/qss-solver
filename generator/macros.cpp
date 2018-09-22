@@ -25,6 +25,7 @@ using namespace std;
 
 namespace MicroModelica {
   using namespace Util;
+  using namespace IR;
   namespace Generator {
     
     Macros::Macros(IR::Model& model, Util::Variable& variable) : 
@@ -96,6 +97,44 @@ namespace MicroModelica {
       buffer << index.str(); 
       if(idx) { buffer << "]"; }
       buffer << endl;
+      return buffer.str();
+    }
+
+    string 
+    Macros::usage(string token, Option<Range> range, int id) const
+    {
+      stringstream buffer, index;
+      if(range) { index << "(" << range->indexes() << ")"; }
+      buffer << token << index.str();
+      return buffer.str();
+    }
+
+    string 
+    Macros::indexMacro(string token, Option<Range> range, int id) const 
+    {
+      stringstream buffer, index, arguments;
+      if(range) { index << "(" << range->indexes() << ")"; }
+      buffer << "#define " << token << index.str() << " ";
+      if(range)
+      {
+        int dim = range->definition().size();
+        stringstream end;
+        RangeDefinitionTable rdt = range->definition();
+        RangeDefinitionTable::iterator it;
+        arguments << "("; 
+        int i = 0;
+        for(RangeDefinition rd = rdt.begin(it); !rdt.end(it); rd = rdt.next(it), i++)
+        {
+          stringstream variable;
+          variable << "*" << range->rowSize(i) << "+";
+          arguments << "(" << rdt.key(it) << "-1)" << (i == dim-1 ? ")" : variable.str()); 
+        }
+        buffer << arguments.str();
+      }
+      else 
+      {
+        buffer << id - 1 << endl;
+      }
       return buffer.str();
     }
 

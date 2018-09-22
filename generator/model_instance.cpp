@@ -258,12 +258,22 @@ namespace MicroModelica {
       {
         _writer->write(e.macro(), WRITER::Model_Header);
       }
+      if(events.size()) { _writer->write("#define _zc zc[0]", WRITER::Model_Header); }
       _writer->write("\n// Output Equations Macros\n", WRITER::Model_Header);
       EquationTable outputs = _model.outputs();
       for(Equation e = outputs.begin(eqit); !outputs.end(eqit); e = outputs.next(eqit))
       {
         _writer->write(e.macro(), WRITER::Model_Header);
       }
+      if(outputs.size()) { _writer->write("#define _out out[0]", WRITER::Model_Header); }
+      _writer->write("\n// Input Matrix Macros\n", WRITER::Model_Header);
+      InputTable inputs = _model.inputs();
+      InputTable::iterator iit;
+      for(Input i = inputs.begin(iit); !inputs.end(iit); i = inputs.next(iit))
+      {
+        _writer->write(i.macro(), WRITER::Model_Header);
+      }
+      _writer->write("#define _time t", WRITER::Model_Header);
     }
 
     string 
@@ -425,6 +435,9 @@ namespace MicroModelica {
       buffer << _model.name() << "\");" << endl;
       buffer << "  modelData = simulator->data;" << endl;
       buffer << "  const double t = " << annot.initialTime() << ";" << endl;
+      buffer << "  double* x = modelData->x;" << endl;
+      buffer << "  double* d = modelData->d;" << endl;
+      buffer << "  double* a = modelData->a;" << endl;
       _writer->write(buffer, WRITER::Alloc_Matrix);
     }
 

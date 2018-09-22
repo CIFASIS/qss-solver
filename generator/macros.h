@@ -26,6 +26,7 @@
 
 #include "../util/symbol_table.h"
 #include "../ir/class.h"
+#include "../ir/index.h"
 
 namespace MicroModelica {
   namespace Generator {
@@ -37,14 +38,19 @@ namespace MicroModelica {
     {
       public:
         Macros(IR::Model& model, Util::Variable& variable); 
+        Macros() : _model(), _variable() {}; 
         ~Macros() {};
-        friend std::ostream& operator<<(std::ostream& out, const Macros& m);
         std::string 
         print() const;
         std::string 
         parameters() const;
         std::string 
         arguments() const;
+        std::string 
+        usage(std::string token, Option<IR::Range> range, int id) const;
+        std::string 
+        indexMacro(std::string token, Option<IR::Range> range, int id) const;
+        friend std::ostream& operator<<(std::ostream& out, const Macros& m);
       private:
         IR::Model      _model;
         Util::Variable _variable;
