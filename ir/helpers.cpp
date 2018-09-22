@@ -245,21 +245,20 @@ namespace MicroModelica {
     FunctionPrinter::beginExpression(string token, Option<Range> range) const
     {
       stringstream buffer;
-      string block = "";
       if(range) 
       { 
-        buffer << "if( " << token << "(idx) >= 1 && ";
+        buffer << "if(" << token << "(idx) >= 1 && ";
         buffer << token << "(idx) <= " << range->size() << ")" << endl;
+        buffer << "{" << endl;
       }
       else 
       {
-        buffer << "case " << token << ":" << endl;
+        buffer << TAB << "case " << token << ":" << endl;
+        buffer << TAB << "{" << endl;
       }
-      buffer << "{" << endl;
-      block += TAB;
       if(range) 
       { 
-        buffer << block << "_get" << token << "_idxs(idx," << range->indexes() << ");" << endl;
+        buffer << TAB << "_get" << token << "_idxs(idx," << range->indexes() << ");" << endl;
         range->addLocalVariables();
       }
       return buffer.str();
@@ -275,7 +274,7 @@ namespace MicroModelica {
       }
       else 
       {
-        buffer << "return;" << endl << "}";
+        buffer << "return;" << endl << TAB << "}";
       }
       return buffer.str();
     }
@@ -362,8 +361,13 @@ namespace MicroModelica {
     {
       stringstream buffer;
       Macros m;
-      if(_range) { buffer << _range.get(); }
-      buffer << "modelData->IT[" << m.usage(token(), _range, _id) << "] = " << _idx << ";" << endl;
+      string block = "";
+      if(_range) 
+      { 
+        buffer << _range.get();
+        block += TAB;
+      }
+      buffer << block << "modelData->IT[" << m.usage(token(), _range, _id) << "] = " << _idx << ";" << endl;
       if(_range) { buffer << _range->end(); }
       return buffer.str();
     }

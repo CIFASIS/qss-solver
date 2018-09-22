@@ -173,7 +173,6 @@ namespace MicroModelica {
     Range::print() const
     {
       stringstream buffer;
-      string block = "";
       RangeDefinitionTable ranges = _ranges;
       RangeDefinitionTable::iterator it;
       for(RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it))
@@ -181,11 +180,10 @@ namespace MicroModelica {
         if(_type == RANGE::For)
         {
           string idx = ranges.key(it);
-          buffer << block << "for(" << idx << " = " << r.begin() << "; ";
+          buffer << "for(" << idx << " = " << r.begin() << "; ";
           buffer << idx << "<=" << r.end() << "; ";
           buffer << idx << "+=" << r.step() << ")" << endl;
           buffer << "{" << endl;
-          block += TAB;
         }
       }
       addLocalVariables();

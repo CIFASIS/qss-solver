@@ -235,7 +235,7 @@ namespace MicroModelica {
 
     VarSymbolTable::VarSymbolTable() :
         _coeffs(1), 
-        _parameters()
+        _parameters(false)
     {
     }
 
@@ -252,16 +252,7 @@ namespace MicroModelica {
     VarSymbolTable::insert(VarName n, Variable vi)
     {
       ModelTable<VarName, Variable>::insert(n, vi);
-      if(vi.isParameter())
-      {
-        _parameters.push_back(vi);
-      }
-    }
-
-    list<Variable>
-    VarSymbolTable::parameters()
-    {
-      return _parameters;
+      if(vi.isParameter()) { _parameters = true; }
     }
   }
 }

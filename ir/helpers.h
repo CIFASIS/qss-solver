@@ -217,7 +217,7 @@ namespace MicroModelica {
     class FunctionPrinter
     {
       public:
-        FunctionPrinter() {};
+        FunctionPrinter()  {};
         ~FunctionPrinter() {};
         std::string 
         beginSwitch();

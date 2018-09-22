@@ -27,19 +27,21 @@ namespace MicroModelica {
   using namespace Util;
   namespace IR {
 
-    Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, Option<Range> range, bool initial) : 
+    Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, Option<Range> range, bool initial, const string& block) : 
       _stm(stm),
       _range(range),
-      _symbols(symbols)
+      _symbols(symbols),
+      _block(block)
     {
       StatementCalledFunctions cf;
       _calledFunctions = cf.apply(stm);
     }
 
-    Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, bool initial) : 
+    Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, bool initial, const string& block) : 
       _stm(stm),
       _range(),
-      _symbols(symbols)
+      _symbols(symbols),
+      _block(block)
     {
       StatementCalledFunctions cf;
       _calledFunctions = cf.apply(stm);
@@ -55,40 +57,40 @@ namespace MicroModelica {
         {
           AST_Statement_If sti = _stm->getAsIf();
           Expression ifcond(sti->condition(), _symbols);
-          buffer << "if(" << ifcond << ")" << endl;
-          buffer << "{" << endl;
+          buffer << _block << "if(" << ifcond << ")" << endl;
+          buffer << _block << "{" << endl;
           AST_StatementList stl = sti->statements();
           AST_StatementListIterator stlit;
           foreach(stlit, stl)
           {
-            Statement st(current_element(stlit), _symbols);
-            buffer << TAB << st << endl;  
+            Statement st(current_element(stlit), _symbols, false, _block+TAB);
+            buffer << st << endl;  
           }
-          buffer << "}";
+          buffer << _block << "}";
           AST_Statement_ElseList stelsel = sti->else_if();
           AST_Statement_ElseListIterator stelselit;
           foreach(stelselit, stelsel)
           {
             Expression eifcond(current_element(stelselit)->condition(), _symbols);
-            buffer << "else if(" << eifcond << ")" << endl << "{" << endl;
+            buffer << _block << "else if(" << eifcond << ")" << endl << _block << "{" << endl;
             stl = current_element(stelselit)->statements();
             foreach(stlit, stl)
             {
-              Statement st(current_element(stlit), _symbols);
-              buffer << TAB << st << endl;;  
+              Statement st(current_element(stlit), _symbols, false, _block+TAB);
+              buffer << st << endl;;  
             }
-            buffer << "}";
+            buffer << _block << "}";
           }
           stl = sti->else_statements();
           if(!stl->empty())
           {
-            buffer << "else" << endl << "{" << endl;
+            buffer << _block << "else" << endl << _block << "{" << endl;
             foreach(stlit, stl)
             {
-              Statement st(current_element(stlit), _symbols);
-              buffer << TAB << st << endl;  
+              Statement st(current_element(stlit), _symbols, false, _block+TAB);
+              buffer << st << endl;  
             }
-            buffer << "}";
+            buffer << _block << "}";
           }
           break;
         }
@@ -97,7 +99,7 @@ namespace MicroModelica {
           AST_Statement_Assign asg = _stm->getAsAssign();
           Expression lhs(asg->lhs(), _symbols);
           Expression rhs(asg->exp(), _symbols);
-          buffer << lhs << " = " << rhs << ";";
+          buffer << _block << lhs << " = " << rhs << ";";
           break;
         }
         case STFOR:
@@ -105,13 +107,12 @@ namespace MicroModelica {
           AST_Statement_For stf = _stm->getAsFor();
           Range range(stf, _symbols);
           buffer << range;
-          cout << buffer.str();
           AST_StatementList stms = stf->statements();
           AST_StatementListIterator stmit;
           foreach(stmit, stms)
           {
-            Statement st(current_element(stmit), _symbols);
-            buffer << TAB << st << endl;  
+            Statement st(current_element(stmit), _symbols, false, TAB);
+            buffer << st << endl;  
           }
           buffer << range.end();
           break;

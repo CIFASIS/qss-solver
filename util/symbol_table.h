@@ -367,11 +367,11 @@ namespace MicroModelica {
         /**
          *
          */
-        list<Variable>
-        parameters();
+        inline bool 
+        parameters() { return _parameters; };
       private:
-        int             _coeffs;
-        list<Variable>  _parameters;
+        int   _coeffs;
+        bool  _parameters;
     };
   }
 }

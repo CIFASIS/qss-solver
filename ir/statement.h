@@ -41,8 +41,8 @@ namespace MicroModelica {
          *
          * @param stm
          */
-        Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, bool initial = false);
-        Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, Option<Range> range, bool initial = false);
+        Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, bool initial = false, const std::string& block = "");
+        Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, Option<Range> range, bool initial = false, const std::string& block = "");
         /**
          *
          */
@@ -63,6 +63,7 @@ namespace MicroModelica {
         Option<Range>        _range;
         Util::VarSymbolTable _symbols;
         Util::SymbolTable    _calledFunctions;
+        std::string          _block;
     };
 
     typedef ModelTable<int, Statement> StatementTable;

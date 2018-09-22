@@ -91,11 +91,11 @@ namespace MicroModelica {
         buffer << "#include \"" << Utils::instance().packageName(i) << ".h\"" << endl;
       }
       buffer << "#include <common/utils.h>" << endl;
-      buffer << endl;
       buffer << "#include <common/model.h>" << endl;
       buffer << "#include <common/commands.h>" << endl;
       buffer << "#include <qss/qss_model.h>" << endl;
       buffer << "#include <classic/classic_model.h>" << endl;
+      buffer << endl;
       _writer->write(buffer,WRITER::Include); 
     }
 
@@ -212,15 +212,15 @@ namespace MicroModelica {
     ModelInstance::settings()
     {
       stringstream buffer;
-      buffer << "\t settings->debug = " << _flags.debug() << ";";
+      buffer << "settings->debug = " << _flags.debug() << ";";
       _writer->print(buffer);
-      buffer << "\t settings->parallel = ";
+      buffer << "settings->parallel = ";
       buffer << (_flags.parallel() ? "TRUE" : "FALSE") << ";";
       _writer->print(buffer);
-      buffer << "\t settings->hybrid = ";
+      buffer << "settings->hybrid = ";
       buffer << (_model.eventNbr() ? "TRUE" : "FALSE") << ";";
       _writer->print(buffer);
-      buffer << "\t settings->method = " << _model.annotations().solver() << ";";
+      buffer << "settings->method = " << _model.annotations().solver() << ";";
       _writer->print(buffer);
     }
     
@@ -230,6 +230,7 @@ namespace MicroModelica {
       VarSymbolTable symbols = _model.symbols();
       VarSymbolTable::iterator it;
       stringstream buffer;
+      _writer->write("// Model Variable and Parameters Macros\n", WRITER::Model_Header); 
       for(Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it))
       {
         if(var.isModelVar()) 
@@ -239,14 +240,15 @@ namespace MicroModelica {
         }
       }
       _writer->write(buffer, WRITER::Model_Header);
+      if(symbols.parameters()) { _writer->write("\n// Model Parameters Declaration\n", WRITER::Model_Header); }
       for(Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it))
       {
         if(var.isParameter()) { buffer << var.declaration("__PAR__"); }
         _writer->write(buffer, WRITER::Model_Header);
       }
-      _writer->write("\n// Derivative Equations Macros\n", WRITER::Model_Header);
       EquationTable derivatives = _model.derivatives();
       EquationTable::iterator eqit;
+      if(!_model.annotations().classic()) { _writer->write("\n// Derivative Equations Macros\n", WRITER::Model_Header); }
       for(Equation e = derivatives.begin(eqit); !derivatives.end(eqit); e = derivatives.next(eqit))
       {
         _writer->write(e.macro(), WRITER::Model_Header);
@@ -321,11 +323,30 @@ namespace MicroModelica {
       }
     }
 
+    string 
+    ModelInstance::allocateModel()
+    {
+      stringstream buffer;
+      buffer << (!_writer->isEmpty(WRITER::ZC_Simple) || !_writer->isEmpty(WRITER::ZC_Generic) ? "MOD_zeroCrossing" : "NULL") << ", ";
+      buffer << (!_writer->isEmpty(WRITER::Handler_Pos_Simple) || !_writer->isEmpty(WRITER::Handler_Pos_Generic) ? "MOD_handlerPos" : "NULL") << ", ";
+      buffer << (!_writer->isEmpty(WRITER::Handler_Neg_Simple) || !_writer->isEmpty(WRITER::Handler_Neg_Generic) ? "MOD_handlerNeg" : "NULL");
+      return buffer.str();
+    }
+    
     /* QSSModelInstance Model Instance class. */
 
     QSSModelInstance::QSSModelInstance(Model& model, CompileFlags& flags, WriterPtr writer) : 
-      ModelInstance(model, flags, writer)
+      ModelInstance(model, flags, writer),
+      _model(model),
+      _flags(flags),
+      _writer(writer)
     {
+    }
+
+    void 
+    QSSModelInstance::allocateSolver()
+    {
+      return;
     }
 
     void
@@ -387,6 +408,7 @@ namespace MicroModelica {
       allocateOutput();
       initializeMatrix(deps.OS(), WRITER::Alloc_Output_States, WRITER::Init_Output_States);
       initializeMatrix(deps.OD(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes);
+      allocateModel();
     }
     
     void
@@ -433,12 +455,22 @@ namespace MicroModelica {
       buffer << _model.inputNbr() << ",";
       buffer << _model.algebraicNbr() << ",\"";
       buffer << _model.name() << "\");" << endl;
-      buffer << "  modelData = simulator->data;" << endl;
-      buffer << "  const double t = " << annot.initialTime() << ";" << endl;
-      buffer << "  double* x = modelData->x;" << endl;
-      buffer << "  double* d = modelData->d;" << endl;
-      buffer << "  double* a = modelData->a;" << endl;
+      buffer << "modelData = simulator->data;" << endl;
+      buffer << "const double t = " << annot.initialTime() << ";" << endl;
+      buffer << "double* x = modelData->x;" << endl;
+      buffer << "double* d = modelData->d;" << endl;
+      buffer << "double* a = modelData->a;" << endl;
       _writer->write(buffer, WRITER::Alloc_Matrix);
+    }
+
+    string 
+    ClassicModelInstance::allocateModel()
+    {
+      stringstream buffer;
+      buffer << "simulator->model = CLC_Model(MOD_definition, ";
+      buffer << ModelInstance::allocateModel();
+      buffer << ", MOD_jacobian);";
+      return buffer.str();
     }
 
     void 
@@ -501,6 +533,7 @@ namespace MicroModelica {
       _writer->print(WRITER::Init_Matrix_SD);
       _writer->print(WRITER::Input);
       _writer->print(WRITER::Init_Output);
+      _writer->print(allocateModel());
       _writer->endBlock();
       _writer->print(componentDefinition(QSS_INIT));
       _writer->beginBlock();

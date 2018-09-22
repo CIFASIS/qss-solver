@@ -138,6 +138,8 @@ namespace MicroModelica
         allocateVectors();
         void 
         freeVectors();
+        std::string 
+        allocateModel();
       private:
         IR::Model           _model;
         Util::CompileFlags  _flags;
@@ -187,6 +189,12 @@ namespace MicroModelica
         generate();
         void 
         header();
+      private:
+        void 
+        allocateSolver();
+        IR::Model           _model;
+        Util::CompileFlags  _flags;
+        WriterPtr           _writer;
     };
 
     /**
@@ -234,6 +242,8 @@ namespace MicroModelica
       private:
         void 
         allocateSolver();
+        std::string 
+        allocateModel();
         IR::Model           _model;
         Util::CompileFlags  _flags;
         WriterPtr           _writer;

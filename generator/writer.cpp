@@ -160,7 +160,12 @@ namespace MicroModelica {
       list<string>::iterator it;
       for(it = _sections[section].begin(); it != _sections[section].end(); it++)
       {
-        _file << _block << *it << endl;
+        istringstream stream(*it);
+        string line;
+        while(getline(stream, line))
+        {
+          _file << _block << line << endl;
+        }
       }
     }
 

@@ -109,12 +109,13 @@ namespace MicroModelica {
       FunctionPrinter fp;
       buffer << fp.beginExpression(id.str(),_range);
       block += TAB;
+      if(!_range) { block += TAB; }
       StatementTable::iterator it;
       for(Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it))
       {
         buffer << block << stm << endl;
       }
-      buffer << fp.endExpression(_range);
+      buffer << block << fp.endExpression(_range);
       return buffer.str();
     }
 

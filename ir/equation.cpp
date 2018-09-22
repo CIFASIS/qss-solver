@@ -208,15 +208,17 @@ namespace MicroModelica {
       {
         buffer << fp.beginExpression(functionId(), _range);
         buffer << fp.algebraics(dependencyMatrix(), _id);
+        block += TAB;
+        if(!_range) { block += TAB; }
       }
-      buffer << block << prefix() << _lhs << " = " << _rhs << ";" << endl; 
+      buffer << block << prefix() << _lhs << " = " << _rhs << ";"; 
       if(_type == EQUATION::ClassicDerivative)
       {
         if(_range) { buffer << endl << _range.get().end(); }
       }
       else 
       {
-        buffer << fp.endExpression(_range);
+        buffer << endl << block << fp.endExpression(_range);
       }
       return buffer.str();
     }
