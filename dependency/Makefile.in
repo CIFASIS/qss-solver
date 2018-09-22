@@ -1,0 +1,51 @@
+CXXFLAGS = -std=c++14 -I. -Wall -Werror -Wno-reorder -O3 
+DEPDIR := .
+DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
+LIBDIR = lib
+LIBDEPS = libdeps.a
+COMPILE.cc = $(CXX) $(DEPFLAGS) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
+POSTCOMPILE = mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d
+
+SRC_COMMON := \
+    ast/expression.cpp \
+		ast/class.cpp \
+		ast/equation.cpp \
+		ast/statement.cpp \
+		ast/modification.cpp \
+		ast/element.cpp \
+		ast/expression.cpp \
+		parser/ident.cpp \
+		parser/expression.cpp \
+		parser/modification.cpp \
+		parser/equation.cpp \
+		parser/statement.cpp \
+		parser/class.cpp \
+		parser/parser.cpp
+
+all: $(LIBDEPS) 
+
+include mmo/Makefile.include
+include deps/Makefile.include
+
+OBJS_COMMON = $(SRC_COMMON:.cpp=.o)
+
+%.o : %.cpp %.d
+	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+	$(POSTCOMPILE)
+
+$(LIBDEPS): create-dirs |  $(OBJS_COMMON) $(OBJS_MMO) $(OBJS_DEPS)
+	$(AR) rcs $(LIBDIR)/$(LIBDEPS) $(OBJS_COMMON) $(OBJS_MMO) $(OBJS_DEPS)
+
+create-dirs:
+	@mkdir -p $(LIBDIR)
+
+-include $(patsubst %,$(DEPDIR)/%.d,$(basename $(SRC_COMMON)))
+
+$(DEPDIR)/%.d: ;
+.PRECIOUS: $(DEPDIR)/%.d
+
+install:
+	@install $(LIBDIR)/$(LIBDEPS) @prefix@/$(LIBDEPS)
+
+clean:
+	$(RM) -rf $(OBJS_COMMON) $(OBJS_MMO) $(OBJS_DEPS) $(LIBDEPS) *.d 

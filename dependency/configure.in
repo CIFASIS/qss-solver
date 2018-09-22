@@ -1,0 +1,35 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ([2.68])
+AC_LANG([C++])
+AC_INIT([ModelDeps], [0.1], [fernandez@cifasis-conicet.gov.ar])
+AC_CONFIG_MACRO_DIR([macros])
+m4_include([macros/ax_boost_base.m4])
+m4_include([macros/ax_cxx_compile_stdcxx.m4])
+
+# Checks for programs.
+AC_PROG_CXX
+AC_PROG_CC
+AX_CXX_COMPILE_STDCXX(11,noext,optional)
+AX_CXX_COMPILE_STDCXX(14,noext,optional)
+
+# Checks for libraries.
+AC_LANG([C++])
+AC_CHECK_HEADERS([ginac/ginac.h],[],[AC_MSG_ERROR([ModelDeps Library needs libginac.])],[])
+
+# Checks for header files.
+AX_BOOST_BASE(["1.58"],[], AC_MSG_ERROR([ModelDeps Library needs boost library.]))
+AC_FUNC_ALLOCA
+AC_CHECK_HEADERS([malloc.h stdlib.h string.h unistd.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_HEADER_STDBOOL
+
+# Checks for library functions.
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_CHECK_FUNCS([bzero])
+
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT

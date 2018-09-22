@@ -1,0 +1,18 @@
+all: objs_mmo 
+SRC_MMO := 	mmo/mmo_class.cpp \
+						util/table.cpp \
+						util/debug.cpp \
+						util/ast_visitors/eval_expression.cpp \
+						util/ast_visitors/partial_eval_expression.cpp \
+						util/ast_visitors/to_micro/convert_to_micro.cpp \
+						util/ast_visitors/to_micro/convert_to_micro_statement.cpp \
+						util/ast_visitors/to_micro/convert_to_micro_expression.cpp \
+						util/type.cpp  
+
+OBJS_MMO = $(SRC_MMO:.cpp=.o)
+-include $(patsubst %,$(DEPDIR)/%.d,$(basename $(SRC_MMO)))
+
+objs_mmo: $(OBJS_MMO)
+
+clean:
+	$(RM) -rf $(OBJS_MMO) *.d 
