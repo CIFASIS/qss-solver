@@ -13,13 +13,14 @@ endif
 
 # The Directories, Source, Includes, Objects, Binary 
 SRCDIR      := .
-ASTDIR 		:= $(SRCDIR)/ast
+ASTDIR 		  := $(SRCDIR)/ast
 GENERATORDIR:= $(SRCDIR)/generator
-IRDIR 		:= $(SRCDIR)/ir
+IRDIR 		  := $(SRCDIR)/ir
 PARSERDIR 	:= $(SRCDIR)/parser
-UTILDIR 	:= $(SRCDIR)/util
+UTILDIR 	  := $(SRCDIR)/util
 3RDPARTYDIR := $(SRCDIR)/3rd-party
-USRDIR 		:= $(SRCDIR)/usr
+DEPSDIR     := $(SRCDIR)/dependency
+USRDIR 		  := $(SRCDIR)/usr
 BUILDDIR    := $(USRDIR)/obj
 LIBDIR      := $(USRDIR)/lib
 BINDIR      := $(USRDIR)/bin
@@ -35,7 +36,7 @@ TARGET      := $(BINDIR)/mmoc
 ifeq ($(OS), Windows_NT)
 LIB 		:= -L/usr/lib
 endif
-LIB 		+= -L$(LIBDIR) -lginac -lcln -lgmp 
+LIB 		+= -L$(LIBDIR) -lginac -lcln -lgmp -ldeps 
 CXXFLAGS 	:= -Wno-write-strings -Wall -std=c++11
 ifeq ($(DEBUG),True)
 CXXFLAGS 	+= -DYY_MCC_Parser_DEBUG -g  
@@ -132,6 +133,17 @@ else
 	echo "Using system provided GiNaC library"
 endif
 
+# Model Dependencies Library.
+
+libdeps := $(LIBDIR)/libdeps.a
+
+$(libdeps):
+	@echo "Building ModelDeps library"
+	@cd $(DEPSDIR) && autoconf
+	@cd $(DEPSDIR) && ./configure --prefix=`pwd`/../usr/lib
+	@cd $(DEPSDIR) && make  
+	@cd $(DEPSDIR) && make install 
+
 $(BUILDDIR)/ast_%.o : $(ASTDIR)/%.cpp $(ASTDIR)/%.h $(PARSERDIR)/mocc_parser.cpp $(PARSERDIR)/mocc_scanner.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS)
@@ -152,7 +164,7 @@ $(BUILDDIR)/util_%.o : $(UTILDIR)/%.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
 
-mmoc: | $(libginac) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) 
+mmoc: | $(libginac) $(libdeps) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) 
 	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(LIB) 
 
 ifneq ($(OS), Windows_NT)
@@ -192,7 +204,7 @@ clean:
 ifeq ($(OS), Windows_NT)
 	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ)
 else
-	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h 
+	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(libdeps) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h 
 endif
 
 #	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h usr
