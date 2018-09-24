@@ -162,9 +162,9 @@ namespace MicroModelica {
     {
       stringstream buffer;
       int size = _ranges.size();
-      for(int i = 0; i < size; i++)
+      for(int i = size; i > 0; i--)
       {
-        buffer << "}";
+        buffer << block(i-1) << "}" << (i-1 > 0 ? "\n" : "");
       }
       return buffer.str();
     }
@@ -175,15 +175,17 @@ namespace MicroModelica {
       stringstream buffer;
       RangeDefinitionTable ranges = _ranges;
       RangeDefinitionTable::iterator it;
+      string block = "";
       for(RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it))
       {
         if(_type == RANGE::For)
         {
           string idx = ranges.key(it);
-          buffer << "for(" << idx << " = " << r.begin() << "; ";
+          buffer << block << "for(" << idx << " = " << r.begin() << "; ";
           buffer << idx << "<=" << r.end() << "; ";
           buffer << idx << "+=" << r.step() << ")" << endl;
-          buffer << "{" << endl;
+          buffer << block << "{" << endl;
+          block += TAB;
         }
       }
       addLocalVariables();
@@ -226,6 +228,19 @@ namespace MicroModelica {
         total *= _rowSize.at(it);
       }
       return total;
+    }
+
+    string 
+    Range::block(int dim) const 
+    {
+      int size = _ranges.size();
+      if(dim >= 0) { size = dim; }
+      string block = "";
+      for(int i = 0; i < size; i++)
+      {
+        block += TAB;
+      }
+      return block;
     }
 
     std::ostream& operator<<(std::ostream& out, const Range& r)

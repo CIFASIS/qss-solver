@@ -111,7 +111,7 @@ namespace MicroModelica {
           AST_StatementListIterator stmit;
           foreach(stmit, stms)
           {
-            Statement st(current_element(stmit), _symbols, false, TAB);
+            Statement st(current_element(stmit), _symbols, false, range.block());
             buffer << st << endl;  
           }
           buffer << range.end();

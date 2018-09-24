@@ -1690,12 +1690,12 @@ ExpressionPrinter::foldTraverseElement(AST_Expression exp)
         AST_ExpressionList indexes = cr->firstIndex();
         AST_ExpressionListIterator it;
         int size = indexes->size(), i = 0;
+        buffer << "(";
         foreach(it, indexes)
         {
-          buffer << "(";
           buffer << apply(current_element(it)) << (++i < size ? "," : "");
-          buffer << ")";
         }
+        buffer << ")";
       }
       break;
     }

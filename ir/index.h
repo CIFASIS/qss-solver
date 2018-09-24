@@ -82,6 +82,8 @@ namespace MicroModelica {
         addLocalVariables() const;
         int 
         rowSize(int dim) const;
+        std::string 
+        block(int dim = -1) const;
         friend std::ostream& operator<<(std::ostream& out, const Range& r);
       private:
         void 

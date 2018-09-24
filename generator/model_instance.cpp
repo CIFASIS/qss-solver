@@ -397,6 +397,7 @@ namespace MicroModelica {
     ClassicModelInstance::initializeDataStructures()
     {
       stringstream buffer;
+      Utils::instance().setLocalSymbols();
       allocateSolver();
       initialCode();
       ModelDependencies deps = _model.dependencies();
@@ -409,6 +410,7 @@ namespace MicroModelica {
       initializeMatrix(deps.OS(), WRITER::Alloc_Output_States, WRITER::Init_Output_States);
       initializeMatrix(deps.OD(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes);
       allocateModel();
+      _writer->write(Utils::instance().localSymbols(), WRITER::Alloc_Matrix);
     }
     
     void

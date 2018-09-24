@@ -201,7 +201,7 @@ namespace MicroModelica {
         if(_range) 
         { 
           buffer << _range.get(); 
-          block += TAB;
+          block = _range->block();
         }
       }
       else 
@@ -209,7 +209,14 @@ namespace MicroModelica {
         buffer << fp.beginExpression(functionId(), _range);
         buffer << fp.algebraics(dependencyMatrix(), _id);
         block += TAB;
-        if(!_range) { block += TAB; }
+        if(_range)
+        {
+          block = _range->block();
+        }
+        else
+        { 
+          block += TAB; 
+        }
       }
       buffer << block << prefix() << _lhs << " = " << _rhs << ";"; 
       if(_type == EQUATION::ClassicDerivative)
