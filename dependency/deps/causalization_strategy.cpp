@@ -24,14 +24,14 @@
  *      Author: fede
  */
 
-#include <causalize/causalization_strategy.h>
-#include <causalize/graph/graph_definition.h>
-#include <causalize/graph/graph_printer.h>
+#include <deps/causalization_strategy.h>
+#include <deps/graph/graph_definition.h>
+#include <deps/graph/graph_printer.h>
 #include <ast/ast_types.h>
-#include <causalize/for_unrolling/process_for_equations.h>
+#include <deps/for_unrolling/process_for_equations.h>
 #include <util/debug.h>
-#include <causalize/unknowns_collector.h>
-#include <causalize/apply_tarjan.h>
+#include <deps/unknowns_collector.h>
+#include <deps/apply_tarjan.h>
 #include <boost/lambda/lambda.hpp>
 #include <ast/equation.h>
 #include <boost/variant/get.hpp>
@@ -53,7 +53,7 @@ CausalizationStrategy::CausalizationStrategy(MMO_Class &mmo_class): _mmo_class(m
   ExpList unknowns = collector.collectUnknowns();
 
   if (equations.size() != unknowns.size()) {
-    ERROR ("The model being causalized is not balanced.\n"
+    ERROR ("The model being depsd is not balanced.\n"
            "There are %d equations and %d variables\n",
            equations.size(), unknowns.size());
   }

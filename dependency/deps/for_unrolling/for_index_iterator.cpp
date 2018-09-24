@@ -17,7 +17,7 @@
 
 ******************************************************************************/
 
-#include <causalize/for_unrolling/for_index_iterator.h>
+#include <deps/for_unrolling/for_index_iterator.h>
 #include <ast/expression.h>
 #include <util/ast_visitors/eval_expression.h>
 #include <ast/modification.h>

@@ -25,8 +25,8 @@
 * implementations.
 */
 #include <mmo/mmo_class.h>
-#include <causalize/vector/vector_graph_definition.h>
-#include <causalize/state_variables_finder.h>
+#include <deps/vector/vector_graph_definition.h>
+#include <deps/state_variables_finder.h>
 
 
 namespace Causalize {

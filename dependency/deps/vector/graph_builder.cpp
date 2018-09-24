@@ -17,9 +17,9 @@
 
 ******************************************************************************/
 
-#include <causalize/vector/graph_builder.h>
-#include <causalize/vector/vector_graph_definition.h>
-#include <causalize/vector/contains_vector.h>
+#include <deps/vector/graph_builder.h>
+#include <deps/vector/vector_graph_definition.h>
+#include <deps/vector/contains_vector.h>
 #include <util/ast_visitors/eval_expression.h>
 
 

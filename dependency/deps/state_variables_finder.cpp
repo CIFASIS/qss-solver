@@ -28,7 +28,7 @@
 #include <boost/variant/variant.hpp>
 #include <boost/variant/get.hpp>
 
-#include <causalize/state_variables_finder.h>
+#include <deps/state_variables_finder.h>
 #include <ast/expression.h>
 #include <util/table.h>
 #include <util/debug.h>

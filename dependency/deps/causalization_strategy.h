@@ -24,7 +24,7 @@
  *      Author: fede
  */
 
-#include <causalize/graph/graph_definition.h>
+#include <deps/graph/graph_definition.h>
 #include <mmo/mmo_class.h>
 
 

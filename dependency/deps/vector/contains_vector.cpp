@@ -17,10 +17,10 @@
 
 ******************************************************************************/
 
-#include <causalize/vector/contains_vector.h>
+#include <deps/vector/contains_vector.h>
 #include <util/debug.h>
 #include <boost/variant/get.hpp>
-#include <causalize/vector/vector_graph_definition.h>
+#include <deps/vector/vector_graph_definition.h>
 #include <util/ast_visitors/eval_expression.h>
 #include <boost/icl/discrete_interval.hpp>
 #include <util/ast_visitors/partial_eval_expression.h>

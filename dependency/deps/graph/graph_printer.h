@@ -17,7 +17,7 @@
 
 ******************************************************************************/
 
-#include <causalize/graph/graph_definition.h>
+#include <deps/graph/graph_definition.h>
 #include <list>
 #include <iostream>
 #include <fstream>

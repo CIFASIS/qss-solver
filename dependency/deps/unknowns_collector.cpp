@@ -25,7 +25,7 @@
  */
 
 #include <ast/queries.h>
-#include <causalize/unknowns_collector.h>
+#include <deps/unknowns_collector.h>
 #include <util/ast_visitors/eval_expression.h>
 #include <util/table.h>
 #include <util/type.h>

@@ -24,7 +24,7 @@
  *      Author: fede
  */
 
-#include <causalize/apply_tarjan.h>
+#include <deps/apply_tarjan.h>
 #include <util/debug.h>
 
 #include <boost/property_map/property_map.hpp>

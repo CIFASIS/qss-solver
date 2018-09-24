@@ -21,8 +21,8 @@
 #include <ast/queries.h>
 #include <boost/variant/get.hpp>
 #include <util/ast_visitors/splitfor_visitor.h>
-#include <causalize/state_variables_finder.h>
-#include <causalize/vector/splitfor.h>
+#include <deps/state_variables_finder.h>
+#include <deps/vector/splitfor.h>
 #include <algorithm>
 #include <vector>
 

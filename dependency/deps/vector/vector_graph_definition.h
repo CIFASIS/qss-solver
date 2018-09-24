@@ -28,12 +28,12 @@
 
 #include <ast/equation.h>
 #include <mmo/mmo_class.h>
-#include <causalize/graph/graph_definition.h>
+#include <deps/graph/graph_definition.h>
 
 namespace Causalize {
   /// @brief This is the property for a vertex in the incidence graph. Nodes can be of two types: Equation or Unknow.
   struct VectorVertexProperty: VertexProperty {
-  /// @brief The number of equations or unknowns left to causalize in this node
+  /// @brief The number of equations or unknowns left to deps in this node
     int count;
   };
   
@@ -118,7 +118,7 @@ namespace Causalize {
   typedef VectorVertex VectorUnknownVertex;
   /// @brief This is an edge of the vectorized causalization graph
   typedef VectorCausalizationGraph::edge_descriptor VectorEdge;
-  /// @brief This struct represents a set of causalized vars for the vector algorithm
+  /// @brief This struct represents a set of depsd vars for the vector algorithm
 
   struct CausalizedVar{
     Unknown unknown;

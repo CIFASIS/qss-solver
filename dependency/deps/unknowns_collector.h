@@ -18,7 +18,7 @@
 ******************************************************************************/
 
 #include <mmo/mmo_class.h>
-#include <causalize/state_variables_finder.h>
+#include <deps/state_variables_finder.h>
 
 using namespace std;
 using namespace Modelica;

@@ -17,11 +17,11 @@
 
 ******************************************************************************/
 
-#include <causalize/vector/causalization_algorithm.h>
-#include <causalize/vector/vector_graph_definition.h>
+#include <deps/vector/causalization_algorithm.h>
+#include <deps/vector/vector_graph_definition.h>
 #define HAS_COUNT
-#include <causalize/graph/graph_printer.h>
-#include <causalize/for_unrolling/process_for_equations.h>
+#include <deps/graph/graph_printer.h>
+#include <deps/for_unrolling/process_for_equations.h>
 #include <util/debug.h>
 #include <util/solve/solve.h>
 #include <boost/tuple/tuple.hpp>
@@ -63,7 +63,7 @@ CausalizationStrategyVector::CausalizationStrategyVector(VectorCausalizationGrap
 			   equationNumber, unknownNumber);
 	
 	if(equationNumber != unknownNumber){
-		ERROR("The model being causalized is not balanced.\n"
+		ERROR("The model being depsd is not balanced.\n"
 			  "There are %d equations and %d variables\n", 
 			  equationNumber, unknownNumber);		
 	}
@@ -96,7 +96,7 @@ CausalizationStrategyVector::CausalizeNto1(const Unknown unk, const Equation eq,
 bool
 CausalizationStrategyVector::Causalize() {	
   while(true){
-    bool causalize_some=false;
+    bool deps_some=false;
     assert(equationNumber == unknownNumber);
     if(equationDescriptors.empty() && unknownDescriptors.empty()) {
       // Finished causalizing :)
@@ -115,12 +115,12 @@ CausalizationStrategyVector::Causalize() {
       auxiliaryIter++;
       EquationVertex eq = *iter;
       ERROR_UNLESS(out_degree(eq, graph) != 0, "Problem is singular, not supported yet\n");
-      // Try to look for a set of indexes to causalize
+      // Try to look for a set of indexes to deps
       Option<std::pair<VectorEdge,IndexPairSet> > op = CanCausalizeEquation(eq);
-      // If we can causalize something
+      // If we can deps something
       if (op) {
-        // We are going to causalize something
-        causalize_some=true;
+        // We are going to deps something
+        deps_some=true;
         // This pair holds which edge(the first component) to use for causalization and which indexes(the second component)
         std::pair<VectorEdge,IndexPairSet> causal_pair = op.get();
         VectorEdge e = causal_pair.first;
@@ -130,7 +130,7 @@ CausalizationStrategyVector::Causalize() {
         unknownNumber--;
         // Save the result of this step of causalization
         Causalize1toN(graph[unk].unknown, graph[eq].equation, causal_pair.second);
-        // Update the pairs in the edge that is being causalized
+        // Update the pairs in the edge that is being depsd
         graph[e].RemovePairs(causal_pair.second);
         // Decrement the number of uncauzalized equations/unknowns
         graph[eq].count -= causal_pair.second.size();
@@ -156,13 +156,13 @@ CausalizationStrategyVector::Causalize() {
         }
         // If the equation node is now unconnected and with count==0 we can remove it
         if (out_degree(eq,graph)==0) {
-          ERROR_UNLESS(graph[eq].count==0, "Disconnected node with uncausalized equations");
+          ERROR_UNLESS(graph[eq].count==0, "Disconnected node with undepsd equations");
           remove_vertex(eq,graph);
           equationDescriptors.erase(iter);
         }
         // If the unknown node is now unconnected and with count==0 we can remove it
         if (out_degree(unk,graph)==0) {
-          ERROR_UNLESS(graph[unk].count==0, "Disconnected node with uncausalized unknowns");
+          ERROR_UNLESS(graph[unk].count==0, "Disconnected node with undepsd unknowns");
           remove_vertex(unk,graph);
           unknownDescriptors.remove(unk);
         }
@@ -181,12 +181,12 @@ CausalizationStrategyVector::Causalize() {
       auxiliaryIter++;
       UnknownVertex unk = *iter;
       ERROR_UNLESS(out_degree(unk, graph) != 0, "Problem is singular, not supported yet\n");
-      // Try to look for a set of indexes to causalize
+      // Try to look for a set of indexes to deps
       Option<std::pair<VectorEdge,IndexPairSet> > op = CanCausalizeUnknown(unk);
-      // If we can causalize something
+      // If we can deps something
       if (op) {
-        // We are going to causalize something
-        causalize_some=true;
+        // We are going to deps something
+        deps_some=true;
         // This pair holds which edge(the first component) to use for causalization and which indexes(the second component)
         std::pair<VectorEdge,IndexPairSet> causal_pair = op.get();
         VectorEdge e = causal_pair.first;
@@ -199,7 +199,7 @@ CausalizationStrategyVector::Causalize() {
         unknownNumber--;
         // Save the result of this step of causalization
         CausalizeNto1(graph[unk].unknown, graph[eq].equation, causal_pair.second);
-        // Update the pairs in the edge that is being causalized
+        // Update the pairs in the edge that is being depsd
         graph[e].RemovePairs(causal_pair.second);
         // Decrement the number of uncauzalized equations/unknowns
         graph[eq].count -= causal_pair.second.size();
@@ -232,13 +232,13 @@ CausalizationStrategyVector::Causalize() {
         }
         // If the equation node is now unconnected and with count==0 we can remove it
         if (out_degree(eq,graph)==0) {
-          ERROR_UNLESS(graph[eq].count==0, "Disconnected node with uncausalized equations");
+          ERROR_UNLESS(graph[eq].count==0, "Disconnected node with undepsd equations");
           remove_vertex(eq,graph);
           equationDescriptors.remove(eq);
         }
         // If the unknown node is now unconnected and with count==0 we can remove it
         if (out_degree(unk,graph)==0) {
-          ERROR_UNLESS(graph[unk].count==0, "Disconnected node with uncausalized unknowns");
+          ERROR_UNLESS(graph[unk].count==0, "Disconnected node with undepsd unknowns");
           remove_vertex(unk,graph);
           unknownDescriptors.erase(iter);
         }
@@ -249,7 +249,7 @@ CausalizationStrategyVector::Causalize() {
       }
     }
 
-    if(!causalize_some){
+    if(!deps_some){
       //we have a LOOP or a FOR equation that we don't
       //handle at least yet, so we resort to the previous
       //algorithm

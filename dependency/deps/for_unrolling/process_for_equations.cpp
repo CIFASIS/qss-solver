@@ -25,8 +25,8 @@
 #include <util/table.h>
 #include <util/ast_visitors/partial_eval_expression.h>
 
-#include <causalize/for_unrolling/process_for_equations.h>
-#include <causalize/for_unrolling/for_index_iterator.h>
+#include <deps/for_unrolling/process_for_equations.h>
+#include <deps/for_unrolling/for_index_iterator.h>
 
 namespace Causalize {
 
