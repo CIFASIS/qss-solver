@@ -30,10 +30,10 @@ ChangeLog
 /dependency/deps/*.o
 /dependency/deps/vector/*.d
 /dependency/deps/vector/*.o
-/dependency/deps/for_unrolling/*.d
-/dependency/deps/for_unrolling/*.o
 /dependency/deps/graph/*.d
 /dependency/deps/graph/*.o
+/dependency/deps/for_unrolling/*.d
+/dependency/deps/for_unrolling/*.o
 /dependency/parser/*.d
 /dependency/parser/*.o
 /dependency/ast/*.d
