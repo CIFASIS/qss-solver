@@ -28,6 +28,7 @@
 #include "../ast/expression.h"
 #include "../ast/modification.h"
 #include "../ast/statement.h"
+#include "../util/ast_util.h"
 #include "../util/error.h"
 #include "../util/symbol_table.h"
 #include "../util/type.h"
@@ -225,6 +226,15 @@ namespace MicroModelica {
           visit(current_element(it));
         }
       }
+      else 
+      {
+        AST_Equation_Equality eqe = x->getAsEquality();
+        DiscreteAssignment da(_class->symbols());
+        da.apply(eqe->left());
+        ArrayUse au(_class->symbols());
+        au.apply(eqe->left()); 
+        au.apply(eqe->right());
+      }
       _class->insert(x);
     }
 
@@ -270,6 +280,8 @@ namespace MicroModelica {
           visit(current_element(it));
         }
       }
+      StatementArrayUse au(_class->symbols());
+      au.apply(x);
       _class->insert(x, _initialCode);
     }
 

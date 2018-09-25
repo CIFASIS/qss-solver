@@ -423,7 +423,7 @@ namespace MicroModelica {
     }
 
     void 
-    Model::setRealVariableOffset(AST_Expression exp, Util::Variable::RealType type, int& offset)
+    Model::setRealVariableOffset(AST_Expression exp, Util::Variable::RealType type, unsigned int& offset)
     {
         Option<Variable> var = variable(exp);
         if(!var->hasOffset())

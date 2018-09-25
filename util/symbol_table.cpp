@@ -139,11 +139,11 @@ namespace MicroModelica {
       }
     }
 
-    int
+    unsigned int
     Variable::size()
     {
       vector<int>::iterator it;
-      int total = 1;
+      unsigned int total = 1;
       for(it = _size.begin(); it != _size.end(); it++)
       {
         total *= *it;
@@ -151,10 +151,10 @@ namespace MicroModelica {
       return total;
     }
 
-    int 
-    Variable::rowSize(int dim) const
+    unsigned int 
+    Variable::rowSize(unsigned int dim) const
     {
-      int total = 1;
+      unsigned int total = 1;
       for(unsigned int it = _size.size()-1; it > dim; it--)
       {
         total *= _size.at(it);

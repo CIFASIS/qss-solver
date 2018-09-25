@@ -484,6 +484,7 @@ AST_Expression_ComponentReference_::cname()
 {
   return name().c_str();
 }
+
 string
 AST_Expression_ComponentReference_::name()
 {

@@ -224,7 +224,7 @@ namespace MicroModelica {
          *
          * @return
          */
-        int
+        unsigned int
         size();
         /**
          *
@@ -282,15 +282,15 @@ namespace MicroModelica {
          * @param dim
          * @return
          */
-        inline int
+        inline unsigned int 
         size(int dim) const { return _size[dim]; };
-        int 
-        rowSize(int dim) const;
+        unsigned int 
+        rowSize(unsigned int dim) const;
         /**
          *
          * @return
          */
-        inline int
+        inline unsigned int
         dimensions() const { return _size.size(); };
         std::string  
         declaration(std::string prefix = "");

@@ -25,6 +25,7 @@
 #include "../ast/ast_types.h"
 #include "../ast/expression.h"
 #include "../ast/statement.h"
+#include "../ast/equation.h"
 #include "../ir/index.h"
 #include "../ir/event.h"
 #include "util_types.h"
@@ -226,7 +227,6 @@ class AST_Expression_Visitor
     foldTraverseElement(R, R, BinOpType) = 0;
 };
 
-
 /**
  *
  */
@@ -263,7 +263,8 @@ class AST_Statement_Visitor
           return c;
         }
         case STASSING:
-          return foldTraverse(_visitor.apply(stm->getAsAssign()->exp()));
+          return foldTraverse(_visitor.apply(stm->getAsAssign()->lhs()),
+                              _visitor.apply(stm->getAsAssign()->exp()));
         case STIF:
         {
           c = foldTraverse(_visitor.apply(stm->getAsIf()->condition()));
@@ -998,6 +999,7 @@ namespace MicroModelica {
     typedef ModelTable<std::string,std::string> SymbolTable;
   }
 }
+
 /**
  *
  */
@@ -1031,6 +1033,58 @@ class StatementCalledFunctions: public AST_Statement_Visitor<MicroModelica::Util
     foldTraverse(MicroModelica::Util::SymbolTable s1, MicroModelica::Util::SymbolTable s2);
 };
 
+/**
+ *
+ */
+class DiscreteAssignment: public AST_Expression_Visitor<bool> 
+{
+  public:
+    DiscreteAssignment(MicroModelica::Util::VarSymbolTable symbols) : _symbols(symbols) {};
+    ~DiscreteAssignment() {};
+  private:
+    bool   
+    foldTraverseElement(AST_Expression exp);
+    bool 
+    foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
+    bool 
+    foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+    MicroModelica::Util::VarSymbolTable _symbols;
+};
+
+/**
+ *
+ */
+class ArrayUse: public AST_Expression_Visitor<bool> 
+{
+  public:
+    ArrayUse(MicroModelica::Util::VarSymbolTable symbols) : _symbols(symbols) {};
+    ~ArrayUse() {};
+  private:
+    bool   
+    foldTraverseElement(AST_Expression exp);
+    bool 
+    foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
+    bool 
+    foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+    MicroModelica::Util::VarSymbolTable _symbols;
+};
+
+/**
+ *
+ */
+class StatementArrayUse: public AST_Statement_Visitor<bool, bool, ArrayUse>
+{
+  public:
+    StatementArrayUse(MicroModelica::Util::VarSymbolTable symbols) : AST_Statement_Visitor(ArrayUse(symbols)) {};
+    ~StatementArrayUse() {};
+  private:
+    inline bool   
+    foldTraverse(bool ret) { return ret; };
+    inline bool   
+    foldTraverse(bool l, bool r) { return l && r; };
+};
+
+
 class ExpressionPrinter : public AST_Expression_Visitor<std::string>
 {
   public:
@@ -1052,5 +1106,7 @@ class ExpressionPrinter : public AST_Expression_Visitor<std::string>
     MicroModelica::IR::Expression           _exp;
     std::string                             _code;
 };
+
+
 
 #endif  /* AST_UTIL_H_ */

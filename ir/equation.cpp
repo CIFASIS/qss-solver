@@ -132,13 +132,8 @@ namespace MicroModelica {
       else if(eqe->left()->expressionType() == EXPOUTPUT)
       {
         AST_Expression_Output eout = eqe->left()->getAsOutput();
-        AST_ExpressionList el = eout->expressionList();
-        AST_ExpressionListIterator it;
-        foreach(it,el)
-        {
-          _lhs = Expression(eout, _symbols);
-          _rhs = Expression(eqe->right(), _symbols);
-        }
+        _lhs = Expression(eout, _symbols);
+        _rhs = Expression(eqe->right(), _symbols);
       }
       Autonomous autonomous(_symbols);
       _autonomous = autonomous.apply(_rhs.expression());

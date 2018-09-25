@@ -518,7 +518,7 @@ namespace MicroModelica
         Option<Util::Variable>
         variable(AST_Expression exp);
         void 
-        setRealVariableOffset(AST_Expression, Util::Variable::RealType type, int& offset);
+        setRealVariableOffset(AST_Expression, Util::Variable::RealType type, unsigned int& offset);
         void 
         setRealVariables(AST_Equation eq);
         void 
@@ -548,12 +548,12 @@ namespace MicroModelica
         Util::SymbolTable         _includeDirectories;
         std::list<AST_Equation>   _astEquations;
         std::list<AST_Statement>  _astStatements;
-        int                       _stateNbr;
-        int                       _discreteNbr;
-        int                       _algebraicNbr;
-        int                       _eventNbr;
-        int                       _outputNbr;
-        int                       _inputNbr;
+        unsigned int              _stateNbr;
+        unsigned int              _discreteNbr;
+        unsigned int              _algebraicNbr;
+        unsigned int              _eventNbr;
+        unsigned int              _outputNbr;
+        unsigned int              _inputNbr;
         int                       _derivativeId;
         int                       _algebraicId;
         int                       _statementId;
