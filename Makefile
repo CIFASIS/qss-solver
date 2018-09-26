@@ -36,7 +36,7 @@ TARGET      := $(BINDIR)/mmoc
 ifeq ($(OS), Windows_NT)
 LIB 		:= -L/usr/lib
 endif
-LIB 		+= -L$(LIBDIR) -lginac -lcln -lgmp -ldeps 
+LIB 		+= -L$(LIBDIR) -ldeps -lginac -lcln -lgmp 
 CXXFLAGS 	:= -Wno-write-strings -Wall -std=c++11
 ifeq ($(DEBUG),True)
 CXXFLAGS 	+= -DYY_MCC_Parser_DEBUG -g  
@@ -140,7 +140,7 @@ libdeps := $(LIBDIR)/libdeps.a
 $(libdeps):
 	@echo "Building ModelDeps library"
 	@cd $(DEPSDIR) && autoconf
-	@cd $(DEPSDIR) && ./configure --prefix=`pwd`/../usr/lib
+	@cd $(DEPSDIR) && ./configure --prefix=`pwd`/../usr/lib 
 	@cd $(DEPSDIR) && make  
 	@cd $(DEPSDIR) && make install 
 

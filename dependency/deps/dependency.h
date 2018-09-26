@@ -17,19 +17,22 @@
 
  ******************************************************************************/
 
-#include "model_dependencies.h"
+#ifndef DEP_DEPENDENCY_H_
+#define DEP_DEPENDENCY_H_
 
+namespace Dependency {
 
-namespace MicroModelica {
-  namespace Util {
-
-    ModelDependencies::ModelDependencies() :
-      _deps("test", true)
-    {
-    }
-     
-    ModelDependencies::~ModelDependencies()
-    {
-    }
-  }
+  class Dependency 
+  {
+    public:
+      Dependency(std::string filename, bool vectorial);
+      ~Dependency();
+      std::string  
+      compute();  
+    private:
+      std::string _filename;
+      bool        _vectorial;
+  };
 }
+
+#endif // DEP_DEPENDENCY_H
