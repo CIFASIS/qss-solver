@@ -46,7 +46,8 @@ namespace MicroModelica {
         _compiledFunctions(),
         _symbols(),
         _localSymbols(),
-        _algebraics()
+        _algebraics(),
+        _fileName()
     {
       _annotations.insert(pair<string, int>("StartTime", 0));
       _annotations.insert(pair<string, int>("StopTime", 1));
@@ -353,6 +354,7 @@ namespace MicroModelica {
     string
     Utils::getFilePath(string file)
     {
+      _fileName = file;
       string path = file;
       size_t found = path.rfind("/");
       if(found != std::string::npos)

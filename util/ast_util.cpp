@@ -172,7 +172,7 @@ EqualExp::equalTraverseElement(AST_Expression a, AST_Expression b)
       {
         return false;
       }
-      ERROR_UNLESS(argsA->size() == 1,
+      Util::ERROR_UNLESS(argsA->size() == 1,
           "EqualExp::equalTraverseElement:\n"
               "AST_Expression_Derivative with more than 1 argument are not supported yet.\n");
       AST_Expression_ComponentReference compRef1 =
@@ -230,7 +230,7 @@ EqualExp::equalTraverseElement(AST_Expression a, AST_Expression b)
       return equalTraverseElement(m->exp(), m1->exp());
     }
     default:
-      ERROR("EqualExp::equalTraverseElement:\n"
+      Util::ERROR("EqualExp::equalTraverseElement:\n"
           "Incorrect AST_Expression_Type %s",
           a->expressionType());
   }
@@ -244,7 +244,7 @@ EqualExp::getVarInfo(AST_Expression_ComponentReference compRef)
   AST_StringList names = compRef->names();
   if(names->size() > 0)
   {
-    ERROR_UNLESS(names->size() == 1, "EqualExp::getVariable\n"
+    Util::ERROR_UNLESS(names->size() == 1, "EqualExp::getVariable\n"
             "AST_Component_Reference with names list bigger than 1 are not supported yet.\n");
     AST_String name = names->front();
     varInfo = _symbolTable[*name];
@@ -262,17 +262,17 @@ EqualExp::compareArrays(AST_Expression_ComponentReference arrayA,
 {
   AST_ExpressionListList indexesListA = arrayA->indexes();
   AST_ExpressionListList indexesListB = arrayB->indexes();
-  ERROR_UNLESS(indexesListA->size() == indexesListB->size(),
+  Util::ERROR_UNLESS(indexesListA->size() == indexesListB->size(),
       "EqualExp::compareArrays:\n"
           "indexes list sizes should be equal.\n");
-  ERROR_UNLESS(indexesListA->size() == 1, "EqualExp::compareArrays:\n"
+  Util::ERROR_UNLESS(indexesListA->size() == 1, "EqualExp::compareArrays:\n"
       "Indexes list sizes greater than 1 are not supported yet.\n");
   AST_ExpressionList indexesA = indexesListA->front();
   AST_ExpressionList indexesB = indexesListB->front();
-  ERROR_UNLESS(indexesA->size() == indexesB->size(),
+  Util::ERROR_UNLESS(indexesA->size() == indexesB->size(),
       "EqualExp::compareArrays:\n"
           "indexes sizes should be equal.\n");
-  ERROR_UNLESS(indexesA->size() == 1, "EqualExp::compareArrays:\n"
+  Util::ERROR_UNLESS(indexesA->size() == 1, "EqualExp::compareArrays:\n"
       "Multidimensional arrays are not supported yet.\n");
   return equalTraverse(indexesA->front(), indexesB->front());
 }
@@ -737,7 +737,7 @@ EvalExp::foldTraverseElement(AST_Expression exp)
       foreach(argsIter, arguments)
       {
         AST_Expression arg = current_element(argsIter);
-        ERROR_UNLESS(arg->expressionType() == EXPCOMPREF,
+        Util::ERROR_UNLESS(arg->expressionType() == EXPCOMPREF,
             "InstantiationTraverse::mapTraverseElement:\n"
                 "Incorrect AST_ExpressionDerivative argument type or not supported yet.\n");
         AST_Expression newArg = evalArray(
@@ -809,7 +809,7 @@ EvalExp::foldTraverseElement(AST_Expression left, AST_Expression right,
         return newAST_Expression_BinOp(left, right, BINOPMULT);
       }
     case BINOPDIV:
-      ERROR_UNLESS(right != 0, "process_for_equations - evalExp:\n"
+      Util::ERROR_UNLESS(right != 0, "process_for_equations - evalExp:\n"
           "Division by zero.\n");
       if(shouldReturnInteger(left, right))
       {
@@ -839,10 +839,10 @@ EvalExp::foldTraverseElement(AST_Expression left, AST_Expression right,
         return newAST_Expression_BinOp(left, right, BINOPEXP);
       }
     default:
-      ERROR("process_for_equations.cpp - evalBinOp:\n"
+      Util::ERROR("process_for_equations.cpp - evalBinOp:\n"
           "Incorrect Binary operation type.\n");
   }
-  ERROR("process_for_equations.cpp - evalBinOp:\n"
+  Util::ERROR("process_for_equations.cpp - evalBinOp:\n"
       "Incorrect Binary operation type.\n");
   return NULL;
 }
@@ -867,7 +867,7 @@ EvalExp::evalCompRef(AST_Expression_ComponentReference compRef)
         return apply(equal->exp());
       }
       default:
-        ERROR("RangeIterator::getVal\n"
+        Util::ERROR("RangeIterator::getVal\n"
             "Incorrect AST_Modification type or not supported yet.\n");
     }
   }

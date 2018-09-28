@@ -2,22 +2,17 @@ all: objs_deps
 SRC_DEPS := util/debug.cpp \
             util/table.cpp \
             util/type.cpp \
-            util/solve/solve.cpp \
             util/ast_visitors/eval_expression.cpp \
             util/ast_visitors/partial_eval_expression.cpp \
-            util/ast_visitors/ginac_interface.cpp \
             util/ast_visitors/contains_expression.cpp \
             util/ast_visitors/splitfor_visitor.cpp \
             deps/for_unrolling/for_index_iterator.cpp \
             deps/for_unrolling/process_for_equations.cpp \
             deps/dependency.cpp \
-            deps/apply_tarjan.cpp \
             deps/state_variables_finder.cpp \
             deps/unknowns_collector.cpp \
-            deps/causalization_strategy.cpp \
             deps/vector/contains_vector.cpp \
             deps/vector/graph_builder.cpp \
-            deps/vector/causalization_algorithm.cpp \
             deps/vector/splitfor.cpp \
             deps/graph/graph_definition.cpp \
             mmo/mmo_class.cpp
@@ -28,5 +23,5 @@ OBJS_DEPS = $(SRC_DEPS:.cpp=.o)
 
 objs_deps: $(OBJS_DEPS)
 	
-clean:
+clean_deps:
 	$(RM) -rf $(OBJS_DEPS) *.d 

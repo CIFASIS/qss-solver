@@ -25,8 +25,6 @@
 #include <util/debug.h>
 #include <deps/dependency.h>
 #include <deps/for_unrolling/process_for_equations.h>
-#include <deps/causalization_strategy.h>
-#include <deps/vector/causalization_algorithm.h>
 #include <deps/vector/graph_builder.h>
 #include <cstdlib>
 #include <stdio.h>
@@ -68,19 +66,8 @@ namespace Dependency {
       sf.splitFor();
       ReducedGraphBuilder gb(mmo);
       VectorCausalizationGraph g = gb.makeGraph();
-      CausalizationStrategyVector cs(g,mmo);
-      if(cs.Causalize()){ // Try vectorial causalization first
-        if(debugIsEnabled('c')){
-          cs.PrintCausalizationResult();
-        }
-        code << mmo << endl;
-        return code.str();
-      }
       return code.str();
     }
-    CausalizationStrategy cStrategy(mmo);
-    cStrategy.Causalize();
-    DEBUG('c', "Causalized Equations:\n");
     foreach_(const Equation &e, mmo.equations_ref().equations_ref()) {
       if (debugIsEnabled('c'))
         code << e << std::endl;

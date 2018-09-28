@@ -18,13 +18,13 @@
  ******************************************************************************/
 
 #include "model_dependencies.h"
-
+#include "util.h"
 
 namespace MicroModelica {
   namespace Util {
 
     ModelDependencies::ModelDependencies() :
-      _deps("test", true)
+      _deps(Utils::instance().fileName(), true)
     {
     }
      

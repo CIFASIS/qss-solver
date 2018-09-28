@@ -23,6 +23,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+namespace Util {
+
 static const char *enableFlags = NULL; // controls which DEBUG messages are printed
 
 void
@@ -97,4 +99,6 @@ ERROR_UNLESS(bool condition, const char *format, ...)
     ERROR(format, ap);
     va_end(ap);
   }
+}
+
 }

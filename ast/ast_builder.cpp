@@ -39,7 +39,7 @@
 
 class MCC_Parser;
 class MCC_Lexer;
-int depth;
+int block;
 
 MCC_Lexer *MCC_Parser::lexer = NULL;
 

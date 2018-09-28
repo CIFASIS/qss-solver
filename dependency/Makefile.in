@@ -34,7 +34,7 @@ OBJS_COMMON = $(SRC_COMMON:.cpp=.o)
 	$(POSTCOMPILE)
 
 $(LIBDEPS): create-dirs |  $(OBJS_COMMON) $(OBJS_MMO) $(OBJS_DEPS)
-	$(AR) rcs $(LIBDIR)/$(LIBDEPS) $(OBJS_COMMON) $(OBJS_MMO) $(OBJS_DEPS) 
+	$(AR) rcs $(LIBDIR)/$(LIBDEPS) $(OBJS_COMMON) $(OBJS_MMO) $(OBJS_DEPS)
 
 create-dirs:
 	@mkdir -p $(LIBDIR)
@@ -47,5 +47,5 @@ $(DEPDIR)/%.d: ;
 install:
 	@install $(LIBDIR)/$(LIBDEPS) @prefix@/$(LIBDEPS)
 
-clean:
+clean: $(clean_deps) $(clean_mmo)
 	$(RM) -rf $(OBJS_COMMON) $(OBJS_MMO) $(OBJS_DEPS) $(LIBDEPS) *.d 

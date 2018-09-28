@@ -223,6 +223,8 @@ namespace MicroModelica {
         dependencies() { return _dependecies; };
         inline void 
         setDependencies(ModelDependencies dependencies) { _dependecies = dependencies; };
+        inline std::string 
+        fileName() { return _fileName; };
       private:
         Utils();
         bool
@@ -241,6 +243,7 @@ namespace MicroModelica {
         SymbolTable                       _localSymbols;
         IR::EquationTable                 _algebraics;
         ModelDependencies                 _dependecies;
+        std::string                       _fileName;
     };
 
   }

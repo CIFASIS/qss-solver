@@ -36,7 +36,7 @@ TARGET      := $(BINDIR)/mmoc
 ifeq ($(OS), Windows_NT)
 LIB 		:= -L/usr/lib
 endif
-LIB 		+= -L$(LIBDIR) -ldeps -lginac -lcln -lgmp 
+LIB 		+= -L$(LIBDIR) -ldeps -lginac -lcln -lgmp   
 CXXFLAGS 	:= -Wno-write-strings -Wall -std=c++11
 ifeq ($(DEBUG),True)
 CXXFLAGS 	+= -DYY_MCC_Parser_DEBUG -g  
@@ -164,7 +164,7 @@ $(BUILDDIR)/util_%.o : $(UTILDIR)/%.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
 
-mmoc: | $(libginac) $(libdeps) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) 
+mmoc: | $(libdeps) $(libginac) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) 
 	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(LIB) 
 
 ifneq ($(OS), Windows_NT)

@@ -30,19 +30,19 @@
 /**
  *
  */
-#define MAKE_SPACE for (int __i=0;__i<depth;__i++) ret << " ";
+#define MAKE_SPACE for (int __i=0;__i<block;__i++) ret << " ";
 /**
  *
  */
-#define BEGIN_BLOCK depth+=2;
+#define BEGIN_BLOCK block+=2;
 /**
  *
  */
-#define END_BLOCK depth-=2;
+#define END_BLOCK block-=2;
 /**
  *
  */
-extern int depth;
+extern int block;
 /**
  *
  */

@@ -14,5 +14,5 @@ OBJS_MMO = $(SRC_MMO:.cpp=.o)
 
 objs_mmo: $(OBJS_MMO)
 
-clean:
+clean_mmo:
 	$(RM) -rf $(OBJS_MMO) *.d 
