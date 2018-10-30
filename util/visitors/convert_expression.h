@@ -716,4 +716,397 @@ class ReplaceReference: public AST_Expression_Fold<AST_Expression>
     foldTraverseElementUMinus(AST_Expression);
 };
 
+/**
+ *
+ */
+class ReplaceDer: public AST_Expression_Visitor<AST_Expression>
+{
+  public:
+    /**
+     *
+     * @param vt
+     */
+    ReplaceDer(MicroModelica::Util::VarSymbolTable vt);
+    /**
+     *
+     */
+    ~ReplaceDer();
+  private:
+    AST_Expression
+    foldTraverseElement(AST_Expression exp);
+    AST_Expression
+    foldTraverseElementUMinus(AST_Expression exp);
+    AST_Expression
+    foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+    MicroModelica::Util::VarSymbolTable _vt;
+};
+
+/**
+ * Evaluates an arithmetic expression.
+ */
+class EvalExp: public AST_Expression_Fold<AST_Expression>
+{
+  public:
+    /**
+     *
+     * @param symbolTable
+     */
+    EvalExp(MicroModelica::Util::VarSymbolTable symbolTable);
+    /**
+     * Evaluates an arithmetic expression.
+     */
+    /**
+     *
+     * @param exp
+     * @return
+     */
+    AST_Expression
+    eval(AST_Expression exp);
+    /**
+     * Evaluates an arithmetic expression replacing the occurrences of compRef with the value provided (compRefValue).
+     */
+    /**
+     *
+     * @param compRef
+     * @param compRefValue
+     * @param exp
+     * @return
+     */
+    AST_Expression
+    eval(AST_Expression_ComponentReference compRef, AST_Expression compRefValue, AST_Expression exp);
+  private:
+    AST_Expression
+    foldTraverseElement(AST_Expression);
+    AST_Expression
+    foldTraverseElementUMinus(AST_Expression);
+    AST_Expression
+    foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
+    AST_Expression
+    evalCompRef(AST_Expression_ComponentReference compRef);
+    AST_Expression
+    evalArray(AST_Expression_ComponentReference exp);
+    bool
+    shouldReturnInteger(AST_Expression left, AST_Expression right);
+    bool
+    shouldReturnReal(AST_Expression left, AST_Expression right);
+    AST_Real
+    getRealVal(AST_Expression exp);
+    AST_Expression_ComponentReference _compRef;
+    AST_Expression _compRefVal;
+    MicroModelica::Util::VarSymbolTable _symbolTable;
+};
+
+
+/**
+ *
+ */
+class EvalInitExp: public AST_Expression_Fold<int>
+{
+  public:
+    /**
+     *
+     * @param vt
+     */
+    EvalInitExp(MicroModelica::Util::VarSymbolTable vt);
+    /**
+     *
+     */
+    ~EvalInitExp();
+    private:
+    int
+    foldTraverseElement(AST_Expression exp);
+    int
+    foldTraverseElement(int l, int r, BinOpType bot);
+    int
+    foldTraverseElementUMinus(AST_Expression exp);
+    MicroModelica::Util::VarSymbolTable _vt;
+};
+
+/**
+ * @breif Helper class that looks for a variable 
+ *        definition in more than one symbol table.
+ */
+class VariableLookup: public AST_Expression_Fold<bool>
+{
+  public:
+    /**
+     *
+     * @param st
+     * @param lst
+     */
+    VariableLookup(MicroModelica::Util::VarSymbolTable st, MicroModelica::Util::VarSymbolTable lst);
+    /**
+     *
+     */
+    ~VariableLookup();
+  private:
+    bool
+    foldTraverseElement(AST_Expression);
+    bool
+    foldTraverseElement(bool, bool, BinOpType);
+    bool
+    foldTraverseElementUMinus(AST_Expression);
+    MicroModelica::Util::VarSymbolTable _st;
+    MicroModelica::Util::VarSymbolTable _lst;
+};
+
+/**
+ *
+ */
+class ReplaceInnerProduct: public AST_Expression_Visitor<AST_Expression>
+{
+  public:
+    /**
+     *
+     * @param vt
+     */
+    ReplaceInnerProduct(MicroModelica::Util::VarSymbolTable& vt);
+    /**
+     *
+     */
+    ~ReplaceInnerProduct() {};
+  private:
+    bool
+    controlArray(AST_Expression exp);
+    AST_Expression
+    foldTraverseElement(AST_Expression exp);
+    AST_Expression
+    foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+    AST_Expression
+    foldTraverseElementUMinus(AST_Expression exp);
+    MicroModelica::Util::VarSymbolTable _symbols;
+};
+
+class ConvertExpression 
+{
+  public:
+    ConvertExpression(AST_Expression left, AST_Expression right, MicroModelica::Util::VarSymbolTable& symbols);
+    /**
+     *
+     */
+    ~ConvertExpression() {};
+    inline std::string 
+    get() { return _convert; };
+  private:
+    AST_Expression_ComponentReference 
+    componentReference(AST_Expression exp);
+    MicroModelica::Util::Variable 
+    variable(AST_Expression_ComponentReference exp);
+    bool 
+    scalarExpression(AST_Expression exp);
+    double 
+    scalarValue(AST_Expression exp);
+    void 
+    convert();
+    AST_Expression                       _left;
+    AST_Expression                       _right;
+    MicroModelica::Util::VarSymbolTable  _symbols;
+    std::string                          _convert;
+};
+
+class ConvertEquation
+{
+  public:
+    ConvertEquation(AST_Equation equation, MicroModelica::Util::VarSymbolTable& symbols);
+    ~ConvertEquation() {};
+    inline AST_Equation 
+    get() { return _equation; };
+  private:
+    AST_Equation 
+    convert(AST_Equation eq);
+    AST_Equation                        _equation;
+    MicroModelica::Util::VarSymbolTable _symbols;
+
+};
+
+class ConvertStatement 
+{
+  public:
+    ConvertStatement(AST_Statement statement, MicroModelica::Util::VarSymbolTable& symbols);
+    ~ConvertStatement() {};
+    inline AST_Statement 
+    get() { return _statement; };
+  private:
+    AST_Statement 
+    convert(AST_Statement st);
+    AST_StatementList 
+    convert(AST_StatementList sts);  
+    AST_Statement_ElseList 
+    convert(AST_Statement_ElseList stel);
+    AST_Statement                       _statement;
+    MicroModelica::Util::VarSymbolTable _symbols;
+};
+
+/**
+ *
+ */
+class ConvertCondition: public AST_Expression_Visitor<AST_Expression>
+{
+  public:
+    /**
+     *
+     */
+    ConvertCondition();
+    /**
+     *
+     */
+    ~ConvertCondition() {};
+    /**
+     *
+     * @return
+     */
+    inline MicroModelica::IR::EVENT::Type 
+    zeroCrossing() { return _zc; };;
+    inline MicroModelica::IR::EVENT::Relation
+    zeroCrossingRelation() { return _zcRelation; };
+  private:
+    AST_Expression
+    foldTraverseElement(AST_Expression exp) { return exp; };
+    AST_Expression
+    foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+    AST_Expression
+    foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+    MicroModelica::IR::EVENT::Type _zc;
+    MicroModelica::IR::EVENT::Relation _zcRelation;
+};
+
+/**
+ *
+ */
+class Autonomous: public AST_Expression_Visitor<bool>
+{
+  public:
+    /**
+     *
+     */
+    Autonomous(MicroModelica::Util::VarSymbolTable symbols) : _symbols(symbols) {};
+    /**
+     *
+     */
+    ~Autonomous() {};
+  private:
+    bool 
+    foldTraverseElement(AST_Expression exp);
+    bool 
+    foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
+    bool
+    foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+    MicroModelica::Util::VarSymbolTable _symbols;
+};
+
+namespace MicroModelica {
+  namespace Util {
+    typedef ModelTable<std::string,std::string> SymbolTable;
+  }
+}
+
+/**
+ *
+ */
+class CalledFunctions: public AST_Expression_Visitor<MicroModelica::Util::SymbolTable>
+{
+  public:
+    CalledFunctions() {};
+    ~CalledFunctions() {};
+  private:
+    MicroModelica::Util::SymbolTable  
+    foldTraverseElement(AST_Expression exp);
+    MicroModelica::Util::SymbolTable 
+    foldTraverseElement(MicroModelica::Util::SymbolTable l, MicroModelica::Util::SymbolTable r, BinOpType bot);
+    MicroModelica::Util::SymbolTable
+    foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+    MicroModelica::Util::VarSymbolTable _symbols;
+};
+
+/**
+ *
+ */
+class StatementCalledFunctions: public AST_Statement_Visitor<MicroModelica::Util::SymbolTable, MicroModelica::Util::SymbolTable, CalledFunctions>
+{
+  public:
+    StatementCalledFunctions() : AST_Statement_Visitor(CalledFunctions()) {};
+    ~StatementCalledFunctions() {};
+  private:
+    inline MicroModelica::Util::SymbolTable  
+    foldTraverse(MicroModelica::Util::SymbolTable symbols) { return symbols; };
+    MicroModelica::Util::SymbolTable  
+    foldTraverse(MicroModelica::Util::SymbolTable s1, MicroModelica::Util::SymbolTable s2);
+};
+
+/**
+ *
+ */
+class DiscreteAssignment: public AST_Expression_Visitor<bool> 
+{
+  public:
+    DiscreteAssignment(MicroModelica::Util::VarSymbolTable symbols) : _symbols(symbols) {};
+    ~DiscreteAssignment() {};
+  private:
+    bool   
+    foldTraverseElement(AST_Expression exp);
+    bool 
+    foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
+    bool 
+    foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+    MicroModelica::Util::VarSymbolTable _symbols;
+};
+
+/**
+ *
+ */
+class ArrayUse: public AST_Expression_Visitor<bool> 
+{
+  public:
+    ArrayUse(MicroModelica::Util::VarSymbolTable symbols) : _symbols(symbols) {};
+    ~ArrayUse() {};
+  private:
+    bool   
+    foldTraverseElement(AST_Expression exp);
+    bool 
+    foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
+    bool 
+    foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+    MicroModelica::Util::VarSymbolTable _symbols;
+};
+
+/**
+ *
+ */
+class StatementArrayUse: public AST_Statement_Visitor<bool, bool, ArrayUse>
+{
+  public:
+    StatementArrayUse(MicroModelica::Util::VarSymbolTable symbols) : AST_Statement_Visitor(ArrayUse(symbols)) {};
+    ~StatementArrayUse() {};
+  private:
+    inline bool   
+    foldTraverse(bool ret) { return ret; };
+    inline bool   
+    foldTraverse(bool l, bool r) { return l && r; };
+};
+
+
+class ExpressionPrinter : public AST_Expression_Visitor<std::string>
+{
+  public:
+    ExpressionPrinter(const MicroModelica::Util::VarSymbolTable& symbols);
+    /**
+     *
+     */
+    ~ExpressionPrinter() {};
+    inline std::string 
+    code() const { return _code; };
+  private:
+    std::string 
+    foldTraverseElement(AST_Expression exp);
+    std::string 
+    foldTraverseElement(std::string l, std::string r, BinOpType bot);
+    std::string 
+    foldTraverseElementUMinus(AST_Expression exp);
+    MicroModelica::Util::VarSymbolTable _symbols;
+    MicroModelica::IR::Expression           _exp;
+    std::string                             _code;
+};
+
+
+
 #endif  /* AST_UTIL_H_ */

@@ -17,6 +17,8 @@
 
  ******************************************************************************/
 
+namespace MicroModelica {
+
 namespace Util {
 // This debugging routines allow the user to turn on selected
 // debugging messages, controllable from the command line arguments
@@ -53,4 +55,5 @@ ERROR(const char *format, ...);
  */
 void
 ERROR_UNLESS(bool condition, const char *format, ...);
+}
 }

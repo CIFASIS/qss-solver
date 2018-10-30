@@ -18,8 +18,10 @@ GENERATORDIR:= $(SRCDIR)/generator
 IRDIR 		  := $(SRCDIR)/ir
 PARSERDIR 	:= $(SRCDIR)/parser
 UTILDIR 	  := $(SRCDIR)/util
+VISITORDIR 	:= $(UTILDIR)/visitors
 3RDPARTYDIR := $(SRCDIR)/3rd-party
 DEPSDIR     := $(SRCDIR)/dependency
+DEPSBUILDERDIR := $(DEPSDIR)/builders
 USRDIR 		  := $(SRCDIR)/usr
 BUILDDIR    := $(USRDIR)/obj
 LIBDIR      := $(USRDIR)/lib
@@ -36,7 +38,7 @@ TARGET      := $(BINDIR)/mmoc
 ifeq ($(OS), Windows_NT)
 LIB 		:= -L/usr/lib
 endif
-LIB 		+= -L$(LIBDIR) -ldeps -lginac -lcln -lgmp   
+LIB 		+= -L$(LIBDIR) -lginac -lcln -lgmp   
 CXXFLAGS 	:= -Wno-write-strings -Wall -std=c++11
 ifeq ($(DEBUG),True)
 CXXFLAGS 	+= -DYY_MCC_Parser_DEBUG -g  
@@ -98,7 +100,23 @@ UTILSRC = $(UTILDIR)/util.cpp \
 					$(UTILDIR)/model_dependencies.cpp  \
 					$(UTILDIR)/dependency_matrix.cpp  \
 					$(UTILDIR)/graph.cpp \
-					$(UTILDIR)/graph_profile.cpp 
+					$(UTILDIR)/graph_profile.cpp \
+
+VISITORSRC = $(VISITORDIR)/array_use.cpp \
+						 $(VISITORDIR)/autonomous.cpp \
+						 $(VISITORDIR)/called_functions.cpp \
+						 $(VISITORDIR)/convert_condition.cpp \
+						 $(VISITORDIR)/discrete_assignment.cpp \
+						 $(VISITORDIR)/eval_exp.cpp \
+						 $(VISITORDIR)/eval_init_exp.cpp \
+						 $(VISITORDIR)/expression_printer.cpp \
+						 $(VISITORDIR)/occurs.cpp \
+						 $(VISITORDIR)/replace_der.cpp \
+						 $(VISITORDIR)/replace_inner_product.cpp \
+						 $(VISITORDIR)/variable_lookup.cpp \
+						 $(VISITORDIR)/occurs.cpp 
+
+DEPSBUILDERSRC = $(DEPSBUILDERDIR)/sd_graph_builder.cpp 
 
 # Objects
 ASTOBJ=$(addprefix $(BUILDDIR)/ast_, $(notdir $(ASTSRC:.cpp=.o)))
@@ -111,10 +129,12 @@ PARSEROBJ=$(addprefix $(BUILDDIR)/par_, $(notdir $(PARSERSRC:.cpp=.o)))
 
 UTILOBJ=$(addprefix $(BUILDDIR)/util_, $(notdir $(UTILSRC:.cpp=.o)))
 
-GRAPHOBJ=$(addprefix $(GRAPHDIR)/$(OBJDIR)/grp_, $(notdir $(GRAPHSRC:.c=.o)))
+VISITOROBJ=$(addprefix $(BUILDDIR)/util_, $(notdir $(VISITORSRC:.cpp=.o)))
+
+DEPSBUILDEROBJ=$(addprefix $(BUILDDIR)/deps_, $(notdir $(DEPSBUILDERSRC:.cpp=.o)))
 
 # Make dependencies
-DEPS = $(ASTOBJ:.o=.d) $(GENERATOROBJ:.o=.d) $(IROBJ:.o=.d) $(PARSEROBJ:.o=.d) $(UTILOBJ:.o=.d)
+DEPS = $(ASTOBJ:.o=.d) $(GENERATOROBJ:.o=.d) $(IROBJ:.o=.d) $(PARSEROBJ:.o=.d) $(UTILOBJ:.o=.d) $(VISITOROBJ:.o=.d) $(DEPSBUILDEROBJ:.o=.d)
 
 default: mmoc 
 
@@ -132,17 +152,6 @@ else
 	echo $(OS)
 	echo "Using system provided GiNaC library"
 endif
-
-# Model Dependencies Library.
-
-libdeps := $(LIBDIR)/libdeps.a
-
-$(libdeps):
-	@echo "Building ModelDeps library"
-	@cd $(DEPSDIR) && autoconf
-	@cd $(DEPSDIR) && ./configure --prefix=`pwd`/../usr/lib 
-	@cd $(DEPSDIR) && make  
-	@cd $(DEPSDIR) && make install 
 
 $(BUILDDIR)/ast_%.o : $(ASTDIR)/%.cpp $(ASTDIR)/%.h $(PARSERDIR)/mocc_parser.cpp $(PARSERDIR)/mocc_scanner.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
@@ -164,8 +173,16 @@ $(BUILDDIR)/util_%.o : $(UTILDIR)/%.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
 
-mmoc: | $(libdeps) $(libginac) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) 
-	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(LIB) 
+$(BUILDDIR)/util_%.o : $(VISITORDIR)/%.cpp 
+	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
+
+$(BUILDDIR)/deps_%.o : $(DEPSBUILDERDIR)/%.cpp 
+	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
+
+mmoc: | $(libginac) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSBUILDEROBJ)
+	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSBUILDEROBJ) $(LIB) 
 
 ifneq ($(OS), Windows_NT)
 $(PARSERDIR)/mocc_parser.cpp: parser/mocc.y
@@ -184,6 +201,10 @@ $(IROBJ): | $(BUILDDIR)
 $(PARSEROBJ): | $(BUILDDIR)
 
 $(UTILOBJ): | $(BUILDDIR)
+
+$(VISITOROBJ): | $(BUILDDIR)
+
+$(DEPSOBJ): | $(BUILDDIR)
 
 $(BUILDDIR):
 	@mkdir -p $(BINDIR)
@@ -204,7 +225,7 @@ clean:
 ifeq ($(OS), Windows_NT)
 	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ)
 else
-	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(libdeps) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h 
+	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(DEPSOBJ) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h 
 endif
 
 #	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h usr

@@ -26,7 +26,6 @@
 #include <vector>
 #include <boost/variant/variant.hpp>
 
-
 #include "annotation.h"
 #include "statement.h"
 #include "equation.h"

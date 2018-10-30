@@ -17,51 +17,43 @@
 
  ******************************************************************************/
 
-#include "expression.h"
-
-#include <sstream>
-#include "../ast/expression.h"
-#include "../util/visitors/expression_printer.h"
-#include "../util/util.h"
-#include "../util/error.h"
+#include "called_functions.h"
+#include "../error.h"
+#include "../symbol_table.h"
 
 namespace MicroModelica {
-  using namespace Util;
-  namespace IR {
+  namespace Util {
 
-    /* MMO_Expression class. */
-    Expression::Expression(AST_Expression exp, const VarSymbolTable& symbols) :
-      _exp(exp),
-      _symbols(symbols)
+    SymbolTable 
+    CalledFunctions::foldTraverseElement(AST_Expression exp)
     {
-    }
-    
-    Expression::Expression() :
-      _exp(NULL),
-      _symbols()
-    {
-    }
-
-    string 
-    Expression::print() const 
-    {
-      stringstream buffer, exp;
-      if(_exp != NULL)
+      SymbolTable symbols;
+      switch(exp->expressionType())
       {
-        ExpressionPrinter printer(_symbols);
-        exp << printer.apply(_exp);
-        buffer << printer.code();
-        buffer << exp.str();
-        return buffer.str();
+        case EXPCALL:
+        {
+          AST_Expression_Call call = exp->getAsCall();
+          symbols.insert(*call->name(), *call->name());
+          return symbols;
+        }
+        default:
+          return symbols;
       }
-      return "";
     }
 
-    std::ostream& operator<<(std::ostream& out, const Expression& s)
+    SymbolTable 
+    CalledFunctions::foldTraverseElement(SymbolTable l, SymbolTable r, BinOpType bot)
     {
-      out << s.print();
-      return out;
+      r.merge(l);
+      return r;
     }
-    
+
+    SymbolTable  
+    StatementCalledFunctions::foldTraverse(SymbolTable s1, SymbolTable s2)
+    {
+      s2.merge(s1);
+      return s2;
+    }
+
   }
 }

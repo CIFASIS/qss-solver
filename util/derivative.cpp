@@ -28,6 +28,7 @@
 #include "../ast/ast_builder.h"
 #include "../ast/equation.h"
 #include "../ir/expression.h"
+#include "../util/visitors/replace_der.h"
 #include "ginac_interface.h"
 
 namespace MicroModelica {

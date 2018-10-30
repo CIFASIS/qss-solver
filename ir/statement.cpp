@@ -20,7 +20,7 @@
 
 #include "../ast/statement.h"
 #include "../util/util.h"
-#include "../util/ast_util.h"
+#include "../util/visitors/called_functions.h"
 #include "statement.h"
 
 namespace MicroModelica {

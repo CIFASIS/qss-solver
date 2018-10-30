@@ -23,6 +23,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+namespace MicroModelica {
+
 namespace Util {
 
 static const char *enableFlags = NULL; // controls which DEBUG messages are printed
@@ -101,4 +103,5 @@ ERROR_UNLESS(bool condition, const char *format, ...)
   }
 }
 
+}
 }

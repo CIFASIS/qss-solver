@@ -24,7 +24,8 @@
 #include "helpers.h"
 #include "../ast/expression.h"
 #include "../ast/equation.h"
-#include "../util/ast_util.h"
+#include "../util/visitors/called_functions.h"
+#include "../util/visitors/autonomous.h"
 #include "../util/util.h"
 
 namespace MicroModelica {

@@ -23,7 +23,7 @@
 
 #include "helpers.h"
 #include "../ast/expression.h"
-#include "../util/ast_util.h"
+#include "../util/visitors/convert_condition.h"
 #include "../util/util.h"
 
 namespace MicroModelica {
