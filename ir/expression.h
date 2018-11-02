@@ -355,6 +355,46 @@ deleteMMO_PrintExp(MMO_PrintExp m);
 /**
  *
  */
+class MMO_PartitionInterval_: public AST_Expression_Visitor<list<int> >
+{
+  public:
+    /**
+     *
+     * @param vt
+     */
+    MMO_PartitionInterval_(VarSymbolTable vt);
+    /**
+     *
+     */
+    ~MMO_PartitionInterval_();
+  private:
+    list<int>
+    foldTraverseElement(AST_Expression exp);
+    list<int>
+    foldTraverseElement(list<int> l, list<int> r, BinOpType bot);
+    list<int>
+    foldTraverseElementUMinus(AST_Expression exp);
+    VarSymbolTable _vt;
+};
+/**
+ *
+ * @param vt
+ * @return
+ */
+MMO_ReplaceInterval
+newMMO_ReplaceInterval(VarSymbolTable vt);
+/**
+ *
+ * @param m
+ */
+void
+deleteMMO_ReplaceInterval(MMO_ReplaceInterval m);
+
+
+
+/**
+ *
+ */
 class MMO_ReplaceInterval_: public AST_Expression_Visitor<AST_Expression>
 {
   public:

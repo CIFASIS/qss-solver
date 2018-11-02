@@ -48,6 +48,7 @@ typedef class MMO_PrintExp_ *MMO_PrintExp;
  *
  */
 typedef class MMO_ReplaceInterval_ *MMO_ReplaceInterval;
+typedef class MMO_PartitionInterval_ *MMO_PartitionInterval;
 /**
  *
  */

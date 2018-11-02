@@ -1080,6 +1080,112 @@ deleteMMO_PrintExp(MMO_PrintExp m)
   delete m;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+
+MMO_PartitionInterval_::MMO_PartitionInterval_(VarSymbolTable vt) :
+    _vt(vt)
+{
+}
+
+MMO_PartitionInterval_::~MMO_PartitionInterval_()
+{
+}
+
+list<int>
+MMO_PartitionInterval_::foldTraverseElement(AST_Expression exp)
+{
+  list<int> part;
+  switch(exp->expressionType())
+  {
+    case EXPCOMPREF:
+      {
+      AST_Expression_ComponentReference cr = exp->getAsComponentReference();
+      VarInfo vi = _vt->lookup(cr->name());
+      if(vi == NULL)
+      {
+        Error::getInstance()->add(exp->lineNum(),
+        EM_IR | EM_VARIABLE_NOT_FOUND,
+            ER_Fatal, "Partition interval: %s", cr->name().c_str());
+      }
+      if(cr->hasIndexes())
+      {
+        AST_ExpressionList indexes = AST_ListFirst(cr->indexes());
+        AST_Expression eidx = AST_ListFirst(indexes);
+        ExpressionType et = eidx->expressionType();
+        if(et == EXPRANGE)
+        {
+          AST_ExpressionList rangeExps = eidx->getAsRange()->expressionList();
+          AST_ExpressionListIterator it;
+          MMO_EvalInitExp_ eie(_vt);
+          int count = 0;
+          int range[3];
+          foreach(it,rangeExps)
+          {
+            range[count++] = eie.foldTraverse(current_element(it));
+          }
+          if(count == 2)
+          {
+            range[2] = range[1];
+            range[1] = 1;
+          }
+          int p;
+          for(p = range[0]; p < range[2]; p += range[1])
+            part.push_back(vi->index().offset()+p);
+          return part;
+        }
+        else if(et == EXPCOLON)
+        {
+          int p;
+          for(p = 0; p < vi->size(); p++)
+            part.push_back(vi->index().offset()+p);
+          return part;
+        }
+      }
+      else if(vi->isArray())
+      {
+        int p;
+        for(p = 0; p < vi->size(); p++)
+          part.push_back(vi->index().offset()+p);
+        return part;
+      }
+      else 
+      {
+        part.push_back(vi->index().offset());
+        return part;
+      }
+    }
+    default:
+      return part;
+  }
+  return part;
+}
+
+list<int>
+MMO_PartitionInterval_::foldTraverseElementUMinus(AST_Expression exp)
+{
+  return list<int>();
+}
+
+list<int>
+MMO_PartitionInterval_::foldTraverseElement(list<int> l, list<int> r, BinOpType bot)
+{
+  return list<int>();
+}
+
+MMO_PartitionInterval
+newMMO_PartitionInterval(VarSymbolTable vt)
+{
+  return new MMO_PartitionInterval_(vt);
+}
+
+void
+deleteMMO_PartitionInterval(MMO_PartitionInterval m)
+{
+  delete m;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
 MMO_ReplaceInterval_::MMO_ReplaceInterval_(VarSymbolTable vt) :
     _vt(vt), _indexes(0), _replacedVars(), _replacedExpsVars(), _replacedExps(), _currentVar()
 {
