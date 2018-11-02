@@ -67,12 +67,9 @@ CodeEditor::CodeEditor(QWidget *parent) :
 {
   lineNumberArea = new LineNumberArea(this);
 
-  connect(this, SIGNAL(blockCountChanged(int)), this,
-      SLOT(updateLineNumberAreaWidth(int)));
-  connect(this, SIGNAL(updateRequest(QRect,int)), this,
-      SLOT(updateLineNumberArea(QRect,int)));
-  connect(this, SIGNAL(cursorPositionChanged()), this,
-      SLOT(highlightCurrentLine()));
+  connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
+  connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
+  connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 
   updateLineNumberAreaWidth(0);
   highlightCurrentLine();
@@ -124,8 +121,7 @@ CodeEditor::resizeEvent(QResizeEvent *e)
 {
   QPlainTextEdit::resizeEvent(e);
   QRect cr = contentsRect();
-  lineNumberArea->setGeometry(
-      QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+  lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
 }
 
 void

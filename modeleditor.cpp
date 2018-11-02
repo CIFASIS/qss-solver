@@ -58,6 +58,7 @@ ModelEditor::ModelEditor(QWidget *parent, QString name) :
     _debugGraph(),
     _reorderPartition(),
     _imbalance(),
+    _BDFPart(),
     _semiStaticPartitioning(false), 
     _hl(NULL)
 {
@@ -70,6 +71,7 @@ ModelEditor::ModelEditor(QWidget *parent, QString name) :
   _defaultValues["AbsTolerance"] = "1e-3";
   _defaultValues["MMO_SymDiff"] = "true";
   _defaultValues["MMO_Output"] = "";
+  _defaultValues["MMO_BDF_Part"] = "";
   _defaultValues["MMO_OutputType"] = "CI_Step";
   _defaultValues["MMO_Period"] = "1e-2";
   _defaultValues["MMO_DT_Synch"] = "SD_DT_Asynchronous";
@@ -180,16 +182,14 @@ bool
 ModelEditor::activeDirty()
 {
   int idx = _model_editor_tab->currentIndex();
-  if(idx < 0)
-    return false;
+  if(idx < 0) { return false; }
   return _models->value(idx).dirty();
 }
 
 QString
 ModelEditor::fileName(int idx)
 {
-  if(idx < 0)
-    return QString();
+  if(idx < 0) { return QString(); }
   return _models->value(idx).name();
 }
 
@@ -203,8 +203,7 @@ ModelEditor::activeBaseFileName()
 QString
 ModelEditor::baseFileName(int idx)
 {
-  if(idx < 0)
-    return QString();
+  if(idx < 0) { return QString(); }
   return _models->value(idx).baseName();
 }
 
@@ -213,12 +212,6 @@ ModelEditor::activeFullFileName()
 {
   int idx = _model_editor_tab->currentIndex();
   return fullFileName(idx);
-}
-
-int
-ModelEditor::activeFileIndex()
-{
-  return _model_editor_tab->currentIndex();
 }
 
 QString
@@ -232,10 +225,7 @@ ModelEditor::fullFileName(int idx)
 void
 ModelEditor::on__textEditor_textChanged(bool changed)
 {
-  if(changed == false)
-  {
-    return;
-  }
+  if(changed == false) { return; }
   int idx = _model_editor_tab->currentIndex();
   if(!_models->value(idx).name().endsWith(".log"))
   {
@@ -252,16 +242,14 @@ ModelEditor::on__textEditor_textChanged(bool changed)
 void
 ModelEditor::on__model_editor_tab_currentChanged(int index)
 {
-  if(index < 0)
-    return;
+  if(index < 0) { return; }
   setWindowTitle(_model_editor_tab->tabText(index));
 }
 
 void
 ModelEditor::on__model_editor_tab_tabCloseRequested(int index)
 {
-  if(index < 0)
-    return;
+  if(index < 0) { return; }
   ModelInfo mi = _models->value(index);
   if(!mi.init())
   {
@@ -272,7 +260,7 @@ ModelEditor::on__model_editor_tab_tabCloseRequested(int index)
           QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
       if(res == QMessageBox::Save)
       {
-        _save(index);
+        save(index);
       }
       else if(res == QMessageBox::Cancel)
       {
@@ -285,7 +273,7 @@ ModelEditor::on__model_editor_tab_tabCloseRequested(int index)
     mi.setInit(false);
     _models->replace(index, mi);
   }
-  _delete(index);
+  remove(index);
 }
 
 void
@@ -297,7 +285,7 @@ ModelEditor::closeFiles()
 }
 
 void
-ModelEditor::_delete(int tab)
+ModelEditor::remove(int tab)
 {
   QString name = baseFileName(tab);
   QString ext = fullFileName(tab);
@@ -316,9 +304,9 @@ ModelEditor::save()
     return;
   if(checkPackage())
   {
-    _deletePackageFiles(idx);
+    deletePackageFiles(idx);
   }
-  _save(idx);
+  save(idx);
   emit clean(idx);
 }
 
@@ -326,12 +314,11 @@ void
 ModelEditor::saveAs(QString name)
 {
   int idx = _model_editor_tab->currentIndex();
-  if(idx < 0)
-    return;
+  if(idx < 0) { return; }
   ModelInfo mi = _models->value(idx);
   if(mi.fullname().isEmpty())
   {
-    _save(idx);
+    save(idx);
   }
   else
   {
@@ -350,10 +337,11 @@ ModelEditor::saveAll()
 {
   int _tab = 0;
   foreach(ModelInfo mi, *_models)
-  {  if(mi.dirty())
-  {
-    _save(_tab);
-  }
+  {  
+    if(mi.dirty())
+    {
+      save(_tab);
+    }
   _tab++;
 }
 }
@@ -371,17 +359,11 @@ ModelEditor::newFileName()
 }
 
 void
-ModelEditor::_save(int tab)
+ModelEditor::save(int tab)
 {
   ModelInfo mi = _models->value(tab);
-  if(mi.fullname().isEmpty())
-  {
-    mi.setFullname(newFileName());
-  }
-  if(mi.fullname().isEmpty())
-  {
-    return;
-  }
+  if(mi.fullname().isEmpty()) { mi.setFullname(newFileName()); }
+  if(mi.fullname().isEmpty()) { return; }
   QFile file(mi.fullname());
   if(!file.open(QIODevice::ReadWrite | QIODevice::Truncate))
   {
@@ -390,8 +372,7 @@ ModelEditor::_save(int tab)
     file.close();
     return;
   }
-  CodeEditor *_textEditor = qobject_cast<CodeEditor*>(
-      _model_editor_tab->widget(tab));
+  CodeEditor *_textEditor = qobject_cast<CodeEditor*>( _model_editor_tab->widget(tab));
   if(!_textEditor)
   {
     QMessageBox::critical(this, QString(tr("Error")),
@@ -421,11 +402,11 @@ ModelEditor::_save(int tab)
 }
 
 QString
-ModelEditor::_getAnnotationValue(QString value, QString token)
+ModelEditor::getAnnotationValue(QString value, QString token)
 {
   QStringList values = value.split("=");
   QString tmpValue;
-  if(token == "MMO_Output")
+  if(token == "MMO_Output" || token == "MMO_BDF_Part")
   {
     int index = value.indexOf("=");
     for(int a = index + 1; a < value.size(); a++)
@@ -449,20 +430,8 @@ ModelEditor::_getAnnotationValue(QString value, QString token)
   return tmpValue.split(",")[0];
 }
 
-QString
-ModelEditor::parallel()
-{
-  return _getAnnotations("MMO_Parallel");
-}
-
-QString
-ModelEditor::partitionMethod()
-{
-  return _getAnnotations("MMO_PartitionMethod");
-}
-
 int
-ModelEditor::_tokenPosition(QString token)
+ModelEditor::tokenPosition(QString token)
 {
   int tab = _model_editor_tab->currentIndex();
   CodeEditor *_textEditor = qobject_cast<CodeEditor*>(
@@ -489,7 +458,7 @@ ModelEditor::fileNames()
 }
 
 bool
-ModelEditor::_lineEmpty()
+ModelEditor::lineEmpty()
 {
   int tab = _model_editor_tab->currentIndex();
   CodeEditor *_textEditor = qobject_cast<CodeEditor*>(
@@ -501,18 +470,12 @@ ModelEditor::_lineEmpty()
 }
 
 void
-ModelEditor::_addLine(QString str)
-{
-  _annotations << str;
-}
-
-void
-ModelEditor::_setAnnotations(QString tag, QString value, bool separator)
+ModelEditor::setAnnotations(QString tag, QString value, bool separator)
 {
   QString add = value;
   if(tag == "Tolerance" || tag == "AbsTolerance" || tag == "MMO_Output"
       || tag == "MMO_Period" || tag == "MMO_PatohSettings"
-      || tag == "MMO_ScotchSettings"
+      || tag == "MMO_ScotchSettings" || tag == "MMO_BDF_Part"
       || tag == "MMO_MetisSettings")
   {
     add.prepend("{");
@@ -520,28 +483,16 @@ ModelEditor::_setAnnotations(QString tag, QString value, bool separator)
   }
   if(separator)
   {
-    _addLine(QString("\t\t").append(tag).append("=").append(add).append(","));
+    addLine(QString("\t\t").append(tag).append("=").append(add).append(","));
   }
   else
   {
-    _addLine(QString("\t\t").append(tag).append("=").append(add));
+    addLine(QString("\t\t").append(tag).append("=").append(add));
   }
 }
 
-int
-ModelEditor::_beginModel()
-{
-  return _tokenPosition("model ");
-}
-
-int
-ModelEditor::_endModel()
-{
-  return _tokenPosition("end " + modelName());
-}
-
 bool
-ModelEditor::_checkToken(QString str)
+ModelEditor::checkToken(QString str)
 {
   int tab = _model_editor_tab->currentIndex();
   CodeEditor *_textEditor = qobject_cast<CodeEditor*>(
@@ -553,10 +504,10 @@ ModelEditor::_checkToken(QString str)
 }
 
 bool
-ModelEditor::_checkAnnotations()
+ModelEditor::checkAnnotations()
 {
   QString mName = modelName();
-  int endModel = _endModel();
+  int endModelPos = endModel();
   int tab = _model_editor_tab->currentIndex();
   CodeEditor *_textEditor = qobject_cast<CodeEditor*>(
       _model_editor_tab->widget(tab));
@@ -570,17 +521,14 @@ ModelEditor::_checkAnnotations()
   {
     tc = _textEditor->textCursor();
     int beginModel = tc.position();
-    int pos = _checkFunctions(beginModel, endModel);
+    int pos = checkFunctions(beginModel, endModelPos);
     tc.setPosition(pos);
     _textEditor->setTextCursor(tc);
     if(_textEditor->find(QString("experiment")))
     {
       QString annotEnd("));");
       tc = _textEditor->textCursor();
-      if(tc.position() > endModel)
-      {
-        return true;
-      }
+      if(tc.position() > endModelPos) { return true; }
       tc.select(QTextCursor::LineUnderCursor);
       line = tc.selection().toPlainText();
       if(!line.endsWith(annotEnd))
@@ -618,22 +566,10 @@ ModelEditor::_checkAnnotations()
   return true;
 }
 
-bool
-ModelEditor::checkModel()
-{
-  return _checkToken("model ");
-}
-
-bool
-ModelEditor::checkPackage()
-{
-  return _checkToken("package ");
-}
-
 QString
-ModelEditor::_getAnnotations(QString str)
+ModelEditor::getAnnotations(QString str)
 {
-  int endModel = _endModel();
+  int endModelPos = endModel();
   QString mName = modelName();
   int tab = _model_editor_tab->currentIndex();
   CodeEditor *_textEditor = qobject_cast<CodeEditor*>(
@@ -653,10 +589,7 @@ ModelEditor::_getAnnotations(QString str)
       if(_textEditor->find("annotation", QTextDocument::FindBackward))
       {
         tc = _textEditor->textCursor();
-        if(tc.position() > endModel)
-        {
-          return QString();
-        }
+        if(tc.position() > endModelPos) { return QString(); }
         int np = tc.position();
         tc.select(QTextCursor::BlockUnderCursor);
         line = tc.selection().toPlainText();
@@ -664,8 +597,8 @@ ModelEditor::_getAnnotations(QString str)
         {
           _textEditor->moveCursor(QTextCursor::Down);
           tc = _textEditor->textCursor();
-          int ep = _controlEmptyLines(tc.position());
-          if(ep > endModel)
+          int ep = controlEmptyLines(tc.position());
+          if(ep > endModelPos)
           {
             return QString();
           }
@@ -706,7 +639,7 @@ ModelEditor::_getAnnotations(QString str)
   QStringList annotationValue = annotations.split(str);
   if(annotationValue.size() > 1)
   {
-    return _getAnnotationValue(annotationValue[1], str);
+    return getAnnotationValue(annotationValue[1], str);
   }
   else if(_defaultValues.contains(str))
   {
@@ -716,7 +649,7 @@ ModelEditor::_getAnnotations(QString str)
 }
 
 QString
-ModelEditor::_findValue(QString token, QString str)
+ModelEditor::findValue(QString token, QString str)
 {
   if(_defaultValues.contains(token))
   {
@@ -729,7 +662,7 @@ ModelEditor::_findValue(QString token, QString str)
 }
 
 int
-ModelEditor::_checkFunctions(int modelInit, int modelEnd)
+ModelEditor::checkFunctions(int modelInit, int modelEnd)
 {
   int tab = _model_editor_tab->currentIndex();
   CodeEditor *_textEditor = qobject_cast<CodeEditor*>(
@@ -771,7 +704,7 @@ ModelEditor::_checkFunctions(int modelInit, int modelEnd)
 }
 
 int
-ModelEditor::_controlEmptyLines(int position)
+ModelEditor::controlEmptyLines(int position)
 {
   int tab = _model_editor_tab->currentIndex();
   CodeEditor *_textEditor = qobject_cast<CodeEditor*>(
@@ -794,15 +727,15 @@ ModelEditor::_controlEmptyLines(int position)
 }
 
 void
-ModelEditor::_deleteAnnotations()
+ModelEditor::deleteAnnotations()
 {
-  if(!_checkAnnotations())
+  if(!checkAnnotations())
   {
     QMessageBox::information(this, "Simulation Settings",
         "Simulation annotations must be located at the end of the file.");
     return;
   }
-  int endModel = _endModel();
+  int endModelPos = endModel();
   QString mName = modelName();
   int tab = _model_editor_tab->currentIndex();
   CodeEditor *_textEditor = qobject_cast<CodeEditor*>(
@@ -821,10 +754,7 @@ ModelEditor::_deleteAnnotations()
       if(_textEditor->find("annotation", QTextDocument::FindBackward))
       {
         tc = _textEditor->textCursor();
-        if(tc.position() > endModel)
-        {
-          return;
-        }
+        if(tc.position() > endModelPos) { return; }
         int np = tc.position();
         tc.select(QTextCursor::BlockUnderCursor);
         line = tc.selection().toPlainText();
@@ -832,11 +762,8 @@ ModelEditor::_deleteAnnotations()
         {
           _textEditor->moveCursor(QTextCursor::Down);
           tc = _textEditor->textCursor();
-          int ep = _controlEmptyLines(tc.position());
-          if(ep > endModel)
-          {
-            return;
-          }
+          int ep = controlEmptyLines(tc.position());
+          if(ep > endModelPos) { return; }
           tc.setPosition(ep);
           tc.select(QTextCursor::BlockUnderCursor);
           line = tc.selection().toPlainText();
@@ -878,55 +805,13 @@ ModelEditor::_deleteAnnotations()
 }
 
 void
-ModelEditor::_deletePackageFiles(int idx)
+ModelEditor::deletePackageFiles(int idx)
 {
   ModelInfo mi = _models->value(idx);
   QString bfn = mi.baseName();
   QString path = mi.path();
   QFile file(path + "/" + "pkg_" + bfn + ".moo");
   file.remove();
-}
-
-QString
-ModelEditor::startTime()
-{
-  return _getAnnotations("StartTime");
-}
-
-QString
-ModelEditor::stopTime()
-{
-  return _getAnnotations("StopTime");
-}
-
-QString
-ModelEditor::tolerance()
-{
-  return _getAnnotations("Tolerance");
-}
-
-QString
-ModelEditor::absTolerance()
-{
-  return _getAnnotations("AbsTolerance");
-}
-
-QString
-ModelEditor::DT()
-{
-  return _getAnnotations("MMO_DT_Min");
-}
-
-QString
-ModelEditor::solver()
-{
-  return _getAnnotations("MMO_Solver");
-}
-
-QString
-ModelEditor::minStep()
-{
-  return _getAnnotations("MMO_MinStep");
 }
 
 QString
@@ -949,125 +834,72 @@ ModelEditor::modelName()
   return "";
 }
 
-QString
-ModelEditor::zcHyst()
-{
-  return _getAnnotations("MMO_ZCHyst");
-}
-
-QString
-ModelEditor::derDelta()
-{
-  return _getAnnotations("MMO_DerDelta");
-}
-
-QString
-ModelEditor::symDiff()
-{
-  return _getAnnotations("MMO_SymDiff");
-}
-
-QString
-ModelEditor::description()
-{
-  return _getAnnotations("MMO_Description").remove('"');
-}
-
-QString
-ModelEditor::output()
-{
-  return _getAnnotations("MMO_Output");
-}
-
-QString
-ModelEditor::outputType()
-{
-  return _getAnnotations("MMO_OutputType");
-}
-
-QString
-ModelEditor::period()
-{
-  return _getAnnotations("MMO_Period");
-}
-
-QString
-ModelEditor::scheduler()
-{
-  return _getAnnotations("MMO_Scheduler");
-}
-
-QString
-ModelEditor::LPS()
-{
-  return _getAnnotations("MMO_LPS");
-}
-
 void
 ModelEditor::writeAnnotations()
 {
   QString mName = modelName();
-  _deleteAnnotations();
+  deleteAnnotations();
   int tab = _model_editor_tab->currentIndex();
-  CodeEditor *_textEditor = qobject_cast<CodeEditor*>(
-      _model_editor_tab->widget(tab));
+  CodeEditor *_textEditor = qobject_cast<CodeEditor*>(_model_editor_tab->widget(tab));
   QString end = "end ";
   end.append(mName).append(";");
-  _addLine(QString("\tannotation("));
-  _addLine(QString("\texperiment("));
-  _setAnnotations("MMO_Description", _description, true);
-  _setAnnotations("MMO_Solver", _solver, true);
+  addLine(QString("\tannotation("));
+  addLine(QString("\texperiment("));
+  setAnnotations("MMO_Description", _description, true);
+  setAnnotations("MMO_Solver", _solver, true);
   if(!_minstep.isEmpty())
-    _setAnnotations("MMO_MinStep", _minstep, true);
+    setAnnotations("MMO_MinStep", _minstep, true);
   if(!_zchyst.isEmpty())
-    _setAnnotations("MMO_ZCHyst", _zchyst, true);
+    setAnnotations("MMO_ZCHyst", _zchyst, true);
   if(!_derdelta.isEmpty())
-    _setAnnotations("MMO_DerDelta", _derdelta, true);
+    setAnnotations("MMO_DerDelta", _derdelta, true);
   if(!_symdiff.isEmpty())
-    _setAnnotations("MMO_SymDiff", _symdiff, true);
+    setAnnotations("MMO_SymDiff", _symdiff, true);
   if(!_period.isEmpty())
-    _setAnnotations("MMO_Period", _period, true);
+    setAnnotations("MMO_Period", _period, true);
   if(!_parallel.isEmpty())
-    _setAnnotations("MMO_Parallel", _parallel, true);
+    setAnnotations("MMO_Parallel", _parallel, true);
   if(!_partitionMethod.isEmpty())
-    _setAnnotations("MMO_PartitionMethod", _partitionMethod, true);
+    setAnnotations("MMO_PartitionMethod", _partitionMethod, true);
   if(!_lps.isEmpty())
-    _setAnnotations("MMO_LPS", _lps, true);
+    setAnnotations("MMO_LPS", _lps, true);
   if(!_dtSynch.isEmpty())
-    _setAnnotations("MMO_DT_Synch", _dtSynch, true);
+    setAnnotations("MMO_DT_Synch", _dtSynch, true);
   if(!_dtPeriod.isEmpty())
-    _setAnnotations("MMO_DT_SynchPeriod", _dtPeriod, true);
+    setAnnotations("MMO_DT_SynchPeriod", _dtPeriod, true);
   if(!_dtStepLog.isEmpty())
-    _setAnnotations("MMO_DT_StepLog", _dtStepLog, true);
+    setAnnotations("MMO_DT_StepLog", _dtStepLog, true);
   if(!_dt.isEmpty())
-    _setAnnotations("MMO_DT_Min", _dt, true);
+    setAnnotations("MMO_DT_Min", _dt, true);
   if(!_output.isEmpty())
-    _setAnnotations("MMO_Output", _output, true);
+    setAnnotations("MMO_Output", _output, true);
   if(!_outputType.isEmpty())
-    _setAnnotations("MMO_OutputType", _outputType, true);
+    setAnnotations("MMO_OutputType", _outputType, true);
   if(!_scheduler.isEmpty())
-    _setAnnotations("MMO_Scheduler", _scheduler, true);
+    setAnnotations("MMO_Scheduler", _scheduler, true);
   if(!_patohSettings.isEmpty())
-    _setAnnotations("MMO_PatohSettings", _patohSettings, true);
+    setAnnotations("MMO_PatohSettings", _patohSettings, true);
   if(!_scotchSettings.isEmpty())
-    _setAnnotations("MMO_ScotchSettings", _scotchSettings, true);
+    setAnnotations("MMO_ScotchSettings", _scotchSettings, true);
   if(!_metisSettings.isEmpty())
-    _setAnnotations("MMO_MetisSettings", _metisSettings, true);
+    setAnnotations("MMO_MetisSettings", _metisSettings, true);
   if(!_jacobian.isEmpty())
-    _setAnnotations("Jacobian", _jacobian, true);
+    setAnnotations("Jacobian", _jacobian, true);
   if(!_imbalance.isEmpty())
-    _setAnnotations("MMO_Imbalance", _imbalance, true);
+    setAnnotations("MMO_Imbalance", _imbalance, true);
   if(!_debugGraph.isEmpty())
-    _setAnnotations("MMO_DebugGraph", _debugGraph, true);
+    setAnnotations("MMO_DebugGraph", _debugGraph, true);
   if(!_reorderPartition.isEmpty())
-    _setAnnotations("MMO_ReorderPartition", _reorderPartition, true);
+    setAnnotations("MMO_ReorderPartition", _reorderPartition, true);
   if(!_generateArch.isEmpty())
-    _setAnnotations("MMO_GenerateArch", _generateArch, true);
-  _setAnnotations("StartTime", _startTime, true);
-  _setAnnotations("StopTime", _stopTime, true);
-  _setAnnotations("Tolerance", _tolerance, true);
-  _setAnnotations("AbsTolerance", _absTolerance, false);
-  _addLine(QString("\t));"));
+    setAnnotations("MMO_GenerateArch", _generateArch, true);
+  if(!_BDFPart.isEmpty())
+    setAnnotations("MMO_BDF_Part", _BDFPart, true);
+  setAnnotations("StartTime", _startTime, true);
+  setAnnotations("StopTime", _stopTime, true);
+  setAnnotations("Tolerance", _tolerance, true);
+  setAnnotations("AbsTolerance", _absTolerance, false);
+  addLine(QString("\t));"));
   QTextCursor tc = _textEditor->textCursor();
   tc.movePosition(QTextCursor::Start);
   _textEditor->setTextCursor(tc);
@@ -1132,58 +964,4 @@ ModelEditor::writeAnnotations()
     }
   }
   _annotations.clear();
-}
-
-QString
-ModelEditor::patohSettings()
-{
-  return _getAnnotations("MMO_PatohSettings");
-}
-
-QString
-ModelEditor::scotchSettings()
-{
-  return _getAnnotations("MMO_ScotchSettings");
-}
-
-QString
-ModelEditor::metisSettings()
-{
-  return _getAnnotations("MMO_MetisSettings");
-}
-
-void
-ModelEditor::setSemiStaticPartitioning(bool st)
-{
-  _semiStaticPartitioning = st;
-}
-
-bool
-ModelEditor::semiStaticPartitioning()
-{
-  return _semiStaticPartitioning;
-}
-
-QString
-ModelEditor::imbalance()
-{
-  return _getAnnotations("MMO_Imbalance");
-}
-
-QString
-ModelEditor::generateArch()
-{
-  return _getAnnotations("MMO_GenerateArch");
-}
-
-QString
-ModelEditor::debugGraph()
-{
-  return _getAnnotations("MMO_DebugGraph");
-}
-
-QString
-ModelEditor::reorderPartition()
-{
-  return _getAnnotations("MMO_ReorderPartition");
 }

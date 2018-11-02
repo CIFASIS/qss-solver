@@ -109,6 +109,11 @@
         </item>
         <item>
          <property name="text">
+          <string>LIQSS_BDF</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
           <string>QSS3</string>
          </property>
         </item>
@@ -623,6 +628,16 @@
          </property>
         </item>
        </widget>
+      </item>
+      <item row="12" column="2">
+       <widget class="QLabel" name="_BDFPartLbl">
+        <property name="text">
+         <string>BDF Partition</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="3">
+       <widget class="QLineEdit" name="_BDFPart"/>
       </item>
      </layout>
     </widget>

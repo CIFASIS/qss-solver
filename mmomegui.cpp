@@ -56,21 +56,20 @@ MmomeGui::MmomeGui() :
   _compiler_msg->setTextColor(Qt::black);
   _compiler_msg->setReadOnly(true);
   setWindowState(Qt::WindowMaximized);
-  _createActions();
-  _addToolBarItems();
-  _addMenuBarItems();
-  _enableActions(true);
+  createActions();
+  addToolBarItems();
+  addMenuBarItems();
+  enableActions(true);
   _settings_only = false;
 }
 
 MmomeGui::~MmomeGui()
 {
   Editor::drop();
-  return;
 }
 
 void
-MmomeGui::_enableActions(bool f)
+MmomeGui::enableActions(bool f)
 {
   action_New->setEnabled(f);
   action_Load->setEnabled(f);
@@ -90,7 +89,7 @@ MmomeGui::_enableActions(bool f)
   return;
 }
 void
-MmomeGui::_addToolBarItems()
+MmomeGui::addToolBarItems()
 {
   _model_toolbar->addAction(action_New);
   _model_toolbar->addAction(action_Load);
@@ -112,7 +111,7 @@ MmomeGui::_addToolBarItems()
 }
 
 void
-MmomeGui::_addMenuBarItems()
+MmomeGui::addMenuBarItems()
 {
   menu_View->addAction(_model_plot->toggleViewAction());
   menu_View->addAction(_model_messages->toggleViewAction());
@@ -125,7 +124,7 @@ MmomeGui::done(QString name, QString ext)
   if(sw)
   {
     if(!ext.endsWith(".log"))
-      _deleteVariables(name);
+      deleteVariables(name);
     if(Editor::instance()->count() == 0)
     {
       Editor::drop();
@@ -164,7 +163,7 @@ MmomeGui::on_actionSettings_triggered()
   _settingsDlg = new SettingsDlg(this);
   connect(_settingsDlg, SIGNAL(finished(int)), this,
       SLOT(_settingsDlgClosed()));
-  _enableActions(false);
+  enableActions(false);
   _settingsDlg->show();
 }
 
@@ -204,12 +203,11 @@ MmomeGui::on_actionImport_triggered()
 void
 MmomeGui::on_action_New_triggered()
 {
-  _editModel(
-      QString());
+  editModel(QString());
 }
 
 void
-MmomeGui::_editModel(QString name)
+MmomeGui::editModel(QString name)
 {
   QMdiSubWindow *sw = mdiArea->currentSubWindow();
   if(sw)
@@ -243,7 +241,7 @@ MmomeGui::on_action_Load_triggered()
   {
     return;
   }
-  _loadFile(fileName);
+  loadFile(fileName);
 }
 
 void
@@ -252,15 +250,14 @@ MmomeGui::on_actionDebug_triggered()
   if(Editor::instance()->activeBaseFileName().isEmpty())
     return;
   _compiler_msg->clear();
-  _enableActions(false);
-  _compile(true);
+  enableActions(false);
+  compile(true);
 }
 
 void
 MmomeGui::on_actionMicroModelica_Language_Scpefication_triggered()
 {
-  QString link =
-      "http://www.fceia.unr.edu.ar/control/modelica/micromodelicaspec.pdf";
+  QString link = "http://www.fceia.unr.edu.ar/control/modelica/micromodelicaspec.pdf";
   QDesktopServices::openUrl(QUrl(link));
 }
 
@@ -286,7 +283,7 @@ MmomeGui::on_actionSBML_Translator_Documentation_triggered()
 }
 
 void
-MmomeGui::_run_finished(int exitCode, QProcess::ExitStatus exitStatus)
+MmomeGui::run_finished(int exitCode, QProcess::ExitStatus exitStatus)
 {
   if(exitStatus == QProcess::NormalExit && exitCode == 0)
   {
@@ -301,9 +298,9 @@ MmomeGui::_run_finished(int exitCode, QProcess::ExitStatus exitStatus)
     QDir buildDir(_utils->appDir(MMOC_BUILD));
     buildDir.refresh();
     QString _name = Editor::instance()->activeBaseFileName();
-    _deleteVariables(_name);
-    _addVariables();
-    _selectVariables();
+    deleteVariables(_name);
+    addVariables();
+    selectVariables();
   }
   else
   {
@@ -321,19 +318,19 @@ MmomeGui::_run_finished(int exitCode, QProcess::ExitStatus exitStatus)
   _proc = NULL;
   _compiler_msg->moveCursor(QTextCursor::End);
   _compiler_msg->ensureCursorVisible();
-  _enableActions(true);
+  enableActions(true);
   _sim_progress->setVisible(false);
   _settings_only = false;
 }
 
 void
-MmomeGui::_settingsDlgClosed()
+MmomeGui::settingsDlgClosed()
 {
-  _enableActions(true);
+  enableActions(true);
 }
 
 void
-MmomeGui::_run(QString name)
+MmomeGui::run(QString name)
 {
   QDir outputDir(_utils->appDir(MMOC_OUTPUT));
   outputDir.mkdir(Editor::instance()->activeBaseFileName());
@@ -376,26 +373,23 @@ MmomeGui::_run(QString name)
   _compiler_msg->ensureCursorVisible();
   QString sim = _utils->appCommand(CMD_SIMULATE);
   QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-  env.insert("MMOC_BUILD", QDir(_utils->appDir(MMOC_BUILD)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_BIN", QDir(_utils->appDir(MMOC_BIN)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_ENGINE", QDir(_utils->appDir(MMOC_ENGINE)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_LIBS", QDir(_utils->appDir(MMOC_LIBS)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_MODELS", QDir(_utils->appDir(MMOC_MODELS)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_SRC", QDir(_utils->appDir(MMOC_SOURCE)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_PACKAGES",
-      QDir(_utils->appDir(MMOC_PACKAGES)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_LIBRARIES",
-      QDir(_utils->appDir(MMOC_LIBRARIES)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_INCLUDE", QDir(_utils->appDir(MMOC_INCLUDE)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_OUTPUT", QDir(_utils->appDir(MMOC_OUTPUT)).absolutePath()); // Add an environment variable
-  env.insert("LD_LIBRARY_PATH",
-      QDir(_utils->appDir(MMOC_LIBRARIES)).absolutePath() + "/../lib"); // Add an environment variable
+  env.insert("MMOC_BUILD", QDir(_utils->appDir(MMOC_BUILD)).absolutePath()); 
+  env.insert("MMOC_BIN", QDir(_utils->appDir(MMOC_BIN)).absolutePath()); 
+  env.insert("MMOC_ENGINE", QDir(_utils->appDir(MMOC_ENGINE)).absolutePath()); 
+  env.insert("MMOC_LIBS", QDir(_utils->appDir(MMOC_LIBS)).absolutePath()); 
+  env.insert("MMOC_MODELS", QDir(_utils->appDir(MMOC_MODELS)).absolutePath()); 
+  env.insert("MMOC_SRC", QDir(_utils->appDir(MMOC_SOURCE)).absolutePath()); 
+  env.insert("MMOC_PACKAGES", QDir(_utils->appDir(MMOC_PACKAGES)).absolutePath()); 
+  env.insert("MMOC_LIBRARIES", QDir(_utils->appDir(MMOC_LIBRARIES)).absolutePath()); 
+  env.insert("MMOC_INCLUDE", QDir(_utils->appDir(MMOC_INCLUDE)).absolutePath()); 
+  env.insert("MMOC_OUTPUT", QDir(_utils->appDir(MMOC_OUTPUT)).absolutePath()); 
+  env.insert("LD_LIBRARY_PATH", QDir(_utils->appDir(MMOC_LIBRARIES)).absolutePath() + "/../lib"); 
   _proc->setProcessEnvironment(env);
   _proc->start(_utils->appDir(MMOC_BIN) + SLASH + sim, args);
 }
 
 void
-MmomeGui::_simulation_message()
+MmomeGui::simulation_message()
 {
   QString out(_proc->readAllStandardError().constData());
   int _init = out.lastIndexOf('*');
@@ -441,15 +435,16 @@ MmomeGui::runDlgClose()
   Editor::instance()->setDebugGraph(_runDlg->debugGraph());
   Editor::instance()->setReorderPartition(_runDlg->reorderPartition());
   Editor::instance()->setImbalance(_runDlg->imbalance());
+  Editor::instance()->setBDFPart(_runDlg->BDFPart());
   Editor::instance()->setSemiStaticPartitioning( _runDlg->semiStaticPartitioning());
   Editor::instance()->setDescription(_runDlg->description());
   Editor::instance()->writeAnnotations();
   bool debugFlag = _runDlg->enableDebug();
-  _enableActions(false);
+  enableActions(false);
   if(Editor::instance()->activeDirty())
   {
     Editor::instance()->save();
-    _compile(debugFlag);
+    compile(debugFlag);
   }
   else
   {
@@ -460,10 +455,10 @@ MmomeGui::runDlgClose()
             + Editor::instance()->activeBaseFileName());
     if(!exefi.exists())
     {
-      _enableActions(false);
+      enableActions(false);
       _settings_only = false;
     }
-    _compile(debugFlag);
+    compile(debugFlag);
   }
   delete _runDlg;
 }
@@ -478,10 +473,7 @@ MmomeGui::on_actionRun_2_triggered()
 void
 MmomeGui::on_actionRun_triggered()
 {
-  if(Editor::instance()->activeBaseFileName().isEmpty())
-  {
-    return;
-  }
+  if(Editor::instance()->activeBaseFileName().isEmpty()) { return; }
   if(!Editor::instance()->checkModel())
   {
     QMessageBox::information(this, "Simulation", "No model definition found.");
@@ -515,6 +507,7 @@ MmomeGui::on_actionRun_triggered()
   _runDlg->setReorderPartition(Editor::instance()->reorderPartition());
   _runDlg->setDebugGraph(Editor::instance()->debugGraph());
   _runDlg->setImbalance(Editor::instance()->imbalance());
+  _runDlg->setBDFPart(Editor::instance()->BDFPart());
   _runDlg->setSemiStaticPartitioning( Editor::instance()->semiStaticPartitioning());
   _runDlg->setDtSynch(Editor::instance()->dtSynch());
   _runDlg->setDescription(Editor::instance()->description());
@@ -523,7 +516,7 @@ MmomeGui::on_actionRun_triggered()
 }
 
 bool
-MmomeGui::_plotScript()
+MmomeGui::plotScript()
 {
   QString name = Editor::instance()->activeBaseFileName();
   QFile file(
@@ -607,23 +600,14 @@ MmomeGui::cleanBuildDir(int idx)
   QFileInfo exefi(
       buildDir.absolutePath() + SLASH
           + Editor::instance()->activeBaseFileName());
-  if(makefi.exists())
-  {
-    buildDir.remove(makefi.absoluteFilePath());
-  }
-  if(cfi.exists())
-  {
-    buildDir.remove(cfi.absoluteFilePath());
-  }
-  if(exefi.exists())
-  {
-    buildDir.remove(exefi.absoluteFilePath());
-  }
-  _setCurrentFile(Editor::instance()->activeFullFileName());
+  if(makefi.exists()) { buildDir.remove(makefi.absoluteFilePath()); }
+  if(cfi.exists()) { buildDir.remove(cfi.absoluteFilePath()); }
+  if(exefi.exists()) { buildDir.remove(exefi.absoluteFilePath()); }
+  setCurrentFile(Editor::instance()->activeFullFileName());
 }
 
 bool
-MmomeGui::_compile(bool dbg)
+MmomeGui::compile(bool dbg)
 {
   _compiler_msg->clear();
   QFileInfo modelFile(Editor::instance()->activeFullFileName());
@@ -633,10 +617,7 @@ MmomeGui::_compile(bool dbg)
   QString fileName(
       buildDir.absolutePath() + SLASH + Editor::instance()->activeBaseFileName()
           + QString(".part"));
-  if(QFile::exists(fileName))
-  {
-    QFile::remove(fileName);
-  }
+  if(QFile::exists(fileName)) { QFile::remove(fileName); }
   QFile::copy(
       modelFile.absoluteDir().absolutePath() + SLASH
           + Editor::instance()->activeBaseFileName() + QString(".part"),
@@ -649,20 +630,14 @@ MmomeGui::_compile(bool dbg)
   QFileInfo cfi(
       buildDir.absolutePath() + SLASH + Editor::instance()->activeBaseFileName()
           + QString(".c"));
-  if(!_settings_only)
-  {
-    cleanBuildDir(Editor::instance()->activeFileIndex());
-  }
+  if(!_settings_only) { cleanBuildDir(Editor::instance()->activeFileIndex()); }
   QString flags = _utils->appFlag(FLG_FLAGS);
   _proc = new QProcess(this);
   connect(_proc, SIGNAL(finished(int,QProcess::ExitStatus)), this,
       SLOT(_comp_finished(int,QProcess::ExitStatus)));
   QStringList args;
   QString set;
-  if(_settings_only)
-  {
-    set += "-s ";
-  }
+  if(_settings_only) { set += "-s "; }
   if(!flags.isEmpty())
   {
     if(Editor::instance()->isParallel() && !flags.contains("-p"))
@@ -695,33 +670,31 @@ MmomeGui::_compile(bool dbg)
   _compiler_msg->moveCursor(QTextCursor::End);
   _compiler_msg->ensureCursorVisible();
   QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-  env.insert("MMOC_BUILD", QDir(_utils->appDir(MMOC_BUILD)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_BIN", QDir(_utils->appDir(MMOC_BIN)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_ENGINE", QDir(_utils->appDir(MMOC_ENGINE)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_LIBS", QDir(_utils->appDir(MMOC_LIBS)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_MODELS", QDir(_utils->appDir(MMOC_MODELS)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_SRC", QDir(_utils->appDir(MMOC_SOURCE)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_PACKAGES",
-      QDir(_utils->appDir(MMOC_PACKAGES)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_LIBRARIES",
-      QDir(_utils->appDir(MMOC_LIBRARIES)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_INCLUDE", QDir(_utils->appDir(MMOC_INCLUDE)).absolutePath()); // Add an environment variable
-  env.insert("MMOC_OUTPUT", QDir(_utils->appDir(MMOC_OUTPUT)).absolutePath()); // Add an environment variable
+  env.insert("MMOC_BUILD", QDir(_utils->appDir(MMOC_BUILD)).absolutePath()); 
+  env.insert("MMOC_BIN", QDir(_utils->appDir(MMOC_BIN)).absolutePath()); 
+  env.insert("MMOC_ENGINE", QDir(_utils->appDir(MMOC_ENGINE)).absolutePath()); 
+  env.insert("MMOC_LIBS", QDir(_utils->appDir(MMOC_LIBS)).absolutePath()); 
+  env.insert("MMOC_MODELS", QDir(_utils->appDir(MMOC_MODELS)).absolutePath()); 
+  env.insert("MMOC_SRC", QDir(_utils->appDir(MMOC_SOURCE)).absolutePath()); 
+  env.insert("MMOC_PACKAGES", QDir(_utils->appDir(MMOC_PACKAGES)).absolutePath()); 
+  env.insert("MMOC_LIBRARIES", QDir(_utils->appDir(MMOC_LIBRARIES)).absolutePath()); 
+  env.insert("MMOC_INCLUDE", QDir(_utils->appDir(MMOC_INCLUDE)).absolutePath()); 
+  env.insert("MMOC_OUTPUT", QDir(_utils->appDir(MMOC_OUTPUT)).absolutePath()); 
   _proc->setProcessEnvironment(env);
   _proc->start(_utils->appDir(MMOC_BIN) + SLASH + comp, args);
   return true;
 }
 
 void
-MmomeGui::_importFinished(int exitCode, QProcess::ExitStatus exitStatus)
+MmomeGui::importFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
   if(exitStatus == QProcess::NormalExit)
   {
     _compiler_msg->setPlainText(
         _compiler_msg->toPlainText() + QString("\n")
             + _proc->readAllStandardError());
-    _editModel(_sbmlFile);
-    _addVariables();
+    editModel(_sbmlFile);
+    addVariables();
   }
   else
   {
@@ -735,7 +708,7 @@ MmomeGui::_importFinished(int exitCode, QProcess::ExitStatus exitStatus)
 }
 
 void
-MmomeGui::_make_finished(int exitCode, QProcess::ExitStatus exitStatus)
+MmomeGui::make_finished(int exitCode, QProcess::ExitStatus exitStatus)
 {
   if(exitStatus == QProcess::NormalExit)
   {
@@ -754,7 +727,7 @@ MmomeGui::_make_finished(int exitCode, QProcess::ExitStatus exitStatus)
       _compiler_msg->setPlainText(
           _compiler_msg->toPlainText()
               + QString("\nCan't generate binary file.") + QString(exitCode));
-      _enableActions(true);
+      enableActions(true);
       _settings_only = false;
       return;
     }
@@ -770,7 +743,7 @@ MmomeGui::_make_finished(int exitCode, QProcess::ExitStatus exitStatus)
     _compiler_msg->setPlainText(
         _compiler_msg->toPlainText()
             + QString("\nError generating binary file.).") + QString(exitCode));
-    _enableActions(true);
+    enableActions(true);
     _settings_only = false;
     return;
   }
@@ -778,11 +751,11 @@ MmomeGui::_make_finished(int exitCode, QProcess::ExitStatus exitStatus)
   _proc = NULL;
   _compiler_msg->moveCursor(QTextCursor::End);
   _compiler_msg->ensureCursorVisible();
-  _run(Editor::instance()->activeBaseFileName());
+  run(Editor::instance()->activeBaseFileName());
 }
 
 void
-MmomeGui::_comp_finished(int exitCode, QProcess::ExitStatus exitStatus)
+MmomeGui::comp_finished(int exitCode, QProcess::ExitStatus exitStatus)
 {
   if(exitStatus == QProcess::NormalExit)
   {
@@ -803,7 +776,7 @@ MmomeGui::_comp_finished(int exitCode, QProcess::ExitStatus exitStatus)
     {
       _compiler_msg->setPlainText(
           _compiler_msg->toPlainText() + QString("\nCan't generate C file."));
-      _enableActions(true);
+      enableActions(true);
       _settings_only = false;
       return;
     }
@@ -830,7 +803,7 @@ MmomeGui::_comp_finished(int exitCode, QProcess::ExitStatus exitStatus)
     {
       _compiler_msg->setPlainText(
           _compiler_msg->toPlainText() + QString("\nCan't generate makefile."));
-      _enableActions(true);
+      enableActions(true);
       _settings_only = false;
       return;
     }
@@ -848,8 +821,8 @@ MmomeGui::_comp_finished(int exitCode, QProcess::ExitStatus exitStatus)
     connect(_proc, SIGNAL(finished(int,QProcess::ExitStatus)), this,
         SLOT(_make_finished(int,QProcess::ExitStatus)));
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    env.insert("MMOC_BUILD", QDir(_utils->appDir(MMOC_BUILD)).absolutePath()); // Add an environment variable
-    env.insert("MMOC_BIN", QDir(_utils->appDir(MMOC_BIN)).absolutePath()); // Add an environment variable
+    env.insert("MMOC_BUILD", QDir(_utils->appDir(MMOC_BUILD)).absolutePath()); 
+    env.insert("MMOC_BIN", QDir(_utils->appDir(MMOC_BIN)).absolutePath()); 
     _proc->setProcessEnvironment(env);
     _proc->start(_utils->appDir(MMOC_BIN) + SLASH + build, args);
   }
@@ -860,7 +833,7 @@ MmomeGui::_comp_finished(int exitCode, QProcess::ExitStatus exitStatus)
     _compiler_msg->setPlainText(
         _compiler_msg->toPlainText() + QString("\nError during compilation.")
             + QString(exitCode));
-    _enableActions(true);
+    enableActions(true);
     _settings_only = false;
   }
   _compiler_msg->moveCursor(QTextCursor::End);
@@ -902,7 +875,7 @@ MmomeGui::on_actionCompile_triggered()
   }
 #endif
   _proc->kill();
-  _enableActions(true);
+  enableActions(true);
 }
 
 void
@@ -932,11 +905,11 @@ MmomeGui::on_actionClear_Log_triggered()
   QDir outputDir(_utils->appDir(MMOC_OUTPUT));
   outputDir.mkdir(Editor::instance()->activeBaseFileName());
   outputDir.cd(Editor::instance()->activeBaseFileName());
-  QStringList dirs = outputDir.entryList(
-      QStringList() << "*.log" << "*.dat" << "*.plt");
+  QStringList dirs = outputDir.entryList(QStringList() << "*.log" << "*.dat" << "*.plt");
   foreach(QString f, dirs)
-  {  outputDir.remove(f);
-}
+  {  
+    outputDir.remove(f);
+  }
 }
 
 void
@@ -946,7 +919,7 @@ MmomeGui::on_actionClear_Messages_triggered()
 }
 
 void
-MmomeGui::_deleteVariables(QString name)
+MmomeGui::deleteVariables(QString name)
 {
   int idx = -1;
   for(int k = 0; k < _model->rowCount(); k++)
@@ -970,7 +943,7 @@ MmomeGui::_deleteVariables(QString name)
 }
 
 void
-MmomeGui::_createActions()
+MmomeGui::createActions()
 {
 
   for(int i = 0; i < MaxRecentFiles; ++i)
@@ -990,21 +963,21 @@ MmomeGui::_createActions()
   separatorAct->setVisible(false);
   menu_File->addSeparator();
   menu_File->addAction(exitAct);
-  _updateRecentFileActions();
+  updateRecentFileActions();
 }
 
 void
-MmomeGui::_openRecentFiles()
+MmomeGui::openRecentFiles()
 {
   QAction *action = qobject_cast<QAction *>(sender());
   if(action)
   {
-    _loadFile(action->data().toString());
+    loadFile(action->data().toString());
   }
 }
 
 void
-MmomeGui::_updateRecentFileActions()
+MmomeGui::updateRecentFileActions()
 {
   QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini",
       QSettings::IniFormat);
@@ -1015,7 +988,7 @@ MmomeGui::_updateRecentFileActions()
 
   for(int i = 0; i < numRecentFiles; ++i)
   {
-    QString text = tr("&%1 %2").arg(i + 1).arg(_strippedName(files[i]));
+    QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
     recentFileActs[i]->setText(text);
     recentFileActs[i]->setData(files[i]);
     recentFileActs[i]->setVisible(true);
@@ -1027,15 +1000,15 @@ MmomeGui::_updateRecentFileActions()
 }
 
 void
-MmomeGui::_loadFile(QString fileName)
+MmomeGui::loadFile(QString fileName)
 {
-  _editModel(fileName);
-  _addVariables();
-  _setCurrentFile(fileName);
+  editModel(fileName);
+  addVariables();
+  setCurrentFile(fileName);
 }
 
 void
-MmomeGui::_setCurrentFile(const QString fileName)
+MmomeGui::setCurrentFile(const QString fileName)
 {
   _curFile = fileName;
   setWindowFilePath(_curFile);
@@ -1048,11 +1021,11 @@ MmomeGui::_setCurrentFile(const QString fileName)
     files.removeLast();
 
   settings.setValue("Editor/recentFileList", files);
-  _updateRecentFileActions();
+  updateRecentFileActions();
 }
 
 void
-MmomeGui::_selectVariables()
+MmomeGui::selectVariables()
 {
   QString name = Editor::instance()->activeBaseFileName();
   bool found = false;
@@ -1081,7 +1054,7 @@ MmomeGui::_selectVariables()
   }
   if(!found)
   {
-    _addVariables();
+    addVariables();
     int k = _model->rowCount() - 1;
     if(k < 0)
       return;
@@ -1099,7 +1072,7 @@ MmomeGui::_selectVariables()
 }
 
 void
-MmomeGui::_addVariables()
+MmomeGui::addVariables()
 {
   QString name = Editor::instance()->activeBaseFileName();
   for(int k = 0; k < _model->rowCount(); k++)
@@ -1131,8 +1104,7 @@ MmomeGui::on_actionGraphics_triggered()
   QString name = Editor::instance()->activeBaseFileName();
   if(name.isEmpty())
     return;
-  if(!_plotScript())
-    return;
+  if(!plotScript()) { return; }
   _compiler_msg->clear();
   QString plotCmd = _utils->appCommand(CMD_PLOT);
   QString plotOptions = _utils->appFlag(FLG_PLOT);
@@ -1159,7 +1131,7 @@ MmomeGui::on_actionGraphics_triggered()
 }
 
 void
-MmomeGui::_plot_finished(int exitCode, QProcess::ExitStatus exitStatus)
+MmomeGui::plot_finished(int exitCode, QProcess::ExitStatus exitStatus)
 {
   QString msgs = _plot->readAllStandardError();
   if(exitStatus == QProcess::NormalExit && !msgs.isEmpty())
@@ -1183,8 +1155,7 @@ void
 MmomeGui::on_actionAbout_triggered()
 {
   QString sh;
-  sh.append(
-      "Modeling and simulation environment for continuous and hybrid systems.\n");
+  sh.append("Modeling and simulation environment for continuous and hybrid systems.\n");
   sh.append("Developed by:\n");
   sh.append("Joaquin Fernandez (fernandez@cifasis-conicet.gov.ar)\n");
   sh.append("Federico Bergero (bergero@cifasis-conicet.gov.ar)\n");
@@ -1199,13 +1170,13 @@ MmomeGui::on_actionAbout_triggered()
 }
 
 QString
-MmomeGui::_strippedName(const QString &fullFileName)
+MmomeGui::strippedName(const QString &fullFileName)
 {
   return QFileInfo(fullFileName).fileName();
 }
 
 void
-MmomeGui::_log_finished(int exitCode, QProcess::ExitStatus exitStatus)
+MmomeGui::log_finished(int exitCode, QProcess::ExitStatus exitStatus)
 {
   QDir outputDir(_utils->appDir(MMOC_OUTPUT));
   outputDir.cd(Editor::instance()->activeBaseFileName());
@@ -1215,7 +1186,7 @@ MmomeGui::_log_finished(int exitCode, QProcess::ExitStatus exitStatus)
           + QString(".log"));
   if(logfi.size())
   {
-    _editModel(logfi.absoluteFilePath());
+    editModel(logfi.absoluteFilePath());
   }
   else if(exitStatus == QProcess::NormalExit)
   {

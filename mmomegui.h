@@ -36,7 +36,7 @@ class Utils;
 class MmomeGui: public QMainWindow, public Ui::MmomeGuiForm
 {
   Q_OBJECT
-    public:
+  public:
     /**
      *
      */
@@ -45,7 +45,7 @@ class MmomeGui: public QMainWindow, public Ui::MmomeGuiForm
      *
      */
     ~MmomeGui();
-    private slots:
+  private slots:
     void
     cleanBuildDir(int);
     void
@@ -93,59 +93,59 @@ class MmomeGui: public QMainWindow, public Ui::MmomeGuiForm
     void
     runDlgRejected();
     void
-    _comp_finished(int exitCode, QProcess::ExitStatus exitStatus);
+    comp_finished(int exitCode, QProcess::ExitStatus exitStatus);
     void
-    _importFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    importFinished(int exitCode, QProcess::ExitStatus exitStatus);
     void
-    _make_finished(int exitCode, QProcess::ExitStatus exitStatus);
+    make_finished(int exitCode, QProcess::ExitStatus exitStatus);
     void
-    _plot_finished(int exitCode, QProcess::ExitStatus exitStatus);
+    plot_finished(int exitCode, QProcess::ExitStatus exitStatus);
     void
-    _run_finished(int exitCode, QProcess::ExitStatus exitStatus);
+    run_finished(int exitCode, QProcess::ExitStatus exitStatus);
     void
-    _settingsDlgClosed();
+    settingsDlgClosed();
     void
-    _simulation_message();
+    simulation_message();
     void
-    _openRecentFiles();
+    openRecentFiles();
     void
-    _log_finished(int exitCode, QProcess::ExitStatus exitStatus);
-    protected:
+    log_finished(int exitCode, QProcess::ExitStatus exitStatus);
+  protected:
     void
     closeEvent(QCloseEvent * event);
-    private:
+  private:
     QString
-    _strippedName(const QString &fullFileName);
+    strippedName(const QString &fullFileName);
     void
-    _setCurrentFile(const QString fileName);
+    setCurrentFile(const QString fileName);
     void
-    _loadFile(QString fileName);
+    loadFile(QString fileName);
     void
-    _updateRecentFileActions();
+    updateRecentFileActions();
     void
-    _createActions();
+    createActions();
     void
-    _addMenuBarItems();
+    addMenuBarItems();
     void
-    _addToolBarItems();
+    addToolBarItems();
     void
-    _addVariables();
+    addVariables();
     bool
-    _compile(bool dbg);
+    compile(bool dbg);
     void
-    _deleteVariables(QString name);
+    deleteVariables(QString name);
     void
-    _editModel(QString name);
+    editModel(QString name);
     void
-    _enableActions(bool f);
+    enableActions(bool f);
     void
-    _loadGraphics();
+    loadGraphics();
     bool
-    _plotScript();
+    plotScript();
     void
-    _run(QString name);
+    run(QString name);
     void
-    _selectVariables();
+    selectVariables();
     ComboBoxDelegate *_cboxd;
     QString _iniFile;
     TreeModel *_model;

@@ -49,8 +49,8 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
      *
      * @return
      */
-    QString
-    absTolerance();
+    inline QString
+    absTolerance() { return getAnnotations("AbsTolerance"); };
     /**
      *
      * @return
@@ -73,8 +73,8 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
      *
      * @return
      */
-    int
-    activeFileIndex();
+    inline int
+    activeFileIndex() { return _model_editor_tab->currentIndex(); };
     /**
      *
      * @return
@@ -92,14 +92,14 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
      *
      * @return
      */
-    bool
-    checkModel();
+    inline bool
+    checkModel() { return checkToken("model "); };
     /**
      *
      * @return
      */
-    bool
-    checkPackage();
+    inline bool
+    checkPackage() { return checkToken("package "); };
     /**
      *
      */
@@ -109,24 +109,20 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
      *
      * @return
      */
-    int
-    count()
-    {
-      return _model_editor_tab->count();
-    }
-    ;
+    inline int
+    count() { return _model_editor_tab->count(); };
     /**
      *
      * @return
      */
-    QString
-    derDelta();
+    inline QString
+    derDelta() { return getAnnotations("MMO_DerDelta"); };
     /**
      *
      * @return
      */
-    QString
-    description();
+    inline QString
+    description() { return getAnnotations("MMO_Description").remove('"'); };
     /**
      *
      * @param name
@@ -157,8 +153,8 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
      *
      * @return
      */
-    QString
-    minStep();
+    inline QString
+    minStep(){ return getAnnotations("MMO_MinStep"); };
     /**
      *
      * @return
@@ -175,223 +171,164 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
      *
      * @return
      */
-    QString
-    output();
+    inline QString
+    output() { return getAnnotations("MMO_Output"); };
     /**
      *
      * @return
      */
-    QString
-    outputType();
+    inline QString
+    outputType() { return getAnnotations("MMO_OutputType"); };
     /**
      *
      * @return
      */
-    QString
-    period();
+    inline QString
+    period() { return getAnnotations("MMO_Period"); };
     /**
      *
      * @return
      */
-    QString
-    scheduler();
+    inline QString
+    scheduler() { return getAnnotations("MMO_Scheduler"); };
     /**
      *
      * @return
      */
-    QString
-    solver();
+    inline QString
+    solver() { return getAnnotations("MMO_Solver"); };
     /**
      *
      * @return
      */
-    QString
-    startTime();
+    inline QString
+    startTime() { return getAnnotations("StartTime"); };
     /**
      *
      * @return
      */
-    QString
-    stopTime();
+    inline QString
+    stopTime() { return getAnnotations("StopTime"); };
     /**
      *
      * @return
      */
-    QString
-    symDiff();
+    inline QString
+    symDiff() { return getAnnotations("MMO_SymDiff"); };
     /**
      *
      * @return
      */
-    QString
-    parallel();
+    inline QString
+    parallel() { return getAnnotations("MMO_Parallel"); };
     /**
      *
      * @return
      */
-    QString
-    partitionMethod();
+    inline QString
+    partitionMethod(){ return getAnnotations("MMO_PartitionMethod"); };
     /**
      *
      * @return
      */
-    QString
-    DT();
+    inline QString
+    DT() { return getAnnotations("MMO_DT_Min"); };
     /**
      *
      * @return
      */
-    QString
-    tolerance();
+    inline QString
+    tolerance() { return getAnnotations("Tolerance"); };
     /**
      *
      * @param str
      */
-    void
-    setAbsTolerance(QString str)
-    {
-      _absTolerance = str;
-    }
-    ;
+    inline void
+    setAbsTolerance(QString str) { _absTolerance = str; };
     /**
      *
      * @param str
      */
-    void
-    setDerDelta(QString str)
-    {
-      _derdelta = _findValue("MMO_DerDelta", str);
-    }
-    ;
+    inline void
+    setDerDelta(QString str) { _derdelta = findValue("MMO_DerDelta", str); };
     /**
      *
      * @param str
      */
-    void
-    setDescription(QString str)
-    {
-      _description.clear();
-      _description.append("\"").append(str).append("\"");
-    }
-    ;
+    inline void
+    setDescription(QString str) { _description.clear(); _description.append("\"").append(str).append("\""); };
     /**
      *
      * @param str
      */
-    void
-    setMinStep(QString str)
-    {
-      _minstep = _findValue("MMO_MinStep", str);
-    }
-    ;
+    inline void
+    setMinStep(QString str) { _minstep = findValue("MMO_MinStep", str); };
     /**
      *
      * @param str
      */
-    void
-    setOutput(QString str)
-    {
-      _output = str;
-    }
-    ;
+    inline void
+    setOutput(QString str) { _output = str; };
     /**
      *
      * @param str
      */
-    void
-    setOutputType(QString str)
-    {
-      _outputType = _findValue("MMO_OutputType", str);
-    }
-    ;
+    inline void
+    setOutputType(QString str) { _outputType = findValue("MMO_OutputType", str); };
     /**
      *
      * @param str
      */
-    void
-    setPeriod(QString str)
-    {
-      _period = _findValue("MMO_Period", str);
-    }
-    ;
+    inline void
+    setPeriod(QString str) { _period = findValue("MMO_Period", str); };
     /**
      *
      * @param str
      */
-    void
-    setScheduler(QString str)
-    {
-      _scheduler = _findValue("MMO_Scheduler", str);
-    }
-    ;
+    inline void
+    setScheduler(QString str) { _scheduler = findValue("MMO_Scheduler", str); };
     /**
      *
      * @param str
      */
-    void
-    setSolver(QString str)
-    {
-      _solver = str;
-    }
-    ;
+    inline void
+    setSolver(QString str) { _solver = str; };
     /**
      *
      * @param str
      */
-    void
-    setStartTime(QString str)
-    {
-      _startTime = str;
-    }
-    ;
+    inline void
+    setStartTime(QString str) { _startTime = str; };
     /**
      *
      * @param str
      */
-    void
-    setStopTime(QString str)
-    {
-      _stopTime = str;
-    }
-    ;
+    inline void
+    setStopTime(QString str) { _stopTime = str; };
     /**
      *
      * @param str
      */
-    void
-    setSymDiff(QString str)
-    {
-      _symdiff = _findValue("MMO_SymDiff", str);
-    }
-    ;
+    inline void
+    setSymDiff(QString str) { _symdiff = findValue("MMO_SymDiff", str); };
     /**
      *
      * @param str
      */
-    void
-    setTolerance(QString str)
-    {
-      _tolerance = str;
-    }
-    ;
+    inline void
+    setTolerance(QString str) { _tolerance = str; };
     /**
      *
      * @param str
      */
-    void
-    setZcHyst(QString str)
-    {
-      _zchyst = _findValue("MMO_ZCHyst", str);
-    };
+    inline void
+    setZcHyst(QString str) { _zchyst = findValue("MMO_ZCHyst", str); };
     /**
      *
      * @param str
      */
-    void
-    setLPS(QString str)
-    {
-      _lps = _findValue("MMO_LPS", str);
-    };
+    inline void
+    setLPS(QString str) { _lps = findValue("MMO_LPS", str); };
     /**
      *
      */
@@ -401,206 +338,149 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
      *
      * @return
      */
-    QString
-    zcHyst();
+    inline QString
+    zcHyst() { return getAnnotations("MMO_ZCHyst"); };
     /**
      *
      * @return
      */
-    QString
-    LPS();
+    inline QString
+    LPS() { return getAnnotations("MMO_LPS"); };
     /**
      *
      * @param str
      */
-    void
-    setParallel(QString str)
-    {
-      _parallel = _findValue("MMO_Parallel", str);
-    }
-    ;
+    inline void
+    setParallel(QString str) { _parallel = findValue("MMO_Parallel", str); };
     /**
      *
      * @return
      */
-    bool
-    isParallel()
-    {
-      return _parallel.compare("true") == 0;
-    };
+    inline bool
+    isParallel() { return _parallel.compare("true") == 0; };
     /**
      *
      * @param str
      */
-    void
-    setPartitionMethod(QString str)
-    {
-      _partitionMethod = _findValue("MMO_PartitionMethod", str);
-    };
+    inline void
+    setPartitionMethod(QString str) { _partitionMethod = findValue("MMO_PartitionMethod", str); };
     /**
      *
      * @param str
      */
-    void
-    setJacobian(QString str)
-    {
-      _jacobian = _findValue("Jacobian", str);
-    };
-    QString
-    jacobian()
-    {
-      return _jacobian;
-    };
+    inline void
+    setJacobian(QString str) { _jacobian = findValue("Jacobian", str); };
+    inline QString jacobian() { return _jacobian; };
     /**
      *
      * @param str
      */
-    void
-    setDT(QString str)
-    {
-      _dt = _findValue("MMO_DT_Min", str);
-    };
+    inline void
+    setDT(QString str) { _dt = findValue("MMO_DT_Min", str); };
     /**
      *
      * @param str
      */
-    void
-    setDtSynch(QString str)
-    {
-      _dtSynch = _findValue("MMO_DT_Synch", str);
-    };
+    inline void
+    setDtSynch(QString str) { _dtSynch = findValue("MMO_DT_Synch", str); };
     /**
      *
      * @return
      */
-    QString
-    dtSynch()
-    {
-      return _getAnnotations("MMO_DT_Synch");
-    };
+    inline QString
+    dtSynch() { return getAnnotations("MMO_DT_Synch"); };
     /**
      *
      * @param str
      */
-    void
-    setDtPeriod(QString str)
-    {
-      _dtPeriod = _findValue("MMO_DT_SynchPeriod", str);
-    };
-    QString
-    dtPeriod()
-    {
-      return _getAnnotations("MMO_DT_SynchPeriod");
-    };
+    inline void
+    setDtPeriod(QString str) { _dtPeriod = findValue("MMO_DT_SynchPeriod", str); };
+    inline QString
+    dtPeriod() { return getAnnotations("MMO_DT_SynchPeriod"); };
     /**
      *
      * @param str
      */
-    void
-    setDtStepLog(QString str)
-    {
-      _dtStepLog = _findValue("MMO_DT_StepLog", str);
-    };
+    inline void
+    setDtStepLog(QString str) { _dtStepLog = findValue("MMO_DT_StepLog", str); };
     /**
      *
      * @return
      */
-    QString
-    dtStepLog()
-    {
-      return _getAnnotations("MMO_DT_StepLog");
-    };
-    void
-    setPatohSettings(QString str)
-    {
-      _patohSettings = str;
-    };
-    void
-    setScotchSettings(QString str)
-    {
-      _scotchSettings = str;
-    };
-    void
-    setMetisSettings(QString str)
-    {
-      _metisSettings = str;
-    };
-    QString
-    patohSettings();
-    QString
-    scotchSettings();
-    QString
-    metisSettings();
-    void
-    setSemiStaticPartitioning(bool st);
-    bool
-    semiStaticPartitioning();
+    inline QString
+    dtStepLog() { return getAnnotations("MMO_DT_StepLog"); };
+    inline void
+    setPatohSettings(QString str) { _patohSettings = str; };
+    inline void
+    setScotchSettings(QString str) { _scotchSettings = str; };
+    inline void
+    setMetisSettings(QString str) { _metisSettings = str; };
+    inline QString
+    patohSettings() { return getAnnotations("MMO_PatohSettings"); };
+    inline QString
+    scotchSettings() { return getAnnotations("MMO_ScotchSettings"); };
+    inline QString
+    metisSettings() { return getAnnotations("MMO_MetisSettings"); };
+    inline void
+    setSemiStaticPartitioning(bool st) { _semiStaticPartitioning = st; };
+    inline bool
+    semiStaticPartitioning() { return _semiStaticPartitioning; };
     /**
      *
      * @param str
      */
-    void
-    setImbalance(QString str)
-    {
-      _imbalance = _findValue("MMO_Imbalance", str);
-    };
+    inline void
+    setImbalance(QString str) { _imbalance = findValue("MMO_Imbalance", str); };
     /**
      *
      * @return
      */
-    QString
-    imbalance();
+    inline QString
+    imbalance() { return getAnnotations("MMO_Imbalance"); };
     /**
      *
      * @param str
      */
-    void
-    setReorderPartition(QString str)
-    {
-      _reorderPartition = _findValue("MMO_ReorderPartition", str);
-    };
+    inline void
+    setReorderPartition(QString str) { _reorderPartition = findValue("MMO_ReorderPartition", str); };
     /**
      *
      * @return
      */
-    QString
-    reorderPartition();
+    inline QString
+    reorderPartition() { return getAnnotations("MMO_ReorderPartition"); };
     /**
      *
      * @param str
      */
-    void
-    setDebugGraph(QString str)
-    {
-      _debugGraph = _findValue("MMO_DebugGraph", str);
-    };
+    inline void
+    setDebugGraph(QString str) { _debugGraph = findValue("MMO_DebugGraph", str); };
     /**
      *
      * @return
      */
-    QString
-    debugGraph();
+    inline QString
+    debugGraph() { return getAnnotations("MMO_DebugGraph"); };
     /**
      *
      * @param str
      */
-    void
-    setGenerateArch(QString str)
-    {
-      _generateArch = _findValue("MMO_GenerateArch", str);
-    };
+    inline void
+    setGenerateArch(QString str) { _generateArch = findValue("MMO_GenerateArch", str); };
     /**
      *
      * @return
      */
-    QString
-    generateArch();
-    protected:
+    inline QString
+    generateArch() { return getAnnotations("MMO_GenerateArch"); };
+    inline QString
+    BDFPart() { return getAnnotations("MMO_BDF_Part"); };
+    inline void
+    setBDFPart(QString str) { _BDFPart = str; };
+  protected:
     void
-    reject()
-    {
-    };
-    public slots:
+    reject() {};
+  public slots:
     void
     keyReleaseEvent(QKeyEvent *event);
     void
@@ -629,40 +509,40 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     void
     done(QString name, QString ext);
     private:
-    void
-    _addLine(QString str);
+    inline void
+    addLine(QString str) { _annotations << str; };
+    inline int
+    beginModel() { return tokenPosition("model "); };
+    inline int
+    endModel() { return tokenPosition("end " + modelName()); };
     int
-    _beginModel();
-    int
-    _endModel();
-    int
-    _controlEmptyLines(int position);
+    controlEmptyLines(int position);
     bool
-    _checkToken(QString str);
+    checkToken(QString str);
     bool
-    _checkAnnotations();
+    checkAnnotations();
     int
-    _checkFunctions(int modelInit, int modelEnd);
+    checkFunctions(int modelInit, int modelEnd);
     void
-    _delete(int tab);
+    remove(int tab);
     void
-    _deleteAnnotations();
+    deleteAnnotations();
     void
-    _deletePackageFiles(int idx);
+    deletePackageFiles(int idx);
     QString
-    _findValue(QString token, QString str);
+    findValue(QString token, QString str);
     QString
-    _getAnnotations(QString str);
+    getAnnotations(QString str);
     QString
-    _getAnnotationValue(QString value, QString token);
+    getAnnotationValue(QString value, QString token);
     bool
-    _lineEmpty();
+    lineEmpty();
     void
-    _setAnnotations(QString str, QString value, bool separator);
+    setAnnotations(QString str, QString value, bool separator);
     void
-    _save(int tab);
+    save(int tab);
     int
-    _tokenPosition(QString token);
+    tokenPosition(QString token);
     QStringList _annotations;
     QMap<QString, QString> _defaultValues;
     QString _startTime;
@@ -694,6 +574,7 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     QString _debugGraph;
     QString _reorderPartition;
     QString _imbalance;
+    QString _BDFPart;
     bool _semiStaticPartitioning;
     QTabWidget *_model_editor_tab;
     QList<ModelInfo> *_models;
