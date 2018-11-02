@@ -90,6 +90,8 @@ MMO_Generator_::generate()
         _files->run();
         _files->plot();
         _files->settings(_model->annotation());
+        if(!_model->annotation()->BDFPartition().empty())
+          _files->BDFPartition();
         if(_flags->graph())
         {
           _files->graph();
