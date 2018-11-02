@@ -40,39 +40,30 @@
 #include "generator_utils.h"
 #include "solver.h"
 
-#ifdef	__linux__
+#ifdef __linux__
 #include <sys/stat.h>
 #endif
 
 MMO_Files_::MMO_Files_(MMO_Model model, MMO_Solver solver,
-    MMO_CompileFlags flags) :
-    _fname(model->name()), _model(model), _solver(solver), _flags(flags)
-{
+                       MMO_CompileFlags flags)
+    : _fname(model->name()), _model(model), _solver(solver), _flags(flags) {
   _writer = newMMO_FileWriter();
-  if(_flags->hasOutputFile())
-  {
+  if (_flags->hasOutputFile()) {
     _fname = _flags->outputFile();
   }
 }
 
-MMO_Files_::MMO_Files_(string name, MMO_CompileFlags flags) :
-    _fname(name), _model(NULL), _solver(NULL), _flags(flags)
-{
+MMO_Files_::MMO_Files_(string name, MMO_CompileFlags flags)
+    : _fname(name), _model(NULL), _solver(NULL), _flags(flags) {
   _writer = newMMO_FileWriter();
-  if(_flags->hasOutputFile())
-  {
+  if (_flags->hasOutputFile()) {
     _fname = _flags->outputFile();
   }
 }
 
-MMO_Files_::~MMO_Files_()
-{
-  delete _writer;
-}
+MMO_Files_::~MMO_Files_() { delete _writer; }
 
-void
-MMO_Files_::makefile()
-{
+void MMO_Files_::makefile() {
   stringstream buffer;
   stringstream includes;
   string fname = _fname;
@@ -87,27 +78,24 @@ MMO_Files_::makefile()
   _writer->print("");
   _writer->print("#Flags, Libraries and Includes");
   includes << "LDFLAGS    :=-L "
-      << Util::getInstance()->environmentVariable("MMOC_LIBS");
+           << Util::getInstance()->environmentVariable("MMOC_LIBS");
   list<string> tmp = _model->libraryDirectories();
-  for(list<string>::iterator it = tmp.begin(); it != tmp.end(); it++)
-  {
+  for (list<string>::iterator it = tmp.begin(); it != tmp.end(); it++) {
     includes << " -L" << *it;
   }
   includes << " -L " << Util::getInstance()->environmentVariable("MMOC_PATH")
-      << "/usr/lib";
+           << "/usr/lib";
   _writer->print(&includes);
   _writer->print(_solver->makefile(SOL_LIBRARIES));
   buffer << _solver->makefile(SOL_INCLUDES);
   tmp = _model->includeDirectories();
-  for(list<string>::iterator it = tmp.begin(); it != tmp.end(); it++)
-  {
+  for (list<string>::iterator it = tmp.begin(); it != tmp.end(); it++) {
     include.insert(pair<string, string>(*it, *it));
   }
-  if(_flags->hasObjects())
-  {
+  if (_flags->hasObjects()) {
     list<string> objects = _flags->objects();
-    for(list<string>::iterator it = objects.begin(); it != objects.end(); it++)
-    {
+    for (list<string>::iterator it = objects.begin(); it != objects.end();
+         it++) {
       string inc = *it;
       unsigned int f = inc.rfind("/");
       inc.erase(inc.begin() + f, inc.end());
@@ -116,54 +104,45 @@ MMO_Files_::makefile()
   }
   string pinclude = Util::getInstance()->environmentVariable("MMOC_INCLUDE");
   include.insert(pair<string, string>(pinclude, pinclude));
-  if(_flags->hasObjects())
-  {
+  if (_flags->hasObjects()) {
     pinclude = Util::getInstance()->environmentVariable("MMOC_PACKAGES");
     include.insert(pair<string, string>(pinclude, pinclude));
   }
-  for(map<string, string>::iterator inct = include.begin();
-      inct != include.end(); inct++)
-  {
+  for (map<string, string>::iterator inct = include.begin();
+       inct != include.end(); inct++) {
     buffer << " -I" << inct->second;
   }
   _writer->print(&buffer);
-  if(_flags->debug())
-  {
+  if (_flags->debug()) {
     _writer->print(
         "CFLAGS    := -Wall -g -msse2 -mfpmath=sse $(LDFLAGS) $(LIBS)");
-  }
-  else
-  {
+  } else {
     _writer->print(
         "CFLAGS    := -Wall -msse2 -mfpmath=sse -O2 $(LDFLAGS) $(LIBS)");
   }
   tmp = _model->linkLibraries();
-  for(list<string>::iterator it = tmp.begin(); it != tmp.end(); it++)
-  {
+  for (list<string>::iterator it = tmp.begin(); it != tmp.end(); it++) {
     includes << " -l" << *it;
   }
   _writer->print("RMS    := rm -rf");
   _writer->print("");
   _writer->print("#Source Files");
   buffer << "TARGET_SRC    := " << _fname << ".c";
-  if(_model->hasExternalFunctions())
-  {
+  if (_model->hasExternalFunctions()) {
     buffer << " " << _fname << "_functions.c";
   }
   _writer->print(&buffer);
-  if(_flags->hasObjects())
-  {
+  if (_flags->hasObjects()) {
     buffer << "SRC    := ";
     list<string> objects = _flags->objects();
-    for(list<string>::iterator it = objects.begin(); it != objects.end(); it++)
-    {
+    for (list<string>::iterator it = objects.begin(); it != objects.end();
+         it++) {
       buffer << *it << " ";
     }
     _writer->print(&buffer);
   }
   _writer->print("");
-  if(_flags->hasObjects())
-  {
+  if (_flags->hasObjects()) {
     _writer->print("#Objects");
     _writer->print("OBJ = $(SRC:.c=.o)");
     _writer->print("\%.o: \%.c");
@@ -173,24 +152,22 @@ MMO_Files_::makefile()
   _writer->print("default: $(TARGET)");
   _writer->print("");
   buffer << "$(TARGET):";
-  if(_flags->hasObjects())
-  {
+  if (_flags->hasObjects()) {
     buffer << " $(OBJ)";
   }
   _writer->print(&buffer);
   buffer << _writer->indent(1) << "$(CC) $(INC)";
-  if(_flags->hasObjects())
-  {
+  if (_flags->hasObjects()) {
     buffer << " $(OBJ)";
   }
   buffer << " $(TARGET_SRC) $(CFLAGS) -o $@ -lm -lgsl -lconfig -lgfortran";
-#ifdef	__linux__
-  buffer
-      << " -lpthread -lmetis -lscotch -lscotcherr -lpatoh -lrt -lsundials_cvode -lsundials_ida -lsundials_nvecserial -llapack -latlas -lf77blas -lklu";
+#ifdef __linux__
+  buffer << " -lpthread -lmetis -lscotch -lscotcherr -lpatoh -lrt "
+            "-lsundials_cvode -lsundials_ida -lsundials_nvecserial -llapack "
+            "-latlas -lf77blas -lklu";
 #endif
   buffer << " -lgslcblas" << includes.str();
-  if(_flags->parallel())
-  {
+  if (_flags->parallel()) {
     buffer << " -DQSS_PARALLEL";
   }
   _writer->print(&buffer);
@@ -202,9 +179,7 @@ MMO_Files_::makefile()
   _writer->clearFile();
 }
 
-void
-MMO_Files_::run()
-{
+void MMO_Files_::run() {
   string fname = _fname;
   fname.append(".sh");
   stringstream buffer;
@@ -215,39 +190,30 @@ MMO_Files_::run()
   buffer << "make -f " + _fname + ".makefile";
   _writer->print(&buffer);
   _writer->print(_solver->runCmd() + Util::getInstance()->getFileName(_fname));
-  if(_model->outs())
-  {
+  if (_model->outs()) {
     _writer->print("echo");
     _writer->print("gnuplot " + _fname + ".plt");
   }
   _writer->print("cd $cwd");
   _writer->clearFile();
-#ifdef	__linux__
+#ifdef __linux__
   chmod(fname.c_str(),
-  S_IRUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+        S_IRUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 #endif
 }
 
-string
-MMO_Files_::_variableSettings(Dependencies deps, string varName)
-{
+string MMO_Files_::_variableSettings(Dependencies deps, string varName) {
   stringstream buffer;
-  if(deps->hasStates())
-  {
+  if (deps->hasStates()) {
     buffer << " with lines title \"" << varName << "\"";
-  }
-  else
-  {
+  } else {
     buffer << " with steps title \"" << varName << "\"";
   }
   return buffer.str();
 }
 
-void
-MMO_Files_::plot()
-{
-  if(!_model->outs())
-  {
+void MMO_Files_::plot() {
+  if (!_model->outs()) {
     return;
   }
   stringstream buffer;
@@ -264,32 +230,26 @@ MMO_Files_::plot()
   int outs = 0, total = _model->outs();
   VarSymbolTable vt = _model->varTable();
   vt->setPrintEnvironment(VST_OUTPUT);
-  for(MMO_Equation eq = outputs->begin(); !outputs->end(); eq = outputs->next())
-  {
+  for (MMO_Equation eq = outputs->begin(); !outputs->end();
+       eq = outputs->next()) {
     Index index = outputs->key();
     string varName;
     Dependencies deps = eq->exp()->deps();
-    if(index.hasRange())
-    {
-      for(int i = index.begin(); i <= index.end(); i++)
-      {
+    if (index.hasRange()) {
+      for (int i = index.begin(); i <= index.end(); i++) {
         varName = eq->exp()->print();
         buffer << "\"" << varName << ".dat\""
-            << _variableSettings(deps, varName);
-        if(i + 1 <= index.end())
-        {
+               << _variableSettings(deps, varName);
+        if (i + 1 <= index.end()) {
           buffer << ",";
         }
       }
-    }
-    else
-    {
+    } else {
       varName = eq->exp()->print("");
       buffer << "\"" << varName << ".dat\"" << _variableSettings(deps, varName);
     }
     outs += index.range();
-    if(outs < total)
-    {
+    if (outs < total) {
       buffer << ",";
     }
   }
@@ -298,9 +258,7 @@ MMO_Files_::plot()
   _writer->clearFile();
 }
 
-void
-MMO_Files_::settings(MMO_Annotation annotation)
-{
+void MMO_Files_::settings(MMO_Annotation annotation) {
   stringstream buffer;
   string fname = _fname;
   fname.append(".ini");
@@ -314,11 +272,11 @@ MMO_Files_::settings(MMO_Annotation annotation)
   _writer->print(&buffer);
   buffer << "symdiff=" << annotation->symDiff() << ";";
   _writer->print(&buffer);
-  if(annotation->parallel())
-  {
+  if (annotation->parallel()) {
     buffer << "lps=" << annotation->lps() << ";";
     _writer->print(&buffer);
-    buffer << "partitionMethod=\"" << annotation->partitionMethodString() << "\";";
+    buffer << "partitionMethod=\"" << annotation->partitionMethodString()
+           << "\";";
     _writer->print(&buffer);
     buffer << "dt=" << annotation->DT() << ";";
     _writer->print(&buffer);
@@ -332,9 +290,7 @@ MMO_Files_::settings(MMO_Annotation annotation)
     _writer->print(&buffer);
     buffer << "reorderPartition=" << annotation->reorderPartition() << ";";
     _writer->print(&buffer);
-  }
-  else
-  {
+  } else {
     _writer->print("lps=0;");
   }
   buffer << "nodesize=" << annotation->nodeSize() << ";";
@@ -349,11 +305,9 @@ MMO_Files_::settings(MMO_Annotation annotation)
   list<double> dq = annotation->dqmin();
   buffer << "dqmin=(";
   int count = 0, size = dq.size();
-  for(list<double>::iterator it = dq.begin(); it != dq.end(); it++)
-  {
+  for (list<double>::iterator it = dq.begin(); it != dq.end(); it++) {
     buffer << *it;
-    if(++count < size)
-    {
+    if (++count < size) {
       buffer << ",";
     }
   }
@@ -363,11 +317,9 @@ MMO_Files_::settings(MMO_Annotation annotation)
   buffer << "dqrel=(";
   count = 0;
   size = dq.size();
-  for(list<double>::iterator it = dq.begin(); it != dq.end(); it++)
-  {
+  for (list<double>::iterator it = dq.begin(); it != dq.end(); it++) {
     buffer << *it;
-    if(++count < size)
-    {
+    if (++count < size) {
       buffer << ",";
     }
   }
@@ -376,24 +328,27 @@ MMO_Files_::settings(MMO_Annotation annotation)
   _printList(annotation->patohSettings(), "patohOptions", annotation);
   _printList(annotation->scotchSettings(), "scotchOptions", annotation);
   _printList(annotation->metisSettings(), "metisOptions", annotation);
+  buffer << "bdf=";
+  if (_model->annotation()->BDFPartition().empty()) {
+    buffer << "\"\";";
+  } else {
+    buffer << _fname << "_BDF.part;";
+  }
+  _writer->print(&buffer);
   _writer->clearFile();
 }
 
-void
-MMO_Files_::_printList(list<string> ann, string tag, MMO_Annotation annotation)
-{
+void MMO_Files_::_printList(list<string> ann, string tag,
+                            MMO_Annotation annotation) {
   stringstream buffer;
-  if(ann.empty())
-  {
+  if (ann.empty()) {
     return;
   }
   buffer << tag << "=(";
   int count = 0, size = ann.size();
-  for(list<string>::iterator it = ann.begin(); it != ann.end(); it++)
-  {
+  for (list<string>::iterator it = ann.begin(); it != ann.end(); it++) {
     buffer << *it;
-    if(++count < size)
-    {
+    if (++count < size) {
       buffer << ",";
     }
   }
@@ -401,12 +356,29 @@ MMO_Files_::_printList(list<string> ann, string tag, MMO_Annotation annotation)
   _writer->print(&buffer);
 }
 
-void
-MMO_Files_::graph()
-{
+void MMO_Files_::BDFPartition() {
+  list<AST_Expression> BDFExps = _model->annotation()->BDFPartition();
+  list<int> variables;
+  list<AST_Expression>::iterator it;
+  list<int>::iterator varIt;
+  for (it = BDFExps.begin(); it != BDFExps.end(); it++) {
+    MMO_PartitionInterval_ pi(_model->varTable());
+    list<int> ret = pi.foldTraverse(*it);
+    variables.splice(variables.end(), ret);
+  }
+  string fileName = _fname + "_BDF.part";
+  ofstream partition(fileName.c_str(), ios::out | ios::binary);
+  partition.seekp(0);
+  for (varIt = variables.begin(); varIt != variables.end(); varIt++) {
+    int val = *varIt;
+    partition.write((char *)&val, sizeof(int));
+  }
+  partition.close();
+}
+
+void MMO_Files_::graph() {
   Graph g = _solver->graph();
-  if(g.empty())
-  {
+  if (g.empty()) {
     return;
   }
   string fileName = _fname + ".graph";
@@ -434,8 +406,7 @@ MMO_Files_::graph()
   ofstream pgraph;
   ofstream pwgraph;
   ofstream ewgraph;
-  if(_model->annotation()->debugGraph())
-  {
+  if (_model->annotation()->debugGraph()) {
     pgraph.open(fileName + ".unpack");
     pwgraph.open(wFileName + ".unpack");
     ewgraph.open(nwFileName + ".unpack");
@@ -447,65 +418,54 @@ MMO_Files_::graph()
   grp_t w, size = 0;
   g.connectGraphs();
   grp_t i;
-  for(i = 0; i < nvtxs; i++)
-  {
+  for (i = 0; i < nvtxs; i++) {
     size += g.graphNodeEdges(i);
-    if(_model->annotation()->debugGraph())
-    {
+    if (_model->annotation()->debugGraph()) {
       pwgraph << i << " Size: " << size << "\n";
     }
-    matrix.write((char*) &size, sizeof(grp_t));
+    matrix.write((char *)&size, sizeof(grp_t));
   }
   grp_t hedges = g.hyperGraphEdges();
-  map<int, set<int> > graph = g.graph();
-  map<int, set<int> > hGraph = g.hyperGraph();
-  for(i = 0; i < nvtxs; i++)
-  {
+  map<int, set<int>> graph = g.graph();
+  map<int, set<int>> hGraph = g.hyperGraph();
+  for (i = 0; i < nvtxs; i++) {
     set<int>::iterator it;
 
-    if(_model->annotation()->debugGraph())
-    {
+    if (_model->annotation()->debugGraph()) {
       pgraph << "Node: " << i << "\n";
     }
-    for(it = graph[i].begin(); it != graph[i].end(); it++)
-    {
+    for (it = graph[i].begin(); it != graph[i].end(); it++) {
       grp_t inf = *it;
-      matrix.write((char*) &inf, sizeof(grp_t));
-      if(_model->annotation()->debugGraph())
-      {
+      matrix.write((char *)&inf, sizeof(grp_t));
+      if (_model->annotation()->debugGraph()) {
         pgraph << inf << "\n";
       }
       w = g.graphEdgeWeight(i, *it);
-      wMatrix.write((char*) &w, sizeof(grp_t));
+      wMatrix.write((char *)&w, sizeof(grp_t));
     }
     w = g.nodeWeight(i);
-    if(_model->annotation()->debugGraph())
-    {
+    if (_model->annotation()->debugGraph()) {
       ewgraph << i << " Weight: " << w << "\n";
     }
-    nwMatrix.write((char*) &w, sizeof(grp_t));
+    nwMatrix.write((char *)&w, sizeof(grp_t));
   }
   size = 0;
-  tmp1.write((char*) &hedges, sizeof(grp_t));
-  for(i = 0; i < nvtxs; i++)
-  {
+  tmp1.write((char *)&hedges, sizeof(grp_t));
+  for (i = 0; i < nvtxs; i++) {
     set<int>::iterator it;
-    for(it = hGraph[i].begin(); it != hGraph[i].end(); ++it)
-    {
+    for (it = hGraph[i].begin(); it != hGraph[i].end(); ++it) {
       grp_t inf = *it;
-      tmp2.write((char*) &inf, sizeof(grp_t));
+      tmp2.write((char *)&inf, sizeof(grp_t));
     }
-    if(!hGraph[i].empty())
-    {
+    if (!hGraph[i].empty()) {
       w = g.hyperGraphEdgeWeight(i);
-      hwMatrix.write((char*) &w, sizeof(grp_t));
+      hwMatrix.write((char *)&w, sizeof(grp_t));
       size += hGraph[i].size();
-      tmp1.write((char*) &size, sizeof(grp_t));
-      tmp3.write((char*) &i, sizeof(grp_t));
+      tmp1.write((char *)&size, sizeof(grp_t));
+      tmp3.write((char *)&i, sizeof(grp_t));
     }
   }
-  if(_model->annotation()->debugGraph())
-  {
+  if (_model->annotation()->debugGraph()) {
     pgraph.close();
     ewgraph.close();
     pwgraph.close();
@@ -516,28 +476,21 @@ MMO_Files_::graph()
   tmp1.close();
   tmp2.close();
   tmp3.close();
-  string command = "cat " + tmp1FileName + " " + tmp2FileName + " "
-      + tmp3FileName + " > " + hFileName;
+  string command = "cat " + tmp1FileName + " " + tmp2FileName + " " +
+                   tmp3FileName + " > " + hFileName;
   system(command.c_str());
   remove(tmp1FileName.c_str());
   remove(tmp2FileName.c_str());
   remove(tmp3FileName.c_str());
 }
 
-MMO_Files
-newMMO_Files(MMO_Model model, MMO_Solver solver, MMO_CompileFlags flags)
-{
+MMO_Files newMMO_Files(MMO_Model model, MMO_Solver solver,
+                       MMO_CompileFlags flags) {
   return new MMO_Files_(model, solver, flags);
 }
 
-MMO_Files
-newMMO_Files(string name, MMO_CompileFlags flags)
-{
+MMO_Files newMMO_Files(string name, MMO_CompileFlags flags) {
   return new MMO_Files_(name, flags);
 }
 
-void
-deleteMMO_Files(MMO_Files m)
-{
-  delete m;
-}
+void deleteMMO_Files(MMO_Files m) { delete m; }

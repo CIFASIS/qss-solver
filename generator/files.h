@@ -76,6 +76,8 @@ class MMO_Files_
     settings(MMO_Annotation annotation);
     void
     graph();
+    void 
+    BDFPartition();
     private:
     string
     _variableSettings(Dependencies deps, string varName);
