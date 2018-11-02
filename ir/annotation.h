@@ -44,6 +44,7 @@ typedef enum
   ANT_LIQSS,
   ANT_QSS2,
   ANT_LIQSS2,
+  ANT_LIQSS_BDF,
   ANT_QSS3,
   ANT_LIQSS3,
   ANT_QSS4,
@@ -227,6 +228,8 @@ class MMO_Annotation_: public MMO_Base_
     debugGraph() = 0;
     virtual int 
     reorderPartition() = 0;
+    virtual list<AST_Expression>
+    BDFPartition();
 };
 
 /**
@@ -714,7 +717,9 @@ class MMO_ModelAnnotation_: public MMO_Annotation_
     imbalance();
     int 
     reorderPartition();
-    private:
+    list<AST_Expression>
+    BDFPartition();
+  private:
     /**
      *
      */
@@ -750,7 +755,8 @@ class MMO_ModelAnnotation_: public MMO_Annotation_
       DEBUG_GRAPH, //!< DEBUG_GRAPH
       IMBALANCE, //!< IMBALANCE
       REORDER_PARTITION, //!< REORER_PARTITION
-      JACOBIAN //!< JACOBIAN
+      JACOBIAN, //!< JACOBIAN
+      BDF_PARTITION 
     } type;
     void
     _processAnnotation(string annot, AST_Modification_Equal x);
@@ -787,6 +793,7 @@ class MMO_ModelAnnotation_: public MMO_Annotation_
     double _weight;
     list<double> _sample;
     list<AST_Expression> _output;
+    list<AST_Expression> _BDFPartition;
     double _initialTime;
     double _finalTime;
     ANT_PartitionMethod _partitionMethod;
