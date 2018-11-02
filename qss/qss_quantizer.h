@@ -21,6 +21,8 @@
 #define QSS_QUANTIZER_H_
 
 #include <qss/qss_data.h>
+#include <qss/qss_bdf.h>
+
 /**
  *
  */
@@ -84,6 +86,11 @@ struct QA_quantizerState_
 {
     int order;
     int xOrder;
+    int *flag2; //!<
+    int *flag3; //!<
+    int *flag4; //!<
+    int *nSZ;
+    int **SZ;
     double *dq; //!<
     double *a; //!<
     double *oldDx; //!<
@@ -91,6 +98,7 @@ struct QA_quantizerState_
     double *u0; //!<
     double *u1; //!<
     double *u2; //!<
+    double *tx;
     double *lt; //!<
     double *ltq; //!<
     double *lquOld; //!<
@@ -99,41 +107,9 @@ struct QA_quantizerState_
     double *simTime; //!<
     double minStep; //!<
     double finTime; //!<
-    int *flag2; //!<
-    int *flag3; //!<
-    int *flag4; //!<
     QSS_time lSimTime; //!<
     QSS_idxMap qMap; //!<
-    double **A;
-    double **U;
-    int sts;
-    int *nSD;
-    int **SD;
-    bool *change;
-    double *next;
-    double *nTime;
-    bool band;
-    double *qstate;
-    double **U0;
-    double **U1;
-    double *tx;
-    double cont[10];
-    
-    double *qj;
-    double **U2;
-    int *nSZ;
-    int **SZ;
-		int **S;
-		int infs;
-		double h;
-		double hmin;
-		int achicar;
-		int agrandar;
-		double *xprev;
-		bool *BE;
-		int nBE;
-		int *BES;
-		double *jac;
+    QSS_BDF_hybrid qss_bdf;
 };
 /**
  *

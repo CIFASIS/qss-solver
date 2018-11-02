@@ -106,6 +106,7 @@ typedef enum
   SD_LIQSS, //!< SD_LIQSS
   SD_QSS2,  //!< SD_QSS2
   SD_LIQSS2,  //!< SD_LIQSS2
+  SD_LIQSS_BDF,  //!< SD_LIQSS2
   SD_QSS3,  //!< SD_QSS3
   SD_LIQSS3,  //!< SD_LIQSS3
   SD_QSS4,   //!< SD_QSS4
