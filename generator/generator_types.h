@@ -80,5 +80,9 @@ typedef class MMO_SerialEngine_ *MMO_SerialEngine;
  *
  */
 typedef class MMO_ParallelEngine_ *MMO_ParallelEngine;
+/**
+ *
+ */
+typedef class MMO_ClassicEngine_ *MMO_ClassicEngine;
 
 #endif  /* GENERATOR_TYPES_H_ */

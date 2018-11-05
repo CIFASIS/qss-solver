@@ -230,6 +230,10 @@ class MMO_Annotation_: public MMO_Base_
     reorderPartition() = 0;
     virtual list<AST_Expression>
     BDFPartition();
+    virtual bool
+    hasJacobian() = 0;
+    virtual bool
+    LIQSS() = 0;
 };
 
 /**
@@ -346,6 +350,17 @@ class MMO_FunctionAnnotation_: public MMO_Annotation_
     reorderPartition()
     {
       return 0;
+    }
+    ;
+    bool
+    hasJacobian()
+    {
+      return false;
+    };
+    bool 
+    LIQSS()
+    {
+      return false;
     };
     private:
     /**
@@ -719,7 +734,11 @@ class MMO_ModelAnnotation_: public MMO_Annotation_
     reorderPartition();
     list<AST_Expression>
     BDFPartition();
-  private:
+    bool 
+    hasJacobian();
+    bool 
+    LIQSS();
+    private:
     /**
      *
      */

@@ -623,8 +623,20 @@ bool MMO_ModelAnnotation_::classic() {
          _solver == ANT_CVODE_AM;
 }
 
-int MMO_ModelAnnotation_::lps() { return _lps; }
+bool 
+MMO_ModelAnnotation_::hasJacobian()
+{
+  return _solver == ANT_LIQSS || _solver == ANT_LIQSS2 
+      || _solver == ANT_LIQSS3 || classic();
+}
 
+bool 
+MMO_ModelAnnotation_::LIQSS()
+{
+  return _solver == ANT_LIQSS || _solver == ANT_LIQSS2 
+      || _solver == ANT_LIQSS3;
+}
+    
 void MMO_ModelAnnotation_::setNodeSize(int ns) { _nodeSize = ns; }
 
 int MMO_ModelAnnotation_::nodeSize() { return _nodeSize; }

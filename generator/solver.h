@@ -47,7 +47,8 @@ typedef enum
   SOL_HANDLER_NEG,
   SOL_OUTPUT,
   SOL_INIT,
-  SOL_CALLBACK
+  SOL_CALLBACK,
+  SOL_JAC
 } SOL_Function;
 
 /**
@@ -455,25 +456,14 @@ class Classic_: public MMO_Solver_
     Graph
     graph();
     private:
-    string
-    _prototype(SOL_Function f);
     void
     _print(SOL_Function f, map<string, string> localVars, WR_Section simple,
         WR_Section generic, bool switchGen);
     void
     _init();
     void
-    _printDeps(Dependencies d, Index derivativeIndex,
-        MMO_EquationTable equations, MMO_EquationTable algebraics,
-        string idxStr, WR_Section s, int i,
-        bool constant, Index infIdx);
-    void
-    _jacobian();
-    void
     _reorderSD(Dependencies d, const Index& idx, const string& indent,
         stringstream& buffer, WR_InsertType it);
-    bool
-    _generateJacobian();
     MMO_CompileFlags _flags;
     MMO_Model _model;
     MMO_Writer _writer;
@@ -488,6 +478,7 @@ class Classic_: public MMO_Solver_
     string _name;
     map<string, string> _freeVars;
     MMO_DependenciesTable _modelDeps;
+    MMO_Engine _engine;
 };
 /**
  *
@@ -519,7 +510,8 @@ class SolverCommon_
      * @param modelVectorDeps
      */
     SolverCommon_(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer,
-        MMO_DependenciesTable modelVectorDeps, Graph *graph = NULL);
+        MMO_DependenciesTable modelVectorDeps, Graph *graph = NULL, 
+        MMO_Engine engine = NULL, MMO_DependenciesTable modelDeps = NULL);
     /**
      *
      */
@@ -729,7 +721,20 @@ class SolverCommon_
     beginForLoops(Index idx, WR_Section section);
     void
     endForLoops(Index idx, WR_Section section);
-    private:
+    void
+    jacobian(map<string,string> *modelDepsVars);
+    bool
+    hasJacobian();
+    void 
+    generateJacobian(map<string,string> *modelDepsVars);
+  private:
+    void
+    _generateJacobianExps(Dependencies d, Index derivativeIndex,
+    MMO_EquationTable equations, MMO_EquationTable algebraics, string idxStr,
+    WR_Section s, int i, bool constant, Index infIdx, map<string, string> *modelDepsVars);
+    void
+    _reorderSD(Dependencies d, const Index& idx, const string& indent,
+    stringstream& buffer, WR_InsertType it);
     MMO_Model _model;
     MMO_CompileFlags _flags;
     MMO_Writer _writer;
@@ -739,6 +744,8 @@ class SolverCommon_
     Graph &_graph;
     bool _generateGraph;
     bool _parallel;
+    MMO_Engine _engine;
+    MMO_DependenciesTable _modelDeps;
 };
 /**
  *
@@ -750,7 +757,8 @@ class SolverCommon_
  */
 SolverCommon
 newSolverCommon(MMO_Model model, MMO_CompileFlags flags, MMO_Writer writer,
-    MMO_DependenciesTable modelVectorDeps = NULL, Graph *graph = NULL);
+    MMO_DependenciesTable modelVectorDeps = NULL, Graph *graph = NULL, 
+    MMO_Engine engine = NULL, MMO_DependenciesTable modelDeps = NULL);
 /**
  *
  * @param m
@@ -934,6 +942,73 @@ newMMO_ParallelEngine(MMO_CompileFlags flags, bool hybrid);
  */
 void
 deleteMMO_ParallelEngine(MMO_ParallelEngine m);
+
+/**
+ *
+ */
+class MMO_ClassicEngine_: public MMO_Engine_
+{
+  public:
+    /**
+     *
+     */
+    MMO_ClassicEngine_(MMO_CompileFlags flags, bool hybrid);
+    /**
+     *
+     */
+    ~MMO_ClassicEngine_();
+    /**
+     *
+     * @param f
+     * @return
+     */
+    string
+    prototype(SOL_Function f);
+    /**
+     *
+     * @param m
+     * @return
+     */
+    string
+    makefile(SOL_Makefile m);
+    /**
+     *
+     * @param index
+     * @return
+     */
+    string
+    variableMap(string index);
+    /**
+     *
+     * @return
+     */
+    string
+    endMap();
+    /**
+     *
+     */
+    void
+    eventTemp();
+  private:
+    MMO_CompileFlags _flags;
+    bool _hybrid;
+};
+
+/**
+ *
+ * @param flags
+ * @param hybrid
+ * @return
+ */
+MMO_ClassicEngine
+newMMO_ClassicEngine(MMO_CompileFlags flags, bool hybrid);
+/**
+ *
+ * @param m
+ */
+void
+deleteMMO_ClassicEngine(MMO_ParallelEngine m);
+
 
 #endif  /* MMO_SOLVER_H_ */
 
