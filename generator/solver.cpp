@@ -2558,6 +2558,7 @@ SolverCommon_::hasJacobian()
       || _model->annotation()->solver() == ANT_CVODE_BDF
       || _model->annotation()->solver() == ANT_LIQSS
       || _model->annotation()->solver() == ANT_LIQSS2 
+      || _model->annotation()->solver() == ANT_LIQSS_BDF 
       || _model->annotation()->solver() == ANT_LIQSS3);
 }
 

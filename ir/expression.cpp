@@ -1112,11 +1112,11 @@ MMO_PartitionInterval_::foldTraverseElement(AST_Expression exp)
         AST_ExpressionList indexes = AST_ListFirst(cr->indexes());
         AST_Expression eidx = AST_ListFirst(indexes);
         ExpressionType et = eidx->expressionType();
+        MMO_EvalInitExp_ eie(_vt);
         if(et == EXPRANGE)
         {
           AST_ExpressionList rangeExps = eidx->getAsRange()->expressionList();
           AST_ExpressionListIterator it;
-          MMO_EvalInitExp_ eie(_vt);
           int count = 0;
           int range[3];
           foreach(it,rangeExps)
@@ -1139,6 +1139,11 @@ MMO_PartitionInterval_::foldTraverseElement(AST_Expression exp)
           for(p = 0; p < vi->size(); p++)
             part.push_back(vi->index().offset()+p);
           return part;
+        }
+        else // Expression must be a constant. 
+        {
+          int p = eie.foldTraverse(eidx);
+          part.push_back(vi->index().offset()+p);
         }
       }
       else if(vi->isArray())

@@ -332,7 +332,7 @@ void MMO_Files_::settings(MMO_Annotation annotation) {
   if (_model->annotation()->BDFPartition().empty()) {
     buffer << "\"\";";
   } else {
-    buffer << _fname << "_BDF.part;";
+    buffer << "\"" <<_fname << "_BDF.part\";";
   }
   _writer->print(&buffer);
   _writer->clearFile();
@@ -369,6 +369,8 @@ void MMO_Files_::BDFPartition() {
   string fileName = _fname + "_BDF.part";
   ofstream partition(fileName.c_str(), ios::out | ios::binary);
   partition.seekp(0);
+  unsigned long size = variables.size();
+  partition.write((char *)&size, sizeof(unsigned long));
   for (varIt = variables.begin(); varIt != variables.end(); varIt++) {
     int val = *varIt;
     partition.write((char *)&val, sizeof(int));

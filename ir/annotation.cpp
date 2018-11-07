@@ -613,6 +613,8 @@ string MMO_ModelAnnotation_::storeData() { return _storeData; }
 
 void MMO_ModelAnnotation_::setLps(int lps) { _lps = lps; }
 
+int MMO_ModelAnnotation_::lps() { return _lps; }
+
 void MMO_ModelAnnotation_::setJacobian(int jacobian) { _jacobian = jacobian; }
 
 int MMO_ModelAnnotation_::jacobian() { return _jacobian; }
@@ -627,14 +629,14 @@ bool
 MMO_ModelAnnotation_::hasJacobian()
 {
   return _solver == ANT_LIQSS || _solver == ANT_LIQSS2 
-      || _solver == ANT_LIQSS3 || classic();
+      || _solver == ANT_LIQSS3 || _solver == ANT_LIQSS_BDF || classic();
 }
 
 bool 
 MMO_ModelAnnotation_::LIQSS()
 {
   return _solver == ANT_LIQSS || _solver == ANT_LIQSS2 
-      || _solver == ANT_LIQSS3;
+      || _solver == ANT_LIQSS3 || _solver == ANT_LIQSS_BDF;
 }
     
 void MMO_ModelAnnotation_::setNodeSize(int ns) { _nodeSize = ns; }
@@ -725,7 +727,7 @@ MMO_EvalAnnotation_::MMO_EvalAnnotation_(VarSymbolTable st)
   _tokens.insert(pair<string, string>("QSS3", "QSS3"));
   _tokens.insert(pair<string, string>("LIQSS", "LIQSS"));
   _tokens.insert(pair<string, string>("LIQSS2", "LIQSS2"));
-  _tokens.insert(pair<string, string>("LIQSS_DF", "LIQSS_BDF"));
+  _tokens.insert(pair<string, string>("LIQSS_BDF", "LIQSS_BDF"));
   _tokens.insert(pair<string, string>("LIQSS3", "LIQSS3"));
   _tokens.insert(pair<string, string>("QSS4", "QSS4"));
   _tokens.insert(pair<string, string>("DASSL", "DASSL"));
