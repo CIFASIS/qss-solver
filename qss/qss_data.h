@@ -154,6 +154,17 @@ typedef void
 (*QSS_input)(double, double*);
 
 /**
+ *
+ * @param
+ * @param
+ * @param
+ * @param
+ * @param
+ */
+typedef void
+(*QSS_jac)(double*, double*, double*, double, double*);
+
+/**
  * @enum QSS_SchedulerType
  * @brief QSS simulator scheduler type definition.
  *
@@ -169,7 +180,9 @@ typedef void
  */
 typedef enum
 {
-  ST_Linear, ST_Binary, ST_Random
+  ST_Linear, 
+  ST_Binary, 
+  ST_Random
 } QSS_SchedulerType;
 
 /**
@@ -333,6 +346,7 @@ struct QSS_data_
     double *q;  //!<
     double *x; //!<
     double *alg; //!<
+    double *jac; //!<
     double it;  //!<
     double ft;  //!<
     int *nSD;  //!<
@@ -365,6 +379,7 @@ struct QSS_data_
     SD_eventData event;  //!<
     SD_parameters params; //!<
     QSS_LP_data lp; //!<
+    char *bdfPartFile;
 };
 
 /**
@@ -514,6 +529,7 @@ struct QSS_model_
     QSS_eq f; //!<
     QSS_dep deps; //!<
     QSS_event events; //!<
+    QSS_jac jac; //!<
 };
 
 /**
@@ -527,7 +543,7 @@ struct QSS_model_
  */
 QSS_model
 QSS_Model(QSS_eq f, QSS_dep deps, QSS_zc zeroCrossing, QSS_hnd handlerPos,
-    QSS_hnd handlerNeg);
+    QSS_hnd handlerNeg, QSS_jac jac);
 
 /**
  *

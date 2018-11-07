@@ -26,6 +26,7 @@
 #include "cqss.h"
 #include "liqss.h"
 #include "liqss2.h"
+#include "liqss_bdf.h"
 #include "liqss3.h"
 #include "qss.h"
 #include "qss2.h"
@@ -49,6 +50,11 @@ QA_QuantizerState()
   QA_quantizerState p = checkedMalloc(sizeof(*p));
   p->order = 0;
   p->xOrder = 0;
+  p->nSZ = NULL;
+  p->flag2 = NULL;
+  p->flag3 = NULL;
+  p->flag4 = NULL;
+  p->SZ = NULL;
   p->dq = NULL;
   p->a = NULL;
   p->oldDx = NULL;
@@ -62,13 +68,12 @@ QA_QuantizerState()
   p->qinf = NULL;
   p->qsup = NULL;
   p->simTime = NULL;
+  p->tx = NULL;
   p->minStep = 0;
   p->finTime = 0;
-  p->flag2 = NULL;
-  p->flag3 = NULL;
-  p->flag4 = NULL;
   p->lSimTime = NULL;
   p->qMap = NULL;
+  p->qss_bdf = NULL;
   return p;
 }
 
@@ -128,6 +133,16 @@ QA_Quantizer(QSS_data simData, QSS_time simTime)
       else
       {
         LIQSS2_init(p, simData, simTime);
+      }
+      break;
+    case SD_LIQSS_BDF:
+      if(simData->params->lps > 0)
+      {
+        LIQSS_BDF_PAR_init(p, simData, simTime);
+      }
+      else
+      {
+        LIQSS_BDF_init(p, simData, simTime);
       }
       break;
     case SD_QSS3:
@@ -228,6 +243,10 @@ QA_freeQuantizerState(QA_quantizerState state)
   if(state->flag4 != NULL)
   {
     free(state->flag4);
+  }
+  if(state->qss_bdf != NULL)
+  {
+    QSS_BDF_freeHybrid(state->qss_bdf);
   }
   free(state);
 }

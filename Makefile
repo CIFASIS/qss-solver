@@ -61,6 +61,7 @@ vpath %.c $(SRCDIR)
 .SUFFIXES: .c
 
 # Source files.
+<<<<<<< HEAD
 COMMONSRC = $(COMMONDIR)/data.c \
 						$(COMMONDIR)/utils.c \
 						$(COMMONDIR)/tree.c \
@@ -90,8 +91,10 @@ SEQSRC = $(QSSDIR)/qss_graph.c \
 				 $(METHODSDIR)/qss4.c \
 				 $(METHODSDIR)/liqss.c \
 				 $(METHODSDIR)/liqss2.c \
+				 $(METHODSDIR)/liqss_bdf.c \
 				 $(METHODSDIR)/liqss3.c \
 				 $(METHODSDIR)/cqss.c \
+				 $(QSSDIR)/qss_bdf.c \
 				 $(QSSDIR)/qss_output.c \
 				 $(QSSDIR)/qss_scheduler.c \
 				 $(QSSDIR)/qss_quantizer.c \
@@ -114,6 +117,7 @@ PARSRC = $(QSSDIR)/qss_file.c \
 				 $(METHODSDIR)/qss4.c \
 				 $(METHODSDIR)/liqss.c \
 				 $(METHODSDIR)/liqss2.c \
+				 $(METHODSDIR)/liqss_bdf.c \
 				 $(METHODSDIR)/liqss3.c \
 				 $(METHODSDIR)/cqss.c \
 				 $(QSSDIR)/qss_dt.c \

@@ -63,8 +63,8 @@ LIQSS2_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 #endif
   quantizer->state->minStep = simData->params->minStep;
   quantizer->state->lSimTime = simTime;
-  quantizer->state->nSD = simData->nSZ;
-  quantizer->state->SD = simData->SZ;
+  quantizer->state->nSZ = simData->nSZ;
+  quantizer->state->SZ = simData->SZ;
   quantizer->ops->recomputeNextTimes = LIQSS2_recomputeNextTimes;
   quantizer->ops->recomputeNextTime = LIQSS2_recomputeNextTime;
   quantizer->ops->nextTime = LIQSS2_nextTime;
@@ -116,12 +116,12 @@ LIQSS2_recomputeNextTime(QA_quantizer quantizer, int var, double t,
   if(flag2[var] != 1)
   {
     if((quantizer->state->lSimTime->type == ST_Event) && (a[var] < 0)
-        && (quantizer->state->nSD[var] > 0))
+        && (quantizer->state->nSZ[var] > 0))
     { //we check if var is involved in the zero crossing function that produced the current event
       int i;
-      for(i = 0; i < quantizer->state->nSD[var]; i++)
+      for(i = 0; i < quantizer->state->nSZ[var]; i++)
       {
-        if(quantizer->state->SD[var][i] == quantizer->state->lSimTime->minIndex)
+        if(quantizer->state->SZ[var][i] == quantizer->state->lSimTime->minIndex)
         {
           nTime[var] = t;
           flag2[var] = 1; //it does, so we restart the quantized state q[var]

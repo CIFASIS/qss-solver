@@ -1160,8 +1160,7 @@ void
 QSS_PAR_integrate(SIM_simulator simulate)
 {
   QSS_simulator simulator = (QSS_simulator) simulate->state->sim;
-  QSS_PAR_printParallelLog(simulator,
-      PAR_createLPTasks(QSS_PAR_runSimulation, simulator));
+  QSS_PAR_printParallelLog(simulator, PAR_createLPTasks(QSS_PAR_runSimulation, simulator));
   QSS_PAR_statistics(simulator);
 }
 #else

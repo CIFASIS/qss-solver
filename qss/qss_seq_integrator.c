@@ -116,7 +116,7 @@ QSS_SEQ_integrate(SIM_simulator simulate)
           simulationLog->states[index]++;
         }
 #endif
-        cf0 = index * coeffs;
+				cf0 = index * coeffs;
         elapsed = t - tx[index];
         integrateState(cf0, elapsed, x, xOrder);
         tx[index] = t;
