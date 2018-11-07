@@ -162,7 +162,7 @@ MmomeGui::on_actionSettings_triggered()
 {
   _settingsDlg = new SettingsDlg(this);
   connect(_settingsDlg, SIGNAL(finished(int)), this,
-      SLOT(_settingsDlgClosed()));
+      SLOT(settingsDlgClosed()));
   enableActions(false);
   _settingsDlg->show();
 }
@@ -185,7 +185,7 @@ MmomeGui::on_actionImport_triggered()
           + fileName);
   _proc = new QProcess(this);
   connect(_proc, SIGNAL(finished(int,QProcess::ExitStatus)), this,
-      SLOT(_importFinished(int,QProcess::ExitStatus)));
+      SLOT(importFinished(int,QProcess::ExitStatus)));
   _sbmlFile = modelsDir.absolutePath() + SLASH + sbmlfi.baseName() + ".mo";
   QStringList args;
   args << "-o " + _sbmlFile;
@@ -339,7 +339,7 @@ MmomeGui::run(QString name)
           + outputDir.absolutePath());
   on_actionClear_Log_triggered();
   _proc = new QProcess(this);
-  connect(_proc, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(_run_finished(int,QProcess::ExitStatus)));
+  connect(_proc, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(run_finished(int,QProcess::ExitStatus)));
   QStringList args;
   args << name;
   if(Editor::instance()->isParallel())
@@ -361,7 +361,7 @@ MmomeGui::run(QString name)
     args << QString("false");
   }
   connect(_proc, SIGNAL(readyReadStandardError()), this,
-      SLOT(_simulation_message()));
+      SLOT(simulation_message()));
   _timeInterval = Editor::instance()->stopTime().toDouble()
       - Editor::instance()->startTime().toDouble();
   _sim_progress->setMaximum(100);
@@ -634,7 +634,7 @@ MmomeGui::compile(bool dbg)
   QString flags = _utils->appFlag(FLG_FLAGS);
   _proc = new QProcess(this);
   connect(_proc, SIGNAL(finished(int,QProcess::ExitStatus)), this,
-      SLOT(_comp_finished(int,QProcess::ExitStatus)));
+      SLOT(comp_finished(int,QProcess::ExitStatus)));
   QStringList args;
   QString set;
   if(_settings_only) { set += "-s "; }
@@ -819,7 +819,7 @@ MmomeGui::comp_finished(int exitCode, QProcess::ExitStatus exitStatus)
     delete _proc;
     _proc = new QProcess(this);
     connect(_proc, SIGNAL(finished(int,QProcess::ExitStatus)), this,
-        SLOT(_make_finished(int,QProcess::ExitStatus)));
+        SLOT(make_finished(int,QProcess::ExitStatus)));
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     env.insert("MMOC_BUILD", QDir(_utils->appDir(MMOC_BUILD)).absolutePath()); 
     env.insert("MMOC_BIN", QDir(_utils->appDir(MMOC_BIN)).absolutePath()); 
@@ -889,7 +889,7 @@ MmomeGui::on_actionLog_triggered()
   QString logCmd = _utils->appCommand(CMD_LOG);
   _log = new QProcess(this);
   connect(_log, SIGNAL(finished(int,QProcess::ExitStatus)), this,
-      SLOT(_log_finished(int,QProcess::ExitStatus)));
+      SLOT(log_finished(int,QProcess::ExitStatus)));
   QStringList args;
   args << name;
   QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
@@ -951,7 +951,7 @@ MmomeGui::createActions()
     recentFileActs[i] = new QAction(this);
     recentFileActs[i]->setVisible(false);
     connect(recentFileActs[i], SIGNAL(triggered()), this,
-        SLOT(_openRecentFiles()));
+        SLOT(openRecentFiles()));
   }
   exitAct = new QAction(tr("E&xit"), this);
   exitAct->setShortcuts(QKeySequence::Quit);
@@ -1119,7 +1119,7 @@ MmomeGui::on_actionGraphics_triggered()
   }
   _plot = new QProcess(this);
   connect(_plot, SIGNAL(finished(int,QProcess::ExitStatus)), this,
-      SLOT(_plot_finished(int,QProcess::ExitStatus)));
+      SLOT(plot_finished(int,QProcess::ExitStatus)));
   QStringList args;
   if(plotOptions.isEmpty())
   {
