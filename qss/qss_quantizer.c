@@ -26,6 +26,7 @@
 #include "cqss.h"
 #include "liqss.h"
 #include "liqss2.h"
+#include "liqss_bdf.h"
 #include "liqss3.h"
 #include "qss.h"
 #include "qss2.h"
@@ -137,11 +138,11 @@ QA_Quantizer(QSS_data simData, QSS_time simTime)
     case SD_LIQSS_BDF:
       if(simData->params->lps > 0)
       {
-        LIQSS2_PAR_init(p, simData, simTime);
+        LIQSS_BDF_PAR_init(p, simData, simTime);
       }
       else
       {
-        LIQSS2_init(p, simData, simTime);
+        LIQSS_BDF_init(p, simData, simTime);
       }
       break;
     case SD_QSS3:

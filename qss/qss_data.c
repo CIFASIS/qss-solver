@@ -315,6 +315,7 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs,
   p->dQMin = (double *)malloc(states * sizeof(double));
   p->dQRel = (double *)malloc(states * sizeof(double));
   p->lqu = (double *)malloc(states * sizeof(double));
+  p->bdfPartFile = NULL;
   if (discretes) {
     p->d = (double *)malloc(discretes * sizeof(double));
   } else {
@@ -426,6 +427,10 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs,
   p->lp = NULL;
   if (settings->lps > 0) {
     QSS_setReinitBuffer(TRUE);
+  }
+  if (settings->BDFPart != NULL ) {
+    p->bdfPartFile = checkedMalloc(256*sizeof(char));
+    strcpy(p->bdfPartFile, settings->BDFPart);
   }
   freeSettings(settings);
   return p;

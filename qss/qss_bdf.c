@@ -37,6 +37,7 @@ QSS_BDF_hybrid QSS_BDF_Hybrid(QSS_data simData) {
   p->xprev = (double *)malloc(states * sizeof(double));
   p->change = (bool *)malloc(states * sizeof(bool));
   p->BE = (bool *)malloc(states * sizeof(bool));
+  p->invAd = NULL;
   int infs = 0;
   for (i = 0; i < states; i++) {
     infs += simData->nSD[i]; // cantidad de influencias
@@ -50,7 +51,7 @@ QSS_BDF_hybrid QSS_BDF_Hybrid(QSS_data simData) {
     int cf0 = i * 3;
     p->xprev[i] = simData->x[cf0];
     p->change[i] = FALSE;
-    p->BE[i] = TRUE;
+    p->BE[i] = FALSE;
     for (j = 0; j < states; j++) {
       p->S[i][j] = -1;
     }
@@ -65,42 +66,107 @@ void QSS_BDF_freeHybrid(QSS_BDF_hybrid h) {
 }
 
 void QSS_BDF_partition(QSS_BDF_hybrid hybrid, QSS_data simData) {
-  int i, j, m, states = simData->states;
-  // Determinar variables que NO van con BE
-  if (simData->HD) {
-    printf("LIQSS_BDF: ");
-    for (i = 0; i < simData->events; i++) {
-      for (j = 0; j < simData->nHD[i]; j++) {
-        for (m = 0; m < simData->nSD[simData->HD[i][j]]; m++) {
-          if (hybrid->BE[simData->SD[simData->HD[i][j]][m]]) {
-            hybrid->BE[simData->SD[simData->HD[i][j]][m]] = FALSE;
-            hybrid->nBE--;
-            printf("%d ", simData->SD[simData->HD[i][j]][m]);
+  int i;
+  FILE *file;
+  char fileName[256];
+  sprintf(fileName, "%s", simData->bdfPartFile);
+  file = fopen(fileName, "r");
+#ifdef DEBUG
+    printf("BDF Partition file: %s\n", fileName);
+#endif
+  bool wrongFile = FALSE;
+  if (file != NULL) {
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    int val;
+    i = 0;
+    read = getline(&line, &len, file);
+    if(read != -1)
+    {
+      unsigned long vars;
+      sscanf(line, "%lu", &vars);
+      if(vars > 0) hybrid->nBE = vars;
+    }
+    if (hybrid->nBE > 0) {
+      hybrid->BES = (int *)malloc(hybrid->nBE * sizeof(int));
+      while ((read = getline(&line, &len, file)) != -1) {
+        sscanf(line, "%d", &val);
+        if (val < 0) {
+          fprintf(stderr, "Wrong partition file.\n");
+          wrongFile = TRUE;
+          break;
+        }
+        hybrid->BE[val] = TRUE;
+        hybrid->BES[i++] = val;
+      }
+    }
+    fclose(file);
+    if (line != NULL) {
+      free(line);
+    }
+    if (wrongFile == TRUE) {
+      abort();
+    }
+  }
+  else {
+    int j, states = simData->states;
+    hybrid->nBE = states;
+    for (i = 0; i < states; i++) {
+      hybrid->BE[i] = TRUE;
+    }
+
+    // Compute LIQSS variables
+    if (simData->HD) {
+#ifdef DEBUG
+      printf("Variables computed with LIQSS: ");
+#endif
+      int m;
+      for (i = 0; i < simData->events; i++) {
+        for (j = 0; j < simData->nHD[i]; j++) {
+          int handlerInfDerivative = simData->HD[i][j];
+          int stateInfDerivatives = simData->nSD[handlerInfDerivative];
+          for (m = 0; m < stateInfDerivatives; m++) {
+            if (hybrid->BE[simData->SD[handlerInfDerivative][m]]) {
+              hybrid->BE[simData->SD[handlerInfDerivative][m]] = FALSE;
+              hybrid->nBE--;
+#ifdef DEBUG
+              printf("%d ", simData->SD[handlerInfDerivative][m]);
+#endif
+            }
           }
         }
       }
     }
-  }
-  printf("\n");
-  // Guardar vector de estados que van con BE
-  if (hybrid->nBE) {
-    hybrid->BES = (int *)malloc(hybrid->nBE * sizeof(int));
-    printf("LIDF2: ");
-    j = 0;
-    for (i = 0; i < states; i++) {
-      if (hybrid->BE[i]) {
-        hybrid->BES[j] = i;
-        printf("%d ", i);
-        j++;
-      }
-    }
+#ifdef DEBUG
     printf("\n");
+#endif
+    if (hybrid->nBE) {
+      hybrid->BES = (int *)malloc(hybrid->nBE * sizeof(int));
+#ifdef DEBUG
+      printf("Variables computed with BDF: ");
+#endif
+      j = 0;
+      for (i = 0; i < states; i++) {
+        if (hybrid->BE[i]) {
+          hybrid->BES[j] = i;
+#ifdef DEBUG
+          printf("%d ", i);
+#endif
+          j++;
+        }
+      }
+#ifdef DEBUG
+      printf("\n");
+#endif
+    }
   }
-
-  // Forzar todo a LI
-  if (0) {
-    for (i = 0; i < states; i++)
-      hybrid->BE[i] = FALSE;
-    hybrid->nBE = 0;
+  if (hybrid->nBE) {
+    hybrid->invAd = (double **)malloc(hybrid->nBE * sizeof(double*));
+    for (i = 0; i < hybrid->nBE; i++) {
+      hybrid->invAd[i] = (double *)malloc(hybrid->nBE * sizeof(double));
+    }
   }
 }
+
+

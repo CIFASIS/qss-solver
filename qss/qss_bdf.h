@@ -42,6 +42,7 @@ struct QSS_BDF_hybrid_
   int **SD;
   int **S;
 	double *xprev;
+  double **invAd;
 	double hmin;
 	double h;
   bool band;
@@ -52,8 +53,6 @@ struct QSS_BDF_hybrid_
 /**
  *
  * @param simData
- * @param simTime
- * @param simOutput
  * @return
  */
 QSS_BDF_hybrid
@@ -70,8 +69,6 @@ QSS_BDF_freeHybrid(QSS_BDF_hybrid o);
  *
  * @param hybrid
  * @param simData
- * @param simTime
- * @param simOutput
  */
 void
 QSS_BDF_partition(QSS_BDF_hybrid hybrid, QSS_data simData);

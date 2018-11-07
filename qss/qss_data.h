@@ -379,6 +379,7 @@ struct QSS_data_
     SD_eventData event;  //!<
     SD_parameters params; //!<
     QSS_LP_data lp; //!<
+    char *bdfPartFile;
 };
 
 /**

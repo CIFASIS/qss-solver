@@ -40,8 +40,6 @@ SD_Solver _getSolver(const char *sol) {
   } else if (!strcmp(sol, "LIQSS_BDF")) {
     return SD_LIQSS_BDF;
   } else if (!strcmp(sol, "QSS3")) {
-    return SD_QSS3;
-  } else if (!strcmp(sol, "LIQSS3")) {
     return SD_LIQSS3;
   } else if (!strcmp(sol, "QSS4")) {
     return SD_QSS4;
@@ -140,7 +138,7 @@ SET_settings SET_Settings(char *fname) {
   p->nDQRel = 0;
   p->pm = SD_Metis;
   p->dtSynch = SD_DT_Adaptive;
-  p->BDFPart = "";
+  p->BDFPart = NULL;
   if (config_lookup_float(cf, "minstep", &dres)) {
     if (dres == 0) {
       p->minstep = MIN_STEP;
@@ -200,7 +198,8 @@ SET_settings SET_Settings(char *fname) {
     p->order = _getOrder(p->solver);
   }
   if (config_lookup_string(cf, "bdf", &bdf)) {
-    p->BDFPart = bdf;
+    p->BDFPart = checkedMalloc(256 * sizeof(char));
+    strcpy(p->BDFPart, bdf);
   }
   if (config_lookup_string(cf, "partitionMethod", &sol)) {
     p->pm = _getPartitionMethod(sol);
