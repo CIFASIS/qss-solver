@@ -61,7 +61,6 @@ vpath %.c $(SRCDIR)
 .SUFFIXES: .c
 
 # Source files.
-<<<<<<< HEAD
 COMMONSRC = $(COMMONDIR)/data.c \
 						$(COMMONDIR)/utils.c \
 						$(COMMONDIR)/tree.c \
