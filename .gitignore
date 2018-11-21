@@ -10,3 +10,5 @@ ChangeLog
 # Vim config files.
 tags
 compile_commands.json
+engine.sublime-project
+engine.sublime-workspace
