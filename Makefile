@@ -20,6 +20,7 @@ DASSLDIR 	:= $(SRCDIR)/classic/dassl
 DOPRIDIR 	:= $(SRCDIR)/classic/dopri5
 COMMONDIR 	:= $(SRCDIR)/common
 USRDIR 		:= $(SRCDIR)/usr
+PWD= $(shell pwd)
 3RDPARTYDIR	:= $(SRCDIR)/3rd-party
 BUILDDIR    := $(USRDIR)/obj/release
 ifeq ($(DEBUG),True)
@@ -43,6 +44,7 @@ LIBQSS      := $(LIBDIR)/libqss.a
 LIBTIMESTEP := $(LIBDIR)/libtimestep.a
 LIBCVODE    := $(LIBDIR)/libsundials_cvode.a
 LIBIDA      := $(LIBDIR)/libsundials_ida.a
+LIBGSL      := $(LIBDIR)/libgsl.a
 ifeq ($(DEBUG),True)
 LIBQSS      := $(LIBDIR)/libqssd.a
 LIBTIMESTEP := $(LIBDIR)/libtimestepd.a
@@ -61,7 +63,6 @@ vpath %.c $(SRCDIR)
 .SUFFIXES: .c
 
 # Source files.
-<<<<<<< HEAD
 COMMONSRC = $(COMMONDIR)/data.c \
 						$(COMMONDIR)/utils.c \
 						$(COMMONDIR)/tree.c \
@@ -158,7 +159,7 @@ DOPRIOBJ=$(addprefix $(BUILDDIR)/, $(notdir $(DOPRISRC:.c=.o)))
 # Make dependencies
 DEPS = $(COMMONOBJ:.o=.d) $(SEQOBJ:.o=.d) $(PAROBJ:.o=.d) $(CLASSICOBJ:.o=.d)
 
-default: $(LIBCVODE) $(LIBIDA) $(LIBQSS) $(LIBTIMESTEP)
+default: $(LIBCVODE) $(LIBIDA) $(LIBGSL) $(LIBQSS) $(LIBTIMESTEP)
 
 $(LIBCVODE): | $(BUILDDIR)
 	tar xvzf $(3RDPARTYDIR)/cvode/cvode-2.9.0.tar.gz
@@ -175,6 +176,11 @@ ifeq ($(OS), Windows_NT)
 	cp -r $(SRCDIR)/msys32/usr/* $(SRCDIR)/usr/
 	rm -rf msys32
 endif
+
+$(LIBGSL): | $(BUILDDIR)
+	tar xvzf $(3RDPARTYDIR)/gsl/gsl-2.5.tar.gz
+	cd ./gsl-2.5/; ./configure --prefix=$(PWD)/usr; make; make install 
+	rm -rf ./gsl-2.5
 
 $(LIBIDA): | $(BUILDDIR)
 	tar xvzf $(3RDPARTYDIR)/ida/ida-2.9.0.tar.gz
