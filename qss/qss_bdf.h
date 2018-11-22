@@ -54,7 +54,6 @@ struct QSS_BDF_hybrid_
   bool band;
   bool *change;
   gsl_spmatrix *As;
-  gsl_spmatrix *Bs;
   gsl_spmatrix *Cs;
   gsl_vector *fs;
   gsl_vector *us;
