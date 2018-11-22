@@ -497,7 +497,7 @@ void LIQSS_BDF_updateQuantizedState(QA_quantizer quantizer, int var, double *q,
       }
       q[cf1] = (a[var] * q[cf0] + u0[var] + h * u1[var]) / (1 - h * a[var]);
 
-      if (x[cf2] * ddx < 0)  // no hace falta
+      if (x[cf2] * ddx < 0)  
       {
         q[cf1] = -u1[var] / a[var];
         q[cf0] = (q[cf1] - u0[var]) / a[var];

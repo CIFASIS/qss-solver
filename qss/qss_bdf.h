@@ -22,6 +22,10 @@
 
 #include "../common/data.h"
 #include "qss_data.h"
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_spmatrix.h>
+#include <gsl/gsl_splinalg.h>
 
 /**
  *
@@ -33,21 +37,29 @@ typedef struct QSS_BDF_hybrid_ *QSS_BDF_hybrid;
  */
 struct QSS_BDF_hybrid_
 {
-	int smaller;
-	int bigger;
+	int inc_step;
+	int dec_step;
 	int nBE;
-	int infs;
+	int *BE;
+  int *Jac;
   int *nSD;
 	int *BES;
   int **SD;
-  int **S;
-	double *xprev;
-  double **invAd;
+  double *xprev;
+  double *jac;
 	double hmin;
+	double hmax;
 	double h;
+	double hprev;
   bool band;
   bool *change;
-	bool *BE;
+  gsl_spmatrix *As;
+  gsl_spmatrix *Bs;
+  gsl_spmatrix *Cs;
+  gsl_vector *fs;
+  gsl_vector *us;
+  gsl_splinalg_itersolve *work;
+  const gsl_splinalg_itersolve_type *T;
 };
 
 /**
