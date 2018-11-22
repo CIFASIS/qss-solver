@@ -36,6 +36,7 @@ CQSS_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 {
   int i;
   int states = simData->states;
+
   quantizer->state->qsup = (double *) malloc(states * sizeof(double));
   quantizer->state->qinf = (double *) malloc(states * sizeof(double));
   quantizer->state->lt = (double *) malloc(states * sizeof(double));
