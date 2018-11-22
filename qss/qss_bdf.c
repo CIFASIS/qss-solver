@@ -45,7 +45,6 @@ QSS_BDF_hybrid QSS_BDF_Hybrid(QSS_data simData) {
   p->work = NULL;
   p->jac = simData->jac;
   p->As = NULL;
-  p->Bs = NULL;
   p->Cs = NULL;
   p->work = NULL;
   p->T = NULL;
@@ -60,19 +59,47 @@ QSS_BDF_hybrid QSS_BDF_Hybrid(QSS_data simData) {
 }
 
 void QSS_BDF_freeHybrid(QSS_BDF_hybrid h) {
-  if (h != NULL) {
-    free(h);
+  if (h->BE != NULL) {
+    free(h->BE);
   }
+  if (h->Jac != NULL) {
+    free(h->Jac);
+  }
+  if (h->BES != NULL) {
+    free(h->BES);
+  }
+  if (h->change != NULL) {
+    free(h->change);
+  }
+  if (h->xprev != NULL) {
+    free(h->xprev);
+  }
+  if (h->As != NULL) {
+    gsl_spmatrix_free(h->As);
+  }
+  if (h->Cs != NULL) {
+    gsl_spmatrix_free(h->Cs);
+  }
+  if (h->fs != NULL) {
+    gsl_vector_free(h->fs);
+  }
+  if (h->us != NULL) {
+    gsl_vector_free(h->us);
+  }
+  if (h->work != NULL) {
+    gsl_splinalg_itersolve_free(h->work);
+  }
+  free(h);
 }
-
 
 void QSS_BDF_initGSL(QSS_BDF_hybrid hybrid) {
   // gsl
-	hybrid->T = gsl_splinalg_itersolve_gmres;
-	hybrid->work = gsl_splinalg_itersolve_alloc(hybrid->T, hybrid->nBE, 0);
-	hybrid->As = gsl_spmatrix_alloc(hybrid->nBE ,hybrid->nBE); // sparse left side matrix
-	hybrid->fs = gsl_vector_alloc(hybrid->nBE); // right side vector
-	hybrid->us = gsl_vector_alloc(hybrid->nBE); // solution vector
+  hybrid->T = gsl_splinalg_itersolve_gmres;
+  hybrid->work = gsl_splinalg_itersolve_alloc(hybrid->T, hybrid->nBE, 0);
+  hybrid->As =
+      gsl_spmatrix_alloc(hybrid->nBE, hybrid->nBE);  // sparse left side matrix
+  hybrid->fs = gsl_vector_alloc(hybrid->nBE);        // right side vector
+  hybrid->us = gsl_vector_alloc(hybrid->nBE);        // solution vector
 }
 
 void QSS_BDF_initJacobianVector(QSS_BDF_hybrid hybrid, QSS_data simData) {
@@ -85,7 +112,7 @@ void QSS_BDF_initJacobianVector(QSS_BDF_hybrid hybrid, QSS_data simData) {
       continue;
     }
   }
-  hybrid->Jac = (int*) malloc (jac * sizeof(int));
+  hybrid->Jac = (int *)malloc(jac * sizeof(int));
   jac = 0;
   for (i = 0; i < states; i++) {
     if (BE[i] == NOT_ASSIGNED) {
@@ -96,7 +123,6 @@ void QSS_BDF_initJacobianVector(QSS_BDF_hybrid hybrid, QSS_data simData) {
       hybrid->Jac[jac++] = fullJac++;
     }
   }
-
 }
 
 void QSS_BDF_partition(QSS_BDF_hybrid hybrid, QSS_data simData) {
@@ -106,7 +132,7 @@ void QSS_BDF_partition(QSS_BDF_hybrid hybrid, QSS_data simData) {
   sprintf(fileName, "%s", simData->bdfPartFile);
   file = fopen(fileName, "r");
 #ifdef DEBUG
-    printf("BDF Partition file: %s\n", fileName);
+  printf("BDF Partition file: %s\n", fileName);
 #endif
   bool wrongFile = FALSE;
   if (file != NULL) {
@@ -116,11 +142,10 @@ void QSS_BDF_partition(QSS_BDF_hybrid hybrid, QSS_data simData) {
     int val;
     i = 0;
     read = getline(&line, &len, file);
-    if(read != -1)
-    {
+    if (read != -1) {
       int vars;
       sscanf(line, "%d", &vars);
-      if(vars > 0) hybrid->nBE = vars;
+      if (vars > 0) hybrid->nBE = vars;
     }
     if (hybrid->nBE > 0) {
       hybrid->BES = (int *)malloc(hybrid->nBE * sizeof(int));
@@ -148,11 +173,10 @@ void QSS_BDF_partition(QSS_BDF_hybrid hybrid, QSS_data simData) {
     printf("Variables computed with BDF: ");
     printf("%d ", hybrid->nBE);
     for (i = 0; i < hybrid->nBE; i++) {
-          printf("%d ", hybrid->BES[i]);
+      printf("%d ", hybrid->BES[i]);
     }
 #endif
-  }
-  else {
+  } else {
     int states = simData->states;
     hybrid->nBE = states;
     for (i = 0; i < states; i++) {
