@@ -816,6 +816,12 @@ MMO_PrintExp_::foldTraverseElement(AST_Expression exp)
   stringstream ret(stringstream::out);
   switch(exp->expressionType())
   {
+    case EXPSTRING:
+    {
+      AST_Expression_String str = exp->getAsString();
+      ret << "\"" << str->str() << "\"";
+      break;
+    }
     case EXPCOMPREF:
       {
       AST_Expression_ComponentReference cr = exp->getAsComponentReference();
