@@ -249,6 +249,15 @@ MMO_MicroModelicaIR_::_insertComponent(AST_Element_Component x)
             NULL, size, array),
             t);
       }
+      else if (c->isString())
+      {
+        _class->insert(
+        current_element(it)->name(),
+            newVarInfo(newType_String(), tp,
+            current_element(it)->modification(),
+            NULL, size, array),
+            t);
+      }
       else
       {
         _class->insert(
