@@ -163,8 +163,8 @@ void MMO_Files_::makefile() {
   buffer << " $(TARGET_SRC) $(CFLAGS) -o $@ -lm -lgsl -lconfig -lgfortran";
 #ifdef __linux__
   buffer << " -lpthread -lmetis -lscotch -lscotcherr -lpatoh -lrt "
-            "-lsundials_cvode -lsundials_ida -lsundials_nvecserial -llapack "
-            "-latlas -lf77blas -lklu";
+            "-lsundials_cvode -lsundials_ida -lsundials_nvecserial "
+            "-latlas -lf77blas -lklu -llapack";
 #endif
   buffer << " -lgslcblas" << includes.str();
   if (_flags->parallel()) {
@@ -367,13 +367,12 @@ void MMO_Files_::BDFPartition() {
     variables.splice(variables.end(), ret);
   }
   string fileName = _fname + "_BDF.part";
-  ofstream partition(fileName.c_str(), ios::out | ios::binary);
-  partition.seekp(0);
-  unsigned long size = variables.size();
-  partition.write((char *)&size, sizeof(unsigned long));
+  ofstream partition(fileName.c_str(), ios::out);
+  int size = variables.size();
+  partition << size << endl;
   for (varIt = variables.begin(); varIt != variables.end(); varIt++) {
     int val = *varIt;
-    partition.write((char *)&val, sizeof(int));
+    partition << val << endl;
   }
   partition.close();
 }

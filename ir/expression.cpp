@@ -1128,6 +1128,7 @@ MMO_PartitionInterval_::foldTraverseElement(AST_Expression exp)
             range[2] = range[1];
             range[1] = 1;
           }
+          range[0] -= 1;
           int p;
           for(p = range[0]; p < range[2]; p += range[1])
             part.push_back(vi->index().offset()+p);
