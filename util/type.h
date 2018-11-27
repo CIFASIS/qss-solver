@@ -324,6 +324,18 @@ class Type_String_: public Type_
     string
     print() const;
 };
+/**
+ *
+ * @return
+ */
+Type_String
+newType_String();
+/**
+ *
+ * @param m
+ */
+void
+deleteType_String(Type_String m);
 
 /**
  *
