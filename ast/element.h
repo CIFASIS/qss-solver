@@ -333,6 +333,8 @@ class AST_Element_Component_: public AST_Element_
     isReal();
     bool
     isInteger();
+    bool
+    isString();
     private:
     AST_DeclarationList _decl_list;
     string _type;
