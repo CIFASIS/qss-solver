@@ -1849,10 +1849,14 @@ MMO_Function_::prototype()
     VarInfo vi = *it;
     if(vi->isInput())
     {
-      input << "double ";
-      if(vi->isArray())
-      {
-        input << "*";
+      if(vi->isString()) {
+        input << "const char*";
+      } else {
+        input << "double ";
+        if(vi->isArray())
+        {
+          input << "*";
+        }
       }
       input << vi->name() << ",";
     }
