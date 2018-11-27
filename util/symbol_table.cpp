@@ -518,11 +518,11 @@ VarSymbolTable_::print(VarInfo vi, string idx, int offset, int order,
       }
       else
       {
-        if(vi->isOutput()
+        /*if(vi->isOutput()
             && _vste == VST_FUNCTION)
         {
           ret << "*";
-        }
+        }*/
         ret << vi->name();
         if(vi->isArray())
         {
