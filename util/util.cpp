@@ -155,7 +155,7 @@ Util::setCompileFlags(MMO_CompileFlags flags)
 bool
 Util::checkTypeString(string t)
 {
-  if(t != "Integer" && t != "Real" && t != "Boolean")
+  if(t != "Integer" && t != "Real" && t != "Boolean" && t != "String")
   {
     return false;
   }
