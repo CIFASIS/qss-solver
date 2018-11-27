@@ -506,6 +506,8 @@ class VarInfo_
      */
     int
     dimensions();
+    inline bool 
+    isString() { return _t->getType() == TYSTRING; } 
     private:
     void
     _processModification();
