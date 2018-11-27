@@ -1,4 +1,4 @@
-# Generated files. 
+# Generated files.
 /usr
 
 # Modelica C Compiler files.
@@ -22,3 +22,5 @@ compile_commands.json
 
 # Local ChangeLog.
 ChangeLog
+mmoc.sublime-project
+mmoc.sublime-workspace
