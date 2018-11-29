@@ -359,6 +359,9 @@ struct QSS_data_
     int *nDD; //!<
     int *nDH; //!<
     int *TD;  //!<
+    int *BDF;
+    int *BDFMap;
+    int BDFOutputs;
     int **SD; //!<
     int **DS; //!<
     int **SZ; //!<
@@ -375,11 +378,12 @@ struct QSS_data_
     int inputs;  //!<
     int order;  //!<
     int maxRHS; //!<
+    int nBDF;
+    int nBDFOutputs;
     SD_Solver solver;  //!<
     SD_eventData event;  //!<
     SD_parameters params; //!<
     QSS_LP_data lp; //!<
-    char *bdfPartFile;
 };
 
 /**

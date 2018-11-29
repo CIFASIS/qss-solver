@@ -101,6 +101,7 @@ SEQSRC = $(QSSDIR)/qss_graph.c \
 				 $(QSSDIR)/qss_quantizer.c \
 				 $(QSSDIR)/qss_integrator.c \
 				 $(QSSDIR)/qss_seq_integrator.c  \
+				 $(QSSDIR)/qss_hyb_integrator.c  \
 				 $(QSSDIR)/qss_simulator.c \
 				 $(QSSDIR)/qss_commands.c
 

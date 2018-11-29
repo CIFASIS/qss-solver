@@ -39,11 +39,11 @@ struct QSS_BDF_hybrid_
 {
 	int inc_step;
 	int dec_step;
-	int nBE;
-	int *BE;
+	int nBDF;
+	int *BDF;
   int *Jac;
   int *nSD;
-	int *BES;
+	int *BDFMap;
   int **SD;
   double *xprev;
   double *jac;
@@ -52,7 +52,6 @@ struct QSS_BDF_hybrid_
 	double h;
 	double hprev;
   bool band;
-  bool *change;
   gsl_spmatrix *As;
   gsl_spmatrix *Cs;
   gsl_vector *fs;
@@ -82,6 +81,6 @@ QSS_BDF_freeHybrid(QSS_BDF_hybrid o);
  * @param simData
  */
 void
-QSS_BDF_partition(QSS_BDF_hybrid hybrid, QSS_data simData);
+QSS_BDF_partition(QSS_data simData, char *name);
 
 #endif  /* QSS_BDF_H_ */

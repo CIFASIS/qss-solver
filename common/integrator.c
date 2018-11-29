@@ -29,6 +29,7 @@
 #include "../qss/qss_integrator.h"
 #include "../qss/qss_par_integrator.h"
 #include "../qss/qss_seq_integrator.h"
+#include "../qss/qss_hyb_integrator.h"
 #include "data.h"
 #include "utils.h"
 
@@ -55,6 +56,10 @@ INT_Integrator(SIM_simulator simulator)
     case SD_IDA:
       p->ops->initiliaze = CLC_initialize;
       p->ops->integrate = IDA_integrate;
+      break;
+    case SD_LIQSS_BDF:
+      p->ops->initiliaze = QSS_HYB_initialize;
+      p->ops->integrate = QSS_HYB_integrate;
       break;
     default:
       {

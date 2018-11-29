@@ -60,7 +60,6 @@ void LIQSS_BDF_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
     quantizer->state->u0[i] = 0;
     quantizer->state->u1[i] = 0;
   }
-  QSS_BDF_partition(quantizer->state->qss_bdf, simData);
 #ifdef QSS_PARALLEL
   quantizer->state->qMap = simData->lp->qMap;
   quantizer->ops->recomputeNextTimes = LIQSS_BDF_PAR_recomputeNextTimes;
@@ -90,9 +89,9 @@ void LIQSS_BDF_setGSLVector(QA_quantizer quantizer, double *x, double *q,
 {
   int i, j, jacIt;
   double *J = quantizer->state->qss_bdf->jac;
-  int *BES = quantizer->state->qss_bdf->BES;
-  int nBE = quantizer->state->qss_bdf->nBE;
-  int *BE = quantizer->state->qss_bdf->BE;
+  int *BDFMap = quantizer->state->qss_bdf->BDFMap;
+  int nBDF = quantizer->state->qss_bdf->nBDF;
+  int *BDF = quantizer->state->qss_bdf->BDF;
   int *Jac = quantizer->state->qss_bdf->Jac;
   double h = quantizer->state->qss_bdf->h;
   double B, f, B1 = 0.0;
@@ -104,14 +103,14 @@ void LIQSS_BDF_setGSLVector(QA_quantizer quantizer, double *x, double *q,
     setMatrix = TRUE;
     B1 = -1 / 3.0;
   }
-  for (i = 0, jacIt = 0; i < nBE; i++) {
+  for (i = 0, jacIt = 0; i < nBDF; i++) {
     f = 0;
-    int row = BES[i];
+    int row = BDFMap[i];
     int nSD = quantizer->state->qss_bdf->nSD[row];
     bool diag = FALSE;
     for (j = 0; j < nSD; j++, jacIt++) {
       int sd = quantizer->state->qss_bdf->SD[row][j];
-      int col = BE[sd];
+      int col = BDF[sd];
       if (col != NOT_ASSIGNED) {
         if (i == col) {
           diag = TRUE;
@@ -125,7 +124,7 @@ void LIQSS_BDF_setGSLVector(QA_quantizer quantizer, double *x, double *q,
             gsl_spmatrix_set(As, i, col, B);
           }
         }
-        f += B * q[3 * BES[col]];
+        f += B * q[3 * BDFMap[col]];
       }
     }
     if (!diag) {
@@ -133,10 +132,10 @@ void LIQSS_BDF_setGSLVector(QA_quantizer quantizer, double *x, double *q,
       if (setMatrix) {
         gsl_spmatrix_set(As, i, i, B);
       }
-      f += B * q[3 * BES[i]];
+      f += B * q[3 * BDFMap[i]];
     }
-    gsl_vector_set(fs, i, f - xprev[i] / 3.0 + 2 / 3.0 * h * x[3 * BES[i] + 1]);
-    gsl_vector_set(us, i, q[3 * BES[i]]);
+    gsl_vector_set(fs, i, f - xprev[i] / 3.0 + 2 / 3.0 * h * x[3 * BDFMap[i] + 1]);
+    gsl_vector_set(us, i, q[3 * BDFMap[i]]);
   }
 }
 
@@ -150,9 +149,9 @@ void LIQSS_BDF_solver2x2_h(QA_quantizer quantizer, double *x, double *q,
 {
   double *J = quantizer->state->qss_bdf->jac;
   double h = quantizer->state->qss_bdf->h;
-  int *BES = quantizer->state->qss_bdf->BES;
-  int nBE = quantizer->state->qss_bdf->nBE;
-  int *BE = quantizer->state->qss_bdf->BE;
+  int *BDFMap = quantizer->state->qss_bdf->BDFMap;
+  int nBDF = quantizer->state->qss_bdf->nBDF;
+  int *BDF = quantizer->state->qss_bdf->BDF;
   int *Jac = quantizer->state->qss_bdf->Jac;
   int i, j;
   double H3;
@@ -180,19 +179,18 @@ void LIQSS_BDF_solver2x2_h(QA_quantizer quantizer, double *x, double *q,
       status = gsl_splinalg_itersolve_iterate(Cs, fs, tol, us, work);
     while (status == GSL_CONTINUE && ++iter < 1);
     double AB2, err, e = 0;
-    tol = lqu[BES[var]] * 10;
-    for (i = 0; i < nBE; i++) {
-      xprev[i] = q[3 * BES[i]]; 
-      AB2 = q[3 * BES[i]] + h * (3 * x[3 * BES[i] + 1] - dxprev[BES[i]]) / 2;
-      q[3 * BES[i]] = gsl_vector_get(us, i);
-      err = fabs(q[3 * BES[i]] - AB2);
+    tol = lqu[BDFMap[var]] * 10;
+    for (i = 0; i < nBDF; i++) {
+      xprev[i] = q[3 * BDFMap[i]]; 
+      AB2 = q[3 * BDFMap[i]] + h * (3 * x[3 * BDFMap[i] + 1] - dxprev[BDFMap[i]]) / 2;
+      q[3 * BDFMap[i]] = gsl_vector_get(us, i);
+      err = fabs(q[3 * BDFMap[i]] - AB2);
       if (err > e) e = err;
-      if (lqu[BES[i]] * 10 < tol) tol = lqu[BES[i]] * 10;
+      if (lqu[BDFMap[i]] * 10 < tol) tol = lqu[BDFMap[i]] * 10;
     }
     quantizer->state->qss_bdf->hprev = h;
-    int SZC_LIBDF = 1;
     RTE = 3 * pow(tol / e, 1 / 3.0);
-    if (RTE < 1 && SZC_LIBDF && h > hmin) {
+    if (RTE < 1 && h > hmin) {
       quantizer->state->qss_bdf->dec_step++;
       if (quantizer->state->qss_bdf->dec_step > 1) {
         h = h * RTE * 0.8;  
@@ -201,12 +199,12 @@ void LIQSS_BDF_solver2x2_h(QA_quantizer quantizer, double *x, double *q,
         quantizer->state->qss_bdf->dec_step = 0;
         quantizer->state->qss_bdf->inc_step = 0;
         H3 = h / quantizer->state->qss_bdf->h;
-        for (i = 0; i < nBE; i++) {
-          xprev[i] = (1 - H3) * q[3 * BES[i]] + H3 * xprev[i];
+        for (i = 0; i < nBDF; i++) {
+          xprev[i] = (1 - H3) * q[3 * BDFMap[i]] + H3 * xprev[i];
         }
       }
     }
-    if (RTE > 10 && SZC_LIBDF && h < hmax) {
+    if (RTE > 10 && h < hmax) {
       quantizer->state->qss_bdf->inc_step++;
       if (quantizer->state->qss_bdf->inc_step > 10) { 
         h = h * RTE * 0.8;
@@ -216,8 +214,8 @@ void LIQSS_BDF_solver2x2_h(QA_quantizer quantizer, double *x, double *q,
         quantizer->state->qss_bdf->dec_step = 0;
         H3 = h / quantizer->state->qss_bdf->h;
         quantizer->state->qss_bdf->h = h;
-        for (i = 0; i < nBE; i++)
-          xprev[i] = (1 - H3) * q[3 * BES[i]] + H3 * xprev[i];
+        for (i = 0; i < nBDF; i++)
+          xprev[i] = (1 - H3) * q[3 * BDFMap[i]] + H3 * xprev[i];
       }
     }
   } else {
@@ -226,14 +224,14 @@ void LIQSS_BDF_solver2x2_h(QA_quantizer quantizer, double *x, double *q,
     if (quantizer->state->qss_bdf->hprev != h) {
       setMatrix = TRUE;
     }
-    for (i = 0, jacIt = 0; i < nBE; i++) {
-      int row = BES[i];
+    for (i = 0, jacIt = 0; i < nBDF; i++) {
+      int row = BDFMap[i];
       int nSD = quantizer->state->qss_bdf->nSD[row];
       bool diag = FALSE;
       f = 0;
       for (j = 0; j < nSD; j++, jacIt++) {
         int sd = quantizer->state->qss_bdf->SD[row][j];
-        int col = BE[sd];
+        int col = BDF[sd];
         if (col != NOT_ASSIGNED) {
           if (i == col) {
             diag = TRUE;
@@ -244,17 +242,17 @@ void LIQSS_BDF_solver2x2_h(QA_quantizer quantizer, double *x, double *q,
           if (setMatrix) {
             gsl_spmatrix_set(As, i, col, B);
           }
-          f += B * q[3 * BES[col]];
+          f += B * q[3 * BDFMap[col]];
         }
       }
       if (!diag) {
         if (setMatrix) {
           gsl_spmatrix_set(As, i, i, 1);
         }
-        f += q[3 * BES[i]];
+        f += q[3 * BDFMap[i]];
       }
-      gsl_vector_set(fs, i, f + h * x[3 * BES[i] + 1]);
-      gsl_vector_set(us, i, q[3 * BES[i]]);
+      gsl_vector_set(fs, i, f + h * x[3 * BDFMap[i] + 1]);
+      gsl_vector_set(us, i, q[3 * BDFMap[i]]);
     }
     // solver
     Cs = gsl_spmatrix_ccs(As);
@@ -262,17 +260,17 @@ void LIQSS_BDF_solver2x2_h(QA_quantizer quantizer, double *x, double *q,
     int status;
     do
       status = gsl_splinalg_itersolve_iterate(Cs, fs, tol, us, work);
-    while (status == GSL_CONTINUE && ++iter < nBE);
+    while (status == GSL_CONTINUE && ++iter < nBDF);
 
-    for (i = 0; i < nBE; i++) {
-      xprev[i] = q[3 * BES[i]]; 
-      q[3 * BES[i]] = gsl_vector_get(us, i);
+    for (i = 0; i < nBDF; i++) {
+      xprev[i] = q[3 * BDFMap[i]]; 
+      q[3 * BDFMap[i]] = gsl_vector_get(us, i);
     }
     quantizer->state->qss_bdf->band = TRUE;
   }
-  for (i = 0; i < nBE; i++) {
-    dxprev[BES[i]] = x[3 * BES[i] + 1];
-    q[3 * BES[i] + 1] = 0;  
+  for (i = 0; i < nBDF; i++) {
+    dxprev[BDFMap[i]] = x[3 * BDFMap[i] + 1];
+    q[3 * BDFMap[i] + 1] = 0;
   }
 }
 
@@ -287,9 +285,9 @@ void LIQSS_BDF_recomputeNextTime(QA_quantizer quantizer, int var, double t,
 #endif
 {
 
-  int *BE = quantizer->state->qss_bdf->BE;
+  int *BDF = quantizer->state->qss_bdf->BDF;
 
-  if (BE[var] == NOT_ASSIGNED) {
+  if (BDF[var] == NOT_ASSIGNED) {
     int cf0 = var * 3, cf1 = cf0 + 1, cf2 = cf1 + 1;
     double *a = quantizer->state->a;
     double *u0 = quantizer->state->u0;
@@ -365,14 +363,7 @@ void LIQSS_BDF_recomputeNextTime(QA_quantizer quantizer, int var, double t,
         nTime[var] = t;
       }
     }
-  } else {
-    bool *change = quantizer->state->qss_bdf->change;
-    double h = quantizer->state->qss_bdf->h;
-    if (change[var] == TRUE)
-      nTime[var] = t;
-    else
-      nTime[var] = t + h;
-  }
+  } 
 }
 
 #ifdef QSS_PARALLEL
@@ -408,9 +399,16 @@ void LIQSS_BDF_nextTime(QA_quantizer quantizer, int var, double t,
                         double *nTime, double *x, double *lqu)
 #endif
 {
-  int *BE = quantizer->state->qss_bdf->BE;
-  if (BE[var] != NOT_ASSIGNED) {
-    nTime[var] = INF;
+  int *BDF = quantizer->state->qss_bdf->BDF;
+  if (BDF[var] != NOT_ASSIGNED) {
+    int *BDFMap = quantizer->state->qss_bdf->BDFMap;
+    int nBDF = quantizer->state->qss_bdf->nBDF;
+    int i;
+    double h = quantizer->state->qss_bdf->h;
+    for (i = 0; i < nBDF; i++) {
+      nTime[BDFMap[i]] = t + h;  
+    }
+    printf("BDF %d nextTime %f\n", var, t+h);
   } else {
     int cf2 = var * 3 + 2;
     if (x[cf2] == 0) {
@@ -429,27 +427,13 @@ void LIQSS_BDF_updateQuantizedState(QA_quantizer quantizer, int var, double *q,
                                     double *x, double *lqu)
 #endif
 {
-  int *BE = quantizer->state->qss_bdf->BE;
-  if (BE[var] != NOT_ASSIGNED) {  // LIDF2
-    bool *change = quantizer->state->qss_bdf->change;
-    int nBE = quantizer->state->qss_bdf->nBE;
-    int *BES = quantizer->state->qss_bdf->BES;
-
-    if (change[var] == TRUE) {
-      change[var] = FALSE;
-    } else {
-      int j;
-      for (j = 0; j < nBE; j++) {
-        if (BES[j] != var) {
-          change[BES[j]] = TRUE;
-        }
-      }
+  int *BDF = quantizer->state->qss_bdf->BDF;
+  if (BDF[var] != NOT_ASSIGNED) {  // BDF
 #ifdef QSS_PARALLEL
       LIQSS_BDF_PAR_solver2x2_h(quantizer, x, q, lqu, var);
 #else
       LIQSS_BDF_solver2x2_h(quantizer, x, q, lqu, var);
 #endif
-    }
   } else {  // LIQSS2
     double t = quantizer->state->lSimTime->time;
     double *a = quantizer->state->a;
