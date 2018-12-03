@@ -361,7 +361,7 @@ struct QSS_data_
     int *TD;  //!<
     int *BDF;
     int *BDFMap;
-    int BDFOutputs;
+    int *BDFOutputs;
     int **SD; //!<
     int **DS; //!<
     int **SZ; //!<

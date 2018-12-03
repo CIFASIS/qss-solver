@@ -115,6 +115,17 @@ void QSS_BDF_freeHybrid(QSS_BDF_hybrid h) {
   free(h);
 }
 
+int QSS_BDF_getOutput(int var, QSS_data simData) {
+  int nSD = simData->nSD[var];
+  int *BDF = simData->BDF;
+  int i,j, out = 0;
+  for(i = 0; i < nSD; i++) {
+    j = simData->SD[var][i];
+    if (BDF[j] == NOT_ASSIGNED) { out++; }
+  }
+  return out;
+}
+
 void QSS_BDF_partition(QSS_data simData, char* name) {
   int i, j;
   FILE *file;
@@ -141,7 +152,7 @@ void QSS_BDF_partition(QSS_data simData, char* name) {
       sscanf(line, "%d", &vars);
       if (vars > 0) simData->nBDF = vars;
     }
-    if (simData->BDF > 0) {
+    if (simData->nBDF > 0) {
       simData->BDFMap = (int *)malloc(simData->nBDF * sizeof(int));
       while ((read = getline(&line, &len, file)) != -1) {
         sscanf(line, "%d", &val);
@@ -152,6 +163,7 @@ void QSS_BDF_partition(QSS_data simData, char* name) {
         }
         simData->BDF[val] = i;
         simData->BDFMap[i++] = val;
+        simData->nBDFOutputs += QSS_BDF_getOutput(val, simData);
       }
     }
     fclose(file);
@@ -218,5 +230,8 @@ void QSS_BDF_partition(QSS_data simData, char* name) {
       printf("\n");
 #endif
     }
+  }
+  if(simData->nBDF) {
+
   }
 }
