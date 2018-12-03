@@ -24,6 +24,7 @@
 #include "../common/data.h"
 #include "../common/simulator.h"
 #include "../common/utils.h"
+#include "qss_bdf.h"
 #include "qss_data.h"
 #include "qss_frw.h"
 #include "qss_integrator.h"
@@ -31,17 +32,16 @@
 #include "qss_quantizer.h"
 #include "qss_scheduler.h"
 #include "qss_simulator.h"
-#include "qss_bdf.h"
 
 void QSS_HYB_initialize(SIM_simulator simulate) {
-  QSS_simulator simulator = (QSS_simulator) simulate->state->sim;
+  QSS_simulator simulator = (QSS_simulator)simulate->state->sim;
   // Local mappings.
   QSS_data qssData = simulator->data;
   double *x = qssData->x;
   double t = simulator->time->time;
   QSS_model qssModel = simulator->model;
-  if(qssModel->jac != NULL) {
-    qssModel->jac(x,qssData->d,qssData->alg,t,qssData->jac);
+  if (qssModel->jac != NULL) {
+    qssModel->jac(x, qssData->d, qssData->alg, t, qssData->jac);
   }
   QSS_BDF_partition(qssData, simulator->output->name);
   QSS_SEQ_initialize(simulate);
@@ -87,6 +87,8 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
   int *BDF = qssData->BDF;
   int *BDFMap = qssData->BDFMap;
   int nBDF = qssData->nBDF;
+  int nBDFOutputs = qssData->nBDFOutputs;
+  int *BDFOutputs = qssData->BDFOutputs;
   int cf0, infCf0;
   const int qOrder = xOrder - 1;
   int nSZ, nLHSSt, nRHSSt, nHD, nHZ;
@@ -126,9 +128,9 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
         }
 #endif
         if (BDF[index] != NOT_ASSIGNED) {
-          //printf("Variable: %d ", index); 
+          // printf("Variable: %d ", index);
           for (i = 0; i < nBDF; i++) {
-            int bdfVar = BDFMap[i];  
+            int bdfVar = BDFMap[i];
             cf0 = bdfVar * coeffs;
             elapsed = t - tx[bdfVar];
             integrateState(cf0, elapsed, x, xOrder);
@@ -137,12 +139,39 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
             if (lqu[bdfVar] < dQMin[bdfVar]) {
               lqu[bdfVar] = dQMin[bdfVar];
             }
-            qssModel->f(bdfVar,q, d, a, t, &(x[cf0]));
+            qssModel->f(bdfVar, q, d, a, t, &(x[cf0]));
           }
-          qssModel->jac(x, d, a, t, qssData->jac);
+          //qssModel->jac(q, d, a, t, qssData->jac);
           QA_updateQuantizedState(quantizer, index, q, x, lqu);
-          tq[index] = t;
+          for (i = 0; i < nBDF; i++) {
+            int bdfVar = BDFMap[i];
+            tq[bdfVar] = t;
+          }
           QA_nextTime(quantizer, index, t, nextStateTime, x, lqu);
+          for (i = 0; i < nBDFOutputs; i++) {
+            int bdfVar = BDFOutputs[i], inf;
+            nSD = qssData->nSD[bdfVar];
+            for (inf = 0; inf < nSD; inf++) {
+              j = SD[bdfVar][inf];
+              elapsed = t - tx[j];
+              infCf0 = j * coeffs;
+              if (elapsed > 0) {
+                x[infCf0] = evaluatePoly(infCf0, elapsed, x, xOrder);
+                tx[j] = t;
+              }
+            }
+            FRW_recomputeDerivatives(frw, qssModel, qssData, qssTime, bdfVar);
+            if (qssData->events > 0) {
+              int inf;
+              nSZ = qssData->nSZ[bdfVar];
+              for (inf = 0; inf < nSZ; inf++) {
+                j = SZ[bdfVar][inf];
+                FRW_nextEventTime(frw, qssModel, qssData, qssTime, j);
+              }
+            }
+            QA_recomputeNextTimes(quantizer, nSD, SD[bdfVar], t, nextStateTime,
+                                  x, lqu, q);
+          }
           if (nOutputs) {
             for (i = 0; i < nBDF; i++) {
               int bdfVar = BDFMap[i];
@@ -152,8 +181,9 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
               }
             }
             qssTime->minIndex = index;
-          }
-        } else {
+        }
+      }
+        else {
           cf0 = index * coeffs;
           elapsed = t - tx[index];
           integrateState(cf0, elapsed, x, xOrder);
@@ -191,185 +221,184 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
             }
           }
         }
-      } 
-      break;
-      case ST_Input: {
+    }
+    break;
+    case ST_Input: {
 #ifdef DEBUG
-        if (settings->debug & SD_DBG_StepInfo) {
-          SD_print(simulationLog, "Input: %d", index);
-        }
+      if (settings->debug & SD_DBG_StepInfo) {
+        SD_print(simulationLog, "Input: %d", index);
+      }
 #endif
-        j = TD[index];
-        elapsed = t - tx[j];
-        infCf0 = j * coeffs;
+      j = TD[index];
+      elapsed = t - tx[j];
+      infCf0 = j * coeffs;
+      if (elapsed > 0) {
+        x[infCf0] = evaluatePoly(infCf0, elapsed, x, xOrder);
+        tx[j] = t;
+      }
+      FRW_recomputeDerivative(frw, qssModel, qssData, qssTime, j);
+      FRW_nextInputTime(frw, qssModel, qssData, qssTime, elapsed, j, index);
+      QA_recomputeNextTime(quantizer, j, t, nextStateTime, x, lqu, q);
+    } break;
+    case ST_Event: {
+#ifdef DEBUG
+      if (settings->debug & SD_DBG_StepInfo) {
+        SD_print(simulationLog, "Event: %d", index);
+      }
+#endif
+      double zc[4];
+      int s;
+      int nZS = qssData->nZS[index];
+      for (i = 0; i < nZS; i++) {
+        j = ZS[index][i];
+        elapsed = t - tq[j];
         if (elapsed > 0) {
-          x[infCf0] = evaluatePoly(infCf0, elapsed, x, xOrder);
-          tx[j] = t;
+          infCf0 = j * coeffs;
+          integrateState(infCf0, elapsed, q, qOrder);
+          tq[j] = t;
         }
-        FRW_recomputeDerivative(frw, qssModel, qssData, qssTime, j);
-        FRW_nextInputTime(frw, qssModel, qssData, qssTime, elapsed, j, index);
-        QA_recomputeNextTime(quantizer, j, t, nextStateTime, x, lqu, q);
-      } break;
-      case ST_Event: {
+      }
+      qssModel->events->zeroCrossing(index, q, d, a, t, zc);
+      s = sign(zc[0]);
+      double et = INF;
+      if (event[index].zcSign == s) {
+        FRW_nextEventTime(frw, qssModel, qssData, qssTime, index);
+        et = qssTime->nextEventTime[index];
+      }
+      if (event[index].zcSign != s || xOrder == 1 || et == t) {
+        if (event[index].direction == 0 || event[index].direction == s) {
 #ifdef DEBUG
-        if (settings->debug & SD_DBG_StepInfo) {
-          SD_print(simulationLog, "Event: %d", index);
-        }
-#endif
-        double zc[4];
-        int s;
-        int nZS = qssData->nZS[index];
-        for (i = 0; i < nZS; i++) {
-          j = ZS[index][i];
-          elapsed = t - tq[j];
-          if (elapsed > 0) {
-            infCf0 = j * coeffs;
-            integrateState(infCf0, elapsed, q, qOrder);
-            tq[j] = t;
+          if (settings->debug & SD_DBG_VarChanges) {
+            simulationLog->handlers[index]++;
           }
-        }
-        qssModel->events->zeroCrossing(index, q, d, a, t, zc);
-        s = sign(zc[0]);
-        double et = INF;
-        if (event[index].zcSign == s) {
-          FRW_nextEventTime(frw, qssModel, qssData, qssTime, index);
-          et = qssTime->nextEventTime[index];
-        }
-        if (event[index].zcSign != s || xOrder == 1 || et == t) {
-          if (event[index].direction == 0 || event[index].direction == s) {
+#endif
+          nRHSSt = event[index].nRHSSt;
+          for (i = 0; i < nRHSSt; i++) {
+            j = event[index].RHSSt[i];
+            infCf0 = j * coeffs;
+            elapsed = t - tq[j];
+            if (elapsed > 0) {
+              integrateState(infCf0, elapsed, q, qOrder);
+            }
+          }
+          nLHSSt = event[index].nLHSSt;
+          for (i = 0; i < nLHSSt; i++) {
+            j = event[index].LHSSt[i];
+            infCf0 = j * coeffs;
+            elapsed = t - tq[j];
+            if (elapsed > 0) {
+              tmp1[i] = q[infCf0];
+              q[infCf0] = evaluatePoly(infCf0, elapsed, q, qOrder);
+            } else {
+              tmp1[i] = q[infCf0];
+            }
+          }
+          if (s >= 0) {
+            qssModel->events->handlerPos(index, q, d, a, t);
+          } else {
+            qssModel->events->handlerNeg(index, q, d, a, t);
+          }
+          for (i = 0; i < nLHSSt; i++) {
+            j = event[index].LHSSt[i];
+            infCf0 = j * coeffs;
+            x[infCf0] = q[infCf0];
+            q[infCf0] = tmp1[i];
+            tx[j] = t;
+            lqu[j] = dQRel[j] * fabs(x[infCf0]);
+            if (lqu[j] < dQMin[j]) {
+              lqu[j] = dQMin[j];
+            }
+            QA_updateQuantizedState(quantizer, j, q, x, lqu);
+            tq[j] = t;
 #ifdef DEBUG
             if (settings->debug & SD_DBG_VarChanges) {
-              simulationLog->handlers[index]++;
+              simulationLog->states[j]++;
             }
 #endif
-            nRHSSt = event[index].nRHSSt;
-            for (i = 0; i < nRHSSt; i++) {
-              j = event[index].RHSSt[i];
-              infCf0 = j * coeffs;
-              elapsed = t - tq[j];
-              if (elapsed > 0) {
-                integrateState(infCf0, elapsed, q, qOrder);
-              }
-            }
-            nLHSSt = event[index].nLHSSt;
-            for (i = 0; i < nLHSSt; i++) {
-              j = event[index].LHSSt[i];
-              infCf0 = j * coeffs;
-              elapsed = t - tq[j];
-              if (elapsed > 0) {
-                tmp1[i] = q[infCf0];
-                q[infCf0] = evaluatePoly(infCf0, elapsed, q, qOrder);
-              } else {
-                tmp1[i] = q[infCf0];
-              }
-            }
-            if (s >= 0) {
-              qssModel->events->handlerPos(index, q, d, a, t);
-            } else {
-              qssModel->events->handlerNeg(index, q, d, a, t);
-            }
-            for (i = 0; i < nLHSSt; i++) {
-              j = event[index].LHSSt[i];
-              infCf0 = j * coeffs;
-              x[infCf0] = q[infCf0];
-              q[infCf0] = tmp1[i];
-              tx[j] = t;
-              lqu[j] = dQRel[j] * fabs(x[infCf0]);
-              if (lqu[j] < dQMin[j]) {
-                lqu[j] = dQMin[j];
-              }
-              QA_updateQuantizedState(quantizer, j, q, x, lqu);
-              tq[j] = t;
-#ifdef DEBUG
-              if (settings->debug & SD_DBG_VarChanges) {
-                simulationLog->states[j]++;
-              }
-#endif
-            }
-            qssModel->events->zeroCrossing(index, q, d, a, t, zc);
-            event[index].zcSign = sign(zc[0]);
-            for (i = 0; i < nLHSSt; i++) {
-              j = event[index].LHSSt[i];
-              QA_nextTime(quantizer, j, t, nextStateTime, x, lqu);
-              int k, h;
-              nSD = qssData->nSD[j];
-              for (h = 0; h < nSD; h++) {
-                k = SD[j][h];
-                elapsed = t - tx[k];
-                infCf0 = k * coeffs;
-                if (elapsed > 0) {
-                  x[infCf0] = evaluatePoly(infCf0, elapsed, x, xOrder);
-                  tx[k] = t;
-                }
-              }
-              FRW_recomputeDerivatives(frw, qssModel, qssData, qssTime, j);
-              nSZ = qssData->nSZ[j];
-              for (h = 0; h < nSZ; h++) {
-                k = SZ[j][h];
-                if (k != index) {
-                  FRW_nextEventTime(frw, qssModel, qssData, qssTime, k);
-                }
-              }
-              QA_recomputeNextTimes(quantizer, nSD, SD[j], t, nextStateTime, x,
-                                    lqu, q);
-              reinits++;
-            }
-            nHZ = qssData->nHZ[index];
-            for (i = 0; i < nHZ; i++) {
-              j = HZ[index][i];
-              if (j != index) {
-                FRW_nextEventTime(frw, qssModel, qssData, qssTime, j);
-              }
-            }
-            nHD = qssData->nHD[index];
-            for (i = 0; i < nHD; i++) {
-              j = HD[index][i];
-              elapsed = t - tx[j];
-              if (elapsed > 0) {
-                infCf0 = j * coeffs;
-                x[infCf0] = evaluatePoly(infCf0, elapsed, x, xOrder);
-                tx[j] = t;
-              }
-              FRW_recomputeDerivative(frw, simulator->model, qssData, qssTime,
-                                      j);
-            }
-            if (nHD) {
-              QA_recomputeNextTimes(quantizer, nHD, HD[index], t, nextStateTime,
-                                    x, lqu, q);
-            }
-            if (nOutputs) {
-              if (event[index].nLHSDsc || event[index].nLHSSt) {
-                OUT_write(log, qssData, qssTime, output);
-              }
-            }
-          } else {
-            event[index].zcSign = sign(zc[0]);
           }
-        }
-        if (et == t) {
-          qssTime->nextEventTime[index] = INF;
+          qssModel->events->zeroCrossing(index, q, d, a, t, zc);
+          event[index].zcSign = sign(zc[0]);
+          for (i = 0; i < nLHSSt; i++) {
+            j = event[index].LHSSt[i];
+            QA_nextTime(quantizer, j, t, nextStateTime, x, lqu);
+            int k, h;
+            nSD = qssData->nSD[j];
+            for (h = 0; h < nSD; h++) {
+              k = SD[j][h];
+              elapsed = t - tx[k];
+              infCf0 = k * coeffs;
+              if (elapsed > 0) {
+                x[infCf0] = evaluatePoly(infCf0, elapsed, x, xOrder);
+                tx[k] = t;
+              }
+            }
+            FRW_recomputeDerivatives(frw, qssModel, qssData, qssTime, j);
+            nSZ = qssData->nSZ[j];
+            for (h = 0; h < nSZ; h++) {
+              k = SZ[j][h];
+              if (k != index) {
+                FRW_nextEventTime(frw, qssModel, qssData, qssTime, k);
+              }
+            }
+            QA_recomputeNextTimes(quantizer, nSD, SD[j], t, nextStateTime, x,
+                                  lqu, q);
+            reinits++;
+          }
+          nHZ = qssData->nHZ[index];
+          for (i = 0; i < nHZ; i++) {
+            j = HZ[index][i];
+            if (j != index) {
+              FRW_nextEventTime(frw, qssModel, qssData, qssTime, j);
+            }
+          }
+          nHD = qssData->nHD[index];
+          for (i = 0; i < nHD; i++) {
+            j = HD[index][i];
+            elapsed = t - tx[j];
+            if (elapsed > 0) {
+              infCf0 = j * coeffs;
+              x[infCf0] = evaluatePoly(infCf0, elapsed, x, xOrder);
+              tx[j] = t;
+            }
+            FRW_recomputeDerivative(frw, simulator->model, qssData, qssTime, j);
+          }
+          if (nHD) {
+            QA_recomputeNextTimes(quantizer, nHD, HD[index], t, nextStateTime,
+                                  x, lqu, q);
+          }
+          if (nOutputs) {
+            if (event[index].nLHSDsc || event[index].nLHSSt) {
+              OUT_write(log, qssData, qssTime, output);
+            }
+          }
         } else {
-          FRW_nextEventTime(frw, qssModel, qssData, qssTime, index);
+          event[index].zcSign = sign(zc[0]);
         }
-      } break;
-      default:
-        break;
-    }
-    SC_update(scheduler, qssData, qssTime);
-    t = qssTime->time;
-    type = qssTime->type;
-    index = qssTime->minIndex;
-    totalSteps++;
-#ifdef DEBUG
-    if (settings->debug & SD_DBG_StepInfo) {
-      SD_print(simulationLog, "");
-    }
-#endif
+      }
+      if (et == t) {
+        qssTime->nextEventTime[index] = INF;
+      } else {
+        FRW_nextEventTime(frw, qssModel, qssData, qssTime, index);
+      }
+    } break;
+    default:
+      break;
   }
-  getTime(simulator->stats->sTime);
-  subTime(simulator->stats->sTime, simulator->stats->iTime);
-  simulator->stats->simulationTime = getTimeValue(simulator->stats->sTime);
-  QSS_SEQ_saveLog(simulator);
-  simulator->stats->totalSteps = totalSteps;
-  QSS_SEQ_printSimulationLog(simulator);
+  SC_update(scheduler, qssData, qssTime);
+  t = qssTime->time;
+  type = qssTime->type;
+  index = qssTime->minIndex;
+  totalSteps++;
+#ifdef DEBUG
+  if (settings->debug & SD_DBG_StepInfo) {
+    SD_print(simulationLog, "");
+  }
+#endif
+}
+getTime(simulator->stats->sTime);
+subTime(simulator->stats->sTime, simulator->stats->iTime);
+simulator->stats->simulationTime = getTimeValue(simulator->stats->sTime);
+QSS_SEQ_saveLog(simulator);
+simulator->stats->totalSteps = totalSteps;
+QSS_SEQ_printSimulationLog(simulator);
 }

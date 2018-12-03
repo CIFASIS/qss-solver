@@ -408,7 +408,7 @@ void LIQSS_BDF_nextTime(QA_quantizer quantizer, int var, double t,
     for (i = 0; i < nBDF; i++) {
       nTime[BDFMap[i]] = t + h;  
     }
-    printf("BDF %d nextTime %f\n", var, t+h);
+    printf("Step size: %f\n", h);
   } else {
     int cf2 = var * 3 + 2;
     if (x[cf2] == 0) {
