@@ -318,6 +318,7 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs,
   p->BDF = NULL;
   p->BDFMap = NULL;
   p->BDFOutputs = NULL;
+  p->JacIt = NULL;
   p->nBDF = 0;
   p->nBDFOutputs = 0;
   if (discretes) {
