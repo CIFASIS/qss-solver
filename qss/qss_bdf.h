@@ -20,65 +20,13 @@
 #ifndef QSS_BDF_H_
 #define QSS_BDF_H_
 
-#include "../common/data.h"
 #include "qss_data.h"
-#include <gsl/gsl_math.h>
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_spmatrix.h>
-#include <gsl/gsl_splinalg.h>
 
 /**
+ * @brief      { function_description }
  *
- */
-typedef struct QSS_BDF_hybrid_ *QSS_BDF_hybrid;
-
-/**
- *
- */
-struct QSS_BDF_hybrid_
-{
-	int inc_step;
-	int dec_step;
-	int nBDF;
-	int *BDF;
-  int *Jac;
-  int *nSD;
-	int *BDFMap;
-  int **SD;
-  double *xprev;
-  double *jac;
-	double hmin;
-	double hmax;
-	double h;
-	double hprev;
-  bool band;
-  gsl_spmatrix *As;
-  gsl_spmatrix *Cs;
-  gsl_vector *fs;
-  gsl_vector *us;
-  gsl_splinalg_itersolve *work;
-  const gsl_splinalg_itersolve_type *T;
-};
-
-/**
- *
- * @param simData
- * @return
- */
-QSS_BDF_hybrid
-QSS_BDF_Hybrid(QSS_data simData);
-
-/**
- *
- * @param o
- */
-void
-QSS_BDF_freeHybrid(QSS_BDF_hybrid o);
-
-/**
- *
- * @param hybrid
- * @param simData
+ * @param[in]  simData  The simulation data
+ * @param      name     The name
  */
 void
 QSS_BDF_partition(QSS_data simData, char *name);

@@ -23,96 +23,27 @@
 
 #include "../common/utils.h"
 
-void QSS_BDF_initGSL(QSS_BDF_hybrid hybrid) {
-  // gsl
-  hybrid->T = gsl_splinalg_itersolve_gmres;
-  hybrid->work = gsl_splinalg_itersolve_alloc(hybrid->T, hybrid->nBDF, 0);
-  hybrid->As =
-      gsl_spmatrix_alloc(hybrid->nBDF, hybrid->nBDF);  // sparse left side matrix
-  hybrid->fs = gsl_vector_alloc(hybrid->nBDF);        // right side vector
-  hybrid->us = gsl_vector_alloc(hybrid->nBDF);        // solution vector
-}
-
-void QSS_BDF_initJacobianVector(QSS_BDF_hybrid hybrid, QSS_data simData) {
+void QSS_BDF_initJacobianVector(QSS_data simData) {
   int jac = 0, fullJac = 0, i, j;
   int states = simData->states;
-  int *BDF = hybrid->BDF;
+  int *BDF = simData->BDF;
   for (i = 0; i < states; i++) {
     if (BDF[i] != NOT_ASSIGNED) {
-      jac += hybrid->nSD[i];
+      jac += simData->nSD[i];
       continue;
     }
   }
-  hybrid->Jac = (int *)malloc(jac * sizeof(int));
+  simData->JacIt = (int *)malloc(jac * sizeof(int));
   jac = 0;
   for (i = 0; i < states; i++) {
     if (BDF[i] == NOT_ASSIGNED) {
-      fullJac += hybrid->nSD[i];
+      fullJac += simData->nSD[i];
       continue;
     }
-    for (j = 0; j < hybrid->nSD[i]; j++) {
-      hybrid->Jac[jac++] = fullJac++;
+    for (j = 0; j < simData->nSD[i]; j++) {
+      simData->JacIt[jac++] = fullJac++;
     }
   }
-}
-
-QSS_BDF_hybrid QSS_BDF_Hybrid(QSS_data simData) {
-  QSS_BDF_hybrid p = checkedMalloc(sizeof(*p));
-  int states = simData->states, i;
-  p->band = FALSE;
-  p->inc_step = 0;
-  p->dec_step = 0;
-  p->hmin = simData->ft / 1.5e4;
-  p->hmax = simData->ft / 100.0;
-  p->h = p->hmin;
-  p->hprev = 0;
-  p->nBDF = simData->nBDF;
-  p->nSD = simData->nSD;
-  p->SD = simData->SD;
-  p->xprev = (double *)malloc(states * sizeof(double));
-  p->BDF = simData->BDF;
-  p->BDFMap = simData->BDFMap;
-  p->fs = NULL;
-  p->us = NULL;
-  p->work = NULL;
-  p->jac = simData->jac;
-  p->As = NULL;
-  p->Cs = NULL;
-  p->work = NULL;
-  p->T = NULL;
-  p->Jac = NULL;
-  for (i = 0; i < states; i++) {
-    int cf0 = i * 3;
-    p->xprev[i] = simData->x[cf0];
-  }
-  QSS_BDF_initGSL(p);
-  QSS_BDF_initJacobianVector(p, simData);
-  return p;
-}
-
-void QSS_BDF_freeHybrid(QSS_BDF_hybrid h) {
-  if (h->Jac != NULL) {
-    free(h->Jac);
-  }
-  if (h->xprev != NULL) {
-    free(h->xprev);
-  }
-  if (h->As != NULL) {
-    gsl_spmatrix_free(h->As);
-  }
-  if (h->Cs != NULL) {
-    gsl_spmatrix_free(h->Cs);
-  }
-  if (h->fs != NULL) {
-    gsl_vector_free(h->fs);
-  }
-  if (h->us != NULL) {
-    gsl_vector_free(h->us);
-  }
-  if (h->work != NULL) {
-    gsl_splinalg_itersolve_free(h->work);
-  }
-  free(h);
 }
 
 int QSS_BDF_getOutput(int var, QSS_data simData) {
@@ -255,7 +186,5 @@ void QSS_BDF_partition(QSS_data simData, char* name) {
 #endif
     }
   }
-  if(simData->nBDF) {
-
-  }
+  QSS_BDF_initJacobianVector(simData);
 }
