@@ -89,6 +89,7 @@ struct QA_quantizerState_
     int *flag2; //!<
     int *flag3; //!<
     int *flag4; //!<
+    int *BDF;
     int *nSZ;
     int **SZ;
     double *dq; //!<
@@ -109,7 +110,6 @@ struct QA_quantizerState_
     double finTime; //!<
     QSS_time lSimTime; //!<
     QSS_idxMap qMap; //!<
-    QSS_BDF_hybrid qss_bdf;
 };
 /**
  *
