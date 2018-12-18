@@ -139,7 +139,7 @@ QSS_::initModel()
 {
   stringstream buffer;
   string zeroCrossing = "NULL", handlerPos = "NULL", handlerNeg = "NULL",
-         jacobian = "NULL", full_model = NULL;
+         jacobian = "NULL", full_model = "NULL";
   if(!_writer->isEmpty(WR_ZC_SIMPLE) || !_writer->isEmpty(WR_ZC_GENERIC))
   {
     zeroCrossing = "MOD_zeroCrossing";
@@ -1420,9 +1420,13 @@ QSS_::_fullModel()
   stringstream buffer;
   string indent = _writer->indent(1);
   int order = _model->annotation()->order(), coeff = order + 1, idt = 0;
-  _model->varTable()->setPrintEnvironment(VST_MODEL_FUNCTIONS);
+  _model->varTable()->setPrintEnvironment(VST_CLASSIC_MODEL_FUNCTIONS);
   stringstream lhsValue;
   set<Index> algebraicArguments;
+  buffer << "int j;" << endl; 
+  buffer << "for(j = 0; j < nBDF; j++) " << endl << "{" << endl;
+  buffer << "i0 = BDFMap[j];" << endl;
+  _writer->write(&buffer, WR_MODEL_FULL);
   for(MMO_Equation eq = algebraics->begin(); !algebraics->end();
       eq = algebraics->next())
   {
@@ -1431,53 +1435,81 @@ QSS_::_fullModel()
     {  
       Index idx = algebraics->key();
       Index lhs = eq->lhs();
-      lhsValue << "alg[(" + lhs.print("i") << "*" << coeff << ")";
+      lhsValue << "alg[(" + lhs.print("j") << ")*" << coeff;
       if(lhs.hasRange())
       {
-        _common->addLocalVar("i0", &_modelFullVars, lhs.dimension());
-        idt = _common->beginForLoops(lhs, WR_MODEL_FULL);
+        buffer << "if(i0 >=" << lhs.begin() << " && i0 <= " << lhs.end() << ")";
+        _writer->write(&buffer, WR_MODEL_FULL);
+        _writer->write("{", WR_MODEL_FULL);
         _common->print(
           eq->print(_writer->indent(idt), lhsValue.str(), "i",
-              false, algebraics, EQ_ALGEBRAIC, order), WR_MODEL_FULL);
-        _common->endForLoops(lhs, WR_MODEL_FULL);
+              false, algebraics, EQ_ALGEBRAIC, 1), WR_MODEL_FULL);
+        _writer->write("}", WR_MODEL_FULL);
         _common->insertLocalVariables(&_modelFullVars, eq->getVariables());
       }
       else
       {
         _common->print(
           eq->print(indent, lhsValue.str(), "", false,
-              algebraics, EQ_ALGEBRAIC, order, true), WR_MODEL_FULL);
+              algebraics, EQ_ALGEBRAIC, 1, true), WR_MODEL_FULL);
         _common->insertLocalVariables(&_modelFullVars, eq->getVariables());
       }
       lhsValue.str("");
     }
   }
+  bool enableSwitch = false;
   for(MMO_Equation eq = equations->begin(); !equations->end();
       eq = equations->next())
   {
     Index idx = equations->key();
-    Index lhs = eq->lhs();
-    lhsValue << "dx[(" + lhs.print("i") << "*" << coeff << ")";
-    if(idx.hasRange())
-    {
-      _common->addLocalVar("i", &_modelFullVars, idx.dimension());
-      idt = _common->beginForLoops(idx, WR_MODEL_FULL);
-      _common->print(
-          eq->print(_writer->indent(idt),lhsValue.str() , "i",
-              false, algebraics, EQ_DEPENDENCIES, order), WR_MODEL_FULL);
-      _common->endForLoops(lhs, WR_MODEL_FULL);
-      _common->insertLocalVariables(&_modelFullVars, eq->getVariables());
+    if(!idx.hasRange()) {
+      enableSwitch = true;
+      break;
+    }  
+  }
+  if (enableSwitch) {
+    buffer << "switch(i0) "
+           << "\n{";
+    _writer->write(&buffer, WR_MODEL_FULL);
+    for (MMO_Equation eq = equations->begin(); !equations->end();
+         eq = equations->next()) {
+      Index idx = equations->key();
+      Index lhs = eq->lhs();
+      lhsValue << "dx[(" + lhs.print("j") << ")*" << coeff;
+      if (!idx.hasRange()) {
+        buffer << "case " << lhs.print("i0") << ":";
+        _writer->write(&buffer, WR_MODEL_FULL);
+        _common->print(eq->print(indent, lhsValue.str(), "", false, algebraics,
+                                 EQ_DEPENDENCIES, 1, true),
+                       WR_MODEL_FULL);
+        _common->insertLocalVariables(&_modelFullVars, eq->getVariables());
+        _writer->write("break;", WR_MODEL_FULL);
+      }
+      lhsValue.str("");
     }
-    else
+    _writer->write("}", WR_MODEL_FULL);
+  }
+  for (MMO_Equation eq = equations->begin(); !equations->end();
+       eq = equations->next()) {
+    Index idx = equations->key();
+    Index lhs = eq->lhs();
+    lhsValue << "dx[(" + lhs.print("j") << ")*" << coeff;
+   if(idx.hasRange())
     {
+      _common->genericDefCondition(idx, eq->lhs(), WR_MODEL_FULL,
+          &_modelFullVars);
       _common->print(
-          eq->print(indent, lhsValue.str(), "", false, algebraics,
-              EQ_DEPENDENCIES, order, true), WR_MODEL_FULL);
-      _common->insertLocalVariables(&_modelFullVars, eq->getVariables());
+          eq->print(_writer->indent(idt),lhsValue.str() , "j",
+              false, algebraics, EQ_DEPENDENCIES, 1), WR_MODEL_FULL);
+      _writer->write("}", WR_MODEL_FULL);
+      _common->insertLocalVariables (&_modelFullVars, eq->getVariables());
     }
     lhsValue.str("");
   }
-  _writer->print("void\nMOD_BDF_definition(double *x, double *d, double *alg, double t, double *dx)\n{");
+  _modelFullVars.erase("int i0 = i;");
+  _common->addLocalVar("i0", &_modelFullVars, "int", 0);
+  _writer->write("}", WR_MODEL_FULL);
+  _writer->print("void\nMOD_BDF_definition(double *x, double *d, double *alg, double t, double *dx, int *BDFMap, int nBDF)\n{");
   _writer->beginBlock();
   for(map<string, string>::iterator it = _modelFullVars.begin();
       it != _modelFullVars.end(); it++)
