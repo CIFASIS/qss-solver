@@ -312,6 +312,8 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
           for (i = 0; i < nBDFOutputs; i++) {
             int bdfVar = BDFOutputs[i], inf;
             nSD = qssData->nSD[bdfVar];
+            cf0 = bdfVar * coeffs;
+            q[cf0 + 1] =  x[cf0 +1];
             for (inf = 0; inf < nSD; inf++) {
               j = SD[bdfVar][inf];
               elapsed = t - tx[j];
