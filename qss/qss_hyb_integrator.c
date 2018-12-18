@@ -129,22 +129,22 @@ static int check_flag(void *flagvalue, const char *funcname, int opt,
 int QSS_HYB_BDF_model(realtype t, N_Vector y, N_Vector ydot, void *user_data) {
   int nBDF = clcData->nBDF, i;
   int *BDFMap = clcData->BDFMap;
-  double *q = clcData->q;
   double *d = clcData->d;
   double *a = clcData->alg;
   double *x = clcData->x;
+  double *q = clcData->q;
   const int coeffs = clcData->order + 1;
   for (i = 0; i < nBDF; i++) {
     int bdfVar = BDFMap[i];
     int cf0 = bdfVar * coeffs;
     q[cf0] = Ith(y,i);
   }
+  clcModel->F(q, d, a, t, x, BDFMap, nBDF);
   for (i = 0; i < nBDF; i++) {
     int bdfVar = BDFMap[i];
-    int cf0 = bdfVar * coeffs;
-    clcModel->f(bdfVar, q, d, a, t, &(x[cf0]));
+    int cf0 = bdfVar * coeffs; 
     Ith(ydot,i) = x[cf0 + 1];
-  }
+  }       
   return 0;
 }
 
@@ -296,8 +296,6 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
               int bdfVar = BDFMap[i];
               cf0 = bdfVar * coeffs;
               Ith(y, i) = q[cf0];
-              tq[bdfVar] = ct;
-              tx[bdfVar] = ct;
             }
             CVodeReInit(cvode_mem, ct, y);
             reinit = FALSE;
@@ -308,12 +306,14 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
             cf0 = bdfVar * coeffs;
             nextStateTime[bdfVar] = ct;
             q[cf0] =  Ith(y, i);
+            tq[bdfVar] = t;
+            tx[bdfVar] = t;
           }          
           for (i = 0; i < nBDFOutputs; i++) {
             int bdfVar = BDFOutputs[i], inf;
             nSD = qssData->nSD[bdfVar];
             cf0 = bdfVar * coeffs;
-            q[cf0 + 1] =  x[cf0 +1];
+            //q[cf0 + 1] =  x[cf0 +1];
             for (inf = 0; inf < nSD; inf++) {
               j = SD[bdfVar][inf];
               elapsed = t - tx[j];
