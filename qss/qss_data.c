@@ -979,12 +979,13 @@ void QSS_freeTime(QSS_time simTime, int events, int inputs) {
 }
 
 QSS_model QSS_Model(QSS_eq f, QSS_dep deps, QSS_zc zeroCrossing,
-                    QSS_hnd handlerPos, QSS_hnd handlerNeg, QSS_jac jac) {
+                    QSS_hnd handlerPos, QSS_hnd handlerNeg, QSS_jac jac, QSS_fmodel F) {
   QSS_model p = checkedMalloc(sizeof(*p));
   p->f = f;
   p->deps = deps;
   p->events = QSS_Event(zeroCrossing, handlerPos, handlerNeg);
   p->jac = jac;
+  p->F = F;
   return p;
 }
 
