@@ -266,12 +266,12 @@
        <widget class="QComboBox" name="_symDiff">
         <item>
          <property name="text">
-          <string>TRUE</string>
+          <string>FALSE</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>FALSE</string>
+          <string>TRUE</string>
          </property>
         </item>
        </widget>
