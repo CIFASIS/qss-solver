@@ -23,7 +23,6 @@ tab=2
 recentFileList=
 
 [Flags]
-dbgflags=" "
 dbgAll=false
 dbgInitValues=false
 dbgExternalEvent=false
