@@ -10,8 +10,8 @@
 :: 							 configuration files. 
 ::
 ::   PARAMETERS: <FILE> simulation executable file.
-::    						 <FOLDER> output folder name.
-::    						 <PARALLEL> True for parallel simulations, False otherwise.
+::    					 <FOLDER> output folder name.
+::    					 <PARALLEL> True for parallel simulations, False otherwise.
 ::      OPTIONS: --- 
 :: REQUIREMENTS: MMOC_OUTPUT MMOC_BUILD must point to the corresponding default 
 ::							 directories used by the QSS Solver GUI.
@@ -27,6 +27,8 @@ set FOLDER=%~2
 
 set PARALLEL=%~3
 
+set PART_FILE=%MMOC_BUILD%\%FILE%\%FILE%_BDF.part
+
 set PREV_PATH=%PATH%
 
 set PATH=%PATH%;%MMOC_BIN%;%MMOC_BIN%\MinGW\bin
@@ -37,10 +39,14 @@ set MMOC_BUILD=%CD%
 
 cd %MMOC_OUTPUT%\%FILE%
 
+IF EXIST %PART_FILE% copy	%PART_FILE% .
+
 copy	%MMOC_BUILD%\%FILE%\%FILE%.ini .
 
 %MMOC_BUILD%\%FILE%\%FILE%.exe
 
 del %FILE%.ini  
+
+del %PART_FILE%  
 
 set PATH=%PREV_PATH%
