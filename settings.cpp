@@ -83,7 +83,6 @@ SettingsDlg::_save()
   _utils->setCommand(CMD_PLOT, _plot->text());
   _utils->setCommand(CMD_SBML, _sbml->text());
   _utils->setFlag(FLG_FLAGS, _flags->text());
-  _utils->setFlag(FLG_DEBUG, _getDebugValue());
   _utils->setFlag(FLG_DBG_ALL, _getCheckBoxValue(_allCbx));
   _utils->setFlag(FLG_DBG_INIT_VALUES, _getCheckBoxValue(_initialValuesCbx));
   _utils->setFlag(FLG_DBG_EXTERNAL_EVENT,
@@ -122,51 +121,4 @@ SettingsDlg::_setCheckBoxValue(QCheckBox *chkBox, QString value)
   {
     chkBox->setCheckState(Qt::Unchecked);
   }
-}
-
-QString
-SettingsDlg::_getDebugValue()
-{
-  QString dbg;
-  if(_allCbx->isChecked())
-  {
-    dbg += "-d SD_DBG_All ";
-  }
-  if(_initialValuesCbx->isChecked())
-  {
-    dbg += "-d SD_DBG_InitValues ";
-  }
-  if(_externalEventsCbx->isChecked())
-  {
-    dbg += "-d SD_DBG_ExternalEvent ";
-  }
-  if(_memoryCbx->isChecked())
-  {
-    dbg += "-d SD_DBG_Memory ";
-  }
-  if(_synchronizeCbx->isChecked())
-  {
-    dbg += "-d SD_DBG_Synchronize ";
-  }
-  if(_stepInfoCbx->isChecked())
-  {
-    dbg += "-d SD_DBG_StepInfo ";
-  }
-  if(_varChangesCbx->isChecked())
-  {
-    dbg += "-d SD_DBG_VarChanges ";
-  }
-  if(_waitForCbx->isChecked())
-  {
-    dbg += "-d SD_DBG_WaitFor ";
-  }
-  if(_weightsCbx->isChecked())
-  {
-    dbg += "-d SD_DBG_Weights ";
-  }
-  if(_dtCbx->isChecked())
-  {
-    dbg += "-d SD_DBG_Dt ";
-  }
-  return dbg;
 }

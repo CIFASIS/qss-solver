@@ -47,8 +47,6 @@ class SettingsDlg: public QDialog, public Ui::Settings
     _getCheckBoxValue(QCheckBox *chkBox);
     void
     _setCheckBoxValue(QCheckBox *chkBox, QString value);
-    QString
-    _getDebugValue();
     private:
     Utils *_utils;
 };
