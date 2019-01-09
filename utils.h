@@ -160,9 +160,11 @@ class Utils
      */
     void
     setFlag(AppFlags f, QString value);
-    private:
+  private:
     QString
     _getDir(AppDirs d);
+    QString
+    _getDebugValue();
 };
 
 #endif  /* UTILS_H_ */

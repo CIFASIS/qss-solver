@@ -128,6 +128,53 @@ Utils::isSet(AppFlags f)
 }
 
 QString
+Utils::_getDebugValue()
+{
+  QString dbg;
+  if(isSet(FLG_DBG_ALL))
+  {
+    dbg += "-d SD_DBG_All ";
+  }
+  if(isSet(FLG_DBG_INIT_VALUES))
+  {
+    dbg += "-d SD_DBG_InitValues ";
+  }
+  if(isSet(FLG_DBG_EXTERNAL_EVENT))
+  {
+    dbg += "-d SD_DBG_ExternalEvent ";
+  }
+  if(isSet(FLG_DBG_MEMORY))
+  {
+    dbg += "-d SD_DBG_Memory ";
+  }
+  if(isSet(FLG_DBG_SYNCHRONIZE))
+  {
+    dbg += "-d SD_DBG_Synchronize ";
+  }
+  if(isSet(FLG_DBG_STEP_INFO))
+  {
+    dbg += "-d SD_DBG_StepInfo ";
+  }
+  if(isSet(FLG_DBG_VAR_CHANGES))
+  {
+    dbg += "-d SD_DBG_VarChanges ";
+  }
+  if(isSet(FLG_DBG_WAIT_FOR))
+  {
+    dbg += "-d SD_DBG_WaitFor ";
+  }
+  if(isSet(FLG_DBG_WEIGHTS))
+  {
+    dbg += "-d SD_DBG_Weights ";
+  }
+  if(isSet(FLG_DBG_DT))
+  {
+    dbg += "-d SD_DBG_Dt ";
+  }
+  return dbg;
+}
+
+QString
 Utils::appFlag(AppFlags f)
 {
   QString _val;
@@ -140,8 +187,7 @@ Utils::appFlag(AppFlags f)
           "Value not found in file qss-solver.ini").toString();
       break;
     case FLG_DEBUG:
-      _val = settings.value("Flags/dbgflags",
-          "Value not found in file qss-solver.ini").toString();
+      _val = _getDebugValue();
       break;
     case FLG_DBG_ALL:
       _val = settings.value("Flags/dbgAll",
@@ -332,9 +378,6 @@ Utils::setFlag(AppFlags f, QString value)
   {
     case FLG_FLAGS:
       settings.setValue("Flags/flags", value);
-      break;
-    case FLG_DEBUG:
-      settings.setValue("Flags/dbgflags", value);
       break;
     case FLG_DBG_ALL:
       settings.setValue("Flags/dbgAll", value);
