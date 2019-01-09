@@ -653,6 +653,10 @@ MmomeGui::compile(bool dbg)
   if(dbg)
   {
     flags = _utils->appFlag(FLG_DEBUG);
+    if (flags.isEmpty()) {
+      QMessageBox::warning(this, "Debug Flags", 
+        "Debug mode enabled but no debug flags found. They can be set from \"File->Settings\"");
+    }
     flags.append(" ");
     set += flags;
   }
