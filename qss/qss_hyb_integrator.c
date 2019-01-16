@@ -20,6 +20,7 @@
 #include "qss_hyb_integrator.h"
 
 #include <math.h>
+#include <stdlib.h>
 
 #include <cvode/cvode.h>             /* prototypes for CVODE fcts., consts. */
 #include <nvector/nvector_serial.h>  /* serial N_Vector types, fcts., macros */
@@ -42,13 +43,22 @@
 #include "qss_scheduler.h"
 #include "qss_simulator.h"
 
-
-#define Ith(v,i)    NV_Ith_S(v,i)       /* Ith numbers components 1..NEQ */
-#define IJth(A,i,j) DENSE_ELEM(A,i,j) /* IJth numbers rows,cols 1..NEQ */
+#define Ith(v, i) NV_Ith_S(v, i)          /* Ith numbers components 1..NEQ */
+#define IJth(A, i, j) DENSE_ELEM(A, i, j) /* IJth numbers rows,cols 1..NEQ */
 
 static QSS_data clcData = NULL;
 
+static QSS_time clcTime = NULL;
+
 static QSS_model clcModel = NULL;
+
+static double *qOld = NULL;
+
+static double *bdfQ = NULL;
+
+static double bdfTime = 0;
+
+static double BDFIntegrationTime = 0;
 
 static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat,
                void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3) {
@@ -67,11 +77,11 @@ static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat,
   for (i = 0; i < nBDF; i++) {
     int bdfVar = BDFMap[i];
     int cf0 = bdfVar * coeffs;
-    q[cf0] = Ith(y,i);
+    q[cf0] = Ith(y, i);
   }
   SparseSetMatToZero(JacMat);
   clcModel->jac(q, clcData->d, clcData->alg, t, clcData->jac);
-  int jval = 0, jcol = 0; 
+  int jval = 0, jcol = 0;
   for (i = 0, jacIt = 0; i < nBDF; i++) {
     colptrs[i] = n;
     int row = BDFMap[i];
@@ -81,7 +91,7 @@ static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat,
       int sd = SD[row][j];
       int col = BDF[sd];
       if (col != NOT_ASSIGNED) {
-        JacMat->data[jval++] =  clcData->jac[JacIt[jacIt]];
+        JacMat->data[jval++] = clcData->jac[JacIt[jacIt]];
         rowvals[jcol + n] = col;
         jcol++;
       }
@@ -129,6 +139,9 @@ static int check_flag(void *flagvalue, const char *funcname, int opt,
 int QSS_HYB_BDF_model(realtype t, N_Vector y, N_Vector ydot, void *user_data) {
   int nBDF = clcData->nBDF, i;
   int *BDFMap = clcData->BDFMap;
+  int nBDFInputs = clcData->nBDFInputs;
+  int *BDFInputs = clcData->BDFInputs;
+  double e;
   double *d = clcData->d;
   double *a = clcData->alg;
   double *x = clcData->x;
@@ -137,14 +150,20 @@ int QSS_HYB_BDF_model(realtype t, N_Vector y, N_Vector ydot, void *user_data) {
   for (i = 0; i < nBDF; i++) {
     int bdfVar = BDFMap[i];
     int cf0 = bdfVar * coeffs;
-    q[cf0] = Ith(y,i);
+    bdfQ[cf0] = Ith(y, i);
   }
-  clcModel->F(q, d, a, t, x, BDFMap, nBDF);
+  for (i = 0; i < nBDFInputs; i++) {
+    int qssVar = BDFInputs[i];
+    int cf0 = qssVar * coeffs;
+    e = t - bdfTime;
+    bdfQ[cf0] = evaluatePoly(cf0, e, q, 1);
+  }
+  clcModel->F(bdfQ, d, a, t, x, BDFMap, nBDF);
   for (i = 0; i < nBDF; i++) {
     int bdfVar = BDFMap[i];
-    int cf0 = bdfVar * coeffs; 
-    Ith(ydot,i) = x[cf0 + 1];
-  }       
+    int cf0 = bdfVar * coeffs;
+    Ith(ydot, i) = x[cf0 + 1];
+  }
   return 0;
 }
 
@@ -154,12 +173,61 @@ void QSS_HYB_initialize(SIM_simulator simulate) {
   QSS_data qssData = simulator->data;
   double *x = qssData->x;
   double t = simulator->time->time;
+  qOld =
+      (double *)malloc(qssData->states * (qssData->order + 1) * sizeof(double));
+  bdfQ =
+      (double *)malloc(qssData->states * (qssData->order + 1) * sizeof(double));
   QSS_model qssModel = simulator->model;
   if (qssModel->jac != NULL) {
     qssModel->jac(x, qssData->d, qssData->alg, t, qssData->jac);
   }
-  QSS_BDF_partition(qssData, simulator->output->name);
+  QSS_BDF_partition(qssData, simulator->output);
   QSS_SEQ_initialize(simulate);
+}
+
+double QSS_HYB_BDFMaxInputError(int index) {
+  int i, j;
+  double eMax = INF;
+  const int coeffs = clcData->order + 1;
+  int **SD = clcData->SD;
+  int nSD = clcData->nSD[index];
+  int *BDF = clcData->BDF;
+  for (i = 0; i < nSD; i++) {
+    j = SD[index][i];
+    if (BDF[j] != NOT_ASSIGNED) {
+      int inf = clcData->QSSOutputJacId[clcData->QSSOutputs[index]] + j;
+      double e = (clcData->dQRel[j] * fabs(clcData->q[j * coeffs]) +
+                  clcData->dQMin[j]) / clcData->QSSOutputJac[inf];
+      if (e < eMax) {
+        eMax = e;
+      }
+    }
+  }
+  return eMax;
+}
+
+bool QSS_HYB_updateBDFStep() {
+  bool ret = FALSE;
+  double delta1, delta2, Q, t, tk1, tk1tj, tjtk, eMax, H, h;
+  double *q = clcData->q;
+  int index = clcTime->minIndex;
+  const int cf0 = (clcData->order + 1) * index;
+  int bdfVar = clcData->BDFMap[0];
+  eMax = QSS_HYB_BDFMaxInputError(index);
+  t = clcTime->time;
+  tk1 = clcTime->nextStateTime[bdfVar];
+  h = tk1 - bdfTime;
+  tk1tj = tk1 - t;
+  tjtk = t - bdfTime;
+  Q = qOld[cf0] * tjtk + qOld[cf0 + 1] * tjtk * tjtk / 2;
+  delta1 = ((qOld[cf0] + q[cf0] + q[cf0 + 1] * tk1tj) / 2) * h;
+  delta2 = q[cf0] * tk1tj + q[cf0 + 1] * tk1tj * tk1tj / 2 + Q;
+  H = tjtk + (eMax + fabs(delta2)) / fabs(delta1);
+  if (H < h) {
+    clcTime->nextStateTime[bdfVar] = bdfTime + H;
+    ret = TRUE;
+  }
+  return ret;
 }
 
 void QSS_HYB_integrate(SIM_simulator simulate) {
@@ -177,6 +245,7 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
   SD_output output = simulator->output;
   clcData = qssData;
   clcModel = qssModel;
+  clcTime = qssTime;
 #ifdef DEBUG
   SD_simulationSettings settings = simulator->settings;
   SD_simulationLog simulationLog = simulator->simulationLog;
@@ -187,6 +256,7 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
   int index = qssTime->minIndex, flag;
   QSS_StepType type = qssTime->type;
   int nSD, nOutputs = output->outputs;
+  int nBDFOutputVars = qssData->nBDFOutputVars;
   const int xOrder = qssData->order;
   const int coeffs = xOrder + 1;
   const double ft = qssData->ft;
@@ -206,6 +276,9 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
   int nBDF = qssData->nBDF;
   int nBDFOutputs = qssData->nBDFOutputs;
   int *BDFOutputs = qssData->BDFOutputs;
+  int nBDFInputs = qssData->nBDFInputs;
+  int *BDFInputs = qssData->BDFInputs;
+  int *BDFOutputVars = qssData->BDFOutputVars;
   int cf0, infCf0;
   const int qOrder = xOrder - 1;
   int nSZ, nLHSSt, nRHSSt, nHD, nHZ;
@@ -219,24 +292,32 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
 #ifdef SYNC_RT
   setInitRealTime();
 #endif
-  realtype reltol = qssData->dQRel[0], ct, tout;
-  N_Vector y, abstol;
+  realtype reltol = qssData->dQRel[0], ct, tout, BDFH, tlast;
+  N_Vector y, abstol, ydot, ylast, ycurrent;
   void *cvode_mem;
   cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
   y = N_VNew_Serial(nBDF);
   if (check_flag((void *)y, "N_VNew_Serial", 0, simulator)) return;
 
+  ycurrent = N_VNew_Serial(nBDF);
+  if (check_flag((void *)ycurrent, "N_VNew_Serial", 0, simulator)) return;
+  
+  ydot = N_VNew_Serial(nBDF);
+  if (check_flag((void *)ydot, "N_VNew_Serial", 0, simulator)) return;
+
+  ylast = N_VNew_Serial(nBDF);
+  if (check_flag((void *)ylast, "N_VNew_Serial", 0, simulator)) return;
+
   abstol = N_VNew_Serial(nBDF);
   if (check_flag((void *)abstol, "N_VNew_Serial", 0, simulator)) return;
-  
+
   for (i = 0; i < nBDF; i++) {
     int bdfVar = BDFMap[i];
-    int cf0 = bdfVar * coeffs; 
+    int cf0 = bdfVar * coeffs;
     Ith(y, i) = x[cf0];
     Ith(abstol, i) = qssData->dQMin[0];
   }
 
-  bool reinit = FALSE;
   flag = CVodeInit(cvode_mem, QSS_HYB_BDF_model, t, y);
   if (check_flag((void *)cvode_mem, "CVodeCreate", 0, simulator)) return;
 
@@ -261,7 +342,6 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
   /* Set the Jacobian routine to Jac (user-supplied) */
   flag = CVSlsSetSparseJacFn(cvode_mem, Jac);
   if (check_flag(&flag, "CVSlsSetSparseJacFn", 1, simulator)) return;
-
 #ifdef DEBUG
   if (settings->debug & SD_DBG_StepInfo) {
     SD_print(simulator->simulationLog, "Begin Simulation:");
@@ -269,6 +349,10 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
 #endif
   tout = ft;
   ct = t;
+  tlast = t;
+  bool BDFReinit = FALSE;
+  bool BDFRestore = FALSE;
+ 
   while (t < ft) {
 #ifdef SYNC_RT
     /* Sync */
@@ -290,30 +374,50 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
         }
 #endif
         if (BDF[index] != NOT_ASSIGNED) {
-          ct = t;
-          if (reinit) {
-            for (i = 0; i < nBDF; i++) {
-              int bdfVar = BDFMap[i];
-              cf0 = bdfVar * coeffs;
-              Ith(y, i) = q[cf0];
+          if (BDFReinit) {
+            BDFReinit = FALSE;
+            if (BDFRestore) {
+              CVodeReInit(cvode_mem, t, y);
+              BDFRestore = FALSE;  
+            } else {
+              CVodeReInit(cvode_mem, t, y);
             }
-            CVodeReInit(cvode_mem, ct, y);
-            reinit = FALSE;
+            ct = t;
+          }
+          bdfTime = t;
+          for (i = 0; i < nBDFInputs; i++) {
+            int qssVar = BDFInputs[i];
+            CVodeGetCurrentTime(cvode_mem, &ct);
+            elapsed = t - tq[qssVar];
+            infCf0 = qssVar * coeffs;
+            if (elapsed > 0) {
+              integrateState(infCf0, elapsed, q, qOrder);
+            }
+            tq[qssVar] = t;
+            qOld[infCf0] = q[infCf0];
+            qOld[infCf0 + 1] = q[infCf0 + 1];
           }
           flag = CVode(cvode_mem, tout, y, &ct, CV_ONE_STEP);
+          while(t > ct) {
+            flag = CVode(cvode_mem, tout, y, &ct, CV_ONE_STEP);
+          }
+          CVodeGetCurrentStep(cvode_mem, &BDFH);
+          flag = CVodeGetDky(cvode_mem, t, 0, ycurrent);
+          tlast = t;
+          flag = CVodeGetDky(cvode_mem, tlast, 0, ylast);
+          BDFIntegrationTime = ct;
           for (i = 0; i < nBDF; i++) {
             int bdfVar = BDFMap[i];
+            nextStateTime[bdfVar] = ct + BDFH;
             cf0 = bdfVar * coeffs;
-            nextStateTime[bdfVar] = ct;
-            q[cf0] =  Ith(y, i);
+            q[cf0] = Ith(ycurrent, i);
             tq[bdfVar] = t;
             tx[bdfVar] = t;
-          }          
+          }
           for (i = 0; i < nBDFOutputs; i++) {
             int bdfVar = BDFOutputs[i], inf;
             nSD = qssData->nSD[bdfVar];
             cf0 = bdfVar * coeffs;
-            //q[cf0 + 1] =  x[cf0 +1];
             for (inf = 0; inf < nSD; inf++) {
               j = SD[bdfVar][inf];
               elapsed = t - tx[j];
@@ -334,19 +438,22 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
             }
             QA_recomputeNextTimes(quantizer, nSD, SD[bdfVar], t, nextStateTime,
                                   x, lqu, q);
+            qssTime->minIndex = bdfVar;
+            SC_update(scheduler, qssData, qssTime);
+            qssTime->minIndex = index;
+            qssTime->minValue = t;
+            qssTime->time = t;
+            qssTime->type = ST_State;
           }
-          if (nOutputs) {
-            for (i = 0; i < nBDF; i++) {
-              int bdfVar = BDFMap[i];
-              if (output->nSO[bdfVar]) {
-                qssTime->minIndex = bdfVar;
-                OUT_write(log, qssData, qssTime, output);
-              }
+          if (nOutputs && nBDFOutputVars) {
+            for (i = 0; i < nBDFOutputVars; i++) {
+              int bdfVar = BDFOutputVars[i];
+              qssTime->minIndex = bdfVar;
+              OUT_write(log, qssData, qssTime, output);
             }
             qssTime->minIndex = index;
           }
         } else {
-          reinit = TRUE;
           cf0 = index * coeffs;
           elapsed = t - tx[index];
           integrateState(cf0, elapsed, x, xOrder);
@@ -359,10 +466,26 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
           tq[index] = t;
           QA_nextTime(quantizer, index, t, nextStateTime, x, lqu);
           nSD = qssData->nSD[index];
+          bool updateBDF = TRUE;
           for (i = 0; i < nSD; i++) {
             j = SD[index][i];
             elapsed = t - tx[j];
             infCf0 = j * coeffs;
+            if ((BDF[j] != NOT_ASSIGNED) && updateBDF) {
+              int bdfInput = qssData->QSSOutputs[index];
+              if (qssData->BDFInputsFirstStep[bdfInput]) {
+                qssData->BDFInputsFirstStep[bdfInput] = FALSE;
+                nextStateTime[j] = t;
+                BDFReinit = TRUE;
+              } else if (BDFIntegrationTime > t) {
+                nextStateTime[j] = t;
+                BDFReinit = TRUE;
+                BDFRestore = TRUE;
+              } else if (QSS_HYB_updateBDFStep()) {
+                BDFReinit = TRUE;
+              }
+              updateBDF = FALSE;
+            }
             if (elapsed > 0) {
               x[infCf0] = evaluatePoly(infCf0, elapsed, x, xOrder);
               tx[j] = t;
