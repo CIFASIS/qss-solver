@@ -46,15 +46,111 @@ void QSS_BDF_initJacobianVector(QSS_data simData) {
   }
 }
 
+void QSS_BDF_initQSSJacInputs(QSS_data simData) {
+  int i, j, k;
+  int states = simData->states, globalSD = 0;
+  int *BDF = simData->BDF;
+  for (i = 0; i < states; i++) {
+    if (BDF[i] != NOT_ASSIGNED) {
+      continue;
+    }
+    int nSD = simData->nSD[i];
+    for(j = 0; j < nSD; j++) {
+      k = simData->SD[i][j];
+      if (BDF[k] != NOT_ASSIGNED) { 
+        globalSD += nSD;
+        break; 
+      }
+    }
+  }
+  simData->QSSOutputJac = (int *)malloc(globalSD * sizeof(int));
+  simData->QSSOutputJacId = (int *)malloc(simData->nBDFInputs * sizeof(int));
+  globalSD = 0;
+  int localSD = 0;
+  int inputs = 0;
+  for (i = 0; i < states; i++) {
+    int nSD = simData->nSD[i];
+    if (BDF[i] != NOT_ASSIGNED) {
+      globalSD += nSD;
+      continue;
+    }
+    bool update = FALSE;
+    for(j = 0; j < nSD; j++) {
+      k = simData->SD[i][j];
+      if (BDF[k] != NOT_ASSIGNED) { 
+        simData->QSSOutputJac[localSD + j] = globalSD + j;
+        update = TRUE;
+      }
+    }
+    globalSD += nSD;
+    if (update) {
+      simData->QSSOutputs[i] = inputs;
+      simData->QSSOutputJacId[inputs++] = localSD;
+      localSD += nSD;
+    }
+  }
+}
+
+void QSS_BDF_initBDFOutputVars(QSS_data simData, SD_output output) {
+  int nBDF = simData->nBDF, i;
+  int *BDFMap = simData->BDFMap;
+  for (i = 0; i < nBDF; i++) {
+    int bdfVar = BDFMap[i];
+    if (output->nSO[bdfVar]) {
+      simData->nBDFOutputVars++;
+    }
+  }
+  simData->BDFOutputVars = (int*) malloc(simData->nBDFOutputVars * sizeof(int));
+  int BDFOut = 0;
+  for (i = 0; i < nBDF; i++) {
+    int bdfVar = BDFMap[i];
+    if (output->nSO[bdfVar]) {
+      simData->BDFOutputVars[BDFOut++] = bdfVar;
+    }
+  }
+}
+
 int QSS_BDF_getOutput(int var, QSS_data simData) {
+    int nSD = simData->nSD[var];
+    int *BDF = simData->BDF;
+    int i, j, out = 0;
+    for (i = 0; i < nSD; i++) {
+      j = simData->SD[var][i];
+      if (BDF[j] == NOT_ASSIGNED) {
+        out++;
+      }
+    }
+    return out;
+}
+
+int QSS_BDF_getInput(int var, QSS_data simData) {
   int nSD = simData->nSD[var];
   int *BDF = simData->BDF;
-  int i,j, out = 0;
+  int i,j, in = 0;
   for(i = 0; i < nSD; i++) {
     j = simData->SD[var][i];
-    if (BDF[j] == NOT_ASSIGNED) { out++; }
+    if (BDF[j] != NOT_ASSIGNED) { in++; }
   }
-  return out;
+  return in;
+}
+
+void QSS_BDF_allocBDFInput(QSS_data simData) {
+  simData->BDFInputs = (int*) malloc(simData->nBDFInputs * sizeof(int));
+  simData->BDFInputsFirstStep = (bool*) malloc(simData->nBDFInputs * sizeof(bool));
+  int nBDF = simData->nBDF;
+  int *BDF = simData->BDF;
+  int i, j, in = 0;
+  for(i = 0; i < nBDF; i++) {
+    int bdf = simData->BDFMap[i];
+    int nDS = simData->nDS[bdf];
+    for(j = 0; j < nDS; j++) {
+      int v = simData->DS[bdf][j];
+      if(BDF[v] == NOT_ASSIGNED) {
+        simData->BDFInputs[in++] = v;
+        simData->BDFInputsFirstStep[in++] = TRUE;
+      }
+    }
+  } 
 }
 
 void QSS_BDF_allocBDFOutput(QSS_data simData) {
@@ -74,21 +170,23 @@ void QSS_BDF_allocBDFOutput(QSS_data simData) {
   } 
 }
 
-void QSS_BDF_partition(QSS_data simData, char* name) {
+void QSS_BDF_partition(QSS_data simData, SD_output output) {
   int i, j;
   FILE *file;
   char fileName[256];
-  sprintf(fileName, "%s_BDF.part", name);
+  sprintf(fileName, "%s_BDF.part", output->name);
   file = fopen(fileName, "r");
 #ifdef DEBUG
   printf("BDF Partition file: %s\n", fileName);
 #endif
   bool wrongFile = FALSE;
   simData->BDF = (int *)malloc(simData->states * sizeof(int));
+  simData->QSSOutputs = (int *)malloc(simData->states * sizeof(int));
   int states = simData->states;
   if (file != NULL) {
     for (i = 0; i < simData->states; i++) {
       simData->BDF[i] = NOT_ASSIGNED;
+      simData->QSSOutputs[i] = NOT_ASSIGNED;
     }
     char *line = NULL;
     size_t len = 0;
@@ -124,9 +222,12 @@ void QSS_BDF_partition(QSS_data simData, char* name) {
     for (i = 0; i < states; i++) {
       if (simData->BDF[i] != NOT_ASSIGNED) {
         simData->nBDFOutputs += QSS_BDF_getOutput(i, simData);
+      } else {
+        simData->nBDFInputs += QSS_BDF_getInput(i, simData);
       }
     }
     QSS_BDF_allocBDFOutput(simData);
+    QSS_BDF_allocBDFInput(simData);
 #ifdef DEBUG
     printf("Variables computed with BDF: ");
     printf("%d ", simData->nBDF);
@@ -181,10 +282,13 @@ void QSS_BDF_partition(QSS_data simData, char* name) {
         }
       }
       QSS_BDF_allocBDFOutput(simData);
+      QSS_BDF_allocBDFInput(simData);
 #ifdef DEBUG
       printf("\n");
 #endif
     }
   }
   QSS_BDF_initJacobianVector(simData);
+  QSS_BDF_initQSSJacInputs(simData);
+  QSS_BDF_initBDFOutputVars(simData, output);  
 }

@@ -20,6 +20,7 @@
 #ifndef QSS_BDF_H_
 #define QSS_BDF_H_
 
+#include "../common/data.h"
 #include "qss_data.h"
 
 /**
@@ -29,6 +30,6 @@
  * @param      name     The name
  */
 void
-QSS_BDF_partition(QSS_data simData, char *name);
+QSS_BDF_partition(QSS_data simData, SD_output output);
 
 #endif  /* QSS_BDF_H_ */

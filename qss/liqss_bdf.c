@@ -200,12 +200,14 @@ void LIQSS_BDF_nextTime(QA_quantizer quantizer, int var, double t,
 {
   int *BDF = quantizer->state->BDF;
   if (BDF[var] == NOT_ASSIGNED) {
+
     int cf2 = var * 3 + 2;
     if (x[cf2] == 0) {
       nTime[var] = INF;
     } else {
       nTime[var] = t + sqrt(fabs(lqu[var] / x[cf2]));
     }
+
   }
 }
 
