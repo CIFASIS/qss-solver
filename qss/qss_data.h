@@ -334,7 +334,14 @@ struct QSS_data_ {
   int *BDF;
   int *BDFMap;
   int *BDFOutputs;
+  int *BDFInputs;
   int *JacIt;
+  bool *BDFInputsFirstStep;
+  int nBDFOutputVars;
+  int *BDFOutputVars;
+  int *QSSOutputs;
+  int *QSSOutputJac;
+  int *QSSOutputJacId;
   int **SD;       //!<
   int **DS;       //!<
   int **SZ;       //!<
@@ -353,6 +360,7 @@ struct QSS_data_ {
   int maxRHS;     //!<
   int nBDF;
   int nBDFOutputs;
+  int nBDFInputs;
   SD_Solver solver;      //!<
   SD_eventData event;    //!<
   SD_parameters params;  //!<

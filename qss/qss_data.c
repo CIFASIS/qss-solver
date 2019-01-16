@@ -318,9 +318,16 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs,
   p->BDF = NULL;
   p->BDFMap = NULL;
   p->BDFOutputs = NULL;
+  p->BDFInputs = NULL;
+  p->BDFOutputVars = NULL;
   p->JacIt = NULL;
   p->nBDF = 0;
   p->nBDFOutputs = 0;
+  p->nBDFInputs = 0;
+  p->nBDFOutputVars = 0;
+  p->QSSOutputJac = NULL;
+  p->QSSOutputJacId = NULL;
+  p->QSSOutputs = NULL;
   if (discretes) {
     p->d = (double *)malloc(discretes * sizeof(double));
   } else {

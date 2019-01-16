@@ -401,7 +401,7 @@ evaluatePoly(int i, double dt, double *p, int order)
     case 0:
       return p[i0];
     case 1:
-      {
+    {
       return p[i0] + dt * p[i0 + 1];
     }
     case 2:
