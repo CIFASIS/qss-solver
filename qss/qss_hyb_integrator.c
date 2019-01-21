@@ -56,9 +56,9 @@ static double *qOld = NULL;
 
 static double *bdfQ = NULL;
 
-static double bdfTime = 0;
-
 static double BDFIntegrationTime = 0;
+
+static bool useOldQ = FALSE;
 
 static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat,
                void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3) {
@@ -155,8 +155,13 @@ int QSS_HYB_BDF_model(realtype t, N_Vector y, N_Vector ydot, void *user_data) {
   for (i = 0; i < nBDFInputs; i++) {
     int qssVar = BDFInputs[i];
     int cf0 = qssVar * coeffs;
-    e = t - bdfTime;
-    bdfQ[cf0] = evaluatePoly(cf0, e, q, 1);
+    if (useOldQ) {
+      e = t - BDFIntegrationTime;
+      bdfQ[cf0] = evaluatePoly(cf0, e, qOld, 1); 
+    } else {
+      e = t - clcTime->tq[qssVar];
+      bdfQ[cf0] = evaluatePoly(cf0, e, q, 1);
+    }
   }
   clcModel->F(bdfQ, d, a, t, x, BDFMap, nBDF);
   for (i = 0; i < nBDF; i++) {
@@ -216,15 +221,15 @@ bool QSS_HYB_updateBDFStep() {
   eMax = QSS_HYB_BDFMaxInputError(index);
   t = clcTime->time;
   tk1 = clcTime->nextStateTime[bdfVar];
-  h = tk1 - bdfTime;
+  h = tk1 - BDFIntegrationTime;
   tk1tj = tk1 - t;
-  tjtk = t - bdfTime;
+  tjtk = t - BDFIntegrationTime;
   Q = qOld[cf0] * tjtk + qOld[cf0 + 1] * tjtk * tjtk / 2;
   delta1 = ((qOld[cf0] + q[cf0] + q[cf0 + 1] * tk1tj) / 2) * h;
   delta2 = q[cf0] * tk1tj + q[cf0 + 1] * tk1tj * tk1tj / 2 + Q;
   H = tjtk + (eMax + fabs(delta2)) / fabs(delta1);
   if (H < h) {
-    clcTime->nextStateTime[bdfVar] = bdfTime + H;
+    clcTime->nextStateTime[bdfVar] = BDFIntegrationTime + H;
     ret = TRUE;
   }
   return ret;
@@ -292,8 +297,8 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
 #ifdef SYNC_RT
   setInitRealTime();
 #endif
-  realtype reltol = qssData->dQRel[0], ct, tout, BDFH, tlast;
-  N_Vector y, abstol, ydot, ylast, ycurrent;
+  realtype reltol = qssData->dQRel[0], ct, tout, BDFH;
+  N_Vector y, abstol, ycurrent;
   void *cvode_mem;
   cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
   y = N_VNew_Serial(nBDF);
@@ -302,12 +307,6 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
   ycurrent = N_VNew_Serial(nBDF);
   if (check_flag((void *)ycurrent, "N_VNew_Serial", 0, simulator)) return;
   
-  ydot = N_VNew_Serial(nBDF);
-  if (check_flag((void *)ydot, "N_VNew_Serial", 0, simulator)) return;
-
-  ylast = N_VNew_Serial(nBDF);
-  if (check_flag((void *)ylast, "N_VNew_Serial", 0, simulator)) return;
-
   abstol = N_VNew_Serial(nBDF);
   if (check_flag((void *)abstol, "N_VNew_Serial", 0, simulator)) return;
 
@@ -349,7 +348,6 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
 #endif
   tout = ft;
   ct = t;
-  tlast = t;
   bool BDFReinit = FALSE;
   bool BDFRestore = FALSE;
  
@@ -377,17 +375,16 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
           if (BDFReinit) {
             BDFReinit = FALSE;
             if (BDFRestore) {
-              CVodeReInit(cvode_mem, t, y);
+              flag = CVodeGetDky(cvode_mem, t, 0, ycurrent);
+              CVodeReInit(cvode_mem, t, ycurrent);
               BDFRestore = FALSE;  
             } else {
               CVodeReInit(cvode_mem, t, y);
             }
             ct = t;
           }
-          bdfTime = t;
           for (i = 0; i < nBDFInputs; i++) {
             int qssVar = BDFInputs[i];
-            CVodeGetCurrentTime(cvode_mem, &ct);
             elapsed = t - tq[qssVar];
             infCf0 = qssVar * coeffs;
             if (elapsed > 0) {
@@ -403,8 +400,6 @@ void QSS_HYB_integrate(SIM_simulator simulate) {
           }
           CVodeGetCurrentStep(cvode_mem, &BDFH);
           flag = CVodeGetDky(cvode_mem, t, 0, ycurrent);
-          tlast = t;
-          flag = CVodeGetDky(cvode_mem, tlast, 0, ylast);
           BDFIntegrationTime = ct;
           for (i = 0; i < nBDF; i++) {
             int bdfVar = BDFMap[i];
