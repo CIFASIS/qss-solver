@@ -3384,13 +3384,24 @@ SolverCommon_::initOutput()
   {
     indent = _writer->indent(1);
     list<double> sample = annot->sample();
-    ssize = sample.size();
-    period = "period";
-    buffer << indent << "double period[" << ssize << "];" << endl;
-    int n = 0;
-    for(list<double>::iterator i = sample.begin(); i != sample.end(); i++)
-    {
-      buffer << indent << "period[" << n << "] = " << *i << ";" << endl;
+    if (_model->outs() > sample.size()) {
+      ssize = _model->outs();
+      period = "period";
+      buffer << indent << "double period[" << ssize << "];" << endl;
+      int n = 0;
+      for (n = 0; n < ssize; n++) {
+        double value = sample.front();
+        buffer << indent << "period[" << n << "] = " << value << ";" << endl;
+      }
+    } else {
+      ssize = sample.size();
+      period = "period";
+      buffer << indent << "double period[" << ssize << "];" << endl;
+      int n = 0;
+      for(list<double>::iterator i = sample.begin(); i != sample.end(); i++)
+      {
+        buffer << indent << "period[" << n << "] = " << *i << ";" << endl;
+      }
     }
   }
   string outputFunction = "NULL";
