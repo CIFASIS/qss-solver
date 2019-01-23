@@ -334,6 +334,9 @@ class MMO_PrintExp_: public AST_Expression_Visitor<string>
     MMO_ReplaceInterval _ri;
     MMO_PackageTable _pt;
     int _forOffset;
+    bool _in_function_call;
+    map<int, list<bool> > _fullArray;
+    int _rid;
 };
 
 /**
@@ -452,6 +455,8 @@ class MMO_ReplaceInterval_: public AST_Expression_Visitor<AST_Expression>
      */
     list<VariableInterval>
     variables(AST_Expression exp);
+    map<int, list<bool> >
+    fullArray();
     private:
     AST_Expression
     foldTraverseElement(AST_Expression exp);
@@ -468,7 +473,10 @@ class MMO_ReplaceInterval_: public AST_Expression_Visitor<AST_Expression>
     list<VariableInterval> _replacedVars;
     map<string, list<VariableInterval> > _replacedExpsVars;
     map<string, AST_Expression> _replacedExps;
+    map<int, list<bool> > _fullArray;
     string _currentVar;
+    int _rid;
+    bool _in_function_call;
 };
 /**
  *

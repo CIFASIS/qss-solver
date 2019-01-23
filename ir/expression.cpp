@@ -49,24 +49,17 @@ MMO_Expression_::MMO_Expression_(AST_Expression exp, MMO_ModelData data) :
   _exp = e;
   _gen = newGenerateDeps(_data);
   _deps = _gen->foldTraverse(exp);
-  for(VariableInterval vi = _ri->first(); !_ri->end(); vi = _ri->next())
-  {
+  for (VariableInterval vi = _ri->first(); !_ri->end(); vi = _ri->next()) {
     VarInfo v = _data->symbols()->lookup(vi.name());
-    if(v->isState())
-    {
+    if (v->isState()) {
       _deps->insert(vi.index(), DEP_STATE_VECTOR);
-    }
-    else if(v->isAlgebraic())
-    {
+    } else if (v->isAlgebraic()) {
       _deps->insert(vi.index(), DEP_ALGEBRAIC_VECTOR_DEF);
-    }
-    else if(v->isDiscrete())
-    {
+    } else if (v->isDiscrete()) {
       _deps->insert(vi.index(), DEP_DISCRETE_VECTOR);
     }
   }
-  if(_data->calculateAlgebraics())
-  {
+  if (_data->calculateAlgebraics()) {
     map<Index, Index> states, discretes;
     _traverseAlgebraics(_deps, _data->lhs(), _deps, &states, &discretes,
         Index(), DEP_ALGEBRAIC_DEF, -1);
@@ -730,8 +723,9 @@ deleteMMO_ConvertCondition(MMO_ConvertCondition m)
 MMO_PrintExp_::MMO_PrintExp_(VarSymbolTable vt, MMO_ReplaceInterval ri,
     MMO_PackageTable pt) :
     _vt(vt), _idx(), _offset(0), _order(0), _constant(-1), _functions(), _variables(), _expressionOrder(
-        1), _ri(ri), _pt(pt), _forOffset()
+        1), _ri(ri), _pt(pt), _forOffset(), _in_function_call(false), _rid(0)
 {
+  _fullArray = _ri->fullArray();
 }
 
 MMO_PrintExp_::~MMO_PrintExp_()
@@ -838,7 +832,14 @@ MMO_PrintExp_::foldTraverseElement(AST_Expression exp)
       {
         _getIndexList(cr, vi->index(), &idxs);
       }
+      if(_in_function_call && vi->isArray() && _fullArray[_rid].front()) {
+        ret << "&(";
+      }
       ret << _vt->print(vi, _idx, _offset, _order, idxs, _constant, _forOffset);
+      if(_in_function_call && vi->isArray() && _fullArray[_rid].front()) {
+        ret << ")";
+        _fullArray[_rid].pop_front();
+      }
     }
       break;
     case EXPCALLARG:
@@ -910,6 +911,7 @@ MMO_PrintExp_::foldTraverseElement(AST_Expression exp)
           {
             ret << pre;
           }
+          _in_function_call = true;
         }
         else if(bif == BIF_ABS)
         {
@@ -926,6 +928,8 @@ MMO_PrintExp_::foldTraverseElement(AST_Expression exp)
           }
         }
         ret << ")";
+        _in_function_call = false;
+        _rid++;
       }
     }
       break;
@@ -1199,7 +1203,7 @@ deleteMMO_PartitionInterval(MMO_PartitionInterval m)
 //////////////////////////////////////////////////////////////////////////////////////////
 
 MMO_ReplaceInterval_::MMO_ReplaceInterval_(VarSymbolTable vt) :
-    _vt(vt), _indexes(0), _replacedVars(), _replacedExpsVars(), _replacedExps(), _currentVar()
+    _vt(vt), _indexes(0), _replacedVars(), _replacedExpsVars(), _replacedExps(), _fullArray(), _currentVar(), _rid(0), _in_function_call(false)
 {
 }
 
@@ -1340,6 +1344,15 @@ MMO_ReplaceInterval_::foldTraverseElement(AST_Expression exp)
       }
       if(cr->hasIndexes())
       {
+        if (_in_function_call) {
+          if (_fullArray.find(_rid) == _fullArray.end()) {
+            list<bool> occ;
+            occ.push_front(false);
+            _fullArray[_rid] = occ;
+          } else {
+            _fullArray[_rid].push_back(false);
+          }
+        }
         AST_ExpressionList indexes = AST_ListFirst(cr->indexes());
         AST_Expression eidx = AST_ListFirst(indexes);
         ExpressionType et = eidx->expressionType();
@@ -1391,6 +1404,15 @@ MMO_ReplaceInterval_::foldTraverseElement(AST_Expression exp)
       {
         _setIndex(0, 1, vi->size(), vi);
         ret->append(newAST_String(cr->name()), newAST_SimpleList(_indexExp()));
+        if (_in_function_call) {
+          if (_fullArray.find(_rid) == _fullArray.end()) {
+            list<bool> occ;
+            occ.push_front(true);
+            _fullArray[_rid] = occ;
+          } else {
+            _fullArray[_rid].push_back(true);
+          }
+        }
         return ret;
       }
       return exp;
@@ -1427,6 +1449,7 @@ MMO_ReplaceInterval_::foldTraverseElement(AST_Expression exp)
         default:
           break;
       }
+      _in_function_call = true;
       AST_ExpressionList el = exp->getAsCall()->arguments();
       string varName = Util::getInstance()->newVarName("tmp", _vt);
       _currentVar = varName;
@@ -1435,6 +1458,8 @@ MMO_ReplaceInterval_::foldTraverseElement(AST_Expression exp)
       {
         AST_ListAppend(nel, foldTraverse(current_element(it)));
       }
+      _in_function_call = false;
+      _rid++;
       AST_Expression ret = newAST_Expression_Call(newAST_String(name), NULL,
           nel);
       _replacedExps[varName] = ret;
@@ -1505,6 +1530,11 @@ MMO_ReplaceInterval_::foldTraverseElement(AST_Expression exp)
   return NULL;
 }
 
+map<int, list<bool> >
+MMO_ReplaceInterval_::fullArray() {
+  return _fullArray;
+}
+  
 AST_Expression
 MMO_ReplaceInterval_::foldTraverseElementUMinus(AST_Expression exp)
 {

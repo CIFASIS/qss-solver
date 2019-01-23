@@ -4116,7 +4116,6 @@ SolverCommon_::jacobian(map<string,string> *modelDepsVars)
     {
       if(paramIndex.compare(it->second) != 0)
       {
-        cout << it->second << paramIndex << endl; 
         _writer->print(it->second);
       }
 

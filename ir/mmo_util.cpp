@@ -247,28 +247,48 @@ MMO_FunctionData_::~MMO_FunctionData_()
 {
 }
 
-list<string>
-MMO_FunctionData_::print(string indent)
-{
+list<string> MMO_FunctionData_::print(string indent) {
   list<string> ret;
   stringstream buffer;
-  if(!_var.empty())
-  {
+  if (!_var.empty()) {
     buffer << _var << " = ";
   }
   buffer << _name << "(";
-  if(_args != NULL)
-  {
+  if (_args != NULL) {
     VarSymbolTable vt = _data->symbols();
     vt->setPrintEnvironment(VST_FUNCTION);
     AST_ExpressionListIterator it;
     unsigned int count = 0;
-    foreach(it,_args)
-    {
+    foreach (it, _args) {
+      string init = "";
+      string end = "";
+      if ((current_element(it)->expressionType() != EXPCOMPREF) &&
+          (current_element(it)->expressionType() != EXPREAL) &&
+          (current_element(it)->expressionType() != EXPINTEGER)) {
+        cout << "General expressions in external function calls not implement"
+             << endl;
+        return list<string>();
+      }
+      if(current_element(it)->expressionType() == EXPCOMPREF) {
+        AST_Expression_ComponentReference cr =
+            current_element(it)->getAsComponentReference();
+        VarInfo vi = vt->lookup(cr->name());
+        if (vi == NULL) {
+          Error::getInstance()->add(current_element(it)->lineNum(),
+                                    EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error,
+                                    "%s", cr->name().c_str());
+          return list<string>();
+        }
+        if (vi->isArray() && !cr->hasIndexes()) {
+          init = "&(";
+          end = ")";
+        }
+      }
+      buffer << init;
       MMO_Expression e = newMMO_Expression(current_element(it), _data);
       buffer << e->print(indent);
-      if(++count < _args->size())
-      {
+      buffer << end;
+      if(++count < _args->size()) {
         buffer << ",";
       }
       list<string> code = e->getCode();
@@ -280,11 +300,9 @@ MMO_FunctionData_::print(string indent)
   return ret;
 }
 
-MMO_FunctionData
-newMMO_FunctionData(string var, string name, AST_ExpressionList args,
-    MMO_ModelData data)
-{
-  return new MMO_FunctionData_(var, name, args, data);
+MMO_FunctionData newMMO_FunctionData(
+      string var, string name, AST_ExpressionList args, MMO_ModelData data) {
+    return new MMO_FunctionData_(var, name, args, data);
 }
 
 void
