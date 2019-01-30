@@ -492,7 +492,7 @@ namespace MicroModelica
         inline EquationTable 
         algebraics() { return _algebraics; };
         inline Util::ModelDependencies
-        dependencies() { return _dependecies; };
+        dependencies() { return _dependencies; };
         inline EquationTable 
         outputs() { return _outputs; };
         inline EventTable 
@@ -539,7 +539,7 @@ namespace MicroModelica
         EquationTable             _outputs;
         EventTable                _events;
         InputTable                _inputs;
-        Util::ModelDependencies   _dependecies;
+        Util::ModelDependencies   _dependencies;
         CompiledPackageTable      _packages;
         StatementTable            _initialCode;
         Util::SymbolTable         _libraryDirectories;

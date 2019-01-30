@@ -80,7 +80,7 @@ namespace MicroModelica {
     }
 
     void 
-    StoredDefinition::process()
+    StoredDefinition::postProcess()
     {
       if(isModel())
       {

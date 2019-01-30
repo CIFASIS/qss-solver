@@ -311,7 +311,7 @@ namespace MicroModelica {
     void
     MicroModelicaIR::leave(AST_StoredDefinition x)
     {
-      _std.process();
+      _std.postProcess();
     }
 
     int

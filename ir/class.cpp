@@ -331,7 +331,7 @@ namespace MicroModelica {
       _derivatives(),
       _algebraics(),
       _events(),
-      _dependecies(),
+      _dependencies(),
       _packages(),
       _initialCode(),
       _libraryDirectories(),
@@ -364,7 +364,7 @@ namespace MicroModelica {
       _derivatives(),
       _algebraics(),
       _events(),
-      _dependecies(),
+      _dependencies(),
       _packages(),
       _initialCode(),
       _libraryDirectories(),
@@ -795,7 +795,7 @@ namespace MicroModelica {
           addInput(eq);
           continue; 
         }
-        EquationDependencyMatrix eqdm = _dependecies.DA();
+        EquationDependencyMatrix eqdm = _dependencies.DA();
         Option<EquationDependency> eqd = eqdm[_derivatives.key(it)];
         if(eqd)
         {
@@ -816,7 +816,7 @@ namespace MicroModelica {
     void 
     Model::setDependencies()
     {
-      Utils::instance().setDependencies(_dependecies);
+      Utils::instance().setDependencies(_dependencies);
     }
   }
 }
