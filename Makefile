@@ -106,6 +106,9 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
 						 $(VISITORDIR)/autonomous.cpp \
 						 $(VISITORDIR)/called_functions.cpp \
 						 $(VISITORDIR)/convert_condition.cpp \
+					     $(VISITORDIR)/convert_expression.cpp \
+						 $(VISITORDIR)/convert_equation.cpp \
+						 $(VISITORDIR)/convert_statement.cpp \
 						 $(VISITORDIR)/discrete_assignment.cpp \
 						 $(VISITORDIR)/eval_exp.cpp \
 						 $(VISITORDIR)/eval_init_exp.cpp \
@@ -113,10 +116,10 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
 						 $(VISITORDIR)/occurs.cpp \
 						 $(VISITORDIR)/replace_der.cpp \
 						 $(VISITORDIR)/replace_inner_product.cpp \
-						 $(VISITORDIR)/variable_lookup.cpp \
-						 $(VISITORDIR)/occurs.cpp 
+						 $(VISITORDIR)/variable_lookup.cpp 
+#						 $(VISITORDIR)/occurs.cpp 
 
-DEPSBUILDERSRC = $(DEPSBUILDERDIR)/sd_graph_builder.cpp 
+#DEPSBUILDERSRC = $(DEPSBUILDERDIR)/sd_graph_builder.cpp 
 
 # Objects
 ASTOBJ=$(addprefix $(BUILDDIR)/ast_, $(notdir $(ASTSRC:.cpp=.o)))
@@ -177,12 +180,12 @@ $(BUILDDIR)/util_%.o : $(VISITORDIR)/%.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
 
-$(BUILDDIR)/deps_%.o : $(DEPSBUILDERDIR)/%.cpp 
-	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
-	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
-
-mmoc: | $(libginac) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSBUILDEROBJ)
-	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSBUILDEROBJ) $(LIB) 
+#$(BUILDDIR)/deps_%.o : $(DEPSBUILDERDIR)/%.cpp 
+#	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+#	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
+#mmoc: | $(libginac) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSBUILDEROBJ)
+mmoc: | $(libginac) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) 
+	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ)  $(LIB) 
 
 ifneq ($(OS), Windows_NT)
 $(PARSERDIR)/mocc_parser.cpp: parser/mocc.y

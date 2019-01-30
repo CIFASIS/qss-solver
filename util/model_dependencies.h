@@ -21,7 +21,7 @@
 #define MODEL_DEPENDENCIES_H_
 
 #include "dependency_matrix.h"
-#include "dependency/deps/dependency.h"
+//#include "dependency/deps/dependency.h"
 
 namespace MicroModelica {
   namespace Util {
@@ -65,7 +65,7 @@ namespace MicroModelica {
         EquationDependencyMatrix _OA;
         EquationDependencyMatrix _ZCA;
         EquationDependencyMatrix _DA;
-        Dependency::Dependency   _deps;
+ //       Dependency::Dependency   _deps;
     };
   }
 }

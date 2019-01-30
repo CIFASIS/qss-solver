@@ -24,67 +24,6 @@
 
 namespace MicroModelica {
   namespace Util {
-
-    class ConvertExpression 
-    {
-      public:
-        ConvertExpression(AST_Expression left, AST_Expression right, MicroModelica::Util::VarSymbolTable& symbols);
-        /**
-         *
-         */
-        ~ConvertExpression() {};
-        inline std::string 
-        get() { return _convert; };
-      private:
-        AST_Expression_ComponentReference 
-        componentReference(AST_Expression exp);
-        MicroModelica::Util::Variable 
-        variable(AST_Expression_ComponentReference exp);
-        bool 
-        scalarExpression(AST_Expression exp);
-        double 
-        scalarValue(AST_Expression exp);
-        void 
-        convert();
-        AST_Expression                       _left;
-        AST_Expression                       _right;
-        MicroModelica::Util::VarSymbolTable  _symbols;
-        std::string                          _convert;
-    };
-
-    class ConvertEquation
-    {
-      public:
-        ConvertEquation(AST_Equation equation, MicroModelica::Util::VarSymbolTable& symbols);
-        ~ConvertEquation() {};
-        inline AST_Equation 
-        get() { return _equation; };
-      private:
-        AST_Equation 
-        convert(AST_Equation eq);
-        AST_Equation                        _equation;
-        MicroModelica::Util::VarSymbolTable _symbols;
-
-    };
-
-    class ConvertStatement 
-    {
-      public:
-        ConvertStatement(AST_Statement statement, MicroModelica::Util::VarSymbolTable& symbols);
-        ~ConvertStatement() {};
-        inline AST_Statement 
-        get() { return _statement; };
-      private:
-        AST_Statement 
-        convert(AST_Statement st);
-        AST_StatementList 
-        convert(AST_StatementList sts);  
-        AST_Statement_ElseList 
-        convert(AST_Statement_ElseList stel);
-        AST_Statement                       _statement;
-        MicroModelica::Util::VarSymbolTable _symbols;
-    };
-
     /**
      *
      */

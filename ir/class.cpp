@@ -31,6 +31,8 @@
 #include "../ast/statement.h"
 #include "../util/error.h"
 #include "../util/visitors/convert_condition.h"
+#include "../util/visitors/convert_statement.h"
+#include "../util/visitors/convert_equation.h"
 #include "../util/visitors/eval_init_exp.h"
 #include "../util/visitors/variable_lookup.h"
 #include "helpers.h"

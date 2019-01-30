@@ -17,41 +17,31 @@
 
  ******************************************************************************/
 
-#ifndef CONVERT_EXPRESSION_H_
-#define CONVERT_EXPRESSION_H_
+#ifndef CONVERT_STATEMENT_H_
+#define CONVERT_STATEMENT_H_
 
 #include "../ast_util.h"
 
 namespace MicroModelica {
   namespace Util {
 
-    class ConvertExpression 
+    class ConvertStatement 
     {
       public:
-        ConvertExpression(AST_Expression left, AST_Expression right, MicroModelica::Util::VarSymbolTable& symbols);
-        /**
-         *
-         */
-        ~ConvertExpression() {};
-        inline std::string 
-        get() { return _convert; };
+        ConvertStatement(AST_Statement statement, MicroModelica::Util::VarSymbolTable& symbols);
+        ~ConvertStatement() {};
+        inline AST_Statement 
+        get() { return _statement; };
       private:
-        AST_Expression_ComponentReference 
-        componentReference(AST_Expression exp);
-        MicroModelica::Util::Variable 
-        variable(AST_Expression_ComponentReference exp);
-        bool 
-        scalarExpression(AST_Expression exp);
-        double 
-        scalarValue(AST_Expression exp);
-        void 
-        convert();
-        AST_Expression                       _left;
-        AST_Expression                       _right;
-        MicroModelica::Util::VarSymbolTable  _symbols;
-        std::string                          _convert;
+        AST_Statement 
+        convert(AST_Statement st);
+        AST_StatementList 
+        convert(AST_StatementList sts);  
+        AST_Statement_ElseList 
+        convert(AST_Statement_ElseList stel);
+        AST_Statement                       _statement;
+        MicroModelica::Util::VarSymbolTable _symbols;
     };
   }
 }
-
-#endif  /* CONVERT_EXPRESSION_H_ */
+#endif  /* CONVERT_STATEMENT_H_ */

@@ -25,8 +25,6 @@
 namespace MicroModelica {
   namespace Util {
 
-    /* EvalInitExp class */
-
     EvalInitExp::EvalInitExp(VarSymbolTable vt) :
         _vt(vt)
     {

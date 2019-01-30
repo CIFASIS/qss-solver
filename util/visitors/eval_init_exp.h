@@ -34,12 +34,12 @@ namespace MicroModelica {
          *
          * @param vt
          */
-        EvalInitExp(MicroModelica::Util::VarSymbolTable vt);
+        EvalInitExp(VarSymbolTable vt);
         /**
          *
          */
-        ~EvalInitExp();
-        private:
+        ~EvalInitExp() {};
+      private:
         int
         foldTraverseElement(AST_Expression exp);
         int
