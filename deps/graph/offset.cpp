@@ -17,22 +17,21 @@
 
  ******************************************************************************/
 
-#ifndef DEP_DEPENDENCY_H_
-#define DEP_DEPENDENCY_H_
+#include "offset.h"
+/*#include <causalize/vector/vector_graph_definition.h>
+#include <ast/expression.h>
+#include <boost/variant/get.hpp>
+#include <util/debug.h>
+#include <stdarg.h>*/
 
-namespace Dependency {
-
-  class Dependency 
-  {
-    public:
-      Dependency(std::string filename, bool vectorial);
-      ~Dependency();
-      std::string  
-      compute();  
-    private:
-      std::string _filename;
-      bool        _vectorial;
-  };
+namespace MicroModelica {
+  namespace Deps {
+    Offset Offset::operator-() const {
+      std::vector<int> ret(offset.size());
+      for (int i = 0; i < (int)offset.size(); i++) {
+        ret[i] = -offset[i];
+      }
+      return ret;
+    };
+  }
 }
-
-#endif // DEP_DEPENDENCY_H

@@ -22,9 +22,8 @@
 
 namespace MicroModelica {
   namespace Util {
-//_deps(Utils::instance().fileName(), true)
-    ModelDependencies::ModelDependencies() 
-      
+    ModelDependencies::ModelDependencies() : 
+      _deps() 
     {
     }
      
