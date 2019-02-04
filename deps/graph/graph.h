@@ -23,57 +23,52 @@
 #include <iostream>
 #include <utility>
 #include <boost/config.hpp>
-#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/directed_graph.hpp>
 
-#include <util/table.h>
-#include <ast/equation.h>
+namespace MicroModelica {
+  namespace Deps {
+    /// @brief Vertex in the incidence graph can be either Equations or Unknowns. This type is used for distinguish between them
+    enum VertexType {E, U};
 
-namespace Causalize {
-  /// @brief Vertex in the incidence graph can be either Equations or Unknowns. This type is used for distinguish between them
-  enum VertexType {E, U};
-
-  struct Unknown {
-    Modelica::AST::Expression expression;
-    Unknown() {};
-    Unknown(Modelica::AST::Expression exp);
-    Unknown(VarInfo varInfo, Modelica::AST::Reference var);
-    void SetIndex(Modelica::AST::Expression index);
-    Expression operator() () const;
-    int dimension;
-  };
+    struct Unknown {
+      int dimension;
+    };
 
 
-  /// @brief This is the property for a vertex in the incidence graph. Nodes can be of two types: Equation or Unknown.
-  struct VertexProperty {
-	  VertexType type;
-    /// @brief This is used for debugging purposes
-	  int  index; 
+    /// @brief This is the property for a vertex in the incidence graph. Nodes can be of two types: Equation or Unknown.
+    struct VertexProperty {
+  	  VertexType type;
+      /// @brief This is used for debugging purposes
+  	  int  index; 
 
-    bool visited;
-    /// @brief This holds the unknown in the case of a Unknown node. 
-	  Unknown unknown;
-    /// @brief This holds the equation in the case of a Equation node. 
-	  Modelica::AST::Equation equation;
-  };
+      bool visited;
+      /// @brief This holds the unknown in the case of a Unknown node. 
+  	  Unknown unknown;
+    };
 
-  /// @brief Empty edge properties for incidence graph 
-  struct EdgeProperty {
-    friend std::ostream & operator << (std::ostream &os, const EdgeProperty &ep) {
-      os << "";
-      return os;
-    }
-  };
-  
-  /// @brief This is the definition of the Incidence graph for the scalar case.
-  typedef boost::adjacency_list<boost::listS, boost::listS, boost::undirectedS, VertexProperty,EdgeProperty> CausalizationGraph;
-  /// @brief A vertex of the Incidence graph
-  typedef Causalize::CausalizationGraph::vertex_descriptor Vertex;
-  /// @brief An equation vertex is the same as a regular vertex
-  typedef Vertex EquationVertex;
-  /// @brief An unknown vertex is the same as a regular vertex
-  typedef Vertex UnknownVertex;
-  /// @brief This is an edge of the scalar causalization graph
-  typedef CausalizationGraph::edge_descriptor Edge;
+    /// @brief Empty edge properties for incidence graph 
+    struct EdgeProperty {
+      friend std::ostream & operator << (std::ostream &os, const EdgeProperty &ep) {
+        os << "";
+        return os;
+      }
+    };
 
+    struct GraphProperty
+    {
+      
+    };
+    
+    /// @brief This is the definition of the Incidence graph for the scalar case.
+    typedef boost::directed_graph<> DepsGraph;
+    /// @brief A vertex of the Incidence graph
+    typedef boost::graph_traits<DepsGraph>::vertex_descriptor Vertex;
+    /// @brief An equation vertex is the same as a regular vertex
+    typedef Vertex EquationVertex;
+    /// @brief An unknown vertex is the same as a regular vertex
+    typedef Vertex InfVertex;
+/*    /// @brief This is an edge of the scalar causalization graph
+    typedef DepsGraph::edge_descriptor Edge;*/
+  }
 }
 #endif

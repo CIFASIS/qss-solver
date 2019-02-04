@@ -25,10 +25,23 @@ namespace MicroModelica {
     ModelDependencies::ModelDependencies() : 
       _deps() 
     {
+      initialize();
     }
      
+    void
+    ModelDependencies::initialize()
+    {
+
+    }
+
     ModelDependencies::~ModelDependencies()
     {
+    }
+
+    void
+    ModelDependencies::compute()
+    {
+
     }
   }
 }

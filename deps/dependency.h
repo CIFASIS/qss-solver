@@ -20,19 +20,19 @@
 #ifndef DEP_DEPENDENCY_H_
 #define DEP_DEPENDENCY_H_
 
-namespace Dependency {
+#include <string>
 
-  class Dependency 
-  {
-    public:
-      Dependency(std::string filename, bool vectorial);
-      ~Dependency();
-      std::string  
-      compute();  
-    private:
-      std::string _filename;
-      bool        _vectorial;
-  };
+namespace MicroModelica {
+  namespace Deps {
+    class Dependency 
+    {
+      public:
+        Dependency();
+        ~Dependency();
+        std::string  
+        compute();  
+    };
+  }
 }
 
 #endif // DEP_DEPENDENCY_H

@@ -63,5 +63,4 @@ using namespace std;
 #define CLASS_PRINTER_IMP(X) ostream & operator<<(ostream &os, \
                                     const X##_ &e ){ os << e.print(); return os; } \
                              CLASSP_PRINTER_IMP(X)
-
 #endif  /*  DEFINITIONS_H_ */

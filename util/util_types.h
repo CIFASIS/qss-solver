@@ -22,8 +22,12 @@
 
 #include <string>
 #include <boost/optional.hpp>
+#include <boost/foreach.hpp>
 
 #include "macros.h"
+
+#define foreach_ BOOST_FOREACH
+
 
 template <typename T>
 struct Option: public boost::optional<T> {

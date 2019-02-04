@@ -53,6 +53,11 @@ namespace MicroModelica {
         ZCA() { return _ZCA; };
         inline EquationDependencyMatrix 
         DA() { return _DA; };
+        void
+        compute();
+      protected:
+        void
+        initialize();
       private:
         VariableDependencyMatrix _SD;
         VariableDependencyMatrix _DS;
@@ -65,7 +70,7 @@ namespace MicroModelica {
         EquationDependencyMatrix _OA;
         EquationDependencyMatrix _ZCA;
         EquationDependencyMatrix _DA;
-        Dependency::Dependency   _deps;
+        MicroModelica::Deps::Dependency   _deps;
     };
   }
 }

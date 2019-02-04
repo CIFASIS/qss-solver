@@ -120,7 +120,12 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
 						 $(VISITORDIR)/variable_lookup.cpp 
 #						 $(VISITORDIR)/occurs.cpp 
 
-#DEPSBUILDERSRC = $(DEPSBUILDERDIR)/sd_graph_builder.cpp 
+DEPSSRC = $(DEPSDIR)/dependency.cpp 
+
+DEPSGRAPHSRC = $(DEPSGRAPHDIR)/graph.cpp \
+			   $(DEPSGRAPHDIR)/graph_helpers.cpp	
+
+DEPSBUILDERSRC = $(DEPSBUILDERDIR)/sd_graph_builder.cpp 
 
 # Objects
 ASTOBJ=$(addprefix $(BUILDDIR)/ast_, $(notdir $(ASTSRC:.cpp=.o)))
@@ -135,10 +140,22 @@ UTILOBJ=$(addprefix $(BUILDDIR)/util_, $(notdir $(UTILSRC:.cpp=.o)))
 
 VISITOROBJ=$(addprefix $(BUILDDIR)/util_, $(notdir $(VISITORSRC:.cpp=.o)))
 
+DEPSOBJ=$(addprefix $(BUILDDIR)/deps_, $(notdir $(DEPSSRC:.cpp=.o)))
+
+DEPSGRAPHOBJ=$(addprefix $(BUILDDIR)/deps_, $(notdir $(DEPSGRAPHSRC:.cpp=.o)))
+
 DEPSBUILDEROBJ=$(addprefix $(BUILDDIR)/deps_, $(notdir $(DEPSBUILDERSRC:.cpp=.o)))
 
 # Make dependencies
-DEPS = $(ASTOBJ:.o=.d) $(GENERATOROBJ:.o=.d) $(IROBJ:.o=.d) $(PARSEROBJ:.o=.d) $(UTILOBJ:.o=.d) $(VISITOROBJ:.o=.d) $(DEPSBUILDEROBJ:.o=.d)
+DEPS = $(ASTOBJ:.o=.d) \
+ 	   $(GENERATOROBJ:.o=.d) \
+ 	   $(IROBJ:.o=.d) \
+ 	   $(PARSEROBJ:.o=.d) \
+ 	   $(UTILOBJ:.o=.d) \
+ 	   $(VISITOROBJ:.o=.d) \
+ 	   $(DEPSOBJ:.o=.d) \
+ 	   $(DEPSGRAPHOBJ:.o=.d) \
+ 	   $(DEPSBUILDEROBJ:.o=.d)
 
 default: mmoc 
 
@@ -181,12 +198,20 @@ $(BUILDDIR)/util_%.o : $(VISITORDIR)/%.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
 
-#$(BUILDDIR)/deps_%.o : $(DEPSBUILDERDIR)/%.cpp 
-#	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
-#	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
-#mmoc: | $(libginac) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSBUILDEROBJ)
-mmoc: | $(libginac) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) 
-	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ)  $(LIB) 
+$(BUILDDIR)/deps_%.o : $(DEPSDIR)/%.cpp 
+	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
+
+$(BUILDDIR)/deps_%.o : $(DEPSGRAPHDIR)/%.cpp 
+	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
+
+$(BUILDDIR)/deps_%.o : $(DEPSBUILDERDIR)/%.cpp 
+	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
+
+mmoc: | $(libginac) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ)
+	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ) $(LIB) 
 
 ifneq ($(OS), Windows_NT)
 $(PARSERDIR)/mocc_parser.cpp: parser/mocc.y

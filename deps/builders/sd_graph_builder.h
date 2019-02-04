@@ -20,20 +20,24 @@
 #define SD_GRAPH_BUILDER_H 
 
 #include "../../ir/class.h"
-#include "../graph_definition.h"
+//#include "../graph/graph.h"
+#include <boost/graph/directed_graph.hpp>
 
 namespace MicroModelica {
-  namespace Dependency {
+  namespace Deps {
+typedef boost::directed_graph<> Graph;
+
     class SDGraphBuilder {
     public:
-        SDGraphBuilder(MicroModelica::IR::Class &model);
-        ~SDGraphBuilder(){};
-        virtual VectorCausalizationGraph makeGraph();
+      SDGraphBuilder(MicroModelica::IR::Model &model);
+      ~SDGraphBuilder(){};
+      Graph
+      graph();    
     private:
-        int getForRangeSize(Modelica::AST::ForEq);
-        list<Causalize::VectorEquationVertex> equationDescriptorList;
-        list<Causalize::VectorUnknownVertex> unknownDescriptorList;
-        MMO_Class &mmo_class;
+//      list<EquationVertex> equationDescriptorList;
+//      list<InfVertex> InfDescriptorList;
+      MicroModelica::IR::Model _model;
+      Graph _g;
     };
   }
 }

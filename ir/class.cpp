@@ -814,7 +814,7 @@ namespace MicroModelica {
     }
 
     void 
-    Model::setDependencies()
+    Model::computeDependencies()
     {
       Utils::instance().setDependencies(_dependencies);
     }
