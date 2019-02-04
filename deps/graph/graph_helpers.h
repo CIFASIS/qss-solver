@@ -17,77 +17,162 @@
 
  ******************************************************************************/
 
-#ifndef DEPS_MDI_H_
-#define DEPS_MDI_H_
+#ifndef DEPS_GRAPH_HELPERS_H_
+#define DEPS_GRAPH_HELPERS_H_
 
-/*#include <utility>
+#include <list>
 #include <set>
-#include <boost/config.hpp>
-#include <boost/graph/adjacency_list.hpp>
+#include <vector>
 #include <boost/icl/discrete_interval.hpp>
-
-#include <ast/equation.h>
-#include <causalize/graph/graph_definition.h>
-
-#include <ast/ast_types.h>
 #include <boost/algorithm/string/join.hpp>
-#include <boost/range/adaptor/transformed.hpp>
-#include <sstream>
-#include <string>*/
+
+#include "../../util/util_types.h"
 
 namespace ICL = boost::icl;
+
 namespace MicroModelica {
   namespace Deps {
     
-    class MDI { //Multi-Dimensional Interval
+    /// @brief A pair representing a usage of a variable in an equation
+    typedef ICL::discrete_interval<int> Interval;
+    inline Interval CreateInterval(int a, int b) {
+      return ICL::discrete_interval<int>(a,b, ICL::interval_bounds::closed());
+    }
+    typedef std::list<Interval> IntervalList;
+    typedef std::vector<Interval> IntervalVector;
+
+    class Usage {
     public:
-      MDI(int d, ... );
-      MDI(IntervalList intervalList);
-      inline MDI() { intervals.resize(0); }
-      inline MDI(IntervalVector intervals): intervals(intervals) { };
-      inline int Dimension() const {return intervals.size(); }
-      int Size () const;
-      std::list<MDI> operator-(const MDI& other);
-      std::list<MDI> Difference(const MDI& other) { return (*this)-other;} ;
-      MDI ApplyOffset(Offset) const;
-      MDI ApplyUsage(Usage, MDI ran = MDI({})) const;
-      MDI RevertUsage(Usage usage, MDI dom = MDI({})) const;
-       // karupayun - Para moverse usando la info de la conexion entre Dom y Ran
-      MDI DomToRan(IndexPair ip) const; 
-      MDI RanToDom(IndexPair ip) const;              
-      bool operator<(const MDI& other) const;
-      Option<MDI> operator&(const MDI& other) const;
-      Option<MDI> Intersection (MDI& other) { return other & (*this) ;}
-      friend std::ostream& operator<<(std::ostream& os, const MDI mdi);
-      inline const IntervalVector & Intervals() const { return intervals; }
-      bool Contains(const MDI& other) const;
-      inline bool operator==(const MDI& other) const { return this->intervals==other.intervals; };
-      inline bool operator!=(const MDI& other) const { return !((*this)==other); };
-
+      inline Usage():usage() { };
+      inline Usage(int size):usage(std::vector<int>(size)) { }
+      inline Usage(int size, int value):usage(std::vector<int>(size, value)) { }
+      inline int& operator[](int index) { return usage[index]; }
+      inline const int& operator[](int index) const { return usage[index]; }
+      inline void push_back(const int i) { usage.push_back(i); }
+      inline bool operator==(const Usage& other) const { return this->usage == other.usage; };
+      inline bool operator!=(const Usage& other) const { return this->usage != other.usage; };
+      inline int Size() { return usage.size(); }
+      inline bool isUnused() {
+        for(int i: usage) {
+          if (i!=-1) return false;
+        }
+        return true;
+      }
+      typedef std::vector<int>::iterator iterator;
+      typedef std::vector<int>::const_iterator const_iterator;
+      inline const_iterator begin() const { return usage.begin(); }
+      inline iterator begin() { return usage.begin(); }
+      inline iterator end() { return usage.end(); }
     private:
-        IntervalVector intervals;
-        typedef IntervalVector::iterator iterator;
-        typedef IntervalVector::const_iterator const_iterator;
-        inline const_iterator begin() const { return intervals.begin(); }
-        inline iterator begin() { return intervals.begin(); }
-        inline iterator end() { return intervals.end(); }
-
-        IntervalList Partition(Interval iA, Interval iB);
-        //MDI ApplyOffset(Offset offset);
-        std::list<MDI> PutHead(Interval i, std::list<MDI> mdiList);
-        std::list<MDI> Filter(std::list<MDI> mdiList, MDI mdi);
-        std::list<MDI> CartProd(std::list<MDI> mdiList);
-        std::list<MDI> PutLists(MDI mdi, std::list<MDI> mdiList);
+      std::vector<int> usage;
     };
-    /*****************************************************************************
-     ****************************************************************************/
+
+    class Offset {
+      public:
+        inline Offset(std::vector<int> offset): offset(offset) { };
+        inline Offset(): offset() { };
+        inline bool operator<(const Offset& other) const { return this->offset < other.offset; };
+        inline bool operator==(const Offset& other) const { return this->offset == other.offset; };
+        inline bool operator!=(const Offset& other) const { return this->offset != other.offset; };
+        inline int operator[](const int& index) const { return offset[index]; };
+        inline bool isZeros() { 
+          for(int i: offset) {
+            if (i!=0) return false;
+          }
+          return true;
+        }
+        Offset operator-() const;
+        typedef std::vector<int>::iterator iterator;
+        typedef std::vector<int>::const_iterator const_iterator;
+        inline const_iterator begin() const { return offset.begin(); }
+        inline iterator begin() { return offset.begin(); }
+        inline iterator end() { return offset.end(); }
+        inline unsigned int Size () const { return offset.size(); }
+      private:
+          std::vector<int> offset;
+    };
+
+    class IndexPair;
+
+    class MDI { //Multi-Dimensional Interval
+      public:
+        MDI(int d, ... );
+        MDI(IntervalList intervalList);
+        inline MDI() { intervals.resize(0); }
+        inline MDI(IntervalVector intervals): intervals(intervals) { };
+        inline int Dimension() const {return intervals.size(); }
+        int Size () const;
+        std::list<MDI> operator-(const MDI& other);
+        std::list<MDI> Difference(const MDI& other) { return (*this)-other;} ;
+        MDI ApplyOffset(Offset) const;
+        MDI ApplyUsage(Usage, MDI ran = MDI({})) const;
+        MDI RevertUsage(Usage usage, MDI dom = MDI({})) const;
+         // karupayun - Para moverse usando la info de la conexion entre Dom y Ran
+        MDI DomToRan(IndexPair ip) const; 
+        MDI RanToDom(IndexPair ip) const;              
+        bool operator<(const MDI& other) const;
+        Option<MDI> operator&(const MDI& other) const;
+        Option<MDI> Intersection (MDI& other) { return other & (*this) ;}
+        friend std::ostream& operator<<(std::ostream& os, const MDI mdi);
+        inline const IntervalVector & Intervals() const { return intervals; }
+        bool Contains(const MDI& other) const;
+        inline bool operator==(const MDI& other) const { return this->intervals==other.intervals; };
+        inline bool operator!=(const MDI& other) const { return !((*this)==other); };
+
+      private:
+          IntervalVector intervals;
+          typedef IntervalVector::iterator iterator;
+          typedef IntervalVector::const_iterator const_iterator;
+          inline const_iterator begin() const { return intervals.begin(); }
+          inline iterator begin() { return intervals.begin(); }
+          inline iterator end() { return intervals.end(); }
+
+          IntervalList Partition(Interval iA, Interval iB);
+          //MDI ApplyOffset(Offset offset);
+          std::list<MDI> PutHead(Interval i, std::list<MDI> mdiList);
+          std::list<MDI> Filter(std::list<MDI> mdiList, MDI mdi);
+          std::list<MDI> CartProd(std::list<MDI> mdiList);
+          std::list<MDI> PutLists(MDI mdi, std::list<MDI> mdiList);
+    };
+
+    enum IndexPairType{
+      _N_N, _N_1, _1_N
+    };
+
+
+    class IndexPair {
+      public:
+        inline IndexPair() { };
+        inline IndexPair(MDI dom_, MDI ran_, Offset os, Usage us): dom(dom_), ran(ran_), offset(os), usage(us) { };
+        inline MDI Dom() const { return dom; }
+        inline MDI Ran() const { return ran; }
+        inline Offset GetOffset() const { return offset; }
+        inline Usage GetUsage() const { return usage; }
+        std::list<IndexPair> operator-(const IndexPair& other) const;
+        std::list<IndexPair> Difference(const IndexPair& other) { return (*this) - other; }
+        std::set<IndexPair> RemoveUnknowns(MDI unk2remove);
+        std::set<IndexPair> RemoveEquations(MDI eqs2remove);
+        bool operator<(const IndexPair& other) const;
+        Option<IndexPair> operator&(const IndexPair& other) const;
+        friend std::ostream& operator<<(std::ostream& os, const IndexPair& ip);
+        bool Contains(const IndexPair& other) const;
+        IndexPairType Type() const;
+      private:
+        MDI dom, ran;
+        Offset offset;
+        Usage usage;
+    };
+
+    std::ostream& operator<<(std::ostream &os, const std::list<IndexPair> &ipList);
+
+
+    typedef std::set<IndexPair> IndexPairSet;
+    std::ostream& operator<<(std::ostream& os, const IndexPairSet& ips);
+
     typedef std::list<MDI> MDIL; // //Multi-Dimensional Interval List
     int sum_size (std::list <MDI> &mdis); // Sumas de los tamaños de los MDI's de la lista
 
     std::ostream& operator<<(std::ostream &os, const std::list<MDI> &mdiList);
-    enum IndexPairType{
-      _N_N, _N_1, _1_N
-    };
   }
 }
-#endif /* DEPS_MDI_H_ */
+#endif /* DEPS_GRAPH_HELPERS_H_ */
