@@ -20,7 +20,7 @@
 #include "dependency_matrix.h"
 
 namespace MicroModelica {
-  namespace Util {
+  namespace Deps {
 
     std::ostream& operator<<(std::ostream& out, const VariableDependency& d)
     {

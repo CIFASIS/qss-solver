@@ -21,8 +21,8 @@
 #define EQUATION_H_
 
 #include "../ast/ast_types.h"
+#include "../deps/dependency_matrix.h"
 #include "../util/table.h"
-#include "../util/dependency_matrix.h"
 #include "index.h"
 
 namespace MicroModelica {
@@ -90,7 +90,7 @@ namespace MicroModelica {
         process(AST_Equation eq);
         void 
         process(AST_Expression exp);
-        Util::EquationDependencyMatrix 
+        Deps::EquationDependencyMatrix 
         dependencyMatrix() const;
         std::string 
         functionId() const;

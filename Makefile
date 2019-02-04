@@ -98,8 +98,6 @@ UTILSRC = $(UTILDIR)/util.cpp \
 					$(UTILDIR)/compile_flags.cpp \
 					$(UTILDIR)/derivative.cpp \
 					$(UTILDIR)/ginac_interface.cpp \
-					$(UTILDIR)/model_dependencies.cpp  \
-					$(UTILDIR)/dependency_matrix.cpp  \
 					$(UTILDIR)/graph.cpp \
 					$(UTILDIR)/graph_profile.cpp \
 
@@ -120,7 +118,9 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
 						 $(VISITORDIR)/variable_lookup.cpp 
 #						 $(VISITORDIR)/occurs.cpp 
 
-DEPSSRC = $(DEPSDIR)/dependency.cpp 
+DEPSSRC = $(DEPSDIR)/dependency.cpp \
+		  $(DEPSDIR)/model_dependencies.cpp  \
+		  $(DEPSDIR)/dependency_matrix.cpp
 
 DEPSGRAPHSRC = $(DEPSGRAPHDIR)/graph.cpp \
 			   $(DEPSGRAPHDIR)/graph_helpers.cpp	

@@ -597,6 +597,18 @@ namespace MicroModelica {
     return os;
   }
 
+  std::ostream& operator<<(std::ostream &os, const IndexPairSet &ips) {
+    std::list<std::string> ipsStList;
+    foreach_(IndexPair ip, ips){
+      std::ostringstream ipSt;
+      ipSt << ip;
+      ipsStList.push_back(ipSt.str());
+    }
+    std::string ipsSt = "{" + boost::algorithm::join(ipsStList, ",") + "}";
+    os << ipsSt;
+    return os;
+  }
+
   /*****************************************************************************
    ****************************************************************************/
 	int sum_size (std::list <MDI> &mdis){
@@ -606,6 +618,8 @@ namespace MicroModelica {
 		}
 		return rta;
 	}
+
+
 
 }
 }

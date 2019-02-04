@@ -38,6 +38,7 @@
 #include "helpers.h"
 
 namespace MicroModelica {
+  using namespace Deps;
   using namespace Util;
   namespace IR
   {
@@ -331,7 +332,7 @@ namespace MicroModelica {
       _derivatives(),
       _algebraics(),
       _events(),
-      _dependencies(),
+      _dependencies(_symbols),
       _packages(),
       _initialCode(),
       _libraryDirectories(),
@@ -364,7 +365,7 @@ namespace MicroModelica {
       _derivatives(),
       _algebraics(),
       _events(),
-      _dependencies(),
+      _dependencies(_symbols),
       _packages(),
       _initialCode(),
       _libraryDirectories(),
@@ -816,6 +817,7 @@ namespace MicroModelica {
     void 
     Model::computeDependencies()
     {
+      _dependencies.compute(derivatives());
       Utils::instance().setDependencies(_dependencies);
     }
   }

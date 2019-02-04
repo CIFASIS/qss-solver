@@ -33,6 +33,7 @@
 #include "../ir/statement.h"
 #include "../util/error.h"
 #include "../util/util.h"
+#include "../deps/dependency_matrix.h"
 
 namespace MicroModelica {
   
@@ -40,6 +41,7 @@ namespace MicroModelica {
   
     using namespace MicroModelica::IR;
     using namespace MicroModelica::Util;
+    using namespace MicroModelica::Deps;
 
     ModelInstance::ModelInstance(Model& model, CompileFlags& flags, WriterPtr writer) :
       _model(model),

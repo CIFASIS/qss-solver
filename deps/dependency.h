@@ -22,6 +22,9 @@
 
 #include <string>
 
+#include "dependency_matrix.h"
+#include "graph/graph.h"
+
 namespace MicroModelica {
   namespace Deps {
     class Dependency 
@@ -29,8 +32,8 @@ namespace MicroModelica {
       public:
         Dependency();
         ~Dependency();
-        std::string  
-        compute();  
+        VariableDependencyMatrix  
+        compute(DepsGraph g);  
     };
   }
 }

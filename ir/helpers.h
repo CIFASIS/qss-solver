@@ -22,9 +22,9 @@
 
 #include <string>
 #include "index.h"
+#include "../deps/dependency_matrix.h"
 #include "../util/symbol_table.h"
 #include "../util/util.h"
-#include "../util/dependency_matrix.h"
 
 namespace MicroModelica {
   namespace IR {
@@ -228,7 +228,7 @@ namespace MicroModelica {
         std::string 
         endExpression(Option<Range> range) const;
         std::string
-        algebraics(Util::EquationDependencyMatrix eqdm, Util::depId key);
+        algebraics(Deps::EquationDependencyMatrix eqdm, Deps::depId key);
         std::string 
         macro(std::string token, Option<Range> range, int id, int offset = 0) const;
       private:

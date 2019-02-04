@@ -20,24 +20,23 @@
 #define SD_GRAPH_BUILDER_H 
 
 #include "../../ir/class.h"
-//#include "../graph/graph.h"
-#include <boost/graph/directed_graph.hpp>
+#include "../../util/symbol_table.h"
+#include "../graph/graph.h"
+
 
 namespace MicroModelica {
   namespace Deps {
-typedef boost::directed_graph<> Graph;
-
     class SDGraphBuilder {
     public:
-      SDGraphBuilder(MicroModelica::IR::Model &model);
+      SDGraphBuilder(IR::EquationTable &equations, Util::VarSymbolTable symbols);
       ~SDGraphBuilder(){};
-      Graph
-      graph();    
+      DepsGraph
+      build();    
     private:
-//      list<EquationVertex> equationDescriptorList;
-//      list<InfVertex> InfDescriptorList;
-      MicroModelica::IR::Model _model;
-      Graph _g;
+      list<EquationVertex> equationDescriptorList;
+      list<InfVertex> InfDescriptorList;
+      IR::EquationTable _equations;
+      Util::VarSymbolTable _symbols;
     };
   }
 }

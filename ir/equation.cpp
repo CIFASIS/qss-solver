@@ -30,6 +30,7 @@
 
 namespace MicroModelica {
   using namespace Util;
+  using namespace Deps;
   namespace IR {
 
     Equation::Equation(AST_Expression eq, VarSymbolTable& symbols, EQUATION::Type type, int id, int offset) :

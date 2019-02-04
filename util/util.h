@@ -26,10 +26,10 @@
 #include <string>
 
 #include "../ast/ast_types.h"
+#include "../deps/model_dependencies.h"
 #include "util_types.h"
 #include "symbol_table.h"
 #include "compile_flags.h"
-#include "model_dependencies.h"
 #include "table.h"
 
 namespace MicroModelica {
@@ -219,10 +219,10 @@ namespace MicroModelica {
         setAlgebraics(IR::EquationTable algebraics);
         IR::EquationTable 
         algebraics();
-        inline ModelDependencies
+        inline Deps::ModelDependencies
         dependencies() { return _dependencies; };
         inline void 
-        setDependencies(ModelDependencies dependencies) { _dependencies = dependencies; };
+        setDependencies(Deps::ModelDependencies dependencies) { _dependencies = dependencies; };
         inline std::string 
         fileName() { return _fileName; };
       private:
@@ -242,7 +242,7 @@ namespace MicroModelica {
         VarSymbolTable                    _symbols;
         SymbolTable                       _localSymbols;
         IR::EquationTable                 _algebraics;
-        ModelDependencies                 _dependencies;
+        Deps::ModelDependencies           _dependencies;
         std::string                       _fileName;
     };
 

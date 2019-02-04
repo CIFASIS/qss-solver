@@ -19,19 +19,22 @@
 
 #include "sd_graph_builder.h"
 
+
 namespace MicroModelica {
   using namespace IR;
   namespace Deps {
-    SDGraphBuilder::SDGraphBuilder(Model &model) :
-      _model(model)
+
+    SDGraphBuilder::SDGraphBuilder(IR::EquationTable &equations, Util::VarSymbolTable symbols) :
+      _equations(equations),
+      _symbols(symbols)
     {
 
     }
     
-    Graph
-    SDGraphBuilder::graph()
+    DepsGraph
+    SDGraphBuilder::build()
     {
-      return _g;
+      return DepsGraph();
     }    
   }
 }

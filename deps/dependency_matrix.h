@@ -26,7 +26,7 @@
 #include "../util/table.h"
 
 namespace MicroModelica {
-  namespace Util {
+  namespace Deps {
 
     typedef int depId;
 

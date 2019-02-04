@@ -23,7 +23,9 @@
 #include <iostream>
 #include <utility>
 #include <boost/config.hpp>
-#include <boost/graph/directed_graph.hpp>
+#include <boost/graph/adjacency_list.hpp>
+
+#include "graph_helpers.h"
 
 namespace MicroModelica {
   namespace Deps {
@@ -46,29 +48,32 @@ namespace MicroModelica {
   	  Unknown unknown;
     };
 
-    /// @brief Empty edge properties for incidence graph 
-    struct EdgeProperty {
-      friend std::ostream & operator << (std::ostream &os, const EdgeProperty &ep) {
-        os << "";
-        return os;
-      }
-    };
-
-    struct GraphProperty
-    {
-      
-    };
+    class Label {
+      public:
+        inline Label() {};
+        Label(IndexPairSet ips);
+        void RemovePairs(IndexPairSet ips);
+        void RemoveUnknowns(MDI const unk2remove);
+        void RemoveEquations(MDI const mdi);
+        unsigned long int EdgeCount();
+        inline bool IsEmpty() { return ips.size()==0; }
+        inline const IndexPairSet & Pairs() const { return ips; }
+        friend std::ostream& operator<<(std::ostream& os, const Label& label);
+      private:
+        IndexPairSet ips;
+        void RemoveDuplicates();
+    }; 
     
     /// @brief This is the definition of the Incidence graph for the scalar case.
-    typedef boost::directed_graph<> DepsGraph;
+    typedef boost::adjacency_list<boost::listS, boost::listS, boost::directedS, VertexProperty, Label> DepsGraph;
     /// @brief A vertex of the Incidence graph
     typedef boost::graph_traits<DepsGraph>::vertex_descriptor Vertex;
     /// @brief An equation vertex is the same as a regular vertex
     typedef Vertex EquationVertex;
     /// @brief An unknown vertex is the same as a regular vertex
     typedef Vertex InfVertex;
-/*    /// @brief This is an edge of the scalar causalization graph
-    typedef DepsGraph::edge_descriptor Edge;*/
+    /// @brief This is an edge of the scalar causalization graph
+    typedef DepsGraph::edge_descriptor Edge;
   }
 }
 #endif

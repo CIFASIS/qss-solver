@@ -47,6 +47,7 @@ namespace MicroModelica {
         _symbols(),
         _localSymbols(),
         _algebraics(),
+        _dependencies(),
         _fileName()
     {
       _annotations.insert(pair<string, int>("StartTime", 0));

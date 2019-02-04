@@ -28,6 +28,7 @@
 #include "../util/util.h"
 
 namespace MicroModelica {
+  using namespace Deps;
   using namespace Util;
   using namespace Generator;
   namespace IR {

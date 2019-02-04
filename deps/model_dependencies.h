@@ -20,16 +20,19 @@
 #ifndef MODEL_DEPENDENCIES_H_
 #define MODEL_DEPENDENCIES_H_
 
+#include "../ir/equation.h"
+#include "../util/symbol_table.h"
 #include "dependency_matrix.h"
-#include "deps/dependency.h"
+#include "dependency.h"
 
 namespace MicroModelica {
-  namespace Util {
+  namespace Deps {
 
     class ModelDependencies 
     {
       public:
-        ModelDependencies();
+        ModelDependencies() {};
+        ModelDependencies(Util::VarSymbolTable &symbols);
         ~ModelDependencies();
         inline VariableDependencyMatrix 
         SD() { return _SD; };
@@ -54,10 +57,7 @@ namespace MicroModelica {
         inline EquationDependencyMatrix 
         DA() { return _DA; };
         void
-        compute();
-      protected:
-        void
-        initialize();
+        compute(IR::EquationTable eqs);
       private:
         VariableDependencyMatrix _SD;
         VariableDependencyMatrix _DS;
@@ -70,7 +70,8 @@ namespace MicroModelica {
         EquationDependencyMatrix _OA;
         EquationDependencyMatrix _ZCA;
         EquationDependencyMatrix _DA;
-        MicroModelica::Deps::Dependency   _deps;
+        Dependency               _deps;
+        Util::VarSymbolTable     _symbols;
     };
   }
 }

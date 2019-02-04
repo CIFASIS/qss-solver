@@ -26,15 +26,16 @@
 #include <vector>
 #include <boost/variant/variant.hpp>
 
+#include "../ast/ast_types.h"
+#include "../deps/model_dependencies.h"
+#include "../util/util_types.h"
+#include "../util/util.h"
+
 #include "annotation.h"
 #include "statement.h"
 #include "equation.h"
 #include "event.h"
 #include "helpers.h"
-#include "../ast/ast_types.h"
-#include "../util/model_dependencies.h"
-#include "../util/util_types.h"
-#include "../util/util.h"
 
 namespace MicroModelica
 {
@@ -491,7 +492,7 @@ namespace MicroModelica
         derivatives() { return _derivatives; };
         inline EquationTable 
         algebraics() { return _algebraics; };
-        inline Util::ModelDependencies
+        inline Deps::ModelDependencies
         dependencies() { return _dependencies; };
         inline EquationTable 
         outputs() { return _outputs; };
@@ -539,7 +540,7 @@ namespace MicroModelica
         EquationTable             _outputs;
         EventTable                _events;
         InputTable                _inputs;
-        Util::ModelDependencies   _dependencies;
+        Deps::ModelDependencies   _dependencies;
         CompiledPackageTable      _packages;
         StatementTable            _initialCode;
         Util::SymbolTable         _libraryDirectories;

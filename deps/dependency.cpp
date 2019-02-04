@@ -36,10 +36,10 @@ namespace MicroModelica {
     {
     }
 
-    string 
-    Dependency::compute()
+    VariableDependencyMatrix 
+    Dependency::compute(DepsGraph g)
     {
-      return "";
+      return VariableDependencyMatrix();
     }
   }
 }

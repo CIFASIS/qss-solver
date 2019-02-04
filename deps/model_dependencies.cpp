@@ -18,30 +18,30 @@
  ******************************************************************************/
 
 #include "model_dependencies.h"
-#include "util.h"
+
+#include "../util/util.h"
+
+#include "builders/sd_graph_builder.h"
 
 namespace MicroModelica {
-  namespace Util {
-    ModelDependencies::ModelDependencies() : 
-      _deps() 
+  using namespace IR;
+  using namespace Util;
+  namespace Deps {
+    ModelDependencies::ModelDependencies(VarSymbolTable &symbols) : 
+      _deps(),
+      _symbols(symbols) 
     {
-      initialize();
     }
      
-    void
-    ModelDependencies::initialize()
-    {
-
-    }
-
     ModelDependencies::~ModelDependencies()
     {
     }
 
     void
-    ModelDependencies::compute()
+    ModelDependencies::compute(EquationTable eqs)
     {
-
+      SDGraphBuilder sd = SDGraphBuilder(eqs, _symbols);
+      _SD = _deps.compute(sd.build());
     }
   }
 }
