@@ -116,7 +116,6 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
 						 $(VISITORDIR)/replace_der.cpp \
 						 $(VISITORDIR)/replace_inner_product.cpp \
 						 $(VISITORDIR)/variable_lookup.cpp 
-#						 $(VISITORDIR)/occurs.cpp 
 
 DEPSSRC = $(DEPSDIR)/dependency.cpp \
 		  $(DEPSDIR)/model_dependencies.cpp  \

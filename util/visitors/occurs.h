@@ -30,16 +30,20 @@ namespace MicroModelica {
     class Occurs: public AST_Expression_Visitor<bool> 
     {
       public:
-        Occurs(VarSymbolTable symbols) : _symbols(symbols) {};
+        Occurs(std::string var, VarSymbolTable symbols) : _symbols(symbols), _occs(), _var(var) {};
         ~Occurs() {};
+        list<IR::Expression> 
+        occurrences() { return _occs; };
       private:
         bool   
         foldTraverseElement(AST_Expression exp);
         bool 
-        foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
+        foldTraverseElement(bool l, bool r, BinOpType bot) { return l || r; };
         bool 
         foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
-        VarSymbolTable _symbols;
+        VarSymbolTable       _symbols;
+        list<IR::Expression> _occs;
+        std::string          _var;
     };
   }
 }

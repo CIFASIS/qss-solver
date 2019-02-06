@@ -22,6 +22,7 @@
 #include "../error.h"
 
 namespace MicroModelica {
+  using namespace IR;
   namespace Util {
     bool 
     Occurs::foldTraverseElement(AST_Expression exp)
@@ -32,42 +33,28 @@ namespace MicroModelica {
         {
           AST_Expression_ComponentReference cr = exp->getAsComponentReference();
           Option<Variable> var = _symbols[cr->name()];
-          if(cr->hasIndexes() && var)
-          {
-            if(AST_ListFirst(cr->indexes())->size() != var->dimensions()) 
-            {
-              Error::instance().add(exp->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, 
-                                  "Wrong array dimension, expected %d got %d.", 
-                                  var->dimensions(), cr->indexes()->size());
-            }
+          if(var && (var->name() == _var)) {
+            _occs.push_back(Expression(exp, _symbols));
+            return true;  
           }
           break;
         }
-        case EXPDERIVATIVE:
+        case EXPCALL:
         {
-          AST_Expression e = AST_ListFirst(exp->getAsDerivative()->arguments());
-          if(e->expressionType() != EXPCOMPREF)
-          {
-            Error::instance().add(exp->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong assign expression in equation.");
-          }
-          foldTraverseElement(e);
-          break;
-        }
-        case EXPOUTPUT:
-        {
-          AST_Expression_Output eout = exp->getAsOutput();
-          AST_ExpressionList el = eout->expressionList();
+          AST_Expression_Call call = exp->getAsCall();
+          AST_ExpressionList el = call->arguments();
           AST_ExpressionListIterator it;
-          foreach(it,el)
+          bool ret = false;
+          foreach(it, el)
           {
-            foldTraverseElement(current_element(it));
+            ret = ret || apply(current_element(it));
           }
-          break;
+          return ret;
         }
         default:
-          return true;
+          return false;
       }
-      return true;
+      return false;
     }
   }
 }
