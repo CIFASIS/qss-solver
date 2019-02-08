@@ -173,6 +173,7 @@ namespace MicroModelica {
     int sum_size (std::list <MDI> &mdis); // Sumas de los tamaños de los MDI's de la lista
 
     std::ostream& operator<<(std::ostream &os, const std::list<MDI> &mdiList);
+
   }
 }
 #endif /* DEPS_GRAPH_HELPERS_H_ */

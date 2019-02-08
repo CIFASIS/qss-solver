@@ -19,12 +19,17 @@
 
 #include "sd_graph_builder.h"
 
+#include "../../util/util_types.h"
+
 
 namespace MicroModelica {
   using namespace IR;
+  using namespace Util;
   namespace Deps {
 
-    SDGraphBuilder::SDGraphBuilder(IR::EquationTable &equations, Util::VarSymbolTable symbols) :
+    SDGraphBuilder::SDGraphBuilder(EquationTable &equations, VarSymbolTable symbols) :
+      _equationDescriptors(),
+      _variableDescriptors(),
       _equations(equations),
       _symbols(symbols)
     {
@@ -34,7 +39,45 @@ namespace MicroModelica {
     DepsGraph
     SDGraphBuilder::build()
     {
-      return DepsGraph();
+      DepsGraph graph;
+      // First, add the symbols as vertex.
+      VarSymbolTable::iterator it;
+      for(Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it))
+      {
+        VertexProperty vp;
+        if(var.isState()) {
+          vp.type = VERTEX::Influencer;
+          vp.var = var;
+          _variableDescriptors.push_back(add_vertex(vp, graph));
+          VertexProperty icee;
+          icee.type = VERTEX::Influencee;
+          icee.var = var; 
+          _variableDescriptors.push_back(add_vertex(icee, graph));
+        }
+        else if (var.isAlgebraic()) {
+          vp.type = VERTEX::Algebraic;
+          vp.var = var;
+          _variableDescriptors.push_back(add_vertex(vp, graph));
+        }
+      }
+      EquationTable::iterator eqit;
+      for(Equation eq = _equations.begin(eqit); !_equations.end(eqit); eq = _equations.next(eqit))
+      {
+        VertexProperty vp;
+        vp.type = VERTEX::Equation;
+        vp.eq = eq;
+        _equationDescriptors.push_back(add_vertex(vp,graph));
+      }
+      foreach_(EqVertex eq, _equationDescriptors){
+        foreach_(IfrVertex inf, _variableDescriptors){
+          GenerateEdge ge = GenerateEdge(eq, inf, symbols);
+          if(ge.exists()) {
+            Label ep(ge.indexes());
+            add_edge(eq, inf, ep, graph);
+          }
+        }
+      }
+      return graph;
     }    
   }
 }

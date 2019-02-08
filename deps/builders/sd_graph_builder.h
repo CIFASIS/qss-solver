@@ -33,9 +33,9 @@ namespace MicroModelica {
       DepsGraph
       build();    
     private:
-      list<EquationVertex> equationDescriptorList;
-      list<InfVertex> InfDescriptorList;
-      IR::EquationTable _equations;
+      list<EqVertex>       _equationDescriptors;
+      list<IfrVertex>      _variableDescriptors;
+      IR::EquationTable    _equations;
       Util::VarSymbolTable _symbols;
     };
   }

@@ -25,27 +25,32 @@
 #include <boost/config.hpp>
 #include <boost/graph/adjacency_list.hpp>
 
+#include "../../ir/expression.h"
+#include "../../ir/equation.h"
+#include "../../util/symbol_table.h"
 #include "graph_helpers.h"
 
 namespace MicroModelica {
   namespace Deps {
-    /// @brief Vertex in the incidence graph can be either Equations or Unknowns. This type is used for distinguish between them
-    enum VertexType {E, U};
-
-    struct Unknown {
-      int dimension;
-    };
-
+    
+    namespace VERTEX  
+    {
+      typedef enum
+      {
+        Equation,
+        Influencer,
+        Algebraic,
+        Influencee
+      } Type;
+    }
 
     /// @brief This is the property for a vertex in the incidence graph. Nodes can be of two types: Equation or Unknown.
     struct VertexProperty {
-  	  VertexType type;
-      /// @brief This is used for debugging purposes
-  	  int  index; 
-
-      bool visited;
+  	  VERTEX::Type type;
       /// @brief This holds the unknown in the case of a Unknown node. 
-  	  Unknown unknown;
+  	  IR::Expression exp;
+      IR::Equation eq;
+      Util::Variable var;
     };
 
     class Label {
@@ -69,11 +74,34 @@ namespace MicroModelica {
     /// @brief A vertex of the Incidence graph
     typedef boost::graph_traits<DepsGraph>::vertex_descriptor Vertex;
     /// @brief An equation vertex is the same as a regular vertex
-    typedef Vertex EquationVertex;
+    typedef Vertex EqVertex;
     /// @brief An unknown vertex is the same as a regular vertex
-    typedef Vertex InfVertex;
+    typedef Vertex IfrVertex;
+    /// @brief This is an edge of the scalar causalization graph
+    typedef Vertex IfeVertex;
+    /// @brief This is an edge of the scalar causalization graph
+    typedef Vertex AlgVertex;
     /// @brief This is an edge of the scalar causalization graph
     typedef DepsGraph::edge_descriptor Edge;
+
+    class GenerateEdge {
+      public:
+        GenerateEdge(EqVertex eq, IfrVertex ifr, Util::VarSymbolTable symbols);
+        ~GenerateEdge() {};
+        inline bool
+        exists() { return _exist; };
+        IndexPairSet
+        indexes();
+      protected:
+        void
+        initialize();
+      private:
+        EqVertex  _eq;
+        IfrVertex _ifr;
+        bool      _exist;
+        Util::VarSymbolTable _symbols;
+    };
+
   }
 }
 #endif
