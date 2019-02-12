@@ -276,7 +276,7 @@ namespace MicroModelica {
     //ERROR_UNLESS((this->Ran().Dimension()==other.Ran().Dimension()), "Range dimension error in IndexPair subtraction");
     std::list<IndexPair> ret;
     switch (this->Type()) {
-    case _N_N:
+    case INDEX::RN_N:
       switch (other.Type()) {
       case _N_N:
         if (this->offset != other.offset) {
@@ -296,7 +296,7 @@ namespace MicroModelica {
           }
           return ret;
         }
-      case _N_1:
+      case INDEX::RN_1:
         if (!this->Ran().Contains(other.Ran())) {
           //Nothing to subtract
           return std::list<IndexPair>{*this};
@@ -321,7 +321,7 @@ namespace MicroModelica {
             return ret;
           }
         }
-      case _1_N:
+      case INDEX::R1_N:
         if (!this->Dom().Contains(other.Dom())) {
           //Nothing to subtract
           return std::list<IndexPair>{*this};
@@ -342,9 +342,9 @@ namespace MicroModelica {
           return ret;
         }
       }
-    case _N_1:
+    case INDEX::RN_1:
       switch (other.Type()) {
-      case _N_N:
+      case INDEX::RN_N:
         if (!other.Ran().Contains(this->Ran())) {
           //Nothing to subtract
           return std::list<IndexPair>{*this};
@@ -363,7 +363,7 @@ namespace MicroModelica {
             return ret;
           }
         }
-      case _N_1:
+      case INDEX::RN_1:
         if (this->Ran()!=other.Ran()) {
           //Nothing to subtract
           return std::list<IndexPair>{*this};
@@ -375,7 +375,7 @@ namespace MicroModelica {
           }
           return ret;
         }
-      case _1_N:
+      case INDEX::R1_N:
         if (!other.Ran().Contains(this->Ran()) || !this->Dom().Contains(other.Ran())) {
           //Nothing to subtract
           return std::list<IndexPair>{*this};
@@ -388,9 +388,9 @@ namespace MicroModelica {
           return ret;
         }
       }
-    case _1_N:
+    case INDEX::R1_N:
       switch (other.Type()) {
-      case _N_N:
+      case INDEX::RN_N:
         if (!other.Dom().Contains(this->Dom())) {
         //Nothing to subtract
         return std::list<IndexPair>{*this};
@@ -409,7 +409,7 @@ namespace MicroModelica {
           return ret;
         }
       }
-      case _N_1:
+      case INDEX::RN_1:
         if (!this->Ran().Contains(other.Ran()) || !other.Dom().Contains(this->Dom())) {
           //Nothing to subtract
           return std::list<IndexPair>{*this};
@@ -421,7 +421,7 @@ namespace MicroModelica {
           }
           return ret;
         }
-      case _1_N:
+      case INDEX::R1_N:
         if (!this->Ran().Contains(other.Ran())) {
           //Nothing to subtract
           return std::list<IndexPair>{*this};
@@ -443,7 +443,7 @@ namespace MicroModelica {
   IndexPairSet IndexPair::RemoveUnknowns(MDI unk2remove) {
     //ERROR_UNLESS(this->Ran().Dimension()==unk2remove.Dimension(), "Removing unknowns of different dimension");
     switch (this->Type()) {
-    case _N_N:
+    case INDEX::RN_N:
       if (Option<MDI> intersection = unk2remove & this->Ran()) {
         MDI ranToRemove = intersection.get();
         MDI domToRemove = (ranToRemove.RevertUsage(usage, this->Dom())).ApplyOffset(-offset);
@@ -462,7 +462,7 @@ namespace MicroModelica {
       } else {
         return {*this};
       }
-    case _N_1:
+    case INDEX::RN_1:
       if (this->Ran()==unk2remove) {
         //Remove all:
         return {};
@@ -471,7 +471,7 @@ namespace MicroModelica {
         //Nothing to remove_
         return {*this};
       }
-    case _1_N:
+    case INDEX::R1_N:
       if (Option<MDI> intersection = unk2remove & this->Ran()) {
         MDI ranToRemove = intersection.get();
         IndexPairSet ret;
@@ -492,7 +492,7 @@ namespace MicroModelica {
   IndexPairSet IndexPair::RemoveEquations(MDI eqs2remove) {
     //ERROR_UNLESS(this->Dom().Dimension()==eqs2remove.Dimension(), "Removing equations of different dimension");
     switch (this->Type()) {
-    case _N_N:
+    case INDEX::RN_N:
       if (Option<MDI> intersection = eqs2remove & this->Dom()) {
         MDI domToRemove = intersection.get();
         MDI ranToRemove = (domToRemove.ApplyUsage(usage, this->Ran())).ApplyOffset(offset);
@@ -511,7 +511,7 @@ namespace MicroModelica {
       } else {
         return {*this};
       }
-    case _N_1:
+    case INDEX::RN_1:
       if (Option<MDI> intersection = eqs2remove & this->Dom()) {
         MDI domToRemove = intersection.get();
         IndexPairSet ret;
@@ -523,7 +523,7 @@ namespace MicroModelica {
       } else {
         return {*this};
       }
-    case _1_N:
+    case INDEX::R1_N:
       if (this->Dom()==eqs2remove) {
         //Remove all:
         return {};

@@ -57,6 +57,7 @@ namespace MicroModelica {
       public:
         inline Label() {};
         Label(IndexPairSet ips);
+        Label(IndexPair ip);
         void RemovePairs(IndexPairSet ips);
         void RemoveUnknowns(MDI const unk2remove);
         void RemoveEquations(MDI const mdi);
@@ -66,6 +67,7 @@ namespace MicroModelica {
         friend std::ostream& operator<<(std::ostream& os, const Label& label);
       private:
         IndexPairSet ips;
+        IndexPair    _ip;
         void RemoveDuplicates();
     }; 
     
@@ -90,16 +92,19 @@ namespace MicroModelica {
         ~GenerateEdge() {};
         inline bool
         exists() { return _exist; };
-        IndexPairSet
-        indexes();
+        inline IndexPairSet
+        indexes() { return _ips; };
       protected:
         void
         initialize();
+        void
+        build(list<IR::Expression> exps);
       private:
         struct VertexProperty  _eq;
-        struct VertexProperty _ifr;
-        bool      _exist;
-        Util::VarSymbolTable _symbols;
+        struct VertexProperty  _ifr;
+        bool                   _exist;
+        Util::VarSymbolTable   _symbols;
+        IndexPairSet           _ips;
     };
 
   }

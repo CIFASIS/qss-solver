@@ -27,7 +27,7 @@ namespace MicroModelica {
   using namespace Util;
   namespace Deps {
 
-    SDGraphBuilder::SDGraphBuilder(EquationTable &equations, VarSymbolTable symbols) :
+    SDGraphBuilder::SDGraphBuilder(EquationTable &equations, VarSymbolTable& symbols) :
       _equationDescriptors(),
       _variableDescriptors(),
       _equations(equations),
@@ -72,8 +72,11 @@ namespace MicroModelica {
         foreach_(IfrVertex inf, _variableDescriptors){
           GenerateEdge ge = GenerateEdge(graph[eq], graph[inf], _symbols);
           if(ge.exists()) {
-            Label ep(ge.indexes());
-            add_edge(eq, inf, ep, graph);
+            IndexPairSet ips = ge.indexes();
+            for (auto ip : ips) {
+              Label ep(ip);
+              add_edge(eq, inf, ep, graph);  
+            }
           }
         }
       }

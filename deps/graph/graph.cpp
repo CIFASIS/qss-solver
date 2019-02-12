@@ -29,8 +29,11 @@ namespace MicroModelica {
     	  /*****************************************************************************
      ****                              LABEL                                  ****
      *****************************************************************************/
-    Label::Label(IndexPairSet ips): ips(ips) {
+    Label::Label(IndexPairSet ips): ips(ips), _ip() {
      this->RemoveDuplicates();
+    }
+
+    Label::Label(IndexPair ip): ips(), _ip(ip) {
     }
 
 
@@ -86,9 +89,9 @@ namespace MicroModelica {
             if (checkingIP == otherIP)
               continue;
             switch (checkingIP->Type()) {
-            case _N_N:
+            case INDEX::RN_N:
               switch (otherIP->Type()) {
-              case _N_N:
+              case INDEX::RN_N:
                 if (checkingIP->GetUsage()==otherIP->GetUsage()) {
                   if (checkingIP->GetOffset()==otherIP->GetOffset()) { // Same usage same offset => are equals: SHOULD NOT OCCUR
                     //ERROR("This case should not occur since should not be equal pairs in a set");
@@ -101,7 +104,7 @@ namespace MicroModelica {
                   //ERROR("Multiple usages of a same vector with different index usages in a same for equation not supported");
                   abort();
                 }
-              case _N_1:
+              case INDEX::RN_1:
                 if (checkingIP->Ran().Contains(otherIP->Ran())) { //There is intersection => remove it from the N-1 Index Pair
                   newIPS.erase(*otherIP);
                   MDI domToRemove = otherIP->Ran().RevertUsage(checkingIP->GetUsage(), checkingIP->Dom()).ApplyOffset(checkingIP->GetOffset());
@@ -115,16 +118,16 @@ namespace MicroModelica {
                   removeSomething = false;
                   continue;
                 }
-              case _1_N:
+              case INDEX::R1_N:
                 if (checkingIP->Dom().Contains(otherIP->Dom())) { //There is intersection => remove the N-N Index Pair, since it must be a 1-1 pair.
                   newIPS.erase(*checkingIP);
                   removeSomething = true;
                   continue;
                 }
               }
-            case _N_1:
+            case INDEX::RN_1:
               switch (otherIP->Type()) {
-              case _N_N:
+              case INDEX::RN_N:
                 if (otherIP->Ran().Contains(checkingIP->Ran())) { //There is intersection => remove it from the N-1 Index Pair
                   newIPS.erase(*checkingIP);
                   MDI domToRemove = checkingIP->Ran().RevertUsage(otherIP->GetUsage(), otherIP->Dom()).ApplyOffset(otherIP->GetOffset());
@@ -138,7 +141,7 @@ namespace MicroModelica {
                   removeSomething = false;
                   continue;
                 }
-              case _N_1:
+              case INDEX::RN_1:
                 if (checkingIP->Ran()==otherIP->Ran()) { // Same range => are equals: SHOULD NOT OCCUR
                   //ERROR("This case should not occur since should not be equal pairs in a set");
                   abort();
@@ -147,24 +150,24 @@ namespace MicroModelica {
                   removeSomething = false;
                   continue;
                 }
-              case _1_N:
+              case INDEX::R1_N:
                 //This case should not occur
                 //ERROR("This case should not occur since should could not be N-1 and 1-N pairs in a same label");
                 abort();
               }
-            case _1_N:
+            case INDEX::R1_N:
               switch (otherIP->Type()) {
-              case _N_N:
+              case INDEX::RN_N:
                 if (otherIP->Dom().Contains(checkingIP->Dom())) { //There is intersection => remove the N-N Index Pair, since it must be a 1-1 pair.
                   newIPS.erase(*otherIP);
                   removeSomething = true;
                   continue;
                 }
-              case _N_1:
+              case INDEX::RN_1:
                 //This case should not occur
                 //ERROR("This case should not occur since should could not be N-1 and 1-N pairs in a same label");
                 abort();
-              case _1_N:
+              case INDEX::R1_N:
                 if (checkingIP->Dom()==otherIP->Dom()) { // Same range => are equals: SHOULD NOT OCCUR
                   //ERROR("This case should not occur since should not be equal pairs in a set");
                   abort();
@@ -186,7 +189,8 @@ namespace MicroModelica {
       _eq(eq), 
       _ifr(ifr), 
       _exist(false),
-      _symbols(symbols) 
+      _symbols(symbols),
+      _ips() 
     {
       initialize();
     }
@@ -198,16 +202,18 @@ namespace MicroModelica {
       Occurs oc(_ifr.var.name(), _symbols);
       _exist = oc.apply(_eq.eq.equation());
       if(_exist) {
-        list<IR::Expression> exps = oc.occurrences();
-        cout << _eq.eq.equation() << endl;
-        
+        build(oc.occurrences());
       }
     }
 
-    IndexPairSet
-    GenerateEdge::indexes()
+    void 
+    GenerateEdge::build(list<Expression> exps) 
     {
-      return IndexPairSet();
+      for (Expression ep : exps) {
+
+      }   
+
     }
+
   }
 }

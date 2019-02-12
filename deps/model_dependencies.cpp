@@ -27,20 +27,14 @@ namespace MicroModelica {
   using namespace IR;
   using namespace Util;
   namespace Deps {
-    ModelDependencies::ModelDependencies(VarSymbolTable &symbols) : 
-      _deps(),
-      _symbols(symbols) 
-    {
-    }
-     
     ModelDependencies::~ModelDependencies()
     {
     }
 
     void
-    ModelDependencies::compute(EquationTable eqs)
+    ModelDependencies::compute(EquationTable eqs, VarSymbolTable symbols)
     {
-      SDGraphBuilder sd = SDGraphBuilder(eqs, _symbols);
+      SDGraphBuilder sd = SDGraphBuilder(eqs, symbols);
       _SD = _deps.compute(sd.build());
     }
   }

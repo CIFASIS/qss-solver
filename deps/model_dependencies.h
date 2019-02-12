@@ -31,8 +31,7 @@ namespace MicroModelica {
     class ModelDependencies 
     {
       public:
-        ModelDependencies() {};
-        ModelDependencies(Util::VarSymbolTable &symbols);
+        ModelDependencies() : _deps() {};
         ~ModelDependencies();
         inline VariableDependencyMatrix 
         SD() { return _SD; };
@@ -57,7 +56,7 @@ namespace MicroModelica {
         inline EquationDependencyMatrix 
         DA() { return _DA; };
         void
-        compute(IR::EquationTable eqs);
+        compute(IR::EquationTable eqs, Util::VarSymbolTable symbols);
       private:
         VariableDependencyMatrix _SD;
         VariableDependencyMatrix _DS;
@@ -71,7 +70,6 @@ namespace MicroModelica {
         EquationDependencyMatrix _ZCA;
         EquationDependencyMatrix _DA;
         Dependency               _deps;
-        Util::VarSymbolTable     _symbols;
     };
   }
 }

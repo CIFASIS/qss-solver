@@ -332,7 +332,7 @@ namespace MicroModelica {
       _derivatives(),
       _algebraics(),
       _events(),
-      _dependencies(_symbols),
+      _dependencies(),
       _packages(),
       _initialCode(),
       _libraryDirectories(),
@@ -365,7 +365,7 @@ namespace MicroModelica {
       _derivatives(),
       _algebraics(),
       _events(),
-      _dependencies(_symbols),
+      _dependencies(),
       _packages(),
       _initialCode(),
       _libraryDirectories(),
@@ -817,7 +817,7 @@ namespace MicroModelica {
     void 
     Model::computeDependencies()
     {
-      _dependencies.compute(derivatives());
+      _dependencies.compute(derivatives(), _symbols);
       Utils::instance().setDependencies(_dependencies);
     }
   }

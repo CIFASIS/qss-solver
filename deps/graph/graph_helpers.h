@@ -135,10 +135,16 @@ namespace MicroModelica {
           std::list<MDI> PutLists(MDI mdi, std::list<MDI> mdiList);
     };
 
-    enum IndexPairType{
-      _N_N, _N_1, _1_N
-    };
-
+    namespace INDEX  
+    {
+      typedef enum
+      {
+        RN_N,
+        RN_1,
+        R1_N,
+        R1_1
+      } Rel;
+    }
 
     class IndexPair {
       public:
@@ -156,7 +162,7 @@ namespace MicroModelica {
         Option<IndexPair> operator&(const IndexPair& other) const;
         friend std::ostream& operator<<(std::ostream& os, const IndexPair& ip);
         bool Contains(const IndexPair& other) const;
-        IndexPairType Type() const;
+        INDEX::Rel Type() const;
       private:
         MDI dom, ran;
         Offset offset;
