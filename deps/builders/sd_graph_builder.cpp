@@ -70,7 +70,7 @@ namespace MicroModelica {
       }
       foreach_(EqVertex eq, _equationDescriptors){
         foreach_(IfrVertex inf, _variableDescriptors){
-          GenerateEdge ge = GenerateEdge(eq, inf, symbols);
+          GenerateEdge ge = GenerateEdge(graph[eq], graph[inf], _symbols);
           if(ge.exists()) {
             Label ep(ge.indexes());
             add_edge(eq, inf, ep, graph);

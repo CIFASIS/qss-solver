@@ -182,7 +182,7 @@ namespace MicroModelica {
       ips = newIPS;
     }
     
-    GenerateEdge::GenerateEdge(EqVertex eq, IfrVertex ifr, VarSymbolTable symbols) : 
+    GenerateEdge::GenerateEdge(struct VertexProperty eq, struct VertexProperty ifr, VarSymbolTable symbols) : 
       _eq(eq), 
       _ifr(ifr), 
       _exist(false),
@@ -197,6 +197,11 @@ namespace MicroModelica {
       string ifrName = _ifr.var.name();
       Occurs oc(_ifr.var.name(), _symbols);
       _exist = oc.apply(_eq.eq.equation());
+      if(_exist) {
+        list<IR::Expression> exps = oc.occurrences();
+        cout << _eq.eq.equation() << endl;
+        
+      }
     }
 
     IndexPairSet

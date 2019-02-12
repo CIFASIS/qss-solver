@@ -86,7 +86,7 @@ namespace MicroModelica {
 
     class GenerateEdge {
       public:
-        GenerateEdge(EqVertex eq, IfrVertex ifr, Util::VarSymbolTable symbols);
+        GenerateEdge(struct VertexProperty eq, struct VertexProperty ifr, Util::VarSymbolTable symbols);
         ~GenerateEdge() {};
         inline bool
         exists() { return _exist; };
@@ -96,8 +96,8 @@ namespace MicroModelica {
         void
         initialize();
       private:
-        EqVertex  _eq;
-        IfrVertex _ifr;
+        struct VertexProperty  _eq;
+        struct VertexProperty _ifr;
         bool      _exist;
         Util::VarSymbolTable _symbols;
     };
