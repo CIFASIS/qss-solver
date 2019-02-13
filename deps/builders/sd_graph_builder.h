@@ -35,6 +35,7 @@ namespace MicroModelica {
     private:
       list<EqVertex>       _equationDescriptors;
       list<IfrVertex>      _variableDescriptors;
+      list<IfeVertex>      _derivativeDescriptors;
       IR::EquationTable    _equations;
       Util::VarSymbolTable _symbols;
     };

@@ -33,7 +33,7 @@ namespace MicroModelica {
         Occurs(std::string var, VarSymbolTable symbols) : _symbols(symbols), _occs(), _var(var) {};
         ~Occurs() {};
         list<IR::Expression> 
-        occurrences() { return _occs; };
+        occurrences();
       private:
         bool   
         foldTraverseElement(AST_Expression exp);
@@ -42,7 +42,7 @@ namespace MicroModelica {
         bool 
         foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
         VarSymbolTable       _symbols;
-        list<IR::Expression> _occs;
+        std::map<std::string,IR::Expression>  _occs;
         std::string          _var;
     };
   }

@@ -21,9 +21,11 @@
 
 #include <boost/variant/get.hpp>
 
+#include "../../ir/expression.h"
 #include "../../util/visitors/occurs.h"
 
 namespace MicroModelica {
+  using namespace IR;
   using namespace Util;
   namespace Deps {
     	  /*****************************************************************************
@@ -199,6 +201,7 @@ namespace MicroModelica {
     GenerateEdge::initialize() 
     {
       string ifrName = _ifr.var.name();
+      cout << "Busca: " << _eq.eq << "" << _ifr.var.name() << endl;
       Occurs oc(_ifr.var.name(), _symbols);
       _exist = oc.apply(_eq.eq.equation());
       if(_exist) {
@@ -209,8 +212,11 @@ namespace MicroModelica {
     void 
     GenerateEdge::build(list<Expression> exps) 
     {
-      for (Expression ep : exps) {
-
+      Equation eq = _eq.eq;
+      Option<Range> range = eq.range();
+      if (eq.has)
+      for (Expression exp : exps) {
+        cout << "Expression: " << exp;
       }   
 
     }

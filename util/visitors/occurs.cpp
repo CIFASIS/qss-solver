@@ -34,7 +34,9 @@ namespace MicroModelica {
           AST_Expression_ComponentReference cr = exp->getAsComponentReference();
           Option<Variable> var = _symbols[cr->name()];
           if(var && (var->name() == _var)) {
-            _occs.push_back(Expression(exp, _symbols));
+            Expression ep(exp, _symbols);
+            _occs[ep.print()] = ep;
+            cout << "Agrega: " << ep << endl;
             return true;  
           }
           break;
@@ -51,10 +53,44 @@ namespace MicroModelica {
           }
           return ret;
         }
+        case EXPCALLARG:
+        {
+          AST_Expression_CallArgs call = exp->getAsCallArgs();
+          AST_ExpressionList el = call->arguments();
+          AST_ExpressionListIterator it;
+          bool ret = false;
+          foreach(it, el)
+          {
+            ret = ret || apply(current_element(it));
+          }
+          return ret;
+        }
+        case EXPOUTPUT:
+        {
+          bool ret = false;
+          AST_Expression_Output out = exp->getAsOutput();
+          AST_ExpressionListIterator it;
+          foreach (it,out->expressionList())
+          {
+            ret = ret || apply(current_element(it));
+          }
+          return ret;
+        }
         default:
           return false;
       }
       return false;
     }
+
+    list<Expression>
+    Occurs::occurrences()
+    {
+      list<Expression> exps;
+      std::for_each(_occs.begin(),_occs.end(),
+                 [&exps](const std::map<std::string,Expression>::value_type& p) 
+                 { exps.push_back(p.second); });
+      return exps;
+    }
+
   }
 }

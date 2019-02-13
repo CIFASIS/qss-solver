@@ -52,7 +52,7 @@ namespace MicroModelica {
           VertexProperty icee;
           icee.type = VERTEX::Influencee;
           icee.var = var; 
-          _variableDescriptors.push_back(add_vertex(icee, graph));
+          _derivativeDescriptors.push_back(add_vertex(icee, graph));
         }
         else if (var.isAlgebraic()) {
           vp.type = VERTEX::Algebraic;
@@ -68,6 +68,9 @@ namespace MicroModelica {
         vp.eq = eq;
         _equationDescriptors.push_back(add_vertex(vp,graph));
       }
+      cout << "Ecuaciones: " << _equationDescriptors.size() << endl;
+      cout << "Variables: " << _variableDescriptors.size() << endl;
+
       foreach_(EqVertex eq, _equationDescriptors){
         foreach_(IfrVertex inf, _variableDescriptors){
           GenerateEdge ge = GenerateEdge(graph[eq], graph[inf], _symbols);

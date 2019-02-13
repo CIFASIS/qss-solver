@@ -40,6 +40,7 @@ namespace MicroModelica {
     ExpressionPrinter::foldTraverseElement(AST_Expression exp)
     {
       stringstream buffer;
+      
       switch(exp->expressionType())
       {
         case EXPBOOLEAN:
@@ -63,7 +64,19 @@ namespace MicroModelica {
           _code = f->code();
           break;
         }
-        case EXPCALLARG: break;
+        case EXPCALLARG: 
+        {
+          AST_Expression_CallArgs call = exp->getAsCallArgs();
+          AST_ExpressionList el = call->arguments();
+          AST_ExpressionListIterator it;
+          buffer << "(";
+          foreach(it, el)
+          {
+            buffer << apply(current_element(it));
+          }
+          buffer << ")";
+          break;
+        }
         case EXPCOMPREF:
         {
           AST_Expression_ComponentReference cr = exp->getAsComponentReference();
@@ -102,11 +115,13 @@ namespace MicroModelica {
           AST_Expression_Output out = exp->getAsOutput();
           AST_ExpressionListIterator it;
           int size = out->expressionList()->size(), i = 0;
+          buffer << "(";
           foreach (it,out->expressionList())
           {
             buffer << apply(current_element(it));
             buffer << (++i == size ? "" : ",");
           }
+          buffer << ")";
           break;
         }
         case EXPREAL:
