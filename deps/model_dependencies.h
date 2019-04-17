@@ -21,6 +21,7 @@
 #define MODEL_DEPENDENCIES_H_
 
 #include "../ir/equation.h"
+#include "../ir/event.h"
 #include "../util/symbol_table.h"
 #include "dependency_matrix.h"
 #include "dependency.h"
@@ -31,24 +32,24 @@ namespace MicroModelica {
     class ModelDependencies 
     {
       public:
-        ModelDependencies() : _deps() {};
-        ~ModelDependencies();
+        ModelDependencies();
+        ~ModelDependencies() {};
         inline VariableDependencyMatrix 
-        SD() { return _SD; };
+        SD() { _SD.setMode(VDM::Normal); return _SD; };
         inline VariableDependencyMatrix 
-        DS() { return _DS; };
+        DS() { _SD.setMode(VDM::Transpose); return _SD; };
         inline VariableDependencyMatrix 
-        SZ() { return _SZ; };
+        SZ() { _SZ.setMode(VDM::Normal); return _SZ; };
         inline VariableDependencyMatrix 
-        ZS() { return _ZS; };
+        ZS() { _SZ.setMode(VDM::Transpose); return _SZ; };
         inline VariableDependencyMatrix 
-        SO() { return _SO; };
+        SO() { _SO.setMode(VDM::Normal); return _SO; };
         inline VariableDependencyMatrix 
-        OS() { return _OS; };
+        OS() { _SO.setMode(VDM::Transpose); return _SO; };
         inline VariableDependencyMatrix 
-        DO() { return _DO; };
+        DO() { _DO.setMode(VDM::Normal); return _DO; };
         inline VariableDependencyMatrix 
-        OD() { return _OD; };
+        OD() { _DO.setMode(VDM::Transpose); return _DO; };
         inline EquationDependencyMatrix 
         OA() { return _OA; };
         inline EquationDependencyMatrix 
@@ -56,16 +57,13 @@ namespace MicroModelica {
         inline EquationDependencyMatrix 
         DA() { return _DA; };
         void
-        compute(IR::EquationTable eqs, Util::VarSymbolTable symbols);
+        compute(IR::EquationTable eqs, IR::EquationTable outputs, IR::EquationTable algs,
+                IR::EventTable events, Util::VarSymbolTable symbols);
       private:
         VariableDependencyMatrix _SD;
-        VariableDependencyMatrix _DS;
-        VariableDependencyMatrix _ZS;
         VariableDependencyMatrix _SZ;
         VariableDependencyMatrix _SO;
-        VariableDependencyMatrix _OS;
         VariableDependencyMatrix _DO;
-        VariableDependencyMatrix _OD;
         EquationDependencyMatrix _OA;
         EquationDependencyMatrix _ZCA;
         EquationDependencyMatrix _DA;

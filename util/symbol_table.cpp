@@ -206,12 +206,9 @@ namespace MicroModelica {
       if(hasAssignment() || hasStartModifier() || hasEachModifier())
       {
         Expression ex(exp(), symbols);
-        if(hasAssignment() || hasStartModifier())
-        {
+        if(hasAssignment() || hasStartModifier()) {
             buffer << this << " = " << ex << ";";
-        }
-        else if(hasEachModifier())
-        {
+        } else if(hasEachModifier()) {
           buffer << "for(" << index << " = 0; " << index << " <= " << size() << ";" << index << "++)" << endl;
           buffer << TAB << "{" << endl;
           buffer << TAB << TAB << this << "[" << index << "]" << " = " << ex << ";" << endl;

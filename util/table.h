@@ -25,39 +25,48 @@
 #include "util_types.h" 
 
 template<typename Key,typename Value>
-class ModelTable : public std::map<Key,Value> 
+class ModelTable 
 {
   public:
-    ModelTable(){};
+    ModelTable(): _map() {};
     ~ModelTable() {};
     void insert(Key k, Value v) 
     {
-	    std::map<Key,Value>::erase(k);
-      std::map<Key,Value>::insert(std::pair<Key,Value>(k,v));
+	    _map.erase(k);
+      _map.insert(std::pair<Key,Value>(k,v));
     }
     Option<Value> operator[](Key k) const 
     {
-      if (std::map<Key,Value>::find(k)==std::map<Key,Value>::end())
+      if (_map.find(k)==_map.end())
       {
         return Option<Value>();
       }
-      return std::map<Key,Value>::at(k); 
+      return _map.at(k); 
     }
     void remove(Key k) 
     {
-      std::map<Key,Value>::erase(k);
+      _map.erase(k);
     }
     typedef typename std::map<Key,Value>::iterator iterator;
+    typedef typename std::map<Key,Value>::const_iterator const_iterator;
     bool 
     lookup(Key key)
     {
-      iterator it = std::map<Key,Value>::find(key);
-      return it != std::map<Key,Value>::end();
+      iterator it = _map.find(key);
+      return it != _map.end();
     }
+    inline iterator 
+    begin() { return _map.begin(); };
+    inline const_iterator 
+    begin() const { return _map.begin(); };
+    inline iterator 
+    end() { return _map.end(); };
+    inline const_iterator 
+    end() const { return _map.end(); };
     inline Value 
-    begin(iterator& it) { it = std::map<Key,Value>::begin(); return (end(it) ? Value() : value(it)); };
+    begin(iterator& it) { it = _map.begin(); return (end(it) ? Value() : value(it)); };
     inline bool 
-    end(iterator& it) { return it == std::map<Key,Value>::end(); }
+    end(iterator& it) { return it == _map.end(); }
     inline Value 
     next(iterator& it) { it++; return (end(it) ? Value() : value(it)); }
     inline Value 
@@ -79,6 +88,14 @@ class ModelTable : public std::map<Key,Value>
       iterator it;
       return begin(it);
     }
+    void 
+    clear() { _map.clear(); };
+    bool 
+    empty() { return _map.empty(); };
+    const int 
+    size() const { return _map.size(); };
+  private:
+    std::map<Key, Value> _map;
   };
 
 

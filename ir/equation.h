@@ -84,6 +84,8 @@ namespace MicroModelica {
         macro() const;
         inline Option<Range>
         range() { return _range; };
+        inline int 
+        id() { return _id; };
         friend std::ostream& operator<<(std::ostream& out, const Equation& e);
       private:
         void 
@@ -107,6 +109,7 @@ namespace MicroModelica {
         int                  _id;
         int                  _offset;
     };
+
 
     typedef ModelTable<int,Equation> EquationTable;
   }

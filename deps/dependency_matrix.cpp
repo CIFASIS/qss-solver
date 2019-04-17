@@ -20,11 +20,52 @@
 #include "dependency_matrix.h"
 
 namespace MicroModelica {
+  using namespace IR;
   namespace Deps {
 
-    std::ostream& operator<<(std::ostream& out, const VariableDependency& d)
+	  VariableDependencyMatrix::VariableDependencyMatrix(MatrixConfig cfg) : 
+		  _cfg(cfg), 
+		  _mode(VDM::Normal), 
+		  _method(VDM::Alloc) 
+	  {
+
+	  }
+
+  	string 
+  	VariableDependencyMatrix::print() const 
+  	{
+      stringstream buffer;
+	    VariableDependencyMatrix::const_iterator it;
+      string matrix = _cfg.names[_method + _mode];
+      string access = _cfg.access[_mode];
+      for( it = begin(); it != end(); it++)
+      {  
+        VariableDependencies vds = it->second;
+        for (auto vd : vds) {
+          Index ifr = vd.ifr();
+          Index ife = vd.ife();
+          if (_mode == VDM::Transpose) {
+            ifr = vd.ife();
+            ife = vd.ifr();
+          }
+          Range range = vd.ifce.range();
+          buffer << range;
+          if (_method == VDM::Alloc) {
+            buffer << range.block() << _cfg.container << matrix << "[" << ifr << "]++;" << endl;   
+          } else {
+            buffer << range.block() << _cfg.container << matrix << "[" << ifr << "][" << access << "[" << ifr << "]] = " << ife << endl;   
+          }
+          if (!range.empty()) {
+            buffer << range.end() << endl;  
+          }
+        }
+      }
+      return buffer.str();
+  	}
+    
+    std::ostream& operator<<(std::ostream& out, const VariableDependencyMatrix& d) 
     {
-      return out;
+      return out << d.print();
     }
   }
 }

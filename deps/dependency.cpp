@@ -19,27 +19,102 @@
 
 #include "dependency.h"
 
+#include <cassert>
 #include <cstdlib>
 #include <stdio.h>
 #include <iostream>
 
+#include "../util/symbol_table.h"
+
 using namespace std;
 
 namespace MicroModelica {
+  using namespace Util;
   namespace Deps {
 
-    Dependency::Dependency() 
+    MDI 
+    Dependency::variableMDI(Variable var) 
     {
+      IntervalList intervals;
+      
+      if(var.isArray()) {
+        int i, d = var.dimensions();
+        for(i = 0; i < d; i++) {
+          intervals.push_back(Interval::closed(1,var.size(i)));  
+        }
+      } else {
+        intervals.push_back(Interval::closed(1,1));
+      }
+      return MDI(intervals); 
     }
 
-    Dependency::~Dependency()
+    void
+    Dependency::compute(DepsGraph g, VariableDependencyMatrix& vdm)
     {
+      for (Vertex vd : boost::make_iterator_range(vertices(g))) {
+        std::cout << "Vertex descriptor #" << vd
+                  << std::endl; /* iterate over the ifr vertex. */
+        VertexProperty v = g[vd];
+        if (v.type == VERTEX::Influencer) {
+          VariableDependencies vdeps; 
+          VariableInfluences algs;
+          influencees(g, vd, variableMDI(v.var), vdeps, algs);
+          vdm.insert(v.var.name(), vdeps);    
+        }
+      }
     }
 
-    VariableDependencyMatrix 
-    Dependency::compute(DepsGraph g)
+    VariableDependency 
+    Dependency::getVariableDependency(string name, MDI dom, MDI ran, int id) 
     {
-      return VariableDependencyMatrix();
+      VariableDependency vdep;
+      vdep.setVariable(name);
+      vdep.setDom(dom);
+      vdep.setRan(ran);
+      vdep.setEquationId(id);
+      return vdep;
+    }
+
+    void 
+    Dependency::influencees(DepsGraph g, Vertex vd, MDI mdi, VariableDependencies& deps, VariableInfluences& algs) 
+    {
+      VertexProperty v = g[vd];
+      boost::graph_traits<DepsGraph>::out_edge_iterator ei, ei_end;
+      for (boost::tie(ei, ei_end) = out_edges(vd, g); ei != ei_end; ++ei) {
+        Label l = g[*ei];
+        MDI dom = l.Pair().Dom();
+        Option<MDI> intersect = mdi.Intersection(dom);
+        if (intersect) {
+          auto target = boost::target(*ei, g);
+          if (v.type == VERTEX::Influencer) {
+            // Store the influencer expression.
+            _ifr = l.Pair().exp();
+            _ifrUsg = l.Pair().GetUsage();
+          }   
+          // First look if the target node is terminal.
+          VertexProperty tar = g[target];
+          MDI ran = intersect->ApplyOffset(l.Pair().GetOffset());
+          if (tar.type == VERTEX::Influencee) {
+            assert(v.type == VERTEX::Equation);
+            VariableDependency vdep = getVariableDependency(v.var.name(),boost::get<MDI>(intersect),
+                                                            ran, v.id);
+            vdep.setIfr(_ifr);
+            vdep.setIfe(l.Pair().exp());
+            vdep.setRange();
+            
+            Influences inf = {algs, vdep};
+            deps.push_back(inf);
+          } else if (tar.type == VERTEX::Algebraic) {
+            assert(v.type == VERTEX::Equation);
+            VariableDependency vdep = getVariableDependency(v.var.name(),boost::get<MDI>(intersect),
+                                                            ran, v.id);
+            algs.push_back(vdep);
+            influencees(g, target, ran, deps, algs);
+          } else { 
+            influencees(g, target, ran, deps, algs);
+          }
+        }
+      }
     }
   }
 }

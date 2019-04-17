@@ -57,6 +57,15 @@ namespace MicroModelica {
       return "";
     }
 
+    bool 
+    Expression::isReference() const
+    {
+      if(_exp == NULL) {
+        return false;
+      }
+      return _exp->expressionType() == EXPCOMPREF; 
+    }
+    
     std::ostream& operator<<(std::ostream& out, const Expression& s)
     {
       out << s.print();

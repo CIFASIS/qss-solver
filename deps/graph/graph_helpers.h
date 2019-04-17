@@ -26,6 +26,7 @@
 #include <boost/icl/discrete_interval.hpp>
 #include <boost/algorithm/string/join.hpp>
 
+#include "../../ir/expression.h"
 #include "../../util/util_types.h"
 
 namespace ICL = boost::icl;
@@ -118,7 +119,8 @@ namespace MicroModelica {
         bool Contains(const MDI& other) const;
         inline bool operator==(const MDI& other) const { return this->intervals==other.intervals; };
         inline bool operator!=(const MDI& other) const { return !((*this)==other); };
-
+        inline IntervalVector 
+        mdi() { return intervals; }; 
       private:
           IntervalVector intervals;
           typedef IntervalVector::iterator iterator;
@@ -149,7 +151,7 @@ namespace MicroModelica {
     class IndexPair {
       public:
         inline IndexPair() { };
-        inline IndexPair(MDI dom_, MDI ran_, Offset os, Usage us): dom(dom_), ran(ran_), offset(os), usage(us) { };
+        inline IndexPair(MDI dom_, MDI ran_, Offset os, Usage us, IR::Expression exp = IR::Expression()): dom(dom_), ran(ran_), offset(os), usage(us), _exp(exp) { };
         inline MDI Dom() const { return dom; }
         inline MDI Ran() const { return ran; }
         inline Offset GetOffset() const { return offset; }
@@ -163,10 +165,12 @@ namespace MicroModelica {
         friend std::ostream& operator<<(std::ostream& os, const IndexPair& ip);
         bool Contains(const IndexPair& other) const;
         INDEX::Rel Type() const;
+        IR::Expression exp() const { return _exp; };
       private:
         MDI dom, ran;
         Offset offset;
         Usage usage;
+        IR::Expression _exp;
     };
 
     std::ostream& operator<<(std::ostream &os, const std::list<IndexPair> &ipList);

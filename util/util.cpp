@@ -149,7 +149,7 @@ namespace MicroModelica {
     Utils::iteratorVar()
     {
       stringstream buffer;
-      buffer << "_tmp" << _varCounter++;
+      buffer << "_it" << _varCounter++;
       return buffer.str();
     }
 

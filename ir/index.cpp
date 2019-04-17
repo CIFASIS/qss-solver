@@ -30,6 +30,7 @@
 #include "../util/error.h"
 
 namespace MicroModelica {
+  using namespace Deps;
   using namespace Util;
   namespace IR {
 
@@ -106,12 +107,16 @@ namespace MicroModelica {
     }
 
     Range::Range() :
-      _ranges()
+      _ranges(),
+      _indexPos(),
+      _size(0),
+      _type(RANGE::For)
     {
     }
     
     Range::Range(AST_Equation_For eqf, VarSymbolTable symbols, RANGE::Type type) :
       _ranges(),
+      _indexPos(),
       _size(0),
       _type(type)
     {
@@ -121,16 +126,19 @@ namespace MicroModelica {
 
     Range::Range(AST_Statement_For stf, VarSymbolTable symbols, RANGE::Type type) :
       _ranges(),
+      _indexPos(),
       _size(0),
       _type(type)
     {
       AST_ForIndexList fil = stf->forIndexList();
       setRangeDefinition(fil, symbols);
     }
+
     void 
     Range::setRangeDefinition(AST_ForIndexList fil, VarSymbolTable symbols)
     {
       AST_ForIndexListIterator filit;
+      int pos = 0;
       foreach (filit, fil)
       {
         AST_ForIndex fi = current_element(filit);
@@ -147,6 +155,7 @@ namespace MicroModelica {
         }
         string index = fi->variable()->c_str();
         _ranges.insert(index,(size == 2 ? RangeDefinition(begin,end) : RangeDefinition(begin, end, eval.apply(AST_ListAt(el, 1)))));
+        _indexPos.insert(index, pos++);
         Option<RangeDefinition> range = _ranges[index];
         if(range) 
         { 
@@ -155,6 +164,42 @@ namespace MicroModelica {
         }
         else { _rowSize.push_back(1); }
       }
+    }
+
+    void 
+    Range::generate(MDI mdi) 
+    {
+      int pos = 0;
+      for (auto interval : mdi.mdi()) {
+        int begin = interval.lower();
+        int end = interval.upper();
+        if(end < begin) {
+          Error::instance().add(0, EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong range in dependency matrix.");
+        }
+        string index = Utils::instance().iteratorVar();
+        _ranges.insert(index, RangeDefinition(begin,end));
+        _indexPos.insert(index, pos++);
+        Option<RangeDefinition> range = _ranges[index];
+        if(range) 
+        { 
+          _size += range->size(); 
+          _rowSize.push_back(range->size());
+        }
+        else { 
+          _rowSize.push_back(1); 
+        }
+      }
+    }
+
+    string 
+    Range::iterator(int dim)
+    {
+      for(auto ip : _indexPos) {
+        if (ip.second  == dim) {
+          return ip.first;
+        } 
+      }
+      return "";     
     }
 
     string 
@@ -241,6 +286,16 @@ namespace MicroModelica {
         block += TAB;
       }
       return block;
+    }
+    
+    int 
+    Range::pos(string var) 
+    { 
+      Option<int> p = _indexPos[var];
+      if(p) {
+        return boost::get<int>(p);
+      }
+      return 0;
     }
 
     std::ostream& operator<<(std::ostream& out, const Range& r)

@@ -53,6 +53,8 @@ namespace MicroModelica {
         print() const;
         inline AST_Expression 
         expression() { return _exp; };
+        bool 
+        isReference() const;
         friend std::ostream& operator<<(std::ostream& out, const Expression& s);
       private:
         AST_Expression       _exp;

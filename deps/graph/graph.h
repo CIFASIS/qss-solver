@@ -42,15 +42,21 @@ namespace MicroModelica {
         Algebraic,
         Influencee
       } Type;
+
+      typedef enum
+      {
+        Input,
+        Output
+      } Mode;
     }
 
     /// @brief This is the property for a vertex in the incidence graph. Nodes can be of two types: Equation or Unknown.
     struct VertexProperty {
   	  VERTEX::Type type;
-      /// @brief This holds the unknown in the case of a Unknown node. 
   	  IR::Expression exp;
       IR::Equation eq;
       Util::Variable var;
+      int id;
     };
 
     class Label {
@@ -63,7 +69,8 @@ namespace MicroModelica {
         void RemoveEquations(MDI const mdi);
         unsigned long int EdgeCount();
         inline bool IsEmpty() { return ips.size()==0; }
-        inline const IndexPairSet & Pairs() const { return ips; }
+        inline const IndexPairSet &Pairs() const { return ips; }
+        inline const IndexPair &Pair() const { return _ip; }
         friend std::ostream& operator<<(std::ostream& os, const Label& label);
       private:
         IndexPairSet ips;
@@ -71,7 +78,6 @@ namespace MicroModelica {
         void RemoveDuplicates();
     }; 
     
-    /// @brief This is the definition of the Incidence graph for the scalar case.
     typedef boost::adjacency_list<boost::listS, boost::listS, boost::directedS, VertexProperty, Label> DepsGraph;
     /// @brief A vertex of the Incidence graph
     typedef boost::graph_traits<DepsGraph>::vertex_descriptor Vertex;
@@ -86,9 +92,39 @@ namespace MicroModelica {
     /// @brief This is an edge of the scalar causalization graph
     typedef DepsGraph::edge_descriptor Edge;
 
+
+    class Occur {
+      public:
+        Occur(IR::Expression exp, Util::VarSymbolTable symbols, Option<IR::Range> range);
+        ~Occur() {};
+        bool 
+        hasIndex();
+        IntervalList
+        intervals();
+        Usage 
+        usages();
+        Offset 
+        offsets();
+      private:
+        void 
+        initialize();
+        std::string
+        reference(AST_Expression exp);
+        int 
+        constant(AST_Expression exp);
+        IR::Expression   _exp; 
+        AST_Expression_ComponentReference _cr;
+        Util::VarSymbolTable _symbols;
+        Option<IR::Range>    _range;    
+        std::vector<int> _offsets;
+        Usage            _usages;
+        IntervalList     _intervals;   
+    };
+
     class GenerateEdge {
       public:
-        GenerateEdge(struct VertexProperty eq, struct VertexProperty ifr, Util::VarSymbolTable symbols);
+        GenerateEdge(struct VertexProperty eq, struct VertexProperty ifr, 
+                     Util::VarSymbolTable symbols, VERTEX::Mode mode = VERTEX::Output);
         ~GenerateEdge() {};
         inline bool
         exists() { return _exist; };
@@ -101,10 +137,11 @@ namespace MicroModelica {
         build(list<IR::Expression> exps);
       private:
         struct VertexProperty  _eq;
-        struct VertexProperty  _ifr;
+        struct VertexProperty  _inf;
         bool                   _exist;
         Util::VarSymbolTable   _symbols;
         IndexPairSet           _ips;
+        VERTEX::Mode           _mode;
     };
 
   }

@@ -22,39 +22,108 @@
 
 #include <map>
 
+#include "graph/graph_helpers.h"
 #include "../ir/index.h"
 #include "../util/table.h"
 
 namespace MicroModelica {
   namespace Deps {
 
+    namespace VDM {
+        typedef enum {
+          Normal,
+          Transpose    
+        } Mode;
+        
+        typedef enum {
+          Alloc = 0,
+          Init = 2   
+        } Method;
+    }
+
     typedef int depId;
+
+    typedef std::string varId;
 
     class VariableDependency 
     {
       public:
         VariableDependency() {};
         ~VariableDependency() {};
-        inline const VariableDependency& 
-        alloc() const { return *this; };
-        inline const VariableDependency&
-        init() const { return *this; }; 
-        friend std::ostream& operator<<(std::ostream& out, const VariableDependency& d);
+        inline void 
+        setVariable(std::string var) { _variable = var; };
+        inline void 
+        setDom(MDI dom) { _dom = dom; };
+        inline void 
+        setRan(MDI ran) { _ran = ran; };
+        inline void 
+        setId(int id) { _id = id; };
+        inline void 
+        setEquationId(int eqid) { _equationId = eqid; };
+        inline const IR::Index
+        ifr() { return _ifr; };
+        inline const IR::Index
+        ife() { return _ife; };
+        IR::Range
+        range() { return _range; };
+        inline void
+        setIfr(IR::Expression exp) { _ifr.setExp(exp); };
+        inline void
+        setIfe(IR::Expression exp) { _ife.setExp(exp); };
+        inline void 
+        setRange() { _range.generate(_ran); };
+        void 
+        replaceIdxVars(Usage ifrUsg, Usage ifeUsg);
       private:
-        IR::Index     _lhs;
-        IR::Index     _rhs;
+        MDI           _dom;
+        MDI           _ran;
+        IR::Index     _ifr;
+        IR::Index     _ife;
         IR::Range     _range;
         int           _id;
-        std::string   _matrixName;
-        std::string   _accessVectorName;
-        std::string   _transposeAccessVectorName;
+        int           _equationId;
+        std::string   _variable;
     };
 
-    class VariableDependencyMatrix : public ModelTable<depId,VariableDependency>
+    typedef list<VariableDependency> VariableInfluences;
+    
+    typedef struct {
+        VariableInfluences algs;
+        VariableDependency ifce;   
+        inline const IR::Index 
+        ifr() { return ifce.ifr(); };
+        inline const IR::Index 
+        ife() { return ifce.ife(); };     
+    } Influences;
+
+    std::ostream& operator<<(std::ostream& out, const Influences& d);
+
+    typedef list<Influences> VariableDependencies;
+
+    struct MatrixConfig {
+        std::string container;
+        std::string names[4];
+        std::string access[2];
+    };
+
+    class VariableDependencyMatrix : public ModelTable<varId,VariableDependencies>
     {
       public:
-        VariableDependencyMatrix() {};
+        VariableDependencyMatrix(MatrixConfig cfg);
         ~VariableDependencyMatrix() {};
+        inline const VariableDependencyMatrix& 
+        alloc() { _method = VDM::Alloc; return *this; };
+        inline const VariableDependencyMatrix&
+        init() { _method = VDM::Init; return *this; }; 
+        inline void 
+        setMode(VDM::Mode mode) { _mode = mode; };
+        std::string 
+        print() const;    
+        friend std::ostream& operator<<(std::ostream& out, const VariableDependencyMatrix& d);
+      private:
+        MatrixConfig _cfg;
+        VDM::Mode    _mode;
+        VDM::Method  _method;  
     };
 
     typedef std::list<depId> EquationDependency;

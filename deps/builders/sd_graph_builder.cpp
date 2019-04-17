@@ -27,10 +27,11 @@ namespace MicroModelica {
   using namespace Util;
   namespace Deps {
 
-    SDGraphBuilder::SDGraphBuilder(EquationTable &equations, VarSymbolTable& symbols) :
+    SDGraphBuilder::SDGraphBuilder(EquationTable &equations, EquationTable &algebraics, VarSymbolTable& symbols) :
       _equationDescriptors(),
       _variableDescriptors(),
       _equations(equations),
+      _algebraics(algebraics),
       _symbols(symbols)
     {
 
@@ -68,11 +69,45 @@ namespace MicroModelica {
         vp.eq = eq;
         _equationDescriptors.push_back(add_vertex(vp,graph));
       }
+      for(Equation eq = _algebraics.begin(eqit); !_algebraics.end(eqit); eq = _algebraics.next(eqit))
+      {
+        VertexProperty vp;
+        vp.type = VERTEX::Equation;
+        vp.eq = eq;
+        _equationDescriptors.push_back(add_vertex(vp,graph));
+      }
+
       cout << "Ecuaciones: " << _equationDescriptors.size() << endl;
       cout << "Variables: " << _variableDescriptors.size() << endl;
+      cout << "Derivadas: " << _derivativeDescriptors.size() << endl;
 
       foreach_(EqVertex eq, _equationDescriptors){
         foreach_(IfrVertex inf, _variableDescriptors){
+          GenerateEdge ge = GenerateEdge(graph[eq], graph[inf], _symbols);
+          if(ge.exists()) {
+            IndexPairSet ips = ge.indexes();
+            for (auto ip : ips) {
+              Label ep(ip);
+              cout << ip << " empty: " << ep.IsEmpty() << endl;
+              add_edge(inf, eq, ep, graph);  
+            }
+          }
+          // Check LHS too if we are working with algebraics.
+          if (graph[inf].type == VERTEX::Algebraic) { 
+            GenerateEdge gea = GenerateEdge(graph[eq], graph[inf], _symbols, VERTEX::Input);
+            if(gea.exists()) {
+              IndexPairSet ips = gea.indexes();
+              for (auto ip : ips) {
+                Label ep(ip);
+                cout << ip << " empty: " << ep.IsEmpty() << endl;
+                add_edge(eq, inf, ep, graph);  
+              }
+            }            
+          }
+        }
+      }
+      foreach_(EqVertex eq, _equationDescriptors){
+        foreach_(IfeVertex inf, _derivativeDescriptors){
           GenerateEdge ge = GenerateEdge(graph[eq], graph[inf], _symbols);
           if(ge.exists()) {
             IndexPairSet ips = ge.indexes();

@@ -23,6 +23,7 @@
 #include <string>
 
 #include "dependency_matrix.h"
+#include "graph/graph_helpers.h"
 #include "graph/graph.h"
 
 namespace MicroModelica {
@@ -30,10 +31,21 @@ namespace MicroModelica {
     class Dependency 
     {
       public:
-        Dependency();
-        ~Dependency();
-        VariableDependencyMatrix  
-        compute(DepsGraph g);  
+        Dependency() : _ifr() {};
+        ~Dependency() {};
+        void
+        compute(DepsGraph g, VariableDependencyMatrix& vdm);
+      private:
+        void
+        influencees(DepsGraph g, Vertex vd, MDI infs, VariableDependencies &deps, VariableInfluences& algs);
+        VariableDependency 
+        getVariableDependency(string name, MDI dom, MDI ran, int id);
+        MDI 
+        variableMDI(Util::Variable var);  
+      private: 
+        IR::Expression _ifr;
+        Usage          _ifrUsg;
+        Usage          _ifeUsg;
     };
   }
 }

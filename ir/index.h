@@ -24,6 +24,7 @@
 #include <map>
 
 #include "expression.h"
+#include "../deps/graph/graph_helpers.h"
 #include "../util/symbol_table.h"
 #include "../util/table.h"
 
@@ -84,11 +85,20 @@ namespace MicroModelica {
         rowSize(int dim) const;
         std::string 
         block(int dim = -1) const;
+        int 
+        pos(std::string var);
+        void 
+        generate(Deps::MDI mdi);
+        inline bool 
+        empty() { return _size == 0; };
+        std::string 
+        iterator(int dim);
         friend std::ostream& operator<<(std::ostream& out, const Range& r);
       private:
         void 
         setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);
         RangeDefinitionTable _ranges;
+        ModelTable<std::string, int> _indexPos;
         int                  _size;
         RANGE::Type          _type;
         std::vector<int>     _rowSize;
@@ -126,6 +136,8 @@ namespace MicroModelica {
         add(IndexDefinition id);
         inline int
         dimension() { return _dim; };
+        inline void
+        setExp(Expression exp) { _exp = exp; }; 
         std::string 
         print() const;
         friend std::ostream& operator<<(std::ostream& out, const Index& i);

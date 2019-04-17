@@ -61,8 +61,7 @@ namespace MicroModelica {
       FunctionPrinter fp;
       for(Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it))
       {
-        buffer << out;
-        _writer->write(buffer.str(), (out.hasRange() ? WRITER::Output_Generic : WRITER::Output_Simple));
+        _writer->write(out, (out.hasRange() ? WRITER::Output_Generic : WRITER::Output_Simple));
       }
       _writer->write(Utils::instance().localSymbols(), WRITER::Output);
       if(!_writer->isEmpty(WRITER::Output_Simple))
@@ -104,15 +103,8 @@ namespace MicroModelica {
     void 
     ModelInstance::initializeMatrix(VariableDependencyMatrix vdm, WRITER::Section alloc, WRITER::Section init)
     {
-      stringstream buffer;
-      VariableDependencyMatrix::iterator it;
-      for(VariableDependency vd = vdm.begin(it); !vdm.end(it); vd = vdm.next(it))
-      {
-        buffer << vd.alloc();
-        _writer->write(buffer, alloc);
-        buffer << vd.init();
-        _writer->write(buffer, init);
-      }
+      _writer->write(vdm.alloc(), alloc);
+      _writer->write(vdm.init(), init);
     }
 
     void 
@@ -161,10 +153,8 @@ namespace MicroModelica {
       Utils::instance().setLocalSymbols();
       for(Event event = events.begin(it); !events.end(it); event = events.next(it))
       {
-        stringstream buffer;
         Equation zc = event.zeroCrossing();
-        buffer << zc;
-        _writer->write(buffer, (zc.hasRange() ? WRITER::ZC_Generic : WRITER::ZC_Simple));
+        _writer->write(zc, (zc.hasRange() ? WRITER::ZC_Generic : WRITER::ZC_Simple));
       }
       _writer->write(Utils::instance().localSymbols(), WRITER::Zero_Crossing);
       if(!_writer->isEmpty(WRITER::ZC_Simple))
@@ -185,10 +175,8 @@ namespace MicroModelica {
       Utils::instance().setLocalSymbols();
       for(Event event = events.begin(it); !events.end(it); event = events.next(it))
       {
-        buffer << event.handler(EVENT::Positive);
-        _writer->write(buffer, (event.hasRange() ? WRITER::Handler_Pos_Generic : WRITER::Handler_Pos_Simple)); 
-        buffer << event.handler(EVENT::Negative);
-        _writer->write(buffer, (event.hasRange() ? WRITER::Handler_Neg_Generic : WRITER::Handler_Neg_Simple)); 
+        _writer->write(event.handler(EVENT::Positive), (event.hasRange() ? WRITER::Handler_Pos_Generic : WRITER::Handler_Pos_Simple)); 
+        _writer->write(event.handler(EVENT::Negative), (event.hasRange() ? WRITER::Handler_Neg_Generic : WRITER::Handler_Neg_Simple)); 
       }
       if(!_writer->isEmpty(WRITER::Handler_Pos_Generic))
       {
@@ -307,8 +295,7 @@ namespace MicroModelica {
       stringstream buffer;
       for(Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it))
       {
-        buffer << stm;
-        _writer->write(buffer, WRITER::Init_Code);
+        _writer->write(stm, WRITER::Init_Code);
       }
     }
 
@@ -319,9 +306,7 @@ namespace MicroModelica {
       InputTable::iterator it;
       for(Input input = inputs.begin(it); !inputs.end(it); input = inputs.next(it))
       {
-        stringstream buffer;
-        buffer << input;
-        _writer->write(buffer, WRITER::Input);  
+        _writer->write(input, WRITER::Input);  
       }
     }
 
@@ -405,12 +390,14 @@ namespace MicroModelica {
       ModelDependencies deps = _model.dependencies();
       // Initialize Solver Data Structures.
       initializeMatrix(deps.SD(), WRITER::Alloc_Matrix_SD, WRITER::Init_Matrix_SD);
-      initializeMatrix(deps.SD(), WRITER::Alloc_Matrix_DS, WRITER::Init_Matrix_DS);
+      initializeMatrix(deps.DS(), WRITER::Alloc_Matrix_DS, WRITER::Init_Matrix_DS);
       inputs();
       // Initialize Output Data Structures.
       allocateOutput();
       initializeMatrix(deps.OS(), WRITER::Alloc_Output_States, WRITER::Init_Output_States);
       initializeMatrix(deps.OD(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes);
+      initializeMatrix(deps.SO(), WRITER::Alloc_Output_States, WRITER::Init_Output_States);
+      initializeMatrix(deps.DO(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes);
       allocateModel();
       _writer->write(Utils::instance().localSymbols(), WRITER::Alloc_Matrix);
     }
@@ -426,13 +413,11 @@ namespace MicroModelica {
       Utils::instance().setLocalSymbols();
       for(Equation alg = algebraics.begin(it); !algebraics.end(it); alg = algebraics.next(it))
       {
-         buffer << alg;
-         _writer->write(buffer, WRITER::Model_Simple);
+         _writer->write(alg, WRITER::Model_Simple);
       }
       for(Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it))
       {
-         buffer << der;
-         _writer->write(buffer, WRITER::Model_Simple);
+         _writer->write(der, WRITER::Model_Simple);
       }
       _writer->write(Utils::instance().localSymbols(), WRITER::Model);
     }
@@ -533,10 +518,14 @@ namespace MicroModelica {
       _writer->print(WRITER::Alloc_Matrix_SD);
       _writer->print(WRITER::Alloc_Matrix_DS);
       _writer->print(WRITER::Init_Matrix);
-      _writer->print(WRITER::Init_Matrix_DS);
       _writer->print(WRITER::Init_Matrix_SD);
+      _writer->print(WRITER::Init_Matrix_DS);
       _writer->print(WRITER::Input);
       _writer->print(WRITER::Init_Output);
+      _writer->print(WRITER::Alloc_Output_States);
+      _writer->print(WRITER::Alloc_Output_Discretes);
+      _writer->print(WRITER::Init_Output_States);
+      _writer->print(WRITER::Init_Output_Discretes);
       _writer->print(allocateModel());
       _writer->endBlock();
       _writer->print(componentDefinition(QSS_INIT));

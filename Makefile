@@ -113,6 +113,7 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
 						 $(VISITORDIR)/eval_init_exp.cpp \
 						 $(VISITORDIR)/expression_printer.cpp \
 						 $(VISITORDIR)/occurs.cpp \
+						 $(VISITORDIR)/partial_eval_exp.cpp \
 						 $(VISITORDIR)/replace_der.cpp \
 						 $(VISITORDIR)/replace_inner_product.cpp \
 						 $(VISITORDIR)/variable_lookup.cpp 
@@ -124,7 +125,8 @@ DEPSSRC = $(DEPSDIR)/dependency.cpp \
 DEPSGRAPHSRC = $(DEPSGRAPHDIR)/graph.cpp \
 			   $(DEPSGRAPHDIR)/graph_helpers.cpp	
 
-DEPSBUILDERSRC = $(DEPSBUILDERDIR)/sd_graph_builder.cpp 
+DEPSBUILDERSRC = $(DEPSBUILDERDIR)/sd_graph_builder.cpp \
+				 $(DEPSBUILDERDIR)/so_graph_builder.cpp 
 
 # Objects
 ASTOBJ=$(addprefix $(BUILDDIR)/ast_, $(notdir $(ASTSRC:.cpp=.o)))

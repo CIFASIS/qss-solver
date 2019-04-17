@@ -142,6 +142,13 @@ namespace MicroModelica {
         */
         virtual void
         clearFile() = 0;
+
+        template<class W> void 
+        write(W out, WRITER::Section section, bool clean = true, WRITER::Insert it = WRITER::Prepend) {
+            std::stringstream buffer;
+            buffer << out;
+            write(buffer, section, clean, it);
+        }
         /**
         *
         * @param str

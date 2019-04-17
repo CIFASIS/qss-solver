@@ -246,59 +246,49 @@ namespace MicroModelica {
     FunctionPrinter::beginExpression(string token, Option<Range> range) const
     {
       stringstream buffer;
-      if(range) 
-      { 
+      if (range) {
         buffer << "if(" << token << "(idx) >= 1 && ";
         buffer << token << "(idx) <= " << range->size() << ")" << endl;
         buffer << "{" << endl;
-      }
-      else 
-      {
+      } else {
         buffer << TAB << "case " << token << ":" << endl;
         buffer << TAB << "{" << endl;
       }
-      if(range) 
-      { 
-        buffer << TAB << "_get" << token << "_idxs(idx," << range->indexes() << ");" << endl;
+      if (range) {
+        buffer << TAB << "_get" << token << "_idxs(idx," << range->indexes()
+               << ");" << endl;
         range->addLocalVariables();
       }
       return buffer.str();
     }
-    
+
     string 
     FunctionPrinter::endExpression(Option<Range> range) const 
     {
       stringstream buffer;
-      if(range)
-      {
-        buffer << "return;" << endl << "}"; 
-      }
-      else 
-      {
+      if (range) {
+        buffer << "return;" << endl << "}";
+      } else {
         buffer << "return;" << endl << TAB << "}";
       }
       return buffer.str();
     }
-    
+
     string
     FunctionPrinter::algebraics(EquationDependencyMatrix eqdm, depId key)
     {
       stringstream buffer;
       EquationTable algebraics = Utils::instance().algebraics();
       Option<EquationDependency> eqd = eqdm[key];
-      if(eqd)
-      {
+      if (eqd) {
         EquationDependency::iterator eqIt;
-        for(eqIt = eqd->begin(); eqIt != eqd->end(); eqIt++)
-        {
+        for (eqIt = eqd->begin(); eqIt != eqd->end(); eqIt++) {
           Option<Equation> alg = algebraics[*eqIt];
-          if(alg)
-          {
-            buffer << alg.get() << endl;;
-          }
-          else 
-          {
-            Error::instance().add(0, EM_CG | EM_NO_EQ, ER_Error, "Algebraic equation not found.");
+          if (alg) {
+            buffer << alg.get() << endl;
+          } else {
+            Error::instance().add(0, EM_CG | EM_NO_EQ, ER_Error,
+                                  "Algebraic equation not found.");
           }
         }
       }
@@ -310,25 +300,29 @@ namespace MicroModelica {
     {
       stringstream buffer;
       buffer << "#define " << token;
-      if(range)
-      {
-        buffer << "(idx) " << "(idx + 1)"; 
-        if(!offset) { buffer << "-" << offset; }
+      if (range) {
+        buffer << "(idx) "
+               << "(idx + 1)";
+        if (!offset) {
+          buffer << "-" << offset;
+        }
         buffer << endl;
         string var = Utils::instance().iteratorVar();
-        buffer << "#define _get" << token << "_idxs(idx, " << range->indexes() << ") \\" << endl;
+        buffer << "#define _get" << token << "_idxs(idx, " << range->indexes()
+               << ") \\" << endl;
         buffer << TAB << "int " << var << " = " << token << "(idx); \\" << endl;
         RangeDefinitionTable rdt = range->definition();
         RangeDefinitionTable::iterator it;
         int size = rdt.size(), i = 0, idx = 0;
-        for(RangeDefinition rd = rdt.begin(it); !rdt.end(it); rd = rdt.next(it), idx++)
-        {
-          buffer << TAB << rdt.key(it) << " = " << (++i < size ? div(mod(var, idx-1, range),idx, range) : mod(var, idx-1, range)) << "+ 1; \\" << endl; 
+        for (RangeDefinition rd = rdt.begin(it); !rdt.end(it);
+             rd = rdt.next(it), idx++) {
+          buffer << TAB << rdt.key(it) << " = "
+                 << (++i < size ? div(mod(var, idx - 1, range), idx, range)
+                                : mod(var, idx - 1, range))
+                 << "+ 1; \\" << endl;
         }
-      }
-      else 
-      {
-        buffer << " " << id - 1; 
+      } else {
+        buffer << " " << id - 1;
       }
       return buffer.str();
     }

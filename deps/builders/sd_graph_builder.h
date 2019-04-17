@@ -28,7 +28,7 @@ namespace MicroModelica {
   namespace Deps {
     class SDGraphBuilder {
     public:
-      SDGraphBuilder(IR::EquationTable &equations, Util::VarSymbolTable& symbols);
+      SDGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics, Util::VarSymbolTable& symbols);
       ~SDGraphBuilder(){};
       DepsGraph
       build();    
@@ -37,6 +37,7 @@ namespace MicroModelica {
       list<IfrVertex>      _variableDescriptors;
       list<IfeVertex>      _derivativeDescriptors;
       IR::EquationTable    _equations;
+      IR::EquationTable    _algebraics;
       Util::VarSymbolTable _symbols;
     };
   }
