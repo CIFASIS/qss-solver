@@ -41,7 +41,6 @@ namespace MicroModelica {
     static MatrixConfig SOCfg = { OUT_CONTAINER, { "nSO", "nOS", "SO", "OS" }, { STATES, OUTPUTS } };
     static MatrixConfig DOCfg = { OUT_CONTAINER, { "nDO", "nOD", "DO", "OD" }, { DISCRETES, OUTPUTS } };
 
-
     ModelDependencies::ModelDependencies() :
       _SD(SDCfg),
       _SZ(SZCfg),
@@ -54,12 +53,13 @@ namespace MicroModelica {
     void
     ModelDependencies::compute(EquationTable eqs, EquationTable outputs, EquationTable algs, EventTable events, VarSymbolTable symbols)
     {
-      SDGraphBuilder SD = SDGraphBuilder(eqs, algs, symbols);
-      _deps.compute(SD.build(), _SD);
+      Utils::instance().setSymbols(symbols);
+      /*SDGraphBuilder SD = SDGraphBuilder(eqs, algs, symbols);
+      _deps.compute(SD.build(), _SD);*/
       OutputGraphBuilder SO = OutputGraphBuilder(outputs, algs, symbols);
       _deps.compute(SO.build(), _SO);
-      OutputGraphBuilder DO = OutputGraphBuilder(outputs, algs, symbols, OUTPUT::DO);
-      _deps.compute(DO.build(), _DO);
+ /*     OutputGraphBuilder DO = OutputGraphBuilder(outputs, algs, symbols, OUTPUT::DO);
+      _deps.compute(DO.build(), _DO);*/
     }
   }
 }

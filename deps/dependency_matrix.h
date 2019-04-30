@@ -61,28 +61,26 @@ namespace MicroModelica {
         inline void 
         setEquationId(int eqid) { _equationId = eqid; };
         inline const IR::Index
-        ifr() { return _ifr; };
+        ifr() { return IR::Index(_ifr); };
         inline const IR::Index
-        ife() { return _ife; };
+        ife() { return IR::Index(_ife); };
         IR::Range
         range() { return _range; };
         inline void
-        setIfr(IR::Expression exp) { _ifr.setExp(exp); };
+        setIfr(IR::Expression exp) { _ifr = exp; };
         inline void
-        setIfe(IR::Expression exp) { _ife.setExp(exp); };
-        inline void 
-        setRange() { _range.generate(_ran); };
+        setIfe(IR::Expression exp) { _ife = exp; };
         void 
-        replaceIdxVars(Usage ifrUsg, Usage ifeUsg);
+        setRange(Usage ifrUsg, Usage ifeUsg);
       private:
-        MDI           _dom;
-        MDI           _ran;
-        IR::Index     _ifr;
-        IR::Index     _ife;
-        IR::Range     _range;
-        int           _id;
-        int           _equationId;
-        std::string   _variable;
+        MDI            _dom;
+        MDI            _ran;
+        IR::Expression _ifr;
+        IR::Expression _ife;
+        IR::Range      _range;
+        int            _id;
+        int            _equationId;
+        std::string    _variable;
     };
 
     typedef list<VariableDependency> VariableInfluences;

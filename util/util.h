@@ -205,7 +205,7 @@ namespace MicroModelica {
         addCompiledFunctions(IR::CompiledFunctionTable fs);
         bool 
         checkBuiltInFunctions(std::string name);
-        inline VarSymbolTable 
+        inline VarSymbolTable& 
         symbols() { return _symbols; };
         inline SymbolTable 
         localSymbols() { return _localSymbols; };

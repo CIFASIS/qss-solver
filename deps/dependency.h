@@ -31,7 +31,7 @@ namespace MicroModelica {
     class Dependency 
     {
       public:
-        Dependency() : _ifr() {};
+        Dependency() : _ifr(), _ifrUsg() {};
         ~Dependency() {};
         void
         compute(DepsGraph g, VariableDependencyMatrix& vdm);
@@ -45,7 +45,6 @@ namespace MicroModelica {
       private: 
         IR::Expression _ifr;
         Usage          _ifrUsg;
-        Usage          _ifeUsg;
     };
   }
 }

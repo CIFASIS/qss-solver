@@ -51,6 +51,10 @@ namespace MicroModelica {
     Macros::arguments() const 
     {
       stringstream arguments;
+      if(_variable.isEqType()) {
+        arguments << _variable << endl;
+        return arguments.str();
+      }
       int dim = _variable.dimensions();
       stringstream end;
       if(!_model.annotations().classic() &&
@@ -88,15 +92,17 @@ namespace MicroModelica {
         index << "_idx" << _variable << parameters();  
         buffer << "#define " << index.str() << " " << arguments(); 
       }
-      buffer << "#define " << _variable << parameters() << " ";
-      if(_variable.isState()) { buffer << "x"; }
-      if(_variable.isAlgebraic()) { buffer << "a"; }
-      if(_variable.isDiscrete()) { buffer << "d"; } 
-      if(_variable.isParameter()) { buffer << "__PAR__" << _variable.name(); } 
-      if(idx) { buffer << "["; }
-      buffer << index.str(); 
-      if(idx) { buffer << "]"; }
-      buffer << endl;
+      if(!_variable.isEqType()) {
+        buffer << "#define " << _variable << parameters() << " ";
+        if(_variable.isState()) { buffer << "x"; }
+        if(_variable.isAlgebraic()) { buffer << "a"; }
+        if(_variable.isDiscrete()) { buffer << "d"; } 
+        if(_variable.isParameter()) { buffer << "__PAR__" << _variable.name(); } 
+        if(idx) { buffer << "["; }
+        buffer << index.str(); 
+        if(idx) { buffer << "]"; }
+        buffer << endl;
+      }
       return buffer.str();
     }
 

@@ -275,8 +275,7 @@ namespace Deps {
       return false;
     }
 
-    // INDEX_PAIR
-
+    // INDEX_PAIR    
     std::list<IndexPair> IndexPair::operator-(const IndexPair &other) const {
       // ERROR_UNLESS((this->Dom().Dimension()==other.Dom().Dimension()), "Domain
       // dimension error in IndexPair subtraction");
@@ -625,6 +624,17 @@ namespace Deps {
         return INDEX::RN_1;
       else
         return INDEX::R1_N;
+    }
+
+    bool
+    Usage::isUsed(int i) 
+    {
+      if (usage.size() > 0) {
+        return usage[i] != -1;
+      } else {
+        return false;
+      }
+      return false;
     }
 
     std::ostream &operator<<(std::ostream &os, const std::list<IndexPair> &ipList) {

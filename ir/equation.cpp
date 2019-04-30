@@ -22,6 +22,7 @@
 #include <sstream>
 
 #include "helpers.h"
+#include "../ast/ast_builder.h"
 #include "../ast/expression.h"
 #include "../ast/equation.h"
 #include "../util/visitors/called_functions.h"
@@ -110,6 +111,17 @@ namespace MicroModelica {
     void
     Equation::process(AST_Expression exp)
     {
+      if(_range) {
+        AST_Expression_ComponentReference lhs = newAST_Expression_ComponentReference();
+        AST_Expression idx = newAST_Expression_ComponentReferenceExp(newAST_String("i"));
+        AST_ExpressionList l = newAST_ExpressionList();
+        l = AST_ListAppend(l, idx);
+        lhs = AST_Expression_ComponentReference_Add(lhs, newAST_String(functionId()), l);
+        _lhs = Expression(lhs, _symbols);
+      } else {
+        AST_Expression lhs = newAST_Expression_ComponentReferenceExp(newAST_String(functionId()));
+        _lhs = Expression(lhs, _symbols);
+      }
       _rhs = Expression(exp, _symbols);
       Autonomous autonomous(_symbols);
       _autonomous = autonomous.apply(exp);
@@ -176,16 +188,38 @@ namespace MicroModelica {
     Equation::functionId() const 
     {
       stringstream buffer;
-      switch(_type)
+      buffer << functionId(_type) << _id;
+      return buffer.str();
+    }
+
+    string 
+    Equation::functionId(EQUATION::Type type) 
+    {
+      stringstream buffer;
+      switch(type)
       {
-        case EQUATION::QSSDerivative: buffer << "_der_eq_" << _id; break; 
-        case EQUATION::Dependency: buffer << "_dep_eq_" << _id; break; 
-        case EQUATION::ZeroCrossing: buffer << "_event_" << _id; break;  
-        case EQUATION::Output: buffer << "_out_eq_" << _id; break;  
+        case EQUATION::QSSDerivative: buffer << "_der_eq_"; break; 
+        case EQUATION::Dependency: buffer << "_dep_eq_"; break; 
+        case EQUATION::ZeroCrossing: buffer << "_event_"; break;  
+        case EQUATION::Output: buffer << "_out_eq_"; break;  
         default: return "";
       }
       return buffer.str();
     }
+
+    string 
+    Equation::lhsStr() const
+    {
+      stringstream buffer;
+      switch(_type)
+      {
+        case EQUATION::ClassicDerivative: buffer << _lhs; break; 
+        case EQUATION::QSSDerivative: buffer << _lhs; break; 
+        default: return "";
+      }
+      return buffer.str();
+    }
+
 
     string 
     Equation::print() const
@@ -210,7 +244,7 @@ namespace MicroModelica {
           block += TAB;
         }
       }
-      buffer << block << prefix() << _lhs << " = " << _rhs << ";";
+      buffer << block << prefix() << lhsStr() << " = " << _rhs << ";";
       if (_type == EQUATION::ClassicDerivative) {
         if (_range) {
           buffer << endl << _range.get().end();

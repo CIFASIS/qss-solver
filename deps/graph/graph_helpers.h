@@ -44,7 +44,7 @@ namespace MicroModelica {
 
     class Usage {
     public:
-      inline Usage():usage() { };
+      inline Usage() : usage() { };
       inline Usage(int size):usage(std::vector<int>(size)) { }
       inline Usage(int size, int value):usage(std::vector<int>(size, value)) { }
       inline int& operator[](int index) { return usage[index]; }
@@ -59,6 +59,7 @@ namespace MicroModelica {
         }
         return true;
       }
+      bool isUsed(int i);
       typedef std::vector<int>::iterator iterator;
       typedef std::vector<int>::const_iterator const_iterator;
       inline const_iterator begin() const { return usage.begin(); }
@@ -150,8 +151,8 @@ namespace MicroModelica {
 
     class IndexPair {
       public:
-        inline IndexPair() { };
-        inline IndexPair(MDI dom_, MDI ran_, Offset os, Usage us, IR::Expression exp = IR::Expression()): dom(dom_), ran(ran_), offset(os), usage(us), _exp(exp) { };
+        IndexPair() { };
+        IndexPair(MDI dom_, MDI ran_, Offset os, Usage us, IR::Expression exp = IR::Expression()): dom(dom_), ran(ran_), offset(os), usage(us), _exp(exp) { };
         inline MDI Dom() const { return dom; }
         inline MDI Ran() const { return ran; }
         inline Offset GetOffset() const { return offset; }

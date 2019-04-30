@@ -88,7 +88,6 @@ namespace MicroModelica {
             IndexPairSet ips = ge.indexes();
             for (auto ip : ips) {
               Label ep(ip);
-              cout << ip << " empty: " << ep.IsEmpty() << endl;
               add_edge(inf, eq, ep, graph);  
             }
           }
@@ -99,7 +98,6 @@ namespace MicroModelica {
               IndexPairSet ips = gea.indexes();
               for (auto ip : ips) {
                 Label ep(ip);
-                cout << ip << " empty: " << ep.IsEmpty() << endl;
                 add_edge(eq, inf, ep, graph);  
               }
             }            

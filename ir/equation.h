@@ -86,6 +86,8 @@ namespace MicroModelica {
         range() { return _range; };
         inline int 
         id() { return _id; };
+        static std::string 
+        functionId(EQUATION::Type type);
         friend std::ostream& operator<<(std::ostream& out, const Equation& e);
       private:
         void 
@@ -98,6 +100,8 @@ namespace MicroModelica {
         functionId() const;
         std::string 
         prefix() const;
+        std::string 
+        lhsStr() const;
         AST_Equation         _eq;
         Expression           _lhs;
         Expression           _rhs;

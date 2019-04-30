@@ -532,7 +532,8 @@ enum TypePrefix
   TP_FLOW = (1 << 5), //!< TP_FLOW
   TP_STREAM = (1 << 6), //!< TP_STREAM
   TP_CONSTANT = (1 << 7), //!< TP_CONSTANT
-  TP_FOR = (1 << 8)  //!< TP_FOR
+  TP_FOR = (1 << 8),  //!< TP_FOR
+  TP_EQ = (1 << 9)  //!< TP_EQ
 };
 
 /**

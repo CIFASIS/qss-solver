@@ -168,6 +168,8 @@ namespace MicroModelica {
          */
         inline bool
         isForType() const { return _tp & TP_FOR; };
+        inline bool
+        isEqType() const { return _tp & TP_EQ; };
         /**
          *
          * @return
@@ -303,7 +305,8 @@ namespace MicroModelica {
         inline int  
         offset() const { return _offset; };
         inline bool 
-        isModelVar() const { return isState() || isDiscrete() || isAlgebraic() || isParameter(); };
+        isModelVar() const { return isState() || isDiscrete() || 
+                                    isAlgebraic() || isParameter() || isEqType(); };
       private:
         void
         processModification();

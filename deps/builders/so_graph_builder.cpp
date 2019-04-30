@@ -60,6 +60,7 @@ namespace MicroModelica {
           vp.var = var;
           _variableDescriptors.push_back(add_vertex(vp, graph));
         }
+
       }
       EquationTable::iterator eqit;
       for(Equation eq = _equations.begin(eqit); !_equations.end(eqit); eq = _equations.next(eqit))
@@ -81,10 +82,6 @@ namespace MicroModelica {
         _equationDescriptors.push_back(add_vertex(vp,graph));
       }
 
-      cout << "Ecuaciones: " << _equationDescriptors.size() << endl;
-      cout << "Variables: " << _variableDescriptors.size() << endl;
-      cout << "Salidas: " << _outputDescriptors.size() << endl;
-
       foreach_(EqVertex eq, _equationDescriptors){
         foreach_(IfrVertex inf, _variableDescriptors){
           GenerateEdge ge = GenerateEdge(graph[eq], graph[inf], _symbols);
@@ -92,11 +89,10 @@ namespace MicroModelica {
             IndexPairSet ips = ge.indexes();
             for (auto ip : ips) {
               Label ep(ip);
-              cout << ip << " empty: " << ep.IsEmpty() << endl;
               add_edge(inf, eq, ep, graph);
-              IndexPair op(ip.Ran(), ip.Ran(), Offset(), Usage()); 
+              IndexPair op(ip.Ran(), ip.Ran(), Offset(), Usage(), graph[eq].eq.lhs()); 
               Label oep(op);
-              add_edge(eq, _outputDescriptors[graph[eq].eq.id()], graph); 
+              add_edge(eq, _outputDescriptors[graph[eq].eq.id()], oep, graph); 
             }
           }
           // Check LHS too if we are working with algebraics.
@@ -106,11 +102,7 @@ namespace MicroModelica {
               IndexPairSet ips = gea.indexes();
               for (auto ip : ips) {
                 Label ep(ip);
-                cout << ip << " empty: " << ep.IsEmpty() << endl;
                 add_edge(eq, inf, ep, graph);  
-                IndexPair op(ip.Ran(), ip.Ran(), Offset(), Usage()); 
-                Label oep(op);
-                add_edge(eq, _outputDescriptors[graph[eq].eq.id()], graph); 
               }
             }            
           }

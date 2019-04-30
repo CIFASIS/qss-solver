@@ -165,7 +165,7 @@ namespace MicroModelica {
     ostream &
     operator<<(ostream &ret, const Variable &e)
     {
-      if(e.isForType() || e.isInput() || e.isOutput()) 
+      if(e.isForType() || e.isInput() || e.isOutput() || e.isEqType()) 
       {
         ret << e._name;
       }
@@ -248,6 +248,7 @@ namespace MicroModelica {
     void
     VarSymbolTable::insert(VarName n, Variable vi)
     {
+      vi.setName(n);
       ModelTable<VarName, Variable>::insert(n, vi);
       if(vi.isParameter()) { _parameters = true; }
     }

@@ -52,12 +52,12 @@ namespace MicroModelica {
     Dependency::compute(DepsGraph g, VariableDependencyMatrix& vdm)
     {
       for (Vertex vd : boost::make_iterator_range(vertices(g))) {
-        std::cout << "Vertex descriptor #" << vd
-                  << std::endl; /* iterate over the ifr vertex. */
+        std::cout << "Vertex descriptor #" << vd << std::endl; /* iterate over the ifr vertex. */
         VertexProperty v = g[vd];
         if (v.type == VERTEX::Influencer) {
           VariableDependencies vdeps; 
           VariableInfluences algs;
+          cout << "Compute for: " << v.var << endl;
           influencees(g, vd, variableMDI(v.var), vdeps, algs);
           vdm.insert(v.var.name(), vdeps);    
         }
@@ -100,7 +100,7 @@ namespace MicroModelica {
                                                             ran, v.id);
             vdep.setIfr(_ifr);
             vdep.setIfe(l.Pair().exp());
-            vdep.setRange();
+            vdep.setRange(_ifrUsg, l.Pair().GetUsage());
             
             Influences inf = {algs, vdep};
             deps.push_back(inf);

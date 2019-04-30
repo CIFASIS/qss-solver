@@ -19,8 +19,12 @@
 
 #include "dependency_matrix.h"
 
+#include "../util/visitors/replace_index.h"
+#include "../util/util.h"
+
 namespace MicroModelica {
   using namespace IR;
+  using namespace Util;
   namespace Deps {
 
 	  VariableDependencyMatrix::VariableDependencyMatrix(MatrixConfig cfg) : 
@@ -30,6 +34,16 @@ namespace MicroModelica {
 	  {
 
 	  }
+
+    void
+    VariableDependency::setRange(Usage ifrUsg, Usage ifeUsg)
+    {
+       _range.generate(_ran);
+       ReplaceIndex riIfr(_range, ifrUsg);
+       _ifr = Expression(riIfr.apply(_ifr.expression()), Utils::instance().symbols());
+       ReplaceIndex riIfe(_range, ifeUsg);
+       _ife = Expression(riIfe.apply(_ife.expression()), Utils::instance().symbols());
+    }
 
   	string 
   	VariableDependencyMatrix::print() const 
@@ -53,7 +67,7 @@ namespace MicroModelica {
           if (_method == VDM::Alloc) {
             buffer << range.block() << _cfg.container << matrix << "[" << ifr << "]++;" << endl;   
           } else {
-            buffer << range.block() << _cfg.container << matrix << "[" << ifr << "][" << access << "[" << ifr << "]] = " << ife << endl;   
+            buffer << range.block() << _cfg.container << matrix << "[" << ifr << "][" << access << "[" << ifr << "]++] = " << ife << endl;   
           }
           if (!range.empty()) {
             buffer << range.end() << endl;  

@@ -377,12 +377,15 @@ namespace MicroModelica {
             cout << "Intenta agregar: " << exp << endl;
             _ips.insert(IndexPair(MDI(eqInterval), MDI(oc.intervals()), oc.offsets(), oc.usages(), exp));  
           } else { // 1 N
+             cout << "Intenta agregar caso 1: " << exp << endl;
             _ips.insert(IndexPair(MDI(eqInterval), MDI(0), Offset(), Usage(), exp));
           }
         } else {
           if (oc.hasIndex()) { // 1 1
-            _ips.insert(IndexPair(MDI(eqInterval), MDI(oc.intervals()), oc.offsets(), oc.usages(), exp));
+             cout << "Intenta agregar: caso 2" << exp << endl;
+            _ips.insert(IndexPair(MDI(0), MDI(0), oc.offsets(), oc.usages(), exp));
           } else { // 1 1
+             cout << "Intenta agregar: caso 3" << exp << endl;
             _ips.insert(IndexPair(MDI(0), MDI(0), Offset(), Usage(), exp));
           }
         } 

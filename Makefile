@@ -115,6 +115,7 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
 						 $(VISITORDIR)/occurs.cpp \
 						 $(VISITORDIR)/partial_eval_exp.cpp \
 						 $(VISITORDIR)/replace_der.cpp \
+						 $(VISITORDIR)/replace_index.cpp \
 						 $(VISITORDIR)/replace_inner_product.cpp \
 						 $(VISITORDIR)/variable_lookup.cpp 
 

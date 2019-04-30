@@ -515,6 +515,8 @@ namespace MicroModelica
         void 
         computeDependencies();
       private:
+        void 
+        addVariable(int id, int size, EQUATION::Type type);
         Option<Util::Variable>
         variable(AST_Expression exp);
         void 

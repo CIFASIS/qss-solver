@@ -688,6 +688,19 @@ namespace MicroModelica {
       }
     }
 
+    void 
+    Model::addVariable(int id, int size, EQUATION::Type type)
+    {
+      stringstream var;
+      vector<int> s;
+      if(size > 1) {
+        s.push_back(size);
+      }
+      var << Equation::functionId(type) << id;
+      Variable vi(newType_Integer(), TP_EQ, NULL, NULL, s, false);
+      insert(var.str(), vi);
+    }
+
     void
     Model::addEvent(AST_Statement stm, Option<Range> range)
     {
@@ -698,7 +711,8 @@ namespace MicroModelica {
         {
           _annotations.eventComment(sw->comment());
         }
-        Event event(sw->condition(),_eventId, _eventNbr,  _symbols, range);
+        addVariable(_eventId, (range ? range->size() : 1), EQUATION::Type::ZeroCrossing);
+        Event event(sw->condition(), _eventId, _eventNbr,  _symbols, range);
         _eventNbr += (range ? range->size() : 1);
         AST_StatementList stl = sw->statements();
         AST_StatementListIterator it;
@@ -717,6 +731,7 @@ namespace MicroModelica {
             Event event2 = event;
             if(!event.compare(se->condition()))
             {
+              addVariable(_eventId+1, (range ? range->size() : 1), EQUATION::Type::ZeroCrossing);
               event2 = Event(se->condition(), _eventId+1, _eventNbr,  _symbols, range);
               _eventNbr += (range ? range->size() : 1);
               newEvent = true;
@@ -769,6 +784,7 @@ namespace MicroModelica {
       list<AST_Expression>::iterator it;
       for(it = astOutputs.begin(); it != astOutputs.end(); it++)
       {
+        addVariable(_eventId, 1, EQUATION::Type::Output);
         Equation eq(*it, _symbols, EQUATION::Output, _outputId, _outputNbr++);
         _outputs.insert(_outputId++, eq);
       }

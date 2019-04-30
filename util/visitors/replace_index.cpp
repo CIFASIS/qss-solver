@@ -23,13 +23,15 @@
 
 #include "../../ast/ast_builder.h"
 #include "../error.h"
-#include "../symbol_table.h"
 
 namespace MicroModelica {
+  using namespace Deps;
+  using namespace IR;
   namespace Util {
 
-    ReplaceIndex::ReplaceIndex(VarSymbolTable vt) :
-        _vt(vt)
+    ReplaceIndex::ReplaceIndex(Range range, Usage usage) :
+        _range(range),
+        _usage(usage)
     {
     }
 
@@ -41,22 +43,25 @@ namespace MicroModelica {
         case EXPCOMPREF:
         {
           AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-          Option<Variable> var = _symbols[cr->name()];
-          if(!var)
-          {
-            Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", cr->name().c_str());
-            break;
-          }
           if(cr->hasIndexes())
           {
             AST_Expression_ComponentReference ret = newAST_Expression_ComponentReference();
             AST_ExpressionList indexes = cr->firstIndex();
             AST_ExpressionListIterator it;
-            int size = indexes->size(), i = 0;
+            int i = 0;
+            AST_ExpressionList l = newAST_ExpressionList();
             foreach(it, indexes)
             {
-              buffer << apply(current_element(it)) << (++i < size ? "," : "");
+              if(_usage.isUsed(i)) {
+                ReplaceVar rv(_range.iterator(i));
+                l = AST_ListAppend(l, rv.apply(current_element(it)));
+              } else {
+                l = AST_ListAppend(l, current_element(it));
+              }
+              i++;
             }
+            ret = AST_Expression_ComponentReference_Add(ret, newAST_String(cr->name()), l);
+            return ret;
           }
           break;
         }
@@ -67,15 +72,18 @@ namespace MicroModelica {
     }
 
     AST_Expression
-    ReplaceIndex::foldTraverseElementUMinus(AST_Expression exp)
+    ReplaceVar::foldTraverseElement(AST_Expression exp)
     {
-      return newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp()));
-    }
-
-    AST_Expression
-    ReplaceIndex::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
-    {
-      return newAST_Expression_BinOp(l, r, bot);
+      switch(exp->expressionType())
+      {
+        case EXPCOMPREF:
+        {
+          return newAST_Expression_ComponentReferenceExp(newAST_String(_var)); 
+        } 
+        default:
+          break;
+      }
+      return exp;
     }
   }
 }
