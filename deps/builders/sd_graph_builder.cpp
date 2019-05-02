@@ -88,16 +88,20 @@ namespace MicroModelica {
             IndexPairSet ips = ge.indexes();
             for (auto ip : ips) {
               Label ep(ip);
+              cout << "Agrega arista desde la var: " << graph[inf].var << " a la ecuacion: " << graph[eq].eq.id() << endl;
+              cout << "Ecuacion: " << graph[eq].eq.type() << endl; 
               add_edge(inf, eq, ep, graph);  
             }
           }
           // Check LHS too if we are working with algebraics.
-          if (graph[inf].type == VERTEX::Algebraic) { 
+          if (graph[inf].type == VERTEX::Algebraic && graph[eq].eq.type() == EQUATION::Algebraic) { 
             GenerateEdge gea = GenerateEdge(graph[eq], graph[inf], _symbols, VERTEX::Input);
             if(gea.exists()) {
               IndexPairSet ips = gea.indexes();
               for (auto ip : ips) {
                 Label ep(ip);
+                cout << "Agrega arista desde la ecuacion algebraica: " << graph[eq].eq.id() << " a la variable: " << graph[inf].var  << endl;
+                cout << "Ecuacion algebraica: " << graph[eq].eq.type() << endl;
                 add_edge(eq, inf, ep, graph);  
               }
             }            
@@ -106,12 +110,17 @@ namespace MicroModelica {
       }
       foreach_(EqVertex eq, _equationDescriptors){
         foreach_(IfeVertex inf, _derivativeDescriptors){
-          GenerateEdge ge = GenerateEdge(graph[eq], graph[inf], _symbols);
-          if(ge.exists()) {
-            IndexPairSet ips = ge.indexes();
-            for (auto ip : ips) {
-              Label ep(ip);
-              add_edge(eq, inf, ep, graph);  
+          if (graph[eq].eq.isDerivative()) {
+            GenerateEdge ge = GenerateEdge(graph[eq], graph[inf], _symbols);
+            if (ge.exists()) {
+              IndexPairSet ips = ge.indexes();
+              for (auto ip : ips) {
+                Label ep(ip);
+                cout << "Agrega arista desde la ecuacion derivada: " << graph[eq].eq.id() << " a la derivada: " << graph[inf].var  << endl;
+                cout << "Ecuacion algebraica: " << graph[eq].eq.type() << endl;
+
+                add_edge(eq, inf, ep, graph);
+              }
             }
           }
         }

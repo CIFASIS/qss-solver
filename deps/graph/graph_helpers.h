@@ -114,7 +114,7 @@ namespace MicroModelica {
         MDI RanToDom(IndexPair ip) const;              
         bool operator<(const MDI& other) const;
         Option<MDI> operator&(const MDI& other) const;
-        Option<MDI> Intersection (MDI& other) { return other & (*this) ;}
+        Option<MDI> Intersection (MDI& other);
         friend std::ostream& operator<<(std::ostream& os, const MDI mdi);
         inline const IntervalVector & Intervals() const { return intervals; }
         bool Contains(const MDI& other) const;

@@ -57,6 +57,15 @@ namespace Deps {
       return (this->intervals) < (other.intervals);
     }
 
+    Option<MDI> 
+    MDI::Intersection (MDI& other) 
+    { 
+      if (intervals.size() != other.intervals.size()) {
+        return Option<MDI>();
+      } 
+      return other & (*this);
+    }
+
     std::list<Interval> MDI::Partition(Interval iA, Interval iB) {
       std::list<Interval> ret;
       int a = iA.lower();

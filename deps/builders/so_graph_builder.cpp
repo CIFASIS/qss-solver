@@ -89,19 +89,29 @@ namespace MicroModelica {
             IndexPairSet ips = ge.indexes();
             for (auto ip : ips) {
               Label ep(ip);
+              cout << "Agrega arista desde la var: " << graph[inf].var << " a la ecuacion: " << graph[eq].eq.id() << endl;
+              cout << "Ecuacion: " << graph[eq].eq.type() << endl; 
               add_edge(inf, eq, ep, graph);
-              IndexPair op(ip.Ran(), ip.Ran(), Offset(), Usage(), graph[eq].eq.lhs()); 
-              Label oep(op);
-              add_edge(eq, _outputDescriptors[graph[eq].eq.id()], oep, graph); 
+              IndexPair op(ip.Ran(), ip.Ran(), Offset(), Usage(), graph[eq].eq.lhs());
+              if (graph[eq].eq.type() == EQUATION::Output) {
+                Label oep(op);
+                cout << "Agrega arista para la ecuacion: " << graph[eq].eq.id()
+                     << " a la ecuacion: "
+                     << graph[_outputDescriptors[graph[eq].eq.id()]].id << endl;
+                cout << "Ecuacion: " << graph[eq].eq.type() << endl;
+                add_edge(eq, _outputDescriptors[graph[eq].eq.id()], oep, graph);
+              }
             }
           }
           // Check LHS too if we are working with algebraics.
-          if (graph[inf].type == VERTEX::Algebraic) { 
+          if (graph[inf].type == VERTEX::Algebraic && graph[eq].eq.type() == EQUATION::Algebraic) { 
             GenerateEdge gea = GenerateEdge(graph[eq], graph[inf], _symbols, VERTEX::Input);
             if(gea.exists()) {
               IndexPairSet ips = gea.indexes();
               for (auto ip : ips) {
                 Label ep(ip);
+                cout << "Agrega arista desde la ecuacion algebraica: " << graph[eq].eq.id() << " a la variable: " << graph[inf].var  << endl;
+                cout << "Ecuacion algebraica: " << graph[eq].eq.type() << endl;
                 add_edge(eq, inf, ep, graph);  
               }
             }            

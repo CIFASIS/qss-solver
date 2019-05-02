@@ -88,6 +88,10 @@ namespace MicroModelica {
         id() { return _id; };
         static std::string 
         functionId(EQUATION::Type type);
+        inline EQUATION::Type 
+        type() { return _type; }
+        inline bool
+        isDerivative() { return _type == EQUATION::QSSDerivative || _type == EQUATION::ClassicDerivative; }
         friend std::ostream& operator<<(std::ostream& out, const Equation& e);
       private:
         void 
