@@ -174,7 +174,7 @@ void QSS_BDF_allocBDFOutput(QSS_data simData) {
   } 
 }
 
-void QSS_BDF_computeLIQSSVariables(QSS_data simData, int ifr, int level, int depth) {
+void QSS_BDF_computeLIQSSVariables(QSS_data simData, int ifr, int level) {
   int i, ifes = simData->nSD[ifr];
   for (i = 0; i < ifes; i++) {
     if (simData->BDF[simData->SD[ifr][i]] != NOT_ASSIGNED) {
@@ -183,8 +183,8 @@ void QSS_BDF_computeLIQSSVariables(QSS_data simData, int ifr, int level, int dep
 #ifdef DEBUG
       printf("%d ", simData->SD[ifr][i]);
 #endif
-      if(level < depth) {
-        QSS_BDF_computeLIQSSVariables(simData, simData->SD[ifr][i], level+1, depth);
+      if(level < simData->BDFPartitionDepth) {
+        QSS_BDF_computeLIQSSVariables(simData, simData->SD[ifr][i], level+1);
       }
     }
   }
@@ -275,10 +275,8 @@ void QSS_BDF_partition(QSS_data simData, SD_output output) {
               printf("%d ", ife);
 #endif
           }
-          // @todo Read depth value from settings.
-          const int DEFAULT_LEVEL = 0;
-          const int DEFAULT_DEPTH = 1;    
-          QSS_BDF_computeLIQSSVariables(simData, ife, DEFAULT_LEVEL, DEFAULT_DEPTH);
+          const int INIT_LEVEL = 0;
+          QSS_BDF_computeLIQSSVariables(simData, ife, INIT_LEVEL);
         }
       }
     }
