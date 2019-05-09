@@ -174,6 +174,22 @@ void QSS_BDF_allocBDFOutput(QSS_data simData) {
   } 
 }
 
+void QSS_BDF_computeLIQSSVariables(QSS_data simData, int ifr, int level, int depth) {
+  int i, ifes = simData->nSD[ifr];
+  for (i = 0; i < ifes; i++) {
+    if (simData->BDF[simData->SD[ifr][i]] != NOT_ASSIGNED) {
+      simData->BDF[simData->SD[ifr][i]] = NOT_ASSIGNED;
+      simData->nBDF--;
+#ifdef DEBUG
+      printf("%d ", simData->SD[ifr][i]);
+#endif
+      if(level < depth) {
+        QSS_BDF_computeLIQSSVariables(simData, simData->SD[ifr][i], level+1, depth);
+      }
+    }
+  }
+}
+
 void QSS_BDF_partition(QSS_data simData, SD_output output) {
   int i, j;
   FILE *file;
@@ -249,20 +265,20 @@ void QSS_BDF_partition(QSS_data simData, SD_output output) {
 #ifdef DEBUG
       printf("Variables computed with LIQSS: ");
 #endif
-      int m;
       for (i = 0; i < simData->events; i++) {
         for (j = 0; j < simData->nHD[i]; j++) {
-          int handlerInfDerivative = simData->HD[i][j];
-          int stateInfDerivatives = simData->nSD[handlerInfDerivative];
-          for (m = 0; m < stateInfDerivatives; m++) {
-            if (simData->BDF[simData->SD[handlerInfDerivative][m]] != NOT_ASSIGNED) {
-              simData->BDF[simData->SD[handlerInfDerivative][m]] = NOT_ASSIGNED;
+          int ife = simData->HD[i][j];
+          if (simData->BDF[ife] != NOT_ASSIGNED) {
+              simData->BDF[ife] = NOT_ASSIGNED;
               simData->nBDF--;
 #ifdef DEBUG
-              printf("%d ", simData->SD[handlerInfDerivative][m]);
+              printf("%d ", ife);
 #endif
-            }
           }
+          // @todo Read depth value from settings.
+          const int DEFAULT_LEVEL = 0;
+          const int DEFAULT_DEPTH = 1;    
+          QSS_BDF_computeLIQSSVariables(simData, ife, DEFAULT_LEVEL, DEFAULT_DEPTH);
         }
       }
     }
