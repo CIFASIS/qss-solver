@@ -139,6 +139,7 @@ SET_settings SET_Settings(char *fname) {
   p->pm = SD_Metis;
   p->dtSynch = SD_DT_Adaptive;
   p->BDFPart = NULL;
+  p->BDFPartitionDepth = 1;
   if (config_lookup_float(cf, "minstep", &dres)) {
     if (dres == 0) {
       p->minstep = MIN_STEP;
@@ -201,6 +202,11 @@ SET_settings SET_Settings(char *fname) {
     p->BDFPart = checkedMalloc(256 * sizeof(char));
     strcpy(p->BDFPart, bdf);
   }
+  if (config_lookup_int(cf, "BDFPartitionDepth", &ires)) {
+    if (ires > 0) {
+      p->BDFPartitionDepth = ires;  
+    }
+  } 
   if (config_lookup_string(cf, "partitionMethod", &sol)) {
     p->pm = _getPartitionMethod(sol);
   }

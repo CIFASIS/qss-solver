@@ -47,6 +47,7 @@ struct SET_settings_ {
   int nDQMin;       //!<
   int nDQRel;       //!<
   int jacobian;
+  int BDFPartitionDepth;
   SD_PartitionMethod pm; //!<
   SD_DtSynch dtSynch;    //!< \f $ \delta t $ \f synchronization policy.
   SD_partitionerOptions partitionerOptions;
