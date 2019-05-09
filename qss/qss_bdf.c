@@ -70,6 +70,8 @@ void QSS_BDF_initQSSJacInputs(QSS_data simData) {
   int inputs = 0;
   for (i = 0; i < states; i++) {
     int nSD = simData->nSD[i];
+    // Each SD influence implies a Jacobian entry.
+    // So if the variable is computed by QSS just increment the global index.
     if (BDF[i] != NOT_ASSIGNED) {
       globalSD += nSD;
       continue;
@@ -129,7 +131,9 @@ int QSS_BDF_getInput(int var, QSS_data simData) {
   int i,j, in = 0;
   for(i = 0; i < nSD; i++) {
     j = simData->SD[var][i];
-    if (BDF[j] != NOT_ASSIGNED) { in++; }
+    if (BDF[j] != NOT_ASSIGNED) { 
+      in++; 
+    }
   }
   return in;
 }
