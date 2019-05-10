@@ -350,6 +350,10 @@ class RunDlg: public QDialog, public Ui::RunForm
     BDFPart() { return _BDFPart->text(); };
     inline void
     setBDFPart(QString str) { _BDFPart->setText(str.remove("{").remove("}")); };
+    inline QString
+    BDFPartitionDepth() { return QString::number(_BDFPartitionDepth->value()); };
+    inline void
+    setBDFPartitionDepth(QString d) { _BDFPartitionDepth->setValue(d.toInt()); };
   private slots:
     void
     on__commInterval_currentIndexChanged(int index);

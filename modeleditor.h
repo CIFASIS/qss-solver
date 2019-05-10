@@ -477,6 +477,10 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     BDFPart() { return getAnnotations("MMO_BDF_Part"); };
     inline void
     setBDFPart(QString str) { _BDFPart = str; };
+    inline QString
+    BDFPartitionDepth() { return getAnnotations("MMO_BDF_PartitionDepth"); };
+    inline void
+    setBDFPartitionDepth(QString str) { _BDFPartitionDepth = str; };
   protected:
     void
     reject() {};
@@ -575,6 +579,7 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     QString _reorderPartition;
     QString _imbalance;
     QString _BDFPart;
+    QString _BDFPartitionDepth;
     bool _semiStaticPartitioning;
     QTabWidget *_model_editor_tab;
     QList<ModelInfo> *_models;

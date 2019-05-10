@@ -59,6 +59,7 @@ ModelEditor::ModelEditor(QWidget *parent, QString name) :
     _reorderPartition(),
     _imbalance(),
     _BDFPart(),
+    _BDFPartitionDepth(),
     _semiStaticPartitioning(false), 
     _hl(NULL)
 {
@@ -89,6 +90,7 @@ ModelEditor::ModelEditor(QWidget *parent, QString name) :
   _defaultValues["MMO_ReorderPartition"] = "false";
   _defaultValues["MMO_DebugGraph"] = "false";
   _defaultValues["MMO_GenerateArch"] = "false";
+  _defaultValues["MMO_BDF_PartitionDepth"] = "1";
   _model_editor_tab = new QTabWidget(this);
   _model_editor_tab->setTabsClosable(true);
   _models = new QList<ModelInfo>();
@@ -895,6 +897,8 @@ ModelEditor::writeAnnotations()
     setAnnotations("MMO_GenerateArch", _generateArch, true);
   if(!_BDFPart.isEmpty())
     setAnnotations("MMO_BDF_Part", _BDFPart, true);
+  if(!_BDFPartitionDepth.isEmpty())
+    setAnnotations("MMO_BDF_PartitionDepth", _BDFPartitionDepth, true);
   setAnnotations("StartTime", _startTime, true);
   setAnnotations("StopTime", _stopTime, true);
   setAnnotations("Tolerance", _tolerance, true);
