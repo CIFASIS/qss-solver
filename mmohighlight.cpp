@@ -99,6 +99,7 @@ MmoHighlighter::MmoHighlighter(QTextDocument *parent, h_type file)
                     << "\\bMMO_ScotchSettings\\b"
                     << "\\bMMO_MetisSettings\\b"
                     << "\\bMMO_BDF_Part\\b"
+                    << "\\bMMO_BDF_PartitionDepth\\b"
                     << "\\bMMO_StoreData\\b"
                     << "\\bderivative\\b";
 
