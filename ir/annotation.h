@@ -230,6 +230,8 @@ class MMO_Annotation_: public MMO_Base_
     reorderPartition() = 0;
     virtual list<AST_Expression>
     BDFPartition();
+    virtual int
+    BDFPartitionDepth();
     virtual bool
     hasJacobian() = 0;
     virtual bool
@@ -734,6 +736,8 @@ class MMO_ModelAnnotation_: public MMO_Annotation_
     reorderPartition();
     list<AST_Expression>
     BDFPartition();
+    int
+    BDFPartitionDepth();
     bool 
     hasJacobian();
     bool 
@@ -775,7 +779,8 @@ class MMO_ModelAnnotation_: public MMO_Annotation_
       IMBALANCE, //!< IMBALANCE
       REORDER_PARTITION, //!< REORER_PARTITION
       JACOBIAN, //!< JACOBIAN
-      BDF_PARTITION 
+      BDF_PARTITION, 
+      BDF_PARTITION_DEPTH 
     } type;
     void
     _processAnnotation(string annot, AST_Modification_Equal x);
@@ -813,6 +818,7 @@ class MMO_ModelAnnotation_: public MMO_Annotation_
     list<double> _sample;
     list<AST_Expression> _output;
     list<AST_Expression> _BDFPartition;
+    int _BDFPartitionDepth;
     double _initialTime;
     double _finalTime;
     ANT_PartitionMethod _partitionMethod;

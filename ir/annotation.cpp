@@ -143,7 +143,7 @@ MMO_ModelAnnotation_::MMO_ModelAnnotation_(MMO_ModelData data)
       _symDiff(true), _minStep(1e-14), _lps(1), _derDelta(1e-8),
       _nodeSize(10000), _ZCHyst(1e-12), _order(1), _scheduler("ST_Binary"),
       _storeData("SD_Memory"), _annotations(), _data(data), _DQMin(), _DQRel(),
-      _weight(-1), _sample(), _output(), _BDFPartition(), _initialTime(0),
+      _weight(-1), _sample(), _output(), _BDFPartition(), _BDFPartitionDepth(), _initialTime(0),
       _finalTime(0), _partitionMethod(ANT_Metis),
       _partitionMethodString("Metis"), _parallel(false), _dt(0), _polyCoeffs(1),
       _dtSynch(ANT_DT_Fixed), _dtSynchString("SD_DT_Asynchronous"), _desc(),
@@ -188,6 +188,8 @@ MMO_ModelAnnotation_::MMO_ModelAnnotation_(MMO_ModelData data)
       pair<string, MMO_ModelAnnotation_::type>("MMO_Output", OUTPUT));
   _annotations.insert(
       pair<string, MMO_ModelAnnotation_::type>("MMO_BDF_Part", BDF_PARTITION));
+  _annotations.insert(
+      pair<string, MMO_ModelAnnotation_::type>("MMO_BDF_PDepth", BDF_PARTITION_DEPTH));
   _annotations.insert(
       pair<string, MMO_ModelAnnotation_::type>("MMO_StoreData", STORE_DATA));
   _annotations.insert(pair<string, MMO_ModelAnnotation_::type>(
@@ -502,6 +504,9 @@ void MMO_ModelAnnotation_::_processAnnotation(string annot,
   case BDF_PARTITION:
     _processExpressionList(x->exp(), &_BDFPartition);
     break;
+  case BDF_PARTITION_DEPTH:
+    _BDFPartitionDepth = av.integer();
+    break;
   case PARTITION_METHOD:
     _partitionMethod = _getPartitionMethod(av.str());
     _partitionMethodString = av.str();
@@ -665,6 +670,10 @@ list<AST_Expression> MMO_ModelAnnotation_::output() { return _output; }
 
 list<AST_Expression> MMO_ModelAnnotation_::BDFPartition() {
   return _BDFPartition;
+}
+
+int MMO_ModelAnnotation_::BDFPartitionDepth() {
+  return _BDFPartitionDepth;
 }
 
 list<string> MMO_ModelAnnotation_::patohSettings() { return _patohSettings; }
@@ -995,6 +1004,10 @@ list<AST_Expression> MMO_Annotation_::output() {
 
 list<AST_Expression> MMO_Annotation_::BDFPartition() {
   return list<AST_Expression>();
+}
+
+int MMO_Annotation_::BDFPartitionDepth() {
+  return 0;
 }
 
 void MMO_Annotation_::setStoreData(string save) { return; }
