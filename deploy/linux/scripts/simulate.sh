@@ -46,7 +46,7 @@ then
 	cp $MMOC_BUILD/$FILE/$FILE.part .
 fi
 
-if [[	-e $MMOC_BUILD/$FILE/$i{FILE}_BDF.part ]]; 
+if [[	-e $MMOC_BUILD/$FILE/${FILE}_BDF.part ]]; 
 then
 	cp $MMOC_BUILD/$FILE/${FILE}_BDF.part .
 fi
