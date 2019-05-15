@@ -330,10 +330,12 @@ void MMO_Files_::settings(MMO_Annotation annotation) {
   _printList(annotation->metisSettings(), "metisOptions", annotation);
   buffer << "bdf=";
   if (_model->annotation()->BDFPartition().empty()) {
-    buffer << "\"\";";
+    buffer << "0;";
   } else {
-    buffer << "\"" <<_fname << "_BDF.part\";";
+    buffer << "1;";
   }
+  _writer->print(&buffer);
+  buffer << "BDFPartitionDepth=" << _model->annotation()->BDFPartitionDepth() << ";";
   _writer->print(&buffer);
   _writer->clearFile();
 }
