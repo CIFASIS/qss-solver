@@ -203,8 +203,8 @@ void QSS_BDF_partition(QSS_data simData, SD_output output) {
   simData->BDF = (int *)malloc(simData->states * sizeof(int));
   simData->QSSOutputs = (int *)malloc(simData->states * sizeof(int));
   int states = simData->states;
-  if (file != NULL) {
-    for (i = 0; i < simData->states; i++) {
+  if (file != NULL && simData->BDFPart) {
+    for (i = 0; i < states; i++) {
       simData->BDF[i] = NOT_ASSIGNED;
       simData->QSSOutputs[i] = NOT_ASSIGNED;
     }
@@ -254,11 +254,15 @@ void QSS_BDF_partition(QSS_data simData, SD_output output) {
     for (i = 0; i < simData->nBDF; i++) {
       printf("%d ", simData->BDFMap[i]);
     }
+    printf("\n");
+    printf("BDF outputs: %d \n", simData->nBDFOutputs);
+    printf("BDF inputs: %d \n", simData->nBDFInputs);
 #endif
   } else {
     simData->nBDF = states;
     for (i = 0; i < states; i++) {
       simData->BDF[i] = i;
+      simData->QSSOutputs[i] = NOT_ASSIGNED;
     }
     // Compute LIQSS variables
     if (simData->HD) {
@@ -279,6 +283,12 @@ void QSS_BDF_partition(QSS_data simData, SD_output output) {
           QSS_BDF_computeLIQSSVariables(simData, ife, INIT_LEVEL);
         }
       }
+      j = 0;
+      for (i = 0; i < states; i++) {
+        if (simData->BDF[i] != NOT_ASSIGNED) {
+          simData->BDF[i] = j++;
+        }
+      }
     }
 #ifdef DEBUG
     printf("\n");
@@ -286,7 +296,7 @@ void QSS_BDF_partition(QSS_data simData, SD_output output) {
     if (simData->nBDF) {
       simData->BDFMap = (int *)malloc(simData->nBDF * sizeof(int));
 #ifdef DEBUG
-      printf("Variables computed with BDF: ");
+      printf("Variables computed with BDF: %d \n", simData->nBDF);
 #endif
       j = 0;
       for (i = 0; i < states; i++) {
@@ -297,12 +307,16 @@ void QSS_BDF_partition(QSS_data simData, SD_output output) {
           printf("%d ", i);
 #endif
           j++;
+        } else {
+          simData->nBDFInputs += QSS_BDF_getInput(i, simData);
         }
       }
       QSS_BDF_allocBDFOutput(simData);
       QSS_BDF_allocBDFInput(simData);
 #ifdef DEBUG
-      printf("\n");
+  printf("\n");
+  printf("BDF outputs: %d \n", simData->nBDFOutputs);
+  printf("BDF inputs: %d \n", simData->nBDFInputs);
 #endif
     }
   }
