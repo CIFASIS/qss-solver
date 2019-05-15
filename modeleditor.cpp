@@ -90,7 +90,7 @@ ModelEditor::ModelEditor(QWidget *parent, QString name) :
   _defaultValues["MMO_ReorderPartition"] = "false";
   _defaultValues["MMO_DebugGraph"] = "false";
   _defaultValues["MMO_GenerateArch"] = "false";
-  _defaultValues["MMO_BDF_PartitionDepth"] = "1";
+  _defaultValues["MMO_BDF_PDepth"] = "1";
   _model_editor_tab = new QTabWidget(this);
   _model_editor_tab->setTabsClosable(true);
   _models = new QList<ModelInfo>();
@@ -639,6 +639,7 @@ ModelEditor::getAnnotations(QString str)
     }
   }
   QStringList annotationValue = annotations.split(str);
+  
   if(annotationValue.size() > 1)
   {
     return getAnnotationValue(annotationValue[1], str);
@@ -898,7 +899,7 @@ ModelEditor::writeAnnotations()
   if(!_BDFPart.isEmpty())
     setAnnotations("MMO_BDF_Part", _BDFPart, true);
   if(!_BDFPartitionDepth.isEmpty())
-    setAnnotations("MMO_BDF_PartitionDepth", _BDFPartitionDepth, true);
+    setAnnotations("MMO_BDF_PDepth", _BDFPartitionDepth, true);
   setAnnotations("StartTime", _startTime, true);
   setAnnotations("StopTime", _stopTime, true);
   setAnnotations("Tolerance", _tolerance, true);

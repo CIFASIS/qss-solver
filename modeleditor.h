@@ -478,7 +478,7 @@ class ModelEditor: public QDialog, public Ui::ModelEditorForm
     inline void
     setBDFPart(QString str) { _BDFPart = str; };
     inline QString
-    BDFPartitionDepth() { return getAnnotations("MMO_BDF_PartitionDepth"); };
+    BDFPartitionDepth() { return getAnnotations("MMO_BDF_PDepth"); };
     inline void
     setBDFPartitionDepth(QString str) { _BDFPartitionDepth = str; };
   protected:
