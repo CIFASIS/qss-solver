@@ -326,6 +326,7 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs,
   p->nBDFInputs = 0;
   p->nBDFOutputVars = 0;
   p->BDFPartitionDepth = settings->BDFPartitionDepth;
+  p->BDFPart = settings->BDFPart;
   p->QSSOutputJac = NULL;
   p->QSSOutputJacId = NULL;
   p->QSSOutputs = NULL;

@@ -362,6 +362,7 @@ struct QSS_data_ {
   int nBDFOutputs;
   int nBDFInputs;
   int BDFPartitionDepth;
+  int BDFPart;
   SD_Solver solver;      //!<
   SD_eventData event;    //!<
   SD_parameters params;  //!<

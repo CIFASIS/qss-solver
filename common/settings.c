@@ -138,7 +138,7 @@ SET_settings SET_Settings(char *fname) {
   p->nDQRel = 0;
   p->pm = SD_Metis;
   p->dtSynch = SD_DT_Adaptive;
-  p->BDFPart = NULL;
+  p->BDFPart = 0;
   p->BDFPartitionDepth = 1;
   if (config_lookup_float(cf, "minstep", &dres)) {
     if (dres == 0) {
@@ -198,9 +198,8 @@ SET_settings SET_Settings(char *fname) {
     p->solver = _getSolver(sol);
     p->order = _getOrder(p->solver);
   }
-  if (config_lookup_string(cf, "bdf", &bdf)) {
-    p->BDFPart = checkedMalloc(256 * sizeof(char));
-    strcpy(p->BDFPart, bdf);
+  if (config_lookup_int(cf, "bdf", &ires)) {
+    p->BDFPart = ires;
   }
   if (config_lookup_int(cf, "BDFPartitionDepth", &ires)) {
     if (ires > 0) {
