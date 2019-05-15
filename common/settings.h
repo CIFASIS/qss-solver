@@ -51,7 +51,7 @@ struct SET_settings_ {
   SD_PartitionMethod pm; //!<
   SD_DtSynch dtSynch;    //!< \f $ \delta t $ \f synchronization policy.
   SD_partitionerOptions partitionerOptions;
-  char *BDFPart;
+  int BDFPart;
 };
 /**
  *
