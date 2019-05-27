@@ -23,6 +23,20 @@
 
 #include "../common/utils.h"
 
+/**
+ * @brief      Initialize Jacobian vector used by CV_ODE
+ *
+ * ** First count the number of SD variables of all the states computed
+ * with CV_ODE. 
+ * ** Allocate JacIt vector with the corresponding number of entries.
+ * ** Finally initialize JacIt vector with the original Jacobian values.
+ *
+ * The vector allocated here is used by the CV_ODE Jacobian function 
+ * provided by our integrator.
+ *
+ * @param[in]  simData  The simulation data structures.
+ */
+
 void QSS_BDF_initJacobianVector(QSS_data simData) {
   int jac = 0, fullJac = 0, i, j;
   int states = simData->states;
@@ -45,6 +59,21 @@ void QSS_BDF_initJacobianVector(QSS_data simData) {
     }
   }
 }
+
+/**
+ * @brief Allocate and initialize Jacobian vectors used in the computation of 
+ *        the maximum error algorithm.
+ *
+ * ** Count the number of variables computed by LIQSS2 that influences a 
+ *    variable computed by CV_ODE. We count ALL the SD variables, even if
+ *    some of them are not computed by CV_ODE.
+ * ** Allocate QSSOutputJac vector that contains all the affected CV_ODE variables
+ *    where we need the Jacobian entry to compute the maximum error allowed. Also,
+ *    allocate QSSOutputJacId that contains the vector entry on the original 
+ *    Jacobian vector. 
+ *
+ * @param[in]  simData  The simulation data
+ */
 
 void QSS_BDF_initQSSJacInputs(QSS_data simData) {
   int i, j, k;
@@ -279,8 +308,10 @@ void QSS_BDF_partition(QSS_data simData, SD_output output) {
               printf("%d ", ife);
 #endif
           }
-          const int INIT_LEVEL = 0;
-          QSS_BDF_computeLIQSSVariables(simData, ife, INIT_LEVEL);
+          if (simData->BDFPartitionDepth > 1) {
+            const int INIT_LEVEL = 2;
+            QSS_BDF_computeLIQSSVariables(simData, ife, INIT_LEVEL);
+          }
         }
       }
       j = 0;
