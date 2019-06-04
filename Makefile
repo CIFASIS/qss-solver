@@ -127,7 +127,9 @@ DEPSGRAPHSRC = $(DEPSGRAPHDIR)/graph.cpp \
 			   $(DEPSGRAPHDIR)/graph_helpers.cpp	
 
 DEPSBUILDERSRC = $(DEPSBUILDERDIR)/sd_graph_builder.cpp \
-				 $(DEPSBUILDERDIR)/so_graph_builder.cpp 
+				 $(DEPSBUILDERDIR)/so_graph_builder.cpp \
+				 $(DEPSBUILDERDIR)/ds_graph_builder.cpp \
+				 $(DEPSBUILDERDIR)/dh_graph_builder.cpp 
 
 # Objects
 ASTOBJ=$(addprefix $(BUILDDIR)/ast_, $(notdir $(ASTSRC:.cpp=.o)))

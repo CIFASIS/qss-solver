@@ -23,6 +23,8 @@
 
 #include "builders/sd_graph_builder.h"
 #include "builders/so_graph_builder.h"
+#include "builders/ds_graph_builder.h"
+#include "builders/dh_graph_builder.h"
 
 namespace MicroModelica {
   using namespace IR;
@@ -40,6 +42,7 @@ namespace MicroModelica {
     static MatrixConfig SZCfg = { INT_CONTAINER, { "nSZ", "nZS", "SZ", "ZS" }, { STATES, EVENTS } };
     static MatrixConfig SOCfg = { OUT_CONTAINER, { "nSO", "nOS", "SO", "OS" }, { STATES, OUTPUTS } };
     static MatrixConfig DOCfg = { OUT_CONTAINER, { "nDO", "nOD", "DO", "OD" }, { DISCRETES, OUTPUTS } };
+    static MatrixConfig HHCfg = { OUT_CONTAINER, { "nDO", "nOD", "DO", "OD" }, { DISCRETES, OUTPUTS } };
 
     ModelDependencies::ModelDependencies() :
       _SD(SDCfg),
@@ -56,6 +59,13 @@ namespace MicroModelica {
       Utils::instance().setSymbols(symbols);
       SDGraphBuilder SD = SDGraphBuilder(eqs, algs, symbols);
       _deps.compute(SD.build(), _SD);
+      VariableDependencyMatrix DS_int(HHCfg);
+      VariableDependencyMatrix DH_int(HHCfg);
+      DSGraphBuilder DS = DSGraphBuilder(eqs, algs, symbols);
+      _deps.compute(DS.build(), DS_int);
+      DHGraphBuilder DH = DHGraphBuilder(eqs, algs, symbols);
+      _deps.compute(DH.build(), DH_int);      
+
       OutputGraphBuilder SO = OutputGraphBuilder(outputs, algs, symbols);
       _deps.compute(SO.build(), _SO);
       OutputGraphBuilder DO = OutputGraphBuilder(outputs, algs, symbols, OUTPUT::DO);
