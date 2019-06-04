@@ -35,6 +35,8 @@ namespace MicroModelica {
         ~Dependency() {};
         void
         compute(DepsGraph g, VariableDependencyMatrix& vdm);
+        void
+        merge(VariableDependencyMatrix& a, VariableDependencyMatrix& b, VariableDependencyMatrix& merge);
       private:
         void
         influencees(DepsGraph g, Vertex vd, MDI infs, VariableDependencies &deps, VariableInfluences& algs);

@@ -64,6 +64,12 @@ namespace MicroModelica {
       }
     }
 
+    void
+    Dependency::merge(VariableDependencyMatrix& a, VariableDependencyMatrix& b, VariableDependencyMatrix& merge) 
+    {
+      return;
+    }
+
     VariableDependency 
     Dependency::getVariableDependency(string name, MDI dom, MDI ran, int id) 
     {
