@@ -52,8 +52,8 @@ namespace MicroModelica {
 
     /// @brief This is the property for a vertex in the incidence graph. Nodes can be of two types: Equation or Unknown.
     struct VertexProperty {
-  	  VERTEX::Type type;
-  	  IR::Expression exp;
+      VERTEX::Type type;
+      IR::Expression exp;
       IR::Equation eq;
       Util::Variable var;
       int id;
@@ -62,8 +62,8 @@ namespace MicroModelica {
     class Label {
       public:
         inline Label() {};
-        Label(IndexPairSet ips);
-        Label(IndexPair ip);
+        Label(IndexPairSet ips, VERTEX::Mode mode = VERTEX::Output);
+        Label(IndexPair ip, VERTEX::Mode mode = VERTEX::Output);
         void RemovePairs(IndexPairSet ips);
         void RemoveUnknowns(MDI const unk2remove);
         void RemoveEquations(MDI const mdi);
@@ -71,10 +71,12 @@ namespace MicroModelica {
         inline bool IsEmpty() { return ips.size()==0; }
         inline const IndexPairSet &Pairs() const { return ips; }
         inline const IndexPair &Pair() const { return _ip; }
+        MDI getRange(MDI intersect) const;
         friend std::ostream& operator<<(std::ostream& os, const Label& label);
       private:
         IndexPairSet ips;
         IndexPair    _ip;
+        VERTEX::Mode _mode;
         void RemoveDuplicates();
     }; 
     

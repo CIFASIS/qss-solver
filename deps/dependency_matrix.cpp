@@ -27,13 +27,13 @@ namespace MicroModelica {
   using namespace Util;
   namespace Deps {
 
-	  VariableDependencyMatrix::VariableDependencyMatrix(MatrixConfig cfg) : 
-		  _cfg(cfg), 
-		  _mode(VDM::Normal), 
-		  _method(VDM::Alloc) 
-	  {
+    VariableDependencyMatrix::VariableDependencyMatrix(MatrixConfig cfg) : 
+      _cfg(cfg), 
+      _mode(VDM::Normal), 
+      _method(VDM::Alloc) 
+    {
 
-	  }
+    }
 
     void
     VariableDependency::setRange(Usage ifrUsg, Usage ifeUsg)
@@ -45,16 +45,19 @@ namespace MicroModelica {
        _ife = Expression(riIfe.apply(_ife.expression()), Utils::instance().symbols());
     }
 
-  	string 
-  	VariableDependencyMatrix::print() const 
-  	{
+    string 
+    VariableDependencyMatrix::print() const 
+    {
+      cout << "Imprime la matriz de salida " << _cfg.container << " " << size() << endl;
       stringstream buffer;
-	    VariableDependencyMatrix::const_iterator it;
+      VariableDependencyMatrix::const_iterator it;
       string matrix = _cfg.names[_method + _mode];
       string access = _cfg.access[_mode];
       for( it = begin(); it != end(); it++)
       {  
+        cout << "Set node " << endl;
         VariableDependencies vds = it->second;
+        cout << "DEPS " << vds.size() << endl;
         for (auto vd : vds) {
           Index ifr = vd.ifr();
           Index ife = vd.ife();
@@ -74,8 +77,9 @@ namespace MicroModelica {
           }
         }
       }
+      cout << buffer.str() << endl;
       return buffer.str();
-  	}
+    }
     
     std::ostream& operator<<(std::ostream& out, const VariableDependencyMatrix& d) 
     {

@@ -62,7 +62,10 @@ namespace Deps {
     { 
       if (intervals.size() != other.intervals.size()) {
         return Option<MDI>();
-      } 
+      } else if (intervals.size() == other.intervals.size() &&
+                 intervals.size() == 0) {
+        return other;
+      }
       return other & (*this);
     }
 
@@ -199,6 +202,22 @@ namespace Deps {
       return MDI(newIntervals);
     }
 
+    MDI MDI::RevertOffset(Offset offset, Usage usage, MDI ran) const {
+      MDI tmp = ApplyUsage(usage, ran);
+      if (this->Dimension() == 0 || offset.Size() == 0) {
+        // nothing to apply
+        return *this;
+      }
+      IntervalVector copyIntervals = intervals;
+      for (int i = 0; i < (int)copyIntervals.size(); i++) {
+        copyIntervals[i] = CreateInterval(copyIntervals[i].lower() - offset[i],
+                                          copyIntervals[i].upper() - offset[i]);
+      }
+      return MDI(copyIntervals);
+    }
+
+
+
     MDI MDI::RevertUsage(Usage usage, MDI dom) const {
       //    ERROR_UNLESS(usage.Size()==dom.Dimension(), "Dimension error reverting
       //    usage");
@@ -240,16 +259,16 @@ namespace Deps {
       std::list<MDI> prod;
       for (int i = 0; i < this->Dimension(); i++) {
         prod.push_back(Partition(
-            *iterA, *iterB));  // particiona en cada eje por posibles subconjuntos
+            *iterA, *iterB));  
         iterA++;
         iterB++;
       }
-      ret = CartProd(prod);       // Genera todos
-      return Filter(ret, other);  // Filtra los que intersecan
+      ret = CartProd(prod);       
+      return Filter(ret, other);  
     }
 
     Option<MDI> MDI::operator&(const MDI &other) const {
-      if (this->Dimension() != other.Dimension()) {  // TODO: Is this condition OK?
+      if (this->Dimension() != other.Dimension()) {  
         std::cout << *this << " " << other << std::endl;
         std::cout << this->Dimension() << " " << other.Dimension() << std::endl;
         // ERROR("Dimension error #5\n");
@@ -282,6 +301,10 @@ namespace Deps {
         return true;
       }
       return false;
+    }
+
+    bool MDI::unique() const {
+      return Size() == Dimension();
     }
 
     // INDEX_PAIR    
@@ -626,13 +649,23 @@ namespace Deps {
     }
 
     INDEX::Rel IndexPair::Type() const {
-      // TODO: Check if there is MtoN or NtoM with N,M > 1
-      if (dom.Size() == ran.Size())
+      if (dom.Size() == ran.Size() && !dom.isEmpty() && !ran.isEmpty()) {
         return INDEX::RN_N;
-      else if (dom.Size() > ran.Size())
+      } else if (dom.isEmpty() && ran.isEmpty()) {
+        return INDEX::R1_1;
+      } else if (dom.unique() && ran.isEmpty()) {
+        return INDEX::R1_1;
+      } else if (dom.isEmpty() && ran.unique()) {
+        return INDEX::R1_1;
+      } else if (dom.unique() && ran.unique()) {
+        return INDEX::R1_1;
+      } else if ((dom.Size() > ran.Size()) && ran.unique()) {
         return INDEX::RN_1;
-      else
-        return INDEX::R1_N;
+      } else if (dom.Size() < ran.Size()){
+        return INDEX::RN_N;
+      }
+      cout << "Dom size " << dom.Size() << " ran size " << ran.Size() << endl;
+      assert(false);
     }
 
     bool

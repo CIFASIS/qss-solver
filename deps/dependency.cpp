@@ -85,6 +85,7 @@ namespace MicroModelica {
         MDI dom = l.Pair().Dom();
         Option<MDI> intersect = mdi.Intersection(dom);
         if (intersect) {
+          MDI intersection = boost::get<MDI>(intersect);
           auto target = boost::target(*ei, g);
           if (v.type == VERTEX::Influencer) {
             // Store the influencer expression.
@@ -93,10 +94,10 @@ namespace MicroModelica {
           }   
           // First look if the target node is terminal.
           VertexProperty tar = g[target];
-          MDI ran = intersect->ApplyOffset(l.Pair().GetOffset());
+          MDI ran = l.getRange(intersection);
           if (tar.type == VERTEX::Influencee) {
             assert(v.type == VERTEX::Equation);
-            VariableDependency vdep = getVariableDependency(v.var.name(),boost::get<MDI>(intersect),
+            VariableDependency vdep = getVariableDependency(v.var.name(),intersection,
                                                             ran, v.id);
             vdep.setIfr(_ifr);
             vdep.setIfe(l.Pair().exp());
@@ -106,7 +107,7 @@ namespace MicroModelica {
             deps.push_back(inf);
           } else if (tar.type == VERTEX::Algebraic) {
             assert(v.type == VERTEX::Equation);
-            VariableDependency vdep = getVariableDependency(v.var.name(),boost::get<MDI>(intersect),
+            VariableDependency vdep = getVariableDependency(v.var.name(),intersection,
                                                             ran, v.id);
             algs.push_back(vdep);
             influencees(g, target, ran, deps, algs);

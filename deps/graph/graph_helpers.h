@@ -107,6 +107,7 @@ namespace MicroModelica {
         std::list<MDI> operator-(const MDI& other);
         std::list<MDI> Difference(const MDI& other) { return (*this)-other;} ;
         MDI ApplyOffset(Offset) const;
+        MDI RevertOffset(Offset offset, Usage usage, MDI ran) const;
         MDI ApplyUsage(Usage, MDI ran = MDI({})) const;
         MDI RevertUsage(Usage usage, MDI dom = MDI({})) const;
          // karupayun - Para moverse usando la info de la conexion entre Dom y Ran
@@ -121,7 +122,9 @@ namespace MicroModelica {
         inline bool operator==(const MDI& other) const { return this->intervals==other.intervals; };
         inline bool operator!=(const MDI& other) const { return !((*this)==other); };
         inline IntervalVector 
-        mdi() { return intervals; }; 
+        mdi() { return intervals; };
+        bool unique() const;
+        inline bool isEmpty() const { return intervals.size() == 0; }; 
       private:
           IntervalVector intervals;
           typedef IntervalVector::iterator iterator;

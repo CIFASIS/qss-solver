@@ -30,14 +30,14 @@ namespace MicroModelica {
   using namespace IR;
   using namespace Util;
   namespace Deps {
-    	  /*****************************************************************************
+        /*****************************************************************************
      ****                              LABEL                                  ****
      *****************************************************************************/
-    Label::Label(IndexPairSet ips): ips(ips), _ip() {
+    Label::Label(IndexPairSet ips, VERTEX::Mode mode): ips(ips), _ip(), _mode(mode) {
      this->RemoveDuplicates();
     }
 
-    Label::Label(IndexPair ip): ips(), _ip(ip) {
+    Label::Label(IndexPair ip, VERTEX::Mode mode): ips(), _ip(ip), _mode(mode) {
     }
 
 
@@ -187,6 +187,42 @@ namespace MicroModelica {
       }
       ips = newIPS;
     }
+
+    MDI 
+    Label::getRange(MDI intersection) const 
+    {
+      // We need to generate a new pair with the intersection as Dom
+      // then get the type and handle the different cases there.  
+      IndexPair orig = Pair();
+      IndexPair p(intersection, orig.Ran(),orig.GetOffset(), orig.GetUsage(), orig.exp());
+      INDEX::Rel rel = p.Type();  
+      if (_mode == VERTEX::Input) {
+        assert(rel != INDEX::RN_1);
+        assert(rel != INDEX::R1_N);
+        switch (rel) {
+          case INDEX::RN_N:
+            return intersection.ApplyOffset(Pair().GetOffset());
+          case INDEX::R1_1:
+            return Pair().Ran();
+          default:
+            return MDI();
+        }
+      } else {
+        switch (rel) {
+          case INDEX::RN_N:
+            return intersection.RevertOffset(Pair().GetOffset(), Pair().GetUsage(), Pair().Ran());
+          case INDEX::R1_1:
+            return Pair().Ran();
+          case INDEX::R1_N:
+            return Pair().Ran();
+          case INDEX::RN_1:
+            return Pair().Ran();
+          default:
+            return MDI();
+        }
+      } 
+    }
+
     
     Occur::Occur(Expression exp, VarSymbolTable symbols, Option<Range> range) : 
       _exp(exp),
@@ -264,7 +300,13 @@ namespace MicroModelica {
               _intervals.push_back(Interval::closed(begin,end));
               _usages.push_back(_range->pos(var->name()));
               _offsets.push_back(0);
+            } else if (var->isConstant()) {
+              _intervals.push_back(Interval::closed(var->value(),var->value())); 
+              _usages.push_back(-1);
+              _offsets.push_back(0);
             } else {
+              cout << "Wrong index expression." << endl;
+              assert(false);
               _intervals.push_back(Interval::closed(0,0));
               _usages.push_back(-1);
               _offsets.push_back(0);
@@ -372,26 +414,31 @@ namespace MicroModelica {
         }
         cout << "Expressions: " << exp << endl;
         Occur oc(exp, _symbols, range);
+        MDI mdi_dom(oc.intervals());
+        MDI mdi_ran(eqInterval);
+        if (_mode == VERTEX::Input) {
+          mdi_dom = MDI(eqInterval);
+          mdi_ran = MDI(oc.intervals());
+        }
         if (range) { 
-          if (oc.hasIndex()) { // N N
+          if (oc.hasIndex()) { // N N also includes 1 N
             cout << "Intenta agregar: " << exp << endl;
-            _ips.insert(IndexPair(MDI(eqInterval), MDI(oc.intervals()), oc.offsets(), oc.usages(), exp));  
+            _ips.insert(IndexPair(mdi_dom, mdi_ran, oc.offsets(), oc.usages(), exp));  
           } else { // 1 N
-             cout << "Intenta agregar caso 1: " << exp << endl;
-            _ips.insert(IndexPair(MDI(eqInterval), MDI(0), Offset(), Usage(), exp));
+            cout << "Intenta agregar caso 1: " << exp << endl;
+            _ips.insert(IndexPair(MDI(0), mdi_ran, Offset(), Usage(), exp));
           }
         } else {
-          if (oc.hasIndex()) { // 1 1
-             cout << "Intenta agregar: caso 2" << exp << endl;
-            _ips.insert(IndexPair(MDI(0), MDI(0), oc.offsets(), oc.usages(), exp));
+          if (oc.hasIndex()) { // 1 1 In this case the index must be an integer expression.
+            cout << "Intenta agregar: caso 2" << exp << endl;
+            _ips.insert(IndexPair(mdi_dom, MDI(0), oc.offsets(), oc.usages(), exp));
           } else { // 1 1
-             cout << "Intenta agregar: caso 3" << exp << endl;
+            cout << "Intenta agregar: caso 3" << exp << endl;
             _ips.insert(IndexPair(MDI(0), MDI(0), Offset(), Usage(), exp));
           }
         } 
         cout << "Indexes: " << _ips.size() << endl;
       }   
     }
-
   }
 }

@@ -92,9 +92,10 @@ namespace MicroModelica {
               cout << "Agrega arista desde la var: " << graph[inf].var << " a la ecuacion: " << graph[eq].eq.id() << endl;
               cout << "Ecuacion: " << graph[eq].eq.type() << endl; 
               add_edge(inf, eq, ep, graph);
-              IndexPair op(ip.Ran(), ip.Ran(), Offset(), Usage(), graph[eq].eq.lhs());
+              cout << ip.Ran() << " " << ip.Dom() << endl;
               if (graph[eq].eq.type() == EQUATION::Output) {
-                Label oep(op);
+                IndexPair op(ip.Ran(), ip.Ran(), Offset(), Usage(), graph[eq].eq.lhs());
+                Label oep(op, VERTEX::Input);
                 cout << "Agrega arista para la ecuacion: " << graph[eq].eq.id()
                      << " a la ecuacion: "
                      << graph[_outputDescriptors[graph[eq].eq.id()]].id << endl;
@@ -109,7 +110,7 @@ namespace MicroModelica {
             if(gea.exists()) {
               IndexPairSet ips = gea.indexes();
               for (auto ip : ips) {
-                Label ep(ip);
+                Label ep(ip, VERTEX::Input);
                 cout << "Agrega arista desde la ecuacion algebraica: " << graph[eq].eq.id() << " a la variable: " << graph[inf].var  << endl;
                 cout << "Ecuacion algebraica: " << graph[eq].eq.type() << endl;
                 add_edge(eq, inf, ep, graph);  
