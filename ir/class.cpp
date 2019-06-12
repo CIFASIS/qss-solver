@@ -784,7 +784,7 @@ namespace MicroModelica {
       list<AST_Expression>::iterator it;
       for(it = astOutputs.begin(); it != astOutputs.end(); it++)
       {
-        addVariable(_eventId, 1, EQUATION::Type::Output);
+        addVariable(_outputId, 1, EQUATION::Type::Output);
         Equation eq(*it, _symbols, EQUATION::Output, _outputId, _outputNbr++);
         _outputs.insert(_outputId++, eq);
       }
