@@ -92,6 +92,8 @@ namespace MicroModelica {
         type() { return _type; }
         inline bool
         isDerivative() { return _type == EQUATION::QSSDerivative || _type == EQUATION::ClassicDerivative; }
+        Option<Util::Variable>
+        derivative();
         friend std::ostream& operator<<(std::ostream& out, const Equation& e);
       private:
         void 

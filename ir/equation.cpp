@@ -220,6 +220,15 @@ namespace MicroModelica {
       return buffer.str();
     }
 
+    Option<Variable>
+    Equation::derivative()
+    {
+      if(isDerivative()) {
+        AST_Expression_ComponentReference cr = _lhs.expression()->getAsComponentReference();
+        return _symbols[cr->name()];
+      }
+      return Option<Variable>();
+    }
 
     string 
     Equation::print() const
