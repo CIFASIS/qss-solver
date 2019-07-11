@@ -279,11 +279,11 @@ namespace MicroModelica {
     {
       stringstream buffer;
       EquationTable algebraics = Utils::instance().algebraics();
-      Option<EquationDependency> eqd = eqdm[key];
+      Option<VariableDependencies> eqd = eqdm[key];
       if (eqd) {
-        EquationDependency::iterator eqIt;
+        VariableDependencies::iterator eqIt;
         for (eqIt = eqd->begin(); eqIt != eqd->end(); eqIt++) {
-          Option<Equation> alg = algebraics[*eqIt];
+          Option<Equation> alg = algebraics[eqIt->ifce.equationId()];
           if (alg) {
             buffer << alg.get() << endl;
           } else {

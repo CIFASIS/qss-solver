@@ -17,55 +17,37 @@
 
  ******************************************************************************/
 
-#ifndef MMO_EXPRESSION_H_
-#define MMO_EXPRESSION_H_
+#ifndef ALGEBRAICS_H_
+#define ALGEBRAICS_H_
 
-#include <string>
-#include "../ast/ast_types.h"
-#include "../util/symbol_table.h"
-
-template<class R>
-class AST_Expression_Visitor;
+#include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace IR {
-
+  namespace Util {
     /**
      *
      */
-    class Expression
+    class Algebraics: public AST_Expression_Visitor<bool>
     {
       public:
         /**
          *
          */
-        Expression();
-        /**
-         *
-         * @param exp
-         */
-        Expression(AST_Expression exp, const Util::VarSymbolTable& symbols);
+        Algebraics(VarSymbolTable symbols) : _symbols(symbols) {};
         /**
          *
          */
-        ~Expression() {};
-        std::string
-        print() const;
-        inline AST_Expression 
-        expression() { return _exp; };
-        bool 
-        isReference() const;
-        bool 
-        isEmpty() const { return _exp == nullptr; };
-        bool 
-        isValid() const { return _exp != nullptr; };
-        friend std::ostream& operator<<(std::ostream& out, const Expression& s);
+        ~Algebraics() {};
       private:
-        AST_Expression       _exp;
-        Util::VarSymbolTable _symbols;
+        bool 
+        foldTraverseElement(AST_Expression exp);
+        bool 
+        foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
+        bool
+        foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+        VarSymbolTable _symbols;
     };
-
-    typedef list<Expression> ExpressionList;
   }
 }
-#endif /* EXPRESSION_H_ */
+
+#endif  /* ALGEBRAICS_H_ */

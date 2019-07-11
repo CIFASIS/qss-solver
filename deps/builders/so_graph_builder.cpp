@@ -62,6 +62,7 @@ namespace MicroModelica {
         }
 
       }
+      
       EquationTable::iterator eqit;
       for(Equation eq = _equations.begin(eqit); !_equations.end(eqit); eq = _equations.next(eqit))
       {
@@ -82,38 +83,38 @@ namespace MicroModelica {
         _equationDescriptors.push_back(add_vertex(vp,graph));
       }
 
-      foreach_(EqVertex eq, _equationDescriptors){
-        foreach_(IfrVertex inf, _variableDescriptors){
-          GenerateEdge ge = GenerateEdge(graph[eq], graph[inf], _symbols);
-          if(ge.exists()) {
-            IndexPairSet ips = ge.indexes();
+      foreach_(EqVertex sink, _equationDescriptors){
+        foreach_(IfrVertex source, _variableDescriptors){
+          GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
+          if(edge.exists()) {
+            IndexPairSet ips = edge.indexes();
             for (auto ip : ips) {
-              Label ep(ip);
-              cout << "Agrega arista desde la var: " << graph[inf].var << " a la ecuacion: " << graph[eq].eq.id() << endl;
-              cout << "Ecuacion: " << graph[eq].eq.type() << endl; 
-              add_edge(inf, eq, ep, graph);
+              Label lbl(ip);
+              cout << "Agrega arista desde la var: " << graph[source].var << " a la ecuacion: " << graph[sink].eq.id() << endl;
+              cout << "Ecuacion: " << graph[sink].eq.type() << endl; 
+              add_edge(source, sink, lbl, graph);
               cout << ip.Ran() << " " << ip.Dom() << endl;
-              if (graph[eq].eq.type() == EQUATION::Output) {
-                IndexPair op(ip.Ran(), ip.Ran(), Offset(), Usage(), graph[eq].eq.lhs());
-                Label oep(op, VERTEX::Input);
-                cout << "Agrega arista para la ecuacion: " << graph[eq].eq.id()
+              if (graph[sink].eq.type() == EQUATION::Output) {
+                IndexPair out_pair(ip.Ran(), ip.Ran(), Offset(), Usage(), graph[sink].eq.lhs());
+                Label out_lbl(out_pair, EDGE::Input);
+                cout << "Agrega arista para la ecuacion: " << graph[sink].eq.id()
                      << " a la ecuacion: "
-                     << graph[_outputDescriptors[graph[eq].eq.id()]].id << endl;
-                cout << "Ecuacion: " << graph[eq].eq.type() << endl;
-                add_edge(eq, _outputDescriptors[graph[eq].eq.id()], oep, graph);
+                     << graph[_outputDescriptors[graph[sink].eq.id()]].id << endl;
+                cout << "Ecuacion: " << graph[sink].eq.type() << endl;
+                add_edge(sink, _outputDescriptors[graph[sink].eq.id()], out_lbl, graph);
               }
             }
           }
           // Check LHS too if we are working with algebraics.
-          if (graph[inf].type == VERTEX::Algebraic && graph[eq].eq.type() == EQUATION::Algebraic) { 
-            GenerateEdge gea = GenerateEdge(graph[eq], graph[inf], _symbols, VERTEX::Input);
-            if(gea.exists()) {
-              IndexPairSet ips = gea.indexes();
+          if (graph[source].type == VERTEX::Algebraic && graph[sink].eq.type() == EQUATION::Algebraic) { 
+            GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input);
+            if(edge.exists()) {
+              IndexPairSet ips = edge.indexes();
               for (auto ip : ips) {
-                Label ep(ip, VERTEX::Input);
-                cout << "Agrega arista desde la ecuacion algebraica: " << graph[eq].eq.id() << " a la variable: " << graph[inf].var  << endl;
-                cout << "Ecuacion algebraica: " << graph[eq].eq.type() << endl;
-                add_edge(eq, inf, ep, graph);  
+                Label lbl(ip, EDGE::Input);
+                cout << "Agrega arista desde la ecuacion algebraica: " << graph[sink].eq.id() << " a la variable: " << graph[source].var  << endl;
+                cout << "Ecuacion algebraica: " << graph[sink].eq.type() << endl;
+                add_edge(sink, source, lbl, graph);  
               }
             }            
           }

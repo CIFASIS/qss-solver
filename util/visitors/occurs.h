@@ -45,6 +45,22 @@ namespace MicroModelica {
         std::map<std::string,IR::Expression>  _occs;
         std::string          _var;
     };
+
+    /**
+     *
+     */
+/*    class StatementOccurs: public AST_Statement_Visitor<SymbolTable, SymbolTable, CalledFunctions>
+    {
+      public:
+        StatementOccurs() : AST_Statement_Visitor(CalledFunctions()) {};
+        ~StatementOccurs() {};
+      private:
+        inline SymbolTable  
+        foldTraverse(SymbolTable symbols) { return symbols; };
+        SymbolTable  
+        foldTraverse(SymbolTable s1, SymbolTable s2);
+    };*/
+
   }
 }
 

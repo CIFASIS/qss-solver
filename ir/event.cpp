@@ -19,6 +19,7 @@
 
 #include "event.h"
 
+#include <assert.h>
 #include <sstream>
 
 #include "helpers.h"
@@ -126,6 +127,13 @@ namespace MicroModelica {
       buffer << "_event_" << _id;
       FunctionPrinter fp;
       return fp.macro(buffer.str(),_range, _id, _offset);
+    }
+
+    Expression 
+    Event::exp() 
+    {
+      assert(isValid());
+      return _zeroCrossing.lhs();
     }
   }
 }

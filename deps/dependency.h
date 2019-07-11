@@ -31,22 +31,24 @@ namespace MicroModelica {
     class Dependency 
     {
       public:
-        Dependency() : _ifr(), _ifrUsg() {};
-        ~Dependency() {};
+        Dependency() : _ifr() {};
+        ~Dependency() = default;
         void
-        compute(DepsGraph g, VariableDependencyMatrix& vdm);
+        compute(DepsGraph graph, VariableDependencyMatrix& vdm);
         void
-        merge(VariableDependencyMatrix& a, VariableDependencyMatrix& b, VariableDependencyMatrix& merge);
+        compute(DepsGraph graph, EquationDependencyMatrix& edm);
+        void
+        merge(VariableDependencyMatrix& source, VariableDependencyMatrix& target, VariableDependencyMatrix& merge);
+
       private:
         void
-        influencees(DepsGraph g, Vertex vd, MDI infs, VariableDependencies &deps, VariableInfluences& algs);
+        influencees(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs);
         VariableDependency 
         getVariableDependency(string name, MDI dom, MDI ran, int id);
         MDI 
-        variableMDI(Util::Variable var);  
-      private: 
-        IR::Expression _ifr;
-        Usage          _ifrUsg;
+        variableRange(Util::Variable var);  
+
+        IndexPair      _ifr;
     };
   }
 }

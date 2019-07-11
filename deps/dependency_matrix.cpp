@@ -27,6 +27,23 @@ namespace MicroModelica {
   using namespace Util;
   namespace Deps {
 
+    MDI
+    VariableDependency::getImage(MDI sub_dom)
+    { 
+      IndexPair p(sub_dom, _ran, _ifr.GetOffset(), _ifr.GetUsage(), _ifr.exp());
+      INDEX::Rel rel = p.Type();  
+      switch (rel) {
+        case INDEX::RN_N:
+          return sub_dom.RevertOffset(_ifr.GetOffset(), _ifr.GetUsage(), _ifr.Ran());
+        case INDEX::R1_1:
+        case INDEX::R1_N:
+        case INDEX::RN_1:
+            return _ran;
+        default:
+          return MDI();
+      } 
+    }
+
     VariableDependencyMatrix::VariableDependencyMatrix(MatrixConfig cfg) : 
       _cfg(cfg), 
       _mode(VDM::Normal), 
@@ -36,19 +53,18 @@ namespace MicroModelica {
     }
 
     void
-    VariableDependency::setRange(Usage ifrUsg, Usage ifeUsg)
+    VariableDependency::setRange()
     {
        _range.generate(_ran);
-       ReplaceIndex riIfr(_range, ifrUsg);
-       _ifr = Expression(riIfr.apply(_ifr.expression()), Utils::instance().symbols());
-       ReplaceIndex riIfe(_range, ifeUsg);
-       _ife = Expression(riIfe.apply(_ife.expression()), Utils::instance().symbols());
+       ReplaceIndex riIfr(_range, _ifr.GetUsage());
+       _ifr_exp = Expression(riIfr.apply(_ifr.exp().expression()), Utils::instance().symbols());
+       ReplaceIndex riIfe(_range, _ife.GetUsage());
+       _ife_exp = Expression(riIfe.apply(_ife.exp().expression()), Utils::instance().symbols());
     }
 
     string 
     VariableDependencyMatrix::print() const 
     {
-      cout << "Imprime la matriz de salida " << _cfg.container << " " << size() << endl;
       stringstream buffer;
       VariableDependencyMatrix::const_iterator it;
       string matrix = _cfg.names[_method + _mode];

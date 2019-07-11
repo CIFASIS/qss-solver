@@ -33,7 +33,7 @@ namespace MicroModelica {
   namespace Deps {
 
     MDI 
-    Dependency::variableMDI(Variable var) 
+    Dependency::variableRange(Variable var) 
     {
       IntervalList intervals;
       
@@ -49,78 +49,131 @@ namespace MicroModelica {
     }
 
     void
-    Dependency::compute(DepsGraph g, VariableDependencyMatrix& vdm)
+    Dependency::compute(DepsGraph graph, EquationDependencyMatrix& edm)
     {
-      for (Vertex vd : boost::make_iterator_range(vertices(g))) {
-        std::cout << "Vertex descriptor #" << vd << std::endl; /* iterate over the ifr vertex. */
-        VertexProperty v = g[vd];
-        if (v.type == VERTEX::Influencer) {
-          VariableDependencies vdeps; 
-          VariableInfluences algs;
-          cout << "Compute for: " << v.var << endl;
-          influencees(g, vd, variableMDI(v.var), vdeps, algs);
-          vdm.insert(v.var.name(), vdeps);    
+      for (Vertex vertex : boost::make_iterator_range(vertices(graph))) {
+        VertexProperty vertex_info = graph[vertex];
+        if (vertex_info.type == VERTEX::Influencer) {
+          VariableDependencies var_deps; 
+          AlgebraicDependencies algs;
+          cout << "Compute dependecies for: " << vertex_info.var << endl;
+          influencees(graph, vertex, variableRange(vertex_info.var), var_deps, algs);
+          edm.insert(vertex_info.id, var_deps);    
         }
       }
     }
 
     void
-    Dependency::merge(VariableDependencyMatrix& a, VariableDependencyMatrix& b, VariableDependencyMatrix& merge) 
+    Dependency::compute(DepsGraph graph, VariableDependencyMatrix& vdm)
     {
-      return;
+      for (Vertex vertex : boost::make_iterator_range(vertices(graph))) {
+        VertexProperty vertex_info = graph[vertex];
+        if (vertex_info.type == VERTEX::Influencer) {
+          VariableDependencies var_deps; 
+          AlgebraicDependencies algs;
+          cout << "Compute dependecies for: " << vertex_info.var << endl;
+          influencees(graph, vertex, variableRange(vertex_info.var), var_deps, algs);
+          vdm.insert(vertex_info.var.name(), var_deps);    
+        }
+      }
     }
 
     VariableDependency 
     Dependency::getVariableDependency(string name, MDI dom, MDI ran, int id) 
     {
-      VariableDependency vdep;
-      vdep.setVariable(name);
-      vdep.setDom(dom);
-      vdep.setRan(ran);
-      vdep.setEquationId(id);
-      return vdep;
+      VariableDependency var_dep;
+      var_dep.setVariable(name);
+      var_dep.setDom(dom);
+      var_dep.setRan(ran);
+      var_dep.setEquationId(id);
+      return var_dep;
     }
 
     void 
-    Dependency::influencees(DepsGraph g, Vertex vd, MDI mdi, VariableDependencies& deps, VariableInfluences& algs) 
+    Dependency::influencees(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs) 
     {
-      VertexProperty v = g[vd];
-      boost::graph_traits<DepsGraph>::out_edge_iterator ei, ei_end;
-      for (boost::tie(ei, ei_end) = out_edges(vd, g); ei != ei_end; ++ei) {
-        Label l = g[*ei];
-        MDI dom = l.Pair().Dom();
-        Option<MDI> intersect = mdi.Intersection(dom);
+      VertexProperty source_vertex_info = graph[source_vertex];
+      boost::graph_traits<DepsGraph>::out_edge_iterator edge, out_edge_end;
+      for (boost::tie(edge, out_edge_end) = out_edges(source_vertex, graph); edge != out_edge_end; ++edge) {
+        Label lbl = graph[*edge];
+        MDI dom = lbl.Pair().Dom();
+        Option<MDI> intersect = source_range.Intersection(dom);
         if (intersect) {
           MDI intersection = boost::get<MDI>(intersect);
-          auto target = boost::target(*ei, g);
-          if (v.type == VERTEX::Influencer) {
-            // Store the influencer expression.
-            _ifr = l.Pair().exp();
-            _ifrUsg = l.Pair().GetUsage();
+          auto target_vertex = boost::target(*edge, graph);
+          if (source_vertex_info.type == VERTEX::Influencer) {
+            // Store the influencer index pair.
+            _ifr = lbl.Pair();
           }   
           // First look if the target node is terminal.
-          VertexProperty tar = g[target];
-          MDI ran = l.getRange(intersection);
-          if (tar.type == VERTEX::Influencee) {
-            assert(v.type == VERTEX::Equation);
-            VariableDependency vdep = getVariableDependency(v.var.name(),intersection,
-                                                            ran, v.id);
-            vdep.setIfr(_ifr);
-            vdep.setIfe(l.Pair().exp());
-            vdep.setRange(_ifrUsg, l.Pair().GetUsage());
+          VertexProperty target_vertex_info = graph[target_vertex];
+          MDI ran = lbl.getImage(intersection);
+          if (target_vertex_info.type == VERTEX::Influencee) {
+            assert(source_vertex_info.type == VERTEX::Equation ||
+                   source_vertex_info.type == VERTEX::Statement);
+            VariableDependency var_dep = getVariableDependency(target_vertex_info.var.name(), intersection,
+                                                               ran, target_vertex_info.id);
+            var_dep.setIfr(_ifr);
+            var_dep.setIfe(lbl.Pair());
+            var_dep.setRange();
             
-            Influences inf = {algs, vdep};
-            deps.push_back(inf);
-          } else if (tar.type == VERTEX::Algebraic) {
-            assert(v.type == VERTEX::Equation);
-            VariableDependency vdep = getVariableDependency(v.var.name(),intersection,
-                                                            ran, v.id);
-            algs.push_back(vdep);
-            influencees(g, target, ran, deps, algs);
+            Influences inf = {algs, var_dep};
+            var_deps.push_back(inf);
+          } else if (target_vertex_info.type == VERTEX::Algebraic) {
+            assert(source_vertex_info.type == VERTEX::Equation);
+            VariableDependency var_dep = getVariableDependency(target_vertex_info.var.name(), intersection,
+                                                               ran, target_vertex_info.id);
+            algs.push_back(var_dep);
+            influencees(graph, target_vertex, ran, var_deps, algs);
           } else { 
-            influencees(g, target, ran, deps, algs);
+            influencees(graph, target_vertex, ran, var_deps, algs);
           }
         }
+      }
+    }
+
+    void
+    Dependency::merge(VariableDependencyMatrix& source, VariableDependencyMatrix& target, VariableDependencyMatrix& merge) 
+    {
+      VariableDependencyMatrix::const_iterator source_it;
+      for(source_it = source.begin(); source_it != source.end(); source_it++)
+      { 
+        // First look if the source variable affects some var in the target matrix. 
+        Option<VariableDependencies> has_target_deps = target[source_it->first]; 
+        if (!has_target_deps) {
+          continue;
+        }
+        VariableDependencies target_var_deps = boost::get<VariableDependencies>(has_target_deps);
+        VariableDependencies source_var_deps = source_it->second;
+        for (auto source_var_dep : source_var_deps) {
+          for (auto target_var_dep : target_var_deps) {
+             MDI target_dom = target_var_dep.ifce.dom();
+             Option<MDI> intersect = source_var_dep.ifce.dom().Intersection(target_dom);    
+             if (intersect) {
+              // We found a match and must adjust the ranges and generate the new var_dep.
+              MDI intersection = boost::get<MDI>(intersect);
+              VariableDependency target = target_var_dep.ifce;
+              VariableDependency source = source_var_dep.ifce;
+              VariableDependency var_dep = getVariableDependency(target.variable(), 
+                                                                 source.getImage(intersection),
+                                                                 target.getImage(intersection), 
+                                                                 target.equationId());
+              var_dep.setIfr(source.ifePair());
+              var_dep.setIfe(target.ifePair());
+              var_dep.setRange();
+              
+              // Finally insert the new variable in the merge matrix.
+              Option<VariableDependencies> has_merge_deps = merge[source.variable()]; 
+              VariableDependencies new_merge_deps;
+              if (has_merge_deps) {
+                new_merge_deps = boost::get<VariableDependencies>(has_merge_deps);
+              }
+              Influences inf = {AlgebraicDependencies(), var_dep};
+              new_merge_deps.push_back(inf);
+              merge.insert(source.variable(), new_merge_deps);
+            }
+          }
+        }      
       }
     }
   }

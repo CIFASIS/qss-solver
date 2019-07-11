@@ -33,11 +33,11 @@ namespace MicroModelica {
         /*****************************************************************************
      ****                              LABEL                                  ****
      *****************************************************************************/
-    Label::Label(IndexPairSet ips, VERTEX::Mode mode): ips(ips), _ip(), _mode(mode) {
+    Label::Label(IndexPairSet ips, EDGE::Direction dir): ips(ips), _ip(), _dir(dir) {
      this->RemoveDuplicates();
     }
 
-    Label::Label(IndexPair ip, VERTEX::Mode mode): ips(), _ip(ip), _mode(mode) {
+    Label::Label(IndexPair ip, EDGE::Direction dir): ips(), _ip(ip), _dir(dir) {
     }
 
 
@@ -96,8 +96,8 @@ namespace MicroModelica {
               switch (otherIP->Type()) {
               case INDEX::RN_N:
                 if (checkingIP->GetUsage()==otherIP->GetUsage()) {
-                  if (checkingIP->GetOffset()==otherIP->GetOffset()) { // Same usage same offset => are equals: SHOULD NOT OCCUR
-                    //ERROR("This case should not occur since should not be equal pairs in a set");
+                  if (checkingIP->GetOffset()==otherIP->GetOffset()) { // Same usage same offset => are equals: SHOULD NOT EvalOccur
+                    //ERROR("This case should not EvalOccur since should not be equal pairs in a set");
                     abort();
                   } else { // Same usage different offset => there is no intersection, nothing to remove
                     removeSomething = false;
@@ -145,8 +145,8 @@ namespace MicroModelica {
                   continue;
                 }
               case INDEX::RN_1:
-                if (checkingIP->Ran()==otherIP->Ran()) { // Same range => are equals: SHOULD NOT OCCUR
-                  //ERROR("This case should not occur since should not be equal pairs in a set");
+                if (checkingIP->Ran()==otherIP->Ran()) { // Same range => are equals: SHOULD NOT EvalOccur
+                  //ERROR("This case should not EvalOccur since should not be equal pairs in a set");
                   abort();
                 }
                 else { //No intersection => nothing to remove
@@ -154,8 +154,8 @@ namespace MicroModelica {
                   continue;
                 }
               case INDEX::R1_N:
-                //This case should not occur
-                //ERROR("This case should not occur since should could not be N-1 and 1-N pairs in a same label");
+                //This case should not EvalOccur
+                //ERROR("This case should not EvalOccur since should could not be N-1 and 1-N pairs in a same label");
                 abort();
               }
             case INDEX::R1_N:
@@ -167,12 +167,12 @@ namespace MicroModelica {
                   continue;
                 }
               case INDEX::RN_1:
-                //This case should not occur
-                //ERROR("This case should not occur since should could not be N-1 and 1-N pairs in a same label");
+                //This case should not EvalOccur
+                //ERROR("This case should not EvalOccur since should could not be N-1 and 1-N pairs in a same label");
                 abort();
               case INDEX::R1_N:
-                if (checkingIP->Dom()==otherIP->Dom()) { // Same range => are equals: SHOULD NOT OCCUR
-                  //ERROR("This case should not occur since should not be equal pairs in a set");
+                if (checkingIP->Dom()==otherIP->Dom()) { // Same range => are equals: SHOULD NOT EvalOccur
+                  //ERROR("This case should not EvalOccur since should not be equal pairs in a set");
                   abort();
                 }
                 else { //No intersection => nothing to remove
@@ -189,14 +189,14 @@ namespace MicroModelica {
     }
 
     MDI 
-    Label::getRange(MDI intersection) const 
+    Label::getImage(MDI intersection) const 
     {
       // We need to generate a new pair with the intersection as Dom
       // then get the type and handle the different cases there.  
       IndexPair orig = Pair();
-      IndexPair p(intersection, orig.Ran(),orig.GetOffset(), orig.GetUsage(), orig.exp());
+      IndexPair p(intersection, orig.Ran(), orig.GetOffset(), orig.GetUsage(), orig.exp());
       INDEX::Rel rel = p.Type();  
-      if (_mode == VERTEX::Input) {
+      if (_dir == EDGE::Input) {
         assert(rel != INDEX::RN_1);
         assert(rel != INDEX::R1_N);
         switch (rel) {
@@ -224,7 +224,7 @@ namespace MicroModelica {
     }
 
     
-    Occur::Occur(Expression exp, VarSymbolTable symbols, Option<Range> range) : 
+    EvalOccur::EvalOccur(Expression exp, VarSymbolTable symbols, Option<Range> range) : 
       _exp(exp),
       _cr(nullptr),
       _symbols(symbols),
@@ -239,7 +239,7 @@ namespace MicroModelica {
     }
 
     string
-    Occur::reference(AST_Expression exp) 
+    EvalOccur::reference(AST_Expression exp) 
     {
       if (exp->expressionType() == EXPBINOP) {
         if (exp->getAsBinOp()->left()->expressionType() == EXPCOMPREF) {
@@ -253,7 +253,7 @@ namespace MicroModelica {
     }
 
     int 
-    Occur::constant(AST_Expression exp) 
+    EvalOccur::constant(AST_Expression exp) 
     {
       if (exp->expressionType() == EXPBINOP) {
         int umin = 1;
@@ -271,7 +271,7 @@ namespace MicroModelica {
     }
 
     void 
-    Occur::initialize()
+    EvalOccur::initialize()
     {
       if (_cr->hasIndexes()) {
         std::vector<int> offset_vector;
@@ -333,37 +333,39 @@ namespace MicroModelica {
     }
 
     bool 
-    Occur::hasIndex()
+    EvalOccur::hasIndex()
     {
       return _cr->hasIndexes();
     }
         
     IntervalList
-    Occur::intervals()
+    EvalOccur::intervals()
     {
       return _intervals;
     }
 
     Usage 
-    Occur::usages()
+    EvalOccur::usages()
     {
       return _usages;
     }
 
     Offset 
-    Occur::offsets()
+    EvalOccur::offsets()
     {
       return Offset(_offsets);
     }
 
-    GenerateEdge::GenerateEdge(struct VertexProperty eq, struct VertexProperty inf, 
-                               VarSymbolTable symbols, VERTEX::Mode mode) : 
-      _eq(eq), 
-      _inf(inf), 
+    GenerateEdge::GenerateEdge(struct VertexProperty source, struct VertexProperty sink, 
+                               VarSymbolTable symbols, EDGE::Direction dir, 
+                               VERTEX::Eval eval) : 
+      _source(source), 
+      _sink(sink), 
       _exist(false),
       _symbols(symbols),
       _ips(),
-      _mode(mode) 
+      _dir(dir),
+      _eval(eval) 
     {
       initialize();
     }
@@ -371,39 +373,85 @@ namespace MicroModelica {
     void
     GenerateEdge::initialize() 
     {
-      if (_inf.type == VERTEX::Influencer ||
-          (_inf.type == VERTEX::Algebraic &&
-           _mode == VERTEX::Output)) {
-        string infName = _inf.var.name();
-        Occurs oc(_inf.var.name(), _symbols);
-        _exist = oc.apply(_eq.eq.equation());
-        if(_exist) {
-          build(oc.occurrences());
+      Occurs occurs(_source.var.name(), _symbols);
+      if (_eval == VERTEX::LHS) {
+        if (_source.type == VERTEX::Influencer ||
+           (_source.type == VERTEX::Algebraic &&
+            _dir == EDGE::Output)) {
+            _exist = occurs.apply(_sink.eq.lhs().expression());
+            if(_exist) {
+              build(occurs.occurrences());
+            }
+        } else if (_source.type == VERTEX::Algebraic && 
+                   _dir == EDGE::Input) {
+          assert(_sink.type == VERTEX::Equation);
+          _exist = occurs.apply(_sink.eq.equation());
+          if(_exist) {
+            build(occurs.occurrences());
+          }
+        } else if (_source.type == VERTEX::Influencee) {
+          assert(_sink.type == VERTEX::Equation);
+          ExpressionList exps;
+          if (sinkIsEvent() && 
+              _source.id == _sink.id) {
+            _exist = true;
+            exps.push_back(_sink.stm.event);
+            build(exps);
+          } else if (_source.id == _sink.eq.id()) { 
+            _exist = true;
+            exps.push_back(_sink.eq.lhs());
+            build(exps);
+          } 
         }
-      } else if (_inf.type == VERTEX::Algebraic && 
-                 _mode == VERTEX::Input) {
-        Occurs oc(_inf.var.name(), _symbols);
-        _exist = oc.apply(_eq.eq.lhs().expression());
-        if(_exist) {
-          build(oc.occurrences());
+      } else { 
+        if (_source.type == VERTEX::Influencer ||
+            (_source.type == VERTEX::Algebraic &&
+             _dir == EDGE::Output)) {
+          if (_sink.type == VERTEX::Equation) {
+            _exist = occurs.apply(_sink.eq.equation());  
+          } else if (_sink.type == VERTEX::Statement) {
+            _exist = occurs.apply(_sink.stm.exp.expression()); 
+          }
+          if(_exist) {
+            build(occurs.occurrences());
+          }
+        } else if (_source.type == VERTEX::Algebraic && 
+                   _dir == EDGE::Input) {
+          assert(_sink.type == VERTEX::Equation);
+          _exist = occurs.apply(_sink.eq.lhs().expression());
+          if(_exist) {
+            build(occurs.occurrences());
+          }
+        } else if (_source.type == VERTEX::Influencee) {
+          ExpressionList exps;
+          if (sinkIsEvent() && 
+              _source.id == _sink.id) {
+            _exist = true;
+            exps.push_back(_sink.stm.event);
+            build(exps);
+          } else if (sinkIsOutput() &&
+            _source.id == _sink.eq.id()) { 
+            _exist = true;
+            exps.push_back(_sink.eq.lhs());
+            build(exps);
+          } else {
+            _exist = occurs.apply(_sink.eq.lhs().expression());
+            if(_exist) {
+              build(occurs.occurrences());
+            }
+          }
         }
-      } else {
-        list<Expression> exps;
-        exps.push_back(_eq.eq.lhs());
-        _exist = true;
-        build(exps);
       }
     }
 
     void 
     GenerateEdge::build(list<Expression> exps) 
     {
-      Equation eq = _eq.eq;
-      Option<Range> range = eq.range();
-      IntervalList eqInterval;
-      if (range) {
-        for(auto rd : range->definition()) {
-          eqInterval.push_back(Interval::closed(rd.second.begin(), rd.second.end()));
+      Option<Range> sink_range = range(_sink);
+      IntervalList sink_interval;
+      if (sink_range) {
+        for(auto rd : sink_range->definition()) {
+          sink_interval.push_back(Interval::closed(rd.second.begin(), rd.second.end()));
         }
       } 
       cout << "Expressions: " << exps.size() << endl;
@@ -413,25 +461,25 @@ namespace MicroModelica {
           break;
         }
         cout << "Expressions: " << exp << endl;
-        Occur oc(exp, _symbols, range);
-        MDI mdi_dom(oc.intervals());
-        MDI mdi_ran(eqInterval);
-        if (_mode == VERTEX::Input) {
-          mdi_dom = MDI(eqInterval);
-          mdi_ran = MDI(oc.intervals());
+        EvalOccur eval_occur(exp, _symbols, sink_range);
+        MDI mdi_dom(eval_occur.intervals());
+        MDI mdi_ran(sink_interval);
+        if (_dir == EDGE::Input) {
+          mdi_dom = MDI(sink_interval);
+          mdi_ran = MDI(eval_occur.intervals());
         }
-        if (range) { 
-          if (oc.hasIndex()) { // N N also includes 1 N
+        if (sink_range) { 
+          if (eval_occur.hasIndex()) { // N N also includes 1 N
             cout << "Intenta agregar: " << exp << endl;
-            _ips.insert(IndexPair(mdi_dom, mdi_ran, oc.offsets(), oc.usages(), exp));  
+            _ips.insert(IndexPair(mdi_dom, mdi_ran, eval_occur.offsets(), eval_occur.usages(), exp));  
           } else { // 1 N
             cout << "Intenta agregar caso 1: " << exp << endl;
             _ips.insert(IndexPair(MDI(0), mdi_ran, Offset(), Usage(), exp));
           }
         } else {
-          if (oc.hasIndex()) { // 1 1 In this case the index must be an integer expression.
+          if (eval_occur.hasIndex()) { // 1 1 In this case the index must be an integer expression.
             cout << "Intenta agregar: caso 2" << exp << endl;
-            _ips.insert(IndexPair(mdi_dom, MDI(0), oc.offsets(), oc.usages(), exp));
+            _ips.insert(IndexPair(mdi_dom, MDI(0), eval_occur.offsets(), eval_occur.usages(), exp));
           } else { // 1 1
             cout << "Intenta agregar: caso 3" << exp << endl;
             _ips.insert(IndexPair(MDI(0), MDI(0), Offset(), Usage(), exp));
@@ -439,6 +487,40 @@ namespace MicroModelica {
         } 
         cout << "Indexes: " << _ips.size() << endl;
       }   
+    }
+
+    Option<Range> 
+    GenerateEdge::range(struct VertexProperty sink)
+    {
+      if (_sink.type == VERTEX::Equation) {
+        return _sink.eq.range();
+      } else if (_sink.type == VERTEX::Statement) {
+        return _sink.stm.range;
+      }
+      return Option<Range>();
+    }
+
+    bool
+    GenerateEdge::sinkIsEvent() 
+    {
+      if (_sink.type == VERTEX::Statement) {
+        return true;
+      } 
+      if (_sink.type == VERTEX::Equation &&
+          _sink.eq.isZeroCrossing()) {
+        return true;
+      }
+      return false;
+    }
+
+    bool 
+    GenerateEdge::sinkIsOutput()
+    {
+      if (_sink.type == VERTEX::Equation &&
+          _sink.eq.isOutput()) {
+        return true;
+      }
+      return false;
     }
   }
 }

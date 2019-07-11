@@ -26,6 +26,7 @@
 #include "../ast/expression.h"
 #include "../ast/equation.h"
 #include "../util/visitors/called_functions.h"
+#include "../util/visitors/algebraics.h"
 #include "../util/visitors/autonomous.h"
 #include "../util/util.h"
 
@@ -221,9 +222,10 @@ namespace MicroModelica {
     }
 
     Option<Variable>
-    Equation::derivative()
+    Equation::LHSVariable()
     {
-      if(isDerivative()) {
+      if(isDerivative() || isAlgebraic() || 
+         isZeroCrossing() || isOutput()) {
         AST_Expression_ComponentReference cr = _lhs.expression()->getAsComponentReference();
         return _symbols[cr->name()];
       }
@@ -272,10 +274,24 @@ namespace MicroModelica {
       return fp.macro(functionId(), _range, _id, _offset);
     }
 
+    bool 
+    Equation::isValid() const 
+    {
+      return _lhs.isValid() && _rhs.isValid();
+    }
+
     std::ostream& operator<<(std::ostream& out, const Equation& e)
     {
       out << e.print();
       return out;
+    }
+
+    bool 
+    Equation::hasAlgebraics()
+    {
+      assert(isValid());
+      Algebraics has_algebraics(_symbols);
+      return has_algebraics.apply(_rhs.expression());     
     }
   }
 }

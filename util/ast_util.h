@@ -234,7 +234,7 @@ template<class F, class R, class V>
 class AST_Statement_Visitor
 {
   public:
-    AST_Statement_Visitor(V v) : _visitor(v) {};
+    AST_Statement_Visitor(V v, bool lhs = true) : _visitor(v), _lhs(lhs) {};
     /**
      *
      */
@@ -263,8 +263,12 @@ class AST_Statement_Visitor
           return c;
         }
         case STASSING:
-          return foldTraverse(_visitor.apply(stm->getAsAssign()->lhs()),
-                              _visitor.apply(stm->getAsAssign()->exp()));
+          if (_lhs) {
+            return foldTraverse(foldTraverse(_visitor.apply(stm->getAsAssign()->lhs())),
+                              foldTraverse(_visitor.apply(stm->getAsAssign()->exp())));  
+          } else {
+            return foldTraverse(_visitor.apply(stm->getAsAssign()->exp()));
+          }
         case STIF:
         {
           c = foldTraverse(_visitor.apply(stm->getAsIf()->condition()));
@@ -318,6 +322,7 @@ class AST_Statement_Visitor
     };
   private:
     V _visitor;
+    bool _lhs;
     virtual F
     foldTraverse(R) = 0;
     virtual F

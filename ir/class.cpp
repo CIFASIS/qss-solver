@@ -813,13 +813,13 @@ namespace MicroModelica {
           continue; 
         }
         EquationDependencyMatrix eqdm = _dependencies.DA();
-        Option<EquationDependency> eqd = eqdm[_derivatives.key(it)];
+        Option<VariableDependencies> eqd = eqdm[_derivatives.key(it)];
         if(eqd)
         {
-          EquationDependency::iterator eit;
+          VariableDependencies::iterator eit;
           for(eit = eqd->begin(); eit != eqd->end(); eit++)
           {
-            Option<Equation> alg = _algebraics[*eit];
+            Option<Equation> alg = _algebraics[eit->ifce.equationId()];
             if(alg && !alg->autonomous())
             {
               addInput(eq);

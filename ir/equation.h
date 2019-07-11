@@ -92,9 +92,19 @@ namespace MicroModelica {
         type() { return _type; }
         inline bool
         isDerivative() { return _type == EQUATION::QSSDerivative || _type == EQUATION::ClassicDerivative; }
+        inline bool
+        isZeroCrossing() { return _type == EQUATION::ZeroCrossing; }
+        inline bool
+        isOutput() { return _type == EQUATION::Output; }
+        inline bool
+        isAlgebraic() { return _type == EQUATION::Algebraic; }
         Option<Util::Variable>
-        derivative();
+        LHSVariable();
         friend std::ostream& operator<<(std::ostream& out, const Equation& e);
+        bool 
+        isValid() const;
+        bool 
+        hasAlgebraics();
       private:
         void 
         process(AST_Equation eq);

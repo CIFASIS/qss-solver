@@ -56,7 +56,6 @@ namespace MicroModelica {
       stringstream buffer;
       EquationTable outputs = _model.outputs();
       EquationTable::iterator it;
-      EquationDependencyMatrix eqdm = _model.dependencies().OA();
       Utils::instance().setLocalSymbols();
       FunctionPrinter fp;
       for(Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it))

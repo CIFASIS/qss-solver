@@ -21,10 +21,13 @@
 
 #include "../util/util.h"
 
+#include "builders/dh_graph_builder.h"
+#include "builders/ds_graph_builder.h"
+#include "builders/dz_graph_builder.h"
+#include "builders/ea_graph_builder.h"
 #include "builders/sd_graph_builder.h"
 #include "builders/so_graph_builder.h"
-#include "builders/ds_graph_builder.h"
-#include "builders/dh_graph_builder.h"
+#include "builders/sz_graph_builder.h"
 
 namespace MicroModelica {
   using namespace IR;
@@ -38,17 +41,26 @@ namespace MicroModelica {
     static constexpr char* OUTPUTS = "outputs";
     static constexpr char* DISCRETES = "discretes";    
 
+    static MatrixConfig EmptyCfg = { "", {}, {} };
     static MatrixConfig SDCfg = { INT_CONTAINER, { "nSD", "nDS", "SD", "DS" }, { STATES, STATES } };
     static MatrixConfig SZCfg = { INT_CONTAINER, { "nSZ", "nZS", "SZ", "ZS" }, { STATES, EVENTS } };
     static MatrixConfig SOCfg = { OUT_CONTAINER, { "nSO", "nOS", "SO", "OS" }, { STATES, OUTPUTS } };
     static MatrixConfig DOCfg = { OUT_CONTAINER, { "nDO", "nOD", "DO", "OD" }, { DISCRETES, OUTPUTS } };
     static MatrixConfig HHCfg = { OUT_CONTAINER, { "nDO", "nOD", "DO", "OD" }, { DISCRETES, OUTPUTS } };
+    static MatrixConfig HDCfg = { OUT_CONTAINER, { "nDO", "nOD", "DO", "OD" }, { DISCRETES, OUTPUTS } };
+    static MatrixConfig HZCfg = { OUT_CONTAINER, { "nDO", "nOD", "DO", "OD" }, { DISCRETES, OUTPUTS } };
 
     ModelDependencies::ModelDependencies() :
       _SD(SDCfg),
       _SZ(SZCfg),
       _SO(SOCfg),
       _DO(DOCfg),
+      _HD(HDCfg),
+      _HZ(HZCfg),
+      _LHSDsc(HZCfg),
+      _LHSSt(HZCfg),
+      _RHSSt(HZCfg),
+      _HH(HZCfg),
       _deps()
     {
     }
@@ -59,17 +71,46 @@ namespace MicroModelica {
       Utils::instance().setSymbols(symbols);
       SDGraphBuilder SD = SDGraphBuilder(eqs, algs, symbols);
       _deps.compute(SD.build(), _SD);
-      VariableDependencyMatrix DS_int(HHCfg);
-      VariableDependencyMatrix DH_int(HHCfg);
+      
+      VariableDependencyMatrix DS_int(EmptyCfg);
       DSGraphBuilder DS = DSGraphBuilder(eqs, algs, symbols);
       _deps.compute(DS.build(), DS_int);
-      DHGraphBuilder DH = DHGraphBuilder(eqs, algs, symbols);
-      _deps.compute(DH.build(), DH_int);      
+      DHGraphBuilder LHSDsc = DHGraphBuilder(events, algs, symbols);
+      _deps.compute(LHSDsc.build(), _LHSDsc);      
+      _deps.merge(_LHSDsc, DS_int, _HD);
 
+      VariableDependencyMatrix DZ_int(HHCfg);
+      DZGraphBuilder DZ = DZGraphBuilder(events, algs, symbols);
+      _deps.compute(DZ.build(),DZ_int);
+      _deps.merge(_LHSDsc, DZ_int, _HZ);
+
+      DHGraphBuilder LHSSt = DHGraphBuilder(events, algs, symbols, STATEMENT::LHS, DHGRAPHBUILDER::State);
+      _deps.compute(LHSSt.build(), _LHSSt);
+
+      DHGraphBuilder RHSSt = DHGraphBuilder(events, algs, symbols, STATEMENT::RHS, DHGRAPHBUILDER::State);
+      _deps.compute(RHSSt.build(), _RHSSt);      
+
+      VariableDependencyMatrix DD_int(EmptyCfg);
+      DHGraphBuilder RHSDsc = DHGraphBuilder(events, algs, symbols, STATEMENT::RHS);
+      _deps.compute(RHSDsc.build(), DD_int);
+      _deps.merge(_LHSDsc, DD_int, _HH);
+  
+      SZGraphBuilder SZ = SZGraphBuilder(events, algs, symbols);
+      _deps.compute(SZ.build(), _SZ);
+      
       OutputGraphBuilder SO = OutputGraphBuilder(outputs, algs, symbols);
       _deps.compute(SO.build(), _SO);
       OutputGraphBuilder DO = OutputGraphBuilder(outputs, algs, symbols, OUTPUT::DO);
       _deps.compute(DO.build(), _DO);
+
+      EAGraphBuilder DA(eqs, algs, symbols);
+      _deps.compute(DA.build(), _DA);
+
+      EAGraphBuilder ZCA(events, algs, symbols);
+      _deps.compute(ZCA.build(), _ZCA);
+
+      EAGraphBuilder OA(outputs, algs, symbols);
+      _deps.compute(OA.build(), _OA);
     }
   }
 }

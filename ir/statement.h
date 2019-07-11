@@ -31,6 +31,14 @@ namespace MicroModelica {
   }
   namespace IR {
 
+    namespace STATEMENT  
+    {
+      typedef enum {
+        LHS,
+        RHS
+      } AssignTerm;
+    }
+
     /**
      *
      */
@@ -58,6 +66,19 @@ namespace MicroModelica {
         friend std::ostream& operator<<(std::ostream& out, const Statement& s);
         string 
         print() const;
+        /**
+         * @brief      Returns a expression list containing all the expressions needed
+         *             by the graph builders. Without the if/for/when sentences.
+         *
+         * @return     Expression list used by the graph builders.\see {dh_graph_builder.cpp}
+         */
+        ExpressionList
+        assignments(STATEMENT::AssignTerm asg) const;
+        bool 
+        isAssignment() const;
+        inline Option<Range>
+        range() { return _range; };
+
       private:
         AST_Statement        _stm;
         Option<Range>        _range;

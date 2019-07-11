@@ -16,8 +16,8 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
  ******************************************************************************/
-#ifndef DH_GRAPH_BUILDER_H 
-#define DH_GRAPH_BUILDER_H 
+#ifndef EA_GRAPH_BUILDER_H 
+#define EA_GRAPH_BUILDER_H 
 
 #include "../../ir/class.h"
 #include "../../util/symbol_table.h"
@@ -26,37 +26,24 @@
 
 namespace MicroModelica {
   namespace Deps {
-
-    namespace DHGRAPHBUILDER  
-    {
-      typedef enum {
-        State,
-        Discrete
-      } IfrType;
-    }
-
-    class DHGraphBuilder {
+    class EAGraphBuilder {
     public:
-      DHGraphBuilder(IR::EventTable &events, IR::EquationTable &algebraics, Util::VarSymbolTable& symbols, 
-                     IR::STATEMENT::AssignTerm search = IR::STATEMENT::LHS, 
-                     DHGRAPHBUILDER::IfrType ifr_type = DHGRAPHBUILDER::Discrete);
-      ~DHGraphBuilder(){};
+      EAGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics, Util::VarSymbolTable& symbols);
+      EAGraphBuilder(IR::EventTable &events, IR::EquationTable &algebraics, Util::VarSymbolTable& symbols);
+      ~EAGraphBuilder() = default;
       DepsGraph
       build();
-    protected:
-      void
-      addStatements(IR::StatementTable stms, DepsGraph& graph, IR::Expression exp, int id);    
+
     private:
-      list<EqVertex>            _statementDescriptors;
-      list<IfrVertex>           _variableDescriptors;
-      list<IfeVertex>           _eventDescriptors;
-      IR::EventTable            _events;
-      IR::EquationTable         _algebraics;
-      Util::VarSymbolTable      _symbols;
-      IR::STATEMENT::AssignTerm _search;
-      DHGRAPHBUILDER::IfrType   _ifr_type;
+      list<EqVertex>       _equationDescriptors;
+      list<IfrVertex>      _sourceDescriptors;
+      list<IfeVertex>      _algebraicDescriptors;
+      IR::EventTable       _events;
+      IR::EquationTable    _algebraics;
+      IR::EquationTable    _equations;
+      Util::VarSymbolTable _symbols;
     };
   }
 }
 
-#endif /* DH_GRAPH_BUILDER_H */
+#endif /* EA_GRAPH_BUILDER_H */

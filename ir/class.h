@@ -234,6 +234,7 @@ namespace MicroModelica
         Util::VarSymbolTable 
         arguments() const;
       private:
+        
         Util::ImportTable     _imports;
         std::string           _name;
         Util::VarSymbolTable  _symbols;
@@ -365,6 +366,7 @@ namespace MicroModelica
         std::string 
         prefix();
       private:
+        
         Util::ImportTable   _imports;
         std::string         _name;
         FunctionTable       _functions;
@@ -515,6 +517,15 @@ namespace MicroModelica
         void 
         computeDependencies();
       private:
+        
+        /**
+         * @brief      Adds a new variable for events and output equations that
+         *             doesn't have associated variables in the model.
+         *
+         * @param[in]  id    The identifier
+         * @param[in]  size  The size
+         * @param[in]  type  The type
+         */
         void 
         addVariable(int id, int size, EQUATION::Type type);
         Option<Util::Variable>

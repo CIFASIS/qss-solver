@@ -122,6 +122,79 @@ namespace MicroModelica {
       return buffer.str();
     }
 
+    bool
+    Statement::isAssignment() const
+    { 
+      return _stm->statementType() == STASSING; 
+    }
+
+    ExpressionList 
+    Statement::assignments(STATEMENT::AssignTerm asg) const
+    {
+      ExpressionList asgs;
+      switch(_stm->statementType())
+      {
+        case STIF:
+        {
+          AST_Statement_If sti = _stm->getAsIf();
+          AST_StatementList stl = sti->statements();
+          AST_StatementListIterator stlit;
+          if (asg == STATEMENT::RHS) {
+            asgs.push_back(Expression(sti->condition(), _symbols));
+          }
+          foreach(stlit, stl)
+          {
+            Statement st(current_element(stlit), _symbols);
+            asgs.splice(asgs.end(),st.assignments(asg));
+          }
+          AST_Statement_ElseList stelsel = sti->else_if();
+          AST_Statement_ElseListIterator stelselit;
+          foreach(stelselit, stelsel)
+          {
+            stl = current_element(stelselit)->statements();
+            foreach(stlit, stl)
+            {
+              Statement st(current_element(stlit), _symbols);
+              asgs.splice(asgs.end(),st.assignments(asg));
+            }
+          }
+          stl = sti->else_statements();
+          if(!stl->empty())
+          {
+            foreach(stlit, stl)
+            {
+              Statement st(current_element(stlit), _symbols);
+              asgs.splice(asgs.end(),st.assignments(asg));
+            }
+          }
+          break;
+        }
+        case STASSING:
+        {
+          if (asg == STATEMENT::LHS) {
+            asgs.push_back(Expression(_stm->getAsAssign()->lhs(), _symbols));
+          } else {
+            asgs.push_back(Expression(_stm->getAsAssign()->exp(), _symbols));  
+          }
+          break;
+        }
+        case STFOR:
+        {
+          AST_Statement_For stf = _stm->getAsFor();
+          AST_StatementList stms = stf->statements();
+          AST_StatementListIterator stmit;
+          foreach(stmit, stms)
+          {
+            Statement st(current_element(stmit), _symbols);
+            asgs.splice(asgs.end(),st.assignments(asg));
+          }
+          break;
+        }
+        default: break;
+      }
+      return asgs;
+    }
+
     std::ostream& operator<<(std::ostream& out, const Statement& s)
     {
       return out << s.print();

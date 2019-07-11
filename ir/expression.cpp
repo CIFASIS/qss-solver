@@ -37,7 +37,7 @@ namespace MicroModelica {
     }
     
     Expression::Expression() :
-      _exp(NULL),
+      _exp(nullptr),
       _symbols()
     {
     }
@@ -46,7 +46,7 @@ namespace MicroModelica {
     Expression::print() const 
     {
       stringstream buffer, exp;
-      if(_exp != NULL)
+      if(!isEmpty())
       {
         ExpressionPrinter printer(_symbols);
         exp << printer.apply(_exp);
@@ -60,7 +60,7 @@ namespace MicroModelica {
     bool 
     Expression::isReference() const
     {
-      if(_exp == NULL) {
+      if(isEmpty()) {
         return false;
       }
       return _exp->expressionType() == EXPCOMPREF; 

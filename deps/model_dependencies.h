@@ -33,7 +33,7 @@ namespace MicroModelica {
     {
       public:
         ModelDependencies();
-        ~ModelDependencies() {};
+        ~ModelDependencies() = default;
         inline VariableDependencyMatrix 
         SD() { _SD.setMode(VDM::Normal); return _SD; };
         inline VariableDependencyMatrix 
@@ -50,6 +50,22 @@ namespace MicroModelica {
         DO() { _DO.setMode(VDM::Normal); return _DO; };
         inline VariableDependencyMatrix 
         OD() { _DO.setMode(VDM::Transpose); return _DO; };
+        inline VariableDependencyMatrix
+        HD() { _HD.setMode(VDM::Normal); return _HD; };
+        inline VariableDependencyMatrix 
+        DH() { _HD.setMode(VDM::Transpose); return _HD; };
+        inline VariableDependencyMatrix
+        HZ() { _HZ.setMode(VDM::Normal); return _HZ; };
+        inline VariableDependencyMatrix 
+        ZH() { _HZ.setMode(VDM::Transpose); return _HZ; };
+        inline VariableDependencyMatrix 
+        HH() { _HH.setMode(VDM::Normal); return _HH; };
+        inline VariableDependencyMatrix 
+        LHSDsc() { _LHSDsc.setMode(VDM::Normal); return _LHSDsc; };
+        inline VariableDependencyMatrix 
+        LHSSt() { _LHSSt.setMode(VDM::Normal); return _LHSSt; };
+        inline VariableDependencyMatrix 
+        RHSSt() { _RHSSt.setMode(VDM::Normal); return _RHSSt; };
         inline EquationDependencyMatrix 
         OA() { return _OA; };
         inline EquationDependencyMatrix 
@@ -59,11 +75,19 @@ namespace MicroModelica {
         void
         compute(IR::EquationTable eqs, IR::EquationTable outputs, IR::EquationTable algs,
                 IR::EventTable events, Util::VarSymbolTable symbols);
+
       private:
         VariableDependencyMatrix _SD;
         VariableDependencyMatrix _SZ;
         VariableDependencyMatrix _SO;
         VariableDependencyMatrix _DO;
+        VariableDependencyMatrix _HD;
+        VariableDependencyMatrix _HZ;
+        VariableDependencyMatrix _LHSDsc;
+        VariableDependencyMatrix _LHSSt;
+        VariableDependencyMatrix _RHSSt;
+        VariableDependencyMatrix _HH;
+        
         EquationDependencyMatrix _OA;
         EquationDependencyMatrix _ZCA;
         EquationDependencyMatrix _DA;

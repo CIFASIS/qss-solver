@@ -86,6 +86,20 @@ namespace MicroModelica {
         hasRange() { return _range.is_initialized(); }; 
         std::string 
         macro() const;
+        int 
+        id() const { return _id; };
+        /**
+         * @brief      This method returns the range expression of the event.
+         *              
+         *             The range is computed from the LHS of the zero crossing
+         *             function associated with the event. 
+         *            
+         * @return     Expression with the LHS used in graph builders.
+         */
+        Expression 
+        exp();
+        bool
+        isValid() const { return _zeroCrossing.isValid(); };
       private:
         AST_Expression
         getExpression(AST_Expression zc);
