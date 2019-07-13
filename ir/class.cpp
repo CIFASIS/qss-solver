@@ -834,7 +834,14 @@ namespace MicroModelica {
     Model::computeDependencies()
     {
       _dependencies.compute(derivatives(), outputs(), algebraics(), events(), _symbols);
-      Utils::instance().setDependencies(_dependencies);
+    }
+
+    void
+    Model::setModelConfig()
+    {
+      ModelConfig::instance().setDependencies(_dependencies);
+      ModelConfig::instance().setAlgebraics(_algebraics);
+      ModelConfig::instance().setModelAnnotations(_annotations);
     }
   }
 }

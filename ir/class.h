@@ -233,8 +233,8 @@ namespace MicroModelica
         localSymbols() const;
         Util::VarSymbolTable 
         arguments() const;
-      private:
-        
+
+      private:        
         Util::ImportTable     _imports;
         std::string           _name;
         Util::VarSymbolTable  _symbols;
@@ -365,8 +365,8 @@ namespace MicroModelica
         */
         std::string 
         prefix();
+
       private:
-        
         Util::ImportTable   _imports;
         std::string         _name;
         FunctionTable       _functions;
@@ -516,8 +516,10 @@ namespace MicroModelica
         initialCode() { return _initialCode; };
         void 
         computeDependencies();
-      private:
-        
+        void
+        setModelConfig();
+      
+      private:  
         /**
          * @brief      Adds a new variable for events and output equations that
          *             doesn't have associated variables in the model.

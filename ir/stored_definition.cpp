@@ -90,6 +90,7 @@ namespace MicroModelica {
         boost::get<Model>(_def).setCalledFunctions(_functions);
         boost::get<Model>(_def).computeDependencies();
         boost::get<Model>(_def).setInputs();
+        boost::get<Model>(_def).setModelConfig();
       }
       else 
       {

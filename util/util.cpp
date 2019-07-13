@@ -46,8 +46,6 @@ namespace MicroModelica {
         _compiledFunctions(),
         _symbols(),
         _localSymbols(),
-        _algebraics(),
-        _dependencies(),
         _fileName()
     {
       _annotations.insert(pair<string, int>("StartTime", 0));
@@ -401,18 +399,6 @@ namespace MicroModelica {
     {
       Option<CompiledFunction> cf = _compiledFunctions[name];
       return cf.is_initialized();
-    }
-
-    void 
-    Utils::setAlgebraics(EquationTable algebraics)
-    {
-      _algebraics = algebraics;
-    }
-
-    EquationTable 
-    Utils::algebraics()
-    {
-      return _algebraics;
     }
   }
 }

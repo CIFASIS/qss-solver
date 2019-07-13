@@ -229,7 +229,7 @@ namespace MicroModelica {
       string s = cr->name();
       if(_generateIndexes)
       {
-        s += cr->print();
+        s = cr->print();
       }
       map<string, symbol>::iterator i = _directory.find(s);
       if(i != _directory.end())

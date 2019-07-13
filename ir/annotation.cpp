@@ -46,10 +46,6 @@ namespace MicroModelica {
       _annotations.insert(pair<string, FunctionAnnotation::type>("LibraryDirectory", LIBRARY_DIRECTORY));
     }
 
-    FunctionAnnotation::~FunctionAnnotation()
-    {
-    }
-
     bool
     FunctionAnnotation::hasDerivative()
     {
@@ -241,10 +237,6 @@ namespace MicroModelica {
       _sample.push_back(1e-2);
       _DQMin.push_back(1e-3);
       _DQRel.push_back(1e-3);
-    }
-
-    ModelAnnotation::~ModelAnnotation()
-    {
     }
 
     void
@@ -1128,7 +1120,7 @@ namespace MicroModelica {
     }
 
     void
-    EvalAnnotation::_setBoolean(bool condition, AnnotationValue *e)
+    EvalAnnotation::setBoolean(bool condition, AnnotationValue *e)
     {
       if(condition)
       {
@@ -1147,28 +1139,28 @@ namespace MicroModelica {
       switch(bot)
       {
         case BINOPOR:
-          _setBoolean(e1.integer() || e2.integer(), &av);
+          setBoolean(e1.integer() || e2.integer(), &av);
           break;
         case BINOPAND:
-          _setBoolean(e1.integer() && e2.integer(), &av);
+          setBoolean(e1.integer() && e2.integer(), &av);
           break;
         case BINOPLOWER:
-          _setBoolean((e1.integer() < e2.integer()) || (e1.real() < e2.real()), &av);
+          setBoolean((e1.integer() < e2.integer()) || (e1.real() < e2.real()), &av);
           break;
         case BINOPLOWEREQ:
-          _setBoolean((e1.integer() <= e2.integer()) || (e1.real() <= e2.real()), &av);
+          setBoolean((e1.integer() <= e2.integer()) || (e1.real() <= e2.real()), &av);
           break;
         case BINOPGREATER:
-          _setBoolean((e1.integer() > e2.integer()) || (e1.real() > e2.real()), &av);
+          setBoolean((e1.integer() > e2.integer()) || (e1.real() > e2.real()), &av);
           break;
         case BINOPGREATEREQ:
-          _setBoolean((e1.integer() >= e2.integer()) || (e1.real() >= e2.real()), &av);
+          setBoolean((e1.integer() >= e2.integer()) || (e1.real() >= e2.real()), &av);
           break;
         case BINOPCOMPNE:
-          _setBoolean((e1.integer() != e2.integer()) || (e1.real() != e2.real()), &av);
+          setBoolean((e1.integer() != e2.integer()) || (e1.real() != e2.real()), &av);
           break;
         case BINOPCOMPEQ:
-          _setBoolean((e1.integer() == e2.integer()) || (e1.real() == e2.real()), &av);
+          setBoolean((e1.integer() == e2.integer()) || (e1.real() == e2.real()), &av);
           break;
         case BINOPADD:
           av.setInteger(e1.integer() + e2.integer());

@@ -24,9 +24,6 @@
 #include "../ast/ast_types.h"
 #include "../util/symbol_table.h"
 
-template<class R>
-class AST_Expression_Visitor;
-
 namespace MicroModelica {
   namespace IR {
 

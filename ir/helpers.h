@@ -21,6 +21,8 @@
 #define MMO_HELPERS_H 
 
 #include <string>
+
+#include "annotation.h"
 #include "index.h"
 #include "../deps/dependency_matrix.h"
 #include "../util/symbol_table.h"
@@ -258,6 +260,45 @@ namespace MicroModelica {
     };
     
     typedef ModelTable<int, Input> InputTable;
+
+    class ModelConfig
+    {
+              public:
+        /**
+         *
+         * @return
+         */
+        static ModelConfig&
+        instance()
+        {
+          static ModelConfig _instance;
+          return _instance;
+        }
+
+        ~ModelConfig() = default;
+        inline void 
+        setAlgebraics(IR::EquationTable algebraics) { _algebraics = algebraics; };
+        inline IR::EquationTable 
+        algebraics() { return _algebraics; };
+        inline Deps::ModelDependencies
+        dependencies() { return _dependencies; };
+        inline void 
+        setDependencies(Deps::ModelDependencies dependencies) { _dependencies = dependencies; };
+        inline ModelAnnotation
+        modelAnnotations() { return _model_annotations; };
+        inline void 
+        setModelAnnotations(ModelAnnotation model_annotations) { _model_annotations = model_annotations; };
+        bool 
+        generateDerivatives();
+        inline int 
+        order() { return _model_annotations.order(); }; 
+
+      private:
+        ModelConfig();
+        ModelAnnotation          _model_annotations;
+        EquationTable            _algebraics;
+        Deps::ModelDependencies  _dependencies;
+    };
   }
 }
 

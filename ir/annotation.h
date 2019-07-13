@@ -83,10 +83,7 @@ namespace MicroModelica {
          *
          */
         FunctionAnnotation();
-        /**
-         *
-         */
-        ~FunctionAnnotation();
+        ~FunctionAnnotation() = default;
         /**
          *
          * @return
@@ -180,15 +177,9 @@ namespace MicroModelica {
     class ModelAnnotation
     {
       public:
-        /**
-         *
-         * @param data
-         */
         ModelAnnotation(Util::VarSymbolTable& symbolTable);
-        /**
-         *
-         */
-        ~ModelAnnotation();
+        ModelAnnotation() {};
+        ~ModelAnnotation() = default;
         /**
          *
          * @param x
@@ -504,6 +495,7 @@ namespace MicroModelica {
         jacobian();
         bool
         classic();
+
       private:
         /**
          *
@@ -554,6 +546,7 @@ namespace MicroModelica {
         getPartitionMethod(string s);
         DT_Synch
         getDtSynch(string s);
+
         Solver                _solver;
         string                _solverString;
         string                _commInterval;
@@ -664,12 +657,11 @@ namespace MicroModelica {
         /**
          *
          */
-        ~EvalAnnotation()
-        {
-        }
+        ~EvalAnnotation() = default;
+
       private:
         void
-        _setBoolean(bool condition, AnnotationValue *e);
+        setBoolean(bool condition, AnnotationValue *e);
         AnnotationValue
         foldTraverseElement(AST_Expression);
         AnnotationValue

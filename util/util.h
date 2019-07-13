@@ -81,9 +81,7 @@ namespace MicroModelica {
           static Utils _instance;
           return _instance;
         }
-        /**
-         *
-         */
+
         ~Utils();
         string
         trimString(string str);
@@ -215,14 +213,6 @@ namespace MicroModelica {
         setSymbols(const VarSymbolTable& symbols) { _symbols = symbols; };
         inline void 
         setLocalSymbols() { _localSymbols.clear(); };
-        void 
-        setAlgebraics(IR::EquationTable algebraics);
-        IR::EquationTable 
-        algebraics();
-        inline Deps::ModelDependencies
-        dependencies() { return _dependencies; };
-        inline void 
-        setDependencies(Deps::ModelDependencies dependencies) { _dependencies = dependencies; };
         inline std::string 
         fileName() { return _fileName; };
       private:
@@ -241,8 +231,6 @@ namespace MicroModelica {
         IR::CompiledFunctionTable         _compiledFunctions;
         VarSymbolTable                    _symbols;
         SymbolTable                       _localSymbols;
-        IR::EquationTable                 _algebraics;
-        Deps::ModelDependencies           _dependencies;
         std::string                       _fileName;
     };
 

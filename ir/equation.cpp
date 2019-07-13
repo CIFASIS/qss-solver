@@ -25,6 +25,8 @@
 #include "../ast/ast_builder.h"
 #include "../ast/expression.h"
 #include "../ast/equation.h"
+#include "../util/derivative.h"
+#include "../util/visitors/replace_der.h"
 #include "../util/visitors/called_functions.h"
 #include "../util/visitors/algebraics.h"
 #include "../util/visitors/autonomous.h"
@@ -74,10 +76,6 @@ namespace MicroModelica {
       _id(id),
       _offset(0)
     {
-      Autonomous autonomous(_symbols);
-      _autonomous = autonomous.apply(_rhs.expression());
-      CalledFunctions cf;
-      _calledFunctions = cf.apply(_rhs.expression());
       process(eq);
     }
 
@@ -154,6 +152,22 @@ namespace MicroModelica {
       _autonomous = autonomous.apply(_rhs.expression());
       CalledFunctions cf;
       _calledFunctions = cf.apply(_rhs.expression());
+      initializeDerivatives();
+    }
+
+    void 
+    Equation::initializeDerivatives()
+    {
+      if (ModelConfig::instance().generateDerivatives()) {
+        ExpressionDerivator ed;
+        ReplaceDer replace_der(_symbols);
+        AST_Expression exp1 = ed.derivate(_rhs.expression(), _symbols, _rhs);
+        _derivatives[0] = Expression(exp1, _symbols);
+        AST_Expression exp2 = ed.derivate(exp1, _symbols, _rhs);
+        _derivatives[1] = Expression(replace_der.apply(exp2), _symbols);
+        AST_Expression exp3 = ed.derivate(exp2, _symbols, _rhs);
+        _derivatives[2] = Expression(replace_der.apply(exp3), _symbols);       
+      }
     }
 
     string 
@@ -173,7 +187,7 @@ namespace MicroModelica {
     EquationDependencyMatrix 
     Equation::dependencyMatrix() const
     {
-      ModelDependencies deps = Utils::instance().dependencies(); 
+      ModelDependencies deps = ModelConfig::instance().dependencies(); 
       switch(_type)
       {
         case EQUATION::ClassicDerivative:  
@@ -233,6 +247,21 @@ namespace MicroModelica {
     }
 
     string 
+    Equation::generateDerivatives() const
+    {
+      ModelConfig config = ModelConfig::instance();
+      if (config.generateDerivatives()) {
+        stringstream buffer;
+        int order = config.order() - 1;
+        for (int i = 0; i < order; i++) {
+          buffer << block << prefix() << lhsStr() << " = " << _derivatives[i] << ";" << endl;  
+        }
+        return buffer.str();
+      }
+      return "";
+    }
+
+    string 
     Equation::print() const
     {
       stringstream buffer;
@@ -255,6 +284,7 @@ namespace MicroModelica {
           block += TAB;
         }
       }
+      buffer << generateDerivatives() << endl;
       buffer << block << prefix() << lhsStr() << " = " << _rhs << ";";
       if (_type == EQUATION::ClassicDerivative) {
         if (_range) {

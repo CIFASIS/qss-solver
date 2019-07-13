@@ -278,12 +278,12 @@ namespace MicroModelica {
     FunctionPrinter::algebraics(EquationDependencyMatrix eqdm, depId key)
     {
       stringstream buffer;
-      EquationTable algebraics = Utils::instance().algebraics();
+      EquationTable algebraic = ModelConfig::instance().algebraics();
       Option<VariableDependencies> eqd = eqdm[key];
       if (eqd) {
         VariableDependencies::iterator eqIt;
         for (eqIt = eqd->begin(); eqIt != eqd->end(); eqIt++) {
-          Option<Equation> alg = algebraics[eqIt->ifce.equationId()];
+          Option<Equation> alg = algebraic[eqIt->ifce.equationId()];
           if (alg) {
             buffer << alg.get() << endl;
           } else {
@@ -387,6 +387,20 @@ namespace MicroModelica {
     {
       out << i.print();
       return out;
+    }
+
+    ModelConfig::ModelConfig() :
+    _model_annotations(),
+    _algebraics(),
+    _dependencies()
+    {
+
+    }
+
+    bool
+    ModelConfig::generateDerivatives()
+    {
+      return _model_annotations.symDiff() && !_model_annotations.classic();
     }
   }
 }

@@ -1,4 +1,4 @@
-# Generated files. 
+# Generated files.
 /usr
 
 # Modelica C Compiler files.
@@ -51,3 +51,4 @@ ChangeLog
 /dependency/config.*
 /dependency/lib
 /dependency/autom4te.cache
+mmoc.sublime-workspace

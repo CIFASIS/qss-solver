@@ -105,6 +105,7 @@ namespace MicroModelica {
         isValid() const;
         bool 
         hasAlgebraics();
+
       private:
         void 
         process(AST_Equation eq);
@@ -118,9 +119,15 @@ namespace MicroModelica {
         prefix() const;
         std::string 
         lhsStr() const;
+        void 
+        initializeDerivatives();
+        std::string 
+        generateDerivatives() const;
+        
         AST_Equation         _eq;
         Expression           _lhs;
         Expression           _rhs;
+        Expression           _derivatives[3];
         Option<Range>        _range;
         bool                 _autonomous;
         Util::VarSymbolTable _symbols;
