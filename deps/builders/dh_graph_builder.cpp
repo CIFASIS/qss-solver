@@ -69,8 +69,7 @@ namespace MicroModelica {
           vp.type = VERTEX::Influencer;
           vp.var = var;
           _variableDescriptors.push_back(add_vertex(vp, graph));
-        }
-        else if (var.isAlgebraic()) {
+        } else if (var.isAlgebraic()) {
           vp.type = VERTEX::Algebraic;
           vp.var = var;
           _variableDescriptors.push_back(add_vertex(vp, graph));

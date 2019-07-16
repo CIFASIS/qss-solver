@@ -83,8 +83,10 @@ namespace MicroModelica {
         _equationDescriptors.push_back(add_vertex(vp,graph));
       }
 
-      foreach_(EqVertex sink, _equationDescriptors){
-        foreach_(IfrVertex source, _variableDescriptors){
+      cout << "Output GRAPH" << endl;
+
+      foreach_(EqVertex sink, _equationDescriptors) {
+        foreach_(IfrVertex source, _variableDescriptors) {  
           GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
           if(edge.exists()) {
             IndexPairSet ips = edge.indexes();
