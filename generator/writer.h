@@ -57,7 +57,7 @@ namespace MicroModelica {
         Alloc_Event_LHSST,  //!< WR_ALLOC_EVENT_LHSST
         Alloc_Event_RHSST,  //!< WR_ALLOC_EVENT_RHSST
         Alloc_Event_Alg_RHSST,  //!< WR_ALLOC_EVENT_ALG_RHSST
-        Alloc_Event_Discretes,    //!< WR_ALLOC_EVENT_DSC
+        Alloc_Event_LHSDSC,    //!< WR_ALLOC_EVENT_DSC
         Alloc_Output_States,       //!< WR_Alloc_Output_StateS
         Alloc_Output_Alg_States,       //!< WR_ALLOC_OUTPUT_ALG_StateS
         Alloc_Output_Discretes,       //!< WR_ALLOC_OUTPUT_Discretes
@@ -81,7 +81,7 @@ namespace MicroModelica {
         Init_Event_LHSST,   //!< WR_INIT_EVENT_LHSST
         Init_Event_RHSST,   //!< WR_INIT_EVENT_RHSST
         Init_Event_Alg_RHSST,   //!< WR_INIT_EVENT_ALG_RHSST
-        Init_Event_Discretes,     //!< WR_INIT_EVENT_DSC
+        Init_Event_LHSDSC,     //!< WR_INIT_EVENT_DSC
         Init_Output,       //!< WR_INIT_OUTPUT
         Init_Output_States, //!< WR_INIT_OUTPUT_STATES
         Init_Output_Alg_States, //!< WR_INIT_OUTPUT_ALG_STATES

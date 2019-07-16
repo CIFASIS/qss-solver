@@ -392,6 +392,16 @@ namespace MicroModelica {
       initializeMatrix(deps.DS(), WRITER::Alloc_Matrix_DS, WRITER::Init_Matrix_DS);
       inputs();
 
+      // Initialize Event Data Structures.
+      initializeMatrix(deps.SZ(), WRITER::Alloc_Matrix_SZ, WRITER::Init_Matrix_SZ);
+      initializeMatrix(deps.ZS(), WRITER::Alloc_Matrix_ZS, WRITER::Init_Matrix_ZS);
+
+      initializeMatrix(deps.HZ(), WRITER::Alloc_Matrix_HZ, WRITER::Init_Matrix_HZ);
+      initializeMatrix(deps.HD(), WRITER::Alloc_Matrix_HD, WRITER::Init_Matrix_HD);
+      initializeMatrix(deps.LHSDsc(), WRITER::Alloc_Event_LHSDSC, WRITER::Init_Event_LHSDSC);
+      initializeMatrix(deps.LHSSt(), WRITER::Alloc_Event_LHSST, WRITER::Init_Event_LHSST);
+      initializeMatrix(deps.RHSSt(), WRITER::Alloc_Event_RHSST, WRITER::Init_Event_RHSST);
+
       // Initialize Output Data Structures.
       allocateOutput();
       initializeMatrix(deps.OS(), WRITER::Alloc_Output_States, WRITER::Init_Output_States);
