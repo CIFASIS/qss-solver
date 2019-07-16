@@ -56,7 +56,7 @@ namespace MicroModelica {
       stringstream buffer;
       EquationTable outputs = _model.outputs();
       EquationTable::iterator it;
-      Utils::instance().setLocalSymbols();
+      Utils::instance().clearLocalSymbols();
       FunctionPrinter fp;
       for(Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it))
       {
@@ -149,7 +149,7 @@ namespace MicroModelica {
       EventTable events = _model.events();
       EventTable::iterator it;
       FunctionPrinter fp;
-      Utils::instance().setLocalSymbols();
+      Utils::instance().clearLocalSymbols();
       for(Event event = events.begin(it); !events.end(it); event = events.next(it))
       {
         Equation zc = event.zeroCrossing();
@@ -171,7 +171,7 @@ namespace MicroModelica {
       VarSymbolTable symbols = _model.symbols();
       stringstream buffer;
       FunctionPrinter fp;
-      Utils::instance().setLocalSymbols();
+      Utils::instance().clearLocalSymbols();
       for(Event event = events.begin(it); !events.end(it); event = events.next(it))
       {
         _writer->write(event.handler(EVENT::Positive), (event.hasRange() ? WRITER::Handler_Pos_Generic : WRITER::Handler_Pos_Simple)); 
@@ -383,7 +383,7 @@ namespace MicroModelica {
     ClassicModelInstance::initializeDataStructures()
     {
       stringstream buffer;
-      Utils::instance().setLocalSymbols();
+      Utils::instance().clearLocalSymbols();
       allocateSolver();
       initialCode();
       ModelDependencies deps = _model.dependencies();
@@ -391,6 +391,7 @@ namespace MicroModelica {
       initializeMatrix(deps.SD(), WRITER::Alloc_Matrix_SD, WRITER::Init_Matrix_SD);
       initializeMatrix(deps.DS(), WRITER::Alloc_Matrix_DS, WRITER::Init_Matrix_DS);
       inputs();
+
       // Initialize Output Data Structures.
       allocateOutput();
       initializeMatrix(deps.OS(), WRITER::Alloc_Output_States, WRITER::Init_Output_States);
@@ -409,7 +410,7 @@ namespace MicroModelica {
       EquationTable::iterator it;
       VarSymbolTable symbols = _model.symbols();
       stringstream buffer;
-      Utils::instance().setLocalSymbols();
+      Utils::instance().clearLocalSymbols();
       for(Equation alg = algebraics.begin(it); !algebraics.end(it); alg = algebraics.next(it))
       {
          _writer->write(alg, WRITER::Model_Simple);

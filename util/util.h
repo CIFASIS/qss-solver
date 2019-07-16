@@ -212,7 +212,7 @@ namespace MicroModelica {
         inline void 
         setSymbols(const VarSymbolTable& symbols) { _symbols = symbols; };
         inline void 
-        setLocalSymbols() { _localSymbols.clear(); };
+        clearLocalSymbols() { _localSymbols.clear(); };
         inline std::string 
         fileName() { return _fileName; };
       private:
