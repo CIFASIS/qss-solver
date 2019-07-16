@@ -424,16 +424,18 @@ namespace MicroModelica {
           }
         } else if (_source.type == VERTEX::Influencee) {
           ExpressionList exps;
-          if (sinkIsEvent() && 
-              _source.id == _sink.id) {
-            _exist = true;
-            exps.push_back(_sink.stm.event);
-            build(exps);
-          } else if (sinkIsOutput() &&
-            _source.id == _sink.eq.id()) { 
-            _exist = true;
-            exps.push_back(_sink.eq.lhs());
-            build(exps);
+          if (sinkIsEvent()) {
+            if (_source.id == _sink.id) {
+              _exist = true;
+              exps.push_back(_sink.stm.event);
+              build(exps);
+            }
+          } else if (sinkIsOutput()) {
+            if (_source.id == _sink.eq.id()) { 
+              _exist = true;
+              exps.push_back(_sink.eq.lhs());
+              build(exps);
+            }
           } else {
             _exist = occurs.apply(_sink.eq.lhs().expression());
             if(_exist) {
