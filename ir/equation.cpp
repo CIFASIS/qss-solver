@@ -284,7 +284,7 @@ namespace MicroModelica {
           block += TAB;
         }
       }
-      buffer << generateDerivatives() << endl;
+      buffer << generateDerivatives();
       buffer << block << prefix() << lhsStr() << " = " << _rhs << ";";
       if (_type == EQUATION::ClassicDerivative) {
         if (_range) {

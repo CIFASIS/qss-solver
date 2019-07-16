@@ -57,7 +57,7 @@ namespace MicroModelica {
       for(Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it))
       {
         if (var.isAlgebraic()) {
-          VertexProperty vp;
+          VertexProperty vp = VertexProperty();
           vp.type = VERTEX::Algebraic;
           vp.var = var;
           _sourceDescriptors.push_back(add_vertex(vp, graph));
@@ -70,13 +70,13 @@ namespace MicroModelica {
         if (zc.hasAlgebraics()) {
           Expression exp = ev.exp();
           int id = ev.id();
-          VertexProperty vp;
+          VertexProperty vp = VertexProperty();
           vp.type = VERTEX::Equation;
           vp.id = id;
           vp.eq = zc; 
           _equationDescriptors.push_back(add_vertex(vp, graph)); 
 
-          VertexProperty ifr;
+          VertexProperty ifr = VertexProperty();
           ifr.type = VERTEX::Influencer;
           Option<Variable> assigned = zc.LHSVariable();
           assert(assigned);

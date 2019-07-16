@@ -66,17 +66,38 @@ namespace MicroModelica {
     struct StatementVertex {
       IR::Expression event;
       IR::Expression exp;
-      Option<IR::Range>  range;      
+      Option<IR::Range>  range;
+      StatementVertex() :
+        event(IR::Expression()),
+        exp(IR::Expression()),
+        range(Option<IR::Range>())
+        {}      
     };
 
     /// @brief This is the property for a vertex in the incidence graph. Nodes can be of two types: Equation or Unknown.
-    struct VertexProperty {
+    class VertexProperty {
+      public:
       VERTEX::Type type;
       IR::Expression exp;
       IR::Equation eq;
       Util::Variable var;
       StatementVertex stm;
       int id;
+      VertexProperty() :
+        type(VERTEX::Equation),
+        exp(IR::Expression()),
+        eq(IR::Equation()),
+        var(Util::Variable()),
+        stm(StatementVertex())
+        {}
+      VertexProperty(const VertexProperty& other) 
+        { 
+          type = other.type;
+          exp = other.exp;
+          eq = other.eq;
+          var = other.var;
+          stm = other.stm;
+        }
     };
 
     class Label {
@@ -180,8 +201,8 @@ namespace MicroModelica {
         sinkIsOutput();
 
       private:  
-        struct VertexProperty  _source;
-        struct VertexProperty  _sink;
+        VertexProperty         _source;
+        VertexProperty         _sink;
         bool                   _exist;
         Util::VarSymbolTable   _symbols;
         IndexPairSet           _ips;

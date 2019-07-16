@@ -45,7 +45,7 @@ namespace MicroModelica {
         StatementTable::iterator stm_it;
         for (Statement stm = stms.begin(stm_it); !stms.end(stm_it); stm = stms.next(stm_it)) {
           for (Expression e : stm.assignments(_search)) {
-            VertexProperty vp;
+            VertexProperty vp = VertexProperty();
             vp.type = VERTEX::Statement;
             vp.stm.exp = e;
             vp.stm.event = exp;
@@ -63,7 +63,7 @@ namespace MicroModelica {
       VarSymbolTable::iterator it;
       for(Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it))
       {
-        VertexProperty vp;
+        VertexProperty vp = VertexProperty();
         bool add_influencer = (_ifr_type == DHGRAPHBUILDER::State) ? var.isState() : var.isDiscrete();
         if(add_influencer) {
           vp.type = VERTEX::Influencer;
@@ -82,7 +82,7 @@ namespace MicroModelica {
         int id = ev.id();
         addStatements(ev.positiveHandler(), graph, exp, id); 
         addStatements(ev.negativeHandler(), graph, exp, id);
-        VertexProperty icee;
+        VertexProperty icee = VertexProperty();
         icee.type = VERTEX::Influencee;
         icee.id = id; 
         _eventDescriptors.push_back(add_vertex(icee, graph)); 
@@ -90,7 +90,7 @@ namespace MicroModelica {
       EquationTable::iterator eq_it;
       for(Equation eq = _algebraics.begin(eq_it); !_algebraics.end(eq_it); eq = _algebraics.next(eq_it))
       {
-        VertexProperty vp;
+        VertexProperty vp = VertexProperty();
         vp.type = VERTEX::Equation;
         vp.eq = eq;
         _statementDescriptors.push_back(add_vertex(vp,graph));

@@ -304,7 +304,7 @@ namespace Deps {
     }
 
     bool MDI::unique() const {
-      return Size() == Dimension();
+      return Size() == 1;
     }
 
     // INDEX_PAIR    

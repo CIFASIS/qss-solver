@@ -48,7 +48,7 @@ namespace MicroModelica {
       VarSymbolTable::iterator it;
       for(Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it))
       {
-        VertexProperty vp;
+        VertexProperty vp = VertexProperty();
         bool varType = _type == OUTPUT::SO ? var.isState() : var.isDiscrete(); 
         if(varType) {
           vp.type = VERTEX::Influencer;
@@ -66,18 +66,18 @@ namespace MicroModelica {
       EquationTable::iterator eqit;
       for(Equation eq = _equations.begin(eqit); !_equations.end(eqit); eq = _equations.next(eqit))
       {
-        VertexProperty vp;
+        VertexProperty vp = VertexProperty();
         vp.type = VERTEX::Equation;
         vp.eq = eq;
         _equationDescriptors.push_back(add_vertex(vp,graph));
-        VertexProperty icee;
+        VertexProperty icee = VertexProperty();
         icee.type = VERTEX::Influencee;
         icee.id = eq.id();
         _outputDescriptors[eq.id()] = add_vertex(icee, graph);
       }
       for(Equation eq = _algebraics.begin(eqit); !_algebraics.end(eqit); eq = _algebraics.next(eqit))
       {
-        VertexProperty vp;
+        VertexProperty vp = VertexProperty();
         vp.type = VERTEX::Equation;
         vp.eq = eq;
         _equationDescriptors.push_back(add_vertex(vp,graph));

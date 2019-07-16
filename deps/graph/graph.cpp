@@ -356,7 +356,7 @@ namespace MicroModelica {
       return Offset(_offsets);
     }
 
-    GenerateEdge::GenerateEdge(struct VertexProperty source, struct VertexProperty sink, 
+    GenerateEdge::GenerateEdge(VertexProperty source, VertexProperty sink, 
                                VarSymbolTable symbols, EDGE::Direction dir, 
                                VERTEX::Eval eval) : 
       _source(source), 

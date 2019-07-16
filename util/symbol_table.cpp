@@ -34,6 +34,29 @@ namespace MicroModelica {
     
     /* Variable class. */
 
+    Variable::Variable() :
+        _unknown(false),
+        _discrete(false), 
+        _t(nullptr), 
+        _tp(TP_CONSTANT), 
+        _m(nullptr), 
+        _comm(nullptr), 
+        _builtin(false), 
+        _size(), 
+        _value(0), 
+        _exp(nullptr), 
+        _hasStart(false), 
+        _hasEach(false), 
+        _hasAssigment(false), 
+        _name(), 
+        _isArray(false),
+        _hasOffset(false),
+        _offset(0),
+        _realType(NotAsigned)
+    {
+
+    }
+
     Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c) :
         _discrete(false), 
         _t(t), 
@@ -65,7 +88,7 @@ namespace MicroModelica {
         _builtin(false), 
         _size(s), 
         _value(0), 
-        _exp(NULL), 
+        _exp(nullptr), 
         _hasStart(false), 
         _hasEach(false), 
         _hasAssigment(false), 
@@ -76,6 +99,30 @@ namespace MicroModelica {
         _realType(NotAsigned)
     {
       processModification();
+    }
+
+    Variable&
+    Variable::operator=(const Variable &other) 
+    {
+        _discrete = other._discrete; 
+        _t = other._t; 
+        _tp = other._tp; 
+        _m = other._m; 
+        _comm = other._comm; 
+        _builtin = other._builtin; 
+        _size = other._size; 
+        _value = other._value; 
+        _exp = other._exp; 
+        _hasStart = other._hasStart; 
+        _hasEach = other._hasEach; 
+        _hasAssigment = other._hasAssigment; 
+        _name = other._name; 
+        _isArray = other._isArray;
+        _hasOffset = other._hasOffset;
+        _offset = other._offset;
+        _realType = other._realType;
+
+        return *this;
     }
 
     /*! \brief Process the argument modification to determine the variable modifiers if any.

@@ -45,7 +45,7 @@ namespace MicroModelica {
     class Variable 
     {
       public:
-        Variable() {};
+        Variable();
         /**
          *
          * @param t
@@ -62,12 +62,16 @@ namespace MicroModelica {
          * @param s
          */
         Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array);
+        Variable&
+        operator=(const Variable& other);
+
         typedef enum 
         {
           State,
           Algebraic,
           NotAsigned
         } RealType;
+
         inline void 
         setRealType(RealType type) { _realType = type; };
         /**
@@ -307,6 +311,7 @@ namespace MicroModelica {
         inline bool 
         isModelVar() const { return isState() || isDiscrete() || 
                                     isAlgebraic() || isParameter() || isEqType(); };
+
       private:
         void
         processModification();
@@ -314,6 +319,7 @@ namespace MicroModelica {
         unsetAssignment() { _hasAssigment = false; };
         inline void
         unsetStartEach() { _hasEach = false; _hasStart = false; };
+
         bool              _unknown;
         bool              _discrete;
         Type              _t;

@@ -77,7 +77,7 @@ namespace MicroModelica {
         {
           if(v->isState() || v->isAlgebraic())
           {
-            GiNaC::ex der_exp = dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff( it->second);
+            GiNaC::ex der_exp = dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff(it->second);
             jacobianExps[it->first] = Expression(rd.apply(toe.convert(der_exp)), vt);
           }
         }
