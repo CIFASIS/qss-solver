@@ -62,7 +62,7 @@ namespace MicroModelica {
     typedef int grp_t;
 #endif
 
-#define TAB "  "
+#define TAB "\t"
 
 
     /**
