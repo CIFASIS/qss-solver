@@ -458,10 +458,7 @@ namespace MicroModelica {
       } 
       cout << "Expressions: " << exps.size() << endl;
       for (Expression exp : exps) {
-        if (!exp.isReference()) {
-          cout << "Error: expression must be a reference." << endl;
-          break;
-        }
+        assert(exp.isReference());
         cout << "Expressions: " << exp << endl;
         EvalOccur eval_occur(exp, _symbols, sink_range);
         MDI mdi_dom(eval_occur.intervals());
@@ -472,7 +469,7 @@ namespace MicroModelica {
         }
         if (sink_range) { 
           if (eval_occur.hasIndex()) { // N N also includes 1 N
-            cout << "Intenta agregar: " << exp << endl;
+            cout << "Intenta agregar caso 0: " << exp << endl;
             _ips.insert(IndexPair(mdi_dom, mdi_ran, eval_occur.offsets(), eval_occur.usages(), exp));  
           } else { // 1 N
             cout << "Intenta agregar caso 1: " << exp << endl;
@@ -480,10 +477,10 @@ namespace MicroModelica {
           }
         } else {
           if (eval_occur.hasIndex()) { // 1 1 In this case the index must be an integer expression.
-            cout << "Intenta agregar: caso 2" << exp << endl;
+            cout << "Intenta agregar caso 2:" << exp << endl;
             _ips.insert(IndexPair(mdi_dom, MDI(0), eval_occur.offsets(), eval_occur.usages(), exp));
           } else { // 1 1
-            cout << "Intenta agregar: caso 3" << exp << endl;
+            cout << "Intenta agregar caso 3:" << exp << endl;
             _ips.insert(IndexPair(MDI(0), MDI(0), Offset(), Usage(), exp));
           }
         } 
