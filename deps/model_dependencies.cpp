@@ -46,9 +46,12 @@ namespace MicroModelica {
     static MatrixConfig SZCfg = { INT_CONTAINER, { "nSZ", "nZS", "SZ", "ZS" }, { STATES, EVENTS } };
     static MatrixConfig SOCfg = { OUT_CONTAINER, { "nSO", "nOS", "SO", "OS" }, { STATES, OUTPUTS } };
     static MatrixConfig DOCfg = { OUT_CONTAINER, { "nDO", "nOD", "DO", "OD" }, { DISCRETES, OUTPUTS } };
-    static MatrixConfig HHCfg = { OUT_CONTAINER, { "nDO", "nOD", "DO", "OD" }, { DISCRETES, OUTPUTS } };
-    static MatrixConfig HDCfg = { OUT_CONTAINER, { "nDO", "nOD", "DO", "OD" }, { DISCRETES, OUTPUTS } };
-    static MatrixConfig HZCfg = { OUT_CONTAINER, { "nDO", "nOD", "DO", "OD" }, { DISCRETES, OUTPUTS } };
+    static MatrixConfig HHCfg = { INT_CONTAINER, { "nHE", "nEH", "HE", "EH" }, { EVENTS, EVENTS } };
+    static MatrixConfig HDCfg = { INT_CONTAINER, { "nHD", "nDH", "HD", "DH" }, { EVENTS, STATES } };
+    static MatrixConfig HZCfg = { INT_CONTAINER, { "nHZ", "nZH", "HZ", "ZH" }, { EVENTS, EVENTS } };
+    static MatrixConfig LHSDSCCfg = { INT_CONTAINER, { "nLHSDsc", "nLHSDsc", "LHSDsc", "LHSDsc" }, { EVENTS, EVENTS } };
+    static MatrixConfig LHSSTCfg = { INT_CONTAINER, { "nLHSSt", "nLHSSt", "LHSSt", "LHSSt" }, { EVENTS, EVENTS } };
+    static MatrixConfig RHSSTCfg = { INT_CONTAINER, { "nRHSSt", "nRHSSt", "RHSSt", "RHSSt" }, { EVENTS, EVENTS } };
 
     ModelDependencies::ModelDependencies() :
       _SD(SDCfg),
@@ -57,10 +60,10 @@ namespace MicroModelica {
       _DO(DOCfg),
       _HD(HDCfg),
       _HZ(HZCfg),
-      _LHSDsc(HZCfg),
-      _LHSSt(HZCfg),
-      _RHSSt(HZCfg),
-      _HH(HZCfg),
+      _LHSDsc(LHSDSCCfg),
+      _LHSSt(LHSSTCfg),
+      _RHSSt(RHSSTCfg),
+      _HH(HHCfg),
       _deps()
     {
     }
