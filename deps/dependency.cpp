@@ -42,9 +42,7 @@ namespace MicroModelica {
         for(i = 0; i < d; i++) {
           intervals.push_back(Interval::closed(1,var.size(i)));  
         }
-      } else {
-        intervals.push_back(Interval::closed(1,1));
-      }
+      } 
       return MDI(intervals); 
     }
 
