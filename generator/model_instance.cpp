@@ -394,7 +394,6 @@ namespace MicroModelica {
 
       // Initialize Event Data Structures.
       initializeMatrix(deps.SZ(), WRITER::Alloc_Matrix_SZ, WRITER::Init_Matrix_SZ);
-      initializeMatrix(deps.ZS(), WRITER::Alloc_Matrix_ZS, WRITER::Init_Matrix_ZS);
 
       initializeMatrix(deps.HZ(), WRITER::Alloc_Matrix_HZ, WRITER::Init_Matrix_HZ);
       initializeMatrix(deps.HD(), WRITER::Alloc_Matrix_HD, WRITER::Init_Matrix_HD);
@@ -527,9 +526,23 @@ namespace MicroModelica {
       _writer->print(WRITER::Init_Code);
       _writer->print(WRITER::Alloc_Matrix_SD);
       _writer->print(WRITER::Alloc_Matrix_DS);
+      _writer->print(WRITER::Alloc_Matrix_SZ);
+      _writer->print(WRITER::Alloc_Matrix_ZS);
+      _writer->print(WRITER::Alloc_Matrix_HZ);
+      _writer->print(WRITER::Alloc_Matrix_HD);
+      _writer->print(WRITER::Alloc_Event_LHSDSC);
+      _writer->print(WRITER::Alloc_Event_LHSST);
+      _writer->print(WRITER::Alloc_Event_RHSST);
       _writer->print(WRITER::Init_Matrix);
       _writer->print(WRITER::Init_Matrix_SD);
       _writer->print(WRITER::Init_Matrix_DS);
+      _writer->print(WRITER::Init_Matrix_SZ);
+      _writer->print(WRITER::Init_Matrix_ZS);
+      _writer->print(WRITER::Init_Matrix_HZ);
+      _writer->print(WRITER::Init_Matrix_HD);
+      _writer->print(WRITER::Init_Event_LHSDSC);
+      _writer->print(WRITER::Init_Event_LHSST);
+      _writer->print(WRITER::Init_Event_RHSST);
       _writer->print(WRITER::Input);
       _writer->print(WRITER::Init_Output);
       _writer->print(WRITER::Alloc_Output_States);
