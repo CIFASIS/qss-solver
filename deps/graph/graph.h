@@ -77,27 +77,29 @@ namespace MicroModelica {
     /// @brief This is the property for a vertex in the incidence graph. Nodes can be of two types: Equation or Unknown.
     class VertexProperty {
       public:
-      VERTEX::Type type;
-      IR::Expression exp;
-      IR::Equation eq;
-      Util::Variable var;
-      StatementVertex stm;
-      int id;
-      VertexProperty() :
-        type(VERTEX::Equation),
-        exp(IR::Expression()),
-        eq(IR::Equation()),
-        var(Util::Variable()),
-        stm(StatementVertex())
-        {}
-      VertexProperty(const VertexProperty& other) 
-        { 
-          type = other.type;
-          exp = other.exp;
-          eq = other.eq;
-          var = other.var;
-          stm = other.stm;
-        }
+        VERTEX::Type type;
+        IR::Expression exp;
+        IR::Equation eq;
+        Util::Variable var;
+        StatementVertex stm;
+        int id;
+        VertexProperty() :
+          type(VERTEX::Equation),
+          exp(IR::Expression()),
+          eq(IR::Equation()),
+          var(Util::Variable()),
+          stm(StatementVertex()),
+          id(0)
+          {}
+        VertexProperty(const VertexProperty& other) 
+          { 
+            type = other.type;
+            exp = other.exp;
+            eq = other.eq;
+            var = other.var;
+            stm = other.stm;
+            id = other.id;
+          }
     };
 
     class Label {
