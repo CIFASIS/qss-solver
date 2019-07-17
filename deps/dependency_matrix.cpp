@@ -86,7 +86,7 @@ namespace MicroModelica {
           if (_method == VDM::Alloc) {
             buffer << range.block() << _cfg.container << matrix << "[" << ifr << "]++;" << endl;   
           } else {
-            buffer << range.block() << _cfg.container << matrix << "[" << ifr << "][" << access << "[" << ifr << "]++] = " << ife << endl;   
+            buffer << range.block() << _cfg.container << matrix << "[" << ifr << "][" << access << "[" << ifr << "]++] = " << ife << ";" << endl;   
           }
           if (!range.empty()) {
             buffer << range.end() << endl;  
