@@ -63,6 +63,8 @@ namespace MicroModelica {
         VertexProperty vp = VertexProperty();
         vp.type = VERTEX::Equation;
         vp.eq = ev.zeroCrossing();
+        vp.stm.event = ev.exp();;
+        vp.id = id;
         _equationDescriptors.push_back(add_vertex(vp,graph));
         VertexProperty icee = VertexProperty();
         icee.type = VERTEX::Influencee;

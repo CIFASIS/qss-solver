@@ -63,6 +63,8 @@ namespace MicroModelica {
         VertexProperty vp = VertexProperty();
         vp.type = VERTEX::Equation;
         vp.eq = ev.zeroCrossing();
+        vp.id = id;
+        vp.stm.event = ev.exp();;
         _equationDescriptors.push_back(add_vertex(vp,graph));
         VertexProperty icee = VertexProperty();
         icee.type = VERTEX::Influencee;
@@ -78,6 +80,8 @@ namespace MicroModelica {
         _equationDescriptors.push_back(add_vertex(vp,graph));
       }
 
+      cout << "GENERATE SZ GRAPH" << endl;
+
       foreach_(EqVertex sink, _equationDescriptors){
         foreach_(IfrVertex source, _variableDescriptors){
           GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
@@ -85,6 +89,7 @@ namespace MicroModelica {
             IndexPairSet ips = edge.indexes();
             for (auto ip : ips) {
               Label lbl(ip);
+              cout << "Adding edge from state var: " << graph[source].var.name() << " to event: " << graph[sink].eq.id() << endl;
               add_edge(source, sink, lbl, graph);  
             }
           }
@@ -107,6 +112,7 @@ namespace MicroModelica {
           if (graph[sink].eq.isZeroCrossing()) {
             GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
             if (edge.exists()) {
+              cout << "Adding edge from ZC: " << graph[sink].eq.id() << " to event: " << graph[source].id << endl;
               IndexPairSet ips = edge.indexes();
               for (auto ip : ips) {
                 Label lbl(ip);
