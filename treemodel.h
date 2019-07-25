@@ -30,33 +30,30 @@ class FileItem;
 /**
  *
  */
-class TreeModel: public QStandardItemModel
-{
+class TreeModel : public QStandardItemModel {
   Q_OBJECT
-    public:
-    /**+
-     *
-     * @param headers
-     * @param parent
-     */
-    TreeModel(const QStringList &headers, QObject *parent = 0);
-    /**
-     *
-     */
-    ~TreeModel();
-    /**
-     *
-     * @param index
-     * @return
-     */
-    Qt::ItemFlags
-    flags(const QModelIndex &index) const;
-    /**
-     *
-     * @param dir
-     */
-    void
-    addFiles(QString dir);
+  public:
+  /**+
+   *
+   * @param headers
+   * @param parent
+   */
+  TreeModel(const QStringList &headers, QObject *parent = 0);
+  /**
+   *
+   */
+  ~TreeModel();
+  /**
+   *
+   * @param index
+   * @return
+   */
+  Qt::ItemFlags flags(const QModelIndex &index) const;
+  /**
+   *
+   * @param dir
+   */
+  void addFiles(QString dir);
 };
 
-#endif  /* TREEMODEL_H_ */
+#endif /* TREEMODEL_H_ */

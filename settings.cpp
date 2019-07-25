@@ -23,8 +23,7 @@
 #include <settings.h>
 #include <utils.h>
 
-SettingsDlg::SettingsDlg(QWidget *parent) :
-    QDialog(parent)
+SettingsDlg::SettingsDlg(QWidget *parent) : QDialog(parent)
 {
   setupUi(this);
   _utils = new Utils();
@@ -47,8 +46,7 @@ SettingsDlg::SettingsDlg(QWidget *parent) :
   _plotFlags->setText(_utils->appFlag(FLG_PLOT));
   _setCheckBoxValue(_allCbx, _utils->appFlag(FLG_DBG_ALL));
   _setCheckBoxValue(_initialValuesCbx, _utils->appFlag(FLG_DBG_INIT_VALUES));
-  _setCheckBoxValue(_externalEventsCbx,
-      _utils->appFlag(FLG_DBG_EXTERNAL_EVENT));
+  _setCheckBoxValue(_externalEventsCbx, _utils->appFlag(FLG_DBG_EXTERNAL_EVENT));
   _setCheckBoxValue(_memoryCbx, _utils->appFlag(FLG_DBG_MEMORY));
   _setCheckBoxValue(_synchronizeCbx, _utils->appFlag(FLG_DBG_SYNCHRONIZE));
   _setCheckBoxValue(_stepInfoCbx, _utils->appFlag(FLG_DBG_STEP_INFO));
@@ -59,13 +57,9 @@ SettingsDlg::SettingsDlg(QWidget *parent) :
   connect(this, SIGNAL(accepted()), this, SLOT(_save()));
 }
 
-SettingsDlg::~SettingsDlg()
-{
-  delete _utils;
-}
+SettingsDlg::~SettingsDlg() { delete _utils; }
 
-void
-SettingsDlg::_save()
+void SettingsDlg::_save()
 {
   _utils->setDir(MMOC_MODELS, _models->text());
   _utils->setDir(MMOC_PACKAGES, _packages->text());
@@ -85,8 +79,7 @@ SettingsDlg::_save()
   _utils->setFlag(FLG_FLAGS, _flags->text());
   _utils->setFlag(FLG_DBG_ALL, _getCheckBoxValue(_allCbx));
   _utils->setFlag(FLG_DBG_INIT_VALUES, _getCheckBoxValue(_initialValuesCbx));
-  _utils->setFlag(FLG_DBG_EXTERNAL_EVENT,
-      _getCheckBoxValue(_externalEventsCbx));
+  _utils->setFlag(FLG_DBG_EXTERNAL_EVENT, _getCheckBoxValue(_externalEventsCbx));
   _utils->setFlag(FLG_DBG_MEMORY, _getCheckBoxValue(_memoryCbx));
   _utils->setFlag(FLG_DBG_SYNCHRONIZE, _getCheckBoxValue(_synchronizeCbx));
   _utils->setFlag(FLG_DBG_STEP_INFO, _getCheckBoxValue(_stepInfoCbx));
@@ -97,28 +90,20 @@ SettingsDlg::_save()
   _utils->setFlag(FLG_PLOT, _plotFlags->text());
 }
 
-QString
-SettingsDlg::_getCheckBoxValue(QCheckBox *chkBox)
+QString SettingsDlg::_getCheckBoxValue(QCheckBox *chkBox)
 {
-  if(chkBox->checkState() == Qt::Checked)
-  {
+  if (chkBox->checkState() == Qt::Checked) {
     return "true";
-  }
-  else
-  {
+  } else {
     return "false";
   }
 }
 
-void
-SettingsDlg::_setCheckBoxValue(QCheckBox *chkBox, QString value)
+void SettingsDlg::_setCheckBoxValue(QCheckBox *chkBox, QString value)
 {
-  if(value.compare("true") == 0)
-  {
+  if (value.compare("true") == 0) {
     chkBox->setCheckState(Qt::Checked);
-  }
-  else
-  {
+  } else {
     chkBox->setCheckState(Qt::Unchecked);
   }
 }

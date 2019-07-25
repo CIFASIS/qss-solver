@@ -23,7 +23,8 @@
 #include <runform.h>
 #include <utils.h>
 
-RunDlg::RunDlg(QWidget *parent) : QDialog(parent) {
+RunDlg::RunDlg(QWidget *parent) : QDialog(parent)
+{
   setupUi(this);
   _utils = new Utils();
   _validate = new QDoubleValidator();
@@ -48,7 +49,8 @@ RunDlg::RunDlg(QWidget *parent) : QDialog(parent) {
 #endif
 }
 
-void RunDlg::on__showAll_stateChanged(int state) {
+void RunDlg::on__showAll_stateChanged(int state)
+{
   switch (state) {
   case Qt::Unchecked:
     _extendedFrame->setVisible(false);
@@ -61,7 +63,8 @@ void RunDlg::on__showAll_stateChanged(int state) {
   }
 }
 
-void RunDlg::on__commInterval_currentIndexChanged(int index) {
+void RunDlg::on__commInterval_currentIndexChanged(int index)
+{
   if (index == 0) {
     _period->setEnabled(false);
   } else {
@@ -69,7 +72,8 @@ void RunDlg::on__commInterval_currentIndexChanged(int index) {
   }
 }
 
-void RunDlg::on__dtSynch_currentIndexChanged(int index) {
+void RunDlg::on__dtSynch_currentIndexChanged(int index)
+{
   if (index == 0) {
     _dtLbl->setText("Dt tolerance");
   } else {
@@ -77,7 +81,8 @@ void RunDlg::on__dtSynch_currentIndexChanged(int index) {
   }
 }
 
-void RunDlg::on__parallel_currentIndexChanged(int index) {
+void RunDlg::on__parallel_currentIndexChanged(int index)
+{
   if (index == 1) {
     _lps->setEnabled(true);
     _partitionMethod->setEnabled(true);
@@ -107,39 +112,27 @@ void RunDlg::on__parallel_currentIndexChanged(int index) {
   }
 }
 
-int RunDlg::getSolverIdx(QString str) {
-  if (str.trimmed() == "QSS")
-    return 0;
-  if (str.trimmed() == "CQSS")
-    return 1;
-  if (str.trimmed() == "LIQSS")
-    return 2;
-  if (str.trimmed() == "QSS2")
-    return 3;
-  if (str.trimmed() == "LIQSS2")
-    return 4;
-  if (str.trimmed() == "LIQSS_BDF")
-    return 5;
-  if (str.trimmed() == "QSS3")
-    return 6;
-  if (str.trimmed() == "LIQSS3")
-    return 7;
-  if (str.trimmed() == "QSS4")
-    return 8;
-  if (str.trimmed() == "DASSL")
-    return 9;
-  if (str.trimmed() == "DOPRI")
-    return 10;
-  if (str.trimmed() == "CVODE_BDF")
-    return 11;
-  if (str.trimmed() == "CVODE_AM")
-    return 12;
-  if (str.trimmed() == "IDA")
-    return 13;
+int RunDlg::getSolverIdx(QString str)
+{
+  if (str.trimmed() == "QSS") return 0;
+  if (str.trimmed() == "CQSS") return 1;
+  if (str.trimmed() == "LIQSS") return 2;
+  if (str.trimmed() == "QSS2") return 3;
+  if (str.trimmed() == "LIQSS2") return 4;
+  if (str.trimmed() == "LIQSS_BDF") return 5;
+  if (str.trimmed() == "QSS3") return 6;
+  if (str.trimmed() == "LIQSS3") return 7;
+  if (str.trimmed() == "QSS4") return 8;
+  if (str.trimmed() == "DASSL") return 9;
+  if (str.trimmed() == "DOPRI") return 10;
+  if (str.trimmed() == "CVODE_BDF") return 11;
+  if (str.trimmed() == "CVODE_AM") return 12;
+  if (str.trimmed() == "IDA") return 13;
   return -1;
 }
 
-QString RunDlg::getSolverString(int idx) {
+QString RunDlg::getSolverString(int idx)
+{
   switch (idx) {
   case 0:
     return "QSS";
@@ -173,7 +166,8 @@ QString RunDlg::getSolverString(int idx) {
   return QString();
 }
 
-QString RunDlg::getJacobianString(int idx) {
+QString RunDlg::getJacobianString(int idx)
+{
   switch (idx) {
   case 0:
     return "Sparse";
@@ -183,17 +177,16 @@ QString RunDlg::getJacobianString(int idx) {
   return "Sparse";
 }
 
-int RunDlg::getOutputTypeIdx(QString str) {
-  if (str.trimmed() == "CI_Step")
-    return 0;
-  if (str.trimmed() == "CI_Sampled")
-    return 1;
-  if (str.trimmed() == "CI_Dense")
-    return 2;
+int RunDlg::getOutputTypeIdx(QString str)
+{
+  if (str.trimmed() == "CI_Step") return 0;
+  if (str.trimmed() == "CI_Sampled") return 1;
+  if (str.trimmed() == "CI_Dense") return 2;
   return 0;
 }
 
-QString RunDlg::getOutputTypeString(int idx) {
+QString RunDlg::getOutputTypeString(int idx)
+{
   switch (idx) {
   case 0:
     return "CI_Step";
@@ -205,17 +198,16 @@ QString RunDlg::getOutputTypeString(int idx) {
   return QString();
 }
 
-int RunDlg::getSchedulerIdx(QString str) {
-  if (str.trimmed() == "ST_Binary")
-    return 0;
-  if (str.trimmed() == "ST_Random")
-    return 1;
-  if (str.trimmed() == "ST_Linear")
-    return 2;
+int RunDlg::getSchedulerIdx(QString str)
+{
+  if (str.trimmed() == "ST_Binary") return 0;
+  if (str.trimmed() == "ST_Random") return 1;
+  if (str.trimmed() == "ST_Linear") return 2;
   return 0;
 }
 
-QString RunDlg::getSchedulerString(int idx) {
+QString RunDlg::getSchedulerString(int idx)
+{
   switch (idx) {
   case 0:
     return "ST_Binary";
@@ -227,15 +219,15 @@ QString RunDlg::getSchedulerString(int idx) {
   return QString();
 }
 
-int RunDlg::getComboBoolIdx(QString str) {
-  if (str.trimmed() == "false")
-    return 0;
-  if (str.trimmed() == "true")
-    return 1;
+int RunDlg::getComboBoolIdx(QString str)
+{
+  if (str.trimmed() == "false") return 0;
+  if (str.trimmed() == "true") return 1;
   return 0;
 }
 
-QString RunDlg::getComboBoolString(int idx) {
+QString RunDlg::getComboBoolString(int idx)
+{
   switch (idx) {
   case 0:
     return "false";
@@ -245,25 +237,20 @@ QString RunDlg::getComboBoolString(int idx) {
   return "false";
 }
 
-int RunDlg::getPartitionMethodIdx(QString str) {
-  if (str.trimmed() == "Metis")
-    return 0;
-  if (str.trimmed() == "HMetis")
-    return 1;
-  if (str.trimmed() == "Scotch")
-    return 2;
-  if (str.trimmed() == "Patoh")
-    return 3;
-  if (str.trimmed() == "MTPL")
-    return 4;
-  if (str.trimmed() == "MTPL_IT")
-    return 5;
-  if (str.trimmed() == "Manual")
-    return 6;
+int RunDlg::getPartitionMethodIdx(QString str)
+{
+  if (str.trimmed() == "Metis") return 0;
+  if (str.trimmed() == "HMetis") return 1;
+  if (str.trimmed() == "Scotch") return 2;
+  if (str.trimmed() == "Patoh") return 3;
+  if (str.trimmed() == "MTPL") return 4;
+  if (str.trimmed() == "MTPL_IT") return 5;
+  if (str.trimmed() == "Manual") return 6;
   return 0;
 }
 
-QString RunDlg::getPartitionMethodString(int idx) {
+QString RunDlg::getPartitionMethodString(int idx)
+{
   switch (idx) {
   case 0:
     return "Metis";
@@ -283,23 +270,22 @@ QString RunDlg::getPartitionMethodString(int idx) {
   return "Metis";
 }
 
-int RunDlg::getJacobianIdx(QString str) {
-  if (str.trimmed() == "Dense")
-    return 1;
-  if (str.trimmed() == "Sparse")
-    return 0;
+int RunDlg::getJacobianIdx(QString str)
+{
+  if (str.trimmed() == "Dense") return 1;
+  if (str.trimmed() == "Sparse") return 0;
   return 0;
 }
 
-int RunDlg::getDtSynchIdx(QString str) {
-  if (str.trimmed() == "SD_DT_Fixed")
-    return 1;
-  if (str.trimmed() == "SD_DT_Asynchronous")
-    return 0;
+int RunDlg::getDtSynchIdx(QString str)
+{
+  if (str.trimmed() == "SD_DT_Fixed") return 1;
+  if (str.trimmed() == "SD_DT_Asynchronous") return 0;
   return 0;
 }
 
-QString RunDlg::getDtSynchString(int idx) {
+QString RunDlg::getDtSynchString(int idx)
+{
   switch (idx) {
   case 1:
     return "SD_DT_Fixed";

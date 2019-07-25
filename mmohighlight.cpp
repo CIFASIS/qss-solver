@@ -21,8 +21,8 @@
 
 #include "mmohighlight.h"
 
-MmoHighlighter::MmoHighlighter(QTextDocument *parent, h_type file)
-    : QSyntaxHighlighter(parent) {
+MmoHighlighter::MmoHighlighter(QTextDocument *parent, h_type file) : QSyntaxHighlighter(parent)
+{
   MmoHighlightingRule rule;
   QStringList keywordPatterns;
   QStringList functionPatterns;
@@ -304,7 +304,8 @@ MmoHighlighter::MmoHighlighter(QTextDocument *parent, h_type file)
   commentEndExpression = QRegExp("\\*/");
 }
 
-void MmoHighlighter::highlightBlock(const QString &text) {
+void MmoHighlighter::highlightBlock(const QString &text)
+{
   foreach (const MmoHighlightingRule &rule, highlightingRules) {
     QRegExp expression(rule.pattern);
     int index = expression.indexIn(text);
@@ -316,8 +317,7 @@ void MmoHighlighter::highlightBlock(const QString &text) {
   }
   setCurrentBlockState(0);
   int startIndex = 0;
-  if (previousBlockState() != 1)
-    startIndex = commentStartExpression.indexIn(text);
+  if (previousBlockState() != 1) startIndex = commentStartExpression.indexIn(text);
   while (startIndex >= 0) {
     int endIndex = commentEndExpression.indexIn(text, startIndex);
     int commentLength;
@@ -325,11 +325,9 @@ void MmoHighlighter::highlightBlock(const QString &text) {
       setCurrentBlockState(1);
       commentLength = text.length() - startIndex;
     } else {
-      commentLength =
-          endIndex - startIndex + commentEndExpression.matchedLength();
+      commentLength = endIndex - startIndex + commentEndExpression.matchedLength();
     }
     setFormat(startIndex, commentLength, multiLineCommentFormat);
-    startIndex =
-        commentStartExpression.indexIn(text, startIndex + commentLength);
+    startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
   }
 }

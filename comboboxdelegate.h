@@ -25,54 +25,46 @@
 /**
  *
  */
-class ComboBoxDelegate: public QItemDelegate
-{
+class ComboBoxDelegate : public QItemDelegate {
   Q_OBJECT
-    public:
-    /**
-     *
-     * @param parent
-     */
-    ComboBoxDelegate(QObject *parent = 0);
-    /**
-     *
-     * @param parent
-     * @param option
-     * @param index
-     * @return
-     */
-    QWidget *
-    createEditor(QWidget *parent, const QStyleOptionViewItem &option,
-        const QModelIndex &index) const;
-    /**
-     *
-     * @param editor
-     * @param index
-     */
-    void
-    setEditorData(QWidget *editor, const QModelIndex &index) const;
-    /**
-     *
-     * @param editor
-     * @param model
-     * @param index
-     */
-    void
-    setModelData(QWidget *editor, QAbstractItemModel *model,
-        const QModelIndex &index) const;
-    /**
-     *
-     * @param editor
-     * @param option
-     * @param index
-     */
-    void
-    updateEditorGeometry(QWidget *editor,
-        /**
-         *
-         */
-        const QStyleOptionViewItem &option,
-        const QModelIndex &index) const;
+  public:
+  /**
+   *
+   * @param parent
+   */
+  ComboBoxDelegate(QObject *parent = 0);
+  /**
+   *
+   * @param parent
+   * @param option
+   * @param index
+   * @return
+   */
+  QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+  /**
+   *
+   * @param editor
+   * @param index
+   */
+  void setEditorData(QWidget *editor, const QModelIndex &index) const;
+  /**
+   *
+   * @param editor
+   * @param model
+   * @param index
+   */
+  void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+  /**
+   *
+   * @param editor
+   * @param option
+   * @param index
+   */
+  void updateEditorGeometry(QWidget *editor,
+                            /**
+                             *
+                             */
+                            const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
-#endif  /* CODEEDITOR_H_ */
+#endif /* CODEEDITOR_H_ */

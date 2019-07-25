@@ -23,52 +23,36 @@
 #include "treemodel.h"
 #include "comboboxdelegate.h"
 
-TreeModel::TreeModel(const QStringList &headers, QObject *parent) :
-    QStandardItemModel(parent)
-{
-  setHorizontalHeaderLabels(headers);
-}
+TreeModel::TreeModel(const QStringList &headers, QObject *parent) : QStandardItemModel(parent) { setHorizontalHeaderLabels(headers); }
 
-TreeModel::~TreeModel()
-{
-}
+TreeModel::~TreeModel() {}
 
-Qt::ItemFlags
-TreeModel::flags(const QModelIndex &index) const
-    {
-  if(!index.isValid())
-    return 0;
-  if(index.column() == 0)
-  {
+Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
+{
+  if (!index.isValid()) return 0;
+  if (index.column() == 0) {
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-  }
-  else
-  {
-    return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsUserCheckable
-        | Qt::ItemIsSelectable;
+  } else {
+    return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable;
   }
 }
 
-void
-TreeModel::addFiles(QString dir)
+void TreeModel::addFiles(QString dir)
 {
   QDir d(dir);
   QFileInfoList fil = d.entryInfoList(QStringList("*.dat"));
-  if(fil.isEmpty())
-    return;
+  if (fil.isEmpty()) return;
   QStringList lines;
-  foreach(QFileInfo f, fil)
-  { lines << f.baseName();
-}
-// Add file header.
+  foreach (QFileInfo f, fil) {
+    lines << f.baseName();
+  }
+  // Add file header.
   QStandardItem *headData = new QStandardItem();
   headData->setText(d.dirName());
   int number = 0;
-  while(number < lines.count())
-  {
+  while (number < lines.count()) {
     QString lineData = lines[number];
-    if(!lineData.isEmpty())
-    {
+    if (!lineData.isEmpty()) {
       QStandardItem *var = new QStandardItem();
       var->setText(lines[number]);
       var->setCheckable(true);
