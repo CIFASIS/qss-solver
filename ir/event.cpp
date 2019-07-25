@@ -31,21 +31,29 @@ namespace MicroModelica {
 using namespace Util;
 namespace IR {
 
-Event::Event(AST_Expression cond, int id, int offset, VarSymbolTable &symbols,
-             Option<Range> range)
-    : _zeroCrossing(), _positiveHandler(), _negativeHandler(),
-      _type(EVENT::Zero), _current(EVENT::Zero), _zcRelation(EVENT::GE),
-      _symbols(symbols), _range(range), _positiveHandlerId(0),
-      _negativeHandlerId(0), _id(id), _offset(offset) {
+Event::Event(AST_Expression cond, int id, int offset, VarSymbolTable &symbols, Option<Range> range)
+    : _zeroCrossing(),
+      _positiveHandler(),
+      _negativeHandler(),
+      _type(EVENT::Zero),
+      _current(EVENT::Zero),
+      _zcRelation(EVENT::GE),
+      _symbols(symbols),
+      _range(range),
+      _positiveHandlerId(0),
+      _negativeHandlerId(0),
+      _id(id),
+      _offset(offset)
+{
   ConvertCondition cc;
-  _zeroCrossing = Equation(cc.apply(getExpression(cond)), symbols, range,
-                           EQUATION::ZeroCrossing, id, offset);
+  _zeroCrossing = Equation(cc.apply(getExpression(cond)), symbols, range, EQUATION::ZeroCrossing, id, offset);
   _type = cc.zeroCrossing();
   _current = _type;
   _zcRelation = cc.zeroCrossingRelation();
 }
 
-void Event::add(AST_Statement stm) {
+void Event::add(AST_Statement stm)
+{
   Statement s(stm, _symbols, _range);
   if (_current == EVENT::Positive) {
     _positiveHandler.insert(_positiveHandlerId++, s);
@@ -54,7 +62,8 @@ void Event::add(AST_Statement stm) {
   }
 }
 
-bool Event::compare(AST_Expression zc) {
+bool Event::compare(AST_Expression zc)
+{
   ConvertCondition cc;
   AST_Expression c = cc.apply(getExpression(zc));
   EqualExp ee(_symbols);
@@ -71,16 +80,17 @@ bool Event::compare(AST_Expression zc) {
   return cr;
 }
 
-AST_Expression Event::getExpression(AST_Expression exp) {
+AST_Expression Event::getExpression(AST_Expression exp)
+{
   if (exp->expressionType() == EXPOUTPUT) {
     return getExpression(AST_ListFirst(exp->getAsOutput()->expressionList()));
   }
   return exp;
 }
 
-string Event::handler(EVENT::Type type) const {
-  StatementTable stms =
-      (type == EVENT::Positive ? _positiveHandler : _negativeHandler);
+string Event::handler(EVENT::Type type) const
+{
+  StatementTable stms = (type == EVENT::Positive ? _positiveHandler : _negativeHandler);
   if (stms.empty()) {
     return "";
   };
@@ -101,27 +111,28 @@ string Event::handler(EVENT::Type type) const {
   return buffer.str();
 }
 
-string Event::macro() const {
+string Event::macro() const
+{
   stringstream buffer;
   buffer << "_event_" << _id;
   FunctionPrinter fp;
   return fp.macro(buffer.str(), _range, _id, _offset);
 }
 
-Expression Event::exp() {
+Expression Event::exp()
+{
   assert(isValid());
   return _zeroCrossing.lhs();
 }
 
-string Event::config() const {
+string Event::config() const
+{
   stringstream buffer;
   int direction = (_type == EVENT::Negative) ? -1 : _type;
-  buffer << "modelData->event[" << _zeroCrossing.functionId()
-         << "].direction = " << direction << ";" << endl;
-  buffer << "modelData->event[" << _zeroCrossing.functionId()
-         << "].relation = " << _zcRelation << ";" << endl;
+  buffer << "modelData->event[" << _zeroCrossing.functionId() << "].direction = " << direction << ";" << endl;
+  buffer << "modelData->event[" << _zeroCrossing.functionId() << "].relation = " << _zcRelation << ";" << endl;
   return buffer.str();
 }
 
-} // namespace IR
-} // namespace MicroModelica
+}  // namespace IR
+}  // namespace MicroModelica
