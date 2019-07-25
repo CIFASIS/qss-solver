@@ -56,7 +56,9 @@ namespace MicroModelica {
           AlgebraicDependencies algs;
           cout << "Compute dependecies for: " << vertex_info.var << endl;
           influencees(graph, vertex, variableRange(vertex_info.var), var_deps, algs);
-          edm.insert(vertex_info.id, var_deps);    
+          if (!var_deps.empty()) {
+            edm.insert(vertex_info.id, var_deps);    
+          }
         }
       }
     }
@@ -71,7 +73,9 @@ namespace MicroModelica {
           AlgebraicDependencies algs;
           cout << "Compute dependecies for: " << vertex_info.var << endl;
           influencees(graph, vertex, variableRange(vertex_info.var), var_deps, algs);
-          vdm.insert(vertex_info.var.name(), var_deps);    
+          if (!var_deps.empty()) {
+            vdm.insert(vertex_info.var.name(), var_deps);
+          }    
         }
       }
     }
@@ -88,7 +92,8 @@ namespace MicroModelica {
     }
 
     void 
-    Dependency::influencees(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs) 
+    Dependency::influencees(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, 
+                            AlgebraicDependencies& algs) 
     {
       VertexProperty source_vertex_info = graph[source_vertex];
       boost::graph_traits<DepsGraph>::out_edge_iterator edge, out_edge_end;

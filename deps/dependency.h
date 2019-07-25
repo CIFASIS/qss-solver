@@ -42,7 +42,8 @@ namespace MicroModelica {
 
       private:
         void
-        influencees(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs);
+        influencees(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, 
+                    AlgebraicDependencies& algs);
         VariableDependency 
         getVariableDependency(string name, MDI dom, MDI ran, int id);
         MDI 
