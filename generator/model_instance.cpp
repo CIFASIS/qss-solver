@@ -48,24 +48,6 @@ ModelInstance::ModelInstance(Model &model, CompileFlags &flags,
                              WriterPtr writer)
     : _model(model), _flags(flags), _writer(writer) {}
 
-void ModelInstance::definition() {
-  EquationTable derivatives = _model.derivatives();
-  EquationTable algebraics = _model.algebraics();
-  EquationTable::iterator it;
-  VarSymbolTable symbols = _model.symbols();
-  stringstream buffer;
-  Utils::instance().clearLocalSymbols();
-  for (Equation alg = algebraics.begin(it); !algebraics.end(it);
-       alg = algebraics.next(it)) {
-    _writer->write(alg, WRITER::Model_Simple);
-  }
-  for (Equation der = derivatives.begin(it); !derivatives.end(it);
-       der = derivatives.next(it)) {
-    _writer->write(der, WRITER::Model_Simple);
-  }
-  _writer->write(Utils::instance().localSymbols(), WRITER::Model);
-}
-
 void ModelInstance::output() {
   stringstream buffer;
   EquationTable outputs = _model.outputs();
@@ -420,6 +402,23 @@ QSSModelInstance::QSSModelInstance(Model &model, CompileFlags &flags,
     : ModelInstance(model, flags, writer), _model(model), _flags(flags),
       _writer(writer) {}
 
+void QSSModelInstance::definition() {
+  EquationTable derivatives = _model.derivatives();
+  EquationTable::iterator it;
+  Utils::instance().clearLocalSymbols();
+  FunctionPrinter fp;
+  for (Equation der = derivatives.begin(it); !derivatives.end(it);
+       der = derivatives.next(it)) {
+    _writer->write(
+        der, (der.hasRange() ? WRITER::Model_Generic : WRITER::Model_Simple));
+  }
+  _writer->write(Utils::instance().localSymbols(), WRITER::Model);
+  if (!_writer->isEmpty(WRITER::Model_Simple)) {
+    _writer->write(fp.beginSwitch(), WRITER::Model);
+    _writer->write(fp.endSwitch(), WRITER::Model_Simple);
+  }
+}
+
 void QSSModelInstance::allocateSolver() {
   ModelAnnotation annot = _model.annotations();
   stringstream buffer;
@@ -576,6 +575,24 @@ ClassicModelInstance::ClassicModelInstance(Model &model, CompileFlags &flags,
                                            WriterPtr writer)
     : ModelInstance(model, flags, writer), _model(model), _flags(flags),
       _writer(writer) {}
+
+void ClassicModelInstance::definition() {
+  EquationTable derivatives = _model.derivatives();
+  EquationTable algebraics = _model.algebraics();
+  EquationTable::iterator it;
+  VarSymbolTable symbols = _model.symbols();
+  stringstream buffer;
+  Utils::instance().clearLocalSymbols();
+  for (Equation alg = algebraics.begin(it); !algebraics.end(it);
+       alg = algebraics.next(it)) {
+    _writer->write(alg, WRITER::Model_Simple);
+  }
+  for (Equation der = derivatives.begin(it); !derivatives.end(it);
+       der = derivatives.next(it)) {
+    _writer->write(der, WRITER::Model_Simple);
+  }
+  _writer->write(Utils::instance().localSymbols(), WRITER::Model);
+}
 
 void ClassicModelInstance::initializeDataStructures() {
   stringstream buffer;
