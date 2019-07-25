@@ -40,18 +40,19 @@ namespace MicroModelica {
     static constexpr char* EVENTS = "events";    
     static constexpr char* OUTPUTS = "outputs";
     static constexpr char* DISCRETES = "discretes";    
+    static string EMPTY_COMPONENT = {"", ""};
 
-    static MatrixConfig EmptyCfg = { "", {}, {} };
-    static MatrixConfig SDCfg = { INT_CONTAINER, { "nSD", "nDS", "SD", "DS" }, { STATES, STATES } };
-    static MatrixConfig SZCfg = { INT_CONTAINER, { "nSZ", "nZS", "SZ", "ZS" }, { STATES, EVENTS } };
-    static MatrixConfig SOCfg = { OUT_CONTAINER, { "nSO", "nOS", "SO", "OS" }, { STATES, OUTPUTS } };
-    static MatrixConfig DOCfg = { OUT_CONTAINER, { "nDO", "nOD", "DO", "OD" }, { DISCRETES, OUTPUTS } };
-    static MatrixConfig HHCfg = { INT_CONTAINER, { "nHE", "nEH", "HE", "EH" }, { EVENTS, EVENTS } };
-    static MatrixConfig HDCfg = { INT_CONTAINER, { "nHD", "nDH", "HD", "DH" }, { EVENTS, STATES } };
-    static MatrixConfig HZCfg = { INT_CONTAINER, { "nHZ", "nZH", "HZ", "ZH" }, { EVENTS, EVENTS } };
-    static MatrixConfig LHSDSCCfg = { INT_CONTAINER, { "nLHSDsc", "nLHSDsc", "LHSDsc", "LHSDsc" }, { EVENTS, EVENTS } };
-    static MatrixConfig LHSSTCfg = { INT_CONTAINER, { "nLHSSt", "nLHSSt", "LHSSt", "LHSSt" }, { EVENTS, EVENTS } };
-    static MatrixConfig RHSSTCfg = { INT_CONTAINER, { "nRHSSt", "nRHSSt", "RHSSt", "RHSSt" }, { EVENTS, EVENTS } };
+    static MatrixConfig EmptyCfg = { "", {}, {}, {}};
+    static MatrixConfig SDCfg = { INT_CONTAINER, { "nSD", "nDS", "SD", "DS" }, { STATES, STATES }, EMPTY_COMPONENT };
+    static MatrixConfig SZCfg = { INT_CONTAINER, { "nSZ", "nZS", "SZ", "ZS" }, { STATES, EVENTS }, EMPTY_COMPONENT };
+    static MatrixConfig SOCfg = { OUT_CONTAINER, { "nSO", "nOS", "SO", "OS" }, { STATES, OUTPUTS }, EMPTY_COMPONENT };
+    static MatrixConfig DOCfg = { OUT_CONTAINER, { "nDO", "nOD", "DO", "OD" }, { DISCRETES, OUTPUTS }, EMPTY_COMPONENT };
+    static MatrixConfig HHCfg = { INT_CONTAINER, { "nHE", "nEH", "HE", "EH" }, { EVENTS, EVENTS }, EMPTY_COMPONENT };
+    static MatrixConfig HDCfg = { INT_CONTAINER, { "nHD", "nDH", "HD", "DH" }, { EVENTS, STATES }, EMPTY_COMPONENT };
+    static MatrixConfig HZCfg = { INT_CONTAINER, { "nHZ", "nZH", "HZ", "ZH" }, { EVENTS, EVENTS }, EMPTY_COMPONENT };
+    static MatrixConfig LHSDSCCfg = { INT_CONTAINER, { "event", "event", "event", "event" }, { EVENTS, EVENTS }, {"nLHSDsc", "LHSDsc"} };
+    static MatrixConfig LHSSTCfg = { INT_CONTAINER, { "event", "event", "event", "event" }, { EVENTS, EVENTS }, {"nLHSSt", "LHSSt"} };
+    static MatrixConfig RHSSTCfg = { INT_CONTAINER, { "event", "event", "event", "event" }, { EVENTS, EVENTS }, {"nRHSSt", "RHSSt"} };
 
     ModelDependencies::ModelDependencies() :
       _SD(SDCfg),
@@ -71,9 +72,9 @@ namespace MicroModelica {
     void
     ModelDependencies::compute(EquationTable eqs, EquationTable outputs, EquationTable algs, EventTable events, VarSymbolTable symbols)
     {
-      Utils::instance().setSymbols(symbols);
+/*      Utils::instance().setSymbols(symbols);
       SDGraphBuilder SD = SDGraphBuilder(eqs, algs, symbols);
-      _deps.compute(SD.build(), _SD);
+      _deps.compute(SD.build(), _SD);*/
       
       VariableDependencyMatrix DS_int(EmptyCfg);
       DSGraphBuilder DS = DSGraphBuilder(eqs, algs, symbols);
