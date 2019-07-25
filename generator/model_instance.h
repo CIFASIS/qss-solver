@@ -153,45 +153,26 @@ namespace MicroModelica
     {
       public:
         QSSModelInstance(){};
-        /**
-        *
-        * @param model
-        * @param flags
-        * @param writer
-        */
         QSSModelInstance(IR::Model& model, Util::CompileFlags& flags, WriterPtr writer);
-        /**
-        *
-        */
         ~QSSModelInstance() {};
-        /**
-        *
-        */
         void
         initializeDataStructures();
-        /**
-        *
-        */
-        void
-        definition();
-        /**
-        *
-        */
-        void
-        dependencies();
-        /**
-        *
-        * @return
-        */
         Graph
         computationalGraph();
         void 
         generate();
         void 
         header();
+
+      protected:
+        void
+        dependencies();
+
       private:
         void 
         allocateSolver();
+        std::string 
+        allocateModel();
         IR::Model           _model;
         Util::CompileFlags  _flags;
         WriterPtr           _writer;
