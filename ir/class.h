@@ -475,15 +475,15 @@ namespace MicroModelica
         inline int 
         algebraicNbr() { return _algebraicNbr; };
         inline int 
-        stateNbr() { return _stateNbr; };
+        stateNbr() const { return _stateNbr; };
         inline int 
-        discreteNbr() { return _discreteNbr; };
+        discreteNbr() const { return _discreteNbr; };
         inline int 
-        inputNbr() { return _inputNbr; };
+        inputNbr() const { return _inputNbr; };
         inline int 
-        outputNbr() { return _outputNbr; };
+        outputNbr() const { return _outputNbr; };
         inline int 
-        eventNbr() { return _eventNbr; };
+        eventNbr() const { return _eventNbr; };
         inline Util::SymbolTable 
         linkLibraries() const { return _linkLibraries; };
         inline Util::SymbolTable 
