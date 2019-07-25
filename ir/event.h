@@ -35,9 +35,9 @@ namespace MicroModelica {
          */
         typedef enum
         {
-          Positive = 0, //!< HND_POSITIVE
-          Negative = 1, //!< HND_NEGATIVE
-          Zero = 2      //!< HND_ZERO
+          Zero = 0,      //!< HND_ZERO
+          Positive = 1, //!< HND_POSITIVE
+          Negative = 2 //!< HND_NEGATIVE
         } Type;
 
         /**
@@ -100,6 +100,9 @@ namespace MicroModelica {
         exp();
         bool
         isValid() const { return _zeroCrossing.isValid(); };
+        std::string 
+        config() const;
+
       private:
         AST_Expression
         getExpression(AST_Expression zc);
