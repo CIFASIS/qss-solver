@@ -33,22 +33,23 @@ namespace MicroModelica
 {
   namespace Generator 
   {
-
+   
+    namespace MODEL_INSTANCE {
     /**
     *
     */
     typedef enum
     {
-      MODEL_SETTINGS,
-      MODEL,
-      DEPS,
-      ZC,
-      HANDLER_POS,
-      HANDLER_NEG,
-      OUTPUT,
-      JACOBIAN,
-      CLC_INIT,
-      QSS_INIT
+      Model_Settings,
+      Model,
+      Deps,
+      Zero_Crossing,
+      Handler_Pos,
+      Handler_Neg,
+      Output,
+      Jacobian,
+      CLC_Init,
+      QSS_Init
     } Component;
 
     typedef enum
@@ -59,7 +60,7 @@ namespace MicroModelica
       HZ,
       DD
     } NodeType;
-
+    }
     /**
     *
     */
@@ -68,78 +69,57 @@ namespace MicroModelica
       public:
         ModelInstance() {};
         ModelInstance(IR::Model& model, Util::CompileFlags& flags, WriterPtr writer);
-        /**
-        *
-        */
         virtual
         ~ModelInstance() {};
-        /**
-        *
-        * @return
-        */
         void
         include();
-        /**
-        *
-        */
         virtual void
         initializeDataStructures() = 0;
-        /**
-        *
-        */
-        virtual void
-        definition() = 0;
-        /**
-        *
-        */
-        virtual void
-        dependencies() = 0;
-        /**
-        *
-        */
+        void
+        definition();
         void
         zeroCrossing();
-        /**
-        *
-        */
         void
         handler();
         void 
         settings();
         void 
         inputs();
-        /**
-        *
-        */
         void
         output();
-        /**
-        *
-        * @return
-        */
         virtual Graph
-        computationalGraph() = 0;
+        computationalGraph() { return Graph(0,0); };
         void 
         initialCode();
         virtual void 
         header();
         virtual void 
         generate() = 0;
+
       protected:
         std::string 
-        componentDefinition(Component c);
+        componentDefinition(MODEL_INSTANCE::Component c);
         void 
         allocateOutput();
         void 
-        initializeMatrix(Deps::VariableDependencyMatrix vdm, WRITER::Section alloc, WRITER::Section init);
+        configOutput();
+        void 
+        initializeMatrix(Deps::VariableDependencyMatrix vdm, WRITER::Section alloc, WRITER::Section init, int size);
         string
         algebraics(Deps::EquationDependencyMatrix eqdm, Deps::depId key);
         void 
-        allocateVectors();
+        configEvents();
+        void
+        allocateVectors() const;
         void 
-        freeVectors();
+        freeVectors() const;
         std::string 
         allocateModel();
+        void
+        allocateVector(std::string name, int size) const;
+        void 
+        freeVector(std::string name, int size) const;
+
       private:
         IR::Model           _model;
         Util::CompileFlags  _flags;
@@ -184,42 +164,15 @@ namespace MicroModelica
     class ClassicModelInstance: public ModelInstance
     {
       public:
-        /**
-        *
-        * @param model
-        * @param flags
-        * @param writer
-        */
         ClassicModelInstance(IR::Model& model, Util::CompileFlags& flags, WriterPtr writer);
-        /**
-        *
-        */
         ~ClassicModelInstance() {};
-        /**
-        *
-        */
         void
         initializeDataStructures();
-        /**
-        *
-        */
-        void
-        definition();
-        /**
-        *
-        */
-        void
-        dependencies();
-        /**
-        *
-        * @return
-        */
-        Graph
-        computationalGraph();
         void
         generate();
         void 
         header();
+
       private:
         void 
         allocateSolver();
