@@ -456,7 +456,6 @@ namespace MicroModelica {
           sink_interval.push_back(Interval::closed(rd.second.begin(), rd.second.end()));
         }
       } 
-      cout << "Expressions: " << exps.size() << endl;
       for (Expression exp : exps) {
         assert(exp.isReference());
         cout << "Expressions: " << exp << endl;
