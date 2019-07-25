@@ -94,6 +94,7 @@ namespace MicroModelica {
         std::string 
         iterator(int dim);
         friend std::ostream& operator<<(std::ostream& out, const Range& r);
+      
       private:
         void 
         setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);
