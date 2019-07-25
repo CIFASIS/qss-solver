@@ -84,9 +84,11 @@ namespace MicroModelica {
           Range range = vd.ifce.range();
           buffer << range;
           if (_method == VDM::Alloc) {
-            buffer << range.block() << _cfg.container << matrix << "[" << ifr << "]++;" << endl;   
+            buffer << range.block() << _cfg.container << matrix << 
+            "[" << ifr << "]" << component() << "++;" << endl;   
           } else {
-            buffer << range.block() << _cfg.container << matrix << "[" << ifr << "][" << access << "[" << ifr << "]++] = " << ife << ";" << endl;   
+            buffer << range.block() << _cfg.container << matrix << "[" << ifr << "]" << 
+            component() << "[" << access << "[" << ifr << "]++] = " << ife << ";" << endl;   
           }
           if (!range.empty()) {
             buffer << range.end() << endl;  
@@ -97,7 +99,21 @@ namespace MicroModelica {
       return buffer.str();
     }
     
-    std::ostream& operator<<(std::ostream& out, const VariableDependencyMatrix& d) 
+    string 
+    VariableDependencyMatrix::component() const
+    {
+      stringstream buffer;
+      string component = _cfg.component[0];
+      if (_method == VDM::Init) {
+        component = _cfg.component[1];
+      }
+      if (!component.empty()) {
+          buffer << "." << component;
+      }
+      return buffer.str();
+    }
+
+    ostream& operator<<(std::ostream& out, const VariableDependencyMatrix& d) 
     {
       return out << d.print();
     }

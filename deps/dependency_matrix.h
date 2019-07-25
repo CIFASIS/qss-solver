@@ -120,6 +120,7 @@ namespace MicroModelica {
         std::string container;
         std::string names[4];
         std::string access[2];
+        std::string component[2];
     };
 
     class VariableDependencyMatrix : public ModelTable<varId,VariableDependencies>
@@ -134,13 +135,18 @@ namespace MicroModelica {
         inline void 
         setMode(VDM::Mode mode) { _mode = mode; };
         std::string 
-        print() const;    
+        print() const;
+        inline std::string 
+        accessVector() const { return _cfg.access[_mode]; };    
         friend std::ostream& operator<<(std::ostream& out, const VariableDependencyMatrix& d);
       
       private:
         MatrixConfig _cfg;
         VDM::Mode    _mode;
         VDM::Method  _method;  
+
+        std::string 
+        component() const;
     };
 
     typedef ModelTable<depId,VariableDependencies> EquationDependencyMatrix;
