@@ -19,6 +19,8 @@
 
 #include "so_graph_builder.h"
 
+#include <boost/graph/adjacency_list.hpp>
+
 #include "../../util/util_types.h"
 
 
@@ -96,7 +98,7 @@ namespace MicroModelica {
               cout << "Ecuacion: " << graph[sink].eq.type() << endl; 
               add_edge(source, sink, lbl, graph);
               cout << ip.Ran() << " " << ip.Dom() << endl;
-              if (graph[sink].eq.type() == EQUATION::Output) {
+              if (graph[sink].eq.type() == EQUATION::Output && out_degree(sink, graph) == 0) {
                 IndexPair out_pair(ip.Ran(), ip.Ran(), Offset(), Usage(), graph[sink].eq.lhs());
                 Label out_lbl(out_pair, EDGE::Input);
                 cout << "Agrega arista para la ecuacion: " << graph[sink].eq.id()
