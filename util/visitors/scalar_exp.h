@@ -23,61 +23,51 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
-    /**
-     * Evaluates an arithmetic expression.
-     */
-    class EvalExp: public AST_Expression_Fold<AST_Expression>
-    {
-      public:
-        /**
-         *
-         * @param symbolTable
-         */
-        EvalExp(VarSymbolTable symbolTable);
-        /**
-         * Evaluates an arithmetic expression.
-         */
-        /**
-         *
-         * @param exp
-         * @return
-         */
-        AST_Expression
-        eval(AST_Expression exp);
-        /**
-         * Evaluates an arithmetic expression replacing the occurrences of compRef with the value provided (compRefValue).
-         */
-        /**
-         *
-         * @param compRef
-         * @param compRefValue
-         * @param exp
-         * @return
-         */
-        AST_Expression
-        eval(AST_Expression_ComponentReference compRef, AST_Expression compRefValue, AST_Expression exp);
-      private:
-        AST_Expression
-        foldTraverseElement(AST_Expression);
-        AST_Expression
-        foldTraverseElementUMinus(AST_Expression);
-        AST_Expression
-        foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
-        AST_Expression
-        evalCompRef(AST_Expression_ComponentReference compRef);
-        AST_Expression
-        evalArray(AST_Expression_ComponentReference exp);
-        bool
-        shouldReturnInteger(AST_Expression left, AST_Expression right);
-        bool
-        shouldReturnReal(AST_Expression left, AST_Expression right);
-        AST_Real
-        getRealVal(AST_Expression exp);
-        AST_Expression_ComponentReference _compRef;
-        AST_Expression _compRefVal;
-        VarSymbolTable _symbolTable;
-    };
-  }
-}
-#endif  /* EVAL_EXP_H_ */
+namespace Util {
+/**
+ * Evaluates an arithmetic expression.
+ */
+class EvalExp : public AST_Expression_Fold<AST_Expression> {
+  public:
+  /**
+   *
+   * @param symbolTable
+   */
+  EvalExp(VarSymbolTable symbolTable);
+  /**
+   * Evaluates an arithmetic expression.
+   */
+  /**
+   *
+   * @param exp
+   * @return
+   */
+  AST_Expression eval(AST_Expression exp);
+  /**
+   * Evaluates an arithmetic expression replacing the occurrences of compRef with the value provided (compRefValue).
+   */
+  /**
+   *
+   * @param compRef
+   * @param compRefValue
+   * @param exp
+   * @return
+   */
+  AST_Expression eval(AST_Expression_ComponentReference compRef, AST_Expression compRefValue, AST_Expression exp);
+
+  private:
+  AST_Expression foldTraverseElement(AST_Expression);
+  AST_Expression foldTraverseElementUMinus(AST_Expression);
+  AST_Expression foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
+  AST_Expression evalCompRef(AST_Expression_ComponentReference compRef);
+  AST_Expression evalArray(AST_Expression_ComponentReference exp);
+  bool shouldReturnInteger(AST_Expression left, AST_Expression right);
+  bool shouldReturnReal(AST_Expression left, AST_Expression right);
+  AST_Real getRealVal(AST_Expression exp);
+  AST_Expression_ComponentReference _compRef;
+  AST_Expression _compRefVal;
+  VarSymbolTable _symbolTable;
+};
+}  // namespace Util
+}  // namespace MicroModelica
+#endif /* EVAL_EXP_H_ */

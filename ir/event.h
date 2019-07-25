@@ -26,102 +26,85 @@
 #include "statement.h"
 
 namespace MicroModelica {
-  namespace IR {
-    
-    namespace EVENT 
-    {
-        /**
-         *
-         */
-        typedef enum
-        {
-          Zero = 0,      //!< HND_ZERO
-          Positive = 1, //!< HND_POSITIVE
-          Negative = 2 //!< HND_NEGATIVE
-        } Type;
+namespace IR {
 
-        /**
-         * Define the original relation type of the zero-crossing function
-         * needed by the initial algorithm.
-         */
-        typedef enum
-        {
-          LT,    //!< ZC_LT
-          LE,    //!< ZC_LE
-          GT,    //!< ZC_GT
-          GE     //!< ZC_GE
-        } Relation;
-    }
+namespace EVENT {
+/**
+ *
+ */
+typedef enum {
+  Zero = 0,      //!< HND_ZERO
+  Positive = 1,  //!< HND_POSITIVE
+  Negative = 2   //!< HND_NEGATIVE
+} Type;
 
-    /**
-     *
-     */
-    class Event
-    {
-      public:
-        /**
-         *
-         * @param cond
-         * @param data
-         */
-        Event() {};
-        Event(AST_Expression cond, int id, int offset, Util::VarSymbolTable& symbols, Option<Range> range);
-        /**
-         *
-         */
-        ~Event() {};
-        inline Equation 
-        zeroCrossing() { return _zeroCrossing; };
-        inline StatementTable    
-        positiveHandler() { return _positiveHandler; };
-        inline StatementTable  
-        negativeHandler() { return _negativeHandler; };
-        std::string 
-        handler(EVENT::Type type) const;
-        void 
-        add(AST_Statement);
-        bool 
-        compare(AST_Expression zc);
-        inline bool 
-        hasRange() { return _range.is_initialized(); }; 
-        std::string 
-        macro() const;
-        int 
-        id() const { return _id; };
-        /**
-         * @brief      This method returns the range expression of the event.
-         *              
-         *             The range is computed from the LHS of the zero crossing
-         *             function associated with the event. 
-         *            
-         * @return     Expression with the LHS used in graph builders.
-         */
-        Expression 
-        exp();
-        bool
-        isValid() const { return _zeroCrossing.isValid(); };
-        std::string 
-        config() const;
+/**
+ * Define the original relation type of the zero-crossing function
+ * needed by the initial algorithm.
+ */
+typedef enum {
+  LT,  //!< ZC_LT
+  LE,  //!< ZC_LE
+  GT,  //!< ZC_GT
+  GE   //!< ZC_GE
+} Relation;
+}  // namespace EVENT
 
-      private:
-        AST_Expression
-        getExpression(AST_Expression zc);
-        Equation              _zeroCrossing;
-        StatementTable        _positiveHandler;
-        StatementTable        _negativeHandler;
-        EVENT::Type           _type;
-        EVENT::Type           _current;
-        EVENT::Relation       _zcRelation;
-        Util::VarSymbolTable  _symbols;
-        Option<Range>         _range;
-        int                   _positiveHandlerId;
-        int                   _negativeHandlerId;
-        int                   _id;
-        int                   _offset;
-    };
+/**
+ *
+ */
+class Event {
+  public:
+  /**
+   *
+   * @param cond
+   * @param data
+   */
+  Event(){};
+  Event(AST_Expression cond, int id, int offset, Util::VarSymbolTable& symbols, Option<Range> range);
+  /**
+   *
+   */
+  ~Event(){};
+  inline Equation zeroCrossing() { return _zeroCrossing; };
+  inline StatementTable positiveHandler() { return _positiveHandler; };
+  inline StatementTable negativeHandler() { return _negativeHandler; };
+  std::string handler(EVENT::Type type) const;
+  void add(AST_Statement);
+  bool compare(AST_Expression zc);
+  inline bool hasRange() { return _range.is_initialized(); };
+  std::string macro() const;
+  int id() const { return _id; };
+  /**
+   * @brief      This method returns the range expression of the event.
+   *
+   *             The range is computed from the LHS of the zero crossing
+   *             function associated with the event.
+   *
+   * @return     Expression with the LHS used in graph builders.
+   */
+  Expression exp();
+  bool isValid() const { return _zeroCrossing.isValid(); };
+  std::string config() const;
 
-    typedef ModelTable<int,Event> EventTable;
-  }
-}
+  private:
+  AST_Expression getExpression(AST_Expression zc);
+  Equation _zeroCrossing;
+  StatementTable _positiveHandler;
+  StatementTable _negativeHandler;
+  EVENT::Type _type;
+  EVENT::Type _current;
+  EVENT::Relation _zcRelation;
+  Util::VarSymbolTable _symbols;
+  Option<Range> _range;
+  int _positiveHandlerId;
+  int _negativeHandlerId;
+  int _id;
+  int _offset;
+};
 
-#endif  /*  MMO_EVENT_H_ */
+typedef ModelTable<int, Event> EventTable;
+}  // namespace IR
+}  // namespace MicroModelica
+
+#endif /*  MMO_EVENT_H_ */

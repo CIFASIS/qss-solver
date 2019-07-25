@@ -16,34 +16,32 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
  ******************************************************************************/
-#ifndef EA_GRAPH_BUILDER_H 
-#define EA_GRAPH_BUILDER_H 
+#ifndef EA_GRAPH_BUILDER_H
+#define EA_GRAPH_BUILDER_H
 
 #include "../../ir/class.h"
 #include "../../util/symbol_table.h"
 #include "../graph/graph.h"
 
-
 namespace MicroModelica {
-  namespace Deps {
-    class EAGraphBuilder {
-    public:
-      EAGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics, Util::VarSymbolTable& symbols);
-      EAGraphBuilder(IR::EventTable &events, IR::EquationTable &algebraics, Util::VarSymbolTable& symbols);
-      ~EAGraphBuilder() = default;
-      DepsGraph
-      build();
+namespace Deps {
+class EAGraphBuilder {
+  public:
+  EAGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics, Util::VarSymbolTable &symbols);
+  EAGraphBuilder(IR::EventTable &events, IR::EquationTable &algebraics, Util::VarSymbolTable &symbols);
+  ~EAGraphBuilder() = default;
+  DepsGraph build();
 
-    private:
-      list<EqVertex>       _equationDescriptors;
-      list<IfrVertex>      _sourceDescriptors;
-      list<IfeVertex>      _algebraicDescriptors;
-      IR::EventTable       _events;
-      IR::EquationTable    _algebraics;
-      IR::EquationTable    _equations;
-      Util::VarSymbolTable _symbols;
-    };
-  }
-}
+  private:
+  list<EqVertex> _equationDescriptors;
+  list<IfrVertex> _sourceDescriptors;
+  list<IfeVertex> _algebraicDescriptors;
+  IR::EventTable _events;
+  IR::EquationTable _algebraics;
+  IR::EquationTable _equations;
+  Util::VarSymbolTable _symbols;
+};
+}  // namespace Deps
+}  // namespace MicroModelica
 
 #endif /* EA_GRAPH_BUILDER_H */

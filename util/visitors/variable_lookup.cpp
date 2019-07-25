@@ -23,45 +23,29 @@
 #include "../symbol_table.h"
 
 namespace MicroModelica {
-  namespace Util {
+namespace Util {
 
-    /* VariableLookup class */
+/* VariableLookup class */
 
-    VariableLookup::VariableLookup(VarSymbolTable st, VarSymbolTable lst) :
-        _st(st), 
-        _lst(lst)
-    {
-    }
+VariableLookup::VariableLookup(VarSymbolTable st, VarSymbolTable lst) : _st(st), _lst(lst) {}
 
-    bool
-    VariableLookup::foldTraverseElement(AST_Expression e)
-    {
-      if(e->expressionType() == EXPCOMPREF)
-      {
-        AST_Expression_ComponentReference cr = e->getAsComponentReference();
-        Option<Variable> vi = _st[cr->name()];
-        if(!vi)
-        {
-          vi = _lst[cr->name()];
-          if(!vi)
-          {
-            return false;
-          }
-        }
+bool VariableLookup::foldTraverseElement(AST_Expression e)
+{
+  if (e->expressionType() == EXPCOMPREF) {
+    AST_Expression_ComponentReference cr = e->getAsComponentReference();
+    Option<Variable> vi = _st[cr->name()];
+    if (!vi) {
+      vi = _lst[cr->name()];
+      if (!vi) {
+        return false;
       }
-      return true;
-    }
-
-    bool
-    VariableLookup::foldTraverseElement(bool e1, bool e2, BinOpType bot)
-    {
-      return e1 && e2;
-    }
-
-    bool
-    VariableLookup::foldTraverseElementUMinus(AST_Expression e)
-    {
-      return foldTraverseElement(e);
     }
   }
+  return true;
 }
+
+bool VariableLookup::foldTraverseElement(bool e1, bool e2, BinOpType bot) { return e1 && e2; }
+
+bool VariableLookup::foldTraverseElementUMinus(AST_Expression e) { return foldTraverseElement(e); }
+}  // namespace Util
+}  // namespace MicroModelica

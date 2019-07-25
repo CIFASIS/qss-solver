@@ -25,44 +25,39 @@
 #include "../util/symbol_table.h"
 
 namespace MicroModelica {
-  namespace IR {
+namespace IR {
 
-    /**
-     *
-     */
-    class Expression
-    {
-      public:
-        /**
-         *
-         */
-        Expression();
-        /**
-         *
-         * @param exp
-         */
-        Expression(AST_Expression exp, const Util::VarSymbolTable& symbols);
-        /**
-         *
-         */
-        ~Expression() {};
-        std::string
-        print() const;
-        inline AST_Expression 
-        expression() { return _exp; };
-        bool 
-        isReference() const;
-        bool 
-        isEmpty() const { return _exp == nullptr; };
-        bool 
-        isValid() const { return _exp != nullptr; };
-        friend std::ostream& operator<<(std::ostream& out, const Expression& s);
-      private:
-        AST_Expression       _exp;
-        Util::VarSymbolTable _symbols;
-    };
+/**
+ *
+ */
+class Expression {
+  public:
+  /**
+   *
+   */
+  Expression();
+  /**
+   *
+   * @param exp
+   */
+  Expression(AST_Expression exp, const Util::VarSymbolTable& symbols);
+  /**
+   *
+   */
+  ~Expression(){};
+  std::string print() const;
+  inline AST_Expression expression() { return _exp; };
+  bool isReference() const;
+  bool isEmpty() const { return _exp == nullptr; };
+  bool isValid() const { return _exp != nullptr; };
+  friend std::ostream& operator<<(std::ostream& out, const Expression& s);
 
-    typedef list<Expression> ExpressionList;
-  }
-}
+  private:
+  AST_Expression _exp;
+  Util::VarSymbolTable _symbols;
+};
+
+typedef list<Expression> ExpressionList;
+}  // namespace IR
+}  // namespace MicroModelica
 #endif /* EXPRESSION_H_ */

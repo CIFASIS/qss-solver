@@ -26,119 +26,78 @@
 #include "index.h"
 
 namespace MicroModelica {
-  namespace Util {
-    typedef ModelTable<std::string,std::string> SymbolTable;
-  }
-
-  namespace IR {
-    namespace EQUATION 
-    {
-      typedef enum
-      {
-        ClassicDerivative,
-        QSSDerivative,
-        Algebraic,
-        Dependency,
-        CLASSIC,
-        Output,
-        ZeroCrossing,
-        Handler,
-        Jacobian
-      } Type;
-    }
-    /**
-     *
-     */
-    class Equation
-    {
-      public:
-        /**
-         *
-         * @param exp
-         */
-        Equation() {};
-        Equation(AST_Expression eq, Util::VarSymbolTable& symbols, EQUATION::Type type, int id, int offset);
-        Equation(AST_Expression eq, Util::VarSymbolTable& symbols, Option<Range> range, EQUATION::Type type, int id, int offset);
-        Equation(AST_Equation eq, Util::VarSymbolTable& symbols, EQUATION::Type type, int id);
-        Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Range r, EQUATION::Type type, int id);
-        Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Option<Range> r, EQUATION::Type type, int id);
-        /**
-         *
-         */
-        ~Equation() {};
-        inline bool 
-        hasRange() { return _range.is_initialized(); }; 
-        inline Expression 
-        lhs() { return _lhs; };
-        inline Expression 
-        rhs() { return _rhs; };
-        inline AST_Expression
-        equation() { return _rhs.expression(); };
-        inline bool
-        autonomous() { return _autonomous; };
-        inline Util::SymbolTable 
-        calledFunctions() { return _calledFunctions; };
-        std::string
-        print() const;
-        std::string 
-        macro() const;
-        inline Option<Range>
-        range() { return _range; };
-        inline int 
-        id() { return _id; };
-        static std::string 
-        functionId(EQUATION::Type type);
-        inline EQUATION::Type 
-        type() { return _type; }
-        inline bool
-        isDerivative() { return _type == EQUATION::QSSDerivative || _type == EQUATION::ClassicDerivative; }
-        inline bool
-        isZeroCrossing() { return _type == EQUATION::ZeroCrossing; }
-        inline bool
-        isOutput() { return _type == EQUATION::Output; }
-        inline bool
-        isAlgebraic() { return _type == EQUATION::Algebraic; }
-        Option<Util::Variable>
-        LHSVariable();
-        friend std::ostream& operator<<(std::ostream& out, const Equation& e);
-        bool 
-        isValid() const;
-        bool 
-        hasAlgebraics();
-
-      private:
-        void 
-        process(AST_Equation eq);
-        void 
-        process(AST_Expression exp);
-        Deps::EquationDependencyMatrix 
-        dependencyMatrix() const;
-        std::string 
-        functionId() const;
-        std::string 
-        prefix() const;
-        std::string 
-        lhsStr() const;
-        void 
-        initializeDerivatives();
-        std::string 
-        generateDerivatives() const;
-        
-        AST_Equation         _eq;
-        Expression           _lhs;
-        Expression           _rhs;
-        Expression           _derivatives[3];
-        Option<Range>        _range;
-        bool                 _autonomous;
-        Util::VarSymbolTable _symbols;
-        Util::SymbolTable    _calledFunctions;
-        EQUATION::Type       _type;
-        int                  _id;
-        int                  _offset;
-    };
-
-
-    typedef ModelTable<int,Equation> EquationTable;
-  }
+namespace Util {
+typedef ModelTable<std::string, std::string> SymbolTable;
 }
-#endif  /* EQUATION_H_ */
+
+namespace IR {
+namespace EQUATION {
+typedef enum { ClassicDerivative, QSSDerivative, Algebraic, Dependency, Output, ZeroCrossing, Handler, Jacobian } Type;
+}
+/**
+ *
+ */
+class Equation {
+  public:
+  /**
+   *
+   * @param exp
+   */
+  Equation(){};
+  Equation(AST_Expression eq, Util::VarSymbolTable& symbols, EQUATION::Type type, int id, int offset);
+  Equation(AST_Expression eq, Util::VarSymbolTable& symbols, Option<Range> range, EQUATION::Type type, int id, int offset);
+  Equation(AST_Equation eq, Util::VarSymbolTable& symbols, EQUATION::Type type, int id);
+  Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Range r, EQUATION::Type type, int id);
+  Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Option<Range> r, EQUATION::Type type, int id);
+  /**
+   *
+   */
+  ~Equation(){};
+  inline bool hasRange() { return _range.is_initialized(); };
+  inline Expression lhs() { return _lhs; };
+  inline Expression rhs() { return _rhs; };
+  inline AST_Expression equation() { return _rhs.expression(); };
+  inline bool autonomous() { return _autonomous; };
+  inline Util::SymbolTable calledFunctions() { return _calledFunctions; };
+  std::string print() const;
+  std::string macro() const;
+  inline Option<Range> range() { return _range; };
+  inline int id() { return _id; };
+  static std::string functionId(EQUATION::Type type);
+  inline EQUATION::Type type() { return _type; }
+  inline bool isDerivative() { return _type == EQUATION::QSSDerivative || _type == EQUATION::ClassicDerivative; }
+  inline bool isZeroCrossing() { return _type == EQUATION::ZeroCrossing; }
+  inline bool isOutput() { return _type == EQUATION::Output; }
+  inline bool isAlgebraic() { return _type == EQUATION::Algebraic; }
+  Option<Util::Variable> LHSVariable();
+  friend std::ostream& operator<<(std::ostream& out, const Equation& e);
+  bool isValid() const;
+  bool hasAlgebraics();
+
+  private:
+  void process(AST_Equation eq);
+  void process(AST_Expression exp);
+  Deps::EquationDependencyMatrix dependencyMatrix() const;
+  std::string functionId() const;
+  std::string prefix() const;
+  std::string lhsStr() const;
+  void initializeDerivatives();
+  std::string generateDerivatives() const;
+
+  AST_Equation _eq;
+  Expression _lhs;
+  Expression _rhs;
+  Expression _derivatives[3];
+  Option<Range> _range;
+  bool _autonomous;
+  Util::VarSymbolTable _symbols;
+  Util::SymbolTable _calledFunctions;
+  EQUATION::Type _type;
+  int _id;
+  int _offset;
+};
+
+typedef ModelTable<int, Equation> EquationTable;
+}  // namespace IR
+}  // namespace MicroModelica
+#endif /* EQUATION_H_ */

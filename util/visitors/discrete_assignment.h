@@ -23,24 +23,21 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
-    /**
-     *
-     */
-    class DiscreteAssignment: public AST_Expression_Visitor<bool> 
-    {
-      public:
-        DiscreteAssignment(VarSymbolTable symbols) : _symbols(symbols) {};
-        ~DiscreteAssignment() {};
-      private:
-        bool   
-        foldTraverseElement(AST_Expression exp);
-        bool 
-        foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
-        bool 
-        foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
-        VarSymbolTable _symbols;
-    };
-  }
-}
-#endif  /* DISCRETE_ASSIGNMENT_H_ */
+namespace Util {
+/**
+ *
+ */
+class DiscreteAssignment : public AST_Expression_Visitor<bool> {
+  public:
+  DiscreteAssignment(VarSymbolTable symbols) : _symbols(symbols){};
+  ~DiscreteAssignment(){};
+
+  private:
+  bool foldTraverseElement(AST_Expression exp);
+  bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
+  bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+  VarSymbolTable _symbols;
+};
+}  // namespace Util
+}  // namespace MicroModelica
+#endif /* DISCRETE_ASSIGNMENT_H_ */

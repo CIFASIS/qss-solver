@@ -27,31 +27,23 @@
 #include "graph/graph.h"
 
 namespace MicroModelica {
-  namespace Deps {
-    class Dependency 
-    {
-      public:
-        Dependency() : _ifr() {};
-        ~Dependency() = default;
-        void
-        compute(DepsGraph graph, VariableDependencyMatrix& vdm);
-        void
-        compute(DepsGraph graph, EquationDependencyMatrix& edm);
-        void
-        merge(VariableDependencyMatrix& source, VariableDependencyMatrix& target, VariableDependencyMatrix& merge);
+namespace Deps {
+class Dependency {
+  public:
+  Dependency() : _ifr(){};
+  ~Dependency() = default;
+  void compute(DepsGraph graph, VariableDependencyMatrix& vdm);
+  void compute(DepsGraph graph, EquationDependencyMatrix& edm);
+  void merge(VariableDependencyMatrix& source, VariableDependencyMatrix& target, VariableDependencyMatrix& merge);
 
-      private:
-        void
-        influencees(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, 
-                    AlgebraicDependencies& algs);
-        VariableDependency 
-        getVariableDependency(string name, MDI dom, MDI ran, int id);
-        MDI 
-        variableRange(Util::Variable var);  
+  private:
+  void influencees(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs);
+  VariableDependency getVariableDependency(string name, MDI dom, MDI ran, int id);
+  MDI variableRange(Util::Variable var);
 
-        IndexPair      _ifr;
-    };
-  }
-}
+  IndexPair _ifr;
+};
+}  // namespace Deps
+}  // namespace MicroModelica
 
-#endif // DEP_DEPENDENCY_H
+#endif  // DEP_DEPENDENCY_H

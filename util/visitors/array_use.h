@@ -23,40 +23,35 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
-    /**
-     *
-     */
-    class ArrayUse: public AST_Expression_Visitor<bool> 
-    {
-      public:
-        ArrayUse(VarSymbolTable symbols) : _symbols(symbols) {};
-        ~ArrayUse() {};
-      private:
-        bool   
-        foldTraverseElement(AST_Expression exp);
-        bool 
-        foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
-        bool 
-        foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
-        VarSymbolTable _symbols;
-    };
+namespace Util {
+/**
+ *
+ */
+class ArrayUse : public AST_Expression_Visitor<bool> {
+  public:
+  ArrayUse(VarSymbolTable symbols) : _symbols(symbols){};
+  ~ArrayUse(){};
 
-    /**
-     *  
-     */
-    class StatementArrayUse: public AST_Statement_Visitor<bool, bool, ArrayUse>
-    {
-      public:
-        StatementArrayUse(MicroModelica::Util::VarSymbolTable symbols) : AST_Statement_Visitor(ArrayUse(symbols)) {};
-        ~StatementArrayUse() {};
-      private:
-        inline bool   
-        foldTraverse(bool ret) { return ret; };
-        inline bool   
-        foldTraverse(bool l, bool r) { return l && r; };
-    };
-  }
-}
+  private:
+  bool foldTraverseElement(AST_Expression exp);
+  bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
+  bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+  VarSymbolTable _symbols;
+};
 
-#endif  /* ARRAY_USE_H_ */
+/**
+ *
+ */
+class StatementArrayUse : public AST_Statement_Visitor<bool, bool, ArrayUse> {
+  public:
+  StatementArrayUse(MicroModelica::Util::VarSymbolTable symbols) : AST_Statement_Visitor(ArrayUse(symbols)){};
+  ~StatementArrayUse(){};
+
+  private:
+  inline bool foldTraverse(bool ret) { return ret; };
+  inline bool foldTraverse(bool l, bool r) { return l && r; };
+};
+}  // namespace Util
+}  // namespace MicroModelica
+
+#endif /* ARRAY_USE_H_ */

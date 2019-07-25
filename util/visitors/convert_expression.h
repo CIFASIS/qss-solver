@@ -23,35 +23,29 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
+namespace Util {
 
-    class ConvertExpression 
-    {
-      public:
-        ConvertExpression(AST_Expression left, AST_Expression right, MicroModelica::Util::VarSymbolTable& symbols);
-        /**
-         *
-         */
-        ~ConvertExpression() {};
-        inline std::string 
-        get() { return _convert; };
-      private:
-        AST_Expression_ComponentReference 
-        componentReference(AST_Expression exp);
-        MicroModelica::Util::Variable 
-        variable(AST_Expression_ComponentReference exp);
-        bool 
-        scalarExpression(AST_Expression exp);
-        double 
-        scalarValue(AST_Expression exp);
-        void 
-        convert();
-        AST_Expression                       _left;
-        AST_Expression                       _right;
-        MicroModelica::Util::VarSymbolTable  _symbols;
-        std::string                          _convert;
-    };
-  }
-}
+class ConvertExpression {
+  public:
+  ConvertExpression(AST_Expression left, AST_Expression right, MicroModelica::Util::VarSymbolTable& symbols);
+  /**
+   *
+   */
+  ~ConvertExpression(){};
+  inline std::string get() { return _convert; };
 
-#endif  /* CONVERT_EXPRESSION_H_ */
+  private:
+  AST_Expression_ComponentReference componentReference(AST_Expression exp);
+  MicroModelica::Util::Variable variable(AST_Expression_ComponentReference exp);
+  bool scalarExpression(AST_Expression exp);
+  double scalarValue(AST_Expression exp);
+  void convert();
+  AST_Expression _left;
+  AST_Expression _right;
+  MicroModelica::Util::VarSymbolTable _symbols;
+  std::string _convert;
+};
+}  // namespace Util
+}  // namespace MicroModelica
+
+#endif /* CONVERT_EXPRESSION_H_ */

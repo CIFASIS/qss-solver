@@ -21,107 +21,101 @@
 
 #include "../../util/util_types.h"
 
-
 namespace MicroModelica {
-  using namespace IR;
-  using namespace Util;
-  namespace Deps {
+using namespace IR;
+using namespace Util;
+namespace Deps {
 
-    SDGraphBuilder::SDGraphBuilder(EquationTable &equations, EquationTable &algebraics, VarSymbolTable& symbols) :
-      _equationDescriptors(),
-      _variableDescriptors(),
-      _equations(equations),
-      _algebraics(algebraics),
-      _symbols(symbols)
-    {
-
-    }
-    
-    DepsGraph
-    SDGraphBuilder::build()
-    {
-      DepsGraph graph;
-      // First, add the symbols as vertex.
-      VarSymbolTable::iterator it;
-      for(Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it))
-      {
-        VertexProperty vp = VertexProperty();
-        if(var.isState()) {
-          vp.type = VERTEX::Influencer;
-          vp.var = var;
-          _variableDescriptors.push_back(add_vertex(vp, graph));
-          VertexProperty icee = VertexProperty();
-          icee.type = VERTEX::Influencee;
-          icee.var = var; 
-          _derivativeDescriptors.push_back(add_vertex(icee, graph));
-        }
-        else if (var.isAlgebraic()) {
-          vp.type = VERTEX::Algebraic;
-          vp.var = var;
-          _variableDescriptors.push_back(add_vertex(vp, graph));
-        }
-      }
-      EquationTable::iterator eqit;
-      for(Equation eq = _equations.begin(eqit); !_equations.end(eqit); eq = _equations.next(eqit))
-      {
-        VertexProperty vp = VertexProperty();
-        vp.type = VERTEX::Equation;
-        vp.eq = eq;
-        _equationDescriptors.push_back(add_vertex(vp,graph));
-      }
-      for(Equation eq = _algebraics.begin(eqit); !_algebraics.end(eqit); eq = _algebraics.next(eqit))
-      {
-        VertexProperty vp = VertexProperty();
-        vp.type = VERTEX::Equation;
-        vp.eq = eq;
-        _equationDescriptors.push_back(add_vertex(vp,graph));
-      }
-
-      foreach_(EqVertex sink, _equationDescriptors){
-        foreach_(IfrVertex source, _variableDescriptors){
-          GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
-          if(edge.exists()) {
-            IndexPairSet ips = edge.indexes();
-            for (auto ip : ips) {
-              Label lbl(ip);
-              cout << "Agrega arista desde la var: " << graph[source].var << " a la ecuacion: " << graph[sink].eq.id() << endl;
-              cout << "Ecuacion: " << graph[sink].eq.type() << endl; 
-              add_edge(source, sink, lbl, graph);  
-            }
-          }
-          // Check LHS too if we are working with algebraics.
-          if (graph[source].type == VERTEX::Algebraic && graph[sink].eq.type() == EQUATION::Algebraic) { 
-            GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input);
-            if(edge.exists()) {
-              IndexPairSet ips = edge.indexes();
-              for (auto ip : ips) {
-                Label lbl(ip);
-                cout << "Agrega arista desde la ecuacion algebraica: " << graph[sink].eq.id() << " a la variable: " << graph[source].var  << endl;
-                cout << "Ecuacion algebraica: " << graph[sink].eq.type() << endl;
-                add_edge(sink, source, lbl, graph);  
-              }
-            }            
-          }
-        }
-      }
-      // Generate der(var) --> var edges.
-      foreach_(EqVertex sink, _equationDescriptors){
-        foreach_(IfeVertex source, _derivativeDescriptors){
-          if (graph[sink].eq.isDerivative()) {
-            GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
-            if (edge.exists()) {
-              IndexPairSet ips = edge.indexes();
-              for (auto ip : ips) {
-                Label lbl(ip);
-                cout << "Agrega arista desde la ecuacion derivada: " << graph[sink].eq.id() << " a la derivada: " << graph[source].var  << endl;
-                cout << "Ecuacion algebraica: " << graph[sink].eq.type() << endl;
-                add_edge(sink, source, lbl, graph);
-              }
-            }
-          }
-        }
-      }
-      return graph;
-    }    
-  }
+SDGraphBuilder::SDGraphBuilder(EquationTable &equations, EquationTable &algebraics, VarSymbolTable &symbols)
+    : _equationDescriptors(), _variableDescriptors(), _equations(equations), _algebraics(algebraics), _symbols(symbols)
+{
 }
+
+DepsGraph SDGraphBuilder::build()
+{
+  DepsGraph graph;
+  // First, add the symbols as vertex.
+  VarSymbolTable::iterator it;
+  for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
+    VertexProperty vp = VertexProperty();
+    if (var.isState()) {
+      vp.type = VERTEX::Influencer;
+      vp.var = var;
+      _variableDescriptors.push_back(add_vertex(vp, graph));
+      VertexProperty icee = VertexProperty();
+      icee.type = VERTEX::Influencee;
+      icee.var = var;
+      _derivativeDescriptors.push_back(add_vertex(icee, graph));
+    } else if (var.isAlgebraic()) {
+      vp.type = VERTEX::Algebraic;
+      vp.var = var;
+      _variableDescriptors.push_back(add_vertex(vp, graph));
+    }
+  }
+  EquationTable::iterator eqit;
+  for (Equation eq = _equations.begin(eqit); !_equations.end(eqit); eq = _equations.next(eqit)) {
+    VertexProperty vp = VertexProperty();
+    vp.type = VERTEX::Equation;
+    vp.eq = eq;
+    _equationDescriptors.push_back(add_vertex(vp, graph));
+  }
+  for (Equation eq = _algebraics.begin(eqit); !_algebraics.end(eqit); eq = _algebraics.next(eqit)) {
+    VertexProperty vp = VertexProperty();
+    vp.type = VERTEX::Equation;
+    vp.eq = eq;
+    _equationDescriptors.push_back(add_vertex(vp, graph));
+  }
+
+  foreach_(EqVertex sink, _equationDescriptors)
+  {
+    foreach_(IfrVertex source, _variableDescriptors)
+    {
+      GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
+      if (edge.exists()) {
+        IndexPairSet ips = edge.indexes();
+        for (auto ip : ips) {
+          Label lbl(ip);
+          cout << "Agrega arista desde la var: " << graph[source].var << " a la ecuacion: " << graph[sink].eq.id() << endl;
+          cout << "Ecuacion: " << graph[sink].eq.type() << endl;
+          add_edge(source, sink, lbl, graph);
+        }
+      }
+      // Check LHS too if we are working with algebraics.
+      if (graph[source].type == VERTEX::Algebraic && graph[sink].eq.type() == EQUATION::Algebraic) {
+        GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input);
+        if (edge.exists()) {
+          IndexPairSet ips = edge.indexes();
+          for (auto ip : ips) {
+            Label lbl(ip);
+            cout << "Agrega arista desde la ecuacion algebraica: " << graph[sink].eq.id() << " a la variable: " << graph[source].var
+                 << endl;
+            cout << "Ecuacion algebraica: " << graph[sink].eq.type() << endl;
+            add_edge(sink, source, lbl, graph);
+          }
+        }
+      }
+    }
+  }
+  // Generate der(var) --> var edges.
+  foreach_(EqVertex sink, _equationDescriptors)
+  {
+    foreach_(IfeVertex source, _derivativeDescriptors)
+    {
+      if (graph[sink].eq.isDerivative()) {
+        GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
+        if (edge.exists()) {
+          IndexPairSet ips = edge.indexes();
+          for (auto ip : ips) {
+            Label lbl(ip);
+            cout << "Agrega arista desde la ecuacion derivada: " << graph[sink].eq.id() << " a la derivada: " << graph[source].var << endl;
+            cout << "Ecuacion algebraica: " << graph[sink].eq.type() << endl;
+            add_edge(sink, source, lbl, graph);
+          }
+        }
+      }
+    }
+  }
+  return graph;
+}
+}  // namespace Deps
+}  // namespace MicroModelica

@@ -25,59 +25,64 @@
 #include "../../ir/index.h"
 #include "../ast_util.h"
 
-
 namespace MicroModelica {
-  namespace Util {
-    /**
-     *
-     */
-    class ReplaceIndex: public AST_Expression_Visitor<AST_Expression>
-    {
-      public:
-        /**
-         *
-         * @param vt
-         */
-        ReplaceIndex(IR::Range range, Deps::Usage usage);
-        /**
-         *
-         */
-        ~ReplaceIndex() {};
-      private:
-        AST_Expression
-        foldTraverseElement(AST_Expression exp);
-        inline AST_Expression
-        foldTraverseElementUMinus(AST_Expression exp) { return newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp())); }
-        inline AST_Expression
-        foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot) { return newAST_Expression_BinOp(l, r, bot); }
-        IR::Range _range;
-        Deps::Usage _usage;
-    };
-      /**
-     *
-     */
-    class ReplaceVar: public AST_Expression_Visitor<AST_Expression>
-    {
-      public:
-        /**
-         *
-         * @param vt
-         */
-        ReplaceVar(std::string var) : _var(var) {};
-        /**
-         *
-         */
-        ~ReplaceVar() {};
-      private:
-        AST_Expression
-        foldTraverseElement(AST_Expression exp);
-        inline AST_Expression
-        foldTraverseElementUMinus(AST_Expression exp) { return newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp())); }
-        inline AST_Expression
-        foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot) { return newAST_Expression_BinOp(l, r, bot); }
-        std::string _var;
-    };
-  
+namespace Util {
+/**
+ *
+ */
+class ReplaceIndex : public AST_Expression_Visitor<AST_Expression> {
+  public:
+  /**
+   *
+   * @param vt
+   */
+  ReplaceIndex(IR::Range range, Deps::Usage usage);
+  /**
+   *
+   */
+  ~ReplaceIndex(){};
+
+  private:
+  AST_Expression foldTraverseElement(AST_Expression exp);
+  inline AST_Expression foldTraverseElementUMinus(AST_Expression exp)
+  {
+    return newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp()));
   }
-}
-#endif  /* REPLACE_INDEX_H_ */
+  inline AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
+  {
+    return newAST_Expression_BinOp(l, r, bot);
+  }
+  IR::Range _range;
+  Deps::Usage _usage;
+};
+/**
+ *
+ */
+class ReplaceVar : public AST_Expression_Visitor<AST_Expression> {
+  public:
+  /**
+   *
+   * @param vt
+   */
+  ReplaceVar(std::string var) : _var(var){};
+  /**
+   *
+   */
+  ~ReplaceVar(){};
+
+  private:
+  AST_Expression foldTraverseElement(AST_Expression exp);
+  inline AST_Expression foldTraverseElementUMinus(AST_Expression exp)
+  {
+    return newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp()));
+  }
+  inline AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
+  {
+    return newAST_Expression_BinOp(l, r, bot);
+  }
+  std::string _var;
+};
+
+}  // namespace Util
+}  // namespace MicroModelica
+#endif /* REPLACE_INDEX_H_ */

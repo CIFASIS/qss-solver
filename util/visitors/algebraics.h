@@ -23,31 +23,28 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
-    /**
-     *
-     */
-    class Algebraics: public AST_Expression_Visitor<bool>
-    {
-      public:
-        /**
-         *
-         */
-        Algebraics(VarSymbolTable symbols) : _symbols(symbols) {};
-        /**
-         *
-         */
-        ~Algebraics() {};
-      private:
-        bool 
-        foldTraverseElement(AST_Expression exp);
-        bool 
-        foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
-        bool
-        foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
-        VarSymbolTable _symbols;
-    };
-  }
-}
+namespace Util {
+/**
+ *
+ */
+class Algebraics : public AST_Expression_Visitor<bool> {
+  public:
+  /**
+   *
+   */
+  Algebraics(VarSymbolTable symbols) : _symbols(symbols){};
+  /**
+   *
+   */
+  ~Algebraics(){};
 
-#endif  /* ALGEBRAICS_H_ */
+  private:
+  bool foldTraverseElement(AST_Expression exp);
+  bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
+  bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+  VarSymbolTable _symbols;
+};
+}  // namespace Util
+}  // namespace MicroModelica
+
+#endif /* ALGEBRAICS_H_ */

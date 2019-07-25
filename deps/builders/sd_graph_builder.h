@@ -16,31 +16,30 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
  ******************************************************************************/
-#ifndef SD_GRAPH_BUILDER_H 
-#define SD_GRAPH_BUILDER_H 
+#ifndef SD_GRAPH_BUILDER_H
+#define SD_GRAPH_BUILDER_H
 
 #include "../../ir/class.h"
 #include "../../util/symbol_table.h"
 #include "../graph/graph.h"
 
-
 namespace MicroModelica {
-  namespace Deps {
-    class SDGraphBuilder {
-    public:
-      SDGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics, Util::VarSymbolTable& symbols);
-      ~SDGraphBuilder(){};
-      DepsGraph
-      build();    
-    private:
-      list<EqVertex>       _equationDescriptors;
-      list<IfrVertex>      _variableDescriptors;
-      list<IfeVertex>      _derivativeDescriptors;
-      IR::EquationTable    _equations;
-      IR::EquationTable    _algebraics;
-      Util::VarSymbolTable _symbols;
-    };
-  }
-}
+namespace Deps {
+class SDGraphBuilder {
+  public:
+  SDGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics, Util::VarSymbolTable &symbols);
+  ~SDGraphBuilder(){};
+  DepsGraph build();
+
+  private:
+  list<EqVertex> _equationDescriptors;
+  list<IfrVertex> _variableDescriptors;
+  list<IfeVertex> _derivativeDescriptors;
+  IR::EquationTable _equations;
+  IR::EquationTable _algebraics;
+  Util::VarSymbolTable _symbols;
+};
+}  // namespace Deps
+}  // namespace MicroModelica
 
 #endif /* SD_GRAPH_BUILDER_H */

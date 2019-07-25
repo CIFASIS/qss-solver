@@ -19,65 +19,47 @@
 
 #include "replace_der.h"
 
-#include <sstream> 
+#include <sstream>
 
 #include "../../ast/ast_builder.h"
 #include "../error.h"
 #include "../symbol_table.h"
 
 namespace MicroModelica {
-  namespace Util {
+namespace Util {
 
-    ReplaceDer::ReplaceDer(VarSymbolTable vt) :
-        _vt(vt)
-    {
-    }
+ReplaceDer::ReplaceDer(VarSymbolTable vt) : _vt(vt) {}
 
-    AST_Expression
-    ReplaceDer::foldTraverseElement(AST_Expression exp)
-    {
-      stringstream ret(stringstream::out);
-      switch(exp->expressionType())
-      {
-        case EXPCALL:
-        {
-          AST_Expression_Call ec = exp->getAsCall();
-          string name = *(ec->name());
-          if(!name.compare("der2"))
-          {
-            return (newAST_Expression_Derivative(
-                    newAST_ExpressionList(
-                    newAST_Expression_Derivative(ec->arguments()))));
-          }
-          else if(!name.compare("der3"))
-          {
-            return (newAST_Expression_Derivative(
-                    newAST_ExpressionList(
-                    newAST_Expression_Derivative(
-                    newAST_ExpressionList(
-                            newAST_Expression_Derivative(ec->arguments()))))));
-          }
-        }
-          break;
-        case EXPOUTPUT:
-          return (newAST_Expression_OutputExpressions(
-                  newAST_ExpressionList(apply(AST_ListFirst(exp->getAsOutput()->expressionList())))));
-        default:
-          break;
-      }
-      return exp;
+AST_Expression ReplaceDer::foldTraverseElement(AST_Expression exp)
+{
+  stringstream ret(stringstream::out);
+  switch (exp->expressionType()) {
+  case EXPCALL: {
+    AST_Expression_Call ec = exp->getAsCall();
+    string name = *(ec->name());
+    if (!name.compare("der2")) {
+      return (newAST_Expression_Derivative(newAST_ExpressionList(newAST_Expression_Derivative(ec->arguments()))));
+    } else if (!name.compare("der3")) {
+      return (newAST_Expression_Derivative(
+          newAST_ExpressionList(newAST_Expression_Derivative(newAST_ExpressionList(newAST_Expression_Derivative(ec->arguments()))))));
     }
-
-    AST_Expression
-    ReplaceDer::foldTraverseElementUMinus(AST_Expression exp)
-    {
-      return newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp()));
-    }
-
-    AST_Expression
-    ReplaceDer::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
-    {
-      return newAST_Expression_BinOp(l, r, bot);
-    }
+  } break;
+  case EXPOUTPUT:
+    return (newAST_Expression_OutputExpressions(newAST_ExpressionList(apply(AST_ListFirst(exp->getAsOutput()->expressionList())))));
+  default:
+    break;
   }
+  return exp;
 }
+
+AST_Expression ReplaceDer::foldTraverseElementUMinus(AST_Expression exp)
+{
+  return newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp()));
+}
+
+AST_Expression ReplaceDer::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
+{
+  return newAST_Expression_BinOp(l, r, bot);
+}
+}  // namespace Util
+}  // namespace MicroModelica

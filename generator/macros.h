@@ -29,33 +29,28 @@
 #include "../ir/index.h"
 
 namespace MicroModelica {
-  namespace Generator {
-    
-    /**
-     *
-     */
-    class Macros 
-    {
-      public:
-        Macros(IR::Model& model, Util::Variable& variable); 
-        Macros() : _model(), _variable() {}; 
-        ~Macros() {};
-        std::string 
-        print() const;
-        std::string 
-        parameters() const;
-        std::string 
-        arguments() const;
-        std::string 
-        usage(std::string token, Option<IR::Range> range, int id) const;
-        std::string 
-        indexMacro(std::string token, Option<IR::Range> range, int id) const;
-        friend std::ostream& operator<<(std::ostream& out, const Macros& m);
-      private:
-        IR::Model      _model;
-        Util::Variable _variable;
-    };
-  }
-}
+namespace Generator {
 
-#endif  /* MMO_MACROS_H_ */
+/**
+ *
+ */
+class Macros {
+  public:
+  Macros(IR::Model& model, Util::Variable& variable);
+  Macros() : _model(), _variable(){};
+  ~Macros(){};
+  std::string print() const;
+  std::string parameters() const;
+  std::string arguments() const;
+  std::string usage(std::string token, Option<IR::Range> range, int id) const;
+  std::string indexMacro(std::string token, Option<IR::Range> range, int id) const;
+  friend std::ostream& operator<<(std::ostream& out, const Macros& m);
+
+  private:
+  IR::Model _model;
+  Util::Variable _variable;
+};
+}  // namespace Generator
+}  // namespace MicroModelica
+
+#endif /* MMO_MACROS_H_ */

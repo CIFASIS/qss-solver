@@ -26,68 +26,58 @@
 
 namespace MicroModelica {
 
-  namespace Util {
-    typedef ModelTable<std::string,std::string> SymbolTable;
-  }
-  namespace IR {
-
-    namespace STATEMENT  
-    {
-      typedef enum {
-        LHS,
-        RHS
-      } AssignTerm;
-    }
-
-    /**
-     *
-     */
-    class Statement
-    {
-      public:
-        /**
-         *
-         * @param stm
-         */
-        Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, bool initial = false, const std::string& block = "");
-        Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, Option<Range> range, bool initial = false, const std::string& block = "");
-        /**
-         *
-         */
-        Statement() {};
-        /**
-         *
-         */
-        ~Statement() {};
-        inline bool  
-        hasRange() { return _range.is_initialized(); }; 
-        inline Util::SymbolTable 
-        calledFunctions() { return _calledFunctions; };
-        friend std::ostream& operator<<(std::ostream& out, const Statement& s);
-        string 
-        print() const;
-        /**
-         * @brief      Returns a expression list containing all the expressions needed
-         *             by the graph builders. Without the if/for/when sentences.
-         *
-         * @return     Expression list used by the graph builders.\see {dh_graph_builder.cpp}
-         */
-        ExpressionList
-        assignments(STATEMENT::AssignTerm asg) const;
-        bool 
-        isAssignment() const;
-        inline Option<Range>
-        range() { return _range; };
-
-      private:
-        AST_Statement        _stm;
-        Option<Range>        _range;
-        Util::VarSymbolTable _symbols;
-        Util::SymbolTable    _calledFunctions;
-        std::string          _block;
-    };
-
-    typedef ModelTable<int, Statement> StatementTable;
-  }
+namespace Util {
+typedef ModelTable<std::string, std::string> SymbolTable;
 }
-#endif  /* MMO_STATEMENT_H_ */
+namespace IR {
+
+namespace STATEMENT {
+typedef enum { LHS, RHS } AssignTerm;
+}
+
+/**
+ *
+ */
+class Statement {
+  public:
+  /**
+   *
+   * @param stm
+   */
+  Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, bool initial = false, const std::string& block = "");
+  Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, Option<Range> range, bool initial = false,
+            const std::string& block = "");
+  /**
+   *
+   */
+  Statement(){};
+  /**
+   *
+   */
+  ~Statement(){};
+  inline bool hasRange() { return _range.is_initialized(); };
+  inline Util::SymbolTable calledFunctions() { return _calledFunctions; };
+  friend std::ostream& operator<<(std::ostream& out, const Statement& s);
+  string print() const;
+  /**
+   * @brief      Returns a expression list containing all the expressions needed
+   *             by the graph builders. Without the if/for/when sentences.
+   *
+   * @return     Expression list used by the graph builders.\see {dh_graph_builder.cpp}
+   */
+  ExpressionList assignments(STATEMENT::AssignTerm asg) const;
+  bool isAssignment() const;
+  inline Option<Range> range() { return _range; };
+
+  private:
+  AST_Statement _stm;
+  Option<Range> _range;
+  Util::VarSymbolTable _symbols;
+  Util::SymbolTable _calledFunctions;
+  std::string _block;
+};
+
+typedef ModelTable<int, Statement> StatementTable;
+}  // namespace IR
+}  // namespace MicroModelica
+#endif /* MMO_STATEMENT_H_ */

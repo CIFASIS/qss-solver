@@ -27,28 +27,21 @@ namespace MicroModelica {
 
 namespace Util {
 
-static const char *enableFlags = NULL; // controls which DEBUG messages are printed
+static const char *enableFlags = NULL;  // controls which DEBUG messages are printed
 
-void
-debugInit(const char *flagList)
-{
-  enableFlags = flagList;
-}
+void debugInit(const char *flagList) { enableFlags = flagList; }
 
-bool
-debugIsEnabled(char flag)
+bool debugIsEnabled(char flag)
 {
-  if(enableFlags != NULL)
+  if (enableFlags != NULL)
     return (strchr(enableFlags, flag) != 0) || (strchr(enableFlags, '+') != 0);
   else
     return false;
 }
 
-void
-DEBUG(char flag, const char *format, ...)
+void DEBUG(char flag, const char *format, ...)
 {
-  if(debugIsEnabled(flag))
-  {
+  if (debugIsEnabled(flag)) {
     va_list ap;
     va_start(ap, format);
     vfprintf(stdout, format, ap);
@@ -57,32 +50,26 @@ DEBUG(char flag, const char *format, ...)
   }
 }
 
-bool
-isDebugParam(char *param)
+bool isDebugParam(char *param)
 {
-  if(strcmp(param, "c") == 0)
-  {
+  if (strcmp(param, "c") == 0) {
     return true;
   }
-  if(strcmp(param, "a") == 0)
-  {
+  if (strcmp(param, "a") == 0) {
     return true;
   }
-  if(strcmp(param, "s") == 0)
-  {
+  if (strcmp(param, "s") == 0) {
     return true;
   }
   return false;
 }
 
-void
-ERROR(const char *format, ...)
+void ERROR(const char *format, ...)
 {
   va_list ap;
   va_start(ap, format);
   char *error_string = "Error: ";
-  char *new_format = (char *) malloc(
-      sizeof(char) * strlen(error_string) + (strlen(format)));
+  char *new_format = (char *)malloc(sizeof(char) * strlen(error_string) + (strlen(format)));
   strcpy(new_format, error_string);
   strcat(new_format, format);
   vfprintf(stderr, new_format, ap);
@@ -91,11 +78,9 @@ ERROR(const char *format, ...)
   exit(EXIT_FAILURE);
 }
 
-void
-ERROR_UNLESS(bool condition, const char *format, ...)
+void ERROR_UNLESS(bool condition, const char *format, ...)
 {
-  if(!condition)
-  {
+  if (!condition) {
     va_list ap;
     va_start(ap, format);
     ERROR(format, ap);
@@ -103,5 +88,5 @@ ERROR_UNLESS(bool condition, const char *format, ...)
   }
 }
 
-}
-}
+}  // namespace Util
+}  // namespace MicroModelica

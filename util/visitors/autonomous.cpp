@@ -20,33 +20,30 @@
 #include "autonomous.h"
 
 namespace MicroModelica {
-  namespace Util {
+namespace Util {
 
-    bool 
-    Autonomous::foldTraverseElement(AST_Expression e)
-    {
-      bool autonomous = true;
-      switch(e->expressionType())
-      {
-        case EXPCALL:
-        {
-          AST_Expression_Call call = e->getAsCall();
-          AST_ExpressionListIterator it;
-          foreach(it , call->arguments())
-          {
-            autonomous &= apply(current_element(it));
-          }
-          return autonomous;
-        }
-        case EXPCOMPREF:
-        {
-          AST_Expression_ComponentReference cr = e->getAsComponentReference();
-          Option<Variable> var = _symbols[cr->name()];
-          if(var && var->isTime()) { autonomous = false; }
-        }
-        default:
-          return autonomous;
-      }
+bool Autonomous::foldTraverseElement(AST_Expression e)
+{
+  bool autonomous = true;
+  switch (e->expressionType()) {
+  case EXPCALL: {
+    AST_Expression_Call call = e->getAsCall();
+    AST_ExpressionListIterator it;
+    foreach (it, call->arguments()) {
+      autonomous &= apply(current_element(it));
+    }
+    return autonomous;
+  }
+  case EXPCOMPREF: {
+    AST_Expression_ComponentReference cr = e->getAsComponentReference();
+    Option<Variable> var = _symbols[cr->name()];
+    if (var && var->isTime()) {
+      autonomous = false;
     }
   }
+  default:
+    return autonomous;
+  }
 }
+}  // namespace Util
+}  // namespace MicroModelica

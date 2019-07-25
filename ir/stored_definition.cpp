@@ -22,81 +22,44 @@
 #include "stored_definition.h"
 
 namespace MicroModelica {
-  namespace IR {
+namespace IR {
 
-    StoredDefinition::StoredDefinition() :
-      _def(),
-      _functions()
-    {
-    }
+StoredDefinition::StoredDefinition() : _def(), _functions() {}
 
-    void 
-    StoredDefinition::setModel(string name)
-    {
-      _def = Model(name);
-    }
+void StoredDefinition::setModel(string name) { _def = Model(name); }
 
-    void 
-    StoredDefinition::setPackage(string name)
-    {
-      _def = Package(name);
-    }
+void StoredDefinition::setPackage(string name) { _def = Package(name); }
 
-    void 
-    StoredDefinition::addFunction(Function& f)
-    {
-      _functions.insert(f.name(), f);
-    }
+void StoredDefinition::addFunction(Function& f) { _functions.insert(f.name(), f); }
 
-    Option<Function> 
-    StoredDefinition::function(string name) 
-    {
-      Option<Function> f = _functions[name];
-      return f;
-    }
+Option<Function> StoredDefinition::function(string name)
+{
+  Option<Function> f = _functions[name];
+  return f;
+}
 
-    Model& 
-    StoredDefinition::model() 
-    {
-      return boost::get<Model>(_def);
-    }
+Model& StoredDefinition::model() { return boost::get<Model>(_def); }
 
-    Package&
-    StoredDefinition::package()
-    {
-      return boost::get<Package>(_def);
-    }
+Package& StoredDefinition::package() { return boost::get<Package>(_def); }
 
-    bool 
-    StoredDefinition::isModel()
-    {
-      return _def.type() == typeid(Model);
-    }
-    
-    bool 
-    StoredDefinition::isPackage()
-    {
-      return _def.type() == typeid(Package);
-    }
+bool StoredDefinition::isModel() { return _def.type() == typeid(Model); }
 
-    void 
-    StoredDefinition::postProcess()
-    {
-      if(isModel())
-      {
-        boost::get<Model>(_def).setEquations();
-        boost::get<Model>(_def).setEvents();
-        boost::get<Model>(_def).setOutputs();
-        boost::get<Model>(_def).setCalledFunctions(_functions);
-        boost::get<Model>(_def).computeDependencies();
-        boost::get<Model>(_def).setInputs();
-        boost::get<Model>(_def).setModelConfig();
-      }
-      else 
-      {
-        boost::get<Package>(_def).setFunctions(_functions);
-      }
-    }
+bool StoredDefinition::isPackage() { return _def.type() == typeid(Package); }
 
+void StoredDefinition::postProcess()
+{
+  if (isModel()) {
+    boost::get<Model>(_def).setEquations();
+    boost::get<Model>(_def).setEvents();
+    boost::get<Model>(_def).setOutputs();
+    boost::get<Model>(_def).setCalledFunctions(_functions);
+    boost::get<Model>(_def).computeDependencies();
+    boost::get<Model>(_def).setInputs();
+    boost::get<Model>(_def).setModelConfig();
+  } else {
+    boost::get<Package>(_def).setFunctions(_functions);
   }
 }
+
+}  // namespace IR
+}  // namespace MicroModelica

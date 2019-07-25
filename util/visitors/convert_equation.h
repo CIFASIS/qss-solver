@@ -23,22 +23,19 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
+namespace Util {
 
-    class ConvertEquation
-    {
-      public:
-        ConvertEquation(AST_Equation equation, MicroModelica::Util::VarSymbolTable& symbols);
-        ~ConvertEquation() {};
-        inline AST_Equation 
-        get() { return _equation; };
-      private:
-        AST_Equation 
-        convert(AST_Equation eq);
-        AST_Equation                        _equation;
-        MicroModelica::Util::VarSymbolTable _symbols;
+class ConvertEquation {
+  public:
+  ConvertEquation(AST_Equation equation, MicroModelica::Util::VarSymbolTable& symbols);
+  ~ConvertEquation(){};
+  inline AST_Equation get() { return _equation; };
 
-    };
-  }
-}
-#endif  /* CONVERT_EQUATION_H_ */
+  private:
+  AST_Equation convert(AST_Equation eq);
+  AST_Equation _equation;
+  MicroModelica::Util::VarSymbolTable _symbols;
+};
+}  // namespace Util
+}  // namespace MicroModelica
+#endif /* CONVERT_EQUATION_H_ */

@@ -23,33 +23,29 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
-    /**
-     *
-     */
-    class ReplaceInnerProduct: public AST_Expression_Visitor<AST_Expression>
-    {
-      public:
-        /**
-         *
-         * @param vt
-         */
-        ReplaceInnerProduct(MicroModelica::Util::VarSymbolTable& vt);
-        /**
-         *
-         */
-        ~ReplaceInnerProduct() {};
-      private:
-        bool
-        controlArray(AST_Expression exp);
-        AST_Expression
-        foldTraverseElement(AST_Expression exp);
-        AST_Expression
-        foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
-        AST_Expression
-        foldTraverseElementUMinus(AST_Expression exp);
-        MicroModelica::Util::VarSymbolTable _symbols;
-    };
-  }
-}
-#endif  /* REPLACE_INNER_PRODUCT_H_ */
+namespace Util {
+/**
+ *
+ */
+class ReplaceInnerProduct : public AST_Expression_Visitor<AST_Expression> {
+  public:
+  /**
+   *
+   * @param vt
+   */
+  ReplaceInnerProduct(MicroModelica::Util::VarSymbolTable& vt);
+  /**
+   *
+   */
+  ~ReplaceInnerProduct(){};
+
+  private:
+  bool controlArray(AST_Expression exp);
+  AST_Expression foldTraverseElement(AST_Expression exp);
+  AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+  AST_Expression foldTraverseElementUMinus(AST_Expression exp);
+  MicroModelica::Util::VarSymbolTable _symbols;
+};
+}  // namespace Util
+}  // namespace MicroModelica
+#endif /* REPLACE_INNER_PRODUCT_H_ */

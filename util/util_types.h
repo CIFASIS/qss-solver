@@ -28,14 +28,12 @@
 
 #define foreach_ BOOST_FOREACH
 
-
 template <typename T>
-struct Option: public boost::optional<T> {
-public:
-  Option(): boost::optional<T>(){};
-  Option(boost::optional<T> t): boost::optional<T>(t){};
-  Option(T const &t ): boost::optional<T>(t){};
-
+struct Option : public boost::optional<T> {
+  public:
+  Option() : boost::optional<T>(){};
+  Option(boost::optional<T> t) : boost::optional<T>(t){};
+  Option(T const &t) : boost::optional<T>(t){};
 };
 
 DEFINE_TYPE(AST_MicroModelica);
@@ -48,4 +46,4 @@ typedef std::string VarName;
  */
 typedef std::string TypeName;
 
-#endif  /*  UTIL_TYPES_H_ */
+#endif /*  UTIL_TYPES_H_ */

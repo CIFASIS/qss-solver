@@ -30,647 +30,524 @@
 #include "../util/util_types.h"
 
 namespace MicroModelica {
-  namespace IR {
+namespace IR {
 
-    /**
-     * @enum ANT_solver
-     * @brief Model annotations solver type.
-     *
-     * @var ANT_solver::ANT_QSS
-     * @brief QSS1 method.
-     */
-    typedef enum
-    {
-      QSS,
-      CQSS,
-      LIQSS,
-      QSS2,
-      LIQSS2,
-      QSS3,
-      LIQSS3,
-      QSS4,
-      DASSL,
-      DOPRI,
-      CVODE_BDF,
-      CVODE_AM,
-      IDA
-    } Solver;
+/**
+ * @enum ANT_solver
+ * @brief Model annotations solver type.
+ *
+ * @var ANT_solver::ANT_QSS
+ * @brief QSS1 method.
+ */
+typedef enum { QSS, CQSS, LIQSS, QSS2, LIQSS2, QSS3, LIQSS3, QSS4, DASSL, DOPRI, CVODE_BDF, CVODE_AM, IDA } Solver;
 
-    typedef enum
-    {
-      Metis,    
-      HMetis,   
-      Scotch,   
-      Patoh,    
-      MTPL,     
-      MTPL_IT,  
-      Manual
-    } PartitionMethod;
+typedef enum { Metis, HMetis, Scotch, Patoh, MTPL, MTPL_IT, Manual } PartitionMethod;
 
-    typedef enum
-    {
-      DT_Fixed, 
-      DT_Asynchronous 
-    } DT_Synch;
+typedef enum { DT_Fixed, DT_Asynchronous } DT_Synch;
 
-    /**
-     *
-     */
-    class FunctionAnnotation
-    {
-      public:
-        /**
-         *
-         */
-        FunctionAnnotation();
-        ~FunctionAnnotation() = default;
-        /**
-         *
-         * @return
-         */
-        bool
-        hasDerivative();
-        /**
-         *
-         * @return
-         */
-        bool
-        hasInclude();
-        /**
-         *
-         * @return
-         */
-        bool
-        hasIncludeDirectory();
-        /**
-         *
-         * @return
-         */
-        bool
-        hasLibraries();
-        /**
-         *
-         * @return
-         */
-        bool
-        hasLibraryDirectory();
-        /**
-         *
-         * @param x
-         * @return
-         */
-        bool
-        insert(AST_Argument_Modification x);
-        /**
-         *
-         * @return
-         */
-        string
-        derivative();
-        /**
-         *
-         * @return
-         */
-        string
-        include();
-        /**
-         *
-         * @return
-         */
-        string
-        includeDirectory();
-        /**
-         *
-         * @return
-         */
-        Util::SymbolTable 
-        libraries() const;
-        /**
-         *
-         * @return
-         */
-        string
-        libraryDirectory();
-      private:
-        /**
-         *
-         */
-        typedef enum
-        {
-          INCLUDE,            //!< INCLUDE
-          INCLUDE_DIRECTORY,  //!< INCLUDE_DIRECTORY
-          LIBRARY,            //!< LIBRARY
-          LIBRARY_DIRECTORY,  //!< LIBRARY_DIRECTORY
-          DERIVATIVE          //!< DERIVATIVE
-        } type;
-        map<std::string, FunctionAnnotation::type> _annotations;
-        std::string                                _derivative;
-        std::string                                _include;
-        std::string                                _includeDirectory;
-        Util::SymbolTable                          _libraries;
-        std::string                                _libraryDirectory;
-    };
+/**
+ *
+ */
+class FunctionAnnotation {
+  public:
+  /**
+   *
+   */
+  FunctionAnnotation();
+  ~FunctionAnnotation() = default;
+  /**
+   *
+   * @return
+   */
+  bool hasDerivative();
+  /**
+   *
+   * @return
+   */
+  bool hasInclude();
+  /**
+   *
+   * @return
+   */
+  bool hasIncludeDirectory();
+  /**
+   *
+   * @return
+   */
+  bool hasLibraries();
+  /**
+   *
+   * @return
+   */
+  bool hasLibraryDirectory();
+  /**
+   *
+   * @param x
+   * @return
+   */
+  bool insert(AST_Argument_Modification x);
+  /**
+   *
+   * @return
+   */
+  string derivative();
+  /**
+   *
+   * @return
+   */
+  string include();
+  /**
+   *
+   * @return
+   */
+  string includeDirectory();
+  /**
+   *
+   * @return
+   */
+  Util::SymbolTable libraries() const;
+  /**
+   *
+   * @return
+   */
+  string libraryDirectory();
 
-    /**
-     *
-     */
-    class ModelAnnotation
-    {
-      public:
-        ModelAnnotation(Util::VarSymbolTable& symbolTable);
-        ModelAnnotation() {};
-        ~ModelAnnotation() = default;
-        /**
-         *
-         * @param x
-         */
-        void
-        eventComment(AST_Comment x);
-        /**
-         *
-         * @param x
-         * @return
-         */
-        bool
-        insert(AST_Argument_Modification x);
-        /**
-         *
-         * @param desc
-         */
-        void
-        setDesc(string desc);
-        /**
-         *
-         * @return
-         */
-        string
-        desc();
-        /**
-         *
-         * @param dqmin
-         */
-        void
-        setDQMin(double dqmin);
-        /**
-         *
-         * @return
-         */
-        list<double>
-        dqmin();
-        /**
-         *
-         * @return
-         */
-        list<double>
-        dqrel();
-        /**
-         *
-         * @param dqrel
-         */
-        void
-        setDQRel(double dqrel);
-        /**
-         *
-         * @param weight
-         */
-        void
-        setWeight(double weight);
-        /**
-         *
-         * @return
-         */
-        double
-        weight();
-        /**
-         *
-         * @param solver
-         */
-        void
-        setSolver(Solver solver);
-        /**
-         *
-         * @return
-         */
-        Solver
-        solver();
-        /**
-         *
-         * @return
-         */
-        string
-        solverString();
-        /**
-         *
-         * @param it
-         */
-        void
-        setInitialTime(double it);
-        /**
-         *
-         * @return
-         */
-        double
-        initialTime();
-        /**
-         *
-         * @param ft
-         */
-        void
-        setFinalTime(double ft);
-        /**
-         *
-         * @return
-         */
-        double
-        finalTime();
-        /**
-         *
-         * @param ms
-         */
-        void
-        setMinStep(double ms);
-        /**
-         *
-         * @return
-         */
-        double
-        minStep();
-        /**
-         *
-         * @param zch
-         */
-        void
-        setZCHyst(double zch);
-        /**
-         *
-         * @return
-         */
-        double
-        ZCHyst();
-        /**
-         *
-         * @param dd
-         */
-        void
-        setDerDelta(double dd);
-        /**
-         *
-         * @return
-         */
-        double
-        derDelta();
-        /**
-         *
-         * @param lps
-         */
-        void
-        setLps(int lps);
-        /**
-         *
-         * @param dt
-         */
-        void
-        setDT(double dt);
-        /**
-         *
-         * @return
-         */
-        double
-        DT();
-        /**
-         *
-         * @return
-         */
-        int
-        lps();
-        /**
-         *
-         * @param ns
-         */
-        void
-        setNodeSize(int ns);
-        /**
-         *
-         * @return
-         */
-        int
-        nodeSize();
-        /**
-         *
-         * @param ci
-         */
-        void
-        setCommInterval(string ci);
-        /**
-         *
-         * @return
-         */
-        string
-        commInterval();
-        /**
-         *
-         * @param s
-         */
-        void
-        setSample(double s);
-        /**
-         *
-         * @return
-         */
-        list<double>
-        sample();
-        /**
-         *
-         * @param sd
-         */
-        void
-        setSymDiff(bool sd);
-        /**
-         *
-         * @return
-         */
-        bool
-        symDiff();
-        /**
-         *
-         * @return
-         */
-        int
-        order();
-        /**
-         *
-         * @return
-         */
-        string
-        scheduler();
-        /**
-         *
-         * @param sched
-         */
-        void
-        setScheduler(string sched);
-        /**
-         *
-         * @return
-         */
-        list<AST_Expression>
-        output();
-        /**
-         *
-         * @param save
-         */
-        void
-        setStoreData(string save);
-        string
-        storeData();
-        /**
-         *
-         * @param pm
-         */
-        void
-        setPartitionMethod(PartitionMethod pm);
-        /**
-         *
-         * @return
-         */
-        string
-        partitionMethodString();
-        /**
-         *
-         * @return
-         */
-        PartitionMethod
-        partitionMethod();
-        /**
-         *
-         * @param p
-         */
-        void
-        setParallel(bool p);
-        /**
-         *
-         * @return
-         */
-        bool
-        parallel();
-        /**
-         *
-         * @return
-         */
-        int
-        polyCoeffs();
-        /**
-         *
-         * @param synch
-         */
-        void
-        setDtSynch(DT_Synch synch);
-        /**
-         *
-         * @return
-         */
-        string
-        dtSynchString();
-        /**
-         *
-         * @return
-         */
-        DT_Synch
-        dtSynch();
-        list<string>
-        patohSettings();
-        list<string>
-        scotchSettings();
-        list<string>
-        metisSettings();
-        void
-        setPatohSettings(string l);
-        void
-        setScotchSettings(string l);
-        void
-        setMetisSettings(string l);
-        void
-        setJacobian(int l);
-        int
-        jacobian();
-        bool
-        classic();
+  private:
+  /**
+   *
+   */
+  typedef enum {
+    INCLUDE,            //!< INCLUDE
+    INCLUDE_DIRECTORY,  //!< INCLUDE_DIRECTORY
+    LIBRARY,            //!< LIBRARY
+    LIBRARY_DIRECTORY,  //!< LIBRARY_DIRECTORY
+    DERIVATIVE          //!< DERIVATIVE
+  } type;
+  map<std::string, FunctionAnnotation::type> _annotations;
+  std::string _derivative;
+  std::string _include;
+  std::string _includeDirectory;
+  Util::SymbolTable _libraries;
+  std::string _libraryDirectory;
+};
 
-      private:
-        /**
-         *
-         */
-        typedef enum
-        {
-          EXPERIMENT,       //!< EXPERIMENT
-          DESC,             //!< DESC
-          DQMIN,            //!< DQMIN
-          DQREL,            //!< DQREL
-          WEIGHT,           //!< WEIGHT
-          SOLVER,           //!< SOLVER
-          INITIAL_TIME,     //!< INITIAL_TIME
-          FINAL_TIME,       //!< FINAL_TIME
-          MIN_STEP,         //!< MIN_STEP
-          ZCHYST,           //!< ZCHYST
-          DER_DELTA,        //!< DER_DELTA
-          LPS,              //!< LPS
-          NODE_SIZE,        //!< NODE_SIZE
-          COMM_INTERVAL,    //!< COMM_INTERVAL
-          STEP_SIZE,        //!< STEP_SIZE
-          SYM_DIFF,         //!< SYM_DIFF
-          SCHEDULER,        //!< SCHEDULER
-          OUTPUT,           //!< OUTPUT
-          STORE_DATA,       //!< STORE_DATA
-          PARTITION_METHOD, //!< PARTITION_METHOD
-          PARALLEL,         //!< PARALLEL
-          DELTAT,           //!< DT
-          DELTAT_SYNCH,     //!< DT_SYNCH
-          PATOH_SETTINGS,   //!< PATOH_SETTINGS
-          SCOTCH_SETTINGS,  //!< SCOTCH_SETTINGS
-          METIS_SETTINGS,   //!< METIS_SETTINGS
-          JACOBIAN          //!< JACOBIAN
-        } type;
-        void
-        processAnnotation(string annot, AST_Modification_Equal x);
-        void
-        processArgument(AST_Argument_Modification arg);
-        void
-        processList(AST_Expression x, list<double> *l);
-        void
-        processList(AST_Expression x, list<string> *l);
-        void
-        processExpressionList(AST_Expression x, list<AST_Expression> *l);
-        Solver
-        getSolver(string s);
-        PartitionMethod
-        getPartitionMethod(string s);
-        DT_Synch
-        getDtSynch(string s);
+/**
+ *
+ */
+class ModelAnnotation {
+  public:
+  ModelAnnotation(Util::VarSymbolTable &symbolTable);
+  ModelAnnotation(){};
+  ~ModelAnnotation() = default;
+  /**
+   *
+   * @param x
+   */
+  void eventComment(AST_Comment x);
+  /**
+   *
+   * @param x
+   * @return
+   */
+  bool insert(AST_Argument_Modification x);
+  /**
+   *
+   * @param desc
+   */
+  void setDesc(string desc);
+  /**
+   *
+   * @return
+   */
+  string desc();
+  /**
+   *
+   * @param dqmin
+   */
+  void setDQMin(double dqmin);
+  /**
+   *
+   * @return
+   */
+  list<double> dqmin();
+  /**
+   *
+   * @return
+   */
+  list<double> dqrel();
+  /**
+   *
+   * @param dqrel
+   */
+  void setDQRel(double dqrel);
+  /**
+   *
+   * @param weight
+   */
+  void setWeight(double weight);
+  /**
+   *
+   * @return
+   */
+  double weight();
+  /**
+   *
+   * @param solver
+   */
+  void setSolver(Solver solver);
+  /**
+   *
+   * @return
+   */
+  Solver solver();
+  /**
+   *
+   * @return
+   */
+  string solverString();
+  /**
+   *
+   * @param it
+   */
+  void setInitialTime(double it);
+  /**
+   *
+   * @return
+   */
+  double initialTime();
+  /**
+   *
+   * @param ft
+   */
+  void setFinalTime(double ft);
+  /**
+   *
+   * @return
+   */
+  double finalTime();
+  /**
+   *
+   * @param ms
+   */
+  void setMinStep(double ms);
+  /**
+   *
+   * @return
+   */
+  double minStep();
+  /**
+   *
+   * @param zch
+   */
+  void setZCHyst(double zch);
+  /**
+   *
+   * @return
+   */
+  double ZCHyst();
+  /**
+   *
+   * @param dd
+   */
+  void setDerDelta(double dd);
+  /**
+   *
+   * @return
+   */
+  double derDelta();
+  /**
+   *
+   * @param lps
+   */
+  void setLps(int lps);
+  /**
+   *
+   * @param dt
+   */
+  void setDT(double dt);
+  /**
+   *
+   * @return
+   */
+  double DT();
+  /**
+   *
+   * @return
+   */
+  int lps();
+  /**
+   *
+   * @param ns
+   */
+  void setNodeSize(int ns);
+  /**
+   *
+   * @return
+   */
+  int nodeSize();
+  /**
+   *
+   * @param ci
+   */
+  void setCommInterval(string ci);
+  /**
+   *
+   * @return
+   */
+  string commInterval();
+  /**
+   *
+   * @param s
+   */
+  void setSample(double s);
+  /**
+   *
+   * @return
+   */
+  list<double> sample();
+  /**
+   *
+   * @param sd
+   */
+  void setSymDiff(bool sd);
+  /**
+   *
+   * @return
+   */
+  bool symDiff();
+  /**
+   *
+   * @return
+   */
+  int order();
+  /**
+   *
+   * @return
+   */
+  string scheduler();
+  /**
+   *
+   * @param sched
+   */
+  void setScheduler(string sched);
+  /**
+   *
+   * @return
+   */
+  list<AST_Expression> output();
+  /**
+   *
+   * @param save
+   */
+  void setStoreData(string save);
+  string storeData();
+  /**
+   *
+   * @param pm
+   */
+  void setPartitionMethod(PartitionMethod pm);
+  /**
+   *
+   * @return
+   */
+  string partitionMethodString();
+  /**
+   *
+   * @return
+   */
+  PartitionMethod partitionMethod();
+  /**
+   *
+   * @param p
+   */
+  void setParallel(bool p);
+  /**
+   *
+   * @return
+   */
+  bool parallel();
+  /**
+   *
+   * @return
+   */
+  int polyCoeffs();
+  /**
+   *
+   * @param synch
+   */
+  void setDtSynch(DT_Synch synch);
+  /**
+   *
+   * @return
+   */
+  string dtSynchString();
+  /**
+   *
+   * @return
+   */
+  DT_Synch dtSynch();
+  list<string> patohSettings();
+  list<string> scotchSettings();
+  list<string> metisSettings();
+  void setPatohSettings(string l);
+  void setScotchSettings(string l);
+  void setMetisSettings(string l);
+  void setJacobian(int l);
+  int jacobian();
+  bool classic();
 
-        Solver                _solver;
-        string                _solverString;
-        string                _commInterval;
-        bool                  _symDiff;
-        double                _minStep;
-        int                   _lps;
-        double                _derDelta;
-        int                   _nodeSize;
-        double                _ZCHyst;
-        int                   _order;
-        string                _scheduler;
-        string                _storeData;
-        map<string, ModelAnnotation::type> _annotations;
-        list<double>          _DQMin;
-        list<double>          _DQRel;
-        double                _weight;
-        list<double>          _sample;
-        list<AST_Expression>  _output;
-        double                _initialTime;
-        double                _finalTime;
-        PartitionMethod       _partitionMethod;
-        string                _partitionMethodString;
-        bool                  _parallel;
-        double                _dt;
-        int                   _polyCoeffs;
-        DT_Synch              _dtSynch;
-        string                _dtSynchString;
-        string                _desc;
-        list<string>          _patohSettings;
-        list<string>          _scotchSettings;
-        list<string>          _metisSettings;
-        int                   _jacobian;
-        Util::VarSymbolTable  _symbolTable;
-    };
+  private:
+  /**
+   *
+   */
+  typedef enum {
+    EXPERIMENT,        //!< EXPERIMENT
+    DESC,              //!< DESC
+    DQMIN,             //!< DQMIN
+    DQREL,             //!< DQREL
+    WEIGHT,            //!< WEIGHT
+    SOLVER,            //!< SOLVER
+    INITIAL_TIME,      //!< INITIAL_TIME
+    FINAL_TIME,        //!< FINAL_TIME
+    MIN_STEP,          //!< MIN_STEP
+    ZCHYST,            //!< ZCHYST
+    DER_DELTA,         //!< DER_DELTA
+    LPS,               //!< LPS
+    NODE_SIZE,         //!< NODE_SIZE
+    COMM_INTERVAL,     //!< COMM_INTERVAL
+    STEP_SIZE,         //!< STEP_SIZE
+    SYM_DIFF,          //!< SYM_DIFF
+    SCHEDULER,         //!< SCHEDULER
+    OUTPUT,            //!< OUTPUT
+    STORE_DATA,        //!< STORE_DATA
+    PARTITION_METHOD,  //!< PARTITION_METHOD
+    PARALLEL,          //!< PARALLEL
+    DELTAT,            //!< DT
+    DELTAT_SYNCH,      //!< DT_SYNCH
+    PATOH_SETTINGS,    //!< PATOH_SETTINGS
+    SCOTCH_SETTINGS,   //!< SCOTCH_SETTINGS
+    METIS_SETTINGS,    //!< METIS_SETTINGS
+    JACOBIAN           //!< JACOBIAN
+  } type;
+  void processAnnotation(string annot, AST_Modification_Equal x);
+  void processArgument(AST_Argument_Modification arg);
+  void processList(AST_Expression x, list<double> *l);
+  void processList(AST_Expression x, list<string> *l);
+  void processExpressionList(AST_Expression x, list<AST_Expression> *l);
+  Solver getSolver(string s);
+  PartitionMethod getPartitionMethod(string s);
+  DT_Synch getDtSynch(string s);
 
-    typedef boost::variant<
-      ModelAnnotation,
-      FunctionAnnotation 
-      > AnnotationType;
+  Solver _solver;
+  string _solverString;
+  string _commInterval;
+  bool _symDiff;
+  double _minStep;
+  int _lps;
+  double _derDelta;
+  int _nodeSize;
+  double _ZCHyst;
+  int _order;
+  string _scheduler;
+  string _storeData;
+  map<string, ModelAnnotation::type> _annotations;
+  list<double> _DQMin;
+  list<double> _DQRel;
+  double _weight;
+  list<double> _sample;
+  list<AST_Expression> _output;
+  double _initialTime;
+  double _finalTime;
+  PartitionMethod _partitionMethod;
+  string _partitionMethodString;
+  bool _parallel;
+  double _dt;
+  int _polyCoeffs;
+  DT_Synch _dtSynch;
+  string _dtSynchString;
+  string _desc;
+  list<string> _patohSettings;
+  list<string> _scotchSettings;
+  list<string> _metisSettings;
+  int _jacobian;
+  Util::VarSymbolTable _symbolTable;
+};
 
-    /**
-     *
-     */
-    class AnnotationValue
-    {
-      public:
-        /**
-         *
-         */
-        AnnotationValue();
-        /**
-         *
-         */
-        ~AnnotationValue();
-        /**
-         *
-         * @return
-         */
-        int
-        integer();
-        /**
-         *
-         * @param i
-         */
-        void
-        setInteger(int i);
-        /**
-         *
-         * @return
-         */
-        double
-        real();
-        /**
-         *
-         * @param d
-         */
-        void
-        setReal(double d);
-        /**
-         *
-         * @return
-         */
-        string
-        str();
-        /**
-         *
-         * @param s
-         */
-        void
-        setStr(string s);
-      private:
-        int _integer;
-        double _real;
-        string _str;
-    };
+typedef boost::variant<ModelAnnotation, FunctionAnnotation> AnnotationType;
 
-    /**
-     *
-     */
-    class EvalAnnotation: public AST_Expression_Fold<AnnotationValue>
-    {
-      public:
-        /**
-         *
-         * @param st
-         */
-        EvalAnnotation(MicroModelica::Util::VarSymbolTable st);
-        /**
-         *
-         */
-        ~EvalAnnotation() = default;
+/**
+ *
+ */
+class AnnotationValue {
+  public:
+  /**
+   *
+   */
+  AnnotationValue();
+  /**
+   *
+   */
+  ~AnnotationValue();
+  /**
+   *
+   * @return
+   */
+  int integer();
+  /**
+   *
+   * @param i
+   */
+  void setInteger(int i);
+  /**
+   *
+   * @return
+   */
+  double real();
+  /**
+   *
+   * @param d
+   */
+  void setReal(double d);
+  /**
+   *
+   * @return
+   */
+  string str();
+  /**
+   *
+   * @param s
+   */
+  void setStr(string s);
 
-      private:
-        void
-        setBoolean(bool condition, AnnotationValue *e);
-        AnnotationValue
-        foldTraverseElement(AST_Expression);
-        AnnotationValue
-        foldTraverseElement(AnnotationValue, AnnotationValue, BinOpType);
-        AnnotationValue
-        foldTraverseElementUMinus(AST_Expression);
-        MicroModelica::Util::VarSymbolTable _st;
-        map<string, string> _tokens;
-    };
-  }
-}
-#endif  /* MMO_ANNOTATION_H_ */
+  private:
+  int _integer;
+  double _real;
+  string _str;
+};
+
+/**
+ *
+ */
+class EvalAnnotation : public AST_Expression_Fold<AnnotationValue> {
+  public:
+  /**
+   *
+   * @param st
+   */
+  EvalAnnotation(MicroModelica::Util::VarSymbolTable st);
+  /**
+   *
+   */
+  ~EvalAnnotation() = default;
+
+  private:
+  void setBoolean(bool condition, AnnotationValue *e);
+  AnnotationValue foldTraverseElement(AST_Expression);
+  AnnotationValue foldTraverseElement(AnnotationValue, AnnotationValue, BinOpType);
+  AnnotationValue foldTraverseElementUMinus(AST_Expression);
+  MicroModelica::Util::VarSymbolTable _st;
+  map<string, string> _tokens;
+};
+}  // namespace IR
+}  // namespace MicroModelica
+#endif /* MMO_ANNOTATION_H_ */

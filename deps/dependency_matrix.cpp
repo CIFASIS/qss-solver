@@ -23,99 +23,84 @@
 #include "../util/util.h"
 
 namespace MicroModelica {
-  using namespace IR;
-  using namespace Util;
-  namespace Deps {
+using namespace IR;
+using namespace Util;
+namespace Deps {
 
-    MDI
-    VariableDependency::getImage(MDI sub_dom)
-    { 
-      IndexPair p(sub_dom, _ran, _ifr.GetOffset(), _ifr.GetUsage(), _ifr.exp());
-      INDEX::Rel rel = p.Type();  
-      switch (rel) {
-        case INDEX::RN_N:
-          return sub_dom.RevertOffset(_ifr.GetOffset(), _ifr.GetUsage(), _ifr.Ran());
-        case INDEX::R1_1:
-        case INDEX::R1_N:
-        case INDEX::RN_1:
-            return _ran;
-        default:
-          return MDI();
-      } 
-    }
-
-    VariableDependencyMatrix::VariableDependencyMatrix(MatrixConfig cfg) : 
-      _cfg(cfg), 
-      _mode(VDM::Normal), 
-      _method(VDM::Alloc) 
-    {
-
-    }
-
-    void
-    VariableDependency::setRange()
-    {
-       _range.generate(_ran);
-       ReplaceIndex riIfr(_range, _ifr.GetUsage());
-       _ifr_exp = Expression(riIfr.apply(_ifr.exp().expression()), Utils::instance().symbols());
-       ReplaceIndex riIfe(_range, _ife.GetUsage());
-       _ife_exp = Expression(riIfe.apply(_ife.exp().expression()), Utils::instance().symbols());
-    }
-
-    string 
-    VariableDependencyMatrix::print() const 
-    {
-      stringstream buffer;
-      VariableDependencyMatrix::const_iterator it;
-      string matrix = _cfg.names[_method + _mode];
-      string access = _cfg.access[_mode];
-      for( it = begin(); it != end(); it++)
-      {  
-        cout << "Set node " << endl;
-        VariableDependencies vds = it->second;
-        cout << "DEPS " << vds.size() << endl;
-        for (auto vd : vds) {
-          Index ifr = vd.ifr();
-          Index ife = vd.ife();
-          if (_mode == VDM::Transpose) {
-            ifr = vd.ife();
-            ife = vd.ifr();
-          }
-          Range range = vd.ifce.range();
-          buffer << range;
-          if (_method == VDM::Alloc) {
-            buffer << range.block() << _cfg.container << matrix << 
-            "[" << ifr << "]" << component() << "++;" << endl;   
-          } else {
-            buffer << range.block() << _cfg.container << matrix << "[" << ifr << "]" << 
-            component() << "[" << access << "[" << ifr << "]++] = " << ife << ";" << endl;   
-          }
-          if (!range.empty()) {
-            buffer << range.end() << endl;  
-          }
-        }
-      }
-      cout << buffer.str() << endl;
-      return buffer.str();
-    }
-    
-    string 
-    VariableDependencyMatrix::component() const
-    {
-      stringstream buffer;
-      string component = _cfg.component[0];
-      if (_method == VDM::Init) {
-        component = _cfg.component[1];
-      }
-      if (!component.empty()) {
-          buffer << "." << component;
-      }
-      return buffer.str();
-    }
-
-    ostream& operator<<(std::ostream& out, const VariableDependencyMatrix& d) 
-    {
-      return out << d.print();
-    }
+MDI VariableDependency::getImage(MDI sub_dom)
+{
+  IndexPair p(sub_dom, _ran, _ifr.GetOffset(), _ifr.GetUsage(), _ifr.exp());
+  INDEX::Rel rel = p.Type();
+  switch (rel) {
+  case INDEX::RN_N:
+    return sub_dom.RevertOffset(_ifr.GetOffset(), _ifr.GetUsage(), _ifr.Ran());
+  case INDEX::R1_1:
+  case INDEX::R1_N:
+  case INDEX::RN_1:
+    return _ran;
+  default:
+    return MDI();
   }
 }
+
+VariableDependencyMatrix::VariableDependencyMatrix(MatrixConfig cfg) : _cfg(cfg), _mode(VDM::Normal), _method(VDM::Alloc) {}
+
+void VariableDependency::setRange()
+{
+  _range.generate(_ran);
+  ReplaceIndex riIfr(_range, _ifr.GetUsage());
+  _ifr_exp = Expression(riIfr.apply(_ifr.exp().expression()), Utils::instance().symbols());
+  ReplaceIndex riIfe(_range, _ife.GetUsage());
+  _ife_exp = Expression(riIfe.apply(_ife.exp().expression()), Utils::instance().symbols());
+}
+
+string VariableDependencyMatrix::print() const
+{
+  stringstream buffer;
+  VariableDependencyMatrix::const_iterator it;
+  string matrix = _cfg.names[_method + _mode];
+  string access = _cfg.access[_mode];
+  for (it = begin(); it != end(); it++) {
+    cout << "Set node " << endl;
+    VariableDependencies vds = it->second;
+    cout << "DEPS " << vds.size() << endl;
+    for (auto vd : vds) {
+      Index ifr = vd.ifr();
+      Index ife = vd.ife();
+      if (_mode == VDM::Transpose) {
+        ifr = vd.ife();
+        ife = vd.ifr();
+      }
+      Range range = vd.ifce.range();
+      buffer << range;
+      if (_method == VDM::Alloc) {
+        buffer << range.block() << _cfg.container << matrix << "[" << ifr << "]" << component() << "++;" << endl;
+      } else {
+        buffer << range.block() << _cfg.container << matrix << "[" << ifr << "]" << component() << "[" << access << "[" << ifr
+               << "]++] = " << ife << ";" << endl;
+      }
+      if (!range.empty()) {
+        buffer << range.end() << endl;
+      }
+    }
+  }
+  cout << buffer.str() << endl;
+  return buffer.str();
+}
+
+string VariableDependencyMatrix::component() const
+{
+  stringstream buffer;
+  string component = _cfg.component[0];
+  if (_method == VDM::Init) {
+    component = _cfg.component[1];
+  }
+  if (!component.empty()) {
+    buffer << "." << component;
+  }
+  return buffer.str();
+}
+
+ostream& operator<<(std::ostream& out, const VariableDependencyMatrix& d) { return out << d.print(); }
+}  // namespace Deps
+}  // namespace MicroModelica

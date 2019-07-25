@@ -16,31 +16,30 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
  ******************************************************************************/
-#ifndef SZ_GRAPH_BUILDER_H 
-#define SZ_GRAPH_BUILDER_H 
+#ifndef SZ_GRAPH_BUILDER_H
+#define SZ_GRAPH_BUILDER_H
 
 #include "../../ir/class.h"
 #include "../../util/symbol_table.h"
 #include "../graph/graph.h"
 
-
 namespace MicroModelica {
-  namespace Deps {
-    class SZGraphBuilder {
-    public:
-      SZGraphBuilder(IR::EventTable &events, IR::EquationTable &algebraics, Util::VarSymbolTable& symbols);
-      ~SZGraphBuilder(){};
-      DepsGraph
-      build();    
-    private:
-      list<EqVertex>       _equationDescriptors;
-      list<IfrVertex>      _variableDescriptors;
-      list<IfeVertex>      _eventDescriptors;
-      IR::EventTable       _events;
-      IR::EquationTable    _algebraics;
-      Util::VarSymbolTable _symbols;
-    };
-  }
-}
+namespace Deps {
+class SZGraphBuilder {
+  public:
+  SZGraphBuilder(IR::EventTable &events, IR::EquationTable &algebraics, Util::VarSymbolTable &symbols);
+  ~SZGraphBuilder(){};
+  DepsGraph build();
+
+  private:
+  list<EqVertex> _equationDescriptors;
+  list<IfrVertex> _variableDescriptors;
+  list<IfeVertex> _eventDescriptors;
+  IR::EventTable _events;
+  IR::EquationTable _algebraics;
+  Util::VarSymbolTable _symbols;
+};
+}  // namespace Deps
+}  // namespace MicroModelica
 
 #endif /* SZ_GRAPH_BUILDER_H */

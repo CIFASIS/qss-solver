@@ -28,11 +28,11 @@
 #include "../util/util.h"
 
 namespace MicroModelica {
-  using namespace Util;
-  namespace IR {
+using namespace Util;
+namespace IR {
 
-    Event::Event(AST_Expression cond, int id, int offset, VarSymbolTable& symbols, Option<Range> range) : 
-      _zeroCrossing(),
+Event::Event(AST_Expression cond, int id, int offset, VarSymbolTable& symbols, Option<Range> range)
+    : _zeroCrossing(),
       _positiveHandler(),
       _negativeHandler(),
       _type(EVENT::Zero),
@@ -44,96 +44,85 @@ namespace MicroModelica {
       _negativeHandlerId(0),
       _id(id),
       _offset(offset)
-    {
-      ConvertCondition cc;
-      _zeroCrossing = Equation(cc.apply(getExpression(cond)), symbols, range, EQUATION::ZeroCrossing, id, offset);
-      _type = cc.zeroCrossing();
-      _current = _type;
-      _zcRelation = cc.zeroCrossingRelation();
-    }
+{
+  ConvertCondition cc;
+  _zeroCrossing = Equation(cc.apply(getExpression(cond)), symbols, range, EQUATION::ZeroCrossing, id, offset);
+  _type = cc.zeroCrossing();
+  _current = _type;
+  _zcRelation = cc.zeroCrossingRelation();
+}
 
-    void 
-    Event::add(AST_Statement stm)
-    {
-      Statement s(stm, _symbols, _range);
-      if(_current == EVENT::Positive)
-      {
-        _positiveHandler.insert(_positiveHandlerId++, s);
-      }
-      else if(_current == EVENT::Negative)
-      {
-        _negativeHandler.insert(_negativeHandlerId++, s);
-      }
-    }
-
-    bool 
-    Event::compare(AST_Expression zc)
-    {
-      ConvertCondition cc;
-      AST_Expression c = cc.apply(getExpression(zc));
-      EqualExp ee(_symbols);
-      bool cr = ee.equalTraverse(c, _zeroCrossing.equation());
-      if(cr)
-      {
-        if(_current == EVENT::Positive)
-        {
-          _current = EVENT::Negative;
-          _type = EVENT::Zero;
-        }
-        else if(_current == EVENT::Negative)
-        {
-          _current = EVENT::Positive;
-          _type = EVENT::Zero;
-        }
-      }
-      return cr;
-    }
-
-    AST_Expression
-    Event::getExpression(AST_Expression exp)
-    {
-      if(exp->expressionType() == EXPOUTPUT)
-      {
-        return getExpression(AST_ListFirst(exp->getAsOutput()->expressionList()));
-      }
-      return exp;
-    }
-
-    string 
-    Event::handler(EVENT::Type type) const 
-    {
-      StatementTable stms = (type == EVENT::Positive ? _positiveHandler : _negativeHandler);
-      if(stms.empty()) { return ""; };
-      stringstream buffer, id; 
-      id << "_event_" << _id;
-      string block = "";
-      FunctionPrinter fp;
-      buffer << fp.beginExpression(id.str(),_range);
-      block += TAB;
-      if(!_range) { block += TAB; }
-      StatementTable::iterator it;
-      for(Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it))
-      {
-        buffer << block << stm << endl;
-      }
-      buffer << block << fp.endExpression(_range);
-      return buffer.str();
-    }
-
-    string 
-    Event::macro() const 
-    {
-      stringstream buffer;
-      buffer << "_event_" << _id;
-      FunctionPrinter fp;
-      return fp.macro(buffer.str(),_range, _id, _offset);
-    }
-
-    Expression 
-    Event::exp() 
-    {
-      assert(isValid());
-      return _zeroCrossing.lhs();
-    }
+void Event::add(AST_Statement stm)
+{
+  Statement s(stm, _symbols, _range);
+  if (_current == EVENT::Positive) {
+    _positiveHandler.insert(_positiveHandlerId++, s);
+  } else if (_current == EVENT::Negative) {
+    _negativeHandler.insert(_negativeHandlerId++, s);
   }
 }
+
+bool Event::compare(AST_Expression zc)
+{
+  ConvertCondition cc;
+  AST_Expression c = cc.apply(getExpression(zc));
+  EqualExp ee(_symbols);
+  bool cr = ee.equalTraverse(c, _zeroCrossing.equation());
+  if (cr) {
+    if (_current == EVENT::Positive) {
+      _current = EVENT::Negative;
+      _type = EVENT::Zero;
+    } else if (_current == EVENT::Negative) {
+      _current = EVENT::Positive;
+      _type = EVENT::Zero;
+    }
+  }
+  return cr;
+}
+
+AST_Expression Event::getExpression(AST_Expression exp)
+{
+  if (exp->expressionType() == EXPOUTPUT) {
+    return getExpression(AST_ListFirst(exp->getAsOutput()->expressionList()));
+  }
+  return exp;
+}
+
+string Event::handler(EVENT::Type type) const
+{
+  StatementTable stms = (type == EVENT::Positive ? _positiveHandler : _negativeHandler);
+  if (stms.empty()) {
+    return "";
+  };
+  stringstream buffer, id;
+  id << "_event_" << _id;
+  string block = "";
+  FunctionPrinter fp;
+  buffer << fp.beginExpression(id.str(), _range);
+  block += TAB;
+  if (!_range) {
+    block += TAB;
+  }
+  StatementTable::iterator it;
+  for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
+    buffer << block << stm << endl;
+  }
+  buffer << block << fp.endExpression(_range);
+  return buffer.str();
+}
+
+string Event::macro() const
+{
+  stringstream buffer;
+  buffer << "_event_" << _id;
+  FunctionPrinter fp;
+  return fp.macro(buffer.str(), _range, _id, _offset);
+}
+
+Expression Event::exp()
+{
+  assert(isValid());
+  return _zeroCrossing.lhs();
+}
+}  // namespace IR
+}  // namespace MicroModelica

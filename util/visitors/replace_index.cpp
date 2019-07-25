@@ -19,71 +19,59 @@
 
 #include "replace_index.h"
 
-#include <sstream> 
+#include <sstream>
 
 #include "../../ast/ast_builder.h"
 #include "../error.h"
 
 namespace MicroModelica {
-  using namespace Deps;
-  using namespace IR;
-  namespace Util {
+using namespace Deps;
+using namespace IR;
+namespace Util {
 
-    ReplaceIndex::ReplaceIndex(Range range, Usage usage) :
-        _range(range),
-        _usage(usage)
-    {
-    }
+ReplaceIndex::ReplaceIndex(Range range, Usage usage) : _range(range), _usage(usage) {}
 
-    AST_Expression
-    ReplaceIndex::foldTraverseElement(AST_Expression exp)
-    {
-      switch(exp->expressionType())
-      {
-        case EXPCOMPREF:
-        {
-          AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-          if(cr->hasIndexes())
-          {
-            AST_Expression_ComponentReference ret = newAST_Expression_ComponentReference();
-            AST_ExpressionList indexes = cr->firstIndex();
-            AST_ExpressionListIterator it;
-            int i = 0;
-            AST_ExpressionList l = newAST_ExpressionList();
-            foreach(it, indexes)
-            {
-              if(_usage.isUsed(i)) {
-                ReplaceVar rv(_range.iterator(i));
-                l = AST_ListAppend(l, rv.apply(current_element(it)));
-              } else {
-                l = AST_ListAppend(l, current_element(it));
-              }
-              i++;
-            }
-            ret = AST_Expression_ComponentReference_Add(ret, newAST_String(cr->name()), l);
-            return ret;
-          }
-          break;
+AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
+{
+  switch (exp->expressionType()) {
+  case EXPCOMPREF: {
+    AST_Expression_ComponentReference cr = exp->getAsComponentReference();
+    if (cr->hasIndexes()) {
+      AST_Expression_ComponentReference ret = newAST_Expression_ComponentReference();
+      AST_ExpressionList indexes = cr->firstIndex();
+      AST_ExpressionListIterator it;
+      int i = 0;
+      AST_ExpressionList l = newAST_ExpressionList();
+      foreach (it, indexes) {
+        if (_usage.isUsed(i)) {
+          ReplaceVar rv(_range.iterator(i));
+          l = AST_ListAppend(l, rv.apply(current_element(it)));
+        } else {
+          l = AST_ListAppend(l, current_element(it));
         }
-        default:
-          break;
+        i++;
       }
-      return exp;
+      ret = AST_Expression_ComponentReference_Add(ret, newAST_String(cr->name()), l);
+      return ret;
     }
-
-    AST_Expression
-    ReplaceVar::foldTraverseElement(AST_Expression exp)
-    {
-      switch(exp->expressionType())
-      {
-        case EXPCOMPREF:
-        {
-          return newAST_Expression_ComponentReferenceExp(newAST_String(_var)); 
-        } 
-        default:
-          break;
-      }
-      return exp;
-    }
+    break;
   }
+  default:
+    break;
+  }
+  return exp;
 }
+
+AST_Expression ReplaceVar::foldTraverseElement(AST_Expression exp)
+{
+  switch (exp->expressionType()) {
+  case EXPCOMPREF: {
+    return newAST_Expression_ComponentReferenceExp(newAST_String(_var));
+  }
+  default:
+    break;
+  }
+  return exp;
+}
+}  // namespace Util
+}  // namespace MicroModelica

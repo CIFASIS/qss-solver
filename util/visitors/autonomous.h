@@ -23,31 +23,28 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
-    /**
-     *
-     */
-    class Autonomous: public AST_Expression_Visitor<bool>
-    {
-      public:
-        /**
-         *
-         */
-        Autonomous(VarSymbolTable symbols) : _symbols(symbols) {};
-        /**
-         *
-         */
-        ~Autonomous() {};
-      private:
-        bool 
-        foldTraverseElement(AST_Expression exp);
-        bool 
-        foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
-        bool
-        foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
-        VarSymbolTable _symbols;
-    };
-  }
-}
+namespace Util {
+/**
+ *
+ */
+class Autonomous : public AST_Expression_Visitor<bool> {
+  public:
+  /**
+   *
+   */
+  Autonomous(VarSymbolTable symbols) : _symbols(symbols){};
+  /**
+   *
+   */
+  ~Autonomous(){};
 
-#endif  /* AUTONOMOUS_H_ */
+  private:
+  bool foldTraverseElement(AST_Expression exp);
+  bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
+  bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+  VarSymbolTable _symbols;
+};
+}  // namespace Util
+}  // namespace MicroModelica
+
+#endif /* AUTONOMOUS_H_ */

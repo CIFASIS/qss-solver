@@ -20,12 +20,7 @@
 #ifndef GRAPH_GRAPH_PROFILE_H_
 #define GRAPH_GRAPH_PROFILE_H_
 
-typedef enum
-{
-  GRP_CONT, 
-  GRP_DSC, 
-  GRP_VIRT
-} GRP_EdgeType;
+typedef enum { GRP_CONT, GRP_DSC, GRP_VIRT } GRP_EdgeType;
 
 /**
  *
@@ -48,36 +43,32 @@ typedef struct GRP_graphProfile_ *GRP_graphProfile;
  * @param
  * @param
  */
-typedef double
-(*GRP_graphProfileWeight)(GRP_graphProfile, GRP_EdgeType);
+typedef double (*GRP_graphProfileWeight)(GRP_graphProfile, GRP_EdgeType);
 
 /**
  *
  */
-struct GRP_graphProfileOps_
-{
-    GRP_graphProfileWeight weight; //!<
+struct GRP_graphProfileOps_ {
+  GRP_graphProfileWeight weight;  //!<
 };
 
 /**
  *
  */
-struct GRP_graphProfileState_
-{
-    int states; //!<
-    int events; //!<
-    double contEdgeWeight;
-    double dscEdgeWeight;
-    double virtEdgeWeight;
+struct GRP_graphProfileState_ {
+  int states;  //!<
+  int events;  //!<
+  double contEdgeWeight;
+  double dscEdgeWeight;
+  double virtEdgeWeight;
 };
 
 /**
  *
  */
-struct GRP_graphProfile_
-{
-    GRP_graphProfileOps ops; //!<
-    GRP_graphProfileState state; //!<
+struct GRP_graphProfile_ {
+  GRP_graphProfileOps ops;      //!<
+  GRP_graphProfileState state;  //!<
 };
 
 /**
@@ -85,45 +76,38 @@ struct GRP_graphProfile_
  * @return
  */
 
-GRP_graphProfile
-GRP_GraphProfile();
+GRP_graphProfile GRP_GraphProfile();
 
 /**
  *
  * @param g
  */
-void
-GRP_freeGraphProfile(GRP_graphProfile g);
+void GRP_freeGraphProfile(GRP_graphProfile g);
 
 /**
  *
  * @return
  */
-GRP_graphProfileOps
-GRP_GraphProfileOps();
+GRP_graphProfileOps GRP_GraphProfileOps();
 
 /**
  *
  * @param ops
  */
-void
-GRP_freeGraphProfileOps(GRP_graphProfileOps ops);
+void GRP_freeGraphProfileOps(GRP_graphProfileOps ops);
 
 /**
  *
  * @return
  */
-GRP_graphProfileState
-GRP_GraphProfileState();
+GRP_graphProfileState GRP_GraphProfileState();
 
 /**
  *
  * @param state
  */
-void
-GRP_freeGraphProfileState(GRP_graphProfileState state);
+void GRP_freeGraphProfileState(GRP_graphProfileState state);
 
-double
-GRP_Weight(GRP_graphProfile g, GRP_EdgeType type);
+double GRP_Weight(GRP_graphProfile g, GRP_EdgeType type);
 
 #endif /* GRAPH_GRAPH_PROFILE_H_ */

@@ -29,45 +29,35 @@
 #include "../../ast/ast_builder.h"
 
 namespace MicroModelica {
-  using namespace IR;
-  namespace Util {
+using namespace IR;
+namespace Util {
 
-    ConvertEquation::ConvertEquation(AST_Equation equation, VarSymbolTable& symbols) :
-      _symbols(symbols)
-    {
-      _equation = convert(equation);
-    }
+ConvertEquation::ConvertEquation(AST_Equation equation, VarSymbolTable& symbols) : _symbols(symbols) { _equation = convert(equation); }
 
-    AST_Equation 
-    ConvertEquation::convert(AST_Equation eq)
-    {
-      if(eq->equationType() == EQEQUALITY)
-      {
-        ReplaceInnerProduct rip(_symbols);
-        AST_Expression l = eq->getAsEquality()->left();
-        AST_Expression r = rip.apply(eq->getAsEquality()->right());
-        string transform = ConvertExpression(l, r,_symbols).get();
-        if(transform.empty())
-        {
-          return newAST_Equation_Equality(l, r);
-        }
-        int rValue;
-        return parseEquation(transform, &rValue);
-      }
-      else if(eq->equationType() == EQFOR)
-      {
-        AST_Equation_For eqf = eq->getAsFor();
-        AST_ForIndexList fil = eqf->forIndexList();
-        AST_EquationList eqs = eqf->equationList();
-        AST_EquationListIterator it;
-        AST_EquationList tel = newAST_EquationList();
-        foreach(it,eqs)
-        {
-          AST_ListAppend(tel, convert(current_element(it)));
-        }
-        return newAST_Equation_For(fil, tel);
-      }
-      return eq;
+AST_Equation ConvertEquation::convert(AST_Equation eq)
+{
+  if (eq->equationType() == EQEQUALITY) {
+    ReplaceInnerProduct rip(_symbols);
+    AST_Expression l = eq->getAsEquality()->left();
+    AST_Expression r = rip.apply(eq->getAsEquality()->right());
+    string transform = ConvertExpression(l, r, _symbols).get();
+    if (transform.empty()) {
+      return newAST_Equation_Equality(l, r);
     }
+    int rValue;
+    return parseEquation(transform, &rValue);
+  } else if (eq->equationType() == EQFOR) {
+    AST_Equation_For eqf = eq->getAsFor();
+    AST_ForIndexList fil = eqf->forIndexList();
+    AST_EquationList eqs = eqf->equationList();
+    AST_EquationListIterator it;
+    AST_EquationList tel = newAST_EquationList();
+    foreach (it, eqs) {
+      AST_ListAppend(tel, convert(current_element(it)));
+    }
+    return newAST_Equation_For(fil, tel);
   }
+  return eq;
 }
+}  // namespace Util
+}  // namespace MicroModelica

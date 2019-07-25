@@ -26,22 +26,19 @@
 #include "../util/compile_flags.h"
 #include "writer.h"
 
-namespace MicroModelica 
-{
-  namespace Generator 
-  {
-    class Package 
-    {
-      public:
-        Package(IR::Package& package, Util::CompileFlags& flags, WriterPtr writer);
-        ~Package() {};
-        void 
-        generate();
-      private:
-        IR::Package            _package;
-        Util::CompileFlags     _flags;
-        WriterPtr              _writer;
-    };
-  }
-}
+namespace MicroModelica {
+namespace Generator {
+class Package {
+  public:
+  Package(IR::Package& package, Util::CompileFlags& flags, WriterPtr writer);
+  ~Package(){};
+  void generate();
+
+  private:
+  IR::Package _package;
+  Util::CompileFlags _flags;
+  WriterPtr _writer;
+};
+}  // namespace Generator
+}  // namespace MicroModelica
 #endif /* MMO_GEN_PACKAGE_H */

@@ -29,162 +29,101 @@
 #include "../util/util_types.h"
 #include "writer.h"
 
-namespace MicroModelica 
-{
-  namespace Generator 
-  {
-   
-    namespace MODEL_INSTANCE {
-    /**
-    *
-    */
-    typedef enum
-    {
-      Model_Settings,
-      Model,
-      Deps,
-      Zero_Crossing,
-      Handler_Pos,
-      Handler_Neg,
-      Output,
-      Jacobian,
-      CLC_Init,
-      QSS_Init
-    } Component;
+namespace MicroModelica {
+namespace Generator {
 
-    typedef enum
-    {
-      SD,
-      SZ,
-      HD,
-      HZ,
-      DD
-    } NodeType;
-    }
-    /**
-    *
-    */
-    class ModelInstance
-    {
-      public:
-        ModelInstance() {};
-        ModelInstance(IR::Model& model, Util::CompileFlags& flags, WriterPtr writer);
-        virtual
-        ~ModelInstance() {};
-        void
-        include();
-        virtual void
-        initializeDataStructures() = 0;
-        void
-        definition();
-        void
-        zeroCrossing();
-        void
-        handler();
-        void 
-        settings();
-        void 
-        inputs();
-        void
-        output();
-        virtual Graph
-        computationalGraph() { return Graph(0,0); };
-        void 
-        initialCode();
-        virtual void 
-        header();
-        virtual void 
-        generate() = 0;
+namespace MODEL_INSTANCE {
+/**
+ *
+ */
+typedef enum { Model_Settings, Model, Deps, Zero_Crossing, Handler_Pos, Handler_Neg, Output, Jacobian, CLC_Init, QSS_Init } Component;
 
-      protected:
-        std::string 
-        componentDefinition(MODEL_INSTANCE::Component c);
-        void 
-        allocateOutput();
-        void 
-        configOutput();
-        void 
-        initializeMatrix(Deps::VariableDependencyMatrix vdm, WRITER::Section alloc, WRITER::Section init, int size);
-        string
-        algebraics(Deps::EquationDependencyMatrix eqdm, Deps::depId key);
-        void 
-        configEvents();
-        void
-        allocateVectors() const;
-        void 
-        freeVectors() const;
-        std::string 
-        allocateModel();
-        void
-        allocateVector(std::string name, int size) const;
-        void 
-        freeVector(std::string name, int size) const;
+typedef enum { SD, SZ, HD, HZ, DD } NodeType;
+}  // namespace MODEL_INSTANCE
+/**
+ *
+ */
+class ModelInstance {
+  public:
+  ModelInstance(){};
+  ModelInstance(IR::Model& model, Util::CompileFlags& flags, WriterPtr writer);
+  virtual ~ModelInstance(){};
+  void include();
+  virtual void initializeDataStructures() = 0;
+  void definition();
+  void zeroCrossing();
+  void handler();
+  void settings();
+  void inputs();
+  void output();
+  virtual Graph computationalGraph() { return Graph(0, 0); };
+  void initialCode();
+  virtual void header();
+  virtual void generate() = 0;
 
-      private:
-        IR::Model           _model;
-        Util::CompileFlags  _flags;
-        WriterPtr           _writer;
-    };
+  protected:
+  std::string componentDefinition(MODEL_INSTANCE::Component c);
+  void allocateOutput();
+  void configOutput();
+  void initializeMatrix(Deps::VariableDependencyMatrix vdm, WRITER::Section alloc, WRITER::Section init, int size);
+  string algebraics(Deps::EquationDependencyMatrix eqdm, Deps::depId key);
+  void configEvents();
+  void allocateVectors() const;
+  void freeVectors() const;
+  std::string allocateModel();
+  void allocateVector(std::string name, int size) const;
+  void freeVector(std::string name, int size) const;
 
-    /**
-    *
-    */
-    class QSSModelInstance: public ModelInstance
-    {
-      public:
-        QSSModelInstance(){};
-        QSSModelInstance(IR::Model& model, Util::CompileFlags& flags, WriterPtr writer);
-        ~QSSModelInstance() {};
-        void
-        initializeDataStructures();
-        Graph
-        computationalGraph();
-        void 
-        generate();
-        void 
-        header();
+  private:
+  IR::Model _model;
+  Util::CompileFlags _flags;
+  WriterPtr _writer;
+};
 
-      protected:
-        void
-        dependencies();
+/**
+ *
+ */
+class QSSModelInstance : public ModelInstance {
+  public:
+  QSSModelInstance(){};
+  QSSModelInstance(IR::Model& model, Util::CompileFlags& flags, WriterPtr writer);
+  ~QSSModelInstance(){};
+  void initializeDataStructures();
+  Graph computationalGraph();
+  void generate();
+  void header();
 
-      private:
-        void 
-        allocateSolver();
-        std::string 
-        allocateModel();
-        IR::Model           _model;
-        Util::CompileFlags  _flags;
-        WriterPtr           _writer;
-    };
+  protected:
+  void dependencies();
 
-    /**
-    *
-    */
-    class ClassicModelInstance: public ModelInstance
-    {
-      public:
-        ClassicModelInstance(IR::Model& model, Util::CompileFlags& flags, WriterPtr writer);
-        ~ClassicModelInstance() {};
-        void
-        initializeDataStructures();
-        void
-        generate();
-        void 
-        header();
+  private:
+  void allocateSolver();
+  std::string allocateModel();
+  IR::Model _model;
+  Util::CompileFlags _flags;
+  WriterPtr _writer;
+};
 
-      private:
-        void 
-        allocateSolver();
-        std::string 
-        allocateModel();
-        IR::Model           _model;
-        Util::CompileFlags  _flags;
-        WriterPtr           _writer;
-    };
-    
-    typedef std::shared_ptr<ModelInstance> ModelInstancePtr;
-  }
-}
-#endif  /* MMO_MODEL_INSTANCE_H */
+/**
+ *
+ */
+class ClassicModelInstance : public ModelInstance {
+  public:
+  ClassicModelInstance(IR::Model& model, Util::CompileFlags& flags, WriterPtr writer);
+  ~ClassicModelInstance(){};
+  void initializeDataStructures();
+  void generate();
+  void header();
 
+  private:
+  void allocateSolver();
+  std::string allocateModel();
+  IR::Model _model;
+  Util::CompileFlags _flags;
+  WriterPtr _writer;
+};
+
+typedef std::shared_ptr<ModelInstance> ModelInstancePtr;
+}  // namespace Generator
+}  // namespace MicroModelica
+#endif /* MMO_MODEL_INSTANCE_H */

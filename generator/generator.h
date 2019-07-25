@@ -34,48 +34,44 @@
 #include "writer.h"
 
 namespace MicroModelica {
-  namespace Generator {
+namespace Generator {
 
-    /**
-     *
-     */
-    class Generator
-    {
-      public:
-        /**
-         *
-         * @param std
-         * @param flags
-         */
-        Generator(const IR::StoredDefinition& std, Util::CompileFlags& flags);
-        /**
-         *
-         */
-        ~Generator() {};
-        /**
-         *
-         * @return
-         */
-        int
-        generate();
-      private:
-        void
-        generateIncludes(string name);
-        void
-        generateModel();
-        void
-        calledFunctionHeader(string fileName);
-        IR::StoredDefinition      _std;
-        IR::Model                 _model;
-        IR::Function              _function;
-        IR::Package               _package;
-        Util::CompileFlags        _flags;
-        ModelInstancePtr          _modelInstance;
-        WriterPtr                 _writer;
-        ofstream                  _file;
-        std::map<string, string>  _includes;
-        list<string>              _fheader;
-    };
-  }
-}
-#endif  /* GENERATOR_H_ */
+/**
+ *
+ */
+class Generator {
+  public:
+  /**
+   *
+   * @param std
+   * @param flags
+   */
+  Generator(const IR::StoredDefinition& std, Util::CompileFlags& flags);
+  /**
+   *
+   */
+  ~Generator(){};
+  /**
+   *
+   * @return
+   */
+  int generate();
+
+  private:
+  void generateIncludes(string name);
+  void generateModel();
+  void calledFunctionHeader(string fileName);
+  IR::StoredDefinition _std;
+  IR::Model _model;
+  IR::Function _function;
+  IR::Package _package;
+  Util::CompileFlags _flags;
+  ModelInstancePtr _modelInstance;
+  WriterPtr _writer;
+  ofstream _file;
+  std::map<string, string> _includes;
+  list<string> _fheader;
+};
+}  // namespace Generator
+}  // namespace MicroModelica
+#endif /* GENERATOR_H_ */

@@ -23,45 +23,41 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
-    /**
-     *
-     */
-    class Occurs: public AST_Expression_Visitor<bool> 
-    {
-      public:
-        Occurs(std::string var, VarSymbolTable symbols) : _symbols(symbols), _occs(), _var(var) {};
-        ~Occurs() {};
-        list<IR::Expression> 
-        occurrences();
-      private:
-        bool   
-        foldTraverseElement(AST_Expression exp);
-        bool 
-        foldTraverseElement(bool l, bool r, BinOpType bot) { return l || r; };
-        bool 
-        foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
-        VarSymbolTable       _symbols;
-        std::map<std::string,IR::Expression>  _occs;
-        std::string          _var;
-    };
+namespace Util {
+/**
+ *
+ */
+class Occurs : public AST_Expression_Visitor<bool> {
+  public:
+  Occurs(std::string var, VarSymbolTable symbols) : _symbols(symbols), _occs(), _var(var){};
+  ~Occurs(){};
+  list<IR::Expression> occurrences();
 
-    /**
-     *
-     */
+  private:
+  bool foldTraverseElement(AST_Expression exp);
+  bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l || r; };
+  bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+  VarSymbolTable _symbols;
+  std::map<std::string, IR::Expression> _occs;
+  std::string _var;
+};
+
+/**
+ *
+ */
 /*    class StatementOccurs: public AST_Statement_Visitor<SymbolTable, SymbolTable, CalledFunctions>
     {
       public:
         StatementOccurs() : AST_Statement_Visitor(CalledFunctions()) {};
         ~StatementOccurs() {};
       private:
-        inline SymbolTable  
+        inline SymbolTable
         foldTraverse(SymbolTable symbols) { return symbols; };
-        SymbolTable  
+        SymbolTable
         foldTraverse(SymbolTable s1, SymbolTable s2);
     };*/
 
-  }
-}
+}  // namespace Util
+}  // namespace MicroModelica
 
-#endif  /* OCCURS_H_ */
+#endif /* OCCURS_H_ */

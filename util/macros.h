@@ -26,11 +26,16 @@ using namespace std;
 /**
  *
  */
-#define DEFINE_TYPE(X) class X##_; typedef X##_ *X;
+#define DEFINE_TYPE(X) \
+  class X##_;          \
+  typedef X##_ *X;
 /**
  *
  */
-#define DEFINE_LIST(X) typedef std::list<X>  *X##List; typedef std::list<X>::iterator X##ListIterator; typedef std::list<X>::reverse_iterator X##ListReverseIterator;
+#define DEFINE_LIST(X)                            \
+  typedef std::list<X> *X##List;                  \
+  typedef std::list<X>::iterator X##ListIterator; \
+  typedef std::list<X>::reverse_iterator X##ListReverseIterator;
 /**
  *
  */
@@ -38,29 +43,38 @@ using namespace std;
 /**
  *
  */
-#define GET_AS(X,Y) AST_##X##_##Y getAs##Y ();
+#define GET_AS(X, Y) AST_##X##_##Y getAs##Y();
 /**
  *
  */
-#define GET_AS_IMP(X,Y) AST_##X##_##Y AST_##X##_::getAs##Y () { return dynamic_cast<AST_##X##_##Y > (this); }
+#define GET_AS_IMP(X, Y) \
+  AST_##X##_##Y AST_##X##_::getAs##Y() { return dynamic_cast<AST_##X##_##Y>(this); }
 /* Printers */
 /**
  *
  */
-#define DEFINE_PRINTER(X) ostream & operator<<(ostream &os , const X &x );
+#define DEFINE_PRINTER(X) ostream &operator<<(ostream &os, const X &x);
 /**
  *
  */
-#define DEFINE_CLASS_PRINTER(X) friend ostream & operator<<(ostream &os , const X##_ &x );
+#define DEFINE_CLASS_PRINTER(X) friend ostream &operator<<(ostream &os, const X##_ &x);
 /**
  *
  */
-#define CLASSP_PRINTER_IMP(X) ostream & operator<<(ostream &os , const X &e ){ \
-                                os << *e; return os;  }
+#define CLASSP_PRINTER_IMP(X)                  \
+  ostream &operator<<(ostream &os, const X &e) \
+  {                                            \
+    os << *e;                                  \
+    return os;                                 \
+  }
 /**
  *
  */
-#define CLASS_PRINTER_IMP(X) ostream & operator<<(ostream &os, \
-                                    const X##_ &e ){ os << e.print(); return os; } \
-                             CLASSP_PRINTER_IMP(X)
-#endif  /*  DEFINITIONS_H_ */
+#define CLASS_PRINTER_IMP(X)                      \
+  ostream &operator<<(ostream &os, const X##_ &e) \
+  {                                               \
+    os << e.print();                              \
+    return os;                                    \
+  }                                               \
+  CLASSP_PRINTER_IMP(X)
+#endif /*  DEFINITIONS_H_ */

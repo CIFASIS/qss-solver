@@ -23,32 +23,29 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
-    /**
-     *
-     */
-    class EvalInitExp: public AST_Expression_Fold<int>
-    {
-      public:
-        /**
-         *
-         * @param vt
-         */
-        EvalInitExp(VarSymbolTable vt);
-        /**
-         *
-         */
-        ~EvalInitExp() {};
-      private:
-        int
-        foldTraverseElement(AST_Expression exp);
-        int
-        foldTraverseElement(int l, int r, BinOpType bot);
-        int
-        foldTraverseElementUMinus(AST_Expression exp);
-        VarSymbolTable _vt;
-    };
-  }
-}
+namespace Util {
+/**
+ *
+ */
+class EvalInitExp : public AST_Expression_Fold<int> {
+  public:
+  /**
+   *
+   * @param vt
+   */
+  EvalInitExp(VarSymbolTable vt);
+  /**
+   *
+   */
+  ~EvalInitExp(){};
 
-#endif  /* EVAL_INIT_EXP_H_ */
+  private:
+  int foldTraverseElement(AST_Expression exp);
+  int foldTraverseElement(int l, int r, BinOpType bot);
+  int foldTraverseElementUMinus(AST_Expression exp);
+  VarSymbolTable _vt;
+};
+}  // namespace Util
+}  // namespace MicroModelica
+
+#endif /* EVAL_INIT_EXP_H_ */

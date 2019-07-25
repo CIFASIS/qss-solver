@@ -16,47 +16,41 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
  ******************************************************************************/
-#ifndef DH_GRAPH_BUILDER_H 
-#define DH_GRAPH_BUILDER_H 
+#ifndef DH_GRAPH_BUILDER_H
+#define DH_GRAPH_BUILDER_H
 
 #include "../../ir/class.h"
 #include "../../util/symbol_table.h"
 #include "../graph/graph.h"
 
-
 namespace MicroModelica {
-  namespace Deps {
+namespace Deps {
 
-    namespace DHGRAPHBUILDER  
-    {
-      typedef enum {
-        State,
-        Discrete
-      } IfrType;
-    }
-
-    class DHGraphBuilder {
-    public:
-      DHGraphBuilder(IR::EventTable &events, IR::EquationTable &algebraics, Util::VarSymbolTable& symbols, 
-                     IR::STATEMENT::AssignTerm search = IR::STATEMENT::LHS, 
-                     DHGRAPHBUILDER::IfrType ifr_type = DHGRAPHBUILDER::Discrete);
-      ~DHGraphBuilder(){};
-      DepsGraph
-      build();
-    protected:
-      void
-      addStatements(IR::StatementTable stms, DepsGraph& graph, IR::Expression exp, int id);    
-    private:
-      list<EqVertex>            _statementDescriptors;
-      list<IfrVertex>           _variableDescriptors;
-      list<IfeVertex>           _eventDescriptors;
-      IR::EventTable            _events;
-      IR::EquationTable         _algebraics;
-      Util::VarSymbolTable      _symbols;
-      IR::STATEMENT::AssignTerm _search;
-      DHGRAPHBUILDER::IfrType   _ifr_type;
-    };
-  }
+namespace DHGRAPHBUILDER {
+typedef enum { State, Discrete } IfrType;
 }
+
+class DHGraphBuilder {
+  public:
+  DHGraphBuilder(IR::EventTable& events, IR::EquationTable& algebraics, Util::VarSymbolTable& symbols,
+                 IR::STATEMENT::AssignTerm search = IR::STATEMENT::LHS, DHGRAPHBUILDER::IfrType ifr_type = DHGRAPHBUILDER::Discrete);
+  ~DHGraphBuilder(){};
+  DepsGraph build();
+
+  protected:
+  void addStatements(IR::StatementTable stms, DepsGraph& graph, IR::Expression exp, int id);
+
+  private:
+  list<EqVertex> _statementDescriptors;
+  list<IfrVertex> _variableDescriptors;
+  list<IfeVertex> _eventDescriptors;
+  IR::EventTable _events;
+  IR::EquationTable _algebraics;
+  Util::VarSymbolTable _symbols;
+  IR::STATEMENT::AssignTerm _search;
+  DHGRAPHBUILDER::IfrType _ifr_type;
+};
+}  // namespace Deps
+}  // namespace MicroModelica
 
 #endif /* DH_GRAPH_BUILDER_H */

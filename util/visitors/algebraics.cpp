@@ -20,23 +20,22 @@
 #include "algebraics.h"
 
 namespace MicroModelica {
-  namespace Util {
+namespace Util {
 
-    bool 
-    Algebraics::foldTraverseElement(AST_Expression e)
-    {
-      bool has_algebraics = false;
-      switch(e->expressionType())
-      {
-        case EXPCOMPREF:
-        {
-          AST_Expression_ComponentReference cr = e->getAsComponentReference();
-          Option<Variable> var = _symbols[cr->name()];
-          if(var && var->isAlgebraic()) { has_algebraics = true; }
-        }
-        default:
-          return has_algebraics;
-      }
+bool Algebraics::foldTraverseElement(AST_Expression e)
+{
+  bool has_algebraics = false;
+  switch (e->expressionType()) {
+  case EXPCOMPREF: {
+    AST_Expression_ComponentReference cr = e->getAsComponentReference();
+    Option<Variable> var = _symbols[cr->name()];
+    if (var && var->isAlgebraic()) {
+      has_algebraics = true;
     }
   }
+  default:
+    return has_algebraics;
+  }
 }
+}  // namespace Util
+}  // namespace MicroModelica

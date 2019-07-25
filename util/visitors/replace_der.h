@@ -23,31 +23,28 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
-    /**
-     *
-     */
-    class ReplaceDer: public AST_Expression_Visitor<AST_Expression>
-    {
-      public:
-        /**
-         *
-         * @param vt
-         */
-        ReplaceDer(VarSymbolTable vt);
-        /**
-         *
-         */
-        ~ReplaceDer() {};
-      private:
-        AST_Expression
-        foldTraverseElement(AST_Expression exp);
-        AST_Expression
-        foldTraverseElementUMinus(AST_Expression exp);
-        AST_Expression
-        foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
-        VarSymbolTable _vt;
-    };
-  }
-}
-#endif  /* REPLACE_DER_H_ */
+namespace Util {
+/**
+ *
+ */
+class ReplaceDer : public AST_Expression_Visitor<AST_Expression> {
+  public:
+  /**
+   *
+   * @param vt
+   */
+  ReplaceDer(VarSymbolTable vt);
+  /**
+   *
+   */
+  ~ReplaceDer(){};
+
+  private:
+  AST_Expression foldTraverseElement(AST_Expression exp);
+  AST_Expression foldTraverseElementUMinus(AST_Expression exp);
+  AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+  VarSymbolTable _vt;
+};
+}  // namespace Util
+}  // namespace MicroModelica
+#endif /* REPLACE_DER_H_ */

@@ -27,43 +27,31 @@
 #include "../util/util.h"
 #include "writer.h"
 
-namespace MicroModelica 
-{
-  namespace Generator 
-  {
-    class Function 
-    {
-      public:
-        Function(IR::Function& function, Util::CompileFlags& flags, WriterPtr writer);
-        ~Function() {};
-        void 
-        definition();
-        std::string 
-        header();
-        void 
-        setPrefix(std::string prefix);
-        void 
-        addInclude(std::string include);
-        void 
-        addInclude(Util::SymbolTable includes);
-      private:
-        void 
-        macros();
-        void 
-        includes();
-        void 
-        body();
-        void 
-        localSymbols();
-        std::string 
-        prototype();
-        IR::Function        _function;
-        Util::CompileFlags  _flags;
-        WriterPtr           _writer;
-        std::string         _prefix;
-        Util::SymbolTable   _include;
-        std::string         _returnVariable;
-    };
-  }
-}
+namespace MicroModelica {
+namespace Generator {
+class Function {
+  public:
+  Function(IR::Function& function, Util::CompileFlags& flags, WriterPtr writer);
+  ~Function(){};
+  void definition();
+  std::string header();
+  void setPrefix(std::string prefix);
+  void addInclude(std::string include);
+  void addInclude(Util::SymbolTable includes);
+
+  private:
+  void macros();
+  void includes();
+  void body();
+  void localSymbols();
+  std::string prototype();
+  IR::Function _function;
+  Util::CompileFlags _flags;
+  WriterPtr _writer;
+  std::string _prefix;
+  Util::SymbolTable _include;
+  std::string _returnVariable;
+};
+}  // namespace Generator
+}  // namespace MicroModelica
 #endif /* MMO_GEN_FUNCTION_H */

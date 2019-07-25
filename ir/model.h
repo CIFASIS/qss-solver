@@ -32,100 +32,86 @@
 /**
  *
  */
-class MMO_Model: public MMO_Class
-{
+class MMO_Model : public MMO_Class {
   public:
-    /**
-     *
-     * @param name
-     */
-    MMO_Model() {};
-    /**
-     *
-     * @param name
-     */
-    MMO_Model(string name);
-    /**
-     *
-     */
-    ~MMO_Model();
-    /**
-     *
-     * @return
-     */
-    string
-    name() const;
-    /**
-     *
-     * @param n
-     */
-    void
-    insert(string n);
-    /**
-     *
-     * @param n
-     * @param vi
-     * @param type
-     */
-    void
-    insert(VarName n, VarInfo vi, DEC_Type type);
-    /**
-     *
-     * @param n
-     * @param vi
-     */
-    void
-    insert(VarName n, VarInfo vi);
-    /**
-     *
-     * @param eq
-     */
-    void
-    insert(AST_Equation eq);
-    /**
-     *
-     * @param stm
-     * @param initial
-     */
-    void
-    insert(AST_Statement stm, bool initial);
-    /**
-     *
-     * @param stm
-     */
-    void
-    insert(AST_Statement stm);
-    /**
-     *
-     * @param f
-     */
-    void
-    insert(MMO_Function &f);
-    /**
-     *
-     * @param efc
-     */
-    void
-    insert(AST_External_Function_Call efc);
-    /**
-     *
-     * @param x
-     */
-    void
-    insert(AST_Argument_Modification x);
-    /**
-     *
-     * @return
-     */
-    VarSymbolTable
-    varTable();
-    /**
-     *
-     * @return
-     */
-    MMO_ImportTable
-    imports();
-    
+  /**
+   *
+   * @param name
+   */
+  MMO_Model(){};
+  /**
+   *
+   * @param name
+   */
+  MMO_Model(string name);
+  /**
+   *
+   */
+  ~MMO_Model();
+  /**
+   *
+   * @return
+   */
+  string name() const;
+  /**
+   *
+   * @param n
+   */
+  void insert(string n);
+  /**
+   *
+   * @param n
+   * @param vi
+   * @param type
+   */
+  void insert(VarName n, VarInfo vi, DEC_Type type);
+  /**
+   *
+   * @param n
+   * @param vi
+   */
+  void insert(VarName n, VarInfo vi);
+  /**
+   *
+   * @param eq
+   */
+  void insert(AST_Equation eq);
+  /**
+   *
+   * @param stm
+   * @param initial
+   */
+  void insert(AST_Statement stm, bool initial);
+  /**
+   *
+   * @param stm
+   */
+  void insert(AST_Statement stm);
+  /**
+   *
+   * @param f
+   */
+  void insert(MMO_Function &f);
+  /**
+   *
+   * @param efc
+   */
+  void insert(AST_External_Function_Call efc);
+  /**
+   *
+   * @param x
+   */
+  void insert(AST_Argument_Modification x);
+  /**
+   *
+   * @return
+   */
+  VarSymbolTable varTable();
+  /**
+   *
+   * @return
+   */
+  MMO_ImportTable imports();
 };
 
-#endif  /* MMO_MODEL_H_ */
+#endif /* MMO_MODEL_H_ */

@@ -34,28 +34,22 @@
 
 using namespace std;
 
-AST_StoredDefinition
-parseFile(string filename, int *r)
+AST_StoredDefinition parseFile(string filename, int *r)
 {
   fstream in;
   int ret;
   MCC_Parser parser(false);
-  if(filename.size())
-  {
+  if (filename.size()) {
     in.open(filename.c_str(), fstream::in);
-    if(in.fail())
-    {
+    if (in.fail()) {
       cerr << "Could not open file " << filename.c_str() << endl;
       exit(-1);
     }
     ret = parser.parseFile(&in);
-  }
-  else
-  { // read from stdin
+  } else {  // read from stdin
     ret = parser.parseFile(&cin);
   }
-  if(ret == 0)
-  {
+  if (ret == 0) {
     *r = 0;
     in.close();
     return parser.root();
@@ -65,8 +59,7 @@ parseFile(string filename, int *r)
   return NULL;
 }
 
-AST_Expression
-parseExpression(string exp, int *r)
+AST_Expression parseExpression(string exp, int *r)
 {
   fstream in;
   string tmpFile;
@@ -80,8 +73,7 @@ parseExpression(string exp, int *r)
   in.close();
   int ret;
   AST_Class c = parseClass(tmpFile.c_str(), &ret);
-  if(ret == 0)
-  {
+  if (ret == 0) {
     *r = 0;
     return c->composition()->compositionList()->front()->getEquationsAlgs()->getEquations()->front()->getAsEquality()->right();
   }
@@ -89,8 +81,7 @@ parseExpression(string exp, int *r)
   return NULL;
 }
 
-AST_Equation
-parseEquation(string exp, int *r)
+AST_Equation parseEquation(string exp, int *r)
 {
   fstream in;
   string tmpFile;
@@ -104,8 +95,7 @@ parseEquation(string exp, int *r)
   in.close();
   int ret;
   AST_Class c = parseClass(tmpFile.c_str(), &ret);
-  if(ret == 0)
-  {
+  if (ret == 0) {
     *r = 0;
     return c->composition()->compositionList()->front()->getEquationsAlgs()->getEquations()->front();
   }
@@ -113,8 +103,7 @@ parseEquation(string exp, int *r)
   return NULL;
 }
 
-AST_Statement
-parseStatement(string exp, int *r)
+AST_Statement parseStatement(string exp, int *r)
 {
   fstream in;
   string tmpFile;
@@ -128,8 +117,7 @@ parseStatement(string exp, int *r)
   in.close();
   int ret;
   AST_Class c = parseClass(tmpFile.c_str(), &ret);
-  if(ret == 0)
-  {
+  if (ret == 0) {
     *r = 0;
     return c->composition()->compositionList()->front()->getEquationsAlgs()->getAlgorithms()->front();
   }
@@ -137,12 +125,10 @@ parseStatement(string exp, int *r)
   return NULL;
 }
 
-AST_Class
-parseClass(string filename, int *r)
+AST_Class parseClass(string filename, int *r)
 {
   AST_StoredDefinition sd = parseFile(filename, r);
-  if(r[0] == 0)
-  {
+  if (r[0] == 0) {
     return sd->models()->front();
   }
   return NULL;

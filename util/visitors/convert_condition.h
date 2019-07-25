@@ -23,39 +23,35 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
-    /**
-     *
-     */
-    class ConvertCondition: public AST_Expression_Visitor<AST_Expression>
-    {
-      public:
-        /**
-         *
-         */
-        ConvertCondition();
-        /**
-         *
-         */
-        ~ConvertCondition() {};
-        /**
-         *
-         * @return
-         */
-        inline MicroModelica::IR::EVENT::Type 
-        zeroCrossing() { return _zc; };;
-        inline MicroModelica::IR::EVENT::Relation
-        zeroCrossingRelation() { return _zcRelation; };
-      private:
-        AST_Expression
-        foldTraverseElement(AST_Expression exp) { return exp; };
-        AST_Expression
-        foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
-        AST_Expression
-        foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
-        MicroModelica::IR::EVENT::Type _zc;
-        MicroModelica::IR::EVENT::Relation _zcRelation;
-    };
-  }
-}
-#endif  /* CONVERT_CONDITION_H_ */
+namespace Util {
+/**
+ *
+ */
+class ConvertCondition : public AST_Expression_Visitor<AST_Expression> {
+  public:
+  /**
+   *
+   */
+  ConvertCondition();
+  /**
+   *
+   */
+  ~ConvertCondition(){};
+  /**
+   *
+   * @return
+   */
+  inline MicroModelica::IR::EVENT::Type zeroCrossing() { return _zc; };
+  ;
+  inline MicroModelica::IR::EVENT::Relation zeroCrossingRelation() { return _zcRelation; };
+
+  private:
+  AST_Expression foldTraverseElement(AST_Expression exp) { return exp; };
+  AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+  AST_Expression foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+  MicroModelica::IR::EVENT::Type _zc;
+  MicroModelica::IR::EVENT::Relation _zcRelation;
+};
+}  // namespace Util
+}  // namespace MicroModelica
+#endif /* CONVERT_CONDITION_H_ */

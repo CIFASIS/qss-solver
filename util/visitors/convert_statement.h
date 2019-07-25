@@ -23,25 +23,21 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
+namespace Util {
 
-    class ConvertStatement 
-    {
-      public:
-        ConvertStatement(AST_Statement statement, MicroModelica::Util::VarSymbolTable& symbols);
-        ~ConvertStatement() {};
-        inline AST_Statement 
-        get() { return _statement; };
-      private:
-        AST_Statement 
-        convert(AST_Statement st);
-        AST_StatementList 
-        convert(AST_StatementList sts);  
-        AST_Statement_ElseList 
-        convert(AST_Statement_ElseList stel);
-        AST_Statement                       _statement;
-        MicroModelica::Util::VarSymbolTable _symbols;
-    };
-  }
-}
-#endif  /* CONVERT_STATEMENT_H_ */
+class ConvertStatement {
+  public:
+  ConvertStatement(AST_Statement statement, MicroModelica::Util::VarSymbolTable& symbols);
+  ~ConvertStatement(){};
+  inline AST_Statement get() { return _statement; };
+
+  private:
+  AST_Statement convert(AST_Statement st);
+  AST_StatementList convert(AST_StatementList sts);
+  AST_Statement_ElseList convert(AST_Statement_ElseList stel);
+  AST_Statement _statement;
+  MicroModelica::Util::VarSymbolTable _symbols;
+};
+}  // namespace Util
+}  // namespace MicroModelica
+#endif /* CONVERT_STATEMENT_H_ */

@@ -23,29 +23,25 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
-    /**
-     * Evaluates an arithmetic expression.
-     */
-    class PartialEvalExp: public AST_Expression_Fold<AST_Expression>
-    {
-      public:
-        /**
-         *
-         * @param symbolTable
-         */
-        PartialEvalExp(VarSymbolTable symbolTable);
-      private:
-        AST_Expression
-        foldTraverseElement(AST_Expression);
-        AST_Expression
-        foldTraverseElementUMinus(AST_Expression);
-        AST_Expression
-        foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
-        bool 
-        shouldReturnInteger(AST_Expression left, AST_Expression right);
-        VarSymbolTable _symbols;
-    };
-  }
-}
-#endif  /* PARTIAL_EVAL_EXP_H_ */
+namespace Util {
+/**
+ * Evaluates an arithmetic expression.
+ */
+class PartialEvalExp : public AST_Expression_Fold<AST_Expression> {
+  public:
+  /**
+   *
+   * @param symbolTable
+   */
+  PartialEvalExp(VarSymbolTable symbolTable);
+
+  private:
+  AST_Expression foldTraverseElement(AST_Expression);
+  AST_Expression foldTraverseElementUMinus(AST_Expression);
+  AST_Expression foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
+  bool shouldReturnInteger(AST_Expression left, AST_Expression right);
+  VarSymbolTable _symbols;
+};
+}  // namespace Util
+}  // namespace MicroModelica
+#endif /* PARTIAL_EVAL_EXP_H_ */

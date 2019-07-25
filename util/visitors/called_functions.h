@@ -25,42 +25,37 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
+namespace Util {
 
-    /**
-     *
-     */
-    class CalledFunctions: public AST_Expression_Visitor<SymbolTable>
-    {
-      public:
-        CalledFunctions() {};
-        ~CalledFunctions() {};
-      private:
-        SymbolTable  
-        foldTraverseElement(AST_Expression exp);
-        SymbolTable 
-        foldTraverseElement(SymbolTable l, SymbolTable r, BinOpType bot);
-        SymbolTable
-        foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
-        SymbolTable _symbols;
-    };
+/**
+ *
+ */
+class CalledFunctions : public AST_Expression_Visitor<SymbolTable> {
+  public:
+  CalledFunctions(){};
+  ~CalledFunctions(){};
 
-    /**
-     *
-     */
-    class StatementCalledFunctions: public AST_Statement_Visitor<SymbolTable, SymbolTable, CalledFunctions>
-    {
-      public:
-        StatementCalledFunctions() : AST_Statement_Visitor(CalledFunctions()) {};
-        ~StatementCalledFunctions() {};
-      private:
-        inline SymbolTable  
-        foldTraverse(SymbolTable symbols) { return symbols; };
-        SymbolTable  
-        foldTraverse(SymbolTable s1, SymbolTable s2);
-    };
+  private:
+  SymbolTable foldTraverseElement(AST_Expression exp);
+  SymbolTable foldTraverseElement(SymbolTable l, SymbolTable r, BinOpType bot);
+  SymbolTable foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+  SymbolTable _symbols;
+};
 
-  }
-}
+/**
+ *
+ */
+class StatementCalledFunctions : public AST_Statement_Visitor<SymbolTable, SymbolTable, CalledFunctions> {
+  public:
+  StatementCalledFunctions() : AST_Statement_Visitor(CalledFunctions()){};
+  ~StatementCalledFunctions(){};
 
-#endif  /* CALLED_FUNCTIONS_H_ */
+  private:
+  inline SymbolTable foldTraverse(SymbolTable symbols) { return symbols; };
+  SymbolTable foldTraverse(SymbolTable s1, SymbolTable s2);
+};
+
+}  // namespace Util
+}  // namespace MicroModelica
+
+#endif /* CALLED_FUNCTIONS_H_ */

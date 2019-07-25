@@ -25,29 +25,25 @@
 #include "../ast_util.h"
 
 namespace MicroModelica {
-  namespace Util {
-    class ExpressionPrinter : public AST_Expression_Visitor<std::string>
-    {
-      public:
-        ExpressionPrinter(const VarSymbolTable& symbols);
-        /**
-         *
-         */
-        ~ExpressionPrinter() {};
-        inline std::string 
-        code() const { return _code; };
-      private:
-        std::string 
-        foldTraverseElement(AST_Expression exp);
-        std::string 
-        foldTraverseElement(std::string l, std::string r, BinOpType bot);
-        std::string 
-        foldTraverseElementUMinus(AST_Expression exp);
-        VarSymbolTable                _symbols;
-        MicroModelica::IR::Expression _exp;
-        std::string                   _code;
-    };
-  }
-}
+namespace Util {
+class ExpressionPrinter : public AST_Expression_Visitor<std::string> {
+  public:
+  ExpressionPrinter(const VarSymbolTable& symbols);
+  /**
+   *
+   */
+  ~ExpressionPrinter(){};
+  inline std::string code() const { return _code; };
 
-#endif  /* EXPRESSION_PRINTER_H_ */
+  private:
+  std::string foldTraverseElement(AST_Expression exp);
+  std::string foldTraverseElement(std::string l, std::string r, BinOpType bot);
+  std::string foldTraverseElementUMinus(AST_Expression exp);
+  VarSymbolTable _symbols;
+  MicroModelica::IR::Expression _exp;
+  std::string _code;
+};
+}  // namespace Util
+}  // namespace MicroModelica
+
+#endif /* EXPRESSION_PRINTER_H_ */

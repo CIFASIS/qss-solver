@@ -31,53 +31,43 @@
 #include "../../ir/event.h"
 
 namespace MicroModelica {
-  using namespace IR;
-  namespace Util {
+using namespace IR;
+namespace Util {
 
-    ConvertCondition::ConvertCondition() :
-        _zc(EVENT::Zero), 
-        _zcRelation(EVENT::GT)
-    {
-    }
+ConvertCondition::ConvertCondition() : _zc(EVENT::Zero), _zcRelation(EVENT::GT) {}
 
-    AST_Expression
-    ConvertCondition::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
-    {
-      switch(bot)
-      {
-        case BINOPLOWER:
-        {
-          AST_Expression bo = newAST_Expression_BinOp(l, newAST_Expression_OutputExpressions(newAST_ExpressionList(r)), BINOPSUB);
-          _zc = EVENT::Negative;
-          _zcRelation = EVENT::LT;
-          return bo;
-        }
-        case BINOPLOWEREQ:
-        {
-          AST_Expression bo = newAST_Expression_BinOp(l, newAST_Expression_OutputExpressions(newAST_ExpressionList(r)), BINOPSUB);
-          _zc = EVENT::Negative;
-          _zcRelation = EVENT::LE;
-          return bo;
-        }
-        case BINOPGREATER:
-          {
-          AST_Expression bo = newAST_Expression_BinOp(l, newAST_Expression_OutputExpressions(newAST_ExpressionList(r)), BINOPSUB);
-          _zc = EVENT::Positive;
-          _zcRelation = EVENT::GT;
-          return bo;
-        }
-        case BINOPGREATEREQ:
-          {
-          AST_Expression bo = newAST_Expression_BinOp(l, newAST_Expression_OutputExpressions(newAST_ExpressionList(r)), BINOPSUB);
-          _zc = EVENT::Positive;
-          _zcRelation = EVENT::GE;
-          return bo;
-        }
-        default:
-          break;
-      }
-      AST_Expression bo = newAST_Expression_BinOp(l, r, bot);
-      return bo;
-    }
+AST_Expression ConvertCondition::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
+{
+  switch (bot) {
+  case BINOPLOWER: {
+    AST_Expression bo = newAST_Expression_BinOp(l, newAST_Expression_OutputExpressions(newAST_ExpressionList(r)), BINOPSUB);
+    _zc = EVENT::Negative;
+    _zcRelation = EVENT::LT;
+    return bo;
   }
+  case BINOPLOWEREQ: {
+    AST_Expression bo = newAST_Expression_BinOp(l, newAST_Expression_OutputExpressions(newAST_ExpressionList(r)), BINOPSUB);
+    _zc = EVENT::Negative;
+    _zcRelation = EVENT::LE;
+    return bo;
+  }
+  case BINOPGREATER: {
+    AST_Expression bo = newAST_Expression_BinOp(l, newAST_Expression_OutputExpressions(newAST_ExpressionList(r)), BINOPSUB);
+    _zc = EVENT::Positive;
+    _zcRelation = EVENT::GT;
+    return bo;
+  }
+  case BINOPGREATEREQ: {
+    AST_Expression bo = newAST_Expression_BinOp(l, newAST_Expression_OutputExpressions(newAST_ExpressionList(r)), BINOPSUB);
+    _zc = EVENT::Positive;
+    _zcRelation = EVENT::GE;
+    return bo;
+  }
+  default:
+    break;
+  }
+  AST_Expression bo = newAST_Expression_BinOp(l, r, bot);
+  return bo;
 }
+}  // namespace Util
+}  // namespace MicroModelica

@@ -22,52 +22,42 @@
 #include "../error.h"
 
 namespace MicroModelica {
-  namespace Util {
-    bool 
-    ArrayUse::foldTraverseElement(AST_Expression exp)
-    {
-      switch(exp->expressionType())
-      {
-        case EXPCOMPREF:
-        {
-          AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-          Option<Variable> var = _symbols[cr->name()];
-          if(cr->hasIndexes() && var)
-          {
-            if(AST_ListFirst(cr->indexes())->size() != var->dimensions()) 
-            {
-              Error::instance().add(exp->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, 
-                                  "Wrong array dimension, expected %d got %d.", 
-                                  var->dimensions(), cr->indexes()->size());
-            }
-          }
-          break;
-        }
-        case EXPDERIVATIVE:
-        {
-          AST_Expression e = AST_ListFirst(exp->getAsDerivative()->arguments());
-          if(e->expressionType() != EXPCOMPREF)
-          {
-            Error::instance().add(exp->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong assign expression in equation.");
-          }
-          foldTraverseElement(e);
-          break;
-        }
-        case EXPOUTPUT:
-        {
-          AST_Expression_Output eout = exp->getAsOutput();
-          AST_ExpressionList el = eout->expressionList();
-          AST_ExpressionListIterator it;
-          foreach(it,el)
-          {
-            foldTraverseElement(current_element(it));
-          }
-          break;
-        }
-        default:
-          return true;
+namespace Util {
+bool ArrayUse::foldTraverseElement(AST_Expression exp)
+{
+  switch (exp->expressionType()) {
+  case EXPCOMPREF: {
+    AST_Expression_ComponentReference cr = exp->getAsComponentReference();
+    Option<Variable> var = _symbols[cr->name()];
+    if (cr->hasIndexes() && var) {
+      if (AST_ListFirst(cr->indexes())->size() != var->dimensions()) {
+        Error::instance().add(exp->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong array dimension, expected %d got %d.",
+                              var->dimensions(), cr->indexes()->size());
       }
-      return true;
     }
+    break;
   }
+  case EXPDERIVATIVE: {
+    AST_Expression e = AST_ListFirst(exp->getAsDerivative()->arguments());
+    if (e->expressionType() != EXPCOMPREF) {
+      Error::instance().add(exp->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong assign expression in equation.");
+    }
+    foldTraverseElement(e);
+    break;
+  }
+  case EXPOUTPUT: {
+    AST_Expression_Output eout = exp->getAsOutput();
+    AST_ExpressionList el = eout->expressionList();
+    AST_ExpressionListIterator it;
+    foreach (it, el) {
+      foldTraverseElement(current_element(it));
+    }
+    break;
+  }
+  default:
+    return true;
+  }
+  return true;
 }
+}  // namespace Util
+}  // namespace MicroModelica

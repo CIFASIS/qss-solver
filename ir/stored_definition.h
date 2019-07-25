@@ -25,45 +25,36 @@
 #include "../ir/class.h"
 
 namespace MicroModelica {
-  namespace IR {
+namespace IR {
 
-    /**
-     *
-     */
-    class StoredDefinition
-    {
-      public:
-        /**
-         *
-         */
-        StoredDefinition();
-        /**
-         *
-         */
-        ~StoredDefinition() {};
-        bool 
-        isModel();
-        bool 
-        isPackage();
-        Model& 
-        model();
-        Package&
-        package();
-        void 
-        setModel(string name);
-        void 
-        setPackage(string name);
-        void 
-        addFunction(Function& f);
-        Option<Function> 
-        function(string name);
-        void 
-        postProcess();
-      private:
-        ClassType      _def;
-        FunctionTable  _functions;
-    };
-  }
-}
+/**
+ *
+ */
+class StoredDefinition {
+  public:
+  /**
+   *
+   */
+  StoredDefinition();
+  /**
+   *
+   */
+  ~StoredDefinition(){};
+  bool isModel();
+  bool isPackage();
+  Model& model();
+  Package& package();
+  void setModel(string name);
+  void setPackage(string name);
+  void addFunction(Function& f);
+  Option<Function> function(string name);
+  void postProcess();
 
-#endif  /* MMO_STORED_DEFINITION_H_ */
+  private:
+  ClassType _def;
+  FunctionTable _functions;
+};
+}  // namespace IR
+}  // namespace MicroModelica
+
+#endif /* MMO_STORED_DEFINITION_H_ */

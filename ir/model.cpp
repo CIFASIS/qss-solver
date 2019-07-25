@@ -33,73 +33,30 @@
 #include "../util/ast_util.h"
 #include "../util/symbol_table.h"
 
-MMO_Model::MMO_Model(string name)
-{
-}
+MMO_Model::MMO_Model(string name) {}
 
-MMO_Model::~MMO_Model()
-{
-}
+MMO_Model::~MMO_Model() {}
 
-void
-MMO_Model::insert(VarName n, VarInfo vi, DEC_Type type)
-{
-}
+void MMO_Model::insert(VarName n, VarInfo vi, DEC_Type type) {}
 
-void
-MMO_Model::insert(VarName n, VarInfo vi)
-{
-}
+void MMO_Model::insert(VarName n, VarInfo vi) {}
 
-void
-MMO_Model::insert(AST_Equation eq)
-{
-}
+void MMO_Model::insert(AST_Equation eq) {}
 
-void
-MMO_Model::insert(AST_Statement stm)
-{
-}
+void MMO_Model::insert(AST_Statement stm) {}
 
-void
-MMO_Model::insert(AST_External_Function_Call efc)
-{
-  return;
-}
+void MMO_Model::insert(AST_External_Function_Call efc) { return; }
 
-void
-MMO_Model::insert(AST_Statement stm, bool initial)
-{
-}
+void MMO_Model::insert(AST_Statement stm, bool initial) {}
 
-void
-MMO_Model::insert(MMO_Function &f)
-{
-}
+void MMO_Model::insert(MMO_Function &f) {}
 
-void
-MMO_Model::insert(AST_Argument_Modification x)
-{
-}
+void MMO_Model::insert(AST_Argument_Modification x) {}
 
-VarSymbolTable
-MMO_Model::varTable()
-{
-  return NULL;
-}
+VarSymbolTable MMO_Model::varTable() { return NULL; }
 
-void
-MMO_Model::insert(string n)
-{
-}
+void MMO_Model::insert(string n) {}
 
-string
-MMO_Model::name() const
-{
-  return "";
-}
+string MMO_Model::name() const { return ""; }
 
-MMO_ImportTable
-MMO_Model::imports()
-{
-}
+MMO_ImportTable MMO_Model::imports() {}

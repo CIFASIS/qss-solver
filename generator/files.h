@@ -31,69 +31,63 @@
 #include "../util/compile_flags.h"
 
 namespace MicroModelica {
-  namespace Generator {
-    
-    /**
-     *
-     */
-    class Files
-    {
-      public:
-        /**
-         *
-         */
-        Files();
-        /**
-         *
-         * @param model
-         * @param solver
-         * @param flags
-         */
-        Files(ModelInstancePtr modelInstance, IR::Model& model, Util::CompileFlags& flags);
-        /**
-         *
-         * @param name
-         * @param flags
-         */
-        Files(string name, Util::CompileFlags& flags);
-        /**
-         *
-         */
-        ~Files();
-        /**
-         *
-         */
-        void
-        makefile();
-        /**
-         *
-         */
-        void
-        run();
-        /**
-         *
-         */
-        void
-        plot();
-        /**
-         *
-         * @param annotation
-         */
-        void
-        settings(IR::ModelAnnotation annotation);
-        void
-        graph();
-      private:
-        void
-        printList(list<string> ann, string tag);
-        string                              _fname;
-        IR::Model                           _model;
-        ModelInstancePtr                    _modelInstance;
-        WriterPtr                           _writer;
-        Util::CompileFlags                  _flags;
-        ofstream                            _file;
-    };
-  }
-}
+namespace Generator {
 
-#endif  /* MMO_FILES_H_ */
+/**
+ *
+ */
+class Files {
+  public:
+  /**
+   *
+   */
+  Files();
+  /**
+   *
+   * @param model
+   * @param solver
+   * @param flags
+   */
+  Files(ModelInstancePtr modelInstance, IR::Model& model, Util::CompileFlags& flags);
+  /**
+   *
+   * @param name
+   * @param flags
+   */
+  Files(string name, Util::CompileFlags& flags);
+  /**
+   *
+   */
+  ~Files();
+  /**
+   *
+   */
+  void makefile();
+  /**
+   *
+   */
+  void run();
+  /**
+   *
+   */
+  void plot();
+  /**
+   *
+   * @param annotation
+   */
+  void settings(IR::ModelAnnotation annotation);
+  void graph();
+
+  private:
+  void printList(list<string> ann, string tag);
+  string _fname;
+  IR::Model _model;
+  ModelInstancePtr _modelInstance;
+  WriterPtr _writer;
+  Util::CompileFlags _flags;
+  ofstream _file;
+};
+}  // namespace Generator
+}  // namespace MicroModelica
+
+#endif /* MMO_FILES_H_ */

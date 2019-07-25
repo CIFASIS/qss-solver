@@ -27,130 +27,104 @@
 #include "../util/table.h"
 
 namespace MicroModelica {
-  namespace Deps {
+namespace Deps {
 
-    namespace VDM {
-        typedef enum {
-          Normal,
-          Transpose    
-        } Mode;
-        
-        typedef enum {
-          Alloc = 0,
-          Init = 2   
-        } Method;
-    }
+namespace VDM {
+typedef enum { Normal, Transpose } Mode;
 
-    typedef int depId;
+typedef enum { Alloc = 0, Init = 2 } Method;
+}  // namespace VDM
 
-    typedef std::string varId;
+typedef int depId;
 
-    class VariableDependency 
-    {
-      public:
-        VariableDependency() {};
-        ~VariableDependency() {};
-        inline void 
-        setVariable(std::string var) { _variable = var; };
-        inline void 
-        setDom(MDI dom) { _dom = dom; };
-        inline void 
-        setRan(MDI ran) { _ran = ran; };
-        inline void 
-        setId(int id) { _id = id; };
-        inline void 
-        setEquationId(int eqid) { _equationId = eqid; };
-        inline const IR::Index
-        ifr() { return IR::Index(_ifr_exp); };
-        inline const IR::Index
-        ife() { return IR::Index(_ife_exp); };
-        IR::Range
-        range() { return _range; };
-        inline void
-        setIfr(IndexPair ifr) { _ifr = ifr; };
-        inline void
-        setIfe(IndexPair ife) { _ife = ife; };
-        void 
-        setRange();
-        MDI 
-        dom() { return _dom; };
-        MDI 
-        ran() { return _ran; };
-        std::string 
-        variable() { return _variable; };
-        MDI 
-        getImage(MDI sub_dom);
-        inline int 
-        equationId() const { return _equationId; };
-        inline IndexPair
-        ifrPair() const { return _ifr; };
-        inline IndexPair
-        ifePair() const { return _ife; };
+typedef std::string varId;
 
-      private:
-        MDI            _dom;
-        MDI            _ran;
-        IndexPair      _ifr;
-        IndexPair      _ife;
-        IR::Expression _ifr_exp;
-        IR::Expression _ife_exp;
-        IR::Range      _range;
-        int            _id;
-        int            _equationId;
-        std::string    _variable;
-    };
+class VariableDependency {
+  public:
+  VariableDependency(){};
+  ~VariableDependency(){};
+  inline void setVariable(std::string var) { _variable = var; };
+  inline void setDom(MDI dom) { _dom = dom; };
+  inline void setRan(MDI ran) { _ran = ran; };
+  inline void setId(int id) { _id = id; };
+  inline void setEquationId(int eqid) { _equationId = eqid; };
+  inline const IR::Index ifr() { return IR::Index(_ifr_exp); };
+  inline const IR::Index ife() { return IR::Index(_ife_exp); };
+  IR::Range range() { return _range; };
+  inline void setIfr(IndexPair ifr) { _ifr = ifr; };
+  inline void setIfe(IndexPair ife) { _ife = ife; };
+  void setRange();
+  MDI dom() { return _dom; };
+  MDI ran() { return _ran; };
+  std::string variable() { return _variable; };
+  MDI getImage(MDI sub_dom);
+  inline int equationId() const { return _equationId; };
+  inline IndexPair ifrPair() const { return _ifr; };
+  inline IndexPair ifePair() const { return _ife; };
 
-    // AlgebraicDependencies
-    typedef list<VariableDependency> AlgebraicDependencies;
-    
-    typedef struct {
-        AlgebraicDependencies algs;
-        VariableDependency ifce;   
-        inline const IR::Index 
-        ifr() { return ifce.ifr(); };
-        inline const IR::Index 
-        ife() { return ifce.ife(); };     
-    } Influences;
+  private:
+  MDI _dom;
+  MDI _ran;
+  IndexPair _ifr;
+  IndexPair _ife;
+  IR::Expression _ifr_exp;
+  IR::Expression _ife_exp;
+  IR::Range _range;
+  int _id;
+  int _equationId;
+  std::string _variable;
+};
 
-    std::ostream& operator<<(std::ostream& out, const Influences& d);
+// AlgebraicDependencies
+typedef list<VariableDependency> AlgebraicDependencies;
 
-    typedef list<Influences> VariableDependencies;
+typedef struct {
+  AlgebraicDependencies algs;
+  VariableDependency ifce;
+  inline const IR::Index ifr() { return ifce.ifr(); };
+  inline const IR::Index ife() { return ifce.ife(); };
+} Influences;
 
-    struct MatrixConfig {
-        std::string container;
-        std::string names[4];
-        std::string access[2];
-        std::string component[2];
-    };
+std::ostream& operator<<(std::ostream& out, const Influences& d);
 
-    class VariableDependencyMatrix : public ModelTable<varId,VariableDependencies>
-    {
-      public:
-        VariableDependencyMatrix(MatrixConfig cfg);
-        ~VariableDependencyMatrix() {};
-        inline const VariableDependencyMatrix& 
-        alloc() { _method = VDM::Alloc; return *this; };
-        inline const VariableDependencyMatrix&
-        init() { _method = VDM::Init; return *this; }; 
-        inline void 
-        setMode(VDM::Mode mode) { _mode = mode; };
-        std::string 
-        print() const;
-        inline std::string 
-        accessVector() const { return _cfg.access[_mode]; };    
-        friend std::ostream& operator<<(std::ostream& out, const VariableDependencyMatrix& d);
-      
-      private:
-        MatrixConfig _cfg;
-        VDM::Mode    _mode;
-        VDM::Method  _method;  
+typedef list<Influences> VariableDependencies;
 
-        std::string 
-        component() const;
-    };
+struct MatrixConfig {
+  std::string container;
+  std::string names[4];
+  std::string access[2];
+  std::string component[2];
+};
 
-    typedef ModelTable<depId,VariableDependencies> EquationDependencyMatrix;
-  }
-}
+class VariableDependencyMatrix : public ModelTable<varId, VariableDependencies> {
+  public:
+  VariableDependencyMatrix(MatrixConfig cfg);
+  ~VariableDependencyMatrix(){};
+  inline const VariableDependencyMatrix& alloc()
+  {
+    _method = VDM::Alloc;
+    return *this;
+  };
+  inline const VariableDependencyMatrix& init()
+  {
+    _method = VDM::Init;
+    return *this;
+  };
+  inline void setMode(VDM::Mode mode) { _mode = mode; };
+  std::string print() const;
+  inline std::string accessVector() const { return _cfg.access[_mode]; };
+  friend std::ostream& operator<<(std::ostream& out, const VariableDependencyMatrix& d);
+
+  private:
+  MatrixConfig _cfg;
+  VDM::Mode _mode;
+  VDM::Method _method;
+
+  std::string component() const;
+};
+
+typedef ModelTable<depId, VariableDependencies> EquationDependencyMatrix;
+}  // namespace Deps
+}  // namespace MicroModelica
 
 #endif /* DEPENDENCY_MATRIX_H_ */

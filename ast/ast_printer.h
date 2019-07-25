@@ -78,4 +78,4 @@ DEFINE_PRINTER(AST_StoredDefinition);
  */
 DEFINE_PRINTER(AST_String);
 
-#endif  /* AST_PRINTER_H_ */
+#endif /* AST_PRINTER_H_ */

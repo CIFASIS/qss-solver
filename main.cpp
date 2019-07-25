@@ -43,8 +43,7 @@ using namespace MicroModelica::Generator;
 using namespace MicroModelica::IR;
 using namespace MicroModelica::Util;
 
-void
-usage()
+void usage()
 {
   cout << "Usage mmoc [options] file" << endl;
   cout << "Compile MicroModelica files and generate a C file that implements a model suitable for the Stand--Alone QSS solver." << endl;
@@ -55,7 +54,9 @@ usage()
   cout << "                    SD_DBG_All: Enable all the debug flags" << endl;
   cout << "                    SD_DBG_Dt: Log dt parameter changes in parallel simulations" << endl;
   cout << "                    SD_DBG_ExternalEvent: Output step information for each external event in parallel simulations" << endl;
-  cout << "                    SD_DBG_InitValues: Output the simulation initialization, including initial state and state derivatives values" << endl;
+  cout
+      << "                    SD_DBG_InitValues: Output the simulation initialization, including initial state and state derivatives values"
+      << endl;
   cout << "                    SD_DBG_Memory: Output memory footprint" << endl;
   cout << "                    SD_DBG_Synchronize: Output synchronization information in parallel simulations" << endl;
   cout << "                    SD_DBG_StepInfo: Output for each simulation step:" << endl;
@@ -75,7 +76,9 @@ usage()
   cout << "-o <file>, --output <file>" << endl;
   cout << "                Sets the output to <file>" << endl;
   cout << "-O, --optimize" << endl;
-  cout << "                Try to avoid the calculation of the next time of change for influenced variables in QSS algorithms (experimental)" << endl;
+  cout
+      << "                Try to avoid the calculation of the next time of change for influenced variables in QSS algorithms (experimental)"
+      << endl;
   cout << "-p, --parallel" << endl;
   cout << "                Generate code for parallel simulation." << endl;
   cout << "-s, --settings-only" << endl;
@@ -86,8 +89,7 @@ usage()
   cout << "MicroModelica C Compiler home page: https://github.com/CIFASIS/qss-solver-mmoc " << endl;
 }
 
-void
-version()
+void version()
 {
   cout << "MicroModelica C Compiler 3.3.0" << endl;
   cout << "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>" << endl;
@@ -95,67 +97,54 @@ version()
   cout << "There is NO WARRANTY, to the extent permitted by law." << endl;
 }
 
-int
-parsePackages(AST_StringList imports, CompileFlags& flags, bool recompile)
+int parsePackages(AST_StringList imports, CompileFlags& flags, bool recompile)
 {
   int r = 0;
   CompileFlags flg;
   AST_StringListIterator it;
-  foreach(it,imports)
-  {
+  foreach (it, imports) {
     string i = *current_element(it);
     string p = Utils::instance().packagePath(i, flags);
     flags.addObject(p + SLASH + Utils::instance().packageName(i) + ".c");
-    if(!Utils::instance().searchCompiledPackage(i, flags) || recompile)
-    {
+    if (!Utils::instance().searchCompiledPackage(i, flags) || recompile) {
       string fileName = p + SLASH + i + ".mo";
       AST_StoredDefinition sd = NULL;
       sd = parseFile(fileName, &r);
       Error::instance().setFile(fileName);
-      if(r == 0)
-      {
+      if (r == 0) {
         ModelChecker mmo(fileName);
         r = mmo.apply(sd);
-        if(r == 0)
-        {
+        if (r == 0) {
           flg.setOutputFile(p + SLASH + i);
           flg.setPath(p);
           parsePackages(sd->imports(), flg, recompile);
           list<string> objects = flg.objects();
-          for(list<string>::iterator it = objects.begin(); it != objects.end(); it++)
-          {
+          for (list<string>::iterator it = objects.begin(); it != objects.end(); it++) {
             flags.addObject(*it);
           }
           Error::instance().setFile(fileName);
           Utils::instance().setCompileFlags(flg);
           MicroModelicaIR ir(fileName);
           r = ir.apply(sd);
-          if(r == 0)
-          {
+          if (r == 0) {
             Generator gen(ir.definition(), flg);
             r = gen.generate();
           }
         }
-      }
-      else
-      {
+      } else {
         delete sd;
       }
       delete sd;
-    }
-    else
-    {
+    } else {
       Utils::instance().setCompileFlags(flags);
       Option<CompiledPackage> pd = Utils::instance().readPackage(i);
-      if(!pd)
-      {
+      if (!pd) {
         Error::instance().add(0, EM_CANT_OPEN_FILE, ER_Error, "%s.moo", i.c_str());
         return -1;
       }
       ImportTable objects = pd->objects();
       ImportTable::iterator it;
-      for(string import = objects.begin(it); !objects.end(it); import = objects.next(it))
-      {
+      for (string import = objects.begin(it); !objects.end(it); import = objects.next(it)) {
         flags.addObject(import);
       }
     }
@@ -163,101 +152,90 @@ parsePackages(AST_StringList imports, CompileFlags& flags, bool recompile)
   return r;
 }
 
-int
-main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
   int r = 0;
   int opt;
-  extern char *optarg;
+  extern char* optarg;
   char strArg[128];
   bool recompile = false;
   bool settings = false;
   CompileFlags flags;
-  while(true)
-  {
-    static struct option long_options[] =
-        {
-            { "version", no_argument, 0, 'v' },
-            { "help", no_argument, 0, 'h' },
-            { "include", required_argument, 0, 'i' },
-            { "external-structure-file", required_argument, 0, 'e' },
-            { "force", no_argument, 0, 'f' },
-            { "settings-only", no_argument, 0, 's' },
-            { "optimize", no_argument, 0, 'O' },
-            { "parallel", no_argument, 0, 'p' },
-            { "debug", required_argument, 0, 'd' },
-            { "output", required_argument, 0, 'o' },
-            { 0, 0, 0, 0 } };
+  while (true) {
+    static struct option long_options[] = {{"version", no_argument, 0, 'v'},
+                                           {"help", no_argument, 0, 'h'},
+                                           {"include", required_argument, 0, 'i'},
+                                           {"external-structure-file", required_argument, 0, 'e'},
+                                           {"force", no_argument, 0, 'f'},
+                                           {"settings-only", no_argument, 0, 's'},
+                                           {"optimize", no_argument, 0, 'O'},
+                                           {"parallel", no_argument, 0, 'p'},
+                                           {"debug", required_argument, 0, 'd'},
+                                           {"output", required_argument, 0, 'o'},
+                                           {0, 0, 0, 0}};
     int option_index = 0;
     opt = getopt_long(argc, argv, "vhmfsOpi:d:o:", long_options, &option_index);
-    if(opt == EOF)
+    if (opt == EOF) break;
+    switch (opt) {
+    case 'v':
+      version();
+      exit(0);
+    case 'h':
+      usage();
+      exit(0);
+    case 'm':
+      flags.setIncidenceMatrices(true);
       break;
-    switch(opt)
-    {
-      case 'v':
-        version();
-        exit(0);
-      case 'h':
-        usage();
-        exit(0);
-      case 'm':
-        flags.setIncidenceMatrices(true);
-        break;
-      case 'd':
-        sscanf(optarg, "%s", strArg);
-        flags.setDebug(strArg);
-        break;
-      case 'o':
-        flags.setOutputFile(optarg);
-        break;
-      case 'i':
-        flags.addLibraryPath(optarg);
-        break;
-      case 'p':
-        flags.setParallel(true);
-        break;
-      case 'e':
-        flags.setExternalStructureFile(true);
-        break;
-      case 'f':
-        recompile = true;
-        break;
-      case 's':
-        settings = true;
-        break;
-      case 'O':
-        flags.setOptimizeQSS(true);
-        break;
-      case '?':
-        usage();
-        exit(-1);
-        break;
-      default:
-        abort();
+    case 'd':
+      sscanf(optarg, "%s", strArg);
+      flags.setDebug(strArg);
+      break;
+    case 'o':
+      flags.setOutputFile(optarg);
+      break;
+    case 'i':
+      flags.addLibraryPath(optarg);
+      break;
+    case 'p':
+      flags.setParallel(true);
+      break;
+    case 'e':
+      flags.setExternalStructureFile(true);
+      break;
+    case 'f':
+      recompile = true;
+      break;
+    case 's':
+      settings = true;
+      break;
+    case 'O':
+      flags.setOptimizeQSS(true);
+      break;
+    case '?':
+      usage();
+      exit(-1);
+      break;
+    default:
+      abort();
     }
   }
   string pkg = Utils::instance().environmentVariable("MMOC_PACKAGES");
-  if(!pkg.empty())
-  {
+  if (!pkg.empty()) {
     flags.addLibraryPath(pkg);
   }
   AST_StoredDefinition sd;
   string fileName;
-  if(argv[optind] != NULL)
-  {
+  if (argv[optind] != NULL) {
     fileName = argv[optind];
     string path = Utils::instance().getFilePath(fileName);
     flags.setPath(path);
     sd = parseFile(fileName, &r);
     Error::instance().setFile(fileName);
-    if(r == 0)
-    {
+    if (r == 0) {
       ModelChecker mmo(fileName);
       r = mmo.apply(sd);
-      if(r == 0)
-      {
-        if(settings)
-        {
+      if (r == 0) {
+        if (settings) {
           Settings set(fileName);
           set.apply(sd);
           Files sc(fileName, flags);
@@ -265,8 +243,7 @@ main(int argc, char ** argv)
           return 0;
         }
         int res = parsePackages(sd->imports(), flags, recompile);
-        if(res != 0)
-        {
+        if (res != 0) {
           Error::instance().show();
           cout << "Exit code: " << res << endl;
           return res;
@@ -275,8 +252,7 @@ main(int argc, char ** argv)
         Error::instance().setFile(fileName);
         MicroModelicaIR ir(fileName);
         r = ir.apply(sd);
-        if(r == 0)
-        {
+        if (r == 0) {
           Generator gen(ir.definition(), flags);
           r = gen.generate();
         }

@@ -1,24 +1,15 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/ usr / bin / env python
+#- * - coding : utf - 8 - * -
 
 from __future__ import print_function
 
-import locale
-import re
-import os
-import os.path
-import sys
-import glob
-import textwrap
-import datetime
-import collections
-import itertools
+    import locale import re import os import os.path import sys import glob import textwrap import datetime import collections import
+        itertools
 
-from subprocess import Popen, PIPE
+            from subprocess import Popen,
+    PIPE
 
-try:
-    import pystache
-except ImportError:  ## pragma: no cover
+    try : import pystache except ImportError:  ## pragma: no cover
     pystache = None
 
 try:
@@ -527,43 +518,32 @@ class GitConfig(SubGitObjectMixin):
     def __getattr__(self, label):
         cmd = "git config %r" % str(label)
         try:
-            res = self.swrap(cmd)
-        except ShellError as e:
-            if e.errlvl == 1 and e.out == "" and e.err == "":
-                raise AttributeError("key %r is not found in git config."
-                                     % label)
-            raise
-        return res
+            res
+          = self.swrap(cmd) except ShellError as e : if e.errlvl == 1 and e.out == "" and
+            e.err == "" : raise AttributeError("key %r is not found in git config." % label) raise return res
 
-    def get(self, label, default=None):
-        return getattr(self, label, default)
+                              def get(self, label, default = None)
+              : return getattr(self, label, default)
 
-    def __getitem__(self, label):
-        try:
-            return getattr(self, label)
-        except AttributeError:
-            raise KeyError(label)
+                    def __getitem__(self, label)
+              : try:
+            return getattr(self, label) except AttributeError : raise KeyError(label)
 
+                                                                    class GitRepos(object)
+                :
 
-class GitRepos(object):
+                  def __init__(self, path)
+                :
 
-    def __init__(self, path):
+                  ##Saving this original path to ensure all future git commands##will be done from this location.self._orig_path =
+                       os.path.abspath(path)
 
-        ## Saving this original path to ensure all future git commands
-        ## will be done from this location.
-        self._orig_path = os.path.abspath(path)
+                           ##verify ``git`` command is accessible : try : self
+              ._git_version = self.swrap("git version") except ShellError : raise EnvironmentError(
+                                                                                "Required ``git`` command not found or broken in $PATH. "
+                                                                                "(calling ``git version`` failed.)")
 
-        ## verify ``git`` command is accessible:
-        try:
-            self._git_version = self.swrap("git version")
-        except ShellError:
-            raise EnvironmentError(
-                "Required ``git`` command not found or broken in $PATH. "
-                "(calling ``git version`` failed.)")
-
-        ## verify that we are in a git repository
-        try:
-            self.swrap("git remote")
+                                                                                ##verify that we are in a git repository try : self.swrap("git remote")
         except ShellError:
             raise EnvironmentError(
                 "Not in a git repository. (calling ``git remote`` failed.)")
@@ -639,7 +619,7 @@ class GitRepos(object):
         values = plog.stdout.read("\x00")
 
         try:
-            while True:  ## values.next() will eventualy raise a StopIteration
+                  while True:  ## values.next() will eventualy raise a StopIteration
                 yield mk_commit(dict([(key, next(values))
                                       for key in GIT_FORMAT_KEYS]))
         finally:
@@ -896,7 +876,8 @@ def changelog(repository,
             })
 
         ## Flush current version
-        current_version["sections"] = [{"label": k, "commits": sections[k]}
+        current_version["sections"] = [{
+                      "label" : k, "commits" : sections[k]}
                                        for k in section_order
                                        if k in sections]
         if len(current_version["sections"]) != 0:
@@ -967,26 +948,21 @@ def main():
         die(usage_msg % {'exname': basename})
 
     try:
-        repository = GitRepos(".")
-    except EnvironmentError as e:
-        die(e.message)
+        repository
+                      = GitRepos(".") except EnvironmentError as e
+                          : die(e.message)
 
-    repository_config = '%s/.%s.rc' % (repository.toplevel, basename) \
-                        if not repository.bare else None
+                                repository_config = '%s/.%s.rc' % (repository.toplevel, basename) if not repository.bare else None
 
-    if len(sys.argv) == 2 and sys.argv[1] == "init":
-        import shutil
-        if repository_config is None:
-            die("``init`` of bare repository not supported.")
-        if os.path.exists(repository_config):
-            die("File %r already exists." % repository_config)
-        shutil.copyfile(reference_config,
-                        repository_config)
-        print("File %r created.")
-        sys.exit(0)
+                                                                  if len(sys.argv) ==
+                                                        2 and
+                                                    sys.argv[1] == "init" : import shutil if repository_config is None
+                          : die("``init`` of bare repository not supported.") if os.path
+                                .exists(repository_config)
+                          : die("File %r already exists." % repository_config)
+                                shutil.copyfile(reference_config, repository_config) print("File %r created.") sys.exit(0)
 
-    try:
-        gc_rc = repository.config.get("gitchangelog.rc-path")
+                                    try : gc_rc = repository.config.get("gitchangelog.rc-path")
     except ShellError as e:
         sys.stderr.write(
             "Error parsing git config: %s."
@@ -1003,8 +979,8 @@ def main():
         (False, lambda: ('%s/.%s.rc' % (repository.toplevel, basename)) \
                  if not repository.bare else None),
         ## Removed to enforce per-repository gitchangelog file.
-        # (False, lambda: os.path.expanduser('~/.%s.rc' % basename)),
-        # (False, lambda: '/etc/%s.rc' % basename),
+#(False, lambda : os.path.expanduser('~/.%s.rc' % basename)),
+#(False, lambda : '/etc/%s.rc' % basename),
         ]:
         changelogrc = fun()
         if changelogrc:
@@ -1046,8 +1022,8 @@ def main():
 
 if __name__ == "__main__":
 
-    # import doctest
-    # doctest.testmod()
-    # sys.exit(1)
+#import doctest
+#doctest.testmod()
+#sys.exit(1)
 
     main()

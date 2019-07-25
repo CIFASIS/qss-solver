@@ -18,103 +18,82 @@
  ******************************************************************************/
 
 #ifndef MMO_BUILT_IN_FUNCTIONS_H
-#define MMO_BUILT_IN_FUNCTIONS_H 
+#define MMO_BUILT_IN_FUNCTIONS_H
 
 #include "helpers.h"
 #include "../util/table.h"
 
 namespace MicroModelica {
-  namespace IR {
-    
-    class BuiltInFunctionPrinter
-    {
-      public:    
-        BuiltInFunctionPrinter() {};
-        ~BuiltInFunctionPrinter() {};
-        friend std::ostream& operator<<(std::ostream& out, const BuiltInFunctionPrinter& b);
-        virtual std::string 
-        print() const { return ""; };
-        virtual std::string  
-        code() { return ""; };
-    };
+namespace IR {
 
-    class MaxFunction : public BuiltInFunctionPrinter
-    {
-      public:    
-        MaxFunction() {};
-        ~MaxFunction() {};
-        std::string 
-        print() const;
-        std::string   
-        code();
-    };
+class BuiltInFunctionPrinter {
+  public:
+  BuiltInFunctionPrinter(){};
+  ~BuiltInFunctionPrinter(){};
+  friend std::ostream& operator<<(std::ostream& out, const BuiltInFunctionPrinter& b);
+  virtual std::string print() const { return ""; };
+  virtual std::string code() { return ""; };
+};
 
-    class MinFunction : public BuiltInFunctionPrinter
-    {
-      public:    
-        MinFunction() {};
-        ~MinFunction() {};
-        std::string 
-        print() const;
-        std::string   
-        code();
-    };
-    
-    class SumFunction : public BuiltInFunctionPrinter
-    {
-      public:    
-        SumFunction() {};
-        ~SumFunction() {};
-        std::string 
-        print() const;
-        std::string   
-        code();
-    };
-    
-    class ProductFunction : public BuiltInFunctionPrinter
-    {
-      public:    
-        ProductFunction() {};
-        ~ProductFunction() {};
-        std::string 
-        print() const;
-        std::string   
-        code();
-    };
-    
-    class InnerProductFunction : public BuiltInFunctionPrinter
-    {
-      public:    
-        InnerProductFunction() {};
-        ~InnerProductFunction() {};
-        std::string 
-        print() const;
-        std::string   
-        code();
-    };
+class MaxFunction : public BuiltInFunctionPrinter {
+  public:
+  MaxFunction(){};
+  ~MaxFunction(){};
+  std::string print() const;
+  std::string code();
+};
 
-    typedef ModelTable<std::string,BuiltInFunctionPrinter> BuiltInFunctionPrinterTable;
+class MinFunction : public BuiltInFunctionPrinter {
+  public:
+  MinFunction(){};
+  ~MinFunction(){};
+  std::string print() const;
+  std::string code();
+};
 
-    class BuiltInFunction 
-    {
-      public:    
-        static BuiltInFunction&
-        instance()
-        {
-          static BuiltInFunction _instance;
-          return _instance;
-        }
-        ~BuiltInFunction() {};
-        inline CompiledFunctionTable 
-        functions() { return _functions; };
-        inline Option<BuiltInFunctionPrinter>  
-        reductionFunctions(string name) { return _reduction[name]; };
-      private:
-        BuiltInFunction();
-        CompiledFunctionTable        _functions;
-        BuiltInFunctionPrinterTable  _reduction;
-    };
+class SumFunction : public BuiltInFunctionPrinter {
+  public:
+  SumFunction(){};
+  ~SumFunction(){};
+  std::string print() const;
+  std::string code();
+};
+
+class ProductFunction : public BuiltInFunctionPrinter {
+  public:
+  ProductFunction(){};
+  ~ProductFunction(){};
+  std::string print() const;
+  std::string code();
+};
+
+class InnerProductFunction : public BuiltInFunctionPrinter {
+  public:
+  InnerProductFunction(){};
+  ~InnerProductFunction(){};
+  std::string print() const;
+  std::string code();
+};
+
+typedef ModelTable<std::string, BuiltInFunctionPrinter> BuiltInFunctionPrinterTable;
+
+class BuiltInFunction {
+  public:
+  static BuiltInFunction& instance()
+  {
+    static BuiltInFunction _instance;
+    return _instance;
   }
-}
+  ~BuiltInFunction(){};
+  inline CompiledFunctionTable functions() { return _functions; };
+  inline Option<BuiltInFunctionPrinter> reductionFunctions(string name) { return _reduction[name]; };
+
+  private:
+  BuiltInFunction();
+  CompiledFunctionTable _functions;
+  BuiltInFunctionPrinterTable _reduction;
+};
+}  // namespace IR
+}  // namespace MicroModelica
 
 #endif /* MMO_BUILT_IN_FUNCTIONS_H */

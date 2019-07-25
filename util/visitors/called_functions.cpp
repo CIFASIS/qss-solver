@@ -22,38 +22,33 @@
 #include "../symbol_table.h"
 
 namespace MicroModelica {
-  namespace Util {
+namespace Util {
 
-    SymbolTable 
-    CalledFunctions::foldTraverseElement(AST_Expression exp)
-    {
-      SymbolTable symbols;
-      switch(exp->expressionType())
-      {
-        case EXPCALL:
-        {
-          AST_Expression_Call call = exp->getAsCall();
-          symbols.insert(*call->name(), *call->name());
-          return symbols;
-        }
-        default:
-          return symbols;
-      }
-    }
-
-    SymbolTable 
-    CalledFunctions::foldTraverseElement(SymbolTable l, SymbolTable r, BinOpType bot)
-    {
-      r.merge(l);
-      return r;
-    }
-
-    SymbolTable  
-    StatementCalledFunctions::foldTraverse(SymbolTable s1, SymbolTable s2)
-    {
-      s2.merge(s1);
-      return s2;
-    }
-
+SymbolTable CalledFunctions::foldTraverseElement(AST_Expression exp)
+{
+  SymbolTable symbols;
+  switch (exp->expressionType()) {
+  case EXPCALL: {
+    AST_Expression_Call call = exp->getAsCall();
+    symbols.insert(*call->name(), *call->name());
+    return symbols;
+  }
+  default:
+    return symbols;
   }
 }
+
+SymbolTable CalledFunctions::foldTraverseElement(SymbolTable l, SymbolTable r, BinOpType bot)
+{
+  r.merge(l);
+  return r;
+}
+
+SymbolTable StatementCalledFunctions::foldTraverse(SymbolTable s1, SymbolTable s2)
+{
+  s2.merge(s1);
+  return s2;
+}
+
+}  // namespace Util
+}  // namespace MicroModelica

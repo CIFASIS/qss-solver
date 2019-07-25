@@ -27,46 +27,40 @@
 #include "symbol_table.h"
 #include "../ir/expression.h"
 
-
 namespace MicroModelica {
-  namespace Util {
+namespace Util {
 
-    class MMO_Expression;
+class MMO_Expression;
 
-    /**
-     *
-     */
-    class EquationDerivator
-    {
-      public:
-        /**
-         *
-         * @param eq
-         * @param varEnv
-         * @return
-         */
-        static AST_Equation_Equality
-        derivate(AST_Equation_Equality eq, const VarSymbolTable& varEnv);
-    };
+/**
+ *
+ */
+class EquationDerivator {
+  public:
+  /**
+   *
+   * @param eq
+   * @param varEnv
+   * @return
+   */
+  static AST_Equation_Equality derivate(AST_Equation_Equality eq, const VarSymbolTable& varEnv);
+};
 
-    /**
-     *
-     */
-    class ExpressionDerivator
-    {
-      public:
-        /**
-         *
-         * @param exp
-         * @param varEnv
-         * @param e
-         * @return
-         */
-        static AST_Expression
-        derivate(AST_Expression exp, const VarSymbolTable& varEnv, IR::Expression e);
-        map<string, MicroModelica::IR::Expression>
-        generateJacobianExps(AST_Expression exp, const VarSymbolTable& vt);
-    };
-  }
-}
-#endif  /* DERIVATIVE_H_ */
+/**
+ *
+ */
+class ExpressionDerivator {
+  public:
+  /**
+   *
+   * @param exp
+   * @param varEnv
+   * @param e
+   * @return
+   */
+  static AST_Expression derivate(AST_Expression exp, const VarSymbolTable& varEnv, IR::Expression e);
+  map<string, MicroModelica::IR::Expression> generateJacobianExps(AST_Expression exp, const VarSymbolTable& vt);
+};
+}  // namespace Util
+}  // namespace MicroModelica
+#endif /* DERIVATIVE_H_ */

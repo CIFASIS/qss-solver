@@ -26,51 +26,40 @@
 #include "../util/error.h"
 
 namespace MicroModelica {
-  using namespace Util;
-  namespace IR {
+using namespace Util;
+namespace IR {
 
-    /* MMO_Expression class. */
-    Expression::Expression(AST_Expression exp, const VarSymbolTable& symbols) :
-      _exp(exp),
-      _symbols(symbols)
-    {
-    }
-    
-    Expression::Expression() :
-      _exp(nullptr),
-      _symbols()
-    {
-    }
+/* MMO_Expression class. */
+Expression::Expression(AST_Expression exp, const VarSymbolTable& symbols) : _exp(exp), _symbols(symbols) {}
 
-    string 
-    Expression::print() const 
-    {
-      stringstream buffer, exp;
-      if(!isEmpty())
-      {
-        ExpressionPrinter printer(_symbols);
-        exp << printer.apply(_exp);
-        buffer << printer.code();
-        buffer << exp.str();
-        return buffer.str();
-      }
-      return "";
-    }
+Expression::Expression() : _exp(nullptr), _symbols() {}
 
-    bool 
-    Expression::isReference() const
-    {
-      if(isEmpty()) {
-        return false;
-      }
-      return _exp->expressionType() == EXPCOMPREF; 
-    }
-    
-    std::ostream& operator<<(std::ostream& out, const Expression& s)
-    {
-      out << s.print();
-      return out;
-    }
-    
+string Expression::print() const
+{
+  stringstream buffer, exp;
+  if (!isEmpty()) {
+    ExpressionPrinter printer(_symbols);
+    exp << printer.apply(_exp);
+    buffer << printer.code();
+    buffer << exp.str();
+    return buffer.str();
   }
+  return "";
 }
+
+bool Expression::isReference() const
+{
+  if (isEmpty()) {
+    return false;
+  }
+  return _exp->expressionType() == EXPCOMPREF;
+}
+
+std::ostream& operator<<(std::ostream& out, const Expression& s)
+{
+  out << s.print();
+  return out;
+}
+
+}  // namespace IR
+}  // namespace MicroModelica
