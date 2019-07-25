@@ -26,7 +26,6 @@
  *
  * @param simulate
  */
-void
-QSS_PAR_integrate(SIM_simulator simulate);
+void QSS_PAR_integrate(SIM_simulator simulate);
 
 #endif /* QSS_PAR_INTEGRATOR_H_ */

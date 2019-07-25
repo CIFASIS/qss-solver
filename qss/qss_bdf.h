@@ -29,7 +29,6 @@
  * @param[in]  simData  The simulation data
  * @param      name     The name
  */
-void
-QSS_BDF_partition(QSS_data simData, SD_output output);
+void QSS_BDF_partition(QSS_data simData, SD_output output);
 
-#endif  /* QSS_BDF_H_ */
+#endif /* QSS_BDF_H_ */

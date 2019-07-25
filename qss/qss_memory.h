@@ -30,8 +30,7 @@
  * @param time
  * @param value
  */
-void
-M_write(LG_log log, int i, double time, double value);
+void M_write(LG_log log, int i, double time, double value);
 
 /**
  *
@@ -39,22 +38,19 @@ M_write(LG_log log, int i, double time, double value);
  * @param time
  * @param value
  */
-void
-M_writeLine(LG_log log, int i, double time, double *value);
+void M_writeLine(LG_log log, int i, double time, double *value);
 
 /**
  *
  */
-void
-M_toFile(LG_log log);
+void M_toFile(LG_log log);
 
 /**
  *
  * @param simData
  * @param simOutput
  */
-void
-M_init(LG_log log, QSS_data simData, SD_output simOutput);
+void M_init(LG_log log, QSS_data simData, SD_output simOutput);
 
 /**
  *
@@ -62,8 +58,7 @@ M_init(LG_log log, QSS_data simData, SD_output simOutput);
  * @param time
  * @param value
  */
-void
-M_PAR_write(LG_log log, int i, double time, double value);
+void M_PAR_write(LG_log log, int i, double time, double value);
 
 /**
  *
@@ -71,21 +66,18 @@ M_PAR_write(LG_log log, int i, double time, double value);
  * @param time
  * @param value
  */
-void
-M_PAR_writeLine(LG_log log, int i, double time, double *value);
+void M_PAR_writeLine(LG_log log, int i, double time, double *value);
 
 /**
  *
  */
-void
-M_PAR_toFile(LG_log log);
+void M_PAR_toFile(LG_log log);
 
 /**
  *
  * @param simData
  * @param simOutput
  */
-void
-M_PAR_init(LG_log log, QSS_data simData, SD_output simOutput);
+void M_PAR_init(LG_log log, QSS_data simData, SD_output simOutput);
 
-#endif  /* QSS_MEMORY_H_ */
+#endif /* QSS_MEMORY_H_ */

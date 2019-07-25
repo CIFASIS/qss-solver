@@ -27,17 +27,18 @@
  * @brief      Initialize Jacobian vector used by CV_ODE
  *
  * ** First count the number of SD variables of all the states computed
- * with CV_ODE. 
+ * with CV_ODE.
  * ** Allocate JacIt vector with the corresponding number of entries.
  * ** Finally initialize JacIt vector with the original Jacobian values.
  *
- * The vector allocated here is used by the CV_ODE Jacobian function 
+ * The vector allocated here is used by the CV_ODE Jacobian function
  * provided by our integrator.
  *
  * @param[in]  simData  The simulation data structures.
  */
 
-void QSS_BDF_initJacobianVector(QSS_data simData) {
+void QSS_BDF_initJacobianVector(QSS_data simData)
+{
   int jac = 0, fullJac = 0, i, j;
   int states = simData->states;
   int *BDF = simData->BDF;
@@ -61,21 +62,22 @@ void QSS_BDF_initJacobianVector(QSS_data simData) {
 }
 
 /**
- * @brief Allocate and initialize Jacobian vectors used in the computation of 
+ * @brief Allocate and initialize Jacobian vectors used in the computation of
  *        the maximum error algorithm.
  *
- * ** Count the number of variables computed by LIQSS2 that influences a 
+ * ** Count the number of variables computed by LIQSS2 that influences a
  *    variable computed by CV_ODE. We count ALL the SD variables, even if
  *    some of them are not computed by CV_ODE.
  * ** Allocate QSSOutputJac vector that contains all the affected CV_ODE variables
  *    where we need the Jacobian entry to compute the maximum error allowed. Also,
- *    allocate QSSOutputJacId that contains the vector entry on the original 
- *    Jacobian vector. 
+ *    allocate QSSOutputJacId that contains the vector entry on the original
+ *    Jacobian vector.
  *
  * @param[in]  simData  The simulation data
  */
 
-void QSS_BDF_initQSSJacInputs(QSS_data simData) {
+void QSS_BDF_initQSSJacInputs(QSS_data simData)
+{
   int i, j, k;
   int states = simData->states, globalSD = 0;
   int *BDF = simData->BDF;
@@ -84,11 +86,11 @@ void QSS_BDF_initQSSJacInputs(QSS_data simData) {
       continue;
     }
     int nSD = simData->nSD[i];
-    for(j = 0; j < nSD; j++) {
+    for (j = 0; j < nSD; j++) {
       k = simData->SD[i][j];
-      if (BDF[k] != NOT_ASSIGNED) { 
+      if (BDF[k] != NOT_ASSIGNED) {
         globalSD += nSD;
-        break; 
+        break;
       }
     }
   }
@@ -106,9 +108,9 @@ void QSS_BDF_initQSSJacInputs(QSS_data simData) {
       continue;
     }
     bool update = FALSE;
-    for(j = 0; j < nSD; j++) {
+    for (j = 0; j < nSD; j++) {
       k = simData->SD[i][j];
-      if (BDF[k] != NOT_ASSIGNED) { 
+      if (BDF[k] != NOT_ASSIGNED) {
         simData->QSSOutputJac[localSD + j] = globalSD + j;
         update = TRUE;
       }
@@ -122,7 +124,8 @@ void QSS_BDF_initQSSJacInputs(QSS_data simData) {
   }
 }
 
-void QSS_BDF_initBDFOutputVars(QSS_data simData, SD_output output) {
+void QSS_BDF_initBDFOutputVars(QSS_data simData, SD_output output)
+{
   int nBDF = simData->nBDF, i;
   int *BDFMap = simData->BDFMap;
   for (i = 0; i < nBDF; i++) {
@@ -131,7 +134,7 @@ void QSS_BDF_initBDFOutputVars(QSS_data simData, SD_output output) {
       simData->nBDFOutputVars++;
     }
   }
-  simData->BDFOutputVars = (int*) malloc(simData->nBDFOutputVars * sizeof(int));
+  simData->BDFOutputVars = (int *)malloc(simData->nBDFOutputVars * sizeof(int));
   int BDFOut = 0;
   for (i = 0; i < nBDF; i++) {
     int bdfVar = BDFMap[i];
@@ -141,69 +144,74 @@ void QSS_BDF_initBDFOutputVars(QSS_data simData, SD_output output) {
   }
 }
 
-int QSS_BDF_getOutput(int var, QSS_data simData) {
-    int nSD = simData->nSD[var];
-    int *BDF = simData->BDF;
-    int i, j, out = 0;
-    for (i = 0; i < nSD; i++) {
-      j = simData->SD[var][i];
-      if (BDF[j] == NOT_ASSIGNED) {
-        out++;
-      }
-    }
-    return out;
-}
-
-int QSS_BDF_getInput(int var, QSS_data simData) {
+int QSS_BDF_getOutput(int var, QSS_data simData)
+{
   int nSD = simData->nSD[var];
   int *BDF = simData->BDF;
-  int i,j, in = 0;
-  for(i = 0; i < nSD; i++) {
+  int i, j, out = 0;
+  for (i = 0; i < nSD; i++) {
     j = simData->SD[var][i];
-    if (BDF[j] != NOT_ASSIGNED) { 
-      in++; 
+    if (BDF[j] == NOT_ASSIGNED) {
+      out++;
+    }
+  }
+  return out;
+}
+
+int QSS_BDF_getInput(int var, QSS_data simData)
+{
+  int nSD = simData->nSD[var];
+  int *BDF = simData->BDF;
+  int i, j, in = 0;
+  for (i = 0; i < nSD; i++) {
+    j = simData->SD[var][i];
+    if (BDF[j] != NOT_ASSIGNED) {
+      in++;
     }
   }
   return in;
 }
 
-void QSS_BDF_allocBDFInput(QSS_data simData) {
-  simData->BDFInputs = (int*) malloc(simData->nBDFInputs * sizeof(int));
-  simData->BDFInputsFirstStep = (bool*) malloc(simData->nBDFInputs * sizeof(bool));
+void QSS_BDF_allocBDFInput(QSS_data simData)
+{
+  simData->BDFInputs = (int *)malloc(simData->nBDFInputs * sizeof(int));
+  simData->BDFInputsFirstStep = (bool *)malloc(simData->nBDFInputs * sizeof(bool));
   int nBDF = simData->nBDF;
   int *BDF = simData->BDF;
   int i, j, in = 0;
-  for(i = 0; i < nBDF; i++) {
+  for (i = 0; i < nBDF; i++) {
     int bdf = simData->BDFMap[i];
     int nDS = simData->nDS[bdf];
-    for(j = 0; j < nDS; j++) {
+    for (j = 0; j < nDS; j++) {
       int v = simData->DS[bdf][j];
-      if(BDF[v] == NOT_ASSIGNED) {
+      if (BDF[v] == NOT_ASSIGNED) {
         simData->BDFInputs[in++] = v;
         simData->BDFInputsFirstStep[in++] = TRUE;
       }
     }
-  } 
+  }
 }
 
-void QSS_BDF_allocBDFOutput(QSS_data simData) {
-  simData->BDFOutputs = (int*) malloc(simData->nBDFOutputs * sizeof(int));
+void QSS_BDF_allocBDFOutput(QSS_data simData)
+{
+  simData->BDFOutputs = (int *)malloc(simData->nBDFOutputs * sizeof(int));
   int nBDF = simData->nBDF;
   int *BDF = simData->BDF;
   int i, j, out = 0;
-  for(i = 0; i < nBDF; i++) {
+  for (i = 0; i < nBDF; i++) {
     int bdf = simData->BDFMap[i];
     int nSD = simData->nSD[bdf];
-    for(j = 0; j < nSD; j++) {
+    for (j = 0; j < nSD; j++) {
       int v = simData->SD[bdf][j];
-      if(BDF[v] == NOT_ASSIGNED) {
+      if (BDF[v] == NOT_ASSIGNED) {
         simData->BDFOutputs[out++] = bdf;
       }
     }
-  } 
+  }
 }
 
-void QSS_BDF_computeLIQSSVariables(QSS_data simData, int ifr, int level) {
+void QSS_BDF_computeLIQSSVariables(QSS_data simData, int ifr, int level)
+{
   int i, ifes = simData->nSD[ifr];
   for (i = 0; i < ifes; i++) {
     if (simData->BDF[simData->SD[ifr][i]] != NOT_ASSIGNED) {
@@ -212,14 +220,15 @@ void QSS_BDF_computeLIQSSVariables(QSS_data simData, int ifr, int level) {
 #ifdef DEBUG
       printf("%d ", simData->SD[ifr][i]);
 #endif
-      if(level < simData->BDFPartitionDepth) {
-        QSS_BDF_computeLIQSSVariables(simData, simData->SD[ifr][i], level+1);
+      if (level < simData->BDFPartitionDepth) {
+        QSS_BDF_computeLIQSSVariables(simData, simData->SD[ifr][i], level + 1);
       }
     }
   }
 }
 
-void QSS_BDF_partition(QSS_data simData, SD_output output) {
+void QSS_BDF_partition(QSS_data simData, SD_output output)
+{
   int i, j;
   FILE *file;
   char fileName[256];
@@ -302,10 +311,10 @@ void QSS_BDF_partition(QSS_data simData, SD_output output) {
         for (j = 0; j < simData->nHD[i]; j++) {
           int ife = simData->HD[i][j];
           if (simData->BDF[ife] != NOT_ASSIGNED) {
-              simData->BDF[ife] = NOT_ASSIGNED;
-              simData->nBDF--;
+            simData->BDF[ife] = NOT_ASSIGNED;
+            simData->nBDF--;
 #ifdef DEBUG
-              printf("%d ", ife);
+            printf("%d ", ife);
 #endif
           }
           if (simData->BDFPartitionDepth > 1) {
@@ -345,13 +354,13 @@ void QSS_BDF_partition(QSS_data simData, SD_output output) {
       QSS_BDF_allocBDFOutput(simData);
       QSS_BDF_allocBDFInput(simData);
 #ifdef DEBUG
-  printf("\n");
-  printf("BDF outputs: %d \n", simData->nBDFOutputs);
-  printf("BDF inputs: %d \n", simData->nBDFInputs);
+      printf("\n");
+      printf("BDF outputs: %d \n", simData->nBDFOutputs);
+      printf("BDF inputs: %d \n", simData->nBDFInputs);
 #endif
     }
   }
   QSS_BDF_initJacobianVector(simData);
   QSS_BDF_initQSSJacInputs(simData);
-  QSS_BDF_initBDFOutputVars(simData, output);  
+  QSS_BDF_initBDFOutputVars(simData, output);
 }

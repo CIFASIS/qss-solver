@@ -30,32 +30,18 @@
  * @param simTime
  * @param simOutput
  */
-void
-SAM_write(OUT_output output, QSS_data simData, QSS_time simTime,
-    SD_output simOutput);
+void SAM_write(OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
 /**
  *
  * @param var
  * @return
  */
-int
-SAM_getSteps(OUT_output output, int var);
+int SAM_getSteps(OUT_output output, int var);
 
 /**
  *
  */
-void
-SAM_save(OUT_output output);
-
-/**
- *
- * @param simData
- * @param simTime
- * @param simOutput
- */
-void
-SAM_init(OUT_output output, QSS_data simData, QSS_time simTime,
-    SD_output simOutput);
+void SAM_save(OUT_output output);
 
 /**
  *
@@ -63,22 +49,26 @@ SAM_init(OUT_output output, QSS_data simData, QSS_time simTime,
  * @param simTime
  * @param simOutput
  */
-void
-SAM_PAR_write(OUT_output output, QSS_data simData, QSS_time simTime,
-    SD_output simOutput);
+void SAM_init(OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
+
+/**
+ *
+ * @param simData
+ * @param simTime
+ * @param simOutput
+ */
+void SAM_PAR_write(OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
 /**
  *
  * @param var
  * @return
  */
-int
-SAM_PAR_getSteps(OUT_output output, int var);
+int SAM_PAR_getSteps(OUT_output output, int var);
 
 /**
  *
  */
-void
-SAM_PAR_save(OUT_output output);
+void SAM_PAR_save(OUT_output output);
 
 /**
  *
@@ -86,8 +76,6 @@ SAM_PAR_save(OUT_output output);
  * @param simTime
  * @param simOutput
  */
-void
-SAM_PAR_init(OUT_output output, QSS_data simData, QSS_time simTime,
-    SD_output simOutput);
+void SAM_PAR_init(OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
 
-#endif  /* QSS_SAMPLED_H_ */
+#endif /* QSS_SAMPLED_H_ */

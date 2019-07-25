@@ -35,8 +35,7 @@
 #define DT_LOWER_BOUND 0.5
 #define DT_UPPER_BOUND 2
 
-QSS_dtSynch
-QSS_DtSynch(int lps)
+QSS_dtSynch QSS_DtSynch(int lps)
 {
   QSS_dtSynch p = checkedMalloc(sizeof(*p));
   p->activeLPS = lps;
@@ -50,8 +49,7 @@ QSS_DtSynch(int lps)
   return p;
 }
 
-void
-QSS_freeDtSynch(QSS_dtSynch dtSynch)
+void QSS_freeDtSynch(QSS_dtSynch dtSynch)
 {
 #ifdef __linux__
   pthread_mutex_destroy(&(dtSynch->activeMutex));
@@ -60,15 +58,12 @@ QSS_freeDtSynch(QSS_dtSynch dtSynch)
   free(dtSynch);
 }
 
-static void
-QSS_updateLocalDt(QSS_dt dt)
+static void QSS_updateLocalDt(QSS_dt dt)
 {
   double lclMin = dt->state->dtOpt[0];
   int ub = dt->state->outputs, lclMinIndex = 0, i;
-  for(i = 1; i < ub; i++)
-  {
-    if(dt->state->dtOpt[i] < lclMin)
-    {
+  for (i = 1; i < ub; i++) {
+    if (dt->state->dtOpt[i] < lclMin) {
       lclMin = dt->state->dtOpt[i];
       lclMinIndex = i;
     }
@@ -90,8 +85,7 @@ QSS_updateLocalDt(QSS_dt dt)
  *
  * @param dt \f $ \delta t$ \f data structure.
  */
-void
-QSS_dtUpdate(QSS_dt dt)
+void QSS_dtUpdate(QSS_dt dt)
 {
   int id = dt->state->id;
   double *gblDtMin = dt->state->gblDtMin;
@@ -102,10 +96,8 @@ QSS_dtUpdate(QSS_dt dt)
   double dtMin = gblDtMin[0];
   dt->state->dtGlobalLP = 0;
   int i, lps = dt->state->lps;
-  for(i = 1; i < lps; i++)
-  {
-    if(gblDtMin[i] < dtMin)
-    {
+  for (i = 1; i < lps; i++) {
+    if (gblDtMin[i] < dtMin) {
       dtMin = gblDtMin[i];
       dt->state->dtGlobalLP = i;
     }
@@ -116,16 +108,13 @@ QSS_dtUpdate(QSS_dt dt)
   dt->state->dtLowerBound = dtMin * DT_LOWER_BOUND;
   dt->state->dtUpperBound = dtMin * DT_UPPER_BOUND;
   pthread_barrier_wait(dt->state->b);
-  if(oldDt < INF)
-  {
+  if (oldDt < INF) {
     dt->state->avgDt += oldDt * dt->state->elapsed[0];
     dt->state->dtChanges++;
   }
 #ifdef DEBUG
-  if (dt->state->debug & SD_DBG_Dt && dt->state->id == 0)
-  {
-    SD_print (dt->state->log, "%g %g", dt->state->t[0],
-        dt->state->dt);
+  if (dt->state->debug & SD_DBG_Dt && dt->state->id == 0) {
+    SD_print(dt->state->log, "%g %g", dt->state->t[0], dt->state->dt);
   }
 #endif
 }
@@ -138,17 +127,9 @@ QSS_dtUpdate(QSS_dt dt)
  * @param maxAdvanceTime
  * @param synch
  */
-static inline bool
-DT_FIXED_logOutput(QSS_dt dt, double Dq, double Dx, double Dt, int variable)
-{
-  return FALSE;
-}
+static inline bool DT_FIXED_logOutput(QSS_dt dt, double Dq, double Dx, double Dt, int variable) { return FALSE; }
 
-static inline bool
-DT_FIXED_logStep(QSS_dt dt, double Dq, double Dx, double Dt)
-{
-  return FALSE;
-}
+static inline bool DT_FIXED_logStep(QSS_dt dt, double Dq, double Dx, double Dt) { return FALSE; }
 
 /**
  * @brief
@@ -159,34 +140,25 @@ DT_FIXED_logStep(QSS_dt dt, double Dq, double Dx, double Dt)
  * @param maxAdvanceTime
  * @param synch
  */
-static bool
-DT_ADAPTIVE_logOutput(QSS_dt dt, double Dq, double Dx, double Dt, int variable)
+static bool DT_ADAPTIVE_logOutput(QSS_dt dt, double Dq, double Dx, double Dt, int variable)
 {
-  if(variable >= dt->state->outputs)
-  {
+  if (variable >= dt->state->outputs) {
     return FALSE;
   }
   double dtOpt = INF;
-  if(Dx != 0)
-  {
+  if (Dx != 0) {
     dtOpt = (Dq * Dt * dt->state->alpha) / fabs(Dx);
   }
   dt->state->dtOpt[variable] = dtOpt;
-  if(variable == dt->state->dtMinIndex)
-  {
+  if (variable == dt->state->dtMinIndex) {
     QSS_updateLocalDt(dt);
-  }
-  else if(dtOpt < dt->state->dtMin)
-  {
+  } else if (dtOpt < dt->state->dtMin) {
     dt->state->dtMin = dtOpt;
     dt->state->dtMinIndex = variable;
   }
-  if((dt->state->dtGlobalLP == dt->state->id
-      && dt->state->dtMin > dt->state->dtUpperBound)
-      || dt->state->dtMin < dt->state->dtLowerBound)
-  {
-    dt->state->elapsed[0] = (dt->state->time->time - dt->state->t[0])
-        / dt->state->simTime;
+  if ((dt->state->dtGlobalLP == dt->state->id && dt->state->dtMin > dt->state->dtUpperBound) ||
+      dt->state->dtMin < dt->state->dtLowerBound) {
+    dt->state->elapsed[0] = (dt->state->time->time - dt->state->t[0]) / dt->state->simTime;
     dt->state->t[0] = dt->state->time->time;
     dt->state->synch[0] = 1;
     QSS_dtUpdate(dt);
@@ -195,39 +167,30 @@ DT_ADAPTIVE_logOutput(QSS_dt dt, double Dq, double Dx, double Dt, int variable)
   return FALSE;
 }
 
-static bool
-DT_ADAPTIVE_logStep(QSS_dt dt, double Dq, double Dx, double Dt)
+static bool DT_ADAPTIVE_logStep(QSS_dt dt, double Dq, double Dx, double Dt)
 {
-  if(dt->state->synch[0] == 1)
-  {
+  if (dt->state->synch[0] == 1) {
     QSS_dtUpdate(dt);
     return TRUE;
   }
   return FALSE;
 }
 
-static bool
-DT_ADAPTIVE_DISCRETE_LogStep(QSS_dt dt, double Dq, double Dx, double Dt)
+static bool DT_ADAPTIVE_DISCRETE_LogStep(QSS_dt dt, double Dq, double Dx, double Dt)
 {
-  if(dt->state->time->type == ST_State && dt->state->time->noReinit)
-  {
+  if (dt->state->time->type == ST_State && dt->state->time->noReinit) {
     int index = dt->state->time->minIndex;
-    if(dt->state->qMap[index] > NOT_ASSIGNED && dt->state->dscMap[index] >= 0)
-    {
+    if (dt->state->qMap[index] > NOT_ASSIGNED && dt->state->dscMap[index] >= 0) {
       DT_ADAPTIVE_logOutput(dt, Dq, Dx, Dt, dt->state->dscMap[index]);
     }
-  }
-  else if(dt->state->synch[0] == 1)
-  {
+  } else if (dt->state->synch[0] == 1) {
     QSS_dtUpdate(dt);
     return TRUE;
   }
   return FALSE;
 }
 
-QSS_dt
-QSS_Dt(double *gblDtMin, int id, QSS_dtSynch dtSynch, char *file,
-    SD_Debug debug, QSS_data data, QSS_time time)
+QSS_dt QSS_Dt(double *gblDtMin, int id, QSS_dtSynch dtSynch, char *file, SD_Debug debug, QSS_data data, QSS_time time)
 {
   QSS_dt p = checkedMalloc(sizeof(*p));
   int i, lclOutputs = data->lp->outStates;
@@ -260,18 +223,13 @@ QSS_Dt(double *gblDtMin, int id, QSS_dtSynch dtSynch, char *file,
   p->state->simTime = ft - it;
   p->state->lastChange = p->state->t[0];
   p->state->simSteps = 0;
-  if(p->state->strategy == SD_DT_Fixed)
-  {
+  if (p->state->strategy == SD_DT_Fixed) {
     p->ops->logStep = DT_FIXED_logStep;
     p->ops->logOutput = DT_FIXED_logOutput;
-  }
-  else if(p->state->strategy == SD_DT_Adaptive)
-  {
+  } else if (p->state->strategy == SD_DT_Adaptive) {
     p->ops->logStep = DT_ADAPTIVE_logStep;
     p->ops->logOutput = DT_ADAPTIVE_logOutput;
-  }
-  else if(p->state->strategy == SD_DT_AdaptiveDiscrete)
-  {
+  } else if (p->state->strategy == SD_DT_AdaptiveDiscrete) {
     p->ops->logStep = DT_ADAPTIVE_DISCRETE_LogStep;
     p->ops->logOutput = DT_FIXED_logOutput;
     p->state->dscMap = data->lp->dscMap;
@@ -279,17 +237,14 @@ QSS_Dt(double *gblDtMin, int id, QSS_dtSynch dtSynch, char *file,
     p->state->outputs = data->lp->dscInf;
     lclOutputs = data->lp->dscInf;
   }
-  if(lclOutputs == 0)
-  {
+  if (lclOutputs == 0) {
     lclOutputs++;
   }
   p->state->dtOpt = checkedMalloc(lclOutputs * sizeof(double));
-  for(i = 0; i < lclOutputs; i++)
-  {
+  for (i = 0; i < lclOutputs; i++) {
     p->state->dtOpt[i] = INF;
   }
-  if(id == 0)
-  {
+  if (id == 0) {
     p->state->log = SD_SimulationLog(logFile);
   }
   p->state->debug = debug;
@@ -299,30 +254,23 @@ QSS_Dt(double *gblDtMin, int id, QSS_dtSynch dtSynch, char *file,
   return p;
 }
 
-void
-QSS_freeDt(QSS_dt dt)
+void QSS_freeDt(QSS_dt dt)
 {
   QSS_freeDtOps(dt->ops);
   QSS_freeDtState(dt->state);
   free(dt);
 }
 
-QSS_dtOps
-QSS_DtOps()
+QSS_dtOps QSS_DtOps()
 {
   QSS_dtOps p = checkedMalloc(sizeof(*p));
   p->logStep = NULL;
   return p;
 }
 
-void
-QSS_freeDtOps(QSS_dtOps ops)
-{
-  free(ops);
-}
+void QSS_freeDtOps(QSS_dtOps ops) { free(ops); }
 
-QSS_dtState
-QSS_DtState()
+QSS_dtState QSS_DtState()
 {
   QSS_dtState p = checkedMalloc(sizeof(*p));
   p->alpha = 0;
@@ -352,61 +300,41 @@ QSS_DtState()
   return p;
 }
 
-void
-QSS_freeDtState(QSS_dtState state)
+void QSS_freeDtState(QSS_dtState state)
 {
-  if(state->id == 0)
-  {
+  if (state->id == 0) {
     SD_freeSimulationLog(state->log);
   }
   free(state->dtOpt);
   free(state);
 }
 
-void
-QSS_dtFinish(QSS_dt dt)
+void QSS_dtFinish(QSS_dt dt)
 {
-  if(dt->state->strategy == SD_DT_Fixed)
-  {
+  if (dt->state->strategy == SD_DT_Fixed) {
     return;
   }
   int ub = dt->state->outputs, i;
-  for(i = 0; i < ub; i++)
-  {
+  for (i = 0; i < ub; i++) {
     dt->state->dtOpt[i] = INF;
   }
   dt->state->dtMin = INF;
   dt->state->dtMinIndex = 0;
-  if(dt->state->dtGlobalLP == dt->state->id)
-  {
+  if (dt->state->dtGlobalLP == dt->state->id) {
     dt->state->synch[0] = 1;
     QSS_dtUpdate(dt);
   }
 }
 
-bool
-QSS_dtLogOutput(QSS_dt dt, double Dq, double Dx, double Dt, int variable)
-{
-  return dt->ops->logOutput(dt, Dq, Dx, Dt, variable);
-}
+bool QSS_dtLogOutput(QSS_dt dt, double Dq, double Dx, double Dt, int variable) { return dt->ops->logOutput(dt, Dq, Dx, Dt, variable); }
 
-double
-QSS_dtValue(QSS_dt dt)
-{
-  return dt->state->dt;
-}
+double QSS_dtValue(QSS_dt dt) { return dt->state->dt; }
 
-bool
-QSS_dtLogStep(QSS_dt dt, double Dq, double Dx, double Dt)
-{
-  return dt->ops->logStep(dt, Dq, Dx, Dt);
-}
+bool QSS_dtLogStep(QSS_dt dt, double Dq, double Dx, double Dt) { return dt->ops->logStep(dt, Dq, Dx, Dt); }
 
-void
-QSS_dtCheck(QSS_dt dt)
+void QSS_dtCheck(QSS_dt dt)
 {
-  if(dt->state->synch[0] == 1)
-  {
+  if (dt->state->synch[0] == 1) {
     QSS_dtUpdate(dt);
   }
 }
@@ -417,90 +345,32 @@ QSS_dtCheck(QSS_dt dt)
 
 #include <qss/qss_dt.h>
 
-QSS_dtSynch
-QSS_DtSynch(int lps)
-{
-  return NULL;
-}
+QSS_dtSynch QSS_DtSynch(int lps) { return NULL; }
 
-void
-QSS_freeDtSynch(QSS_dtSynch dtSynch)
-{
-  return;
-}
+void QSS_freeDtSynch(QSS_dtSynch dtSynch) { return; }
 
-QSS_dt
-QSS_Dt (double *gblDtMin, int id,
-    QSS_dtSynch dtSynch, char *file, SD_Debug debug,
-    QSS_data data, QSS_time time)
-{
-  return NULL;
-}
+QSS_dt QSS_Dt(double *gblDtMin, int id, QSS_dtSynch dtSynch, char *file, SD_Debug debug, QSS_data data, QSS_time time) { return NULL; }
 
-void
-QSS_freeDt (QSS_dt dt)
-{
-  return;
-}
+void QSS_freeDt(QSS_dt dt) { return; }
 
-QSS_dtOps
-QSS_DtOps ()
-{
-  return NULL;
-}
+QSS_dtOps QSS_DtOps() { return NULL; }
 
-void
-QSS_freeDtOps (QSS_dtOps ops)
-{
-  return;
-}
+void QSS_freeDtOps(QSS_dtOps ops) { return; }
 
-QSS_dtState
-QSS_DtState ()
-{
-  return NULL;
-}
+QSS_dtState QSS_DtState() { return NULL; }
 
-void
-QSS_freeDtState (QSS_dtState state)
-{
-  return;
-}
+void QSS_freeDtState(QSS_dtState state) { return; }
 
-void
-QSS_dtCheck (QSS_dt dt)
-{
-  return;
-}
+void QSS_dtCheck(QSS_dt dt) { return; }
 
-double
-QSS_dtValue (QSS_dt dt)
-{
-  return 0;
-}
+double QSS_dtValue(QSS_dt dt) { return 0; }
 
-bool
-QSS_dtLogOutput (QSS_dt dt, double Dq, double Dx, double Dt, int variable)
-{
-  return TRUE;
-}
+bool QSS_dtLogOutput(QSS_dt dt, double Dq, double Dx, double Dt, int variable) { return TRUE; }
 
-bool
-QSS_dtLogStep (QSS_dt dt, double Dq, double Dx, double Dt)
-{
-  return TRUE;
-}
+bool QSS_dtLogStep(QSS_dt dt, double Dq, double Dx, double Dt) { return TRUE; }
 
-void
-QSS_dtFinish (QSS_dt dt)
-{
-  return;
-}
+void QSS_dtFinish(QSS_dt dt) { return; }
 
-void
-QSS_dtUpdate (QSS_dt dt)
-{
-  return;
-}
+void QSS_dtUpdate(QSS_dt dt) { return; }
 
 #endif

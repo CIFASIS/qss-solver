@@ -114,8 +114,7 @@ typedef void (*QSS_eq)(int, double *, double *, double *, double, double *);
  * @param
  * @param
  */
-typedef void (*QSS_dep)(int, double *, double *, double *, double, double *,
-                        int *);
+typedef void (*QSS_dep)(int, double *, double *, double *, double, double *, int *);
 
 /**
  *
@@ -209,16 +208,16 @@ struct QSS_LP_dataArray_ {
  *
  */
 struct QSS_LP_data_ {
-  int lpsCount;   //!<
-  int nLPSCount;  //!<
-  int states;     //!<
-  int events;     //!<
-  int inputs;     //!<
-  int outputs;    //!<
-  int outStates;  //!< Number of state variables that communicates with another
-                  //!LPs.
-  int inStates;   //!<
-  int inEvents;   //!<
+  int lpsCount;      //!<
+  int nLPSCount;     //!<
+  int states;        //!<
+  int events;        //!<
+  int inputs;        //!<
+  int outputs;       //!<
+  int outStates;     //!< Number of state variables that communicates with another
+                     //! LPs.
+  int inStates;      //!<
+  int inEvents;      //!<
   int totalStates;   //!<
   int totalEvents;   //!<
   int totalOutputs;  //!<
@@ -242,10 +241,8 @@ struct QSS_LP_data_ {
 /**
  *
  */
-QSS_LP_data QSS_LP_Data(int states, int events, int inputs, int outputs,
-                        int inStates, int inEvents, int totalStates,
-                        int totalEvents, int totalOutputs, int nLPS, int lps,
-                        int id);
+QSS_LP_data QSS_LP_Data(int states, int events, int inputs, int outputs, int inStates, int inEvents, int totalStates, int totalEvents,
+                        int totalOutputs, int nLPS, int lps, int id);
 
 /**
  *
@@ -378,8 +375,7 @@ struct QSS_data_ {
  * @param name
  * @return
  */
-QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs,
-                  string name);
+QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, string name);
 
 /**
  *
@@ -499,8 +495,7 @@ struct QSS_time_ {
  * @param weights
  * @return
  */
-QSS_time QSS_Time(int states, int events, int inputs, double it,
-                  QSS_SchedulerType scheduler, double *weights);
+QSS_time QSS_Time(int states, int events, int inputs, double it, QSS_SchedulerType scheduler, double *weights);
 
 /**
  *
@@ -523,7 +518,7 @@ struct QSS_model_ {
   QSS_dep deps;      //!<
   QSS_event events;  //!<
   QSS_jac jac;       //!<
-  QSS_fmodel F;       //!<
+  QSS_fmodel F;      //!<
 };
 
 /**
@@ -535,8 +530,7 @@ struct QSS_model_ {
  * @param handlerNeg
  * @return
  */
-QSS_model QSS_Model(QSS_eq f, QSS_dep deps, QSS_zc zeroCrossing,
-                    QSS_hnd handlerPos, QSS_hnd handlerNeg, QSS_jac jac, QSS_fmodel);
+QSS_model QSS_Model(QSS_eq f, QSS_dep deps, QSS_zc zeroCrossing, QSS_hnd handlerPos, QSS_hnd handlerNeg, QSS_jac jac, QSS_fmodel);
 
 /**
  *
@@ -554,8 +548,7 @@ void QSS_freeModel(QSS_model model);
  * @param
  * @param SD_simulationSettings
  */
-typedef void (*QSS_setData)(QSS_data, QSS_time, SD_output, QSS_model,
-                            SD_simulationSettings);
+typedef void (*QSS_setData)(QSS_data, QSS_time, SD_output, QSS_model, SD_simulationSettings);
 
 /**
  *

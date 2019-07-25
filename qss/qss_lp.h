@@ -31,21 +31,20 @@ typedef struct LP_partitionInfo_ *LP_partitionInfo;
 /**
  *
  */
-struct LP_partitionInfo_
-{
-    int *stateInput; //!<
-    int *handlerInput; //!<
-    int *output; //!<
-    int *stateReinits; //!<
-    int nLPS; //!<
-    int lps; //!<
-    int states; //!<
-    int handlers; //!<
-    int outputs; //!<
-    int stateInputs; //!<
-    int handlerInputs; //!<
-    int lastHandler; //!<
-    int lastState; //!<
+struct LP_partitionInfo_ {
+  int *stateInput;    //!<
+  int *handlerInput;  //!<
+  int *output;        //!<
+  int *stateReinits;  //!<
+  int nLPS;           //!<
+  int lps;            //!<
+  int states;         //!<
+  int handlers;       //!<
+  int outputs;        //!<
+  int stateInputs;    //!<
+  int handlerInputs;  //!<
+  int lastHandler;    //!<
+  int lastState;      //!<
 };
 
 /**
@@ -55,15 +54,13 @@ struct LP_partitionInfo_
  * @param out
  * @return
  */
-LP_partitionInfo
-LP_PartitionInfo(int states, int events, int out);
+LP_partitionInfo LP_PartitionInfo(int states, int events, int out);
 
 /**
  *
  * @param simulator
  * @param partitions
  */
-void
-LP_initializeDataStructs(QSS_simulator simulator, PRT_partition partitions);
+void LP_initializeDataStructs(QSS_simulator simulator, PRT_partition partitions);
 
 #endif /* QSS_LP_H_ */

@@ -45,50 +45,44 @@ typedef struct OUT_output_ *OUT_output;
  * @param QSS_time
  * @param SD_output
  */
-typedef void
-(*OUT_writeFn)(OUT_output, QSS_data, QSS_time, SD_output);
+typedef void (*OUT_writeFn)(OUT_output, QSS_data, QSS_time, SD_output);
 
 /**
  *
  * @param
  * @return
  */
-typedef int
-(*OUT_getStepsFn)(OUT_output, int);
+typedef int (*OUT_getStepsFn)(OUT_output, int);
 
 /**
  *
  */
-typedef void
-(*OUT_saveFn)(OUT_output);
+typedef void (*OUT_saveFn)(OUT_output);
 
 /**
  *
  */
-struct OUT_outputState_
-{
-    LG_log log; //!<
-    int *steps; //!<
-    double *values; //!<
+struct OUT_outputState_ {
+  LG_log log;      //!<
+  int *steps;      //!<
+  double *values;  //!<
 };
 
 /**
  *
  */
-struct OUT_outputOps_
-{
-    OUT_writeFn write; //!<
-    OUT_getStepsFn getSteps; //!<
-    OUT_saveFn save; //!<
+struct OUT_outputOps_ {
+  OUT_writeFn write;        //!<
+  OUT_getStepsFn getSteps;  //!<
+  OUT_saveFn save;          //!<
 };
 
 /**
  *
  */
-struct OUT_output_
-{
-    OUT_outputState state; //!<
-    OUT_outputOps ops; //!<
+struct OUT_output_ {
+  OUT_outputState state;  //!<
+  OUT_outputOps ops;      //!<
 };
 
 /**
@@ -98,43 +92,37 @@ struct OUT_output_
  * @param simOutput
  * @return
  */
-OUT_output
-OUT_Output(QSS_data simData, QSS_time simTime, SD_output simOutput);
+OUT_output OUT_Output(QSS_data simData, QSS_time simTime, SD_output simOutput);
 
 /**
  *
  * @return
  */
-OUT_outputState
-OUT_OutputState();
+OUT_outputState OUT_OutputState();
 
 /**
  *
  * @return
  */
-OUT_outputOps
-OUT_OutputOps();
+OUT_outputOps OUT_OutputOps();
 
 /**
  *
  * @param o
  */
-void
-OUT_freeOutput(OUT_output o);
+void OUT_freeOutput(OUT_output o);
 
 /**
  *
  * @param o
  */
-void
-OUT_freeOutputState(OUT_outputState o);
+void OUT_freeOutputState(OUT_outputState o);
 
 /**
  *
  * @param o
  */
-void
-OUT_freeOutputOps(OUT_outputOps o);
+void OUT_freeOutputOps(OUT_outputOps o);
 
 /**
  *
@@ -143,9 +131,7 @@ OUT_freeOutputOps(OUT_outputOps o);
  * @param simTime
  * @param simOutput
  */
-void
-OUT_write(OUT_output output, QSS_data simData, QSS_time simTime,
-    SD_output simOutput);
+void OUT_write(OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
 
 /**
  *
@@ -153,14 +139,12 @@ OUT_write(OUT_output output, QSS_data simData, QSS_time simTime,
  * @param var
  * @return
  */
-int
-OUT_getSteps(OUT_output output, int var);
+int OUT_getSteps(OUT_output output, int var);
 
 /**
  *
  * @param output
  */
-void
-OUT_save(OUT_output output);
+void OUT_save(OUT_output output);
 
-#endif  /* QSS_OUTPUT_H_ */
+#endif /* QSS_OUTPUT_H_ */

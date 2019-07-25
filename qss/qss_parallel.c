@@ -19,7 +19,7 @@
 
 #ifdef __linux__
 
-#define _GNU_SOURCE 
+#define _GNU_SOURCE
 #define __USE_GNU
 #include <sys/mman.h>
 #include <sched.h>
@@ -39,53 +39,45 @@ static pthread_barrier_t b;
 
 static int lpArch[MAX_LPS];
 
-void
-PAR_readArchitecture(int lps)
+void PAR_readArchitecture(int lps)
 {
   char fileName[256];
   sprintf(fileName, "%s", "arch.cfg");
   FILE *file;
   int i;
   file = fopen(fileName, "r");
-  if(file != NULL)
-  {
-    char * line = NULL;
+  if (file != NULL) {
+    char *line = NULL;
     size_t len = 0;
     ssize_t read;
     int val;
     i = 0;
-    while((read = getline(&line, &len, file)) != -1)
-    {
+    while ((read = getline(&line, &len, file)) != -1) {
       sscanf(line, "%d", &val);
       lpArch[i++] = val;
     }
     fclose(file);
-    if(line != NULL)
-    {
+    if (line != NULL) {
       free(line);
     }
     return;
   }
-  for(i = 0; i < lps; i++)
-  {
+  for (i = 0; i < lps; i++) {
     lpArch[i] = i;
   }
 }
 
-int
-PAR_initLPTasks(int lp)
+int PAR_initLPTasks(int lp)
 {
   cpu_set_t set;
   int lpNumber = lpArch[lp];
   CPU_ZERO(&set);
   CPU_SET(lpNumber, &set);
   int retCode = PAR_NO_ERROR;
-  if(pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &set))
-  {
+  if (pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &set)) {
     retCode = PAR_ERR_SET_AFFINITY_MASK;
   }
-  if(pthread_getaffinity_np(pthread_self(), sizeof(cpu_set_t), &set) != 0)
-  {
+  if (pthread_getaffinity_np(pthread_self(), sizeof(cpu_set_t), &set) != 0) {
     retCode = PAR_ERR_GET_AFFINITY_MASK;
   }
   struct sched_param p;
@@ -95,8 +87,7 @@ PAR_initLPTasks(int lp)
   return retCode;
 }
 
-int
-PAR_createLPTasks(QSS_sim simulate, QSS_simulator simulator)
+int PAR_createLPTasks(QSS_sim simulate, QSS_simulator simulator)
 {
   int i, lps = simulator->data->params->lps;
   PAR_readArchitecture(lps);
@@ -104,46 +95,27 @@ PAR_createLPTasks(QSS_sim simulate, QSS_simulator simulator)
   pthread_barrier_init(&b, NULL, lps);
   QSS_simulatorInstance si[lps];
   simulator->id = ROOT_SIMULATOR;
-  for(i = 0; i < lps; i++)
-  {
+  for (i = 0; i < lps; i++) {
     si[i].root = simulator;
     si[i].id = i;
-    if(pthread_create(&tasks[i], NULL, simulate, &(si[i])) != 0)
-    {
+    if (pthread_create(&tasks[i], NULL, simulate, &(si[i])) != 0) {
       return PAR_ERR_CREATE_THREAD;
     }
   }
-  for(i = 0; i < lps; i++)
-  {
+  for (i = 0; i < lps; i++) {
     pthread_join(tasks[i], NULL);
   }
   free(tasks);
   return PAR_NO_ERROR;
 }
 
-int
-PAR_cleanLPTask(int lp)
-{
-  return PAR_NO_ERROR;
-}
+int PAR_cleanLPTask(int lp) { return PAR_NO_ERROR; }
 
 #else
 #include <qss/qss_parallel.h>
-int
-PAR_createLPTasks (QSS_sim simulate, QSS_simulator simulator)
-{
-  return 0;
-}
+int PAR_createLPTasks(QSS_sim simulate, QSS_simulator simulator) { return 0; }
 
-int
-PAR_cleanLPTask (int lp)
-{
-  return 0;
-}
+int PAR_cleanLPTask(int lp) { return 0; }
 
-int
-PAR_initLPTasks (int lp)
-{
-  return 0;
-}
+int PAR_initLPTasks(int lp) { return 0; }
 #endif

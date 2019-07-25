@@ -28,29 +28,25 @@
  * @param QSS_data
  * @param QSS_time
  */
-void
-LN_update(SC_scheduler scheduler, QSS_data, QSS_time);
+void LN_update(SC_scheduler scheduler, QSS_data, QSS_time);
 /**
  *
  * @param simData
  * @param simTime
  */
-void
-LN_init(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
+void LN_init(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
 
 /**
  *
  * @param QSS_data
  * @param QSS_time
  */
-void
-LN_PAR_update(SC_scheduler scheduler, QSS_data, QSS_time);
+void LN_PAR_update(SC_scheduler scheduler, QSS_data, QSS_time);
 /**
  *
  * @param simData
  * @param simTime
  */
-void
-LN_PAR_init(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
+void LN_PAR_init(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
 
-#endif  /* QSS_LINEAR_H_ */
+#endif /* QSS_LINEAR_H_ */

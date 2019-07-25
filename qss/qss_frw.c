@@ -32,156 +32,120 @@
  * \f$ \Delta \f$ is proportional to the final simulation time.
  */
 
-void
-FRW_initDelta(FRW_framework f, double ft, double param)
-{
-  f->state->delta = param * ft;
-}
+void FRW_initDelta(FRW_framework f, double ft, double param) { f->state->delta = param * ft; }
 
-FRW_framework
-FRW_Framework(QSS_data simData)
+FRW_framework FRW_Framework(QSS_data simData)
 {
   FRW_framework p = checkedMalloc(sizeof(*p));
   p->state = FRW_FrameworkState();
   p->ops = FRW_FrameworkOps();
-  if(simData->params->symDiff)
-  {
-    if(simData->params->lps > 0)
-    {
+  if (simData->params->symDiff) {
+    if (simData->params->lps > 0) {
       p->ops->recomputeDerivatives = SYM_PAR_recomputeDerivatives;
       p->ops->recomputeDerivative = SYM_PAR_recomputeDerivative;
       p->ops->nextEventTime = SYM_PAR_nextEventTime;
-    }
-    else
-    {
+    } else {
       p->ops->recomputeDerivatives = SYM_recomputeDerivatives;
       p->ops->recomputeDerivative = SYM_recomputeDerivative;
       p->ops->nextEventTime = SYM_nextEventTime;
     }
-    switch(simData->order)
-    {
-      case 1:
-        if(simData->params->lps > 0)
-        {
-          p->ops->recomputeDerivatives = FO_PAR_recomputeDerivatives;
-          p->ops->recomputeDerivative = FO_PAR_recomputeDerivative;
-          p->ops->nextEventTime = FO_PAR_nextEventTime;
-          p->ops->nextInputTime = FO_PAR_nextInputTime;
-        }
-        else
-        {
-          p->ops->recomputeDerivatives = FO_recomputeDerivatives;
-          p->ops->recomputeDerivative = FO_recomputeDerivative;
-          p->ops->nextEventTime = FO_nextEventTime;
-          p->ops->nextInputTime = FO_nextInputTime;
-        }
-        break;
-      case 2:
-        if(simData->params->lps > 0)
-        {
-          p->ops->nextInputTime = SO_PAR_nextInputTime;
-        }
-        else
-        {
-          p->ops->nextInputTime = SO_nextInputTime;
-        }
-        break;
-      case 3:
-        if(simData->params->lps > 0)
-        {
-          p->ops->nextInputTime = TO_PAR_nextInputTime;
-        }
-        else
-        {
-          p->ops->nextInputTime = TO_nextInputTime;
-        }
-        break;
-      case 4:
-        if(simData->params->lps > 0)
-        {
-          p->ops->nextInputTime = TO_PAR_nextInputTime;
-        }
-        else
-        {
-          p->ops->nextInputTime = TO_nextInputTime;
-        }
-        break;
+    switch (simData->order) {
+    case 1:
+      if (simData->params->lps > 0) {
+        p->ops->recomputeDerivatives = FO_PAR_recomputeDerivatives;
+        p->ops->recomputeDerivative = FO_PAR_recomputeDerivative;
+        p->ops->nextEventTime = FO_PAR_nextEventTime;
+        p->ops->nextInputTime = FO_PAR_nextInputTime;
+      } else {
+        p->ops->recomputeDerivatives = FO_recomputeDerivatives;
+        p->ops->recomputeDerivative = FO_recomputeDerivative;
+        p->ops->nextEventTime = FO_nextEventTime;
+        p->ops->nextInputTime = FO_nextInputTime;
+      }
+      break;
+    case 2:
+      if (simData->params->lps > 0) {
+        p->ops->nextInputTime = SO_PAR_nextInputTime;
+      } else {
+        p->ops->nextInputTime = SO_nextInputTime;
+      }
+      break;
+    case 3:
+      if (simData->params->lps > 0) {
+        p->ops->nextInputTime = TO_PAR_nextInputTime;
+      } else {
+        p->ops->nextInputTime = TO_nextInputTime;
+      }
+      break;
+    case 4:
+      if (simData->params->lps > 0) {
+        p->ops->nextInputTime = TO_PAR_nextInputTime;
+      } else {
+        p->ops->nextInputTime = TO_nextInputTime;
+      }
+      break;
     }
-  }
-  else
-  {
-    switch(simData->order)
-    {
-      case 1:
-        if(simData->params->lps > 0)
-        {
-          p->ops->recomputeDerivatives = FO_PAR_recomputeDerivatives;
-          p->ops->recomputeDerivative = FO_PAR_recomputeDerivative;
-          p->ops->nextEventTime = FO_PAR_nextEventTime;
-          p->ops->nextInputTime = FO_PAR_nextInputTime;
-        }
-        else
-        {
-          p->ops->recomputeDerivatives = FO_recomputeDerivatives;
-          p->ops->recomputeDerivative = FO_recomputeDerivative;
-          p->ops->nextEventTime = FO_nextEventTime;
-          p->ops->nextInputTime = FO_nextInputTime;
-        }
+  } else {
+    switch (simData->order) {
+    case 1:
+      if (simData->params->lps > 0) {
+        p->ops->recomputeDerivatives = FO_PAR_recomputeDerivatives;
+        p->ops->recomputeDerivative = FO_PAR_recomputeDerivative;
+        p->ops->nextEventTime = FO_PAR_nextEventTime;
+        p->ops->nextInputTime = FO_PAR_nextInputTime;
+      } else {
+        p->ops->recomputeDerivatives = FO_recomputeDerivatives;
+        p->ops->recomputeDerivative = FO_recomputeDerivative;
+        p->ops->nextEventTime = FO_nextEventTime;
+        p->ops->nextInputTime = FO_nextInputTime;
+      }
 
-        break;
-      case 2:
-        if(simData->params->lps > 0)
-        {
-          p->ops->recomputeDerivatives = SO_PAR_recomputeDerivatives;
-          p->ops->recomputeDerivative = SO_PAR_recomputeDerivative;
-          p->ops->nextEventTime = SO_PAR_nextEventTime;
-          p->ops->nextInputTime = SO_PAR_nextInputTime;
-        }
-        else
-        {
-          p->ops->recomputeDerivatives = SO_recomputeDerivatives;
-          p->ops->recomputeDerivative = SO_recomputeDerivative;
-          p->ops->nextEventTime = SO_nextEventTime;
-          p->ops->nextInputTime = SO_nextInputTime;
-        }
-        break;
-      case 3:
-        if(simData->params->lps > 0)
-        {
-          p->ops->recomputeDerivatives = TO_PAR_recomputeDerivatives;
-          p->ops->recomputeDerivative = TO_PAR_recomputeDerivative;
-          p->ops->nextEventTime = TO_PAR_nextEventTime;
-          p->ops->nextInputTime = TO_PAR_nextInputTime;
-        }
-        else
-        {
-          p->ops->recomputeDerivatives = TO_recomputeDerivatives;
-          p->ops->recomputeDerivative = TO_recomputeDerivative;
-          p->ops->nextEventTime = TO_nextEventTime;
-          p->ops->nextInputTime = TO_nextInputTime;
-        }
-        break;
-      case 4:
-        printf("TODO!!\n");
-        break;
-      default:
-        return NULL;
+      break;
+    case 2:
+      if (simData->params->lps > 0) {
+        p->ops->recomputeDerivatives = SO_PAR_recomputeDerivatives;
+        p->ops->recomputeDerivative = SO_PAR_recomputeDerivative;
+        p->ops->nextEventTime = SO_PAR_nextEventTime;
+        p->ops->nextInputTime = SO_PAR_nextInputTime;
+      } else {
+        p->ops->recomputeDerivatives = SO_recomputeDerivatives;
+        p->ops->recomputeDerivative = SO_recomputeDerivative;
+        p->ops->nextEventTime = SO_nextEventTime;
+        p->ops->nextInputTime = SO_nextInputTime;
+      }
+      break;
+    case 3:
+      if (simData->params->lps > 0) {
+        p->ops->recomputeDerivatives = TO_PAR_recomputeDerivatives;
+        p->ops->recomputeDerivative = TO_PAR_recomputeDerivative;
+        p->ops->nextEventTime = TO_PAR_nextEventTime;
+        p->ops->nextInputTime = TO_PAR_nextInputTime;
+      } else {
+        p->ops->recomputeDerivatives = TO_recomputeDerivatives;
+        p->ops->recomputeDerivative = TO_recomputeDerivative;
+        p->ops->nextEventTime = TO_nextEventTime;
+        p->ops->nextInputTime = TO_nextInputTime;
+      }
+      break;
+    case 4:
+      printf("TODO!!\n");
+      break;
+    default:
+      return NULL;
     }
   }
   FRW_initDelta(p, simData->ft, simData->params->derDelta);
   return p;
 }
 
-void
-FRW_freeFramework(FRW_framework f)
+void FRW_freeFramework(FRW_framework f)
 {
   FRW_freeFrameworkState(f->state);
   FRW_freeFrameworkOps(f->ops);
   free(f);
 }
 
-FRW_frameworkState
-FRW_FrameworkState()
+FRW_frameworkState FRW_FrameworkState()
 {
   FRW_frameworkState p = checkedMalloc(sizeof(*p));
   p->delta = 0;
@@ -189,14 +153,9 @@ FRW_FrameworkState()
   return p;
 }
 
-void
-FRW_freeFrameworkState(FRW_frameworkState f)
-{
-  free(f);
-}
+void FRW_freeFrameworkState(FRW_frameworkState f) { free(f); }
 
-FRW_frameworkOps
-FRW_FrameworkOps()
+FRW_frameworkOps FRW_FrameworkOps()
 {
   FRW_frameworkOps p = checkedMalloc(sizeof(*p));
   p->nextEventTime = NULL;
@@ -206,37 +165,24 @@ FRW_FrameworkOps()
   return p;
 }
 
-void
-FRW_freeFrameworkOps(FRW_frameworkOps o)
-{
-  free(o);
-}
+void FRW_freeFrameworkOps(FRW_frameworkOps o) { free(o); }
 
-void
-FRW_recomputeDerivative(FRW_framework f, QSS_model simModel, QSS_data simData,
-    QSS_time simTime, int index)
+void FRW_recomputeDerivative(FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index)
 {
   f->ops->recomputeDerivative(f, simModel, simData, simTime, index);
 }
 
-void
-FRW_recomputeDerivatives(FRW_framework f, QSS_model simModel, QSS_data simData,
-    QSS_time simTime, int index)
+void FRW_recomputeDerivatives(FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index)
 {
   f->ops->recomputeDerivatives(f, simModel, simData, simTime, index);
 }
 
-void
-FRW_nextEventTime(FRW_framework f, QSS_model simModel, QSS_data simData,
-    QSS_time simTime, int index)
+void FRW_nextEventTime(FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, int index)
 {
   f->ops->nextEventTime(f, simModel, simData, simTime, index);
 }
 
-void
-FRW_nextInputTime(FRW_framework f, QSS_model simModel, QSS_data simData,
-    QSS_time simTime, double elapsed, int var, int index)
+void FRW_nextInputTime(FRW_framework f, QSS_model simModel, QSS_data simData, QSS_time simTime, double elapsed, int var, int index)
 {
   f->ops->nextInputTime(f, simModel, simData, simTime, elapsed, var, index);
 }
-

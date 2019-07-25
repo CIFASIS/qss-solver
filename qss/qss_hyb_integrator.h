@@ -26,14 +26,12 @@
  *
  * @param simulate
  */
-void
-QSS_HYB_initialize(SIM_simulator simulate);
+void QSS_HYB_initialize(SIM_simulator simulate);
 
 /**
  *
  * @param simulator
  */
-void
-QSS_HYB_integrate(SIM_simulator simulator);
+void QSS_HYB_integrate(SIM_simulator simulator);
 
 #endif /* QSS_HYB_INTEGRATOR_H_ */

@@ -26,17 +26,14 @@
 #include "qss_quantizer.h"
 
 #ifdef QSS_PARALLEL
-void
-QSS4_PAR_init (QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
+void QSS4_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 #else
-void
-QSS4_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
+void QSS4_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 #endif
 {
   int i;
   int states = simData->states;
-  for(i = 0; i < states; i++)
-  {
+  for (i = 0; i < states; i++) {
     int cf0 = i * 5;
     simData->x[cf0 + 2] = 0;
     simData->x[cf0 + 3] = 0;
@@ -61,44 +58,30 @@ QSS4_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 }
 
 #ifdef QSS_PARALLEL
-void
-QSS4_PAR_nextTime (QA_quantizer quantizer, int var, double t, double *nTime,
-    double *x, double *lqu)
+void QSS4_PAR_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)
 #else
-void
-QSS4_nextTime(QA_quantizer quantizer, int var, double t, double *nTime,
-    double *x, double *lqu)
+void QSS4_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)
 #endif
 {
   int cf4 = var * 5 + 4;
-  if(x[cf4])
-  {
+  if (x[cf4]) {
     nTime[var] = t + pow(lqu[var] / fabs(x[cf4]), 1.0 / 4);
-  }
-  else
-  {
+  } else {
     nTime[var] = INF;
   }
 }
 
 #ifdef QSS_PARALLEL
-void
-QSS4_PAR_recomputeNextTime (QA_quantizer quantizer, int var, double t,
-    double *nTime, double *x, double *lqu, double *q)
+void QSS4_PAR_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
 #else
-void
-QSS4_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime,
-    double *x, double *lqu, double *q)
+void QSS4_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
 #endif
 {
   int cf0 = var * 5, cf1 = cf0 + 1, cf2 = cf1 + 1, cf3 = cf2 + 1, cf4 = cf3 + 1;
   double coeff[5];
-  if(fabs(q[cf0] - x[cf0]) >= lqu[var] * 0.999999999)
-  {
+  if (fabs(q[cf0] - x[cf0]) >= lqu[var] * 0.999999999) {
     nTime[var] = t;
-  }
-  else
-  {
+  } else {
     coeff[0] = q[cf0] + lqu[var] - x[cf0];
     coeff[1] = q[cf1] - x[cf1];
     coeff[2] = q[cf2] - x[cf2];
@@ -107,48 +90,37 @@ QSS4_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime,
     nTime[var] = t + minPosRoot(coeff, 4);
     coeff[0] = q[cf0] - lqu[var] - x[cf0];
     double timeaux = t + minPosRoot(coeff, 4);
-    if(timeaux < nTime[var])
-    {
+    if (timeaux < nTime[var]) {
       nTime[var] = timeaux;
     }
   }
 }
 
 #ifdef QSS_PARALLEL
-void
-QSS4_PAR_recomputeNextTimes (QA_quantizer quantizer, int vars, int *inf, double t,
-    double *nTime, double *x, double *lqu, double *q)
+void QSS4_PAR_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
 #else
-void
-QSS4_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t,
-    double *nTime, double *x, double *lqu, double *q)
+void QSS4_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
 #endif
 {
   int i;
 #ifdef QSS_PARALLEL
   int *map = quantizer->state->qMap;
 #endif
-  for(i = 0; i < vars; i++)
-  {
+  for (i = 0; i < vars; i++) {
 #ifdef QSS_PARALLEL
-    if (map[inf[i]] > NOT_ASSIGNED)
-    {
+    if (map[inf[i]] > NOT_ASSIGNED) {
 #endif
-    QSS4_recomputeNextTime(quantizer, inf[i], t, nTime, x, lqu, q);
+      QSS4_recomputeNextTime(quantizer, inf[i], t, nTime, x, lqu, q);
 #ifdef QSS_PARALLEL
-  }
+    }
 #endif
   }
 }
 
 #ifdef QSS_PARALLEL
-void
-QSS4_PAR_updateQuantizedState (QA_quantizer quantizer, int i, double *q, double *x,
-    double *lqu)
+void QSS4_PAR_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu)
 #else
-void
-QSS4_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x,
-    double *lqu)
+void QSS4_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu)
 #endif
 {
   int cf0 = i * 5, cf1 = cf0 + 1, cf2 = cf1 + 1, cf3 = cf2 + 1;

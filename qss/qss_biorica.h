@@ -26,7 +26,6 @@
  * @param value
  * @return
  */
-double
-root(int sq, double value);
+double root(int sq, double value);
 
-#endif  /* QSS_BIORICA_H_ */
+#endif /* QSS_BIORICA_H_ */

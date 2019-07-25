@@ -30,19 +30,18 @@ typedef struct PRT_partition_ *PRT_partition;
 /**
  *
  */
-struct PRT_partition_
-{
-    long int *values; //!<
-    int *nOutputs; //!<
-    int *nDsc;
-    int **dscInf;
-    int **asgDscInf;
-    int **outputs; //!<
-    int beginStates; //!<
-    int endStates; //!<
-    int beginHandlers; //!<
-    int endHandlers; //!<
-    int lps;
+struct PRT_partition_ {
+  long int *values;  //!<
+  int *nOutputs;     //!<
+  int *nDsc;
+  int **dscInf;
+  int **asgDscInf;
+  int **outputs;      //!<
+  int beginStates;    //!<
+  int endStates;      //!<
+  int beginHandlers;  //!<
+  int endHandlers;    //!<
+  int lps;
 };
 
 /**
@@ -50,14 +49,12 @@ struct PRT_partition_
  * @param data
  * @return
  */
-PRT_partition
-PRT_Partition(QSS_data data, char *name);
+PRT_partition PRT_Partition(QSS_data data, char *name);
 
 /**
  *
  * @param partition
  */
-void
-PRT_freePartition(PRT_partition partition);
+void PRT_freePartition(PRT_partition partition);
 
 #endif /* QSS_PARTITION_H_ */

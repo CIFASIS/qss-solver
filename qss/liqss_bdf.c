@@ -24,8 +24,7 @@
 #include <stdlib.h>
 
 #ifdef QSS_PARALLEL
-void LIQSS_BDF_PAR_init(QA_quantizer quantizer, QSS_data simData,
-                        QSS_time simTime)
+void LIQSS_BDF_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 #else
 void LIQSS_BDF_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 #endif
@@ -75,24 +74,18 @@ void LIQSS_BDF_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 }
 
 #ifdef QSS_PARALLEL
-void LIQSS_BDF_PAR_recomputeNextTime(QA_quantizer quantizer, int var, double t,
-                                     double *nTime, double *x, double *lqu,
-                                     double *q)
+void LIQSS_BDF_PAR_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
 #else
-void LIQSS_BDF_recomputeNextTime(QA_quantizer quantizer, int var, double t,
-                                 double *nTime, double *x, double *lqu,
-                                 double *q)
+void LIQSS_BDF_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
 #endif
 {
-
   int *BDF = quantizer->state->BDF;
   if (BDF[var] == NOT_ASSIGNED) {
     int cf0 = var * 3, cf1 = cf0 + 1, cf2 = cf1 + 1;
     double *a = quantizer->state->a;
     double *u0 = quantizer->state->u0;
     double *u1 = quantizer->state->u1;
-    bool self = quantizer->state->lSimTime->minIndex == var &&
-                quantizer->state->lSimTime->type == ST_State;
+    bool self = quantizer->state->lSimTime->minIndex == var && quantizer->state->lSimTime->type == ST_State;
     double diffQ, timeaux;
     double coeff[3];
     double *tu = quantizer->state->tx;
@@ -115,13 +108,11 @@ void LIQSS_BDF_recomputeNextTime(QA_quantizer quantizer, int var, double t,
     coeff[2] = -x[cf2];
     if (flag2[var] != 1) {
       if ((quantizer->state->lSimTime->type == ST_Event) && (a[var] < 0) &&
-          (quantizer->state->nSZ[var] >
-           0)) {  // we check if var is involved in the zero crossing function
-                  // that produced the current event
+          (quantizer->state->nSZ[var] > 0)) {  // we check if var is involved in the zero crossing function
+                                               // that produced the current event
         int i;
         for (i = 0; i < quantizer->state->nSZ[var]; i++) {
-          if (quantizer->state->SZ[var][i] ==
-              quantizer->state->lSimTime->minIndex) {
+          if (quantizer->state->SZ[var][i] == quantizer->state->lSimTime->minIndex) {
             nTime[var] = t;
             flag2[var] = 1;  // it does, so we restart the quantized state
                              // q[var]
@@ -150,11 +141,8 @@ void LIQSS_BDF_recomputeNextTime(QA_quantizer quantizer, int var, double t,
           if (nTime[var] > t + timeaux) nTime[var] = t + timeaux;
         }
         if (flag2[var] == 2 && self) flag2[var] = 0;
-        double err1 = q[cf0] - x[cf0] + coeff[1] * (nTime[var] - t) / 2 +
-                      coeff[2] * pow((nTime[var] - t) / 2, 2);
-        if (fabs(err1) > 3 * fabs(lqu[var]))
-          nTime[var] =
-              t + quantizer->state->finTime * quantizer->state->minStep;
+        double err1 = q[cf0] - x[cf0] + coeff[1] * (nTime[var] - t) / 2 + coeff[2] * pow((nTime[var] - t) / 2, 2);
+        if (fabs(err1) > 3 * fabs(lqu[var])) nTime[var] = t + quantizer->state->finTime * quantizer->state->minStep;
       }
     } else {
       if (self) {
@@ -166,13 +154,10 @@ void LIQSS_BDF_recomputeNextTime(QA_quantizer quantizer, int var, double t,
 }
 
 #ifdef QSS_PARALLEL
-void LIQSS_BDF_PAR_recomputeNextTimes(QA_quantizer quantizer, int vars,
-                                      int *inf, double t, double *nTime,
-                                      double *x, double *lqu, double *q)
+void LIQSS_BDF_PAR_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu,
+                                      double *q)
 #else
-void LIQSS_BDF_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf,
-                                  double t, double *nTime, double *x,
-                                  double *lqu, double *q)
+void LIQSS_BDF_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
 #endif
 {
   int i;
@@ -191,32 +176,26 @@ void LIQSS_BDF_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf,
 }
 
 #ifdef QSS_PARALLEL
-void LIQSS_BDF_PAR_nextTime(QA_quantizer quantizer, int var, double t,
-                            double *nTime, double *x, double *lqu)
+void LIQSS_BDF_PAR_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)
 #else
-void LIQSS_BDF_nextTime(QA_quantizer quantizer, int var, double t,
-                        double *nTime, double *x, double *lqu)
+void LIQSS_BDF_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)
 #endif
 {
   int *BDF = quantizer->state->BDF;
   if (BDF[var] == NOT_ASSIGNED) {
-
     int cf2 = var * 3 + 2;
     if (x[cf2] == 0) {
       nTime[var] = INF;
     } else {
       nTime[var] = t + sqrt(fabs(lqu[var] / x[cf2]));
     }
-
   }
 }
 
 #ifdef QSS_PARALLEL
-void LIQSS_BDF_PAR_updateQuantizedState(QA_quantizer quantizer, int var,
-                                        double *q, double *x, double *lqu)
+void LIQSS_BDF_PAR_updateQuantizedState(QA_quantizer quantizer, int var, double *q, double *x, double *lqu)
 #else
-void LIQSS_BDF_updateQuantizedState(QA_quantizer quantizer, int var, double *q,
-                                    double *x, double *lqu)
+void LIQSS_BDF_updateQuantizedState(QA_quantizer quantizer, int var, double *q, double *x, double *lqu)
 #endif
 {
   double t = quantizer->state->lSimTime->time;
@@ -245,22 +224,17 @@ void LIQSS_BDF_updateQuantizedState(QA_quantizer quantizer, int var, double *q,
     }
 
     h = (quantizer->state->finTime - t);
-    q[cf0] = ((x[cf0] + h * u0[var] + h * h / 2 * u1[var]) * (1 - h * a[var]) +
-              (h * h / 2 * a[var] - h) * (u0[var] + h * u1[var])) /
+    q[cf0] = ((x[cf0] + h * u0[var] + h * h / 2 * u1[var]) * (1 - h * a[var]) + (h * h / 2 * a[var] - h) * (u0[var] + h * u1[var])) /
              (1 - h * a[var] + h * h * a[var] * a[var] / 2);
     if (fabs(q[cf0] - x[cf0]) > 2 * lqu[var]) {
       h = sqrt(fabs(2 * lqu[var] / ddx));
-      q[cf0] =
-          ((x[cf0] + h * u0[var] + h * h / 2 * u1[var]) * (1 - h * a[var]) +
-           (h * h / 2 * a[var] - h) * (u0[var] + h * u1[var])) /
-          (1 - h * a[var] + h * h * a[var] * a[var] / 2);
+      q[cf0] = ((x[cf0] + h * u0[var] + h * h / 2 * u1[var]) * (1 - h * a[var]) + (h * h / 2 * a[var] - h) * (u0[var] + h * u1[var])) /
+               (1 - h * a[var] + h * h * a[var] * a[var] / 2);
     }
     while (fabs(q[cf0] - x[cf0]) > 2 * lqu[var]) {
       h = h * sqrt(lqu[var] / fabs(q[cf0] - x[cf0]));
-      q[cf0] =
-          ((x[cf0] + h * u0[var] + h * h / 2 * u1[var]) * (1 - h * a[var]) +
-           (h * h / 2 * a[var] - h) * (u0[var] + h * u1[var])) /
-          (1 - h * a[var] + h * h * a[var] * a[var] / 2);
+      q[cf0] = ((x[cf0] + h * u0[var] + h * h / 2 * u1[var]) * (1 - h * a[var]) + (h * h / 2 * a[var] - h) * (u0[var] + h * u1[var])) /
+               (1 - h * a[var] + h * h * a[var] * a[var] / 2);
     }
     q[cf1] = (a[var] * q[cf0] + u0[var] + h * u1[var]) / (1 - h * a[var]);
 

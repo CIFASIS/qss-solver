@@ -23,19 +23,16 @@
 #include "qss_data.h"
 #include "qss_scheduler.h"
 
-void
-BTR_update(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
+void BTR_update(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
 /**
  *
  */
-void
-BTR_free(void);
+void BTR_free(void);
 /**
  *
  * @param simData
  * @param simTime
  */
-void
-BTR_init(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
+void BTR_init(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
 
-#endif  /* QSS_BINARY_RANDOM_H_ */
+#endif /* QSS_BINARY_RANDOM_H_ */

@@ -21,7 +21,7 @@
 
 #include "../common/integrator.h"
 
-#ifdef  __linux__
+#ifdef __linux__
 #define _GNU_SOURCE
 #define __USE_GNU
 #include <fenv.h>
@@ -29,8 +29,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void
-fpe_handler(int dummy)
+void fpe_handler(int dummy)
 {
   printf("Floating point exception\n");
   abort();
@@ -46,8 +45,7 @@ fpe_handler(int dummy)
 #include <qss/qss_simulator.h>
 #include <qss/qss_model.h>
 
-QSS_simulator
-QSS_Simulator()
+QSS_simulator QSS_Simulator()
 {
   QSS_simulator p = checkedMalloc(sizeof(*p));
   p->quantizer = NULL;
@@ -74,18 +72,13 @@ QSS_Simulator()
   return p;
 }
 
-void
-QSS_freeSimulator(QSS_simulator simulator)
+void QSS_freeSimulator(QSS_simulator simulator)
 {
   SD_freeSimulationLog(simulator->simulationLog);
-  QSS_freeTime(simulator->time, simulator->data->events,
-      simulator->data->inputs);
-  if(simulator->settings->parallel)
-  {
-    if(simulator->id == ROOT_SIMULATOR)
-    {
-      SD_freeOutput(simulator->output, simulator->data->states,
-          simulator->data->discretes);
+  QSS_freeTime(simulator->time, simulator->data->events, simulator->data->inputs);
+  if (simulator->settings->parallel) {
+    if (simulator->id == ROOT_SIMULATOR) {
+      SD_freeOutput(simulator->output, simulator->data->states, simulator->data->discretes);
       QSS_freeModel(simulator->model);
       SD_freeSimulationSettings(simulator->settings);
       free(simulator->lpTime);
@@ -94,9 +87,7 @@ QSS_freeSimulator(QSS_simulator simulator)
       MLB_freeMailbox(simulator->mailbox);
       QSS_freeDtSynch(simulator->dtSynch);
       QSS_freeData(simulator->data);
-    }
-    else
-    {
+    } else {
       QA_freeQuantizer(simulator->quantizer);
       OUT_freeOutput(simulator->log);
       SC_freeScheduler(simulator->scheduler);
@@ -106,15 +97,12 @@ QSS_freeSimulator(QSS_simulator simulator)
       QSS_freeSimSteps(simulator->simSteps);
     }
     SD_freeStatistics(simulator->stats);
-  }
-  else
-  {
+  } else {
     QA_freeQuantizer(simulator->quantizer);
     OUT_freeOutput(simulator->log);
     SC_freeScheduler(simulator->scheduler);
     FRW_freeFramework(simulator->frw);
-    SD_freeOutput(simulator->output, simulator->data->states,
-        simulator->data->discretes);
+    SD_freeOutput(simulator->output, simulator->data->states, simulator->data->discretes);
     QSS_freeData(simulator->data);
     QSS_freeModel(simulator->model);
     SD_freeSimulationSettings(simulator->settings);
@@ -123,19 +111,17 @@ QSS_freeSimulator(QSS_simulator simulator)
   free(simulator);
 }
 
-void
-QSS_simulatorEnd(SIM_simulator simulate)
+void QSS_simulatorEnd(SIM_simulator simulate)
 {
-  QSS_simulator simulator = (QSS_simulator) simulate->state->sim;
+  QSS_simulator simulator = (QSS_simulator)simulate->state->sim;
   QSS_freeSimulator(simulator);
   freeRandom();
 }
 
-void
-QSS_simulate(SIM_simulator simulate)
+void QSS_simulate(SIM_simulator simulate)
 {
   Random();
-  QSS_simulator simulator = (QSS_simulator) simulate->state->sim;
+  QSS_simulator simulator = (QSS_simulator)simulate->state->sim;
   INT_integrator integrator = INT_Integrator(simulate);
   /*#ifdef __linux__
    signal (SIGFPE, fpe_handler);
@@ -143,7 +129,7 @@ QSS_simulate(SIM_simulator simulate)
    #endif*/
   getTime(simulator->stats->iTime);
   QSS_initializeDataStructs(simulator);
-  //QSS_orderDataMatrix(simulator->data);
+  // QSS_orderDataMatrix(simulator->data);
   getTime(simulator->stats->sdTime);
   subTime(simulator->stats->sdTime, simulator->stats->iTime);
   simulator->stats->initTime = getTimeValue(simulator->stats->sdTime);
@@ -154,14 +140,11 @@ QSS_simulate(SIM_simulator simulate)
   QSS_CMD_free();
 }
 
-void
-QSS_initSimulator(SIM_simulator simulator)
+void QSS_initSimulator(SIM_simulator simulator)
 {
-  simulator->state->sim = (void*) QSS_Simulator();
-  ((QSS_simulator) simulator->state->sim)->settings =
-      simulator->state->settings;
-  ((QSS_simulator) simulator->state->sim)->stats = SD_Statistics();
+  simulator->state->sim = (void*)QSS_Simulator();
+  ((QSS_simulator)simulator->state->sim)->settings = simulator->state->settings;
+  ((QSS_simulator)simulator->state->sim)->stats = SD_Statistics();
   simulator->ops->simulate = QSS_simulate;
   simulator->ops->freeSimulator = QSS_simulatorEnd;
 }
-

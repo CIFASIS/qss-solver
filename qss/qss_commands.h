@@ -25,23 +25,19 @@
 /**
  *
  */
-void
-QSS_CMD_terminate();
+void QSS_CMD_terminate();
 
 /**
  *
  * @param simulator
  */
-void
-QSS_CMD_init(QSS_simulator simulator);
+void QSS_CMD_init(QSS_simulator simulator);
 
-void
-QSS_CMD_free();
+void QSS_CMD_free();
 
 /**
  *
  */
-void
-QSS_CMD_alloc(QSS_simulator simulator);
+void QSS_CMD_alloc(QSS_simulator simulator);
 
 #endif /* QSS_COMMANDS_H_ */

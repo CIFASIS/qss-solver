@@ -43,85 +43,76 @@ typedef struct SC_scheduler_ *SC_scheduler;
  * @param QSS_data
  * @param QSS_time
  */
-typedef void
-(*SC_updateFn)(SC_scheduler, QSS_data, QSS_time);
+typedef void (*SC_updateFn)(SC_scheduler, QSS_data, QSS_time);
 
 /**
  *
  * @param QSS_data
  * @param QSS_time
  */
-typedef void
-(*BT_upd)(SC_scheduler, QSS_data, QSS_time);
+typedef void (*BT_upd)(SC_scheduler, QSS_data, QSS_time);
 
 /**
  *
  */
-struct SC_schedulerState_
-{
-    BT_upd update; //!<
-    BT_tree states; //!<
-    BT_tree events; //!<
-    BT_tree inputs; //!<
-    BT_info info; //!<
-    BTR_tree BTR_states; //!<
-    BTR_tree BTR_events; //!<
-    BTR_tree BTR_inputs; //!<
-    BT_info visit; //!<
-    double minInputValue; //!<
-    double minEventValue; //!<
-    double tUnit; //!<
-    double tOut; //!<
-    int minInputIndex; //!<
-    int minEventIndex; //!<
-    QSS_StepType stepType; //!<
-    QSS_LP_data lp; //!<
+struct SC_schedulerState_ {
+  BT_upd update;          //!<
+  BT_tree states;         //!<
+  BT_tree events;         //!<
+  BT_tree inputs;         //!<
+  BT_info info;           //!<
+  BTR_tree BTR_states;    //!<
+  BTR_tree BTR_events;    //!<
+  BTR_tree BTR_inputs;    //!<
+  BT_info visit;          //!<
+  double minInputValue;   //!<
+  double minEventValue;   //!<
+  double tUnit;           //!<
+  double tOut;            //!<
+  int minInputIndex;      //!<
+  int minEventIndex;      //!<
+  QSS_StepType stepType;  //!<
+  QSS_LP_data lp;         //!<
 };
 
 /**
  *
  */
-struct SC_schedulerOps_
-{
-    SC_updateFn update; //!<
+struct SC_schedulerOps_ {
+  SC_updateFn update;  //!<
 };
 
 /**
  *
  */
-struct SC_scheduler_
-{
-    SC_schedulerState state; //!<
-    SC_schedulerOps ops; //!<
+struct SC_scheduler_ {
+  SC_schedulerState state;  //!<
+  SC_schedulerOps ops;      //!<
 };
 
 /**
  *
  * @return
  */
-SC_schedulerState
-SC_SchedulerState();
+SC_schedulerState SC_SchedulerState();
 
 /**
  *
  * @param scheduler
  */
-void
-SC_freeSchedulerState(SC_schedulerState scheduler);
+void SC_freeSchedulerState(SC_schedulerState scheduler);
 
 /**
  *
  * @return
  */
-SC_schedulerOps
-SC_SchedulerOps();
+SC_schedulerOps SC_SchedulerOps();
 
 /**
  *
  * @param scheduler
  */
-void
-SC_freeSchedulerOps(SC_schedulerOps scheduler);
+void SC_freeSchedulerOps(SC_schedulerOps scheduler);
 
 /**
  *
@@ -129,24 +120,13 @@ SC_freeSchedulerOps(SC_schedulerOps scheduler);
  * @param simTime
  * @return
  */
-SC_scheduler
-SC_Scheduler(QSS_data simData, QSS_time simTime);
+SC_scheduler SC_Scheduler(QSS_data simData, QSS_time simTime);
 
 /**
  *
  * @param scheduler
  */
-void
-SC_freeScheduler(SC_scheduler scheduler);
-
-/**
- *
- * @param scheduler
- * @param simData
- * @param simTime
- */
-void
-SC_update(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
+void SC_freeScheduler(SC_scheduler scheduler);
 
 /**
  *
@@ -154,7 +134,14 @@ SC_update(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
  * @param simData
  * @param simTime
  */
-void
-SC_setUpdate(SC_scheduler scheduler, BT_upd updFunction);
+void SC_update(SC_scheduler scheduler, QSS_data simData, QSS_time simTime);
 
-#endif  /* QSS_SCHEDULER_H_ */
+/**
+ *
+ * @param scheduler
+ * @param simData
+ * @param simTime
+ */
+void SC_setUpdate(SC_scheduler scheduler, BT_upd updFunction);
+
+#endif /* QSS_SCHEDULER_H_ */

@@ -45,9 +45,7 @@ typedef struct QA_quantizer_ *QA_quantizer;
  * @param
  * @param
  */
-typedef void
-(*QA_recomputeNextTimesFn)(QA_quantizer, int, int *, double, double*, double*,
-    double*, double*);
+typedef void (*QA_recomputeNextTimesFn)(QA_quantizer, int, int *, double, double *, double *, double *, double *);
 /**
  *
  * @param
@@ -57,9 +55,7 @@ typedef void
  * @param
  * @param
  */
-typedef void
-(*QA_recomputeNextTimeFn)(QA_quantizer, int, double, double*, double*, double*,
-    double*);
+typedef void (*QA_recomputeNextTimeFn)(QA_quantizer, int, double, double *, double *, double *, double *);
 /**
  *
  * @param
@@ -68,8 +64,7 @@ typedef void
  * @param
  * @param
  */
-typedef void
-(*QA_nextTimeFn)(QA_quantizer, int, double, double*, double*, double*);
+typedef void (*QA_nextTimeFn)(QA_quantizer, int, double, double *, double *, double *);
 /**
  *
  * @param
@@ -77,96 +72,86 @@ typedef void
  * @param
  * @param
  */
-typedef void
-(*QA_updateQuantizedStateFn)(QA_quantizer, int, double *, double *, double *);
+typedef void (*QA_updateQuantizedStateFn)(QA_quantizer, int, double *, double *, double *);
 /**
  *
  */
-struct QA_quantizerState_
-{
-    int order;
-    int xOrder;
-    int *flag2; //!<
-    int *flag3; //!<
-    int *flag4; //!<
-    int *BDF;
-    int *nSZ;
-    int **SZ;
-    double *dq; //!<
-    double *a; //!<
-    double *oldDx; //!<
-    double *qAux; //!<
-    double *u0; //!<
-    double *u1; //!<
-    double *u2; //!<
-    double *tx;
-    double *lt; //!<
-    double *ltq; //!<
-    double *lquOld; //!<
-    double *qinf; //!<
-    double *qsup; //!<
-    double *simTime; //!<
-    double minStep; //!<
-    double finTime; //!<
-    QSS_time lSimTime; //!<
-    QSS_idxMap qMap; //!<
+struct QA_quantizerState_ {
+  int order;
+  int xOrder;
+  int *flag2;  //!<
+  int *flag3;  //!<
+  int *flag4;  //!<
+  int *BDF;
+  int *nSZ;
+  int **SZ;
+  double *dq;     //!<
+  double *a;      //!<
+  double *oldDx;  //!<
+  double *qAux;   //!<
+  double *u0;     //!<
+  double *u1;     //!<
+  double *u2;     //!<
+  double *tx;
+  double *lt;         //!<
+  double *ltq;        //!<
+  double *lquOld;     //!<
+  double *qinf;       //!<
+  double *qsup;       //!<
+  double *simTime;    //!<
+  double minStep;     //!<
+  double finTime;     //!<
+  QSS_time lSimTime;  //!<
+  QSS_idxMap qMap;    //!<
 };
 /**
  *
  */
-struct QA_quantizerOps_
-{
-    QA_recomputeNextTimesFn recomputeNextTimes; //!<
-    QA_recomputeNextTimeFn recomputeNextTime; //!<
-    QA_nextTimeFn nextTime; //!<
-    QA_updateQuantizedStateFn updateQuantizedState; //!<
+struct QA_quantizerOps_ {
+  QA_recomputeNextTimesFn recomputeNextTimes;      //!<
+  QA_recomputeNextTimeFn recomputeNextTime;        //!<
+  QA_nextTimeFn nextTime;                          //!<
+  QA_updateQuantizedStateFn updateQuantizedState;  //!<
 };
 /**
  *
  */
-struct QA_quantizer_
-{
-    QA_quantizerState state; //!<
-    QA_quantizerOps ops; //!<
+struct QA_quantizer_ {
+  QA_quantizerState state;  //!<
+  QA_quantizerOps ops;      //!<
 };
 /**
  *
  * @return
  */
-QA_quantizerOps
-QA_QuantizerOps();
+QA_quantizerOps QA_QuantizerOps();
 /**
  *
  * @return
  */
-QA_quantizerState
-QA_QuantizerState();
+QA_quantizerState QA_QuantizerState();
 /**
  *
  * @param simData
  * @param simTime
  * @return
  */
-QA_quantizer
-QA_Quantizer(QSS_data simData, QSS_time simTime);
+QA_quantizer QA_Quantizer(QSS_data simData, QSS_time simTime);
 /**
  *
  * @param state
  */
-void
-QA_freeQuantizerState(QA_quantizerState state);
+void QA_freeQuantizerState(QA_quantizerState state);
 /**
  *
  * @param ops
  */
-void
-QA_freeQuantizerOps(QA_quantizerOps ops);
+void QA_freeQuantizerOps(QA_quantizerOps ops);
 /**
  *
  * @param q
  */
-void
-QA_freeQuantizer(QA_quantizer quantizer);
+void QA_freeQuantizer(QA_quantizer quantizer);
 /**
  *
  * @param quantizer
@@ -178,9 +163,7 @@ QA_freeQuantizer(QA_quantizer quantizer);
  * @param lqu
  * @param q
  */
-void
-QA_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t,
-    double *nTime, double *x, double * lqu, double *q);
+void QA_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q);
 /**
  *
  * @param quantizer
@@ -191,9 +174,7 @@ QA_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t,
  * @param lqu
  * @param q
  */
-void
-QA_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime,
-    double *x, double *lqu, double *q);
+void QA_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q);
 /**
  *
  * @param quantizer
@@ -203,9 +184,7 @@ QA_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime,
  * @param x
  * @param lqu
  */
-void
-QA_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x,
-    double *lqu);
+void QA_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu);
 /**
  *
  * @param quantizer
@@ -214,8 +193,6 @@ QA_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x,
  * @param x
  * @param lqu
  */
-void
-QA_updateQuantizedState(QA_quantizer quantizer, int var, double *q, double *x,
-    double *lqu);
+void QA_updateQuantizedState(QA_quantizer quantizer, int var, double *q, double *x, double *lqu);
 
-#endif  /* QSS_QUANTIZER_H_ */
+#endif /* QSS_QUANTIZER_H_ */

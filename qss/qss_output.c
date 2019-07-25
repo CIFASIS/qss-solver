@@ -25,8 +25,7 @@
 #include "qss_sampled.h"
 #include "qss_step.h"
 
-OUT_outputState
-OUT_OutputState()
+OUT_outputState OUT_OutputState()
 {
   OUT_outputState p = checkedMalloc(sizeof(*p));
   p->log = NULL;
@@ -35,8 +34,7 @@ OUT_OutputState()
   return p;
 }
 
-OUT_outputOps
-OUT_OutputOps()
+OUT_outputOps OUT_OutputOps()
 {
   OUT_outputOps p = checkedMalloc(sizeof(*p));
   p->getSteps = NULL;
@@ -45,88 +43,61 @@ OUT_OutputOps()
   return p;
 }
 
-OUT_output
-OUT_Output(QSS_data simData, QSS_time simTime, SD_output simOutput)
+OUT_output OUT_Output(QSS_data simData, QSS_time simTime, SD_output simOutput)
 {
   OUT_output p = checkedMalloc(sizeof(*p));
   p->state = OUT_OutputState();
   p->ops = OUT_OutputOps();
-  switch(simOutput->commInterval)
-  {
-    case CI_Step:
-      if(simData->params->lps > 0)
-      {
-        ST_PAR_init(p, simData, simTime, simOutput);
-      }
-      else
-      {
-        ST_init(p, simData, simTime, simOutput);
-      }
-      break;
-    case CI_Dense:
-      case CI_Sampled:
-      if(simData->params->lps > 0)
-      {
-        SAM_PAR_init(p, simData, simTime, simOutput);
-      }
-      else
-      {
-        SAM_init(p, simData, simTime, simOutput);
-      }
-      break;
-    default:
-      return NULL;
+  switch (simOutput->commInterval) {
+  case CI_Step:
+    if (simData->params->lps > 0) {
+      ST_PAR_init(p, simData, simTime, simOutput);
+    } else {
+      ST_init(p, simData, simTime, simOutput);
+    }
+    break;
+  case CI_Dense:
+  case CI_Sampled:
+    if (simData->params->lps > 0) {
+      SAM_PAR_init(p, simData, simTime, simOutput);
+    } else {
+      SAM_init(p, simData, simTime, simOutput);
+    }
+    break;
+  default:
+    return NULL;
   }
   return p;
 }
 
-void
-OUT_freeOutputOps(OUT_outputOps o)
-{
-  free(o);
-}
+void OUT_freeOutputOps(OUT_outputOps o) { free(o); }
 
-void
-OUT_freeOutputState(OUT_outputState o)
+void OUT_freeOutputState(OUT_outputState o)
 {
   LG_freeLog(o->log);
-  if(o->steps != NULL)
-  {
+  if (o->steps != NULL) {
     free(o->steps);
   }
-  if(o->values != NULL)
-  {
+  if (o->values != NULL) {
     free(o->values);
   }
   free(o);
 }
 
-void
-OUT_freeOutput(OUT_output o)
+void OUT_freeOutput(OUT_output o)
 {
-  if(o != NULL)
-  {
+  if (o != NULL) {
     OUT_freeOutputState(o->state);
     OUT_freeOutputOps(o->ops);
     free(o);
   }
 }
 
-void
-OUT_write(OUT_output output, QSS_data simData, QSS_time simTime,
-    SD_output simOutput)
+void OUT_write(OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput)
 {
   output->ops->write(output, simData, simTime, simOutput);
 }
 
-int
-OUT_getSteps(OUT_output output, int var)
-{
-  return output->ops->getSteps(output, var);
-}
+int OUT_getSteps(OUT_output output, int var) { return output->ops->getSteps(output, var); }
 
-void
-OUT_save(OUT_output output)
-{
-  output->ops->save(output);
-}
+void OUT_save(OUT_output output) { output->ops->save(output); }

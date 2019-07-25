@@ -26,17 +26,14 @@
 #include "qss_quantizer.h"
 
 #ifdef QSS_PARALLEL
-void
-QSS3_PAR_init (QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
+void QSS3_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 #else
-void
-QSS3_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
+void QSS3_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 #endif
 {
   int i;
   int states = simData->states;
-  for(i = 0; i < states; i++)
-  {
+  for (i = 0; i < states; i++) {
     int cf0 = i * 4;
     simData->x[cf0 + 2] = 0;
     simData->x[cf0 + 3] = 0;
@@ -59,50 +56,37 @@ QSS3_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 }
 
 #ifdef QSS_PARALLEL
-void
-QSS3_PAR_recomputeNextTimes (QA_quantizer quantizer, int vars, int *inf, double t,
-    double *nTime, double *x, double *lqu, double *q)
+void QSS3_PAR_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
 #else
-void
-QSS3_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t,
-    double *nTime, double *x, double *lqu, double *q)
+void QSS3_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
 #endif
 {
   int i;
 #ifdef QSS_PARALLEL
   int *map = quantizer->state->qMap;
 #endif
-  for(i = 0; i < vars; i++)
-  {
+  for (i = 0; i < vars; i++) {
 #ifdef QSS_PARALLEL
-    if (map[inf[i]] > NOT_ASSIGNED)
-    {
+    if (map[inf[i]] > NOT_ASSIGNED) {
 #endif
-    QSS3_recomputeNextTime(quantizer, inf[i], t, nTime, x, lqu, q);
+      QSS3_recomputeNextTime(quantizer, inf[i], t, nTime, x, lqu, q);
 #ifdef QSS_PARALLEL
-  }
+    }
 #endif
   }
 }
 
 #ifdef QSS_PARALLEL
-void
-QSS3_PAR_recomputeNextTime (QA_quantizer quantizer, int var, double t,
-    double *nTime, double *x, double *lqu, double *q)
+void QSS3_PAR_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
 #else
-void
-QSS3_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime,
-    double *x, double *lqu, double *q)
+void QSS3_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
 #endif
 {
   int cf0 = var * 4, cf1 = cf0 + 1, cf2 = cf1 + 1, cf3 = cf2 + 1;
   double coeff[4];
-  if(fabs(q[cf0] - x[cf0]) >= lqu[var] * 0.999999999)
-  {
+  if (fabs(q[cf0] - x[cf0]) >= lqu[var] * 0.999999999) {
     nTime[var] = t;
-  }
-  else
-  {
+  } else {
     coeff[0] = q[cf0] + lqu[var] - x[cf0];
     coeff[1] = q[cf1] - x[cf1];
     coeff[2] = q[cf2] - x[cf2];
@@ -110,42 +94,30 @@ QSS3_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime,
     nTime[var] = t + minPosRoot(coeff, 3);
     coeff[0] = q[cf0] - lqu[var] - x[cf0];
     double timeaux = t + minPosRoot(coeff, 3);
-    if(timeaux < nTime[var])
-    {
+    if (timeaux < nTime[var]) {
       nTime[var] = timeaux;
     }
   }
 }
 
 #ifdef QSS_PARALLEL
-void
-QSS3_PAR_nextTime (QA_quantizer quantizer, int var, double t, double *nTime,
-    double *x, double *lqu)
+void QSS3_PAR_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)
 #else
-void
-QSS3_nextTime(QA_quantizer quantizer, int var, double t, double *nTime,
-    double *x, double *lqu)
+void QSS3_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)
 #endif
 {
   int cf3 = var * 4 + 3;
-  if(x[cf3])
-  {
+  if (x[cf3]) {
     nTime[var] = t + pow(lqu[var] / fabs(x[cf3]), 1.0 / 3);
-  }
-  else
-  {
+  } else {
     nTime[var] = INF;
   }
 }
 
 #ifdef QSS_PARALLEL
-void
-QSS3_PAR_updateQuantizedState (QA_quantizer quantizer, int i, double *q, double *x,
-    double *lqu)
+void QSS3_PAR_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu)
 #else
-void
-QSS3_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x,
-    double *lqu)
+void QSS3_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu)
 #endif
 {
   int cf0 = i * 4, cf1 = cf0 + 1, cf2 = cf1 + 1;
