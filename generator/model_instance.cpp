@@ -13,18 +13,19 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with QSSModelInstance Solver.  If not, see <http://www.gnu.org/licenses/>.
+ along with QSSModelInstance Solver.  If not, see
+ <http://www.gnu.org/licenses/>.
 
  ******************************************************************************/
 
 #include "model_instance.h"
 
+#include <boost/optional/optional_io.hpp>
 #include <sstream>
 #include <utility>
-#include <boost/optional/optional_io.hpp>
 
-#include "macros.h"
 #include "../ast/expression.h"
+#include "../deps/dependency_matrix.h"
 #include "../ir/annotation.h"
 #include "../ir/class.h"
 #include "../ir/equation.h"
@@ -33,7 +34,7 @@
 #include "../ir/statement.h"
 #include "../util/error.h"
 #include "../util/util.h"
-#include "../deps/dependency_matrix.h"
+#include "macros.h"
 
 namespace MicroModelica {
 
@@ -43,34 +44,38 @@ using namespace MicroModelica::IR;
 using namespace MicroModelica::Util;
 using namespace MicroModelica::Deps;
 
-ModelInstance::ModelInstance(Model& model, CompileFlags& flags, WriterPtr writer) : _model(model), _flags(flags), _writer(writer) {}
+ModelInstance::ModelInstance(Model &model, CompileFlags &flags,
+                             WriterPtr writer)
+    : _model(model), _flags(flags), _writer(writer) {}
 
-void ModelInstance::definition()
-{
+void ModelInstance::definition() {
   EquationTable derivatives = _model.derivatives();
   EquationTable algebraics = _model.algebraics();
   EquationTable::iterator it;
   VarSymbolTable symbols = _model.symbols();
   stringstream buffer;
   Utils::instance().clearLocalSymbols();
-  for (Equation alg = algebraics.begin(it); !algebraics.end(it); alg = algebraics.next(it)) {
+  for (Equation alg = algebraics.begin(it); !algebraics.end(it);
+       alg = algebraics.next(it)) {
     _writer->write(alg, WRITER::Model_Simple);
   }
-  for (Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it)) {
-    _writer->write(der, WRITER::Model_Generic);
+  for (Equation der = derivatives.begin(it); !derivatives.end(it);
+       der = derivatives.next(it)) {
+    _writer->write(der, WRITER::Model_Simple);
   }
   _writer->write(Utils::instance().localSymbols(), WRITER::Model);
 }
 
-void ModelInstance::output()
-{
+void ModelInstance::output() {
   stringstream buffer;
   EquationTable outputs = _model.outputs();
   EquationTable::iterator it;
   Utils::instance().clearLocalSymbols();
   FunctionPrinter fp;
-  for (Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it)) {
-    _writer->write(out, (out.hasRange() ? WRITER::Output_Generic : WRITER::Output_Simple));
+  for (Equation out = outputs.begin(it); !outputs.end(it);
+       out = outputs.next(it)) {
+    _writer->write(
+        out, (out.hasRange() ? WRITER::Output_Generic : WRITER::Output_Simple));
   }
   _writer->write(Utils::instance().localSymbols(), WRITER::Output);
   if (!_writer->isEmpty(WRITER::Output_Simple)) {
@@ -80,8 +85,7 @@ void ModelInstance::output()
   configOutput();
 }
 
-void ModelInstance::include()
-{
+void ModelInstance::include() {
   stringstream buffer;
   buffer << "#include <stdlib.h>" << endl;
   buffer << "#include <stdio.h>" << endl;
@@ -95,7 +99,8 @@ void ModelInstance::include()
   ImportTable imports = _model.imports();
   ImportTable::iterator it;
   for (string i = imports.begin(it); !imports.end(it); i = imports.next(it)) {
-    buffer << "#include \"" << Utils::instance().packageName(i) << ".h\"" << endl;
+    buffer << "#include \"" << Utils::instance().packageName(i) << ".h\""
+           << endl;
   }
   buffer << "#include <common/utils.h>" << endl;
   buffer << "#include <common/model.h>" << endl;
@@ -106,8 +111,9 @@ void ModelInstance::include()
   _writer->write(buffer, WRITER::Include);
 }
 
-void ModelInstance::initializeMatrix(VariableDependencyMatrix vdm, WRITER::Section alloc, WRITER::Section init, int size)
-{
+void ModelInstance::initializeMatrix(VariableDependencyMatrix vdm,
+                                     WRITER::Section alloc,
+                                     WRITER::Section init, int size) {
   _writer->write(vdm.alloc(), alloc);
   if (!vdm.empty()) {
     stringstream buffer;
@@ -117,8 +123,7 @@ void ModelInstance::initializeMatrix(VariableDependencyMatrix vdm, WRITER::Secti
   _writer->write(vdm.init(), init);
 }
 
-void ModelInstance::allocateOutput()
-{
+void ModelInstance::allocateOutput() {
   stringstream buffer;
   ModelAnnotation annot = _model.annotations();
   string period = "NULL";
@@ -151,8 +156,7 @@ void ModelInstance::allocateOutput()
   _writer->write(buffer, WRITER::Init_Output);
 }
 
-void ModelInstance::configOutput()
-{
+void ModelInstance::configOutput() {
   stringstream buffer;
   buffer << "SD_allocOutputMatrix(";
   buffer << "modelOutput, ";
@@ -161,26 +165,29 @@ void ModelInstance::configOutput()
   _writer->write(buffer, WRITER::Config_Output);
   EquationTable outputs = _model.outputs();
   EquationTable::iterator it;
-  for (Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it)) {
+  for (Equation out = outputs.begin(it); !outputs.end(it);
+       out = outputs.next(it)) {
     assert(out.isValid());
     Expression var = out.lhs();
     if (out.isRHSReference()) {
       var = out.rhs();
     }
-    buffer << "sprintf(modelOutput->variable[" << out.functionId() << "].name, \"" << var << "\");";
+    buffer << "sprintf(modelOutput->variable[" << out.functionId()
+           << "].name, \"" << var << "\");";
     _writer->write(buffer, WRITER::Config_Output);
   }
 }
 
-void ModelInstance::zeroCrossing()
-{
+void ModelInstance::zeroCrossing() {
   EventTable events = _model.events();
   EventTable::iterator it;
   FunctionPrinter fp;
   Utils::instance().clearLocalSymbols();
-  for (Event event = events.begin(it); !events.end(it); event = events.next(it)) {
+  for (Event event = events.begin(it); !events.end(it);
+       event = events.next(it)) {
     Equation zc = event.zeroCrossing();
-    _writer->write(zc, (zc.hasRange() ? WRITER::ZC_Generic : WRITER::ZC_Simple));
+    _writer->write(zc,
+                   (zc.hasRange() ? WRITER::ZC_Generic : WRITER::ZC_Simple));
   }
   _writer->write(Utils::instance().localSymbols(), WRITER::Zero_Crossing);
   if (!_writer->isEmpty(WRITER::ZC_Simple)) {
@@ -190,17 +197,21 @@ void ModelInstance::zeroCrossing()
   configEvents();
 }
 
-void ModelInstance::handler()
-{
+void ModelInstance::handler() {
   EventTable events = _model.events();
   EventTable::iterator it;
   VarSymbolTable symbols = _model.symbols();
   stringstream buffer;
   FunctionPrinter fp;
   Utils::instance().clearLocalSymbols();
-  for (Event event = events.begin(it); !events.end(it); event = events.next(it)) {
-    _writer->write(event.handler(EVENT::Positive), (event.hasRange() ? WRITER::Handler_Pos_Generic : WRITER::Handler_Pos_Simple));
-    _writer->write(event.handler(EVENT::Negative), (event.hasRange() ? WRITER::Handler_Neg_Generic : WRITER::Handler_Neg_Simple));
+  for (Event event = events.begin(it); !events.end(it);
+       event = events.next(it)) {
+    _writer->write(event.handler(EVENT::Positive),
+                   (event.hasRange() ? WRITER::Handler_Pos_Generic
+                                     : WRITER::Handler_Pos_Simple));
+    _writer->write(event.handler(EVENT::Negative),
+                   (event.hasRange() ? WRITER::Handler_Neg_Generic
+                                     : WRITER::Handler_Neg_Simple));
   }
   if (!_writer->isEmpty(WRITER::Handler_Pos_Generic)) {
     _writer->write(Utils::instance().localSymbols(), WRITER::Handler_Pos);
@@ -218,17 +229,16 @@ void ModelInstance::handler()
   }
 }
 
-void ModelInstance::configEvents()
-{
+void ModelInstance::configEvents() {
   EventTable events = _model.events();
   EventTable::iterator it;
-  for (Event event = events.begin(it); !events.end(it); event = events.next(it)) {
+  for (Event event = events.begin(it); !events.end(it);
+       event = events.next(it)) {
     _writer->write(event.config(), WRITER::Config_Events);
   }
 }
 
-void ModelInstance::settings()
-{
+void ModelInstance::settings() {
   stringstream buffer;
   buffer << "settings->debug = " << _flags.debug() << ";";
   _writer->print(buffer);
@@ -242,13 +252,14 @@ void ModelInstance::settings()
   _writer->print(buffer);
 }
 
-void ModelInstance::header()
-{
+void ModelInstance::header() {
   VarSymbolTable symbols = _model.symbols();
   VarSymbolTable::iterator it;
   stringstream buffer;
-  _writer->write("// Model Variable and Parameters Macros\n", WRITER::Model_Header);
-  for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
+  _writer->write("// Model Variable and Parameters Macros\n",
+                 WRITER::Model_Header);
+  for (Variable var = symbols.begin(it); !symbols.end(it);
+       var = symbols.next(it)) {
     if (var.isModelVar()) {
       Macros macros(_model, var);
       buffer << macros;
@@ -258,7 +269,8 @@ void ModelInstance::header()
   if (symbols.parameters()) {
     _writer->write("\n// Model Parameters Declaration\n", WRITER::Model_Header);
   }
-  for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
+  for (Variable var = symbols.begin(it); !symbols.end(it);
+       var = symbols.next(it)) {
     if (var.isParameter()) {
       buffer << var.declaration("__PAR__");
     }
@@ -269,7 +281,8 @@ void ModelInstance::header()
   if (!_model.annotations().classic()) {
     _writer->write("\n// Derivative Equations Macros\n", WRITER::Model_Header);
   }
-  for (Equation e = derivatives.begin(eqit); !derivatives.end(eqit); e = derivatives.next(eqit)) {
+  for (Equation e = derivatives.begin(eqit); !derivatives.end(eqit);
+       e = derivatives.next(eqit)) {
     _writer->write(e.macro(), WRITER::Model_Header);
   }
   _writer->write("\n// Event Macros\n", WRITER::Model_Header);
@@ -283,7 +296,8 @@ void ModelInstance::header()
   }
   _writer->write("\n// Output Equations Macros\n", WRITER::Model_Header);
   EquationTable outputs = _model.outputs();
-  for (Equation e = outputs.begin(eqit); !outputs.end(eqit); e = outputs.next(eqit)) {
+  for (Equation e = outputs.begin(eqit); !outputs.end(eqit);
+       e = outputs.next(eqit)) {
     _writer->write(e.macro(), WRITER::Model_Header);
   }
   if (outputs.size()) {
@@ -298,25 +312,31 @@ void ModelInstance::header()
   _writer->write("#define _time t", WRITER::Model_Header);
 }
 
-string ModelInstance::componentDefinition(MODEL_INSTANCE::Component c)
-{
+string ModelInstance::componentDefinition(MODEL_INSTANCE::Component c) {
   switch (c) {
   case MODEL_INSTANCE::Model_Settings:
     return "void\nMOD_settings(SD_simulationSettings settings)";
   case MODEL_INSTANCE::Model:
-    return "void\nMOD_definition(double *x, double *d, double *a, double t, double *dx)";
+    return "void\nMOD_definition(double *x, double *d, double *a, double t, "
+           "double *dx)";
   case MODEL_INSTANCE::Deps:
-    return "void\nMOD_dependencies(int idx, double *x, double *d, double *a, double t, double *der, int *map)";
+    return "void\nMOD_dependencies(int idx, double *x, double *d, double *a, "
+           "double t, double *der, int *map)";
   case MODEL_INSTANCE::Zero_Crossing:
-    return "void\nMOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)";
+    return "void\nMOD_zeroCrossing(int idx, double *x, double *d, double *a, "
+           "double t, double *zc)";
   case MODEL_INSTANCE::Handler_Pos:
-    return "void\nMOD_handlerPos(int idx, double *x, double *d, double *a, double t)";
+    return "void\nMOD_handlerPos(int idx, double *x, double *d, double *a, "
+           "double t)";
   case MODEL_INSTANCE::Handler_Neg:
-    return "void\nMOD_handlerNeg(int idx, double *x, double *d, double *a, double t)";
+    return "void\nMOD_handlerNeg(int idx, double *x, double *d, double *a, "
+           "double t)";
   case MODEL_INSTANCE::Output:
-    return "void\nMOD_output(int idx, double *x, double *d, double *a, double t, double *out)";
+    return "void\nMOD_output(int idx, double *x, double *d, double *a, double "
+           "t, double *out)";
   case MODEL_INSTANCE::Jacobian:
-    return "void\nMOD_jacobian(double *x, double *d, double *a, double t, double *jac)";
+    return "void\nMOD_jacobian(double *x, double *d, double *a, double t, "
+           "double *jac)";
   case MODEL_INSTANCE::CLC_Init:
     return "void\nCLC_initializeDataStructs(CLC_simulator simulator)";
   case MODEL_INSTANCE::QSS_Init:
@@ -325,8 +345,7 @@ string ModelInstance::componentDefinition(MODEL_INSTANCE::Component c)
   return "";
 }
 
-void ModelInstance::initialCode()
-{
+void ModelInstance::initialCode() {
   StatementTable stms = _model.initialCode();
   StatementTable::iterator it;
   stringstream buffer;
@@ -335,36 +354,44 @@ void ModelInstance::initialCode()
   }
 }
 
-void ModelInstance::inputs()
-{
+void ModelInstance::inputs() {
   InputTable inputs = _model.inputs();
   InputTable::iterator it;
-  for (Input input = inputs.begin(it); !inputs.end(it); input = inputs.next(it)) {
+  for (Input input = inputs.begin(it); !inputs.end(it);
+       input = inputs.next(it)) {
     _writer->write(input, WRITER::Input);
   }
 }
 
-string ModelInstance::allocateModel()
-{
+string ModelInstance::allocateModel() {
   stringstream buffer;
-  buffer << (!_writer->isEmpty(WRITER::ZC_Simple) || !_writer->isEmpty(WRITER::ZC_Generic) ? "MOD_zeroCrossing" : "NULL") << ", ";
-  buffer << (!_writer->isEmpty(WRITER::Handler_Pos_Simple) || !_writer->isEmpty(WRITER::Handler_Pos_Generic) ? "MOD_handlerPos" : "NULL")
+  buffer << (!_writer->isEmpty(WRITER::ZC_Simple) ||
+                     !_writer->isEmpty(WRITER::ZC_Generic)
+                 ? "MOD_zeroCrossing"
+                 : "NULL")
          << ", ";
-  buffer << (!_writer->isEmpty(WRITER::Handler_Neg_Simple) || !_writer->isEmpty(WRITER::Handler_Neg_Generic) ? "MOD_handlerNeg" : "NULL");
+  buffer << (!_writer->isEmpty(WRITER::Handler_Pos_Simple) ||
+                     !_writer->isEmpty(WRITER::Handler_Pos_Generic)
+                 ? "MOD_handlerPos"
+                 : "NULL")
+         << ", ";
+  buffer << (!_writer->isEmpty(WRITER::Handler_Neg_Simple) ||
+                     !_writer->isEmpty(WRITER::Handler_Neg_Generic)
+                 ? "MOD_handlerNeg"
+                 : "NULL");
   return buffer.str();
 }
 
-void ModelInstance::allocateVector(string name, int size) const
-{
+void ModelInstance::allocateVector(string name, int size) const {
   stringstream buffer;
   if (size) {
-    buffer << "int* " << name << " = (int*) malloc(" << size << "*sizeof(int));" << endl;
+    buffer << "int* " << name << " = (int*) malloc(" << size << "*sizeof(int));"
+           << endl;
     _writer->write(buffer, WRITER::Alloc_Access_Vectors);
   }
 }
 
-void ModelInstance::freeVector(string name, int size) const
-{
+void ModelInstance::freeVector(string name, int size) const {
   stringstream buffer;
   if (size) {
     buffer << "free(" << name << ");" << endl;
@@ -372,16 +399,14 @@ void ModelInstance::freeVector(string name, int size) const
   }
 }
 
-void ModelInstance::allocateVectors() const
-{
+void ModelInstance::allocateVectors() const {
   allocateVector("states", _model.stateNbr());
   allocateVector("discretes", _model.discreteNbr());
   allocateVector("events", _model.eventNbr());
   allocateVector("outputs", _model.outputNbr());
 }
 
-void ModelInstance::freeVectors() const
-{
+void ModelInstance::freeVectors() const {
   freeVector("states", _model.stateNbr());
   freeVector("discretes", _model.discreteNbr());
   freeVector("events", _model.eventNbr());
@@ -390,13 +415,12 @@ void ModelInstance::freeVectors() const
 
 /* QSSModelInstance Model Instance class. */
 
-QSSModelInstance::QSSModelInstance(Model& model, CompileFlags& flags, WriterPtr writer)
-    : ModelInstance(model, flags, writer), _model(model), _flags(flags), _writer(writer)
-{
-}
+QSSModelInstance::QSSModelInstance(Model &model, CompileFlags &flags,
+                                   WriterPtr writer)
+    : ModelInstance(model, flags, writer), _model(model), _flags(flags),
+      _writer(writer) {}
 
-void QSSModelInstance::allocateSolver()
-{
+void QSSModelInstance::allocateSolver() {
   ModelAnnotation annot = _model.annotations();
   stringstream buffer;
   buffer << "simulator->data = QSS_Data(" << _model.stateNbr() << ",";
@@ -413,8 +437,7 @@ void QSSModelInstance::allocateSolver()
   _writer->write(buffer, WRITER::Alloc_Matrix);
 }
 
-string QSSModelInstance::allocateModel()
-{
+string QSSModelInstance::allocateModel() {
   stringstream buffer;
   buffer << "simulator->model = QSS_Model(MOD_definition, ";
   buffer << "MOD_dependencies, ";
@@ -423,8 +446,7 @@ string QSSModelInstance::allocateModel()
   return buffer.str();
 }
 
-void QSSModelInstance::initializeDataStructures()
-{
+void QSSModelInstance::initializeDataStructures() {
   stringstream buffer;
   Utils::instance().clearLocalSymbols();
   allocateSolver();
@@ -433,25 +455,37 @@ void QSSModelInstance::initializeDataStructures()
   freeVectors();
   ModelDependencies deps = _model.dependencies();
   // Initialize Solver Data Structures.
-  initializeMatrix(deps.SD(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
-  initializeMatrix(deps.DS(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+  initializeMatrix(deps.SD(), WRITER::Alloc_Data, WRITER::Init_Data,
+                   _model.stateNbr());
+  initializeMatrix(deps.DS(), WRITER::Alloc_Data, WRITER::Init_Data,
+                   _model.stateNbr());
   inputs();
 
   // Initialize Event Data Structures.
-  initializeMatrix(deps.SZ(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+  initializeMatrix(deps.SZ(), WRITER::Alloc_Data, WRITER::Init_Data,
+                   _model.stateNbr());
 
-  initializeMatrix(deps.HZ(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
-  initializeMatrix(deps.HD(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
-  initializeMatrix(deps.LHSDsc(), WRITER::Alloc_Event_LHSDSC, WRITER::Init_Event_LHSDSC, _model.eventNbr());
-  initializeMatrix(deps.LHSSt(), WRITER::Alloc_Event_LHSST, WRITER::Init_Event_LHSST, _model.eventNbr());
-  initializeMatrix(deps.RHSSt(), WRITER::Alloc_Event_RHSST, WRITER::Init_Event_RHSST, _model.eventNbr());
+  initializeMatrix(deps.HZ(), WRITER::Alloc_Data, WRITER::Init_Data,
+                   _model.eventNbr());
+  initializeMatrix(deps.HD(), WRITER::Alloc_Data, WRITER::Init_Data,
+                   _model.eventNbr());
+  initializeMatrix(deps.LHSDsc(), WRITER::Alloc_Event_LHSDSC,
+                   WRITER::Init_Event_LHSDSC, _model.eventNbr());
+  initializeMatrix(deps.LHSSt(), WRITER::Alloc_Event_LHSST,
+                   WRITER::Init_Event_LHSST, _model.eventNbr());
+  initializeMatrix(deps.RHSSt(), WRITER::Alloc_Event_RHSST,
+                   WRITER::Init_Event_RHSST, _model.eventNbr());
 
   // Initialize Output Data Structures.
   allocateOutput();
-  initializeMatrix(deps.OS(), WRITER::Alloc_Output_States, WRITER::Init_Output_States, _model.outputNbr());
-  initializeMatrix(deps.OD(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes, _model.outputNbr());
-  initializeMatrix(deps.SO(), WRITER::Alloc_Output_States, WRITER::Init_Output_States, _model.stateNbr());
-  initializeMatrix(deps.DO(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes, _model.discreteNbr());
+  initializeMatrix(deps.OS(), WRITER::Alloc_Output_States,
+                   WRITER::Init_Output_States, _model.outputNbr());
+  initializeMatrix(deps.OD(), WRITER::Alloc_Output_Discretes,
+                   WRITER::Init_Output_Discretes, _model.outputNbr());
+  initializeMatrix(deps.SO(), WRITER::Alloc_Output_States,
+                   WRITER::Init_Output_States, _model.stateNbr());
+  initializeMatrix(deps.DO(), WRITER::Alloc_Output_Discretes,
+                   WRITER::Init_Output_Discretes, _model.discreteNbr());
   allocateModel();
   _writer->write(Utils::instance().localSymbols(), WRITER::Alloc_Matrix);
 }
@@ -460,8 +494,7 @@ void QSSModelInstance::dependencies() {}
 
 Graph QSSModelInstance::computationalGraph() { return Graph(0, 0); }
 
-void QSSModelInstance::generate()
-{
+void QSSModelInstance::generate() {
   include();
   definition();
   dependencies();
@@ -539,13 +572,12 @@ void QSSModelInstance::header() { ModelInstance::header(); }
 
 /* ClassicModelInstance Model Instance class. */
 
-ClassicModelInstance::ClassicModelInstance(Model& model, CompileFlags& flags, WriterPtr writer)
-    : ModelInstance(model, flags, writer), _model(model), _flags(flags), _writer(writer)
-{
-}
+ClassicModelInstance::ClassicModelInstance(Model &model, CompileFlags &flags,
+                                           WriterPtr writer)
+    : ModelInstance(model, flags, writer), _model(model), _flags(flags),
+      _writer(writer) {}
 
-void ClassicModelInstance::initializeDataStructures()
-{
+void ClassicModelInstance::initializeDataStructures() {
   stringstream buffer;
   Utils::instance().clearLocalSymbols();
   allocateSolver();
@@ -554,21 +586,26 @@ void ClassicModelInstance::initializeDataStructures()
   freeVectors();
   ModelDependencies deps = _model.dependencies();
   // Initialize Solver Data Structures.
-  initializeMatrix(deps.SD(), WRITER::Alloc_Matrix_SD, WRITER::Init_Matrix_SD, _model.stateNbr());
-  initializeMatrix(deps.DS(), WRITER::Alloc_Matrix_DS, WRITER::Init_Matrix_DS, _model.stateNbr());
+  initializeMatrix(deps.SD(), WRITER::Alloc_Matrix_SD, WRITER::Init_Matrix_SD,
+                   _model.stateNbr());
+  initializeMatrix(deps.DS(), WRITER::Alloc_Matrix_DS, WRITER::Init_Matrix_DS,
+                   _model.stateNbr());
   inputs();
   // Initialize Output Data Structures.
   allocateOutput();
-  initializeMatrix(deps.OS(), WRITER::Alloc_Output_States, WRITER::Init_Output_States, _model.outputNbr());
-  initializeMatrix(deps.OD(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes, _model.outputNbr());
-  initializeMatrix(deps.SO(), WRITER::Alloc_Output_States, WRITER::Init_Output_States, _model.stateNbr());
-  initializeMatrix(deps.DO(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes, _model.discreteNbr());
+  initializeMatrix(deps.OS(), WRITER::Alloc_Output_States,
+                   WRITER::Init_Output_States, _model.outputNbr());
+  initializeMatrix(deps.OD(), WRITER::Alloc_Output_Discretes,
+                   WRITER::Init_Output_Discretes, _model.outputNbr());
+  initializeMatrix(deps.SO(), WRITER::Alloc_Output_States,
+                   WRITER::Init_Output_States, _model.stateNbr());
+  initializeMatrix(deps.DO(), WRITER::Alloc_Output_Discretes,
+                   WRITER::Init_Output_Discretes, _model.discreteNbr());
   allocateModel();
   _writer->write(Utils::instance().localSymbols(), WRITER::Alloc_Matrix);
 }
 
-void ClassicModelInstance::allocateSolver()
-{
+void ClassicModelInstance::allocateSolver() {
   ModelAnnotation annot = _model.annotations();
   stringstream buffer;
   buffer << "simulator->data = CLC_Data(" << _model.stateNbr() << ",";
@@ -585,8 +622,7 @@ void ClassicModelInstance::allocateSolver()
   _writer->write(buffer, WRITER::Alloc_Matrix);
 }
 
-string ClassicModelInstance::allocateModel()
-{
+string ClassicModelInstance::allocateModel() {
   stringstream buffer;
   buffer << "simulator->model = CLC_Model(MOD_definition, ";
   buffer << ModelInstance::allocateModel();
@@ -594,8 +630,7 @@ string ClassicModelInstance::allocateModel()
   return buffer.str();
 }
 
-void ClassicModelInstance::generate()
-{
+void ClassicModelInstance::generate() {
   include();
   definition();
   zeroCrossing();
@@ -681,8 +716,7 @@ void ClassicModelInstance::generate()
   _writer->endBlock();
 }
 
-void ClassicModelInstance::header()
-{
+void ClassicModelInstance::header() {
   ModelInstance::header();
   VarSymbolTable symbols = _model.symbols();
   VarSymbolTable::iterator it;
@@ -690,7 +724,8 @@ void ClassicModelInstance::header()
   buffer << endl;
   buffer << "// Derivative Macros definition. ";
   _writer->write(buffer, WRITER::Model_Header);
-  for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
+  for (Variable var = symbols.begin(it); !symbols.end(it);
+       var = symbols.next(it)) {
     if (!var.isState()) {
       continue;
     }
@@ -705,5 +740,5 @@ void ClassicModelInstance::header()
   _writer->write(buffer, WRITER::Model_Header);
 }
 
-}  // namespace Generator
-}  // namespace MicroModelica
+} // namespace Generator
+} // namespace MicroModelica
