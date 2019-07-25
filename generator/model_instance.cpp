@@ -51,6 +51,26 @@ namespace MicroModelica {
     }
 
     void
+    ModelInstance::definition()
+    {
+      EquationTable derivatives = _model.derivatives();
+      EquationTable algebraics = _model.algebraics();
+      EquationTable::iterator it;
+      VarSymbolTable symbols = _model.symbols();
+      stringstream buffer;
+      Utils::instance().clearLocalSymbols();
+      for(Equation alg = algebraics.begin(it); !algebraics.end(it); alg = algebraics.next(it))
+      {
+         _writer->write(alg, WRITER::Model_Simple);
+      }
+      for(Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it))
+      {
+         _writer->write(der, WRITER::Model_Generic);
+      }
+      _writer->write(Utils::instance().localSymbols(), WRITER::Model);
+    }
+ 
+    void
     ModelInstance::output()
     {
       stringstream buffer;
@@ -68,6 +88,7 @@ namespace MicroModelica {
         _writer->write(fp.beginSwitch(), WRITER::Output); 
         _writer->write(fp.endSwitch(), WRITER::Output_Simple); 
       }
+      configOutput();
     }
     
     void
@@ -100,9 +121,14 @@ namespace MicroModelica {
     }
 
     void 
-    ModelInstance::initializeMatrix(VariableDependencyMatrix vdm, WRITER::Section alloc, WRITER::Section init)
+    ModelInstance::initializeMatrix(VariableDependencyMatrix vdm, WRITER::Section alloc, WRITER::Section init, int size)
     {
       _writer->write(vdm.alloc(), alloc);
+      if (!vdm.empty()) {
+        stringstream buffer;
+        buffer << "cleanVector(" << vdm.accessVector() << ", 0, " << size << ");";  
+        _writer->write(buffer.str(), init);
+      }
       _writer->write(vdm.init(), init);
     }
 
@@ -143,6 +169,29 @@ namespace MicroModelica {
       _writer->write(buffer, WRITER::Init_Output);
     }
 
+    void
+    ModelInstance::configOutput()
+    {
+      stringstream buffer;
+      buffer << "SD_allocOutputMatrix(";
+      buffer << "modelOutput, ";
+      buffer << _model.stateNbr() << ", ";
+      buffer << _model.discreteNbr() << ");";
+      _writer->write(buffer, WRITER::Config_Output); 
+      EquationTable outputs = _model.outputs();
+      EquationTable::iterator it;
+      for(Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it))
+      {
+        assert(out.isValid());
+        Expression var = out.lhs();
+        if (out.isRHSReference()) {
+          var = out.rhs();
+        } 
+        buffer << "sprintf(modelOutput->variable[" << out.functionId() <<"].name, \"" << var << "\");";
+        _writer->write(buffer, WRITER::Config_Output); 
+      }
+    }
+
     void 
     ModelInstance::zeroCrossing()
     {
@@ -161,6 +210,7 @@ namespace MicroModelica {
         _writer->write(fp.beginSwitch(), WRITER::Zero_Crossing);
         _writer->write(fp.endSwitch(), WRITER::ZC_Simple);
       }
+      configEvents();
     }
  
     void 
@@ -172,28 +222,33 @@ namespace MicroModelica {
       stringstream buffer;
       FunctionPrinter fp;
       Utils::instance().clearLocalSymbols();
-      for(Event event = events.begin(it); !events.end(it); event = events.next(it))
-      {
+      for(Event event = events.begin(it); !events.end(it); event = events.next(it)) {
         _writer->write(event.handler(EVENT::Positive), (event.hasRange() ? WRITER::Handler_Pos_Generic : WRITER::Handler_Pos_Simple)); 
         _writer->write(event.handler(EVENT::Negative), (event.hasRange() ? WRITER::Handler_Neg_Generic : WRITER::Handler_Neg_Simple)); 
       }
-      if(!_writer->isEmpty(WRITER::Handler_Pos_Generic))
-      {
+      if(!_writer->isEmpty(WRITER::Handler_Pos_Generic)) {
         _writer->write(Utils::instance().localSymbols(), WRITER::Handler_Pos);
       }
-      if(!_writer->isEmpty(WRITER::Handler_Neg_Generic))
-      { 
+      if(!_writer->isEmpty(WRITER::Handler_Neg_Generic)) { 
         _writer->write(Utils::instance().localSymbols(), WRITER::Handler_Neg);
       }
-      if(!_writer->isEmpty(WRITER::Handler_Pos_Simple))
-      {
+      if(!_writer->isEmpty(WRITER::Handler_Pos_Simple)) {
         _writer->write(fp.beginSwitch(), WRITER::Handler_Pos);
         _writer->write(fp.endSwitch(), WRITER::Handler_Pos_Simple);
       }
-      if(!_writer->isEmpty(WRITER::Handler_Neg_Simple))
-      {
+      if(!_writer->isEmpty(WRITER::Handler_Neg_Simple)) {
         _writer->write(fp.beginSwitch(), WRITER::Handler_Neg);
         _writer->write(fp.endSwitch(), WRITER::Handler_Neg_Simple);
+      }
+    }
+
+    void 
+    ModelInstance::configEvents()
+    {
+      EventTable events = _model.events();
+      EventTable::iterator it;
+      for(Event event = events.begin(it); !events.end(it); event = events.next(it)) {
+        _writer->write(event.config(), WRITER::Config_Events); 
       }
     }
 
@@ -220,10 +275,8 @@ namespace MicroModelica {
       VarSymbolTable::iterator it;
       stringstream buffer;
       _writer->write("// Model Variable and Parameters Macros\n", WRITER::Model_Header); 
-      for(Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it))
-      {
-        if(var.isModelVar()) 
-        { 
+      for(Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
+        if(var.isModelVar()) { 
           Macros macros(_model, var);
           buffer << macros;
         }
@@ -268,20 +321,20 @@ namespace MicroModelica {
     }
 
     string 
-    ModelInstance::componentDefinition(Component c)
+    ModelInstance::componentDefinition(MODEL_INSTANCE::Component c)
     {
       switch(c)
       {
-        case MODEL_SETTINGS: return "void\nMOD_settings(SD_simulationSettings settings)";
-        case MODEL: return "void\nMOD_definition(double *x, double *d, double *a, double t, double *dx)";
-        case DEPS: return "void\nMOD_dependencies(int idx, double *x, double *d, double *a, double t, double *der, int *map)";
-        case ZC: return "void\nMOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)";
-        case HANDLER_POS: return "void\nMOD_handlerPos(int idx, double *x, double *d, double *a, double t)";
-        case HANDLER_NEG: return "void\nMOD_handlerNeg(int idx, double *x, double *d, double *a, double t)";
-        case OUTPUT: return "void\nMOD_output(int idx, double *x, double *d, double *a, double t, double *out)";
-        case JACOBIAN: return "void\nMOD_jacobian(double *x, double *d, double *a, double t, double *jac)";
-        case CLC_INIT: return "void\nCLC_initializeDataStructs(CLC_simulator simulator)";
-        case QSS_INIT: return "void\nQSS_initializeDataStructs(QSS_simulator simulator)";
+        case MODEL_INSTANCE::Model_Settings: return "void\nMOD_settings(SD_simulationSettings settings)";
+        case MODEL_INSTANCE::Model: return "void\nMOD_definition(double *x, double *d, double *a, double t, double *dx)";
+        case MODEL_INSTANCE::Deps: return "void\nMOD_dependencies(int idx, double *x, double *d, double *a, double t, double *der, int *map)";
+        case MODEL_INSTANCE::Zero_Crossing: return "void\nMOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)";
+        case MODEL_INSTANCE::Handler_Pos: return "void\nMOD_handlerPos(int idx, double *x, double *d, double *a, double t)";
+        case MODEL_INSTANCE::Handler_Neg: return "void\nMOD_handlerNeg(int idx, double *x, double *d, double *a, double t)";
+        case MODEL_INSTANCE::Output: return "void\nMOD_output(int idx, double *x, double *d, double *a, double t, double *out)";
+        case MODEL_INSTANCE::Jacobian: return "void\nMOD_jacobian(double *x, double *d, double *a, double t, double *jac)";
+        case MODEL_INSTANCE::CLC_Init: return "void\nCLC_initializeDataStructs(CLC_simulator simulator)";
+        case MODEL_INSTANCE::QSS_Init: return "void\nQSS_initializeDataStructs(QSS_simulator simulator)";
       }
       return "";
     }
@@ -292,8 +345,7 @@ namespace MicroModelica {
       StatementTable stms = _model.initialCode();
       StatementTable::iterator it;
       stringstream buffer;
-      for(Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it))
-      {
+      for(Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
         _writer->write(stm, WRITER::Init_Code);
       }
     }
@@ -303,8 +355,7 @@ namespace MicroModelica {
     {
       InputTable inputs = _model.inputs();
       InputTable::iterator it;
-      for(Input input = inputs.begin(it); !inputs.end(it); input = inputs.next(it))
-      {
+      for(Input input = inputs.begin(it); !inputs.end(it); input = inputs.next(it)) {
         _writer->write(input, WRITER::Input);  
       }
     }
@@ -317,6 +368,44 @@ namespace MicroModelica {
       buffer << (!_writer->isEmpty(WRITER::Handler_Pos_Simple) || !_writer->isEmpty(WRITER::Handler_Pos_Generic) ? "MOD_handlerPos" : "NULL") << ", ";
       buffer << (!_writer->isEmpty(WRITER::Handler_Neg_Simple) || !_writer->isEmpty(WRITER::Handler_Neg_Generic) ? "MOD_handlerNeg" : "NULL");
       return buffer.str();
+    }
+
+    void  
+    ModelInstance::allocateVector(string name, int size) const  
+    {
+      stringstream buffer;
+      if (size) {
+        buffer << "int* " << name << " = (int*) malloc(" << size << "*sizeof(int));" << endl;
+        _writer->write(buffer, WRITER::Alloc_Access_Vectors);
+      }   
+    }
+
+    void 
+    ModelInstance::freeVector(string name, int size) const
+    {
+      stringstream buffer;
+      if (size) {
+        buffer << "free(" << name << ");" << endl;
+        _writer->write(buffer, WRITER::Free_Access_Vectors);
+      }
+    }
+
+    void 
+    ModelInstance::allocateVectors() const 
+    {
+      allocateVector("states", _model.stateNbr());
+      allocateVector("discretes", _model.discreteNbr());
+      allocateVector("events", _model.eventNbr());
+      allocateVector("outputs", _model.outputNbr());
+    }
+
+    void
+    ModelInstance::freeVectors() const
+    {
+      freeVector("states", _model.stateNbr());
+      freeVector("discretes", _model.discreteNbr());
+      freeVector("events", _model.eventNbr());
+      freeVector("outputs", _model.outputNbr());
     }
     
     /* QSSModelInstance Model Instance class. */
@@ -332,25 +421,72 @@ namespace MicroModelica {
     void 
     QSSModelInstance::allocateSolver()
     {
-      return;
+      ModelAnnotation annot = _model.annotations();
+      stringstream buffer;
+      buffer << "simulator->data = QSS_Data(" << _model.stateNbr() << ",";
+      buffer << _model.discreteNbr() << ",";
+      buffer << _model.eventNbr() << ",";
+      buffer << _model.inputNbr() << ",";
+      buffer << _model.algebraicNbr() << ",\"";
+      buffer << _model.name() << "\");" << endl;
+      buffer << "QSS_data modelData = simulator->data;" << endl;
+      buffer << "const double t = " << annot.initialTime() << ";" << endl;
+      buffer << "double* x = modelData->x;" << endl;
+      buffer << "double* d = modelData->d;" << endl;
+      buffer << "double* a = modelData->a;" << endl;
+      _writer->write(buffer, WRITER::Alloc_Matrix);
+    }
+
+
+    string 
+    QSSModelInstance::allocateModel()
+    {
+      stringstream buffer;
+      buffer << "simulator->model = QSS_Model(MOD_definition, ";
+      buffer << "MOD_dependencies, ";
+      buffer << ModelInstance::allocateModel();
+      buffer << ");";
+      return buffer.str();
     }
 
     void
     QSSModelInstance::initializeDataStructures()
     {
-      return;
-    }
+      stringstream buffer;
+      Utils::instance().clearLocalSymbols();
+      allocateSolver();
+      initialCode();
+      allocateVectors();
+      freeVectors();
+      ModelDependencies deps = _model.dependencies();
+      // Initialize Solver Data Structures.
+      initializeMatrix(deps.SD(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+      initializeMatrix(deps.DS(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+      inputs();
 
-    void
-    QSSModelInstance::definition()
-    {
-      return;
+      // Initialize Event Data Structures.
+      initializeMatrix(deps.SZ(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+
+      initializeMatrix(deps.HZ(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
+      initializeMatrix(deps.HD(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
+      initializeMatrix(deps.LHSDsc(), WRITER::Alloc_Event_LHSDSC, WRITER::Init_Event_LHSDSC, _model.eventNbr());
+      initializeMatrix(deps.LHSSt(), WRITER::Alloc_Event_LHSST, WRITER::Init_Event_LHSST, _model.eventNbr());
+      initializeMatrix(deps.RHSSt(), WRITER::Alloc_Event_RHSST, WRITER::Init_Event_RHSST, _model.eventNbr());
+
+      // Initialize Output Data Structures.
+      allocateOutput();
+      initializeMatrix(deps.OS(), WRITER::Alloc_Output_States, WRITER::Init_Output_States, _model.outputNbr());
+      initializeMatrix(deps.OD(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes, _model.outputNbr());
+      initializeMatrix(deps.SO(), WRITER::Alloc_Output_States, WRITER::Init_Output_States, _model.stateNbr());
+      initializeMatrix(deps.DO(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes, _model.discreteNbr());
+      allocateModel();
+      _writer->write(Utils::instance().localSymbols(), WRITER::Alloc_Matrix);
+
     }
 
     void
     QSSModelInstance::dependencies()
     {
-      return;
     }
 
     Graph
@@ -362,11 +498,83 @@ namespace MicroModelica {
     void
     QSSModelInstance::generate()
     {
+      include();
+      definition();
+      dependencies();
+      zeroCrossing();
+      handler();
+      output();
+      initializeDataStructures();
+      // Print generated Model Instance.
+      _writer->print(WRITER::Include);
+      _writer->print(componentDefinition(MODEL_INSTANCE::Model_Settings));
+      _writer->beginBlock();
+      settings();
+      _writer->endBlock();
+      _writer->print(componentDefinition(MODEL_INSTANCE::Model));
+      _writer->beginBlock();
+      _writer->print(WRITER::Model);
+      _writer->print(WRITER::Model_Simple);
+      _writer->print(WRITER::Model_Generic);
+      _writer->endBlock();
+      _writer->print(componentDefinition(MODEL_INSTANCE::Zero_Crossing));
+      _writer->beginBlock();
+      _writer->print(WRITER::Zero_Crossing);
+      _writer->print(WRITER::ZC_Simple);
+      _writer->print(WRITER::ZC_Generic);
+      _writer->endBlock();
+      _writer->print(componentDefinition(MODEL_INSTANCE::Handler_Pos));
+      _writer->beginBlock();
+      _writer->print(WRITER::Handler_Pos);
+      _writer->print(WRITER::Handler_Pos_Simple);
+      _writer->print(WRITER::Handler_Pos_Generic);
+      _writer->endBlock();
+      _writer->print(componentDefinition(MODEL_INSTANCE::Handler_Neg));
+      _writer->beginBlock();
+      _writer->print(WRITER::Handler_Neg);
+      _writer->print(WRITER::Handler_Neg_Simple);
+      _writer->print(WRITER::Handler_Neg_Generic);
+      _writer->endBlock();
+      _writer->print(componentDefinition(MODEL_INSTANCE::Output));
+      _writer->beginBlock();
+      _writer->print(WRITER::Output);
+      _writer->print(WRITER::Output_Simple);
+      _writer->print(WRITER::Output_Generic);
+      _writer->endBlock();
+      _writer->print(componentDefinition(MODEL_INSTANCE::QSS_Init));
+      _writer->beginBlock();
+      _writer->print(WRITER::Alloc_Access_Vectors);
+      _writer->print(WRITER::Alloc_Matrix);
+      _writer->print(WRITER::Init_Code);
+      _writer->print(WRITER::Alloc_Data);
+      _writer->print(WRITER::Alloc_Event_LHSDSC);
+      _writer->print(WRITER::Alloc_Event_LHSST);
+      _writer->print(WRITER::Alloc_Event_RHSST);
+      _writer->print(WRITER::Init_Matrix);
+      _writer->print(WRITER::Init_Data);
+      _writer->print(WRITER::Init_Event_LHSDSC);
+      _writer->print(WRITER::Init_Event_LHSST);
+      _writer->print(WRITER::Init_Event_RHSST);
+      _writer->print(WRITER::Config_Events);
+      _writer->print(WRITER::Input);
+      _writer->print(WRITER::Init_Output);
+      _writer->print(WRITER::Alloc_Output_States);
+      _writer->print(WRITER::Alloc_Output_Discretes);
+      _writer->print(WRITER::Config_Output);
+      _writer->print(WRITER::Init_Output_States);
+      _writer->print(WRITER::Init_Output_Discretes);
+      _writer->print(allocateModel());
+      _writer->print(WRITER::Free_Access_Vectors);
+      _writer->endBlock();
+      _writer->print(componentDefinition(MODEL_INSTANCE::CLC_Init));
+      _writer->beginBlock();
+      _writer->endBlock();
     }
 
     void 
     QSSModelInstance::header()
     {
+      ModelInstance::header();
     }
 
     /* ClassicModelInstance Model Instance class. */
@@ -386,62 +594,23 @@ namespace MicroModelica {
       Utils::instance().clearLocalSymbols();
       allocateSolver();
       initialCode();
+      allocateVectors();
+      freeVectors();
       ModelDependencies deps = _model.dependencies();
       // Initialize Solver Data Structures.
-      initializeMatrix(deps.SD(), WRITER::Alloc_Matrix_SD, WRITER::Init_Matrix_SD);
-      initializeMatrix(deps.DS(), WRITER::Alloc_Matrix_DS, WRITER::Init_Matrix_DS);
+      initializeMatrix(deps.SD(), WRITER::Alloc_Matrix_SD, WRITER::Init_Matrix_SD, _model.stateNbr());
+      initializeMatrix(deps.DS(), WRITER::Alloc_Matrix_DS, WRITER::Init_Matrix_DS, _model.stateNbr());
       inputs();
-
-      // Initialize Event Data Structures.
-      initializeMatrix(deps.SZ(), WRITER::Alloc_Matrix_SZ, WRITER::Init_Matrix_SZ);
-
-      initializeMatrix(deps.HZ(), WRITER::Alloc_Matrix_HZ, WRITER::Init_Matrix_HZ);
-      initializeMatrix(deps.HD(), WRITER::Alloc_Matrix_HD, WRITER::Init_Matrix_HD);
-      initializeMatrix(deps.LHSDsc(), WRITER::Alloc_Event_LHSDSC, WRITER::Init_Event_LHSDSC);
-      initializeMatrix(deps.LHSSt(), WRITER::Alloc_Event_LHSST, WRITER::Init_Event_LHSST);
-      initializeMatrix(deps.RHSSt(), WRITER::Alloc_Event_RHSST, WRITER::Init_Event_RHSST);
-
       // Initialize Output Data Structures.
       allocateOutput();
-      initializeMatrix(deps.OS(), WRITER::Alloc_Output_States, WRITER::Init_Output_States);
-      initializeMatrix(deps.OD(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes);
-      initializeMatrix(deps.SO(), WRITER::Alloc_Output_States, WRITER::Init_Output_States);
-      initializeMatrix(deps.DO(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes);
+      initializeMatrix(deps.OS(), WRITER::Alloc_Output_States, WRITER::Init_Output_States, _model.outputNbr());
+      initializeMatrix(deps.OD(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes, _model.outputNbr());
+      initializeMatrix(deps.SO(), WRITER::Alloc_Output_States, WRITER::Init_Output_States, _model.stateNbr());
+      initializeMatrix(deps.DO(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes, _model.discreteNbr());
       allocateModel();
       _writer->write(Utils::instance().localSymbols(), WRITER::Alloc_Matrix);
     }
-    
-    void
-    ClassicModelInstance::definition()
-    {
-      EquationTable derivatives = _model.derivatives();
-      EquationTable algebraics = _model.algebraics();
-      EquationTable::iterator it;
-      VarSymbolTable symbols = _model.symbols();
-      stringstream buffer;
-      Utils::instance().clearLocalSymbols();
-      for(Equation alg = algebraics.begin(it); !algebraics.end(it); alg = algebraics.next(it))
-      {
-         _writer->write(alg, WRITER::Model_Simple);
-      }
-      for(Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it))
-      {
-         _writer->write(der, WRITER::Model_Simple);
-      }
-      _writer->write(Utils::instance().localSymbols(), WRITER::Model);
-    }
-    
-    void
-    ClassicModelInstance::dependencies()
-    {
-    }
-    
-    Graph
-    ClassicModelInstance::computationalGraph()
-    {
-      return Graph(0,0);
-    }
-
+           
     void 
     ClassicModelInstance::allocateSolver()
     {
@@ -453,11 +622,11 @@ namespace MicroModelica {
       buffer << _model.inputNbr() << ",";
       buffer << _model.algebraicNbr() << ",\"";
       buffer << _model.name() << "\");" << endl;
-      buffer << "modelData = simulator->data;" << endl;
+      buffer << "CLC_data modelData = simulator->data;" << endl;
       buffer << "const double t = " << annot.initialTime() << ";" << endl;
       buffer << "double* x = modelData->x;" << endl;
       buffer << "double* d = modelData->d;" << endl;
-      buffer << "double* a = modelData->a;" << endl;
+      //buffer << "double* a = modelData->a;" << endl;
       _writer->write(buffer, WRITER::Alloc_Matrix);
     }
 
@@ -476,52 +645,52 @@ namespace MicroModelica {
     {
       include();
       definition();
-      dependencies();
       zeroCrossing();
       handler();
       output();
       initializeDataStructures();
       // Print generated Model Instance.
       _writer->print(WRITER::Include);
-      _writer->print(componentDefinition(MODEL_SETTINGS));
+      _writer->print(componentDefinition(MODEL_INSTANCE::Model_Settings));
       _writer->beginBlock();
       settings();
       _writer->endBlock();
-      _writer->print(componentDefinition(MODEL));
+      _writer->print(componentDefinition(MODEL_INSTANCE::Model));
       _writer->beginBlock();
       _writer->print(WRITER::Model);
       _writer->print(WRITER::Model_Simple);
       _writer->endBlock();
-      _writer->print(componentDefinition(JACOBIAN));
+      _writer->print(componentDefinition(MODEL_INSTANCE::Jacobian));
       _writer->beginBlock();
       _writer->print(WRITER::Jacobian);
       _writer->endBlock();
-      _writer->print(componentDefinition(ZC));
+      _writer->print(componentDefinition(MODEL_INSTANCE::Zero_Crossing));
       _writer->beginBlock();
       _writer->print(WRITER::Zero_Crossing);
       _writer->print(WRITER::ZC_Simple);
       _writer->print(WRITER::ZC_Generic);
       _writer->endBlock();
-      _writer->print(componentDefinition(HANDLER_POS));
+      _writer->print(componentDefinition(MODEL_INSTANCE::Handler_Pos));
       _writer->beginBlock();
       _writer->print(WRITER::Handler_Pos);
       _writer->print(WRITER::Handler_Pos_Simple);
       _writer->print(WRITER::Handler_Pos_Generic);
       _writer->endBlock();
-      _writer->print(componentDefinition(HANDLER_NEG));
+      _writer->print(componentDefinition(MODEL_INSTANCE::Handler_Neg));
       _writer->beginBlock();
       _writer->print(WRITER::Handler_Neg);
       _writer->print(WRITER::Handler_Neg_Simple);
       _writer->print(WRITER::Handler_Neg_Generic);
       _writer->endBlock();
-      _writer->print(componentDefinition(OUTPUT));
+      _writer->print(componentDefinition(MODEL_INSTANCE::Output));
       _writer->beginBlock();
       _writer->print(WRITER::Output);
       _writer->print(WRITER::Output_Simple);
       _writer->print(WRITER::Output_Generic);
       _writer->endBlock();
-      _writer->print(componentDefinition(CLC_INIT));
+      _writer->print(componentDefinition(MODEL_INSTANCE::CLC_Init));
       _writer->beginBlock();
+      _writer->print(WRITER::Alloc_Access_Vectors);
       _writer->print(WRITER::Alloc_Matrix);
       _writer->print(WRITER::Init_Code);
       _writer->print(WRITER::Alloc_Matrix_SD);
@@ -543,15 +712,18 @@ namespace MicroModelica {
       _writer->print(WRITER::Init_Event_LHSDSC);
       _writer->print(WRITER::Init_Event_LHSST);
       _writer->print(WRITER::Init_Event_RHSST);
+      _writer->print(WRITER::Config_Events);
       _writer->print(WRITER::Input);
       _writer->print(WRITER::Init_Output);
       _writer->print(WRITER::Alloc_Output_States);
       _writer->print(WRITER::Alloc_Output_Discretes);
+      _writer->print(WRITER::Config_Output);
       _writer->print(WRITER::Init_Output_States);
       _writer->print(WRITER::Init_Output_Discretes);
       _writer->print(allocateModel());
+      _writer->print(WRITER::Free_Access_Vectors);
       _writer->endBlock();
-      _writer->print(componentDefinition(QSS_INIT));
+      _writer->print(componentDefinition(MODEL_INSTANCE::QSS_Init));
       _writer->beginBlock();
       _writer->endBlock();
     }
