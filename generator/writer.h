@@ -20,10 +20,10 @@
 #ifndef MMO_WRITER_H_
 #define MMO_WRITER_H_
 
+#include <boost/variant/variant.hpp>
 #include <fstream>
 #include <list>
 #include <string>
-#include <boost/variant/variant.hpp>
 
 #include "../util/util.h"
 
@@ -39,86 +39,92 @@ namespace WRITER {
  *
  */
 typedef enum {
-  Alloc_Matrix,                //!< WR_Alloc_LD
-  Alloc_Matrix_SD,             //!< WR_Alloc_LD_SD
-  Alloc_Matrix_Alg_SD,         //!< WR_Alloc_LD_ALG_SD
-  Alloc_Matrix_SZ,             //!< WR_Alloc_LD_SZ
-  Alloc_Matrix_Alg_SZ,         //!< WR_Alloc_LD_ALG_SZ
-  Alloc_Matrix_ZS,             //!< WR_Alloc_LD_ZS
-  Alloc_Matrix_Alg_ZS,         //!< WR_Alloc_LD_ALG_ZS
-  Alloc_Matrix_DS,             //!< WR_Alloc_LD_DS
-  Alloc_Matrix_Alg_DS,         //!< WR_Alloc_LD_ALG_DS
-  Alloc_Matrix_HD,             //!< WR_Alloc_LD_HD
-  Alloc_Matrix_HZ,             //!< WR_Alloc_LD_HZ
-  Alloc_Matrix_DD,             //!< WR_Alloc_LD_DD
-  Alloc_Matrix_DH,             //!< WR_Alloc_LD_DH
-  Alloc_State_Handlers,        //!< WR_ALLOC_STATE_HANDLERS
-  Alloc_Event_LHSST,           //!< WR_ALLOC_EVENT_LHSST
-  Alloc_Event_RHSST,           //!< WR_ALLOC_EVENT_RHSST
-  Alloc_Event_Alg_RHSST,       //!< WR_ALLOC_EVENT_ALG_RHSST
-  Alloc_Event_LHSDSC,          //!< WR_ALLOC_EVENT_DSC
-  Alloc_Output_States,         //!< WR_Alloc_Output_StateS
-  Alloc_Output_Alg_States,     //!< WR_ALLOC_OUTPUT_ALG_StateS
-  Alloc_Output_Discretes,      //!< WR_ALLOC_OUTPUT_Discretes
-  Alloc_Output_Alg_Discretes,  //!< WR_ALLOC_OUTPUT_ALG_Discretes
-  Include,                     //!< INCLUDE_
-  Init_Matrix,                 //!< WR_Init_LD
-  Init_Matrix_SD,              //!< WR_Init_LD_SD
-  Init_Matrix_Alg_SD,          //!< WR_Init_LD_ALG_SD
-  Init_Matrix_SZ,              //!< WR_Init_LD_SZ
-  Init_Matrix_Alg_SZ,          //!< WR_Init_LD_ALG_SZ
-  Init_Matrix_ZS,              //!< WR_Init_LD_ZS
-  Init_Matrix_Alg_ZS,          //!< WR_Init_LD_ALG_ZS
-  Init_Matrix_DS,              //!< WR_Init_LD_DS
-  Init_Matrix_Alg_DS,          //!< WR_Init_LD_ALG_DS
-  Init_Matrix_HD,              //!< WR_Init_LD_HD
-  Init_Matrix_HZ,              //!< WR_Init_LD_HZ
-  Init_Matrix_DD,              //!< WR_Init_LD_DD
-  Init_Matrix_DH,              //!< WR_Init_LD_DH
-  Init_Event,                  //!< WR_INIT_EVENT
-  Init_State_Handlers,         //!< WR_INIT_STATE_HANDLERS
-  Init_Event_LHSST,            //!< WR_INIT_EVENT_LHSST
-  Init_Event_RHSST,            //!< WR_INIT_EVENT_RHSST
-  Init_Event_Alg_RHSST,        //!< WR_INIT_EVENT_ALG_RHSST
-  Init_Event_LHSDSC,           //!< WR_INIT_EVENT_DSC
-  Init_Output,                 //!< WR_INIT_OUTPUT
-  Init_Output_States,          //!< WR_INIT_OUTPUT_STATES
-  Init_Output_Alg_States,      //!< WR_INIT_OUTPUT_ALG_STATES
-  Init_Output_Discretes,       //!< WR_INIT_OUTPUT_DSC
-  Init_Output_Alg_Discretes,   //!< WR_INIT_OUTPUT_ALG_DSC
-  Init_Time,                   //!< WR_INIT_TIME
-  Init_Code,                   //!< WR_INIT_CODE
+  Config_Output,
+  Config_Events,
+  Alloc_Access_Vectors,
+  Free_Access_Vectors,
+  Alloc_Data,
+  Init_Data,
+  Alloc_Matrix,               //!< WR_Alloc_LD
+  Alloc_Matrix_SD,            //!< WR_Alloc_LD_SD
+  Alloc_Matrix_Alg_SD,        //!< WR_Alloc_LD_ALG_SD
+  Alloc_Matrix_SZ,            //!< WR_Alloc_LD_SZ
+  Alloc_Matrix_Alg_SZ,        //!< WR_Alloc_LD_ALG_SZ
+  Alloc_Matrix_ZS,            //!< WR_Alloc_LD_ZS
+  Alloc_Matrix_Alg_ZS,        //!< WR_Alloc_LD_ALG_ZS
+  Alloc_Matrix_DS,            //!< WR_Alloc_LD_DS
+  Alloc_Matrix_Alg_DS,        //!< WR_Alloc_LD_ALG_DS
+  Alloc_Matrix_HD,            //!< WR_Alloc_LD_HD
+  Alloc_Matrix_HZ,            //!< WR_Alloc_LD_HZ
+  Alloc_Matrix_DD,            //!< WR_Alloc_LD_DD
+  Alloc_Matrix_DH,            //!< WR_Alloc_LD_DH
+  Alloc_State_Handlers,       //!< WR_ALLOC_STATE_HANDLERS
+  Alloc_Event_LHSST,          //!< WR_ALLOC_EVENT_LHSST
+  Alloc_Event_RHSST,          //!< WR_ALLOC_EVENT_RHSST
+  Alloc_Event_Alg_RHSST,      //!< WR_ALLOC_EVENT_ALG_RHSST
+  Alloc_Event_LHSDSC,         //!< WR_ALLOC_EVENT_DSC
+  Alloc_Output_States,        //!< WR_Alloc_Output_StateS
+  Alloc_Output_Alg_States,    //!< WR_ALLOC_OUTPUT_ALG_StateS
+  Alloc_Output_Discretes,     //!< WR_ALLOC_OUTPUT_Discretes
+  Alloc_Output_Alg_Discretes, //!< WR_ALLOC_OUTPUT_ALG_Discretes
+  Include,                    //!< INCLUDE_
+  Init_Matrix,                //!< WR_Init_LD
+  Init_Matrix_SD,             //!< WR_Init_LD_SD
+  Init_Matrix_Alg_SD,         //!< WR_Init_LD_ALG_SD
+  Init_Matrix_SZ,             //!< WR_Init_LD_SZ
+  Init_Matrix_Alg_SZ,         //!< WR_Init_LD_ALG_SZ
+  Init_Matrix_ZS,             //!< WR_Init_LD_ZS
+  Init_Matrix_Alg_ZS,         //!< WR_Init_LD_ALG_ZS
+  Init_Matrix_DS,             //!< WR_Init_LD_DS
+  Init_Matrix_Alg_DS,         //!< WR_Init_LD_ALG_DS
+  Init_Matrix_HD,             //!< WR_Init_LD_HD
+  Init_Matrix_HZ,             //!< WR_Init_LD_HZ
+  Init_Matrix_DD,             //!< WR_Init_LD_DD
+  Init_Matrix_DH,             //!< WR_Init_LD_DH
+  Init_Event,                 //!< WR_INIT_EVENT
+  Init_State_Handlers,        //!< WR_INIT_STATE_HANDLERS
+  Init_Event_LHSST,           //!< WR_INIT_EVENT_LHSST
+  Init_Event_RHSST,           //!< WR_INIT_EVENT_RHSST
+  Init_Event_Alg_RHSST,       //!< WR_INIT_EVENT_ALG_RHSST
+  Init_Event_LHSDSC,          //!< WR_INIT_EVENT_DSC
+  Init_Output,                //!< WR_INIT_OUTPUT
+  Init_Output_States,         //!< WR_INIT_OUTPUT_STATES
+  Init_Output_Alg_States,     //!< WR_INIT_OUTPUT_ALG_STATES
+  Init_Output_Discretes,      //!< WR_INIT_OUTPUT_DSC
+  Init_Output_Alg_Discretes,  //!< WR_INIT_OUTPUT_ALG_DSC
+  Init_Time,                  //!< WR_INIT_TIME
+  Init_Code,                  //!< WR_INIT_CODE
   Input,
-  Model,               //!< WR_MODEL_SIMPLE
-  Model_Simple,        //!< WR_MODEL_SIMPLE
-  Model_Generic,       //!< WR_MODEL_GENERIC
-  Model_Deps_Simple,   //!< WR_MODEL_DEPS_SIMPLE
-  Model_Deps,          //!< WR_MODEL_DEPS_SIMPLE
-  Model_Deps_Generic,  //!< WR_MODEL_DEPS_GENERIC
-  Zero_Crossing,       //!< WR_ZC_SIMPLE
-  ZC_Simple,           //!< WR_ZC_SIMPLE
-  ZC_Generic,          //!< WR_ZC_GENERIC
+  Model,              //!< WR_MODEL_SIMPLE
+  Model_Simple,       //!< WR_MODEL_SIMPLE
+  Model_Generic,      //!< WR_MODEL_GENERIC
+  Model_Deps_Simple,  //!< WR_MODEL_DEPS_SIMPLE
+  Model_Deps,         //!< WR_MODEL_DEPS_SIMPLE
+  Model_Deps_Generic, //!< WR_MODEL_DEPS_GENERIC
+  Zero_Crossing,      //!< WR_ZC_SIMPLE
+  ZC_Simple,          //!< WR_ZC_SIMPLE
+  ZC_Generic,         //!< WR_ZC_GENERIC
   Handler_Pos,
-  Handler_Pos_Simple,   //!< WR_HANDLER_POS_SIMPLE
-  Handler_Pos_Generic,  //!< WR_HANDLER_POS_GENERIC
+  Handler_Pos_Simple,  //!< WR_HANDLER_POS_SIMPLE
+  Handler_Pos_Generic, //!< WR_HANDLER_POS_GENERIC
   Handler_Neg,
-  Handler_Neg_Simple,   //!< WR_HANDLER_NEG_SIMPLE
-  Handler_Neg_Generic,  //!< WR_HANDLER_NEG_GENERIC
-  Jacobian,             //!< WR_MODEL_JACOBIAN
-  Output,               //!< WR_Output_SIMPLE
-  Output_Simple,        //!< WR_Output_SIMPLE
-  Output_Generic,       //!< WR_Output_GENERIC
-  Function_Header,      //!< WR_FUNCTION_HEADER
-  Function_Code,        //!< WR_FUNCTION_CODE
+  Handler_Neg_Simple,  //!< WR_HANDLER_NEG_SIMPLE
+  Handler_Neg_Generic, //!< WR_HANDLER_NEG_GENERIC
+  Jacobian,            //!< WR_MODEL_JACOBIAN
+  Output,              //!< WR_Output_SIMPLE
+  Output_Simple,       //!< WR_Output_SIMPLE
+  Output_Generic,      //!< WR_Output_GENERIC
+  Function_Header,     //!< WR_FUNCTION_HEADER
+  Function_Code,       //!< WR_FUNCTION_CODE
   Model_Header,
-  Empty  //!< WR_NULL
+  Empty //!< WR_NULL
 } Section;
 
 typedef enum { Append_Simple, Append_Generic, Prepend } Insert;
-}  // namespace WRITER
+} // namespace WRITER
 
 class Writer {
-  public:
+public:
   /**
    *
    */
@@ -134,8 +140,8 @@ class Writer {
   virtual void clearFile() = 0;
 
   template <class W>
-  void write(W out, WRITER::Section section, bool clean = true, WRITER::Insert it = WRITER::Prepend)
-  {
+  void write(W out, WRITER::Section section, bool clean = true,
+             WRITER::Insert it = WRITER::Prepend) {
     std::stringstream buffer;
     buffer << out;
     write(buffer, section, clean, it);
@@ -145,21 +151,25 @@ class Writer {
    * @param str
    * @param section
    */
-  virtual void write(std::string str, WRITER::Section section, WRITER::Insert it = WRITER::Prepend) = 0;
+  virtual void write(std::string str, WRITER::Section section,
+                     WRITER::Insert it = WRITER::Prepend) = 0;
   /**
    *
    * @param s
    * @param section
    * @param clean
    */
-  virtual void write(std::stringstream& s, WRITER::Section section, bool clean = true, WRITER::Insert it = WRITER::Prepend) = 0;
+  virtual void write(std::stringstream &s, WRITER::Section section,
+                     bool clean = true,
+                     WRITER::Insert it = WRITER::Prepend) = 0;
   virtual void removeFromSection(std::string str, WRITER::Section section) = 0;
   /**
    *
    * @param block
    * @param section
    */
-  virtual void writeBlock(std::list<std::string> block, WRITER::Section section) = 0;
+  virtual void writeBlock(std::list<std::string> block,
+                          WRITER::Section section) = 0;
   /**
    *
    * @param section
@@ -169,7 +179,7 @@ class Writer {
    *
    * @param s
    */
-  virtual void print(std::stringstream& s) = 0;
+  virtual void print(std::stringstream &s) = 0;
   /**
    *
    * @param s
@@ -242,7 +252,7 @@ typedef std::shared_ptr<Writer> WriterPtr;
  *
  */
 class MemoryWriter : public Writer {
-  public:
+public:
   /**
    *
    */
@@ -265,14 +275,16 @@ class MemoryWriter : public Writer {
    * @param str
    * @param section
    */
-  void write(std::string str, WRITER::Section section, WRITER::Insert it = WRITER::Prepend);
+  void write(std::string str, WRITER::Section section,
+             WRITER::Insert it = WRITER::Prepend);
   /**
    *
    * @param s
    * @param section
    * @param clean
    */
-  void write(std::stringstream& s, WRITER::Section section, bool clean = true, WRITER::Insert it = WRITER::Prepend);
+  void write(std::stringstream &s, WRITER::Section section, bool clean = true,
+             WRITER::Insert it = WRITER::Prepend);
   void removeFromSection(std::string str, WRITER::Section section);
   /**
    *
@@ -289,7 +301,7 @@ class MemoryWriter : public Writer {
    *
    * @param s
    */
-  void print(std::stringstream& s);
+  void print(std::stringstream &s);
   /**
    *
    * @param s
@@ -355,7 +367,7 @@ class MemoryWriter : public Writer {
   void clear(WRITER::Section section);
   void write(Util::SymbolTable symbols, WRITER::Section s);
 
-  private:
+private:
   std::list<std::string> _sections[SECTIONS];
   std::ofstream _file;
   std::string _indentStr;
@@ -369,7 +381,7 @@ class MemoryWriter : public Writer {
  *
  */
 class FileWriter : public Writer {
-  public:
+public:
   /**
    *
    */
@@ -392,14 +404,16 @@ class FileWriter : public Writer {
    * @param str
    * @param section
    */
-  void write(std::string str, WRITER::Section section, WRITER::Insert it = WRITER::Prepend);
+  void write(std::string str, WRITER::Section section,
+             WRITER::Insert it = WRITER::Prepend);
   /**
    *
    * @param s
    * @param section
    * @param clean
    */
-  void write(std::stringstream& s, WRITER::Section section, bool clean = true, WRITER::Insert it = WRITER::Prepend);
+  void write(std::stringstream &s, WRITER::Section section, bool clean = true,
+             WRITER::Insert it = WRITER::Prepend);
   void removeFromSection(std::string str, WRITER::Section section);
   /**
    *
@@ -416,7 +430,7 @@ class FileWriter : public Writer {
    *
    * @param s
    */
-  void print(std::stringstream& s);
+  void print(std::stringstream &s);
   /**
    *
    * @param s
@@ -482,7 +496,7 @@ class FileWriter : public Writer {
   void clear(WRITER::Section section);
   void write(Util::SymbolTable symbols, WRITER::Section s);
 
-  private:
+private:
   std::ofstream _sections[SECTIONS];
   std::ofstream _file;
   std::string _indentStr;
@@ -492,7 +506,7 @@ class FileWriter : public Writer {
 };
 
 typedef boost::variant<MemoryWriter, FileWriter> WriterType;
-}  // namespace Generator
-}  // namespace MicroModelica
+} // namespace Generator
+} // namespace MicroModelica
 
 #endif /* MMO_WRITER_H_ */
