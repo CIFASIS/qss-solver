@@ -32,23 +32,33 @@ typedef ModelTable<std::string, std::string> SymbolTable;
 
 namespace IR {
 namespace EQUATION {
-typedef enum { ClassicDerivative, QSSDerivative, Algebraic, Dependency, Output, ZeroCrossing, Handler, Jacobian } Type;
+typedef enum {
+  ClassicDerivative,
+  QSSDerivative,
+  Algebraic,
+  Dependency,
+  Output,
+  ZeroCrossing,
+  Handler,
+  Jacobian
+} Type;
 }
-/**
- *
- */
+
+// class EquationPrinter;
+
 class Equation {
-  public:
-  /**
-   *
-   * @param exp
-   */
+public:
   Equation(){};
-  Equation(AST_Expression eq, Util::VarSymbolTable& symbols, EQUATION::Type type, int id, int offset);
-  Equation(AST_Expression eq, Util::VarSymbolTable& symbols, Option<Range> range, EQUATION::Type type, int id, int offset);
-  Equation(AST_Equation eq, Util::VarSymbolTable& symbols, EQUATION::Type type, int id);
-  Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Range r, EQUATION::Type type, int id);
-  Equation(AST_Equation eq, Util::VarSymbolTable& symbols, Option<Range> r, EQUATION::Type type, int id);
+  Equation(AST_Expression eq, Util::VarSymbolTable &symbols,
+           EQUATION::Type type, int id, int offset);
+  Equation(AST_Expression eq, Util::VarSymbolTable &symbols,
+           Option<Range> range, EQUATION::Type type, int id, int offset);
+  Equation(AST_Equation eq, Util::VarSymbolTable &symbols, EQUATION::Type type,
+           int id);
+  Equation(AST_Equation eq, Util::VarSymbolTable &symbols, Range r,
+           EQUATION::Type type, int id);
+  Equation(AST_Equation eq, Util::VarSymbolTable &symbols, Option<Range> r,
+           EQUATION::Type type, int id);
   /**
    *
    */
@@ -65,25 +75,29 @@ class Equation {
   inline int id() { return _id; };
   static std::string functionId(EQUATION::Type type);
   inline EQUATION::Type type() { return _type; }
-  inline bool isDerivative() { return _type == EQUATION::QSSDerivative || _type == EQUATION::ClassicDerivative; }
+  inline bool isDerivative() {
+    return _type == EQUATION::QSSDerivative ||
+           _type == EQUATION::ClassicDerivative;
+  }
   inline bool isZeroCrossing() { return _type == EQUATION::ZeroCrossing; }
   inline bool isOutput() { return _type == EQUATION::Output; }
   inline bool isAlgebraic() { return _type == EQUATION::Algebraic; }
   Option<Util::Variable> LHSVariable();
-  friend std::ostream& operator<<(std::ostream& out, const Equation& e);
+  friend std::ostream &operator<<(std::ostream &out, const Equation &e);
   bool isValid() const;
   bool hasAlgebraics();
+  std::string functionId() const;
+  bool isRHSReference() const;
 
-  private:
+private:
   void process(AST_Equation eq);
   void process(AST_Expression exp);
   Deps::EquationDependencyMatrix dependencyMatrix() const;
-  std::string functionId() const;
   std::string prefix() const;
   std::string lhsStr() const;
   void initializeDerivatives();
   std::string generateDerivatives() const;
-
+  // EquationPrinter getPrinter() const;
   AST_Equation _eq;
   Expression _lhs;
   Expression _rhs;
@@ -98,6 +112,60 @@ class Equation {
 };
 
 typedef ModelTable<int, Equation> EquationTable;
-}  // namespace IR
-}  // namespace MicroModelica
+
+/*class EquationPrinter
+{
+public:
+    EquationPrinter(Equation eq) : _eq(eq) {};
+    ~EquationPrinter() = default;
+    virtual std::string print() const { return ""; };
+    std::string prefix() const;
+    std::string lhs() const;
+private:
+    Equation _eq;
+};
+
+class ClassicConfig : public EquationPrinter
+{
+public:
+    ClassicConfig(Equation eq) : EquationPrinter(eq), _eq(eq) {};
+    ~ClassicConfig() = default;
+    std::string print() const;
+
+private:
+    Equation _eq;
+};
+
+class OutputConfig : public EquationPrinter
+{
+public:
+    OutputConfig(Equation eq) : EquationPrinter(eq), _eq(eq) {};
+    ~OutputConfig() = default;
+    std::string print() const;
+
+private:
+    Equation _eq;
+};
+
+class EquationConfig : public EquationPrinter
+{
+public:
+    EquationConfig(Equation eq, const Util::VarSymbolTable& symbols) :
+EquationPrinter(eq), _eq(eq), _symbols(symbols) {};
+    ~EquationConfig() = default;
+    std::string print() const;
+
+protected:
+  void initializeDerivatives();
+  std::string generateDerivatives() const;
+
+private:
+  Equation _eq;
+  Util::VarSymbolTable _symbols;
+  Expression _derivatives[3];
+};*/
+
+} // namespace IR
+} // namespace MicroModelica
+
 #endif /* EQUATION_H_ */
