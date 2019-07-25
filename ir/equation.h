@@ -32,53 +32,34 @@ typedef ModelTable<std::string, std::string> SymbolTable;
 
 namespace IR {
 namespace EQUATION {
-typedef enum {
-  ClassicDerivative,
-  QSSDerivative,
-  Algebraic,
-  Dependency,
-  Output,
-  ZeroCrossing,
-  Handler,
-  Jacobian
-} Type;
+typedef enum { ClassicDerivative, QSSDerivative, Algebraic, Dependency, Output, ZeroCrossing, Handler, Jacobian } Type;
 }
 
-// class EquationPrinter;
-
 class Equation {
-public:
+  public:
   Equation(){};
-  Equation(AST_Expression eq, Util::VarSymbolTable &symbols,
-           EQUATION::Type type, int id, int offset);
-  Equation(AST_Expression eq, Util::VarSymbolTable &symbols,
-           Option<Range> range, EQUATION::Type type, int id, int offset);
-  Equation(AST_Equation eq, Util::VarSymbolTable &symbols, EQUATION::Type type,
-           int id);
-  Equation(AST_Equation eq, Util::VarSymbolTable &symbols, Range r,
-           EQUATION::Type type, int id);
-  Equation(AST_Equation eq, Util::VarSymbolTable &symbols, Option<Range> r,
-           EQUATION::Type type, int id);
+  Equation(AST_Expression eq, Util::VarSymbolTable &symbols, EQUATION::Type type, int id, int offset);
+  Equation(AST_Expression eq, Util::VarSymbolTable &symbols, Option<Range> range, EQUATION::Type type, int id, int offset);
+  Equation(AST_Equation eq, Util::VarSymbolTable &symbols, EQUATION::Type type, int id);
+  Equation(AST_Equation eq, Util::VarSymbolTable &symbols, Range r, EQUATION::Type type, int id);
+  Equation(AST_Equation eq, Util::VarSymbolTable &symbols, Option<Range> r, EQUATION::Type type, int id);
   /**
    *
    */
   ~Equation(){};
   inline bool hasRange() { return _range.is_initialized(); };
-  inline Expression lhs() { return _lhs; };
-  inline Expression rhs() { return _rhs; };
+  inline Expression lhs() const { return _lhs; };
+  inline Expression rhs() const { return _rhs; };
   inline AST_Expression equation() { return _rhs.expression(); };
   inline bool autonomous() { return _autonomous; };
   inline Util::SymbolTable calledFunctions() { return _calledFunctions; };
   std::string print() const;
   std::string macro() const;
-  inline Option<Range> range() { return _range; };
-  inline int id() { return _id; };
+  inline Option<Range> range() const { return _range; };
+  inline int id() const { return _id; };
   static std::string functionId(EQUATION::Type type);
-  inline EQUATION::Type type() { return _type; }
-  inline bool isDerivative() {
-    return _type == EQUATION::QSSDerivative ||
-           _type == EQUATION::ClassicDerivative;
-  }
+  inline EQUATION::Type type() const { return _type; }
+  inline bool isDerivative() { return _type == EQUATION::QSSDerivative || _type == EQUATION::ClassicDerivative; }
   inline bool isZeroCrossing() { return _type == EQUATION::ZeroCrossing; }
   inline bool isOutput() { return _type == EQUATION::Output; }
   inline bool isAlgebraic() { return _type == EQUATION::Algebraic; }
@@ -88,16 +69,11 @@ public:
   bool hasAlgebraics();
   std::string functionId() const;
   bool isRHSReference() const;
+  Deps::EquationDependencyMatrix dependencyMatrix() const;
 
-private:
+  private:
   void process(AST_Equation eq);
   void process(AST_Expression exp);
-  Deps::EquationDependencyMatrix dependencyMatrix() const;
-  std::string prefix() const;
-  std::string lhsStr() const;
-  void initializeDerivatives();
-  std::string generateDerivatives() const;
-  // EquationPrinter getPrinter() const;
   AST_Equation _eq;
   Expression _lhs;
   Expression _rhs;
@@ -113,59 +89,55 @@ private:
 
 typedef ModelTable<int, Equation> EquationTable;
 
-/*class EquationPrinter
-{
-public:
-    EquationPrinter(Equation eq) : _eq(eq) {};
-    ~EquationPrinter() = default;
-    virtual std::string print() const { return ""; };
-    std::string prefix() const;
-    std::string lhs() const;
-private:
-    Equation _eq;
+class EquationPrinter {
+  public:
+  EquationPrinter(Equation eq) : _eq(eq){};
+  ~EquationPrinter() = default;
+  virtual std::string print() const { return ""; };
+  std::string prefix() const;
+  std::string lhs() const;
+
+  private:
+  Equation _eq;
 };
 
-class ClassicConfig : public EquationPrinter
-{
-public:
-    ClassicConfig(Equation eq) : EquationPrinter(eq), _eq(eq) {};
-    ~ClassicConfig() = default;
-    std::string print() const;
+class ClassicConfig : public EquationPrinter {
+  public:
+  ClassicConfig(Equation eq) : EquationPrinter(eq), _eq(eq){};
+  ~ClassicConfig() = default;
+  std::string print() const override;
 
-private:
-    Equation _eq;
+  private:
+  Equation _eq;
 };
 
-class OutputConfig : public EquationPrinter
-{
-public:
-    OutputConfig(Equation eq) : EquationPrinter(eq), _eq(eq) {};
-    ~OutputConfig() = default;
-    std::string print() const;
+class OutputConfig : public EquationPrinter {
+  public:
+  OutputConfig(Equation eq) : EquationPrinter(eq), _eq(eq){};
+  ~OutputConfig() = default;
+  std::string print() const;
 
-private:
-    Equation _eq;
+  private:
+  Equation _eq;
 };
 
-class EquationConfig : public EquationPrinter
-{
-public:
-    EquationConfig(Equation eq, const Util::VarSymbolTable& symbols) :
-EquationPrinter(eq), _eq(eq), _symbols(symbols) {};
-    ~EquationConfig() = default;
-    std::string print() const;
+class EquationConfig : public EquationPrinter {
+  public:
+  EquationConfig(Equation eq, const Util::VarSymbolTable &symbols) : EquationPrinter(eq), _eq(eq), _symbols(symbols){};
+  ~EquationConfig() = default;
+  std::string print() const;
 
-protected:
+  protected:
   void initializeDerivatives();
   std::string generateDerivatives() const;
 
-private:
+  private:
   Equation _eq;
   Util::VarSymbolTable _symbols;
   Expression _derivatives[3];
-};*/
+};
 
-} // namespace IR
-} // namespace MicroModelica
+}  // namespace IR
+}  // namespace MicroModelica
 
 #endif /* EQUATION_H_ */
