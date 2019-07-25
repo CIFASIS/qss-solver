@@ -26,21 +26,13 @@
 
 static CMD_terminateFn _terminate = NULL;
 
-void
-CMD_init(SD_simulationSettings settings)
+void CMD_init(SD_simulationSettings settings)
 {
-  if(settings->method == SD_DOPRI || settings->method == SD_DASSL)
-  {
+  if (settings->method == SD_DOPRI || settings->method == SD_DASSL) {
     _terminate = CLC_CMD_terminate;
-  }
-  else
-  {
+  } else {
     _terminate = QSS_CMD_terminate;
   }
 }
 
-void
-CMD_terminate()
-{
-  _terminate();
-}
+void CMD_terminate() { _terminate(); }

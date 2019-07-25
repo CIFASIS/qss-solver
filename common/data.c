@@ -22,8 +22,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-SD_simulationSettings
-SD_SimulationSettings()
+SD_simulationSettings SD_SimulationSettings()
 {
   SD_simulationSettings p = checkedMalloc(sizeof(*p));
   p->debug = SD_DBG_NoDebug;
@@ -33,8 +32,7 @@ SD_SimulationSettings()
   return p;
 }
 
-SD_simulationSettings
-SD_copySimulationSettings(SD_simulationSettings settings)
+SD_simulationSettings SD_copySimulationSettings(SD_simulationSettings settings)
 {
   SD_simulationSettings p = SD_SimulationSettings();
   p->debug = settings->debug;
@@ -45,14 +43,9 @@ SD_copySimulationSettings(SD_simulationSettings settings)
   return p;
 }
 
-void
-SD_freeSimulationSettings(SD_simulationSettings settings)
-{
-  free(settings);
-}
+void SD_freeSimulationSettings(SD_simulationSettings settings) { free(settings); }
 
-SD_simulationLog
-SD_SimulationLog(char *name)
+SD_simulationLog SD_SimulationLog(char *name)
 {
   char logFile[128];
   sprintf(logFile, "%s.log", name);
@@ -61,51 +54,43 @@ SD_SimulationLog(char *name)
   p->handlers = NULL;
   p->hasVariables = FALSE;
   p->log = fopen(logFile, "w");
-  if(!p->log)
-  {
+  if (!p->log) {
     fprintf(stderr, "Error: Can't open log file.");
   }
   return p;
 }
 
-void
-SD_freeSimulationLog(SD_simulationLog log)
+void SD_freeSimulationLog(SD_simulationLog log)
 {
-  if(log->states != NULL && log->hasVariables == TRUE)
-  {
+  if (log->states != NULL && log->hasVariables == TRUE) {
     free(log->states);
   }
-  if(log->handlers && log->hasVariables == TRUE)
-  {
+  if (log->handlers && log->hasVariables == TRUE) {
     free(log->handlers);
   }
   fclose(log->log);
   free(log);
 }
 
-void
-SD_copySimulationLogVariables(SD_simulationLog log, SD_simulationLog orig)
+void SD_copySimulationLogVariables(SD_simulationLog log, SD_simulationLog orig)
 {
   log->states = orig->states;
   log->handlers = orig->handlers;
 }
 
-void
-SD_setSimulationLogVariables(SD_simulationLog log, int states, int events)
+void SD_setSimulationLogVariables(SD_simulationLog log, int states, int events)
 {
-  log->states = (int*) malloc(states * sizeof(int));
+  log->states = (int *)malloc(states * sizeof(int));
   cleanVector(log->states, 0, states);
   log->handlers = NULL;
-  if(events)
-  {
-    log->handlers = (int*) malloc(events * sizeof(int));
+  if (events) {
+    log->handlers = (int *)malloc(events * sizeof(int));
     cleanVector(log->handlers, 0, events);
   }
   log->hasVariables = TRUE;
 }
 
-void
-SD_print(SD_simulationLog log, const char *message, ...)
+void SD_print(SD_simulationLog log, const char *message, ...)
 {
   va_list ap;
   va_start(ap, message);
@@ -114,13 +99,11 @@ SD_print(SD_simulationLog log, const char *message, ...)
   fprintf(log->log, "\n");
 }
 
-SD_eventData
-SD_EventData(int size)
+SD_eventData SD_EventData(int size)
 {
   SD_eventData p = checkedMalloc(size * sizeof(*p));
   int i;
-  for(i = 0; i < size; i++)
-  {
+  for (i = 0; i < size; i++) {
     p[i].nLHSSt = 0;
     p[i].nLHSDsc = 0;
     p[i].nRHSSt = 0;
@@ -134,13 +117,11 @@ SD_EventData(int size)
   return p;
 }
 
-SD_eventData
-SD_copyEventData(int size, SD_eventData events)
+SD_eventData SD_copyEventData(int size, SD_eventData events)
 {
   SD_eventData p = checkedMalloc(size * sizeof(*p));
   int i;
-  for(i = 0; i < size; i++)
-  {
+  for (i = 0; i < size; i++) {
     p[i].nLHSSt = events[i].nLHSSt;
     p[i].nLHSDsc = events[i].nLHSDsc;
     p[i].nRHSSt = events[i].nRHSSt;
@@ -154,46 +135,36 @@ SD_copyEventData(int size, SD_eventData events)
   return p;
 }
 
-void
-SD_freeEventData(SD_eventData events, int size)
+void SD_freeEventData(SD_eventData events, int size)
 {
-  if(events == NULL)
-  {
+  if (events == NULL) {
     return;
   }
   int i;
-  for(i = 0; i < size; i++)
-  {
-    if(events[i].nLHSSt)
-    {
+  for (i = 0; i < size; i++) {
+    if (events[i].nLHSSt) {
       free(events[i].LHSSt);
     }
-    if(events[i].nLHSDsc)
-    {
+    if (events[i].nLHSDsc) {
       free(events[i].LHSDsc);
     }
-    if(events[i].nRHSSt)
-    {
+    if (events[i].nRHSSt) {
       free(events[i].RHSSt);
     }
   }
   free(events);
 }
 
-void
-SD_cleanEventData(SD_eventData events, int size)
+void SD_cleanEventData(SD_eventData events, int size)
 {
-  if(events == NULL)
-  {
+  if (events == NULL) {
     return;
   }
   free(events);
 }
 
-SD_parameters
-SD_Parameters(double derDelta, double zcHyst, double minStep, int symDiff,
-    int lps, int nodeSize, SD_PartitionMethod pm, double dt, SD_DtSynch synch,
-    SD_partitionerOptions partitionerOptions, int jacobian)
+SD_parameters SD_Parameters(double derDelta, double zcHyst, double minStep, int symDiff, int lps, int nodeSize, SD_PartitionMethod pm,
+                            double dt, SD_DtSynch synch, SD_partitionerOptions partitionerOptions, int jacobian)
 {
   SD_parameters p = checkedMalloc(sizeof(*p));
   p->derDelta = derDelta;
@@ -210,8 +181,7 @@ SD_Parameters(double derDelta, double zcHyst, double minStep, int symDiff,
   return p;
 }
 
-SD_parameters
-SD_copyParameters(SD_parameters parameters)
+SD_parameters SD_copyParameters(SD_parameters parameters)
 {
   SD_parameters p = checkedMalloc(sizeof(*p));
   p->derDelta = parameters->derDelta;
@@ -225,31 +195,21 @@ SD_copyParameters(SD_parameters parameters)
   return p;
 }
 
-void
-SD_freeParameters(SD_parameters params)
-{
-  free(params);
-}
+void SD_freeParameters(SD_parameters params) { free(params); }
 
-SD_sampledOutput
-SD_SampledOutput(int outputs, double it, double *period, int nPeriod)
+SD_sampledOutput SD_SampledOutput(int outputs, double it, double *period, int nPeriod)
 {
   int i;
   SD_sampledOutput p = checkedMalloc(sizeof(*p));
-  p->nextTime = (double*) malloc(outputs * sizeof(double));
-  p->period = (double*) malloc(outputs * sizeof(double));
-  if(nPeriod == outputs)
-  {
-    for(i = 0; i < outputs; i++)
-    {
+  p->nextTime = (double *)malloc(outputs * sizeof(double));
+  p->period = (double *)malloc(outputs * sizeof(double));
+  if (nPeriod == outputs) {
+    for (i = 0; i < outputs; i++) {
       p->nextTime[i] = it;
       p->period[i] = period[i];
     }
-  }
-  else
-  {
-    for(i = 0; i < outputs; i++)
-    {
+  } else {
+    for (i = 0; i < outputs; i++) {
       p->nextTime[i] = it;
       p->period[i] = period[0];
     }
@@ -257,31 +217,23 @@ SD_SampledOutput(int outputs, double it, double *period, int nPeriod)
   return p;
 }
 
-void
-SD_freeSampledOutput(SD_sampledOutput output)
+void SD_freeSampledOutput(SD_sampledOutput output)
 {
   free(output->nextTime);
   free(output->period);
   free(output);
 }
 
-SD_outputVariable
-SD_OutputVariable(int outputs)
+SD_outputVariable SD_OutputVariable(int outputs)
 {
   SD_outputVariable p = checkedMalloc(outputs * sizeof(*p));
   return p;
 }
 
-void
-SD_freeOutputVariable(SD_outputVariable variable)
-{
-  free(variable);
-}
+void SD_freeOutputVariable(SD_outputVariable variable) { free(variable); }
 
-SD_output
-SD_Output(string name, int outputs, int discretes, int states, double *period,
-    int nPeriod, double it, SD_CommInterval commInterval, SD_StoreData store,
-    SD_eq value)
+SD_output SD_Output(string name, int outputs, int discretes, int states, double *period, int nPeriod, double it,
+                    SD_CommInterval commInterval, SD_StoreData store, SD_eq value)
 {
   SD_output p = checkedMalloc(sizeof(*p));
   p->name = name;
@@ -297,41 +249,36 @@ SD_Output(string name, int outputs, int discretes, int states, double *period,
   p->OS = NULL;
   p->nOD = NULL;
   p->OD = NULL;
-  if(outputs)
-  {
-    if(discretes)
-    {
-      p->nDO = (int*) malloc(discretes * sizeof(int));
+  if (outputs) {
+    if (discretes) {
+      p->nDO = (int *)malloc(discretes * sizeof(int));
       cleanVector(p->nDO, 0, discretes);
-      p->DO = (int**) malloc(discretes * sizeof(int*));
+      p->DO = (int **)malloc(discretes * sizeof(int *));
     }
-    if(states)
-    {
-      p->nSO = (int*) malloc(states * sizeof(int));
+    if (states) {
+      p->nSO = (int *)malloc(states * sizeof(int));
       cleanVector(p->nSO, 0, states);
-      p->SO = (int**) malloc(states * sizeof(int*));
+      p->SO = (int **)malloc(states * sizeof(int *));
     }
-    if(outputs)
-    {
-      p->nOS = (int*) malloc(outputs * sizeof(int));
+    if (outputs) {
+      p->nOS = (int *)malloc(outputs * sizeof(int));
       cleanVector(p->nOS, 0, outputs);
-      p->OS = (int**) malloc(outputs * sizeof(int*));
-      p->nOD = (int*) malloc(outputs * sizeof(int));
+      p->OS = (int **)malloc(outputs * sizeof(int *));
+      p->nOD = (int *)malloc(outputs * sizeof(int));
       cleanVector(p->nOD, 0, outputs);
-      p->OD = (int**) malloc(outputs * sizeof(int*));
+      p->OD = (int **)malloc(outputs * sizeof(int *));
     }
     p->commInterval = commInterval;
     p->store = store;
-    switch(commInterval)
-    {
-      case CI_Step:
-        p->sampled = NULL;
-        break;
-      case CI_Sampled:
-        p->sampled = SD_SampledOutput(outputs, it, period, nPeriod);
-        break;
-      case CI_Dense:
-        break;
+    switch (commInterval) {
+    case CI_Step:
+      p->sampled = NULL;
+      break;
+    case CI_Sampled:
+      p->sampled = SD_SampledOutput(outputs, it, period, nPeriod);
+      break;
+    case CI_Dense:
+      break;
     }
     p->variable = SD_OutputVariable(outputs);
     p->value = value;
@@ -339,96 +286,64 @@ SD_Output(string name, int outputs, int discretes, int states, double *period,
   return p;
 }
 
-void
-SD_allocOutputMatrix(SD_output output, int states, int discretes)
+void SD_allocOutputMatrix(SD_output output, int states, int discretes)
 {
   int i, outputs = output->outputs;
-  for(i = 0; i < states; i++)
-  {
-    output->SO[i] =
-        (output->nSO[i] > 0) ?
-                               (int*) malloc(output->nSO[i] * sizeof(int)) :
-                               NULL;
+  for (i = 0; i < states; i++) {
+    output->SO[i] = (output->nSO[i] > 0) ? (int *)malloc(output->nSO[i] * sizeof(int)) : NULL;
   }
-  for(i = 0; i < discretes; i++)
-  {
-    output->DO[i] =
-        (output->nDO[i] > 0) ?
-                               (int*) malloc(output->nDO[i] * sizeof(int)) :
-                               NULL;
+  for (i = 0; i < discretes; i++) {
+    output->DO[i] = (output->nDO[i] > 0) ? (int *)malloc(output->nDO[i] * sizeof(int)) : NULL;
   }
-  for(i = 0; i < outputs; i++)
-  {
-    output->OS[i] =
-        (output->nOS[i] > 0) ?
-                               (int*) malloc(output->nOS[i] * sizeof(int)) :
-                               NULL;
-    output->OD[i] =
-        (output->nOD[i] > 0) ?
-                               (int*) malloc(output->nOD[i] * sizeof(int)) :
-                               NULL;
+  for (i = 0; i < outputs; i++) {
+    output->OS[i] = (output->nOS[i] > 0) ? (int *)malloc(output->nOS[i] * sizeof(int)) : NULL;
+    output->OD[i] = (output->nOD[i] > 0) ? (int *)malloc(output->nOD[i] * sizeof(int)) : NULL;
   }
 }
 
-void
-SD_freeOutput(SD_output output, int states, int discretes)
+void SD_freeOutput(SD_output output, int states, int discretes)
 {
   int i, outputs = output->outputs;
-  if(outputs)
-  {
-    if(discretes)
-    {
+  if (outputs) {
+    if (discretes) {
       free(output->nDO);
     }
-    if(states)
-    {
+    if (states) {
       free(output->nSO);
     }
-    if(outputs)
-    {
+    if (outputs) {
       free(output->nOS);
       free(output->nOD);
     }
-    for(i = 0; i < discretes; i++)
-    {
-      if(output->DO[i] != NULL)
-      {
+    for (i = 0; i < discretes; i++) {
+      if (output->DO[i] != NULL) {
         free(output->DO[i]);
       }
     }
-    for(i = 0; i < states; i++)
-    {
-      if(output->SO[i] != NULL)
-      {
+    for (i = 0; i < states; i++) {
+      if (output->SO[i] != NULL) {
         free(output->SO[i]);
       }
     }
-    for(i = 0; i < outputs; i++)
-    {
-      if(output->OS[i] != NULL)
-      {
+    for (i = 0; i < outputs; i++) {
+      if (output->OS[i] != NULL) {
         free(output->OS[i]);
       }
-      if(output->OD[i] != NULL)
-      {
+      if (output->OD[i] != NULL) {
         free(output->OD[i]);
       }
     }
-    if(discretes)
-    {
+    if (discretes) {
       free(output->DO);
     }
-    if(states)
-    {
+    if (states) {
       free(output->SO);
     }
-    if(outputs)
-    {
+    if (outputs) {
       free(output->OS);
       free(output->OD);
     }
-    if(output->sampled)
-    {
+    if (output->sampled) {
       SD_freeSampledOutput(output->sampled);
     }
     SD_freeOutputVariable(output->variable);
@@ -436,8 +351,7 @@ SD_freeOutput(SD_output output, int states, int discretes)
   free(output);
 }
 
-SD_statistics
-SD_Statistics()
+SD_statistics SD_Statistics()
 {
   SD_statistics p = checkedMalloc(sizeof(*p));
   p->initializeLPS = 0;
@@ -462,23 +376,18 @@ SD_Statistics()
   return p;
 }
 
-void
-SD_freeStatistics(SD_statistics stats)
+void SD_freeStatistics(SD_statistics stats)
 {
-  if(stats->simulationTimes != NULL)
-  {
+  if (stats->simulationTimes != NULL) {
     free(stats->simulationTimes);
   }
-  if(stats->simulationExternalEvents != NULL)
-  {
+  if (stats->simulationExternalEvents != NULL) {
     free(stats->simulationExternalEvents);
   }
-  if(stats->simulationMessages != NULL)
-  {
+  if (stats->simulationMessages != NULL) {
     free(stats->simulationMessages);
   }
-  if(stats->steps != NULL)
-  {
+  if (stats->steps != NULL) {
     free(stats->steps);
   }
   free(stats->iTime);
@@ -487,8 +396,7 @@ SD_freeStatistics(SD_statistics stats)
   free(stats);
 }
 
-void
-SD_setStatisticsLPS(SD_statistics stats, int lps)
+void SD_setStatisticsLPS(SD_statistics stats, int lps)
 {
   stats->simulationTimes = checkedMalloc(lps * sizeof(double));
   cleanDoubleVector(stats->simulationTimes, 0, lps);

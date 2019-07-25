@@ -26,31 +26,23 @@
 #include "commands.h"
 #include "utils.h"
 
-SIM_simulator
-SIM_Simulator(SD_simulationSettings settings)
+SIM_simulator SIM_Simulator(SD_simulationSettings settings)
 {
   SIM_simulator p = checkedMalloc(sizeof(*p));
   p->ops = SIM_SimulatorOps();
   p->state = SIM_SimulatorState();
   p->state->settings = settings;
-  if(settings->method == SD_DASSL ||
-     settings->method == SD_DOPRI ||
-     settings->method == SD_CVODE_BDF ||
-     settings->method == SD_CVODE_AM ||
-     settings->method == SD_IDA)
-  {
+  if (settings->method == SD_DASSL || settings->method == SD_DOPRI || settings->method == SD_CVODE_BDF || settings->method == SD_CVODE_AM ||
+      settings->method == SD_IDA) {
     CLC_initSimulator(p);
-  }
-  else
-  {
+  } else {
     QSS_initSimulator(p);
   }
   CMD_init(settings);
   return p;
 }
 
-void
-SIM_freeSimulator(SIM_simulator simulator)
+void SIM_freeSimulator(SIM_simulator simulator)
 {
   simulator->ops->freeSimulator(simulator);
   SIM_freeSimulatorState(simulator->state);
@@ -58,8 +50,7 @@ SIM_freeSimulator(SIM_simulator simulator)
   free(simulator);
 }
 
-SIM_simulatorState
-SIM_SimulatorState()
+SIM_simulatorState SIM_SimulatorState()
 {
   SIM_simulatorState p = checkedMalloc(sizeof(*p));
   p->sim = NULL;
@@ -67,14 +58,9 @@ SIM_SimulatorState()
   return p;
 }
 
-void
-SIM_freeSimulatorState(SIM_simulatorState state)
-{
-  free(state);
-}
+void SIM_freeSimulatorState(SIM_simulatorState state) { free(state); }
 
-SIM_simulatorOps
-SIM_SimulatorOps()
+SIM_simulatorOps SIM_SimulatorOps()
 {
   SIM_simulatorOps p = checkedMalloc(sizeof(*p));
   p->freeSimulator = NULL;
@@ -82,14 +68,6 @@ SIM_SimulatorOps()
   return p;
 }
 
-void
-SIM_freeSimulatorOps(SIM_simulatorOps ops)
-{
-  free(ops);
-}
+void SIM_freeSimulatorOps(SIM_simulatorOps ops) { free(ops); }
 
-void
-SIM_simulate(SIM_simulator simulator)
-{
-  simulator->ops->simulate(simulator);
-}
+void SIM_simulate(SIM_simulator simulator) { simulator->ops->simulate(simulator); }

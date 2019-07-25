@@ -22,20 +22,17 @@
 #include "simulator.h"
 
 #ifdef __linux__
-#include <signal.h> 
-#include <stdlib.h> 
-void
-segfault_hdlr(int dummy)
+#include <signal.h>
+#include <stdlib.h>
+void segfault_hdlr(int dummy)
 {
   printf("Segmentation fault detected\n");
   exit(-1);
 }
 #endif
 
-int
-main()
+int main()
 {
-
 #ifdef __linux__
   signal(SIGSEGV, segfault_hdlr);
 #endif

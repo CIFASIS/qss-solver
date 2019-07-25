@@ -33,60 +33,52 @@
 #include "data.h"
 #include "utils.h"
 
-INT_integrator
-INT_Integrator(SIM_simulator simulator)
+INT_integrator INT_Integrator(SIM_simulator simulator)
 {
   INT_integrator p = checkedMalloc(sizeof(*p));
   p->ops = INT_IntegratorOps();
-  switch(simulator->state->settings->method)
-  {
-    case SD_DOPRI:
-      p->ops->initiliaze = CLC_initialize;
-      p->ops->integrate = DOPRI_integrate;
-      break;
-    case SD_DASSL:
-      p->ops->initiliaze = CLC_initialize;
-      p->ops->integrate = DASSL_integrate;
-      break;
-    case SD_CVODE_BDF:
-    case SD_CVODE_AM:
-      p->ops->initiliaze = CLC_initialize;
-      p->ops->integrate = CVODE_integrate;
-      break;
-    case SD_IDA:
-      p->ops->initiliaze = CLC_initialize;
-      p->ops->integrate = IDA_integrate;
-      break;
-    case SD_LIQSS_BDF:
-      p->ops->initiliaze = QSS_HYB_initialize;
-      p->ops->integrate = QSS_HYB_integrate;
-      break;
-    default:
-      {
-        if(simulator->state->settings->parallel == TRUE)
-        {
-          p->ops->initiliaze = QSS_PAR_initialize;
-          p->ops->integrate = QSS_PAR_integrate;
-        }
-        else
-        {
-          p->ops->initiliaze = QSS_SEQ_initialize;
-          p->ops->integrate = QSS_SEQ_integrate;
-        }
-      }
+  switch (simulator->state->settings->method) {
+  case SD_DOPRI:
+    p->ops->initiliaze = CLC_initialize;
+    p->ops->integrate = DOPRI_integrate;
+    break;
+  case SD_DASSL:
+    p->ops->initiliaze = CLC_initialize;
+    p->ops->integrate = DASSL_integrate;
+    break;
+  case SD_CVODE_BDF:
+  case SD_CVODE_AM:
+    p->ops->initiliaze = CLC_initialize;
+    p->ops->integrate = CVODE_integrate;
+    break;
+  case SD_IDA:
+    p->ops->initiliaze = CLC_initialize;
+    p->ops->integrate = IDA_integrate;
+    break;
+  case SD_LIQSS_BDF:
+    p->ops->initiliaze = QSS_HYB_initialize;
+    p->ops->integrate = QSS_HYB_integrate;
+    break;
+  default: {
+    if (simulator->state->settings->parallel == TRUE) {
+      p->ops->initiliaze = QSS_PAR_initialize;
+      p->ops->integrate = QSS_PAR_integrate;
+    } else {
+      p->ops->initiliaze = QSS_SEQ_initialize;
+      p->ops->integrate = QSS_SEQ_integrate;
+    }
+  }
   }
   return p;
 }
 
-void
-INT_freeIntegrator(INT_integrator integrator)
+void INT_freeIntegrator(INT_integrator integrator)
 {
   INT_freeIntegratorOps(integrator->ops);
   free(integrator);
 }
 
-INT_integratorOps
-INT_IntegratorOps()
+INT_integratorOps INT_IntegratorOps()
 {
   INT_integratorOps p = checkedMalloc(sizeof(*p));
   p->initiliaze = NULL;
@@ -94,20 +86,8 @@ INT_IntegratorOps()
   return p;
 }
 
-void
-INT_freeIntegratorOps(INT_integratorOps ops)
-{
-  free(ops);
-}
+void INT_freeIntegratorOps(INT_integratorOps ops) { free(ops); }
 
-void
-INT_initialize(INT_integrator integrator, SIM_simulator simulator)
-{
-  integrator->ops->initiliaze(simulator);
-}
+void INT_initialize(INT_integrator integrator, SIM_simulator simulator) { integrator->ops->initiliaze(simulator); }
 
-void
-INT_integrate(INT_integrator integrator, SIM_simulator simulator)
-{
-  integrator->ops->integrate(simulator);
-}
+void INT_integrate(INT_integrator integrator, SIM_simulator simulator) { integrator->ops->integrate(simulator); }

@@ -31,18 +31,16 @@ typedef struct BT_node_ *BT_node;
 /**
  *
  */
-struct BT_node_
-{
-    int value; //!<
-    int father; //!<
-    short size; //!<
+struct BT_node_ {
+  int value;   //!<
+  int father;  //!<
+  short size;  //!<
 };
 /**
  *
  * @return
  */
-BT_node
-BT_Node(void);
+BT_node BT_Node(void);
 /**
  *
  */
@@ -50,14 +48,13 @@ typedef struct BT_tree_ *BT_tree;
 /**
  *
  */
-struct BT_tree_
-{
-    BT_node *nodes; //!<
-    leave leaves; //!<
-    int *map;
-    int *father; //!<
-    int height; //!<
-    int size; //!<
+struct BT_tree_ {
+  BT_node *nodes;  //!<
+  leave leaves;    //!<
+  int *map;
+  int *father;  //!<
+  int height;   //!<
+  int size;     //!<
 };
 /**
  *
@@ -65,11 +62,9 @@ struct BT_tree_
  * @param leaves
  * @return
  */
-BT_tree
-BT_Tree(int dim, leave leaves, int leavesNumber, int *map);
+BT_tree BT_Tree(int dim, leave leaves, int leavesNumber, int *map);
 
-void
-BT_freeTree(BT_tree tree);
+void BT_freeTree(BT_tree tree);
 /**
  *
  */
@@ -77,10 +72,9 @@ typedef struct BT_info_ *BT_info;
 /**
  *
  */
-struct BT_info_
-{
-    int size; //!<
-    int **fathers; //!<
+struct BT_info_ {
+  int size;       //!<
+  int **fathers;  //!<
 };
 /**
  *
@@ -88,11 +82,9 @@ struct BT_info_
  * @param mn
  * @return
  */
-BT_info
-BT_Info(int mh, int mn);
+BT_info BT_Info(int mh, int mn);
 
-void
-BT_freeInfo(BT_info info);
+void BT_freeInfo(BT_info info);
 
 /** Random binary tree structures */
 
@@ -104,20 +96,18 @@ typedef struct BTR_node_ *BTR_node;
 /**
  *
  */
-struct BTR_node_
-{
-    int value; //!<
-    int father; //!<
-    short size; //!<
-    int visit[3]; //!<
+struct BTR_node_ {
+  int value;     //!<
+  int father;    //!<
+  short size;    //!<
+  int visit[3];  //!<
 };
 
 /**
  *
  * @return
  */
-BTR_node
-BTR_Node(void);
+BTR_node BTR_Node(void);
 
 /**
  *
@@ -126,20 +116,19 @@ typedef struct BTR_tree_ *BTR_tree;
 /**
  *
  */
-struct BTR_tree_
-{
-    BTR_node *nodes; //!<
-    leave leaves; //!<
-    int *father; //!<
-    int *equals; //!<
-    int *weightedEquals; //!<
-    int height; //!<
-    int size; //!<
-    int numEquals; //!<
-    int randomRange; //!<
-    int num; //!<
-    double *weights; //!<
-    double minimum; //!<
+struct BTR_tree_ {
+  BTR_node *nodes;      //!<
+  leave leaves;         //!<
+  int *father;          //!<
+  int *equals;          //!<
+  int *weightedEquals;  //!<
+  int height;           //!<
+  int size;             //!<
+  int numEquals;        //!<
+  int randomRange;      //!<
+  int num;              //!<
+  double *weights;      //!<
+  double minimum;       //!<
 };
 /**
  *
@@ -148,7 +137,6 @@ struct BTR_tree_
  * @param weights
  * @return
  */
-BTR_tree
-BTR_Tree(int dim, leave leaves, double *weights);
+BTR_tree BTR_Tree(int dim, leave leaves, double *weights);
 
 #endif /* TREE_H_ */

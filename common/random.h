@@ -34,52 +34,44 @@ gsl_rng *_rseed;
  *
  * @param n
  */
-unsigned long
-getRandomValue(int n);
+unsigned long getRandomValue(int n);
 /**
  *
  * @param mu
  * @return
  */
-double
-exponential(double mu);
+double exponential(double mu);
 /**
  *
  * @param a
  * @param b
  * @return
  */
-double
-uniform(double a, double b);
+double uniform(double a, double b);
 /**
  *
  * @param sigma
  * @return
  */
-double
-normal(double sigma);
+double normal(double sigma);
 /**
  *
  *  @param max
  */
-double
-randomS(double max);
+double randomS(double max);
 /**
  *
  * @param a
  * @param size
  */
-void
-shuffle(int *a, int size);
+void shuffle(int *a, int size);
 /**
  *
  */
-void
-Random();
+void Random();
 /**
  *
  */
-void
-freeRandom();
+void freeRandom();
 
-#endif  /* RANDOM_H_ */
+#endif /* RANDOM_H_ */

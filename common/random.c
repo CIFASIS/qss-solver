@@ -22,45 +22,23 @@
 #include <gsl/gsl_randist.h>
 #include <time.h>
 
-void
-shuffle(int *a, int size)
-{
-  gsl_ran_shuffle(_rseed, a, size, sizeof(int));
-}
+void shuffle(int *a, int size) { gsl_ran_shuffle(_rseed, a, size, sizeof(int)); }
 
-unsigned long
-getRandomValue(int n)
+unsigned long getRandomValue(int n)
 {
   unsigned long ret = gsl_rng_get(_rseed) % n;
   return ret;
 }
 
-double
-exponential(double mu)
-{
-  return gsl_ran_exponential(_rseed, mu);
-}
+double exponential(double mu) { return gsl_ran_exponential(_rseed, mu); }
 
-double
-uniform(double a, double b)
-{
-  return gsl_ran_flat(_rseed, a, b);
-}
+double uniform(double a, double b) { return gsl_ran_flat(_rseed, a, b); }
 
-double
-normal(double sigma)
-{
-  return gsl_ran_gaussian(_rseed, sigma);
-}
+double normal(double sigma) { return gsl_ran_gaussian(_rseed, sigma); }
 
-double
-randomS(double max)
-{
-  return max * gsl_rng_uniform(_rseed);
-}
+double randomS(double max) { return max * gsl_rng_uniform(_rseed); }
 
-void
-Random()
+void Random()
 {
   gsl_rng_env_setup();
   _random_generator = gsl_rng_default;
@@ -68,8 +46,4 @@ Random()
   gsl_rng_set(_rseed, time(NULL));
 }
 
-void
-freeRandom()
-{
-  gsl_rng_free(_rseed);
-}
+void freeRandom() { gsl_rng_free(_rseed); }

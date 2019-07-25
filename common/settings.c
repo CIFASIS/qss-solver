@@ -26,7 +26,8 @@
 
 #include "utils.h"
 
-SD_Solver _getSolver(const char *sol) {
+SD_Solver _getSolver(const char *sol)
+{
   if (!strcmp(sol, "QSS")) {
     return SD_QSS;
   } else if (!strcmp(sol, "CQSS")) {
@@ -57,7 +58,8 @@ SD_Solver _getSolver(const char *sol) {
   return SD_QSS;
 }
 
-SD_PartitionMethod _getPartitionMethod(const char *sol) {
+SD_PartitionMethod _getPartitionMethod(const char *sol)
+{
   if (!strcmp(sol, "Metis")) {
     return SD_Metis;
   } else if (!strcmp(sol, "HMetis")) {
@@ -72,7 +74,8 @@ SD_PartitionMethod _getPartitionMethod(const char *sol) {
   return SD_Metis;
 }
 
-SD_DtSynch _getDtSynch(const char *sol) {
+SD_DtSynch _getDtSynch(const char *sol)
+{
   if (!strcmp(sol, "SD_DT_Fixed")) {
     return SD_DT_Fixed;
   } else if (!strcmp(sol, "SD_DT_Asynchronous")) {
@@ -81,7 +84,8 @@ SD_DtSynch _getDtSynch(const char *sol) {
   return SD_DT_Fixed;
 }
 
-int _getOrder(SD_Solver sol) {
+int _getOrder(SD_Solver sol)
+{
   switch (sol) {
   case SD_QSS:
   case SD_CQSS:
@@ -105,7 +109,8 @@ int _getOrder(SD_Solver sol) {
   return 1;
 }
 
-SET_settings SET_Settings(char *fname) {
+SET_settings SET_Settings(char *fname)
+{
   config_t cfg, *cf;
   const config_setting_t *lists;
   int count, n, ires, option;
@@ -203,9 +208,9 @@ SET_settings SET_Settings(char *fname) {
   }
   if (config_lookup_int(cf, "BDFPartitionDepth", &ires)) {
     if (ires > 0) {
-      p->BDFPartitionDepth = ires;  
+      p->BDFPartitionDepth = ires;
     }
-  } 
+  }
   if (config_lookup_string(cf, "partitionMethod", &sol)) {
     p->pm = _getPartitionMethod(sol);
   }
@@ -231,23 +236,18 @@ SET_settings SET_Settings(char *fname) {
   if (lists != NULL) {
     count = config_setting_length(lists);
     for (n = 0, option = 0; n < count; n += 2, option++) {
-      sprintf(p->partitionerOptions.scotch[option].lvalue, "%s",
-              config_setting_get_string_elem(lists, n));
-      sprintf(p->partitionerOptions.scotch[option].value, "%s",
-              config_setting_get_string_elem(lists, n + 1));
+      sprintf(p->partitionerOptions.scotch[option].lvalue, "%s", config_setting_get_string_elem(lists, n));
+      sprintf(p->partitionerOptions.scotch[option].value, "%s", config_setting_get_string_elem(lists, n + 1));
     }
     p->partitionerOptions.nScotch = option;
   }
   lists = config_lookup(cf, "patohOptions");
   p->partitionerOptions.nPatoh = 0;
   if (lists != NULL) {
-
     count = config_setting_length(lists);
     for (n = 0, option = 0; n < count; n += 2, option++) {
-      sprintf(p->partitionerOptions.patoh[option].lvalue, "%s",
-              config_setting_get_string_elem(lists, n));
-      sprintf(p->partitionerOptions.patoh[option].value, "%s",
-              config_setting_get_string_elem(lists, n + 1));
+      sprintf(p->partitionerOptions.patoh[option].lvalue, "%s", config_setting_get_string_elem(lists, n));
+      sprintf(p->partitionerOptions.patoh[option].value, "%s", config_setting_get_string_elem(lists, n + 1));
     }
     p->partitionerOptions.nPatoh = option;
   }
@@ -256,10 +256,8 @@ SET_settings SET_Settings(char *fname) {
   if (lists != NULL) {
     count = config_setting_length(lists);
     for (n = 0, option = 0; n < count; n += 2, option++) {
-      sprintf(p->partitionerOptions.metis[option].lvalue, "%s",
-              config_setting_get_string_elem(lists, n));
-      sprintf(p->partitionerOptions.metis[option].value, "%s",
-              config_setting_get_string_elem(lists, n + 1));
+      sprintf(p->partitionerOptions.metis[option].lvalue, "%s", config_setting_get_string_elem(lists, n));
+      sprintf(p->partitionerOptions.metis[option].value, "%s", config_setting_get_string_elem(lists, n + 1));
     }
     p->partitionerOptions.nMetis = option;
   }
@@ -267,7 +265,8 @@ SET_settings SET_Settings(char *fname) {
   return p;
 }
 
-void freeSettings(SET_settings settings) {
+void freeSettings(SET_settings settings)
+{
   if (settings->dqmin != NULL) {
     free(settings->dqmin);
   }
