@@ -87,16 +87,11 @@ DepsGraph OutputGraphBuilder::build()
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {
           Label lbl(ip);
-          cout << "Agrega arista desde la var: " << graph[source].var << " a la ecuacion: " << graph[sink].eq.id() << endl;
-          cout << "Ecuacion: " << graph[sink].eq.type() << endl;
           add_edge(source, sink, lbl, graph);
           cout << ip.Ran() << " " << ip.Dom() << endl;
           if (graph[sink].eq.type() == EQUATION::Output && out_degree(sink, graph) == 0) {
             IndexPair out_pair(ip.Ran(), ip.Ran(), Offset(), Usage(), graph[sink].eq.lhs());
             Label out_lbl(out_pair, EDGE::Input);
-            cout << "Agrega arista para la ecuacion: " << graph[sink].eq.id()
-                 << " a la ecuacion: " << graph[_outputDescriptors[graph[sink].eq.id()]].id << endl;
-            cout << "Ecuacion: " << graph[sink].eq.type() << endl;
             add_edge(sink, _outputDescriptors[graph[sink].eq.id()], out_lbl, graph);
           }
         }
@@ -108,9 +103,6 @@ DepsGraph OutputGraphBuilder::build()
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
             Label lbl(ip, EDGE::Input);
-            cout << "Agrega arista desde la ecuacion algebraica: " << graph[sink].eq.id() << " a la variable: " << graph[source].var
-                 << endl;
-            cout << "Ecuacion algebraica: " << graph[sink].eq.type() << endl;
             add_edge(sink, source, lbl, graph);
           }
         }
