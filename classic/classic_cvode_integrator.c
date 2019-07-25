@@ -53,8 +53,8 @@ int is_sampled;
 
 //#ifdef USE_JACOBIAN
 
-static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat,
-               void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3) {
+static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat, void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3)
+{
   int n = 0;
   int size = clcData->states, i, m;
   int *colptrs = *JacMat->colptrs;
@@ -75,15 +75,13 @@ static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat,
 //#endif
 
 /* Test jacobian */
-static int check_flag(void *flagvalue, const char *funcname, int opt,
-                      CLC_simulator simulator) {
+static int check_flag(void *flagvalue, const char *funcname, int opt, CLC_simulator simulator)
+{
   int *errflag;
 
   /* Check if SUNDIALS function returned NULL pointer - no memory allocated */
   if (opt == 0 && flagvalue == NULL) {
-    SD_print(simulator->simulationLog,
-             "\nSUNDIALS_ERROR: %s() failed - returned NULL pointer\n\n",
-             funcname);
+    SD_print(simulator->simulationLog, "\nSUNDIALS_ERROR: %s() failed - returned NULL pointer\n\n", funcname);
     return 1;
   }
 
@@ -91,42 +89,40 @@ static int check_flag(void *flagvalue, const char *funcname, int opt,
   else if (opt == 1) {
     errflag = (int *)flagvalue;
     if (*errflag < 0) {
-      SD_print(simulator->simulationLog,
-               "\nSUNDIALS_ERROR: %s() failed with flag = %d\n\n", funcname,
-               *errflag);
+      SD_print(simulator->simulationLog, "\nSUNDIALS_ERROR: %s() failed with flag = %d\n\n", funcname, *errflag);
       return 1;
     }
   }
 
   /* Check if function returned NULL pointer - no memory allocated */
   else if (opt == 2 && flagvalue == NULL) {
-    SD_print(simulator->simulationLog,
-             "\nMEMORY_ERROR: %s() failed - returned NULL pointer\n\n",
-             funcname);
+    SD_print(simulator->simulationLog, "\nMEMORY_ERROR: %s() failed - returned NULL pointer\n\n", funcname);
     return 1;
   }
 
   return 0;
 }
 
-int CVODE_model(realtype t, N_Vector y, N_Vector ydot, void *user_data) {
+int CVODE_model(realtype t, N_Vector y, N_Vector ydot, void *user_data)
+{
   clcData->funEvaluations++;
   clcModel->f(NV_DATA_S(y), clcData->d, clcData->alg, t, NV_DATA_S(ydot));
   return 0;
 }
 
-int CVODE_events(realtype t, N_Vector y, realtype *gout, void *user_data) {
+int CVODE_events(realtype t, N_Vector y, realtype *gout, void *user_data)
+{
   double out;
   int i;
   for (i = 0; i < clcData->events; i++) {
-    clcModel->events->zeroCrossing(i, NV_DATA_S(y), clcData->d, clcData->alg, t,
-                                   &out);
+    clcModel->events->zeroCrossing(i, NV_DATA_S(y), clcData->d, clcData->alg, t, &out);
     gout[i] = out + clcData->event[i].zcSign * HIST;
   }
   return 0;
 }
 
-void CVODE_integrate(SIM_simulator simulate) {
+void CVODE_integrate(SIM_simulator simulate)
+{
   CLC_simulator simulator = (CLC_simulator)simulate->state->sim;
   clcData = simulator->data;
   clcModel = simulator->model;
@@ -159,8 +155,7 @@ void CVODE_integrate(SIM_simulator simulate) {
   long int nst = 0, nfe = 0, nni = 0, netf = 0, val;
   CLC_compute_outputs(simOutput, solution, num_steps);
 
-  cvode_mem = CVodeCreate(clcData->solver == SD_CVODE_BDF ? CV_BDF : CV_ADAMS,
-                          CV_NEWTON);
+  cvode_mem = CVodeCreate(clcData->solver == SD_CVODE_BDF ? CV_BDF : CV_ADAMS, CV_NEWTON);
 
   y = N_VNew_Serial(size);
   if (check_flag((void *)y, "N_VNew_Serial", 0, simulator)) return;
@@ -197,8 +192,7 @@ void CVODE_integrate(SIM_simulator simulate) {
 
   getTime(simulator->stats->sTime);
   if (is_sampled) {
-    CLC_save_step(simOutput, solution, solution_time, t, totalOutputSteps,
-                  NV_DATA_S(y), clcData->d, clcData->alg);
+    CLC_save_step(simOutput, solution, solution_time, t, totalOutputSteps, NV_DATA_S(y), clcData->d, clcData->alg);
     totalOutputSteps++;
   }
 #ifdef SYNC_RT
@@ -212,17 +206,15 @@ void CVODE_integrate(SIM_simulator simulate) {
     CVodeGetCurrentStep(cvode_mem, &hcur);
     if (flag == CV_SUCCESS) {
       if (!is_sampled) {
-        CLC_save_step(simOutput, solution, solution_time, t, totalOutputSteps,
-                      NV_DATA_S(y), clcData->d, clcData->alg);
+        CLC_save_step(simOutput, solution, solution_time, t, totalOutputSteps, NV_DATA_S(y), clcData->d, clcData->alg);
         totalOutputSteps++;
       } else {
         while (last_step + step_size < t) {
           if (fabs(last_step + step_size - _ft) / step_size < 1) break;
           flag = CVodeGetDky(cvode_mem, last_step + step_size, 0, temp_y);
           check_flag(&flag, "CVodeGetDky", 1, simulator);
-          CLC_save_step(simOutput, solution, solution_time,
-                        last_step + step_size, totalOutputSteps,
-                        NV_DATA_S(temp_y), clcData->d, clcData->alg);
+          CLC_save_step(simOutput, solution, solution_time, last_step + step_size, totalOutputSteps, NV_DATA_S(temp_y), clcData->d,
+                        clcData->alg);
           totalOutputSteps++;
           last_step += step_size;
         }
@@ -256,16 +248,14 @@ void CVODE_integrate(SIM_simulator simulate) {
           if (fabs(last_step + step_size - _ft) / step_size < 1) break;
           flag = CVodeGetDky(cvode_mem, last_step + step_size, 0, temp_y);
           check_flag(&flag, "CVodeGetDky", 0, simulator);
-          CLC_save_step(simOutput, solution, solution_time,
-                        last_step + step_size, totalOutputSteps,
-                        NV_DATA_S(temp_y), clcData->d, clcData->alg);
+          CLC_save_step(simOutput, solution, solution_time, last_step + step_size, totalOutputSteps, NV_DATA_S(temp_y), clcData->d,
+                        clcData->alg);
           totalOutputSteps++;
           last_step += step_size;
         }
       } else {  // When a root is found and the per-step output is selected,
                 // take roots as outputs
-        CLC_save_step(simOutput, solution, solution_time, t, totalOutputSteps,
-                      NV_DATA_S(y), clcData->d, clcData->alg);
+        CLC_save_step(simOutput, solution, solution_time, t, totalOutputSteps, NV_DATA_S(y), clcData->d, clcData->alg);
         totalOutputSteps++;
       }
       CVodeReInit(cvode_mem, t, y);
@@ -285,8 +275,7 @@ void CVODE_integrate(SIM_simulator simulate) {
   getTime(simulator->stats->sTime);
   if (is_sampled) {
     if (totalOutputSteps < num_steps) {
-      CLC_save_step(simOutput, solution, solution_time, _ft, totalOutputSteps,
-                    NV_DATA_S(y), clcData->d, clcData->alg);
+      CLC_save_step(simOutput, solution, solution_time, _ft, totalOutputSteps, NV_DATA_S(y), clcData->d, clcData->alg);
       totalOutputSteps++;
     }
   }
@@ -304,27 +293,18 @@ void CVODE_integrate(SIM_simulator simulate) {
     check_flag(&flag, "CVodeGetNumNonlinSolvIters", 1, simulator);
     nni += val;
 
-    SD_print(simulator->simulationLog, "Simulation time (CVODE %s):",
-             clcData->solver == SD_CVODE_BDF ? "BDF" : "ADAMS");
+    SD_print(simulator->simulationLog, "Simulation time (CVODE %s):", clcData->solver == SD_CVODE_BDF ? "BDF" : "ADAMS");
     SD_print(simulator->simulationLog, "----------------");
-    SD_print(simulator->simulationLog, "Miliseconds: %g",
-             getTimeValue(simulator->stats->sTime));
-    SD_print(simulator->simulationLog, "Scalar function evaluations: %d",
-             clcData->scalarEvaluations);
-    SD_print(simulator->simulationLog, "Individual Zero Crossings : %d",
-             clcData->zeroCrossings);
-    SD_print(simulator->simulationLog, "Function evaluations: %llu",
-             clcData->funEvaluations);
-    SD_print(simulator->simulationLog,
-             "Function evaluations (reported by CVODE): %ld", nfe);
+    SD_print(simulator->simulationLog, "Miliseconds: %g", getTimeValue(simulator->stats->sTime));
+    SD_print(simulator->simulationLog, "Scalar function evaluations: %d", clcData->scalarEvaluations);
+    SD_print(simulator->simulationLog, "Individual Zero Crossings : %d", clcData->zeroCrossings);
+    SD_print(simulator->simulationLog, "Function evaluations: %llu", clcData->funEvaluations);
+    SD_print(simulator->simulationLog, "Function evaluations (reported by CVODE): %ld", nfe);
     SD_print(simulator->simulationLog, "Output steps: %d", totalOutputSteps);
     SD_print(simulator->simulationLog, "Simulation steps: %ld", nst);
-    SD_print(simulator->simulationLog, "Simulation steps (rejected) : %ld",
-             netf);
-    SD_print(simulator->simulationLog,
-             "Newton iterations performed: (reported by CVODE): %ld", nni);
-    SD_print(simulator->simulationLog, "Events detected : %d",
-             clcData->totalEvents);
+    SD_print(simulator->simulationLog, "Simulation steps (rejected) : %ld", netf);
+    SD_print(simulator->simulationLog, "Newton iterations performed: (reported by CVODE): %ld", nni);
+    SD_print(simulator->simulationLog, "Events detected : %d", clcData->totalEvents);
   }
   CLC_write_output(simOutput, solution, solution_time, totalOutputSteps);
   /* Free y and abstol vectors */

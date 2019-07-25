@@ -22,8 +22,7 @@
 #include <common/random.h>
 #include <classic/classic_model.h>
 
-CLC_simulator
-CLC_Simulator()
+CLC_simulator CLC_Simulator()
 {
   CLC_simulator p = checkedMalloc(sizeof(*p));
   p->data = NULL;
@@ -35,12 +34,10 @@ CLC_Simulator()
   return p;
 }
 
-void
-CLC_freeSimulator(CLC_simulator simulator)
+void CLC_freeSimulator(CLC_simulator simulator)
 {
   SD_freeSimulationLog(simulator->simulationLog);
-  SD_freeOutput(simulator->output, simulator->data->states,
-      simulator->data->discretes);
+  SD_freeOutput(simulator->output, simulator->data->states, simulator->data->discretes);
   CLC_freeData(simulator->data);
   CLC_freeModel(simulator->model);
   SD_freeSimulationSettings(simulator->settings);
@@ -48,11 +45,10 @@ CLC_freeSimulator(CLC_simulator simulator)
   free(simulator);
 }
 
-void
-CLC_simulate(SIM_simulator simulate)
+void CLC_simulate(SIM_simulator simulate)
 {
   Random();
-  CLC_simulator simulator = (CLC_simulator) simulate->state->sim;
+  CLC_simulator simulator = (CLC_simulator)simulate->state->sim;
   CLC_initializeDataStructs(simulator);
   INT_integrator integrator = INT_Integrator(simulate);
   SD_output output = simulator->output;
@@ -61,31 +57,27 @@ CLC_simulate(SIM_simulator simulate)
 #ifdef DEBUG
   SD_simulationSettings settings = simulator->settings;
   SD_simulationLog simulationLog = simulator->simulationLog;
-  if (settings->debug > 3)
-  {
-    SD_print (simulationLog, "\nBegin Simulation:");
-    SD_print (simulationLog, "\n-----------------");
+  if (settings->debug > 3) {
+    SD_print(simulationLog, "\nBegin Simulation:");
+    SD_print(simulationLog, "\n-----------------");
   }
 #endif
   INT_integrate(integrator, simulate);
   INT_freeIntegrator(integrator);
 }
 
-void
-CLC_simulatorEnd(SIM_simulator simulate)
+void CLC_simulatorEnd(SIM_simulator simulate)
 {
-  CLC_simulator simulator = (CLC_simulator) simulate->state->sim;
+  CLC_simulator simulator = (CLC_simulator)simulate->state->sim;
   CLC_freeSimulator(simulator);
   freeRandom();
 }
 
-void
-CLC_initSimulator(SIM_simulator simulator)
+void CLC_initSimulator(SIM_simulator simulator)
 {
-  simulator->state->sim = (void*) CLC_Simulator();
-  ((CLC_simulator) simulator->state->sim)->settings =
-      simulator->state->settings;
-  ((CLC_simulator) simulator->state->sim)->stats = SD_Statistics();
+  simulator->state->sim = (void*)CLC_Simulator();
+  ((CLC_simulator)simulator->state->sim)->settings = simulator->state->settings;
+  ((CLC_simulator)simulator->state->sim)->stats = SD_Statistics();
   simulator->ops->simulate = CLC_simulate;
   simulator->ops->freeSimulator = CLC_simulatorEnd;
 }

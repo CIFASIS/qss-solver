@@ -25,7 +25,6 @@
 /**
  *
  */
-void
-DOPRI_integrate(SIM_simulator simulator);
+void DOPRI_integrate(SIM_simulator simulator);
 
-#endif  /* DOPRI_INTEGRATOR_H_ */
+#endif /* DOPRI_INTEGRATOR_H_ */

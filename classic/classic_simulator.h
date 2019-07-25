@@ -26,23 +26,19 @@
 
 typedef struct CLC_simulator_ *CLC_simulator;
 
-struct CLC_simulator_
-{
-    CLC_data data;
-    CLC_model model;
-    SD_output output;
-    SD_simulationSettings settings;
-    SD_simulationLog simulationLog;
-    SD_statistics stats;
+struct CLC_simulator_ {
+  CLC_data data;
+  CLC_model model;
+  SD_output output;
+  SD_simulationSettings settings;
+  SD_simulationLog simulationLog;
+  SD_statistics stats;
 };
 
-CLC_simulator
-CLC_Simulator();
+CLC_simulator CLC_Simulator();
 
-void
-CLC_freeSimulator(CLC_simulator simulator);
+void CLC_freeSimulator(CLC_simulator simulator);
 
-void
-CLC_initSimulator(SIM_simulator simulator);
+void CLC_initSimulator(SIM_simulator simulator);
 
 #endif /* CLASSIC_SIMULATOR_H_ */

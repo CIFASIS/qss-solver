@@ -21,8 +21,4 @@
 
 #include <stdlib.h>
 
-void
-CLC_CMD_terminate()
-{
-  abort();
-}
+void CLC_CMD_terminate() { abort(); }

@@ -24,8 +24,7 @@
 
 #include "../common/settings.h"
 
-CLC_event
-CLC_Event(CLC_zc zeroCrossing, CLC_hnd handlerPos, CLC_hnd handlerNeg)
+CLC_event CLC_Event(CLC_zc zeroCrossing, CLC_hnd handlerPos, CLC_hnd handlerNeg)
 {
   CLC_event p = checkedMalloc(sizeof(*p));
   p->zeroCrossing = zeroCrossing;
@@ -34,15 +33,9 @@ CLC_Event(CLC_zc zeroCrossing, CLC_hnd handlerPos, CLC_hnd handlerNeg)
   return p;
 }
 
-void
-CLC_freeEvent(CLC_event events)
-{
-  free(events);
-}
+void CLC_freeEvent(CLC_event events) { free(events); }
 
-CLC_data
-CLC_Data(int states, int discretes, int events, int inputs, int algebraics,
-    string name)
+CLC_data CLC_Data(int states, int discretes, int events, int inputs, int algebraics, string name)
 {
   char fileName[256];
   strcpy(fileName, name);
@@ -55,37 +48,28 @@ CLC_Data(int states, int discretes, int events, int inputs, int algebraics,
   p->events = events;
   p->inputs = inputs;
   p->solver = settings->solver;
-  p->dQMin = (double*) malloc(states * sizeof(double));
-  p->dQRel = (double*) malloc(states * sizeof(double));
-  if(discretes > 0)
-  {
-    p->d = (double*) malloc(discretes * sizeof(double));
-  }
-  else
-  {
+  p->dQMin = (double*)malloc(states * sizeof(double));
+  p->dQRel = (double*)malloc(states * sizeof(double));
+  if (discretes > 0) {
+    p->d = (double*)malloc(discretes * sizeof(double));
+  } else {
     p->d = NULL;
   }
-  p->x = (double*) malloc(states * sizeof(double));
-  if(algebraics > 0)
-  {
-    p->alg = (double*) malloc(algebraics * sizeof(double));
-  }
-  else
-  {
+  p->x = (double*)malloc(states * sizeof(double));
+  if (algebraics > 0) {
+    p->alg = (double*)malloc(algebraics * sizeof(double));
+  } else {
     p->alg = NULL;
   }
   p->it = settings->it;
   p->ft = settings->ft;
-  p->nSD = (int*) malloc(states * sizeof(int));
-  p->nDS = (int*) malloc(states * sizeof(int));
-  p->SD = (int**) malloc(states * sizeof(int*));
-  p->DS = (int**) malloc(states * sizeof(int*));
-  if(inputs > 0)
-  {
-    p->IT = (int*) malloc(inputs * sizeof(int));
-  }
-  else
-  {
+  p->nSD = (int*)malloc(states * sizeof(int));
+  p->nDS = (int*)malloc(states * sizeof(int));
+  p->SD = (int**)malloc(states * sizeof(int*));
+  p->DS = (int**)malloc(states * sizeof(int*));
+  if (inputs > 0) {
+    p->IT = (int*)malloc(inputs * sizeof(int));
+  } else {
     p->IT = NULL;
   }
   cleanDoubleVector(p->d, 0, discretes);
@@ -94,18 +78,14 @@ CLC_Data(int states, int discretes, int events, int inputs, int algebraics,
   cleanVector(p->nDS, 0, states);
   double sameDQMin = (settings->nDQMin == 1) ? settings->dqmin[0] : 0;
   double sameDQRel = (settings->nDQRel == 1) ? settings->dqrel[0] : 0;
-  for(i = 0; i < states; i++)
-  {
+  for (i = 0; i < states; i++) {
     p->nSD[i] = 0;
     p->dQMin[i] = (sameDQMin > 0) ? sameDQMin : settings->dqmin[i];
     p->dQRel[i] = (sameDQRel > 0) ? sameDQRel : settings->dqrel[i];
   }
   p->event = SD_EventData(events);
-  p->params = SD_Parameters(settings->derdelta, settings->zchyst,
-      settings->minstep, settings->symdiff, settings->lps, settings->nodesize,
-      settings->pm,
-      settings->dt, settings->dtSynch, settings->partitionerOptions,
-      settings->jacobian);
+  p->params = SD_Parameters(settings->derdelta, settings->zchyst, settings->minstep, settings->symdiff, settings->lps, settings->nodesize,
+                            settings->pm, settings->dt, settings->dtSynch, settings->partitionerOptions, settings->jacobian);
   p->scalarEvaluations = 0;
   p->zeroCrossings = 0;
   p->funEvaluations = 0;
@@ -116,55 +96,44 @@ CLC_Data(int states, int discretes, int events, int inputs, int algebraics,
   p->totalSteps = 0;
   p->totalEvents = 0;
   freeSettings(settings);
-  if(events)
-  {
-    p->fired = (char*) malloc(events);
+  if (events) {
+    p->fired = (char*)malloc(events);
   }
   return p;
 }
 
-void
-CLC_freeData(CLC_data data)
+void CLC_freeData(CLC_data data)
 {
   int i, states = data->states;
   free(data->dQMin);
   free(data->dQRel);
-  if(data->alg != NULL)
-  {
+  if (data->alg != NULL) {
     free(data->alg);
   }
-  if(data->discretes > 0)
-  {
+  if (data->discretes > 0) {
     free(data->d);
   }
   free(data->x);
   free(data->nSD);
   free(data->nDS);
-  for(i = 0; i < states; i++)
-  {
-    if(data->SD[i] != NULL)
-      free(data->SD[i]);
-    if(data->DS[i] != NULL)
-      free(data->DS[i]);
+  for (i = 0; i < states; i++) {
+    if (data->SD[i] != NULL) free(data->SD[i]);
+    if (data->DS[i] != NULL) free(data->DS[i]);
   }
   free(data->SD);
   free(data->DS);
-  if(data->inputs > 0)
-  {
+  if (data->inputs > 0) {
     free(data->IT);
   }
   SD_freeEventData(data->event, data->events);
   SD_freeParameters(data->params);
-  if(data->events)
-  {
+  if (data->events) {
     free(data->fired);
   }
   free(data);
 }
 
-CLC_model
-CLC_Model(CLC_eq f, CLC_zc zeroCrossing, CLC_hnd handlerPos, CLC_hnd handlerNeg,
-    CLC_jac jac)
+CLC_model CLC_Model(CLC_eq f, CLC_zc zeroCrossing, CLC_hnd handlerPos, CLC_hnd handlerNeg, CLC_jac jac)
 {
   CLC_model p = checkedMalloc(sizeof(*p));
   p->f = f;
@@ -173,23 +142,17 @@ CLC_Model(CLC_eq f, CLC_zc zeroCrossing, CLC_hnd handlerPos, CLC_hnd handlerNeg,
   return p;
 }
 
-void
-CLC_freeModel(CLC_model model)
+void CLC_freeModel(CLC_model model)
 {
   free(model->events);
   free(model);
 }
 
-void
-CLC_allocDataMatrix(CLC_data data)
+void CLC_allocDataMatrix(CLC_data data)
 {
   int i, states = data->states;
-  for(i = 0; i < states; i++)
-  {
-    data->SD[i] =
-        (data->nSD[i] > 0) ? (int*) malloc(data->nSD[i] * sizeof(int)) : NULL;
-    data->DS[i] =
-        (data->nDS[i] > 0) ? (int*) malloc(data->nDS[i] * sizeof(int)) : NULL;
+  for (i = 0; i < states; i++) {
+    data->SD[i] = (data->nSD[i] > 0) ? (int*)malloc(data->nSD[i] * sizeof(int)) : NULL;
+    data->DS[i] = (data->nDS[i] > 0) ? (int*)malloc(data->nDS[i] * sizeof(int)) : NULL;
   }
 }
-
