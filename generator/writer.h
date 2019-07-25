@@ -33,7 +33,7 @@ namespace Generator {
 /**
  *
  */
-#define SECTIONS 73
+#define SECTIONS 79
 namespace WRITER {
 /**
  *
