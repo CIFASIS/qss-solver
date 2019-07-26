@@ -30,7 +30,10 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-ExpressionPrinter::ExpressionPrinter(const VarSymbolTable& symbols) : _symbols(symbols), _code() {}
+ExpressionPrinter::ExpressionPrinter(const VarSymbolTable& symbols, bool is_qss, int order)
+    : _symbols(symbols), _code(), _is_qss(is_qss), _order(order)
+{
+}
 
 string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
 {
@@ -71,23 +74,14 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
     break;
   }
   case EXPCOMPREF: {
-    AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-    Option<Variable> var = _symbols[cr->name()];
+    AST_Expression_ComponentReference ref = exp->getAsComponentReference();
+    Option<Variable> var = _symbols[ref->name()];
     if (!var) {
-      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", cr->name().c_str());
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", ref->name().c_str());
       break;
     }
-    buffer << var.get();
-    if (cr->hasIndexes()) {
-      AST_ExpressionList indexes = cr->firstIndex();
-      AST_ExpressionListIterator it;
-      int size = indexes->size(), i = 0;
-      buffer << "(";
-      foreach (it, indexes) {
-        buffer << apply(current_element(it)) << (++i < size ? "," : "");
-      }
-      buffer << ")";
-    }
+    VariablePrinter var_printer(var.get(), ref, _is_qss, _order);
+    buffer << var_printer;
     break;
   }
   case EXPDERIVATIVE: {
@@ -192,5 +186,34 @@ string ExpressionPrinter::foldTraverseElementUMinus(AST_Expression exp)
   buffer << "-" << apply(exp->getAsUMinus()->exp());
   return buffer.str();
 }
+
+VariablePrinter::VariablePrinter(Variable var, AST_Expression_ComponentReference ref, const VarSymbolTable& symbols, bool is_qss, int order)
+    : : _var(var), _ref(ref), _is_qss(is_qss), _order(order), _exp(), _symbols(symbols)
+{
+  gerenate();
+}
+
+void VariablePrinter::generate()
+{
+  stringstream buffer;
+  buffer << var.get();
+  if (cr->hasIndexes()) {
+    AST_ExpressionList indexes = cr->firstIndex();
+    AST_ExpressionListIterator it;
+    int size = indexes->size(), i = 0;
+    buffer << "(";
+    foreach (it, indexes) {
+      buffer << apply(current_element(it)) << (++i < size ? "," : "");
+    }
+    buffer << ")";
+  }
+}
+
+std::ostream& operator<<(std::ostream& out, const VariablePrinter& var)
+{
+  out << exp;
+  return out;
+}
+
 }  // namespace Util
 }  // namespace MicroModelica
