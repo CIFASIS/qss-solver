@@ -134,7 +134,7 @@ void Variable::processModification()
   _hasAssigment = false;
   _hasEach = false;
   _hasStart = false;
-  if (_m != NULL) {
+  if (_m != nullptr) {
     ModificationType t = _m->modificationType();
     if (t == MODEQUAL) {
       _hasAssigment = true;
@@ -223,8 +223,7 @@ string Variable::initialization(const VarSymbolTable &symbols)
     if (hasAssignment() || hasStartModifier()) {
       buffer << this << " = " << ex << ";";
     } else if (hasEachModifier()) {
-      buffer << "for(" << index << " = 0; " << index << " <= " << size() << ";" << index << "++)" << endl;
-      buffer << TAB << "{" << endl;
+      buffer << "for(" << index << " = 0; " << index << " <= " << size() << ";" << index << "++) {" << endl;
       buffer << TAB << TAB << this << "[" << index << "]"
              << " = " << ex << ";" << endl;
       buffer << TAB << "}";
@@ -249,7 +248,7 @@ VarSymbolTable::VarSymbolTable() : _coeffs(1), _parameters(false) {}
 
 void VarSymbolTable::initialize(TypeSymbolTable ty)
 {
-  Variable v(ty["Real"].get(), 0, NULL, NULL, vector<int>(1, 0), false);
+  Variable v(ty["Real"].get(), 0, nullptr, nullptr, vector<int>(1, 0), false);
   v.setBuiltIn();
   v.setName("time");
   insert("time", v);
