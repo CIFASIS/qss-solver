@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <iostream>
 
+#include "../ir/equation.h"
 #include "../util/symbol_table.h"
 
 using namespace std;
@@ -43,38 +44,6 @@ MDI Dependency::variableRange(Variable var)
     }
   }
   return MDI(intervals);
-}
-
-void Dependency::compute(DepsGraph graph, EquationDependencyMatrix& edm)
-{
-  for (Vertex vertex : boost::make_iterator_range(vertices(graph))) {
-    VertexProperty vertex_info = graph[vertex];
-    if (vertex_info.type == VERTEX::Influencer) {
-      VariableDependencies var_deps;
-      AlgebraicDependencies algs;
-      cout << "Compute dependecies for: " << vertex_info.var << endl;
-      influencees(graph, vertex, variableRange(vertex_info.var), var_deps, algs);
-      if (!var_deps.empty()) {
-        edm.insert(vertex_info.id, var_deps);
-      }
-    }
-  }
-}
-
-void Dependency::compute(DepsGraph graph, VariableDependencyMatrix& vdm)
-{
-  for (Vertex vertex : boost::make_iterator_range(vertices(graph))) {
-    VertexProperty vertex_info = graph[vertex];
-    if (vertex_info.type == VERTEX::Influencer) {
-      VariableDependencies var_deps;
-      AlgebraicDependencies algs;
-      cout << "Compute dependecies for: " << vertex_info.var << endl;
-      influencees(graph, vertex, variableRange(vertex_info.var), var_deps, algs);
-      if (!var_deps.empty()) {
-        vdm.insert(vertex_info.var.name(), var_deps);
-      }
-    }
-  }
 }
 
 VariableDependency Dependency::getVariableDependency(string name, MDI dom, MDI ran, int id)
@@ -99,26 +68,35 @@ void Dependency::influencees(DepsGraph graph, Vertex source_vertex, MDI source_r
     if (intersect) {
       MDI intersection = boost::get<MDI>(intersect);
       auto target_vertex = boost::target(*edge, graph);
-      if (source_vertex_info.type == VERTEX::Influencer) {
+      if (source_vertex_info.type() == VERTEX::Influencer) {
         // Store the influencer index pair.
         _ifr = lbl.Pair();
       }
       // First look if the target node is terminal.
       VertexProperty target_vertex_info = graph[target_vertex];
       MDI ran = lbl.getImage(intersection);
-      if (target_vertex_info.type == VERTEX::Influencee) {
-        assert(source_vertex_info.type == VERTEX::Equation || source_vertex_info.type == VERTEX::Statement);
-        VariableDependency var_dep = getVariableDependency(target_vertex_info.var.name(), intersection, ran, target_vertex_info.id);
+      if (target_vertex_info.type() == VERTEX::Influencee) {
+        assert(source_vertex_info.type() == VERTEX::Equation || source_vertex_info.type() == VERTEX::Statement);
+        int id = 0;
+        if (source_vertex_info.type() == VERTEX::Equation) {
+          id = source_vertex_info.eq().id();
+        } else {
+          // @TODO Set statement id.
+          id = 0;
+        }
+        VariableDependency var_dep = getVariableDependency(target_vertex_info.var().name(), intersection, ran, id);
         var_dep.setIfr(_ifr);
         var_dep.setIfe(lbl.Pair());
         var_dep.setRange();
-
         Influences inf = {algs, var_dep};
         var_deps.push_back(inf);
-      } else if (target_vertex_info.type == VERTEX::Algebraic) {
-        assert(source_vertex_info.type == VERTEX::Equation);
-        VariableDependency var_dep = getVariableDependency(target_vertex_info.var.name(), intersection, ran, target_vertex_info.id);
+      } else if (target_vertex_info.type() == VERTEX::Algebraic) {
+        assert(source_vertex_info.type() == VERTEX::Equation);
+        // if (source_vertex_info.eq.type() == IR::EQUATION::Algebraic) {
+        int id = source_vertex_info.eq().id();
+        VariableDependency var_dep = getVariableDependency(target_vertex_info.var().name(), intersection, ran, id);
         algs.push_back(var_dep);
+        //}
         influencees(graph, target_vertex, ran, var_deps, algs);
       } else {
         influencees(graph, target_vertex, ran, var_deps, algs);

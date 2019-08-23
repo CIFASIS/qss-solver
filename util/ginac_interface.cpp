@@ -108,10 +108,12 @@ ex ConvertToGiNaC::convert(AST_Expression e, bool replaceDer, bool generateIndex
   _replaceDer = replaceDer;
   _generateIndexes = generateIndexes;
   ex p = apply(e);
+  cout << "Expression: " << p << endl;
   return p;
 }
 
 static ex var_derivative(const ex& x, const ex& y, unsigned diff_param) { return der(x, y); }
+
 REGISTER_FUNCTION(var, derivative_func(var_derivative))
 
 GiNaC::symbol& ConvertToGiNaC::first() { return getSymbol(""); }

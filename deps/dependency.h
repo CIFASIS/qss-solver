@@ -32,14 +32,38 @@ class Dependency {
   public:
   Dependency() : _ifr(){};
   ~Dependency() = default;
-  void compute(DepsGraph graph, VariableDependencyMatrix& vdm);
-  void compute(DepsGraph graph, EquationDependencyMatrix& edm);
+  template <class DM>
+  void compute(DepsGraph graph, DM& dm)
+  {
+    for (Vertex vertex : boost::make_iterator_range(vertices(graph))) {
+      VertexProperty vertex_info = graph[vertex];
+      if (vertex_info.type() == VERTEX::Influencer) {
+        VariableDependencies var_deps;
+        AlgebraicDependencies algs;
+        cout << "Compute dependecies for: " << vertex_info.var() << endl;
+        influencees(graph, vertex, variableRange(vertex_info.var()), var_deps, algs);
+        insert(dm, vertex_info, var_deps);
+      }
+    }
+  }
+
   void merge(VariableDependencyMatrix& source, VariableDependencyMatrix& target, VariableDependencyMatrix& merge);
 
   private:
   void influencees(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs);
   VariableDependency getVariableDependency(string name, MDI dom, MDI ran, int id);
   MDI variableRange(Util::Variable var);
+  template <class DM>
+  void insert(DM& dm, VertexProperty vp, VariableDependencies var_deps)
+  {
+    if (!var_deps.empty()) {
+      if (dm.keyType() == VDM::String_Key) {
+        dm.insert(vp.var().name(), var_deps);
+      } else {
+        dm.insert(vp.id(), var_deps);
+      }
+    }
+  }
 
   IndexPair _ifr;
 };

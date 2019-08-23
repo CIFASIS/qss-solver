@@ -17,38 +17,36 @@
 
  ******************************************************************************/
 
-#ifndef MMO_EXPRESSION_H_
-#define MMO_EXPRESSION_H_
+#include "revert_index.h"
 
-#include <string>
-#include "../ast/ast_types.h"
-#include "../util/symbol_table.h"
+#include <sstream>
+
+#include "../../ast/ast_builder.h"
+#include "../error.h"
 
 namespace MicroModelica {
-namespace IR {
+using namespace Deps;
+using namespace IR;
+namespace Util {
 
-/**
- *
- */
-class Expression {
-  public:
-  Expression();
-  Expression(AST_Expression exp, const Util::VarSymbolTable& symbols, int order = 0);
-  ~Expression() = default;
-  std::string print() const;
-  inline AST_Expression expression() const { return _exp; };
-  bool isReference() const;
-  bool isEmpty() const { return _exp == nullptr; };
-  bool isValid() const { return _exp != nullptr; };
-  friend std::ostream& operator<<(std::ostream& out, const Expression& s);
+RevertIndex::RevertIndex() {}
 
-  private:
-  AST_Expression _exp;
-  Util::VarSymbolTable _symbols;
-  int _order;
-};
+AST_Expression RevertIndex::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
+{
+  switch (bot) {
+  case BINOPADD:
+    return newAST_Expression_BinOp(l, r, BINOPSUB);
+  case BINOPSUB:
+    return newAST_Expression_BinOp(l, r, BINOPADD);
+  case BINOPDIV:
+    return newAST_Expression_BinOp(l, r, BINOPMULT);
+  case BINOPMULT:
+    return newAST_Expression_BinOp(l, r, BINOPDIV);
+  default:
+    break;
+  }
+  return newAST_Expression_BinOp(l, r, bot);
+}
 
-typedef list<Expression> ExpressionList;
-}  // namespace IR
+}  // namespace Util
 }  // namespace MicroModelica
-#endif /* EXPRESSION_H_ */

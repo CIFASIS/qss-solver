@@ -394,7 +394,7 @@ class ModelAnnotation {
   void setMetisSettings(string l);
   void setJacobian(int l);
   int jacobian();
-  bool classic();
+  bool isClassic();
 
   private:
   /**

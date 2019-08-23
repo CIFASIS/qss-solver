@@ -48,12 +48,12 @@ DepsGraph OutputGraphBuilder::build()
     VertexProperty vp = VertexProperty();
     bool varType = _type == OUTPUT::SO ? var.isState() : var.isDiscrete();
     if (varType) {
-      vp.type = VERTEX::Influencer;
-      vp.var = var;
+      vp.setType(VERTEX::Influencer);
+      vp.setVar(var);
       _variableDescriptors.push_back(add_vertex(vp, graph));
     } else if (var.isAlgebraic()) {
-      vp.type = VERTEX::Algebraic;
-      vp.var = var;
+      vp.setType(VERTEX::Algebraic);
+      vp.setVar(var);
       _variableDescriptors.push_back(add_vertex(vp, graph));
     }
   }
@@ -61,18 +61,18 @@ DepsGraph OutputGraphBuilder::build()
   EquationTable::iterator eqit;
   for (Equation eq = _equations.begin(eqit); !_equations.end(eqit); eq = _equations.next(eqit)) {
     VertexProperty vp = VertexProperty();
-    vp.type = VERTEX::Equation;
-    vp.eq = eq;
+    vp.setType(VERTEX::Equation);
+    vp.setEq(eq);
     _equationDescriptors.push_back(add_vertex(vp, graph));
     VertexProperty icee = VertexProperty();
-    icee.type = VERTEX::Influencee;
-    icee.id = eq.id();
+    icee.setType(VERTEX::Influencee);
+    icee.setId(eq.id());
     _outputDescriptors[eq.id()] = add_vertex(icee, graph);
   }
   for (Equation eq = _algebraics.begin(eqit); !_algebraics.end(eqit); eq = _algebraics.next(eqit)) {
     VertexProperty vp = VertexProperty();
-    vp.type = VERTEX::Equation;
-    vp.eq = eq;
+    vp.setType(VERTEX::Equation);
+    vp.setEq(eq);
     _equationDescriptors.push_back(add_vertex(vp, graph));
   }
 
@@ -89,15 +89,15 @@ DepsGraph OutputGraphBuilder::build()
           Label lbl(ip);
           add_edge(source, sink, lbl, graph);
           cout << ip.Ran() << " " << ip.Dom() << endl;
-          if (graph[sink].eq.type() == EQUATION::Output && out_degree(sink, graph) == 0) {
-            IndexPair out_pair(ip.Ran(), ip.Ran(), Offset(), Usage(), graph[sink].eq.lhs());
+          if (graph[sink].eq().type() == EQUATION::Output && out_degree(sink, graph) == 0) {
+            IndexPair out_pair(ip.Ran(), ip.Ran(), Offset(), Usage(), graph[sink].eq().lhs());
             Label out_lbl(out_pair, EDGE::Input);
-            add_edge(sink, _outputDescriptors[graph[sink].eq.id()], out_lbl, graph);
+            add_edge(sink, _outputDescriptors[graph[sink].eq().id()], out_lbl, graph);
           }
         }
       }
       // Check LHS too if we are working with algebraics.
-      if (graph[source].type == VERTEX::Algebraic && graph[sink].eq.type() == EQUATION::Algebraic) {
+      if (graph[source].type() == VERTEX::Algebraic && graph[sink].eq().type() == EQUATION::Algebraic) {
         GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();

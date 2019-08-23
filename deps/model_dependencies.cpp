@@ -43,55 +43,34 @@ static constexpr char *DISCRETES = "discretes";
 static string EMPTY_COMPONENT = {"", ""};
 
 static MatrixConfig EmptyCfg = {"", {}, {}, {}};
-static MatrixConfig SDCfg = {INT_CONTAINER,
-                             {"nSD", "nDS", "SD", "DS"},
-                             {STATES, STATES},
-                             EMPTY_COMPONENT};
-static MatrixConfig SZCfg = {INT_CONTAINER,
-                             {"nSZ", "nZS", "SZ", "ZS"},
-                             {STATES, EVENTS},
-                             EMPTY_COMPONENT};
-static MatrixConfig SOCfg = {OUT_CONTAINER,
-                             {"nSO", "nOS", "SO", "OS"},
-                             {STATES, OUTPUTS},
-                             EMPTY_COMPONENT};
-static MatrixConfig DOCfg = {OUT_CONTAINER,
-                             {"nDO", "nOD", "DO", "OD"},
-                             {DISCRETES, OUTPUTS},
-                             EMPTY_COMPONENT};
-static MatrixConfig HHCfg = {INT_CONTAINER,
-                             {"nHE", "nEH", "HE", "EH"},
-                             {EVENTS, EVENTS},
-                             EMPTY_COMPONENT};
-static MatrixConfig HDCfg = {INT_CONTAINER,
-                             {"nHD", "nDH", "HD", "DH"},
-                             {EVENTS, STATES},
-                             EMPTY_COMPONENT};
-static MatrixConfig HZCfg = {INT_CONTAINER,
-                             {"nHZ", "nZH", "HZ", "ZH"},
-                             {EVENTS, EVENTS},
-                             EMPTY_COMPONENT};
-static MatrixConfig LHSDSCCfg = {INT_CONTAINER,
-                                 {"event", "event", "event", "event"},
-                                 {EVENTS, EVENTS},
-                                 {"nLHSDsc", "LHSDsc"}};
-static MatrixConfig LHSSTCfg = {INT_CONTAINER,
-                                {"event", "event", "event", "event"},
-                                {EVENTS, EVENTS},
-                                {"nLHSSt", "LHSSt"}};
-static MatrixConfig RHSSTCfg = {INT_CONTAINER,
-                                {"event", "event", "event", "event"},
-                                {EVENTS, EVENTS},
-                                {"nRHSSt", "RHSSt"}};
+static MatrixConfig SDCfg = {INT_CONTAINER, {"nSD", "nDS", "SD", "DS"}, {STATES, STATES}, EMPTY_COMPONENT};
+static MatrixConfig SZCfg = {INT_CONTAINER, {"nSZ", "nZS", "SZ", "ZS"}, {STATES, EVENTS}, EMPTY_COMPONENT};
+static MatrixConfig SOCfg = {OUT_CONTAINER, {"nSO", "nOS", "SO", "OS"}, {STATES, OUTPUTS}, EMPTY_COMPONENT};
+static MatrixConfig DOCfg = {OUT_CONTAINER, {"nDO", "nOD", "DO", "OD"}, {DISCRETES, OUTPUTS}, EMPTY_COMPONENT};
+static MatrixConfig HHCfg = {INT_CONTAINER, {"nHE", "nEH", "HE", "EH"}, {EVENTS, EVENTS}, EMPTY_COMPONENT};
+static MatrixConfig HDCfg = {INT_CONTAINER, {"nHD", "nDH", "HD", "DH"}, {EVENTS, STATES}, EMPTY_COMPONENT};
+static MatrixConfig HZCfg = {INT_CONTAINER, {"nHZ", "nZH", "HZ", "ZH"}, {EVENTS, EVENTS}, EMPTY_COMPONENT};
+static MatrixConfig LHSDSCCfg = {INT_CONTAINER, {"event", "event", "event", "event"}, {EVENTS, EVENTS}, {"nLHSDsc", "LHSDsc"}};
+static MatrixConfig LHSSTCfg = {INT_CONTAINER, {"event", "event", "event", "event"}, {EVENTS, EVENTS}, {"nLHSSt", "LHSSt"}};
+static MatrixConfig RHSSTCfg = {INT_CONTAINER, {"event", "event", "event", "event"}, {EVENTS, EVENTS}, {"nRHSSt", "RHSSt"}};
 
 ModelDependencies::ModelDependencies()
-    : _SD(SDCfg), _SZ(SZCfg), _SO(SOCfg), _DO(DOCfg), _HD(HDCfg), _HZ(HZCfg),
-      _LHSDsc(LHSDSCCfg), _LHSSt(LHSSTCfg), _RHSSt(RHSSTCfg), _HH(HHCfg),
-      _deps() {}
+    : _SD(SDCfg),
+      _SZ(SZCfg),
+      _SO(SOCfg),
+      _DO(DOCfg),
+      _HD(HDCfg),
+      _HZ(HZCfg),
+      _LHSDsc(LHSDSCCfg),
+      _LHSSt(LHSSTCfg),
+      _RHSSt(RHSSTCfg),
+      _HH(HHCfg),
+      _deps()
+{
+}
 
-void ModelDependencies::compute(EquationTable eqs, EquationTable outputs,
-                                EquationTable algs, EventTable events,
-                                VarSymbolTable symbols) {
+void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, EquationTable algs, EventTable events, VarSymbolTable symbols)
+{
   Utils::instance().setSymbols(symbols);
   SDGraphBuilder SD = SDGraphBuilder(eqs, algs, symbols);
   _deps.compute(SD.build(), _SD);
@@ -108,12 +87,10 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs,
   _deps.compute(DZ.build(), DZ_int);
   _deps.merge(_LHSDsc, DZ_int, _HZ);
 
-  DHGraphBuilder LHSSt = DHGraphBuilder(events, algs, symbols, STATEMENT::LHS,
-                                        DHGRAPHBUILDER::State);
+  DHGraphBuilder LHSSt = DHGraphBuilder(events, algs, symbols, STATEMENT::LHS, DHGRAPHBUILDER::State);
   _deps.compute(LHSSt.build(), _LHSSt);
 
-  DHGraphBuilder RHSSt = DHGraphBuilder(events, algs, symbols, STATEMENT::RHS,
-                                        DHGRAPHBUILDER::State);
+  DHGraphBuilder RHSSt = DHGraphBuilder(events, algs, symbols, STATEMENT::RHS, DHGRAPHBUILDER::State);
   _deps.compute(RHSSt.build(), _RHSSt);
 
   VariableDependencyMatrix DD_int(EmptyCfg);
@@ -126,18 +103,17 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs,
 
   OutputGraphBuilder SO = OutputGraphBuilder(outputs, algs, symbols);
   _deps.compute(SO.build(), _SO);
-  OutputGraphBuilder DO =
-      OutputGraphBuilder(outputs, algs, symbols, OUTPUT::DO);
+  OutputGraphBuilder DO = OutputGraphBuilder(outputs, algs, symbols, OUTPUT::DO);
   _deps.compute(DO.build(), _DO);
 
-  EAGraphBuilder DA(eqs, algs, symbols);
+  EAGraphBuilder DA = EAGraphBuilder(eqs, algs, symbols);
   _deps.compute(DA.build(), _DA);
 
-  EAGraphBuilder ZCA(events, algs, symbols);
+  EAGraphBuilder ZCA = EAGraphBuilder(events, algs, symbols);
   _deps.compute(ZCA.build(), _ZCA);
 
-  EAGraphBuilder OA(outputs, algs, symbols);
+  EAGraphBuilder OA = EAGraphBuilder(outputs, algs, symbols);
   _deps.compute(OA.build(), _OA);
 }
-} // namespace Deps
-} // namespace MicroModelica
+}  // namespace Deps
+}  // namespace MicroModelica

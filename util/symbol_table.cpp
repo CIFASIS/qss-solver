@@ -22,6 +22,7 @@
 #include <sstream>
 #include <math.h>
 
+#include "../ast/ast_builder.h"
 #include "../ast/expression.h"
 #include "../ir/equation.h"
 #include "../ir/expression.h"
@@ -57,7 +58,8 @@ Variable::Variable()
 }
 
 Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c)
-    : _discrete(false),
+    : _unknown(false),
+      _discrete(false),
       _t(t),
       _tp(tp),
       _m(m),
@@ -79,7 +81,8 @@ Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c)
 }
 
 Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array)
-    : _discrete(false),
+    : _unknown(false),
+      _discrete(false),
       _t(t),
       _tp(tp),
       _m(m),
@@ -170,7 +173,7 @@ void Variable::processModification()
 
 unsigned int Variable::size()
 {
-  vector<int>::iterator it;
+  vector<int>::const_iterator it;
   unsigned int total = 1;
   for (it = _size.begin(); it != _size.end(); it++) {
     total *= *it;
@@ -210,6 +213,14 @@ string Variable::declaration(string prefix)
   return buffer.str();
 }
 
+string Variable::variableExpression(const VarSymbolTable &symbols)
+{
+  AST_Expression var = newAST_Expression_ComponentReferenceExp(newAST_String(name()));
+  stringstream buffer;
+  buffer << Expression(var, symbols);
+  return buffer.str();
+}
+
 string Variable::initialization(const VarSymbolTable &symbols)
 {
   stringstream buffer;
@@ -220,11 +231,12 @@ string Variable::initialization(const VarSymbolTable &symbols)
   }
   if (hasAssignment() || hasStartModifier() || hasEachModifier()) {
     Expression ex(exp(), symbols);
+    string var = variableExpression(symbols);
     if (hasAssignment() || hasStartModifier()) {
-      buffer << this << " = " << ex << ";";
+      buffer << var << " = " << ex << ";";
     } else if (hasEachModifier()) {
       buffer << "for(" << index << " = 0; " << index << " <= " << size() << ";" << index << "++) {" << endl;
-      buffer << TAB << TAB << this << "[" << index << "]"
+      buffer << TAB << TAB << var << "[" << index << "]"
              << " = " << ex << ";" << endl;
       buffer << TAB << "}";
     }
@@ -244,7 +256,7 @@ TypeSymbolTable::TypeSymbolTable()
 
 /* VarSymbolTable class */
 
-VarSymbolTable::VarSymbolTable() : _coeffs(1), _parameters(false) {}
+VarSymbolTable::VarSymbolTable() : _parameters(false) {}
 
 void VarSymbolTable::initialize(TypeSymbolTable ty)
 {

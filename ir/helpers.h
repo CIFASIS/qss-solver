@@ -56,61 +56,16 @@ typedef ModelTable<int, ExternalFunction> ExternalFunctionTable;
  */
 class CompiledFunction {
   public:
-  /**
-   *
-   */
   CompiledFunction();
-  /**
-   *
-   * @param name
-   * @param includeDir
-   * @param libraryDir
-   * @param libraries
-   */
   CompiledFunction(std::string name, std::string includeDir, std::string libraryDir, Util::SymbolTable& libraries, std::string prefix = "");
-  /**
-   *
-   */
   ~CompiledFunction(){};
-  /**
-   *
-   * @return
-   */
   inline bool hasIncludeDirectory() const { return !_includeDirectory.empty(); };
-  /**
-   *
-   * @return
-   */
   inline bool hasLibraryDirectory() const { return !_libraryDirectory.empty(); };
-  /**
-   *
-   * @return
-   */
   inline bool hasLibraries() const { return _libraries.size() > 0; };
-  /**
-   *
-   * @return
-   */
   inline string includeDirectory() const { return _includeDirectory; };
-  /**
-   *
-   * @return
-   */
   inline string libraryDirectory() const { return _libraryDirectory; };
-  /**
-   *
-   * @return
-   */
   inline Util::SymbolTable libraries() { return _libraries; };
-  /**
-   *
-   * @return
-   */
   inline string name() const { return _name; };
-  /**
-   *
-   * @return
-   */
   inline string prototype() const { return _prototype; };
   friend std::ostream& operator<<(std::ostream& out, const CompiledFunction& cf);
   std::string print() const;
@@ -133,57 +88,16 @@ typedef ModelTable<std::string, CompiledFunction> CompiledFunctionTable;
  */
 class CompiledPackage {
   public:
-  /**
-   *
-   */
   CompiledPackage();
-  /**
-   *
-   * @param name
-   * @param includeDir
-   * @param libraryDir
-   * @param libraries
-   */
   CompiledPackage(string name, CompiledFunctionTable cft, Util::ImportTable objects);
   CompiledPackage(string name);
-  /**
-   *
-   */
   ~CompiledPackage(){};
-  /**
-   *
-   * @return
-   */
   string name();
-  /**
-   *
-   * @return
-   */
   string prefix();
-  /**
-   *
-   * @return
-   */
   Util::SymbolTable linkLibraries();
-  /**
-   *
-   * @return
-   */
   Util::SymbolTable includeDirectories();
-  /**
-   *
-   * @return
-   */
   Util::SymbolTable libraryDirectories();
-  /**
-   *
-   * @return
-   */
   CompiledFunctionTable definitions();
-  /**
-   *
-   * @return
-   */
   Util::ImportTable objects();
   inline void setObjects(Util::ImportTable& objects) { _objects = objects; };
   inline void setDefinitions(CompiledFunctionTable& cft) { _cft = cft; };
@@ -200,12 +114,21 @@ class FunctionPrinter {
   public:
   FunctionPrinter(){};
   ~FunctionPrinter(){};
+  std::string loop(int end);
+  std::string endLoop();
   std::string beginSwitch();
   std::string endSwitch();
   std::string beginExpression(std::string token, Option<Range> range) const;
-  std::string endExpression(Option<Range> range) const;
+  std::string endExpression(Option<Range> range, bool ret = true) const;
   std::string algebraics(Deps::EquationDependencyMatrix eqdm, Deps::depId key);
+  std::string algebraics(Deps::AlgebraicDependencies deps);
   std::string macro(std::string token, Option<Range> range, int id, int offset = 0) const;
+  std::string getIndexes(string var, Option<Range> range) const;
+  std::string beginDimGuards(std::string token, string args, Option<Range> range) const;
+  std::string endDimGuards(Option<Range> range) const;
+
+  protected:
+  std::string algebraic(int id);
 
   private:
   std::string mod(std::string var, int dim, Option<Range> range) const;
@@ -232,10 +155,6 @@ typedef ModelTable<int, Input> InputTable;
 
 class ModelConfig {
   public:
-  /**
-   *
-   * @return
-   */
   static ModelConfig& instance()
   {
     static ModelConfig _instance;
@@ -251,12 +170,16 @@ class ModelConfig {
   inline void setModelAnnotations(ModelAnnotation model_annotations) { _model_annotations = model_annotations; };
   bool generateDerivatives();
   inline int order() { return _model_annotations.order(); };
+  inline bool isQss() { return !_model_annotations.isClassic(); };
+  inline void setDerivatives(EquationTable derivatives) { _derivatives = derivatives; };
+  inline EquationTable derivatives() { return _derivatives; };
 
   private:
   ModelConfig();
   ModelAnnotation _model_annotations;
   EquationTable _algebraics;
   Deps::ModelDependencies _dependencies;
+  EquationTable _derivatives;
 };
 }  // namespace IR
 }  // namespace MicroModelica

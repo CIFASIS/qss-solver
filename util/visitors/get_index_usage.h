@@ -17,38 +17,35 @@
 
  ******************************************************************************/
 
-#ifndef MMO_EXPRESSION_H_
-#define MMO_EXPRESSION_H_
+#ifndef GET_INDEX_USAGE_H_
+#define GET_INDEX_USAGE_H_
 
-#include <string>
-#include "../ast/ast_types.h"
-#include "../util/symbol_table.h"
+#include "../../ast/ast_builder.h"
+#include "../../deps/graph/graph_helpers.h"
+#include "../../ir/index.h"
+#include "../ast_util.h"
 
 namespace MicroModelica {
-namespace IR {
-
+namespace Util {
 /**
  *
  */
-class Expression {
+class GetIndexUsage : public AST_Expression_Visitor<list<std::string>> {
   public:
-  Expression();
-  Expression(AST_Expression exp, const Util::VarSymbolTable& symbols, int order = 0);
-  ~Expression() = default;
-  std::string print() const;
-  inline AST_Expression expression() const { return _exp; };
-  bool isReference() const;
-  bool isEmpty() const { return _exp == nullptr; };
-  bool isValid() const { return _exp != nullptr; };
-  friend std::ostream& operator<<(std::ostream& out, const Expression& s);
+  GetIndexUsage();
+  ~GetIndexUsage(){};
 
   private:
-  AST_Expression _exp;
-  Util::VarSymbolTable _symbols;
-  int _order;
+  list<std::string> foldTraverseElement(AST_Expression exp);
+  inline list<std::string> foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
+  inline list<std::string> foldTraverseElement(list<std::string> l, list<std::string> r, BinOpType bot)
+  {
+    l.splice(l.end(), r);
+    return l;
+  }
+  bool _in_index_list;
 };
 
-typedef list<Expression> ExpressionList;
-}  // namespace IR
+}  // namespace Util
 }  // namespace MicroModelica
-#endif /* EXPRESSION_H_ */
+#endif /* GET_INDEX_INDEX_H_ */

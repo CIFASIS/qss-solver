@@ -18,6 +18,7 @@
  ******************************************************************************/
 #include <sstream>
 
+#include "../ast/ast_builder.h"
 #include "../ast/statement.h"
 #include "../util/util.h"
 #include "../util/visitors/called_functions.h"
@@ -28,17 +29,88 @@ using namespace Util;
 namespace IR {
 
 Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, Option<Range> range, bool initial, const string& block)
-    : _stm(stm), _range(range), _symbols(symbols), _block(block)
+    : _stm(stm), _range(range), _symbols(symbols), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs()
 {
-  StatementCalledFunctions cf;
-  _calledFunctions = cf.apply(stm);
+  initialize();
 }
 
 Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, bool initial, const string& block)
-    : _stm(stm), _range(), _symbols(symbols), _block(block)
+    : _stm(stm), _range(), _symbols(symbols), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs()
+{
+  initialize();
+}
+
+void Statement::initialize()
 {
   StatementCalledFunctions cf;
-  _calledFunctions = cf.apply(stm);
+  _calledFunctions = cf.apply(_stm);
+  _lhs_assignments = generateExps(STATEMENT::LHS);
+  _lhs_assignments = generateExps(STATEMENT::RHS);
+  _lhs = generateExps(STATEMENT::LHS_EXPS);
+}
+
+ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
+{
+  ExpressionList asgs;
+  switch (_stm->statementType()) {
+  case STIF: {
+    AST_Statement_If sti = _stm->getAsIf();
+    AST_StatementList stl = sti->statements();
+    AST_StatementListIterator stlit;
+    if (asg == STATEMENT::RHS) {
+      asgs.push_back(Expression(sti->condition(), _symbols));
+    } else if (asg == STATEMENT::LHS_EXPS) {
+      asgs.push_back(emptyRef());
+    }
+    foreach (stlit, stl) {
+      Statement st(current_element(stlit), _symbols);
+      asgs.splice(asgs.end(), st.generateExps(asg));
+    }
+    AST_Statement_ElseList stelsel = sti->else_if();
+    AST_Statement_ElseListIterator stelselit;
+    foreach (stelselit, stelsel) {
+      if (asg == STATEMENT::RHS) {
+        asgs.push_back(Expression(current_element(stelselit)->condition(), _symbols));
+      } else if (asg == STATEMENT::LHS_EXPS) {
+        asgs.push_back(emptyRef());
+      }
+      stl = current_element(stelselit)->statements();
+      foreach (stlit, stl) {
+        Statement st(current_element(stlit), _symbols);
+        asgs.splice(asgs.end(), st.generateExps(asg));
+      }
+    }
+    stl = sti->else_statements();
+    if (!stl->empty()) {
+      foreach (stlit, stl) {
+        Statement st(current_element(stlit), _symbols);
+        asgs.splice(asgs.end(), st.generateExps(asg));
+      }
+    }
+    break;
+  }
+  case STASSING: {
+    if (asg == STATEMENT::LHS || asg == STATEMENT::LHS_EXPS) {
+      asgs.push_back(Expression(_stm->getAsAssign()->lhs(), _symbols));
+    } else {
+      asgs.push_back(Expression(_stm->getAsAssign()->exp(), _symbols));
+    }
+    break;
+  }
+  case STFOR: {
+    AST_Statement_For stf = _stm->getAsFor();
+    AST_StatementList stms = stf->statements();
+    AST_StatementListIterator stmit;
+    foreach (stmit, stms) {
+      Statement st(current_element(stmit), _symbols);
+      asgs.splice(asgs.end(), st.generateExps(asg));
+    }
+    break;
+  }
+  default:
+    break;
+  }
+  return asgs;
 }
 
 string Statement::print() const
@@ -66,7 +138,6 @@ string Statement::print() const
       foreach (stlit, stl) {
         Statement st(current_element(stlit), _symbols, false, _block + TAB);
         buffer << st << endl;
-        ;
       }
       buffer << _block << "}";
     }
@@ -109,61 +180,24 @@ string Statement::print() const
 
 bool Statement::isAssignment() const { return _stm->statementType() == STASSING; }
 
+Expression Statement::emptyRef()
+{
+  AST_Expression lhs = newAST_Expression_ComponentReferenceExp(newAST_String("dummy"));
+  return Expression(lhs, _symbols);
+}
+
 ExpressionList Statement::assignments(STATEMENT::AssignTerm asg) const
 {
-  ExpressionList asgs;
-  switch (_stm->statementType()) {
-  case STIF: {
-    AST_Statement_If sti = _stm->getAsIf();
-    AST_StatementList stl = sti->statements();
-    AST_StatementListIterator stlit;
-    if (asg == STATEMENT::RHS) {
-      asgs.push_back(Expression(sti->condition(), _symbols));
-    }
-    foreach (stlit, stl) {
-      Statement st(current_element(stlit), _symbols);
-      asgs.splice(asgs.end(), st.assignments(asg));
-    }
-    AST_Statement_ElseList stelsel = sti->else_if();
-    AST_Statement_ElseListIterator stelselit;
-    foreach (stelselit, stelsel) {
-      stl = current_element(stelselit)->statements();
-      foreach (stlit, stl) {
-        Statement st(current_element(stlit), _symbols);
-        asgs.splice(asgs.end(), st.assignments(asg));
-      }
-    }
-    stl = sti->else_statements();
-    if (!stl->empty()) {
-      foreach (stlit, stl) {
-        Statement st(current_element(stlit), _symbols);
-        asgs.splice(asgs.end(), st.assignments(asg));
-      }
-    }
-    break;
-  }
-  case STASSING: {
-    if (asg == STATEMENT::LHS) {
-      asgs.push_back(Expression(_stm->getAsAssign()->lhs(), _symbols));
-    } else {
-      asgs.push_back(Expression(_stm->getAsAssign()->exp(), _symbols));
-    }
-    break;
-  }
-  case STFOR: {
-    AST_Statement_For stf = _stm->getAsFor();
-    AST_StatementList stms = stf->statements();
-    AST_StatementListIterator stmit;
-    foreach (stmit, stms) {
-      Statement st(current_element(stmit), _symbols);
-      asgs.splice(asgs.end(), st.assignments(asg));
-    }
-    break;
-  }
+  assert(asg != STATEMENT::LHS_EXPS);
+  switch (asg) {
+  case STATEMENT::LHS:
+    return _lhs_assignments;
+  case STATEMENT::RHS:
+    return _rhs_assignments;
   default:
-    break;
+    return ExpressionList();
   }
-  return asgs;
+  return ExpressionList();
 }
 
 std::ostream& operator<<(std::ostream& out, const Statement& s) { return out << s.print(); }

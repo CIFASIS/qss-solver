@@ -205,6 +205,7 @@ Model::Model()
       _algebraicNbr(0),
       _eventNbr(0),
       _outputNbr(0),
+      _inputNbr(0),
       _derivativeId(1),
       _algebraicId(1),
       _eventId(1),
@@ -238,6 +239,7 @@ Model::Model(string name)
       _algebraicNbr(0),
       _eventNbr(0),
       _outputNbr(0),
+      _inputNbr(0),
       _derivativeId(1),
       _algebraicId(1),
       _eventId(1),
@@ -425,7 +427,7 @@ void Model::addEquation(AST_Equation eq, Option<Range> range)
 {
   assert(eq->equationType() == EQEQUALITY);
   AST_Equation_Equality eqe = eq->getAsEquality();
-  EQUATION::Type t = (_annotations.classic() ? EQUATION::ClassicDerivative : EQUATION::QSSDerivative);
+  EQUATION::Type t = (_annotations.isClassic() ? EQUATION::ClassicDerivative : EQUATION::QSSDerivative);
   if (eqe->left()->expressionType() == EXPDERIVATIVE) {
     AST_Expression_Derivative ed = eqe->left()->getAsDerivative();
     variable(AST_ListFirst(ed->arguments()));
@@ -479,7 +481,7 @@ void Model::addVariable(int id, int size, EQUATION::Type type)
   if (size > 1) {
     s.push_back(size);
   }
-  var << Equation::functionId(type) << id;
+  var << Equation::identifier(type) << id;
   Variable vi(newType_Integer(), TP_EQ, NULL, NULL, s, false);
   insert(var.str(), vi);
 }
@@ -597,6 +599,7 @@ void Model::setModelConfig()
   ModelConfig::instance().setDependencies(_dependencies);
   ModelConfig::instance().setAlgebraics(_algebraics);
   ModelConfig::instance().setModelAnnotations(_annotations);
+  ModelConfig::instance().setDerivatives(_derivatives);
 }
 }  // namespace IR
 }  // namespace MicroModelica

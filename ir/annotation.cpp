@@ -557,7 +557,7 @@ void ModelAnnotation::setJacobian(int jacobian) { _jacobian = jacobian; }
 
 int ModelAnnotation::jacobian() { return _jacobian; }
 
-bool ModelAnnotation::classic()
+bool ModelAnnotation::isClassic()
 {
   return _solver == DASSL || _solver == DOPRI || _solver == CVODE_BDF || _solver == IDA || _solver == CVODE_AM;
 }

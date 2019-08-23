@@ -39,12 +39,12 @@ DepsGraph DSGraphBuilder::build()
   for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
     VertexProperty vp = VertexProperty();
     if (var.isDiscrete()) {
-      vp.type = VERTEX::Influencer;
-      vp.var = var;
+      vp.setType(VERTEX::Influencer);
+      vp.setVar(var);
       _variableDescriptors.push_back(add_vertex(vp, graph));
     } else if (var.isAlgebraic()) {
-      vp.type = VERTEX::Algebraic;
-      vp.var = var;
+      vp.setType(VERTEX::Algebraic);
+      vp.setVar(var);
       _variableDescriptors.push_back(add_vertex(vp, graph));
     }
   }
@@ -52,20 +52,20 @@ DepsGraph DSGraphBuilder::build()
   EquationTable::iterator eqit;
   for (Equation eq = _equations.begin(eqit); !_equations.end(eqit); eq = _equations.next(eqit)) {
     VertexProperty vp = VertexProperty();
-    vp.type = VERTEX::Equation;
-    vp.eq = eq;
+    vp.setType(VERTEX::Equation);
+    vp.setEq(eq);
     _equationDescriptors.push_back(add_vertex(vp, graph));
     VertexProperty ife = VertexProperty();
-    ife.type = VERTEX::Influencee;
+    ife.setType(VERTEX::Influencee);
     Option<Variable> var = eq.LHSVariable();
     assert(var);
-    ife.var = var.get();
+    ife.setVar(var.get());
     _derivativeDescriptors.push_back(add_vertex(ife, graph));
   }
   for (Equation eq = _algebraics.begin(eqit); !_algebraics.end(eqit); eq = _algebraics.next(eqit)) {
     VertexProperty vp = VertexProperty();
-    vp.type = VERTEX::Equation;
-    vp.eq = eq;
+    vp.setType(VERTEX::Equation);
+    vp.setEq(eq);
     _equationDescriptors.push_back(add_vertex(vp, graph));
   }
 
@@ -78,21 +78,21 @@ DepsGraph DSGraphBuilder::build()
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {
           Label lbl(ip);
-          cout << "Agrega arista desde la var: " << graph[source].var << " a la ecuacion: " << graph[sink].eq.id() << endl;
-          cout << "Ecuacion: " << graph[sink].eq.type() << endl;
+          cout << "Agrega arista desde la var: " << graph[source].var() << " a la ecuacion: " << graph[sink].eq().id() << endl;
+          cout << "Ecuacion: " << graph[sink].eq().type() << endl;
           add_edge(source, sink, lbl, graph);
         }
       }
       // Check LHS too if we are working with algebraics.
-      if (graph[source].type == VERTEX::Algebraic && graph[sink].eq.type() == EQUATION::Algebraic) {
+      if (graph[source].type() == VERTEX::Algebraic && graph[sink].eq().type() == EQUATION::Algebraic) {
         edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
             Label lbl(ip);
-            cout << "Agrega arista desde la ecuacion algebraica: " << graph[sink].eq.id() << " a la variable: " << graph[source].var
+            cout << "Agrega arista desde la ecuacion algebraica: " << graph[sink].eq().id() << " a la variable: " << graph[source].var()
                  << endl;
-            cout << "Ecuacion algebraica: " << graph[sink].eq.type() << endl;
+            cout << "Ecuacion algebraica: " << graph[sink].eq().type() << endl;
             add_edge(sink, source, lbl, graph);
           }
         }
@@ -104,14 +104,15 @@ DepsGraph DSGraphBuilder::build()
   {
     foreach_(IfeVertex source, _derivativeDescriptors)
     {
-      if (graph[sink].eq.isDerivative()) {
+      if (graph[sink].eq().isDerivative()) {
         GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
             Label lbl(ip);
-            cout << "Agrega arista desde la ecuacion derivada: " << graph[sink].eq.id() << " a la derivada: " << graph[source].var << endl;
-            cout << "Ecuacion algebraica: " << graph[sink].eq.type() << endl;
+            cout << "Agrega arista desde la ecuacion derivada: " << graph[sink].eq().id() << " a la derivada: " << graph[source].var()
+                 << endl;
+            cout << "Ecuacion algebraica: " << graph[sink].eq().type() << endl;
             add_edge(sink, source, lbl, graph);
           }
         }

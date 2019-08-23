@@ -39,78 +39,25 @@
 
 namespace MicroModelica {
 namespace IR {
-/**
- *
- */
+
 typedef enum {
   DEC_PUBLIC,  //!< DEC_PUBLIC
   DEC_LOCAL    //!< DEC_LOCAL
 } DEC_Type;
 
-/**
- *
- */
 class Class {
   public:
   ~Class(){};
-  /**
-   *
-   * @return
-   */
   virtual string name() const = 0;
-  /**
-   *
-   * @param n
-   */
   virtual void insert(string n) = 0;
-  /**
-   *
-   * @param eq
-   */
   virtual void insert(AST_Equation eq) = 0;
-  /**
-   *
-   * @param stm
-   * @param initial
-   */
   virtual void insert(AST_Statement stm, bool initial) = 0;
-  /**
-   *
-   * @param stm
-   */
   virtual void insert(AST_Statement stm) = 0;
-  /**
-   *
-   * @param efc
-   */
   virtual void insert(AST_External_Function_Call efc) = 0;
-  /**
-   *
-   * @param n
-   * @param vi
-   * @param type
-   */
   virtual void insert(VarName n, Util::Variable& vi, DEC_Type type) = 0;
-  /**
-   *
-   * @param n
-   * @param vi
-   */
   virtual void insert(VarName n, Util::Variable& vi) = 0;
-  /**
-   *
-   * @param x
-   */
   virtual void insert(AST_Argument_Modification x) = 0;
-  /**
-   *
-   * @return
-   */
   virtual Util::VarSymbolTable symbols() const = 0;
-  /**
-   *
-   * @return
-   */
   virtual Util::ImportTable imports() const = 0;
 };
 
@@ -119,77 +66,19 @@ class Class {
  */
 class Function : public Class {
   public:
-  /**
-   *
-   */
   Function(){};
-  /**
-   *
-   * @param name
-   */
   Function(string name);
-  /**
-   *
-   */
   ~Function();
-  /**
-   *
-   * @return
-   */
   string name() const;
-  /**
-   *
-   * @param efc
-   */
   void insert(AST_External_Function_Call efc);
-  /**
-   *
-   * @param n
-   * @param vi
-   * @param type
-   */
   void insert(VarName n, Util::Variable& vi, DEC_Type type);
-  /**
-   *
-   * @param n
-   * @param vi
-   */
   void insert(VarName n, Util::Variable& vi);
-  /**
-   *
-   * @param eq
-   */
   void insert(AST_Equation eq);
-  /**
-   *
-   * @param stm
-   * @param initial
-   */
   void insert(AST_Statement stm, bool initial);
-  /**
-   *
-   * @param stm
-   */
   void insert(AST_Statement stm);
-  /**
-   *
-   * @param n
-   */
   void insert(string n);
-  /**
-   *
-   * @param x
-   */
   void insert(AST_Argument_Modification x);
-  /**
-   *
-   * @return
-   */
   Util::VarSymbolTable symbols() const;
-  /**
-   *
-   * @return
-   */
   Util::ImportTable imports() const;
   StatementTable statements() const;
   ExternalFunctionTable externalFunctions() const;
@@ -222,97 +111,23 @@ typedef ModelTable<std::string, Function> FunctionTable;
  */
 class Package : public Class {
   public:
-  /**
-   *
-   */
   Package(){};
-  /**
-   *
-   * @param name
-   */
   Package(string name);
-  /**
-   *
-   */
   ~Package(){};
-  /**
-   *
-   * @return
-   */
   Util::VarSymbolTable symbols() const;
-  /**
-   *
-   * @return
-   */
   string name() const;
-  /**
-   *
-   * @param n
-   */
   void insert(string n);
-  /**
-   *
-   * @param eq
-   */
   void insert(AST_Equation eq);
-  /**
-   *
-   * @param stm
-   * @param initial
-   */
   void insert(AST_Statement stm, bool initial);
-  /**
-   *
-   * @param stm
-   */
   void insert(AST_Statement stm);
-  /**
-   *
-   * @param f
-   */
   void setFunctions(FunctionTable& fs);
-  /**
-   *
-   * @param efc
-   */
   void insert(AST_External_Function_Call efc);
-  /**
-   *
-   * @param n
-   * @param vi
-   * @param type
-   */
   void insert(VarName n, Util::Variable& vi, DEC_Type type);
-  /**
-   *
-   * @param n
-   * @param vi
-   */
   void insert(VarName n, Util::Variable& vi);
-  /**
-   *
-   * @param x
-   */
   void insert(AST_Argument_Modification x);
-  /**
-   *
-   * @return
-   */
   Util::ImportTable imports() const;
-  /**
-   *
-   * @return
-   */
   FunctionTable definitions();
-  /*
-   *
-   * @return
-   */
   std::string fileName();
-  /*
-   *
-   * @return
-   */
   std::string prefix();
 
   private:
@@ -326,83 +141,20 @@ class Package : public Class {
  */
 class Model : public Class {
   public:
-  /**
-   *
-   * @param name
-   */
   Model();
-  /**
-   *
-   * @param name
-   */
   Model(string name);
-  /**
-   *
-   */
   ~Model(){};
-  /**
-   *
-   * @return
-   */
   inline string name() const { return _name; };
-  /**
-   *
-   * @param n
-   */
   void insert(string n);
-  /**
-   *
-   * @param n
-   * @param vi
-   * @param type
-   */
   void insert(VarName n, Util::Variable& vi, DEC_Type type);
-  /**
-   *
-   * @param n
-   * @param vi
-   */
   void insert(VarName n, Util::Variable& vi);
-  /**
-   *
-   * @param eq
-   */
   void insert(AST_Equation eq);
-  /**
-   *
-   * @param stm
-   * @param initial
-   */
   void insert(AST_Statement stm, bool initial);
-  /**
-   *
-   * @param stm
-   */
   void insert(AST_Statement stm);
-  /**
-   *
-   * @param f
-   */
   void setCalledFunctions(FunctionTable& fs);
-  /**
-   *
-   * @param efc
-   */
   void insert(AST_External_Function_Call efc);
-  /**
-   *
-   * @param x
-   */
   void insert(AST_Argument_Modification x);
-  /**
-   *
-   * @return
-   */
   inline Util::VarSymbolTable symbols() const { return _symbols; };
-  /**
-   *
-   * @return
-   */
   inline Util::ImportTable imports() const { return _imports; };
   inline ModelAnnotation annotations() const { return _annotations; };
   inline FunctionTable calledFunctions() const { return _calledFunctions; };

@@ -42,12 +42,18 @@ void DHGraphBuilder::addStatements(StatementTable stms, DepsGraph& graph, Expres
 {
   StatementTable::iterator stm_it;
   for (Statement stm = stms.begin(stm_it); !stms.end(stm_it); stm = stms.next(stm_it)) {
-    for (Expression e : stm.assignments(_search)) {
+    ExpressionList lhs_discretes = stm.lhsDiscretes();
+    ExpressionList assignments = stm.assignments(_search);
+    //    assert(assignments.size() == lhs_discretes.size());
+    ExpressionList::iterator it = lhs_discretes.begin();
+    for (Expression e : assignments) {
       VertexProperty vp = VertexProperty();
-      vp.type = VERTEX::Statement;
-      vp.stm.exp = e;
-      vp.stm.event = exp;
-      vp.id = id;
+      vp.setType(VERTEX::Statement);
+      vp.stm().setExp(e);
+      vp.stm().setEvent(exp);
+      //      vp.stm.lhs = *it;
+      vp.setId(id);
+      //      it++;
       _statementDescriptors.push_back(add_vertex(vp, graph));
     }
   }
@@ -62,12 +68,12 @@ DepsGraph DHGraphBuilder::build()
     VertexProperty vp = VertexProperty();
     bool add_influencer = (_ifr_type == DHGRAPHBUILDER::State) ? var.isState() : var.isDiscrete();
     if (add_influencer) {
-      vp.type = VERTEX::Influencer;
-      vp.var = var;
+      vp.setType(VERTEX::Influencer);
+      vp.setVar(var);
       _variableDescriptors.push_back(add_vertex(vp, graph));
     } else if (var.isAlgebraic()) {
-      vp.type = VERTEX::Algebraic;
-      vp.var = var;
+      vp.setType(VERTEX::Algebraic);
+      vp.setVar(var);
       _variableDescriptors.push_back(add_vertex(vp, graph));
     }
   }
@@ -78,15 +84,15 @@ DepsGraph DHGraphBuilder::build()
     addStatements(ev.positiveHandler(), graph, exp, id);
     addStatements(ev.negativeHandler(), graph, exp, id);
     VertexProperty icee = VertexProperty();
-    icee.type = VERTEX::Influencee;
-    icee.id = id;
+    icee.setType(VERTEX::Influencee);
+    icee.setId(id);
     _eventDescriptors.push_back(add_vertex(icee, graph));
   }
   EquationTable::iterator eq_it;
   for (Equation eq = _algebraics.begin(eq_it); !_algebraics.end(eq_it); eq = _algebraics.next(eq_it)) {
     VertexProperty vp = VertexProperty();
-    vp.type = VERTEX::Equation;
-    vp.eq = eq;
+    vp.setType(VERTEX::Equation);
+    vp.setEq(eq);
     _statementDescriptors.push_back(add_vertex(vp, graph));
   }
 
@@ -103,7 +109,7 @@ DepsGraph DHGraphBuilder::build()
         }
       }
       // Check LHS too if we are working with algebraics.
-      if (graph[source].type == VERTEX::Algebraic && graph[sink].eq.type() == EQUATION::Algebraic) {
+      if (graph[source].type() == VERTEX::Algebraic && graph[sink].eq().type() == EQUATION::Algebraic) {
         edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
@@ -119,7 +125,7 @@ DepsGraph DHGraphBuilder::build()
   {
     foreach_(IfeVertex source, _eventDescriptors)
     {
-      if (graph[sink].type == VERTEX::Statement) {
+      if (graph[sink].type() == VERTEX::Statement) {
         GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();

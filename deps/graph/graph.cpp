@@ -336,64 +336,64 @@ GenerateEdge::GenerateEdge(VertexProperty source, VertexProperty sink, VarSymbol
 
 void GenerateEdge::initialize()
 {
-  Occurs occurs(_source.var.name(), _symbols);
+  Occurs occurs(_source.var().name(), _symbols);
   if (_eval == VERTEX::LHS) {
-    if (_source.type == VERTEX::Influencer || (_source.type == VERTEX::Algebraic && _dir == EDGE::Output)) {
-      _exist = occurs.apply(_sink.eq.lhs().expression());
+    if (_source.type() == VERTEX::Influencer || (_source.type() == VERTEX::Algebraic && _dir == EDGE::Output)) {
+      _exist = occurs.apply(_sink.eq().lhs().expression());
       if (_exist) {
         build(occurs.occurrences());
       }
-    } else if (_source.type == VERTEX::Algebraic && _dir == EDGE::Input) {
-      assert(_sink.type == VERTEX::Equation);
-      _exist = occurs.apply(_sink.eq.equation());
+    } else if (_source.type() == VERTEX::Algebraic && _dir == EDGE::Input) {
+      assert(_sink.type() == VERTEX::Equation);
+      _exist = occurs.apply(_sink.eq().equation());
       if (_exist) {
         build(occurs.occurrences());
       }
-    } else if (_source.type == VERTEX::Influencee) {
-      assert(_sink.type == VERTEX::Equation);
+    } else if (_source.type() == VERTEX::Influencee) {
+      assert(_sink.type() == VERTEX::Equation);
       ExpressionList exps;
-      if (sinkIsEvent() && _source.id == _sink.id) {
+      if (sinkIsEvent() && _source.id() == _sink.id()) {
         _exist = true;
-        exps.push_back(_sink.stm.event);
+        exps.push_back(_sink.stm().event());
         build(exps);
-      } else if (_source.id == _sink.eq.id()) {
+      } else if (_source.id() == _sink.eq().id()) {
         _exist = true;
-        exps.push_back(_sink.eq.lhs());
+        exps.push_back(_sink.eq().lhs());
         build(exps);
       }
     }
   } else {
-    if (_source.type == VERTEX::Influencer || (_source.type == VERTEX::Algebraic && _dir == EDGE::Output)) {
-      if (_sink.type == VERTEX::Equation) {
-        _exist = occurs.apply(_sink.eq.equation());
-      } else if (_sink.type == VERTEX::Statement) {
-        _exist = occurs.apply(_sink.stm.exp.expression());
+    if (_source.type() == VERTEX::Influencer || (_source.type() == VERTEX::Algebraic && _dir == EDGE::Output)) {
+      if (_sink.type() == VERTEX::Equation) {
+        _exist = occurs.apply(_sink.eq().equation());
+      } else if (_sink.type() == VERTEX::Statement) {
+        _exist = occurs.apply(_sink.stm().exp().expression());
       }
       if (_exist) {
         build(occurs.occurrences());
       }
-    } else if (_source.type == VERTEX::Algebraic && _dir == EDGE::Input) {
-      assert(_sink.type == VERTEX::Equation);
-      _exist = occurs.apply(_sink.eq.lhs().expression());
+    } else if (_source.type() == VERTEX::Algebraic && _dir == EDGE::Input) {
+      assert(_sink.type() == VERTEX::Equation);
+      _exist = occurs.apply(_sink.eq().lhs().expression());
       if (_exist) {
         build(occurs.occurrences());
       }
-    } else if (_source.type == VERTEX::Influencee) {
+    } else if (_source.type() == VERTEX::Influencee) {
       ExpressionList exps;
       if (sinkIsEvent()) {
-        if (_source.id == _sink.id) {
+        if (_source.id() == _sink.id()) {
           _exist = true;
-          exps.push_back(_sink.stm.event);
+          exps.push_back(_sink.stm().event());
           build(exps);
         }
       } else if (sinkIsOutput()) {
-        if (_source.id == _sink.eq.id()) {
+        if (_source.id() == _sink.eq().id()) {
           _exist = true;
-          exps.push_back(_sink.eq.lhs());
+          exps.push_back(_sink.eq().lhs());
           build(exps);
         }
       } else {
-        _exist = occurs.apply(_sink.eq.lhs().expression());
+        _exist = occurs.apply(_sink.eq().lhs().expression());
         if (_exist) {
           build(occurs.occurrences());
         }
@@ -432,32 +432,65 @@ void GenerateEdge::build(list<Expression> exps)
     } else {
       if (eval_occur.hasIndex()) {  // 1 1 In this case the index must be an integer expression.
         cout << "Intenta agregar caso 2:" << exp << endl;
-        _ips.insert(IndexPair(mdi_dom, MDI(0), eval_occur.offsets(), eval_occur.usages(), exp));
+        _ips.insert(IndexPair(mdi_dom, getScalarMDI(), eval_occur.offsets(), eval_occur.usages(), exp));
       } else {  // 1 1
         cout << "Intenta agregar caso 3:" << exp << endl;
-        _ips.insert(IndexPair(MDI(0), MDI(0), Offset(), Usage(), exp));
+        _ips.insert(IndexPair(MDI(0), getScalarMDI(), Offset(), Usage(), exp));
       }
     }
     cout << "Indexes: " << _ips.size() << endl;
   }
 }
 
+MDI GenerateEdge::getScalarMDI(Expression exp)
+{
+  assert(exp.isReference());
+  IntervalList interval;
+  AST_Expression_ComponentReference cr = exp.expression()->getAsComponentReference();
+  if (cr->hasIndexes()) {
+    AST_ExpressionList indexes = cr->firstIndex();
+    AST_ExpressionListIterator it;
+    foreach (it, indexes) {
+      PartialEvalExp pexp(_symbols);
+      AST_Expression cur = pexp.apply(current_element(it));
+      if (cur->expressionType() == EXPINTEGER) {
+        int v = cur->getAsInteger()->val();
+        interval.push_back(Interval::closed(v, v));
+      } else {
+        // @TODO: Add error message
+        assert(false);
+      }
+    }
+  }
+  return MDI(interval);
+}
+
+MDI GenerateEdge::getScalarMDI()
+{
+  if (_sink.type() == VERTEX::Equation && (_sink.eq().isDerivative() || _sink.eq().isAlgebraic())) {
+    return getScalarMDI(_sink.eq().lhs());
+  } /* if (_sink.type == VERTEX::Statement && _eval == VERTEX::RHS) {
+     return getScalarMDI(_sink.stm.lhs);
+   }*/
+  return MDI(0);
+}
+
 Option<Range> GenerateEdge::range(struct VertexProperty sink)
 {
-  if (_sink.type == VERTEX::Equation) {
-    return _sink.eq.range();
-  } else if (_sink.type == VERTEX::Statement) {
-    return _sink.stm.range;
+  if (_sink.type() == VERTEX::Equation) {
+    return _sink.eq().range();
+  } else if (_sink.type() == VERTEX::Statement) {
+    return _sink.stm().range();
   }
   return Option<Range>();
 }
 
 bool GenerateEdge::sinkIsEvent()
 {
-  if (_sink.type == VERTEX::Statement) {
+  if (_sink.type() == VERTEX::Statement) {
     return true;
   }
-  if (_sink.type == VERTEX::Equation && _sink.eq.isZeroCrossing()) {
+  if (_sink.type() == VERTEX::Equation && _sink.eq().isZeroCrossing()) {
     return true;
   }
   return false;
@@ -465,7 +498,7 @@ bool GenerateEdge::sinkIsEvent()
 
 bool GenerateEdge::sinkIsOutput()
 {
-  if (_sink.type == VERTEX::Equation && _sink.eq.isOutput()) {
+  if (_sink.type() == VERTEX::Equation && _sink.eq().isOutput()) {
     return true;
   }
   return false;

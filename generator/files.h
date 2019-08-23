@@ -38,47 +38,18 @@ namespace Generator {
  */
 class Files {
   public:
-  /**
-   *
-   */
   Files();
-  /**
-   *
-   * @param model
-   * @param solver
-   * @param flags
-   */
   Files(ModelInstancePtr modelInstance, IR::Model& model, Util::CompileFlags& flags);
-  /**
-   *
-   * @param name
-   * @param flags
-   */
   Files(string name, Util::CompileFlags& flags);
-  /**
-   *
-   */
   ~Files();
-  /**
-   *
-   */
   void makefile();
-  /**
-   *
-   */
   void run();
-  /**
-   *
-   */
   void plot();
-  /**
-   *
-   * @param annotation
-   */
   void settings(IR::ModelAnnotation annotation);
   void graph();
 
   private:
+  std::string variablePlotSettings();
   void printList(list<string> ann, string tag);
   string _fname;
   IR::Model _model;

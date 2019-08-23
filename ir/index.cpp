@@ -81,6 +81,8 @@ Range::Range(AST_Statement_For stf, VarSymbolTable symbols, RANGE::Type type) : 
   setRangeDefinition(fil, symbols);
 }
 
+Range::Range(Variable var, RANGE::Type type) : _ranges(), _indexPos(), _size(0), _type(type) { generate(var); }
+
 void Range::setRangeDefinition(AST_ForIndexList fil, VarSymbolTable symbols)
 {
   AST_ForIndexListIterator filit;
@@ -107,6 +109,27 @@ void Range::setRangeDefinition(AST_ForIndexList fil, VarSymbolTable symbols)
     } else {
       _rowSize.push_back(1);
     }
+  }
+}
+
+void Range::generate(Variable var)
+{
+  int pos = 0;
+  for (unsigned int i = 0; i < var.dimensions(); i++) {
+    string index = Utils::instance().dimensionVar(i + 1);
+    int begin = 1;
+    int end = var.size(i);
+    _ranges.insert(index, RangeDefinition(begin, end));
+    _indexPos.insert(index, pos++);
+    Option<RangeDefinition> range = _ranges[index];
+    if (range) {
+      _size += range->size();
+      _rowSize.push_back(range->size());
+    } else {
+      _rowSize.push_back(1);
+    }
+    Variable vi(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false);
+    Utils::instance().symbols().insert(index, vi);
   }
 }
 
@@ -144,6 +167,23 @@ string Range::iterator(int dim)
   return "";
 }
 
+string Range::getDimensionVars() const
+{
+  stringstream buffer;
+  int size = _ranges.size();
+  for (int i = 1; i <= size; i++) {
+    buffer << getDimensionVar(i) << (i + 1 < size ? "," : "");
+  }
+  return buffer.str();
+}
+
+string Range::getDimensionVar(int i) const
+{
+  stringstream buffer;
+  buffer << "_d" << i;
+  return buffer.str();
+}
+
 string Range::end() const
 {
   stringstream buffer;
@@ -165,8 +205,7 @@ string Range::print() const
       string idx = ranges.key(it);
       buffer << block << "for(" << idx << " = " << r.begin() << "; ";
       buffer << idx << "<=" << r.end() << "; ";
-      buffer << idx << "+=" << r.step() << ")" << endl;
-      buffer << block << "{" << endl;
+      buffer << idx << "+=" << r.step() << ") {" << endl;
       block += TAB;
     }
   }
@@ -191,9 +230,11 @@ void Range::addLocalVariables() const
 {
   RangeDefinitionTable ranges = _ranges;
   RangeDefinitionTable::iterator it;
+  int i = 1;
   for (RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it)) {
     string var = ranges.key(it);
     Utils::instance().addLocalSymbol("int " + var + ";");
+    Utils::instance().addLocalSymbol("int " + getDimensionVar(i++) + ";");
   }
 }
 

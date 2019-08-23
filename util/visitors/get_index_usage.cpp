@@ -17,35 +17,46 @@
 
  ******************************************************************************/
 
-#include "algebraics.h"
+#include "get_index_usage.h"
+
+#include <sstream>
+
+#include "../../ast/ast_builder.h"
+#include "../error.h"
 
 namespace MicroModelica {
+using namespace Deps;
+using namespace IR;
 namespace Util {
 
-bool Algebraics::foldTraverseElement(AST_Expression e)
+GetIndexUsage::GetIndexUsage() : _in_index_list(false) {}
+
+list<string> GetIndexUsage::foldTraverseElement(AST_Expression exp)
 {
-  bool has_algebraics = false;
-  switch (e->expressionType()) {
+  list<string> ret;
+  switch (exp->expressionType()) {
   case EXPCOMPREF: {
-    AST_Expression_ComponentReference cr = e->getAsComponentReference();
-    Option<Variable> var = _symbols[cr->name()];
-    if (var && var->isAlgebraic()) {
-      has_algebraics = true;
+    AST_Expression_ComponentReference cr = exp->getAsComponentReference();
+    if (_in_index_list) {
+      ret.push_back(cr->name());
     }
-    break;
-  }
-  case EXPOUTPUT: {
-    AST_Expression_Output out = e->getAsOutput();
-    AST_ExpressionListIterator it;
-    foreach (it, out->expressionList()) {
-      has_algebraics = has_algebraics || apply(current_element(it));
+    if (cr->hasIndexes()) {
+      assert(!_in_index_list);
+      _in_index_list = true;
+      AST_ExpressionList indexes = cr->firstIndex();
+      AST_ExpressionListIterator it;
+      foreach (it, indexes) {
+        ret.splice(ret.end(), foldTraverseElement(current_element(it)));
+      }
+      _in_index_list = false;
     }
     break;
   }
   default:
-    return has_algebraics;
+    break;
   }
-  return has_algebraics;
+  return ret;
 }
+
 }  // namespace Util
 }  // namespace MicroModelica

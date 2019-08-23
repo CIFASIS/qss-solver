@@ -40,7 +40,7 @@ class Algebraics : public AST_Expression_Visitor<bool> {
 
   private:
   bool foldTraverseElement(AST_Expression exp);
-  bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
+  bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l || r; };
   bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
   VarSymbolTable _symbols;
 };

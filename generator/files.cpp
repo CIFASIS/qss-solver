@@ -203,57 +203,70 @@ void Files::run()
 #endif
 }
 
-void Files::plot()
+string Files::variablePlotSettings()
 {
-  /*if(!_model->outs())
-  {
-    return;
-  }
   stringstream buffer;
-  string fname = _fname;
-  fname.append(".plt");
-  _writer->setFile(fname);
-  _writer->print("set terminal wxt");
-  _writer->print("set title \"" + _fname + "\"");
-  _writer->print("set ylabel \"State Variables\"");
-  _writer->print("set xlabel \"Time\"");
-  _writer->print("set grid");
-  buffer << "plot ";
-  MMO_EquationTable outputs = _model->outputs();
-  int outs = 0, total = _model->outs();
-  VarSymbolTable vt = _model.symbols();
-  for(MMO_Equation eq = outputs->begin(); !outputs->end(); eq = outputs->next())
-  {
-    Index index = outputs->key();
-    string varName;
-    Dependencies deps = eq->exp()->deps();
-    if(index.hasRange())
+  /*  if(deps->hasStates())
     {
-      for(int i = index.begin(); i <= index.end(); i++)
-      {
-        varName = eq->exp()->print();
-        buffer << "\"" << varName << ".dat\""
-            << _variableSettings(deps, varName);
-        if(i + 1 <= index.end())
-        {
-          buffer << ",";
-        }
-      }
+      buffer << " with lines title \"" << varName << "\"";
     }
     else
     {
-      varName = eq->exp()->print("");
-      buffer << "\"" << varName << ".dat\"" << _variableSettings(deps, varName);
+      buffer << " with steps title \"" << varName << "\"";
+    }*/
+  return buffer.str();
+}
+
+void Files::plot()
+{
+  /*  if(!_model.outputNbr()) {
+      return;
     }
-    outs += index.range();
-    if(outs < total)
-    {
-      buffer << ",";
+    stringstream buffer;
+    string fname = _fname;
+    fname.append(".plt");
+    _writer->setFile(fname);
+    _writer->print("set terminal wxt");
+    _writer->print("set title \"" + _fname + "\"");
+    _writer->print("set ylabel \"State Variables\"");
+    _writer->print("set xlabel \"Time\"");
+    _writer->print("set grid");
+    buffer << "plot ";
+    EquationTable outputs = _model.outputs();
+    int outs = 0, total = _model.outputNbr();
+    VarSymbolTable vt = _model.symbols();
+    EquationTable::iterator it;
+    for (Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it)) {
+      Index index = outputs->key();
+      string varName;
+      Dependencies deps = eq->exp()->deps();
+      if(out.hasRange()) {
+        Option<Range> range = out.range();
+        for(int i = range-> ex.begin(); i <= index.end(); i++)
+        {
+          varName = eq->exp()->print();
+          buffer << "\"" << varName << ".dat\""
+              << _variableSettings(deps, varName);
+          if(i + 1 <= index.end())
+          {
+            buffer << ",";
+          }
+        }
+      }
+      else
+      {
+        varName = eq->exp()->print("");
+        buffer << "\"" << varName << ".dat\"" << _variableSettings(deps, varName);
+      }
+      outs += index.range();
+      if(outs < total)
+      {
+        buffer << ",";
+      }
     }
-  }
-  _writer->print(&buffer);
-  _writer->print("pause mouse close");
-  _writer->clearFile();*/
+    _writer->print(&buffer);
+    _writer->print("pause mouse close");
+    _writer->clearFile();*/
 }
 
 void Files::settings(ModelAnnotation annotation)

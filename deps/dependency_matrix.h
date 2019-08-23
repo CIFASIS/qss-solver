@@ -33,6 +33,8 @@ namespace VDM {
 typedef enum { Normal, Transpose } Mode;
 
 typedef enum { Alloc = 0, Init = 2 } Method;
+
+typedef enum { String_Key, Int_Key } Key;
 }  // namespace VDM
 
 typedef int depId;
@@ -100,6 +102,9 @@ class VariableDependencyMatrix : public ModelTable<varId, VariableDependencies> 
   public:
   VariableDependencyMatrix(MatrixConfig cfg);
   ~VariableDependencyMatrix(){};
+  void insert(varId id, VariableDependencies deps) { ModelTable::insert(id, deps); };
+  void insert(depId id, VariableDependencies deps){};
+
   inline const VariableDependencyMatrix& alloc()
   {
     _method = VDM::Alloc;
@@ -113,6 +118,7 @@ class VariableDependencyMatrix : public ModelTable<varId, VariableDependencies> 
   inline void setMode(VDM::Mode mode) { _mode = mode; };
   std::string print() const;
   inline std::string accessVector() const { return _cfg.access[_mode]; };
+  inline VDM::Key keyType() const { return VDM::String_Key; };
   friend std::ostream& operator<<(std::ostream& out, const VariableDependencyMatrix& d);
 
   private:
@@ -123,7 +129,13 @@ class VariableDependencyMatrix : public ModelTable<varId, VariableDependencies> 
   std::string component() const;
 };
 
-typedef ModelTable<depId, VariableDependencies> EquationDependencyMatrix;
+class EquationDependencyMatrix : public ModelTable<depId, VariableDependencies> {
+  public:
+  inline VDM::Key keyType() const { return VDM::Int_Key; };
+  void insert(varId id, VariableDependencies deps){};
+  void insert(depId id, VariableDependencies deps) { ModelTable::insert(id, deps); };
+};
+
 }  // namespace Deps
 }  // namespace MicroModelica
 

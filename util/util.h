@@ -69,10 +69,6 @@ typedef int grp_t;
  */
 class Utils {
   public:
-  /**
-   *
-   * @return
-   */
   static Utils& instance()
   {
     static Utils _instance;
@@ -81,98 +77,21 @@ class Utils {
 
   ~Utils();
   string trimString(string str);
-  /**
-   *
-   * @return
-   */
   string languageEspecification();
-  /**
-   *
-   * @param t
-   * @return
-   */
   bool checkTypeString(string t);
-  /**
-   *
-   * @param annotation
-   * @return
-   */
   bool checkExperimentAnnotations(string* annotation);
-  /**
-   *
-   * @param bot
-   * @return
-   */
   string opString(BinOpType bot);
-  /**
-   *
-   * @param n
-   * @param vt
-   * @return
-   */
   string iteratorVar();
-  /**
-   *
-   * @param name
-   * @return
-   */
+  string dimensionVar(int d);
   string getVarName(string name);
-  /**
-   *
-   * @param fileName
-   * @param pt
-   * @return
-   */
   bool readPackage(string fileName, IR::CompiledPackageTable& pt);
-  /**
-   *
-   * @param fileName
-   * @return
-   */
   Option<MicroModelica::IR::CompiledPackage> readPackage(string fileName);
-  /**
-   *
-   * @param pname
-   * @param flags
-   * @return
-   */
   bool searchCompiledPackage(string pname, CompileFlags flags);
-  /**
-   *
-   * @param pname
-   * @param flags
-   * @param ext
-   * @return
-   */
   string packagePath(string pname, CompileFlags flags, string ext = ".mo");
-  /**
-   *
-   * @param flags
-   */
   void setCompileFlags(CompileFlags flags);
-  /**
-   *
-   * @param name
-   * @return
-   */
   string packageName(string name);
-  /**
-   *
-   * @param ev
-   * @return
-   */
   string environmentVariable(string ev);
-  /**
-   *
-   * @param file
-   * @return
-   */
   string getFilePath(string file);
-  /**
-   *
-   * @param file
-   * @return
-   */
   string getFileName(string file);
   bool checkGKLinkFunctions(std::string name) { return false; };
   IR::CompiledFunctionTable compiledFunctions();

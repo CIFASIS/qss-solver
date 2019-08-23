@@ -45,34 +45,60 @@ namespace EDGE {
 typedef enum { Input, Output } Direction;
 }
 
-struct StatementVertex {
-  IR::Expression event;
-  IR::Expression exp;
-  Option<IR::Range> range;
-  StatementVertex() : event(IR::Expression()), exp(IR::Expression()), range(Option<IR::Range>()) {}
+class StatementVertex {
+  public:
+  StatementVertex() : _event(), _exp(), _range() {}
+  StatementVertex(const StatementVertex& other)
+  {
+    _event = other._event;
+    _exp = other._exp;
+    _range = other._range;
+  }
+  IR::Expression event() { return _event; }
+  void setEvent(IR::Expression event) { _event = event; }
+  IR::Expression exp() { return _exp; }
+  void setExp(IR::Expression exp) { _exp = exp; }
+  Option<IR::Range> range() { return _range; }
+  void setRange(Option<IR::Range> range) { _range = range; }
+
+  private:
+  IR::Expression _event;
+  IR::Expression _exp;
+  Option<IR::Range> _range;
 };
 
-/// @brief This is the property for a vertex in the incidence graph. Nodes can be of two types: Equation or Unknown.
 class VertexProperty {
   public:
-  VERTEX::Type type;
-  IR::Expression exp;
-  IR::Equation eq;
-  Util::Variable var;
-  StatementVertex stm;
-  int id;
-  VertexProperty() : type(VERTEX::Equation), exp(IR::Expression()), eq(IR::Equation()), var(Util::Variable()), stm(StatementVertex()), id(0)
-  {
-  }
+  VertexProperty() : _type(VERTEX::Equation), _exp(), _eq(), _stm(), _id(0), _var() {}
   VertexProperty(const VertexProperty& other)
   {
-    type = other.type;
-    exp = other.exp;
-    eq = other.eq;
-    var = other.var;
-    stm = other.stm;
-    id = other.id;
+    _type = other._type;
+    _exp = other._exp;
+    _eq = other._eq;
+    _var = other._var;
+    _stm = other._stm;
+    _id = other._id;
   }
+  Util::Variable var() { return _var; }
+  void setVar(Util::Variable var) { _var = var; }
+  VERTEX::Type type() { return _type; }
+  void setType(VERTEX::Type type) { _type = type; }
+  IR::Expression exp() { return _exp; }
+  void setExp(IR::Expression exp) { _exp = exp; }
+  IR::Equation eq() { return _eq; }
+  void setEq(IR::Equation eq) { _eq = eq; }
+  StatementVertex stm() { return _stm; }
+  void setStm(StatementVertex stm) { _stm = stm; }
+  int id() { return _id; }
+  void setId(int id) { _id = id; }
+
+  private:
+  VERTEX::Type _type;
+  IR::Expression _exp;
+  IR::Equation _eq;
+  StatementVertex _stm;
+  int _id;
+  Util::Variable _var;
 };
 
 class Label {
@@ -158,6 +184,8 @@ class GenerateEdge {
    */
   bool sinkIsEvent();
   bool sinkIsOutput();
+  MDI getScalarMDI();
+  MDI getScalarMDI(IR::Expression exp);
 
   private:
   VertexProperty _source;

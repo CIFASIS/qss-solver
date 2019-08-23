@@ -113,7 +113,6 @@ void MicroModelicaIR::visit(AST_Element x)
           size.push_back(eval.apply(current_element(elistit)));
         }
       }
-
       DEC_Type t = (_compositionElement ? DEC_LOCAL : DEC_PUBLIC);
       if (tp & TP_CONSTANT) {
         Variable vi(newType_Integer(), tp, current_element(it)->modification(), nullptr, size, array);

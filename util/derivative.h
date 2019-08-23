@@ -43,7 +43,7 @@ class EquationDerivator {
    * @param varEnv
    * @return
    */
-  static AST_Equation_Equality derivate(AST_Equation_Equality eq, const VarSymbolTable& varEnv);
+  static AST_Equation_Equality derivate(AST_Equation_Equality eq, const VarSymbolTable& symbols);
 };
 
 /**
@@ -58,8 +58,8 @@ class ExpressionDerivator {
    * @param e
    * @return
    */
-  static AST_Expression derivate(AST_Expression exp, const VarSymbolTable& varEnv, IR::Expression e);
-  map<string, MicroModelica::IR::Expression> generateJacobianExps(AST_Expression exp, const VarSymbolTable& vt);
+  static AST_Expression derivate(AST_Expression exp, const VarSymbolTable& symbols, IR::Expression e);
+  map<string, MicroModelica::IR::Expression> generateJacobianExps(AST_Expression exp, const VarSymbolTable& symbols);
 };
 }  // namespace Util
 }  // namespace MicroModelica

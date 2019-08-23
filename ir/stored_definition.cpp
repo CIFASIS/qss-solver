@@ -49,15 +49,15 @@ bool StoredDefinition::isPackage() { return _def.type() == typeid(Package); }
 void StoredDefinition::postProcess()
 {
   if (isModel()) {
-    boost::get<Model>(_def).setEquations();
-    boost::get<Model>(_def).setEvents();
-    boost::get<Model>(_def).setOutputs();
-    boost::get<Model>(_def).setCalledFunctions(_functions);
-    boost::get<Model>(_def).computeDependencies();
-    boost::get<Model>(_def).setInputs();
-    boost::get<Model>(_def).setModelConfig();
+    model().setEquations();
+    model().setEvents();
+    model().setOutputs();
+    model().setCalledFunctions(_functions);
+    model().computeDependencies();
+    model().setInputs();
+    model().setModelConfig();
   } else {
-    boost::get<Package>(_def).setFunctions(_functions);
+    package().setFunctions(_functions);
   }
 }
 

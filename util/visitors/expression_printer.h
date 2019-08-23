@@ -28,11 +28,8 @@ namespace MicroModelica {
 namespace Util {
 class ExpressionPrinter : public AST_Expression_Visitor<std::string> {
   public:
-  ExpressionPrinter(const VarSymbolTable& symbols);
-  /**
-   *
-   */
-  ~ExpressionPrinter(){};
+  ExpressionPrinter(const VarSymbolTable &symbols, bool is_qss = false, int order = 0);
+  ~ExpressionPrinter() = default;
   inline std::string code() const { return _code; };
 
   private:
@@ -42,7 +39,28 @@ class ExpressionPrinter : public AST_Expression_Visitor<std::string> {
   VarSymbolTable _symbols;
   MicroModelica::IR::Expression _exp;
   std::string _code;
+  bool _is_qss;
+  int _order;
 };
+
+class VariablePrinter {
+  public:
+  VariablePrinter(Variable var, AST_Expression_ComponentReference ref, const VarSymbolTable &symbols, bool is_qss, int order);
+  ~VariablePrinter() = default;
+  friend std::ostream &operator<<(std::ostream &out, const VariablePrinter &var);
+
+  protected:
+  void generate();
+
+  private:
+  Variable _var;
+  AST_Expression_ComponentReference _ref;
+  bool _is_qss;
+  int _order;
+  std::string _exp;
+  VarSymbolTable _symbols;
+};
+
 }  // namespace Util
 }  // namespace MicroModelica
 

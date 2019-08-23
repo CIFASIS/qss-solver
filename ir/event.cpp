@@ -129,8 +129,8 @@ string Event::config() const
 {
   stringstream buffer;
   int direction = (_type == EVENT::Negative) ? -1 : _type;
-  buffer << "modelData->event[" << _zeroCrossing.functionId() << "].direction = " << direction << ";" << endl;
-  buffer << "modelData->event[" << _zeroCrossing.functionId() << "].relation = " << _zcRelation << ";" << endl;
+  buffer << "modelData->event[" << _zeroCrossing.identifier() << "].direction = " << direction << ";" << endl;
+  buffer << "modelData->event[" << _zeroCrossing.identifier() << "].relation = " << _zcRelation << ";" << endl;
   return buffer.str();
 }
 

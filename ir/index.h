@@ -44,7 +44,7 @@ class RangeDefinition {
   inline int begin() { return _begin; };
   inline int end() { return _end; };
   inline int step() { return _step; };
-  inline int size() const { return (_end - _begin) / _step; };
+  inline int size() const { return (_begin == _end) ? 1 : (_end - _begin) / _step; };
   friend std::ostream& operator<<(std::ostream& out, const RangeDefinition& rd);
 
   private:
@@ -60,6 +60,7 @@ class Range {
   Range();
   Range(AST_Equation_For eqf, Util::VarSymbolTable symbols, RANGE::Type type = RANGE::For);
   Range(AST_Statement_For stf, Util::VarSymbolTable symbols, RANGE::Type type = RANGE::For);
+  Range(Util::Variable var, RANGE::Type type = RANGE::For);
   ~Range(){};
   inline int size() const { return _size; };
   inline RangeDefinitionTable definition() const { return _ranges; };
@@ -73,7 +74,12 @@ class Range {
   void generate(Deps::MDI mdi);
   inline bool empty() { return _size == 0; };
   std::string iterator(int dim);
+  std::string getDimensionVars() const;
+  std::string getDimensionVar(int i) const;
   friend std::ostream& operator<<(std::ostream& out, const Range& r);
+
+  protected:
+  void generate(Util::Variable var);
 
   private:
   void setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);

@@ -39,12 +39,12 @@ DepsGraph SZGraphBuilder::build()
   for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
     VertexProperty vp = VertexProperty();
     if (var.isState()) {
-      vp.type = VERTEX::Influencer;
-      vp.var = var;
+      vp.setType(VERTEX::Influencer);
+      vp.setVar(var);
       _variableDescriptors.push_back(add_vertex(vp, graph));
     } else if (var.isAlgebraic()) {
-      vp.type = VERTEX::Algebraic;
-      vp.var = var;
+      vp.setType(VERTEX::Algebraic);
+      vp.setVar(var);
       _variableDescriptors.push_back(add_vertex(vp, graph));
     }
   }
@@ -52,22 +52,22 @@ DepsGraph SZGraphBuilder::build()
   for (Event ev = _events.begin(ev_it); !_events.end(ev_it); ev = _events.next(ev_it)) {
     int id = ev.id();
     VertexProperty vp = VertexProperty();
-    vp.type = VERTEX::Equation;
-    vp.eq = ev.zeroCrossing();
-    vp.id = id;
-    vp.stm.event = ev.exp();
+    vp.setType(VERTEX::Equation);
+    vp.setEq(ev.zeroCrossing());
+    vp.setId(id);
+    vp.stm().setEvent(ev.exp());
     ;
     _equationDescriptors.push_back(add_vertex(vp, graph));
     VertexProperty icee = VertexProperty();
-    icee.type = VERTEX::Influencee;
-    icee.id = id;
+    icee.setType(VERTEX::Influencee);
+    icee.setId(id);
     _eventDescriptors.push_back(add_vertex(icee, graph));
   }
   EquationTable::iterator eq_it;
   for (Equation eq = _algebraics.begin(eq_it); !_algebraics.end(eq_it); eq = _algebraics.next(eq_it)) {
     VertexProperty vp = VertexProperty();
-    vp.type = VERTEX::Equation;
-    vp.eq = eq;
+    vp.setType(VERTEX::Equation);
+    vp.setEq(eq);
     _equationDescriptors.push_back(add_vertex(vp, graph));
   }
 
@@ -82,12 +82,12 @@ DepsGraph SZGraphBuilder::build()
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {
           Label lbl(ip);
-          cout << "Adding edge from state var: " << graph[source].var.name() << " to event: " << graph[sink].eq.id() << endl;
+          cout << "Adding edge from state var: " << graph[source].var().name() << " to event: " << graph[sink].eq().id() << endl;
           add_edge(source, sink, lbl, graph);
         }
       }
       // Check LHS too if we are working with algebraics.
-      if (graph[source].type == VERTEX::Algebraic && graph[sink].eq.type() == EQUATION::Algebraic) {
+      if (graph[source].type() == VERTEX::Algebraic && graph[sink].eq().type() == EQUATION::Algebraic) {
         GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
@@ -104,10 +104,10 @@ DepsGraph SZGraphBuilder::build()
   {
     foreach_(IfeVertex source, _eventDescriptors)
     {
-      if (graph[sink].eq.isZeroCrossing()) {
+      if (graph[sink].eq().isZeroCrossing()) {
         GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
         if (edge.exists()) {
-          cout << "Adding edge from ZC: " << graph[sink].eq.id() << " to event: " << graph[source].id << endl;
+          cout << "Adding edge from ZC: " << graph[sink].eq().id() << " to event: " << graph[source].id() << endl;
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
             Label lbl(ip);

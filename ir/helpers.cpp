@@ -165,10 +165,24 @@ SymbolTable CompiledPackage::includeDirectories()
 
 /* Function Printer implementation */
 
+string FunctionPrinter::loop(int end)
+{
+  stringstream buffer;
+  buffer << "for (idx = 1; idx <=" << end << "; idx++) {";
+  return buffer.str();
+}
+
+string FunctionPrinter::endLoop()
+{
+  stringstream buffer;
+  buffer << "}";
+  return buffer.str();
+}
+
 string FunctionPrinter::beginSwitch()
 {
   stringstream buffer;
-  buffer << "switch(idx)" << endl << "{";
+  buffer << "switch(idx) {";
   return buffer.str();
 }
 
@@ -178,27 +192,75 @@ string FunctionPrinter::beginExpression(string token, Option<Range> range) const
 {
   stringstream buffer;
   if (range) {
-    buffer << "if(" << token << "(idx) >= 1 && ";
-    buffer << token << "(idx) <= " << range->size() << ")" << endl;
-    buffer << "{" << endl;
+    buffer << "if (_is_var" << token << "(idx)) {" << endl;
   } else {
-    buffer << TAB << "case " << token << ":" << endl;
-    buffer << TAB << "{" << endl;
+    buffer << TAB << "case " << token << ": {" << endl;
   }
   if (range) {
-    buffer << TAB << "_get" << token << "_idxs(idx," << range->indexes() << ");" << endl;
+    buffer << TAB << "_get" << token << "_idxs(idx);" << endl;
     range->addLocalVariables();
   }
   return buffer.str();
 }
 
-string FunctionPrinter::endExpression(Option<Range> range) const
+string FunctionPrinter::endExpression(Option<Range> range, bool ret) const
+{
+  stringstream buffer;
+  if (ret) {
+    buffer << "return;" << endl;
+  }
+  if (!range) {
+    buffer << TAB;
+  }
+  buffer << "}";
+  return buffer.str();
+}
+
+string FunctionPrinter::endDimGuards(Option<Range> range) const
+{
+  if (range) {
+    return "}";
+  }
+  return "";
+}
+
+string FunctionPrinter::beginDimGuards(string token, string args, Option<Range> range) const
 {
   stringstream buffer;
   if (range) {
-    buffer << "return;" << endl << "}";
+    buffer << TAB << "_apply_usage" << token << "(" << args << ");" << endl;
+    ;
+    RangeDefinitionTable rdt = range->definition();
+    RangeDefinitionTable::iterator it;
+    int size = rdt.size(), i = 0, idx = 0;
+    buffer << TAB << "if (";
+    for (RangeDefinition rd = rdt.begin(it); !rdt.end(it); rd = rdt.next(it), idx++) {
+      buffer << "(" << rdt.key(it) << " >= " << rd.begin() << " && " << rdt.key(it) << " <= " << rd.end() << ")";
+      buffer << (++i < size ? " && " : "");
+    }
+    buffer << ") {" << endl;
+  }
+  return buffer.str();
+}
+
+string FunctionPrinter::algebraic(int id)
+{
+  stringstream buffer;
+  EquationTable algebraic = ModelConfig::instance().algebraics();
+  Option<Equation> alg = algebraic[id];
+  if (alg) {
+    buffer << alg.get() << endl;
   } else {
-    buffer << "return;" << endl << TAB << "}";
+    Error::instance().add(0, EM_CG | EM_NO_EQ, ER_Error, "Algebraic equation not found.");
+  }
+  return buffer.str();
+}
+
+string FunctionPrinter::algebraics(AlgebraicDependencies deps)
+{
+  stringstream buffer;
+  for (VariableDependency d : deps) {
+    buffer << algebraic(d.equationId());
   }
   return buffer.str();
 }
@@ -206,17 +268,28 @@ string FunctionPrinter::endExpression(Option<Range> range) const
 string FunctionPrinter::algebraics(EquationDependencyMatrix eqdm, depId key)
 {
   stringstream buffer;
-  EquationTable algebraic = ModelConfig::instance().algebraics();
   Option<VariableDependencies> eqd = eqdm[key];
   if (eqd) {
     VariableDependencies::iterator eqIt;
     for (eqIt = eqd->begin(); eqIt != eqd->end(); eqIt++) {
-      Option<Equation> alg = algebraic[eqIt->ifce.equationId()];
-      if (alg) {
-        buffer << alg.get() << endl;
-      } else {
-        Error::instance().add(0, EM_CG | EM_NO_EQ, ER_Error, "Algebraic equation not found.");
-      }
+      buffer << algebraic(eqIt->ifce.equationId());
+      buffer << algebraics(eqIt->algs);
+    }
+  }
+  return buffer.str();
+}
+
+string FunctionPrinter::getIndexes(string var, Option<Range> range) const
+{
+  stringstream buffer;
+  if (range) {
+    RangeDefinitionTable rdt = range->definition();
+    RangeDefinitionTable::iterator it;
+    int size = rdt.size(), i = 0, idx = 0;
+    for (RangeDefinition rd = rdt.begin(it); !rdt.end(it); rd = rdt.next(it), idx++) {
+      buffer << TAB << rdt.key(it) << " = " << (i + 1 < size ? div(mod(var, idx - 1, range), idx, range) : mod(var, idx - 1, range))
+             << "+ 1;" << (i + 1 < size ? " \\" : "") << endl;
+      i++;
     }
   }
   return buffer.str();
@@ -225,27 +298,21 @@ string FunctionPrinter::algebraics(EquationDependencyMatrix eqdm, depId key)
 string FunctionPrinter::macro(string token, Option<Range> range, int id, int offset) const
 {
   stringstream buffer;
-  buffer << "#define " << token;
+  // buffer << "#define " << token;
   if (range) {
-    buffer << "(idx) "
-           << "(idx + 1)";
-    if (!offset) {
-      buffer << "-" << offset;
-    }
-    buffer << endl;
+    /*  buffer << "(idx) "
+             << "(idx + 1)";
+      if (!offset) {
+        buffer << "-" << offset;
+      }
+      buffer << endl;*/
     string var = Utils::instance().iteratorVar();
     buffer << "#define _get" << token << "_idxs(idx, " << range->indexes() << ") \\" << endl;
     buffer << TAB << "int " << var << " = " << token << "(idx); \\" << endl;
-    RangeDefinitionTable rdt = range->definition();
-    RangeDefinitionTable::iterator it;
-    int size = rdt.size(), i = 0, idx = 0;
-    for (RangeDefinition rd = rdt.begin(it); !rdt.end(it); rd = rdt.next(it), idx++) {
-      buffer << TAB << rdt.key(it) << " = " << (++i < size ? div(mod(var, idx - 1, range), idx, range) : mod(var, idx - 1, range))
-             << "+ 1; \\" << endl;
-    }
-  } else {
-    buffer << " " << id - 1;
-  }
+    buffer << getIndexes(Utils::instance().iteratorVar(), range);
+  } /* else {
+     buffer << " " << id - 1;
+   }*/
   return buffer.str();
 }
 
@@ -305,6 +372,6 @@ ostream& operator<<(std::ostream& out, const Input& i)
 
 ModelConfig::ModelConfig() : _model_annotations(), _algebraics(), _dependencies() {}
 
-bool ModelConfig::generateDerivatives() { return _model_annotations.symDiff() && !_model_annotations.classic(); }
+bool ModelConfig::generateDerivatives() { return _model_annotations.symDiff() && isQss(); }
 }  // namespace IR
 }  // namespace MicroModelica

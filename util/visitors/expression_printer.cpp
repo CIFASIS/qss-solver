@@ -80,7 +80,7 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", ref->name().c_str());
       break;
     }
-    VariablePrinter var_printer(var.get(), ref, _is_qss, _order);
+    VariablePrinter var_printer(var.get(), ref, _symbols, _is_qss, _order);
     buffer << var_printer;
     break;
   }
@@ -169,7 +169,7 @@ string ExpressionPrinter::foldTraverseElement(string l, string r, BinOpType bot)
     buffer << l << "IMPLEMENT" << r;
     break;
   case BINOPEXP:
-    buffer << l << "^" << r;
+    buffer << "pow(" << l << "," << r << ")";
     break;
   case BINOPELEXP:
     buffer << l << "IMPLEMENT" << r;
@@ -188,30 +188,40 @@ string ExpressionPrinter::foldTraverseElementUMinus(AST_Expression exp)
 }
 
 VariablePrinter::VariablePrinter(Variable var, AST_Expression_ComponentReference ref, const VarSymbolTable& symbols, bool is_qss, int order)
-    : : _var(var), _ref(ref), _is_qss(is_qss), _order(order), _exp(), _symbols(symbols)
+    : _var(var), _ref(ref), _is_qss(is_qss), _order(order), _exp(), _symbols(symbols)
 {
-  gerenate();
+  generate();
 }
 
 void VariablePrinter::generate()
 {
   stringstream buffer;
-  buffer << var.get();
-  if (cr->hasIndexes()) {
-    AST_ExpressionList indexes = cr->firstIndex();
+  buffer << _var;
+  const bool PRINT_COEFF = _is_qss && (_var.isState() || _var.isAlgebraic());
+  const bool HAS_INDEXES = _ref->hasIndexes();
+  if (HAS_INDEXES) {
+    ExpressionPrinter printer(_symbols, _is_qss, _order);
+    AST_ExpressionList indexes = _ref->firstIndex();
     AST_ExpressionListIterator it;
     int size = indexes->size(), i = 0;
     buffer << "(";
     foreach (it, indexes) {
-      buffer << apply(current_element(it)) << (++i < size ? "," : "");
+      buffer << printer.apply(current_element(it)) << (++i < size ? "," : "");
     }
+  }
+  if (PRINT_COEFF && HAS_INDEXES) {
+    buffer << "," << _order << ")";
+  } else if (PRINT_COEFF) {
+    buffer << "(" << _order << ")";
+  } else if (HAS_INDEXES) {
     buffer << ")";
   }
+  _exp = buffer.str();
 }
 
 std::ostream& operator<<(std::ostream& out, const VariablePrinter& var)
 {
-  out << exp;
+  out << var._exp;
   return out;
 }
 

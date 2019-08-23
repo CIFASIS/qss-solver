@@ -58,7 +58,8 @@ class ModelInstance {
   virtual Graph computationalGraph() { return Graph(0, 0); };
   void initialCode();
   virtual void header();
-  virtual void generate() = 0;
+  virtual void generate();
+  void jacobian();
 
   protected:
   virtual void definition() = 0;
@@ -98,6 +99,7 @@ class QSSModelInstance : public ModelInstance {
   void dependencies();
 
   private:
+  void initTime();
   void allocateSolver();
   std::string allocateModel();
   IR::Model _model;
@@ -118,7 +120,6 @@ class ClassicModelInstance : public ModelInstance {
 
   protected:
   void definition();
-  void jacobian();
 
   private:
   void allocateSolver();

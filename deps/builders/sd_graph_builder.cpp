@@ -39,30 +39,32 @@ DepsGraph SDGraphBuilder::build()
   for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
     VertexProperty vp = VertexProperty();
     if (var.isState()) {
-      vp.type = VERTEX::Influencer;
-      vp.var = var;
+      vp.setType(VERTEX::Influencer);
+      vp.setVar(var);
       _variableDescriptors.push_back(add_vertex(vp, graph));
       VertexProperty icee = VertexProperty();
-      icee.type = VERTEX::Influencee;
-      icee.var = var;
+      icee.setType(VERTEX::Influencee);
+      icee.setVar(var);
       _derivativeDescriptors.push_back(add_vertex(icee, graph));
     } else if (var.isAlgebraic()) {
-      vp.type = VERTEX::Algebraic;
-      vp.var = var;
+      vp.setType(VERTEX::Algebraic);
+      vp.setVar(var);
       _variableDescriptors.push_back(add_vertex(vp, graph));
     }
   }
   EquationTable::iterator eqit;
   for (Equation eq = _equations.begin(eqit); !_equations.end(eqit); eq = _equations.next(eqit)) {
     VertexProperty vp = VertexProperty();
-    vp.type = VERTEX::Equation;
-    vp.eq = eq;
+    vp.setType(VERTEX::Equation);
+    vp.setEq(eq);
+    vp.setId(eq.id());
     _equationDescriptors.push_back(add_vertex(vp, graph));
   }
   for (Equation eq = _algebraics.begin(eqit); !_algebraics.end(eqit); eq = _algebraics.next(eqit)) {
     VertexProperty vp = VertexProperty();
-    vp.type = VERTEX::Equation;
-    vp.eq = eq;
+    vp.setType(VERTEX::Equation);
+    vp.setEq(eq);
+    vp.setId(eq.id());
     _equationDescriptors.push_back(add_vertex(vp, graph));
   }
 
@@ -79,7 +81,7 @@ DepsGraph SDGraphBuilder::build()
         }
       }
       // Check LHS too if we are working with algebraics.
-      if (graph[source].type == VERTEX::Algebraic && graph[sink].eq.type() == EQUATION::Algebraic) {
+      if (graph[source].type() == VERTEX::Algebraic && graph[sink].eq().type() == EQUATION::Algebraic) {
         GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
@@ -96,7 +98,7 @@ DepsGraph SDGraphBuilder::build()
   {
     foreach_(IfeVertex source, _derivativeDescriptors)
     {
-      if (graph[sink].eq.isDerivative()) {
+      if (graph[sink].eq().isDerivative()) {
         GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();

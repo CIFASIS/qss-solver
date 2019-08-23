@@ -61,7 +61,6 @@ void ModelInstance::output()
     _writer->write(fp.beginSwitch(), WRITER::Output);
     _writer->write(fp.endSwitch(), WRITER::Output_Simple);
   }
-  configOutput();
 }
 
 void ModelInstance::include()
@@ -132,7 +131,7 @@ void ModelInstance::allocateOutput()
   buffer << annot.storeData() << ",";
   buffer << outputFunction << ");" << endl;
   buffer << indent << "SD_output modelOutput = simulator->output;" << endl;
-  _writer->write(buffer, WRITER::Init_Output);
+  _writer->write(buffer, WRITER::Alloc_Output);
 }
 
 void ModelInstance::configOutput()
@@ -142,7 +141,7 @@ void ModelInstance::configOutput()
   buffer << "modelOutput, ";
   buffer << _model.stateNbr() << ", ";
   buffer << _model.discreteNbr() << ");";
-  _writer->write(buffer, WRITER::Config_Output);
+  _writer->write(buffer, WRITER::Alloc_Output);
   EquationTable outputs = _model.outputs();
   EquationTable::iterator it;
   for (Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it)) {
@@ -151,8 +150,8 @@ void ModelInstance::configOutput()
     if (out.isRHSReference()) {
       var = out.rhs();
     }
-    buffer << "sprintf(modelOutput->variable[" << out.functionId() << "].name, \"" << var << "\");";
-    _writer->write(buffer, WRITER::Config_Output);
+    buffer << "sprintf(modelOutput->variable[" << out.identifier() << "].name, \"" << var << "\");";
+    _writer->write(buffer, WRITER::Alloc_Output);
   }
 }
 
@@ -171,7 +170,6 @@ void ModelInstance::zeroCrossing()
     _writer->write(fp.beginSwitch(), WRITER::Zero_Crossing);
     _writer->write(fp.endSwitch(), WRITER::ZC_Simple);
   }
-  configEvents();
 }
 
 void ModelInstance::handler()
@@ -207,7 +205,7 @@ void ModelInstance::configEvents()
   EventTable events = _model.events();
   EventTable::iterator it;
   for (Event event = events.begin(it); !events.end(it); event = events.next(it)) {
-    _writer->write(event.config(), WRITER::Config_Events);
+    _writer->write(event.config(), WRITER::Init_Data);
   }
 }
 
@@ -231,7 +229,14 @@ void ModelInstance::header()
   VarSymbolTable symbols = _model.symbols();
   VarSymbolTable::iterator it;
   stringstream buffer;
-  _writer->write("// Model Variable and Parameters Macros\n", WRITER::Model_Header);
+  _writer->write("// Model data access macro.\n", WRITER::Model_Header);
+  buffer << "#define MODEL_DATA_ACCESS(m) \\" << endl;
+  buffer << "  double* x = m->x; \\" << endl;
+  buffer << "  double* d = m->d; \\" << endl;
+  buffer << "  double* a = m->a;" << endl;
+  buffer << endl;
+  _writer->write(buffer, WRITER::Model_Header);
+  _writer->write("// Model Variables and Parameters Macros\n", WRITER::Model_Header);
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     if (var.isModelVar()) {
       Macros macros(_model, var);
@@ -250,7 +255,7 @@ void ModelInstance::header()
   }
   EquationTable derivatives = _model.derivatives();
   EquationTable::iterator eqit;
-  if (!_model.annotations().classic()) {
+  if (!_model.annotations().isClassic()) {
     _writer->write("\n// Derivative Equations Macros\n", WRITER::Model_Header);
   }
   for (Equation e = derivatives.begin(eqit); !derivatives.end(eqit); e = derivatives.next(eqit)) {
@@ -263,7 +268,11 @@ void ModelInstance::header()
     _writer->write(e.macro(), WRITER::Model_Header);
   }
   if (events.size()) {
-    _writer->write("#define _zc zc[0]", WRITER::Model_Header);
+    if (ModelConfig::instance().isQss()) {
+      _writer->write("#define _zc(coeff) zc[coeff]", WRITER::Model_Header);
+    } else {
+      _writer->write("#define _zc zc[0]", WRITER::Model_Header);
+    }
   }
   _writer->write("\n// Output Equations Macros\n", WRITER::Model_Header);
   EquationTable outputs = _model.outputs();
@@ -279,39 +288,51 @@ void ModelInstance::header()
   for (Input i = inputs.begin(iit); !inputs.end(iit); i = inputs.next(iit)) {
     _writer->write(i.macro(), WRITER::Model_Header);
   }
-  _writer->write("#define _time t", WRITER::Model_Header);
+  buffer << endl << "// Jacobian Macros definition. ";
+  _writer->write(buffer, WRITER::Model_Header);
+  buffer << "#define _jac(i) jac[i++]";
+  _writer->write(buffer, WRITER::Model_Header);
+  buffer << endl;
+  buffer << "#define _time t";
+  _writer->write(buffer, WRITER::Model_Header);
 }
 
 string ModelInstance::componentDefinition(MODEL_INSTANCE::Component c)
 {
   switch (c) {
   case MODEL_INSTANCE::Model_Settings:
-    return "void\nMOD_settings(SD_simulationSettings settings)";
-  case MODEL_INSTANCE::Model:
-    return "void\nMOD_definition(double *x, double *d, double *a, double t, "
-           "double *dx)";
+    return "void MOD_settings(SD_simulationSettings settings)";
+  case MODEL_INSTANCE::Model: {
+    stringstream buffer;
+    buffer << "void MOD_definition(";
+    if (ModelConfig::instance().isQss()) {
+      buffer << "int idx, ";
+    }
+    buffer << "double *x, double *d, double *a, double t, double *dx)";
+    return buffer.str();
+  }
   case MODEL_INSTANCE::Deps:
-    return "void\nMOD_dependencies(int idx, double *x, double *d, double *a, "
-           "double t, double *der, int *map)";
+    return "void MOD_dependencies(int idx, double *x, double *d, double *a, "
+           "double t, double *dx, int *map)";
   case MODEL_INSTANCE::Zero_Crossing:
-    return "void\nMOD_zeroCrossing(int idx, double *x, double *d, double *a, "
+    return "void MOD_zeroCrossing(int idx, double *x, double *d, double *a, "
            "double t, double *zc)";
   case MODEL_INSTANCE::Handler_Pos:
-    return "void\nMOD_handlerPos(int idx, double *x, double *d, double *a, "
+    return "void MOD_handlerPos(int idx, double *x, double *d, double *a, "
            "double t)";
   case MODEL_INSTANCE::Handler_Neg:
-    return "void\nMOD_handlerNeg(int idx, double *x, double *d, double *a, "
+    return "void MOD_handlerNeg(int idx, double *x, double *d, double *a, "
            "double t)";
   case MODEL_INSTANCE::Output:
-    return "void\nMOD_output(int idx, double *x, double *d, double *a, double "
+    return "void MOD_output(int idx, double *x, double *d, double *a, double "
            "t, double *out)";
   case MODEL_INSTANCE::Jacobian:
-    return "void\nMOD_jacobian(double *x, double *d, double *a, double t, "
+    return "void MOD_jacobian(double *x, double *d, double *a, double t, "
            "double *jac)";
   case MODEL_INSTANCE::CLC_Init:
-    return "void\nCLC_initializeDataStructs(CLC_simulator simulator)";
+    return "void CLC_initializeDataStructs(CLC_simulator simulator)";
   case MODEL_INSTANCE::QSS_Init:
-    return "void\nQSS_initializeDataStructs(QSS_simulator simulator)";
+    return "void QSS_initializeDataStructs(QSS_simulator simulator)";
   }
   return "";
 }
@@ -321,9 +342,19 @@ void ModelInstance::initialCode()
   StatementTable stms = _model.initialCode();
   StatementTable::iterator it;
   stringstream buffer;
+  Utils::instance().clearLocalSymbols();
   for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
     _writer->write(stm, WRITER::Init_Code);
   }
+  VarSymbolTable symbols = _model.symbols();
+  VarSymbolTable::iterator var_it;
+  for (Variable var = symbols.begin(var_it); !symbols.end(var_it); var = symbols.next(var_it)) {
+    if (var.isConstant()) {
+      continue;
+    }
+    _writer->write(var.initialization(symbols), WRITER::Init_Code);
+  }
+  _writer->write(Utils::instance().localSymbols(), WRITER::Prologue);
 }
 
 void ModelInstance::inputs()
@@ -338,10 +369,10 @@ void ModelInstance::inputs()
 string ModelInstance::allocateModel()
 {
   stringstream buffer;
-  buffer << (!_writer->isEmpty(WRITER::ZC_Simple) || !_writer->isEmpty(WRITER::ZC_Generic) ? "MOD_zeroCrossing" : "NULL") << ", ";
-  buffer << (!_writer->isEmpty(WRITER::Handler_Pos_Simple) || !_writer->isEmpty(WRITER::Handler_Pos_Generic) ? "MOD_handlerPos" : "NULL")
-         << ", ";
-  buffer << (!_writer->isEmpty(WRITER::Handler_Neg_Simple) || !_writer->isEmpty(WRITER::Handler_Neg_Generic) ? "MOD_handlerNeg" : "NULL");
+  buffer << "MOD_zeroCrossing, ";
+  buffer << "MOD_handlerPos, ";
+  buffer << "MOD_handlerNeg, ";
+  buffer << "MOD_jacobian)";
   return buffer.str();
 }
 
@@ -350,7 +381,7 @@ void ModelInstance::allocateVector(string name, int size) const
   stringstream buffer;
   if (size) {
     buffer << "int* " << name << " = (int*) malloc(" << size << "*sizeof(int));" << endl;
-    _writer->write(buffer, WRITER::Alloc_Access_Vectors);
+    _writer->write(buffer, WRITER::Prologue);
   }
 }
 
@@ -359,7 +390,7 @@ void ModelInstance::freeVector(string name, int size) const
   stringstream buffer;
   if (size) {
     buffer << "free(" << name << ");" << endl;
-    _writer->write(buffer, WRITER::Free_Access_Vectors);
+    _writer->write(buffer, WRITER::Epilogue);
   }
 }
 
@@ -379,103 +410,36 @@ void ModelInstance::freeVectors() const
   freeVector("outputs", _model.outputNbr());
 }
 
-/* QSSModelInstance Model Instance class. */
-
-QSSModelInstance::QSSModelInstance(Model &model, CompileFlags &flags, WriterPtr writer)
-    : ModelInstance(model, flags, writer), _model(model), _flags(flags), _writer(writer)
-{
-}
-
-void QSSModelInstance::definition()
+void ModelInstance::jacobian()
 {
   EquationTable derivatives = _model.derivatives();
   EquationTable::iterator it;
   Utils::instance().clearLocalSymbols();
+  Utils::instance().addLocalSymbol("int jit;");
+  Utils::instance().addLocalSymbol("int idx;");
   FunctionPrinter fp;
+  VarSymbolTable symbols = _model.symbols();
   for (Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it)) {
-    _writer->write(der, (der.hasRange() ? WRITER::Model_Generic : WRITER::Model_Simple));
+    Jacobian jac = Jacobian(der, symbols);
+    _writer->write(jac, (der.hasRange() ? WRITER::Jacobian_Generic : WRITER::Jacobian_Simple));
   }
-  _writer->write(Utils::instance().localSymbols(), WRITER::Model);
-  if (!_writer->isEmpty(WRITER::Model_Simple)) {
-    _writer->write(fp.beginSwitch(), WRITER::Model);
-    _writer->write(fp.endSwitch(), WRITER::Model_Simple);
+  _writer->write(Utils::instance().localSymbols(), WRITER::Jacobian);
+  _writer->write(fp.loop(_model.stateNbr()), WRITER::Jacobian);
+  if (!_writer->isEmpty(WRITER::Jacobian_Simple)) {
+    _writer->write(fp.beginSwitch(), WRITER::Jacobian);
+    _writer->write(fp.endSwitch(), WRITER::Jacobian_Simple);
   }
+  _writer->write(fp.endLoop(), WRITER::Jacobian_Generic);
 }
 
-void QSSModelInstance::allocateSolver()
-{
-  ModelAnnotation annot = _model.annotations();
-  stringstream buffer;
-  buffer << "simulator->data = QSS_Data(" << _model.stateNbr() << ",";
-  buffer << _model.discreteNbr() << ",";
-  buffer << _model.eventNbr() << ",";
-  buffer << _model.inputNbr() << ",";
-  buffer << _model.algebraicNbr() << ",\"";
-  buffer << _model.name() << "\");" << endl;
-  buffer << "QSS_data modelData = simulator->data;" << endl;
-  buffer << "const double t = " << annot.initialTime() << ";" << endl;
-  buffer << "double* x = modelData->x;" << endl;
-  buffer << "double* d = modelData->d;" << endl;
-  buffer << "double* a = modelData->a;" << endl;
-  _writer->write(buffer, WRITER::Alloc_Matrix);
-}
-
-string QSSModelInstance::allocateModel()
-{
-  stringstream buffer;
-  buffer << "simulator->model = QSS_Model(MOD_definition, ";
-  buffer << "MOD_dependencies, ";
-  buffer << ModelInstance::allocateModel();
-  buffer << ");";
-  return buffer.str();
-}
-
-void QSSModelInstance::initializeDataStructures()
-{
-  stringstream buffer;
-  Utils::instance().clearLocalSymbols();
-  allocateSolver();
-  initialCode();
-  allocateVectors();
-  freeVectors();
-  ModelDependencies deps = _model.dependencies();
-  // Initialize Solver Data Structures.
-  initializeMatrix(deps.SD(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
-  initializeMatrix(deps.DS(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
-  inputs();
-
-  // Initialize Event Data Structures.
-  initializeMatrix(deps.SZ(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
-
-  initializeMatrix(deps.HZ(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
-  initializeMatrix(deps.HD(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
-  initializeMatrix(deps.LHSDsc(), WRITER::Alloc_Event_LHSDSC, WRITER::Init_Event_LHSDSC, _model.eventNbr());
-  initializeMatrix(deps.LHSSt(), WRITER::Alloc_Event_LHSST, WRITER::Init_Event_LHSST, _model.eventNbr());
-  initializeMatrix(deps.RHSSt(), WRITER::Alloc_Event_RHSST, WRITER::Init_Event_RHSST, _model.eventNbr());
-
-  // Initialize Output Data Structures.
-  allocateOutput();
-  initializeMatrix(deps.OS(), WRITER::Alloc_Output_States, WRITER::Init_Output_States, _model.outputNbr());
-  initializeMatrix(deps.OD(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes, _model.outputNbr());
-  initializeMatrix(deps.SO(), WRITER::Alloc_Output_States, WRITER::Init_Output_States, _model.stateNbr());
-  initializeMatrix(deps.DO(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes, _model.discreteNbr());
-  allocateModel();
-  _writer->write(Utils::instance().localSymbols(), WRITER::Alloc_Matrix);
-}
-
-void QSSModelInstance::dependencies() {}
-
-Graph QSSModelInstance::computationalGraph() { return Graph(0, 0); }
-
-void QSSModelInstance::generate()
+void ModelInstance::generate()
 {
   include();
-  definition();
-  dependencies();
   zeroCrossing();
   handler();
   output();
-  initializeDataStructures();
+  initialCode();
+  jacobian();
   // Print generated Model Instance.
   _writer->print(WRITER::Include);
   _writer->print(componentDefinition(MODEL_INSTANCE::Model_Settings));
@@ -512,37 +476,176 @@ void QSSModelInstance::generate()
   _writer->print(WRITER::Output_Simple);
   _writer->print(WRITER::Output_Generic);
   _writer->endBlock();
+  _writer->print(componentDefinition(MODEL_INSTANCE::Jacobian));
+  _writer->beginBlock();
+  _writer->print(WRITER::Jacobian);
+  _writer->print(WRITER::Jacobian_Simple);
+  _writer->print(WRITER::Jacobian_Generic);
+  _writer->endBlock();
+}
+
+/* QSSModelInstance Model Instance class. */
+
+QSSModelInstance::QSSModelInstance(Model &model, CompileFlags &flags, WriterPtr writer)
+    : ModelInstance(model, flags, writer), _model(model), _flags(flags), _writer(writer)
+{
+}
+
+void QSSModelInstance::definition()
+{
+  EquationTable derivatives = _model.derivatives();
+  EquationTable::iterator it;
+  Utils::instance().clearLocalSymbols();
+  FunctionPrinter fp;
+  for (Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it)) {
+    _writer->write(der, (der.hasRange() ? WRITER::Model_Generic : WRITER::Model_Simple));
+  }
+  _writer->write(Utils::instance().localSymbols(), WRITER::Model);
+  if (!_writer->isEmpty(WRITER::Model_Simple)) {
+    _writer->write(fp.beginSwitch(), WRITER::Model);
+    _writer->write(fp.endSwitch(), WRITER::Model_Simple);
+  }
+}
+
+void QSSModelInstance::allocateSolver()
+{
+  ModelAnnotation annot = _model.annotations();
+  stringstream buffer;
+  buffer << "simulator->data = QSS_Data(" << _model.stateNbr() << ",";
+  buffer << _model.discreteNbr() << ",";
+  buffer << _model.eventNbr() << ",";
+  buffer << _model.inputNbr() << ",";
+  buffer << _model.algebraicNbr() << ",\"";
+  buffer << _model.name() << "\");" << endl;
+  buffer << "QSS_data modelData = simulator->data;" << endl;
+  buffer << "MODEL_DATA_ACCESS(modelData)" << endl;
+  _writer->write(buffer, WRITER::Prologue);
+}
+
+string QSSModelInstance::allocateModel()
+{
+  stringstream buffer;
+  buffer << "simulator->model = QSS_Model(MOD_definition, ";
+  buffer << "MOD_dependencies, ";
+  buffer << ModelInstance::allocateModel();
+  return buffer.str();
+}
+
+void QSSModelInstance::initTime()
+{
+  stringstream buffer;
+  buffer << "simulator->time = QSS_Time(" << _model.stateNbr() << "," << _model.eventNbr() << "," << _model.inputNbr() << ","
+         << _model.annotations().initialTime() << "," << _model.annotations().scheduler() << ", NULL);" << endl;
+  _writer->write(buffer, WRITER::Init_Data);
+}
+
+void QSSModelInstance::initializeDataStructures()
+{
+  stringstream buffer;
+  Utils::instance().clearLocalSymbols();
+  allocateSolver();
+  allocateVectors();
+  freeVectors();
+  ModelDependencies deps = _model.dependencies();
+  // Initialize Solver Data Structures.
+  initializeMatrix(deps.SD(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+  initializeMatrix(deps.DS(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+  inputs();
+
+  // Initialize Event Data Structures.
+  initializeMatrix(deps.SZ(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+
+  initializeMatrix(deps.HZ(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
+  initializeMatrix(deps.HD(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
+  initializeMatrix(deps.LHSDsc(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
+  initializeMatrix(deps.LHSSt(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
+  initializeMatrix(deps.RHSSt(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
+  configEvents();
+  _writer->write("QSS_allocDataMatrix(modelData);", WRITER::Alloc_Data);
+  // Initialize Output Data Structures.
+  allocateOutput();
+  initializeMatrix(deps.OS(), WRITER::Alloc_Output, WRITER::Init_Output, _model.outputNbr());
+  initializeMatrix(deps.OD(), WRITER::Alloc_Output, WRITER::Init_Output, _model.outputNbr());
+  initializeMatrix(deps.SO(), WRITER::Alloc_Output, WRITER::Init_Output, _model.stateNbr());
+  initializeMatrix(deps.DO(), WRITER::Alloc_Output, WRITER::Init_Output, _model.discreteNbr());
+  initTime();
+  configOutput();
+  allocateModel();
+  _writer->write(Utils::instance().localSymbols(), WRITER::Prologue);
+}
+
+void QSSModelInstance::dependencies()
+{
+  ModelDependencies deps = _model.dependencies();
+  VariableDependencyMatrix SD = deps.SD();
+  VariableDependencyMatrix::const_iterator it;
+  VarSymbolTable symbols = _model.symbols();
+  Utils::instance().clearLocalSymbols();
+  FunctionPrinter fp;
+  for (it = SD.begin(); it != SD.end(); it++) {
+    Option<Variable> var = symbols[it->first];
+    if (var) {
+      IR::Dependency deps(var.get(), it->second);
+      _writer->write(deps.scalar(), WRITER::Model_Deps_Simple);
+      _writer->write(deps.vector(), WRITER::Model_Deps_Generic);
+    }
+  }
+  _writer->write(Utils::instance().localSymbols(), WRITER::Model_Deps);
+  if (!_writer->isEmpty(WRITER::Model_Deps_Simple)) {
+    _writer->write(fp.beginSwitch(), WRITER::Model_Deps);
+    _writer->write(fp.endSwitch(), WRITER::Model_Deps_Simple);
+  }
+}
+
+Graph QSSModelInstance::computationalGraph() { return Graph(0, 0); }
+
+void QSSModelInstance::generate()
+{
+  definition();
+  dependencies();
+  initializeDataStructures();
+  ModelInstance::generate();
+  _writer->print(componentDefinition(MODEL_INSTANCE::Deps));
+  _writer->beginBlock();
+  _writer->print(WRITER::Model_Deps);
+  _writer->print(WRITER::Model_Deps_Simple);
+  _writer->print(WRITER::Model_Deps_Generic);
+  _writer->endBlock();
   _writer->print(componentDefinition(MODEL_INSTANCE::QSS_Init));
   _writer->beginBlock();
-  _writer->print(WRITER::Alloc_Access_Vectors);
-  _writer->print(WRITER::Alloc_Matrix);
+  _writer->print(WRITER::Prologue);
   _writer->print(WRITER::Init_Code);
   _writer->print(WRITER::Alloc_Data);
-  _writer->print(WRITER::Alloc_Event_LHSDSC);
-  _writer->print(WRITER::Alloc_Event_LHSST);
-  _writer->print(WRITER::Alloc_Event_RHSST);
-  _writer->print(WRITER::Init_Matrix);
   _writer->print(WRITER::Init_Data);
-  _writer->print(WRITER::Init_Event_LHSDSC);
-  _writer->print(WRITER::Init_Event_LHSST);
-  _writer->print(WRITER::Init_Event_RHSST);
-  _writer->print(WRITER::Config_Events);
   _writer->print(WRITER::Input);
+  _writer->print(WRITER::Alloc_Output);
   _writer->print(WRITER::Init_Output);
-  _writer->print(WRITER::Alloc_Output_States);
-  _writer->print(WRITER::Alloc_Output_Discretes);
-  _writer->print(WRITER::Config_Output);
-  _writer->print(WRITER::Init_Output_States);
-  _writer->print(WRITER::Init_Output_Discretes);
   _writer->print(allocateModel());
-  _writer->print(WRITER::Free_Access_Vectors);
+  _writer->print(WRITER::Epilogue);
   _writer->endBlock();
   _writer->print(componentDefinition(MODEL_INSTANCE::CLC_Init));
   _writer->beginBlock();
   _writer->endBlock();
 }
 
-void QSSModelInstance::header() { ModelInstance::header(); }
+void QSSModelInstance::header()
+{
+  ModelInstance::header();
+  VarSymbolTable symbols = _model.symbols();
+  VarSymbolTable::iterator it;
+  stringstream buffer;
+  buffer << endl;
+  buffer << "// Derivative Macros definition. ";
+  _writer->write(buffer, WRITER::Model_Header);
+  for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
+    if (var.isState()) {
+      stringstream buffer;
+      Macros macros(_model, var);
+      buffer << "#define _der" << var << macros.parameters() << " dx[coeff]";
+      _writer->write(buffer, WRITER::Model_Header);
+    }
+  }
+}
 
 /* ClassicModelInstance Model Instance class. */
 
@@ -573,22 +676,23 @@ void ClassicModelInstance::initializeDataStructures()
   stringstream buffer;
   Utils::instance().clearLocalSymbols();
   allocateSolver();
-  initialCode();
   allocateVectors();
   freeVectors();
   ModelDependencies deps = _model.dependencies();
   // Initialize Solver Data Structures.
-  initializeMatrix(deps.SD(), WRITER::Alloc_Matrix_SD, WRITER::Init_Matrix_SD, _model.stateNbr());
-  initializeMatrix(deps.DS(), WRITER::Alloc_Matrix_DS, WRITER::Init_Matrix_DS, _model.stateNbr());
+  initializeMatrix(deps.SD(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+  initializeMatrix(deps.DS(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+  configEvents();
   inputs();
   // Initialize Output Data Structures.
   allocateOutput();
-  initializeMatrix(deps.OS(), WRITER::Alloc_Output_States, WRITER::Init_Output_States, _model.outputNbr());
-  initializeMatrix(deps.OD(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes, _model.outputNbr());
-  initializeMatrix(deps.SO(), WRITER::Alloc_Output_States, WRITER::Init_Output_States, _model.stateNbr());
-  initializeMatrix(deps.DO(), WRITER::Alloc_Output_Discretes, WRITER::Init_Output_Discretes, _model.discreteNbr());
+  initializeMatrix(deps.OS(), WRITER::Alloc_Output, WRITER::Init_Output, _model.outputNbr());
+  initializeMatrix(deps.OD(), WRITER::Alloc_Output, WRITER::Init_Output, _model.outputNbr());
+  configOutput();
+  initializeMatrix(deps.SO(), WRITER::Alloc_Output, WRITER::Init_Output, _model.stateNbr());
+  initializeMatrix(deps.DO(), WRITER::Alloc_Output, WRITER::Init_Output, _model.discreteNbr());
   allocateModel();
-  _writer->write(Utils::instance().localSymbols(), WRITER::Alloc_Matrix);
+  _writer->write(Utils::instance().localSymbols(), WRITER::Prologue);
 }
 
 void ClassicModelInstance::allocateSolver()
@@ -602,11 +706,8 @@ void ClassicModelInstance::allocateSolver()
   buffer << _model.algebraicNbr() << ",\"";
   buffer << _model.name() << "\");" << endl;
   buffer << "CLC_data modelData = simulator->data;" << endl;
-  buffer << "const double t = " << annot.initialTime() << ";" << endl;
-  buffer << "double* x = modelData->x;" << endl;
-  buffer << "double* d = modelData->d;" << endl;
-  // buffer << "double* a = modelData->a;" << endl;
-  _writer->write(buffer, WRITER::Alloc_Matrix);
+  buffer << "MODEL_DATA_ACCESS(modelData)" << endl;
+  _writer->write(buffer, WRITER::Prologue);
 }
 
 string ClassicModelInstance::allocateModel()
@@ -614,91 +715,26 @@ string ClassicModelInstance::allocateModel()
   stringstream buffer;
   buffer << "simulator->model = CLC_Model(MOD_definition, ";
   buffer << ModelInstance::allocateModel();
-  buffer << ", MOD_jacobian);";
   return buffer.str();
 }
 
 void ClassicModelInstance::generate()
 {
-  include();
   definition();
-  zeroCrossing();
-  handler();
-  output();
+  jacobian();
   initializeDataStructures();
-  // Print generated Model Instance.
-  _writer->print(WRITER::Include);
-  _writer->print(componentDefinition(MODEL_INSTANCE::Model_Settings));
-  _writer->beginBlock();
-  settings();
-  _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::Model));
-  _writer->beginBlock();
-  _writer->print(WRITER::Model);
-  _writer->print(WRITER::Model_Simple);
-  _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::Jacobian));
-  _writer->beginBlock();
-  _writer->print(WRITER::Jacobian);
-  _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::Zero_Crossing));
-  _writer->beginBlock();
-  _writer->print(WRITER::Zero_Crossing);
-  _writer->print(WRITER::ZC_Simple);
-  _writer->print(WRITER::ZC_Generic);
-  _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::Handler_Pos));
-  _writer->beginBlock();
-  _writer->print(WRITER::Handler_Pos);
-  _writer->print(WRITER::Handler_Pos_Simple);
-  _writer->print(WRITER::Handler_Pos_Generic);
-  _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::Handler_Neg));
-  _writer->beginBlock();
-  _writer->print(WRITER::Handler_Neg);
-  _writer->print(WRITER::Handler_Neg_Simple);
-  _writer->print(WRITER::Handler_Neg_Generic);
-  _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::Output));
-  _writer->beginBlock();
-  _writer->print(WRITER::Output);
-  _writer->print(WRITER::Output_Simple);
-  _writer->print(WRITER::Output_Generic);
-  _writer->endBlock();
+  ModelInstance::generate();
   _writer->print(componentDefinition(MODEL_INSTANCE::CLC_Init));
   _writer->beginBlock();
-  _writer->print(WRITER::Alloc_Access_Vectors);
-  _writer->print(WRITER::Alloc_Matrix);
+  _writer->print(WRITER::Prologue);
   _writer->print(WRITER::Init_Code);
-  _writer->print(WRITER::Alloc_Matrix_SD);
-  _writer->print(WRITER::Alloc_Matrix_DS);
-  _writer->print(WRITER::Alloc_Matrix_SZ);
-  _writer->print(WRITER::Alloc_Matrix_ZS);
-  _writer->print(WRITER::Alloc_Matrix_HZ);
-  _writer->print(WRITER::Alloc_Matrix_HD);
-  _writer->print(WRITER::Alloc_Event_LHSDSC);
-  _writer->print(WRITER::Alloc_Event_LHSST);
-  _writer->print(WRITER::Alloc_Event_RHSST);
-  _writer->print(WRITER::Init_Matrix);
-  _writer->print(WRITER::Init_Matrix_SD);
-  _writer->print(WRITER::Init_Matrix_DS);
-  _writer->print(WRITER::Init_Matrix_SZ);
-  _writer->print(WRITER::Init_Matrix_ZS);
-  _writer->print(WRITER::Init_Matrix_HZ);
-  _writer->print(WRITER::Init_Matrix_HD);
-  _writer->print(WRITER::Init_Event_LHSDSC);
-  _writer->print(WRITER::Init_Event_LHSST);
-  _writer->print(WRITER::Init_Event_RHSST);
-  _writer->print(WRITER::Config_Events);
+  _writer->print(WRITER::Alloc_Data);
+  _writer->print(WRITER::Init_Data);
   _writer->print(WRITER::Input);
+  _writer->print(WRITER::Alloc_Output);
   _writer->print(WRITER::Init_Output);
-  _writer->print(WRITER::Alloc_Output_States);
-  _writer->print(WRITER::Alloc_Output_Discretes);
-  _writer->print(WRITER::Config_Output);
-  _writer->print(WRITER::Init_Output_States);
-  _writer->print(WRITER::Init_Output_Discretes);
   _writer->print(allocateModel());
-  _writer->print(WRITER::Free_Access_Vectors);
+  _writer->print(WRITER::Epilogue);
   _writer->endBlock();
   _writer->print(componentDefinition(MODEL_INSTANCE::QSS_Init));
   _writer->beginBlock();
@@ -715,21 +751,14 @@ void ClassicModelInstance::header()
   buffer << "// Derivative Macros definition. ";
   _writer->write(buffer, WRITER::Model_Header);
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
-    if (!var.isState()) {
-      continue;
+    if (var.isState()) {
+      stringstream buffer;
+      Macros macros(_model, var);
+      buffer << "#define _der" << var << macros.parameters() << " dx[0]";
+      _writer->write(buffer, WRITER::Model_Header);
     }
-    stringstream buffer;
-    Macros macros(_model, var);
-    buffer << "#define _der" << var << macros.parameters() << " dx[0]";
-    _writer->write(buffer, WRITER::Model_Header);
   }
-  buffer << endl << "// Jacobian Macros definition. ";
-  _writer->write(buffer, WRITER::Model_Header);
-  buffer << "#define _jac(i) jac[i++]";
-  _writer->write(buffer, WRITER::Model_Header);
 }
-
-void ClassicModelInstance::jacobian() { return; }
 
 }  // namespace Generator
 }  // namespace MicroModelica

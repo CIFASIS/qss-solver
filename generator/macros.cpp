@@ -19,6 +19,8 @@
 
 #include "macros.h"
 
+#include "../ir/helpers.h"
+
 #include <sstream>
 
 using namespace std;
@@ -28,7 +30,11 @@ using namespace Util;
 using namespace IR;
 namespace Generator {
 
-Macros::Macros(IR::Model& model, Util::Variable& variable) : _model(model), _variable(variable) {}
+Macros::Macros(IR::Model& model, Util::Variable& variable) : _model(model), _variable(variable), _is_qss(false)
+{
+  _is_qss = !_model.annotations().isClassic() && (_variable.isAlgebraic() || _variable.isState());
+  initialize();
+}
 
 string Macros::parameters() const
 {
@@ -38,7 +44,12 @@ string Macros::parameters() const
     buffer << "(";
   }
   for (int i = 0; i < dim; i++) {
-    buffer << "d" << i + 1 << (i == dim - 1 ? ")" : ",");
+    buffer << "d" << i + 1 << (((i == dim - 1) && !_is_qss) ? ")" : ",");
+  }
+  if (_is_qss && dim) {
+    buffer << "coeff)";
+  } else if (_is_qss) {
+    buffer << "(coeff)";
   }
   return buffer.str();
 }
@@ -52,8 +63,8 @@ string Macros::arguments() const
   }
   int dim = _variable.dimensions();
   stringstream end;
-  if (!_model.annotations().classic() && (_variable.isAlgebraic() || _variable.isState())) {
-    end << "*" << _model.annotations().polyCoeffs();
+  if (_is_qss) {
+    end << "*" << _model.annotations().polyCoeffs() << " + coeff";
   }
   if (dim) {
     arguments << "(";
@@ -72,39 +83,89 @@ string Macros::arguments() const
   return arguments.str();
 }
 
-string Macros::print() const
+string Macros::engineIndexArguments() const
 {
-  stringstream buffer, index;
+  stringstream arguments;
   int dim = _variable.dimensions();
-  bool idx = !_variable.isParameter() || dim;
-  if (idx) {
-    index << "_idx" << _variable << parameters();
-    buffer << "#define " << index.str() << " " << arguments();
+  stringstream end;
+  if (dim) {
+    arguments << "(";
+    for (int i = 0; i < dim; i++) {
+      stringstream variable;
+      variable << "*" << _variable.rowSize(i) << "+";
+      if (_variable.offset()) {
+        arguments << _variable.offset() << "+";
+      }
+      arguments << "(d" << i + 1 << "-1)" << (i == dim - 1 ? ")" + end.str() : variable.str());
+    }
+  } else {
+    arguments << _variable.offset() << end.str();
   }
-  if (!_variable.isEqType()) {
-    buffer << "#define " << _variable << parameters() << " ";
-    if (_variable.isState()) {
-      buffer << "x";
-    }
-    if (_variable.isAlgebraic()) {
-      buffer << "a";
-    }
-    if (_variable.isDiscrete()) {
-      buffer << "d";
-    }
-    if (_variable.isParameter()) {
-      buffer << "__PAR__" << _variable.name();
-    }
-    if (idx) {
-      buffer << "[";
-    }
-    buffer << index.str();
-    if (idx) {
-      buffer << "]";
-    }
-    buffer << endl;
+  return arguments.str();
+}
+
+string Macros::engineIndex() const
+{
+  stringstream buffer;
+  int dim = _variable.dimensions();
+  if (dim) {
+    buffer << "(";
+  }
+  for (int i = 0; i < dim; i++) {
+    buffer << "d" << i + 1 << (i == dim - 1 ? ")" : ",");
   }
   return buffer.str();
+}
+
+void Macros::initialize()
+{
+  stringstream index, def;
+  int dim = _variable.dimensions();
+  bool idx = !_variable.isParameter() || dim;
+  string params = parameters();
+  if (idx) {
+    index << "_idx" << _variable << params;
+    _macros << "#define " << index.str() << " " << arguments();
+  }
+  if (!_variable.isEqType()) {
+    _macros << "#define " << _variable << params << " ";
+    if (_variable.isState()) {
+      _macros << "x";
+    }
+    if (_variable.isAlgebraic()) {
+      _macros << "a";
+    }
+    if (_variable.isDiscrete()) {
+      _macros << "d";
+    }
+    if (_variable.isParameter()) {
+      _macros << "__PAR__" << _variable.name();
+    }
+    if (idx) {
+      def << "[";
+    }
+    def << index.str();
+    if (idx) {
+      def << "]";
+    }
+    _macros << def.str() << endl;
+    if (_variable.isState()) {
+      FunctionPrinter fp = FunctionPrinter();
+      int offset = _variable.offset();
+      Range range = Range(_variable);
+      _macros << "#define _eval" << _variable << parameters() << " ";
+      _macros << engineIndexArguments() << endl;
+      _macros << "#define _is_var" << _variable << "(idx) ";
+      _macros << "idx >= " << offset << " && ";
+      _macros << "idx < " << offset + _variable.size() << endl;
+      _macros << "#define _get" << _variable << "_idxs(idx) ";
+      _macros << fp.getIndexes("idx", range);
+    }
+    if (_is_qss && _variable.isState()) {
+      _macros << "#define _eval_dep" << _variable << params << " ";
+      _macros << "dx" << def.str() << endl;
+    }
+  }
 }
 
 string Macros::usage(string token, Option<Range> range, int id) const

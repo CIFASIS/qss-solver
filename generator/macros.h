@@ -39,16 +39,23 @@ class Macros {
   Macros(IR::Model& model, Util::Variable& variable);
   Macros() : _model(), _variable(){};
   ~Macros(){};
-  std::string print() const;
+  std::string print() const { return _macros.str(); };
   std::string parameters() const;
+  std::string engineIndex() const;
+  std::string engineIndexArguments() const;
   std::string arguments() const;
   std::string usage(std::string token, Option<IR::Range> range, int id) const;
   std::string indexMacro(std::string token, Option<IR::Range> range, int id) const;
   friend std::ostream& operator<<(std::ostream& out, const Macros& m);
 
+  protected:
+  void initialize();
+
   private:
   IR::Model _model;
   Util::Variable _variable;
+  bool _is_qss;
+  std::stringstream _macros;
 };
 }  // namespace Generator
 }  // namespace MicroModelica

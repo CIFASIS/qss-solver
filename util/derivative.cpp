@@ -35,44 +35,44 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-AST_Equation_Equality EquationDerivator::derivate(AST_Equation_Equality eq, const VarSymbolTable& varEnv)
+AST_Equation_Equality EquationDerivator::derivate(AST_Equation_Equality eq, const VarSymbolTable& symbols)
 {
-  ConvertToGiNaC tog(varEnv, Option<Expression>());
-  ConvertToExpression toe;
-  GiNaC::ex left = tog.convert(eq->left());
-  GiNaC::ex right = tog.convert(eq->right());
-  GiNaC::symbol time = tog.getTime();
+  ConvertToGiNaC to_ginac(symbols, Option<Expression>());
+  ConvertToExpression to_exp;
+  GiNaC::ex left = to_ginac.convert(eq->left());
+  GiNaC::ex right = to_ginac.convert(eq->right());
+  GiNaC::symbol time = to_ginac.getTime();
   GiNaC::ex der_left = left.diff(time).subs(var(GiNaC::wild(), time) == GiNaC::wild());
   GiNaC::ex der_right = right.diff(time).subs(var(GiNaC::wild(), time) == GiNaC::wild());
-  return (newAST_Equation_Equality(toe.convert(der_left), toe.convert(der_right))->getAsEquality());
+  return (newAST_Equation_Equality(to_exp.convert(der_left), to_exp.convert(der_right))->getAsEquality());
 }
 
-AST_Expression ExpressionDerivator::derivate(AST_Expression exp, const VarSymbolTable& varEnv, Expression e)
+AST_Expression ExpressionDerivator::derivate(AST_Expression exp, const VarSymbolTable& symbols, Expression e)
 {
-  ConvertToGiNaC tog(varEnv, e);
-  ConvertToExpression toe;
-  GiNaC::ex dexp = tog.convert(exp, false, true);
-  GiNaC::symbol time = tog.getTime();
+  ConvertToGiNaC to_ginac(symbols, e);
+  ConvertToExpression to_exp;
+  GiNaC::ex dexp = to_ginac.convert(exp, false, true);
+  GiNaC::symbol time = to_ginac.getTime();
   GiNaC::ex der_exp = dexp.diff(time).subs(var(GiNaC::wild(), time) == GiNaC::wild());
-  return toe.convert(der_exp);
+  return to_exp.convert(der_exp);
 }
 
-map<string, Expression> ExpressionDerivator::generateJacobianExps(AST_Expression exp, const VarSymbolTable& vt)
+map<string, Expression> ExpressionDerivator::generateJacobianExps(AST_Expression exp, const VarSymbolTable& symbols)
 {
-  ConvertToGiNaC tog(vt, Option<Expression>());
-  ConvertToExpression toe;
-  ReplaceDer rd(vt);
-  GiNaC::ex dexp = tog.convert(exp, false, true);
-  map<string, GiNaC::symbol> dir = tog.directory();
+  ConvertToGiNaC to_ginac(symbols, Option<Expression>());
+  ConvertToExpression to_exp;
+  ReplaceDer replace_der(symbols);
+  GiNaC::ex dexp = to_ginac.convert(exp, false, true);
+  map<string, GiNaC::symbol> dir = to_ginac.directory();
   map<string, GiNaC::symbol>::iterator it;
   map<string, Expression> jacobianExps;
-  GiNaC::symbol time = tog.getTime();
+  GiNaC::symbol time = to_ginac.getTime();
   for (it = dir.begin(); it != dir.end(); it++) {
-    Option<Variable> v = vt[tog.identifier(it->first)];
+    Option<Variable> v = symbols[to_ginac.identifier(it->first)];
     if (v) {
       if (v->isState() || v->isAlgebraic()) {
         GiNaC::ex der_exp = dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff(it->second);
-        jacobianExps[it->first] = Expression(rd.apply(toe.convert(der_exp)), vt);
+        jacobianExps[it->first] = Expression(replace_der.apply(to_exp.convert(der_exp)), symbols);
       }
     }
   }

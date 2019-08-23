@@ -55,8 +55,8 @@ DepsGraph EAGraphBuilder::build()
   for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
     if (var.isAlgebraic()) {
       VertexProperty vp = VertexProperty();
-      vp.type = VERTEX::Algebraic;
-      vp.var = var;
+      vp.setType(VERTEX::Algebraic);
+      vp.setVar(var);
       _sourceDescriptors.push_back(add_vertex(vp, graph));
     }
   }
@@ -68,17 +68,17 @@ DepsGraph EAGraphBuilder::build()
       Expression exp = ev.exp();
       int id = ev.id();
       VertexProperty vp = VertexProperty();
-      vp.type = VERTEX::Equation;
-      vp.id = id;
-      vp.eq = zc;
+      vp.setType(VERTEX::Equation);
+      vp.setId(id);
+      vp.setEq(zc);
       _equationDescriptors.push_back(add_vertex(vp, graph));
 
       VertexProperty ifr = VertexProperty();
-      ifr.type = VERTEX::Influencer;
+      ifr.setType(VERTEX::Influencer);
       Option<Variable> assigned = zc.LHSVariable();
       assert(assigned);
-      ifr.var = assigned.get();
-      ifr.id = id;
+      ifr.setVar(assigned.get());
+      ifr.setId(id);
       _sourceDescriptors.push_back(add_vertex(ifr, graph));
     }
   }
@@ -86,33 +86,37 @@ DepsGraph EAGraphBuilder::build()
   EquationTable::iterator eq_it;
   for (Equation eq = _equations.begin(eq_it); !_equations.end(eq_it); eq = _equations.next(eq_it)) {
     if (eq.hasAlgebraics()) {
-      VertexProperty vp;
-      vp.type = VERTEX::Equation;
-      vp.eq = eq;
+      VertexProperty vp = VertexProperty();
+      vp.setType(VERTEX::Equation);
+      vp.setEq(eq);
+      vp.setId(eq.id());
       _equationDescriptors.push_back(add_vertex(vp, graph));
-
-      VertexProperty ifr;
-      ifr.type = VERTEX::Influencer;
       Option<Variable> assigned = eq.LHSVariable();
       assert(assigned);
-      ifr.var = assigned.get();
-      ifr.id = eq.id();
-      _sourceDescriptors.push_back(add_vertex(ifr, graph));
+      _ifrs[assigned->name()] = assigned.get();
     }
   }
 
+  for (auto &inf : _ifrs) {
+    VertexProperty ifr = VertexProperty();
+    ifr.setType(VERTEX::Influencer);
+    ifr.setVar(inf.second);
+    _sourceDescriptors.push_back(add_vertex(ifr, graph));
+  }
+
   for (Equation eq = _algebraics.begin(eq_it); !_algebraics.end(eq_it); eq = _algebraics.next(eq_it)) {
-    VertexProperty vp;
-    vp.type = VERTEX::Equation;
-    vp.eq = eq;
+    VertexProperty vp = VertexProperty();
+    vp.setType(VERTEX::Equation);
+    vp.setEq(eq);
+    vp.setId(eq.id());
     _equationDescriptors.push_back(add_vertex(vp, graph));
     if (!eq.hasAlgebraics()) {
-      VertexProperty ife;
-      ife.type = VERTEX::Influencee;
+      VertexProperty ife = VertexProperty();
+      ife.setType(VERTEX::Influencee);
       Option<Variable> assigned = eq.LHSVariable();
       assert(assigned);
-      ife.var = assigned.get();
-      ife.id = eq.id();
+      ife.setVar(assigned.get());
+      ife.setId(eq.id());
       _algebraicDescriptors.push_back(add_vertex(ife, graph));
     }
   }
@@ -129,8 +133,8 @@ DepsGraph EAGraphBuilder::build()
           add_edge(source, sink, lbl, graph);
         }
       }
-      // Check LHS too if we are working with algebraics.
-      if (graph[source].type == VERTEX::Algebraic && graph[sink].eq.type() == EQUATION::Algebraic) {
+      // Check RHS too if we are working with algebraics.
+      if (graph[source].type() == VERTEX::Algebraic) {
         edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input, VERTEX::LHS);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
@@ -146,8 +150,8 @@ DepsGraph EAGraphBuilder::build()
   {
     foreach_(IfeVertex source, _algebraicDescriptors)
     {
-      if (graph[sink].type == VERTEX::Algebraic) {
-        GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
+      if (graph[sink].type() == VERTEX::Equation && graph[sink].eq().type() == EQUATION::Algebraic) {
+        GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input, VERTEX::LHS);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {

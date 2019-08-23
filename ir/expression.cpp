@@ -20,25 +20,27 @@
 #include "expression.h"
 
 #include <sstream>
+
 #include "../ast/expression.h"
 #include "../util/visitors/expression_printer.h"
 #include "../util/util.h"
 #include "../util/error.h"
+#include "helpers.h"
 
 namespace MicroModelica {
 using namespace Util;
 namespace IR {
 
 /* MMO_Expression class. */
-Expression::Expression(AST_Expression exp, const VarSymbolTable& symbols) : _exp(exp), _symbols(symbols) {}
+Expression::Expression(AST_Expression exp, const VarSymbolTable& symbols, int order) : _exp(exp), _symbols(symbols), _order(order) {}
 
-Expression::Expression() : _exp(nullptr), _symbols() {}
+Expression::Expression() : _exp(nullptr), _symbols(), _order(0) {}
 
 string Expression::print() const
 {
   stringstream buffer, exp;
   if (!isEmpty()) {
-    ExpressionPrinter printer(_symbols);
+    ExpressionPrinter printer(_symbols, ModelConfig::instance().isQss(), _order);
     exp << printer.apply(_exp);
     buffer << printer.code();
     buffer << exp.str();

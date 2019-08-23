@@ -39,12 +39,12 @@ DepsGraph DZGraphBuilder::build()
   for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
     VertexProperty vp = VertexProperty();
     if (var.isDiscrete()) {
-      vp.type = VERTEX::Influencer;
-      vp.var = var;
+      vp.setType(VERTEX::Influencer);
+      vp.setVar(var);
       _variableDescriptors.push_back(add_vertex(vp, graph));
     } else if (var.isAlgebraic()) {
-      vp.type = VERTEX::Algebraic;
-      vp.var = var;
+      vp.setType(VERTEX::Algebraic);
+      vp.setVar(var);
       _variableDescriptors.push_back(add_vertex(vp, graph));
     }
   }
@@ -53,22 +53,22 @@ DepsGraph DZGraphBuilder::build()
     Expression exp = ev.exp();
     int id = ev.id();
     VertexProperty vp = VertexProperty();
-    vp.type = VERTEX::Equation;
-    vp.eq = ev.zeroCrossing();
-    vp.stm.event = ev.exp();
+    vp.setType(VERTEX::Equation);
+    vp.setEq(ev.zeroCrossing());
+    vp.stm().setEvent(ev.exp());
     ;
-    vp.id = id;
+    vp.setId(id);
     _equationDescriptors.push_back(add_vertex(vp, graph));
     VertexProperty icee = VertexProperty();
-    icee.type = VERTEX::Influencee;
-    icee.id = id;
+    icee.setType(VERTEX::Influencee);
+    icee.setId(id);
     _eventDescriptors.push_back(add_vertex(icee, graph));
   }
   EquationTable::iterator eq_it;
   for (Equation eq = _algebraics.begin(eq_it); !_algebraics.end(eq_it); eq = _algebraics.next(eq_it)) {
     VertexProperty vp = VertexProperty();
-    vp.type = VERTEX::Equation;
-    vp.eq = eq;
+    vp.setType(VERTEX::Equation);
+    vp.setEq(eq);
     _equationDescriptors.push_back(add_vertex(vp, graph));
   }
 
@@ -85,7 +85,7 @@ DepsGraph DZGraphBuilder::build()
         }
       }
       // Check LHS too if we are working with algebraics.
-      if (graph[source].type == VERTEX::Algebraic && graph[sink].eq.type() == EQUATION::Algebraic) {
+      if (graph[source].type() == VERTEX::Algebraic && graph[sink].eq().type() == EQUATION::Algebraic) {
         edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
@@ -101,7 +101,7 @@ DepsGraph DZGraphBuilder::build()
   {
     foreach_(IfeVertex source, _eventDescriptors)
     {
-      if (graph[sink].eq.isZeroCrossing()) {
+      if (graph[sink].eq().isZeroCrossing()) {
         GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
