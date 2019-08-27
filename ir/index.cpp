@@ -26,6 +26,10 @@
 #include "../ast/equation.h"
 #include "../ast/statement.h"
 #include "../util/visitors/eval_init_exp.h"
+#include "../util/visitors/get_index_usage.h"
+#include "../util/visitors/is_constant_index.h"
+#include "../util/visitors/replace_index.h"
+#include "../util/visitors/revert_index.h"
 #include "../util/util.h"
 #include "../util/error.h"
 
@@ -48,7 +52,62 @@ bool Index::hasMap() const { return false; }
 
 bool Index::operator==(const Index& other) const { return false; }
 
-void Index::add(IndexDefinition id) {}
+bool Index::isConstant() const
+{
+  IsConstantIndex constant_index;
+  return constant_index.apply(_exp.expression());
+}
+
+Usage Index::usage() const
+{
+  GetIndexUsage usage;
+  return usage.apply(_exp.expression());
+}
+
+string Index::identifier() const
+{
+  stringstream buffer;
+  if (isConstant()) {
+    buffer << "_eval" << _exp;
+  } else {
+    buffer << variable();
+  }
+  return buffer.str();
+}
+
+Variable Index::variable() const
+{
+  Option<Variable> var = _exp.reference();
+  if (var) {
+    // @TODO: use get function for optional values.
+    return *var;
+  }
+  assert(false);
+  return Variable(); 
+}
+
+Range Index::range()
+{
+  return Range(variable());
+}
+
+Index Index::revert() const
+{
+  RevertIndex revert;
+  VarSymbolTable symbols = Utils::instance().symbols();
+  return Index(Expression(revert.apply(_exp.expression()), symbols));
+}
+
+void Index::replace()
+{
+  ReplaceIndex replace = ReplaceIndex(range(), usage());
+  _exp = Expression(replace.apply(_exp.expression()), Utils::instance().symbols());
+}
+
+string Index::usageExp() const
+{
+  return _exp.usage();
+}
 
 string Index::print() const
 {
@@ -116,7 +175,7 @@ void Range::generate(Variable var)
 {
   int pos = 0;
   for (unsigned int i = 0; i < var.dimensions(); i++) {
-    string index = Utils::instance().dimensionVar(i + 1);
+    string index = getDimensionVar(i + 1);
     int begin = 1;
     int end = var.size(i);
     _ranges.insert(index, RangeDefinition(begin, end));

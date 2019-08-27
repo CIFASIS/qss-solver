@@ -110,6 +110,10 @@ class CompiledPackage {
 
 typedef ModelTable<std::string, CompiledPackage> CompiledPackageTable;
 
+namespace FUNCTION_PRINTER {
+typedef enum { Return, Break } ReturnStatementType;
+}
+
 class FunctionPrinter {
   public:
   FunctionPrinter(){};
@@ -119,7 +123,7 @@ class FunctionPrinter {
   std::string beginSwitch();
   std::string endSwitch();
   std::string beginExpression(std::string token, Option<Range> range) const;
-  std::string endExpression(Option<Range> range, bool ret = true) const;
+  std::string endExpression(Option<Range> range, FUNCTION_PRINTER::ReturnStatementType ret = FUNCTION_PRINTER::ReturnStatementType::Return) const;
   std::string algebraics(Deps::EquationDependencyMatrix eqdm, Deps::depId key);
   std::string algebraics(Deps::AlgebraicDependencies deps);
   std::string macro(std::string token, Option<Range> range, int id, int offset = 0) const;
@@ -180,6 +184,38 @@ class ModelConfig {
   EquationTable _algebraics;
   Deps::ModelDependencies _dependencies;
   EquationTable _derivatives;
+};
+
+class DepInfo {
+public:
+  DepInfo() : _index(), _deps() {};
+  DepInfo(Index index) : _index(index), _deps() {};
+  ~DepInfo() = default;
+  inline bool isScalar() const { return _index.isConstant(); };
+  inline void addDependency(string dep) { _deps.push_back(dep); };
+  inline list<std::string> deps() { return _deps; };
+  inline Index index() { return _index; }; 
+private:
+  Index _index;
+  list<std::string> _deps;
+};
+
+class DependencyMapper {
+public:
+  DependencyMapper();
+  ~DependencyMapper() = default;
+  void processInf(Deps::Influences inf);
+  std::string scalar() const;
+  std::string vector() const;
+
+protected:
+  void initialize();
+  std::string dependencies(bool scalar) const;
+  std::string generate(std::stringstream& begin, std::stringstream& code, std::stringstream& end) const;
+  std::string generateGuards(DepInfo dep, bool begin) const;
+
+private:
+  map<std::string, DepInfo> _mapper;
 };
 }  // namespace IR
 }  // namespace MicroModelica

@@ -203,11 +203,19 @@ string FunctionPrinter::beginExpression(string token, Option<Range> range) const
   return buffer.str();
 }
 
-string FunctionPrinter::endExpression(Option<Range> range, bool ret) const
+string FunctionPrinter::endExpression(Option<Range> range, FUNCTION_PRINTER::ReturnStatementType ret) const
 {
   stringstream buffer;
-  if (ret) {
-    buffer << "return;" << endl;
+  switch (ret) {
+    case FUNCTION_PRINTER::Return:
+      buffer << "return;" << endl;
+      break;
+    case FUNCTION_PRINTER::Break: {
+      if (!range) {
+        buffer << "break;" << endl;
+      }
+      break;        
+    }
   }
   if (!range) {
     buffer << TAB;
@@ -219,7 +227,9 @@ string FunctionPrinter::endExpression(Option<Range> range, bool ret) const
 string FunctionPrinter::endDimGuards(Option<Range> range) const
 {
   if (range) {
-    return "}";
+    stringstream buffer;
+    buffer << "}" << endl;
+    return buffer.str();
   }
   return "";
 }
@@ -373,5 +383,103 @@ ostream& operator<<(std::ostream& out, const Input& i)
 ModelConfig::ModelConfig() : _model_annotations(), _algebraics(), _dependencies() {}
 
 bool ModelConfig::generateDerivatives() { return _model_annotations.symDiff() && isQss(); }
+
+DependencyMapper::DependencyMapper() : _mapper() {};
+
+void DependencyMapper::processInf(Influences inf)
+{
+  EquationTable derivatives = ModelConfig::instance().derivatives();
+  stringstream buffer;
+  FunctionPrinter fp;
+  Option<Equation> ifce = derivatives[inf.ifce.equationId()];
+  if (ifce) {
+    Index ifr = inf.ifr();
+    string idx_exp = ifr.print();
+    if (_mapper.find(idx_exp) == _mapper.end()) {
+      DepInfo d = DepInfo(ifr);
+      _mapper[idx_exp] = d;
+    }
+    Equation eq = ifce.get();
+    eq.setType(EQUATION::Dependency);
+    eq.setUsage(ifr);
+    buffer << fp.algebraics(inf.algs);
+    buffer << eq << endl;
+    DepInfo dep = _mapper[idx_exp];
+    dep.addDependency(buffer.str());
+    _mapper[idx_exp] = dep;
+  }
+}
+
+string DependencyMapper::generateGuards(DepInfo dep, bool begin) const
+{
+  stringstream buffer;
+  FunctionPrinter fp;
+  Index index = dep.index();
+  Option<Range> range;
+  if (!dep.isScalar()) {
+    range = index.range();
+  } 
+  if (begin) {
+    buffer << fp.beginExpression(index.identifier(), range);
+  } else {
+    buffer << TAB << fp.endExpression(range, FUNCTION_PRINTER::Break);
+  }
+  return buffer.str();
+}
+
+string DependencyMapper::generate(stringstream& begin, stringstream& code, stringstream& end) const
+{
+  stringstream buffer;
+  buffer << begin.str();
+  buffer << code.str();
+  buffer << end.str();
+  begin.str("");
+  code.str("");
+  end.str("");
+  return buffer.str();
+} 
+
+string DependencyMapper::dependencies(bool scalar) const
+{
+  stringstream code, buffer, begin_exp, end_exp;
+  bool generate_guards = true;
+  static constexpr bool BEGIN = true;
+  static constexpr bool END = false;
+  for (auto mapper : _mapper) {
+    DepInfo dep = mapper.second;
+    if (dep.isScalar() == scalar) {
+      if (generate_guards) { 
+        begin_exp << generateGuards(dep, BEGIN);
+        end_exp << generateGuards(dep, END);
+      }
+      for (string eq : dep.deps()) {
+        buffer << eq;
+      }
+      if (scalar) { 
+        code << generate(begin_exp, buffer, end_exp);
+      }
+      if (!scalar && generate_guards) {
+        generate_guards = false;
+      }
+    }
+  }
+  if (!scalar) {
+    code << generate(begin_exp, buffer, end_exp);
+  }  
+  return code.str();
+}
+
+string DependencyMapper::scalar() const
+{
+  static bool constexpr SCALAR = true;
+  return dependencies(SCALAR); 
+}
+
+string DependencyMapper::vector() const
+{
+  static bool constexpr VECTOR = false;
+  return dependencies(VECTOR); 
+}
+
 }  // namespace IR
 }  // namespace MicroModelica

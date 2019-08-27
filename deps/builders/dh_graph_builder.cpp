@@ -48,12 +48,14 @@ void DHGraphBuilder::addStatements(StatementTable stms, DepsGraph& graph, Expres
     ExpressionList::iterator it = lhs_discretes.begin();
     for (Expression e : assignments) {
       VertexProperty vp = VertexProperty();
+      StatementVertex sv = StatementVertex();
       vp.setType(VERTEX::Statement);
-      vp.stm().setExp(e);
-      vp.stm().setEvent(exp);
+      sv.setExp(e);
+      sv.setEvent(exp);
       //      vp.stm.lhs = *it;
       vp.setId(id);
       //      it++;
+      vp.setStm(sv);
       _statementDescriptors.push_back(add_vertex(vp, graph));
     }
   }

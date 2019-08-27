@@ -57,6 +57,31 @@ bool Expression::isReference() const
   return _exp->expressionType() == EXPCOMPREF;
 }
 
+Option<Variable> Expression::reference() const
+{
+  assert(isReference());
+  AST_Expression_ComponentReference cr = _exp->getAsComponentReference();
+  return _symbols[cr->name()];
+}
+
+string Expression::usage() const
+{
+  stringstream buffer;
+  if (isReference()) {
+    AST_Expression_ComponentReference cr = _exp->getAsComponentReference();
+    if (cr->hasIndexes()) {
+      AST_ExpressionList indexes = cr->firstIndex();
+      AST_ExpressionListIterator it;
+      int size = indexes->size(), i = 0;
+      foreach (it, indexes) {
+        Expression idx = Expression(current_element(it), _symbols);
+        buffer << idx << (++i < size ? "," : "");
+      }
+    }
+  }
+  return buffer.str();
+}
+
 std::ostream& operator<<(std::ostream& out, const Expression& s)
 {
   out << s.print();

@@ -52,11 +52,12 @@ DepsGraph SZGraphBuilder::build()
   for (Event ev = _events.begin(ev_it); !_events.end(ev_it); ev = _events.next(ev_it)) {
     int id = ev.id();
     VertexProperty vp = VertexProperty();
+    StatementVertex sv = StatementVertex();
     vp.setType(VERTEX::Equation);
     vp.setEq(ev.zeroCrossing());
     vp.setId(id);
-    vp.stm().setEvent(ev.exp());
-    ;
+    sv.setEvent(ev.exp());
+    vp.setStm(sv);
     _equationDescriptors.push_back(add_vertex(vp, graph));
     VertexProperty icee = VertexProperty();
     icee.setType(VERTEX::Influencee);

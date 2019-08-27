@@ -31,6 +31,30 @@ namespace Util {
 
 RevertIndex::RevertIndex() {}
 
+AST_Expression RevertIndex::foldTraverseElement(AST_Expression exp)
+{
+  switch (exp->expressionType()) {
+  case EXPCOMPREF: {
+    AST_Expression_ComponentReference cr = exp->getAsComponentReference();
+    if (cr->hasIndexes()) {
+      AST_Expression_ComponentReference ret = newAST_Expression_ComponentReference();
+      AST_ExpressionList indexes = cr->firstIndex();
+      AST_ExpressionListIterator it;
+      AST_ExpressionList l = newAST_ExpressionList();
+      foreach (it, indexes) {
+        l = AST_ListAppend(l, apply(current_element(it)));
+      }
+      ret = AST_Expression_ComponentReference_Add(ret, newAST_String(cr->name()), l);
+      return ret;
+    }
+    break;
+  }
+  default:
+    break;
+  }
+  return exp;
+}
+
 AST_Expression RevertIndex::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
 {
   switch (bot) {

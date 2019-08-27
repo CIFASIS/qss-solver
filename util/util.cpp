@@ -116,13 +116,6 @@ string Utils::getVarName(string name)
   return ret;
 }
 
-string Utils::dimensionVar(int d)
-{
-  stringstream buffer;
-  buffer << "_d" << d;
-  return buffer.str();
-}
-
 string Utils::iteratorVar()
 {
   stringstream buffer;

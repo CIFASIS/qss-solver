@@ -53,10 +53,11 @@ DepsGraph DZGraphBuilder::build()
     Expression exp = ev.exp();
     int id = ev.id();
     VertexProperty vp = VertexProperty();
+    StatementVertex sv = StatementVertex();
     vp.setType(VERTEX::Equation);
     vp.setEq(ev.zeroCrossing());
-    vp.stm().setEvent(ev.exp());
-    ;
+    sv.setEvent(ev.exp());
+    vp.setStm(sv);
     vp.setId(id);
     _equationDescriptors.push_back(add_vertex(vp, graph));
     VertexProperty icee = VertexProperty();

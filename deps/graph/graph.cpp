@@ -91,9 +91,9 @@ void Label::RemoveDuplicates()
         // Ignore the same pair
         if (checkingIP == otherIP) continue;
         switch (checkingIP->Type()) {
-        case INDEX::RN_N:
+        case INDEX_PAIR::RN_N:
           switch (otherIP->Type()) {
-          case INDEX::RN_N:
+          case INDEX_PAIR::RN_N:
             if (checkingIP->GetUsage() == otherIP->GetUsage()) {
               if (checkingIP->GetOffset() == otherIP->GetOffset()) {  // Same usage same offset => are equals: SHOULD NOT EvalOccur
                 // ERROR("This case should not EvalOccur since should not be equal pairs in a set");
@@ -106,7 +106,7 @@ void Label::RemoveDuplicates()
               // ERROR("Multiple usages of a same vector with different index usages in a same for equation not supported");
               abort();
             }
-          case INDEX::RN_1:
+          case INDEX_PAIR::RN_1:
             if (checkingIP->Ran().Contains(otherIP->Ran())) {  // There is intersection => remove it from the N-1 Index Pair
               newIPS.erase(*otherIP);
               MDI domToRemove = otherIP->Ran().RevertUsage(checkingIP->GetUsage(), checkingIP->Dom()).ApplyOffset(checkingIP->GetOffset());
@@ -119,7 +119,7 @@ void Label::RemoveDuplicates()
               removeSomething = false;
               continue;
             }
-          case INDEX::R1_N:
+          case INDEX_PAIR::R1_N:
             if (checkingIP->Dom().Contains(
                     otherIP->Dom())) {  // There is intersection => remove the N-N Index Pair, since it must be a 1-1 pair.
               newIPS.erase(*checkingIP);
@@ -127,9 +127,9 @@ void Label::RemoveDuplicates()
               continue;
             }
           }
-        case INDEX::RN_1:
+        case INDEX_PAIR::RN_1:
           switch (otherIP->Type()) {
-          case INDEX::RN_N:
+          case INDEX_PAIR::RN_N:
             if (otherIP->Ran().Contains(checkingIP->Ran())) {  // There is intersection => remove it from the N-1 Index Pair
               newIPS.erase(*checkingIP);
               MDI domToRemove = checkingIP->Ran().RevertUsage(otherIP->GetUsage(), otherIP->Dom()).ApplyOffset(otherIP->GetOffset());
@@ -142,7 +142,7 @@ void Label::RemoveDuplicates()
               removeSomething = false;
               continue;
             }
-          case INDEX::RN_1:
+          case INDEX_PAIR::RN_1:
             if (checkingIP->Ran() == otherIP->Ran()) {  // Same range => are equals: SHOULD NOT EvalOccur
               // ERROR("This case should not EvalOccur since should not be equal pairs in a set");
               abort();
@@ -150,25 +150,25 @@ void Label::RemoveDuplicates()
               removeSomething = false;
               continue;
             }
-          case INDEX::R1_N:
+          case INDEX_PAIR::R1_N:
             // This case should not EvalOccur
             // ERROR("This case should not EvalOccur since should could not be N-1 and 1-N pairs in a same label");
             abort();
           }
-        case INDEX::R1_N:
+        case INDEX_PAIR::R1_N:
           switch (otherIP->Type()) {
-          case INDEX::RN_N:
+          case INDEX_PAIR::RN_N:
             if (otherIP->Dom().Contains(
                     checkingIP->Dom())) {  // There is intersection => remove the N-N Index Pair, since it must be a 1-1 pair.
               newIPS.erase(*otherIP);
               removeSomething = true;
               continue;
             }
-          case INDEX::RN_1:
+          case INDEX_PAIR::RN_1:
             // This case should not EvalOccur
             // ERROR("This case should not EvalOccur since should could not be N-1 and 1-N pairs in a same label");
             abort();
-          case INDEX::R1_N:
+          case INDEX_PAIR::R1_N:
             if (checkingIP->Dom() == otherIP->Dom()) {  // Same range => are equals: SHOULD NOT EvalOccur
               // ERROR("This case should not EvalOccur since should not be equal pairs in a set");
               abort();
@@ -191,27 +191,27 @@ MDI Label::getImage(MDI intersection) const
   // then get the type and handle the different cases there.
   IndexPair orig = Pair();
   IndexPair p(intersection, orig.Ran(), orig.GetOffset(), orig.GetUsage(), orig.exp());
-  INDEX::Rel rel = p.Type();
+  INDEX_PAIR::Rel rel = p.Type();
   if (_dir == EDGE::Input) {
-    assert(rel != INDEX::RN_1);
-    assert(rel != INDEX::R1_N);
+    assert(rel != INDEX_PAIR::RN_1);
+    assert(rel != INDEX_PAIR::R1_N);
     switch (rel) {
-    case INDEX::RN_N:
+    case INDEX_PAIR::RN_N:
       return intersection.ApplyOffset(Pair().GetOffset());
-    case INDEX::R1_1:
+    case INDEX_PAIR::R1_1:
       return Pair().Ran();
     default:
       return MDI();
     }
   } else {
     switch (rel) {
-    case INDEX::RN_N:
+    case INDEX_PAIR::RN_N:
       return intersection.RevertOffset(Pair().GetOffset(), Pair().GetUsage(), Pair().Ran());
-    case INDEX::R1_1:
+    case INDEX_PAIR::R1_1:
       return Pair().Ran();
-    case INDEX::R1_N:
+    case INDEX_PAIR::R1_N:
       return Pair().Ran();
-    case INDEX::RN_1:
+    case INDEX_PAIR::RN_1:
       return Pair().Ran();
     default:
       return MDI();
@@ -412,6 +412,7 @@ void GenerateEdge::build(list<Expression> exps)
     }
   }
   for (Expression exp : exps) {
+    cout << "BUILDER EXP: " << exp << endl;
     assert(exp.isReference());
     cout << "Expressions: " << exp << endl;
     EvalOccur eval_occur(exp, _symbols, sink_range);

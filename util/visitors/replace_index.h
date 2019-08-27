@@ -27,19 +27,10 @@
 
 namespace MicroModelica {
 namespace Util {
-/**
- *
- */
+
 class ReplaceIndex : public AST_Expression_Visitor<AST_Expression> {
   public:
-  /**
-   *
-   * @param vt
-   */
   ReplaceIndex(IR::Range range, Deps::Usage usage);
-  /**
-   *
-   */
   ~ReplaceIndex(){};
 
   private:
@@ -55,19 +46,10 @@ class ReplaceIndex : public AST_Expression_Visitor<AST_Expression> {
   IR::Range _range;
   Deps::Usage _usage;
 };
-/**
- *
- */
+
 class ReplaceVar : public AST_Expression_Visitor<AST_Expression> {
   public:
-  /**
-   *
-   * @param vt
-   */
   ReplaceVar(std::string var) : _var(var){};
-  /**
-   *
-   */
   ~ReplaceVar(){};
 
   private:

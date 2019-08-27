@@ -321,9 +321,9 @@ std::list<IndexPair> IndexPair::operator-(const IndexPair &other) const
   // dimension error in IndexPair subtraction");
   std::list<IndexPair> ret;
   switch (this->Type()) {
-  case INDEX::RN_N:
+  case INDEX_PAIR::RN_N:
     switch (other.Type()) {
-    case INDEX::RN_N:
+    case INDEX_PAIR::RN_N:
       if (this->offset != other.offset) {
         // Nothing to subtract
         return std::list<IndexPair>{*this};
@@ -342,7 +342,7 @@ std::list<IndexPair> IndexPair::operator-(const IndexPair &other) const
         }
         return ret;
       }
-    case INDEX::RN_1:
+    case INDEX_PAIR::RN_1:
       if (!this->Ran().Contains(other.Ran())) {
         // Nothing to subtract
         return std::list<IndexPair>{*this};
@@ -369,7 +369,7 @@ std::list<IndexPair> IndexPair::operator-(const IndexPair &other) const
           return ret;
         }
       }
-    case INDEX::R1_N:
+    case INDEX_PAIR::R1_N:
       if (!this->Dom().Contains(other.Dom())) {
         // Nothing to subtract
         return std::list<IndexPair>{*this};
@@ -394,9 +394,9 @@ std::list<IndexPair> IndexPair::operator-(const IndexPair &other) const
     default:
       return ret;
     }
-  case INDEX::RN_1:
+  case INDEX_PAIR::RN_1:
     switch (other.Type()) {
-    case INDEX::RN_N:
+    case INDEX_PAIR::RN_N:
       if (!other.Ran().Contains(this->Ran())) {
         // Nothing to subtract
         return std::list<IndexPair>{*this};
@@ -416,7 +416,7 @@ std::list<IndexPair> IndexPair::operator-(const IndexPair &other) const
           return ret;
         }
       }
-    case INDEX::RN_1:
+    case INDEX_PAIR::RN_1:
       if (this->Ran() != other.Ran()) {
         // Nothing to subtract
         return std::list<IndexPair>{*this};
@@ -428,7 +428,7 @@ std::list<IndexPair> IndexPair::operator-(const IndexPair &other) const
         }
         return ret;
       }
-    case INDEX::R1_N:
+    case INDEX_PAIR::R1_N:
       if (!other.Ran().Contains(this->Ran()) || !this->Dom().Contains(other.Ran())) {
         // Nothing to subtract
         return std::list<IndexPair>{*this};
@@ -443,9 +443,9 @@ std::list<IndexPair> IndexPair::operator-(const IndexPair &other) const
     default:
       return ret;
     }
-  case INDEX::R1_N:
+  case INDEX_PAIR::R1_N:
     switch (other.Type()) {
-    case INDEX::RN_N:
+    case INDEX_PAIR::RN_N:
       if (!other.Dom().Contains(this->Dom())) {
         // Nothing to subtract
         return std::list<IndexPair>{*this};
@@ -465,7 +465,7 @@ std::list<IndexPair> IndexPair::operator-(const IndexPair &other) const
           return ret;
         }
       }
-    case INDEX::RN_1:
+    case INDEX_PAIR::RN_1:
       if (!this->Ran().Contains(other.Ran()) || !other.Dom().Contains(this->Dom())) {
         // Nothing to subtract
         return std::list<IndexPair>{*this};
@@ -477,7 +477,7 @@ std::list<IndexPair> IndexPair::operator-(const IndexPair &other) const
         }
         return ret;
       }
-    case INDEX::R1_N:
+    case INDEX_PAIR::R1_N:
       if (!this->Ran().Contains(other.Ran())) {
         // Nothing to subtract
         return std::list<IndexPair>{*this};
@@ -503,7 +503,7 @@ IndexPairSet IndexPair::RemoveUnknowns(MDI unk2remove)
   // ERROR_UNLESS(this->Ran().Dimension()==unk2remove.Dimension(), "Removing
   // unknowns of different dimension");
   switch (this->Type()) {
-  case INDEX::RN_N:
+  case INDEX_PAIR::RN_N:
     if (Option<MDI> intersection = unk2remove & this->Ran()) {
       MDI ranToRemove = intersection.get();
       MDI domToRemove = (ranToRemove.RevertUsage(usage, this->Dom())).ApplyOffset(-offset);
@@ -523,7 +523,7 @@ IndexPairSet IndexPair::RemoveUnknowns(MDI unk2remove)
     } else {
       return {*this};
     }
-  case INDEX::RN_1:
+  case INDEX_PAIR::RN_1:
     if (this->Ran() == unk2remove) {
       // Remove all:
       return {};
@@ -531,7 +531,7 @@ IndexPairSet IndexPair::RemoveUnknowns(MDI unk2remove)
       // Nothing to remove_
       return {*this};
     }
-  case INDEX::R1_N:
+  case INDEX_PAIR::R1_N:
     if (Option<MDI> intersection = unk2remove & this->Ran()) {
       MDI ranToRemove = intersection.get();
       IndexPairSet ret;
@@ -554,7 +554,7 @@ IndexPairSet IndexPair::RemoveEquations(MDI eqs2remove)
   // ERROR_UNLESS(this->Dom().Dimension()==eqs2remove.Dimension(), "Removing
   // equations of different dimension");
   switch (this->Type()) {
-  case INDEX::RN_N:
+  case INDEX_PAIR::RN_N:
     if (Option<MDI> intersection = eqs2remove & this->Dom()) {
       MDI domToRemove = intersection.get();
       MDI ranToRemove = (domToRemove.ApplyUsage(usage, this->Ran())).ApplyOffset(offset);
@@ -574,7 +574,7 @@ IndexPairSet IndexPair::RemoveEquations(MDI eqs2remove)
     } else {
       return {*this};
     }
-  case INDEX::RN_1:
+  case INDEX_PAIR::RN_1:
     if (Option<MDI> intersection = eqs2remove & this->Dom()) {
       MDI domToRemove = intersection.get();
       IndexPairSet ret;
@@ -586,7 +586,7 @@ IndexPairSet IndexPair::RemoveEquations(MDI eqs2remove)
     } else {
       return {*this};
     }
-  case INDEX::R1_N:
+  case INDEX_PAIR::R1_N:
     if (this->Dom() == eqs2remove) {
       // Remove all:
       return {};
@@ -639,22 +639,22 @@ Option<IndexPair> IndexPair::operator&(const IndexPair &other) const
   return Option<IndexPair>();
 }
 
-INDEX::Rel IndexPair::Type() const
+INDEX_PAIR::Rel IndexPair::Type() const
 {
   if (dom.Size() == ran.Size() && !dom.isEmpty() && !ran.isEmpty()) {
-    return INDEX::RN_N;
+    return INDEX_PAIR::RN_N;
   } else if (dom.isEmpty() && ran.isEmpty()) {
-    return INDEX::R1_1;
+    return INDEX_PAIR::R1_1;
   } else if (dom.unique() && ran.isEmpty()) {
-    return INDEX::R1_1;
+    return INDEX_PAIR::R1_1;
   } else if (dom.isEmpty() && ran.unique()) {
-    return INDEX::R1_1;
+    return INDEX_PAIR::R1_1;
   } else if (dom.unique() && ran.unique()) {
-    return INDEX::R1_1;
+    return INDEX_PAIR::R1_1;
   } else if ((dom.Size() > ran.Size()) && ran.unique()) {
-    return INDEX::RN_1;
+    return INDEX_PAIR::RN_1;
   } else if (dom.Size() < ran.Size()) {
-    return INDEX::RN_N;
+    return INDEX_PAIR::RN_N;
   }
   cout << "Dom size " << dom.Size() << " ran size " << ran.Size() << endl;
   assert(false);
@@ -662,12 +662,20 @@ INDEX::Rel IndexPair::Type() const
 
 bool Usage::isUsed(int i)
 {
-  if (usage.size() > 0) {
-    return usage[i] != -1;
+  if (_usage.size() > 0) {
+    return _usage[i] != -1;
   } else {
     return false;
   }
   return false;
+}
+
+void Usage::join(Usage usage)
+{
+  iterator it;
+  for (it = usage.begin(); it != usage.end(); it++) {
+    _usage.push_back(*it);
+  }
 }
 
 std::ostream &operator<<(std::ostream &os, const std::list<IndexPair> &ipList)

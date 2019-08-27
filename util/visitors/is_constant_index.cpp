@@ -17,11 +17,8 @@
 
  ******************************************************************************/
 
-#include "replace_index.h"
+#include "is_constant_index.h"
 
-#include <sstream>
-
-#include "../../ast/ast_builder.h"
 #include "../error.h"
 
 namespace MicroModelica {
@@ -29,50 +26,34 @@ using namespace Deps;
 using namespace IR;
 namespace Util {
 
-ReplaceIndex::ReplaceIndex(Range range, Usage usage) : _range(range), _usage(usage) {}
+IsConstantIndex::IsConstantIndex() : _in_index_list(false) {}
 
-AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
+bool IsConstantIndex::foldTraverseElement(AST_Expression exp)
 {
+  bool ret = true;
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
+    if (_in_index_list) {
+      ret = false;
+    }
     if (cr->hasIndexes()) {
-      AST_Expression_ComponentReference ret = newAST_Expression_ComponentReference();
+      assert(!_in_index_list);
+      _in_index_list = true;
       AST_ExpressionList indexes = cr->firstIndex();
       AST_ExpressionListIterator it;
-      int i = 0;
-      AST_ExpressionList l = newAST_ExpressionList();
       foreach (it, indexes) {
-        if (_usage.isUsed(i)) {
-          string var = _range.iterator(i);
-          ReplaceVar rv(var);
-          l = AST_ListAppend(l, rv.apply(current_element(it)));
-        } else {
-          l = AST_ListAppend(l, current_element(it));
-        }
-        i++;
+        ret = ret && apply(current_element(it));
       }
-      ret = AST_Expression_ComponentReference_Add(ret, newAST_String(cr->name()), l);
-      return ret;
+      _in_index_list = false;
     }
     break;
   }
   default:
     break;
   }
-  return exp;
+  return ret;
 }
 
-AST_Expression ReplaceVar::foldTraverseElement(AST_Expression exp)
-{
-  switch (exp->expressionType()) {
-  case EXPCOMPREF: {
-    return newAST_Expression_ComponentReferenceExp(newAST_String(_var));
-  }
-  default:
-    break;
-  }
-  return exp;
-}
 }  // namespace Util
 }  // namespace MicroModelica

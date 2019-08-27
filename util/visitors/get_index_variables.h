@@ -1,5 +1,3 @@
-
-
 /*****************************************************************************
 
  This file is part of QSS Solver.
@@ -19,8 +17,8 @@
 
  ******************************************************************************/
 
-#ifndef GET_INDEX_USAGE_H_
-#define GET_INDEX_USAGE_H_
+#ifndef GET_INDEX_VARIABLES_H_
+#define GET_INDEX_VARIABLES_H_
 
 #include "../../deps/graph/graph_helpers.h"
 #include "../../ir/index.h"
@@ -31,17 +29,17 @@ namespace Util {
 /**
  *
  */
-class GetIndexUsage : public AST_Expression_Visitor<Deps::Usage> {
+class GetIndexVariables : public AST_Expression_Visitor<list<std::string>> {
   public:
-  GetIndexUsage();
-  ~GetIndexUsage(){};
+  GetIndexVariables();
+  ~GetIndexVariables(){};
 
   private:
-  Deps::Usage foldTraverseElement(AST_Expression exp);
-  inline Deps::Usage foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
-  inline Deps::Usage foldTraverseElement(Deps::Usage l, Deps::Usage r, BinOpType bot)
+  list<std::string> foldTraverseElement(AST_Expression exp);
+  inline list<std::string> foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
+  inline list<std::string> foldTraverseElement(list<std::string> l, list<std::string> r, BinOpType bot)
   {
-    l.join(r);
+    l.splice(l.end(), r);
     return l;
   }
   bool _in_index_list;
@@ -49,4 +47,4 @@ class GetIndexUsage : public AST_Expression_Visitor<Deps::Usage> {
 
 }  // namespace Util
 }  // namespace MicroModelica
-#endif /* GET_INDEX_USAGE_H_ */
+#endif /* GET_INDEX_VARIABLES_H_ */

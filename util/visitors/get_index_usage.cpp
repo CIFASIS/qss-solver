@@ -19,9 +19,6 @@
 
 #include "get_index_usage.h"
 
-#include <sstream>
-
-#include "../../ast/ast_builder.h"
 #include "../error.h"
 
 namespace MicroModelica {
@@ -31,14 +28,16 @@ namespace Util {
 
 GetIndexUsage::GetIndexUsage() : _in_index_list(false) {}
 
-list<string> GetIndexUsage::foldTraverseElement(AST_Expression exp)
+Usage GetIndexUsage::foldTraverseElement(AST_Expression exp)
 {
-  list<string> ret;
+  Usage ret;
+  static constexpr int USED = 1;
+  static constexpr int UNUSED = -1;  
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
     if (_in_index_list) {
-      ret.push_back(cr->name());
+      ret.push_back(USED);
     }
     if (cr->hasIndexes()) {
       assert(!_in_index_list);
@@ -46,13 +45,16 @@ list<string> GetIndexUsage::foldTraverseElement(AST_Expression exp)
       AST_ExpressionList indexes = cr->firstIndex();
       AST_ExpressionListIterator it;
       foreach (it, indexes) {
-        ret.splice(ret.end(), foldTraverseElement(current_element(it)));
+        ret.join(apply(current_element(it)));
       }
       _in_index_list = false;
     }
     break;
   }
   default:
+    if (_in_index_list) {
+      ret.push_back(UNUSED);
+    }
     break;
   }
   return ret;

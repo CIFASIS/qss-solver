@@ -30,13 +30,13 @@ namespace Deps {
 MDI VariableDependency::getImage(MDI sub_dom)
 {
   IndexPair p(sub_dom, _ran, _ifr.GetOffset(), _ifr.GetUsage(), _ifr.exp());
-  INDEX::Rel rel = p.Type();
+  INDEX_PAIR::Rel rel = p.Type();
   switch (rel) {
-  case INDEX::RN_N:
+  case INDEX_PAIR::RN_N:
     return sub_dom.RevertOffset(_ifr.GetOffset(), _ifr.GetUsage(), _ifr.Ran());
-  case INDEX::R1_1:
-  case INDEX::R1_N:
-  case INDEX::RN_1:
+  case INDEX_PAIR::R1_1:
+  case INDEX_PAIR::R1_N:
+  case INDEX_PAIR::RN_1:
     return _ran;
   default:
     return MDI();

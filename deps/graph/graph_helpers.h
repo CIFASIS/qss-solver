@@ -42,31 +42,32 @@ typedef std::vector<Interval> IntervalVector;
 
 class Usage {
   public:
-  inline Usage() : usage(){};
-  inline Usage(int size) : usage(std::vector<int>(size)) {}
-  inline Usage(int size, int value) : usage(std::vector<int>(size, value)) {}
-  inline int& operator[](int index) { return usage[index]; }
-  inline const int& operator[](int index) const { return usage[index]; }
-  inline void push_back(const int i) { usage.push_back(i); }
-  inline bool operator==(const Usage& other) const { return this->usage == other.usage; };
-  inline bool operator!=(const Usage& other) const { return this->usage != other.usage; };
-  inline int Size() { return usage.size(); }
+  inline Usage() : _usage(){};
+  inline Usage(int size) : _usage(std::vector<int>(size)) {}
+  inline Usage(int size, int value) : _usage(std::vector<int>(size, value)) {}
+  inline int& operator[](int index) { return _usage[index]; }
+  inline const int& operator[](int index) const { return _usage[index]; }
+  inline void push_back(const int i) { _usage.push_back(i); }
+  inline bool operator==(const Usage& other) const { return this->_usage == other._usage; };
+  inline bool operator!=(const Usage& other) const { return this->_usage != other._usage; };
+  inline int Size() { return _usage.size(); }
   inline bool isUnused()
   {
-    for (int i : usage) {
+    for (int i : _usage) {
       if (i != -1) return false;
     }
     return true;
   }
   bool isUsed(int i);
+  void join(Usage usage);
   typedef std::vector<int>::iterator iterator;
   typedef std::vector<int>::const_iterator const_iterator;
-  inline const_iterator begin() const { return usage.begin(); }
-  inline iterator begin() { return usage.begin(); }
-  inline iterator end() { return usage.end(); }
+  inline const_iterator begin() const { return _usage.begin(); }
+  inline iterator begin() { return _usage.begin(); }
+  inline iterator end() { return _usage.end(); }
 
   private:
-  std::vector<int> usage;
+  std::vector<int> _usage;
 };
 
 class Offset {
@@ -143,7 +144,7 @@ class MDI {  // Multi-Dimensional Interval
   std::list<MDI> PutLists(MDI mdi, std::list<MDI> mdiList);
 };
 
-namespace INDEX {
+namespace INDEX_PAIR {
 typedef enum { RN_N, RN_1, R1_N, R1_1 } Rel;
 }
 
@@ -164,7 +165,7 @@ class IndexPair {
   Option<IndexPair> operator&(const IndexPair& other) const;
   friend std::ostream& operator<<(std::ostream& os, const IndexPair& ip);
   bool Contains(const IndexPair& other) const;
-  INDEX::Rel Type() const;
+  INDEX_PAIR::Rel Type() const;
   IR::Expression exp() const { return _exp; };
 
   private:

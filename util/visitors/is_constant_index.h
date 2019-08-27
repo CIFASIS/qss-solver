@@ -1,5 +1,3 @@
-
-
 /*****************************************************************************
 
  This file is part of QSS Solver.
@@ -19,9 +17,10 @@
 
  ******************************************************************************/
 
-#ifndef GET_INDEX_USAGE_H_
-#define GET_INDEX_USAGE_H_
+#ifndef IS_CONSTANT_INDEX_H_
+#define IS_CONSTANT_INDEX_H_
 
+#include "../../ast/ast_builder.h"
 #include "../../deps/graph/graph_helpers.h"
 #include "../../ir/index.h"
 #include "../ast_util.h"
@@ -31,22 +30,21 @@ namespace Util {
 /**
  *
  */
-class GetIndexUsage : public AST_Expression_Visitor<Deps::Usage> {
+class IsConstantIndex : public AST_Expression_Visitor<bool> {
   public:
-  GetIndexUsage();
-  ~GetIndexUsage(){};
+  IsConstantIndex();
+  ~IsConstantIndex(){};
 
   private:
-  Deps::Usage foldTraverseElement(AST_Expression exp);
-  inline Deps::Usage foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
-  inline Deps::Usage foldTraverseElement(Deps::Usage l, Deps::Usage r, BinOpType bot)
+  bool foldTraverseElement(AST_Expression exp);
+  inline bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
+  inline bool foldTraverseElement(bool l, bool r, BinOpType bot)
   {
-    l.join(r);
-    return l;
+    return l && r;
   }
   bool _in_index_list;
 };
 
 }  // namespace Util
 }  // namespace MicroModelica
-#endif /* GET_INDEX_USAGE_H_ */
+#endif /* IS_CONSTANT_INDEX_H_ */

@@ -32,8 +32,9 @@
 #include "../util/visitors/algebraics.h"
 #include "../util/visitors/autonomous.h"
 #include "../util/visitors/called_functions.h"
-#include "../util/visitors/get_index_usage.h"
+#include "../util/visitors/get_index_variables.h"
 #include "../util/visitors/replace_der.h"
+#include "../util/visitors/revert_index.h"
 #include "helpers.h"
 
 namespace MicroModelica {
@@ -42,37 +43,37 @@ using namespace Deps;
 namespace IR {
 
 Equation::Equation(AST_Expression eq, VarSymbolTable &symbols, EQUATION::Type type, int id, int offset)
-    : _eq(), _lhs(), _rhs(), _range(), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(offset), _lhs_exp()
+    : _eq(), _lhs(), _rhs(), _range(), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(offset), _lhs_exp(), _usage()
 {
   initialize(eq);
 }
 
 Equation::Equation(AST_Expression lhs, AST_Expression rhs, VarSymbolTable &symbols, Option<Range> range, EQUATION::Type type, int id)
-    : _eq(), _lhs(), _rhs(), _range(range), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(0), _lhs_exp()
+    : _eq(), _lhs(), _rhs(), _range(range), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
 {
   initialize(lhs, rhs);
 }
 
 Equation::Equation(AST_Expression eq, VarSymbolTable &symbols, Option<Range> range, EQUATION::Type type, int id, int offset)
-    : _eq(), _lhs(), _rhs(), _range(range), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(offset), _lhs_exp()
+    : _eq(), _lhs(), _rhs(), _range(range), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(offset), _lhs_exp(), _usage()
 {
   initialize(eq);
 }
 
 Equation::Equation(AST_Equation eq, VarSymbolTable &symbols, EQUATION::Type type, int id)
-    : _eq(eq), _lhs(), _rhs(), _range(), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(0), _lhs_exp()
+    : _eq(eq), _lhs(), _rhs(), _range(), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
 {
   initialize(eq);
 }
 
 Equation::Equation(AST_Equation eq, VarSymbolTable &symbols, Range r, EQUATION::Type type, int id)
-    : _eq(eq), _lhs(), _rhs(), _range(r), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(0), _lhs_exp()
+    : _eq(eq), _lhs(), _rhs(), _range(r), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
 {
   initialize(eq);
 }
 
 Equation::Equation(AST_Equation eq, VarSymbolTable &symbols, Option<Range> r, EQUATION::Type type, int id)
-    : _eq(eq), _lhs(), _rhs(), _range(r), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(0), _lhs_exp()
+    : _eq(eq), _lhs(), _rhs(), _range(r), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
 {
   initialize(eq);
 }
@@ -152,6 +153,8 @@ EquationDependencyMatrix Equation::dependencyMatrix() const
   return EquationDependencyMatrix();
 }
 
+// @TODO: Remove this function
+
 string Equation::identifier() const
 {
   stringstream buffer, id;
@@ -205,9 +208,8 @@ string Equation::identifier(EQUATION::Type type)
 
 Option<Variable> Equation::LHSVariable()
 {
-  if (isDerivative() || isAlgebraic() || isZeroCrossing() || isOutput()) {
-    AST_Expression_ComponentReference cr = _lhs.expression()->getAsComponentReference();
-    return _symbols[cr->name()];
+  if (isDerivative() || isAlgebraic() || isZeroCrossing() || isOutput() || isJacobian()) {
+    return _lhs.reference();
   }
   return Option<Variable>();
 }
@@ -228,6 +230,8 @@ bool Equation::hasAlgebraics()
   Algebraics has_algebraics(_symbols);
   return has_algebraics.apply(_rhs.expression());
 }
+
+// @TODO: Initialize and use a pointer in these functions.
 
 string Equation::macro() const
 {
@@ -305,42 +309,12 @@ Dependency::Dependency(Variable var, VariableDependencies deps) : _var(var), _sc
 
 void Dependency::initialize(VariableDependencies deps)
 {
-  EquationTable derivatives = ModelConfig::instance().derivatives();
-  FunctionPrinter fp;
-  stringstream buffer;
-  if (_var.isScalar()) {
-    buffer << fp.beginExpression(identifier(), Option<Range>());
-  }
+  DependencyMapper mapper;
   for (Influences inf : deps) {
-    Option<Equation> ifce = derivatives[inf.ifce.equationId()];
-    if (ifce) {
-      Range range = inf.ifce.range();
-      if (_var.isArray()) {
-        buffer << fp.beginExpression(identifier(), range);
-      }
-      Equation eq = ifce.get();
-      eq.setType(EQUATION::Dependency);
-      buffer << fp.algebraics(inf.algs);
-      buffer << eq << endl;
-      if (_var.isArray()) {
-        static bool PRINT_RETURN = false;
-        buffer << fp.endExpression(range, PRINT_RETURN) << endl;
-      }
-    }
+    mapper.processInf(inf);
   }
-  if (_var.isScalar()) {
-    buffer << TAB << TAB << fp.endExpression(Option<Range>());
-    _scalar << buffer.str();
-  } else {
-    _vector << buffer.str();
-  }
-}
-
-string Dependency::identifier()
-{
-  stringstream buffer;
-  buffer << "_deps_var" << _var;
-  return buffer.str();
+  _scalar << mapper.scalar();
+  _vector << mapper.vector();
 }
 
 Jacobian::Jacobian(Equation eq, VarSymbolTable &symbols) : _eq(eq), _symbols(symbols) {}
@@ -368,6 +342,33 @@ std::ostream &operator<<(std::ostream &out, const Jacobian &j)
 {
   out << j.print();
   return out;
+}
+
+EquationPrinter::EquationPrinter(Equation eq, Util::VarSymbolTable symbols) : _eq(eq), _symbols(symbols), _identifier()
+{
+  setup();
+}
+
+void EquationPrinter::setup()
+{
+  stringstream buffer;
+  if (_eq.hasRange()) {
+    Option<Variable> var = _eq.LHSVariable();
+    if (var) {
+      buffer << *var;
+    }
+    _identifier = buffer.str();
+  } else {
+    buffer << "_eval" << _eq.lhs();
+    _identifier = buffer.str();
+  }
+}
+
+string EquationPrinter::equationId() const
+{
+  stringstream buffer;
+  buffer << "_eq_" << _eq.id();
+  return buffer.str();
 }
 
 string EquationPrinter::lhs(int order) const
@@ -418,20 +419,26 @@ string EquationPrinter::prefix() const
 string JacobianConfig::print() const
 {
   stringstream buffer;
-  string block = "";
+  string tabs = "";
   FunctionPrinter fp;
   Option<Range> range = _eq.range();
-  buffer << fp.beginExpression(_eq.identifier(), range);
-  block += TAB;
+  string arguments;
+  tabs += TAB;
   if (range) {
-    block = range->block();
-  } else {
-    block += TAB;
-  }
-  buffer << block << prefix() << lhs() << " = " << _eq.rhs() << ";";
-  buffer << endl << fp.endExpression(range, false);
+    tabs = range->block();
+    Index lhs = Index(_eq.lhs()).revert();
+    lhs.replace();
+    arguments = lhs.usageExp();
+  } 
+  tabs += TAB;
+  buffer << fp.beginExpression(identifier(), range);
+  buffer << fp.beginDimGuards(equationId(), arguments, range);
+  buffer << tabs << prefix() << lhs() << " = " << _eq.rhs() << ";";
+  buffer << endl << TAB << fp.endDimGuards(range);
+  buffer << TAB << fp.endExpression(range, FUNCTION_PRINTER::Break);
   return buffer.str();
 }
+
 
 string ClassicConfig::print() const
 {
@@ -469,31 +476,16 @@ string OutputConfig::print() const
 }
 
 EquationConfig::EquationConfig(Equation eq, VarSymbolTable symbols)
-    : EquationPrinter(eq, symbols), _eq(eq), _symbols(symbols), _identifier()
-{
-  setup();
-}
-
-void EquationConfig::setup()
+    : EquationPrinter(eq, symbols), _eq(eq), _symbols(symbols)
 {
   initializeDerivatives();
-  stringstream buffer;
-  if (_eq.hasRange()) {
-    // @TODO: Review this, why the initial extra space?
-    buffer << _eq.LHSVariable();
-    _identifier = buffer.str();
-    _identifier.erase(0, 1);
-  } else {
-    buffer << "_eval" << _eq.lhs();
-    _identifier = buffer.str();
-  }
 }
 
 string EquationConfig::macro() const
 {
   stringstream buffer;
   if (_eq.hasRange()) {
-    GetIndexUsage index_usage;
+    GetIndexVariables index_usage;
     Option<Range> range = _eq.range();
     buffer << "#define _apply_usage" << equationId();
     buffer << "(" << range->getDimensionVars() << ") \\" << endl;
@@ -543,13 +535,6 @@ string EquationConfig::generateDerivatives(string tabs, int init) const
   return "";
 }
 
-string EquationConfig::equationId() const
-{
-  stringstream buffer;
-  buffer << "_eq_" << _eq.id();
-  return buffer.str();
-}
-
 string EquationConfig::print() const
 {
   stringstream buffer;
@@ -562,14 +547,14 @@ string EquationConfig::print() const
     tabs = range->block();
     arguments = range->getDimensionVars();
   }
+  tabs += TAB;
   buffer << fp.beginExpression(identifier(), range);
   buffer << fp.beginDimGuards(equationId(), arguments, range);
   buffer << fp.algebraics(_eq.dependencyMatrix(), _eq.id());
-  tabs += TAB;
   buffer << tabs << prefix() << lhs() << " = " << _eq.rhs() << ";" << endl;
   buffer << generateDerivatives(tabs);
   buffer << endl << TAB << fp.endDimGuards(range);
-  buffer << endl << TAB << fp.endExpression(range);
+  buffer << TAB << fp.endExpression(range);
   return buffer.str();
 }
 
@@ -598,14 +583,19 @@ string DependencyConfig::print() const
   static constexpr int SECOND_ORDER = 2;
   FunctionPrinter fp;
   Option<Range> range = _eq.range();
+  string arguments;
   tabs += TAB;
   if (range) {
     tabs = range->block();
-  } else {
-    tabs += TAB;
+    Index revert = _eq.usage().revert();
+    revert.replace();
+    arguments = revert.usageExp();
   }
+  tabs += TAB;
+  buffer << fp.beginDimGuards(equationId(), arguments, range);
   buffer << tabs << prefix() << lhs(FIRST_ORDER) << " = " << _eq.rhs() << ";" << endl;
   buffer << generateDerivatives(tabs, SECOND_ORDER);
+  buffer << TAB << fp.endDimGuards(range);
   return buffer.str();
 }
 

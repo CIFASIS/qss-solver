@@ -38,8 +38,11 @@ class Expression {
   std::string print() const;
   inline AST_Expression expression() const { return _exp; };
   bool isReference() const;
+  std::string usage() const;
   bool isEmpty() const { return _exp == nullptr; };
   bool isValid() const { return _exp != nullptr; };
+  Option<Util::Variable> reference() const;
+
   friend std::ostream& operator<<(std::ostream& out, const Expression& s);
 
   private:

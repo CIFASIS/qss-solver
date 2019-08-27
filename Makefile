@@ -89,6 +89,12 @@ ifneq($(OS), Windows_NT) OS = $(shell uname) endif DEBUG ? = False
                                                $(VISITORDIR) /
                                                revert_index
                                                    .cpp
+                                               $(VISITORDIR) /
+                                               is_constant_index
+                                                   .cpp
+                                               $(VISITORDIR) /
+                                               get_index_variables
+                                                   .cpp
 
                                                DEPSSRC =
                                                    $(DEPSDIR) /

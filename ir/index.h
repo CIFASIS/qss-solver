@@ -29,11 +29,14 @@
 #include "../util/table.h"
 
 namespace MicroModelica {
-
 namespace IR {
 
 namespace RANGE {
 typedef enum { For, If } Type;
+}
+
+namespace INDEX {
+  typedef enum { Iterator, Dimension } Type;
 }
 
 class RangeDefinition {
@@ -104,9 +107,6 @@ class IndexDefinition {
 
 class Index {
   public:
-  /**
-   *
-   */
   Index() : _indexes(), _dim(0), _exp(){};
   Index(IndexDefinition id);
   Index(Expression exp);
@@ -114,11 +114,20 @@ class Index {
   void setMap(IR::Expression exp);
   bool hasMap() const;
   bool operator==(const Index& other) const;
-  void add(IndexDefinition id);
+  bool isConstant() const;
   inline int dimension() { return _dim; };
   inline void setExp(Expression exp) { _exp = exp; };
   std::string print() const;
+  std::string identifier() const;
+  Range range();
+  Deps::Usage usage() const;
+  Index revert() const;
+  void replace();
+  std::string usageExp() const;
   friend std::ostream& operator<<(std::ostream& out, const Index& i);
+
+protected:
+  Util::Variable variable() const;
 
   private:
   map<int, IndexDefinition> _indexes;

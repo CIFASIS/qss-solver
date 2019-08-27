@@ -82,7 +82,6 @@ class Utils {
   bool checkExperimentAnnotations(string* annotation);
   string opString(BinOpType bot);
   string iteratorVar();
-  string dimensionVar(int d);
   string getVarName(string name);
   bool readPackage(string fileName, IR::CompiledPackageTable& pt);
   Option<MicroModelica::IR::CompiledPackage> readPackage(string fileName);

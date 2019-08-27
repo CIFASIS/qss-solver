@@ -44,9 +44,6 @@ class Equation {
   Equation(AST_Equation eq, Util::VarSymbolTable &symbols, EQUATION::Type type, int id);
   Equation(AST_Equation eq, Util::VarSymbolTable &symbols, Range r, EQUATION::Type type, int id);
   Equation(AST_Equation eq, Util::VarSymbolTable &symbols, Option<Range> r, EQUATION::Type type, int id);
-  /**
-   *
-   */
   ~Equation();
   inline bool hasRange() const { return _range.is_initialized(); };
   inline Expression lhs() const { return _lhs; };
@@ -64,6 +61,7 @@ class Equation {
   inline bool isZeroCrossing() const { return _type == EQUATION::ZeroCrossing; }
   inline bool isOutput() const { return _type == EQUATION::Output; }
   inline bool isAlgebraic() const { return _type == EQUATION::Algebraic; }
+  inline bool isJacobian() const { return _type == EQUATION::Jacobian; }
   Option<Util::Variable> LHSVariable();
   friend std::ostream &operator<<(std::ostream &out, const Equation &e);
   bool isValid() const;
@@ -71,6 +69,8 @@ class Equation {
   std::string identifier() const;
   bool isRHSReference() const;
   Deps::EquationDependencyMatrix dependencyMatrix() const;
+  inline void setUsage(Index usage) { _usage = usage; };
+  inline Index usage() const { return _usage; };
   inline void setType(EQUATION::Type type) { _type = type; };
 
   private:
@@ -89,6 +89,7 @@ class Equation {
   int _id;
   int _offset;
   std::string _lhs_exp;
+  Index _usage;
 };
 
 typedef ModelTable<int, Equation> EquationTable;
@@ -114,9 +115,6 @@ class Dependency {
   inline std::string scalar() { return _scalar.str(); };
   inline std::string vector() { return _vector.str(); };
 
-  protected:
-  std::string identifier();
-
   private:
   void initialize(Deps::VariableDependencies deps);
   Util::Variable _var;
@@ -126,16 +124,22 @@ class Dependency {
 
 class EquationPrinter {
   public:
-  EquationPrinter(Equation eq, Util::VarSymbolTable symbols) : _eq(eq), _symbols(symbols){};
+  EquationPrinter(Equation eq, Util::VarSymbolTable symbols);
   ~EquationPrinter() = default;
   virtual std::string print() const { return ""; };
   virtual std::string macro() const { return ""; };
+  std::string identifier() const { return _identifier; };
   std::string prefix() const;
   std::string lhs(int order = 0) const;
+  std::string equationId() const;
+
+protected:
+  void setup();
 
   private:
   Equation _eq;
   Util::VarSymbolTable _symbols;
+  std::string _identifier;
 };
 
 class ClassicConfig : public EquationPrinter {
@@ -173,20 +177,16 @@ class EquationConfig : public EquationPrinter {
   EquationConfig(Equation eq, Util::VarSymbolTable symbols);
   ~EquationConfig() = default;
   std::string print() const override;
-  std::string identifier() const { return _identifier; };
   std::string macro() const override;
 
   protected:
   void initializeDerivatives();
   std::string generateDerivatives(std::string tabs, int init = 1) const;
-  std::string equationId() const;
-  void setup();
-
+ 
   private:
   Equation _eq;
   Util::VarSymbolTable _symbols;
   Expression _derivatives[3];
-  std::string _identifier;
 };
 
 class AlgebraicConfig : public EquationConfig {
