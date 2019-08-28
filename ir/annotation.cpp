@@ -143,12 +143,13 @@ MMO_ModelAnnotation_::MMO_ModelAnnotation_(MMO_ModelData data)
       _symDiff(true), _minStep(1e-14), _lps(1), _derDelta(1e-8),
       _nodeSize(10000), _ZCHyst(1e-12), _order(1), _scheduler("ST_Binary"),
       _storeData("SD_Memory"), _annotations(), _data(data), _DQMin(), _DQRel(),
-      _weight(-1), _sample(), _output(), _BDFPartition(), _BDFPartitionDepth(), _initialTime(0),
-      _finalTime(0), _partitionMethod(ANT_Metis),
-      _partitionMethodString("Metis"), _parallel(false), _dt(0), _polyCoeffs(1),
-      _dtSynch(ANT_DT_Fixed), _dtSynchString("SD_DT_Asynchronous"), _desc(),
-      _patohSettings(), _scotchSettings(), _metisSettings(), _jacobian(0),
-      _generateArch(0), _debugGraph(0), _reorderPartition(0), _imbalance(0.01) {
+      _weight(-1), _sample(), _output(), _BDFPartition(), _BDFPartitionDepth(),
+      _BDFMaxStep(0), _initialTime(0), _finalTime(0),
+      _partitionMethod(ANT_Metis), _partitionMethodString("Metis"),
+      _parallel(false), _dt(0), _polyCoeffs(1), _dtSynch(ANT_DT_Fixed),
+      _dtSynchString("SD_DT_Asynchronous"), _desc(), _patohSettings(),
+      _scotchSettings(), _metisSettings(), _jacobian(0), _generateArch(0),
+      _debugGraph(0), _reorderPartition(0), _imbalance(0.01) {
   _annotations.insert(
       pair<string, MMO_ModelAnnotation_::type>("experiment", EXPERIMENT));
   _annotations.insert(
@@ -188,8 +189,10 @@ MMO_ModelAnnotation_::MMO_ModelAnnotation_(MMO_ModelData data)
       pair<string, MMO_ModelAnnotation_::type>("MMO_Output", OUTPUT));
   _annotations.insert(
       pair<string, MMO_ModelAnnotation_::type>("MMO_BDF_Part", BDF_PARTITION));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_BDF_PDepth", BDF_PARTITION_DEPTH));
+  _annotations.insert(pair<string, MMO_ModelAnnotation_::type>(
+      "MMO_BDF_PDepth", BDF_PARTITION_DEPTH));
+  _annotations.insert(pair<string, MMO_ModelAnnotation_::type>(
+      "MMO_BDF_Max_Step", BDF_MAX_STEP));
   _annotations.insert(
       pair<string, MMO_ModelAnnotation_::type>("MMO_StoreData", STORE_DATA));
   _annotations.insert(pair<string, MMO_ModelAnnotation_::type>(
@@ -507,6 +510,9 @@ void MMO_ModelAnnotation_::_processAnnotation(string annot,
   case BDF_PARTITION_DEPTH:
     _BDFPartitionDepth = av.integer();
     break;
+  case BDF_MAX_STEP:
+    _BDFMaxStep = av.real();
+    break;
   case PARTITION_METHOD:
     _partitionMethod = _getPartitionMethod(av.str());
     _partitionMethodString = av.str();
@@ -630,20 +636,16 @@ bool MMO_ModelAnnotation_::classic() {
          _solver == ANT_CVODE_AM;
 }
 
-bool 
-MMO_ModelAnnotation_::hasJacobian()
-{
-  return _solver == ANT_LIQSS || _solver == ANT_LIQSS2 
-      || _solver == ANT_LIQSS3 || _solver == ANT_LIQSS_BDF || classic();
+bool MMO_ModelAnnotation_::hasJacobian() {
+  return _solver == ANT_LIQSS || _solver == ANT_LIQSS2 ||
+         _solver == ANT_LIQSS3 || _solver == ANT_LIQSS_BDF || classic();
 }
 
-bool 
-MMO_ModelAnnotation_::LIQSS()
-{
-  return _solver == ANT_LIQSS || _solver == ANT_LIQSS2 
-      || _solver == ANT_LIQSS3 || _solver == ANT_LIQSS_BDF;
+bool MMO_ModelAnnotation_::LIQSS() {
+  return _solver == ANT_LIQSS || _solver == ANT_LIQSS2 ||
+         _solver == ANT_LIQSS3 || _solver == ANT_LIQSS_BDF;
 }
-    
+
 void MMO_ModelAnnotation_::setNodeSize(int ns) { _nodeSize = ns; }
 
 int MMO_ModelAnnotation_::nodeSize() { return _nodeSize; }
@@ -672,9 +674,9 @@ list<AST_Expression> MMO_ModelAnnotation_::BDFPartition() {
   return _BDFPartition;
 }
 
-int MMO_ModelAnnotation_::BDFPartitionDepth() {
-  return _BDFPartitionDepth;
-}
+int MMO_ModelAnnotation_::BDFPartitionDepth() { return _BDFPartitionDepth; }
+
+double MMO_ModelAnnotation_::BDFMaxStep() { return _BDFMaxStep; }
 
 list<string> MMO_ModelAnnotation_::patohSettings() { return _patohSettings; }
 
@@ -1006,9 +1008,9 @@ list<AST_Expression> MMO_Annotation_::BDFPartition() {
   return list<AST_Expression>();
 }
 
-int MMO_Annotation_::BDFPartitionDepth() {
-  return 0;
-}
+int MMO_Annotation_::BDFPartitionDepth() { return 0; }
+
+double MMO_Annotation_::BDFMaxStep() { return 0; }
 
 void MMO_Annotation_::setStoreData(string save) { return; }
 

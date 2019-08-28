@@ -335,7 +335,10 @@ void MMO_Files_::settings(MMO_Annotation annotation) {
     buffer << "1;";
   }
   _writer->print(&buffer);
-  buffer << "BDFPartitionDepth=" << _model->annotation()->BDFPartitionDepth() << ";";
+  buffer << "BDFPartitionDepth=" << _model->annotation()->BDFPartitionDepth()
+         << ";";
+  _writer->print(&buffer);
+  buffer << "BDFMaxStep=" << _model->annotation()->BDFMaxStep() << ";";
   _writer->print(&buffer);
   _writer->clearFile();
 }
