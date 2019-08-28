@@ -145,6 +145,7 @@ SET_settings SET_Settings(char *fname)
   p->dtSynch = SD_DT_Adaptive;
   p->BDFPart = 0;
   p->BDFPartitionDepth = 1;
+  p->BDFMaxStep = 0;
   if (config_lookup_float(cf, "minstep", &dres)) {
     if (dres == 0) {
       p->minstep = MIN_STEP;
@@ -210,6 +211,9 @@ SET_settings SET_Settings(char *fname)
     if (ires > 0) {
       p->BDFPartitionDepth = ires;
     }
+  }
+  if (config_lookup_float(cf, "BDFMaxStep", &dres)) {
+    p->BDFMaxStep = dres;
   }
   if (config_lookup_string(cf, "partitionMethod", &sol)) {
     p->pm = _getPartitionMethod(sol);

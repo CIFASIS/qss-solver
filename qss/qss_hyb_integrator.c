@@ -311,6 +311,7 @@ void QSS_HYB_integrate(SIM_simulator simulate)
   int **ZS = qssData->ZS;
   int **HD = qssData->HD;
   int **HZ = qssData->HZ;
+  double BDFMaxStep = qssData->BDFMaxStep;
 #ifdef SYNC_RT
   setInitRealTime();
 #endif
@@ -403,11 +404,16 @@ void QSS_HYB_integrate(SIM_simulator simulate)
           BDFReinit = FALSE;
           if (BDFRestore) {
             flag = CVodeGetDky(cvode_mem, t, 0, ycurrent);
+            CVodeSetMaxStep(cvode_mem, BDFMaxStep);
             CVodeReInit(cvode_mem, t, ycurrent);
             BDFRestore = FALSE;
           } else {
             BDFH = t - BDFIntegrationTime;
-            CVodeSetMaxStep(cvode_mem, BDFH);
+            double max_step = BDFH;
+            if (max_step > BDFMaxStep) {
+              max_step = BDFMaxStep;
+            }
+            CVodeSetMaxStep(cvode_mem, max_step);
             RESTORE_MAX_STEP = TRUE;
           }
         }
@@ -427,7 +433,11 @@ void QSS_HYB_integrate(SIM_simulator simulate)
         flag = CVode(cvode_mem, tout, y, &ct, CV_ONE_STEP);
         while (ct < t) {
           BDFH = t - ct;
-          CVodeSetMaxStep(cvode_mem, BDFH);
+          double max_step = BDFH;
+          if (max_step > BDFMaxStep) {
+            max_step = BDFMaxStep;
+          }
+          CVodeSetMaxStep(cvode_mem, max_step);
           RESTORE_MAX_STEP = TRUE;
           flag = CVode(cvode_mem, tout, y, &ct, CV_ONE_STEP);
         }
@@ -440,7 +450,7 @@ void QSS_HYB_integrate(SIM_simulator simulate)
           ct = t;
         }
         if (RESTORE_MAX_STEP) {
-          CVodeSetMaxStep(cvode_mem, 0.0);
+          CVodeSetMaxStep(cvode_mem, BDFMaxStep);
         }
         for (i = 0; i < nBDFInputs; i++) {
           int qssVar = BDFInputs[i];

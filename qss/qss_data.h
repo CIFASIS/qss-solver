@@ -318,16 +318,17 @@ struct QSS_data_ {
   double *jac;    //!<
   double it;      //!<
   double ft;      //!<
-  int *nSD;       //!<
-  int *nDS;       //!<
-  int *nSZ;       //!<
-  int *nZS;       //!<
-  int *nHD;       //!<
-  int *nHZ;       //!<
-  int *nSH;       //!<
-  int *nDD;       //!<
-  int *nDH;       //!<
-  int *TD;        //!<
+  double BDFMaxStep;
+  int *nSD;  //!<
+  int *nDS;  //!<
+  int *nSZ;  //!<
+  int *nZS;  //!<
+  int *nHD;  //!<
+  int *nHZ;  //!<
+  int *nSH;  //!<
+  int *nDD;  //!<
+  int *nDH;  //!<
+  int *TD;   //!<
   int *BDF;
   int *BDFMap;
   int *BDFOutputs;

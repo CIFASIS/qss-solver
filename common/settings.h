@@ -31,12 +31,13 @@ typedef struct SET_settings_ *SET_settings;
  *
  */
 struct SET_settings_ {
-  double minstep;    //!<
-  double zchyst;     //!<
-  double derdelta;   //!<
-  double it;         //!<
-  double ft;         //!<
-  double dt;         //!<
+  double minstep;   //!<
+  double zchyst;    //!<
+  double derdelta;  //!<
+  double it;        //!<
+  double ft;        //!<
+  double dt;        //!<
+  double BDFMaxStep;
   double *dqmin;     //!<
   double *dqrel;     //!<
   int symdiff;       //!<
