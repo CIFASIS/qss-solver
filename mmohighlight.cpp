@@ -100,6 +100,7 @@ MmoHighlighter::MmoHighlighter(QTextDocument *parent, h_type file) : QSyntaxHigh
                     << "\\bMMO_MetisSettings\\b"
                     << "\\bMMO_BDF_Part\\b"
                     << "\\bMMO_BDF_PDepth\\b"
+                    << "\\bMMO_BDF_Max_Step\\b"
                     << "\\bMMO_StoreData\\b"
                     << "\\bderivative\\b";
 

@@ -357,6 +357,7 @@ void MmomeGui::runDlgClose()
   Editor::instance()->setImbalance(_runDlg->imbalance());
   Editor::instance()->setBDFPart(_runDlg->BDFPart());
   Editor::instance()->setBDFPartitionDepth(_runDlg->BDFPartitionDepth());
+  Editor::instance()->setBDFMaxStep(_runDlg->BDFMaxStep());
   Editor::instance()->setSemiStaticPartitioning(_runDlg->semiStaticPartitioning());
   Editor::instance()->setDescription(_runDlg->description());
   Editor::instance()->writeAnnotations();
@@ -423,6 +424,7 @@ void MmomeGui::on_actionRun_triggered()
   _runDlg->setImbalance(Editor::instance()->imbalance());
   _runDlg->setBDFPart(Editor::instance()->BDFPart());
   _runDlg->setBDFPartitionDepth(Editor::instance()->BDFPartitionDepth());
+  _runDlg->setBDFMaxStep(Editor::instance()->BDFMaxStep());
   _runDlg->setSemiStaticPartitioning(Editor::instance()->semiStaticPartitioning());
   _runDlg->setDtSynch(Editor::instance()->dtSynch());
   _runDlg->setDescription(Editor::instance()->description());

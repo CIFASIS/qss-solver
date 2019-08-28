@@ -60,6 +60,7 @@ ModelEditor::ModelEditor(QWidget *parent, QString name)
       _imbalance(),
       _BDFPart(),
       _BDFPartitionDepth(),
+      _BDFMaxStep(),
       _semiStaticPartitioning(false),
       _hl(NULL)
 {
@@ -91,6 +92,7 @@ ModelEditor::ModelEditor(QWidget *parent, QString name)
   _defaultValues["MMO_DebugGraph"] = "false";
   _defaultValues["MMO_GenerateArch"] = "false";
   _defaultValues["MMO_BDF_PDepth"] = "1";
+  _defaultValues["MMO_BDF_Max_Step"] = "0";
   _model_editor_tab = new QTabWidget(this);
   _model_editor_tab->setTabsClosable(true);
   _models = new QList<ModelInfo>();
@@ -762,6 +764,7 @@ void ModelEditor::writeAnnotations()
   if (!_generateArch.isEmpty()) setAnnotations("MMO_GenerateArch", _generateArch, true);
   if (!_BDFPart.isEmpty()) setAnnotations("MMO_BDF_Part", _BDFPart, true);
   if (!_BDFPartitionDepth.isEmpty()) setAnnotations("MMO_BDF_PDepth", _BDFPartitionDepth, true);
+  if (!_BDFMaxStep.isEmpty()) setAnnotations("MMO_BDF_Max_Step", _BDFMaxStep, true);
   setAnnotations("StartTime", _startTime, true);
   setAnnotations("StopTime", _stopTime, true);
   setAnnotations("Tolerance", _tolerance, true);
