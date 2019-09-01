@@ -36,7 +36,7 @@ typedef enum { For, If } Type;
 }
 
 namespace INDEX {
-  typedef enum { Iterator, Dimension } Type;
+typedef enum { Iterator, Dimension } Type;
 }
 
 class RangeDefinition {
@@ -64,6 +64,7 @@ class Range {
   Range(AST_Equation_For eqf, Util::VarSymbolTable symbols, RANGE::Type type = RANGE::For);
   Range(AST_Statement_For stf, Util::VarSymbolTable symbols, RANGE::Type type = RANGE::For);
   Range(Util::Variable var, RANGE::Type type = RANGE::For);
+
   ~Range(){};
   inline int size() const { return _size; };
   inline RangeDefinitionTable definition() const { return _ranges; };
@@ -126,7 +127,7 @@ class Index {
   std::string usageExp() const;
   friend std::ostream& operator<<(std::ostream& out, const Index& i);
 
-protected:
+  protected:
   Util::Variable variable() const;
 
   private:

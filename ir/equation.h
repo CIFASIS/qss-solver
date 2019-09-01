@@ -38,7 +38,6 @@ typedef enum { ClassicDerivative, QSSDerivative, Algebraic, Dependency, Output, 
 class Equation {
   public:
   Equation(){};
-  Equation(AST_Expression eq, Util::VarSymbolTable &symbols, EQUATION::Type type, int id, int offset);
   Equation(AST_Expression lhs, AST_Expression rhs, Util::VarSymbolTable &symbols, Option<Range> range, EQUATION::Type type, int id);
   Equation(AST_Expression eq, Util::VarSymbolTable &symbols, Option<Range> range, EQUATION::Type type, int id, int offset);
   Equation(AST_Equation eq, Util::VarSymbolTable &symbols, EQUATION::Type type, int id);
@@ -131,9 +130,9 @@ class EquationPrinter {
   std::string identifier() const { return _identifier; };
   std::string prefix() const;
   std::string lhs(int order = 0) const;
-  std::string equationId() const;
+  virtual std::string equationId() const;
 
-protected:
+  protected:
   void setup();
 
   private:
@@ -182,7 +181,7 @@ class EquationConfig : public EquationPrinter {
   protected:
   void initializeDerivatives();
   std::string generateDerivatives(std::string tabs, int init = 1) const;
- 
+
   private:
   Equation _eq;
   Util::VarSymbolTable _symbols;
@@ -205,6 +204,17 @@ class DependencyConfig : public EquationConfig {
   DependencyConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq){};
   ~DependencyConfig() = default;
   std::string print() const override;
+
+  private:
+  Equation _eq;
+  Util::VarSymbolTable _symbols;
+};
+
+class ZeroCrossingConfig : public EquationConfig {
+  public:
+  ZeroCrossingConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq){};
+  ~ZeroCrossingConfig() = default;
+  std::string equationId() const override;
 
   private:
   Equation _eq;

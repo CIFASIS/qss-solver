@@ -17,35 +17,21 @@
 
  ******************************************************************************/
 
-#ifndef EVAL_INIT_EXP_H_
-#define EVAL_INIT_EXP_H_
+#ifndef PROCESS_STATEMENT_H_
+#define PROCESS_STATEMENT_H_
 
-#include "../ast_util.h"
+#include "../ast/ast_types.h"
+#include "../ast/statement.h"
 
 namespace MicroModelica {
 namespace Util {
-/**
- *
- */
-class EvalInitExp : public AST_Expression_Fold<int> {
-  public:
-  /**
-   *
-   * @param vt
-   */
-  EvalInitExp(VarSymbolTable symbols);
-  /**
-   *
-   */
-  ~EvalInitExp(){};
 
-  private:
-  int foldTraverseElement(AST_Expression exp);
-  int foldTraverseElement(int l, int r, BinOpType bot);
-  int foldTraverseElementUMinus(AST_Expression exp);
-  VarSymbolTable _symbols;
-};
+namespace STATEMENT {
+typedef enum { LHS, RHS, LHS_DISCRETES, LHS_STATES } AssignTerm;
+}
+
+AST_Statement processStatement(AST_Statement stm);
+
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif /* EVAL_INIT_EXP_H_ */
+#endif /* PROCESS_STATEMENT_H_ */

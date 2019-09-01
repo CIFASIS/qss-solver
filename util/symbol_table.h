@@ -119,6 +119,8 @@ class Variable {
   };
   inline int offset() const { return _offset; };
   inline bool isModelVar() const { return isState() || isDiscrete() || isAlgebraic() || isParameter() || isEqType(); };
+  std::string print() const;
+  friend std::ostream& operator<<(std::ostream& out, const Variable& v);
 
   private:
   std::string variableExpression(const VarSymbolTable& symbols);

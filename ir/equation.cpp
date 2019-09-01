@@ -42,12 +42,6 @@ using namespace Util;
 using namespace Deps;
 namespace IR {
 
-Equation::Equation(AST_Expression eq, VarSymbolTable &symbols, EQUATION::Type type, int id, int offset)
-    : _eq(), _lhs(), _rhs(), _range(), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(offset), _lhs_exp(), _usage()
-{
-  initialize(eq);
-}
-
 Equation::Equation(AST_Expression lhs, AST_Expression rhs, VarSymbolTable &symbols, Option<Range> range, EQUATION::Type type, int id)
     : _eq(), _lhs(), _rhs(), _range(range), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
 {
@@ -55,7 +49,17 @@ Equation::Equation(AST_Expression lhs, AST_Expression rhs, VarSymbolTable &symbo
 }
 
 Equation::Equation(AST_Expression eq, VarSymbolTable &symbols, Option<Range> range, EQUATION::Type type, int id, int offset)
-    : _eq(), _lhs(), _rhs(), _range(range), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(offset), _lhs_exp(), _usage()
+    : _eq(),
+      _lhs(),
+      _rhs(),
+      _range(range),
+      _autonomous(true),
+      _symbols(symbols),
+      _type(type),
+      _id(id),
+      _offset(offset),
+      _lhs_exp(),
+      _usage()
 {
   initialize(eq);
 }
@@ -91,11 +95,17 @@ void Equation::initialize(AST_Expression exp)
 {
   if (_range) {
     AST_Expression_ComponentReference lhs = newAST_Expression_ComponentReference();
-    AST_Expression idx = newAST_Expression_ComponentReferenceExp(newAST_String("i"));
     AST_ExpressionList l = newAST_ExpressionList();
-    l = AST_ListAppend(l, idx);
+    RangeDefinitionTable ranges = _range->definition();
+    int dim = 0;
+    for (auto range : ranges) {
+      string idx_var = _range->iterator(dim++);
+      AST_Expression idx = newAST_Expression_ComponentReferenceExp(newAST_String(idx_var));
+      l = AST_ListAppend(l, idx);
+    }
     lhs = AST_Expression_ComponentReference_Add(lhs, newAST_String(identifier()), l);
     _lhs = Expression(lhs, _symbols);
+    cout << "GENERATED OUTPUT LHS " << _lhs << endl;
   } else {
     AST_Expression lhs = newAST_Expression_ComponentReferenceExp(newAST_String(identifier()));
     _lhs = Expression(lhs, _symbols);
@@ -261,6 +271,10 @@ string Equation::macro() const
     DependencyConfig printer = DependencyConfig(*this, _symbols);
     return printer.macro();
   }
+  case EQUATION::ZeroCrossing: {
+    ZeroCrossingConfig printer = ZeroCrossingConfig(*this, _symbols);
+    return printer.macro();
+  }
   default: {
     EquationConfig printer = EquationConfig(*this, _symbols);
     return printer.macro();
@@ -295,6 +309,10 @@ string Equation::print() const
   }
   case EQUATION::Dependency: {
     DependencyConfig printer = DependencyConfig(*this, _symbols);
+    return printer.print();
+  }
+  case EQUATION::ZeroCrossing: {
+    ZeroCrossingConfig printer = ZeroCrossingConfig(*this, _symbols);
     return printer.print();
   }
   default: {
@@ -344,10 +362,7 @@ std::ostream &operator<<(std::ostream &out, const Jacobian &j)
   return out;
 }
 
-EquationPrinter::EquationPrinter(Equation eq, Util::VarSymbolTable symbols) : _eq(eq), _symbols(symbols), _identifier()
-{
-  setup();
-}
+EquationPrinter::EquationPrinter(Equation eq, Util::VarSymbolTable symbols) : _eq(eq), _symbols(symbols), _identifier() { setup(); }
 
 void EquationPrinter::setup()
 {
@@ -429,7 +444,7 @@ string JacobianConfig::print() const
     Index lhs = Index(_eq.lhs()).revert();
     lhs.replace();
     arguments = lhs.usageExp();
-  } 
+  }
   tabs += TAB;
   buffer << fp.beginExpression(identifier(), range);
   buffer << fp.beginDimGuards(equationId(), arguments, range);
@@ -438,7 +453,6 @@ string JacobianConfig::print() const
   buffer << TAB << fp.endExpression(range, FUNCTION_PRINTER::Break);
   return buffer.str();
 }
-
 
 string ClassicConfig::print() const
 {
@@ -475,8 +489,7 @@ string OutputConfig::print() const
   return buffer.str();
 }
 
-EquationConfig::EquationConfig(Equation eq, VarSymbolTable symbols)
-    : EquationPrinter(eq, symbols), _eq(eq), _symbols(symbols)
+EquationConfig::EquationConfig(Equation eq, VarSymbolTable symbols) : EquationPrinter(eq, symbols), _eq(eq), _symbols(symbols)
 {
   initializeDerivatives();
 }
@@ -596,6 +609,13 @@ string DependencyConfig::print() const
   buffer << tabs << prefix() << lhs(FIRST_ORDER) << " = " << _eq.rhs() << ";" << endl;
   buffer << generateDerivatives(tabs, SECOND_ORDER);
   buffer << TAB << fp.endDimGuards(range);
+  return buffer.str();
+}
+
+string ZeroCrossingConfig::equationId() const
+{
+  stringstream buffer;
+  buffer << "_event_" << _eq.id();
   return buffer.str();
 }
 

@@ -178,7 +178,8 @@ MDI MDI::ApplyOffset(Offset offset) const
   // TODO: It is mandatory to "Apply" or "Revert" usage before applying this
   // method
   //    ERROR_UNLESS((int)offset.Size()==this->Dimension(),"Dimension error
-  //    applying offset"); //TODO: Review this error
+  //    applying offset");
+  // TODO: Review this error
   if (this->Dimension() == 0 || offset.Size() == 0) {
     // nothing to apply
     return *this;

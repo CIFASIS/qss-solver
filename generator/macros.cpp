@@ -155,11 +155,7 @@ void Macros::initialize()
       Range range = Range(_variable);
       _macros << "#define _eval" << _variable << parameters() << " ";
       _macros << engineIndexArguments() << endl;
-      _macros << "#define _is_var" << _variable << "(idx) ";
-      _macros << "idx >= " << offset << " && ";
-      _macros << "idx < " << offset + _variable.size() << endl;
-      _macros << "#define _get" << _variable << "_idxs(idx) ";
-      _macros << fp.getIndexes("idx", range);
+      _macros << fp.accessMacros(_variable.print(), offset, range);
     }
     if (_is_qss && _variable.isState()) {
       _macros << "#define _eval_dep" << _variable << params << " ";

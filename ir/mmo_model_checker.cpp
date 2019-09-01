@@ -169,6 +169,10 @@ void ModelChecker::visit(AST_Element x)
     AST_TypePrefix tp = c->typePrefix();
     AST_DeclarationList dl = c->nameList();
     foreach (it, dl) {
+      if (Utils::instance().checkCompiledFunctions(current_element(it)->name())) {
+        Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Redefinition of symbol used in variable name: %s.",
+                              current_element(it)->name().c_str());
+      }
       if (Utils::instance().checkBuiltInFunctions(current_element(it)->name())) {
         Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Redefinition of symbol used in variable name: %s.",
                               current_element(it)->name().c_str());

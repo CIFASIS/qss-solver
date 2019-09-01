@@ -32,6 +32,7 @@
 #include "../util/error.h"
 #include "../util/visitors/convert_condition.h"
 #include "../util/visitors/convert_equation.h"
+#include "../util/visitors/convert_output_range.h"
 #include "../util/visitors/convert_statement.h"
 #include "../util/visitors/eval_init_exp.h"
 #include "../util/visitors/variable_lookup.h"
@@ -268,14 +269,14 @@ void Model::insert(VarName n, Variable &vi)
 
 Option<Variable> Model::variable(AST_Expression exp)
 {
-  string varName;
+  string var_name;
   if (exp->expressionType() == EXPCOMPREF) {
     AST_Expression_ComponentReference ecr = exp->getAsComponentReference();
-    varName = *AST_ListFirst(ecr->names());
+    var_name = *AST_ListFirst(ecr->names());
   }
-  Option<Variable> var = _symbols[varName];
+  Option<Variable> var = _symbols[var_name];
   if (!var) {
-    Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", varName.c_str());
+    Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", var_name.c_str());
   }
   return var;
 }
@@ -553,9 +554,11 @@ void Model::setOutputs()
 {
   list<AST_Expression> astOutputs = _annotations.output();
   list<AST_Expression>::iterator it;
+  ConvertOutputRange convert = ConvertOutputRange(_symbols);
   for (it = astOutputs.begin(); it != astOutputs.end(); it++) {
     addVariable(_outputId, 1, EQUATION::Type::Output);
-    Equation eq(*it, _symbols, EQUATION::Output, _outputId, _outputNbr++);
+    AST_Expression converted = convert.apply(*it);
+    Equation eq(converted, _symbols, convert.range(), EQUATION::Output, _outputId, _outputNbr++);
     _outputs.insert(_outputId++, eq);
   }
 }

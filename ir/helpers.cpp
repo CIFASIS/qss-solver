@@ -207,15 +207,15 @@ string FunctionPrinter::endExpression(Option<Range> range, FUNCTION_PRINTER::Ret
 {
   stringstream buffer;
   switch (ret) {
-    case FUNCTION_PRINTER::Return:
-      buffer << "return;" << endl;
-      break;
-    case FUNCTION_PRINTER::Break: {
-      if (!range) {
-        buffer << "break;" << endl;
-      }
-      break;        
+  case FUNCTION_PRINTER::Return:
+    buffer << "return;" << endl;
+    break;
+  case FUNCTION_PRINTER::Break: {
+    if (!range) {
+      buffer << "break;" << endl;
     }
+    break;
+  }
   }
   if (!range) {
     buffer << TAB;
@@ -305,6 +305,19 @@ string FunctionPrinter::getIndexes(string var, Option<Range> range) const
   return buffer.str();
 }
 
+string FunctionPrinter::accessMacros(string token, int offset, Option<Range> range) const
+{
+  stringstream macros;
+  if (range) {
+    macros << "#define _is_var" << token << "(idx) ";
+    macros << "idx >= " << offset << " && ";
+    macros << "idx <= " << offset + range->size() << endl;
+    macros << "#define _get" << token << "_idxs(idx) ";
+    macros << getIndexes("idx", range);
+  }
+  return macros.str();
+}
+
 string FunctionPrinter::macro(string token, Option<Range> range, int id, int offset) const
 {
   stringstream buffer;
@@ -316,10 +329,8 @@ string FunctionPrinter::macro(string token, Option<Range> range, int id, int off
         buffer << "-" << offset;
       }
       buffer << endl;*/
-    string var = Utils::instance().iteratorVar();
-    buffer << "#define _get" << token << "_idxs(idx, " << range->indexes() << ") \\" << endl;
-    buffer << TAB << "int " << var << " = " << token << "(idx); \\" << endl;
-    buffer << getIndexes(Utils::instance().iteratorVar(), range);
+    buffer << "#define _get" << token << "_idxs(idx) \\" << endl;
+    buffer << getIndexes("idx", range);
   } /* else {
      buffer << " " << id - 1;
    }*/
@@ -384,7 +395,7 @@ ModelConfig::ModelConfig() : _model_annotations(), _algebraics(), _dependencies(
 
 bool ModelConfig::generateDerivatives() { return _model_annotations.symDiff() && isQss(); }
 
-DependencyMapper::DependencyMapper() : _mapper() {};
+DependencyMapper::DependencyMapper() : _mapper(){};
 
 void DependencyMapper::processInf(Influences inf)
 {
@@ -418,7 +429,7 @@ string DependencyMapper::generateGuards(DepInfo dep, bool begin) const
   Option<Range> range;
   if (!dep.isScalar()) {
     range = index.range();
-  } 
+  }
   if (begin) {
     buffer << fp.beginExpression(index.identifier(), range);
   } else {
@@ -437,7 +448,7 @@ string DependencyMapper::generate(stringstream& begin, stringstream& code, strin
   code.str("");
   end.str("");
   return buffer.str();
-} 
+}
 
 string DependencyMapper::dependencies(bool scalar) const
 {
@@ -448,14 +459,14 @@ string DependencyMapper::dependencies(bool scalar) const
   for (auto mapper : _mapper) {
     DepInfo dep = mapper.second;
     if (dep.isScalar() == scalar) {
-      if (generate_guards) { 
+      if (generate_guards) {
         begin_exp << generateGuards(dep, BEGIN);
         end_exp << generateGuards(dep, END);
       }
       for (string eq : dep.deps()) {
         buffer << eq;
       }
-      if (scalar) { 
+      if (scalar) {
         code << generate(begin_exp, buffer, end_exp);
       }
       if (!scalar && generate_guards) {
@@ -465,20 +476,20 @@ string DependencyMapper::dependencies(bool scalar) const
   }
   if (!scalar) {
     code << generate(begin_exp, buffer, end_exp);
-  }  
+  }
   return code.str();
 }
 
 string DependencyMapper::scalar() const
 {
   static bool constexpr SCALAR = true;
-  return dependencies(SCALAR); 
+  return dependencies(SCALAR);
 }
 
 string DependencyMapper::vector() const
 {
   static bool constexpr VECTOR = false;
-  return dependencies(VECTOR); 
+  return dependencies(VECTOR);
 }
 
 }  // namespace IR

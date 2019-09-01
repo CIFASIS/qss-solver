@@ -38,7 +38,7 @@ DHGraphBuilder::DHGraphBuilder(EventTable& events, EquationTable& algebraics, Va
 {
 }
 
-void DHGraphBuilder::addStatements(StatementTable stms, DepsGraph& graph, Expression exp, int id)
+void DHGraphBuilder::addStatements(StatementTable stms, DepsGraph& graph, Expression exp, int id, Option<Range> range)
 {
   StatementTable::iterator stm_it;
   for (Statement stm = stms.begin(stm_it); !stms.end(stm_it); stm = stms.next(stm_it)) {
@@ -52,6 +52,9 @@ void DHGraphBuilder::addStatements(StatementTable stms, DepsGraph& graph, Expres
       vp.setType(VERTEX::Statement);
       sv.setExp(e);
       sv.setEvent(exp);
+      if (range) {
+        sv.setRange(*range);
+      }
       //      vp.stm.lhs = *it;
       vp.setId(id);
       //      it++;
@@ -82,9 +85,10 @@ DepsGraph DHGraphBuilder::build()
   EventTable::iterator ev_it;
   for (Event ev = _events.begin(ev_it); !_events.end(ev_it); ev = _events.next(ev_it)) {
     Expression exp = ev.exp();
+    Option<Range> range = ev.range();
     int id = ev.id();
-    addStatements(ev.positiveHandler(), graph, exp, id);
-    addStatements(ev.negativeHandler(), graph, exp, id);
+    addStatements(ev.positiveHandler(), graph, exp, id, range);
+    addStatements(ev.negativeHandler(), graph, exp, id, range);
     VertexProperty icee = VertexProperty();
     icee.setType(VERTEX::Influencee);
     icee.setId(id);

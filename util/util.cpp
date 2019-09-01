@@ -25,12 +25,12 @@
 #include <sstream>
 #include <utility>
 
+#include "../ir/built_in_functions.h"
+#include "../ir/class.h"
 #include "../ir/expression.h"
 #include "../ir/equation.h"
-#include "../ir/class.h"
-#include "../ir/index.h"
-#include "../ir/built_in_functions.h"
 #include "../ir/helpers.h"
+#include "../ir/index.h"
 #include "compile_flags.h"
 #include "error.h"
 #include "symbol_table.h"
@@ -39,7 +39,7 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-Utils::Utils() : _languageEspecification("C"), _varCounter(1), _flags(), _compiledFunctions(), _symbols(), _localSymbols(), _fileName()
+Utils::Utils() : _language_especification("C"), _flags(), _compiled_functions(), _symbols(), _local_symbols(), _file_name()
 {
   _annotations.insert(pair<string, int>("StartTime", 0));
   _annotations.insert(pair<string, int>("StopTime", 1));
@@ -86,7 +86,7 @@ string Utils::trimString(string str)
   return ret;
 }
 
-string Utils::languageEspecification() { return _languageEspecification; }
+string Utils::languageEspecification() { return _language_especification; }
 
 void Utils::setCompileFlags(CompileFlags flags) { _flags = flags; }
 
@@ -116,10 +116,10 @@ string Utils::getVarName(string name)
   return ret;
 }
 
-string Utils::iteratorVar()
+string Utils::iteratorVar(int dim)
 {
   stringstream buffer;
-  buffer << "_it" << _varCounter++;
+  buffer << "_it" << dim + 1;
   return buffer.str();
 }
 
@@ -136,7 +136,7 @@ SymbolTable Utils::getValue(fstream *package, string token)
   return ret;
 }
 
-Option<MicroModelica::IR::CompiledPackage> Utils::readPackage(string fileName)
+Option<CompiledPackage> Utils::readPackage(string fileName)
 {
   fstream package;
   string pname = packageName(fileName);
@@ -145,7 +145,7 @@ Option<MicroModelica::IR::CompiledPackage> Utils::readPackage(string fileName)
   package.open(name.c_str());
   if (package.good()) {
     string line;
-    IR::CompiledFunctionTable cft;
+    CompiledFunctionTable cft;
     ImportTable objects;
     CompiledPackage cp(fileName);
     string fname;
@@ -168,7 +168,7 @@ Option<MicroModelica::IR::CompiledPackage> Utils::readPackage(string fileName)
       } else if (!line.compare("LIBRARIES")) {
         libraries = getValue(&package, "ENDLIBRARIES");
       } else if (!line.compare("ENDDEFINITION")) {
-        IR::CompiledFunction fi(fname, includeDir, libraryDir, libraries, prefix);
+        CompiledFunction fi(fname, includeDir, libraryDir, libraries, prefix);
         cft.insert(fname, fi);
       }
     }
@@ -272,7 +272,7 @@ string Utils::packageName(string name)
 string Utils::environmentVariable(string ev)
 {
   char *li = getenv(ev.c_str());
-  if (li != NULL) {
+  if (li != nullptr) {
     return li;
   }
   return "";
@@ -280,7 +280,7 @@ string Utils::environmentVariable(string ev)
 
 string Utils::getFilePath(string file)
 {
-  _fileName = file;
+  _file_name = file;
   string path = file;
   size_t found = path.rfind("/");
   if (found != std::string::npos) {
@@ -300,16 +300,18 @@ string Utils::getFileName(string file)
   return fn;
 }
 
-CompiledFunctionTable Utils::compiledFunctions() { return _compiledFunctions; }
+CompiledFunctionTable Utils::compiledFunctions() { return _compiled_functions; }
 
-void Utils::addCompiledFunction(CompiledFunction f) { _compiledFunctions.insert(f.name(), f); }
+void Utils::addCompiledFunction(CompiledFunction f) { _compiled_functions.insert(f.name(), f); }
 
-void Utils::addCompiledFunctions(CompiledFunctionTable fs) { _compiledFunctions.merge(fs); }
+void Utils::addCompiledFunctions(CompiledFunctionTable fs) { _compiled_functions.merge(fs); }
 
-bool Utils::checkBuiltInFunctions(string name)
+bool Utils::checkCompiledFunctions(string name)
 {
-  Option<CompiledFunction> cf = _compiledFunctions[name];
+  Option<CompiledFunction> cf = _compiled_functions[name];
   return cf.is_initialized();
 }
+
+bool Utils::checkBuiltInFunctions(string name) { return BuiltInFunction::instance().isValid(name); }
 }  // namespace Util
 }  // namespace MicroModelica

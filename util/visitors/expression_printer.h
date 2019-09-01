@@ -37,7 +37,7 @@ class ExpressionPrinter : public AST_Expression_Visitor<std::string> {
   std::string foldTraverseElement(std::string l, std::string r, BinOpType bot);
   std::string foldTraverseElementUMinus(AST_Expression exp);
   VarSymbolTable _symbols;
-  MicroModelica::IR::Expression _exp;
+  IR::Expression _exp;
   std::string _code;
   bool _is_qss;
   int _order;

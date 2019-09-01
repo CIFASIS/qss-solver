@@ -17,35 +17,38 @@
 
  ******************************************************************************/
 
-#ifndef EVAL_INIT_EXP_H_
-#define EVAL_INIT_EXP_H_
+#ifndef CONVERT_OUTPUT_RANGE_H_
+#define CONVERT_OUTPUT_RANGE_H_
 
+#include "../../ast/ast_builder.h"
+#include "../../deps/graph/graph_helpers.h"
+#include "../../ir/index.h"
 #include "../ast_util.h"
 
 namespace MicroModelica {
 namespace Util {
-/**
- *
- */
-class EvalInitExp : public AST_Expression_Fold<int> {
+class ConvertOutputRange : public AST_Expression_Visitor<AST_Expression> {
   public:
-  /**
-   *
-   * @param vt
-   */
-  EvalInitExp(VarSymbolTable symbols);
-  /**
-   *
-   */
-  ~EvalInitExp(){};
+  ConvertOutputRange(VarSymbolTable& symbols) : _symbols(symbols), _range(), _intervals(), _dim(0), _var(){};
+  ~ConvertOutputRange() = default;
+  Option<IR::Range> range();
 
   private:
-  int foldTraverseElement(AST_Expression exp);
-  int foldTraverseElement(int l, int r, BinOpType bot);
-  int foldTraverseElementUMinus(AST_Expression exp);
-  VarSymbolTable _symbols;
+  AST_Expression foldTraverseElement(AST_Expression exp);
+  inline AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
+  {
+    return newAST_Expression_BinOp(l, r, bot);
+  }
+  inline AST_Expression foldTraverseElementUMinus(AST_Expression exp) { return exp; };
+
+  VarSymbolTable& _symbols;
+  IR::Range _range;
+  Deps::IntervalList _intervals;
+  int _dim;
+  std::string _var;
 };
+
 }  // namespace Util
 }  // namespace MicroModelica
 
-#endif /* EVAL_INIT_EXP_H_ */
+#endif /* CONVERT_OUTPUT_RANGE_H_ */

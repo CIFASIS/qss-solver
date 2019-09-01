@@ -21,6 +21,7 @@
 #include "../ast/ast_builder.h"
 #include "../ast/statement.h"
 #include "../util/util.h"
+#include "../util/process_statement.h"
 #include "../util/visitors/called_functions.h"
 #include "statement.h"
 
@@ -29,13 +30,13 @@ using namespace Util;
 namespace IR {
 
 Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, Option<Range> range, bool initial, const string& block)
-    : _stm(stm), _range(range), _symbols(symbols), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs()
+    : _stm(stm), _range(range), _symbols(symbols), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states()
 {
   initialize();
 }
 
 Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, bool initial, const string& block)
-    : _stm(stm), _range(), _symbols(symbols), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs()
+    : _stm(stm), _range(), _symbols(symbols), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states()
 {
   initialize();
 }
@@ -43,10 +44,13 @@ Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, bool init
 void Statement::initialize()
 {
   StatementCalledFunctions cf;
+  Utils::instance().setSymbols(_symbols);
+  _stm = processStatement(_stm);
   _calledFunctions = cf.apply(_stm);
   _lhs_assignments = generateExps(STATEMENT::LHS);
-  _lhs_assignments = generateExps(STATEMENT::RHS);
-  _lhs = generateExps(STATEMENT::LHS_EXPS);
+  _rhs_assignments = generateExps(STATEMENT::RHS);
+  _lhs_discretes = generateExps(STATEMENT::LHS_DISCRETES);
+  _lhs_states = generateExps(STATEMENT::LHS_STATES);
 }
 
 ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
@@ -59,7 +63,7 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
     AST_StatementListIterator stlit;
     if (asg == STATEMENT::RHS) {
       asgs.push_back(Expression(sti->condition(), _symbols));
-    } else if (asg == STATEMENT::LHS_EXPS) {
+    } else if (asg == STATEMENT::LHS_DISCRETES || asg == STATEMENT::LHS_STATES) {
       asgs.push_back(emptyRef());
     }
     foreach (stlit, stl) {
@@ -71,7 +75,7 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
     foreach (stelselit, stelsel) {
       if (asg == STATEMENT::RHS) {
         asgs.push_back(Expression(current_element(stelselit)->condition(), _symbols));
-      } else if (asg == STATEMENT::LHS_EXPS) {
+      } else if (asg == STATEMENT::LHS_DISCRETES || asg == STATEMENT::LHS_STATES) {
         asgs.push_back(emptyRef());
       }
       stl = current_element(stelselit)->statements();
@@ -90,7 +94,7 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
     break;
   }
   case STASSING: {
-    if (asg == STATEMENT::LHS || asg == STATEMENT::LHS_EXPS) {
+    if (asg == STATEMENT::LHS || asg == STATEMENT::LHS_DISCRETES || asg == STATEMENT::LHS_STATES) {
       asgs.push_back(Expression(_stm->getAsAssign()->lhs(), _symbols));
     } else {
       asgs.push_back(Expression(_stm->getAsAssign()->exp(), _symbols));
@@ -188,7 +192,7 @@ Expression Statement::emptyRef()
 
 ExpressionList Statement::assignments(STATEMENT::AssignTerm asg) const
 {
-  assert(asg != STATEMENT::LHS_EXPS);
+  assert(asg != STATEMENT::LHS_DISCRETES);
   switch (asg) {
   case STATEMENT::LHS:
     return _lhs_assignments;

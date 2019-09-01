@@ -86,6 +86,10 @@ class Event {
   Expression exp();
   bool isValid() const { return _zeroCrossing.isValid(); };
   std::string config() const;
+  inline Option<Range> range() const { return _range; };
+
+  protected:
+  inline std::string eventId() const;
 
   private:
   AST_Expression getExpression(AST_Expression zc);

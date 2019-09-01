@@ -26,191 +26,40 @@
 #include "../util/ast_util.h"
 
 /* Constructors */
-/**
- *
- * @return
- */
 AST_ArgumentList newAST_ArgumentList();
-/**
- *
- * @param
- * @param
- * @return
- */
+
 AST_Argument newAST_Argument_Modification(AST_String, AST_Modification);
-/**
- *
- * @param
- * @param
- * @param
- * @return
- */
 AST_Argument newAST_Redeclaration(AST_Boolean, AST_Boolean, AST_Argument);
-/**
- *
- * @param
- * @param
- * @param
- * @return
- */
 AST_Argument newAST_ShortClass(AST_ClassPrefix, AST_String, AST_ShortClassExp);
-/**
- *
- * @param
- * @param
- * @param
- * @param
- * @return
- */
+
 AST_ShortClassExp newAST_ShortClassExp(AST_TypePrefix, AST_String, AST_ExpressionList, AST_ArgumentList);
-/**
- *
- * @param
- * @return
- */
 AST_ShortClassExp newAST_ShortClassExp_Enum(AST_StringList);
-/**
- *
- * @param
- * @param
- * @param
- * @return
- */
+
 AST_Argument AST_ArgumentSet(AST_Boolean, AST_Boolean, AST_Argument);
-/**
- *
- * @param
- * @param
- * @return
- */
 AST_Argument newAST_ElementModification(AST_String, AST_Modification);
-/**
- *
- * @param
- * @return
- */
 AST_Argument AST_ArgumentSetReplaceable(AST_Argument);
-/**
- *
- * @param
- * @param
- * @return
- */
+
 AST_Comment newAST_Comment(AST_String, AST_ArgumentList);
 
 /* Strings */
-/**
- *
- * @param
- * @return
- */
 AST_String newAST_String(AST_String);
-/**
- *
- * @return
- */
 AST_String newAST_StringNull();
-/**
- *
- * @param s
- * @return
- */
 AST_String newAST_String(string s);
-/**
- *
- * @param s
- * @return
- */
 AST_String newAST_String(char* s);
-/**
- *
- * @param s
- * @return
- */
 AST_String newAST_String(const char* s);
-/**
- *
- * @param
- * @return
- */
 AST_String newAST_String(AST_String);
-/**
- *
- * @param
- * @return
- */
 AST_String newAST_DotString(AST_String);
-/**
- *
- * @param
- * @param
- * @return
- */
 AST_String AST_StringDotAppend(AST_String, AST_String);
-/**
- *
- * @return
- */
 AST_StringList newAST_StringList();
-/**
- *
- * @param
- * @return
- */
 AST_String copyAST_String(AST_String);
-/**
- *
- * @param
- * @param
- * @return
- */
 #define toStr(it) (*it)
 
 /* Classes */
-/**
- *
- * @param
- * @param
- * @return
- */
 AST_Class newAST_Class(AST_String, AST_Composition);
-/**
- *
- * @param
- * @return
- */
 AST_Class newAST_Class(AST_String);
-/**
- *
- * @param
- * @param
- * @return
- */
 AST_Class newAST_ClassEnumeration(AST_String, AST_StringList);
-/**
- *
- * @param
- * @param
- * @param
- * @return
- */
 AST_Class newAST_ClassDerivation(AST_String, AST_String, AST_StringList);
-/**
- *
- * @param
- * @param
- * @return
- */
 AST_Class newAST_ClassExtends(AST_String, AST_Composition);
-/**
- *
- * @param
- * @param
- * @param
- * @param
- * @param
- * @return
- */
 AST_Class newAST_ClassModification(AST_String, AST_TypePrefix, AST_String, AST_ExpressionList, AST_ArgumentList);
 AST_ClassList newAST_ClassList();
 AST_Class newAST_Class(AST_String s);
@@ -332,43 +181,13 @@ AST_Statement newAST_Statement_If(AST_Expression, AST_StatementList, AST_Stateme
 AST_Statement newAST_Statement_Assign(AST_Expression_ComponentReference, AST_Expression);
 AST_Statement newAST_Statement_OutputAssign(AST_ExpressionList, AST_Expression_ComponentReference, AST_ExpressionList);
 AST_StatementList newAST_StatementList();
-/**
- *
- * @param
- * @param
- * @return
- */
 AST_Statement_Else newAST_Statement_Else(AST_Expression, AST_StatementList);
-/**
- *
- * @return
- */
 AST_Statement_ElseList newAST_Statement_ElseList();
 
-/**
- *
- * @param
- * @param
- * @return
- */
 AST_StoredDefinition newAST_StoredDefinition(AST_ClassList, AST_String);
-/**
- *
- * @return
- */
+
 AST_TypePrefix newAST_TypePrefix();
-/**
- *
- * @param
- * @return
- */
 AST_TypePrefix newAST_TypePrefix(AST_TypePrefix);
-/**
- *
- * @param
- * @param
- * @return
- */
 AST_TypePrefix AST_TypePrefixAdd(AST_TypePrefix, AST_TypePrefix);
 
 #endif /* AST_BUILDER_H_ */

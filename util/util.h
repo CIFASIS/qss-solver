@@ -27,9 +27,9 @@
 
 #include "../ast/ast_types.h"
 #include "../deps/model_dependencies.h"
+#include "compile_flags.h"
 #include "util_types.h"
 #include "symbol_table.h"
-#include "compile_flags.h"
 #include "table.h"
 
 namespace MicroModelica {
@@ -43,9 +43,9 @@ typedef ModelTable<int, Equation> EquationTable;
 }  // namespace IR
 namespace Util {
 
-typedef ModelTable<string, string> ImportTable;
+typedef ModelTable<std::string, std::string> ImportTable;
 
-typedef ModelTable<string, string> SymbolTable;
+typedef ModelTable<std::string, std::string> SymbolTable;
 
 /**
  *
@@ -76,48 +76,49 @@ class Utils {
   }
 
   ~Utils();
-  string trimString(string str);
-  string languageEspecification();
-  bool checkTypeString(string t);
-  bool checkExperimentAnnotations(string* annotation);
-  string opString(BinOpType bot);
-  string iteratorVar();
-  string getVarName(string name);
-  bool readPackage(string fileName, IR::CompiledPackageTable& pt);
-  Option<MicroModelica::IR::CompiledPackage> readPackage(string fileName);
-  bool searchCompiledPackage(string pname, CompileFlags flags);
-  string packagePath(string pname, CompileFlags flags, string ext = ".mo");
+  std::string trimString(std::string str);
+  std::string languageEspecification();
+  bool checkTypeString(std::string t);
+  bool checkExperimentAnnotations(std::string* annotation);
+  std::string opString(BinOpType bot);
+  std::string iteratorVar(int dim);
+  std::string getVarName(std::string name);
+  bool readPackage(std::string fileName, IR::CompiledPackageTable& pt);
+  Option<IR::CompiledPackage> readPackage(std::string file_name);
+  bool searchCompiledPackage(std::string pname, CompileFlags flags);
+  std::string packagePath(std::string pname, CompileFlags flags, std::string ext = ".mo");
   void setCompileFlags(CompileFlags flags);
-  string packageName(string name);
-  string environmentVariable(string ev);
-  string getFilePath(string file);
-  string getFileName(string file);
+  std::string packageName(std::string name);
+  std::string environmentVariable(std::string ev);
+  std::string getFilePath(std::string file);
+  std::string getFileName(std::string file);
   bool checkGKLinkFunctions(std::string name) { return false; };
   IR::CompiledFunctionTable compiledFunctions();
   void addCompiledFunction(IR::CompiledFunction f);
   void addCompiledFunctions(IR::CompiledFunctionTable fs);
+  bool checkCompiledFunctions(std::string name);
   bool checkBuiltInFunctions(std::string name);
   inline VarSymbolTable& symbols() { return _symbols; };
-  inline SymbolTable localSymbols() { return _localSymbols; };
-  inline void addLocalSymbol(std::string symbol) { _localSymbols.insert(symbol, symbol); };
+  inline SymbolTable localSymbols() { return _local_symbols; };
+  inline void addLocalSymbol(std::string symbol) { _local_symbols.insert(symbol, symbol); };
   inline void setSymbols(const VarSymbolTable& symbols) { _symbols = symbols; };
-  inline void clearLocalSymbols() { _localSymbols.clear(); };
-  inline std::string fileName() { return _fileName; };
+  inline void clearLocalSymbols() { _local_symbols.clear(); };
+  inline std::string fileName() { return _file_name; };
 
   private:
   Utils();
-  bool checkCodeFiles(string name, string ext);
-  SymbolTable getValue(fstream* package, string token);
-  string packagePath(string name);
-  string _languageEspecification;
-  int _varCounter;
+  bool checkCodeFiles(std::string name, std::string ext);
+  SymbolTable getValue(fstream* package, std::string token);
+  std::string packagePath(std::string name);
+
+  std::string _language_especification;
   CompileFlags _flags;
-  map<string, int> _annotations;
-  string _binop[BINOPS];
-  IR::CompiledFunctionTable _compiledFunctions;
+  map<std::string, int> _annotations;
+  std::string _binop[BINOPS];
+  IR::CompiledFunctionTable _compiled_functions;
   VarSymbolTable _symbols;
-  SymbolTable _localSymbols;
-  std::string _fileName;
+  SymbolTable _local_symbols;
+  std::string _file_name;
 };
 
 }  // namespace Util

@@ -32,7 +32,7 @@ typedef ModelTable<std::string, std::string> SymbolTable;
 namespace IR {
 
 namespace STATEMENT {
-typedef enum { LHS, RHS, LHS_EXPS } AssignTerm;
+typedef enum { LHS, RHS, LHS_DISCRETES, LHS_STATES } AssignTerm;
 }
 
 /**
@@ -50,7 +50,7 @@ class Statement {
   /**
    *
    */
-  Statement(){};
+  Statement() : _stm(nullptr), _range(), _symbols(), _block(), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states(){};
   /**
    *
    */
@@ -66,7 +66,8 @@ class Statement {
    * @return     Expression list used by the graph builders.\see {dh_graph_builder.cpp}
    */
   ExpressionList assignments(STATEMENT::AssignTerm asg) const;
-  ExpressionList lhsDiscretes() const { return _lhs; };
+  ExpressionList lhsDiscretes() const { return _lhs_discretes; };
+  ExpressionList lhsStates() const { return _lhs_states; };
   bool isAssignment() const;
   inline Option<Range> range() { return _range; };
 
@@ -83,7 +84,8 @@ class Statement {
   std::string _block;
   ExpressionList _lhs_assignments;
   ExpressionList _rhs_assignments;
-  ExpressionList _lhs;
+  ExpressionList _lhs_discretes;
+  ExpressionList _lhs_states;
 };
 
 typedef ModelTable<int, Statement> StatementTable;

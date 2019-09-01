@@ -36,7 +36,7 @@ class RevertIndex : public AST_Expression_Visitor<AST_Expression> {
   ~RevertIndex(){};
 
   private:
-  inline AST_Expression foldTraverseElement(AST_Expression exp);
+  AST_Expression foldTraverseElement(AST_Expression exp);
   inline AST_Expression foldTraverseElementUMinus(AST_Expression exp) { return exp->getAsUMinus()->exp(); }
   AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
 };

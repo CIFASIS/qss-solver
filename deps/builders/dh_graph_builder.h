@@ -20,6 +20,7 @@
 #define DH_GRAPH_BUILDER_H
 
 #include "../../ir/class.h"
+#include "../../ir/index.h"
 #include "../../util/symbol_table.h"
 #include "../graph/graph.h"
 
@@ -38,7 +39,7 @@ class DHGraphBuilder {
   DepsGraph build();
 
   protected:
-  void addStatements(IR::StatementTable stms, DepsGraph& graph, IR::Expression exp, int id);
+  void addStatements(IR::StatementTable stms, DepsGraph& graph, IR::Expression exp, int id, Option<IR::Range> range);
 
   private:
   list<EqVertex> _statementDescriptors;

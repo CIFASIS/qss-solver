@@ -25,7 +25,7 @@
 namespace MicroModelica {
 namespace Util {
 
-EvalInitExp::EvalInitExp(VarSymbolTable vt) : _vt(vt) {}
+EvalInitExp::EvalInitExp(VarSymbolTable symbols) : _symbols(symbols) {}
 
 int EvalInitExp::foldTraverseElement(AST_Expression exp)
 {
@@ -33,17 +33,17 @@ int EvalInitExp::foldTraverseElement(AST_Expression exp)
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-    Option<Variable> vi = _vt[cr->name()];
-    if (!vi) {
+    Option<Variable> var = _symbols[cr->name()];
+    if (!var) {
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", cr->name().c_str());
       return ret;
     }
-    if (!vi->isConstant()) {
+    if (!var->isConstant()) {
       Error::instance().add(exp->lineNum(), EM_IR | EM_INIT_EXP, ER_Error, "Only constants allowed inside initial expressions. %s",
                             cr->name().c_str());
       return ret;
     }
-    return vi->value();
+    return var->value();
   }
   case EXPBOOLEAN: {
     AST_Expression_Boolean eb = exp->getAsBoolean();
@@ -103,7 +103,7 @@ int EvalInitExp::foldTraverseElement(int l, int r, BinOpType bot)
     if (r != 0) {
       return l / r;
     } else {
-      Error::instance().add(0, EM_IR | EM_INIT_EXP, ER_Warning, "Initial expression zero division, returning zero as default value.");
+      Error::instance().add(0, EM_IR | EM_INIT_EXP, ER_Warning, "Initial expression zero divarsion, returning zero as default value.");
     }
     break;
   case BINOPMULT:

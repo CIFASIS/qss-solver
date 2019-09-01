@@ -88,25 +88,36 @@ AST_Expression Event::getExpression(AST_Expression exp)
   return exp;
 }
 
+string Event::eventId() const
+{
+  stringstream buffer;
+  buffer << "_event_" << _id;
+  return buffer.str();
+}
+
 string Event::handler(EVENT::Type type) const
 {
   StatementTable stms = (type == EVENT::Positive ? _positiveHandler : _negativeHandler);
   if (stms.empty()) {
     return "";
   };
-  stringstream buffer, id;
-  id << "_event_" << _id;
+  stringstream buffer;
   string block = "";
   FunctionPrinter fp;
-  buffer << fp.beginExpression(id.str(), _range);
+  string arguments;
   block += TAB;
-  if (!_range) {
-    block += TAB;
+  if (_range) {
+    block = _range->block();
+    arguments = _range->getDimensionVars();
   }
+  block += TAB;
+  buffer << fp.beginExpression(eventId(), _range);
+  buffer << fp.beginDimGuards(eventId(), arguments, _range);
   StatementTable::iterator it;
   for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
     buffer << block << stm << endl;
   }
+  buffer << block << fp.endDimGuards(_range);
   buffer << block << fp.endExpression(_range);
   return buffer.str();
 }
@@ -114,9 +125,10 @@ string Event::handler(EVENT::Type type) const
 string Event::macro() const
 {
   stringstream buffer;
-  buffer << "_event_" << _id;
   FunctionPrinter fp;
-  return fp.macro(buffer.str(), _range, _id, _offset);
+  buffer << fp.accessMacros(eventId(), _offset, _range);
+  buffer << _zeroCrossing.macro();
+  return buffer.str();
 }
 
 Expression Event::exp()

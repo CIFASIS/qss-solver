@@ -87,6 +87,7 @@ class BuiltInFunction {
   ~BuiltInFunction(){};
   inline CompiledFunctionTable functions() { return _functions; };
   inline Option<BuiltInFunctionPrinter> reductionFunctions(string name) { return _reduction[name]; };
+  inline bool isValid(std::string func) { return _functions[func].is_initialized(); };
 
   private:
   BuiltInFunction();

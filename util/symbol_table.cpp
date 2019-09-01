@@ -190,16 +190,23 @@ unsigned int Variable::rowSize(unsigned int dim) const
   return total;
 }
 
-ostream &operator<<(ostream &ret, const Variable &e)
+string Variable::print() const
 {
-  if (e.isForType() || e.isInput() || e.isOutput() || e.isEqType()) {
-    ret << e._name;
-  } else if (e.isConstant()) {
-    ret << e._value;
+  stringstream buffer;
+  if (isForType() || isInput() || isOutput() || isEqType()) {
+    buffer << _name;
+  } else if (isConstant()) {
+    buffer << _value;
   } else {
-    ret << "_" << e._name;
+    buffer << "_" << _name;
   }
-  return ret;
+  return buffer.str();
+}
+
+ostream &operator<<(ostream &out, const Variable &v)
+{
+  out << v.print();
+  return out;
 }
 
 string Variable::declaration(string prefix)
@@ -226,7 +233,7 @@ string Variable::initialization(const VarSymbolTable &symbols)
   stringstream buffer;
   string index;
   if (hasEachModifier()) {
-    index = Utils::instance().iteratorVar();
+    index = Utils::instance().iteratorVar(0);
     buffer << "int " << index << ";" << endl;
   }
   if (hasAssignment() || hasStartModifier() || hasEachModifier()) {

@@ -12,25 +12,25 @@ FLEX 		:= flex++
 endif
 
 # The Directories, Source, Includes, Objects, Binary 
-SRCDIR      := .
-ASTDIR 		  := $(SRCDIR)/ast
-GENERATORDIR:= $(SRCDIR)/generator
-IRDIR 		  := $(SRCDIR)/ir
-PARSERDIR 	:= $(SRCDIR)/parser
-UTILDIR 	  := $(SRCDIR)/util
-VISITORDIR 	:= $(UTILDIR)/visitors
-3RDPARTYDIR := $(SRCDIR)/3rd-party
-DEPSDIR     := $(SRCDIR)/deps
+SRCDIR         := .
+ASTDIR 		   := $(SRCDIR)/ast
+GENERATORDIR   := $(SRCDIR)/generator
+IRDIR 		   := $(SRCDIR)/ir
+PARSERDIR 	   := $(SRCDIR)/parser
+UTILDIR 	   := $(SRCDIR)/util
+VISITORDIR 	   := $(UTILDIR)/visitors
+3RDPARTYDIR    := $(SRCDIR)/3rd-party
+DEPSDIR        := $(SRCDIR)/deps
 DEPSBUILDERDIR := $(DEPSDIR)/builders
-DEPSGRAPHDIR := $(DEPSDIR)/graph
-USRDIR 		  := $(SRCDIR)/usr
-BUILDDIR    := $(USRDIR)/obj
-LIBDIR      := $(USRDIR)/lib
-BINDIR      := $(USRDIR)/bin
-INCDIR      := $(USRDIR)/include
-SRCEXT      := cpp
-DEPEXT      := d
-OBJEXT      := o
+DEPSGRAPHDIR   := $(DEPSDIR)/graph
+USRDIR 		   := $(SRCDIR)/usr
+BUILDDIR       := $(USRDIR)/obj
+LIBDIR         := $(USRDIR)/lib
+BINDIR         := $(USRDIR)/bin
+INCDIR         := $(USRDIR)/include
+SRCEXT         := cpp
+DEPEXT         := d
+OBJEXT         := o
 
 # The Target Binary Program
 TARGET      := $(BINDIR)/mmoc
@@ -52,24 +52,24 @@ RMS 		:= rm -rf
 
 # Source files.
 ASTSRC = $(ASTDIR)/ast_builder.cpp \
-				 $(ASTDIR)/ast_node.cpp \
-				 $(ASTDIR)/class.cpp \
-				 $(ASTDIR)/composition.cpp \
-				 $(ASTDIR)/element.cpp \
-				 $(ASTDIR)/imports.cpp \
-				 $(ASTDIR)/equation.cpp \
-				 $(ASTDIR)/expression.cpp \
-				 $(ASTDIR)/modification.cpp \
-				 $(ASTDIR)/statement.cpp \
-				 $(ASTDIR)/stored_definition.cpp
+		 $(ASTDIR)/ast_node.cpp \
+	     $(ASTDIR)/class.cpp \
+		 $(ASTDIR)/composition.cpp \
+		 $(ASTDIR)/element.cpp \
+		 $(ASTDIR)/imports.cpp \
+		 $(ASTDIR)/equation.cpp \
+		 $(ASTDIR)/expression.cpp \
+		 $(ASTDIR)/modification.cpp \
+		 $(ASTDIR)/statement.cpp \
+		 $(ASTDIR)/stored_definition.cpp
 
 GENERATORSRC = $(GENERATORDIR)/files.cpp  \
-							 $(GENERATORDIR)/model_instance.cpp  \
-							 $(GENERATORDIR)/writer.cpp  \
-							 $(GENERATORDIR)/function.cpp  \
-							 $(GENERATORDIR)/package.cpp  \
-							 $(GENERATORDIR)/macros.cpp  \
-							 $(GENERATORDIR)/generator.cpp 
+			   $(GENERATORDIR)/model_instance.cpp  \
+			   $(GENERATORDIR)/writer.cpp  \
+			   $(GENERATORDIR)/function.cpp  \
+			   $(GENERATORDIR)/package.cpp  \
+			   $(GENERATORDIR)/macros.cpp  \
+			   $(GENERATORDIR)/generator.cpp 
 
 IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
 				$(IRDIR)/expression.cpp  \
@@ -86,43 +86,45 @@ IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
 				$(IRDIR)/mmo_settings.cpp 
 
 PARSERSRC = $(PARSERDIR)/mocc_parser.cpp \
-						$(PARSERDIR)/mocc_scanner.cpp \
-						$(PARSERDIR)/parse.cpp 
+			$(PARSERDIR)/mocc_scanner.cpp \
+			$(PARSERDIR)/parse.cpp 
 
 UTILSRC = $(UTILDIR)/util.cpp \
-					$(UTILDIR)/ast_util.cpp \
-					$(UTILDIR)/type.cpp \
-					$(UTILDIR)/symbol_table.cpp \
-					$(UTILDIR)/error.cpp \
-					$(UTILDIR)/debug.cpp \
-					$(UTILDIR)/compile_flags.cpp \
-					$(UTILDIR)/derivative.cpp \
-					$(UTILDIR)/ginac_interface.cpp \
-					$(UTILDIR)/graph.cpp \
-					$(UTILDIR)/graph_profile.cpp \
+		  $(UTILDIR)/ast_util.cpp \
+		  $(UTILDIR)/type.cpp \
+		  $(UTILDIR)/symbol_table.cpp \
+		  $(UTILDIR)/error.cpp \
+		  $(UTILDIR)/debug.cpp \
+		  $(UTILDIR)/compile_flags.cpp \
+		  $(UTILDIR)/derivative.cpp \
+		  $(UTILDIR)/ginac_interface.cpp \
+		  $(UTILDIR)/graph.cpp \
+		  $(UTILDIR)/graph_profile.cpp \
+		  $(UTILDIR)/process_statement.cpp
 
 VISITORSRC = $(VISITORDIR)/array_use.cpp \
-						 $(VISITORDIR)/autonomous.cpp \
-						 $(VISITORDIR)/called_functions.cpp \
-						 $(VISITORDIR)/convert_condition.cpp \
-					   $(VISITORDIR)/convert_expression.cpp \
-						 $(VISITORDIR)/convert_equation.cpp \
-						 $(VISITORDIR)/convert_statement.cpp \
-						 $(VISITORDIR)/discrete_assignment.cpp \
-						 $(VISITORDIR)/eval_exp.cpp \
-						 $(VISITORDIR)/eval_init_exp.cpp \
-						 $(VISITORDIR)/expression_printer.cpp \
-						 $(VISITORDIR)/occurs.cpp \
-						 $(VISITORDIR)/partial_eval_exp.cpp \
-						 $(VISITORDIR)/replace_der.cpp \
-						 $(VISITORDIR)/replace_index.cpp \
-						 $(VISITORDIR)/replace_inner_product.cpp \
-						 $(VISITORDIR)/variable_lookup.cpp \
-						 $(VISITORDIR)/algebraics.cpp \
+			 $(VISITORDIR)/autonomous.cpp \
+			 $(VISITORDIR)/called_functions.cpp \
+			 $(VISITORDIR)/convert_condition.cpp \
+			 $(VISITORDIR)/convert_expression.cpp \
+			 $(VISITORDIR)/convert_equation.cpp \
+			 $(VISITORDIR)/convert_statement.cpp \
+			 $(VISITORDIR)/discrete_assignment.cpp \
+			 $(VISITORDIR)/eval_exp.cpp \
+			 $(VISITORDIR)/eval_init_exp.cpp \
+			 $(VISITORDIR)/expression_printer.cpp \
+			 $(VISITORDIR)/occurs.cpp \
+			 $(VISITORDIR)/partial_eval_exp.cpp \
+			 $(VISITORDIR)/replace_der.cpp \
+			 $(VISITORDIR)/replace_index.cpp \
+			 $(VISITORDIR)/replace_inner_product.cpp \
+			 $(VISITORDIR)/variable_lookup.cpp \
+			 $(VISITORDIR)/algebraics.cpp \
              $(VISITORDIR)/get_index_usage.cpp \
              $(VISITORDIR)/revert_index.cpp \
              $(VISITORDIR)/is_constant_index.cpp \
-             $(VISITORDIR)/get_index_variables.cpp 
+             $(VISITORDIR)/get_index_variables.cpp \
+             $(VISITORDIR)/convert_output_range.cpp
 
 DEPSSRC = $(DEPSDIR)/dependency.cpp \
 		  $(DEPSDIR)/model_dependencies.cpp  \

@@ -83,13 +83,10 @@ Variable Index::variable() const
     return *var;
   }
   assert(false);
-  return Variable(); 
+  return Variable();
 }
 
-Range Index::range()
-{
-  return Range(variable());
-}
+Range Index::range() { return Range(variable()); }
 
 Index Index::revert() const
 {
@@ -104,10 +101,7 @@ void Index::replace()
   _exp = Expression(replace.apply(_exp.expression()), Utils::instance().symbols());
 }
 
-string Index::usageExp() const
-{
-  return _exp.usage();
-}
+string Index::usageExp() const { return _exp.usage(); }
 
 string Index::print() const
 {
@@ -201,7 +195,7 @@ void Range::generate(MDI mdi)
     if (end < begin) {
       Error::instance().add(0, EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong range in dependency matrix.");
     }
-    string index = Utils::instance().iteratorVar();
+    string index = Utils::instance().iteratorVar(pos);
     _ranges.insert(index, RangeDefinition(begin, end));
     _indexPos.insert(index, pos++);
     Option<RangeDefinition> range = _ranges[index];
