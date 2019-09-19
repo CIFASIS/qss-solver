@@ -59,7 +59,8 @@ class ExpressionDerivator {
    * @return
    */
   static AST_Expression derivate(AST_Expression exp, const VarSymbolTable& symbols, IR::Expression e);
-  map<string, MicroModelica::IR::Expression> generateJacobianExps(AST_Expression exp, const VarSymbolTable& symbols);
+  map<string, MicroModelica::IR::Expression> generateJacobianExps(Variable variable, std::string usage, AST_Expression exp,
+                                                                  const VarSymbolTable& symbols);
 };
 }  // namespace Util
 }  // namespace MicroModelica

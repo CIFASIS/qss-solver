@@ -39,7 +39,15 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-Utils::Utils() : _language_especification("C"), _flags(), _compiled_functions(), _symbols(), _local_symbols(), _file_name()
+Utils::Utils()
+    : _language_especification("C"),
+      _flags(),
+      _compiled_functions(),
+      _symbols(),
+      _local_symbols(),
+      _local_init_symbols(),
+      _file_name(),
+      _init_symbols(false)
 {
   _annotations.insert(pair<string, int>("StartTime", 0));
   _annotations.insert(pair<string, int>("StopTime", 1));

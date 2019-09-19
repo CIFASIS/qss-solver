@@ -67,6 +67,7 @@ class Range {
 
   ~Range(){};
   inline int size() const { return _size; };
+  inline bool isEmpty() const { return _size == 0; };
   inline RangeDefinitionTable definition() const { return _ranges; };
   std::string print() const;
   std::string end() const;
@@ -125,9 +126,8 @@ class Index {
   Index revert() const;
   void replace();
   std::string usageExp() const;
+  std::string modelicaExp() const;
   friend std::ostream& operator<<(std::ostream& out, const Index& i);
-
-  protected:
   Util::Variable variable() const;
 
   private:

@@ -93,6 +93,7 @@ void Equation::initialize(AST_Expression lhs, AST_Expression rhs)
 
 void Equation::initialize(AST_Expression exp)
 {
+  string model_variable = EquationVariable::modelVariables(_id, _type);
   if (_range) {
     AST_Expression_ComponentReference lhs = newAST_Expression_ComponentReference();
     AST_ExpressionList l = newAST_ExpressionList();
@@ -103,11 +104,10 @@ void Equation::initialize(AST_Expression exp)
       AST_Expression idx = newAST_Expression_ComponentReferenceExp(newAST_String(idx_var));
       l = AST_ListAppend(l, idx);
     }
-    lhs = AST_Expression_ComponentReference_Add(lhs, newAST_String(identifier()), l);
+    lhs = AST_Expression_ComponentReference_Add(lhs, newAST_String(model_variable), l);
     _lhs = Expression(lhs, _symbols);
-    cout << "GENERATED OUTPUT LHS " << _lhs << endl;
   } else {
-    AST_Expression lhs = newAST_Expression_ComponentReferenceExp(newAST_String(identifier()));
+    AST_Expression lhs = newAST_Expression_ComponentReferenceExp(newAST_String(model_variable));
     _lhs = Expression(lhs, _symbols);
   }
   _rhs = Expression(exp, _symbols);
@@ -163,57 +163,10 @@ EquationDependencyMatrix Equation::dependencyMatrix() const
   return EquationDependencyMatrix();
 }
 
-// @TODO: Remove this function
-
 string Equation::identifier() const
 {
-  stringstream buffer, id;
-  buffer << identifier(_type);
-  switch (_type) {
-  case EQUATION::QSSDerivative:
-    buffer << _lhs_exp;
-    break;
-  case EQUATION::Dependency:
-    buffer << _lhs_exp;
-    break;
-  case EQUATION::Jacobian:
-    buffer << _lhs_exp;
-    break;
-  case EQUATION::ZeroCrossing:
-    buffer << _id;
-    break;
-  case EQUATION::Output:
-    buffer << _id;
-    break;
-  default:
-    return "";
-  }
-  return buffer.str();
-}
-
-string Equation::identifier(EQUATION::Type type)
-{
-  stringstream buffer;
-  switch (type) {
-  case EQUATION::QSSDerivative:
-    buffer << "_eval";
-    break;
-  case EQUATION::Jacobian:
-    buffer << "_eval";
-    break;
-  case EQUATION::Dependency:
-    buffer << "_dep_eq_";
-    break;
-  case EQUATION::ZeroCrossing:
-    buffer << "_event_";
-    break;
-  case EQUATION::Output:
-    buffer << "_out_exp_";
-    break;
-  default:
-    return "";
-  }
-  return buffer.str();
+  EquationPrinter equation_printer = EquationPrinter(*this, _symbols);
+  return equation_printer.identifier();
 }
 
 Option<Variable> Equation::LHSVariable()
@@ -230,6 +183,13 @@ std::ostream &operator<<(std::ostream &out, const Equation &e)
 {
   out << e.print();
   return out;
+}
+
+Index Equation::index() const
+{
+  assert(isValid());
+  Index idx = Index(_lhs);
+  return idx;
 }
 
 bool Equation::isRHSReference() const { return _rhs.isReference(); }
@@ -323,43 +283,29 @@ string Equation::print() const
   assert(false);
 }
 
-Dependency::Dependency(Variable var, VariableDependencies deps) : _var(var), _scalar(), _vector() { initialize(deps); }
-
-void Dependency::initialize(VariableDependencies deps)
+Equation Dependency::generate(Equation eq, Index idx)
 {
-  DependencyMapper mapper;
-  for (Influences inf : deps) {
-    mapper.processInf(inf);
-  }
-  _scalar << mapper.scalar();
-  _vector << mapper.vector();
+  Equation dep = eq;
+  dep.setType(EQUATION::Dependency);
+  dep.setUsage(idx);
+  return dep;
 }
 
-Jacobian::Jacobian(Equation eq, VarSymbolTable &symbols) : _eq(eq), _symbols(symbols) {}
-
-string Jacobian::print() const
+Equation Jacobian::generate(Equation eq, Index idx)
 {
-  stringstream buffer;
+  // @TODO use the first expression, change generate jacobian to return a pair.
   ExpressionDerivator exp_der;
-  map<string, Expression> jac_exps = exp_der.generateJacobianExps(_eq.rhs().expression(), _symbols);
-  VarSymbolTable symbols = _symbols;
-  int last = 1, size = jac_exps.size();
+  map<string, Expression> jac_exps = exp_der.generateJacobianExps(idx.variable(), idx.modelicaExp(), eq.rhs().expression(), _symbols);
+  Equation jac;
   for (auto j : jac_exps) {
     int res = 0;
     AST_Expression lhs = parseExpression(j.first, &res);
     if (res) {
       Error::instance().add(0, EM_IR | EM_PARSE_FILE, ER_Fatal, "Can't generate Jacobian equation left hand side for: %s", j.first.c_str());
     }
-    Equation jac = Equation(lhs, j.second.expression(), symbols, _eq.range(), EQUATION::Jacobian, _eq.id());
-    buffer << jac << ((last++ != size) ? "\n" : "");
+    jac = Equation(lhs, j.second.expression(), _symbols, eq.range(), EQUATION::Jacobian, eq.id());
   }
-  return buffer.str();
-}
-
-std::ostream &operator<<(std::ostream &out, const Jacobian &j)
-{
-  out << j.print();
-  return out;
+  return jac;
 }
 
 EquationPrinter::EquationPrinter(Equation eq, Util::VarSymbolTable symbols) : _eq(eq), _symbols(symbols), _identifier() { setup(); }
@@ -446,11 +392,9 @@ string JacobianConfig::print() const
     arguments = lhs.usageExp();
   }
   tabs += TAB;
-  buffer << fp.beginExpression(identifier(), range);
   buffer << fp.beginDimGuards(equationId(), arguments, range);
   buffer << tabs << prefix() << lhs() << " = " << _eq.rhs() << ";";
   buffer << endl << TAB << fp.endDimGuards(range);
-  buffer << TAB << fp.endExpression(range, FUNCTION_PRINTER::Break);
   return buffer.str();
 }
 
@@ -470,22 +414,32 @@ string ClassicConfig::print() const
   return buffer.str();
 }
 
+string OutputConfig::equationId() const
+{
+  stringstream buffer;
+  buffer << "_out_exp_" << _eq.id();
+  return buffer.str();
+}
+
 string OutputConfig::print() const
 {
   stringstream buffer;
   string block = "";
   FunctionPrinter fp;
   Option<Range> range = _eq.range();
-  buffer << fp.beginExpression(_eq.identifier(), range);
-  buffer << fp.algebraics(_eq.dependencyMatrix(), _eq.id());
+  string arguments;
   block += TAB;
   if (range) {
     block = range->block();
-  } else {
-    block += TAB;
+    arguments = range->getDimensionVars();
   }
+  block += TAB;
+  buffer << fp.beginExpression(identifier(), range);
+  buffer << fp.beginDimGuards(equationId(), arguments, range);
+  buffer << fp.algebraics(_eq.dependencyMatrix(), _eq.id());
   buffer << block << prefix() << lhs() << " = " << _eq.rhs() << ";";
-  buffer << endl << block << fp.endExpression(range);
+  buffer << endl << TAB << fp.endDimGuards(range);
+  buffer << TAB << fp.endExpression(range);
   return buffer.str();
 }
 

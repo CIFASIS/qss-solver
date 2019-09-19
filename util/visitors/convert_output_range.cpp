@@ -71,22 +71,27 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
     string it_var = Utils::instance().iteratorVar(_dim);
     AST_Expression_ComponentReference idx = newAST_Expression_ComponentReference();
     AST_Expression_ComponentReference_Add(idx, newAST_String(it_var), newAST_ExpressionList());
+    int cte = 0;
     if (count == 2) {
-      _intervals.push_back(Interval::closed(1, range[1] - range[0] + 1));
-      int cte = range[0] - 1;
-      lhs = newAST_Expression_Integer(cte);
-      rhs = idx;
+      _intervals.push_back(Interval::closed(1, range[1] - range[0]));
+      cte = range[0] - 1;
+      lhs = idx;
     } else {
       if (range[1] > 0) {
         _intervals.push_back(Interval::closed(1, ((range[2] - range[0]) / range[1]) + 1));
-        int cte = range[0] - range[1];
-        lhs = newAST_Expression_Integer(cte);
-        rhs = newAST_Expression_BinOp(newAST_Expression_Integer(range[1]), idx, BINOPMULT);
+        cte = range[0] - range[1];
+        lhs = newAST_Expression_BinOp(newAST_Expression_Integer(range[1]), idx, BINOPMULT);
       } else {
         Error::instance().add(exp->lineNum(), EM_IR | EM_FOR_DEF, ER_Fatal, "Range interval not valid");
       }
     }
-    return newAST_Expression_BinOp(lhs, rhs, BINOPADD);
+    if (cte >= 0) {
+      rhs = newAST_Expression_Integer(cte);
+      return newAST_Expression_BinOp(lhs, rhs, BINOPADD);
+    } else {
+      rhs = newAST_Expression_Integer(-1 * cte);
+      return newAST_Expression_BinOp(lhs, rhs, BINOPSUB);
+    }
   }
   case EXPCOLON: {
     Option<Variable> var = _symbols[_var];

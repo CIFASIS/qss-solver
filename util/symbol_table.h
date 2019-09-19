@@ -49,7 +49,7 @@ class Variable {
   Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array);
   Variable& operator=(const Variable& other);
 
-  typedef enum { State, Algebraic, NotAsigned } RealType;
+  typedef enum { State, Algebraic, NotAssigned } RealType;
 
   inline void setRealType(RealType type) { _realType = type; };
   inline AST_TypePrefix typePrefix() { return _tp; };
@@ -118,7 +118,7 @@ class Variable {
     _hasOffset = true;
   };
   inline int offset() const { return _offset; };
-  inline bool isModelVar() const { return isState() || isDiscrete() || isAlgebraic() || isParameter() || isEqType(); };
+  inline bool isModelVar() const { return isState() || isDiscrete() || isAlgebraic() || isParameter() || isEqType() || isOutput(); };
   std::string print() const;
   friend std::ostream& operator<<(std::ostream& out, const Variable& v);
 

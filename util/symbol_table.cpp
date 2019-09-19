@@ -53,7 +53,7 @@ Variable::Variable()
       _isArray(false),
       _hasOffset(false),
       _offset(0),
-      _realType(NotAsigned)
+      _realType(NotAssigned)
 {
 }
 
@@ -75,7 +75,7 @@ Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c)
       _isArray(false),
       _hasOffset(false),
       _offset(0),
-      _realType(NotAsigned)
+      _realType(NotAssigned)
 {
   processModification();
 }
@@ -98,7 +98,7 @@ Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c,
       _isArray(array),
       _hasOffset(false),
       _offset(0),
-      _realType(NotAsigned)
+      _realType(NotAssigned)
 {
   processModification();
 }

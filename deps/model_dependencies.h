@@ -105,12 +105,12 @@ class ModelDependencies {
   };
   inline VariableDependencyMatrix LHSSt()
   {
-    _LHSSt.setMode(VDM::Normal);
+    _LHSSt.setMode(VDM::Transpose);
     return _LHSSt;
   };
   inline VariableDependencyMatrix RHSSt()
   {
-    _RHSSt.setMode(VDM::Normal);
+    _RHSSt.setMode(VDM::Transpose);
     return _RHSSt;
   };
   inline EquationDependencyMatrix OA() { return _OA; };

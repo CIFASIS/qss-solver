@@ -24,6 +24,8 @@
 
 #include "annotation.h"
 #include "index.h"
+#include "equation.h"
+#include "expression.h"
 #include "../deps/dependency_matrix.h"
 #include "../util/symbol_table.h"
 #include "../util/util.h"
@@ -127,11 +129,11 @@ class FunctionPrinter {
                             FUNCTION_PRINTER::ReturnStatementType ret = FUNCTION_PRINTER::ReturnStatementType::Return) const;
   std::string algebraics(Deps::EquationDependencyMatrix eqdm, Deps::depId key);
   std::string algebraics(Deps::AlgebraicDependencies deps);
-  std::string macro(std::string token, Option<Range> range, int id, int offset = 0) const;
-  std::string getIndexes(string var, Option<Range> range) const;
+  std::string getIndexes(string var, Option<Range> range, bool modelica_index) const;
   std::string beginDimGuards(std::string token, string args, Option<Range> range) const;
   std::string endDimGuards(Option<Range> range) const;
-  std::string accessMacros(std::string token, int offset, Option<Range> range) const;
+  std::string accessMacros(std::string token, int offset, Option<Range> range, bool modelica_index = true) const;
+  std::string outputVariableName(Expression exp, Option<Range> range);
 
   protected:
   std::string algebraic(int id);
@@ -201,24 +203,6 @@ class DepInfo {
   private:
   Index _index;
   list<std::string> _deps;
-};
-
-class DependencyMapper {
-  public:
-  DependencyMapper();
-  ~DependencyMapper() = default;
-  void processInf(Deps::Influences inf);
-  std::string scalar() const;
-  std::string vector() const;
-
-  protected:
-  void initialize();
-  std::string dependencies(bool scalar) const;
-  std::string generate(std::stringstream& begin, std::stringstream& code, std::stringstream& end) const;
-  std::string generateGuards(DepInfo dep, bool begin) const;
-
-  private:
-  map<std::string, DepInfo> _mapper;
 };
 }  // namespace IR
 }  // namespace MicroModelica

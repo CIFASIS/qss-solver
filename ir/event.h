@@ -29,9 +29,7 @@ namespace MicroModelica {
 namespace IR {
 
 namespace EVENT {
-/**
- *
- */
+
 typedef enum {
   Zero = 0,      //!< HND_ZERO
   Positive = 1,  //!< HND_POSITIVE
@@ -50,21 +48,10 @@ typedef enum {
 } Relation;
 }  // namespace EVENT
 
-/**
- *
- */
 class Event {
   public:
-  /**
-   *
-   * @param cond
-   * @param data
-   */
   Event(){};
   Event(AST_Expression cond, int id, int offset, Util::VarSymbolTable& symbols, Option<Range> range);
-  /**
-   *
-   */
   ~Event(){};
   inline Equation zeroCrossing() { return _zeroCrossing; };
   inline StatementTable positiveHandler() { return _positiveHandler; };
@@ -87,9 +74,6 @@ class Event {
   bool isValid() const { return _zeroCrossing.isValid(); };
   std::string config() const;
   inline Option<Range> range() const { return _range; };
-
-  protected:
-  inline std::string eventId() const;
 
   private:
   AST_Expression getExpression(AST_Expression zc);

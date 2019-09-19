@@ -88,13 +88,6 @@ AST_Expression Event::getExpression(AST_Expression exp)
   return exp;
 }
 
-string Event::eventId() const
-{
-  stringstream buffer;
-  buffer << "_event_" << _id;
-  return buffer.str();
-}
-
 string Event::handler(EVENT::Type type) const
 {
   StatementTable stms = (type == EVENT::Positive ? _positiveHandler : _negativeHandler);
@@ -111,8 +104,8 @@ string Event::handler(EVENT::Type type) const
     arguments = _range->getDimensionVars();
   }
   block += TAB;
-  buffer << fp.beginExpression(eventId(), _range);
-  buffer << fp.beginDimGuards(eventId(), arguments, _range);
+  buffer << fp.beginExpression(_zeroCrossing.identifier(), _range);
+  buffer << fp.beginDimGuards(_zeroCrossing.identifier(), arguments, _range);
   StatementTable::iterator it;
   for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
     buffer << block << stm << endl;
@@ -122,14 +115,7 @@ string Event::handler(EVENT::Type type) const
   return buffer.str();
 }
 
-string Event::macro() const
-{
-  stringstream buffer;
-  FunctionPrinter fp;
-  buffer << fp.accessMacros(eventId(), _offset, _range);
-  buffer << _zeroCrossing.macro();
-  return buffer.str();
-}
+string Event::macro() const { return _zeroCrossing.macro(); }
 
 Expression Event::exp()
 {
@@ -141,8 +127,17 @@ string Event::config() const
 {
   stringstream buffer;
   int direction = (_type == EVENT::Negative) ? -1 : _type;
-  buffer << "modelData->event[" << _zeroCrossing.identifier() << "].direction = " << direction << ";" << endl;
-  buffer << "modelData->event[" << _zeroCrossing.identifier() << "].relation = " << _zcRelation << ";" << endl;
+  string tabs = "";
+  if (_range) {
+    buffer << _range.get();
+    tabs = _range->block();
+  }
+  buffer << tabs << "modelData->event[" << _zeroCrossing.index() << "].direction = " << direction << ";" << endl;
+  buffer << tabs << "modelData->event[" << _zeroCrossing.index() << "].relation = " << _zcRelation << ";" << endl;
+  if (_range) {
+    buffer << _range->end();
+    tabs = _range->block();
+  }
   return buffer.str();
 }
 

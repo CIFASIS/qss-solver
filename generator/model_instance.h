@@ -36,7 +36,19 @@ namespace MODEL_INSTANCE {
 /**
  *
  */
-typedef enum { Model_Settings, Model, Deps, Zero_Crossing, Handler_Pos, Handler_Neg, Output, Jacobian, CLC_Init, QSS_Init } Component;
+typedef enum {
+  Model_Settings,
+  Model,
+  Deps,
+  Zero_Crossing,
+  Handler_Pos,
+  Handler_Neg,
+  Output,
+  Jacobian,
+  BdfModel,
+  CLC_Init,
+  QSS_Init
+} Component;
 
 typedef enum { SD, SZ, HD, HZ, DD } NodeType;
 }  // namespace MODEL_INSTANCE

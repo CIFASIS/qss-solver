@@ -79,8 +79,7 @@ Variable Index::variable() const
 {
   Option<Variable> var = _exp.reference();
   if (var) {
-    // @TODO: use get function for optional values.
-    return *var;
+    return var.get();
   }
   assert(false);
   return Variable();
@@ -102,6 +101,17 @@ void Index::replace()
 }
 
 string Index::usageExp() const { return _exp.usage(); }
+
+string Index::modelicaExp() const
+{
+  stringstream buffer;
+  string usage_exp = usageExp();
+  buffer << variable().name();
+  if (!usage_exp.empty()) {
+    buffer << "[" << usageExp() << "]";
+  }
+  return buffer.str();
+}
 
 string Index::print() const
 {

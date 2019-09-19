@@ -61,9 +61,7 @@ string VariableDependencyMatrix::print() const
   string matrix = _cfg.names[_method + _mode];
   string access = _cfg.access[_mode];
   for (it = begin(); it != end(); it++) {
-    cout << "Set node " << endl;
     VariableDependencies vds = it->second;
-    cout << "DEPS " << vds.size() << endl;
     for (auto vd : vds) {
       Index ifr = vd.ifr();
       Index ife = vd.ife();

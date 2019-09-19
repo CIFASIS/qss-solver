@@ -191,9 +191,9 @@ class Model : public Class {
    * @param[in]  size  The size
    * @param[in]  type  The type
    */
-  void addVariable(int id, int size, EQUATION::Type type);
+  void addVariable(int id, Option<Range> range, EQUATION::Type type, unsigned int& offset);
   Option<Util::Variable> variable(AST_Expression exp);
-  void setRealVariableOffset(AST_Expression, Util::Variable::RealType type, unsigned int& offset);
+  void setVariableOffset(Option<Util::Variable> var, unsigned int& offset, Util::Variable::RealType type, bool set_variable_count = true);
   void setRealVariables(AST_Equation eq);
   void addEquation(AST_Equation eq, Option<Range> range);
   void addEvent(AST_Statement stm, Option<Range> range);

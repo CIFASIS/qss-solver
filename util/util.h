@@ -100,9 +100,19 @@ class Utils {
   bool checkBuiltInFunctions(std::string name);
   inline VarSymbolTable& symbols() { return _symbols; };
   inline SymbolTable localSymbols() { return _local_symbols; };
-  inline void addLocalSymbol(std::string symbol) { _local_symbols.insert(symbol, symbol); };
+  inline SymbolTable localInitSymbols() { return _local_init_symbols; };
+  inline void addLocalSymbol(std::string symbol)
+  {
+    if (_init_symbols) {
+      _local_init_symbols.insert(symbol, symbol);
+    } else {
+      _local_symbols.insert(symbol, symbol);
+    }
+  };
   inline void setSymbols(const VarSymbolTable& symbols) { _symbols = symbols; };
   inline void clearLocalSymbols() { _local_symbols.clear(); };
+  inline void setLocalInitSymbols() { _init_symbols = true; };
+  inline void unsetLocalInitSymbols() { _init_symbols = false; };
   inline std::string fileName() { return _file_name; };
 
   private:
@@ -118,7 +128,9 @@ class Utils {
   IR::CompiledFunctionTable _compiled_functions;
   VarSymbolTable _symbols;
   SymbolTable _local_symbols;
+  SymbolTable _local_init_symbols;
   std::string _file_name;
+  bool _init_symbols;
 };
 
 }  // namespace Util

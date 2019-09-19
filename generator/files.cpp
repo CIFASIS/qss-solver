@@ -50,8 +50,6 @@ using namespace IR;
 using namespace Util;
 namespace Generator {
 
-Files::Files() : _fname(), _model(), _writer(), _flags() {}
-
 Files::Files(ModelInstancePtr modelInstance, Model& model, CompileFlags& flags)
     : _fname(model.name()), _model(model), _modelInstance(modelInstance), _writer(new FileWriter()), _flags(flags)
 {
@@ -97,7 +95,7 @@ void Files::makefile()
   buffer << "INC    := -I" + Utils::instance().environmentVariable("MMOC_ENGINE");
   tmp = _model.includeDirectories();
   for (string i = tmp.begin(it); !tmp.end(it); i = tmp.next(it)) {
-    include[i] = i;
+    include.insert(i, i);
   }
   if (_flags.hasObjects()) {
     list<string> objects = _flags.objects();
@@ -105,14 +103,14 @@ void Files::makefile()
       string inc = *it;
       unsigned int f = inc.rfind("/");
       inc.erase(inc.begin() + f, inc.end());
-      include[inc] = inc;
+      include.insert(inc, inc);
     }
   }
   string pinclude = Utils::instance().environmentVariable("MMOC_INCLUDE");
   include[pinclude] = pinclude;
   if (_flags.hasObjects()) {
     pinclude = Utils::instance().environmentVariable("MMOC_PACKAGES");
-    include[pinclude] = pinclude;
+    include.insert(pinclude, pinclude);
   }
   for (string i = include.begin(it); !include.end(it); i = include.next(it)) {
     buffer << " -I" << i;
@@ -331,6 +329,17 @@ void Files::settings(ModelAnnotation annotation)
   printList(annotation.patohSettings(), "patohOptions");
   printList(annotation.scotchSettings(), "scotchOptions");
   printList(annotation.metisSettings(), "metisOptions");
+  buffer << "bdf=";
+  if (annotation.BDFPartition().empty()) {
+    buffer << "0;";
+  } else {
+    buffer << "1;";
+  }
+  _writer->print(buffer);
+  buffer << "BDFPartitionDepth=" << annotation.BDFPartitionDepth() << ";";
+  _writer->print(buffer);
+  buffer << "BDFMaxStep=" << annotation.BDFMaxStep() << ";";
+  _writer->print(buffer);
   _writer->clearFile();
 }
 

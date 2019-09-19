@@ -32,90 +32,29 @@
 namespace MicroModelica {
 namespace IR {
 
-/**
- * @enum ANT_solver
- * @brief Model annotations solver type.
- *
- * @var ANT_solver::ANT_QSS
- * @brief QSS1 method.
- */
-typedef enum { QSS, CQSS, LIQSS, QSS2, LIQSS2, QSS3, LIQSS3, QSS4, DASSL, DOPRI, CVODE_BDF, CVODE_AM, IDA } Solver;
+typedef enum { QSS, CQSS, LIQSS, QSS2, LIQSS2, LIQSS_BDF, QSS3, LIQSS3, QSS4, DASSL, DOPRI, CVODE_BDF, CVODE_AM, IDA } Solver;
 
 typedef enum { Metis, HMetis, Scotch, Patoh, MTPL, MTPL_IT, Manual } PartitionMethod;
 
 typedef enum { DT_Fixed, DT_Asynchronous } DT_Synch;
 
-/**
- *
- */
 class FunctionAnnotation {
   public:
-  /**
-   *
-   */
   FunctionAnnotation();
   ~FunctionAnnotation() = default;
-  /**
-   *
-   * @return
-   */
   bool hasDerivative();
-  /**
-   *
-   * @return
-   */
   bool hasInclude();
-  /**
-   *
-   * @return
-   */
   bool hasIncludeDirectory();
-  /**
-   *
-   * @return
-   */
   bool hasLibraries();
-  /**
-   *
-   * @return
-   */
   bool hasLibraryDirectory();
-  /**
-   *
-   * @param x
-   * @return
-   */
   bool insert(AST_Argument_Modification x);
-  /**
-   *
-   * @return
-   */
   string derivative();
-  /**
-   *
-   * @return
-   */
   string include();
-  /**
-   *
-   * @return
-   */
   string includeDirectory();
-  /**
-   *
-   * @return
-   */
   Util::SymbolTable libraries() const;
-  /**
-   *
-   * @return
-   */
   string libraryDirectory();
 
   private:
-  /**
-   *
-   */
   typedef enum {
     INCLUDE,            //!< INCLUDE
     INCLUDE_DIRECTORY,  //!< INCLUDE_DIRECTORY
@@ -139,252 +78,55 @@ class ModelAnnotation {
   ModelAnnotation(Util::VarSymbolTable &symbolTable);
   ModelAnnotation(){};
   ~ModelAnnotation() = default;
-  /**
-   *
-   * @param x
-   */
   void eventComment(AST_Comment x);
-  /**
-   *
-   * @param x
-   * @return
-   */
   bool insert(AST_Argument_Modification x);
-  /**
-   *
-   * @param desc
-   */
   void setDesc(string desc);
-  /**
-   *
-   * @return
-   */
   string desc();
-  /**
-   *
-   * @param dqmin
-   */
   void setDQMin(double dqmin);
-  /**
-   *
-   * @return
-   */
   list<double> dqmin();
-  /**
-   *
-   * @return
-   */
   list<double> dqrel();
-  /**
-   *
-   * @param dqrel
-   */
   void setDQRel(double dqrel);
-  /**
-   *
-   * @param weight
-   */
   void setWeight(double weight);
-  /**
-   *
-   * @return
-   */
   double weight();
-  /**
-   *
-   * @param solver
-   */
   void setSolver(Solver solver);
-  /**
-   *
-   * @return
-   */
   Solver solver();
-  /**
-   *
-   * @return
-   */
   string solverString();
-  /**
-   *
-   * @param it
-   */
   void setInitialTime(double it);
-  /**
-   *
-   * @return
-   */
   double initialTime();
-  /**
-   *
-   * @param ft
-   */
   void setFinalTime(double ft);
-  /**
-   *
-   * @return
-   */
   double finalTime();
-  /**
-   *
-   * @param ms
-   */
   void setMinStep(double ms);
-  /**
-   *
-   * @return
-   */
   double minStep();
-  /**
-   *
-   * @param zch
-   */
   void setZCHyst(double zch);
-  /**
-   *
-   * @return
-   */
   double ZCHyst();
-  /**
-   *
-   * @param dd
-   */
   void setDerDelta(double dd);
-  /**
-   *
-   * @return
-   */
   double derDelta();
-  /**
-   *
-   * @param lps
-   */
   void setLps(int lps);
-  /**
-   *
-   * @param dt
-   */
   void setDT(double dt);
-  /**
-   *
-   * @return
-   */
   double DT();
-  /**
-   *
-   * @return
-   */
   int lps();
-  /**
-   *
-   * @param ns
-   */
   void setNodeSize(int ns);
-  /**
-   *
-   * @return
-   */
   int nodeSize();
-  /**
-   *
-   * @param ci
-   */
   void setCommInterval(string ci);
-  /**
-   *
-   * @return
-   */
   string commInterval();
-  /**
-   *
-   * @param s
-   */
   void setSample(double s);
-  /**
-   *
-   * @return
-   */
   list<double> sample();
-  /**
-   *
-   * @param sd
-   */
   void setSymDiff(bool sd);
-  /**
-   *
-   * @return
-   */
   bool symDiff();
-  /**
-   *
-   * @return
-   */
   int order();
-  /**
-   *
-   * @return
-   */
   string scheduler();
-  /**
-   *
-   * @param sched
-   */
   void setScheduler(string sched);
-  /**
-   *
-   * @return
-   */
   list<AST_Expression> output();
-  /**
-   *
-   * @param save
-   */
   void setStoreData(string save);
   string storeData();
-  /**
-   *
-   * @param pm
-   */
   void setPartitionMethod(PartitionMethod pm);
-  /**
-   *
-   * @return
-   */
   string partitionMethodString();
-  /**
-   *
-   * @return
-   */
   PartitionMethod partitionMethod();
-  /**
-   *
-   * @param p
-   */
   void setParallel(bool p);
-  /**
-   *
-   * @return
-   */
   bool parallel();
-  /**
-   *
-   * @return
-   */
   int polyCoeffs();
-  /**
-   *
-   * @param synch
-   */
   void setDtSynch(DT_Synch synch);
-  /**
-   *
-   * @return
-   */
   string dtSynchString();
-  /**
-   *
-   * @return
-   */
   DT_Synch dtSynch();
   list<string> patohSettings();
   list<string> scotchSettings();
@@ -395,39 +137,42 @@ class ModelAnnotation {
   void setJacobian(int l);
   int jacobian();
   bool isClassic();
+  list<AST_Expression> BDFPartition();
+  int BDFPartitionDepth();
+  double BDFMaxStep();
 
   private:
-  /**
-   *
-   */
   typedef enum {
-    EXPERIMENT,        //!< EXPERIMENT
-    DESC,              //!< DESC
-    DQMIN,             //!< DQMIN
-    DQREL,             //!< DQREL
-    WEIGHT,            //!< WEIGHT
-    SOLVER,            //!< SOLVER
-    INITIAL_TIME,      //!< INITIAL_TIME
-    FINAL_TIME,        //!< FINAL_TIME
-    MIN_STEP,          //!< MIN_STEP
-    ZCHYST,            //!< ZCHYST
-    DER_DELTA,         //!< DER_DELTA
-    LPS,               //!< LPS
-    NODE_SIZE,         //!< NODE_SIZE
-    COMM_INTERVAL,     //!< COMM_INTERVAL
-    STEP_SIZE,         //!< STEP_SIZE
-    SYM_DIFF,          //!< SYM_DIFF
-    SCHEDULER,         //!< SCHEDULER
-    OUTPUT,            //!< OUTPUT
-    STORE_DATA,        //!< STORE_DATA
-    PARTITION_METHOD,  //!< PARTITION_METHOD
-    PARALLEL,          //!< PARALLEL
-    DELTAT,            //!< DT
-    DELTAT_SYNCH,      //!< DT_SYNCH
-    PATOH_SETTINGS,    //!< PATOH_SETTINGS
-    SCOTCH_SETTINGS,   //!< SCOTCH_SETTINGS
-    METIS_SETTINGS,    //!< METIS_SETTINGS
-    JACOBIAN           //!< JACOBIAN
+    EXPERIMENT,
+    DESC,
+    DQMIN,
+    DQREL,
+    WEIGHT,
+    SOLVER,
+    INITIAL_TIME,
+    FINAL_TIME,
+    MIN_STEP,
+    ZCHYST,
+    DER_DELTA,
+    LPS,
+    NODE_SIZE,
+    COMM_INTERVAL,
+    STEP_SIZE,
+    SYM_DIFF,
+    SCHEDULER,
+    OUTPUT,
+    STORE_DATA,
+    PARTITION_METHOD,
+    PARALLEL,
+    DELTAT,
+    DELTAT_SYNCH,
+    PATOH_SETTINGS,
+    SCOTCH_SETTINGS,
+    METIS_SETTINGS,
+    JACOBIAN,
+    BDF_PARTITION,
+    BDF_PARTITION_DEPTH,
+    BDF_MAX_STEP
   } type;
   void processAnnotation(string annot, AST_Modification_Equal x);
   void processArgument(AST_Argument_Modification arg);
@@ -470,53 +215,23 @@ class ModelAnnotation {
   list<string> _scotchSettings;
   list<string> _metisSettings;
   int _jacobian;
+  list<AST_Expression> _BDFPartition;
+  int _BDFPartitionDepth;
+  double _BDFMaxStep;
   Util::VarSymbolTable _symbolTable;
 };
 
 typedef boost::variant<ModelAnnotation, FunctionAnnotation> AnnotationType;
 
-/**
- *
- */
 class AnnotationValue {
   public:
-  /**
-   *
-   */
   AnnotationValue();
-  /**
-   *
-   */
   ~AnnotationValue();
-  /**
-   *
-   * @return
-   */
   int integer();
-  /**
-   *
-   * @param i
-   */
   void setInteger(int i);
-  /**
-   *
-   * @return
-   */
   double real();
-  /**
-   *
-   * @param d
-   */
   void setReal(double d);
-  /**
-   *
-   * @return
-   */
   string str();
-  /**
-   *
-   * @param s
-   */
   void setStr(string s);
 
   private:
@@ -525,19 +240,9 @@ class AnnotationValue {
   string _str;
 };
 
-/**
- *
- */
 class EvalAnnotation : public AST_Expression_Fold<AnnotationValue> {
   public:
-  /**
-   *
-   * @param st
-   */
   EvalAnnotation(MicroModelica::Util::VarSymbolTable st);
-  /**
-   *
-   */
   ~EvalAnnotation() = default;
 
   private:

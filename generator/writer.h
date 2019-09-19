@@ -33,7 +33,7 @@ namespace Generator {
 /**
  *
  */
-#define SECTIONS 34
+#define SECTIONS 36
 namespace WRITER {
 /**
  *
@@ -51,9 +51,11 @@ typedef enum {
   Model,
   Model_Simple,
   Model_Generic,
-  Model_Deps_Simple,
   Model_Deps,
+  Model_Deps_Simple,
   Model_Deps_Generic,
+  Model_Bdf,
+  Model_Bdf_Simple,
   Zero_Crossing,
   ZC_Simple,
   ZC_Generic,

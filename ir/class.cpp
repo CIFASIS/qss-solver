@@ -281,13 +281,14 @@ Option<Variable> Model::variable(AST_Expression exp)
   return var;
 }
 
-void Model::setRealVariableOffset(AST_Expression exp, Util::Variable::RealType type, unsigned int &offset)
+void Model::setVariableOffset(Option<Variable> var, unsigned int &offset, Util::Variable::RealType type, bool set_variable_count)
 {
-  Option<Variable> var = variable(exp);
   if (!var->hasOffset()) {
     var->setOffset(offset);
     var->setRealType(type);
-    offset += var->size();
+    if (set_variable_count) {
+      offset += var->size();
+    }
   }
   _symbols.insert(var->name(), var.get());
 }
@@ -298,9 +299,9 @@ void Model::setRealVariables(AST_Equation eq)
   if (eqe->left()->expressionType() == EXPDERIVATIVE) {
     AST_Expression_Derivative ed = eqe->left()->getAsDerivative();
     AST_Expression derArg = AST_ListFirst(ed->arguments());
-    setRealVariableOffset(derArg, Variable::RealType::State, _stateNbr);
+    setVariableOffset(variable(derArg), _stateNbr, Variable::RealType::State);
   } else if (eqe->left()->expressionType() == EXPCOMPREF) {
-    setRealVariableOffset(eqe->left(), Variable::RealType::Algebraic, _algebraicNbr);
+    setVariableOffset(variable(eqe->left()), _algebraicNbr, Variable::RealType::Algebraic);
   } else if (eqe->left()->expressionType() == EXPOUTPUT) {
     AST_Expression_Output eout = eqe->left()->getAsOutput();
     AST_ExpressionList el = eout->expressionList();
@@ -308,7 +309,7 @@ void Model::setRealVariables(AST_Equation eq)
     list<string> lvars;
     list<Index> lidx;
     foreach (it, el) {
-      setRealVariableOffset(current_element(it), Variable::RealType::Algebraic, _algebraicNbr);
+      setVariableOffset(variable(current_element(it)), _algebraicNbr, Variable::RealType::Algebraic);
     }
   } else {
     Error::instance().add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Insert model equation.");
@@ -475,16 +476,22 @@ void Model::setEquations()
   }
 }
 
-void Model::addVariable(int id, int size, EQUATION::Type type)
+void Model::addVariable(int id, Option<Range> range, EQUATION::Type type, unsigned int &offset)
 {
-  stringstream var;
   vector<int> s;
-  if (size > 1) {
-    s.push_back(size);
+  if (range) {
+    s.push_back(range->size());
   }
-  var << Equation::identifier(type) << id;
-  Variable vi(newType_Integer(), TP_EQ, NULL, NULL, s, false);
-  insert(var.str(), vi);
+  TypePrefix eq_type = TP_EQ;
+  if (type == EQUATION::Type::Output) {
+    eq_type = TP_OUTPUT;
+  }
+  Variable vi(newType_Integer(), eq_type, NULL, NULL, s, false);
+  string var = EquationVariable::modelVariables(id, type);
+  insert(var, vi);
+  Option<Variable> variable = _symbols[var];
+  static bool DONT_INCREASE_OFFSET = false;
+  setVariableOffset(variable, offset, Variable::RealType::NotAssigned, DONT_INCREASE_OFFSET);
 }
 
 void Model::addEvent(AST_Statement stm, Option<Range> range)
@@ -494,7 +501,7 @@ void Model::addEvent(AST_Statement stm, Option<Range> range)
     if (sw->hasComment()) {
       _annotations.eventComment(sw->comment());
     }
-    addVariable(_eventId, (range ? range->size() : 1), EQUATION::Type::ZeroCrossing);
+    addVariable(_eventId, range, EQUATION::Type::ZeroCrossing, _eventNbr);
     Event event(sw->condition(), _eventId, _eventNbr, _symbols, range);
     _eventNbr += (range ? range->size() : 1);
     AST_StatementList stl = sw->statements();
@@ -510,7 +517,7 @@ void Model::addEvent(AST_Statement stm, Option<Range> range)
         AST_Statement_Else se = current_element(ewit);
         Event else_event = event;
         if (!else_event.compare(se->condition())) {
-          addVariable(_eventId + 1, (range ? range->size() : 1), EQUATION::Type::ZeroCrossing);
+          addVariable(_eventId + 1, range, EQUATION::Type::ZeroCrossing, _eventNbr);
           else_event = Event(se->condition(), _eventId + 1, _eventNbr, _symbols, range);
           _eventNbr += (range ? range->size() : 1);
           new_event = true;
@@ -554,11 +561,13 @@ void Model::setOutputs()
 {
   list<AST_Expression> astOutputs = _annotations.output();
   list<AST_Expression>::iterator it;
-  ConvertOutputRange convert = ConvertOutputRange(_symbols);
   for (it = astOutputs.begin(); it != astOutputs.end(); it++) {
-    addVariable(_outputId, 1, EQUATION::Type::Output);
+    ConvertOutputRange convert = ConvertOutputRange(_symbols);
     AST_Expression converted = convert.apply(*it);
-    Equation eq(converted, _symbols, convert.range(), EQUATION::Output, _outputId, _outputNbr++);
+    Option<Range> range = convert.range();
+    addVariable(_outputId, range, EQUATION::Type::Output, _outputNbr);
+    Equation eq(converted, _symbols, range, EQUATION::Output, _outputId, _outputNbr);
+    _outputNbr += (range ? range->size() : 1);
     _outputs.insert(_outputId++, eq);
   }
 }

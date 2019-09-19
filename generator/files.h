@@ -38,7 +38,7 @@ namespace Generator {
  */
 class Files {
   public:
-  Files();
+  // Files();
   Files(ModelInstancePtr modelInstance, IR::Model& model, Util::CompileFlags& flags);
   Files(string name, Util::CompileFlags& flags);
   ~Files();
@@ -55,7 +55,7 @@ class Files {
   IR::Model _model;
   ModelInstancePtr _modelInstance;
   WriterPtr _writer;
-  Util::CompileFlags _flags;
+  Util::CompileFlags& _flags;
   ofstream _file;
 };
 }  // namespace Generator

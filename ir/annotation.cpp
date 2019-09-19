@@ -149,6 +149,9 @@ ModelAnnotation::ModelAnnotation(VarSymbolTable &symbolTable)
       _scotchSettings(),
       _metisSettings(),
       _jacobian(0),
+      _BDFPartition(),
+      _BDFPartitionDepth(),
+      _BDFMaxStep(0),
       _symbolTable(symbolTable)
 {
   _annotations.insert(pair<string, ModelAnnotation::type>("experiment", EXPERIMENT));
@@ -178,6 +181,9 @@ ModelAnnotation::ModelAnnotation(VarSymbolTable &symbolTable)
   _annotations.insert(pair<string, ModelAnnotation::type>("MMO_PatohSettings", PATOH_SETTINGS));
   _annotations.insert(pair<string, ModelAnnotation::type>("MMO_MetisSettings", METIS_SETTINGS));
   _annotations.insert(pair<string, ModelAnnotation::type>("MMO_ScotchSettings", SCOTCH_SETTINGS));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_BDF_Part", BDF_PARTITION));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_BDF_PDepth", BDF_PARTITION_DEPTH));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_BDF_Max_Step", BDF_MAX_STEP));
   _sample.push_back(1e-2);
   _DQMin.push_back(1e-3);
   _DQRel.push_back(1e-3);
@@ -352,6 +358,10 @@ Solver ModelAnnotation::getSolver(string s)
     _order = 2;
     _polyCoeffs = 3;
     return LIQSS2;
+  } else if (!s.compare("LIQSS_BDF")) {
+    _order = 2;
+    _polyCoeffs = 3;
+    return LIQSS_BDF;
   } else if (!s.compare("QSS3")) {
     _order = 3;
     _polyCoeffs = 4;
@@ -486,6 +496,15 @@ void ModelAnnotation::processAnnotation(string annot, AST_Modification_Equal x)
   case METIS_SETTINGS:
     processList(x->exp(), &_metisSettings);
     break;
+  case BDF_PARTITION:
+    processExpressionList(x->exp(), &_BDFPartition);
+    break;
+  case BDF_PARTITION_DEPTH:
+    _BDFPartitionDepth = av.integer();
+    break;
+  case BDF_MAX_STEP:
+    _BDFMaxStep = av.real();
+    break;
   default:
     break;
   }
@@ -600,6 +619,12 @@ void ModelAnnotation::setScotchSettings(string l) { _scotchSettings.push_back(l)
 
 void ModelAnnotation::setMetisSettings(string l) { _metisSettings.push_back(l); }
 
+list<AST_Expression> ModelAnnotation::BDFPartition() { return _BDFPartition; }
+
+int ModelAnnotation::BDFPartitionDepth() { return _BDFPartitionDepth; }
+
+double ModelAnnotation::BDFMaxStep() { return _BDFMaxStep; }
+
 /* AnnotationValue class */
 
 AnnotationValue::AnnotationValue() : _integer(0), _real(0), _str("") {}
@@ -628,6 +653,7 @@ EvalAnnotation::EvalAnnotation(VarSymbolTable st) : _st(st), _tokens()
   _tokens.insert(pair<string, string>("QSS3", "QSS3"));
   _tokens.insert(pair<string, string>("LIQSS", "LIQSS"));
   _tokens.insert(pair<string, string>("LIQSS2", "LIQSS2"));
+  _tokens.insert(pair<string, string>("LIQSS_BDF", "LIQSS_BDF"));
   _tokens.insert(pair<string, string>("LIQSS3", "LIQSS3"));
   _tokens.insert(pair<string, string>("QSS4", "QSS4"));
   _tokens.insert(pair<string, string>("DASSL", "DASSL"));

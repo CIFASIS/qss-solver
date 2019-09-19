@@ -239,7 +239,6 @@ string FunctionPrinter::beginDimGuards(string token, string args, Option<Range> 
   stringstream buffer;
   if (range) {
     buffer << TAB << "_apply_usage" << token << "(" << args << ");" << endl;
-    ;
     RangeDefinitionTable rdt = range->definition();
     RangeDefinitionTable::iterator it;
     int size = rdt.size(), i = 0, idx = 0;
@@ -249,6 +248,7 @@ string FunctionPrinter::beginDimGuards(string token, string args, Option<Range> 
       buffer << (++i < size ? " && " : "");
     }
     buffer << ") {" << endl;
+    range->addLocalVariables();
   }
   return buffer.str();
 }
@@ -289,7 +289,7 @@ string FunctionPrinter::algebraics(EquationDependencyMatrix eqdm, depId key)
   return buffer.str();
 }
 
-string FunctionPrinter::getIndexes(string var, Option<Range> range) const
+string FunctionPrinter::getIndexes(string var, Option<Range> range, bool modelica_index) const
 {
   stringstream buffer;
   if (range) {
@@ -298,43 +298,24 @@ string FunctionPrinter::getIndexes(string var, Option<Range> range) const
     int size = rdt.size(), i = 0, idx = 0;
     for (RangeDefinition rd = rdt.begin(it); !rdt.end(it); rd = rdt.next(it), idx++) {
       buffer << TAB << rdt.key(it) << " = " << (i + 1 < size ? div(mod(var, idx - 1, range), idx, range) : mod(var, idx - 1, range))
-             << "+ 1;" << (i + 1 < size ? " \\" : "") << endl;
+             << (modelica_index ? "+ 1;" : ";") << (i + 1 < size ? " \\" : "") << endl;
       i++;
     }
   }
   return buffer.str();
 }
 
-string FunctionPrinter::accessMacros(string token, int offset, Option<Range> range) const
+string FunctionPrinter::accessMacros(string token, int offset, Option<Range> range, bool modelica_index) const
 {
   stringstream macros;
-  if (range) {
+  if (range && !range->isEmpty()) {
     macros << "#define _is_var" << token << "(idx) ";
     macros << "idx >= " << offset << " && ";
     macros << "idx <= " << offset + range->size() << endl;
-    macros << "#define _get" << token << "_idxs(idx) ";
-    macros << getIndexes("idx", range);
+    macros << "#define _get" << token << "_idxs(idx) \\" << endl;
+    macros << TAB << getIndexes("idx", range, modelica_index);
   }
   return macros.str();
-}
-
-string FunctionPrinter::macro(string token, Option<Range> range, int id, int offset) const
-{
-  stringstream buffer;
-  // buffer << "#define " << token;
-  if (range) {
-    /*  buffer << "(idx) "
-             << "(idx + 1)";
-      if (!offset) {
-        buffer << "-" << offset;
-      }
-      buffer << endl;*/
-    buffer << "#define _get" << token << "_idxs(idx) \\" << endl;
-    buffer << getIndexes("idx", range);
-  } /* else {
-     buffer << " " << id - 1;
-   }*/
-  return buffer.str();
 }
 
 string FunctionPrinter::mod(string idx, int dim, Option<Range> range) const
@@ -351,6 +332,26 @@ string FunctionPrinter::div(string idx, int dim, Option<Range> range) const
 {
   stringstream buffer;
   buffer << "(" << idx << "/" << range->rowSize(dim) << ")";
+  return buffer.str();
+}
+
+string FunctionPrinter::outputVariableName(Expression exp, Option<Range> range)
+{
+  assert(exp.isReference());
+  stringstream buffer;
+  Option<Variable> var = exp.reference();
+  assert(var);
+  buffer << "\"" << var->name();
+  if (var->isArray()) {
+    buffer << "[";
+  }
+  if (range) {
+    buffer << "%d]\"," << exp.usage();
+  } else if (var->isArray()) {
+    buffer << exp.usage() << "]\"";
+  } else {
+    buffer << exp.usage() << "\"";
+  }
   return buffer.str();
 }
 
@@ -394,103 +395,6 @@ ostream& operator<<(std::ostream& out, const Input& i)
 ModelConfig::ModelConfig() : _model_annotations(), _algebraics(), _dependencies() {}
 
 bool ModelConfig::generateDerivatives() { return _model_annotations.symDiff() && isQss(); }
-
-DependencyMapper::DependencyMapper() : _mapper(){};
-
-void DependencyMapper::processInf(Influences inf)
-{
-  EquationTable derivatives = ModelConfig::instance().derivatives();
-  stringstream buffer;
-  FunctionPrinter fp;
-  Option<Equation> ifce = derivatives[inf.ifce.equationId()];
-  if (ifce) {
-    Index ifr = inf.ifr();
-    string idx_exp = ifr.print();
-    if (_mapper.find(idx_exp) == _mapper.end()) {
-      DepInfo d = DepInfo(ifr);
-      _mapper[idx_exp] = d;
-    }
-    Equation eq = ifce.get();
-    eq.setType(EQUATION::Dependency);
-    eq.setUsage(ifr);
-    buffer << fp.algebraics(inf.algs);
-    buffer << eq << endl;
-    DepInfo dep = _mapper[idx_exp];
-    dep.addDependency(buffer.str());
-    _mapper[idx_exp] = dep;
-  }
-}
-
-string DependencyMapper::generateGuards(DepInfo dep, bool begin) const
-{
-  stringstream buffer;
-  FunctionPrinter fp;
-  Index index = dep.index();
-  Option<Range> range;
-  if (!dep.isScalar()) {
-    range = index.range();
-  }
-  if (begin) {
-    buffer << fp.beginExpression(index.identifier(), range);
-  } else {
-    buffer << TAB << fp.endExpression(range, FUNCTION_PRINTER::Break);
-  }
-  return buffer.str();
-}
-
-string DependencyMapper::generate(stringstream& begin, stringstream& code, stringstream& end) const
-{
-  stringstream buffer;
-  buffer << begin.str();
-  buffer << code.str();
-  buffer << end.str();
-  begin.str("");
-  code.str("");
-  end.str("");
-  return buffer.str();
-}
-
-string DependencyMapper::dependencies(bool scalar) const
-{
-  stringstream code, buffer, begin_exp, end_exp;
-  bool generate_guards = true;
-  static constexpr bool BEGIN = true;
-  static constexpr bool END = false;
-  for (auto mapper : _mapper) {
-    DepInfo dep = mapper.second;
-    if (dep.isScalar() == scalar) {
-      if (generate_guards) {
-        begin_exp << generateGuards(dep, BEGIN);
-        end_exp << generateGuards(dep, END);
-      }
-      for (string eq : dep.deps()) {
-        buffer << eq;
-      }
-      if (scalar) {
-        code << generate(begin_exp, buffer, end_exp);
-      }
-      if (!scalar && generate_guards) {
-        generate_guards = false;
-      }
-    }
-  }
-  if (!scalar) {
-    code << generate(begin_exp, buffer, end_exp);
-  }
-  return code.str();
-}
-
-string DependencyMapper::scalar() const
-{
-  static bool constexpr SCALAR = true;
-  return dependencies(SCALAR);
-}
-
-string DependencyMapper::vector() const
-{
-  static bool constexpr VECTOR = false;
-  return dependencies(VECTOR);
-}
 
 }  // namespace IR
 }  // namespace MicroModelica

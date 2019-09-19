@@ -35,6 +35,21 @@ namespace EQUATION {
 typedef enum { ClassicDerivative, QSSDerivative, Algebraic, Dependency, Output, ZeroCrossing, Handler, Jacobian } Type;
 }
 
+class EquationVariable {
+  public:
+  static std::string modelVariables(int id, EQUATION::Type type)
+  {
+    stringstream buffer;
+    if (type == EQUATION::Type::Output) {
+      buffer << "_out_exp_";
+    } else {
+      buffer << "_event_";
+    }
+    buffer << id;
+    return buffer.str();
+  };
+};
+
 class Equation {
   public:
   Equation(){};
@@ -46,6 +61,7 @@ class Equation {
   ~Equation();
   inline bool hasRange() const { return _range.is_initialized(); };
   inline Expression lhs() const { return _lhs; };
+  Index index() const;
   inline Expression rhs() const { return _rhs; };
   inline AST_Expression equation() { return _rhs.expression(); };
   inline bool autonomous() { return _autonomous; };
@@ -54,7 +70,6 @@ class Equation {
   std::string macro() const;
   inline Option<Range> range() const { return _range; };
   inline int id() const { return _id; };
-  static std::string identifier(EQUATION::Type type);
   inline EQUATION::Type type() const { return _type; }
   inline bool isDerivative() const { return _type == EQUATION::QSSDerivative || _type == EQUATION::ClassicDerivative; }
   inline bool isZeroCrossing() const { return _type == EQUATION::ZeroCrossing; }
@@ -95,30 +110,19 @@ typedef ModelTable<int, Equation> EquationTable;
 
 class Jacobian {
   public:
-  Jacobian(Equation eq, Util::VarSymbolTable &symbols);
+  Jacobian(Util::VarSymbolTable &symbols) : _symbols(symbols){};
   ~Jacobian() = default;
-  friend std::ostream &operator<<(std::ostream &out, const Jacobian &j);
-
-  protected:
-  std::string print() const;
+  Equation generate(Equation eq, Index idx);
 
   private:
-  Equation _eq;
   Util::VarSymbolTable _symbols;
 };
 
 class Dependency {
   public:
-  Dependency(Util::Variable var, Deps::VariableDependencies deps);
+  Dependency(){};
   ~Dependency() = default;
-  inline std::string scalar() { return _scalar.str(); };
-  inline std::string vector() { return _vector.str(); };
-
-  private:
-  void initialize(Deps::VariableDependencies deps);
-  Util::Variable _var;
-  stringstream _scalar;
-  stringstream _vector;
+  Equation generate(Equation eq, Index idx);
 };
 
 class EquationPrinter {
@@ -161,16 +165,6 @@ class JacobianConfig : public EquationPrinter {
   Equation _eq;
 };
 
-class OutputConfig : public EquationPrinter {
-  public:
-  OutputConfig(Equation eq, Util::VarSymbolTable symbols) : EquationPrinter(eq, symbols), _eq(eq){};
-  ~OutputConfig() = default;
-  std::string print() const override;
-
-  private:
-  Equation _eq;
-};
-
 class EquationConfig : public EquationPrinter {
   public:
   EquationConfig(Equation eq, Util::VarSymbolTable symbols);
@@ -186,6 +180,17 @@ class EquationConfig : public EquationPrinter {
   Equation _eq;
   Util::VarSymbolTable _symbols;
   Expression _derivatives[3];
+};
+
+class OutputConfig : public EquationConfig {
+  public:
+  OutputConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq){};
+  ~OutputConfig() = default;
+  std::string print() const override;
+  std::string equationId() const override;
+
+  private:
+  Equation _eq;
 };
 
 class AlgebraicConfig : public EquationConfig {

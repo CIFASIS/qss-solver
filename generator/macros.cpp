@@ -54,16 +54,13 @@ string Macros::parameters() const
   return buffer.str();
 }
 
-string Macros::arguments() const
+string Macros::arguments(bool state) const
 {
   stringstream arguments;
-  if (_variable.isEqType()) {
-    arguments << _variable << endl;
-    return arguments.str();
-  }
+  string index_offset = "-1";
   int dim = _variable.dimensions();
   stringstream end;
-  if (_is_qss) {
+  if (_is_qss && state) {
     end << "*" << _model.annotations().polyCoeffs() << " + coeff";
   }
   if (dim) {
@@ -74,9 +71,9 @@ string Macros::arguments() const
       if (_variable.offset()) {
         arguments << _variable.offset() << "+";
       }
-      arguments << "(d" << i + 1 << "-1)" << (i == dim - 1 ? ")" + end.str() : variable.str());
+      arguments << "(d" << i + 1 << index_offset << ")" << (i == dim - 1 ? ")" + end.str() : variable.str());
     }
-  } else if (_variable.isDiscrete() || _variable.isState() || _variable.isAlgebraic()) {
+  } else if (_variable.isDiscrete() || _variable.isState() || _variable.isAlgebraic() || _variable.isOutput() || _variable.isEqType()) {
     arguments << _variable.offset() << end.str();
   }
   arguments << endl;
@@ -119,15 +116,20 @@ string Macros::engineIndex() const
 
 void Macros::initialize()
 {
-  stringstream index, def;
+  stringstream index, def, state_index;
   int dim = _variable.dimensions();
   bool idx = !_variable.isParameter() || dim;
   string params = parameters();
   if (idx) {
     index << "_idx" << _variable << params;
-    _macros << "#define " << index.str() << " " << arguments();
+    static const bool MATRIX_INDEX = false;
+    _macros << "#define " << index.str() << " " << arguments(MATRIX_INDEX);
+    if (_is_qss) {
+      state_index << "_state_idx" << _variable << params;
+      _macros << "#define " << state_index.str() << " " << arguments();
+    }
   }
-  if (!_variable.isEqType()) {
+  if (!_variable.isEqType() && !_variable.isOutput()) {
     _macros << "#define " << _variable << params << " ";
     if (_variable.isState()) {
       _macros << "x";
@@ -144,23 +146,27 @@ void Macros::initialize()
     if (idx) {
       def << "[";
     }
-    def << index.str();
+    if (_is_qss) {
+      def << state_index.str();
+    } else {
+      def << index.str();
+    }
     if (idx) {
       def << "]";
     }
     _macros << def.str() << endl;
-    if (_variable.isState()) {
-      FunctionPrinter fp = FunctionPrinter();
-      int offset = _variable.offset();
-      Range range = Range(_variable);
-      _macros << "#define _eval" << _variable << parameters() << " ";
-      _macros << engineIndexArguments() << endl;
-      _macros << fp.accessMacros(_variable.print(), offset, range);
-    }
-    if (_is_qss && _variable.isState()) {
-      _macros << "#define _eval_dep" << _variable << params << " ";
-      _macros << "dx" << def.str() << endl;
-    }
+  }
+  if (_variable.isState() || _variable.isOutput() || _variable.isEqType()) {
+    FunctionPrinter fp = FunctionPrinter();
+    int offset = _variable.offset();
+    Range range = Range(_variable);
+    _macros << "#define _eval" << _variable << parameters() << " ";
+    _macros << engineIndexArguments() << endl;
+    _macros << fp.accessMacros(_variable.print(), offset, range, _variable.isState());
+  }
+  if (_is_qss && _variable.isState()) {
+    _macros << "#define _eval_dep" << _variable << params << " ";
+    _macros << "dx" << def.str() << endl;
   }
 }
 
@@ -197,6 +203,27 @@ string Macros::indexMacro(string token, Option<Range> range, int id) const
   } else {
     buffer << id - 1 << endl;
   }
+  return buffer.str();
+}
+
+string Macros::modelAccess(int discretes, int algebraics)
+{
+  stringstream buffer;
+  buffer << "#define MODEL_DATA_ACCESS(m) \\" << endl;
+  if (discretes && algebraics) {
+    buffer << "  double* x = m->x; \\" << endl;
+    buffer << "  double* d = m->d; \\" << endl;
+    buffer << "  double* a = m->alg;" << endl;
+  } else if (discretes) {
+    buffer << "  double* x = m->x; \\" << endl;
+    buffer << "  double* d = m->d;" << endl;
+  } else if (algebraics) {
+    buffer << "  double* x = m->x; \\" << endl;
+    buffer << "  double* a = m->alg;" << endl;
+  } else {
+    buffer << "  double* x = m->x; " << endl;
+  }
+  buffer << endl;
   return buffer.str();
 }
 

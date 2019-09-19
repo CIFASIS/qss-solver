@@ -29,6 +29,7 @@
 #include "../ir/annotation.h"
 #include "../ir/class.h"
 #include "../ir/equation.h"
+#include "../ir/equation_mapper.h"
 #include "../ir/event.h"
 #include "../ir/expression.h"
 #include "../ir/statement.h"
@@ -144,13 +145,23 @@ void ModelInstance::configOutput()
   _writer->write(buffer, WRITER::Alloc_Output);
   EquationTable outputs = _model.outputs();
   EquationTable::iterator it;
+  FunctionPrinter fp;
   for (Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it)) {
     assert(out.isValid());
     Expression var = out.lhs();
     if (out.isRHSReference()) {
       var = out.rhs();
     }
-    buffer << "sprintf(modelOutput->variable[" << out.identifier() << "].name, \"" << var << "\");";
+    string tabs = "";
+    Option<Range> range = out.range();
+    if (range) {
+      buffer << range.get();
+      tabs = range->block();
+    }
+    buffer << tabs << "sprintf(modelOutput->variable[" << Index(out.lhs()) << "].name, " << fp.outputVariableName(var, range) << ");";
+    if (range) {
+      buffer << endl << range->end();
+    }
     _writer->write(buffer, WRITER::Alloc_Output);
   }
 }
@@ -230,11 +241,8 @@ void ModelInstance::header()
   VarSymbolTable::iterator it;
   stringstream buffer;
   _writer->write("// Model data access macro.\n", WRITER::Model_Header);
-  buffer << "#define MODEL_DATA_ACCESS(m) \\" << endl;
-  buffer << "  double* x = m->x; \\" << endl;
-  buffer << "  double* d = m->d; \\" << endl;
-  buffer << "  double* a = m->a;" << endl;
-  buffer << endl;
+  Macros access_macro;
+  buffer << access_macro.modelAccess(_model.discreteNbr(), _model.algebraicNbr());
   _writer->write(buffer, WRITER::Model_Header);
   _writer->write("// Model Variables and Parameters Macros\n", WRITER::Model_Header);
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
@@ -329,6 +337,8 @@ string ModelInstance::componentDefinition(MODEL_INSTANCE::Component c)
   case MODEL_INSTANCE::Jacobian:
     return "void MOD_jacobian(double *x, double *d, double *a, double t, "
            "double *jac)";
+  case MODEL_INSTANCE::BdfModel:
+    return "void MOD_BDF_definition(double *x, double *d, double *alg, double t, double *dx, int *BDFMap, int nBDF)";
   case MODEL_INSTANCE::CLC_Init:
     return "void CLC_initializeDataStructs(CLC_simulator simulator)";
   case MODEL_INSTANCE::QSS_Init:
@@ -342,7 +352,7 @@ void ModelInstance::initialCode()
   StatementTable stms = _model.initialCode();
   StatementTable::iterator it;
   stringstream buffer;
-  Utils::instance().clearLocalSymbols();
+  Utils::instance().setLocalInitSymbols();
   for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
     _writer->write(stm, WRITER::Init_Code);
   }
@@ -354,7 +364,7 @@ void ModelInstance::initialCode()
     }
     _writer->write(var.initialization(symbols), WRITER::Init_Code);
   }
-  _writer->write(Utils::instance().localSymbols(), WRITER::Prologue);
+  Utils::instance().unsetLocalInitSymbols();
 }
 
 void ModelInstance::inputs()
@@ -372,7 +382,7 @@ string ModelInstance::allocateModel()
   buffer << "MOD_zeroCrossing, ";
   buffer << "MOD_handlerPos, ";
   buffer << "MOD_handlerNeg, ";
-  buffer << "MOD_jacobian)";
+  buffer << "MOD_jacobian";
   return buffer.str();
 }
 
@@ -412,16 +422,22 @@ void ModelInstance::freeVectors() const
 
 void ModelInstance::jacobian()
 {
-  EquationTable derivatives = _model.derivatives();
-  EquationTable::iterator it;
   Utils::instance().clearLocalSymbols();
   Utils::instance().addLocalSymbol("int jit;");
   Utils::instance().addLocalSymbol("int idx;");
   FunctionPrinter fp;
+  ModelDependencies deps = _model.dependencies();
+  VariableDependencyMatrix SD = deps.SD();
+  VariableDependencyMatrix::const_iterator it;
   VarSymbolTable symbols = _model.symbols();
-  for (Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it)) {
-    Jacobian jac = Jacobian(der, symbols);
-    _writer->write(jac, (der.hasRange() ? WRITER::Jacobian_Generic : WRITER::Jacobian_Simple));
+  for (it = SD.begin(); it != SD.end(); it++) {
+    Option<Variable> var = symbols[it->first];
+    if (var) {
+      Jacobian jac = Jacobian(symbols);
+      EquationMapper<Jacobian> mapper(jac, var.get(), it->second);
+      _writer->write(mapper.scalar(), WRITER::Jacobian_Simple);
+      _writer->write(mapper.vector(), WRITER::Jacobian_Generic);
+    }
   }
   _writer->write(Utils::instance().localSymbols(), WRITER::Jacobian);
   _writer->write(fp.loop(_model.stateNbr()), WRITER::Jacobian);
@@ -482,6 +498,7 @@ void ModelInstance::generate()
   _writer->print(WRITER::Jacobian_Simple);
   _writer->print(WRITER::Jacobian_Generic);
   _writer->endBlock();
+  _writer->write(Utils::instance().localInitSymbols(), WRITER::Prologue);
 }
 
 /* QSSModelInstance Model Instance class. */
@@ -528,6 +545,7 @@ string QSSModelInstance::allocateModel()
   buffer << "simulator->model = QSS_Model(MOD_definition, ";
   buffer << "MOD_dependencies, ";
   buffer << ModelInstance::allocateModel();
+  buffer << ", MOD_BDF_definition);";
   return buffer.str();
 }
 
@@ -542,7 +560,7 @@ void QSSModelInstance::initTime()
 void QSSModelInstance::initializeDataStructures()
 {
   stringstream buffer;
-  Utils::instance().clearLocalSymbols();
+  Utils::instance().setLocalInitSymbols();
   allocateSolver();
   allocateVectors();
   freeVectors();
@@ -571,7 +589,7 @@ void QSSModelInstance::initializeDataStructures()
   initTime();
   configOutput();
   allocateModel();
-  _writer->write(Utils::instance().localSymbols(), WRITER::Prologue);
+  Utils::instance().unsetLocalInitSymbols();
 }
 
 void QSSModelInstance::dependencies()
@@ -585,9 +603,10 @@ void QSSModelInstance::dependencies()
   for (it = SD.begin(); it != SD.end(); it++) {
     Option<Variable> var = symbols[it->first];
     if (var) {
-      IR::Dependency deps(var.get(), it->second);
-      _writer->write(deps.scalar(), WRITER::Model_Deps_Simple);
-      _writer->write(deps.vector(), WRITER::Model_Deps_Generic);
+      IR::Dependency dep;
+      EquationMapper<IR::Dependency> mapper(dep, var.get(), it->second);
+      _writer->write(mapper.scalar(), WRITER::Model_Deps_Simple);
+      _writer->write(mapper.vector(), WRITER::Model_Deps_Generic);
     }
   }
   _writer->write(Utils::instance().localSymbols(), WRITER::Model_Deps);
@@ -610,6 +629,11 @@ void QSSModelInstance::generate()
   _writer->print(WRITER::Model_Deps);
   _writer->print(WRITER::Model_Deps_Simple);
   _writer->print(WRITER::Model_Deps_Generic);
+  _writer->endBlock();
+  _writer->print(componentDefinition(MODEL_INSTANCE::BdfModel));
+  _writer->beginBlock();
+  _writer->print(WRITER::Model_Bdf);
+  _writer->print(WRITER::Model_Bdf_Simple);
   _writer->endBlock();
   _writer->print(componentDefinition(MODEL_INSTANCE::QSS_Init));
   _writer->beginBlock();
@@ -674,7 +698,7 @@ void ClassicModelInstance::definition()
 void ClassicModelInstance::initializeDataStructures()
 {
   stringstream buffer;
-  Utils::instance().clearLocalSymbols();
+  Utils::instance().setLocalInitSymbols();
   allocateSolver();
   allocateVectors();
   freeVectors();
@@ -692,7 +716,7 @@ void ClassicModelInstance::initializeDataStructures()
   initializeMatrix(deps.SO(), WRITER::Alloc_Output, WRITER::Init_Output, _model.stateNbr());
   initializeMatrix(deps.DO(), WRITER::Alloc_Output, WRITER::Init_Output, _model.discreteNbr());
   allocateModel();
-  _writer->write(Utils::instance().localSymbols(), WRITER::Prologue);
+  Utils::instance().unsetLocalInitSymbols();
 }
 
 void ClassicModelInstance::allocateSolver()
@@ -715,6 +739,7 @@ string ClassicModelInstance::allocateModel()
   stringstream buffer;
   buffer << "simulator->model = CLC_Model(MOD_definition, ";
   buffer << ModelInstance::allocateModel();
+  buffer << ");";
   return buffer.str();
 }
 

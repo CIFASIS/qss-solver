@@ -57,25 +57,20 @@ AST_Expression ExpressionDerivator::derivate(AST_Expression exp, const VarSymbol
   return to_exp.convert(der_exp);
 }
 
-map<string, Expression> ExpressionDerivator::generateJacobianExps(AST_Expression exp, const VarSymbolTable& symbols)
+map<string, Expression> ExpressionDerivator::generateJacobianExps(Variable variable, string usage, AST_Expression exp,
+                                                                  const VarSymbolTable& symbols)
 {
   ConvertToGiNaC to_ginac(symbols, Option<Expression>());
   ConvertToExpression to_exp;
   ReplaceDer replace_der(symbols);
   GiNaC::ex dexp = to_ginac.convert(exp, false, true);
   map<string, GiNaC::symbol> dir = to_ginac.directory();
-  map<string, GiNaC::symbol>::iterator it;
   map<string, Expression> jacobianExps;
   GiNaC::symbol time = to_ginac.getTime();
-  for (it = dir.begin(); it != dir.end(); it++) {
-    Option<Variable> v = symbols[to_ginac.identifier(it->first)];
-    if (v) {
-      if (v->isState() || v->isAlgebraic()) {
-        GiNaC::ex der_exp = dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff(it->second);
-        jacobianExps[it->first] = Expression(replace_der.apply(to_exp.convert(der_exp)), symbols);
-      }
-    }
-  }
+  assert(variable.isState() || variable.isAlgebraic());
+  GiNaC::symbol ginac_usage = dir[usage];
+  GiNaC::ex der_exp = dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff(ginac_usage);
+  jacobianExps[usage] = Expression(replace_der.apply(to_exp.convert(der_exp)), symbols);
   return jacobianExps;
 }
 }  // namespace Util
