@@ -24,6 +24,13 @@
 
 namespace MicroModelica {
 namespace Deps {
+
+Interval::Interval(int a, int b) : _step(1) { _interval = ICL::discrete_interval<int>(a, b, ICL::interval_bounds::closed()); }
+
+Interval Interval::operator&(const Interval &other) const { return Interval(_interval & other._interval); }
+
+bool Interval::operator<(const Interval &other) const { return _interval < other._interval; }
+
 Offset Offset::operator-() const
 {
   std::vector<int> ret(offset.size());
@@ -41,7 +48,7 @@ MDI::MDI(int d, ...)
   for (int i = 0; i < d; i++) {
     int lower = va_arg(vl, int);
     int upper = va_arg(vl, int);
-    intervals[i] = CreateInterval(lower, upper);
+    intervals[i] = Interval(lower, upper);
   }
   va_end(vl);
 }
@@ -51,7 +58,7 @@ MDI::MDI(IntervalList intervalList) : intervals(IntervalVector(intervalList.begi
 int MDI::Size() const
 {
   int size = 1;
-  foreach_(Interval i, intervals) { size *= boost::icl::size(i); }
+  foreach_(Interval i, intervals) { size *= i.size(); }
   return size;
 }
 
@@ -75,18 +82,18 @@ std::list<Interval> MDI::Partition(Interval iA, Interval iB)
   int c = iB.lower();
   int d = iB.upper();
   if ((a < c) && (d < b)) {
-    ret.push_back(CreateInterval(a, c - 1));
-    ret.push_back(CreateInterval(c, d));
-    ret.push_back(CreateInterval(d + 1, b));
+    ret.push_back(Interval(a, c - 1));
+    ret.push_back(Interval(c, d));
+    ret.push_back(Interval(d + 1, b));
   } else if ((c <= a) && (a <= d) && (d < b)) {
-    //      return {CreateInterval(a,d), CreateInterval(d+1,b)}; /* c++11 */
-    ret.push_back(CreateInterval(a, d));
-    ret.push_back(CreateInterval(d + 1, b));
+    //      return {Interval(a,d), Interval(d+1,b)}; /* c++11 */
+    ret.push_back(Interval(a, d));
+    ret.push_back(Interval(d + 1, b));
   } else if ((a < c) && (c <= b) && (b <= d)) {
-    ret.push_back(CreateInterval(a, c - 1));
-    ret.push_back(CreateInterval(c, b));
+    ret.push_back(Interval(a, c - 1));
+    ret.push_back(Interval(c, b));
   } else {
-    ret.push_back(CreateInterval(a, b));
+    ret.push_back(Interval(a, b));
   }
   return ret;
 }
@@ -162,7 +169,7 @@ std::list<MDI> MDI::Filter(std::list<MDI> mdiList, MDI mdi)
     MDI::iterator iterYS = mdi.begin();
     bool hasInter = true;
     for (int i = 0; i < (int)m.Dimension(); i++) {
-      hasInter &= intersects(*iterXS, *iterYS);
+      hasInter &= iterXS->intersects(*iterYS);
       iterXS++;
       iterYS++;
     }
@@ -186,7 +193,7 @@ MDI MDI::ApplyOffset(Offset offset) const
   }
   IntervalVector copyIntervals = intervals;
   for (int i = 0; i < (int)copyIntervals.size(); i++) {
-    copyIntervals[i] = CreateInterval(copyIntervals[i].lower() + offset[i], copyIntervals[i].upper() + offset[i]);
+    copyIntervals[i] = Interval(copyIntervals[i].lower() + offset[i], copyIntervals[i].upper() + offset[i]);
   }
   return MDI(copyIntervals);
 }
@@ -217,7 +224,7 @@ MDI MDI::RevertOffset(Offset offset, Usage usage, MDI ran) const
   }
   IntervalVector copyIntervals = intervals;
   for (int i = 0; i < (int)copyIntervals.size(); i++) {
-    copyIntervals[i] = CreateInterval(copyIntervals[i].lower() - offset[i], copyIntervals[i].upper() - offset[i]);
+    copyIntervals[i] = Interval(copyIntervals[i].lower() - offset[i], copyIntervals[i].upper() - offset[i]);
   }
   return MDI(copyIntervals);
 }
@@ -285,10 +292,11 @@ Option<MDI> MDI::operator&(const MDI &other) const
   for (int i = 0; i < this->Dimension(); i++) {
     // If i-th interval does not intersect with its corresponding interval in
     // the other MDI: return an empty MDI
-    if (!intersects(this->intervals[i], other.intervals[i]))
+    if (!this->intervals[i].intersects(other.intervals[i])) {
       return Option<MDI>();
-    else
+    } else {
       intersection.push_back((this->intervals[i]) & (other.intervals[i]));
+    }
   }
   // All intervals intersect with its corresponding interval in the other MDI:
   // return the resulting intersection MDI
@@ -302,7 +310,9 @@ bool MDI::Contains(const MDI &other) const
                    // square?
   else {
     for (int i = 0; i < (int)this->intervals.size(); i++) {
-      if (!boost::icl::contains(this->intervals[i], other.intervals[i])) return false;
+      if (!this->intervals[i].contains(other.intervals[i])) {
+        return false;
+      }
     }
     // If each interval of "this" contains its corresponding interval of "other"
     // return true

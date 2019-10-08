@@ -35,8 +35,30 @@ namespace MicroModelica {
 namespace Deps {
 
 /// @brief A pair representing a usage of a variable in an equation
-typedef ICL::discrete_interval<int> Interval;
-inline Interval CreateInterval(int a, int b) { return ICL::discrete_interval<int>(a, b, ICL::interval_bounds::closed()); }
+// typedef ICL::discrete_interval<int> Interval;
+// inline Interval CreateInterval(int a, int b) { return ICL::discrete_interval<int>(a, b, ICL::interval_bounds::closed()); }
+
+class Interval {
+  public:
+  typedef ICL::discrete_interval<int> DiscreteInterval;
+  Interval() : _interval(), _step(1){};
+  Interval(int a, int b);
+  Interval(DiscreteInterval interval) : _interval(interval), _step(1){};
+  inline bool operator==(const Interval& other) const { return this->_interval == other._interval; };
+  inline bool operator!=(const Interval& other) const { return this->_interval != other._interval; };
+  inline int lower() { return _interval.lower(); }
+  inline int upper() { return _interval.upper(); }
+  inline int size() { return boost::icl::size(_interval); }
+  bool operator<(const Interval& other) const;
+  Interval operator&(const Interval& other) const;
+  inline bool contains(const Interval& other) const { return boost::icl::contains(_interval, other._interval); }
+  inline bool intersects(const Interval& other) const { return boost::icl::intersects(_interval, other._interval); }
+
+  private:
+  DiscreteInterval _interval;
+  int _step;
+};
+
 typedef std::list<Interval> IntervalList;
 typedef std::vector<Interval> IntervalVector;
 

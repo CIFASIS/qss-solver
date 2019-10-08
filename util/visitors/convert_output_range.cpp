@@ -73,12 +73,12 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
     AST_Expression_ComponentReference_Add(idx, newAST_String(it_var), newAST_ExpressionList());
     int cte = 0;
     if (count == 2) {
-      _intervals.push_back(Interval::closed(1, range[1] - range[0]));
+      _intervals.push_back(Interval(1, range[1] - range[0]));
       cte = range[0] - 1;
       lhs = idx;
     } else {
       if (range[1] > 0) {
-        _intervals.push_back(Interval::closed(1, ((range[2] - range[0]) / range[1]) + 1));
+        _intervals.push_back(Interval(1, ((range[2] - range[0]) / range[1]) + 1));
         cte = range[0] - range[1];
         lhs = newAST_Expression_BinOp(newAST_Expression_Integer(range[1]), idx, BINOPMULT);
       } else {
@@ -98,7 +98,7 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
     if (!var) {
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "Convert output expression: %s", _var.c_str());
     }
-    _intervals.push_back(Interval::closed(1, var->size(_dim)));
+    _intervals.push_back(Interval(1, var->size(_dim)));
     string it_var = Utils::instance().iteratorVar(_dim);
     AST_Expression_ComponentReference idx = newAST_Expression_ComponentReference();
     AST_Expression_ComponentReference_Add(idx, newAST_String(it_var), newAST_ExpressionList());

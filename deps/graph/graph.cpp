@@ -271,7 +271,7 @@ void EvalOccur::initialize()
       AST_Expression cur = pexp.apply(current_element(it));
       if (cur->expressionType() == EXPINTEGER) {
         int v = cur->getAsInteger()->val();
-        _intervals.push_back(Interval::closed(v, v));
+        _intervals.push_back(Interval(v, v));
         _usages.push_back(-1);
         _offsets.push_back(0);
       } else if (cur->expressionType() == EXPCOMPREF) {
@@ -285,17 +285,17 @@ void EvalOccur::initialize()
             begin = rd->begin();
             end = rd->end();
           }
-          _intervals.push_back(Interval::closed(begin, end));
+          _intervals.push_back(Interval(begin, end));
           _usages.push_back(_range->pos(var->name()));
           _offsets.push_back(0);
         } else if (var->isConstant()) {
-          _intervals.push_back(Interval::closed(var->value(), var->value()));
+          _intervals.push_back(Interval(var->value(), var->value()));
           _usages.push_back(-1);
           _offsets.push_back(0);
         } else {
           cout << "Wrong index expression." << endl;
           assert(false);
-          _intervals.push_back(Interval::closed(0, 0));
+          _intervals.push_back(Interval(0, 0));
           _usages.push_back(-1);
           _offsets.push_back(0);
         }
@@ -311,7 +311,7 @@ void EvalOccur::initialize()
             begin = rd->begin();
             end = rd->end();
           }
-          _intervals.push_back(Interval::closed(begin + offset, end + offset));
+          _intervals.push_back(Interval(begin + offset, end + offset));
           _usages.push_back(_range->pos(name));
           _offsets.push_back(offset);
         }
@@ -408,7 +408,7 @@ void GenerateEdge::build(list<Expression> exps)
   IntervalList sink_interval;
   if (sink_range) {
     for (auto rd : sink_range->definition()) {
-      sink_interval.push_back(Interval::closed(rd.second.begin(), rd.second.end()));
+      sink_interval.push_back(Interval(rd.second.begin(), rd.second.end()));
     }
   }
   for (Expression exp : exps) {
@@ -456,7 +456,7 @@ MDI GenerateEdge::getScalarMDI(Expression exp)
       AST_Expression cur = pexp.apply(current_element(it));
       if (cur->expressionType() == EXPINTEGER) {
         int v = cur->getAsInteger()->val();
-        interval.push_back(Interval::closed(v, v));
+        interval.push_back(Interval(v, v));
       } else {
         // @TODO: Add error message
         assert(false);

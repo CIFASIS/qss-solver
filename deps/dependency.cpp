@@ -40,7 +40,7 @@ MDI Dependency::variableRange(Variable var)
   if (var.isArray()) {
     int i, d = var.dimensions();
     for (i = 0; i < d; i++) {
-      intervals.push_back(Interval::closed(1, var.size(i)));
+      intervals.push_back(Interval(1, var.size(i)));
     }
   }
   return MDI(intervals);
