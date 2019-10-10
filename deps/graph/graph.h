@@ -152,6 +152,8 @@ class EvalOccur {
   void initialize();
   std::string reference(AST_Expression exp);
   int constant(AST_Expression exp);
+  int step(AST_Expression exp);
+  int getBinopInteger(AST_Expression exp);
 
   IR::Expression _exp;
   AST_Expression_ComponentReference _cr;

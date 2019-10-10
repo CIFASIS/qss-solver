@@ -197,7 +197,7 @@ MDI Label::getImage(MDI intersection) const
     assert(rel != INDEX_PAIR::R1_N);
     switch (rel) {
     case INDEX_PAIR::RN_N:
-      return intersection.ApplyOffset(Pair().GetOffset());
+      return intersection.getImage(orig);  // ApplyOffset(Pair().GetOffset());
     case INDEX_PAIR::R1_1:
       return Pair().Ran();
     default:
@@ -206,7 +206,7 @@ MDI Label::getImage(MDI intersection) const
   } else {
     switch (rel) {
     case INDEX_PAIR::RN_N:
-      return intersection.RevertOffset(Pair().GetOffset(), Pair().GetUsage(), Pair().Ran());
+      return intersection.revertImage(orig);  // RevertOffset(Pair().GetOffset(), Pair().GetUsage(), Pair().Ran());
     case INDEX_PAIR::R1_1:
       return Pair().Ran();
     case INDEX_PAIR::R1_N:
@@ -243,18 +243,44 @@ string EvalOccur::reference(AST_Expression exp)
   return "";
 }
 
+int EvalOccur::getBinopInteger(AST_Expression exp)
+{
+  assert(exp->expressionType() == EXPBINOP);
+  if (exp->getAsBinOp()->left()->expressionType() == EXPINTEGER) {
+    return exp->getAsBinOp()->left()->getAsInteger()->val();
+  }
+  if (exp->getAsBinOp()->right()->expressionType() == EXPINTEGER) {
+    return exp->getAsBinOp()->right()->getAsInteger()->val();
+  }
+  return 0;
+}
+
 int EvalOccur::constant(AST_Expression exp)
 {
   if (exp->expressionType() == EXPBINOP) {
+    if (!(exp->getAsBinOp()->binopType() == BINOPSUB || exp->getAsBinOp()->binopType() == BINOPADD)) {
+      return 0;
+    }
     int umin = 1;
     if (exp->getAsBinOp()->binopType() == BINOPSUB) {
       umin = -1;
     }
-    if (exp->getAsBinOp()->left()->expressionType() == EXPINTEGER) {
-      return umin * exp->getAsBinOp()->left()->getAsInteger()->val();
+    return umin * getBinopInteger(exp);
+  }
+  return 0;
+}
+
+int EvalOccur::step(AST_Expression exp)
+{
+  if (exp->expressionType() == EXPBINOP) {
+    if (exp->getAsBinOp()->binopType() == BINOPMULT) {
+      return getBinopInteger(exp);
     }
-    if (exp->getAsBinOp()->right()->expressionType() == EXPINTEGER) {
-      return umin * exp->getAsBinOp()->right()->getAsInteger()->val();
+    if (exp->getAsBinOp()->left()->expressionType() == BINOPMULT) {
+      return getBinopInteger(exp->getAsBinOp()->left());
+    }
+    if (exp->getAsBinOp()->right()->expressionType() == BINOPMULT) {
+      return getBinopInteger(exp->getAsBinOp()->right());
     }
   }
   return 0;
@@ -280,12 +306,13 @@ void EvalOccur::initialize()
         if (var && _range) {
           RangeDefinitionTable rdt = _range->definition();
           Option<RangeDefinition> rd = rdt[var->name()];
-          int begin = 0, end = 0;
+          int begin = 0, end = 0, step = 1;
           if (rd) {
             begin = rd->begin();
             end = rd->end();
+            step = rd->step();
           }
-          _intervals.push_back(Interval(begin, end));
+          _intervals.push_back(Interval(begin, end, step));
           _usages.push_back(_range->pos(var->name()));
           _offsets.push_back(0);
         } else if (var->isConstant()) {
@@ -302,6 +329,7 @@ void EvalOccur::initialize()
       } else if (cur->expressionType() == EXPBINOP) {
         int offset = constant(cur);
         string name = reference(cur);
+        int s = step(cur);
         Option<Variable> var = _symbols[name];
         if (var && _range) {
           RangeDefinitionTable rdt = _range->definition();
@@ -311,7 +339,7 @@ void EvalOccur::initialize()
             begin = rd->begin();
             end = rd->end();
           }
-          _intervals.push_back(Interval(begin + offset, end + offset));
+          _intervals.push_back(Interval(s * begin + offset, s * end + offset));
           _usages.push_back(_range->pos(name));
           _offsets.push_back(offset);
         }

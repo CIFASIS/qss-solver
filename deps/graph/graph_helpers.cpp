@@ -340,6 +340,50 @@ MDI MDI::RanToDom(IndexPair ip) const
   return rta;
 }
 
+MDI MDI::getImage(IndexPair p)
+{
+  MDI ret = DomToRan(p);
+  return ret.applyStep(p.Ran());
+}
+
+MDI MDI::revertImage(IndexPair p)
+{
+  MDI ret = RanToDom(p);
+  return ret.revertStep(p.Dom());
+}
+
+MDI MDI::applyStep(MDI other)
+{
+  assert(this->Dimension() == other.Dimension());
+  if (this->Dimension() == 0) {
+    // nothing to apply
+    return *this;
+  }
+  IntervalVector copy_intervals = intervals;
+  IntervalVector other_intervals = other.Intervals();
+  for (int i = 0; i < (int)copy_intervals.size(); i++) {
+    int step = other_intervals[i].step();
+    copy_intervals[i] = Interval(copy_intervals[i].lower() * step, copy_intervals[i].upper() * step);
+  }
+  return MDI(copy_intervals);
+}
+
+MDI MDI::revertStep(MDI other)
+{
+  assert(this->Dimension() == other.Dimension());
+  if (this->Dimension() == 0) {
+    // nothing to apply
+    return *this;
+  }
+  IntervalVector copy_intervals = intervals;
+  IntervalVector other_intervals = other.Intervals();
+  for (int i = 0; i < (int)copy_intervals.size(); i++) {
+    int step = other_intervals[i].step();
+    copy_intervals[i] = Interval(copy_intervals[i].lower() / step, copy_intervals[i].upper() / step);
+  }
+  return MDI(copy_intervals);
+}
+
 std::list<MDI> MDI::operator-(const MDI &other)
 {
   // if (this->Dimension()!=other.Dimension()) {

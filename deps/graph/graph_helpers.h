@@ -51,6 +51,7 @@ class Interval {
   inline bool contains(const Interval& other) const { return ICL::contains(_interval, other._interval); }
   inline bool intersects(const Interval& other) const { return ICL::intersects(_interval, other._interval); }
   inline bool isEmpty() const { return ICL::is_empty(_interval); }
+  inline int step() const { return _step; };
 
   protected:
   int getStep(const Interval& other) const;
@@ -141,6 +142,8 @@ class MDI {  // Multi-Dimensional Interval
   MDI RevertOffset(Offset offset, Usage usage, MDI ran) const;
   MDI ApplyUsage(Usage, MDI ran = MDI({})) const;
   MDI RevertUsage(Usage usage, MDI dom = MDI({})) const;
+  MDI applyStep(MDI other);
+  MDI revertStep(MDI other);
   // karupayun - Para moverse usando la info de la conexion entre Dom y Ran
   MDI DomToRan(IndexPair ip) const;
   MDI RanToDom(IndexPair ip) const;
@@ -155,6 +158,8 @@ class MDI {  // Multi-Dimensional Interval
   inline IntervalVector mdi() { return intervals; };
   bool unique() const;
   inline bool isEmpty() const { return intervals.size() == 0; };
+  MDI getImage(IndexPair p);
+  MDI revertImage(IndexPair p);
 
   private:
   IntervalVector intervals;
@@ -215,4 +220,5 @@ std::ostream& operator<<(std::ostream& os, const std::list<MDI>& mdiList);
 
 }  // namespace Deps
 }  // namespace MicroModelica
+
 #endif /* DEPS_GRAPH_HELPERS_H_ */
