@@ -19,15 +19,92 @@
 
 #include "graph_helpers.h"
 
-#include <stdarg.h>
+#include <boost/math/common_factor.hpp>
 #include <iostream>
+#include <stdarg.h>
 
 namespace MicroModelica {
 namespace Deps {
 
 Interval::Interval(int a, int b) : _step(1) { _interval = ICL::discrete_interval<int>(a, b, ICL::interval_bounds::closed()); }
 
-Interval Interval::operator&(const Interval &other) const { return Interval(_interval & other._interval); }
+Interval::Interval(int a, int b, int step) : _step(step) { _interval = ICL::discrete_interval<int>(a, b, ICL::interval_bounds::closed()); }
+
+int Interval::getStep(const Interval &other) const { return boost::math::lcm(_step, other._step); }
+
+int Interval::getLowerBound(const Interval &other, int new_step) const
+{
+  int lower_a = _interval.lower();
+  int lower_b = other._interval.lower();
+  if (lower_a == lower_b) {
+    return lower_a;
+  }
+  int lower = lower_a;
+  int lower_step = _step;
+  int bigger = lower_b;
+  int bigger_step = other._step;
+  if (lower_b < lower) {
+    lower = lower_b;
+    lower_step = other._step;
+    bigger = lower_a;
+    bigger_step = _step;
+  }
+  int end_search = bigger + new_step;
+  int N = (bigger - lower) / lower_step;
+  int current_lower = lower + lower_step * N;
+  int current_upper = bigger;
+  while (current_lower < end_search) {
+    if (current_lower == current_upper) {
+      return current_lower;
+    }
+    // Advance one step in lower.
+    current_lower += lower_step;
+    // Advance one or more step in bigger if needed.
+    while (current_lower > current_upper) {
+      current_upper += bigger_step;
+    }
+  }
+  return -1;
+}
+
+int Interval::getUpperBound(int new_begin, int new_step, int upper) const
+{
+  int N = (upper - new_begin) / new_step;
+  return new_begin + N * new_step;
+}
+
+bool Interval::checkStepIntersection(const Interval &other) const
+{
+  int lower_a = _interval.lower();
+  int lower_b = other._interval.lower();
+  bool no_common_div = boost::math::gcd(_step, other._step) == 1;
+  bool lower_even = isEven(lower_a) || isEven(lower_b);
+  bool lower_odd = isOdd(lower_a) || isOdd(lower_b);
+  bool new_step_even = isEven(getStep(other));
+  return !(no_common_div && lower_even && lower_odd && new_step_even);
+}
+
+Interval Interval::operator&(const Interval &other) const
+{
+  DiscreteInterval intersection = _interval & other._interval;
+  // Intersection without steps.
+  if (_step == 1 && other._step == 1) {
+    return Interval(intersection);
+  }
+  if (!checkStepIntersection(other)) {
+    return Interval();
+  }
+  int new_step = getStep(other);
+  int lower_bound = getLowerBound(other, new_step);
+  if (lower_bound == -1) {
+    return Interval();
+  }
+  if (lower_bound + new_step > intersection.upper()) {
+    return Interval(lower_bound, lower_bound);
+  }
+  int upper_bound = getUpperBound(lower_bound, new_step, intersection.upper());
+  return Interval(lower_bound, upper_bound, new_step);
+}
 
 bool Interval::operator<(const Interval &other) const { return _interval < other._interval; }
 
@@ -295,7 +372,11 @@ Option<MDI> MDI::operator&(const MDI &other) const
     if (!this->intervals[i].intersects(other.intervals[i])) {
       return Option<MDI>();
     } else {
-      intersection.push_back((this->intervals[i]) & (other.intervals[i]));
+      Interval possible_intersection = (this->intervals[i]) & (other.intervals[i]);
+      if (possible_intersection.isEmpty()) {
+        return Option<MDI>();
+      }
+      intersection.push_back(possible_intersection);
     }
   }
   // All intervals intersect with its corresponding interval in the other MDI:

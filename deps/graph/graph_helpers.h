@@ -34,25 +34,31 @@ namespace ICL = boost::icl;
 namespace MicroModelica {
 namespace Deps {
 
-/// @brief A pair representing a usage of a variable in an equation
-// typedef ICL::discrete_interval<int> Interval;
-// inline Interval CreateInterval(int a, int b) { return ICL::discrete_interval<int>(a, b, ICL::interval_bounds::closed()); }
-
 class Interval {
   public:
   typedef ICL::discrete_interval<int> DiscreteInterval;
   Interval() : _interval(), _step(1){};
+  Interval(int a, int b, int step);
   Interval(int a, int b);
-  Interval(DiscreteInterval interval) : _interval(interval), _step(1){};
+  Interval(DiscreteInterval interval, int step = 1) : _interval(interval), _step(step){};
   inline bool operator==(const Interval& other) const { return this->_interval == other._interval; };
   inline bool operator!=(const Interval& other) const { return this->_interval != other._interval; };
   inline int lower() { return _interval.lower(); }
   inline int upper() { return _interval.upper(); }
-  inline int size() { return boost::icl::size(_interval); }
+  inline int size() { return ICL::size(_interval); }
   bool operator<(const Interval& other) const;
   Interval operator&(const Interval& other) const;
-  inline bool contains(const Interval& other) const { return boost::icl::contains(_interval, other._interval); }
-  inline bool intersects(const Interval& other) const { return boost::icl::intersects(_interval, other._interval); }
+  inline bool contains(const Interval& other) const { return ICL::contains(_interval, other._interval); }
+  inline bool intersects(const Interval& other) const { return ICL::intersects(_interval, other._interval); }
+  inline bool isEmpty() const { return ICL::is_empty(_interval); }
+
+  protected:
+  int getStep(const Interval& other) const;
+  int getLowerBound(const Interval& other, int new_step) const;
+  int getUpperBound(int new_begin, int new_step, int upper) const;
+  bool checkStepIntersection(const Interval& other) const;
+  inline bool isEven(int n) const { return (n % 2) == 0; }
+  inline bool isOdd(int n) const { return !isEven(n); }
 
   private:
   DiscreteInterval _interval;
