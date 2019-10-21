@@ -24,6 +24,7 @@
 namespace MicroModelica {
 using namespace IR;
 namespace Util {
+
 bool Occurs::foldTraverseElement(AST_Expression exp)
 {
   switch (exp->expressionType()) {
@@ -33,7 +34,6 @@ bool Occurs::foldTraverseElement(AST_Expression exp)
     if (var && (var->name() == _var)) {
       Expression ep(exp, _symbols);
       _occs[ep.print()] = ep;
-      cout << "Agrega: " << ep << endl;
       return true;
     }
     break;
