@@ -33,6 +33,74 @@ namespace MicroModelica {
 using namespace Util;
 namespace Deps {
 
+void Dependency::print(DepsGraph graph)
+{
+  for (Vertex vertex : boost::make_iterator_range(vertices(graph))) {
+    VertexProperty vertex_info = graph[vertex];
+    if (vertex_info.type() == VERTEX::Influencer) {
+      Variable var = vertex_info.var();
+      cout << "Print edges for: " << var << " Source range: " << variableRange(var) << endl;
+      printEdges(graph, vertex, variableRange(vertex_info.var()));
+    }
+  }
+}
+
+void Dependency::printEdges(DepsGraph graph, Vertex source_vertex, MDI source_range)
+{
+  VertexProperty source_vertex_info = graph[source_vertex];
+  boost::graph_traits<DepsGraph>::out_edge_iterator edge, out_edge_end;
+  stringstream buffer;
+  for (boost::tie(edge, out_edge_end) = out_edges(source_vertex, graph); edge != out_edge_end; ++edge) {
+    Label lbl = graph[*edge];
+    MDI dom = lbl.Pair().Dom();
+    MDI ran = source_range;
+    buffer << "Processing new output edge" << endl;
+    Option<MDI> intersect = source_range.Intersection(dom);
+    if (intersect) {
+      buffer << "Intersection found for " << source_range << " and " << dom;
+      MDI intersection = boost::get<MDI>(intersect);
+      ran = lbl.getImage(intersection);
+      buffer << " IMAGE " << ran;
+    } else {
+      buffer << "NO Intersection found for " << source_range << " and " << dom;
+    }
+    cout << buffer.str() << endl;
+    buffer.str("");
+    auto target_vertex = boost::target(*edge, graph);
+    if (source_vertex_info.type() == VERTEX::Influencer) {
+      // Store the influencer index pair.
+      buffer.str("");
+      buffer << "Source " << source_vertex_info.var().name();
+      buffer << " Exp: " << lbl.Pair().exp();
+      buffer << " Dom: " << lbl.Pair().Dom();
+      buffer << " Ran: " << lbl.Pair().Ran() << " -----> ";
+    }
+    VertexProperty target_vertex_info = graph[target_vertex];
+    if (target_vertex_info.type() == VERTEX::Influencee) {
+      assert(source_vertex_info.type() == VERTEX::Equation || source_vertex_info.type() == VERTEX::Statement);
+      int id;
+      if (source_vertex_info.type() == VERTEX::Equation) {
+        id = source_vertex_info.eq().id();
+      } else {
+        // @TODO Set statement id.
+        id = 0;
+      }
+      buffer << " Equation " << id << " to variable " << target_vertex_info.var().name() << endl;
+      cout << buffer.str();
+    } else if (target_vertex_info.type() == VERTEX::Algebraic) {
+      assert(source_vertex_info.type() == VERTEX::Equation);
+      int id = source_vertex_info.eq().id();
+      buffer << " Algebraic Equation " << id << " to variable " << target_vertex_info.var().name();
+      cout << buffer.str();
+      printEdges(graph, target_vertex, ran);
+    } else {
+      buffer << " Following equation ";
+      cout << buffer.str();
+      printEdges(graph, target_vertex, ran);
+    }
+  }
+}
+
 MDI Dependency::variableRange(Variable var)
 {
   IntervalList intervals;
