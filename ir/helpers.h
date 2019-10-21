@@ -181,6 +181,8 @@ class ModelConfig {
   inline bool isQss() { return !_model_annotations.isClassic(); };
   inline void setDerivatives(EquationTable derivatives) { _derivatives = derivatives; };
   inline EquationTable derivatives() { return _derivatives; };
+  inline void setInitialCode(bool initial_code) { _initial_code = initial_code; };
+  inline bool initialCode() { return _initial_code; };
 
   private:
   ModelConfig();
@@ -188,6 +190,7 @@ class ModelConfig {
   EquationTable _algebraics;
   Deps::ModelDependencies _dependencies;
   EquationTable _derivatives;
+  bool _initial_code;
 };
 
 class DepInfo {

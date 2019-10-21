@@ -392,7 +392,7 @@ ostream& operator<<(std::ostream& out, const Input& i)
   return out;
 }
 
-ModelConfig::ModelConfig() : _model_annotations(), _algebraics(), _dependencies() {}
+ModelConfig::ModelConfig() : _model_annotations(), _algebraics(), _dependencies(), _initial_code(false) {}
 
 bool ModelConfig::generateDerivatives() { return _model_annotations.symDiff() && isQss(); }
 
