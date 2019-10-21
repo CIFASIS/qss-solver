@@ -86,7 +86,15 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
   }
   case EXPDERIVATIVE: {
     AST_Expression_Derivative der = exp->getAsDerivative();
-    buffer << apply(AST_ListFirst(der->arguments()));
+    int order = _order;
+    _order = 1;
+    AST_Expression args = AST_ListFirst(der->arguments());
+    while (args->expressionType() == EXPDERIVATIVE) {
+      _order++;
+      args = AST_ListFirst(args->getAsDerivative()->arguments());
+    }
+    buffer << apply(args);
+    _order = order;
     break;
   }
   case EXPINTEGER:
@@ -196,6 +204,9 @@ VariablePrinter::VariablePrinter(Variable var, AST_Expression_ComponentReference
 void VariablePrinter::generate()
 {
   stringstream buffer;
+  if (ModelConfig::instance().initialCode() && _var.isState()) {
+    buffer << "_init";
+  }
   buffer << _var;
   const bool PRINT_COEFF = _is_qss && (_var.isState() || _var.isAlgebraic());
   const bool HAS_INDEXES = _ref->hasIndexes();
