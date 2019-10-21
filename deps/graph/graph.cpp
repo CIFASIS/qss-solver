@@ -276,11 +276,17 @@ int EvalOccur::step(AST_Expression exp)
     if (exp->getAsBinOp()->binopType() == BINOPMULT) {
       return getBinopInteger(exp);
     }
-    if (exp->getAsBinOp()->left()->expressionType() == BINOPMULT) {
-      return getBinopInteger(exp->getAsBinOp()->left());
+    AST_Expression op = exp->getAsBinOp()->left();
+    if (op->expressionType() == EXPBINOP) {
+      if (op->getAsBinOp()->binopType() == BINOPMULT) {
+        return getBinopInteger(op);
+      }
     }
-    if (exp->getAsBinOp()->right()->expressionType() == BINOPMULT) {
-      return getBinopInteger(exp->getAsBinOp()->right());
+    op = exp->getAsBinOp()->right();
+    if (op->expressionType() == EXPBINOP) {
+      if (op->getAsBinOp()->binopType() == BINOPMULT) {
+        return getBinopInteger(op);
+      }
     }
   }
   return 0;
