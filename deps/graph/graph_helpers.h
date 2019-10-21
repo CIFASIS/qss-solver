@@ -38,9 +38,12 @@ class Interval {
   public:
   typedef ICL::discrete_interval<int> DiscreteInterval;
   Interval() : _interval(), _step(1){};
-  Interval(int a, int b, int step);
-  Interval(int a, int b);
+  Interval(int a, int b, int step = 1) : _interval(), _step(step)
+  {
+    _interval = ICL::discrete_interval<int>(a, b, ICL::interval_bounds::closed());
+  };
   Interval(DiscreteInterval interval, int step = 1) : _interval(interval), _step(step){};
+  Interval(const Interval& other);
   inline bool operator==(const Interval& other) const { return this->_interval == other._interval; };
   inline bool operator!=(const Interval& other) const { return this->_interval != other._interval; };
   inline int lower() { return _interval.lower(); }
