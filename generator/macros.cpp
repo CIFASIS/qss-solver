@@ -36,15 +36,19 @@ Macros::Macros(IR::Model& model, Util::Variable& variable) : _model(model), _var
   initialize();
 }
 
-string Macros::parameters() const
+string Macros::parameters(MACROS::Offset offset) const
 {
   stringstream buffer;
+  string dim_offset = "";
+  if (offset == MACROS::Engine) {
+    dim_offset = "-1";
+  }
   int dim = _variable.dimensions();
   if (dim) {
     buffer << "(";
   }
   for (int i = 0; i < dim; i++) {
-    buffer << "d" << i + 1 << (((i == dim - 1) && !_is_qss) ? ")" : ",");
+    buffer << "d" << i + 1 << dim_offset << (((i == dim - 1) && !_is_qss) ? ")" : ",");
   }
   if (_is_qss && dim) {
     buffer << "coeff)";
@@ -116,7 +120,7 @@ string Macros::engineIndex() const
 
 void Macros::initialize()
 {
-  stringstream index, def, state_index;
+  stringstream index, def, state_index, state_def, init_code;
   int dim = _variable.dimensions();
   bool idx = !_variable.isParameter() || dim;
   string params = parameters();
@@ -133,6 +137,7 @@ void Macros::initialize()
     _macros << "#define " << _variable << params << " ";
     if (_variable.isState()) {
       _macros << "x";
+      init_code << "#define _init" << _variable << params << " x";
     }
     if (_variable.isAlgebraic()) {
       _macros << "a";
@@ -154,7 +159,15 @@ void Macros::initialize()
     if (idx) {
       def << "]";
     }
-    _macros << def.str() << endl;
+    state_def << def.str();
+    if (_is_qss) {
+      state_def << " * COEFF_MULTIPLIER(coeff)";
+    }
+    _macros << state_def.str() << endl;
+    if (_variable.isState()) {
+      init_code << def.str() << endl;
+      _macros << init_code.str();
+    }
   }
   if (_variable.isState() || _variable.isOutput() || _variable.isEqType()) {
     FunctionPrinter fp = FunctionPrinter();
@@ -222,6 +235,38 @@ string Macros::modelAccess(int discretes, int algebraics)
     buffer << "  double* a = m->alg;" << endl;
   } else {
     buffer << "  double* x = m->x; " << endl;
+  }
+  buffer << endl;
+  return buffer.str();
+}
+
+string Macros::coeffMultipliers(int order)
+{
+  stringstream buffer;
+  buffer << "#define COEFF_MULTIPLIER(c) COEFF_MULTIPLIER_##c" << endl;
+  switch (order) {
+  case 1:
+    buffer << "#define COEFF_MULTIPLIER_0 1" << endl;
+    buffer << "#define COEFF_MULTIPLIER_1 1" << endl;
+    break;
+  case 2:
+    buffer << "#define COEFF_MULTIPLIER_0 1" << endl;
+    buffer << "#define COEFF_MULTIPLIER_1 1" << endl;
+    buffer << "#define COEFF_MULTIPLIER_2 2" << endl;
+    break;
+  case 3:
+    buffer << "#define COEFF_MULTIPLIER_0 1" << endl;
+    buffer << "#define COEFF_MULTIPLIER_1 1" << endl;
+    buffer << "#define COEFF_MULTIPLIER_2 2" << endl;
+    buffer << "#define COEFF_MULTIPLIER_3 6" << endl;
+    break;
+  case 4:
+    buffer << "#define COEFF_MULTIPLIER_0 1" << endl;
+    buffer << "#define COEFF_MULTIPLIER_1 1" << endl;
+    buffer << "#define COEFF_MULTIPLIER_2 2" << endl;
+    buffer << "#define COEFF_MULTIPLIER_3 6" << endl;
+    buffer << "#define COEFF_MULTIPLIER_4 24" << endl;
+    break;
   }
   buffer << endl;
   return buffer.str();

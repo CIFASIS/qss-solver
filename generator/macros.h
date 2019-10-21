@@ -31,6 +31,10 @@
 namespace MicroModelica {
 namespace Generator {
 
+namespace MACROS {
+typedef enum { Modelica, Engine } Offset;
+}
+
 /**
  *
  */
@@ -40,13 +44,14 @@ class Macros {
   Macros() : _model(), _variable(){};
   ~Macros(){};
   std::string print() const { return _macros.str(); };
-  std::string parameters() const;
+  std::string parameters(MACROS::Offset offset = MACROS::Modelica) const;
   std::string engineIndex() const;
   std::string engineIndexArguments() const;
   std::string arguments(bool state = true) const;
   std::string usage(std::string token, Option<IR::Range> range, int id) const;
   std::string indexMacro(std::string token, Option<IR::Range> range, int id) const;
   std::string modelAccess(int discretes, int algebraics);
+  std::string coeffMultipliers(int order);
   friend std::ostream& operator<<(std::ostream& out, const Macros& m);
 
   protected:
