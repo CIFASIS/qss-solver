@@ -26,9 +26,16 @@
 namespace MicroModelica {
 namespace Deps {
 
-Interval::Interval(int a, int b) : _step(1) { _interval = ICL::discrete_interval<int>(a, b, ICL::interval_bounds::closed()); }
+// Interval::Interval(int a, int b) : _step(1) { _interval = ICL::discrete_interval<int>(a, b, ICL::interval_bounds::closed()); }
 
-Interval::Interval(int a, int b, int step) : _step(step) { _interval = ICL::discrete_interval<int>(a, b, ICL::interval_bounds::closed()); }
+// Interval::Interval(int a, int b, int step) : _step(step) { _interval = ICL::discrete_interval<int>(a, b, ICL::interval_bounds::closed());
+// }
+
+Interval::Interval(const Interval &other)
+{
+  _step = other._step;
+  _interval = other._interval;
+}
 
 int Interval::getStep(const Interval &other) const { return boost::math::lcm(_step, other._step); }
 
@@ -95,6 +102,7 @@ Interval Interval::operator&(const Interval &other) const
     return Interval();
   }
   int new_step = getStep(other);
+  assert(new_step > 0);
   int lower_bound = getLowerBound(other, new_step);
   if (lower_bound == -1) {
     return Interval();
