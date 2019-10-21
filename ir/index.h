@@ -47,7 +47,7 @@ class RangeDefinition {
   inline int begin() { return _begin; };
   inline int end() { return _end; };
   inline int step() { return _step; };
-  inline int size() const { return (_begin == _end) ? 1 : (_end - _begin) / _step; };
+  inline int size() const { return (_begin == _end) ? 1 : (_end - _begin + 1) / _step; };
   friend std::ostream& operator<<(std::ostream& out, const RangeDefinition& rd);
 
   private:
