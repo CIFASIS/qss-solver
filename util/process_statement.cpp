@@ -83,7 +83,6 @@ AST_Statement processStatement(AST_Statement stm)
           lhs = e->getAsComponentReference();
           VarSymbolTable symbols = Utils::instance().symbols();
           string sname = lhs->name();
-          cout << "BUSCA: " << sname << endl;
           Option<Variable> var = symbols[sname];
           if (!var) {
             Error::instance().add(lhs->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", sname.c_str());
