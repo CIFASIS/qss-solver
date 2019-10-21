@@ -100,7 +100,7 @@ class ModelDependencies {
   };
   inline VariableDependencyMatrix LHSDsc()
   {
-    _LHSDsc.setMode(VDM::Normal);
+    _LHSDsc.setMode(VDM::Transpose);
     return _LHSDsc;
   };
   inline VariableDependencyMatrix LHSSt()
