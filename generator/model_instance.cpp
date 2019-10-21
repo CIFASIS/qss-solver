@@ -244,6 +244,11 @@ void ModelInstance::header()
   Macros access_macro;
   buffer << access_macro.modelAccess(_model.discreteNbr(), _model.algebraicNbr());
   _writer->write(buffer, WRITER::Model_Header);
+  if (ModelConfig::instance().isQss()) {
+    _writer->write("// Coeff multipliers definition.\n", WRITER::Model_Header);
+    buffer << access_macro.coeffMultipliers(_model.annotations().order());
+    _writer->write(buffer, WRITER::Model_Header);
+  }
   _writer->write("// Model Variables and Parameters Macros\n", WRITER::Model_Header);
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     if (var.isModelVar()) {
@@ -353,6 +358,7 @@ void ModelInstance::initialCode()
   StatementTable::iterator it;
   stringstream buffer;
   Utils::instance().setLocalInitSymbols();
+  ModelConfig::instance().setInitialCode(true);
   for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
     _writer->write(stm, WRITER::Init_Code);
   }
@@ -364,6 +370,7 @@ void ModelInstance::initialCode()
     }
     _writer->write(var.initialization(symbols), WRITER::Init_Code);
   }
+  ModelConfig::instance().setInitialCode(false);
   Utils::instance().unsetLocalInitSymbols();
 }
 
@@ -572,6 +579,7 @@ void QSSModelInstance::initializeDataStructures()
 
   // Initialize Event Data Structures.
   initializeMatrix(deps.SZ(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+  initializeMatrix(deps.ZS(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
 
   initializeMatrix(deps.HZ(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
   initializeMatrix(deps.HD(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
@@ -665,7 +673,7 @@ void QSSModelInstance::header()
     if (var.isState()) {
       stringstream buffer;
       Macros macros(_model, var);
-      buffer << "#define _der" << var << macros.parameters() << " dx[coeff]";
+      buffer << "#define _der" << var << macros.parameters() << " dx[coeff+1]";
       _writer->write(buffer, WRITER::Model_Header);
     }
   }
@@ -708,13 +716,14 @@ void ClassicModelInstance::initializeDataStructures()
   initializeMatrix(deps.DS(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
   configEvents();
   inputs();
+  _writer->write("CLC_allocDataMatrix(modelData);", WRITER::Alloc_Data);
   // Initialize Output Data Structures.
   allocateOutput();
   initializeMatrix(deps.OS(), WRITER::Alloc_Output, WRITER::Init_Output, _model.outputNbr());
   initializeMatrix(deps.OD(), WRITER::Alloc_Output, WRITER::Init_Output, _model.outputNbr());
-  configOutput();
   initializeMatrix(deps.SO(), WRITER::Alloc_Output, WRITER::Init_Output, _model.stateNbr());
   initializeMatrix(deps.DO(), WRITER::Alloc_Output, WRITER::Init_Output, _model.discreteNbr());
+  configOutput();
   allocateModel();
   Utils::instance().unsetLocalInitSymbols();
 }
@@ -746,7 +755,6 @@ string ClassicModelInstance::allocateModel()
 void ClassicModelInstance::generate()
 {
   definition();
-  jacobian();
   initializeDataStructures();
   ModelInstance::generate();
   _writer->print(componentDefinition(MODEL_INSTANCE::CLC_Init));
@@ -777,9 +785,14 @@ void ClassicModelInstance::header()
   _writer->write(buffer, WRITER::Model_Header);
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     if (var.isState()) {
-      stringstream buffer;
+      stringstream buffer, arguments;
       Macros macros(_model, var);
-      buffer << "#define _der" << var << macros.parameters() << " dx[0]";
+      if (var.isArray()) {
+        arguments << macros.parameters(MACROS::Engine);
+      } else {
+        arguments << var.offset();
+      }
+      buffer << "#define _der" << var << macros.parameters() << " dx[" << arguments.str() << "]";
       _writer->write(buffer, WRITER::Model_Header);
     }
   }
