@@ -23,6 +23,7 @@
 #include "../util/util.h"
 #include "../util/process_statement.h"
 #include "../util/visitors/called_functions.h"
+#include "helpers.h"
 #include "statement.h"
 
 namespace MicroModelica {
@@ -117,6 +118,14 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
   return asgs;
 }
 
+bool Statement::checkStateAssignment(Expression exp) const
+{
+  assert(exp.isReference());
+  Option<Variable> var = exp.reference();
+  assert(var);
+  return var->isState();
+}
+
 string Statement::print() const
 {
   stringstream buffer;
@@ -160,7 +169,14 @@ string Statement::print() const
     AST_Statement_Assign asg = _stm->getAsAssign();
     Expression lhs(asg->lhs(), _symbols);
     Expression rhs(asg->exp(), _symbols);
+    bool state_assignment = checkStateAssignment(lhs);
+    if (state_assignment) {
+      ModelConfig::instance().setInitialCode(true);
+    }
     buffer << _block << lhs << " = " << rhs << ";";
+    if (state_assignment) {
+      ModelConfig::instance().setInitialCode(false);
+    }
     break;
   }
   case STFOR: {

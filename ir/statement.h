@@ -75,6 +75,7 @@ class Statement {
   void initialize();
   ExpressionList generateExps(STATEMENT::AssignTerm asg);
   Expression emptyRef();
+  bool checkStateAssignment(Expression exp) const;
 
   private:
   AST_Statement _stm;
