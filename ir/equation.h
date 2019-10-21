@@ -145,16 +145,6 @@ class EquationPrinter {
   std::string _identifier;
 };
 
-class ClassicConfig : public EquationPrinter {
-  public:
-  ClassicConfig(Equation eq, Util::VarSymbolTable symbols) : EquationPrinter(eq, symbols), _eq(eq){};
-  ~ClassicConfig() = default;
-  std::string print() const override;
-
-  private:
-  Equation _eq;
-};
-
 class JacobianConfig : public EquationPrinter {
   public:
   JacobianConfig(Equation eq, Util::VarSymbolTable symbols) : EquationPrinter(eq, symbols), _eq(eq){};
@@ -171,6 +161,7 @@ class EquationConfig : public EquationPrinter {
   ~EquationConfig() = default;
   std::string print() const override;
   std::string macro() const override;
+  inline void factorialInit(int fact_init) { _fact_init = fact_init; };
 
   protected:
   void initializeDerivatives();
@@ -180,6 +171,17 @@ class EquationConfig : public EquationPrinter {
   Equation _eq;
   Util::VarSymbolTable _symbols;
   Expression _derivatives[3];
+  int _fact_init;
+};
+
+class ClassicConfig : public EquationConfig {
+  public:
+  ClassicConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq){};
+  ~ClassicConfig() = default;
+  std::string print() const override;
+
+  private:
+  Equation _eq;
 };
 
 class OutputConfig : public EquationConfig {
@@ -217,7 +219,7 @@ class DependencyConfig : public EquationConfig {
 
 class ZeroCrossingConfig : public EquationConfig {
   public:
-  ZeroCrossingConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq){};
+  ZeroCrossingConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq) { factorialInit(1); };
   ~ZeroCrossingConfig() = default;
   std::string equationId() const override;
 

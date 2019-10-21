@@ -443,7 +443,8 @@ string OutputConfig::print() const
   return buffer.str();
 }
 
-EquationConfig::EquationConfig(Equation eq, VarSymbolTable symbols) : EquationPrinter(eq, symbols), _eq(eq), _symbols(symbols)
+EquationConfig::EquationConfig(Equation eq, VarSymbolTable symbols)
+    : EquationPrinter(eq, symbols), _eq(eq), _symbols(symbols), _fact_init(2)
 {
   initializeDerivatives();
 }
@@ -470,18 +471,15 @@ string EquationConfig::macro() const
 void EquationConfig::initializeDerivatives()
 {
   if (ModelConfig::instance().generateDerivatives()) {
-    static constexpr int SECOND_ORDER = 1;
-    static constexpr int THIRD_ORDER = 2;
-    static constexpr int FOURTH_ORDER = 3;
     ExpressionDerivator ed;
     ReplaceDer replace_der(_symbols);
     Expression rhs = _eq.rhs();
     AST_Expression exp1 = ed.derivate(rhs.expression(), _symbols, rhs);
-    _derivatives[0] = Expression(exp1, _symbols, SECOND_ORDER);
+    _derivatives[0] = Expression(exp1, _symbols);
     AST_Expression exp2 = ed.derivate(exp1, _symbols, rhs);
-    _derivatives[1] = Expression(replace_der.apply(exp2), _symbols, THIRD_ORDER);
+    _derivatives[1] = Expression(replace_der.apply(exp2), _symbols);
     AST_Expression exp3 = ed.derivate(exp2, _symbols, rhs);
-    _derivatives[2] = Expression(replace_der.apply(exp3), _symbols, FOURTH_ORDER);
+    _derivatives[2] = Expression(replace_der.apply(exp3), _symbols);
   }
 }
 
@@ -491,10 +489,12 @@ string EquationConfig::generateDerivatives(string tabs, int init) const
   if (config.generateDerivatives()) {
     stringstream buffer;
     int order = config.order() - 1;
+    int fact = _fact_init;
     for (int i = 0; i < order; i++) {
-      buffer << tabs << prefix() << lhs(init + i) << " = " << _derivatives[i] << ";";
+      buffer << tabs << prefix() << lhs(init + i) << " = (" << _derivatives[i] << ")/" << fact << ";";
       if (i + 1 < order) {
         buffer << endl;
+        fact *= fact + 1;
       }
     }
     return buffer.str();
