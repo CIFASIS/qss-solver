@@ -289,15 +289,19 @@ string FunctionPrinter::algebraics(EquationDependencyMatrix eqdm, depId key)
   return buffer.str();
 }
 
-string FunctionPrinter::getIndexes(string var, Option<Range> range, bool modelica_index) const
+string FunctionPrinter::getIndexes(string var, Option<Range> range, int offset, bool modelica_index) const
 {
   stringstream buffer;
   if (range) {
     RangeDefinitionTable rdt = range->definition();
     RangeDefinitionTable::iterator it;
     int size = rdt.size(), i = 0, idx = 0;
+    stringstream offset_var;
+    offset_var << "(" << var << "-" << offset << ")";
+    string alligned_var = offset_var.str();
     for (RangeDefinition rd = rdt.begin(it); !rdt.end(it); rd = rdt.next(it), idx++) {
-      buffer << TAB << rdt.key(it) << " = " << (i + 1 < size ? div(mod(var, idx - 1, range), idx, range) : mod(var, idx - 1, range))
+      buffer << TAB << rdt.key(it) << " = "
+             << (i + 1 < size ? div(mod(alligned_var, idx - 1, range), idx, range) : mod(alligned_var, idx - 1, range))
              << (modelica_index ? "+ 1;" : ";") << (i + 1 < size ? " \\" : "") << endl;
       i++;
     }
@@ -311,9 +315,9 @@ string FunctionPrinter::accessMacros(string token, int offset, Option<Range> ran
   if (range && !range->isEmpty()) {
     macros << "#define _is_var" << token << "(idx) ";
     macros << "idx >= " << offset << " && ";
-    macros << "idx <= " << offset + range->size() << endl;
+    macros << "idx < " << offset + range->size() << endl;
     macros << "#define _get" << token << "_idxs(idx) \\" << endl;
-    macros << TAB << getIndexes("idx", range, modelica_index);
+    macros << TAB << getIndexes("idx", range, offset, modelica_index);
   }
   return macros.str();
 }

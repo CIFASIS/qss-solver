@@ -129,9 +129,10 @@ class FunctionPrinter {
                             FUNCTION_PRINTER::ReturnStatementType ret = FUNCTION_PRINTER::ReturnStatementType::Return) const;
   std::string algebraics(Deps::EquationDependencyMatrix eqdm, Deps::depId key);
   std::string algebraics(Deps::AlgebraicDependencies deps);
-  std::string getIndexes(string var, Option<Range> range, bool modelica_index) const;
+  std::string getIndexes(string var, Option<Range> range, int offset, bool modelica_index) const;
   std::string beginDimGuards(std::string token, string args, Option<Range> range) const;
   std::string endDimGuards(Option<Range> range) const;
+  /// TODO: Review modelica_index parameter usage.
   std::string accessMacros(std::string token, int offset, Option<Range> range, bool modelica_index = true) const;
   std::string outputVariableName(Expression exp, Option<Range> range);
 
