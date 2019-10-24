@@ -52,3 +52,7 @@ ChangeLog
 /dependency/lib
 /dependency/autom4te.cache
 mmoc.sublime-workspace
+.vscode/launch.json
+.vscode/settings.json
+.vscode/tasks.json
+MMOC.code-workspace
