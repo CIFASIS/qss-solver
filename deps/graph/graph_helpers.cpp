@@ -785,7 +785,9 @@ Option<IndexPair> IndexPair::operator&(const IndexPair &other) const
 
 INDEX_PAIR::Rel IndexPair::Type() const
 {
-  if (dom.Size() == ran.Size() && !dom.isEmpty() && !ran.isEmpty()) {
+  if (dom.Size() == ran.Size() && !dom.isEmpty() && !ran.isEmpty() && dom.unique()) {
+    return INDEX_PAIR::R1_1;
+  } else if (dom.Size() == ran.Size() && !dom.isEmpty() && !ran.isEmpty()) {
     return INDEX_PAIR::RN_N;
   } else if (dom.isEmpty() && ran.isEmpty()) {
     return INDEX_PAIR::R1_1;
