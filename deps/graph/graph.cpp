@@ -289,7 +289,7 @@ int EvalOccur::step(AST_Expression exp)
       }
     }
   }
-  return 0;
+  return 1;
 }
 
 void EvalOccur::initialize()
