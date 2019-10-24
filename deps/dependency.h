@@ -50,6 +50,8 @@ class Dependency {
 
   void merge(VariableDependencyMatrix& source, VariableDependencyMatrix& target, VariableDependencyMatrix& merge);
 
+  void append(VariableDependencyMatrix& a, VariableDependencyMatrix& b);
+
   protected:
   void influencees(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs);
   VariableDependency getVariableDependency(string name, MDI dom, MDI ran, int id);

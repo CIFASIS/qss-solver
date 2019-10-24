@@ -173,6 +173,14 @@ void Dependency::influencees(DepsGraph graph, Vertex source_vertex, MDI source_r
   }
 }
 
+void Dependency::append(VariableDependencyMatrix& a, VariableDependencyMatrix& b)
+{
+  VariableDependencyMatrix::const_iterator source_it;
+  for (source_it = b.begin(); source_it != b.end(); source_it++) {
+    a.insert(source_it->first, source_it->second);
+  }
+}
+
 void Dependency::merge(VariableDependencyMatrix& source, VariableDependencyMatrix& target, VariableDependencyMatrix& merge)
 {
   VariableDependencyMatrix::const_iterator source_it;
