@@ -101,6 +101,10 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, Equati
   SZGraphBuilder SZ = SZGraphBuilder(events, algs, symbols);
   _deps.compute(SZ.build(), _SZ);
 
+  VariableDependencyMatrix HZ_int(HHCfg);
+  _deps.merge(_LHSSt, _SZ, HZ_int);
+  _deps.append(_HZ, HZ_int);
+
   OutputGraphBuilder SO = OutputGraphBuilder(outputs, algs, symbols);
   _deps.compute(SO.build(), _SO);
   OutputGraphBuilder DO = OutputGraphBuilder(outputs, algs, symbols, OUTPUT::DO);
