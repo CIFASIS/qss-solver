@@ -123,6 +123,7 @@ void Macros::initialize()
   stringstream index, def, state_index, state_def, init_code;
   int dim = _variable.dimensions();
   bool idx = !_variable.isParameter() || dim;
+  static const bool IS_STATE = _variable.isState();
   string params = parameters();
   if (idx) {
     index << "_idx" << _variable << params;
@@ -160,7 +161,7 @@ void Macros::initialize()
       def << "]";
     }
     state_def << def.str();
-    if (_is_qss) {
+    if (_is_qss && IS_STATE) {
       state_def << " * COEFF_MULTIPLIER(coeff)";
     }
     _macros << state_def.str() << endl;
