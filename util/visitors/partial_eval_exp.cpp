@@ -43,6 +43,9 @@ AST_Expression PartialEvalExp::foldTraverseElement(AST_Expression exp)
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", cr->name().c_str());
       break;
     }
+    if (var->isConstant()) {
+      return newAST_Expression_Integer(var->value());
+    }
     if (cr->hasIndexes()) {
       AST_Expression_ComponentReference newCR = newAST_Expression_ComponentReference();
       AST_ExpressionList indexes = cr->firstIndex();
@@ -73,19 +76,19 @@ AST_Expression PartialEvalExp::foldTraverseElement(AST_Expression left, AST_Expr
   switch (binOpType) {
   case BINOPADD:
     if (shouldReturnInteger(left, right)) {
-      return (newAST_Expression_Integer(left->getAsInteger()->val() + right->getAsInteger()->val()));
+      return (newAST_Expression_Integer(getValue(left) + getValue(right)));
     } else {
       return newAST_Expression_BinOp(left, right, BINOPADD);
     }
   case BINOPSUB:
     if (shouldReturnInteger(left, right)) {
-      return (newAST_Expression_Integer(left->getAsInteger()->val() - right->getAsInteger()->val()));
+      return (newAST_Expression_Integer(getValue(left) - getValue(right)));
     } else {
       return newAST_Expression_BinOp(left, right, BINOPSUB);
     }
   case BINOPMULT:
     if (shouldReturnInteger(left, right)) {
-      return (newAST_Expression_Integer(left->getAsInteger()->val() * right->getAsInteger()->val()));
+      return (newAST_Expression_Integer(getValue(left) * getValue(right)));
     } else {
       return newAST_Expression_BinOp(left, right, BINOPMULT);
     }
@@ -94,13 +97,13 @@ AST_Expression PartialEvalExp::foldTraverseElement(AST_Expression left, AST_Expr
                        "process_for_equations - evalExp:\n"
                        "Division by zero.\n");
     if (shouldReturnInteger(left, right)) {
-      return (newAST_Expression_Integer(left->getAsInteger()->val() / right->getAsInteger()->val()));
+      return (newAST_Expression_Integer(getValue(left) / getValue(right)));
     } else {
       return newAST_Expression_BinOp(left, right, BINOPDIV);
     }
   case BINOPEXP:
     if (shouldReturnInteger(left, right)) {
-      return (newAST_Expression_Integer(pow(left->getAsInteger()->val(), right->getAsInteger()->val())));
+      return (newAST_Expression_Integer(pow(getValue(left), getValue(right))));
     } else {
       return newAST_Expression_BinOp(left, right, BINOPEXP);
     }
@@ -115,9 +118,40 @@ AST_Expression PartialEvalExp::foldTraverseElement(AST_Expression left, AST_Expr
   return NULL;
 }
 
+bool PartialEvalExp::isIntegerOrConstant(AST_Expression exp)
+{
+  if (exp->expressionType() == EXPINTEGER) {
+    return true;
+  } else if (exp->expressionType() == EXPCOMPREF) {
+    AST_Expression_ComponentReference ref = exp->getAsComponentReference();
+    Option<Variable> var = _symbols[ref->name()];
+    if (var) {
+      return var->isConstant();
+    }
+  }
+  return false;
+}
+
 bool PartialEvalExp::shouldReturnInteger(AST_Expression left, AST_Expression right)
 {
-  return (left->expressionType() == EXPINTEGER && right->expressionType() == EXPINTEGER);
+  return (isIntegerOrConstant(left) && isIntegerOrConstant(right));
+}
+
+int PartialEvalExp::getValue(AST_Expression exp)
+{
+  if (exp->expressionType() == EXPINTEGER) {
+    return exp->getAsInteger()->val();
+  } else if (exp->expressionType() == EXPCOMPREF) {
+    AST_Expression_ComponentReference ref = exp->getAsComponentReference();
+    Option<Variable> var = _symbols[ref->name()];
+    if (!var) {
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", ref->name().c_str());
+      return 0;
+    }
+    assert(var->isConstant());
+    return var->value();
+  }
+  assert(false);
 }
 }  // namespace Util
 }  // namespace MicroModelica

@@ -40,6 +40,8 @@ class PartialEvalExp : public AST_Expression_Fold<AST_Expression> {
   AST_Expression foldTraverseElementUMinus(AST_Expression);
   AST_Expression foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
   bool shouldReturnInteger(AST_Expression left, AST_Expression right);
+  int getValue(AST_Expression exp);
+  bool isIntegerOrConstant(AST_Expression exp);
   VarSymbolTable _symbols;
 };
 }  // namespace Util
