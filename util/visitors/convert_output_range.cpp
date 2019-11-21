@@ -54,6 +54,20 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
       }
       ret->append(newAST_String(cr->name()), new_indexes);
       return ret;
+    } else if (var->isArray()) {
+      /// If variable is an array, just add the entire range for the variable as output.
+      AST_Expression_ComponentReference ret = newAST_Expression_ComponentReference();
+      AST_ExpressionList new_indexes = newAST_ExpressionList();
+      int dims = var->dimensions();
+      for (int i = 0; i < dims; i++) {
+        string index = Utils::instance().iteratorVar(_dim);
+        Variable vi(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false);
+        _symbols.insert(index, vi);
+        AST_ListAppend(new_indexes, generateIndexVariable(var->size(_dim)));
+        _dim++;
+      }
+      ret->append(newAST_String(cr->name()), new_indexes);
+      return ret;
     }
     return exp;
   }
@@ -98,16 +112,21 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
     if (!var) {
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "Convert output expression: %s", _var.c_str());
     }
-    _intervals.push_back(Interval(1, var->size(_dim)));
-    string it_var = Utils::instance().iteratorVar(_dim);
-    AST_Expression_ComponentReference idx = newAST_Expression_ComponentReference();
-    AST_Expression_ComponentReference_Add(idx, newAST_String(it_var), newAST_ExpressionList());
-    return idx;
+    return generateIndexVariable(var->size(_dim));
   }
   default:
     break;
   }
   return exp;
+}
+
+AST_Expression ConvertOutputRange::generateIndexVariable(int size)
+{
+  _intervals.push_back(Interval(1, size));
+  string it_var = Utils::instance().iteratorVar(_dim);
+  AST_Expression_ComponentReference idx = newAST_Expression_ComponentReference();
+  AST_Expression_ComponentReference_Add(idx, newAST_String(it_var), newAST_ExpressionList());
+  return idx;
 }
 
 Option<Range> ConvertOutputRange::range()

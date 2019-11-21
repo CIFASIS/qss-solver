@@ -41,6 +41,8 @@ class ConvertOutputRange : public AST_Expression_Visitor<AST_Expression> {
   }
   inline AST_Expression foldTraverseElementUMinus(AST_Expression exp) { return exp; };
 
+  AST_Expression generateIndexVariable(int size);
+
   VarSymbolTable& _symbols;
   IR::Range _range;
   Deps::IntervalList _intervals;
