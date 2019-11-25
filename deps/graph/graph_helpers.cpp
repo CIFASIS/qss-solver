@@ -799,6 +799,8 @@ INDEX_PAIR::Rel IndexPair::Type() const
     return INDEX_PAIR::R1_1;
   } else if ((dom.Size() > ran.Size()) && ran.unique()) {
     return INDEX_PAIR::RN_1;
+  } else if (dom.unique() && ran.Size() > 1) {
+    return INDEX_PAIR::R1_N;
   } else if (dom.Size() < ran.Size()) {
     return INDEX_PAIR::RN_N;
   }
