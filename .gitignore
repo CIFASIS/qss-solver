@@ -56,3 +56,4 @@ mmoc.sublime-workspace
 .vscode/settings.json
 .vscode/tasks.json
 MMOC.code-workspace
+.vscode/c_cpp_properties.json
