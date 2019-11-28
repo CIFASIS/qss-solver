@@ -134,11 +134,12 @@ void Dependency::influencees(DepsGraph graph, Vertex source_vertex, MDI source_r
     MDI dom = lbl.Pair().Dom();
     Option<MDI> intersect = source_range.Intersection(dom);
     if (intersect) {
-      MDI intersection = boost::get<MDI>(intersect);
+      MDI intersection = intersect.get();
       auto target_vertex = boost::target(*edge, graph);
       if (source_vertex_info.type() == VERTEX::Influencer) {
         // Store the influencer index pair.
         _ifr = lbl.Pair();
+        _ifr_dom = intersection;
       }
       // First look if the target node is terminal.
       VertexProperty target_vertex_info = graph[target_vertex];
@@ -152,7 +153,7 @@ void Dependency::influencees(DepsGraph graph, Vertex source_vertex, MDI source_r
           // @TODO Set statement id.
           id = 0;
         }
-        VariableDependency var_dep = getVariableDependency(target_vertex_info.var().name(), intersection, ran, id);
+        VariableDependency var_dep = getVariableDependency(target_vertex_info.var().name(), _ifr_dom, ran, id);
         var_dep.setIfr(_ifr);
         var_dep.setIfe(lbl.Pair());
         var_dep.setRange();
@@ -160,11 +161,11 @@ void Dependency::influencees(DepsGraph graph, Vertex source_vertex, MDI source_r
         var_deps.push_back(inf);
       } else if (target_vertex_info.type() == VERTEX::Algebraic) {
         assert(source_vertex_info.type() == VERTEX::Equation);
-        // if (source_vertex_info.eq.type() == IR::EQUATION::Algebraic) {
-        int id = source_vertex_info.eq().id();
-        VariableDependency var_dep = getVariableDependency(target_vertex_info.var().name(), intersection, ran, id);
-        algs.push_back(var_dep);
-        //}
+        if (source_vertex_info.eq().type() == IR::EQUATION::Algebraic) {
+          int id = source_vertex_info.eq().id();
+          VariableDependency var_dep = getVariableDependency(target_vertex_info.var().name(), intersection, ran, id);
+          algs.push_back(var_dep);
+        }
         influencees(graph, target_vertex, ran, var_deps, algs);
       } else {
         influencees(graph, target_vertex, ran, var_deps, algs);
@@ -185,24 +186,25 @@ void Dependency::merge(VariableDependencyMatrix& source, VariableDependencyMatri
 {
   VariableDependencyMatrix::const_iterator source_it;
   for (source_it = source.begin(); source_it != source.end(); source_it++) {
-    // First look if the source variable affects some var in the target matrix.
+    // First look if the source variable affects some equation in the target matrix.
     Option<VariableDependencies> has_target_deps = target[source_it->first];
     if (!has_target_deps) {
       continue;
     }
-    VariableDependencies target_var_deps = boost::get<VariableDependencies>(has_target_deps);
+    VariableDependencies target_var_deps = has_target_deps.get();
     VariableDependencies source_var_deps = source_it->second;
     for (auto source_var_dep : source_var_deps) {
       for (auto target_var_dep : target_var_deps) {
+        // Intersect the merging variable
         MDI target_dom = target_var_dep.ifce.dom();
         Option<MDI> intersect = source_var_dep.ifce.dom().Intersection(target_dom);
         if (intersect) {
           // We found a match and must adjust the ranges and generate the new var_dep.
-          MDI intersection = boost::get<MDI>(intersect);
+          MDI intersection = intersect.get();
           VariableDependency target = target_var_dep.ifce;
           VariableDependency source = source_var_dep.ifce;
           VariableDependency var_dep =
-              getVariableDependency(target.variable(), source.getImage(intersection), target.getImage(intersection), target.equationId());
+              getVariableDependency(source.variable(), source.getImage(intersection), target.getImage(intersection), target.equationId());
           var_dep.setIfr(source.ifePair());
           var_dep.setIfe(target.ifePair());
           var_dep.setRange();
@@ -211,7 +213,7 @@ void Dependency::merge(VariableDependencyMatrix& source, VariableDependencyMatri
           Option<VariableDependencies> has_merge_deps = merge[source.variable()];
           VariableDependencies new_merge_deps;
           if (has_merge_deps) {
-            new_merge_deps = boost::get<VariableDependencies>(has_merge_deps);
+            new_merge_deps = has_merge_deps.get();
           }
           Influences inf = {AlgebraicDependencies(), var_dep};
           new_merge_deps.push_back(inf);

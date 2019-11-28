@@ -93,14 +93,15 @@ DepsGraph EAGraphBuilder::build()
       _equationDescriptors.push_back(add_vertex(vp, graph));
       Option<Variable> assigned = eq.LHSVariable();
       assert(assigned);
-      _ifrs[assigned->name()] = assigned.get();
+      _ifrs[assigned->name()] = pair<Variable, int>(assigned.get(), eq.id());
     }
   }
 
   for (auto &inf : _ifrs) {
     VertexProperty ifr = VertexProperty();
     ifr.setType(VERTEX::Influencer);
-    ifr.setVar(inf.second);
+    ifr.setVar(inf.second.first);
+    ifr.setId(inf.second.second);
     _sourceDescriptors.push_back(add_vertex(ifr, graph));
   }
 

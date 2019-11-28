@@ -69,6 +69,7 @@ DepsGraph SZGraphBuilder::build()
     VertexProperty vp = VertexProperty();
     vp.setType(VERTEX::Equation);
     vp.setEq(eq);
+    vp.setId(eq.id());
     _equationDescriptors.push_back(add_vertex(vp, graph));
   }
 
@@ -83,7 +84,6 @@ DepsGraph SZGraphBuilder::build()
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {
           Label lbl(ip);
-          cout << "Adding edge from state var: " << graph[source].var().name() << " to event: " << graph[sink].eq().id() << endl;
           add_edge(source, sink, lbl, graph);
         }
       }
@@ -108,7 +108,6 @@ DepsGraph SZGraphBuilder::build()
       if (graph[sink].eq().isZeroCrossing()) {
         GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
         if (edge.exists()) {
-          cout << "Adding edge from ZC: " << graph[sink].eq().id() << " to event: " << graph[source].id() << endl;
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
             Label lbl(ip);

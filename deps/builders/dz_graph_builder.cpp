@@ -70,6 +70,7 @@ DepsGraph DZGraphBuilder::build()
     VertexProperty vp = VertexProperty();
     vp.setType(VERTEX::Equation);
     vp.setEq(eq);
+    vp.setId(eq.id());
     _equationDescriptors.push_back(add_vertex(vp, graph));
   }
 

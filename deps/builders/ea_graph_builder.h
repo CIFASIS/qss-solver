@@ -36,7 +36,7 @@ class EAGraphBuilder {
   list<EqVertex> _equationDescriptors;
   list<IfrVertex> _sourceDescriptors;
   list<IfeVertex> _algebraicDescriptors;
-  std::map<std::string, Util::Variable> _ifrs;
+  std::map<std::string, std::pair<Util::Variable, int>> _ifrs;
   IR::EventTable _events;
   IR::EquationTable _algebraics;
   IR::EquationTable _equations;

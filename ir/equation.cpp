@@ -490,8 +490,17 @@ string EquationConfig::generateDerivatives(string tabs, int init) const
     stringstream buffer;
     int order = config.order() - 1;
     int fact = _fact_init;
+    const bool POLY_COEFF = _fact_init > 0;
     for (int i = 0; i < order; i++) {
-      buffer << tabs << prefix() << lhs(init + i) << " = (" << _derivatives[i] << ")/" << fact << ";";
+      buffer << tabs << prefix() << lhs(init + i) << " = ";
+      if (POLY_COEFF) {
+        buffer << "(";
+      }
+      buffer << _derivatives[i];
+      if (POLY_COEFF) {
+        buffer << ")/" << fact;
+      }
+      buffer << ";";
       if (i + 1 < order) {
         buffer << endl;
         fact *= fact + 1;

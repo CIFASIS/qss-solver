@@ -197,7 +197,7 @@ class OutputConfig : public EquationConfig {
 
 class AlgebraicConfig : public EquationConfig {
   public:
-  AlgebraicConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq){};
+  AlgebraicConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq) { factorialInit(0); };
   ~AlgebraicConfig() = default;
   std::string print() const override;
 

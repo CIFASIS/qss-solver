@@ -133,8 +133,7 @@ string Statement::print() const
   case STIF: {
     AST_Statement_If sti = _stm->getAsIf();
     Expression ifcond(sti->condition(), _symbols);
-    buffer << _block << "if(" << ifcond << ")" << endl;
-    buffer << _block << "{" << endl;
+    buffer << _block << "if(" << ifcond << ") {" << endl;
     AST_StatementList stl = sti->statements();
     AST_StatementListIterator stlit;
     foreach (stlit, stl) {
@@ -146,7 +145,7 @@ string Statement::print() const
     AST_Statement_ElseListIterator stelselit;
     foreach (stelselit, stelsel) {
       Expression eifcond(current_element(stelselit)->condition(), _symbols);
-      buffer << _block << "else if(" << eifcond << ")" << endl << _block << "{" << endl;
+      buffer << _block << "else if(" << eifcond << ") {" << endl;
       stl = current_element(stelselit)->statements();
       foreach (stlit, stl) {
         Statement st(current_element(stlit), _symbols, false, _block + TAB);
@@ -156,7 +155,7 @@ string Statement::print() const
     }
     stl = sti->else_statements();
     if (!stl->empty()) {
-      buffer << _block << "else" << endl << _block << "{" << endl;
+      buffer << _block << "else {" << endl;
       foreach (stlit, stl) {
         Statement st(current_element(stlit), _symbols, false, _block + TAB);
         buffer << st << endl;

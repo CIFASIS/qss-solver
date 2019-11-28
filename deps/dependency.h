@@ -30,7 +30,7 @@ namespace MicroModelica {
 namespace Deps {
 class Dependency {
   public:
-  Dependency() : _ifr(){};
+  Dependency() : _ifr(), _ifr_dom(){};
   ~Dependency() = default;
   template <class DM>
   void compute(DepsGraph graph, DM& dm)
@@ -45,7 +45,6 @@ class Dependency {
         insert(dm, vertex_info, var_deps);
       }
     }
-    print(graph);
   }
 
   void merge(VariableDependencyMatrix& source, VariableDependencyMatrix& target, VariableDependencyMatrix& merge);
@@ -72,6 +71,7 @@ class Dependency {
 
   private:
   IndexPair _ifr;
+  MDI _ifr_dom;
 };
 }  // namespace Deps
 }  // namespace MicroModelica

@@ -45,12 +45,12 @@ void Error::add(int pos, unsigned int code, ER_Type t, const string message, ...
 {
   va_list ap;
   ostringstream msg;
-  string local;
+  char local[1024];
   int size = 100;
   msg << "Line: " << pos << " Class: " << _className << endl;
   msg << _typeString(t) << "(" << hex << uppercase << code << ")" << endl;
   va_start(ap, message);
-  vsnprintf((char *)local.c_str(), size, message.c_str(), ap);
+  vsnprintf((char *)local, size, message.c_str(), ap);
   va_end(ap);
   msg << _printCode(code) << endl;
   msg << local.c_str() << endl;

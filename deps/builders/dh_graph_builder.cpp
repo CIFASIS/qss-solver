@@ -53,7 +53,7 @@ void DHGraphBuilder::addStatements(StatementTable stms, DepsGraph& graph, Expres
       sv.setExp(e);
       sv.setEvent(exp);
       if (range) {
-        sv.setRange(*range);
+        sv.setRange(range.get());
       }
       //      vp.stm.lhs = *it;
       vp.setId(id);
@@ -99,6 +99,7 @@ DepsGraph DHGraphBuilder::build()
     VertexProperty vp = VertexProperty();
     vp.setType(VERTEX::Equation);
     vp.setEq(eq);
+    vp.setId(eq.id());
     _statementDescriptors.push_back(add_vertex(vp, graph));
   }
 

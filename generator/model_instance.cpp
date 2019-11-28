@@ -359,9 +359,6 @@ void ModelInstance::initialCode()
   stringstream buffer;
   Utils::instance().setLocalInitSymbols();
   ModelConfig::instance().setInitialCode(true);
-  for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
-    _writer->write(stm, WRITER::Init_Code);
-  }
   VarSymbolTable symbols = _model.symbols();
   VarSymbolTable::iterator var_it;
   for (Variable var = symbols.begin(var_it); !symbols.end(var_it); var = symbols.next(var_it)) {
@@ -369,6 +366,9 @@ void ModelInstance::initialCode()
       continue;
     }
     _writer->write(var.initialization(symbols), WRITER::Init_Code);
+  }
+  for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
+    _writer->write(stm, WRITER::Init_Code);
   }
   ModelConfig::instance().setInitialCode(false);
   Utils::instance().unsetLocalInitSymbols();
