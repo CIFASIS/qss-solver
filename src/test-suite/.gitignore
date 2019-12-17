@@ -1,0 +1,11 @@
+# Testsuite objects.
+/**/*.o
+
+# Tarball files.
+*.tar.gz
+
+# Local ChangeLog.
+ChangeLog
+
+# Experimental tests.
+/new-experiments/*
