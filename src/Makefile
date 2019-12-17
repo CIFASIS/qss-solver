@@ -105,9 +105,8 @@ clean:
 	@cd interfaces/sbml && $(MAKE) clean     
 
 help:
-	@echo "make DEBUG=<True|False> CORES=<n> ACCESS=<HTTPS|SSH>"
+	@echo "make DEBUG=<True|False> CORES=<n>"
 	@echo "Default values:"
 	@echo ""
 	@echo "DEBUG=False"
 	@echo "CORES=1"
-	@echo "ACCESS=HTTPS"
