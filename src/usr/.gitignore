@@ -1,0 +1,18 @@
+# User libraries  objects.
+/src/*.o
+
+# Generated libraries.
+/lib/*
+/libexec/*
+
+# Generated binaries.
+/bin/*
+
+# Ginac includes.
+/include/ginac/*
+
+# Shared files.
+/share/*
+
+# Local ChangeLog.
+ChangeLog

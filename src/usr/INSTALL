@@ -1,0 +1,34 @@
+Installation
+============
+
+These are generic installation instructions.
+
+Basic Installation
+==================
+
+The simplest way to compile the source code is:
+
+  1. `cd' to the directory containing the user libraries source code and type
+     `make '. The generated libraries are located in the usr/lib folder.
+     
+  2. You can remove the generated binaries and object files from the
+     source code directory by typing `make clean'.  
+
+Makefile options
+================
+
+The makefile script accepts the following options:
+
+    * DEBUG = <True|False>  If True, adds the compiler's debug flags. 
+              Default value False.
+    
+    * ENGINE= Path to the QSS Solver engine source code root folder. 
+              Default value ".".
+
+Makefile targets
+================
+
+The makefile script accepts the following targets:
+    
+    * default:  Builds the user libraries.
+    * clean:    Clean up generated files.
