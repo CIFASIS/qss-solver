@@ -15,17 +15,6 @@ endif
 # The Directories, Source, Includes, Objects, Binary 
 ROOT   	:= ..
 
-# Repositories location.
-
-mmo-compiler-repo 			:= ./mmoc 
-mmo-interfaces-repo 		:= ./interfaces/sbml
-mmo-models-repo 			:= $(ROOT)/models
-mmo-packages-repo 			:= $(ROOT)/packages
-qss-engine-repo 			:= ./engine 
-qss-test-suite-repo			:= ./testsuite 
-qss-solver-gui-repo			:= ./gui 
-qss-user-libs-repo 			:= ./usr
-
 all: mmo-compiler mmo-interfaces qss-engine qss-solver-gui qss-user-libs
 
 mmo-interfaces: create-dirs 
