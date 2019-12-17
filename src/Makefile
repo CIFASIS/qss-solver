@@ -58,16 +58,6 @@ create-dirs:
 	@mkdir -p $(ROOT)/output
 	@mkdir -p $(ROOT)/lib
 
-clean-repos:
-	@rm -rf mmoc
-	@rm -rf engine
-	@rm -rf gui
-	@rm -rf interfaces
-	@rm -rf usr
-	@rm -rf test-suite
-	@rm -rf $(ROOT)/models
-	@rm -rf $(ROOT)/packages
-
 install:	
 	@echo "Installing engine libraries."
 	ln -s $(ROOT)/src/engine/usr/lib/* $(ROOT)/lib/
