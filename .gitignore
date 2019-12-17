@@ -6,29 +6,11 @@ output/
 build/
 lib/
 
-# Distributed models and packages.
-models/
-packages/
-
 # Generated packages.
 deploy/linux/*.deb
 deploy/osx/*.dmg
 deploy/windows/*.exe
 deploy/src/*.tar.gz
-
-# Solver source code submodules.
-src/usr/
-src/engine/
-src/mmoc/
-src/gui/
-src/interfaces/
-src/test-suite/
-
-# Eclipse project files.
-.project
-.cproject
-.settings
-tags
 
 # Local Changelog
 src/ChangeLog
