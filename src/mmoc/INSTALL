@@ -1,0 +1,47 @@
+Installation
+============
+
+These are generic installation instructions.
+
+Dependences
+===========
+
+In order to be able to install and compile the MicroModelica compiler, 
+the following dependencies must be installed: 
+    
+    * bison++
+    * g++
+    * libcln-dev 
+ 
+Basic Installation
+==================
+
+The simplest way to compile this package is:
+
+  1. `cd' to the directory containing the compiler source code and type
+     `make '. The mmoc binary is located in the usr/bin folder.
+	
+  2. You can remove the generated binaries and object files from the
+     source code directory by typing `make clean'.  
+
+
+Makefile options
+================
+
+The makefile script accepts the following options:
+
+	* DEBUG = <True|False> 	If True, adds the compiler's debug flags. 
+              Default value False.
+	
+	* CORES= <n> In a multicore machine, select the number of cores used 
+             to	compile the solver. Default value 1.
+
+Makefile targets
+================
+
+The makefile script accepts the following targets:
+    
+    * default:  Builds the MicroModelca compiler.
+    * doc:      Builds the compiler documentation.
+    * clean:    Clean up generated files.
+

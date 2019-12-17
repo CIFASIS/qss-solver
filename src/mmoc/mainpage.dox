@@ -1,0 +1,60 @@
+/** 
+ *   @mainpage MicroModelica Compiler Developer's Guide
+ *
+ * @section intro Introduction
+ * The MicroModelica compiler allows the user to describe models 
+ * using a subset of the standard Modelica language called μ–Modelica 
+ * (the language specification can be found in 
+ * http://www.cifasis-conicet.gov.ar/jfernandez/micromodelica/micromodelicaspec.pdf), 
+ * the compiler extracts all the structural information needed and
+ * automatically generates the plain C code that contains an appropiate 
+ * model definition needed by the 
+ * QSS Solver engine (https://github.com/CIFASIS/qss-solver-engine)
+ * together with all the configuration files (makefiles, config, etc.).
+ * 
+ * @section install Installation
+ * 
+ * These are generic installation instructions.
+ *
+ * @subsection deps Dependencies
+ *
+ * In order to be able to install and compile the QSS Solver, 
+ * the following dependencies must be installed: 
+ *  
+ *  - bison++ 
+ *  - g++
+ *  - libcln-dev
+ *   
+ * @subsection inst Basic Intallation
+ *
+ * The simplest way to compile this package is:
+ *
+ *  1.`cd' to the directory containing the compiler source code and type
+ *    `make '. The mmoc binary is located in the usr/bin folder.
+ *   
+ *  2.You can remove the generated binaries and object files from the
+ *    source code directory by typing `make clean'.  
+ * 
+ * @subsection mkopt Makefile Options 
+ *
+ * The makefile script accepts the following options:
+ *
+ *   - DEBUG = <True|False>  If True, adds the compiler's debug flags. 
+ *             Default value False.
+ *   
+ *   - CORES= <n> In a multicore machine, select the number of cores used 
+ *            to compile the solver. Default value 1.
+ *
+ * @subsection mktgs Makefile targets
+ *
+ * The makefile script accepts the following targets:
+ *   
+ *   - default:  Builds the MicroModelica compiler.
+ *   - doc:      Builds the compiler documentation.
+ *   - clean:    Clean up generated files.
+ *
+ * @section br Bug Reporting
+ *
+ *  Report bugs to: fernandez@cifasis-conicet.gov.ar
+ * 
+ */
