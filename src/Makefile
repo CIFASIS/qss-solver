@@ -28,38 +28,12 @@ qss-user-libs-repo 			:= ./usr
 
 all: mmo-compiler mmo-interfaces qss-engine qss-solver-gui qss-user-libs
 
-# Repositories rules.
-
-$(mmo-compiler-repo):
-	$(shell git clone $(ACCESS_PATH)CIFASIS/qss-solver-mmoc.git mmoc)
-
-$(mmo-interfaces-repo):
-	$(shell git clone $(ACCESS_PATH)CIFASIS/sbml-mmo.git interfaces/sbml)
-
-$(mmo-models-repo):
-	$(shell git clone $(ACCESS_PATH)CIFASIS/qss-solver-models.git $(ROOT)/models)
-
-$(mmo-packages-repo):
-	$(shell git clone $(ACCESS_PATH)CIFASIS/qss-solver-packages.git $(ROOT)/packages)
-
-$(qss-engine-repo):
-	$(shell git clone $(ACCESS_PATH)CIFASIS/qss-solver-engine.git engine)
-
-$(qss-test-suite-repo):
-	$(shell git clone $(ACCESS_PATH)CIFASIS/qss-solver-test-suite.git test-suite)
-
-$(qss-solver-gui-repo):
-	$(shell git clone $(ACCESS_PATH)CIFASIS/qss-solver-gui.git gui)
-
-$(qss-user-libs-repo):
-	$(shell git clone $(ACCESS_PATH)CIFASIS/qss-solver-user-libs.git usr)
-
-mmo-interfaces: create-dirs | $(mmo-interfaces-repo)
+mmo-interfaces: create-dirs 
 	@echo BUILDING MMO-SBML INTERFACE
 	@cd interfaces/sbml &&  $(MAKE) DEBUG=$(DEBUG) -j $(CORES)
 	@echo Done
 
-qss-engine: create-dirs | $(qss-engine-repo) $(qss-test-suite-repo) 
+qss-engine: create-dirs  
 	@echo BUILDING QSS LIBRARY
 	@cd engine && $(MAKE) -j $(CORES)
 	@echo Done
@@ -67,17 +41,17 @@ qss-engine: create-dirs | $(qss-engine-repo) $(qss-test-suite-repo)
 	@cd engine && $(MAKE) DEBUG=True -j $(CORES)
 	@echo Done
 
-qss-user-libs: create-dirs qss-engine | $(qss-user-libs-repo)
+qss-user-libs: create-dirs qss-engine
 	@echo BUILDING USER LIBS
 	@cd usr && $(MAKE) DEBUG=$(DEBUG) -j $(CORES) ENGINE=../engine     
 	@echo Done
 
-mmo-compiler: create-dirs | $(mmo-compiler-repo) 
+mmo-compiler: create-dirs  
 	@echo BUILDING MICROMODELICA C COMPILER
 	@cd mmoc && $(MAKE) DEBUG=$(DEBUG) -j $(CORES) 
 	@echo Done
 
-qss-solver-gui: create-dirs | $(qss-solver-gui-repo) $(mmo-models-repo) $(mmo-packages-repo)
+qss-solver-gui: create-dirs 
 	@echo BUILDING MMO EDITOR
 	@cd gui && $(MAKE) -f gui.makefile      
 	@echo Done
