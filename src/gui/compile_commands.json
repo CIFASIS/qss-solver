@@ -1,0 +1,107 @@
+[
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/main.o /home/joaquin/work/qss-solver/src/gui/main.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/main.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/mmomegui.o /home/joaquin/work/qss-solver/src/gui/mmomegui.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/mmomegui.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/modeleditor.o /home/joaquin/work/qss-solver/src/gui/modeleditor.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/modeleditor.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/mmohighlight.o /home/joaquin/work/qss-solver/src/gui/mmohighlight.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/mmohighlight.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/treemodel.o /home/joaquin/work/qss-solver/src/gui/treemodel.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/treemodel.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/editor.o /home/joaquin/work/qss-solver/src/gui/editor.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/editor.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/codeeditor.o /home/joaquin/work/qss-solver/src/gui/codeeditor.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/codeeditor.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/modelinfo.o /home/joaquin/work/qss-solver/src/gui/modelinfo.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/modelinfo.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/runform.o /home/joaquin/work/qss-solver/src/gui/runform.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/runform.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/utils.o /home/joaquin/work/qss-solver/src/gui/utils.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/utils.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/settings.o /home/joaquin/work/qss-solver/src/gui/settings.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/settings.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/comboboxdelegate.o /home/joaquin/work/qss-solver/src/gui/comboboxdelegate.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/comboboxdelegate.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/qrc_mmome.o /home/joaquin/work/qss-solver/src/gui/qrc_mmome.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/qrc_mmome.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/moc_mmomegui.o /home/joaquin/work/qss-solver/src/gui/usr/moc/moc_mmomegui.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/usr/moc/moc_mmomegui.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/moc_modeleditor.o /home/joaquin/work/qss-solver/src/gui/usr/moc/moc_modeleditor.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/usr/moc/moc_modeleditor.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/moc_mmohighlight.o /home/joaquin/work/qss-solver/src/gui/usr/moc/moc_mmohighlight.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/usr/moc/moc_mmohighlight.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/moc_treemodel.o /home/joaquin/work/qss-solver/src/gui/usr/moc/moc_treemodel.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/usr/moc/moc_treemodel.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/moc_codeeditor.o /home/joaquin/work/qss-solver/src/gui/usr/moc/moc_codeeditor.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/usr/moc/moc_codeeditor.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/moc_runform.o /home/joaquin/work/qss-solver/src/gui/usr/moc/moc_runform.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/usr/moc/moc_runform.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/moc_settings.o /home/joaquin/work/qss-solver/src/gui/usr/moc/moc_settings.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/usr/moc/moc_settings.cpp"
+    },
+    {
+        "command": "c++ -c -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/home/joaquin/work/qss-solver/src/gui -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I/home/joaquin/work/qss-solver/src/gui/usr/moc -I/home/joaquin/work/qss-solver/src/gui/ui -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -o usr/obj/moc_comboboxdelegate.o /home/joaquin/work/qss-solver/src/gui/usr/moc/moc_comboboxdelegate.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/gui",
+        "file": "/home/joaquin/work/qss-solver/src/gui/usr/moc/moc_comboboxdelegate.cpp"
+    }
+]
