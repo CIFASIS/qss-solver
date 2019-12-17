@@ -1,0 +1,337 @@
+[
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/data.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/common/data.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/common/data.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/utils.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/common/utils.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/common/utils.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/tree.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/common/tree.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/common/tree.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/settings.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/common/settings.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/common/settings.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/random.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/common/random.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/common/random.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/simulator.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/common/simulator.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/common/simulator.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/integrator.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/common/integrator.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/common/integrator.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/engine.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/common/engine.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/common/engine.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/commands.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/common/commands.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/common/commands.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_graph.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_graph.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_graph.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_biorica.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_biorica.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_biorica.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_data.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_data.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_data.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_file.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_file.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_file.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_memory.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_memory.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_memory.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_log.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_log.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_log.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_sampled.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_sampled.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_sampled.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_step.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_step.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_step.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_binary_random.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_binary_random.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_binary_random.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_binary.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_binary.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_binary.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_linear.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_linear.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_linear.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_frw.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_frw.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_frw.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_frw_imp.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_frw_imp.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_frw_imp.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss2.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss2.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss2.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss3.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss3.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss3.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss4.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss4.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss4.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_liqss.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/liqss.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/liqss.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_liqss2.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/liqss2.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/liqss2.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_liqss3.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/liqss3.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/liqss3.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_cqss.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/cqss.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/cqss.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_output.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_output.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_output.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_scheduler.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_scheduler.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_scheduler.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_quantizer.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_quantizer.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_quantizer.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_integrator.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_integrator.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_integrator.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_seq_integrator.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_seq_integrator.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_seq_integrator.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_simulator.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_simulator.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_simulator.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/seq_qss_commands.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/qss/qss_commands.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_commands.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss_file.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss_file.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_file.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss_memory.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss_memory.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_memory.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss_sampled.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss_sampled.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_sampled.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss_step.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss_step.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_step.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss_binary.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss_binary.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_binary.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss_linear.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss_linear.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_linear.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss_frw_imp.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss_frw_imp.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_frw_imp.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_cqss.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/cqss.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/cqss.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss2.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss2.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss2.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss3.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss3.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss3.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss4.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss4.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss4.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_liqss.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/liqss.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/liqss.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_liqss2.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/liqss2.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/liqss2.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_liqss3.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/liqss3.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/liqss3.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss_dt.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss_dt.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_dt.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss_lp.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss_lp.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_lp.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss_partition.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss_partition.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_partition.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss_parallel.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss_parallel.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_parallel.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss_sim_steps.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss_sim_steps.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_sim_steps.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/par_qss_par_integrator.o -Wall -msse2 -mfpmath=sse -O2 -DQSS_PARALLEL /home/joaquin/work/qss-solver/src/engine/qss/qss_par_integrator.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/qss/qss_par_integrator.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/classic_data.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/classic/classic_data.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/classic/classic_data.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/classic_integrator.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/classic/classic_integrator.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/classic/classic_integrator.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/classic_cvode_integrator.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/classic/classic_cvode_integrator.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/classic/classic_cvode_integrator.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/classic_ida_integrator.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/classic/classic_ida_integrator.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/classic/classic_ida_integrator.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/classic_dopri_integrator.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/classic/classic_dopri_integrator.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/classic/classic_dopri_integrator.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/classic_dassl_integrator.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/classic/classic_dassl_integrator.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/classic/classic_dassl_integrator.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/classic_simulator.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/classic/classic_simulator.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/classic/classic_simulator.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/classic_commands.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/classic/classic_commands.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/classic/classic_commands.c"
+    },
+    {
+        "command": "cc -c -I/home/joaquin/work/qss-solver/src/engine/common -I/home/joaquin/work/qss-solver/src/engine -I/home/joaquin/work/qss-solver/src/engine/usr/include -o usr/obj/release/dopri5.o -Wall -msse2 -mfpmath=sse -O2 /home/joaquin/work/qss-solver/src/engine/classic/dopri5/dopri5.c",
+        "directory": "/home/joaquin/work/qss-solver/src/engine",
+        "file": "/home/joaquin/work/qss-solver/src/engine/classic/dopri5/dopri5.c"
+    }
+]
