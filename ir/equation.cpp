@@ -33,6 +33,7 @@
 #include "../util/visitors/autonomous.h"
 #include "../util/visitors/called_functions.h"
 #include "../util/visitors/get_index_variables.h"
+#include "../util/visitors/is_recursive_def.h"
 #include "../util/visitors/replace_der.h"
 #include "../util/visitors/revert_index.h"
 #include "helpers.h"
@@ -175,6 +176,16 @@ Option<Variable> Equation::LHSVariable()
     return _lhs.reference();
   }
   return Option<Variable>();
+}
+
+bool Equation::isRecursive() const
+{
+  if (_lhs.isScalar()) {
+    return false;
+  }
+  Variable var = _lhs.reference().get();
+  IsRecursiveDef is_recursive(var.name());
+  return is_recursive.apply(_rhs.expression());
 }
 
 bool Equation::isValid() const { return _lhs.isValid() && _rhs.isValid(); }
@@ -474,6 +485,7 @@ void EquationConfig::initializeDerivatives()
     ExpressionDerivator ed;
     ReplaceDer replace_der(_symbols);
     Expression rhs = _eq.rhs();
+    cout << "Exression derivative: " << rhs << endl;
     AST_Expression exp1 = ed.derivate(rhs.expression(), _symbols, rhs);
     _derivatives[0] = Expression(exp1, _symbols);
     AST_Expression exp2 = ed.derivate(exp1, _symbols, rhs);

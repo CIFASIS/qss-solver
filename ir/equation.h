@@ -86,6 +86,7 @@ class Equation {
   inline void setUsage(Index usage) { _usage = usage; };
   inline Index usage() const { return _usage; };
   inline void setType(EQUATION::Type type) { _type = type; };
+  bool isRecursive() const;
 
   private:
   void initialize(AST_Equation eq);

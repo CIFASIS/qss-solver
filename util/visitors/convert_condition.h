@@ -24,25 +24,11 @@
 
 namespace MicroModelica {
 namespace Util {
-/**
- *
- */
 class ConvertCondition : public AST_Expression_Visitor<AST_Expression> {
   public:
-  /**
-   *
-   */
   ConvertCondition();
-  /**
-   *
-   */
   ~ConvertCondition(){};
-  /**
-   *
-   * @return
-   */
   inline MicroModelica::IR::EVENT::Type zeroCrossing() { return _zc; };
-  ;
   inline MicroModelica::IR::EVENT::Relation zeroCrossingRelation() { return _zcRelation; };
 
   private:

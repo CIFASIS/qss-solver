@@ -40,7 +40,7 @@ AST_Expression PartialEvalExp::foldTraverseElement(AST_Expression exp)
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
     Option<Variable> var = _symbols[cr->name()];
     if (!var) {
-      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", cr->name().c_str());
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "partial_eval_exp.cpp:43 %s", cr->name().c_str());
       break;
     }
     if (var->isConstant()) {
@@ -145,7 +145,7 @@ int PartialEvalExp::getValue(AST_Expression exp)
     AST_Expression_ComponentReference ref = exp->getAsComponentReference();
     Option<Variable> var = _symbols[ref->name()];
     if (!var) {
-      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", ref->name().c_str());
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "partial_eval_exp.cpp:148 %s", ref->name().c_str());
       return 0;
     }
     assert(var->isConstant());

@@ -23,6 +23,7 @@
 
 #include "../ast/expression.h"
 #include "../util/visitors/expression_printer.h"
+#include "../util/visitors/is_constant_index.h"
 #include "../util/util.h"
 #include "../util/error.h"
 #include "helpers.h"
@@ -47,6 +48,19 @@ string Expression::print() const
     return buffer.str();
   }
   return "";
+}
+
+bool Expression::isScalar() const
+{
+  if (isReference()) {
+    Option<Variable> var = reference();
+    if (var->isArray()) {
+      IsConstantIndex constant_index;
+      return constant_index.apply(_exp);
+    }
+    return true;
+  }
+  return false;
 }
 
 bool Expression::isReference() const

@@ -24,9 +24,6 @@
 
 namespace MicroModelica {
 namespace Util {
-/**
- *
- */
 class ArrayUse : public AST_Expression_Visitor<bool> {
   public:
   ArrayUse(VarSymbolTable symbols) : _symbols(symbols){};
@@ -39,9 +36,6 @@ class ArrayUse : public AST_Expression_Visitor<bool> {
   VarSymbolTable _symbols;
 };
 
-/**
- *
- */
 class StatementArrayUse : public AST_Statement_Visitor<bool, bool, ArrayUse> {
   public:
   StatementArrayUse(MicroModelica::Util::VarSymbolTable symbols) : AST_Statement_Visitor(ArrayUse(symbols)){};

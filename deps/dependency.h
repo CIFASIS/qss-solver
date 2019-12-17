@@ -41,7 +41,7 @@ class Dependency {
         VariableDependencies var_deps;
         AlgebraicDependencies algs;
         cout << "Compute dependecies for: " << vertex_info.var() << endl;
-        influencees(graph, vertex, variableRange(vertex_info.var()), var_deps, algs);
+        paths(graph, vertex, variableRange(vertex_info.var()), var_deps, algs);
         insert(dm, vertex_info, var_deps);
       }
     }
@@ -52,7 +52,7 @@ class Dependency {
   void append(VariableDependencyMatrix& a, VariableDependencyMatrix& b);
 
   protected:
-  void influencees(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs);
+  void paths(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs);
   VariableDependency getVariableDependency(string name, MDI dom, MDI ran, int id);
   MDI variableRange(Util::Variable var);
   template <class DM>
@@ -68,6 +68,7 @@ class Dependency {
   }
   void print(DepsGraph graph);
   void printEdges(DepsGraph graph, Vertex source_vertex, MDI source_range);
+  bool isRecursive(VertexProperty source, VertexProperty target);
 
   private:
   IndexPair _ifr;

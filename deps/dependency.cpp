@@ -31,6 +31,7 @@ using namespace std;
 
 namespace MicroModelica {
 using namespace Util;
+using namespace IR;
 namespace Deps {
 
 void Dependency::print(DepsGraph graph)
@@ -124,8 +125,22 @@ VariableDependency Dependency::getVariableDependency(string name, MDI dom, MDI r
   return var_dep;
 }
 
-void Dependency::influencees(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps,
-                             AlgebraicDependencies& algs)
+bool Dependency::isRecursive(VertexProperty source, VertexProperty target)
+{
+  if (source.type() == VERTEX::Algebraic && target.type() == VERTEX::Equation && target.eq().type() == IR::EQUATION::Algebraic) {
+    // Check if the LHS of the equation is equal to
+    // the source variable.
+    Equation eq = target.eq();
+    Option<Variable> target_variable = eq.LHSVariable();
+    assert(target_variable);
+    if (source.var().name().compare(target_variable->name()) == 0 && eq.isRecursive()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs)
 {
   VertexProperty source_vertex_info = graph[source_vertex];
   boost::graph_traits<DepsGraph>::out_edge_iterator edge, out_edge_end;
@@ -157,8 +172,13 @@ void Dependency::influencees(DepsGraph graph, Vertex source_vertex, MDI source_r
         var_dep.setIfr(_ifr);
         var_dep.setIfe(lbl.Pair());
         var_dep.setRange();
+        cout << "dependency from: " << _ifr.exp() << " to " << target_vertex_info.var().name() << endl;
         Influences inf = {algs, var_dep};
         var_deps.push_back(inf);
+      } else if (isRecursive(source_vertex_info, target_vertex_info)) {
+        int id = target_vertex_info.eq().id();
+        VariableDependency var_dep = getVariableDependency(source_vertex_info.var().name(), intersection, lbl.Pair().Ran(), id);
+        algs.push_back(var_dep);
       } else if (target_vertex_info.type() == VERTEX::Algebraic) {
         assert(source_vertex_info.type() == VERTEX::Equation);
         if (source_vertex_info.eq().type() == IR::EQUATION::Algebraic) {
@@ -166,9 +186,9 @@ void Dependency::influencees(DepsGraph graph, Vertex source_vertex, MDI source_r
           VariableDependency var_dep = getVariableDependency(target_vertex_info.var().name(), intersection, ran, id);
           algs.push_back(var_dep);
         }
-        influencees(graph, target_vertex, ran, var_deps, algs);
+        paths(graph, target_vertex, ran, var_deps, algs);
       } else {
-        influencees(graph, target_vertex, ran, var_deps, algs);
+        paths(graph, target_vertex, ran, var_deps, algs);
       }
     }
   }

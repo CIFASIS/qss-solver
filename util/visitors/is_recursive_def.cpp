@@ -17,25 +17,45 @@
 
  ******************************************************************************/
 
-#ifndef REPLACE_DER_H_
-#define REPLACE_DER_H_
+#include "is_recursive_def.h"
 
-#include "../ast_util.h"
+#include "../error.h"
 
 namespace MicroModelica {
+using namespace Deps;
+using namespace IR;
 namespace Util {
 
-class ReplaceDer : public AST_Expression_Visitor<AST_Expression> {
-  public:
-  ReplaceDer(VarSymbolTable symbols);
-  ~ReplaceDer() = default;
+IsRecursiveDef::IsRecursiveDef(string var_name) : _in_index_list(false), _var_name(var_name) {}
 
-  private:
-  AST_Expression foldTraverseElement(AST_Expression exp);
-  AST_Expression foldTraverseElementUMinus(AST_Expression exp);
-  AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
-  VarSymbolTable _symbols;
-};
+bool IsRecursiveDef::foldTraverseElement(AST_Expression exp)
+{
+  bool ret = false;
+  switch (exp->expressionType()) {
+  case EXPCOMPREF: {
+    AST_Expression_ComponentReference cr = exp->getAsComponentReference();
+    if (_in_index_list) {
+      return true;
+    } else if (_var_name.compare(cr->name())) {
+      return false;
+    }
+    if (cr->hasIndexes()) {
+      assert(!_in_index_list);
+      _in_index_list = true;
+      AST_ExpressionList indexes = cr->firstIndex();
+      AST_ExpressionListIterator it;
+      foreach (it, indexes) {
+        ret = ret || apply(current_element(it));
+      }
+      _in_index_list = false;
+    }
+    break;
+  }
+  default:
+    break;
+  }
+  return ret;
+}
+
 }  // namespace Util
 }  // namespace MicroModelica
-#endif /* REPLACE_DER_H_ */

@@ -53,7 +53,7 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
     CompiledFunctionTable fs = Utils::instance().compiledFunctions();
     Option<CompiledFunction> f = fs[*call->name()];
     if (!f) {
-      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", call->name()->c_str());
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "expression_printer.cpp:56 %s", call->name()->c_str());
       break;
     }
     Utils::instance().setSymbols(_symbols);
@@ -77,7 +77,7 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
     AST_Expression_ComponentReference ref = exp->getAsComponentReference();
     Option<Variable> var = _symbols[ref->name()];
     if (!var) {
-      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", ref->name().c_str());
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "expression_printer.cpp:80 %s", ref->name().c_str());
       break;
     }
     VariablePrinter var_printer(var.get(), ref, _symbols, _is_qss, _order);

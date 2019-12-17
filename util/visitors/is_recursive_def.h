@@ -17,42 +17,32 @@
 
  ******************************************************************************/
 
-#ifndef MMO_EXPRESSION_H_
-#define MMO_EXPRESSION_H_
+#ifndef IS_RECURSIVE_DEF_H_
+#define IS_RECURSIVE_DEF_H_
 
-#include <string>
-#include "../ast/ast_types.h"
-#include "../util/symbol_table.h"
+#include "../../ast/ast_builder.h"
+#include "../../deps/graph/graph_helpers.h"
+#include "../../ir/index.h"
+#include "../ast_util.h"
 
 namespace MicroModelica {
-namespace IR {
-
+namespace Util {
 /**
  *
  */
-class Expression {
+class IsRecursiveDef : public AST_Expression_Visitor<bool> {
   public:
-  Expression();
-  Expression(AST_Expression exp, const Util::VarSymbolTable& symbols, int order = 0);
-  ~Expression() = default;
-  std::string print() const;
-  inline AST_Expression expression() const { return _exp; };
-  bool isReference() const;
-  std::string usage() const;
-  bool isEmpty() const { return _exp == nullptr; };
-  bool isValid() const { return _exp != nullptr; };
-  Option<Util::Variable> reference() const;
-  bool isScalar() const;
-
-  friend std::ostream& operator<<(std::ostream& out, const Expression& s);
+  IsRecursiveDef(std::string var_name);
+  ~IsRecursiveDef(){};
 
   private:
-  AST_Expression _exp;
-  Util::VarSymbolTable _symbols;
-  int _order;
+  bool foldTraverseElement(AST_Expression exp);
+  inline bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
+  inline bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l || r; }
+  bool _in_index_list;
+  std::string _var_name;
 };
 
-typedef list<Expression> ExpressionList;
-}  // namespace IR
+}  // namespace Util
 }  // namespace MicroModelica
-#endif /* EXPRESSION_H_ */
+#endif /* IS_RECURSIVE_DEF_H_ */

@@ -26,11 +26,6 @@
 namespace MicroModelica {
 namespace Deps {
 
-// Interval::Interval(int a, int b) : _step(1) { _interval = ICL::discrete_interval<int>(a, b, ICL::interval_bounds::closed()); }
-
-// Interval::Interval(int a, int b, int step) : _step(step) { _interval = ICL::discrete_interval<int>(a, b, ICL::interval_bounds::closed());
-// }
-
 Interval::Interval(const Interval &other)
 {
   _step = other._step;

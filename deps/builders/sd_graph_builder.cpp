@@ -45,6 +45,7 @@ DepsGraph SDGraphBuilder::build()
       VertexProperty icee = VertexProperty();
       icee.setType(VERTEX::Influencee);
       icee.setVar(var);
+      cout << "Adding influencee: " << var.name() << endl;
       _derivativeDescriptors.push_back(add_vertex(icee, graph));
     } else if (var.isAlgebraic()) {
       vp.setType(VERTEX::Algebraic);
@@ -78,6 +79,8 @@ DepsGraph SDGraphBuilder::build()
         for (auto ip : ips) {
           Label lbl(ip);
           add_edge(source, sink, lbl, graph);
+          cout << "Adding edge from: " << graph[source].var().name() << " to equation: " << graph[sink].eq().id() << endl;
+          cout << "Equation type: " << graph[sink].eq().type() << endl;
         }
       }
       // Check LHS too if we are working with algebraics.
@@ -88,6 +91,7 @@ DepsGraph SDGraphBuilder::build()
           for (auto ip : ips) {
             Label lbl(ip);
             add_edge(sink, source, lbl, graph);
+            cout << "Adding edge from equation: " << graph[sink].eq().id() << " to equation: " << graph[source].var().name() << endl;
           }
         }
       }
@@ -105,6 +109,7 @@ DepsGraph SDGraphBuilder::build()
           for (auto ip : ips) {
             Label lbl(ip);
             add_edge(sink, source, lbl, graph);
+            cout << "Adding edge from equation: " << graph[sink].eq().id() << " to equation: " << graph[source].var().name() << endl;
           }
         }
       }

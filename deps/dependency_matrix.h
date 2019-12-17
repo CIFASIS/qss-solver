@@ -75,6 +75,8 @@ class VariableDependency {
   int _id;
   int _equationId;
   std::string _variable;
+  bool _is_reduction;
+  bool _is
 };
 
 // AlgebraicDependencies

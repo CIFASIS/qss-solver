@@ -124,7 +124,9 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
              $(VISITORDIR)/revert_index.cpp \
              $(VISITORDIR)/is_constant_index.cpp \
              $(VISITORDIR)/get_index_variables.cpp \
-             $(VISITORDIR)/convert_output_range.cpp
+             $(VISITORDIR)/convert_output_range.cpp \
+			 $(VISITORDIR)/convert_sum.cpp \
+			 $(VISITORDIR)/is_recursive_def.cpp
 
 DEPSSRC = $(DEPSDIR)/dependency.cpp \
 		  $(DEPSDIR)/model_dependencies.cpp  \

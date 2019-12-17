@@ -28,7 +28,7 @@
 namespace MicroModelica {
 namespace Util {
 
-ReplaceDer::ReplaceDer(VarSymbolTable vt) : _vt(vt) {}
+ReplaceDer::ReplaceDer(VarSymbolTable symbols) : _symbols(symbols) {}
 
 AST_Expression ReplaceDer::foldTraverseElement(AST_Expression exp)
 {

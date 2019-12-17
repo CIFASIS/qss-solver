@@ -85,7 +85,7 @@ AST_Statement processStatement(AST_Statement stm)
           string sname = lhs->name();
           Option<Variable> var = symbols[sname];
           if (!var) {
-            Error::instance().add(lhs->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", sname.c_str());
+            Error::instance().add(lhs->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "process_statement.cpp:88 %s", sname.c_str());
           }
           if (!var->isState()) {
             Error::instance().add(lhs->lineNum(), EM_IR | EM_WRONG_EXP, ER_Error, "Only state variables allowed.");

@@ -35,7 +35,7 @@ int EvalInitExp::foldTraverseElement(AST_Expression exp)
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
     Option<Variable> var = _symbols[cr->name()];
     if (!var) {
-      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "%s", cr->name().c_str());
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "eval_init_exp.cpp:38 %s", cr->name().c_str());
       return ret;
     }
     if (!var->isConstant()) {

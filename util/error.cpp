@@ -53,7 +53,7 @@ void Error::add(int pos, unsigned int code, ER_Type t, const string message, ...
   vsnprintf((char *)local, size, message.c_str(), ap);
   va_end(ap);
   msg << _printCode(code) << endl;
-  msg << local.c_str() << endl;
+  msg << local << endl;
   if (t == ER_Error) {
     _errors[_numErrors++] = msg.str();
   } else {

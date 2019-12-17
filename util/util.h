@@ -114,6 +114,7 @@ class Utils {
   inline void setLocalInitSymbols() { _init_symbols = true; };
   inline void unsetLocalInitSymbols() { _init_symbols = false; };
   inline std::string fileName() { return _file_name; };
+  inline int id() { return _ids++; };
 
   private:
   Utils();
@@ -131,6 +132,7 @@ class Utils {
   SymbolTable _local_init_symbols;
   std::string _file_name;
   bool _init_symbols;
+  int _ids;
 };
 
 }  // namespace Util

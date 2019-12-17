@@ -17,42 +17,34 @@
 
  ******************************************************************************/
 
-#ifndef MMO_EXPRESSION_H_
-#define MMO_EXPRESSION_H_
+#ifndef CONVERT_SUM_H_
+#define CONVERT_SUM_H_
 
-#include <string>
-#include "../ast/ast_types.h"
-#include "../util/symbol_table.h"
+#include "../ast_util.h"
 
 namespace MicroModelica {
-namespace IR {
-
-/**
- *
- */
-class Expression {
+namespace Util {
+class ConvertSum : public AST_Expression_Visitor<AST_Expression> {
   public:
-  Expression();
-  Expression(AST_Expression exp, const Util::VarSymbolTable& symbols, int order = 0);
-  ~Expression() = default;
-  std::string print() const;
-  inline AST_Expression expression() const { return _exp; };
-  bool isReference() const;
-  std::string usage() const;
-  bool isEmpty() const { return _exp == nullptr; };
-  bool isValid() const { return _exp != nullptr; };
-  Option<Util::Variable> reference() const;
-  bool isScalar() const;
+  ConvertSum(VarSymbolTable &symbols);
+  ~ConvertSum() = default;
 
-  friend std::ostream& operator<<(std::ostream& out, const Expression& s);
+  bool hasSum();
+
+  list<AST_Equation> code();
+
+  list<Variable> variables();
 
   private:
-  AST_Expression _exp;
-  Util::VarSymbolTable _symbols;
-  int _order;
-};
+  AST_Expression foldTraverseElement(AST_Expression exp);
+  AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+  AST_Expression foldTraverseElementUMinus(AST_Expression exp);
 
-typedef list<Expression> ExpressionList;
-}  // namespace IR
+  VarSymbolTable &_symbols;
+  bool _has_sum;
+  list<AST_Equation> _code;
+  list<Variable> _variables;
+};
+}  // namespace Util
 }  // namespace MicroModelica
-#endif /* EXPRESSION_H_ */
+#endif /* CONVERT_SUM_H_ */

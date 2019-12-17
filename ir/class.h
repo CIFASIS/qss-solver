@@ -32,6 +32,7 @@
 #include "../util/util.h"
 
 #include "annotation.h"
+#include "reduction_functions.h"
 #include "statement.h"
 #include "equation.h"
 #include "event.h"
@@ -192,10 +193,11 @@ class Model : public Class {
    * @param[in]  type  The type
    */
   void addVariable(int id, Option<Range> range, EQUATION::Type type, unsigned int& offset);
-  Option<Util::Variable> variable(AST_Expression exp);
-  void setVariableOffset(Option<Util::Variable> var, unsigned int& offset, Util::Variable::RealType type, bool set_variable_count = true);
+  Util::Variable variable(AST_Expression exp);
+  void setVariableOffset(Util::Variable var, unsigned int& offset, Util::Variable::RealType type, bool set_variable_count = true);
   void setRealVariables(AST_Equation eq);
   void addEquation(AST_Equation eq, Option<Range> range);
+  void reduceEquation(AST_Equation_Equality eq, list<AST_Equation>& new_eqs);
   void addEvent(AST_Statement stm, Option<Range> range);
   void addFunction(Util::SymbolTable symbols, FunctionTable& fs);
   void addInput(Equation eq);
