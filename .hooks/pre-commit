@@ -1,0 +1,17 @@
+#!/bin/bash
+echo "Apply clang format to commit"
+
+format_file() {
+  file="${1}"
+  if [ -f $file ]; then
+    if [[ $file == *.cpp ]] || [[ $file == *.h ]]; then 
+      clang-format-7 -i ${STYLEARG} ${1}
+      git add ${1}
+    fi
+  fi
+}
+
+for file in `git diff-index --cached --name-only HEAD` ; do
+    echo "Format file: " ${file}
+    format_file "${file}"
+done
