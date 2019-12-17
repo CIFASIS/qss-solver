@@ -1,0 +1,88 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [ 
+
+
+
+        // Generic per model configurations.
+
+        // Interleaved
+        {
+            "name": "Interleaved model.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/interleaved/interleaved ", "/home/joaquin/work/qss-solver/models/interleaved/interleaved.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        
+        // Sum reduction test
+        {
+            "name": "Sum Test.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/sum_test/sum_test ", "/home/joaquin/work/qss-solver/models/sum_test.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }, 
+        
+        // Partial explicit sum reduction test
+        {
+            "name": "Partial Sum Test.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/par_sum_test/par_sum_test ", "/home/joaquin/work/qss-solver/models/par_sum_test.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+
+            // Simple algebraic test.
+            {
+                "name": "Simple Algebraic Test.",
+                "type": "cppdbg",
+                "request": "launch",
+                "program": "${workspaceFolder}/usr/bin/mmoc",
+                "args": ["-o /home/joaquin/work/qss-solver/build/simple_alg/simple_alg ", "/home/joaquin/work/qss-solver/models/simple_alg.mo"],
+                "cwd": "${workspaceFolder}/usr/bin/",
+                "environment": [],
+                "MIMode": "gdb",
+                "setupCommands": [
+                    {
+                        "description": "Enable pretty-printing for gdb",
+                        "text": "-enable-pretty-printing",
+                        "ignoreFailures": true
+                    }
+                ]
+            }
+    ]
+}

@@ -9,9 +9,6 @@ ChangeLog
 
 # Vim config files.
 tags
-compile_commands.json
-engine.sublime-project
-engine.sublime-workspace
 3rd-party/partitioners/metis/metis-5.1.0/
 3rd-party/partitioners/scotch/INSTALL.txt
 3rd-party/partitioners/scotch/LICENCE_fr.txt
