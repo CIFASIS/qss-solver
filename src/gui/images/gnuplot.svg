@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="54.699169"
+   height="37.90707"
+   viewBox="0 0 54.699169 37.90707"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.0 r9654"
+   sodipodi:docname="gnuplot.svg">
+  <metadata
+     id="metadata210">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1366"
+     inkscape:window-height="691"
+     id="namedview208"
+     showgrid="false"
+     inkscape:zoom="0.7225"
+     inkscape:cx="198.27449"
+     inkscape:cy="17.293333"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g204"
+     fit-margin-top="2"
+     fit-margin-left="2"
+     fit-margin-right="2"
+     fit-margin-bottom="2" />
+  <desc
+     id="desc4">Produced by GNUPLOT 4.2 patchlevel 2  </desc>
+  <defs
+     id="defs6">
+    <circle
+       id="gpDot"
+       r="1"
+       cx="0"
+       cy="0"
+       sodipodi:cx="0"
+       sodipodi:cy="0"
+       sodipodi:rx="1"
+       sodipodi:ry="1" />
+    <path
+       id="gpPt0"
+       style="stroke-width:0.222"
+       d="M -1,0 H 1 M 0,-1 v 2"
+       inkscape:connector-curvature="0" />
+    <path
+       id="gpPt1"
+       style="stroke-width:0.222"
+       d="M -1,-1 1,1 M 1,-1 -1,1"
+       inkscape:connector-curvature="0" />
+    <path
+       id="gpPt2"
+       style="stroke-width:0.222"
+       d="M -1,0 1,0 M 0,-1 0,1 m -1,-2 2,2 m -2,0 2,-2"
+       inkscape:connector-curvature="0" />
+    <rect
+       id="gpPt3"
+       style="stroke-width:0.222"
+       x="-1"
+       y="-1"
+       width="2"
+       height="2" />
+    <use
+       xlink:href="#gpPt3"
+       id="gpPt4"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="600"
+       height="400" />
+    <circle
+       id="gpPt5"
+       style="stroke-width:0.222"
+       cx="0"
+       cy="0"
+       r="1"
+       sodipodi:cx="0"
+       sodipodi:cy="0"
+       sodipodi:rx="1"
+       sodipodi:ry="1" />
+    <use
+       xlink:href="#gpPt5"
+       id="gpPt6"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="600"
+       height="400" />
+    <path
+       id="gpPt7"
+       style="stroke-width:0.222"
+       d="m 0,-1.33 -1.33,2 2.66,0 z"
+       inkscape:connector-curvature="0" />
+    <use
+       xlink:href="#gpPt7"
+       id="gpPt8"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="600"
+       height="400" />
+    <use
+       xlink:href="#gpPt7"
+       id="gpPt9"
+       transform="scale(-1,-1)"
+       x="0"
+       y="0"
+       width="600"
+       height="400" />
+    <use
+       xlink:href="#gpPt9"
+       id="gpPt10"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="600"
+       height="400" />
+    <use
+       xlink:href="#gpPt3"
+       id="gpPt11"
+       transform="matrix(0.70710678,0.70710678,-0.70710678,0.70710678,0,0)"
+       x="0"
+       y="0"
+       width="600"
+       height="400" />
+    <use
+       xlink:href="#gpPt11"
+       id="gpPt12"
+       style="fill:currentColor;stroke:none"
+       x="0"
+       y="0"
+       width="600"
+       height="400" />
+  </defs>
+  <g
+     style="color:#ffffff;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g22"
+     transform="translate(-274.75721,-179.38627)" />
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g24"
+     transform="translate(-274.75721,-179.38627)" />
+  <g
+     style="color:#808080;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g26"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 75.4,364 499,0"
+       id="path28"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g30"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 75.4,364 9,0"
+       id="path32"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(67.1,368.5)"
+       style="font-size:15px;text-anchor:end;fill:#000000;stroke:none;font-family:Bitstream Vera Sans"
+       id="g34">
+      <text
+         id="text36">0</text>
+    </g>
+  </g>
+  <g
+     style="color:#808080;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+     id="g38"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 75.4,294.5 499,0"
+       id="path40"
+       style="stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g42"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 75.4,294.5 9,0"
+       id="path44"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(67.1,299)"
+       style="font-size:15px;text-anchor:end;fill:#000000;stroke:none;font-family:Bitstream Vera Sans"
+       id="g46">
+      <text
+         id="text48">5000</text>
+    </g>
+  </g>
+  <g
+     style="color:#808080;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+     id="g50"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 75.4,225 499,0"
+       id="path52"
+       style="stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g54"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 75.4,225 9,0"
+       id="path56"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(67.1,229.5)"
+       style="font-size:15px;text-anchor:end;fill:#000000;stroke:none;font-family:Bitstream Vera Sans"
+       id="g58">
+      <text
+         id="text60">10000</text>
+    </g>
+  </g>
+  <g
+     style="color:#808080;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+     id="g62"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 75.4,155.6 499,0"
+       id="path64"
+       style="stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g66"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 75.4,155.6 9,0"
+       id="path68"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(67.1,160.1)"
+       style="font-size:15px;text-anchor:end;fill:#000000;stroke:none;font-family:Bitstream Vera Sans"
+       id="g70">
+      <text
+         id="text72">15000</text>
+    </g>
+  </g>
+  <g
+     style="color:#808080;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+     id="g74"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 75.4,86.1 499,0"
+       id="path76"
+       style="stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g78"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 75.4,86.1 9,0"
+       id="path80"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(67.1,90.6)"
+       style="font-size:15px;text-anchor:end;fill:#000000;stroke:none;font-family:Bitstream Vera Sans"
+       id="g82">
+      <text
+         id="text84">20000</text>
+    </g>
+  </g>
+  <g
+     style="color:#808080;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+     id="g86"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 75.4,16.6 499,0"
+       id="path88"
+       style="stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g90"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 75.4,16.6 9,0"
+       id="path92"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(67.1,21.1)"
+       style="font-size:15px;text-anchor:end;fill:#000000;stroke:none;font-family:Bitstream Vera Sans"
+       id="g94">
+      <text
+         id="text96">25000</text>
+    </g>
+  </g>
+  <g
+     style="color:#808080;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g98"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 75.4,364 0,-347.4"
+       id="path100"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g102"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 75.4,364 0,-9"
+       id="path104"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(75.4,386.5)"
+       style="font-size:15px;text-anchor:middle;fill:#000000;stroke:none;font-family:Bitstream Vera Sans"
+       id="g106">
+      <text
+         id="text108">1994</text>
+    </g>
+  </g>
+  <g
+     style="color:#808080;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+     id="g110"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 145.4,364 0,-347.4"
+       id="path112"
+       style="stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g114"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 145.4,364 0,-9"
+       id="path116"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(145.4,386.5)"
+       style="font-size:15px;text-anchor:middle;fill:#000000;stroke:none;font-family:Bitstream Vera Sans"
+       id="g118">
+      <text
+         id="text120">1996</text>
+    </g>
+  </g>
+  <g
+     style="color:#808080;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+     id="g122"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 215.5,364 0,-347.4"
+       id="path124"
+       style="stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g126"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 215.5,364 0,-9"
+       id="path128"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(215.5,386.5)"
+       style="font-size:15px;text-anchor:middle;fill:#000000;stroke:none;font-family:Bitstream Vera Sans"
+       id="g130">
+      <text
+         id="text132">1998</text>
+    </g>
+  </g>
+  <g
+     style="color:#808080;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+     id="g134"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 285.5,364 0,-347.4"
+       id="path136"
+       style="stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g138"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 285.5,364 0,-9"
+       id="path140"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(285.5,386.5)"
+       style="font-size:15px;text-anchor:middle;fill:#000000;stroke:none;font-family:Bitstream Vera Sans"
+       id="g142">
+      <text
+         id="text144">2000</text>
+    </g>
+  </g>
+  <g
+     style="color:#808080;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+     id="g146"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 355.6,364 0,-347.4"
+       id="path148"
+       style="stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g150"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 355.6,364 0,-9"
+       id="path152"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(355.6,386.5)"
+       style="font-size:15px;text-anchor:middle;fill:#000000;stroke:none;font-family:Bitstream Vera Sans"
+       id="g154">
+      <text
+         id="text156">2002</text>
+    </g>
+  </g>
+  <g
+     style="color:#808080;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+     id="g158"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 425.6,364 0,-347.4"
+       id="path160"
+       style="stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g162"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 425.6,364 0,-9"
+       id="path164"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(425.6,386.5)"
+       style="font-size:15px;text-anchor:middle;fill:#000000;stroke:none;font-family:Bitstream Vera Sans"
+       id="g166">
+      <text
+         id="text168">2004</text>
+    </g>
+  </g>
+  <g
+     style="color:#808080;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+     id="g170"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 495.7,364 0,-347.4"
+       id="path172"
+       style="stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g174"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 495.7,364 0,-9"
+       id="path176"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(495.7,386.5)"
+       style="font-size:15px;text-anchor:middle;fill:#000000;stroke:none;font-family:Bitstream Vera Sans"
+       id="g178">
+      <text
+         id="text180">2006</text>
+    </g>
+  </g>
+  <g
+     style="color:#808080;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+     id="g182"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 565.7,364 0,-347.4"
+       id="path184"
+       style="stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g186"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       d="m 565.7,364 0,-9"
+       id="path188"
+       inkscape:connector-curvature="0" />
+    <g
+       transform="translate(565.7,386.5)"
+       style="font-size:15px;text-anchor:middle;fill:#000000;stroke:none;font-family:Bitstream Vera Sans"
+       id="g190">
+      <text
+         id="text192">2008</text>
+    </g>
+    <path
+       d="m 75.4,16.6 0,347.4 499,0 m 0,-347.4 m -499,0"
+       id="path194"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g196"
+     transform="translate(-274.75721,-179.38627)" />
+  <g
+     style="color:#ff0000;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g198"
+     transform="matrix(0.09,0,0,0.09,0.1599746,1.1029531)">
+    <path
+       style="stroke:#ff0000;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 75.4,362.6 125.4,-12.5 61.2,-13.9 55.6,-13.9 29.2,-13.9 17.4,-13.9 52.6,-69.5 43.9,-69.4 113.7,-139"
+       id="path200"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     style="color:#ff0000;fill:none;stroke:#ff0000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g202"
+     transform="translate(-274.75721,-179.38627)" />
+  <g
+     style="color:#000000;fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter"
+     id="g204"
+     transform="translate(-274.75721,-179.38627)">
+    <path
+       d="m 281.70318,181.98322 0,31.266 44.91,0 m 0,-31.266 m -44.91,0"
+       id="path206"
+       inkscape:connector-curvature="0"
+       style="stroke-width:0.09" />
+  </g>
+</svg>

@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MmomeGuiForm</class>
+ <widget class="QMainWindow" name="MmomeGuiForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>693</width>
+    <height>597</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>QSS Solver</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../mmome.qrc">
+    <normaloff>:/images/integrator.svg</normaloff>:/images/integrator.svg</iconset>
+  </property>
+  <property name="toolTip">
+   <string>QSS Solver</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QMdiArea" name="mdiArea"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>693</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="action_New"/>
+    <addaction name="action_Load"/>
+    <addaction name="separator"/>
+    <addaction name="actionImport"/>
+    <addaction name="actionSettings"/>
+    <addaction name="separator"/>
+    <addaction name="action_Save"/>
+    <addaction name="action_Save_As"/>
+    <addaction name="actionSa_ve_All"/>
+   </widget>
+   <widget class="QMenu" name="menuModel">
+    <property name="title">
+     <string>&amp;Model</string>
+    </property>
+    <addaction name="actionRun"/>
+    <addaction name="actionRun_2"/>
+    <addaction name="actionDebug"/>
+    <addaction name="actionCompile"/>
+    <addaction name="separator"/>
+    <addaction name="actionLog"/>
+    <addaction name="actionClear_Log"/>
+    <addaction name="actionGraphics"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionClear_Messages"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionMicroModelica_Language_Scpefication"/>
+    <addaction name="actionQSS_Solver_Engine_Documentation"/>
+    <addaction name="actionMicroModelica_Compiler_Documentation"/>
+    <addaction name="actionSBML_Translator_Documentation"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menu_File"/>
+   <addaction name="menuModel"/>
+   <addaction name="menu_View"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QToolBar" name="_model_toolbar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QDockWidget" name="_model_plot">
+   <property name="windowTitle">
+    <string>Plot Variables</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QTreeView" name="_model_variables"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="_model_messages">
+   <property name="layoutDirection">
+    <enum>Qt::RightToLeft</enum>
+   </property>
+   <property name="windowTitle">
+    <string>Messages</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="3">
+      <widget class="QProgressBar" name="_sim_progress">
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="value">
+        <number>0</number>
+       </property>
+       <property name="invertedAppearance">
+        <bool>false</bool>
+       </property>
+       <property name="format">
+        <string>%p% </string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QTextEdit" name="_compiler_msg">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>MMO compiler messages.</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <action name="action_New">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/newFile.png</normaloff>:/images/newFile.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;New</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="action_Load">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/editfile.png</normaloff>:/images/editfile.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Load</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="action_Save">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/document_save.png</normaloff>:/images/document_save.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="action_Save_As">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/saveas.png</normaloff>:/images/saveas.png</iconset>
+   </property>
+   <property name="text">
+    <string>S&amp;ave As</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="action_Settings">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/settings.png</normaloff>:/images/settings.png</iconset>
+   </property>
+   <property name="text">
+    <string>Se&amp;ttings</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionRun">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/run.png</normaloff>:/images/run.png</iconset>
+   </property>
+   <property name="text">
+    <string>Compile  and Run</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+  </action>
+  <action name="actionCompile">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/cancel.png</normaloff>:/images/cancel.png</iconset>
+   </property>
+   <property name="text">
+    <string>Abort</string>
+   </property>
+   <property name="shortcut">
+    <string>F6</string>
+   </property>
+  </action>
+  <action name="actionLog">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/log.png</normaloff>:/images/log.png</iconset>
+   </property>
+   <property name="text">
+    <string>Log</string>
+   </property>
+   <property name="shortcut">
+    <string>F7</string>
+   </property>
+  </action>
+  <action name="actionGraphics">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/gnuplot.png</normaloff>:/images/gnuplot.png</iconset>
+   </property>
+   <property name="text">
+    <string>Graphics</string>
+   </property>
+   <property name="shortcut">
+    <string>F8</string>
+   </property>
+  </action>
+  <action name="action_Plot">
+   <property name="text">
+    <string>&amp;Plot</string>
+   </property>
+  </action>
+  <action name="action_Console">
+   <property name="text">
+    <string>&amp;Console</string>
+   </property>
+  </action>
+  <action name="actionSa_ve_All">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/save_all.png</normaloff>:/images/save_all.png</iconset>
+   </property>
+   <property name="text">
+    <string>Sa&amp;ve All</string>
+   </property>
+  </action>
+  <action name="actionDebug">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/debug.png</normaloff>:/images/debug.png</iconset>
+   </property>
+   <property name="text">
+    <string>Debug</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F5</string>
+   </property>
+  </action>
+  <action name="actionClear_Messages">
+   <property name="text">
+    <string>Clear Messages</string>
+   </property>
+  </action>
+  <action name="actionClear_Log">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/clear.png</normaloff>:/images/clear.png</iconset>
+   </property>
+   <property name="text">
+    <string>Clear Log</string>
+   </property>
+  </action>
+  <action name="actionFirst_Error">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/images/prev.png</normaloff>:/images/prev.png</iconset>
+   </property>
+   <property name="text">
+    <string>Prev Error</string>
+   </property>
+   <property name="shortcut">
+    <string>F3</string>
+   </property>
+  </action>
+  <action name="actionNext_Error">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/images/next.png</normaloff>:/images/next.png</iconset>
+   </property>
+   <property name="text">
+    <string>Next Error</string>
+   </property>
+   <property name="shortcut">
+    <string>F4</string>
+   </property>
+  </action>
+  <action name="actionRun_2">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/run_copy.png</normaloff>:/images/run_copy.png</iconset>
+   </property>
+   <property name="text">
+    <string>Run</string>
+   </property>
+   <property name="shortcut">
+    <string>F9</string>
+   </property>
+  </action>
+  <action name="actionImport">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/ImportFile.png</normaloff>:/images/ImportFile.png</iconset>
+   </property>
+   <property name="text">
+    <string>Import SBML file</string>
+   </property>
+  </action>
+  <action name="actionCompile_Package">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/compile.png</normaloff>:/images/compile.png</iconset>
+   </property>
+   <property name="text">
+    <string>Compile Package</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="icon">
+    <iconset resource="../mmome.qrc">
+     <normaloff>:/images/settings.png</normaloff>:/images/settings.png</iconset>
+   </property>
+   <property name="text">
+    <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionMicroModelica_Language_Scpefication">
+   <property name="text">
+    <string>MicroModelica Language  Specification </string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionQSS_Solver_Engine_Documentation">
+   <property name="text">
+    <string>QSS Solver Engine Documentation</string>
+   </property>
+  </action>
+  <action name="actionMicroModelica_Compiler_Documentation">
+   <property name="text">
+    <string>MicroModelica Compiler Documentation</string>
+   </property>
+  </action>
+  <action name="actionSBML_Translator_Documentation">
+   <property name="text">
+    <string>SBML Translator Documentation</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../mmome.qrc"/>
+ </resources>
+ <connections/>
+</ui>

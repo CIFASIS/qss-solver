@@ -1,0 +1,52 @@
+/** 
+ *   @mainpage QSS Solver GUI Developer's Guide
+ * 
+ * @section intro Introduction
+ * The QSS Solver GUI is a simple interface that allows the end-user
+ * of the QSS Solver to access all the developed tools in a
+ * unified way.
+ *
+ * The GUI has the following features:
+ *
+ * - It has a text editor, where models in μ-Modelica can be defined.
+ * - It invokes the corresponding tools to compile and run simulations.
+ * - It provides debug information in case of errors during the model generation.
+ * - It invokes GnuPlot to plot the simulation output trajectories.
+ * - It shows statistics about simulations (number of steps, simulation time, etc.).
+ *
+ * @section install Installation
+ * 
+ * These are generic installation instructions.
+ *
+ * @subsection deps Dependencies
+ *
+ * In order to be able to install and compile the QSS Solver, 
+ * the following dependencies must be installed: 
+ *  
+ *  - gnuplot 
+ *  - qt4-default (or higher)
+ *   
+ * @subsection inst Basic Intallation
+ *
+ * The simplest way to compile this package is:
+ *
+ *  1.`cd' to the directory containing the GUI source code and type
+ *    `make -f gui.makefile'. 
+ *    The qss-solver GUI executable is located in the usr/bin folder.
+ *   
+ *  2.You can remove the generated binaries and object files from the
+ *    source code directory by typing `make clean'.  
+ * 
+ * @subsection mktgs Makefile targets
+ *
+ * The makefile script accepts the following targets:
+ *   
+ *   - default:  Builds the qss-solver GUI.
+ *   - doc:      Builds the GUI documentation.
+ *   - clean:    Clean up generated files.
+ *
+ * @section br Bug Reporting
+ *
+ *  Report bugs to: fernandez@cifasis-conicet.gov.ar
+ * 
+ */

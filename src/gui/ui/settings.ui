@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Settings</class>
+ <widget class="QDialog" name="Settings">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>657</width>
+    <height>523</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Application Settings</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="pathsGbx">
+     <property name="title">
+      <string>Environment Variables</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="0">
+       <widget class="QLabel" name="_builLbl">
+        <property name="text">
+         <string>Build:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="_libsLbl">
+        <property name="text">
+         <string>Libraries:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="_build"/>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="_engine"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="_engineLbl">
+        <property name="text">
+         <string>Engine:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="_models"/>
+      </item>
+      <item row="1" column="4">
+       <widget class="QLabel" name="_sourceLbl">
+        <property name="text">
+         <string>Source:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="_modelsLbl">
+        <property name="text">
+         <string>Models:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QLineEdit" name="_output"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="_libs"/>
+      </item>
+      <item row="0" column="4">
+       <widget class="QLabel" name="_outputLbl">
+        <property name="text">
+         <string>Output:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QLineEdit" name="_bin"/>
+      </item>
+      <item row="1" column="6">
+       <widget class="QLineEdit" name="_source"/>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="_binLbl">
+        <property name="text">
+         <string>Binaries:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="4">
+       <widget class="QLabel" name="_externalLibsLlb">
+        <property name="text">
+         <string>External Libraries</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="_packagesLbl">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Packages:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="_packages"/>
+      </item>
+      <item row="2" column="6">
+       <widget class="QLineEdit" name="_externalLibs"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="_includeLbl">
+        <property name="text">
+         <string>Include:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="_include"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="commandsGbx">
+     <property name="title">
+      <string>Commands</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="_plot"/>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="_sbmlLbl">
+        <property name="text">
+         <string>SBML:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="_compLbl">
+        <property name="text">
+         <string>Compile:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="_plotLbl">
+        <property name="text">
+         <string>Plot:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="_comp"/>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="_buildCmd"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="_buildLbl">
+        <property name="text">
+         <string>Build:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QLineEdit" name="_simulate"/>
+      </item>
+      <item row="0" column="4">
+       <widget class="QLabel" name="_simulateLbl">
+        <property name="text">
+         <string>Simulate:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QLineEdit" name="_sbml"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="flagsGbx">
+     <property name="title">
+      <string>Flags</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="5">
+       <widget class="QLabel" name="_flagsLbl">
+        <property name="text">
+         <string>Compiler:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QLineEdit" name="_flags"/>
+      </item>
+      <item row="1" column="6">
+       <widget class="QLineEdit" name="_plotFlags"/>
+      </item>
+      <item row="1" column="5">
+       <widget class="QLabel" name="_plotFlagsLbl">
+        <property name="text">
+         <string>Plot:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="8" rowspan="2">
+       <widget class="QGroupBox" name="debugGbx">
+        <property name="title">
+         <string>Debug</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="1" column="2">
+          <widget class="QCheckBox" name="_stepInfoCbx">
+           <property name="text">
+            <string>Step Information</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QCheckBox" name="_memoryCbx">
+           <property name="text">
+            <string>Memory</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QCheckBox" name="_varChangesCbx">
+           <property name="text">
+            <string>Variable Changes</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="2">
+          <widget class="QCheckBox" name="_weightsCbx">
+           <property name="text">
+            <string>Generate Weights File</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QCheckBox" name="_externalEventsCbx">
+           <property name="text">
+            <string>External Events</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QCheckBox" name="_allCbx">
+           <property name="text">
+            <string>Enable All</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QCheckBox" name="_initialValuesCbx">
+           <property name="text">
+            <string>Initial Values</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
+          <widget class="QCheckBox" name="_synchronizeCbx">
+           <property name="text">
+            <string>Synchronize</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="2">
+          <widget class="QCheckBox" name="_waitForCbx">
+           <property name="text">
+            <string>Waiting Time</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="2">
+          <widget class="QCheckBox" name="_dtCbx">
+           <property name="text">
+            <string>Dt</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>_models</tabstop>
+  <tabstop>_packages</tabstop>
+  <tabstop>_output</tabstop>
+  <tabstop>_build</tabstop>
+  <tabstop>_engine</tabstop>
+  <tabstop>_source</tabstop>
+  <tabstop>_libs</tabstop>
+  <tabstop>_bin</tabstop>
+  <tabstop>_comp</tabstop>
+  <tabstop>_buildCmd</tabstop>
+  <tabstop>_simulate</tabstop>
+  <tabstop>_plot</tabstop>
+  <tabstop>_sbml</tabstop>
+  <tabstop>_flags</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Settings</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Settings</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

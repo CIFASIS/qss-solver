@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:ns0="http://www.iki.fi/pav/software/textext/"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docname="multiplier.svg"
+   inkscape:version="0.48.0 r9654"
+   version="1.1"
+   id="svg2"
+   height="136.1875"
+   width="117.4375">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="4.7984496"
+     inkscape:cx="58.6625"
+     inkscape:cy="68.1125"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1440"
+     inkscape:window-height="823"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
+     fit-margin-top="2"
+     fit-margin-left="2"
+     fit-margin-right="2"
+     fit-margin-bottom="2" />
+  <defs
+     id="defs4" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-418.9375,-618.625)">
+    <g
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:normal;word-spacing:normal;text-anchor:start;fill:#0000ff;stroke:#0000ff;stroke-width:0.27558474;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10.43299961;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       ns0:preamble=""
+       ns0:text="$\\times$"
+       word-spacing="normal"
+       letter-spacing="normal"
+       font-size-adjust="none"
+       font-stretch="normal"
+       font-weight="normal"
+       font-variant="normal"
+       font-style="normal"
+       stroke-miterlimit="10.433"
+       xml:space="preserve"
+       transform="matrix(7.3819393,0,0,-7.1347571,-1199.7242,5754.4578)"
+       id="content-9">
+<path
+   style="fill:#0000ff;stroke-width:0.27558474;stroke-miterlimit:10.43299961;stroke-dasharray:none;stroke:#0000ff"
+   inkscape:connector-curvature="0"
+   id="path2990"
+   d="m 227.31,709.89 -1.99,1.99 c -0.12,0.11 -0.14,0.13 -0.22,0.13 -0.1,0 -0.2,-0.09 -0.2,-0.19 0,-0.08 0.02,-0.1 0.13,-0.2 l 1.99,-2.01 -1.99,-2 c -0.11,-0.11 -0.13,-0.13 -0.13,-0.2 0,-0.11 0.1,-0.2 0.2,-0.2 0.08,0 0.1,0.02 0.22,0.14 l 1.98,1.98 2.06,-2.06 c 0.02,-0.01 0.09,-0.06 0.15,-0.06 0.12,0 0.2,0.09 0.2,0.2 0,0.02 0,0.06 -0.03,0.11 -0.01,0.02 -1.59,1.58 -2.09,2.09 l 1.82,1.83 c 0.05,0.06 0.2,0.19 0.25,0.24 0.01,0.03 0.05,0.06 0.05,0.14 0,0.1 -0.08,0.19 -0.2,0.19 -0.08,0 -0.12,-0.04 -0.23,-0.15 z" />
+</g>  </g>
+</svg>
