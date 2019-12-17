@@ -17,8 +17,3 @@ ChangeLog
 
 # Vim config files.
 tags
-compile_commands.json
-
-# SublimeText config files.
-gui.sublime-project
-gui.sublime-workspace
