@@ -1,0 +1,29 @@
+# Generated libs.
+usr/*
+
+# Local Changelog
+ChangeLog
+
+# Tmp VIM files.
+/**/*.swp
+
+# Vim config files.
+tags
+compile_commands.json
+engine.sublime-project
+engine.sublime-workspace
+3rd-party/partitioners/metis/metis-5.1.0/
+3rd-party/partitioners/scotch/INSTALL.txt
+3rd-party/partitioners/scotch/LICENCE_fr.txt
+3rd-party/partitioners/scotch/LICENSE_en.txt
+3rd-party/partitioners/scotch/LISEZ-MOI.txt
+3rd-party/partitioners/scotch/README.txt
+3rd-party/partitioners/scotch/bin/
+3rd-party/partitioners/scotch/doc/
+3rd-party/partitioners/scotch/grf/
+3rd-party/partitioners/scotch/include/
+3rd-party/partitioners/scotch/lib/
+3rd-party/partitioners/scotch/man/
+3rd-party/partitioners/scotch/src/
+3rd-party/partitioners/scotch/tgt/
+3rd-party/partitioners/scotch_old/

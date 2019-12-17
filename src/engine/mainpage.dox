@@ -1,0 +1,86 @@
+/** 
+ *   @mainpage QSS Solver Developer's Guide
+ *   
+ *   @section intro Introduction
+ *   The QSS Engine is a library that allows the simulation of continuous and hybrid 
+ *   systems and it's optimized for large scale model simulation.  
+ *   The solver is implemented as a set of modules coded in plain C language, where
+ *   the simulated models can contain time and state discontinuities.
+ *   Simulations can be performed using one of the following integration methods:
+ *
+ *      - QSS methods (the entire family is supported)
+ *      - DASSL
+ *      - DOPRI
+ *      - CVODE
+ *      - IDA
+ *
+ *  In order to obtain an executable model, a plain C file that contains the 
+ *  following functions must be provided:
+ *
+ *      - Model definition.
+ *      - Model settings.
+ *      - Model dependencies (for QSS methods).
+ *      - Model Jacobian (for IDA and CVODE).
+ *      - Model zero-crossing function.
+ *      - Model event handlers.
+ *      - A function in charge of the simulator data structure initialization.
+ *
+ * The signature of these functions and the data structures that are used depends 
+ * on the integration method used.
+ *
+ * Finally, the file containing the model has to be compiled and linked with the 
+ * engine library.
+ * 
+ *   @section install Installation
+ * 
+ * These are generic installation instructions.
+ *
+ * @subsection deps Dependencies
+ *
+ * In order to be able to install and compile the QSS Solver, 
+ * the following dependencies must be installed: 
+ *  
+ *  - cmake 
+ *  - g++
+ *  - gfortran 
+ *  - libatlas-base-dev
+ *  - libcln-dev
+ *  - libconfig-dev
+ *  - libgsl-dev
+ *  - libsuitesparse-dev
+ *  - pkgconf
+ *  - python
+ *   
+ * @subsection inst Basic Intallation
+ *
+ * The simplest way to compile this package is:
+ *
+ *  1. `cd' to the directory containing the package's source code and type
+ *    `make '. The qss-solver libraries are located in the usr/lib folder.
+ *   
+ *  2. You can remove the generated libraries and object files from the
+ *    source code directory by typing `make clean'.  
+ * 
+ * @subsection mkopt Makefile Options 
+ *
+ * The makefile script accepts the following options:
+ *
+ *   - DEBUG = <True|False>  If True, adds the compiler's debug flags. 
+ *             Default value False.
+ *   
+ *   - CORES= <n> In a multicore machine, select the number of cores used 
+ *            to compile the solver. Default value 1.
+ *
+ * @subsection mktgs Makefile targets
+ *
+ * The makefile script accepts the following targets:
+ *   
+ *   - default:  Builds the QSS solver libraries.
+ *   - doc:      Builds the QSS solver documentation.
+ *   - clean:    Clean up generated files.
+ *
+ * @section br Bug Reporting
+ *
+ *  Report bugs to: fernandez@cifasis-conicet.gov.ar
+ *
+ */
