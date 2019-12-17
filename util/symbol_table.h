@@ -25,1236 +25,155 @@
 #include <list>
 #include <map>
 #include <string>
+#include <vector>
 
 #include "../ast/ast_types.h"
 #include "../ast/element.h"
 #include "../ast/modification.h"
-#include "../ir/mmo_types.h"
-#include "../ir/mmo_util.h"
-#include "md_index.h"
 #include "type.h"
-#include "util_types.h"
+#include "table.h"
+
+namespace MicroModelica {
+
+namespace Util {
+
+class VarSymbolTable;
 
 /**
  *
  */
-template<class Key, class Value, class Compare = std::less<Key> >
-class SymbolTable
-{
+class Variable {
   public:
-    /**
-     *
-     */
-    ~SymbolTable()
-    {
-    }
-    ;
-    /**
-     *
-     * @param k
-     * @param v
-     */
-    void
-    insert(Key k, Value v)
-    {
-      _st[k] = v;
-    }
-    ;
-    /**
-     *
-     * @param k
-     * @return
-     */
-    Value
-    lookup(Key k)
-    {
-      typename std::map<Key, Value, Compare>::iterator it;
-      it = _st.find(k);
-      if(it == _st.end())
-      {
-        return NULL;
-      }
-      else
-      {
-        return it->second;
-      }
-    }
-    ;
-    int
-    count()
-    {
-      return _st.size();
-    }
-    ;
-    /**
-     *
-     * @param i
-     * @return
-     */
-    Value
-    val(int i)
-    {
-      typename std::map<Key, Value, Compare>::iterator it;
-      it = _st.begin();
-      for(int j = 0; j < i; j++)
-      {
-        it++;
-      }
-      return it->second;
-    }
-    ;
-    /**
-     *
-     * @param i
-     * @return
-     */
-    Key
-    key(int i)
-    {
-      typename std::map<Key, Value, Compare>::iterator it;
-      it = _st.begin();
-      for(int j = 0; j < i; j++)
-      {
-        it++;
-      }
-      return it->first;
-    }
-    ;
-    /**
-     *
-     * @param k
-     */
-    void
-    remove(Key k)
-    {
-      _st.erase(k);
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    Value
-    begin()
-    {
-      _currentKey = 0;
-      if(_st.empty())
-      {
-        return NULL;
-      }
-      return val(_currentKey);
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    Value
-    next()
-    {
-      _currentKey++;
-      if(_currentKey < _st.size())
-      {
-        return val(_currentKey);
-      }
-      return NULL;
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    bool
-    end()
-    {
-      if(_st.empty())
-      {
-        return true;
-      }
-      return _currentKey == _st.size();
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    Key
-    key()
-    {
-      if(_currentKey < _st.size())
-      {
-        return key(_currentKey);
-      }
-      return key(0);
-    }
-    ;
-    protected:
-    std::map<Key, Value, Compare> _st;
-    unsigned int _currentKey;
-};
+  Variable();
+  Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c);
+  Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array);
+  Variable& operator=(const Variable& other);
 
-/**
- *
- */
-class VarInfo_
-{
-  public:
-    /**
-     *
-     * @param t
-     * @param tp
-     * @param m
-     * @param c
-     */
-    VarInfo_(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c);
-    /**
-     *
-     * @param t
-     * @param tp
-     * @param m
-     * @param s
-     */
-    VarInfo_(Type t, AST_TypePrefix tp, AST_Modification m, vector<int> s,
-        bool array);
-    /**
-     *
-     * @return
-     */
-    AST_TypePrefix
-    typePrefix()
-    {
-      return _tp;
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    AST_Comment
-    comment()
-    {
-      return _comm;
-    }
-    /**
-     *
-     * @param c
-     */
-    void
-    setComment(AST_Comment c)
-    {
-      _comm = c;
-    }
-    /**
-     *
-     * @return
-     */
-    AST_Modification
-    modification()
-    {
-      return _m;
-    }
-    ;
-    /**
-     *
-     * @param m
-     */
-    void
-    setModification(AST_Modification m)
-    {
-      _m = m;
-      _processModification();
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    Type
-    type();
-    /**
-     *
-     * @param t
-     */
-    void
-    setType(Type t)
-    {
-      _t = t;
-    }
-    ;
-    /**
-     *
-     */
-    void
-    setParameter();
-    /**
-     *
-     * @return
-     */
-    bool
-    isParameter() const
-    {
-      return _tp & TP_PARAMETER;
-    }
-    /**
-     *
-     * @return
-     */
-    bool
-    isDiscrete() const
-    {
-      return (_tp & TP_DISCRETE) || _discrete;
-    }
-    /**
-     *
-     * @return
-     */
-    bool
-    builtIn() const
-    {
-      return _builtin;
-    }
-    /**
-     *
-     */
-    void
-    setDiscrete();
-    /**
-     *
-     */
-    void
-    setBuiltIn()
-    {
-      _builtin = true;
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    bool
-    isConstant() const
-    {
-      return _tp & TP_CONSTANT;
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    bool
-    isInput() const
-    {
-      return _tp & TP_INPUT;
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    bool
-    isOutput() const
-    {
-      return _tp & TP_OUTPUT;
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    bool
-    isForType() const
-    {
-      return _tp & TP_FOR;
-    }
-    /**
-     *
-     * @return
-     */
-    bool
-    isState();
-    /**
-     *
-     */
-    void
-    setState();
-    /**
-     *
-     * @return
-     */
-    bool
-    isUnknown();
-    /**
-     *
-     */
-    void
-    setUnknown();
-    /**
-     *
-     * @return
-     */
-    bool
-    isTime();
-    /**
-     *
-     * @return
-     */
-    bool
-    isAlgebraic();
-    /**
-     *
-     */
-    void
-    setAlgebraic();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasIndex();
-    /**
-     *
-     * @param idx
-     */
-    void
-    setIndex(Index idx);
-    /**
-     *
-     * @return
-     */
-    Index
-    index();
-    /**
-     *
-     * @param val
-     */
-    void
-    setValue(int val);
-    /**
-     *
-     * @return
-     */
-    int
-    value();
-    /**
-     *
-     * @return
-     */
-    int
-    size();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasAssignment();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasStartModifier();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasEachModifier();
-    void
-    setEachModifier(bool each);
-    /**
-     *
-     * @return
-     */
-    string
-    name();
-    /**
-     *
-     * @param n
-     */
-    void
-    setName(string n);
-    /**
-     *
-     * @return
-     */
-    AST_Expression
-    exp();
-    /**
-     *
-     * @return
-     */
-    bool
-    isArray();
-    /**
-     *
-     * @param os
-     * @param e
-     * @return
-     */
-    friend ostream &
-    operator<<(ostream &os, const VarInfo_ &e);
-    /**
-     *
-     * @param dim
-     * @return
-     */
-    int
-    size(int dim);
-    /**
-     *
-     * @return
-     */
-    int
-    dimensions();
-    inline bool 
-    isString() { return _t->getType() == TYSTRING; } 
-    private:
-    void
-    _processModification();
-    void
-    _unsetAssignment();
-    void
-    _unsetStartEach();
-    bool _state;
-    bool _unknown;
-    bool _discrete;
-    Type _t;
-    AST_TypePrefix _tp;
-    AST_Modification _m;
-    AST_Comment _comm;
-    bool _builtin;
-    Index _index;
-    vector<int> _size;
-    int _value;
-    bool _algebraic;
-    AST_Expression _exp;
-    bool _hasStart;
-    bool _hasEach;
-    bool _hasAssigment;
-    string _name;
-    bool _isArray;
-};
+  typedef enum { State, Algebraic, NotAssigned } RealType;
 
-/**
- *
- */
-typedef enum
-{
-  VST_CLASSIC_INIT,           //!< VST_CLASSIC_INIT
-  VST_INIT,                   //!< VST_INIT
-  VST_MODEL_FUNCTIONS,        //!< VST_MODEL_FUNCTIONS
-  VST_MODEL_OUTPUT_FUNCTIONS,        //!< VST_MODEL_OUTPUT_FUNCTIONS
-  VST_CLASSIC_MODEL_FUNCTIONS,        //!< VST_CLASSIC_MODEL_FUNCTIONS
-  VST_FUNCTION,               //!< VST_FUNCTION
-  VST_FUNCTION_SO,               //!< VST_FUNCTION_SO
-  VST_OUTPUT                  //!< VST_OUTPUT
-} VST_Environment;
+  inline void setRealType(RealType type) { _realType = type; };
+  inline AST_TypePrefix typePrefix() { return _tp; };
+  inline AST_Comment comment() { return _comm; };
+  inline void setComment(AST_Comment c) { _comm = c; };
+  inline AST_Modification modification() { return _m; };
+  inline void setModification(AST_Modification m)
+  {
+    _m = m;
+    processModification();
+  };
+  inline Type type() { return _t; };
+  inline void setType(Type t) { _t = t; };
+  inline void setParameter()
+  {
+    _tp = TP_PARAMETER;
+    unsetStartEach();
+  };
+  inline bool isParameter() const { return _tp & TP_PARAMETER; };
+  inline bool isDiscrete() const { return (_tp & TP_DISCRETE) || _discrete; };
+  inline bool builtIn() const { return _builtin; };
+  inline void setDiscrete()
+  {
+    _discrete = true;
+    unsetAssignment();
+  };
+  inline void setBuiltIn() { _builtin = true; };
+  inline bool isConstant() const { return _tp & TP_CONSTANT; };
+  inline bool isInput() const { return _tp & TP_INPUT; };
+  inline bool isOutput() const { return _tp & TP_OUTPUT; };
+  inline bool isForType() const { return _tp & TP_FOR; };
+  inline bool isEqType() const { return _tp & TP_EQ; };
+  inline bool isState() const { return _realType == State; };
+  inline void setState() { unsetAssignment(); };
+  inline bool isUnknown() { return _unknown; };
+  inline void setUnknown() { _unknown = true; };
+  inline bool isTime() { return _name.compare("time") == 0; };
+  inline bool isAlgebraic() const { return _realType == Algebraic; };
+  inline void setAlgebraic()
+  {
+    unsetAssignment();
+    unsetStartEach();
+  };
+  inline void setValue(int val) { _value = val; };
+  inline int value() { return _value; };
+  unsigned int size();
+  inline bool hasAssignment() { return _hasAssigment; };
+  inline bool hasStartModifier() { return _hasStart; };
+  inline bool hasEachModifier() { return _hasEach; };
+  inline void setEachModifier(bool each) { _hasEach = each; };
+  inline string name() const { return _name; };
+  inline void setName(string n) { _name = n; };
+  inline AST_Expression exp() { return _exp; };
+  inline bool isArray() { return _isArray; };
+  inline bool isScalar() { return !isArray(); };
+  friend ostream& operator<<(ostream& os, const Variable& e);
+  inline unsigned int size(int dim) const { return _size[dim]; };
+  unsigned int rowSize(unsigned int dim) const;
+  inline unsigned int dimensions() const { return _size.size(); };
+  std::string declaration(std::string prefix = "");
+  std::string initialization(const VarSymbolTable& symbols);
+  inline bool hasOffset() { return _hasOffset; };
+  inline void setOffset(int offset)
+  {
+    _offset = offset;
+    _hasOffset = true;
+  };
+  inline int offset() const { return _offset; };
+  inline bool isModelVar() const { return isState() || isDiscrete() || isAlgebraic() || isParameter() || isEqType() || isOutput(); };
+  std::string print() const;
+  friend std::ostream& operator<<(std::ostream& out, const Variable& v);
 
-/**
- *
- */
-class VarSymbolTable_: public SymbolTable<VarName, VarInfo>
-{
-  public:
-    /**
-     *
-     */
-    VarSymbolTable_();
-    /**
-     *
-     * @param
-     */
-    void
-    initialize(TypeSymbolTable);
-    /**
-     *
-     * @param i
-     * @return
-     */
-    VarInfo
-    varInfo(int i)
-    {
-      return val(i);
-    }
-    ;
-    /**
-     *
-     * @param i
-     * @return
-     */
-    VarName
-    varName(int i)
-    {
-      return key(i);
-    }
-    /**
-     *
-     * @param vse
-     */
-    void
-    setPrintEnvironment(VST_Environment vse);
-    /**
-     *
-     * @return
-     */
-    VST_Environment
-    printEnvironment();
-    /**
-     *
-     * @param vi
-     * @param idx
-     * @param offset
-     * @param order
-     * @param idxs
-     * @param constant
-     * @param forOffset
-     * @return
-     */
-    string
-    print(VarInfo vi, string idx = "", int offset = 0, int order = 0,
-        list<Index> idxs = list<Index>(), int constant = -1, int forOffset = 0);
-    string
-    printIndex(Index idx, list<Index> idxs, string sub, int offset,
-        int constant, VarInfo vi, int order);
-    void
-    setPolyCoeffs(int order);
-    void
-    insert(VarName n, VarInfo vi);
-    list<VarInfo>
-    parameters();
-    string
-    getTypePrefix();
-    private:
-    VST_Environment _vste;
-    int _coeffs;
-    list<VarInfo> _parameters;
-};
-
-/**
- *
- */
-class TypeSymbolTable_: public SymbolTable<TypeName, Type>
-{
-  public:
-    /**
-     *
-     */
-    TypeSymbolTable_();
-};
-
-/**
- *
- * @param t
- * @param tp
- * @param
- * @param
- * @param s
- * @return
- */
-VarInfo
-newVarInfo(Type t, AST_TypePrefix tp, AST_Modification, AST_Comment,
-    vector<int> s = vector<int>(), bool array = false);
-/**
- *
- * @return
- */
-VarSymbolTable
-newVarSymbolTable();
-/**
- *
- * @return
- */
-TypeSymbolTable
-newTypeSymbolTable();
-
-/**
- *
- */
-template<class Value>
-class IndexTable: public SymbolTable<Index, Value>
-{
-  public:
-    /**
-     *
-     * @return
-     */
-    Value
-    begin()
-    {
-      Value e = SymbolTable<Index, Value>::begin();
-      if(e == NULL)
-      {
-        return NULL;
-      }
-      Index i = SymbolTable<Index, Value>::key();
-      if(i.hasRange())
-      {
-        _beginRange = true;
-        _endRange = false;
-        _range = i.range();
-        _begin = i.begin();
-        _end = i.end();
-      }
-      else
-      {
-        _beginRange = false;
-        _endRange = false;
-        _range = 0;
-        _begin = 0;
-        _end = 0;
-      }
-      return e;
-    }
-    ;
-    /** @brief Returns an iterator to the next equation of the table.
-     *
-     * 	@return Next MMO_Equation in the table.
-     *
-     * 		The \emph{beginRange} and \emph{endRange} flags are set in the following way:
-     * 			-# If the next equation is a generic then:
-     * 				+# If the range is the same as the previous equation, then set
-     * 				   \emph{beginRange} to false.
-     * 				+# Otherwise if the previous equation had a range defined, then set
-     * 			       \emph{endRange} to true.
-     * 			    +# Finally, if there was no previous range defined, set \emph{beginRange}
-     * 			       to true.
-     * 			-# If the next equation is a simple equation, then:
-     *				+# If the there was a previous range defined, then set \emph{endRange} to true.
-     *				+# Otherwise set \emph{endRange} to false.
-     *				+# Set \emph{beginRange} to false.
-     *
-     */
-    Value
-    next()
-    {
-      Value e = SymbolTable<Index, Value>::next();
-      Index i = SymbolTable<Index, Value>::key();
-      if(e == NULL)
-      {
-        return NULL;
-      }
-      if(i.hasRange())
-      {
-        int range = i.range();
-        int begin = i.begin();
-        int end = i.end();
-        if(range == _range && _begin == begin && _end == end)
-        {
-          _beginRange = false;
-          _endRange = false;
-        }
-        else if(_range > 0)
-        {
-          _endRange = true;
-          _beginRange = true;
-          _range = range;
-          _begin = begin;
-          _end = end;
-        }
-        else if(_range == 0)
-        {
-          _beginRange = true;
-          _endRange = false;
-          _range = range;
-          _begin = begin;
-          _end = end;
-        }
-      }
-      else
-      {
-        if(_range > 0)
-        {
-          _endRange = true;
-        }
-        else
-        {
-          _endRange = false;
-        }
-        _beginRange = false;
-        _range = 0;
-        _begin = 0;
-        _end = 0;
-      }
-      return e;
-    }
-    ;
-
-    /** @brief Returns true if the end of the table is reached.
-     *
-     * 	@return True if the end of the table is reached, false otherwise.
-     *
-     * 	@note{As a size effect, the \emph{beginRange} and \emph{endRange} flags
-     * 		  are cleared.}
-     *
-     */
-    bool
-    end()
-    {
-      bool ret = SymbolTable<Index, Value>::end();
-      if(ret)
-      {
-        _beginRange = false;
-        _endRange = false;
-        _range = 0;
-      }
-      return ret;
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    bool
-    beginGenericDefinition()
-    {
-      return _beginRange;
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    bool
-    endGenericDefinition()
-    {
-      return _endRange;
-    }
-    ;
-    /**
-     *
-     * @param val
-     * @return
-     */
-    bool
-    find(int val)
-    {
-      int s = SymbolTable<Index, Value>::count();
-      for(int i = 0; i < s; i++)
-      {
-        Index idx = SymbolTable<Index, Value>::key(i);
-        if(idx.factor() != 0)
-        {
-          if(idx.checkReverseValue(val))
-          {
-            return true;
-          }
-        }
-      }
-      return false;
-    }
   private:
-    int _range;
-    int _begin;
-    int _end;
-    bool _beginRange;
-    bool _endRange;
+  std::string variableExpression(const VarSymbolTable& symbols);
+  void processModification();
+  void unsetAssignment() { _hasAssigment = false; };
+  inline void unsetStartEach()
+  {
+    _hasEach = false;
+    _hasStart = false;
+  };
+
+  bool _unknown;
+  bool _discrete;
+  Type _t;
+  AST_TypePrefix _tp;
+  AST_Modification _m;
+  AST_Comment _comm;
+  bool _builtin;
+  vector<int> _size;
+  int _value;
+  AST_Expression _exp;
+  bool _hasStart;
+  bool _hasEach;
+  bool _hasAssigment;
+  string _name;
+  bool _isArray;
+  bool _hasOffset;
+  int _offset;
+  RealType _realType;
 };
 
 /**
  *
  */
-class MMO_EquationTable_: public IndexTable<MMO_Equation>
-{
+class TypeSymbolTable : public ModelTable<TypeName, Type> {
   public:
-    /**
-     *
-     */
-    MMO_EquationTable_();
-    /**
-     *
-     * @param index
-     * @return
-     */
-    list<MMO_Equation>
-    equation(Index index);
-    /**
-     *
-     * @param index
-     * @return
-     */
-    Index
-    equationIndex(Index index);
-    bool
-    equations(Index index);
-    bool
-    findGenericDependencies(int val);
-    private:
-    MMO_Equation
-    _equation(Index index);
+  TypeSymbolTable();
 };
-/**
- *
- * @return
- */
-MMO_EquationTable
-newMMO_EquationTable();
-/**
- *
- * @param m
- */
-void
-deleteMMO_EquationTable(MMO_EquationTable m);
 
 /**
  *
  */
-class MMO_EventTable_: public IndexTable<MMO_Event>
-{
+class VarSymbolTable : public ModelTable<VarName, Variable> {
   public:
-    /**
-     *
-     */
-    MMO_EventTable_();
-};
-/**
- *
- * @return
- */
-MMO_EventTable
-newMMO_EventTable();
-/**
- *
- * @param m
- */
-void
-deleteMMO_EventTable(MMO_EventTable m);
+  VarSymbolTable();
+  ~VarSymbolTable() = default;
+  void initialize(TypeSymbolTable tst);
+  void insert(VarName n, Variable vi);
+  inline bool parameters() { return _parameters; };
 
-/**
- *
- */
-class MMO_FunctionTable_: public IndexTable<MMO_Function>
-{
-  public:
-    /**
-     *
-     */
-    MMO_FunctionTable_();
+  private:
+  bool _parameters;
 };
-/**
- *
- * @return
- */
-MMO_FunctionTable
-newMMO_FunctionTable();
-/**
- *
- * @param m
- */
-void
-deleteMMO_FunctionTable(MMO_FunctionTable m);
-
-/**
- *
- */
-class MMO_DependenciesTable_: public IndexTable<Dependencies>
-{
-  public:
-    /**
-     *
-     */
-    MMO_DependenciesTable_();
-    bool
-    find(int val);
-};
-/**
- *
- * @return
- */
-MMO_DependenciesTable
-newMMO_DependenciesTable();
-/**
- *
- * @param m
- */
-void
-deleteMMO_DependenciesTable(MMO_DependenciesTable m);
-
-/**
- *
- */
-class MMO_ArgumentsTable_: public IndexTable<MMO_FunctionData>
-{
-  public:
-    /**
-     *
-     */
-    MMO_ArgumentsTable_();
-};
-/**
- *
- * @return
- */
-MMO_ArgumentsTable
-newMMO_ArgumentsTable();
-/**
- *
- * @param m
- */
-void
-deleteMMO_ArgumentsTable(MMO_ArgumentsTable m);
-
-/**
- *
- */
-class MMO_IndexTable_: public SymbolTable<Index, Index*>
-{
-  public:
-    /**
-     *
-     */
-    MMO_IndexTable_();
-};
-/**
- *
- * @return
- */
-MMO_IndexTable
-newMMO_IndexTable();
-/**
- *
- * @param m
- */
-void
-deleteMMO_IndexTable(MMO_IndexTable m);
-
-/**
- *
- */
-template<class R>
-class ListTable_
-{
-  public:
-    /**
-     *
-     * @param i
-     */
-    void
-    insert(R i)
-    {
-      _ls.push_back(i);
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    R
-    begin()
-    {
-      _currentKey = 0;
-      if(_ls.empty())
-      {
-        return R();
-      }
-      return _val(_currentKey);
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    R
-    next()
-    {
-      _currentKey++;
-      if(_currentKey < _ls.size())
-      {
-        return _val(_currentKey);
-      }
-      return R();
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    bool
-    end()
-    {
-      if(_ls.empty())
-      {
-        return true;
-      }
-      return _currentKey == _ls.size();
-    }
-    ;
-    /**
-     *
-     * @return
-     */
-    R
-    last()
-    {
-      return _ls.back();
-    }
-    /**
-     *
-     * @return
-     */
-    int
-    count()
-    {
-      return _ls.size();
-    }
-    ;
-    private:
-    R
-    _val(int i)
-    {
-      typename std::list<R>::iterator it;
-      it = _ls.begin();
-      for(int j = 0; j < i; j++)
-      {
-        it++;
-      }
-      return *it;
-    }
-    ;
-    list<R> _ls;
-    unsigned int _currentKey;
-};
-
-/**
- *
- */
-class MMO_StatementTable_: public ListTable_<MMO_Statement>
-{
-  public:
-    /**
-     *
-     */
-    MMO_StatementTable_();
-    /**
-     *
-     */
-    ~MMO_StatementTable_();
-};
-/**
- *
- * @return
- */
-MMO_StatementTable
-newMMO_StatementTable();
-/**
- *
- * @param m
- */
-void
-deleteMMO_StatementTable(MMO_StatementTable m);
-
-/**
- *
- */
-class MMO_ImportTable_: public ListTable_<string>
-{
-  public:
-    /**
-     *
-     */
-    MMO_ImportTable_();
-    /**
-     *
-     */
-    ~MMO_ImportTable_();
-};
-/**
- *
- * @return
- */
-MMO_ImportTable
-newMMO_ImportTable();
-/**
- *
- * @param m
- */
-void
-deleteMMO_ImportTable(MMO_ImportTable m);
-
-/**
- *
- */
-class MMO_FunctionDefinitionTable_: public ListTable_<MMO_FunctionDefinition>
-{
-  public:
-    /**
-     *
-     */
-    MMO_FunctionDefinitionTable_();
-    /**
-     *
-     */
-    ~MMO_FunctionDefinitionTable_();
-};
-/**
- *
- * @return
- */
-MMO_FunctionDefinitionTable
-newMMO_FunctionDefinitionTable();
-/**
- *
- * @param m
- */
-void
-deleteMMO_FunctionDefinitionTable(MMO_FunctionDefinitionTable m);
-
-/**
- *
- */
-class MMO_SymbolRefTable_: public SymbolTable<string, MMO_FunctionInfo *>
-{
-  public:
-    /**
-     *
-     */
-    MMO_SymbolRefTable_();
-    /**
-     *
-     */
-    ~MMO_SymbolRefTable_();
-};
-/**
- *
- * @return
- */
-MMO_SymbolRefTable
-newMMO_SymbolRefTable();
-/**
- *
- * @param m
- */
-void
-deleteMMO_SymbolRefTable(MMO_SymbolRefTable m);
-
-/**
- *
- */
-class MMO_PackageTable_: public ListTable_<MMO_PackageData>
-{
-  public:
-    /**
-     *
-     */
-    MMO_PackageTable_();
-    /**
-     *
-     * @param name
-     * @return
-     */
-    string
-    functionPrefix(string name);
-};
-/**
- *
- * @return
- */
-MMO_PackageTable
-newMMO_PackageTable();
-/**
- *
- * @param m
- */
-void
-deleteMMO_PackageTable(MMO_PackageTable m);
-
+}  // namespace Util
+}  // namespace MicroModelica
 #endif /* SYMBOL_TABLE_H_ */

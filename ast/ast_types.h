@@ -30,19 +30,20 @@
 /**
  *
  */
-#define MAKE_SPACE for (int __i=0;__i<depth;__i++) ret << " ";
+#define MAKE_SPACE \
+  for (int __i = 0; __i < block; __i++) ret << " ";
 /**
  *
  */
-#define BEGIN_BLOCK depth+=2;
+#define BEGIN_BLOCK block += 2;
 /**
  *
  */
-#define END_BLOCK depth-=2;
+#define END_BLOCK block -= 2;
 /**
  *
  */
-extern int depth;
+extern int block;
 /**
  *
  */
@@ -342,6 +343,10 @@ DEFINE_TYPE(AST_Statement_Assign);
 /**
  *
  */
+DEFINE_TYPE(AST_Statement_OutputAssigment);
+/**
+ *
+ */
 DEFINE_TYPE(AST_StoredDefinition);
 /**
  *
@@ -411,131 +416,124 @@ DEFINE_LIST(AST_Integer);
 /**
  *
  */
-enum BinOpType
-{
-  BINOPOR,        //!< BINOPOR
-  BINOPAND,       //!< BINOPAND
-  BINOPLOWER,     //!< BINOPLOWER
-  BINOPLOWEREQ,   //!< BINOPLOWEREQ
-  BINOPGREATER,   //!< BINOPGREATER
-  BINOPGREATEREQ, //!< BINOPGREATEREQ
-  BINOPCOMPNE,    //!< BINOPCOMPNE
-  BINOPCOMPEQ,    //!< BINOPCOMPEQ
-  BINOPADD,      //!< BINOPADD
-  BINOPELADD,     //!< BINOPELADD
-  BINOPSUB,       //!< BINOPSUB
-  BINOPELSUB,     //!< BINOPELSUB
-  BINOPDIV,       //!< BINOPDIV
-  BINOPELDIV,     //!< BINOPELDIV
-  BINOPMULT,      //!< BINOPMULT
-  BINOPELMULT,    //!< BINOPELMULT
-  BINOPEXP,       //!< BINOPEXP
-  BINOPELEXP,     //!< BINOPELEXP
-  BINOPNULL       //!< BINOPNULL
+enum BinOpType {
+  BINOPOR,         //!< BINOPOR
+  BINOPAND,        //!< BINOPAND
+  BINOPLOWER,      //!< BINOPLOWER
+  BINOPLOWEREQ,    //!< BINOPLOWEREQ
+  BINOPGREATER,    //!< BINOPGREATER
+  BINOPGREATEREQ,  //!< BINOPGREATEREQ
+  BINOPCOMPNE,     //!< BINOPCOMPNE
+  BINOPCOMPEQ,     //!< BINOPCOMPEQ
+  BINOPADD,        //!< BINOPADD
+  BINOPELADD,      //!< BINOPELADD
+  BINOPSUB,        //!< BINOPSUB
+  BINOPELSUB,      //!< BINOPELSUB
+  BINOPDIV,        //!< BINOPDIV
+  BINOPELDIV,      //!< BINOPELDIV
+  BINOPMULT,       //!< BINOPMULT
+  BINOPELMULT,     //!< BINOPELMULT
+  BINOPEXP,        //!< BINOPEXP
+  BINOPELEXP,      //!< BINOPELEXP
+  BINOPNULL        //!< BINOPNULL
 };
 
 /**
  *
  */
-enum ElementType
-{
-  ELNONE,    //!< ELNONE
-  COMPONENT, //!< COMPONENT
-  IMPORT,    //!< IMPORT
-  EXTENDS,   //!< EXTENDS
-  ELCLASS    //!< ELCLASS
+enum ElementType {
+  ELNONE,     //!< ELNONE
+  COMPONENT,  //!< COMPONENT
+  IMPORT,     //!< IMPORT
+  EXTENDS,    //!< EXTENDS
+  ELCLASS     //!< ELCLASS
 };
 
 /**
  *
  */
-enum EquationType
-{
-  EQNONE,     //!< EQNONE
-  EQEQUALITY, //!< EQEQUALITY
-  EQCONNECT,  //!< EQCONNECT
-  EQCALL,     //!< EQCALL
-  EQFOR,      //!< EQFOR
-  EQWHEN,     //!< EQWHEN
-  EQIF        //!< EQIF
+enum EquationType {
+  EQNONE,      //!< EQNONE
+  EQEQUALITY,  //!< EQEQUALITY
+  EQCONNECT,   //!< EQCONNECT
+  EQCALL,      //!< EQCALL
+  EQFOR,       //!< EQFOR
+  EQWHEN,      //!< EQWHEN
+  EQIF         //!< EQIF
 };
 
 /**
  *
  */
-enum ExpressionType
-{
-  EXPNONE,        //!< EXPNONE
-  EXPCOMPREF,     //!< EXPCOMPREF
-  EXPBINOP,       //!< EXPBINOP
-  EXPDERIVATIVE,  //!< EXPDERIVATIVE
-  EXPNULL,        //!< EXPNULL
-  EXPEND,         //!< EXPEND
-  EXPIF,          //!< EXPIF
-  EXPCALLARG,     //!< EXPCALLARG
-  EXPBRACE,       //!< EXPBRACE
-  EXPCALL,        //!< EXPCALL
-  EXPELSEIF,      //!< EXPELSEIF
-  EXPCOLON,       //!< EXPCOLON
-  EXPUMINUS,      //!< EXPUMINUS
-  EXPBOOLEAN,     //!< EXPBOOLEAN
-  EXPSTRING,      //!< EXPSTRING
-  EXPREAL,        //!< EXPREAL
-  EXPINTEGER,     //!< EXPINTEGER
-  EXPBOOLEANNOT,  //!< EXPBOOLEANNOT
-  EXPOUTPUT,      //!< EXPOUTPUT
-  EXPRANGE,       //!< EXPRANGE
-  EXPNAMEDARGUMENT,       //!< EXPNAMEDARGUMENT
-  EXPARRAYINDEX       //!< EXPARRAYINDEX
+enum ExpressionType {
+  EXPNONE,           //!< EXPNONE
+  EXPCOMPREF,        //!< EXPCOMPREF
+  EXPBINOP,          //!< EXPBINOP
+  EXPDERIVATIVE,     //!< EXPDERIVATIVE
+  EXPNULL,           //!< EXPNULL
+  EXPEND,            //!< EXPEND
+  EXPIF,             //!< EXPIF
+  EXPCALLARG,        //!< EXPCALLARG
+  EXPBRACE,          //!< EXPBRACE
+  EXPCALL,           //!< EXPCALL
+  EXPELSEIF,         //!< EXPELSEIF
+  EXPCOLON,          //!< EXPCOLON
+  EXPUMINUS,         //!< EXPUMINUS
+  EXPBOOLEAN,        //!< EXPBOOLEAN
+  EXPSTRING,         //!< EXPSTRING
+  EXPREAL,           //!< EXPREAL
+  EXPINTEGER,        //!< EXPINTEGER
+  EXPBOOLEANNOT,     //!< EXPBOOLEANNOT
+  EXPOUTPUT,         //!< EXPOUTPUT
+  EXPRANGE,          //!< EXPRANGE
+  EXPNAMEDARGUMENT,  //!< EXPNAMEDARGUMENT
+  EXPARRAYINDEX      //!< EXPARRAYINDEX
 };
 
 /**
  *
  */
-enum ModificationType
-{
-  MODNONE,  //!< MODNONE
-  MODEQUAL, //!< MODEQUAL
-  MODASSIGN, //!< MODASSIGN
-  MODCLASS  //!< MODCLASS
+enum ModificationType {
+  MODNONE,    //!< MODNONE
+  MODEQUAL,   //!< MODEQUAL
+  MODASSIGN,  //!< MODASSIGN
+  MODCLASS    //!< MODCLASS
 };
 
 /**
  *
  */
-enum StatementType
-{
-  STNONE,     //!< STNONE
-  STRETURN,   //!< STRETURN
-  STBREAK,    //!< STBREAK
-  STWHEN,     //!< STWHEN
-  STASSING,   //!< STASSING
-  STFOR,      //!< STFOR
-  STIF,       //!< STIF
-  STWHILE,    //!< STWHILE
-  STOUTASSING //!< STOUTASSING
+enum StatementType {
+  STNONE,      //!< STNONE
+  STRETURN,    //!< STRETURN
+  STBREAK,     //!< STBREAK
+  STWHEN,      //!< STWHEN
+  STASSING,    //!< STASSING
+  STFOR,       //!< STFOR
+  STIF,        //!< STIF
+  STWHILE,     //!< STWHILE
+  STOUTASSING  //!< STOUTASSING
 };
 
 /**
  *
  */
-enum TypePrefix
-{
-  TP_INPUT = (1 << 1), //!< TP_INPUT
-  TP_OUTPUT = (1 << 2), //!< TP_OUTPUT
-  TP_DISCRETE = (1 << 3), //!< TP_DISCRETE
-  TP_PARAMETER = (1 << 4), //!< TP_PARAMETER
-  TP_FLOW = (1 << 5), //!< TP_FLOW
-  TP_STREAM = (1 << 6), //!< TP_STREAM
-  TP_CONSTANT = (1 << 7), //!< TP_CONSTANT
-  TP_FOR = (1 << 8)  //!< TP_FOR
+enum TypePrefix {
+  TP_INPUT = (1 << 1),      //!< TP_INPUT
+  TP_OUTPUT = (1 << 2),     //!< TP_OUTPUT
+  TP_DISCRETE = (1 << 3),   //!< TP_DISCRETE
+  TP_PARAMETER = (1 << 4),  //!< TP_PARAMETER
+  TP_FLOW = (1 << 5),       //!< TP_FLOW
+  TP_STREAM = (1 << 6),     //!< TP_STREAM
+  TP_CONSTANT = (1 << 7),   //!< TP_CONSTANT
+  TP_FOR = (1 << 8),        //!< TP_FOR
+  TP_EQ = (1 << 9)          //!< TP_EQ
 };
 
 /**
  *
  */
-enum ArgumentType
-{
+enum ArgumentType {
   AR_MODIFICATION,  //!< AR_MODIFICATION
   AR_REDECLARATION  //!< AR_REDECLARATION
 };
@@ -543,41 +541,37 @@ enum ArgumentType
  *
  * @return
  */
-AST_TypePrefix
-newAST_TypePrefix();
+AST_TypePrefix newAST_TypePrefix();
 /**
  *
  * @param
  * @return
  */
-AST_TypePrefix
-newAST_TypePrefix(AST_TypePrefix);
+AST_TypePrefix newAST_TypePrefix(AST_TypePrefix);
 /**
  *
  * @param
  * @param
  * @return
  */
-AST_TypePrefix
-AST_TypePrefixAdd(AST_TypePrefix, AST_TypePrefix);
+AST_TypePrefix AST_TypePrefixAdd(AST_TypePrefix, AST_TypePrefix);
 /**
  *
  */
-enum ClassPrefix
-{
-  CP_PARTIAL = (1 << 1), //!< CP_PARTIAL
-  CP_CLASS = (1 << 2), //!< CP_CLASS
-  CP_MODEL = (1 << 3), //!< CP_MODEL
-  CP_BLOCK = (1 << 4), //!< CP_BLOCK
-  CP_RECORD = (1 << 5), //!< CP_RECORD
-  CP_CONNECTOR = (1 << 6), //!< CP_CONNECTOR
-  CP_TYPE = (1 << 7), //!< CP_TYPE
-  CP_OPERATOR = (1 << 8), //!< CP_OPERATOR
-  CP_EXPANDABLE = (1 << 9), //!< CP_EXPANDABLE
-  CP_PURE = (1 << 10), //!< CP_PURE
-  CP_IMPURE = (1 << 11), //!< CP_IMPURE
-  CP_PACKAGE = (1 << 12), //!< CP_PACKAGE
-  CP_FUNCTION = (1 << 13) //!< CP_FUNCTION
+enum ClassPrefix {
+  CP_PARTIAL = (1 << 1),     //!< CP_PARTIAL
+  CP_CLASS = (1 << 2),       //!< CP_CLASS
+  CP_MODEL = (1 << 3),       //!< CP_MODEL
+  CP_BLOCK = (1 << 4),       //!< CP_BLOCK
+  CP_RECORD = (1 << 5),      //!< CP_RECORD
+  CP_CONNECTOR = (1 << 6),   //!< CP_CONNECTOR
+  CP_TYPE = (1 << 7),        //!< CP_TYPE
+  CP_OPERATOR = (1 << 8),    //!< CP_OPERATOR
+  CP_EXPANDABLE = (1 << 9),  //!< CP_EXPANDABLE
+  CP_PURE = (1 << 10),       //!< CP_PURE
+  CP_IMPURE = (1 << 11),     //!< CP_IMPURE
+  CP_PACKAGE = (1 << 12),    //!< CP_PACKAGE
+  CP_FUNCTION = (1 << 13)    //!< CP_FUNCTION
 };
 
 /**
@@ -593,14 +587,14 @@ enum ClassPrefix
  * @param n
  * @return
  */
-#define foreach(it,list) for (it=list->begin();it!=list->end();it++)
+#define foreach(it, list) for (it = list->begin(); it != list->end(); it++)
 /**
  *
  * @param l
  * @param n
  * @return
  */
-#define foreachReverse(it,list) for (it=list->rbegin();it!=list->rend();it++)
+#define foreachReverse(it, list) for (it = list->rbegin(); it != list->rend(); it++)
 
 /**
  *
@@ -608,14 +602,12 @@ enum ClassPrefix
  * @param n
  * @return
  */
-template<typename T1>
-T1
-AST_ListElement(list<T1> *l, int n)
+template <typename T1>
+T1 AST_ListElement(list<T1> *l, int n)
 {
   typename std::list<T1>::iterator it;
   it = l->begin();
-  for(int j = 1; j < n; j++)
-  {
+  for (int j = 1; j < n; j++) {
     it++;
   }
   return *it;
@@ -627,9 +619,8 @@ AST_ListElement(list<T1> *l, int n)
  * @param e
  * @return
  */
-template<typename T1>
-list<T1> *
-AST_ListAppend(list<T1> *l, T1 e)
+template <typename T1>
+list<T1> *AST_ListAppend(list<T1> *l, T1 e)
 {
   l->push_back(e);
   return l;
@@ -641,9 +632,8 @@ AST_ListAppend(list<T1> *l, T1 e)
  * @param e
  * @return
  */
-template<typename T1>
-list<T1> *
-AST_ListPrepend(list<T1> *l, T1 e)
+template <typename T1>
+list<T1> *AST_ListPrepend(list<T1> *l, T1 e)
 {
   l->push_front(e);
   return l;
@@ -655,9 +645,8 @@ AST_ListPrepend(list<T1> *l, T1 e)
  * @param e
  * @return
  */
-template<typename T1>
-list<T1> *
-AST_ListRemove(list<T1> *l, T1 e)
+template <typename T1>
+list<T1> *AST_ListRemove(list<T1> *l, T1 e)
 {
   l->remove(e);
   return l;
@@ -668,9 +657,8 @@ AST_ListRemove(list<T1> *l, T1 e)
  * @param l
  * @return
  */
-template<typename T1>
-T1
-AST_ListFirst(list<T1> *l)
+template <typename T1>
+T1 AST_ListFirst(list<T1> *l)
 {
   return l->front();
 }
@@ -681,9 +669,8 @@ AST_ListFirst(list<T1> *l)
  * @param l2
  * @return
  */
-template<typename T1>
-list<T1> *
-AST_ListConcat(list<T1> *l1, list<T1> *l2)
+template <typename T1>
+list<T1> *AST_ListConcat(list<T1> *l1, list<T1> *l2)
 {
   l1->insert(l1->end(), l2->begin(), l2->end());
   return l1;
@@ -694,11 +681,10 @@ AST_ListConcat(list<T1> *l1, list<T1> *l2)
  * @param l1
  * @return
  */
-template<typename T1>
-list<T1> *
-AST_ListCopy(list<T1> *l1)
+template <typename T1>
+list<T1> *AST_ListCopy(list<T1> *l1)
 {
-  list<T1> * ls = new list<T1>;
+  list<T1> *ls = new list<T1>;
   ls->assign(l1->begin(), l1->end());
   return ls;
 }
@@ -708,9 +694,8 @@ AST_ListCopy(list<T1> *l1)
  * @param l1
  * @return
  */
-template<typename T1>
-int
-AST_Length(list<T1> *l1)
+template <typename T1>
+int AST_Length(list<T1> *l1)
 {
   return l1->size();
 }
@@ -721,17 +706,14 @@ AST_Length(list<T1> *l1)
  * @param i
  * @return
  */
-template<typename T1>
-T1
-AST_ListAt(list<T1> *l1, int i)
+template <typename T1>
+T1 AST_ListAt(list<T1> *l1, int i)
 {
   typename list<T1>::iterator it = l1->begin();
-  for(int c = 0; c < i; c++)
-  {
+  for (int c = 0; c < i; c++) {
     it++;
   }
-  if(it != l1->end())
-  {
+  if (it != l1->end()) {
     return *it;
   }
   return T1();
@@ -742,11 +724,10 @@ AST_ListAt(list<T1> *l1, int i)
  * @param t
  * @return
  */
-template<typename T1>
-list<T1> *
-newAST_SimpleList(T1 t)
+template <typename T1>
+list<T1> *newAST_SimpleList(T1 t)
 {
-  list<T1> * ls = new list<T1>;
+  list<T1> *ls = new list<T1>;
   ls->push_back(t);
   return ls;
 }
@@ -761,32 +742,24 @@ newAST_SimpleList(T1 t)
  * @param closer
  * @param block
  */
-template<typename T1>
-void
-AST_ListPrint(list<T1> *l1, ostream &ret, string sec_name = "",
-    string separator = " ", string opener = "", string closer = "", bool block =
-        false)
+template <typename T1>
+void AST_ListPrint(list<T1> *l1, ostream &ret, string sec_name = "", string separator = " ", string opener = "", string closer = "",
+                   bool block = false)
 {
   typename list<T1>::iterator it;
   int size = l1->size(), i = 1;
-  if(size)
-  {
+  if (size) {
     ret << sec_name;
-    if(block)
-      BEGIN_BLOCK
-    ;
+    if (block) BEGIN_BLOCK;
     ret << opener;
-    foreach(it,l1)
-    {
+    foreach (it, l1) {
       ret << current_element(it);
       ret << (i < size ? separator : "");
       i++;
     }
     ret << closer;
-    if(block)
-      END_BLOCK
-    ;
+    if (block) END_BLOCK;
   }
 }
 
-#endif  /* AST_TYPES_H_ */
+#endif /* AST_TYPES_H_ */

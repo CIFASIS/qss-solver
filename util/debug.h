@@ -17,6 +17,9 @@
 
  ******************************************************************************/
 
+namespace MicroModelica {
+
+namespace Util {
 // This debugging routines allow the user to turn on selected
 // debugging messages, controllable from the command line arguments
 // passed to modelicacc after de -d option.
@@ -28,27 +31,24 @@
  *
  * "flagList" is a string of characters for whose DEBUG messages are to be enabled.
  */
-void
-debugInit(const char* flags);
+void debugInit(const char *flags);
 
 /**
  * Print an INFO debug message, if flag is enabled.
  **/
-void
-DEBUG(char flag, const char* format, ...);
+void DEBUG(char flag, const char *format, ...);
 
-bool
-isDebugParam(char *param);
+bool isDebugParam(char *param);
 
 /*
  * Print an ERROR message. Then exits with EXIT_FAILURE status.
  */
-void
-ERROR(const char *format, ...);
+void ERROR(const char *format, ...);
 
 /**
  * Print an ERROR message if condition is false.
  * Then exits with EXIT_FAILURE status.
  */
-void
-ERROR_UNLESS(bool condition, const char *format, ...);
+void ERROR_UNLESS(bool condition, const char *format, ...);
+}  // namespace Util
+}  // namespace MicroModelica

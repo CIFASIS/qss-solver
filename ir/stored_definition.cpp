@@ -17,73 +17,49 @@
 
  ******************************************************************************/
 
-#include <ir/stored_definition.h>
-#include <ir/class.h>
+#include <boost/variant/variant.hpp>
+#include <boost/variant/get.hpp>
+#include "stored_definition.h"
 
-MMO_StoredDefinition_::MMO_StoredDefinition_() :
-    _classList()
+namespace MicroModelica {
+namespace IR {
+
+StoredDefinition::StoredDefinition() : _def(), _functions() {}
+
+void StoredDefinition::setModel(string name) { _def = Model(name); }
+
+void StoredDefinition::setPackage(string name) { _def = Package(name); }
+
+void StoredDefinition::addFunction(Function& f) { _functions.insert(f.name(), f); }
+
+Option<Function> StoredDefinition::function(string name)
 {
+  Option<Function> f = _functions[name];
+  return f;
 }
 
-MMO_StoredDefinition_::~MMO_StoredDefinition_()
-{
-}
+Model& StoredDefinition::model() { return boost::get<Model>(_def); }
 
-list<MMO_Class>
-MMO_StoredDefinition_::classes() const
-{
-  return _classList;
-}
+Package& StoredDefinition::package() { return boost::get<Package>(_def); }
 
-void
-MMO_StoredDefinition_::addClass(MMO_Class c)
-{
-  _classList.push_back(c);
-}
+bool StoredDefinition::isModel() { return _def.type() == typeid(Model); }
 
-MMO_Class
-MMO_StoredDefinition_::begin()
+bool StoredDefinition::isPackage() { return _def.type() == typeid(Package); }
+
+void StoredDefinition::postProcess()
 {
-  _it = _classList.begin();
-  if(_it == _classList.end())
-  {
-    return NULL;
+  if (isModel()) {
+    model().setEquations();
+    model().setEvents();
+    model().setOutputs();
+    model().setCalledFunctions(_functions);
+    model().computeDependencies();
+    model().setInputs();
+    model().setModelConfig();
+  } else {
+    package().setFunctions(_functions);
   }
-  return *_it;
 }
 
-MMO_Class
-MMO_StoredDefinition_::next()
-{
-  _it++;
-  if(_it == _classList.end())
-  {
-    return NULL;
-  }
-  return *_it;
-}
-
-bool
-MMO_StoredDefinition_::end()
-{
-  return _it != _classList.end();
-}
-
-string
-MMO_StoredDefinition_::print()
-{
-  string ret;
-  return ret;
-}
-
-MMO_StoredDefinition
-newMMO_StoredDefinition()
-{
-  return new MMO_StoredDefinition_();
-}
-
-void
-deleteMMO_StoredDefinition(MMO_StoredDefinition m)
-{
-  delete m;
-}
+}  // namespace IR
+}  // namespace MicroModelica

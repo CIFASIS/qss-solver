@@ -17,210 +17,219 @@
 
  ******************************************************************************/
 
-#ifndef MMO_EQUATION_H_
-#define MMO_EQUATION_H_
-
-#include <list>
-#include <set>
-#include <string>
-#include <map>
+#ifndef EQUATION_H_
+#define EQUATION_H_
 
 #include "../ast/ast_types.h"
-#include "../util/index.h"
-#include "../util/util_types.h"
-#include "../util/dependencies.h"
-#include "mmo_base.h"
-#include "mmo_types.h"
+#include "../deps/dependency_matrix.h"
+#include "../util/table.h"
+#include "index.h"
 
-typedef enum
-{
-  EQ_DERIVATIVE,
-  EQ_DEPENDENCIES,
-  EQ_CLASSIC,
-  EQ_ALGEBRAIC,
-  EQ_OUTPUT,
-  EQ_ZC,
-  EQ_HANDLER,
-  EQ_HANDLER_IF,
-  EQ_JACOBIAN
-} EQ_Type;
+namespace MicroModelica {
+namespace Util {
+typedef ModelTable<std::string, std::string> SymbolTable;
+}
 
-/**
- *
- */
-class MMO_Equation_: public MMO_Base_
-{
+namespace IR {
+namespace EQUATION {
+typedef enum { ClassicDerivative, QSSDerivative, Algebraic, Dependency, Output, ZeroCrossing, Handler, Jacobian } Type;
+}
+
+class EquationVariable {
   public:
-    /**
-     *
-     * @param exp
-     * @param data
-     */
-    MMO_Equation_(AST_Expression exp, MMO_ModelData data);
-    /**
-     *
-     * @param exp
-     * @param data
-     */
-    MMO_Equation_(MMO_Expression exp, MMO_ModelData data);
-    /**
-     *
-     */
-    ~MMO_Equation_();
-    /**
-     *
-     * @return
-     */
-    MMO_Expression
-    exp();
-    /**
-     *
-     * @return
-     */
-    int
-    end();
-    /**
-     *
-     * @return
-     */
-    list<string>
-    getVariables();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasRange();
-    /**
-     *
-     * @return
-     */
-    int
-    init();
-    /**
-     *
-     * @return
-     */
-    Index
-    lhs();
-    /**
-     *
-     * @return
-     */
-    string
-    print();
-    /**
-     *
-     * @param indent
-     * @param lhs
-     * @param idx
-     * @param palgs
-     * @param algs
-     * @param type
-     * @param order
-     * @param constant
-     * @param offset
-     * @param dereq
-     * @param forOffset
-     * @param constantOffset
-     * @return
-     */
-    list<string>
-    print(string indent, string lhs = "", string idx = "", bool palgs = false,
-        MMO_EquationTable algs = NULL, EQ_Type type = EQ_DERIVATIVE, int order =
-            1,
-        bool constant = false, int offset = 0, bool dereq = true,
-        int forOffset = 0, int constantOffset = 0);
-    /**
-     *
-     * @param variable
-     * @param idx
-     * @param indent
-     * @param lhs
-     * @param variableChange
-     * @return
-     */
-    string
-    printRange(string variable, string idx, string indent, Index lhs,
-        bool variableChange = false);
-    /**
-     *
-     * @return
-     */
-    list<string>
-    getCode();
-    /**
-     *
-     * @return
-     */
-    list<string>
-    getEquation();
-    /**
-     *
-     * @return
-     */
-    list<string>
-    getAlgebraics();
-    /**
-     *
-     */
-    void
-    controlAlgebraicDefinition();
-    /**
-     *
-     * @return
-     */
-    set<Index>
-    algebraicArguments();
-    MMO_Equation
-    jacobianExp(Index idx, DEP_Type type = DEP_STATE);
-    bool
-    controlAlgebraicArguments(set<Index> *algs, set<Index> eqAlgs);
-    private:
-    void
-    _initDerivatives();
-    MMO_Expression
-    _generateChainRule(Index idx);
-    void
-    _generateJacobianExps();
-    string
-    _printArguments(int i, string idx, int offset, int cte, int order,
-        int forOffset);
-    MMO_ModelData _data;
-    int _end;
-    MMO_Expression _exp[4];
-    int _init;
-    Index _lhs;
-    list<string> _variables;
-    AST_Expression _arguments;
-    list<string> _code;
-    list<string> _equation;
-    list<string> _algebraics;
-    set<Index> _algebraicArguments;
-    map<string, MMO_Expression> _jacobianExps;
-    int _coeffs;
+  static std::string modelVariables(int id, EQUATION::Type type)
+  {
+    stringstream buffer;
+    if (type == EQUATION::Type::Output) {
+      buffer << "_out_exp_";
+    } else {
+      buffer << "_event_";
+    }
+    buffer << id;
+    return buffer.str();
+  };
 };
-/**
- *
- * @param exp
- * @param data
- * @return
- */
-MMO_Equation
-newMMO_Equation(AST_Expression exp, MMO_ModelData data);
-/**
- *
- * @param exp
- * @param data
- * @return
- */
-MMO_Equation
-newMMO_Equation(MMO_Expression exp, MMO_ModelData data);
-/**
- *
- * @param m
- */
-void
-deleteMMO_Equation(MMO_Equation m);
 
-#endif  /* MMO_EQUATION_H_ */
+class Equation {
+  public:
+  Equation(){};
+  Equation(AST_Expression lhs, AST_Expression rhs, Util::VarSymbolTable &symbols, Option<Range> range, EQUATION::Type type, int id);
+  Equation(AST_Expression eq, Util::VarSymbolTable &symbols, Option<Range> range, EQUATION::Type type, int id, int offset);
+  Equation(AST_Equation eq, Util::VarSymbolTable &symbols, EQUATION::Type type, int id);
+  Equation(AST_Equation eq, Util::VarSymbolTable &symbols, Range r, EQUATION::Type type, int id);
+  Equation(AST_Equation eq, Util::VarSymbolTable &symbols, Option<Range> r, EQUATION::Type type, int id);
+  ~Equation();
+  inline bool hasRange() const { return _range.is_initialized(); };
+  inline Expression lhs() const { return _lhs; };
+  Index index() const;
+  inline Expression rhs() const { return _rhs; };
+  inline AST_Expression equation() { return _rhs.expression(); };
+  inline bool autonomous() { return _autonomous; };
+  inline Util::SymbolTable calledFunctions() { return _calledFunctions; };
+  std::string print() const;
+  std::string macro() const;
+  inline Option<Range> range() const { return _range; };
+  inline int id() const { return _id; };
+  inline EQUATION::Type type() const { return _type; }
+  inline bool isDerivative() const { return _type == EQUATION::QSSDerivative || _type == EQUATION::ClassicDerivative; }
+  inline bool isZeroCrossing() const { return _type == EQUATION::ZeroCrossing; }
+  inline bool isOutput() const { return _type == EQUATION::Output; }
+  inline bool isAlgebraic() const { return _type == EQUATION::Algebraic; }
+  inline bool isJacobian() const { return _type == EQUATION::Jacobian; }
+  Option<Util::Variable> LHSVariable();
+  friend std::ostream &operator<<(std::ostream &out, const Equation &e);
+  bool isValid() const;
+  bool hasAlgebraics();
+  std::string identifier() const;
+  bool isRHSReference() const;
+  Deps::EquationDependencyMatrix dependencyMatrix() const;
+  inline void setUsage(Index usage) { _usage = usage; };
+  inline Index usage() const { return _usage; };
+  inline void setType(EQUATION::Type type) { _type = type; };
+  bool isRecursive() const;
+
+  private:
+  void initialize(AST_Equation eq);
+  void initialize(AST_Expression exp);
+  void initialize(AST_Expression lhs, AST_Expression rhs);
+  void setup();
+  AST_Equation _eq;
+  Expression _lhs;
+  Expression _rhs;
+  Option<Range> _range;
+  bool _autonomous;
+  Util::VarSymbolTable _symbols;
+  Util::SymbolTable _calledFunctions;
+  EQUATION::Type _type;
+  int _id;
+  int _offset;
+  std::string _lhs_exp;
+  Index _usage;
+};
+
+typedef ModelTable<int, Equation> EquationTable;
+
+class Jacobian {
+  public:
+  Jacobian(Util::VarSymbolTable &symbols) : _symbols(symbols){};
+  ~Jacobian() = default;
+  Equation generate(Equation eq, Index idx);
+
+  private:
+  Util::VarSymbolTable _symbols;
+};
+
+class Dependency {
+  public:
+  Dependency(){};
+  ~Dependency() = default;
+  Equation generate(Equation eq, Index idx);
+};
+
+class EquationPrinter {
+  public:
+  EquationPrinter(Equation eq, Util::VarSymbolTable symbols);
+  ~EquationPrinter() = default;
+  virtual std::string print() const { return ""; };
+  virtual std::string macro() const { return ""; };
+  std::string identifier() const { return _identifier; };
+  std::string prefix() const;
+  std::string lhs(int order = 0) const;
+  virtual std::string equationId() const;
+
+  protected:
+  void setup();
+
+  private:
+  Equation _eq;
+  Util::VarSymbolTable _symbols;
+  std::string _identifier;
+};
+
+class JacobianConfig : public EquationPrinter {
+  public:
+  JacobianConfig(Equation eq, Util::VarSymbolTable symbols) : EquationPrinter(eq, symbols), _eq(eq){};
+  ~JacobianConfig() = default;
+  std::string print() const override;
+
+  private:
+  Equation _eq;
+};
+
+class EquationConfig : public EquationPrinter {
+  public:
+  EquationConfig(Equation eq, Util::VarSymbolTable symbols);
+  ~EquationConfig() = default;
+  std::string print() const override;
+  std::string macro() const override;
+  inline void factorialInit(int fact_init) { _fact_init = fact_init; };
+
+  protected:
+  void initializeDerivatives();
+  std::string generateDerivatives(std::string tabs, int init = 1) const;
+
+  private:
+  Equation _eq;
+  Util::VarSymbolTable _symbols;
+  Expression _derivatives[3];
+  int _fact_init;
+};
+
+class ClassicConfig : public EquationConfig {
+  public:
+  ClassicConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq){};
+  ~ClassicConfig() = default;
+  std::string print() const override;
+
+  private:
+  Equation _eq;
+};
+
+class OutputConfig : public EquationConfig {
+  public:
+  OutputConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq){};
+  ~OutputConfig() = default;
+  std::string print() const override;
+  std::string equationId() const override;
+
+  private:
+  Equation _eq;
+};
+
+class AlgebraicConfig : public EquationConfig {
+  public:
+  AlgebraicConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq) { factorialInit(0); };
+  ~AlgebraicConfig() = default;
+  std::string print() const override;
+
+  private:
+  Equation _eq;
+  Util::VarSymbolTable _symbols;
+};
+
+class DependencyConfig : public EquationConfig {
+  public:
+  DependencyConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq){};
+  ~DependencyConfig() = default;
+  std::string print() const override;
+
+  private:
+  Equation _eq;
+  Util::VarSymbolTable _symbols;
+};
+
+class ZeroCrossingConfig : public EquationConfig {
+  public:
+  ZeroCrossingConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq) { factorialInit(1); };
+  ~ZeroCrossingConfig() = default;
+  std::string equationId() const override;
+
+  private:
+  Equation _eq;
+  Util::VarSymbolTable _symbols;
+};
+
+}  // namespace IR
+}  // namespace MicroModelica
+
+#endif /* EQUATION_H_ */

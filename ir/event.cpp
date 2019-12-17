@@ -19,275 +19,127 @@
 
 #include "event.h"
 
+#include <assert.h>
+#include <sstream>
+
 #include "../ast/expression.h"
-#include "../util/ast_util.h"
-#include "../util/dependencies.h"
-#include "equation.h"
-#include "expression.h"
-#include "mmo_util.h"
-#include "statement.h"
+#include "../util/util.h"
+#include "../util/visitors/convert_condition.h"
+#include "helpers.h"
 
-MMO_Event_::MMO_Event_(AST_Expression cond, MMO_ModelData data) :
-    _positiveHandlerStatements(), _negativeHandlerStatements(),
-        _init(0), _end(0), _handler(HND_ZERO), _handlerType(HND_ZERO), _data(
-            data), _weight(-1), _zcRelation(ZC_GT)
+namespace MicroModelica {
+using namespace Util;
+namespace IR {
+
+Event::Event(AST_Expression cond, int id, int offset, VarSymbolTable &symbols, Option<Range> range)
+    : _zeroCrossing(),
+      _positiveHandler(),
+      _negativeHandler(),
+      _type(EVENT::Zero),
+      _current(EVENT::Zero),
+      _zcRelation(EVENT::GE),
+      _symbols(symbols),
+      _range(range),
+      _positiveHandlerId(0),
+      _negativeHandlerId(0),
+      _id(id),
+      _offset(offset)
 {
-  MMO_ConvertCondition_ cc(_data);
-  _data->setCalculateAlgegraics(true);
-  _cond = newMMO_Equation(cc.foldTraverse(_getExpression(cond)), _data);
-  _data->setCalculateAlgegraics(false);
-  if(cc.zeroCrossing() > 0)
-  {
-    _handler = HND_POSITIVE;
-    _handlerType = HND_POSITIVE;
-  }
-  else
-  {
-    _handler = HND_NEGATIVE;
-    _handlerType = HND_NEGATIVE;
-  }
-  if(cc.zeroCrossingRelation() == 0)
-  {
-    _zcRelation = ZC_LT;
-  }
-  else if(cc.zeroCrossingRelation() == 1)
-  {
-    _zcRelation = ZC_LE;
-  }
-  else if(cc.zeroCrossingRelation() == 2)
-  {
-    _zcRelation = ZC_GT;
-  }
-  else if(cc.zeroCrossingRelation() == 3)
-  {
-    _zcRelation = ZC_GE;
-  }
-  _weight = data->weight();
-  _deps = newDependencies();
-  _lhs = newDependencies();
-  _index = data->lhs();
-  _end = _index.hi();
-  _init = _index.low();
-  _data = data;
+  ConvertCondition cc;
+  _zeroCrossing = Equation(cc.apply(getExpression(cond)), symbols, range, EQUATION::ZeroCrossing, id, offset);
+  _type = cc.zeroCrossing();
+  _current = _type;
+  _zcRelation = cc.zeroCrossingRelation();
 }
 
-MMO_Event_::~MMO_Event_()
+void Event::add(AST_Statement stm)
 {
-  delete _cond;
-  delete _deps;
-  delete _lhs;
+  Statement s(stm, _symbols, _range);
+  if (_current == EVENT::Positive) {
+    _positiveHandler.insert(_positiveHandlerId++, s);
+  } else if (_current == EVENT::Negative) {
+    _negativeHandler.insert(_negativeHandlerId++, s);
+  }
 }
 
-MMO_Equation
-MMO_Event_::condition()
+bool Event::compare(AST_Expression zc)
 {
-  return _cond;
-}
-
-bool
-MMO_Event_::hasWeight()
-{
-  return _weight >= 0;
-}
-
-double
-MMO_Event_::weight()
-{
-  return _weight;
-}
-
-void
-MMO_Event_::setCondition(MMO_Expression cond)
-{
-  _data->setCalculateAlgegraics(true);
-  _cond = newMMO_Equation(cond, _data);
-  _data->setCalculateAlgegraics(false);
-}
-
-/*! \brief Evaluates the eslewhen statement condition and sets the appropiate handler.
- *
- * 	\param cond: AST_Expression condition of the when statement.
- *  \return True if the elsewhen condition is the opposite condition of the when statement, False otherwise.
- *
- * 	Depscription:
- * 		Sets the handler of the event according to the condition expression, if the condition of the elsewhen statement 
- * 		is the opporite of the original event zero--crossing condition, otherwise we don't change anything.
- *
- */
-
-bool
-MMO_Event_::compareCondition(AST_Expression cond)
-{
-  MMO_ConvertCondition_ cc(_data);
-  AST_Expression c = cc.foldTraverse(_getExpression(cond));
-  EqualExp ee(_data->symbols());
-  bool cr = ee.equalTraverse(c, _cond->exp()->exp());
-  if(cr)
-  {
-    if(_handler == HND_POSITIVE)
-    {
-      _handler = HND_NEGATIVE;
-      _handlerType = HND_ZERO;
-    }
-    else if(_handler == HND_NEGATIVE)
-    {
-      _handler = HND_POSITIVE;
-      _handlerType = HND_ZERO;
+  ConvertCondition cc;
+  AST_Expression c = cc.apply(getExpression(zc));
+  EqualExp ee(_symbols);
+  bool cr = ee.equalTraverse(c, _zeroCrossing.equation());
+  if (cr) {
+    if (_current == EVENT::Positive) {
+      _current = EVENT::Negative;
+      _type = EVENT::Zero;
+    } else if (_current == EVENT::Negative) {
+      _current = EVENT::Positive;
+      _type = EVENT::Zero;
     }
   }
   return cr;
 }
 
-void
-MMO_Event_::insert(AST_Statement stm)
+AST_Expression Event::getExpression(AST_Expression exp)
 {
-  _data->setWhenStatement(true);
-  Index tmp = _data->lhs();
-  _data->setLHS(_index);
-  MMO_Statement s = newMMO_Statement(stm, _data);
-  _data->setLHS(tmp);
-  _data->setWhenStatement(false);
-  _deps->join(s->deps());
-  _lhs->join(s->lhs());
-  if(_handler == HND_POSITIVE)
-  {
-    _positiveHandlerStatements.push_back(s);
-  }
-  else if(_handler == HND_NEGATIVE)
-  {
-    _negativeHandlerStatements.push_back(s);
-  }
-}
-
-MMO_Statement
-MMO_Event_::begin(HND_Type h)
-{
-  _handler = h;
-  if(h == HND_POSITIVE)
-  {
-    _it = _positiveHandlerStatements.begin();
-    return *_it;
-  }
-  else if(h == HND_NEGATIVE)
-  {
-    _it = _negativeHandlerStatements.begin();
-    return *_it;
-  }
-  return NULL;
-}
-
-MMO_Statement
-MMO_Event_::next()
-{
-  _it++;
-  return *_it;
-}
-
-bool
-MMO_Event_::end()
-{
-  if(_handler == HND_POSITIVE)
-  {
-    return _it == _positiveHandlerStatements.end();
-  }
-  else if(_handler == HND_NEGATIVE)
-  {
-    return _it == _negativeHandlerStatements.end();
-  }
-  return false;
-}
-
-Index
-MMO_Event_::index()
-{
-  return _index;
-}
-
-void
-MMO_Event_::setIndex(Index idx)
-{
-  _index = idx;
-}
-
-int
-MMO_Event_::beginRange()
-{
-  return _init;
-}
-
-int
-MMO_Event_::endRange()
-{
-  return _end;
-}
-
-HND_Type
-MMO_Event_::handlerType()
-{
-  return _handlerType;
-}
-
-void
-MMO_Event_::setHandlerType(HND_Type h)
-{
-  _handlerType = h;
-}
-
-string
-MMO_Event_::print()
-{
-  string ret;
-  return ret;
-}
-
-Dependencies
-MMO_Event_::deps()
-{
-  return _deps;
-}
-
-Dependencies
-MMO_Event_::lhs()
-{
-  return _lhs;
-}
-
-bool
-MMO_Event_::hasPositiveHandler()
-{
-  return !_positiveHandlerStatements.empty();
-}
-
-bool
-MMO_Event_::hasNegativeHandler()
-{
-  return !_negativeHandlerStatements.empty();
-}
-
-MMO_Event
-newMMO_Event(AST_Expression cond, MMO_ModelData data)
-{
-  return new MMO_Event_(cond, data);
-}
-
-void
-deleteMMO_Event(MMO_Event m)
-{
-  delete m;
-}
-
-ZC_REL
-MMO_Event_::zcRelation()
-{
-  return _zcRelation;
-}
-
-AST_Expression
-MMO_Event_::_getExpression(AST_Expression exp)
-{
-  if(exp->expressionType() == EXPOUTPUT)
-  {
-    return _getExpression(AST_ListFirst(exp->getAsOutput()->expressionList()));
+  if (exp->expressionType() == EXPOUTPUT) {
+    return getExpression(AST_ListFirst(exp->getAsOutput()->expressionList()));
   }
   return exp;
 }
+
+string Event::handler(EVENT::Type type) const
+{
+  StatementTable stms = (type == EVENT::Positive ? _positiveHandler : _negativeHandler);
+  if (stms.empty()) {
+    return "";
+  };
+  stringstream buffer;
+  string block = "";
+  FunctionPrinter fp;
+  string arguments;
+  block += TAB;
+  if (_range) {
+    block = _range->block();
+    arguments = _range->getDimensionVars();
+  }
+  block += TAB;
+  buffer << fp.beginExpression(_zeroCrossing.identifier(), _range);
+  buffer << fp.beginDimGuards(_zeroCrossing.identifier(), arguments, _range);
+  StatementTable::iterator it;
+  for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
+    buffer << block << stm << endl;
+  }
+  buffer << block << fp.endDimGuards(_range);
+  buffer << block << fp.endExpression(_range);
+  return buffer.str();
+}
+
+string Event::macro() const { return _zeroCrossing.macro(); }
+
+Expression Event::exp()
+{
+  assert(isValid());
+  return _zeroCrossing.lhs();
+}
+
+string Event::config() const
+{
+  stringstream buffer;
+  int direction = (_type == EVENT::Negative) ? -1 : _type;
+  string tabs = "";
+  if (_range) {
+    buffer << _range.get();
+    tabs = _range->block();
+  }
+  buffer << tabs << "modelData->event[" << _zeroCrossing.index() << "].direction = " << direction << ";" << endl;
+  buffer << tabs << "modelData->event[" << _zeroCrossing.index() << "].relation = " << _zcRelation << ";" << endl;
+  if (_range) {
+    buffer << _range->end();
+    tabs = _range->block();
+  }
+  return buffer.str();
+}
+
+}  // namespace IR
+}  // namespace MicroModelica

@@ -26,10 +26,26 @@
 #include <string>
 
 #include "../ast/ast_types.h"
-#include "../ir/mmo_types.h"
+#include "../deps/model_dependencies.h"
+#include "compile_flags.h"
 #include "util_types.h"
+#include "symbol_table.h"
+#include "table.h"
 
-using namespace std;
+namespace MicroModelica {
+namespace IR {
+class Equation;
+class CompiledPackage;
+class CompiledFunction;
+typedef ModelTable<std::string, CompiledPackage> CompiledPackageTable;
+typedef ModelTable<std::string, CompiledFunction> CompiledFunctionTable;
+typedef ModelTable<int, Equation> EquationTable;
+}  // namespace IR
+namespace Util {
+
+typedef ModelTable<std::string, std::string> ImportTable;
+
+typedef ModelTable<std::string, std::string> SymbolTable;
 
 /**
  *
@@ -38,7 +54,7 @@ using namespace std;
 /**
  *
  */
-#define 	BINOPS 18
+#define BINOPS 18
 
 #if __x86_64__
 typedef long int grp_t;
@@ -46,389 +62,80 @@ typedef long int grp_t;
 typedef int grp_t;
 #endif
 
-/**
- *
- */
-typedef enum
-{
-  BIF_NONE,  //!< BIF_NONE
-  BIF_REINIT,  //!< BIF_REINIT
-  BIF_TERMINATE, //!< BIF_TERMINATE
-  BIF_SUM,   //!< BIF_SUM
-  BIF_PRODUCT,   //!< BIF_PRODUCT
-  BIF_INNER_PRODUCT,   //!< BIF_INNER_PRODUCT
-  BIF_MIN,   //!< BIF_MIN
-  BIF_MAX,   //!< BIF_MAX
-  BIF_ABS,   //!< BIF_ABS
-  BIF_SIGN,  //!< BIF_SIGN
-  BIF_SQRT,  //!< BIF_SQRT
-  BIF_CEIL,  //!< BIF_CEIL
-  BIF_FLOOR, //!< BIF_FLOOR
-  BIF_SIN,   //!< BIF_SIN
-  BIF_COS,   //!< BIF_COS
-  BIF_TAN,   //!< BIF_TAN
-  BIF_ASIN,  //!< BIF_ASIN
-  BIF_ACOS,  //!< BIF_ACOS
-  BIF_ATAN,  //!< BIF_ATAN
-  BIF_ATAN2, //!< BIF_ATAN2
-  BIF_SINH,  //!< BIF_SINH
-  BIF_COSH,  //!< BIF_COSH
-  BIF_TANH,  //!< BIF_TANH
-  BIF_EXP,   //!< BIF_EXP
-  BIF_LOG,   //!< BIF_LOG
-  BIF_LOG10, //!< BIF_LOG10
-  BIF_PRE,    //!< BIF_PRE
-  BIF_GQLINK  //!< BIF_GQLINK
-} BIF_NAMES;
+#define TAB "\t"
 
 /**
  *
  */
-typedef enum
-{
-  BIV_NONE, //!< BIV_NONE
-  BIV_TIME, //!< BIV_TIME
-  BIV_SUM,   //!< BIV_SUM
-  BIV_PRODUCT,   //!< BIV_PRODUCT
-  BIV_INNER_PRODUCT,   //!< BIV_INNER_PRODUCT
-  BIV_MIN,   //!< BIV_MIN
-  BIV_MAX   //!< BIV_MAX
-} BIV_NAMES;
-
-class BIF
-{
+class Utils {
   public:
-    /**
-     *
-     */
-    virtual
-    ~BIF()
-    {
+  static Utils& instance()
+  {
+    static Utils _instance;
+    return _instance;
+  }
+
+  ~Utils();
+  std::string trimString(std::string str);
+  std::string languageEspecification();
+  bool checkTypeString(std::string t);
+  bool checkExperimentAnnotations(std::string* annotation);
+  std::string opString(BinOpType bot);
+  std::string iteratorVar(int dim);
+  std::string getVarName(std::string name);
+  bool readPackage(std::string fileName, IR::CompiledPackageTable& pt);
+  Option<IR::CompiledPackage> readPackage(std::string file_name);
+  bool searchCompiledPackage(std::string pname, CompileFlags flags);
+  std::string packagePath(std::string pname, CompileFlags flags, std::string ext = ".mo");
+  void setCompileFlags(CompileFlags flags);
+  std::string packageName(std::string name);
+  std::string environmentVariable(std::string ev);
+  std::string getFilePath(std::string file);
+  std::string getFileName(std::string file);
+  bool checkGKLinkFunctions(std::string name) { return false; };
+  IR::CompiledFunctionTable compiledFunctions();
+  void addCompiledFunction(IR::CompiledFunction f);
+  void addCompiledFunctions(IR::CompiledFunctionTable fs);
+  bool checkCompiledFunctions(std::string name);
+  bool checkBuiltInFunctions(std::string name);
+  inline VarSymbolTable& symbols() { return _symbols; };
+  inline SymbolTable localSymbols() { return _local_symbols; };
+  inline SymbolTable localInitSymbols() { return _local_init_symbols; };
+  inline void addLocalSymbol(std::string symbol)
+  {
+    if (_init_symbols) {
+      _local_init_symbols.insert(symbol, symbol);
+    } else {
+      _local_symbols.insert(symbol, symbol);
     }
-    ;
-    list<string>
-    generateCode(string variableMap, string variableIndex,
-        list<VariableInterval> variableInterval, int expOrder);
-    void
-    setSymbolTable(VarSymbolTable vt);
-    VarSymbolTable
-    symbolTable(VarSymbolTable vt);
-    string
-    variableName(VariableInterval vin);
-    string
-    expressionOrderStr(int order, VariableInterval vin);
-    bool
-    isState(VariableInterval vin);
-    void
-    setExpressionOrder(int expressionOrder);
-    int
-    expressionOrder();
-    string
-    print(Index idx, string variableIndex);
-    private:
-    VarSymbolTable _vt;
-    int _expressionOrder;
-    bool
-    _hasStates(list<VariableInterval> variables);
-    Index
-    _index(list<VariableInterval> variables);
-    VarInfo
-    _variableInfo(VariableInterval vin);
-    virtual string
-    _reduce(string variableMap, string variableIndex, int variableOrder,
-        list<VariableInterval> variableInterval, bool hasStates) = 0;
-    virtual string
-    _init(string variableMap, string variableIndex,
-        list<VariableInterval> variableInterval, bool hasStates) = 0;
+  };
+  inline void setSymbols(const VarSymbolTable& symbols) { _symbols = symbols; };
+  inline void clearLocalSymbols() { _local_symbols.clear(); };
+  inline void setLocalInitSymbols() { _init_symbols = true; };
+  inline void unsetLocalInitSymbols() { _init_symbols = false; };
+  inline std::string fileName() { return _file_name; };
+  inline int id() { return _ids++; };
+
+  private:
+  Utils();
+  bool checkCodeFiles(std::string name, std::string ext);
+  SymbolTable getValue(fstream* package, std::string token);
+  std::string packagePath(std::string name);
+
+  std::string _language_especification;
+  CompileFlags _flags;
+  map<std::string, int> _annotations;
+  std::string _binop[BINOPS];
+  IR::CompiledFunctionTable _compiled_functions;
+  VarSymbolTable _symbols;
+  SymbolTable _local_symbols;
+  SymbolTable _local_init_symbols;
+  std::string _file_name;
+  bool _init_symbols;
+  int _ids;
 };
 
-/**
- *
- */
-class Util
-{
-  public:
-    /**
-     *
-     * @return
-     */
-    static Util *
-    getInstance();
-    /**
-     *
-     */
-    ~Util();
-    string
-    trimString(string str);
-    /**
-     *
-     * @return
-     */
-    string
-    languageEspecification();
-    /**
-     *
-     * @param t
-     * @return
-     */
-    bool
-    checkTypeString(string t);
-    /**
-     *
-     * @param annotation
-     * @return
-     */
-    bool
-    checkExperimentAnnotations(string *annotation);
-    /**
-     *
-     * @param fname
-     * @return
-     */
-    BIF_NAMES
-    checkBuiltInFunctions(string fname);
-    /**
-     *
-     * @param fname
-     * @return
-     */
-    BIF_NAMES
-    checkBuiltInReductionFunctions(string fname);
-    /**
-     *
-     * @param fname
-     * @return
-     */
-    BIV_NAMES
-    checkBuiltInVariables(string fname);
-    /**
-     *
-     * @param fname
-     * @param type
-     */
-    void
-    addBuiltInVariables(string fname, BIV_NAMES type);
-    /**
-     *
-     * @param bot
-     * @return
-     */
-    string
-    opString(BinOpType bot);
-    /**
-     *
-     * @param n
-     * @param vt
-     * @return
-     */
-    string
-    newVarName(string n, VarSymbolTable vt);
-    /**
-     *
-     * @param name
-     * @return
-     */
-    string
-    getVarName(string name);
-    /**
-     *
-     * @param fileName
-     * @param pt
-     * @return
-     */
-    bool
-    readPackage(string fileName, MMO_PackageTable pt);
-    /**
-     *
-     * @param fileName
-     * @return
-     */
-    MMO_PackageData
-    readPackage(string fileName);
-    /**
-     *
-     * @param pname
-     * @param flags
-     * @return
-     */
-    bool
-    searchCompiledPackage(string pname, MMO_CompileFlags flags);
-    /**
-     *
-     * @param pname
-     * @param flags
-     * @param ext
-     * @return
-     */
-    string
-    packagePath(string pname, MMO_CompileFlags flags, string ext = ".mo");
-    /**
-     *
-     * @param flags
-     */
-    void
-    setCompileFlags(MMO_CompileFlags flags);
-    /**
-     *
-     * @param name
-     * @return
-     */
-    string
-    packageName(string name);
-    /**
-     *
-     * @param data
-     */
-    void
-    setData(MMO_ModelData data);
-    /**
-     *
-     * @param vi
-     * @param indent
-     * @param localVar
-     * @return
-     */
-    string
-    printInitialAssignment(VarInfo vi, string indent, string localVar = "i0");
-    /**
-     *
-     * @param ev
-     * @return
-     */
-    string
-    environmentVariable(string ev);
-    /**
-     *
-     * @param file
-     * @return
-     */
-    string
-    getFilePath(string file);
-    /**
-     *
-     * @param file
-     * @return
-     */
-    string
-    getFileName(string file);
-    BIF *
-    builtInReductionFunctions(BIF_NAMES fn);
-    bool
-    checkGKLinkFunctions(string name);
-    private:
-    Util();
-    static Util *_instance;
-    bool
-    _checkCodeFiles(string name, string ext);
-    list<string>
-    _getValue(fstream *package, string token);
-    string
-    _packagePath(string name);
-    string _languageEspecification;
-    int _varCounter;
-    MMO_CompileFlags _flags;
-    MMO_ModelData _data;
-    map<string, BIF_NAMES> _builtInFunctions;
-    map<string, BIV_NAMES> _builtInVariables;
-    map<BIF_NAMES, BIF*> _builtInFunctionImp;
-    map<string, int> _annotations;
-    string _binop[BINOPS];
-};
+}  // namespace Util
+}  // namespace MicroModelica
 
-class BuiltInFunction: public BIF
-{
-  public:
-    /**
-     *
-     */
-    ~BuiltInFunction();
-    private:
-    string
-    _reduce(string variableMap, string variableIndex, int variableOrder,
-        list<VariableInterval> variableInterval, bool hasStates);
-    string
-    _init(string variableMap, string variableIndex,
-        list<VariableInterval> variableInterval, bool hasStates);
-};
-
-class BuiltInSumFunction: public BIF
-{
-  public:
-    /**
-     *
-     */
-    ~BuiltInSumFunction();
-    private:
-    string
-    _reduce(string variableMap, string variableIndex, int variableOrder,
-        list<VariableInterval> variableInterval, bool hasStates);
-    string
-    _init(string variableMap, string variableIndex,
-        list<VariableInterval> variableInterval, bool hasStates);
-};
-
-class BuiltInProductFunction: public BIF
-{
-  public:
-    /**
-     *
-     */
-    ~BuiltInProductFunction();
-    private:
-    string
-    _reduce(string variableMap, string variableIndex, int variableOrder,
-        list<VariableInterval> variableInterval, bool hasStates);
-    string
-    _init(string variableMap, string variableIndex,
-        list<VariableInterval> variableInterval, bool hasStates);
-};
-
-class BuiltInInnerProductFunction: public BIF
-{
-  public:
-    /**
-     *
-     */
-    ~BuiltInInnerProductFunction();
-    private:
-    string
-    _reduce(string variableMap, string variableIndex, int variableOrder,
-        list<VariableInterval> variableInterval, bool hasStates);
-    string
-    _init(string variableMap, string variableIndex,
-        list<VariableInterval> variableInterval, bool hasStates);
-};
-
-class BuiltInMinFunction: public BIF
-{
-  public:
-    /**
-     *
-     */
-    ~BuiltInMinFunction();
-    private:
-    string
-    _reduce(string variableMap, string variableIndex, int variableOrder,
-        list<VariableInterval> variableInterval, bool hasStates);
-    string
-    _init(string variableMap, string variableIndex,
-        list<VariableInterval> variableInterval, bool hasStates);
-};
-
-class BuiltInMaxFunction: public BIF
-{
-  public:
-    /**
-     *
-     */
-    ~BuiltInMaxFunction();
-    private:
-    string
-    _reduce(string variableMap, string variableIndex, int variableOrder,
-        list<VariableInterval> variableInterval, bool hasStates);
-    string
-    _init(string variableMap, string variableIndex,
-        list<VariableInterval> variableInterval, bool hasStates);
-};
-
-#endif  /* UTIL_H_ */
+#endif /* UTIL_H_ */

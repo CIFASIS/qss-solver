@@ -17,7 +17,6 @@
 
  ******************************************************************************/
 
-//#include <util/solve.h>
 #include "derivative.h"
 
 #include <ginac/function.h>
@@ -28,68 +27,51 @@
 
 #include "../ast/ast_builder.h"
 #include "../ast/equation.h"
-#include "../ir/mmo_util.h"
 #include "../ir/expression.h"
+#include "../util/visitors/replace_der.h"
 #include "ginac_interface.h"
 
-AST_Equation_Equality
-EquationDerivator::derivate(AST_Equation_Equality eq, VarSymbolTable varEnv)
+namespace MicroModelica {
+using namespace IR;
+namespace Util {
+
+AST_Equation_Equality EquationDerivator::derivate(AST_Equation_Equality eq, const VarSymbolTable& symbols)
 {
-  ConvertToGiNaC tog(varEnv, true);
-  ConvertToExpression toe;
-  GiNaC::ex left = tog.convert(eq->left());
-  GiNaC::ex right = tog.convert(eq->right());
-  GiNaC::symbol time = tog.getTime();
-  GiNaC::ex der_left = left.diff(time).subs(
-      var(GiNaC::wild(), time) == GiNaC::wild());
-  GiNaC::ex der_right = right.diff(time).subs(
-      var(GiNaC::wild(), time) == GiNaC::wild());
-  return (newAST_Equation_Equality(toe.convert(der_left),
-      toe.convert(der_right))->getAsEquality());
+  ConvertToGiNaC to_ginac(symbols, Option<Expression>());
+  ConvertToExpression to_exp;
+  GiNaC::ex left = to_ginac.convert(eq->left());
+  GiNaC::ex right = to_ginac.convert(eq->right());
+  GiNaC::symbol time = to_ginac.getTime();
+  GiNaC::ex der_left = left.diff(time).subs(var(GiNaC::wild(), time) == GiNaC::wild());
+  GiNaC::ex der_right = right.diff(time).subs(var(GiNaC::wild(), time) == GiNaC::wild());
+  return (newAST_Equation_Equality(to_exp.convert(der_left), to_exp.convert(der_right))->getAsEquality());
 }
 
-AST_Expression
-ExpressionDerivator::derivate(AST_Expression exp, VarSymbolTable varEnv,
-    MMO_Expression e)
+AST_Expression ExpressionDerivator::derivate(AST_Expression exp, const VarSymbolTable& symbols, Expression e)
 {
-  ConvertToGiNaC tog(varEnv, true, e);
-  ConvertToExpression toe;
-  GiNaC::ex dexp = tog.convert(exp, false, true);
-  GiNaC::symbol time = tog.getTime();
-  GiNaC::ex der_exp = dexp.diff(time).subs(
-      var(GiNaC::wild(), time) == GiNaC::wild());
-  return toe.convert(der_exp);
+  ConvertToGiNaC to_ginac(symbols, e);
+  ConvertToExpression to_exp;
+  GiNaC::ex dexp = to_ginac.convert(exp, false, true);
+  GiNaC::symbol time = to_ginac.getTime();
+  GiNaC::ex der_exp = dexp.diff(time).subs(var(GiNaC::wild(), time) == GiNaC::wild());
+  return to_exp.convert(der_exp);
 }
 
-map<string, MMO_Expression>
-ExpressionDerivator::generateJacobianExps(AST_Expression exp,
-    MMO_ModelData data)
+map<string, Expression> ExpressionDerivator::generateJacobianExps(Variable variable, string usage, AST_Expression exp,
+                                                                  const VarSymbolTable& symbols)
 {
-  ConvertToGiNaC tog(data->symbols(), true);
-  ConvertToExpression toe;
-  ReplaceDer_ rd(data->symbols());
-  GiNaC::ex dexp = tog.convert(exp, false, true);
-  map<string, GiNaC::symbol> dir = tog.directory();
-  map<string, GiNaC::symbol>::iterator it;
-  map<string, MMO_Expression> jacobianExps;
-  GiNaC::symbol time = tog.getTime();
-  for(it = dir.begin(); it != dir.end(); it++)
-  {
-    VarInfo v = data->symbols()->lookup(tog.identifier(it->first));
-    if(v != NULL)
-    {
-      if(v->isState() || v->isAlgebraic())
-      {
-        GiNaC::ex der_exp =
-            dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff(
-                it->second);
-        bool algState = data->calculateAlgebraics();
-        data->setCalculateAlgegraics(true);
-        jacobianExps[it->first] = newMMO_Expression(
-            rd.foldTraverse(toe.convert(der_exp)), data);
-        data->setCalculateAlgegraics(algState);
-      }
-    }
-  }
+  ConvertToGiNaC to_ginac(symbols, Option<Expression>());
+  ConvertToExpression to_exp;
+  ReplaceDer replace_der(symbols);
+  GiNaC::ex dexp = to_ginac.convert(exp, false, true);
+  map<string, GiNaC::symbol> dir = to_ginac.directory();
+  map<string, Expression> jacobianExps;
+  GiNaC::symbol time = to_ginac.getTime();
+  assert(variable.isState() || variable.isAlgebraic());
+  GiNaC::symbol ginac_usage = dir[usage];
+  GiNaC::ex der_exp = dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff(ginac_usage);
+  jacobianExps[usage] = Expression(replace_der.apply(to_exp.convert(der_exp)), symbols);
   return jacobianExps;
 }
+}  // namespace Util
+}  // namespace MicroModelica

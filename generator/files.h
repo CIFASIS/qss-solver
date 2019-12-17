@@ -24,97 +24,41 @@
 #include <string>
 #include <list>
 
-#include "../ir/mmo_types.h"
-#include "../util/util_types.h"
-#include "generator_types.h"
+#include "model_instance.h"
+#include "writer.h"
+#include "../ir/annotation.h"
+#include "../ir/class.h"
+#include "../util/compile_flags.h"
 
-using namespace std;
+namespace MicroModelica {
+namespace Generator {
 
 /**
  *
  */
-class MMO_Files_
-{
+class Files {
   public:
-    /**
-     *
-     * @param model
-     * @param solver
-     * @param flags
-     */
-    MMO_Files_(MMO_Model model, MMO_Solver solver, MMO_CompileFlags flags);
-    /**
-     *
-     * @param name
-     * @param flags
-     */
-    MMO_Files_(string name, MMO_CompileFlags flags);
-    /**
-     *
-     */
-    ~MMO_Files_();
-    /**
-     *
-     */
-    void
-    makefile();
-    /**
-     *
-     */
-    void
-    run();
-    /**
-     *
-     */
-    void
-    plot();
-    /**
-     *
-     * @param annotation
-     */
-    void
-    settings(MMO_Annotation annotation);
-    void
-    graph();
-    void 
-    BDFPartition();
-    private:
-    string
-    _variableSettings(Dependencies deps, string varName);
-    void
-    _printList(list<string> ann, string tag, MMO_Annotation annotation);
-    string _fname;
-    MMO_Model _model;
-    MMO_Solver _solver;
-    MMO_Writer _writer;
-    MMO_CompileFlags _flags;
-    ofstream _file;
+  // Files();
+  Files(ModelInstancePtr modelInstance, IR::Model& model, Util::CompileFlags& flags);
+  Files(string name, Util::CompileFlags& flags);
+  ~Files();
+  void makefile();
+  void run();
+  void plot();
+  void settings(IR::ModelAnnotation annotation);
+  void graph();
+
+  private:
+  std::string variablePlotSettings();
+  void printList(list<string> ann, string tag);
+  string _fname;
+  IR::Model _model;
+  ModelInstancePtr _modelInstance;
+  WriterPtr _writer;
+  Util::CompileFlags& _flags;
+  ofstream _file;
 };
+}  // namespace Generator
+}  // namespace MicroModelica
 
-/**
- *
- * @param model
- * @param solver
- * @param flags
- * @return
- */
-MMO_Files
-newMMO_Files(MMO_Model model, MMO_Solver solver, MMO_CompileFlags flags);
-
-/**
- *
- * @param name
- * @param flags
- * @return
- */
-MMO_Files
-newMMO_Files(string name, MMO_CompileFlags flags);
-
-/**
- *
- * @param m
- */
-void
-deleteMMO_Files(MMO_Files m);
-
-#endif  /* MMO_FILES_H_ */
+#endif /* MMO_FILES_H_ */

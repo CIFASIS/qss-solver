@@ -27,121 +27,107 @@
 #include <string>
 
 #include "../ast/ast_types.h"
-#include "../ir/mmo_types.h"
+#include "../ir/built_in_functions.h"
 #include "ast_util.h"
 #include "util_types.h"
 
+namespace MicroModelica {
+namespace Util {
 /**
  *
  */
-DECLARE_FUNCTION_2P (var)
+DECLARE_FUNCTION_2P(var)
 /**
  *
  */
-DECLARE_FUNCTION_2P (der)
+DECLARE_FUNCTION_2P(der)
 /**
  *
  */
-DECLARE_FUNCTION_2P (der2)
+DECLARE_FUNCTION_2P(der2)
 /**
  *
  */
-DECLARE_FUNCTION_1P (der3)
+DECLARE_FUNCTION_1P(der3)
+/**
+ *
+ */
+DECLARE_FUNCTION_1P(pre)
 
 /**
  *
  */
-DECLARE_FUNCTION_1P (pre)
-
-/**
- *
- */
-class ConvertToGiNaC: public AST_Expression_Visitor<GiNaC::ex>
-{
+class ConvertToGiNaC : public AST_Expression_Visitor<GiNaC::ex> {
   public:
-    /**
-     *
-     * @param varEnv
-     * @param forDerivation
-     * @param exp
-     */
-    ConvertToGiNaC(VarSymbolTable varEnv, bool forDerivation = false,
-        MMO_Expression exp = NULL);
-    /**
-     *
-     * @param
-     * @param replaceDer
-     * @param generateIndexes
-     * @return
-     */
-    GiNaC::ex
-    convert(AST_Expression, bool replaceDer = true,
-        bool generateIndexes = false);
-    /**
-     *
-     * @param
-     * @return
-     */
-    GiNaC::symbol&
-    getSymbol(AST_Expression_ComponentReference);
-    /**
-     *
-     * @param
-     * @return
-     */
-    GiNaC::symbol&
-    getSymbol(string);
-    /**
-     *
-     * @param
-     * @return
-     */
-    GiNaC::symbol&
-    getSymbol(AST_Expression_Derivative);
-    /**
-     *
-     * @return
-     */
-    GiNaC::symbol&
-    getTime();
-    GiNaC::symbol&
-    first();
-    GiNaC::symbol&
-    next();
-    bool
-    end();
-    map<string, GiNaC::symbol>
-    directory();
-    string
-    identifier(string str);
-    private:
-    virtual GiNaC::ex
-    foldTraverseElement(AST_Expression);
-    virtual GiNaC::ex
-    foldTraverseElementUMinus(AST_Expression);
-    virtual GiNaC::ex
-    foldTraverseElement(GiNaC::ex, GiNaC::ex, BinOpType);
-    map<string, GiNaC::symbol> _directory;
-    bool _forDerivation;
-    VarSymbolTable _varEnv;
-    bool _replaceDer;
-    bool _generateIndexes;
-    MMO_Expression _exp;
+  /**
+   *
+   * @param varEnv
+   * @param forDerivation
+   * @param exp
+   */
+  ConvertToGiNaC(VarSymbolTable varEnv, Option<IR::Expression> exp);
+  /**
+   *
+   * @param
+   * @param replaceDer
+   * @param generateIndexes
+   * @return
+   */
+  GiNaC::ex convert(AST_Expression, bool replaceDer = true, bool generateIndexes = false);
+  /**
+   *
+   * @param
+   * @return
+   */
+  GiNaC::symbol& getSymbol(AST_Expression_ComponentReference);
+  /**
+   *
+   * @param
+   * @return
+   */
+  GiNaC::symbol& getSymbol(string);
+  /**
+   *
+   * @param
+   * @return
+   */
+  GiNaC::symbol& getSymbol(AST_Expression_Derivative);
+  /**
+   *
+   * @return
+   */
+  GiNaC::symbol& getTime();
+  GiNaC::symbol& first();
+  GiNaC::symbol& next();
+  bool end();
+  map<string, GiNaC::symbol> directory();
+  string identifier(string str);
+
+  private:
+  virtual GiNaC::ex foldTraverseElement(AST_Expression);
+  virtual GiNaC::ex foldTraverseElementUMinus(AST_Expression);
+  virtual GiNaC::ex foldTraverseElement(GiNaC::ex, GiNaC::ex, BinOpType);
+  GiNaC::ex expressionVariable();
+  map<string, GiNaC::symbol> _directory;
+  VarSymbolTable _symbols;
+  bool _replaceDer;
+  bool _generateIndexes;
+  Option<MicroModelica::IR::Expression> _exp;
 };
 
 /**
  *
  */
-class ConvertToExpression
-{
+class ConvertToExpression {
   public:
-    /**
-     *
-     * @param
-     * @return
-     */
-    static AST_Expression
-    convert(GiNaC::ex);
+  /**
+   *
+   * @param
+   * @return
+   */
+  static AST_Expression convert(GiNaC::ex);
 };
+}  // namespace Util
+}  // namespace MicroModelica
 
-#endif  /* GINAC_INTERFACE_H_ */
+#endif /* GINAC_INTERFACE_H_ */

@@ -21,65 +21,22 @@
 #define UTIL_TYPES_H_
 
 #include <string>
+#include <boost/optional.hpp>
+#include <boost/foreach.hpp>
 
 #include "macros.h"
 
-/**
- *
- */
-DEFINE_TYPE(VarSymbolTable);
-/**
- *
- */
-DEFINE_TYPE(TypeSymbolTable);
-/**
- *
- */
-DEFINE_TYPE(VarInfo);
-/**
- *
- */
-DEFINE_TYPE(MMO_EquationTable);
-/**
- *
- */
-DEFINE_TYPE(MMO_EventTable);
-/**
- *
- */
-DEFINE_TYPE(MMO_FunctionTable);
-/**
- *
- */
-DEFINE_TYPE(MMO_PackageTable);
-/**
- *
- */
-DEFINE_TYPE(MMO_DependenciesTable);
-/**
- *
- */
-DEFINE_TYPE(MMO_ArgumentsTable);
-/**
- *
- */
-DEFINE_TYPE(MMO_StatementTable);
-/**
- *
- */
-DEFINE_TYPE(MMO_IndexTable);
-/**
- *
- */
-DEFINE_TYPE(MMO_ImportTable);
-/**
- *
- */
-DEFINE_TYPE(MMO_SymbolRefTable);
-/**
- *
- */
-DEFINE_TYPE(MMO_FunctionDefinitionTable);
+#define foreach_ BOOST_FOREACH
+
+template <typename T>
+struct Option : public boost::optional<T> {
+  public:
+  Option() : boost::optional<T>(){};
+  Option(boost::optional<T> t) : boost::optional<T>(t){};
+  Option(T const &t) : boost::optional<T>(t){};
+};
+
+DEFINE_TYPE(AST_MicroModelica);
 /**
  *
  */
@@ -88,53 +45,5 @@ typedef std::string VarName;
  *
  */
 typedef std::string TypeName;
-/**
- *
- */
-DEFINE_TYPE(AST_Visitor);
-/**
- *
- */
-DEFINE_TYPE(AST_MicroModelica);
-/**
- *
- */
-typedef class Dependencies_ *Dependencies;
-/**
- *
- */
-typedef class GenerateDeps_ *GenerateDeps;
-/**
- *
- */
-typedef class MDIndex_ Index;
-/**
- *
- */
-typedef class Range_ Range;
-/**
- *
- */
-typedef class MDVariableInterval_ VariableInterval;
-/**
- *
- */
-typedef class ExpressionIndex_ *ExpressionIndex;
-/**
- *
- */
-typedef class ExpIndexes_ *ExpIndexes;
-/**
- *
- */
-typedef class ReplaceDer_ *ReplaceDer;
-/**
- *
- */
-typedef class ControlVars_ *ControlVars;
-/**
- *
- */
-typedef class MMO_CompileFlags_ *MMO_CompileFlags;
 
-#endif  /*  UTIL_TYPES_H_ */
+#endif /*  UTIL_TYPES_H_ */

@@ -20,209 +20,79 @@
 #ifndef MMO_EVENT_H_
 #define MMO_EVENT_H_
 
-#include <list>
-#include <string>
-
 #include "../ast/ast_types.h"
-#include "../util/md_index.h"
-#include "../util/util_types.h"
-#include "mmo_base.h"
-#include "mmo_types.h"
+#include "../util/table.h"
+#include "equation.h"
+#include "statement.h"
 
-/**
- *
- */
-typedef enum
-{
-  HND_POSITIVE, //!< HND_POSITIVE
-  HND_NEGATIVE, //!< HND_NEGATIVE
-  HND_ZERO     //!< HND_ZERO
-} HND_Type;
+namespace MicroModelica {
+namespace IR {
+
+namespace EVENT {
+
+typedef enum {
+  Zero = 0,      //!< HND_ZERO
+  Positive = 1,  //!< HND_POSITIVE
+  Negative = 2   //!< HND_NEGATIVE
+} Type;
 
 /**
  * Define the original relation type of the zero-crossing function
  * needed by the initial algorithm.
  */
-typedef enum
-{
-  ZC_LT,     //!< ZC_LT
-  ZC_LE,     //!< ZC_LE
-  ZC_GT,     //!< ZC_GT
-  ZC_GE //!< ZC_GE
-} ZC_REL;
+typedef enum {
+  LT,  //!< ZC_LT
+  LE,  //!< ZC_LE
+  GT,  //!< ZC_GT
+  GE   //!< ZC_GE
+} Relation;
+}  // namespace EVENT
 
-/**
- *
- */
-class MMO_Event_: public MMO_Base_
-{
+class Event {
   public:
-    /**
-     *
-     * @param cond
-     * @param data
-     */
-    MMO_Event_(AST_Expression cond, MMO_ModelData data);
-    /**
-     *
-     */
-    ~MMO_Event_();
-    /**
-     *
-     * @return
-     */
-    string
-    print();
-    /**
-     *
-     * @return
-     */
-    MMO_Equation
-    condition();
-    /**
-     *
-     * @param cond
-     */
-    void
-    setCondition(MMO_Expression cond);
-    /**
-     *
-     * @param cond
-     * @return
-     */
-    bool
-    compareCondition(AST_Expression cond);
-    /**
-     *
-     * @param stm
-     */
-    void
-    insert(AST_Statement stm);
-    /**
-     *
-     * @param h
-     * @return
-     */
-    MMO_Statement
-    begin(HND_Type h);
-    /**
-     *
-     * @return
-     */
-    MMO_Statement
-    next();
-    /**
-     *
-     * @return
-     */
-    bool
-    end();
-    /**
-     *
-     * @return
-     */
-    Index
-    index();
-    /**
-     *
-     * @param idx
-     */
-    void
-    setIndex(Index idx);
-    /**
-     *
-     * @return
-     */
-    int
-    beginRange();
-    /**
-     *
-     * @return
-     */
-    int
-    endRange();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasPositiveHandler();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasNegativeHandler();
-    /**
-     *
-     * @return
-     */
-    HND_Type
-    handlerType();
-    /**
-     *
-     * @param h
-     */
-    void
-    setHandlerType(HND_Type h);
-    /**
-     *
-     * @return
-     */
-    Dependencies
-    deps();
-    /**
-     *
-     * @return
-     */
-    Dependencies
-    lhs();
-    /**
-     *
-     * @return
-     */
-    bool
-    hasWeight();
-    /**
-     *
-     * @return
-     */
-    double
-    weight();
-    ZC_REL
-    zcRelation();
-    private:
-    AST_Expression
-    _getExpression(AST_Expression exp);
-    MMO_Equation _cond;
-    list<MMO_Statement> _positiveHandlerStatements;
-    list<MMO_Statement> _negativeHandlerStatements;
-    Index _index;
-    int _init;
-    int _end;
-    HND_Type _handler;
-    HND_Type _handlerType;
-    list<MMO_Statement>::iterator _it;
-    MMO_ModelData _data;
-    Dependencies _deps;
-    Dependencies _lhs;
-    VarSymbolTable _lhsVars;
-    double _weight;
-    ZC_REL _zcRelation;
-};
-/**
- *
- * @param cond
- * @param data
- * @return
- */
-MMO_Event
-newMMO_Event(AST_Expression cond, MMO_ModelData data);
-/**
- *
- * @param m
- */
-void
-deleteMMO_Event(MMO_Event m);
+  Event(){};
+  Event(AST_Expression cond, int id, int offset, Util::VarSymbolTable& symbols, Option<Range> range);
+  ~Event(){};
+  inline Equation zeroCrossing() { return _zeroCrossing; };
+  inline StatementTable positiveHandler() { return _positiveHandler; };
+  inline StatementTable negativeHandler() { return _negativeHandler; };
+  std::string handler(EVENT::Type type) const;
+  void add(AST_Statement);
+  bool compare(AST_Expression zc);
+  inline bool hasRange() { return _range.is_initialized(); };
+  std::string macro() const;
+  int id() const { return _id; };
+  /**
+   * @brief      This method returns the range expression of the event.
+   *
+   *             The range is computed from the LHS of the zero crossing
+   *             function associated with the event.
+   *
+   * @return     Expression with the LHS used in graph builders.
+   */
+  Expression exp();
+  bool isValid() const { return _zeroCrossing.isValid(); };
+  std::string config() const;
+  inline Option<Range> range() const { return _range; };
 
-#endif  /*  MMO_EVENT_H_ */
+  private:
+  AST_Expression getExpression(AST_Expression zc);
+  Equation _zeroCrossing;
+  StatementTable _positiveHandler;
+  StatementTable _negativeHandler;
+  EVENT::Type _type;
+  EVENT::Type _current;
+  EVENT::Relation _zcRelation;
+  Util::VarSymbolTable _symbols;
+  Option<Range> _range;
+  int _positiveHandlerId;
+  int _negativeHandlerId;
+  int _id;
+  int _offset;
+};
+
+typedef ModelTable<int, Event> EventTable;
+}  // namespace IR
+}  // namespace MicroModelica
+
+#endif /*  MMO_EVENT_H_ */

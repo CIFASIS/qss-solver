@@ -26,75 +26,52 @@
 #include "class.h"
 #include "imports.h"
 
-AST_StoredDefinition_::AST_StoredDefinition_(AST_ClassList ml,
-    AST_String within) :
-    _model_list(ml), _within(within)
+AST_StoredDefinition_::AST_StoredDefinition_(AST_ClassList ml, AST_String within) : _model_list(ml), _within(within)
 {
   _imports = new AST_Imports();
 }
 
 CLASSP_PRINTER_IMP(AST_StoredDefinition);
 
-AST_ClassList
-AST_StoredDefinition_::models() const
-{
-  return _model_list;
-}
+AST_ClassList AST_StoredDefinition_::models() const { return _model_list; }
 
-AST_String
-AST_StoredDefinition_::within() const
-{
-  return _within;
-}
+AST_String AST_StoredDefinition_::within() const { return _within; }
 
-ostream &
-operator<<(ostream &os, const AST_StoredDefinition_ &sd)
+ostream &operator<<(ostream &os, const AST_StoredDefinition_ &sd)
 {
   AST_ClassListIterator it;
   AST_ClassList cl = sd.models();
-  if(sd.within() != NULL)
-    os << "within " << sd.within() << endl;
-  foreach(it,cl)
-  {
+  if (sd.within() != NULL) os << "within " << sd.within() << endl;
+  foreach (it, cl) {
     os << current_element(it);
   }
   return os;
 }
 
-void
-AST_StoredDefinition_::accept(AST_Visitor visitor)
+void AST_StoredDefinition_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
   AST_ClassListIterator it;
-  foreach(it,_model_list)
-  {
+  foreach (it, _model_list) {
     AST_Class x = current_element(it);
     AST_TypePrefix p = x->prefix();
-    if((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE))
-    {
+    if ((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE)) {
       x->accept(visitor);
     }
   }
-  foreach(it,_model_list)
-  {
+  foreach (it, _model_list) {
     AST_Class x = current_element(it);
     AST_TypePrefix p = x->prefix();
-    if(!(p & CP_FUNCTION) && !(p & CP_IMPURE) && !(p & CP_PURE))
-    {
+    if (!(p & CP_FUNCTION) && !(p & CP_IMPURE) && !(p & CP_PURE)) {
       x->accept(visitor);
     }
   }
   visitor->leave(this);
 }
 
-bool
-AST_StoredDefinition_::hasWithin()
-{
-  return _within != NULL;
-}
+bool AST_StoredDefinition_::hasWithin() { return _within != NULL; }
 
-AST_StringList
-AST_StoredDefinition_::imports()
+AST_StringList AST_StoredDefinition_::imports()
 {
   AST_Imports imp;
   _imports->apply(this);

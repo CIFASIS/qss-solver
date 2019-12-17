@@ -23,42 +23,45 @@
 #include <map>
 
 #include "../ast/ast_types.h"
-#include "../ir/mmo_types.h"
 #include "util_types.h"
+#include "symbol_table.h"
+#include "../ir/expression.h"
+
+namespace MicroModelica {
+namespace Util {
+
+class MMO_Expression;
 
 /**
  *
  */
-class EquationDerivator
-{
+class EquationDerivator {
   public:
-    /**
-     *
-     * @param eq
-     * @param varEnv
-     * @return
-     */
-    static AST_Equation_Equality
-    derivate(AST_Equation_Equality eq, VarSymbolTable varEnv);
+  /**
+   *
+   * @param eq
+   * @param varEnv
+   * @return
+   */
+  static AST_Equation_Equality derivate(AST_Equation_Equality eq, const VarSymbolTable& symbols);
 };
 
 /**
  *
  */
-class ExpressionDerivator
-{
+class ExpressionDerivator {
   public:
-    /**
-     *
-     * @param exp
-     * @param varEnv
-     * @param e
-     * @return
-     */
-    static AST_Expression
-    derivate(AST_Expression exp, VarSymbolTable varEnv, MMO_Expression e);
-    map<string, MMO_Expression>
-    generateJacobianExps(AST_Expression exp, MMO_ModelData data);
+  /**
+   *
+   * @param exp
+   * @param varEnv
+   * @param e
+   * @return
+   */
+  static AST_Expression derivate(AST_Expression exp, const VarSymbolTable& symbols, IR::Expression e);
+  map<string, MicroModelica::IR::Expression> generateJacobianExps(Variable variable, std::string usage, AST_Expression exp,
+                                                                  const VarSymbolTable& symbols);
 };
-
-#endif  /* DERIVATIVE_H_ */
+}  // namespace Util
+}  // namespace MicroModelica
+#endif /* DERIVATIVE_H_ */

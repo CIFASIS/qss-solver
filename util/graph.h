@@ -27,115 +27,101 @@
 
 using namespace std;
 
-class Graph
-{
+class Graph {
   public:
-    /**
-     *
-     * @param states
-     * @param events
-     */
-    Graph(int states, int events);
-    /**
-     *
-     */
-    ~Graph();
-    /**
-     *
-     * @return
-     */
-    map<int, set<int> >
-    graph();
-    /**
-     *
-     * @return
-     */
-    map<int, set<int> >
-    hyperGraph();
-    /**
-     *
-     * @param orig
-     * @param dest
-     */
-    void
-    addGraphEdge(int orig, int dest);
-    /**
-     *
-     * @param orig
-     * @param dest
-     */
-    void
-    addHyperGraphEdge(int orig, int dest);
-    /**
-     *
-     * @param node
-     * @param edge
-     * @return
-     */
-    int
-    graphEdgeWeight(int node, int inf);
-    /**
-     *
-     * @param node
-     * @param edge
-     * @return
-     */
-    int
-    hyperGraphEdgeWeight(int node);
-    /**
-     *
-     */
-    void
-    connectGraphs();
-    /**
-     *
-     * @return
-     */
-    int
-    graphEdges();
-    /**
-     *
-     * @param node
-     * @return
-     */
-    int
-    graphNodeEdges(int node);
-    /**
-     *
-     * @return
-     */
-    bool
-    empty();
-    /**
-     *
-     * @return
-     */
-    int
-    hyperGraphEdges();
-    /**
-     *
-     */
-    int
-    nodeWeight(int node);
-    /**
-     *
-     */
-    void
-    addNodeWeight(int node, int weight);
-    private:
-    int
-    edgeWeight(int node);
-    int _states;
-    int _events;
-    int _nvtxs;
-    int _graphEdges;
-    map<int, set<int> > _graph;
-    map<int, set<int> > _graphInputs;
-    map<int, int> _graphDiscretes;
-    map<int, set<int> > _hyperGraph;
-    map<int, set<int> > _wmap;
-    map<int, set<int> > _hwmap;
-    GRP_graphProfile _profile;
+  /**
+   *
+   * @param states
+   * @param events
+   */
+  Graph(int states, int events);
+  /**
+   *
+   */
+  ~Graph();
+  /**
+   *
+   * @return
+   */
+  map<int, set<int>> graph();
+  /**
+   *
+   * @return
+   */
+  map<int, set<int>> hyperGraph();
+  /**
+   *
+   * @param orig
+   * @param dest
+   */
+  void addGraphEdge(int orig, int dest);
+  /**
+   *
+   * @param orig
+   * @param dest
+   */
+  void addHyperGraphEdge(int orig, int dest);
+  /**
+   *
+   * @param node
+   * @param edge
+   * @return
+   */
+  int graphEdgeWeight(int node, int inf);
+  /**
+   *
+   * @param node
+   * @param edge
+   * @return
+   */
+  int hyperGraphEdgeWeight(int node);
+  /**
+   *
+   */
+  void connectGraphs();
+  /**
+   *
+   * @return
+   */
+  int graphEdges();
+  /**
+   *
+   * @param node
+   * @return
+   */
+  int graphNodeEdges(int node);
+  /**
+   *
+   * @return
+   */
+  bool empty();
+  /**
+   *
+   * @return
+   */
+  int hyperGraphEdges();
+  /**
+   *
+   */
+  int nodeWeight(int node);
+  /**
+   *
+   */
+  void addNodeWeight(int node, int weight);
+
+  private:
+  int edgeWeight(int node);
+  int _states;
+  int _events;
+  int _nvtxs;
+  int _graphEdges;
+  map<int, set<int>> _graph;
+  map<int, set<int>> _graphInputs;
+  map<int, int> _graphDiscretes;
+  map<int, set<int>> _hyperGraph;
+  map<int, set<int>> _wmap;
+  map<int, set<int>> _hwmap;
+  GRP_graphProfile _profile;
 };
 
 #endif /* MMO_UTIL_GRAPH_H_ */

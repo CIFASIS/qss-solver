@@ -21,59 +21,45 @@
 
 #include "graph_profile.h"
 
-double
-GRP_nodeWeight(GRP_graphProfile g, GRP_EdgeType type)
+double GRP_nodeWeight(GRP_graphProfile g, GRP_EdgeType type)
 {
-  if(type == GRP_CONT)
-  {
+  if (type == GRP_CONT) {
     return g->state->contEdgeWeight;
-  }
-  else if(type == GRP_DSC)
-  {
+  } else if (type == GRP_DSC) {
     return g->state->dscEdgeWeight;
-  }
-  else
-  {
+  } else {
     return g->state->virtEdgeWeight;
   }
   return 0;
 }
 
-GRP_graphProfile
-GRP_GraphProfile()
+GRP_graphProfile GRP_GraphProfile()
 {
-  GRP_graphProfile p = (GRP_graphProfile) malloc(sizeof(*p));
+  GRP_graphProfile p = (GRP_graphProfile)malloc(sizeof(*p));
   p->ops = GRP_GraphProfileOps();
   p->state = GRP_GraphProfileState();
   return p;
 }
 
-void
-GRP_freeGraphProfile(GRP_graphProfile g)
+void GRP_freeGraphProfile(GRP_graphProfile g)
 {
   GRP_freeGraphProfileOps(g->ops);
   GRP_freeGraphProfileState(g->state);
   free(g);
 }
 
-GRP_graphProfileOps
-GRP_GraphProfileOps()
+GRP_graphProfileOps GRP_GraphProfileOps()
 {
-  GRP_graphProfileOps p = (GRP_graphProfileOps) malloc(sizeof(*p));
+  GRP_graphProfileOps p = (GRP_graphProfileOps)malloc(sizeof(*p));
   p->weight = GRP_nodeWeight;
   return p;
 }
 
-void
-GRP_freeGraphProfileOps(GRP_graphProfileOps ops)
-{
-  free(ops);
-}
+void GRP_freeGraphProfileOps(GRP_graphProfileOps ops) { free(ops); }
 
-GRP_graphProfileState
-GRP_GraphProfileState()
+GRP_graphProfileState GRP_GraphProfileState()
 {
-  GRP_graphProfileState p = (GRP_graphProfileState) malloc(sizeof(*p));
+  GRP_graphProfileState p = (GRP_graphProfileState)malloc(sizeof(*p));
   p->states = 0;
   p->events = 0;
   p->contEdgeWeight = 10;
@@ -82,15 +68,6 @@ GRP_GraphProfileState()
   return p;
 }
 
-void
-GRP_freeGraphProfileState(GRP_graphProfileState state)
-{
-  free(state);
-}
+void GRP_freeGraphProfileState(GRP_graphProfileState state) { free(state); }
 
-double
-GRP_Weight(GRP_graphProfile g, GRP_EdgeType type)
-{
-  return g->ops->weight(g, type);
-}
-
+double GRP_Weight(GRP_graphProfile g, GRP_EdgeType type) { return g->ops->weight(g, type); }

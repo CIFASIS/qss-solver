@@ -17,83 +17,44 @@
 
  ******************************************************************************/
 
-#ifndef STORED_DEFINITION_H_
-#define STORED_DEFINITION_H_
+#ifndef MMO_STORED_DEFINITION_H_
+#define MMO_STORED_DEFINITION_H_
 
 #include <string>
 
-using namespace std;
+#include "../ir/class.h"
 
-#include <list>
-
-#include <ir/mmo_base.h>
-#include <ir/mmo_types.h>
+namespace MicroModelica {
+namespace IR {
 
 /**
  *
  */
-class MMO_StoredDefinition_: public MMO_Base_
-{
+class StoredDefinition {
   public:
-    /**
-     *
-     */
-    MMO_StoredDefinition_();
-    /**
-     *
-     */
-    ~MMO_StoredDefinition_();
-    /**
-     *
-     * @return
-     */
-    string
-    print();
-    /**
-     *
-     * @return
-     */
-    list<MMO_Class>
-    classes() const;
-    /**
-     *
-     * @param c
-     */
-    void
-    addClass(MMO_Class c);
-    /**
-     *
-     * @return
-     */
-    MMO_Class
-    begin();
-    /**
-     *
-     * @return
-     */
-    MMO_Class
-    next();
-    /**
-     *
-     * @return
-     */
-    bool
-    end();
-    private:
-    list<MMO_Class> _classList;
-    list<MMO_Class>::iterator _it;
-};
-/**
- *
- * @return
- */
-MMO_StoredDefinition
-newMMO_StoredDefinition();
-/**
- *
- * @param m
- */
-void
-deleteMMO_StoredDefinition(MMO_StoredDefinition m);
+  /**
+   *
+   */
+  StoredDefinition();
+  /**
+   *
+   */
+  ~StoredDefinition(){};
+  bool isModel();
+  bool isPackage();
+  Model& model();
+  Package& package();
+  void setModel(string name);
+  void setPackage(string name);
+  void addFunction(Function& f);
+  Option<Function> function(string name);
+  void postProcess();
 
-#endif  /* STORED_DEFINITION_H_ */
+  private:
+  ClassType _def;
+  FunctionTable _functions;
+};
+}  // namespace IR
+}  // namespace MicroModelica
+
+#endif /* MMO_STORED_DEFINITION_H_ */

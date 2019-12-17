@@ -27,54 +27,36 @@
 #include "../util/error.h"
 #include "../util/symbol_table.h"
 #include "../util/util.h"
-#include "mmo_util.h"
 
-MMO_Annotation_::MMO_Annotation_() {}
+namespace MicroModelica {
+using namespace Util;
+namespace IR {
 
-MMO_Annotation_::~MMO_Annotation_() {}
-
-string MMO_Annotation_::print() {
-  string ret;
-  return ret;
+FunctionAnnotation::FunctionAnnotation() : _annotations(), _derivative(), _include()
+{
+  _libraryDirectory = Utils::instance().environmentVariable("MMOC_LIBRARIES");
+  _includeDirectory = Utils::instance().environmentVariable("MMOC_INCLUDE");
+  _annotations.insert(pair<string, FunctionAnnotation::type>("derivative", DERIVATIVE));
+  _annotations.insert(pair<string, FunctionAnnotation::type>("Include", INCLUDE));
+  _annotations.insert(pair<string, FunctionAnnotation::type>("IncludeDirectory", INCLUDE_DIRECTORY));
+  _annotations.insert(pair<string, FunctionAnnotation::type>("Library", LIBRARY));
+  _annotations.insert(pair<string, FunctionAnnotation::type>("LibraryDirectory", LIBRARY_DIRECTORY));
 }
 
-MMO_FunctionAnnotation_::MMO_FunctionAnnotation_()
-    : _annotations(), _derivative(), _include() {
-  _libraryDirectory =
-      Util::getInstance()->environmentVariable("MMOC_LIBRARIES");
-  _includeDirectory = Util::getInstance()->environmentVariable("MMOC_INCLUDE");
-  _annotations.insert(
-      pair<string, MMO_FunctionAnnotation_::type>("derivative", DERIVATIVE));
-  _annotations.insert(
-      pair<string, MMO_FunctionAnnotation_::type>("Include", INCLUDE));
-  _annotations.insert(pair<string, MMO_FunctionAnnotation_::type>(
-      "IncludeDirectory", INCLUDE_DIRECTORY));
-  _annotations.insert(
-      pair<string, MMO_FunctionAnnotation_::type>("Library", LIBRARY));
-  _annotations.insert(pair<string, MMO_FunctionAnnotation_::type>(
-      "LibraryDirectory", LIBRARY_DIRECTORY));
-}
+bool FunctionAnnotation::hasDerivative() { return !_derivative.empty(); }
 
-MMO_FunctionAnnotation_::~MMO_FunctionAnnotation_() {}
+bool FunctionAnnotation::hasInclude() { return !_include.empty(); }
 
-bool MMO_FunctionAnnotation_::hasDerivative() { return !_derivative.empty(); }
+bool FunctionAnnotation::hasIncludeDirectory() { return !_includeDirectory.empty(); }
 
-bool MMO_FunctionAnnotation_::hasInclude() { return !_include.empty(); }
+bool FunctionAnnotation::hasLibraries() { return !_libraries.empty(); }
 
-bool MMO_FunctionAnnotation_::hasIncludeDirectory() {
-  return !_includeDirectory.empty();
-}
+bool FunctionAnnotation::hasLibraryDirectory() { return !_libraryDirectory.empty(); }
 
-bool MMO_FunctionAnnotation_::hasLibraries() { return !_libraries.empty(); }
-
-bool MMO_FunctionAnnotation_::hasLibraryDirectory() {
-  return !_libraryDirectory.empty();
-}
-
-bool MMO_FunctionAnnotation_::insert(AST_Argument_Modification x) {
+bool FunctionAnnotation::insert(AST_Argument_Modification x)
+{
   string annot = *(x->name());
-  map<string, MMO_FunctionAnnotation_::type>::iterator itf =
-      _annotations.find(annot);
+  map<string, FunctionAnnotation::type>::const_iterator itf = _annotations.find(annot);
   if (itf == _annotations.end()) {
     return false;
   }
@@ -97,12 +79,14 @@ bool MMO_FunctionAnnotation_::insert(AST_Argument_Modification x) {
     break;
   case LIBRARY:
     if (mod->expressionType() == EXPSTRING) {
-      _libraries.push_back(mod->getAsString()->str());
+      string l = mod->getAsString()->str();
+      _libraries.insert(l, l);
     } else if (mod->expressionType() == EXPBRACE) {
       AST_ExpressionList el = mod->getAsBrace()->arguments();
       AST_ExpressionListIterator eli;
       foreach (eli, el) {
-        _libraries.push_back(current_element(eli)->getAsString()->str());
+        string l = current_element(eli)->getAsString()->str();
+        _libraries.insert(l, l);
       }
     }
     break;
@@ -122,109 +106,91 @@ bool MMO_FunctionAnnotation_::insert(AST_Argument_Modification x) {
   return true;
 }
 
-string MMO_FunctionAnnotation_::derivative() { return _derivative; }
+string FunctionAnnotation::derivative() { return _derivative; }
 
-string MMO_FunctionAnnotation_::include() { return _include; }
+string FunctionAnnotation::include() { return _include; }
 
-string MMO_FunctionAnnotation_::includeDirectory() { return _includeDirectory; }
+string FunctionAnnotation::includeDirectory() { return _includeDirectory; }
 
-list<string> MMO_FunctionAnnotation_::libraries() { return _libraries; }
+SymbolTable FunctionAnnotation::libraries() const { return _libraries; }
 
-string MMO_FunctionAnnotation_::libraryDirectory() { return _libraryDirectory; }
+string FunctionAnnotation::libraryDirectory() { return _libraryDirectory; }
 
-MMO_FunctionAnnotation newMMO_FunctionAnnotation() {
-  return new MMO_FunctionAnnotation_();
-}
-
-void deleteMMO_FunctionAnnotation(MMO_FunctionAnnotation m) { delete m; }
-
-MMO_ModelAnnotation_::MMO_ModelAnnotation_(MMO_ModelData data)
-    : _solver(ANT_LIQSS2), _solverString("LIQSS2"), _commInterval("CI_Step"),
-      _symDiff(true), _minStep(1e-14), _lps(1), _derDelta(1e-8),
-      _nodeSize(10000), _ZCHyst(1e-12), _order(1), _scheduler("ST_Binary"),
-      _storeData("SD_Memory"), _annotations(), _data(data), _DQMin(), _DQRel(),
-      _weight(-1), _sample(), _output(), _BDFPartition(), _BDFPartitionDepth(),
-      _BDFMaxStep(0), _initialTime(0), _finalTime(0),
-      _partitionMethod(ANT_Metis), _partitionMethodString("Metis"),
-      _parallel(false), _dt(0), _polyCoeffs(1), _dtSynch(ANT_DT_Fixed),
-      _dtSynchString("SD_DT_Asynchronous"), _desc(), _patohSettings(),
-      _scotchSettings(), _metisSettings(), _jacobian(0), _generateArch(0),
-      _debugGraph(0), _reorderPartition(0), _imbalance(0.01) {
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("experiment", EXPERIMENT));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Description", DESC));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("Tolerance", DQREL));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("AbsTolerance", DQMIN));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Weight", WEIGHT));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Solver", SOLVER));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("StartTime", INITIAL_TIME));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("StopTime", FINAL_TIME));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_MinStep", MIN_STEP));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_ZCHyst", ZCHYST));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_DerDelta", DER_DELTA));
-  _annotations.insert(pair<string, MMO_ModelAnnotation_::type>("MMO_LPS", LPS));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_NodeSize", NODE_SIZE));
-  _annotations.insert(pair<string, MMO_ModelAnnotation_::type>("MMO_OutputType",
-                                                               COMM_INTERVAL));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Period", STEP_SIZE));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("Jacobian", JACOBIAN));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_SymDiff", SYM_DIFF));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Scheduler", SCHEDULER));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Output", OUTPUT));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_BDF_Part", BDF_PARTITION));
-  _annotations.insert(pair<string, MMO_ModelAnnotation_::type>(
-      "MMO_BDF_PDepth", BDF_PARTITION_DEPTH));
-  _annotations.insert(pair<string, MMO_ModelAnnotation_::type>(
-      "MMO_BDF_Max_Step", BDF_MAX_STEP));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_StoreData", STORE_DATA));
-  _annotations.insert(pair<string, MMO_ModelAnnotation_::type>(
-      "MMO_PartitionMethod", PARTITION_METHOD));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Parallel", PARALLEL));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_DT_Min", DELTAT));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_DT_Synch", DELTAT_SYNCH));
-  _annotations.insert(pair<string, MMO_ModelAnnotation_::type>(
-      "MMO_PatohSettings", PATOH_SETTINGS));
-  _annotations.insert(pair<string, MMO_ModelAnnotation_::type>(
-      "MMO_MetisSettings", METIS_SETTINGS));
-  _annotations.insert(pair<string, MMO_ModelAnnotation_::type>(
-      "MMO_ScotchSettings", SCOTCH_SETTINGS));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_Imbalance", IMBALANCE));
-  _annotations.insert(
-      pair<string, MMO_ModelAnnotation_::type>("MMO_DebugGraph", DEBUG_GRAPH));
-  _annotations.insert(pair<string, MMO_ModelAnnotation_::type>(
-      "MMO_GenerateArch", GENERATE_ARCH));
-  _annotations.insert(pair<string, MMO_ModelAnnotation_::type>(
-      "MMO_ReorderPartition", REORDER_PARTITION));
+ModelAnnotation::ModelAnnotation(VarSymbolTable &symbolTable)
+    : _solver(LIQSS2),
+      _solverString("LIQSS2"),
+      _commInterval("CI_Step"),
+      _symDiff(true),
+      _minStep(1e-14),
+      _lps(1),
+      _derDelta(1e-8),
+      _nodeSize(10000),
+      _ZCHyst(1e-12),
+      _order(1),
+      _scheduler("ST_Binary"),
+      _storeData("SD_Memory"),
+      _annotations(),
+      _DQMin(),
+      _DQRel(),
+      _weight(-1),
+      _sample(),
+      _output(),
+      _initialTime(0),
+      _finalTime(0),
+      _partitionMethod(Metis),
+      _partitionMethodString("Metis"),
+      _parallel(false),
+      _dt(0),
+      _polyCoeffs(1),
+      _dtSynch(DT_Fixed),
+      _dtSynchString("SD_DT_Asynchronous"),
+      _desc(),
+      _patohSettings(),
+      _scotchSettings(),
+      _metisSettings(),
+      _jacobian(0),
+      _BDFPartition(),
+      _BDFPartitionDepth(),
+      _BDFMaxStep(0),
+      _symbolTable(symbolTable)
+{
+  _annotations.insert(pair<string, ModelAnnotation::type>("experiment", EXPERIMENT));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Description", DESC));
+  _annotations.insert(pair<string, ModelAnnotation::type>("Tolerance", DQREL));
+  _annotations.insert(pair<string, ModelAnnotation::type>("AbsTolerance", DQMIN));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Weight", WEIGHT));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Solver", SOLVER));
+  _annotations.insert(pair<string, ModelAnnotation::type>("StartTime", INITIAL_TIME));
+  _annotations.insert(pair<string, ModelAnnotation::type>("StopTime", FINAL_TIME));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_MinStep", MIN_STEP));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_ZCHyst", ZCHYST));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_DerDelta", DER_DELTA));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_LPS", LPS));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_NodeSize", NODE_SIZE));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_OutputType", COMM_INTERVAL));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Period", STEP_SIZE));
+  _annotations.insert(pair<string, ModelAnnotation::type>("Jacobian", JACOBIAN));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_SymDiff", SYM_DIFF));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Scheduler", SCHEDULER));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Output", OUTPUT));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_StoreData", STORE_DATA));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_PartitionMethod", PARTITION_METHOD));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Parallel", PARALLEL));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_DT_Min", DELTAT));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_DT_Synch", DELTAT_SYNCH));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_PatohSettings", PATOH_SETTINGS));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_MetisSettings", METIS_SETTINGS));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_ScotchSettings", SCOTCH_SETTINGS));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_BDF_Part", BDF_PARTITION));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_BDF_PDepth", BDF_PARTITION_DEPTH));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_BDF_Max_Step", BDF_MAX_STEP));
   _sample.push_back(1e-2);
   _DQMin.push_back(1e-3);
   _DQRel.push_back(1e-3);
 }
 
-MMO_ModelAnnotation_::~MMO_ModelAnnotation_() {}
-
-void MMO_ModelAnnotation_::eventComment(AST_Comment x) {
+void ModelAnnotation::eventComment(AST_Comment x)
+{
   _weight = -1;
   AST_ArgumentList al = x->arguments();
   AST_ArgumentListIterator it;
@@ -236,25 +202,24 @@ void MMO_ModelAnnotation_::eventComment(AST_Comment x) {
   }
 }
 
-void MMO_ModelAnnotation_::_processArgument(AST_Argument_Modification arg) {
+void ModelAnnotation::processArgument(AST_Argument_Modification arg)
+{
   if (arg->hasModification()) {
     AST_Modification m = arg->modification();
     if (m->modificationType() == MODEQUAL) {
-      _processAnnotation(*(arg->name()), m->getAsEqual());
+      processAnnotation(*(arg->name()), m->getAsEqual());
     } else {
-      Error::getInstance()->add(m->lineNum(), EM_IR | EM_ANNOTATION_TYPE,
-                                ER_Error, "%s", arg->name()->c_str());
+      Error::instance().add(m->lineNum(), EM_IR | EM_ANNOTATION_TYPE, ER_Error, "%s", arg->name()->c_str());
     }
   } else {
-    Error::getInstance()->add(arg->lineNum(), EM_IR | EM_ANNOTATION_TYPE,
-                              ER_Error, "%s", arg->name()->c_str());
+    Error::instance().add(arg->lineNum(), EM_IR | EM_ANNOTATION_TYPE, ER_Error, "%s", arg->name()->c_str());
   }
 }
 
-bool MMO_ModelAnnotation_::insert(AST_Argument_Modification x) {
+bool ModelAnnotation::insert(AST_Argument_Modification x)
+{
   string annot = *(x->name());
-  map<string, MMO_ModelAnnotation_::type>::iterator itf =
-      _annotations.find(annot);
+  map<string, ModelAnnotation::type>::const_iterator itf = _annotations.find(annot);
   if (itf == _annotations.end()) {
     return false;
   }
@@ -267,24 +232,21 @@ bool MMO_ModelAnnotation_::insert(AST_Argument_Modification x) {
         AST_ArgumentListIterator it;
         foreach (it, mc->arguments()) {
           if (current_element(it)->argumentType() == AR_MODIFICATION) {
-            _processArgument(current_element(it)->getAsModification());
+            processArgument(current_element(it)->getAsModification());
           } else {
-            Error::getInstance()->add(x->lineNum(), EM_IR | EM_ANNOTATION_TYPE,
-                                      ER_Error, "%s", x->name()->c_str());
+            Error::instance().add(x->lineNum(), EM_IR | EM_ANNOTATION_TYPE, ER_Error, "%s", x->name()->c_str());
           }
         }
       } else {
-        Error::getInstance()->add(
-            x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Error,
-            "Missing modification arguments. %s", x->name()->c_str());
+        Error::instance().add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Error, "Missing modification arguments. %s",
+                              x->name()->c_str());
       }
     } else {
-      Error::getInstance()->add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND,
-                                ER_Warning, "%s", x->name()->c_str());
+      Error::instance().add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Warning, "%s", x->name()->c_str());
     }
   } break;
   case WEIGHT:
-    _processArgument(x);
+    processArgument(x);
     break;
   default:
     break;
@@ -292,174 +254,176 @@ bool MMO_ModelAnnotation_::insert(AST_Argument_Modification x) {
   return true;
 }
 
-void MMO_ModelAnnotation_::_processList(AST_Expression x, list<double> *l) {
+void ModelAnnotation::processList(AST_Expression x, list<double> *l)
+{
   l->clear();
-  MMO_EvalAnnotation_ ea(_data->symbols());
-  MMO_AnnotationValue av;
+  EvalAnnotation ea(_symbolTable);
+  AnnotationValue av;
   if (x->expressionType() == EXPBRACE) {
     AST_Expression_Brace b = x->getAsBrace();
     AST_ExpressionList el = b->arguments();
     AST_ExpressionListIterator it;
     foreach (it, el) {
-      av = ea.foldTraverse(current_element(it));
+      av = ea.apply(current_element(it));
       l->push_back(av.real());
     }
   } else {
-    av = ea.foldTraverse(x);
+    av = ea.apply(x);
     l->push_back(av.real());
   }
 }
 
-void MMO_ModelAnnotation_::_processList(AST_Expression x, list<string> *l) {
+void ModelAnnotation::processList(AST_Expression x, list<string> *l)
+{
   l->clear();
-  MMO_EvalAnnotation_ ea(_data->symbols());
-  MMO_AnnotationValue av;
+  EvalAnnotation ea(_symbolTable);
+  AnnotationValue av;
   if (x->expressionType() == EXPBRACE) {
     AST_Expression_Brace b = x->getAsBrace();
     AST_ExpressionList el = b->arguments();
     AST_ExpressionListIterator it;
     foreach (it, el) {
-      av = ea.foldTraverse(current_element(it));
+      av = ea.apply(current_element(it));
       l->push_back(av.str());
     }
   } else {
-    av = ea.foldTraverse(x);
+    av = ea.apply(x);
     l->push_back(av.str());
   }
 }
 
-void MMO_ModelAnnotation_::_processExpressionList(AST_Expression x,
-                                                  list<AST_Expression> *l) {
+void ModelAnnotation::processExpressionList(AST_Expression x, list<AST_Expression> *l)
+{
   if (x->expressionType() == EXPBRACE) {
     AST_Expression_Brace b = x->getAsBrace();
     AST_ExpressionList el = b->arguments();
     AST_ExpressionListIterator it;
-    foreach (it, el) { l->push_back(current_element(it)); }
+    foreach (it, el) {
+      l->push_back(current_element(it));
+    }
   }
 }
 
-ANT_PartitionMethod MMO_ModelAnnotation_::partitionMethod() {
-  return _partitionMethod;
-}
+PartitionMethod ModelAnnotation::partitionMethod() { return _partitionMethod; }
 
-ANT_DT_Synch MMO_ModelAnnotation_::_getDtSynch(string s) {
+DT_Synch ModelAnnotation::getDtSynch(string s)
+{
   if (!s.compare("SD_DT_Fixed")) {
-    return ANT_DT_Fixed;
+    return DT_Fixed;
   } else if (!s.compare("SD_DT_Asynchronous")) {
-    return ANT_DT_Asynchronous;
+    return DT_Asynchronous;
   }
-  return ANT_DT_Fixed;
+  return DT_Fixed;
 }
 
-ANT_PartitionMethod MMO_ModelAnnotation_::_getPartitionMethod(string s) {
+PartitionMethod ModelAnnotation::getPartitionMethod(string s)
+{
   if (!s.compare("Metis")) {
-    return ANT_Metis;
+    return Metis;
   } else if (!s.compare("HMetis")) {
-    return ANT_HMetis;
+    return HMetis;
   } else if (!s.compare("Scotch")) {
-    return ANT_Scotch;
+    return Scotch;
   } else if (!s.compare("Patoh")) {
-    return ANT_Patoh;
+    return Patoh;
   } else if (!s.compare("MTPL")) {
-    return ANT_MTPL;
+    return MTPL;
   } else if (!s.compare("MTPL_IT")) {
-    return ANT_MTPL_IT;
+    return MTPL_IT;
   } else if (!s.compare("Manual")) {
-    return ANT_Manual;
+    return Manual;
   }
-  return ANT_Metis;
+  return Metis;
 }
 
-ANT_Solver MMO_ModelAnnotation_::_getSolver(string s) {
+Solver ModelAnnotation::getSolver(string s)
+{
   if (!s.compare("QSS")) {
     _order = 1;
     _polyCoeffs = 2;
-    return ANT_QSS;
+    return QSS;
   } else if (!s.compare("CQSS")) {
     _order = 1;
     _polyCoeffs = 2;
-    return ANT_CQSS;
+    return CQSS;
   } else if (!s.compare("LIQSS")) {
     _order = 1;
     _polyCoeffs = 2;
-    return ANT_LIQSS;
+    return LIQSS;
   } else if (!s.compare("QSS2")) {
     _order = 2;
     _polyCoeffs = 3;
-    return ANT_QSS2;
+    return QSS2;
   } else if (!s.compare("LIQSS2")) {
     _order = 2;
     _polyCoeffs = 3;
-    return ANT_LIQSS2;
+    return LIQSS2;
   } else if (!s.compare("LIQSS_BDF")) {
     _order = 2;
     _polyCoeffs = 3;
-    return ANT_LIQSS_BDF;
+    return LIQSS_BDF;
   } else if (!s.compare("QSS3")) {
     _order = 3;
     _polyCoeffs = 4;
-    return ANT_QSS3;
+    return QSS3;
   } else if (!s.compare("LIQSS3")) {
     _order = 3;
     _polyCoeffs = 4;
-    return ANT_LIQSS3;
+    return LIQSS3;
   } else if (!s.compare("DASSL")) {
     _order = 1;
     _polyCoeffs = 1;
-    return ANT_DASSL;
+    return DASSL;
   } else if (!s.compare("DOPRI")) {
     _order = 1;
     _polyCoeffs = 1;
-    return ANT_DOPRI;
+    return DOPRI;
   } else if (!s.compare("CVODE_BDF")) {
     _order = 1;
     _polyCoeffs = 1;
-    return ANT_CVODE_BDF;
+    return CVODE_BDF;
   } else if (!s.compare("IDA")) {
     _order = 1;
     _polyCoeffs = 1;
-    return ANT_IDA;
+    return IDA;
   } else if (!s.compare("CVODE_AM")) {
     _order = 1;
     _polyCoeffs = 1;
-    return ANT_CVODE_AM;
+    return CVODE_AM;
   } else if (!s.compare("QSS4")) {
     _order = 4;
     _polyCoeffs = 5;
-    return ANT_QSS4;
+    return QSS4;
   }
-  return ANT_QSS;
+  return QSS;
 }
 
-void MMO_ModelAnnotation_::_processAnnotation(string annot,
-                                              AST_Modification_Equal x) {
-  map<string, MMO_ModelAnnotation_::type>::iterator itf =
-      _annotations.find(annot);
+void ModelAnnotation::processAnnotation(string annot, AST_Modification_Equal x)
+{
+  map<string, ModelAnnotation::type>::const_iterator itf = _annotations.find(annot);
   if (itf == _annotations.end()) {
-    Error::getInstance()->add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND,
-                              ER_Warning, "%s", annot.c_str());
+    Error::instance().add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Warning, "%s", annot.c_str());
   }
-  MMO_EvalAnnotation_ ea(_data->symbols());
-  MMO_AnnotationValue av;
-  if (itf->second != DQMIN && itf->second != DQREL &&
-      itf->second != STEP_SIZE) {
-    av = ea.foldTraverse(x->exp());
+  EvalAnnotation ea(_symbolTable);
+  AnnotationValue av;
+  if (itf->second != DQMIN && itf->second != DQREL && itf->second != STEP_SIZE) {
+    av = ea.apply(x->exp());
   }
   switch (itf->second) {
   case DESC:
     _desc = av.str();
     break;
   case DQMIN:
-    _processList(x->exp(), &_DQMin);
+    processList(x->exp(), &_DQMin);
     break;
   case DQREL:
-    _processList(x->exp(), &_DQRel);
+    processList(x->exp(), &_DQRel);
     break;
   case WEIGHT:
     _weight = av.real();
     break;
   case SOLVER:
-    _solver = _getSolver(av.str());
+    _solver = getSolver(av.str());
     _solverString = av.str();
     break;
   case INITIAL_TIME:
@@ -487,7 +451,7 @@ void MMO_ModelAnnotation_::_processAnnotation(string annot,
     _commInterval = av.str();
     break;
   case STEP_SIZE:
-    _processList(x->exp(), &_sample);
+    processList(x->exp(), &_sample);
     break;
   case SCHEDULER:
     _scheduler = av.str();
@@ -502,23 +466,14 @@ void MMO_ModelAnnotation_::_processAnnotation(string annot,
     }
     break;
   case OUTPUT:
-    _processExpressionList(x->exp(), &_output);
-    break;
-  case BDF_PARTITION:
-    _processExpressionList(x->exp(), &_BDFPartition);
-    break;
-  case BDF_PARTITION_DEPTH:
-    _BDFPartitionDepth = av.integer();
-    break;
-  case BDF_MAX_STEP:
-    _BDFMaxStep = av.real();
+    processExpressionList(x->exp(), &_output);
     break;
   case PARTITION_METHOD:
-    _partitionMethod = _getPartitionMethod(av.str());
+    _partitionMethod = getPartitionMethod(av.str());
     _partitionMethodString = av.str();
     break;
   case DELTAT_SYNCH:
-    _dtSynch = _getDtSynch(av.str());
+    _dtSynch = getDtSynch(av.str());
     _dtSynchString = av.str();
     break;
   case PARALLEL:
@@ -533,205 +488,165 @@ void MMO_ModelAnnotation_::_processAnnotation(string annot,
   case STORE_DATA:
     break;
   case PATOH_SETTINGS:
-    _processList(x->exp(), &_patohSettings);
+    processList(x->exp(), &_patohSettings);
     break;
   case SCOTCH_SETTINGS:
-    _processList(x->exp(), &_scotchSettings);
+    processList(x->exp(), &_scotchSettings);
     break;
   case METIS_SETTINGS:
-    _processList(x->exp(), &_metisSettings);
+    processList(x->exp(), &_metisSettings);
     break;
-  case GENERATE_ARCH:
-    _generateArch = av.integer();
+  case BDF_PARTITION:
+    processExpressionList(x->exp(), &_BDFPartition);
     break;
-  case DEBUG_GRAPH:
-    _debugGraph = av.integer();
+  case BDF_PARTITION_DEPTH:
+    _BDFPartitionDepth = av.integer();
     break;
-  case IMBALANCE:
-    _imbalance = av.real();
-    break;
-  case REORDER_PARTITION:
-    _reorderPartition = av.integer();
+  case BDF_MAX_STEP:
+    _BDFMaxStep = av.real();
     break;
   default:
     break;
   }
 }
 
-void MMO_ModelAnnotation_::setDesc(string desc) { _desc = desc; }
+void ModelAnnotation::setDesc(string desc) { _desc = desc; }
 
-string MMO_ModelAnnotation_::desc() { return _desc; }
+string ModelAnnotation::desc() { return _desc; }
 
-void MMO_ModelAnnotation_::setDQMin(double dqmin) { _DQMin.push_back(dqmin); }
+void ModelAnnotation::setDQMin(double dqmin) { _DQMin.push_back(dqmin); }
 
-list<double> MMO_ModelAnnotation_::dqmin() { return _DQMin; }
+list<double> ModelAnnotation::dqmin() { return _DQMin; }
 
-void MMO_ModelAnnotation_::setDT(double dt) { _dt = dt; }
+void ModelAnnotation::setDT(double dt) { _dt = dt; }
 
-double MMO_ModelAnnotation_::DT() { return _dt; }
+double ModelAnnotation::DT() { return _dt; }
 
-list<double> MMO_ModelAnnotation_::dqrel() { return _DQRel; }
+list<double> ModelAnnotation::dqrel() { return _DQRel; }
 
-void MMO_ModelAnnotation_::setDQRel(double dqrel) { _DQRel.push_back(dqrel); }
+void ModelAnnotation::setDQRel(double dqrel) { _DQRel.push_back(dqrel); }
 
-void MMO_ModelAnnotation_::setWeight(double weight) { _weight = weight; }
+void ModelAnnotation::setWeight(double weight) { _weight = weight; }
 
-double MMO_ModelAnnotation_::weight() { return _weight; }
+double ModelAnnotation::weight() { return _weight; }
 
-void MMO_ModelAnnotation_::setSolver(ANT_Solver solver) { _solver = solver; }
+void ModelAnnotation::setSolver(Solver solver) { _solver = solver; }
 
-string MMO_ModelAnnotation_::solverString() { return _solverString; }
+string ModelAnnotation::solverString() { return _solverString; }
 
-ANT_Solver MMO_ModelAnnotation_::solver() { return _solver; }
+Solver ModelAnnotation::solver() { return _solver; }
 
-void MMO_ModelAnnotation_::setPartitionMethod(ANT_PartitionMethod pm) {
-  _partitionMethod = pm;
+void ModelAnnotation::setPartitionMethod(PartitionMethod pm) { _partitionMethod = pm; }
+
+string ModelAnnotation::partitionMethodString() { return _partitionMethodString; }
+
+DT_Synch ModelAnnotation::dtSynch() { return _dtSynch; }
+
+string ModelAnnotation::dtSynchString() { return _dtSynchString; }
+
+void ModelAnnotation::setDtSynch(DT_Synch synch) { _dtSynch = synch; }
+
+void ModelAnnotation::setInitialTime(double it) { _initialTime = it; }
+
+double ModelAnnotation::initialTime() { return _initialTime; }
+
+void ModelAnnotation::setFinalTime(double ft) { _finalTime = ft; }
+
+double ModelAnnotation::finalTime() { return _finalTime; }
+
+void ModelAnnotation::setMinStep(double ms) { _minStep = ms; }
+
+double ModelAnnotation::minStep() { return _minStep; }
+
+void ModelAnnotation::setZCHyst(double zch) { _ZCHyst = zch; }
+
+double ModelAnnotation::ZCHyst() { return _ZCHyst; }
+
+void ModelAnnotation::setDerDelta(double dd) { _derDelta = dd; }
+
+double ModelAnnotation::derDelta() { return _derDelta; }
+
+void ModelAnnotation::setStoreData(string store) { _storeData = store; }
+
+string ModelAnnotation::storeData() { return _storeData; }
+
+void ModelAnnotation::setLps(int lps) { _lps = lps; }
+
+void ModelAnnotation::setJacobian(int jacobian) { _jacobian = jacobian; }
+
+int ModelAnnotation::jacobian() { return _jacobian; }
+
+bool ModelAnnotation::isClassic()
+{
+  return _solver == DASSL || _solver == DOPRI || _solver == CVODE_BDF || _solver == IDA || _solver == CVODE_AM;
 }
 
-string MMO_ModelAnnotation_::partitionMethodString() {
-  return _partitionMethodString;
-}
+int ModelAnnotation::lps() { return _lps; }
 
-ANT_DT_Synch MMO_ModelAnnotation_::dtSynch() { return _dtSynch; }
+void ModelAnnotation::setNodeSize(int ns) { _nodeSize = ns; }
 
-string MMO_ModelAnnotation_::dtSynchString() { return _dtSynchString; }
+int ModelAnnotation::nodeSize() { return _nodeSize; }
 
-void MMO_ModelAnnotation_::setDtSynch(ANT_DT_Synch synch) { _dtSynch = synch; }
+void ModelAnnotation::setCommInterval(string ci) { _commInterval = ci; }
 
-void MMO_ModelAnnotation_::setInitialTime(double it) { _initialTime = it; }
+string ModelAnnotation::commInterval() { return _commInterval; }
 
-double MMO_ModelAnnotation_::initialTime() { return _initialTime; }
+void ModelAnnotation::setSample(double s) { _sample.push_back(s); }
 
-void MMO_ModelAnnotation_::setFinalTime(double ft) { _finalTime = ft; }
+list<double> ModelAnnotation::sample() { return _sample; }
 
-double MMO_ModelAnnotation_::finalTime() { return _finalTime; }
+void ModelAnnotation::setScheduler(string sched) { _scheduler = sched; }
 
-void MMO_ModelAnnotation_::setMinStep(double ms) { _minStep = ms; }
+string ModelAnnotation::scheduler() { return _scheduler; }
 
-double MMO_ModelAnnotation_::minStep() { return _minStep; }
+void ModelAnnotation::setSymDiff(bool sd) { _symDiff = sd; }
 
-void MMO_ModelAnnotation_::setZCHyst(double zch) { _ZCHyst = zch; }
+bool ModelAnnotation::symDiff() { return _symDiff; }
 
-double MMO_ModelAnnotation_::ZCHyst() { return _ZCHyst; }
+int ModelAnnotation::order() { return _order; }
 
-void MMO_ModelAnnotation_::setDerDelta(double dd) { _derDelta = dd; }
+list<AST_Expression> ModelAnnotation::output() { return _output; }
 
-double MMO_ModelAnnotation_::derDelta() { return _derDelta; }
+list<string> ModelAnnotation::patohSettings() { return _patohSettings; }
 
-void MMO_ModelAnnotation_::setStoreData(string store) { _storeData = store; }
+list<string> ModelAnnotation::scotchSettings() { return _scotchSettings; }
 
-string MMO_ModelAnnotation_::storeData() { return _storeData; }
+list<string> ModelAnnotation::metisSettings() { return _metisSettings; }
 
-void MMO_ModelAnnotation_::setLps(int lps) { _lps = lps; }
+void ModelAnnotation::setPatohSettings(string l) { _patohSettings.push_back(l); }
 
-int MMO_ModelAnnotation_::lps() { return _lps; }
+void ModelAnnotation::setScotchSettings(string l) { _scotchSettings.push_back(l); }
 
-void MMO_ModelAnnotation_::setJacobian(int jacobian) { _jacobian = jacobian; }
+void ModelAnnotation::setMetisSettings(string l) { _metisSettings.push_back(l); }
 
-int MMO_ModelAnnotation_::jacobian() { return _jacobian; }
+list<AST_Expression> ModelAnnotation::BDFPartition() { return _BDFPartition; }
 
-bool MMO_ModelAnnotation_::classic() {
-  return _solver == ANT_DASSL || _solver == ANT_DOPRI ||
-         _solver == ANT_CVODE_BDF || _solver == ANT_IDA ||
-         _solver == ANT_CVODE_AM;
-}
+int ModelAnnotation::BDFPartitionDepth() { return _BDFPartitionDepth; }
 
-bool MMO_ModelAnnotation_::hasJacobian() {
-  return _solver == ANT_LIQSS || _solver == ANT_LIQSS2 ||
-         _solver == ANT_LIQSS3 || _solver == ANT_LIQSS_BDF || classic();
-}
+double ModelAnnotation::BDFMaxStep() { return _BDFMaxStep; }
 
-bool MMO_ModelAnnotation_::LIQSS() {
-  return _solver == ANT_LIQSS || _solver == ANT_LIQSS2 ||
-         _solver == ANT_LIQSS3 || _solver == ANT_LIQSS_BDF;
-}
+/* AnnotationValue class */
 
-void MMO_ModelAnnotation_::setNodeSize(int ns) { _nodeSize = ns; }
+AnnotationValue::AnnotationValue() : _integer(0), _real(0), _str("") {}
 
-int MMO_ModelAnnotation_::nodeSize() { return _nodeSize; }
+AnnotationValue::~AnnotationValue() {}
 
-void MMO_ModelAnnotation_::setCommInterval(string ci) { _commInterval = ci; }
+int AnnotationValue::integer() { return _integer; }
 
-string MMO_ModelAnnotation_::commInterval() { return _commInterval; }
+void AnnotationValue::setInteger(int i) { _integer = i; }
 
-void MMO_ModelAnnotation_::setSample(double s) { _sample.push_back(s); }
+double AnnotationValue::real() { return _real; }
 
-list<double> MMO_ModelAnnotation_::sample() { return _sample; }
+void AnnotationValue::setReal(double d) { _real = d; }
 
-void MMO_ModelAnnotation_::setScheduler(string sched) { _scheduler = sched; }
+string AnnotationValue::str() { return _str; }
 
-string MMO_ModelAnnotation_::scheduler() { return _scheduler; }
-
-void MMO_ModelAnnotation_::setSymDiff(bool sd) { _symDiff = sd; }
-
-bool MMO_ModelAnnotation_::symDiff() { return _symDiff; }
-
-int MMO_ModelAnnotation_::order() { return _order; }
-
-list<AST_Expression> MMO_ModelAnnotation_::output() { return _output; }
-
-list<AST_Expression> MMO_ModelAnnotation_::BDFPartition() {
-  return _BDFPartition;
-}
-
-int MMO_ModelAnnotation_::BDFPartitionDepth() { return _BDFPartitionDepth; }
-
-double MMO_ModelAnnotation_::BDFMaxStep() { return _BDFMaxStep; }
-
-list<string> MMO_ModelAnnotation_::patohSettings() { return _patohSettings; }
-
-list<string> MMO_ModelAnnotation_::scotchSettings() { return _scotchSettings; }
-
-list<string> MMO_ModelAnnotation_::metisSettings() { return _metisSettings; }
-
-void MMO_ModelAnnotation_::setPatohSettings(string l) {
-  _patohSettings.push_back(l);
-}
-
-void MMO_ModelAnnotation_::setScotchSettings(string l) {
-  _scotchSettings.push_back(l);
-}
-
-void MMO_ModelAnnotation_::setMetisSettings(string l) {
-  _metisSettings.push_back(l);
-}
-
-double MMO_ModelAnnotation_::imbalance() { return _imbalance; }
-
-int MMO_ModelAnnotation_::debugGraph() { return _debugGraph; }
-
-int MMO_ModelAnnotation_::generateArch() { return _generateArch; }
-
-int MMO_ModelAnnotation_::reorderPartition() { return _reorderPartition; }
-
-MMO_ModelAnnotation newMMO_ModelAnnotation(MMO_ModelData data) {
-  return new MMO_ModelAnnotation_(data);
-}
-
-void deleteMMO_ModelAnnotation(MMO_ModelAnnotation m) { delete m; }
-
-/* MMO_AnnotationValue class */
-
-MMO_AnnotationValue::MMO_AnnotationValue() : _integer(0), _real(0), _str("") {}
-
-MMO_AnnotationValue::~MMO_AnnotationValue() {}
-
-int MMO_AnnotationValue::integer() { return _integer; }
-
-void MMO_AnnotationValue::setInteger(int i) { _integer = i; }
-
-double MMO_AnnotationValue::real() { return _real; }
-
-void MMO_AnnotationValue::setReal(double d) { _real = d; }
-
-string MMO_AnnotationValue::str() { return _str; }
-
-void MMO_AnnotationValue::setStr(string s) { _str = s; }
+void AnnotationValue::setStr(string s) { _str = s; }
 
 /* EvalAnnotation class */
 
-MMO_EvalAnnotation_::MMO_EvalAnnotation_(VarSymbolTable st)
-    : _st(st), _tokens() {
+EvalAnnotation::EvalAnnotation(VarSymbolTable st) : _st(st), _tokens()
+{
   _tokens.insert(pair<string, string>("QSS", "QSS"));
   _tokens.insert(pair<string, string>("CQSS", "CQSS"));
   _tokens.insert(pair<string, string>("QSS2", "QSS2"));
@@ -764,12 +679,12 @@ MMO_EvalAnnotation_::MMO_EvalAnnotation_(VarSymbolTable st)
   _tokens.insert(pair<string, string>("SD_DT_Fixed", "SD_DT_Fixed"));
   _tokens.insert(pair<string, string>("Sparse", "Sparse"));
   _tokens.insert(pair<string, string>("Dense", "Dense"));
-  _tokens.insert(
-      pair<string, string>("SD_DT_Asynchronous", "SD_DT_Asynchronous"));
+  _tokens.insert(pair<string, string>("SD_DT_Asynchronous", "SD_DT_Asynchronous"));
 }
 
-MMO_AnnotationValue MMO_EvalAnnotation_::foldTraverseElement(AST_Expression e) {
-  MMO_AnnotationValue av = MMO_AnnotationValue();
+AnnotationValue EvalAnnotation::foldTraverseElement(AST_Expression e)
+{
+  AnnotationValue av = AnnotationValue();
   switch (e->expressionType()) {
   case EXPSTRING:
     av.setStr(e->getAsString()->print());
@@ -777,8 +692,8 @@ MMO_AnnotationValue MMO_EvalAnnotation_::foldTraverseElement(AST_Expression e) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = e->getAsComponentReference();
     string name = cr->name();
-    VarInfo vi = _st->lookup(name);
-    if (vi != NULL) {
+    Option<Variable> vi = _st[name];
+    if (vi) {
       if (vi->isConstant()) {
         av.setInteger(vi->value());
       }
@@ -804,7 +719,7 @@ MMO_AnnotationValue MMO_EvalAnnotation_::foldTraverseElement(AST_Expression e) {
     }
     break;
   case EXPBOOLEANNOT: {
-    MMO_AnnotationValue a = foldTraverse(e->getAsBooleanNot()->exp());
+    AnnotationValue a = apply(e->getAsBooleanNot()->exp());
     if (a.integer() == 1) {
       av.setInteger(0);
     } else {
@@ -818,7 +733,8 @@ MMO_AnnotationValue MMO_EvalAnnotation_::foldTraverseElement(AST_Expression e) {
   return av;
 }
 
-void MMO_EvalAnnotation_::_setBoolean(bool condition, MMO_AnnotationValue *e) {
+void EvalAnnotation::setBoolean(bool condition, AnnotationValue *e)
+{
   if (condition) {
     e->setInteger(1);
   } else {
@@ -826,37 +742,33 @@ void MMO_EvalAnnotation_::_setBoolean(bool condition, MMO_AnnotationValue *e) {
   }
 }
 
-MMO_AnnotationValue MMO_EvalAnnotation_::foldTraverseElement(
-    MMO_AnnotationValue e1, MMO_AnnotationValue e2, BinOpType bot) {
-  MMO_AnnotationValue av = MMO_AnnotationValue();
+AnnotationValue EvalAnnotation::foldTraverseElement(AnnotationValue e1, AnnotationValue e2, BinOpType bot)
+{
+  AnnotationValue av = AnnotationValue();
   switch (bot) {
   case BINOPOR:
-    _setBoolean(e1.integer() || e2.integer(), &av);
+    setBoolean(e1.integer() || e2.integer(), &av);
     break;
   case BINOPAND:
-    _setBoolean(e1.integer() && e2.integer(), &av);
+    setBoolean(e1.integer() && e2.integer(), &av);
     break;
   case BINOPLOWER:
-    _setBoolean((e1.integer() < e2.integer()) || (e1.real() < e2.real()), &av);
+    setBoolean((e1.integer() < e2.integer()) || (e1.real() < e2.real()), &av);
     break;
   case BINOPLOWEREQ:
-    _setBoolean((e1.integer() <= e2.integer()) || (e1.real() <= e2.real()),
-                &av);
+    setBoolean((e1.integer() <= e2.integer()) || (e1.real() <= e2.real()), &av);
     break;
   case BINOPGREATER:
-    _setBoolean((e1.integer() > e2.integer()) || (e1.real() > e2.real()), &av);
+    setBoolean((e1.integer() > e2.integer()) || (e1.real() > e2.real()), &av);
     break;
   case BINOPGREATEREQ:
-    _setBoolean((e1.integer() >= e2.integer()) || (e1.real() >= e2.real()),
-                &av);
+    setBoolean((e1.integer() >= e2.integer()) || (e1.real() >= e2.real()), &av);
     break;
   case BINOPCOMPNE:
-    _setBoolean((e1.integer() != e2.integer()) || (e1.real() != e2.real()),
-                &av);
+    setBoolean((e1.integer() != e2.integer()) || (e1.real() != e2.real()), &av);
     break;
   case BINOPCOMPEQ:
-    _setBoolean((e1.integer() == e2.integer()) || (e1.real() == e2.real()),
-                &av);
+    setBoolean((e1.integer() == e2.integer()) || (e1.real() == e2.real()), &av);
     break;
   case BINOPADD:
     av.setInteger(e1.integer() + e2.integer());
@@ -884,164 +796,18 @@ MMO_AnnotationValue MMO_EvalAnnotation_::foldTraverseElement(
   return av;
 }
 
-MMO_AnnotationValue
-MMO_EvalAnnotation_::foldTraverseElementUMinus(AST_Expression e) {
-  MMO_AnnotationValue av = foldTraverseElement(e);
+AnnotationValue EvalAnnotation::foldTraverseElementUMinus(AST_Expression e)
+{
+  AnnotationValue av = foldTraverseElement(e);
   av.setInteger(-1 * av.integer());
   av.setReal(-1 * av.real());
   return av;
 }
 
-MMO_EvalAnnotation newMMO_EvalAnnotation(VarSymbolTable st) {
-  return new MMO_EvalAnnotation_(st);
-}
+void ModelAnnotation::setParallel(bool p) { _parallel = p; }
 
-void deleteMMO_EvalAnnotation(MMO_EvalAnnotation m) { delete m; }
+bool ModelAnnotation::parallel() { return _parallel; }
 
-void MMO_ModelAnnotation_::setParallel(bool p) { _parallel = p; }
-
-bool MMO_ModelAnnotation_::parallel() { return _parallel; }
-
-int MMO_ModelAnnotation_::polyCoeffs() { return _polyCoeffs; }
-
-bool MMO_Annotation_::hasDerivative() { return true; }
-
-bool MMO_Annotation_::hasInclude() { return true; }
-
-bool MMO_Annotation_::hasIncludeDirectory() { return true; }
-
-bool MMO_Annotation_::hasLibraries() { return true; }
-
-bool MMO_Annotation_::hasLibraryDirectory() { return true; }
-
-string MMO_Annotation_::derivative() { return ""; }
-
-string MMO_Annotation_::include() { return ""; }
-
-string MMO_Annotation_::includeDirectory() { return ""; }
-
-list<string> MMO_Annotation_::libraries() { return list<string>(); }
-
-string MMO_Annotation_::libraryDirectory() { return ""; }
-
-void MMO_Annotation_::eventComment(AST_Comment x) { return; }
-
-bool MMO_Annotation_::insert(AST_Argument_Modification x) { return true; }
-
-void MMO_Annotation_::setDesc(string desc) { return; }
-
-string MMO_Annotation_::desc() { return ""; }
-
-void MMO_Annotation_::setDQMin(double dqmin) { return; }
-
-list<double> MMO_Annotation_::dqmin() { return list<double>(); }
-
-list<double> MMO_Annotation_::dqrel() { return list<double>(); }
-
-void MMO_Annotation_::setDQRel(double dqrel) { return; }
-
-void MMO_Annotation_::setWeight(double weight) { return; }
-
-double MMO_Annotation_::weight() { return 0; }
-
-void MMO_Annotation_::setSolver(ANT_Solver solver) { return; }
-
-ANT_Solver MMO_Annotation_::solver() { return ANT_QSS; }
-
-string MMO_Annotation_::solverString() { return ""; }
-
-void MMO_Annotation_::setInitialTime(double it) { return; }
-
-double MMO_Annotation_::initialTime() { return 0; }
-
-void MMO_Annotation_::setFinalTime(double ft) { return; }
-
-double MMO_Annotation_::finalTime() { return 0; }
-
-void MMO_Annotation_::setMinStep(double ms) { return; }
-
-double MMO_Annotation_::minStep() { return 0; }
-
-void MMO_Annotation_::setZCHyst(double zch) { return; }
-
-double MMO_Annotation_::ZCHyst() { return 0; }
-
-void MMO_Annotation_::setDerDelta(double dd) { return; }
-
-double MMO_Annotation_::derDelta() { return 0; }
-
-void MMO_Annotation_::setLps(int lps) { return; }
-
-void MMO_Annotation_::setDT(double dt) { return; }
-
-double MMO_Annotation_::DT() { return 0; }
-
-int MMO_Annotation_::lps() { return 0; }
-
-void MMO_Annotation_::setNodeSize(int ns) { return; }
-
-int MMO_Annotation_::nodeSize() { return 0; }
-
-void MMO_Annotation_::setCommInterval(string ci) { return; }
-
-string MMO_Annotation_::commInterval() { return ""; }
-
-void MMO_Annotation_::setSample(double s) { return; }
-
-list<double> MMO_Annotation_::sample() { return list<double>(); }
-
-void MMO_Annotation_::setSymDiff(bool sd) { return; }
-
-bool MMO_Annotation_::symDiff() { return true; }
-
-int MMO_Annotation_::order() { return 1; }
-
-string MMO_Annotation_::scheduler() { return ""; }
-
-void MMO_Annotation_::setScheduler(string sched) { return; }
-
-list<AST_Expression> MMO_Annotation_::output() {
-  return list<AST_Expression>();
-}
-
-list<AST_Expression> MMO_Annotation_::BDFPartition() {
-  return list<AST_Expression>();
-}
-
-int MMO_Annotation_::BDFPartitionDepth() { return 0; }
-
-double MMO_Annotation_::BDFMaxStep() { return 0; }
-
-void MMO_Annotation_::setStoreData(string save) { return; }
-
-string MMO_Annotation_::storeData() { return ""; }
-
-void MMO_Annotation_::setPartitionMethod(ANT_PartitionMethod pm) { return; }
-
-string MMO_Annotation_::partitionMethodString() { return ""; }
-
-ANT_PartitionMethod MMO_Annotation_::partitionMethod() { return ANT_Metis; }
-
-void MMO_Annotation_::setParallel(bool p) { return; }
-
-bool MMO_Annotation_::parallel() { return true; }
-
-int MMO_Annotation_::polyCoeffs() { return 2; }
-
-void MMO_Annotation_::setDtSynch(ANT_DT_Synch synch) { return; }
-
-string MMO_Annotation_::dtSynchString() { return ""; }
-
-ANT_DT_Synch MMO_Annotation_::dtSynch() { return ANT_DT_Asynchronous; }
-
-list<string> MMO_Annotation_::patohSettings() { return list<string>(); }
-
-list<string> MMO_Annotation_::scotchSettings() { return list<string>(); }
-
-list<string> MMO_Annotation_::metisSettings() { return list<string>(); }
-
-void MMO_Annotation_::setPatohSettings(string l) { return; }
-
-void MMO_Annotation_::setScotchSettings(string l) { return; }
-
-void MMO_Annotation_::setMetisSettings(string l) { return; }
+int ModelAnnotation::polyCoeffs() { return _polyCoeffs; }
+}  // namespace IR
+}  // namespace MicroModelica

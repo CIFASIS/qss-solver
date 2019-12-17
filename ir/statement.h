@@ -20,141 +20,76 @@
 #ifndef MMO_STATEMENT_H_
 #define MMO_STATEMENT_H_
 
-#include <list>
-#include <string>
-
 #include "../ast/ast_types.h"
-#include "../util/dependencies.h"
-#include "../util/util_types.h"
-#include "mmo_base.h"
-#include "mmo_types.h"
+#include "../util/table.h"
+#include "index.h"
+
+namespace MicroModelica {
+
+namespace Util {
+typedef ModelTable<std::string, std::string> SymbolTable;
+}
+namespace IR {
+
+namespace STATEMENT {
+typedef enum { LHS, RHS, LHS_DISCRETES, LHS_STATES } AssignTerm;
+}
 
 /**
  *
  */
-class MMO_Statement_: public MMO_Base_
-{
+class Statement {
   public:
-    /**
-     *
-     * @param stm
-     * @param data
-     */
-    MMO_Statement_(AST_Statement stm, MMO_ModelData data);
-    /**
-     *
-     * @param stm
-     */
-    MMO_Statement_(AST_Statement stm);
-    /**
-     *
-     */
-    MMO_Statement_();
-    /**
-     *
-     */
-    ~MMO_Statement_();
-    /**
-     *
-     * @return
-     */
-    string
-    print();
-    /**
-     *
-     * @param indent
-     * @param idx
-     * @param offset
-     * @param order
-     * @param forOffset
-     * @return
-     */
-    list<string>
-    print(string indent, string idx = "", int offset = 0, int order = 1,
-        int forOffset = 0);
-    /**
-     *
-     * @return
-     */
-    list<string>
-    getVariables();
-    /**
-     *
-     * @return
-     */
-    Dependencies
-    deps();
-    /**
-     *
-     * @return
-     */
-    Dependencies
-    lhs();
-    private:
-    void
-    _getIndexList(AST_Expression_ComponentReference cr, Index index,
-        list<Index> *idxs);
-    void
-    _init();
-    void
-    _setInitialCode(AST_Statement stm);
-    void
-    _insertDeps(AST_Expression exp);
-    void
-    _insertDeps(AST_Statement stm, Range range = Range());
-    void
-    _insertVectorDeps(Dependencies deps, Dependencies in, DEP_Type type,
-        DEP_Type insert, Range range);
-    Index
-    _getIndex(AST_Expression_ComponentReference cr, VarInfo vi);
-    void
-    _printAssignment(const string& name, AST_Expression_ComponentReference cr,
-        AST_Expression e, const string& indent, const string& idx, int offset,
-        int order, int forOffset, list<string>& ret);
-    void
-    _printList(AST_StatementListIterator it, AST_StatementList stl,
-        const string& indent, const string& idx, int offset, int order,
-        int forOffset,
-        list<string>& ret);
-    void
-    _printIfExpression(AST_Expression e, string lhs, const string& indent,
-        const string& idx, int order, int offset, int forOffset,
-        list<string>& ret, list<string>& code);
+  /**
+   *
+   * @param stm
+   */
+  Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, bool initial = false, const std::string& block = "");
+  Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, Option<Range> range, bool initial = false,
+            const std::string& block = "");
+  /**
+   *
+   */
+  Statement() : _stm(nullptr), _range(), _symbols(), _block(), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states(){};
+  /**
+   *
+   */
+  ~Statement(){};
+  inline bool hasRange() { return _range.is_initialized(); };
+  inline Util::SymbolTable calledFunctions() { return _calledFunctions; };
+  friend std::ostream& operator<<(std::ostream& out, const Statement& s);
+  string print() const;
+  /**
+   * @brief      Returns a expression list containing all the expressions needed
+   *             by the graph builders. Without the if/for/when sentences.
+   *
+   * @return     Expression list used by the graph builders.\see {dh_graph_builder.cpp}
+   */
+  ExpressionList assignments(STATEMENT::AssignTerm asg) const;
+  ExpressionList lhsDiscretes() const { return _lhs_discretes; };
+  ExpressionList lhsStates() const { return _lhs_states; };
+  bool isAssignment() const;
+  inline Option<Range> range() { return _range; };
 
-    AST_Statement _stm;
-    MMO_ModelData _data;
-    Dependencies _deps;
-    Dependencies _lhs;
-    bool _initialCode;
-    list<string> _variables;
-    Index _eventLhs;
+  protected:
+  void initialize();
+  ExpressionList generateExps(STATEMENT::AssignTerm asg);
+  Expression emptyRef();
+  bool checkStateAssignment(Expression exp) const;
+
+  private:
+  AST_Statement _stm;
+  Option<Range> _range;
+  Util::VarSymbolTable _symbols;
+  Util::SymbolTable _calledFunctions;
+  std::string _block;
+  ExpressionList _lhs_assignments;
+  ExpressionList _rhs_assignments;
+  ExpressionList _lhs_discretes;
+  ExpressionList _lhs_states;
 };
-/**
- *
- * @param stm
- * @param data
- * @return
- */
-MMO_Statement
-newMMO_Statement(AST_Statement stm, MMO_ModelData data);
-/**
- *
- * @param stm
- * @return
- */
-MMO_Statement
-newMMO_Statement(AST_Statement stm);
-/**
- *
- * @return
- */
-MMO_Statement
-newMMO_Statement();
-/**
- *
- * @param m
- */
-void
-deleteMMO_Statement(MMO_Statement m);
 
-#endif  /* MMO_STATEMENT_H_ */
+typedef ModelTable<int, Statement> StatementTable;
+}  // namespace IR
+}  // namespace MicroModelica
+#endif /* MMO_STATEMENT_H_ */
