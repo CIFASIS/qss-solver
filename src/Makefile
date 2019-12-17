@@ -5,12 +5,6 @@ endif
 DEBUG ?= False
 CORES ?= 1
 ARCH = $(shell uname -m)
-ACCESS ?= HTTPS
-ifeq ($(ACCESS), HTTPS)
-ACCESS_PATH = https://github.com/
-else
-ACCESS_PATH = git@github.com:
-endif
 
 # The Directories, Source, Includes, Objects, Binary 
 ROOT   	:= ..
