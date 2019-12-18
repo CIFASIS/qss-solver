@@ -1,3 +1,5 @@
+MODE ?= Debug
+
 # The Directories, Source, Includes, Objects, Binary 
 SRCDIR 		:= .
 USRDIR 		:= $(SRCDIR)/usr
@@ -11,6 +13,9 @@ default: build
 build: | $(BUILDDIR)
 	qmake
 	$(MAKE)
+ifeq ($(MODE),Debug)
+	@cd tests && $(MAKE)  
+endif
 
 $(BUILDDIR):
 	@mkdir -p $(OBJDIR) 
@@ -20,3 +25,9 @@ doc:
 	@mkdir -p $(DOCDIR)
 	@mkdir -p $(DOCDIR)/html
 	doxygen QSSSolverGUI.doxyfile
+
+help:
+	@echo "make MODE=<Debug|Release>"
+	@echo "Default values:"
+	@echo ""
+	@echo "MODE=Debug"
