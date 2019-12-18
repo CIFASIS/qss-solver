@@ -30,24 +30,3 @@ http://www.cifasis-conicet.gov.ar/jfernandez/engine/
 
 Finally, the file containing the model has to be compiled and linked with the 
 engine library.
-
-Installation
-------------
-
-Please see the file called INSTALL. 
-			   
-Licensing
----------
-
-Please see the file called LICENSE.
-
-
-ChangeLog
-----------
-
-Please see the file called CHANGELOG.
-
-Bug Reporting
--------------
-
-Report bugs to: fernandez@cifasis-conicet.gov.ar

@@ -12,24 +12,3 @@ QSS Solver engine (https://github.com/CIFASIS/qss-solver-engine)
 together with all the configuration files (makefiles, config, etc.).
 The compiler documentation can be found at: 
 http://www.cifasis-conicet.gov.ar/jfernandez/mmoc/
-
-Installation
-------------
-
-Please see the file called INSTALL. 
-			   
-Licensing
----------
-
-Please see the file called LICENSE.
-
-
-ChangeLog
-----------
-
-Please see the file called CHANGELOG.
-
-Bug Reporting
--------------
-
-Report bugs to: fernandez@cifasis-conicet.gov.ar

@@ -1,7 +1,7 @@
 # qss-solver-user-libs
 QSS Solver C user libraries.
 
-C libraries that contains helper functions used in MicroModelica packages. The Makefile included in this repo compiles the source 
+C libraries that contains helper functions used in MicroModelica packages. The Makefile included compiles the source 
 files and generates the static library in the lib folder of the qss-solver. 
 To compile a new user library, follow these steps:
 
@@ -13,7 +13,5 @@ To compile a new user library, follow these steps:
 
 4- Finally, run make to generate the corresponding static lib.
 
-The generated lib is stored in the default path that the MMOC looks for, so the lib can be directly accesed from MicroModelica
-functions. For examples of how the C user libraries can be used, see the packages repo 
-(https://github.com/CIFASIS/qss-solver-packages). 
-
+The generated lib is stored in the default path that the MMOC looks for, so the lib can be directly accesed from MicroModelica 
+functions. 
