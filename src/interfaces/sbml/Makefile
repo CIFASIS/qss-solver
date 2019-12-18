@@ -35,7 +35,19 @@ endif
 RMS 				:= rm -rf
 
 # Source files.
-SRC = mmo_utils.cpp mmo_decl.cpp mmo_event.cpp mmo_assignment.cpp mmo_zerocrossing.cpp mmo_equation.cpp mmo_math.cpp mmo_model.cpp mmo_section.cpp mmo_convert.cpp mmo_writer.cpp biorica_writer.cpp mmo_function.cpp
+SRC = mmo_utils.cpp \
+      mmo_decl.cpp \
+	  mmo_event.cpp \
+	  mmo_assignment.cpp \
+	  mmo_zerocrossing.cpp \
+	  mmo_equation.cpp \
+	  mmo_math.cpp \
+	  mmo_model.cpp \
+	  mmo_section.cpp \
+	  mmo_convert.cpp \
+	  mmo_writer.cpp \
+	  biorica_writer.cpp \
+	  mmo_function.cpp
 
 # Objects
 OBJ=$(addprefix $(BUILDDIR)/, $(notdir $(SRC:.cpp=.o)))
