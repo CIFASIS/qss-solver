@@ -17,3 +17,6 @@ ChangeLog
 
 # Vim config files.
 tags
+
+# Tests generated files.
+/tests/usr/
