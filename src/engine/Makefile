@@ -28,13 +28,8 @@ BUILDDIR    := $(USRDIR)/obj/debug
 endif
 LIBDIR   	:= $(USRDIR)/lib
 INCDIR   	:= $(USRDIR)/include
-ifeq ($(OS), Linux)
 KLULIBDIR 	:= /usr/lib/$(ARCH)-linux-gnu/
 KLUINCDIR 	:= /usr/include/suitesparse/
-else
-KLULIBDIR 	:= /usr/local/Cellar/suite-sparse/4.5.5_1/lib/
-KLUINCDIR 	:= /usr/local/Cellar/suite-sparse/4.5.5_1/include/
-endif
 SRCEXT      := c
 DEPEXT      := d
 OBJEXT      := o
