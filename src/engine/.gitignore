@@ -9,6 +9,8 @@ ChangeLog
 
 # Vim config files.
 tags
+
+# 3rd party libraries
 3rd-party/partitioners/metis/metis-5.1.0/
 3rd-party/partitioners/scotch/INSTALL.txt
 3rd-party/partitioners/scotch/LICENCE_fr.txt
@@ -24,3 +26,6 @@ tags
 3rd-party/partitioners/scotch/src/
 3rd-party/partitioners/scotch/tgt/
 3rd-party/partitioners/scotch_old/
+
+# Generated test files.
+tests/usr/
