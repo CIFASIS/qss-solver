@@ -1,4 +1,4 @@
-DEBUG ?= False
+MODE ?= Debug
 ENGINE ?= .
 
 # Source Path.
@@ -17,7 +17,7 @@ OBJ = $(SRC:.c=.o)
 
 CFLAGS = -Wall -I$(INCDIR) -I$(ENGINE)/common -lm -msse2 -mfpmath=sse -O2   
 
-ifeq ($(DEBUG),True)
+ifeq ($(MODE),Debug)
 	CFLAGS += -g   
 endif
 
@@ -38,7 +38,8 @@ clean:
 	$(RMS) $(OBJ) $(TARGET)  
 
 help:
-	echo "make DEBUG=<True|False> ENGINE=<qss-engine-root-dir>"
+	echo "make MODE=<Debug|Release> ENGINE=<qss-engine-root-dir>"
 	echo "Default values:"
 	echo ""
+	echo "MODE=Debug"
 	echo "ENGINE=."
