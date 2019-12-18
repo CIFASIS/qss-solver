@@ -39,7 +39,7 @@ mmo-compiler: create-dirs lib-gtest
 
 qss-solver-gui: create-dirs 
 	@echo BUILDING MMO EDITOR
-	@cd gui && $(MAKE) -f gui.makefile      
+	@cd gui && $(MAKE) -f gui.makefile MODE=$(MODE) -j $(CORES)     
 	@echo Done
 
 qss-solver-doc: qss-engine mmo-compiler qss-solver-gui mmo-interfaces
