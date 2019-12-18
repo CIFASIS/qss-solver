@@ -34,6 +34,9 @@ OBJEXT         := o
 
 # The Target Binary Program
 TARGET      := $(BINDIR)/mmoc
+ifeq ($(DEBUG),True)
+RUN_TESTS 	:= @cd tests && $(MAKE)  
+endif
 
 # Flags, Libraries and Includes
 ifeq ($(OS), Windows_NT)
@@ -223,6 +226,7 @@ $(BUILDDIR)/deps_%.o : $(DEPSBUILDERDIR)/%.cpp
 
 mmoc: | $(libginac) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ)
 	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ) $(LIB) 
+	$(RUN_TESTS)
 
 ifneq ($(OS), Windows_NT)
 $(PARSERDIR)/mocc_parser.cpp: parser/mocc.y
@@ -252,6 +256,11 @@ $(BUILDDIR):
 	@mkdir -p $(LIBDIR)
 	@mkdir -p $(BUILDDIR)
 
+run-tests:
+	@echo Compile and Run tests.
+	@cd tests && $(MAKE) 
+	@echo Done
+
 doc:
 	@mkdir -p $(USRDIR)/doc
 	@mkdir -p $(USRDIR)/doc/html
@@ -267,8 +276,6 @@ ifeq ($(OS), Windows_NT)
 else
 	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(DEPSOBJ) $(VISITOROBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h 
 endif
-
-#	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h usr
 
 help:
 	@echo "make DEBUG=<True|False>"
