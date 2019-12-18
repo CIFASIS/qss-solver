@@ -45,14 +45,8 @@ Makefile options
 
 The makefile script accepts the following options:
 
-	* DEBUG = <True|False> 	If True, adds the compiler's debug flags. Default value False.
+	* MODE = <Debug|Release> 	When set to Debug, adds the compiler's debug flags. Default value Debug.
 	
-	* CORES= <n> 						In a multicore machine, select the number of cores used to 
-													compile the solver. Default value 1.
-
-  * ACCESS= <HTTPS|SSH>   Clone the repositories using HTPPS or SSH access to the server.
-                          Default value HTTPS.
-
 Makefile targets
 ================
 
@@ -70,5 +64,3 @@ The makefile script accepts the following targets:
 
   * qss-solver-doc: Builds the documentation for the QSS solver libraries,
                     the MicroModelica compiler and the QSS solver GUI.
-
-  * clean-repos:    Delete all the repositories.
