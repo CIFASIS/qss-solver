@@ -180,15 +180,10 @@ default: mmoc
 libginac 	:= $(LIBDIR)/libginac.a 
 
 $(libginac):
-ifneq ($(OS), Darwin)
 	echo "Building deterministic GiNaC" 
 	cd $(3RDPARTYDIR)/ginac; tar xvjf ginac-1.7.0.tar.bz2
 	cd $(3RDPARTYDIR)/ginac/ginac-1.7.0; ./configure --prefix=`pwd`/../../../usr --disable-shared; make -j 4 install
 	rm -rf $(3RDPARTYDIR)/ginac/ginac-1.7.0
-else
-	echo $(OS)
-	echo "Using system provided GiNaC library"
-endif
 
 $(BUILDDIR)/ast_%.o : $(ASTDIR)/%.cpp $(ASTDIR)/%.h $(PARSERDIR)/mocc_parser.cpp $(PARSERDIR)/mocc_scanner.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
