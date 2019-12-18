@@ -156,7 +156,7 @@ DOPRIOBJ=$(addprefix $(BUILDDIR)/, $(notdir $(DOPRISRC:.c=.o)))
 # Make dependencies
 DEPS = $(COMMONOBJ:.o=.d) $(SEQOBJ:.o=.d) $(PAROBJ:.o=.d) $(CLASSICOBJ:.o=.d)
 
-default: $(LIBCVODE) $(LIBIDA) $(LIBGSL) $(LIBQSS) $(LIBTIMESTEP)
+default: compile-all
 
 $(LIBCVODE): | $(BUILDDIR)
 	tar xvzf $(3RDPARTYDIR)/cvode/cvode-2.9.0.tar.gz
@@ -238,11 +238,32 @@ $(BUILDDIR):
 	@mkdir -p $(BUILDDIR)
 	@mkdir -p $(LIBDIR)
 
+# Rules
+	
+compile-all: $(LIBCVODE) $(LIBIDA) $(LIBGSL) $(LIBQSS) $(LIBTIMESTEP)
+ifeq ($(MODE),Debug)
+	@cd tests && $(MAKE)  
+endif
+
+cvode: $(LIBCVODE)
+
+ida: $(LIBIDA)
+
+gsl: $(LIBGSL)
+
+qss: $(LIBQSS)
+
+time-step: $(LIBTIMESTEP)
+
+run-tests:
+	@echo Compile and Run tests.
+	@cd tests && $(MAKE) 
+	@echo Done
+
 doc:
 	@mkdir -p $(USRDIR)/doc
 	@mkdir -p $(USRDIR)/doc/html
 	doxygen QSSSolver.doxyfile
-
 
 -include $(DEPS)
 
