@@ -95,9 +95,6 @@ else
 ifeq ($(OS),Windows_NT)
 	@cp $(ROOT)/deploy/windows/scripts/* $(ROOT)/bin/
 	@cp $(ROOT)/deploy/windows/qss-solver.ini.in $(ROOT)/bin/qss-solver.ini
-else
-	@cp $(ROOT)/deploy/osx/scripts/* $(ROOT)/bin/
-	@cp $(ROOT)/deploy/osx/qss-solver.ini.in $(ROOT)/bin/qss-solver.ini
 endif
 endif
 	
