@@ -58,7 +58,8 @@ CFLAGS 		:= -Wall -msse2 -mfpmath=sse -g -DDEBUG
 endif
 LIB         := -lm
 INC         := -I$(COMMONDIR) -I$(SRCDIR) -I$(INCDIR)
-RMS 		:= rm -rf
+RM  		:= rm -rf
+
 vpath %.c $(SRCDIR)
 .SUFFIXES: .c
 
@@ -228,6 +229,7 @@ $(LIBTIMESTEP): $(DASSLOBJ) $(DOPRIOBJ)
 $(LIBQSS): $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ)
 	@echo $ARCH
 	@ar rsc $@ $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ)
+	$(RM) $(LIBDIR)/*.so*
 
 $(COMMONOBJ): | $(BUILDDIR)
 
@@ -252,7 +254,7 @@ doc:
 .PHONY: clean
 
 clean:
-	$(RMS) $(DEPS) $(TARGET) $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ) $(DASSLOBJ) $(DOPRIOBJ) 
+	$(RM) $(DEPS) $(TARGET) $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ) $(DASSLOBJ) $(DOPRIOBJ) 
 
 help:
 	@echo "make DEBUG=<True|False>"
