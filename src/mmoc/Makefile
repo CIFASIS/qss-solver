@@ -2,7 +2,7 @@
 ifneq ($(OS), Windows_NT)
 OS = $(shell uname)
 endif
-DEBUG ?= False
+MODE ?= Debug
 
 # Compiler and Linker
 CXX         := g++
@@ -34,7 +34,7 @@ OBJEXT         := o
 
 # The Target Binary Program
 TARGET      := $(BINDIR)/mmoc
-ifeq ($(DEBUG),True)
+ifeq ($(MODE),Debug)
 RUN_TESTS 	:= @cd tests && $(MAKE)  
 endif
 
@@ -44,7 +44,7 @@ LIB 		:= -L/usr/lib
 endif
 LIB 		+= -L$(LIBDIR) -lginac -lcln -lgmp   
 CXXFLAGS 	:= -Wno-write-strings -Wall -std=c++11
-ifeq ($(DEBUG),True)
+ifeq ($(MODE),Debug)
 CXXFLAGS 	+= -DYY_MCC_Parser_DEBUG -g  
 endif
 INC         := -I$(SRCDIR) -I$(INCDIR)
@@ -278,7 +278,7 @@ else
 endif
 
 help:
-	@echo "make DEBUG=<True|False>"
+	@echo "make MODE=<Debug|Release>"
 	@echo "Default values:"
 	@echo ""
-	@echo "DEBUG=False"
+	@echo "MODE=Debug"
