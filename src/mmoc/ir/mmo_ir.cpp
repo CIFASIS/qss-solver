@@ -46,7 +46,7 @@ namespace IR {
 /* MicroModelica Intermediate Representation */
 
 MicroModelicaIR::MicroModelicaIR(string name)
-    : _std(), _class(NULL), _initialCode(false), _classModification(false), _compositionElement(false)
+    : _std(), _class(nullptr), _initialCode(false), _classModification(false), _compositionElement(false)
 {
 }
 

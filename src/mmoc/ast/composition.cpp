@@ -33,7 +33,7 @@
 /* Composition Class */
 
 AST_Composition_::AST_Composition_(AST_ElementList el, AST_CompositionElementList cl)
-    : _composition_list(cl), _element_list(el), _annot(NULL), _ext(NULL)
+    : _composition_list(cl), _element_list(el), _annot(nullptr), _ext(nullptr)
 {
 }
 
@@ -52,9 +52,9 @@ ostream &operator<<(ostream &ret, const AST_Composition_ &cm)
   foreach (it, cm.compositionList()) {
     ret << current_element(it);
   }
-  if (cm.externalCall() != NULL) {
+  if (cm.externalCall() != nullptr) {
     ret << "    external ";
-    if (cm.externalCall()->language() != NULL) {
+    if (cm.externalCall()->language() != nullptr) {
       ret << "\"" << cm.externalCall()->language() << "\"";
     }
     if (cm.externalCall()->annotation()->size()) {
@@ -98,7 +98,7 @@ void AST_Composition_::accept(AST_Visitor *visitor)
   foreach (_annot_it, _annot) {
     current_element(_annot_it)->accept(visitor);
   }
-  if (_ext != NULL) {
+  if (_ext != nullptr) {
     _ext->accept(visitor);
   }
   visitor->leave(this);
@@ -106,7 +106,7 @@ void AST_Composition_::accept(AST_Visitor *visitor)
 
 bool AST_Composition_::hasCompositionList()
 {
-  if (_composition_list == NULL) {
+  if (_composition_list == nullptr) {
     return false;
   }
   return _composition_list->size() > 0;
@@ -114,7 +114,7 @@ bool AST_Composition_::hasCompositionList()
 
 bool AST_Composition_::hasExternalFunctionCall()
 {
-  if (_ext == NULL) {
+  if (_ext == nullptr) {
     return false;
   }
   return true;
@@ -122,7 +122,7 @@ bool AST_Composition_::hasExternalFunctionCall()
 
 bool AST_Composition_::hasAnnotation()
 {
-  if (_annot == NULL) {
+  if (_annot == nullptr) {
     return false;
   }
   return true;
@@ -145,7 +145,7 @@ ostream &operator<<(ostream &ret, const AST_CompositionElement_ &ce)
 {
   AST_EquationListIterator it;
   AST_StatementListIterator st_it;
-  if (ce._eqs_algs != NULL) {
+  if (ce._eqs_algs != nullptr) {
     if (ce._eqs_algs->getEquations()->size() > 0) {
       MAKE_SPACE;
       ret << (ce._eqs_algs->isInitial() ? "initial " : "");
@@ -168,7 +168,7 @@ ostream &operator<<(ostream &ret, const AST_CompositionElement_ &ce)
     END_BLOCK;
   }
   AST_ElementListIterator et;
-  if (ce._el != NULL) {
+  if (ce._el != nullptr) {
     if (ce._el->size() > 0) {
       ret << "public" << endl;
     }
@@ -183,7 +183,7 @@ ostream &operator<<(ostream &ret, const AST_CompositionElement_ &ce)
 void AST_CompositionElement_::accept(AST_Visitor *visitor)
 {
   visitor->visit(this);
-  if (_eqs_algs != NULL) {
+  if (_eqs_algs != nullptr) {
     _eqs_algs->accept(visitor);
   }
   AST_ElementListIterator _el_it;
@@ -195,7 +195,7 @@ void AST_CompositionElement_::accept(AST_Visitor *visitor)
 
 bool AST_CompositionElement_::hasEquations()
 {
-  if (_eqs_algs == NULL) {
+  if (_eqs_algs == nullptr) {
     return false;
   }
   return _eqs_algs->hasEquations();
@@ -203,7 +203,7 @@ bool AST_CompositionElement_::hasEquations()
 
 bool AST_CompositionElement_::hasStatements()
 {
-  if (_eqs_algs == NULL) {
+  if (_eqs_algs == nullptr) {
     return false;
   }
   return _eqs_algs->hasStatements();
@@ -211,7 +211,7 @@ bool AST_CompositionElement_::hasStatements()
 
 bool AST_CompositionElement_::hasElements()
 {
-  if (_el == NULL) {
+  if (_el == nullptr) {
     return false;
   }
   return _el->size() > 0;
@@ -249,7 +249,7 @@ void AST_CompositionEqsAlgs_::accept(AST_Visitor *visitor)
 
 bool AST_CompositionEqsAlgs_::hasEquations()
 {
-  if (_eq == NULL) {
+  if (_eq == nullptr) {
     return false;
   }
   return _eq->size() > 0;
@@ -257,7 +257,7 @@ bool AST_CompositionEqsAlgs_::hasEquations()
 
 bool AST_CompositionEqsAlgs_::hasStatements()
 {
-  if (_st == NULL) {
+  if (_st == nullptr) {
     return false;
   }
   return _st->size() > 0;
@@ -284,7 +284,7 @@ string AST_External_Function_Call_::name() { return *_call->name(); }
 
 AST_Expression_ComponentReference AST_External_Function_Call_::componentReference() { return _cr; }
 
-bool AST_External_Function_Call_::hasComponentReference() { return _cr != NULL; }
+bool AST_External_Function_Call_::hasComponentReference() { return _cr != nullptr; }
 
 void AST_External_Function_Call_::accept(AST_Visitor *visitor)
 {

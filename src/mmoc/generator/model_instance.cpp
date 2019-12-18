@@ -105,7 +105,7 @@ void ModelInstance::allocateOutput()
 {
   stringstream buffer;
   ModelAnnotation annot = _model.annotations();
-  string period = "NULL";
+  string period = "nullptr";
   string indent = "";
   int ssize = 0;
   if (annot.commInterval() == "CI_Sampled") {
@@ -119,7 +119,7 @@ void ModelInstance::allocateOutput()
       buffer << indent << "period[" << n << "] = " << *i << ";" << endl;
     }
   }
-  string outputFunction = (_model.outputNbr() ? "MOD_output" : "NULL");
+  string outputFunction = (_model.outputNbr() ? "MOD_output" : "nullptr");
   buffer << indent << "simulator->output = SD_Output(\"";
   buffer << _model.name() << "\",";
   buffer << _model.outputNbr() << ",";
@@ -560,7 +560,7 @@ void QSSModelInstance::initTime()
 {
   stringstream buffer;
   buffer << "simulator->time = QSS_Time(" << _model.stateNbr() << "," << _model.eventNbr() << "," << _model.inputNbr() << ","
-         << _model.annotations().initialTime() << "," << _model.annotations().scheduler() << ", NULL);" << endl;
+         << _model.annotations().initialTime() << "," << _model.annotations().scheduler() << ", nullptr);" << endl;
   _writer->write(buffer, WRITER::Init_Data);
 }
 

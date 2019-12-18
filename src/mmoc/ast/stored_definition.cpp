@@ -41,7 +41,7 @@ ostream &operator<<(ostream &os, const AST_StoredDefinition_ &sd)
 {
   AST_ClassListIterator it;
   AST_ClassList cl = sd.models();
-  if (sd.within() != NULL) os << "within " << sd.within() << endl;
+  if (sd.within() != nullptr) os << "within " << sd.within() << endl;
   foreach (it, cl) {
     os << current_element(it);
   }
@@ -69,7 +69,7 @@ void AST_StoredDefinition_::accept(AST_Visitor *visitor)
   visitor->leave(this);
 }
 
-bool AST_StoredDefinition_::hasWithin() { return _within != NULL; }
+bool AST_StoredDefinition_::hasWithin() { return _within != nullptr; }
 
 AST_StringList AST_StoredDefinition_::imports()
 {

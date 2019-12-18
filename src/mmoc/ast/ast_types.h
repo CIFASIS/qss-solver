@@ -435,7 +435,7 @@ enum BinOpType {
   BINOPELMULT,     //!< BINOPELMULT
   BINOPEXP,        //!< BINOPEXP
   BINOPELEXP,      //!< BINOPELEXP
-  BINOPNULL        //!< BINOPNULL
+  BINOPnullptr     //!< BINOPnullptr
 };
 
 /**

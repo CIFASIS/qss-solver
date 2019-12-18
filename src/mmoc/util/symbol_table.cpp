@@ -67,7 +67,7 @@ Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c)
       _builtin(false),
       _size(),
       _value(0),
-      _exp(NULL),
+      _exp(nullptr),
       _hasStart(false),
       _hasEach(false),
       _hasAssigment(false),

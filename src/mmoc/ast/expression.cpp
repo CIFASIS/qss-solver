@@ -320,7 +320,7 @@ bool AST_Expression_ComponentReference_::hasIndexes() const
     AST_ExpressionList el = current_element(it);
     AST_ExpressionListIterator elit;
     foreach (elit, el) {
-      if (current_element(elit) != NULL) {
+      if (current_element(elit) != nullptr) {
         return true;
       }
     }

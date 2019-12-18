@@ -138,7 +138,7 @@ AST_Statement_ElseList AST_Statement_When_::else_when() const { return _else_lis
 
 AST_Comment AST_Statement_When_::comment() const { return _comm; }
 
-bool AST_Statement_When_::hasComment() { return _comm != NULL; }
+bool AST_Statement_When_::hasComment() { return _comm != nullptr; }
 
 bool AST_Statement_When_::hasElsewhen() { return _else_list->size() > 0; }
 

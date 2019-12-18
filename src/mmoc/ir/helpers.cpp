@@ -48,7 +48,7 @@ std::ostream& operator<<(std::ostream& out, const ExternalFunction& e)
     buffer << e._lvalue << " = ";
   }
   buffer << e._name << "(";
-  if (e._args != NULL) {
+  if (e._args != nullptr) {
     AST_ExpressionListIterator it;
     unsigned int count = 0;
     foreach (it, e._args) {

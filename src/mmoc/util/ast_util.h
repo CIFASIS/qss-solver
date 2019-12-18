@@ -94,14 +94,14 @@
 /**
  *
  */
-#define IS_STATE(X) (_varSymbolTable->lookup(CREF_NAME(X)) != NULL && _varSymbolTable->lookup(CREF_NAME(X))->isState())
+#define IS_STATE(X) (_varSymbolTable->lookup(CREF_NAME(X)) != nullptr && _varSymbolTable->lookup(CREF_NAME(X))->isState())
 /**
  *
  */
-#define IS_PARAMETER(X)                                                                                                                \
-  (IS_UMINUS(X)                                                                                                                        \
-       ? _varSymbolTable->lookup(CREF_NAME(UMINUS_EXP(X))) != NULL && _varSymbolTable->lookup(CREF_NAME(UMINUS_EXP(X)))->isParameter() \
-       : _varSymbolTable->lookup(CREF_NAME(X)) != NULL && _varSymbolTable->lookup(CREF_NAME(X))->isParameter())
+#define IS_PARAMETER(X)                                                                                                                   \
+  (IS_UMINUS(X)                                                                                                                           \
+       ? _varSymbolTable->lookup(CREF_NAME(UMINUS_EXP(X))) != nullptr && _varSymbolTable->lookup(CREF_NAME(UMINUS_EXP(X)))->isParameter() \
+       : _varSymbolTable->lookup(CREF_NAME(X)) != nullptr && _varSymbolTable->lookup(CREF_NAME(X))->isParameter())
 /**
  *
  */

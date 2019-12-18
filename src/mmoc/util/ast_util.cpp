@@ -393,7 +393,7 @@ AST_Expression PreChange::foldTraverseElement(AST_Expression e)
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = e->getAsComponentReference();
     if (_pre->find(cr->name()) != _pre->end()) {
-      return (newAST_Expression_Call(_MMOC_S("pre"), NULL, newAST_SimpleList(static_cast<AST_Expression>(cr))));
+      return (newAST_Expression_Call(_MMOC_S("pre"), nullptr, newAST_SimpleList(static_cast<AST_Expression>(cr))));
     }
     return e;
   }

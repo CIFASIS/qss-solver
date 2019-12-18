@@ -191,7 +191,7 @@ void Range::generate(Variable var)
     } else {
       _rowSize.push_back(1);
     }
-    Variable vi(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false);
+    Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
     Utils::instance().symbols().insert(index, vi);
   }
 }

@@ -187,7 +187,7 @@ CLASSP_PRINTER_IMP(AST_ForIndex);
 ostream &operator<<(ostream &os, const AST_ForIndex_ &f)
 {
   os << f.variable();
-  if (f.in_exp() != NULL) {
+  if (f.in_exp() != nullptr) {
     os << " in " << f.in_exp();
   }
   return os;

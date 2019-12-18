@@ -53,7 +53,7 @@ void MMO_Model::insert(MMO_Function &f) {}
 
 void MMO_Model::insert(AST_Argument_Modification x) {}
 
-VarSymbolTable MMO_Model::varTable() { return NULL; }
+VarSymbolTable MMO_Model::varTable() { return nullptr; }
 
 void MMO_Model::insert(string n) {}
 

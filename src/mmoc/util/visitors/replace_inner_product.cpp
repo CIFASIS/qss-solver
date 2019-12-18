@@ -39,7 +39,7 @@ AST_Expression ReplaceInnerProduct::foldTraverseElement(AST_Expression exp)
     foreach (it, el) {
       AST_ListAppend(nel, apply(current_element(it)));
     }
-    AST_Expression ret = newAST_Expression_Call(newAST_String(name), NULL, nel);
+    AST_Expression ret = newAST_Expression_Call(newAST_String(name), nullptr, nel);
     return ret;
   }
   case EXPCALLARG: {
@@ -72,7 +72,7 @@ AST_Expression ReplaceInnerProduct::foldTraverseElement(AST_Expression exp)
   default:
     return exp;
   }
-  return NULL;
+  return nullptr;
 }
 
 AST_Expression ReplaceInnerProduct::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
@@ -83,7 +83,7 @@ AST_Expression ReplaceInnerProduct::foldTraverseElement(AST_Expression l, AST_Ex
       AST_ExpressionList nel = newAST_ExpressionList();
       AST_ListAppend(nel, l);
       AST_ListAppend(nel, r);
-      AST_Expression ret = newAST_Expression_Call(newAST_String(name), NULL, nel);
+      AST_Expression ret = newAST_Expression_Call(newAST_String(name), nullptr, nel);
       return ret;
     }
   }

@@ -115,7 +115,7 @@ AST_Expression PartialEvalExp::foldTraverseElement(AST_Expression left, AST_Expr
   Util::ERROR(
       "process_for_equations.cpp - evalBinOp:\n"
       "Incorrect Binary operation type.\n");
-  return NULL;
+  return nullptr;
 }
 
 bool PartialEvalExp::isIntegerOrConstant(AST_Expression exp)

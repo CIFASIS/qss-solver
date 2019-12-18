@@ -33,8 +33,8 @@ namespace Util {
 
 EvalExp::EvalExp(VarSymbolTable symbolTable)
 {
-  _compRef = NULL;
-  _compRefVal = NULL;
+  _compRef = nullptr;
+  _compRefVal = nullptr;
   _symbolTable = symbolTable;
 }
 
@@ -139,7 +139,7 @@ AST_Expression EvalExp::foldTraverseElement(AST_Expression left, AST_Expression 
   Util::ERROR(
       "process_for_equations.cpp - evalBinOp:\n"
       "Incorrect Binary operation type.\n");
-  return NULL;
+  return nullptr;
 }
 
 AST_Expression EvalExp::evalCompRef(AST_Expression_ComponentReference compRef)

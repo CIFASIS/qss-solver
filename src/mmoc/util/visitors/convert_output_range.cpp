@@ -47,7 +47,7 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
       AST_ExpressionList new_indexes = newAST_ExpressionList();
       foreach (it, indexes) {
         string index = Utils::instance().iteratorVar(_dim);
-        Variable vi(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false);
+        Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
         _symbols.insert(index, vi);
         AST_ListAppend(new_indexes, apply(current_element(it)));
         _dim++;
@@ -61,7 +61,7 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
       int dims = var->dimensions();
       for (int i = 0; i < dims; i++) {
         string index = Utils::instance().iteratorVar(_dim);
-        Variable vi(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false);
+        Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
         _symbols.insert(index, vi);
         AST_ListAppend(new_indexes, generateIndexVariable(var->size(_dim)));
         _dim++;

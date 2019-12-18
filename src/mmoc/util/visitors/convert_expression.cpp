@@ -49,7 +49,7 @@ AST_Expression_ComponentReference ConvertExpression::componentReference(AST_Expr
   } else if (exp->expressionType() == EXPCOMPREF) {
     return exp->getAsComponentReference();
   }
-  return NULL;
+  return nullptr;
 }
 
 Variable ConvertExpression::variable(AST_Expression_ComponentReference exp)
@@ -79,7 +79,7 @@ double ConvertExpression::scalarValue(AST_Expression exp)
 void ConvertExpression::convert()
 {
   AST_Expression_ComponentReference eleft = componentReference(_left);
-  if (eleft == NULL) {
+  if (eleft == nullptr) {
     return;
   }
   string prefix = "";
@@ -110,7 +110,7 @@ void ConvertExpression::convert()
               Error::instance().add(cright->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal,
                                     "Different array size in element-wise operation");
             }
-            Variable vi(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false);
+            Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
             _symbols["i"] = vi;
             stringstream buffer;
             buffer << "for i in 1:" << elvi.size() << " loop" << endl;
@@ -123,7 +123,7 @@ void ConvertExpression::convert()
               Error::instance().add(cright->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal,
                                     "Different array size in element-wise operation");
             }
-            Variable vi(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false);
+            Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
             _symbols["i"] = vi;
             stringstream buffer;
             buffer << "for i in 1:" << elvi.size() << " loop" << endl;
@@ -136,7 +136,7 @@ void ConvertExpression::convert()
               Error::instance().add(cleft->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error,
                                     "Different array size in element-wise operation");
             }
-            Variable vi(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false);
+            Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
             _symbols["i"] = vi;
             stringstream buffer;
             buffer << "for i in 1:" << elvi.size() << " loop" << endl;
@@ -155,7 +155,7 @@ void ConvertExpression::convert()
             Error::instance().add(cleft->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error,
                                   "Different array size in element-wise operation");
           }
-          Variable vi(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false);
+          Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
           _symbols["i"] = vi;
           stringstream buffer;
           buffer << "for i in 1:" << elvi.size() << " loop" << endl;
@@ -173,7 +173,7 @@ void ConvertExpression::convert()
             Error::instance().add(cright->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error,
                                   "Different array size in element-wise operation");
           }
-          Variable vi(newType_Integer(), TP_FOR, NULL, NULL, vector<int>(1, 1), false);
+          Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
           _symbols["i"] = vi;
           stringstream buffer;
           buffer << "for i in 1:" << elvi.size() << " loop" << endl;

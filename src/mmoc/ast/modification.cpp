@@ -109,7 +109,7 @@ string AST_Modification_Class_::print() const
   return ret.str();
 }
 
-bool AST_Modification_Class_::hasExpression() { return _e != NULL; }
+bool AST_Modification_Class_::hasExpression() { return _e != nullptr; }
 
 /* Argument modification Class */
 
@@ -121,7 +121,7 @@ string AST_Argument_Modification_::print() const
   if (hasEach()) {
     ret << "each ";
   }
-  if (modification() != NULL) {
+  if (modification() != nullptr) {
     ret << name() << modification();
   } else {
     ret << name();
@@ -135,7 +135,7 @@ AST_Modification AST_Argument_Modification_::modification() const { return _mod;
 
 ArgumentType AST_Argument_Modification_::argumentType() const { return AR_MODIFICATION; }
 
-bool AST_Argument_Modification_::hasModification() { return _mod != NULL; }
+bool AST_Argument_Modification_::hasModification() { return _mod != nullptr; }
 
 /* Argument redeclaration Class */
 

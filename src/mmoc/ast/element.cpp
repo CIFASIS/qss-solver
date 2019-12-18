@@ -58,8 +58,8 @@ AST_Element_ClassWrapper_::AST_Element_ClassWrapper_(AST_Class_ *c) : _c(c) {}
 string AST_Element_ClassWrapper_::print() const
 {
   stringstream ret(stringstream::out);
-  if (_c == NULL)
-    ret << "CLASS[NULL]";
+  if (_c == nullptr)
+    ret << "CLASS[nullptr]";
   else
     ret << (*_c);
   return ret.str();
@@ -72,7 +72,7 @@ AST_Class AST_Element_ClassWrapper_::getClass() { return _c; }
 /* Element Component Class */
 
 AST_Element_Component_::AST_Element_Component_(AST_DeclarationList decl_list, string type, AST_TypePrefix tp, AST_ExpressionList indexes)
-    : _decl_list(decl_list), _type(type), _indexes(indexes), _origin(NULL), _tp(tp)
+    : _decl_list(decl_list), _type(type), _indexes(indexes), _origin(nullptr), _tp(tp)
 {
 }
 
@@ -185,7 +185,7 @@ ostream &operator<<(ostream &os, const AST_Comment_ &c)
 
 ostream &operator<<(ostream &os, const AST_Comment &c)
 {
-  if (c != NULL) {
+  if (c != nullptr) {
     os << *c;
   }
   return os;
@@ -196,7 +196,7 @@ void AST_Comment_::accept(AST_Visitor *visitor) { visitor->visit(this); }
 /* Declaration Class */
 
 AST_Declaration_::AST_Declaration_(string name, AST_ExpressionList indexes, AST_Modification m)
-    : _name(name), _indexes(indexes), _mod(m), _comm(NULL)
+    : _name(name), _indexes(indexes), _mod(m), _comm(nullptr)
 {
 }
 
@@ -215,19 +215,19 @@ string AST_Declaration_::print() const
     }
     ret << "]";
   }
-  if (modification() != NULL) {
+  if (modification() != nullptr) {
     /*
      if (modification()->modificationType()==MODEQUAL) {
      ret << " = " << modification()->getAsEqual()->exp();
      } else if (modification()->modificationType()==MODCLASS) {
      AST_Expression e  = modification()->getAsClass()->exp();
-     if (e!=NULL && e->expressionType()!=EXPNULL)
+     if (e!=nullptr && e->expressionType()!=EXPNULL)
      ret << " = " << e;
      }
      */
     ret << modification();
   }
-  if (comment() != NULL) ret << comment();
+  if (comment() != nullptr) ret << comment();
   return ret.str();
 }
 
@@ -237,7 +237,7 @@ AST_ExpressionList AST_Declaration_::indexes() const { return _indexes; }
 
 bool AST_Declaration_::hasIndexes()
 {
-  if (_indexes != NULL) {
+  if (_indexes != nullptr) {
     if (AST_Length(_indexes) > 0) {
       return true;
     }
@@ -247,7 +247,7 @@ bool AST_Declaration_::hasIndexes()
 
 AST_Modification AST_Declaration_::modification() const { return _mod; }
 
-bool AST_Declaration_::hasModification() { return _mod != NULL; }
+bool AST_Declaration_::hasModification() { return _mod != nullptr; }
 
 void AST_Declaration_::setComment(AST_Comment c) { _comm = c; }
 
@@ -281,7 +281,7 @@ AST_Class AST_Element_Component_::origin() { return _origin; }
 
 void AST_Element_Component_::setOrigin(AST_Class c)
 {
-  if (_origin == NULL) _origin = c;
+  if (_origin == nullptr) _origin = c;
 }
 
 AST_TypePrefix AST_Element_Component_::typePrefix() { return _tp; }

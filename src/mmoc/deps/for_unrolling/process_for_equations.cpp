@@ -65,7 +65,7 @@ void process_for_equations(Modelica::MMO_Class &mmo_class)
       OptExp ind = in.exp();
       ERROR_UNLESS((bool)ind, "for-equation's index with implicit range not supported yet\n");
       Expression exp = ind.get();
-      ForIndexIterator *forIndexIter = NULL;
+      ForIndexIterator *forIndexIter = nullptr;
       if (is<Range>(exp)) {
         forIndexIter = new RangeIterator(get<Range>(exp), mmo_class.syms_ref());
       } else if (is<Brace>(exp)) {

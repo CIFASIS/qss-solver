@@ -56,7 +56,7 @@ AST_StoredDefinition parseFile(string filename, int *r)
   }
   *r = -1;
   in.close();
-  return NULL;
+  return nullptr;
 }
 
 AST_Expression parseExpression(string exp, int *r)
@@ -78,7 +78,7 @@ AST_Expression parseExpression(string exp, int *r)
     return c->composition()->compositionList()->front()->getEquationsAlgs()->getEquations()->front()->getAsEquality()->right();
   }
   *r = -1;
-  return NULL;
+  return nullptr;
 }
 
 AST_Equation parseEquation(string exp, int *r)
@@ -100,7 +100,7 @@ AST_Equation parseEquation(string exp, int *r)
     return c->composition()->compositionList()->front()->getEquationsAlgs()->getEquations()->front();
   }
   *r = -1;
-  return NULL;
+  return nullptr;
 }
 
 AST_Statement parseStatement(string exp, int *r)
@@ -122,7 +122,7 @@ AST_Statement parseStatement(string exp, int *r)
     return c->composition()->compositionList()->front()->getEquationsAlgs()->getAlgorithms()->front();
   }
   *r = -1;
-  return NULL;
+  return nullptr;
 }
 
 AST_Class parseClass(string filename, int *r)
@@ -131,5 +131,5 @@ AST_Class parseClass(string filename, int *r)
   if (r[0] == 0) {
     return sd->models()->front();
   }
-  return NULL;
+  return nullptr;
 }

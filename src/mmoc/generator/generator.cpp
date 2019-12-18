@@ -41,7 +41,7 @@ using namespace Util;
 namespace Generator {
 
 Generator::Generator(const StoredDefinition& std, CompileFlags& flags)
-    : _std(std), _flags(flags), _modelInstance(NULL), _writer(NULL), _includes(), _fheader()
+    : _std(std), _flags(flags), _modelInstance(nullptr), _writer(nullptr), _includes(), _fheader()
 {
   if (_flags.output()) {
     _writer = WriterPtr(new MemoryWriter());

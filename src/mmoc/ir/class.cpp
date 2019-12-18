@@ -92,7 +92,7 @@ void Function::insert(AST_External_Function_Call efc)
     lvalue = cr->name();
   }
   AST_ExpressionListIterator eli;
-  if (efc->args() != NULL) {
+  if (efc->args() != nullptr) {
     foreach (eli, efc->args()) {
       if (!vl.apply(current_element(eli))) {
         Error::instance().add(efc->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "External function call.");
@@ -513,7 +513,7 @@ void Model::addVariable(int id, Option<Range> range, EQUATION::Type type, unsign
   if (type == EQUATION::Type::Output) {
     eq_type = TP_OUTPUT;
   }
-  Variable vi(newType_Integer(), eq_type, NULL, NULL, s, false);
+  Variable vi(newType_Integer(), eq_type, nullptr, nullptr, s, false);
   string var = EquationVariable::modelVariables(id, type);
   insert(var, vi);
   Option<Variable> variable = _symbols[var];

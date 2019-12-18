@@ -12,7 +12,7 @@
 
 %define DESSTRUCTOR_CODE \
   delete lexer;\
-  lexer = NULL;
+  lexer = nullptr;
 
 %header{
 #include <FlexLexer.h>
@@ -36,7 +36,7 @@ private:
           virtual ~MCC_Parser() {} \
           int gettoken() { return lexer->yylex(); };   \
           int yyinput() { return lexer->yyinput(); };   \
-          static int lineno() { if (lexer==NULL) return 0; return lexer->lineno(); };    \
+          static int lineno() { if (lexer==nullptr) return 0; return lexer->lineno(); };    \
           int parseFile(std::istream* in) { lexer->setInput(in); return yyparse(); };    \
           void setParsingSubscript() { parsing_subscript=true; } \
           void unsetParsingSubscript() { parsing_subscript=false; } \
@@ -277,7 +277,7 @@ composition:
 
 opt_external_composition:
     /* empty */                                                                                   { $$ = newAST_ExternalCall(); }
-  	| TOKEXTERNAL opt_language_specification opt_external_function_call opt_annotation TOKSEMICOLON { $$ = newAST_ExternalCall($2,NULL,$3,$4); } 
+  	| TOKEXTERNAL opt_language_specification opt_external_function_call opt_annotation TOKSEMICOLON { $$ = newAST_ExternalCall($2,nullptr,$3,$4); } 
   	| TOKEXTERNAL opt_language_specification component_reference TOKEQUAL opt_external_function_call opt_annotation TOKSEMICOLON { $$ = newAST_ExternalCall($2,$3,$5,$6); } 
 	;
 
@@ -287,9 +287,9 @@ opt_language_specification:
 ;
 
 opt_external_function_call:
-    /* empty */ 								 {$$ = NULL;}
-  	| TOKID TOKOPAREN expression_list TOKCPAREN  {$$ = newAST_Expression_Call($1,NULL,$3);}
-  	| TOKID TOKOPAREN TOKCPAREN  {$$ = newAST_Expression_Call($1,NULL,NULL);}
+    /* empty */ 								 {$$ = nullptr;}
+  	| TOKID TOKOPAREN expression_list TOKCPAREN  {$$ = newAST_Expression_Call($1,nullptr,$3);}
+  	| TOKID TOKOPAREN TOKCPAREN  {$$ = newAST_Expression_Call($1,nullptr,nullptr);}
 	;
 
 opt_annotation_composition:

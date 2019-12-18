@@ -108,7 +108,7 @@ int parsePackages(AST_StringList imports, CompileFlags& flags, bool recompile)
     flags.addObject(p + SLASH + Utils::instance().packageName(i) + ".c");
     if (!Utils::instance().searchCompiledPackage(i, flags) || recompile) {
       string fileName = p + SLASH + i + ".mo";
-      AST_StoredDefinition sd = NULL;
+      AST_StoredDefinition sd = nullptr;
       sd = parseFile(fileName, &r);
       Error::instance().setFile(fileName);
       if (r == 0) {
@@ -225,7 +225,7 @@ int main(int argc, char** argv)
   }
   AST_StoredDefinition sd;
   string fileName;
-  if (argv[optind] != NULL) {
+  if (argv[optind] != nullptr) {
     fileName = argv[optind];
     string path = Utils::instance().getFilePath(fileName);
     flags.setPath(path);

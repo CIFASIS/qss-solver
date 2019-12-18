@@ -319,7 +319,7 @@ AST_Expression ConvertToExpression::convert(ex exp)
   } else {
     e = parseExpression(s.str().c_str(), &r);
   }
-  assert(e != NULL && r == 0);
+  assert(e != nullptr && r == 0);
   return e;
 }
 }  // namespace Util

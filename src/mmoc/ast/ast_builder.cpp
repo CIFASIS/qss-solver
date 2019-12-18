@@ -40,7 +40,7 @@ class MCC_Parser;
 class MCC_Lexer;
 int block;
 
-MCC_Lexer *MCC_Parser::lexer = NULL;
+MCC_Lexer *MCC_Parser::lexer = nullptr;
 
 AST_StoredDefinition newAST_StoredDefinition(AST_ClassList cl, AST_String within) { return new AST_StoredDefinition_(cl, within); }
 
@@ -73,10 +73,10 @@ AST_String newAST_DotString(AST_String s)
 
 AST_String AST_StringDotAppend(AST_String ret, AST_String a)
 {
-  if (ret == NULL) {
+  if (ret == nullptr) {
     ret = new string();
   }
-  if (a != NULL) {
+  if (a != nullptr) {
     ret->append(".");
     ret->append(*a);
     delete a;
@@ -84,7 +84,7 @@ AST_String AST_StringDotAppend(AST_String ret, AST_String a)
   return ret;
 }
 
-AST_String newAST_StringNull() { return NULL; }
+AST_String newAST_StringNull() { return nullptr; }
 
 AST_ClassList newAST_ClassList() { return new list<AST_Class>(); }
 
@@ -191,7 +191,7 @@ AST_Expression newAST_Expression_ComponentReferenceExp(AST_String s)
 
 AST_Expression newAST_Expression_ComponentReferenceExp(AST_String s, AST_String s2)
 {
-  if (s2 != NULL) {
+  if (s2 != nullptr) {
     s->append(*s2);
     delete s2;
   }
@@ -229,14 +229,14 @@ AST_Expression_ComponentReference AST_Expression_ComponentReference_Add(AST_Expr
 
 ostream &operator<<(ostream &os, const AST_CompositionElement &ce)
 {
-  assert(ce != NULL);
+  assert(ce != nullptr);
   os << *ce;
   return os;
 }
 
 ostream &operator<<(ostream &os, const AST_String &s)
 {
-  assert(s != NULL);
+  assert(s != nullptr);
   os << *s;
   return os;
 }
@@ -310,7 +310,7 @@ AST_Expression newAST_Expression_Null() { return new AST_Expression_Null_(); }
 AST_Expression newAST_Expression_DotCall(AST_String name, AST_String rest, AST_ExpressionList args)
 {
   name->insert(0, ".");
-  if (rest != NULL) {
+  if (rest != nullptr) {
     name->append(rest->c_str());
     delete rest;
   }
@@ -319,7 +319,7 @@ AST_Expression newAST_Expression_DotCall(AST_String name, AST_String rest, AST_E
 
 AST_Expression newAST_Expression_Call(AST_String name, AST_String rest, AST_ExpressionList args)
 {
-  if (rest != NULL) {
+  if (rest != nullptr) {
     name->append(rest->c_str());
     delete rest;
   }
@@ -423,7 +423,7 @@ AST_Class AST_Class_SetPrefixEncapsulated(AST_Class c, AST_ClassPrefix prefix, A
 AST_Expression AST_Expression_ComponentReferenceExpAddDot(AST_Expression_ComponentReference cr, AST_String id, AST_String rest,
                                                           AST_ExpressionList subs)
 {
-  if (rest != NULL) {
+  if (rest != nullptr) {
     id->append(rest->c_str());
     delete rest;
   }
@@ -433,7 +433,7 @@ AST_Expression AST_Expression_ComponentReferenceExpAddDot(AST_Expression_Compone
 AST_Expression AST_Expression_ComponentReferenceExpAdd(AST_Expression_ComponentReference cr, AST_String id, AST_String rest,
                                                        AST_ExpressionList subs)
 {
-  if (rest != NULL) {
+  if (rest != nullptr) {
     id->append(rest->c_str());
     delete rest;
   }
@@ -455,7 +455,7 @@ AST_Expression newAST_Expression_FunctionCallArgs(AST_ExpressionList el)
 AST_Expression newAST_Expression_Function(AST_String, AST_ExpressionList)
 {
   /* TODO */
-  return NULL;
+  return nullptr;
 }
 
 AST_Equation_ElseList newAST_Equation_ElseIfList() { return new list<AST_Equation_Else>(); }
@@ -468,7 +468,7 @@ AST_Statement newAST_Statement_Break() { return new AST_Statement_Break_(); }
 
 AST_Statement newAST_Statement_Return() { return new AST_Statement_Return_(); }
 
-AST_Modification newAST_ModificationNull() { return NULL; }
+AST_Modification newAST_ModificationNull() { return nullptr; }
 
 AST_Statement_ElseList newAST_Statement_ElseList() { return new list<AST_Statement_Else>(); }
 
@@ -554,24 +554,24 @@ AST_CompositionEqsAlgs newAST_CompositionAlgorithms(AST_StatementList stlist) { 
 AST_ShortClassExp newAST_ShortClassExp(AST_TypePrefix, AST_String, AST_ExpressionList, AST_ArgumentList)
 {
   /* TODO */
-  return NULL;
+  return nullptr;
 }
 AST_ShortClassExp newAST_ShortClassExp_Enum(AST_StringList)
 {
   /* TODO */
-  return NULL;
+  return nullptr;
 }
 
 AST_Argument newAST_Redeclaration(AST_Boolean, AST_Boolean, AST_Argument)
 {
   /* TODO */
-  return NULL;
+  return nullptr;
 }
 
 AST_Argument newAST_ShortClass(AST_ClassPrefix, AST_String, AST_ShortClassExp)
 {
   /* TODO */
-  return NULL;
+  return nullptr;
 }
 
 AST_Argument newAST_ElementModification(AST_String n, AST_Modification m) { return new AST_Argument_Modification_(n, m); }
@@ -583,28 +583,28 @@ AST_CompositionElement newAST_CompositionElement(AST_CompositionEqsAlgs comp_eq_
 AST_Class newAST_ClassExtends(AST_String, AST_Composition)
 {
   /* TODO */
-  return NULL;
+  return nullptr;
 }
 
 AST_Class newAST_ClassEnumeration(AST_String, AST_StringList)
 {
   /* TODO */
-  return NULL;
+  return nullptr;
 }
 
 AST_Class newAST_ClassDerivation(AST_String, AST_String, AST_StringList)
 {
   /* TODO */
-  return NULL;
+  return nullptr;
 }
 
 AST_Class newAST_ClassModification(AST_String, AST_TypePrefix, AST_String, AST_ExpressionList, AST_ArgumentList)
 {
   /* TODO */
-  return NULL;
+  return nullptr;
 }
 
-AST_CompositionEqsAlgs newAST_NullCompositionEquations() { return NULL; }
+AST_CompositionEqsAlgs newAST_NullCompositionEquations() { return nullptr; }
 
 AST_Declaration AST_Declaration_AddCondComment(AST_Declaration decl, AST_Expression exp, AST_Comment comment)
 {
@@ -614,13 +614,13 @@ AST_Declaration AST_Declaration_AddCondComment(AST_Declaration decl, AST_Express
 
 AST_Comment newAST_Comment(AST_String st, AST_ArgumentList al)
 {
-  if (al->size() || st != NULL) {
+  if (al->size() || st != nullptr) {
     return new AST_Comment_(st, al);
   }
-  return NULL;
+  return nullptr;
 }
 
-AST_External_Function_Call newAST_ExternalCall() { return NULL; }
+AST_External_Function_Call newAST_ExternalCall() { return nullptr; }
 
 AST_External_Function_Call newAST_ExternalCall(AST_String lang, AST_Expression_ComponentReference cr, AST_Expression args,
                                                AST_ArgumentList annot)

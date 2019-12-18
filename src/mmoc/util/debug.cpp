@@ -27,13 +27,13 @@ namespace MicroModelica {
 
 namespace Util {
 
-static const char *enableFlags = NULL;  // controls which DEBUG messages are printed
+static const char *enableFlags = nullptr;  // controls which DEBUG messages are printed
 
 void debugInit(const char *flagList) { enableFlags = flagList; }
 
 bool debugIsEnabled(char flag)
 {
-  if (enableFlags != NULL)
+  if (enableFlags != nullptr)
     return (strchr(enableFlags, flag) != 0) || (strchr(enableFlags, '+') != 0);
   else
     return false;

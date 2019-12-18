@@ -29,7 +29,7 @@
 #include "element.h"
 
 AST_Class_::AST_Class_(AST_String n, AST_Composition comp)
-    : _name(n), _composition(comp), _father(NULL), _basic(false), _encapsulated(false), _final(false), _prefix()
+    : _name(n), _composition(comp), _father(nullptr), _basic(false), _encapsulated(false), _final(false), _prefix()
 {
   _extends_list = newAST_StringList();
   _sub_classes = newAST_ClassList();
@@ -41,13 +41,13 @@ AST_Class_::~AST_Class_()
   delete _extends_list;
   delete _sub_classes;
   delete _components;
-  if (_composition != NULL) {
+  if (_composition != nullptr) {
     delete _composition;
   }
-  if (_name != NULL) {
+  if (_name != nullptr) {
     delete _name;
   }
-  if (_father != NULL) {
+  if (_father != nullptr) {
     delete _father;
   }
 }
@@ -101,7 +101,7 @@ AST_ClassList AST_Class_::getClasses() { return _sub_classes; }
 
 void AST_Class_::setFather(AST_Class c) { _father = c; }
 
-bool AST_Class_::hasFather() { return _father != NULL; }
+bool AST_Class_::hasFather() { return _father != nullptr; }
 
 AST_Class AST_Class_::father() const { return _father; }
 

@@ -60,7 +60,7 @@ bool FunctionAnnotation::insert(AST_Argument_Modification x)
   if (itf == _annotations.end()) {
     return false;
   }
-  AST_Expression mod = NULL;
+  AST_Expression mod = nullptr;
   if (x->hasModification()) {
     if (x->modification()->modificationType() == MODEQUAL) {
       mod = x->modification()->getAsEqual()->exp();
