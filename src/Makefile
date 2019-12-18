@@ -65,7 +65,7 @@ create-dirs:
 
 install:	
 	@echo "Installing engine libraries."
-	ln -s $(ROOT)/src/engine/usr/lib/* $(ROOT)/lib/
+	ln -s $(ROOT)/src/engine/usr/lib/*.a $(ROOT)/lib/
 	@echo "Installing MicroModelica Compiler."
 	ln -s $(ROOT)/src/mmoc/usr/bin/mmoc $(ROOT)/bin/
 	@echo "Installing SBML translator."
