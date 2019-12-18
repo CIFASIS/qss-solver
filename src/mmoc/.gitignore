@@ -4,6 +4,9 @@
 # Modelica C Compiler files.
 /mocc/*
 
+# Compiled test files.
+/tests/usr/
+
 # Tmp VIM files.
 /**/*.swp
 
