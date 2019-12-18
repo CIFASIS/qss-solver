@@ -2,7 +2,7 @@
 ifneq ($(OS), Windows_NT)
 OS = $(shell uname)
 endif
-DEBUG ?= False
+MODE ?= Debug
 
 # Compiler and Linker
 CXX         := g++
@@ -25,7 +25,7 @@ ifeq ($(OS),Windows_NT)
 LIB 				:= -L/usr/local/lib -lsbml -lxml2
 endif
 CXXFLAGS 			:= -Wall -Wabi-tag -lm -msse2 -mfpmath=sse 
-ifeq ($(DEBUG),True)
+ifeq ($(MODE),Debug)
 CXXFLAGS 			:= -g
 endif
 INC 				:= -I. 
@@ -83,7 +83,7 @@ clean:
 	$(RMS) $(OBJ) $(TARGET) usr
 
 help:
-	@echo "make DEBUG=<True|False>"
+	@echo "make MODE=<MODE|Release> "
 	@echo "Default values:"
 	@echo ""
-	@echo "DEBUG=False"
+	@echo "MODE=Debug"
