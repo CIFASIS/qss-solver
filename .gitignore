@@ -9,7 +9,6 @@ models/tests/
 
 # Generated packages.
 deploy/linux/*.deb
-deploy/osx/*.dmg
 deploy/windows/*.exe
 deploy/src/*.tar.gz
 
