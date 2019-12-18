@@ -2,7 +2,7 @@
 ifneq ($(OS), Windows_NT)
 OS = $(shell uname)
 endif
-DEBUG ?= False
+MODE ?= Debug
 ARCH= $(shell uname -m)
 ifeq ($(ARCH), i686)
 ARCH= i386
@@ -23,7 +23,7 @@ USRDIR 		:= $(SRCDIR)/usr
 PWD= $(shell pwd)
 3RDPARTYDIR	:= $(SRCDIR)/3rd-party
 BUILDDIR    := $(USRDIR)/obj/release
-ifeq ($(DEBUG),True)
+ifeq ($(MODE),Debug)
 BUILDDIR    := $(USRDIR)/obj/debug
 endif
 LIBDIR   	:= $(USRDIR)/lib
@@ -40,7 +40,7 @@ LIBTIMESTEP := $(LIBDIR)/libtimestep.a
 LIBCVODE    := $(LIBDIR)/libsundials_cvode.a
 LIBIDA      := $(LIBDIR)/libsundials_ida.a
 LIBGSL      := $(LIBDIR)/libgsl.a
-ifeq ($(DEBUG),True)
+ifeq ($(MODE),Debug)
 LIBQSS      := $(LIBDIR)/libqssd.a
 LIBTIMESTEP := $(LIBDIR)/libtimestepd.a
 endif
@@ -48,7 +48,7 @@ endif
 # Flags, Libraries and Includes
 ARCH 		:= $(shell uname -m)
 CFLAGS 		:= -Wall -msse2 -mfpmath=sse -O2
-ifeq ($(DEBUG),True)
+ifeq ($(MODE),Debug)
 CFLAGS 		:= -Wall -msse2 -mfpmath=sse -g -DDEBUG
 endif
 LIB         := -lm
@@ -252,7 +252,7 @@ clean:
 	$(RM) $(DEPS) $(TARGET) $(COMMONOBJ) $(SEQOBJ) $(PAROBJ) $(CLASSICOBJ) $(DASSLOBJ) $(DOPRIOBJ) 
 
 help:
-	@echo "make DEBUG=<True|False>"
+	@echo "make MODE=<Debug|Release>"
 	@echo "Default value:"
 	@echo ""
-	@echo "DEBUG=False"
+	@echo "MODE=Release"
