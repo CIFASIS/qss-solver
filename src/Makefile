@@ -7,9 +7,12 @@ CORES ?= 1
 ARCH = $(shell uname -m)
 
 # The Directories, Source, Includes, Objects, Binary 
-ROOT   	:= ..
+ROOT   	        := ..
+3RD_PARTY_DIR   := ./3rd-party
+GTEST_DIR      := googletest-release-1.10.0
+GTEST_CODE      := $(GTEST_DIR).tar.gz
 
-all: mmo-compiler mmo-interfaces qss-engine qss-solver-gui qss-user-libs
+all: mmo-compiler mmo-interfaces qss-engine qss-solver-gui qss-user-libs lib-gtest
 
 mmo-interfaces: create-dirs 
 	@echo BUILDING MMO-SBML INTERFACE
@@ -45,7 +48,15 @@ qss-solver-doc: qss-engine mmo-compiler qss-solver-gui mmo-interfaces
 	@cd mmoc && $(MAKE) doc 
 	@cd gui && $(MAKE) -f gui.makefile doc 
 	@cd interfaces/sbml && $(MAKE) doc 
-	
+
+lib-gtest: | create-dirs 
+	cd $(3RD_PARTY_DIR)/gtest; tar xvzf $(GTEST_CODE)
+	mkdir -p $(3RD_PARTY_DIR)/gtest/build
+	cd $(3RD_PARTY_DIR)/gtest/build; cmake ../$(GTEST_DIR) -DCMAKE_INSTALL_PREFIX=$(ROOT)/usr  
+	cd $(3RD_PARTY_DIR)/gtest/build; make install 
+	rm -rf $(3RD_PARTY_DIR)/gtest/$(GTEST_DIR)
+	rm -rf $(3RD_PARTY_DIR)/gtest/build
+
 create-dirs:
 	@mkdir -p $(ROOT)/bin
 	@mkdir -p $(ROOT)/build
@@ -78,6 +89,8 @@ else
 	@install $(ROOT)/src/engine/3rd-party/partitioners/scotch/Linux-x86_64/libscotch.a $(ROOT)/lib/
 	@install $(ROOT)/src/engine/3rd-party/partitioners/scotch/Linux-x86_64/libscotcherr.a $(ROOT)/lib/
 endif
+	@echo "Installing GTEST libraries."
+	ln -s $(ROOT)/src/3rd-party/gtest/usr/lib/*.a $(ROOT)/lib/
 else
 ifeq ($(OS),Windows_NT)
 	@cp $(ROOT)/deploy/windows/scripts/* $(ROOT)/bin/
