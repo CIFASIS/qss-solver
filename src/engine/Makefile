@@ -255,4 +255,4 @@ help:
 	@echo "make MODE=<Debug|Release>"
 	@echo "Default value:"
 	@echo ""
-	@echo "MODE=Release"
+	@echo "MODE=Debug"

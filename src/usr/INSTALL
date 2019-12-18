@@ -19,8 +19,8 @@ Makefile options
 
 The makefile script accepts the following options:
 
-    * DEBUG = <True|False>  If True, adds the compiler's debug flags. 
-              Default value False.
+    * MODE = <Debug|Release>  If set to Debug, adds the compiler's debug flags. 
+              Default value Debug.
     
     * ENGINE= Path to the QSS Solver engine source code root folder. 
               Default value ".".
