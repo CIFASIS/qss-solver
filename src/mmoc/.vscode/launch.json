@@ -5,9 +5,26 @@
     "version": "0.2.0",
     "configurations": [ 
 
-
-
         // Generic per model configurations.
+        
+        // Advection
+        {
+            "name": "Advection model.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/advection/advection ", "/home/joaquin/work/qss-solver/models/advection/advection.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
 
         // Interleaved
         {
