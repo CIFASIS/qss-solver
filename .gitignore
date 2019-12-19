@@ -5,7 +5,7 @@ bin/
 output/
 build/
 lib/
-models/tests/
+models/
 
 # Generated packages.
 deploy/linux/*.deb
