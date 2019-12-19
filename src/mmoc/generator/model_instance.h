@@ -109,6 +109,7 @@ class QSSModelInstance : public ModelInstance {
   protected:
   void definition();
   void dependencies();
+  void bdfDefinition();
 
   private:
   void initTime();
