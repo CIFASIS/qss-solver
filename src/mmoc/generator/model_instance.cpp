@@ -105,7 +105,7 @@ void ModelInstance::allocateOutput()
 {
   stringstream buffer;
   ModelAnnotation annot = _model.annotations();
-  string period = "nullptr";
+  string period = "NULL";
   string indent = "";
   int ssize = 0;
   if (annot.commInterval() == "CI_Sampled") {
@@ -119,7 +119,7 @@ void ModelInstance::allocateOutput()
       buffer << indent << "period[" << n << "] = " << *i << ";" << endl;
     }
   }
-  string outputFunction = (_model.outputNbr() ? "MOD_output" : "nullptr");
+  string outputFunction = (_model.outputNbr() ? "MOD_output" : "NULL");
   buffer << indent << "simulator->output = SD_Output(\"";
   buffer << _model.name() << "\",";
   buffer << _model.outputNbr() << ",";
@@ -531,6 +531,31 @@ void QSSModelInstance::definition()
   }
 }
 
+void QSSModelInstance::bdfDefinition()
+{
+  ModelAnnotation annot = _model.annotations();
+  annot.setSymDiff(false);
+  ModelConfig::instance().setModelAnnotations(annot);
+  EquationTable derivatives = _model.derivatives();
+  EquationTable::iterator it;
+  Utils::instance().clearLocalSymbols();
+  FunctionPrinter fp;
+  for (Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it)) {
+    _writer->write(der, (der.hasRange() ? WRITER::Model_Bdf_Generic : WRITER::Model_Bdf_Simple));
+  }
+  _writer->write(Utils::instance().localSymbols(), WRITER::Model_Bdf);
+  _writer->write("int idx;", WRITER::Model_Bdf);
+  _writer->write("int __bdf_it;", WRITER::Model_Bdf);
+  _writer->write("for(__bdf_it = 0; __bdf_it < nBDF; __bdf_it++) {", WRITER::Model_Bdf);
+  _writer->write("idx = BDFMap[__bdf_it];", WRITER::Model_Bdf);
+  if (!_writer->isEmpty(WRITER::Model_Bdf_Simple)) {
+    _writer->write(fp.beginSwitch(), WRITER::Model_Bdf);
+    _writer->write(fp.endSwitch(), WRITER::Model_Bdf_Simple);
+  }
+  _writer->write("}", WRITER::Model_Bdf_Generic);
+  ModelConfig::instance().setModelAnnotations(_model.annotations());
+}
+
 void QSSModelInstance::allocateSolver()
 {
   ModelAnnotation annot = _model.annotations();
@@ -560,7 +585,7 @@ void QSSModelInstance::initTime()
 {
   stringstream buffer;
   buffer << "simulator->time = QSS_Time(" << _model.stateNbr() << "," << _model.eventNbr() << "," << _model.inputNbr() << ","
-         << _model.annotations().initialTime() << "," << _model.annotations().scheduler() << ", nullptr);" << endl;
+         << _model.annotations().initialTime() << "," << _model.annotations().scheduler() << ", NULL);" << endl;
   _writer->write(buffer, WRITER::Init_Data);
 }
 
@@ -630,6 +655,7 @@ void QSSModelInstance::generate()
 {
   definition();
   dependencies();
+  bdfDefinition();
   initializeDataStructures();
   ModelInstance::generate();
   _writer->print(componentDefinition(MODEL_INSTANCE::Deps));
@@ -642,6 +668,7 @@ void QSSModelInstance::generate()
   _writer->beginBlock();
   _writer->print(WRITER::Model_Bdf);
   _writer->print(WRITER::Model_Bdf_Simple);
+  _writer->print(WRITER::Model_Bdf_Generic);
   _writer->endBlock();
   _writer->print(componentDefinition(MODEL_INSTANCE::QSS_Init));
   _writer->beginBlock();
