@@ -137,7 +137,7 @@ class FunctionPrinter {
   std::string outputVariableName(Expression exp, Option<Range> range);
 
   protected:
-  std::string algebraic(int id);
+  std::string algebraic(int id, bool reduction);
 
   private:
   std::string mod(std::string var, int dim, Option<Range> range) const;

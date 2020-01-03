@@ -253,13 +253,24 @@ string FunctionPrinter::beginDimGuards(string token, string args, Option<Range> 
   return buffer.str();
 }
 
-string FunctionPrinter::algebraic(int id)
+string FunctionPrinter::algebraic(int id, bool reduction)
 {
   stringstream buffer;
   EquationTable algebraic = ModelConfig::instance().algebraics();
   Option<Equation> alg = algebraic[id];
   if (alg) {
-    buffer << alg.get() << endl;
+    Equation a = alg.get();
+    Option<Range> range = a.range();
+    bool reduction_range = reduction && range;
+    if (reduction_range) {
+      buffer << range.get();
+      cout << buffer.str() << endl;
+    }
+    buffer << a << endl;
+    if (reduction_range) {
+      buffer << range.get().end() << endl;
+      cout << buffer.str() << endl;
+    }
   } else {
     Error::instance().add(0, EM_CG | EM_NO_EQ, ER_Error, "Algebraic equation not found.");
   }
@@ -270,7 +281,7 @@ string FunctionPrinter::algebraics(AlgebraicDependencies deps)
 {
   stringstream buffer;
   for (VariableDependency d : deps) {
-    buffer << algebraic(d.equationId());
+    buffer << algebraic(d.equationId(), d.isReduction());
   }
   return buffer.str();
 }
@@ -280,10 +291,10 @@ string FunctionPrinter::algebraics(EquationDependencyMatrix eqdm, depId key)
   stringstream buffer;
   Option<VariableDependencies> eqd = eqdm[key];
   if (eqd) {
-    VariableDependencies::iterator eqIt;
-    for (eqIt = eqd->begin(); eqIt != eqd->end(); eqIt++) {
-      buffer << algebraic(eqIt->ifce.equationId());
-      buffer << algebraics(eqIt->algs);
+    VariableDependencies::iterator eq_it;
+    for (eq_it = eqd->begin(); eq_it != eqd->end(); eq_it++) {
+      buffer << algebraic(eq_it->ifce.equationId(), eq_it->ifce.isReduction());
+      buffer << algebraics(eq_it->algs);
     }
   }
   return buffer.str();
