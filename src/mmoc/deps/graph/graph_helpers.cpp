@@ -451,6 +451,17 @@ bool MDI::Contains(const MDI &other) const
 
 bool MDI::unique() const { return Size() == 1; }
 
+bool MDI::reduction(MDI other)
+{
+  if (unique()) {
+    return false;
+  }
+  if (other.unique()) {
+    return true;
+  }
+  return false;
+}
+
 // INDEX_PAIR
 std::list<IndexPair> IndexPair::operator-(const IndexPair &other) const
 {
