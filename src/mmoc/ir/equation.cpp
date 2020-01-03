@@ -573,17 +573,29 @@ string DependencyConfig::print() const
   Option<Range> range = _eq.range();
   string arguments;
   tabs += TAB;
+  Index idx = _eq.usage();
+  // Case 1 -> N
+  const bool PRINT_EQ_RANGE = idx.isConstant() && range;
   if (range) {
     tabs = range->block();
-    Index revert = _eq.usage().revert();
-    revert.replace();
-    arguments = revert.usageExp();
+    Index idx = _eq.usage();
+    if (PRINT_EQ_RANGE) {
+      buffer << range.get();
+      arguments = range.get().indexes();
+    } else {
+      Index revert = _eq.usage().revert();
+      revert.replace();
+      arguments = revert.usageExp();
+    }
   }
   tabs += TAB;
   buffer << fp.beginDimGuards(equationId(), arguments, range);
   buffer << tabs << prefix() << lhs(FIRST_ORDER) << " = " << _eq.rhs() << ";" << endl;
   buffer << generateDerivatives(tabs, SECOND_ORDER);
   buffer << TAB << fp.endDimGuards(range);
+  if (PRINT_EQ_RANGE) {
+    buffer << range.get().end();
+  }
   return buffer.str();
 }
 
