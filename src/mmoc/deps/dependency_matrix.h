@@ -44,7 +44,7 @@ typedef std::string varId;
 class VariableDependency {
   public:
   VariableDependency(){};
-  ~VariableDependency(){};
+  ~VariableDependency() = default;
   inline void setVariable(std::string var) { _variable = var; };
   inline void setDom(MDI dom) { _dom = dom; };
   inline void setRan(MDI ran) { _ran = ran; };
@@ -63,6 +63,8 @@ class VariableDependency {
   inline int equationId() const { return _equationId; };
   inline IndexPair ifrPair() const { return _ifr; };
   inline IndexPair ifePair() const { return _ife; };
+  inline void setReduction(bool is_reduction) { _is_reduction = is_reduction; };
+  inline bool isReduction() const { return _is_reduction; };
 
   private:
   MDI _dom;
@@ -75,6 +77,7 @@ class VariableDependency {
   int _id;
   int _equationId;
   std::string _variable;
+  bool _is_reduction;
 };
 
 // AlgebraicDependencies
