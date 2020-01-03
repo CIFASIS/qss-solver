@@ -163,6 +163,7 @@ class MDI {  // Multi-Dimensional Interval
   inline bool isEmpty() const { return intervals.size() == 0; };
   MDI getImage(IndexPair p);
   MDI revertImage(IndexPair p);
+  bool reduction(MDI other);
 
   private:
   IntervalVector intervals;
