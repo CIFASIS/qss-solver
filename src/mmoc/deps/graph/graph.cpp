@@ -513,7 +513,17 @@ MDI GenerateEdge::getScalarMDI()
 Option<Range> GenerateEdge::range(struct VertexProperty sink)
 {
   if (_sink.type() == VERTEX::Equation) {
-    return _sink.eq().range();
+    Option<Range> eq_range = _sink.eq().range();
+    if (eq_range) {
+      return eq_range;
+    } else {
+      MDI eq_mdi = getScalarMDI();
+      if (!eq_mdi.isEmpty()) {
+        Range scalar;
+        scalar.generate(eq_mdi);
+        return scalar;
+      }
+    }
   } else if (_sink.type() == VERTEX::Statement) {
     return _sink.stm().range();
   }
