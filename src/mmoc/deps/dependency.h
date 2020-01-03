@@ -40,8 +40,9 @@ class Dependency {
       if (vertex_info.type() == VERTEX::Influencer) {
         VariableDependencies var_deps;
         AlgebraicDependencies algs;
+        AlgebraicDependencies alg_paths;
         cout << "Compute dependecies for: " << vertex_info.var() << endl;
-        paths(graph, vertex, variableRange(vertex_info.var()), var_deps, algs);
+        paths(graph, vertex, variableRange(vertex_info.var()), var_deps, algs, alg_paths);
         insert(dm, vertex_info, var_deps);
       }
     }
@@ -52,7 +53,10 @@ class Dependency {
   void append(VariableDependencyMatrix& a, VariableDependencyMatrix& b);
 
   protected:
-  void paths(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs);
+  void paths(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs,
+             AlgebraicDependencies& alg_paths, VariableDependency recursive_alg = VariableDependency());
+  void recursivePaths(DepsGraph graph, Vertex source_vertex, MDI source_range, AlgebraicDependencies& algs,
+                      AlgebraicDependencies& alg_paths);
   VariableDependency getVariableDependency(string name, MDI dom, MDI ran, int id);
   MDI variableRange(Util::Variable var);
   template <class DM>
@@ -69,6 +73,7 @@ class Dependency {
   void print(DepsGraph graph);
   void printEdges(DepsGraph graph, Vertex source_vertex, MDI source_range);
   bool isRecursive(VertexProperty source, VertexProperty target);
+  bool isReduction(MDI source_dom, MDI sink_dom);
 
   private:
   IndexPair _ifr;

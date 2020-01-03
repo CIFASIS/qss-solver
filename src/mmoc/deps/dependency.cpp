@@ -140,7 +140,36 @@ bool Dependency::isRecursive(VertexProperty source, VertexProperty target)
   return false;
 }
 
-void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs)
+bool Dependency::isReduction(MDI source_dom, MDI sink_dom) { return source_dom.reduction(sink_dom); }
+
+void Dependency::recursivePaths(DepsGraph graph, Vertex source_vertex, MDI source_range, AlgebraicDependencies& algs,
+                                AlgebraicDependencies& alg_paths)
+{
+  VertexProperty source_vertex_info = graph[source_vertex];
+  boost::graph_traits<DepsGraph>::out_edge_iterator edge, out_edge_end;
+  VariableDependency recursive = algs.back();
+  algs.pop_back();
+  for (boost::tie(edge, out_edge_end) = out_edges(source_vertex, graph); edge != out_edge_end; ++edge) {
+    Label lbl = graph[*edge];
+    MDI dom = lbl.Pair().Dom();
+    Option<MDI> intersect = source_range.Intersection(dom);
+    if (intersect) {
+      MDI intersection = intersect.get();
+      auto target_vertex = boost::target(*edge, graph);
+      VertexProperty target_vertex_info = graph[target_vertex];
+      MDI ran = lbl.getImage(intersection);
+      if (isRecursive(source_vertex_info, target_vertex_info)) {
+        recursive.setReduction(true);
+        algs.insert(algs.end(), alg_paths.begin(), alg_paths.end());
+        algs.push_back(recursive);
+        alg_paths.push_back(recursive);
+      }
+    }
+  }
+}
+
+void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs,
+                       AlgebraicDependencies& alg_paths, VariableDependency recursive_alg)
 {
   VertexProperty source_vertex_info = graph[source_vertex];
   boost::graph_traits<DepsGraph>::out_edge_iterator edge, out_edge_end;
@@ -155,6 +184,7 @@ void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, 
         // Store the influencer index pair.
         _ifr = lbl.Pair();
         _ifr_dom = intersection;
+        algs.clear();
       }
       // First look if the target node is terminal.
       VertexProperty target_vertex_info = graph[target_vertex];
@@ -172,23 +202,23 @@ void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, 
         var_dep.setIfr(_ifr);
         var_dep.setIfe(lbl.Pair());
         var_dep.setRange();
-        cout << "dependency from: " << _ifr.exp() << " to " << target_vertex_info.var().name() << endl;
+        var_dep.setReduction(isReduction(_ifr_dom, lbl.Pair().Dom()));
         Influences inf = {algs, var_dep};
         var_deps.push_back(inf);
       } else if (isRecursive(source_vertex_info, target_vertex_info)) {
-        int id = target_vertex_info.eq().id();
-        VariableDependency var_dep = getVariableDependency(source_vertex_info.var().name(), intersection, lbl.Pair().Ran(), id);
-        algs.push_back(var_dep);
+        continue;
       } else if (target_vertex_info.type() == VERTEX::Algebraic) {
         assert(source_vertex_info.type() == VERTEX::Equation);
+        VariableDependency var_dep;
         if (source_vertex_info.eq().type() == IR::EQUATION::Algebraic) {
           int id = source_vertex_info.eq().id();
-          VariableDependency var_dep = getVariableDependency(target_vertex_info.var().name(), intersection, ran, id);
+          var_dep = getVariableDependency(target_vertex_info.var().name(), intersection, ran, id);
           algs.push_back(var_dep);
+          recursivePaths(graph, target_vertex, ran, algs, alg_paths);
         }
-        paths(graph, target_vertex, ran, var_deps, algs);
+        paths(graph, target_vertex, ran, var_deps, algs, alg_paths, var_dep);
       } else {
-        paths(graph, target_vertex, ran, var_deps, algs);
+        paths(graph, target_vertex, ran, var_deps, algs, alg_paths);
       }
     }
   }
