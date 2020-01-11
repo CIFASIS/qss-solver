@@ -142,34 +142,49 @@ bool Dependency::isRecursive(VertexProperty source, VertexProperty target)
 
 bool Dependency::isReduction(MDI source_dom, MDI sink_dom) { return source_dom.reduction(sink_dom); }
 
-void Dependency::recursivePaths(DepsGraph graph, Vertex source_vertex, MDI source_range, AlgebraicDependencies& algs,
-                                AlgebraicDependencies& alg_paths)
+bool Dependency::recursivePaths(DepsGraph graph, Vertex source_vertex, MDI source_range, bool from_alg, AlgebraicDependencies& algs,
+                                AlgebraicDependencies& alg_paths, VertexInfo& node_info)
 {
   VertexProperty source_vertex_info = graph[source_vertex];
   boost::graph_traits<DepsGraph>::out_edge_iterator edge, out_edge_end;
-  VariableDependency recursive = algs.back();
-  algs.pop_back();
+  VariableDependency recursive;
+  if (from_alg) {
+    assert(algs.size());
+    recursive = algs.back();
+    algs.pop_back();
+  }
+  bool rec = false;
   for (boost::tie(edge, out_edge_end) = out_edges(source_vertex, graph); edge != out_edge_end; ++edge) {
     Label lbl = graph[*edge];
     MDI dom = lbl.Pair().Dom();
     Option<MDI> intersect = source_range.Intersection(dom);
+    auto target_vertex = boost::target(*edge, graph);
     if (intersect) {
       MDI intersection = intersect.get();
-      auto target_vertex = boost::target(*edge, graph);
       VertexProperty target_vertex_info = graph[target_vertex];
       MDI ran = lbl.getImage(intersection);
       if (isRecursive(source_vertex_info, target_vertex_info)) {
+        if (!from_alg) {
+          int id = target_vertex_info.eq().id();
+          recursive = getVariableDependency(source_vertex_info.var().name(), intersection, ran, id);
+        }
         recursive.setReduction(true);
         algs.insert(algs.end(), alg_paths.begin(), alg_paths.end());
-        algs.push_back(recursive);
         alg_paths.push_back(recursive);
+        rec = true;
       }
+    } else {
+      node_info.push_back(make_pair(target_vertex, dom));
     }
   }
+  if (rec || from_alg) {
+    algs.push_back(recursive);
+  }
+  return rec;
 }
 
 void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs,
-                       AlgebraicDependencies& alg_paths, VariableDependency recursive_alg)
+                       AlgebraicDependencies& alg_paths, TRAVERSE::Init init, VariableDependency recursive_alg)
 {
   VertexProperty source_vertex_info = graph[source_vertex];
   boost::graph_traits<DepsGraph>::out_edge_iterator edge, out_edge_end;
@@ -210,15 +225,29 @@ void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, 
       } else if (target_vertex_info.type() == VERTEX::Algebraic) {
         assert(source_vertex_info.type() == VERTEX::Equation);
         VariableDependency var_dep;
+        VertexInfo node_info;
+        bool recursive;
         if (source_vertex_info.eq().type() == IR::EQUATION::Algebraic) {
           int id = source_vertex_info.eq().id();
           var_dep = getVariableDependency(target_vertex_info.var().name(), intersection, ran, id);
           algs.push_back(var_dep);
-          recursivePaths(graph, target_vertex, ran, algs, alg_paths);
+          recursive = recursivePaths(graph, target_vertex, ran, true, algs, alg_paths, node_info);
+          if (recursive && init == TRAVERSE::Equation) {
+            for (auto& n : node_info) {
+              paths(graph, n.first, n.second, var_deps, algs, alg_paths, init, var_dep);
+            }
+          }
+        } else {  // The edge comes from a state equation or handler statement
+          recursive = recursivePaths(graph, target_vertex, ran, false, algs, alg_paths, node_info);
+          if (recursive) {
+            for (auto& n : node_info) {
+              paths(graph, n.first, n.second, var_deps, algs, alg_paths, init, var_dep);
+            }
+          }
         }
-        paths(graph, target_vertex, ran, var_deps, algs, alg_paths, var_dep);
+        paths(graph, target_vertex, ran, var_deps, algs, alg_paths, init, var_dep);
       } else {
-        paths(graph, target_vertex, ran, var_deps, algs, alg_paths);
+        paths(graph, target_vertex, ran, var_deps, algs, alg_paths, init);
       }
     }
   }
