@@ -111,13 +111,13 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, Equati
   _deps.compute(DO.build(), _DO);
 
   EAGraphBuilder DA = EAGraphBuilder(eqs, algs, symbols);
-  _deps.compute(DA.build(), _DA);
+  _deps.compute(DA.build(), _DA, TRAVERSE::Equation);
 
   EAGraphBuilder ZCA = EAGraphBuilder(events, algs, symbols);
-  _deps.compute(ZCA.build(), _ZCA);
+  _deps.compute(ZCA.build(), _ZCA, TRAVERSE::Equation);
 
   EAGraphBuilder OA = EAGraphBuilder(outputs, algs, symbols);
-  _deps.compute(OA.build(), _OA);
+  _deps.compute(OA.build(), _OA, TRAVERSE::Equation);
 }
 }  // namespace Deps
 }  // namespace MicroModelica
