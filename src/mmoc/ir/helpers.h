@@ -135,8 +135,6 @@ class FunctionPrinter {
   /// TODO: Review modelica_index parameter usage.
   std::string accessMacros(std::string token, int offset, Option<Range> range, bool modelica_index = true) const;
   std::string outputVariableName(Expression exp, Option<Range> range);
-
-  protected:
   std::string algebraic(int id, bool reduction);
 
   private:
