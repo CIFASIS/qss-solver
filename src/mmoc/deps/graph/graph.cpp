@@ -465,12 +465,15 @@ void GenerateEdge::build(list<Expression> exps)
         _ips.insert(IndexPair(MDI(0), mdi_ran, Offset(), Usage(), exp));
       }
     } else {
+      if (_dir != EDGE::Input && _eval != VERTEX::LHS) {
+        mdi_ran = getScalarMDI();
+      }
       if (eval_occur.hasIndex()) {  // 1 1 In this case the index must be an integer expression.
         cout << "Intenta agregar caso 2:" << exp << endl;
-        _ips.insert(IndexPair(mdi_dom, getScalarMDI(), eval_occur.offsets(), eval_occur.usages(), exp));
+        _ips.insert(IndexPair(mdi_dom, mdi_ran, eval_occur.offsets(), eval_occur.usages(), exp));
       } else {  // 1 1
         cout << "Intenta agregar caso 3:" << exp << endl;
-        _ips.insert(IndexPair(MDI(0), getScalarMDI(), Offset(), Usage(), exp));
+        _ips.insert(IndexPair(MDI(0), mdi_ran, Offset(), Usage(), exp));
       }
     }
     cout << "Indexes: " << _ips.size() << endl;
