@@ -28,12 +28,19 @@
 
 namespace MicroModelica {
 namespace Deps {
+
+namespace TRAVERSE {
+typedef enum { Variable, Equation } Init;
+}
+
+typedef std::list<std::pair<Vertex, MDI>> VertexInfo;
+
 class Dependency {
   public:
   Dependency() : _ifr(), _ifr_dom(){};
   ~Dependency() = default;
   template <class DM>
-  void compute(DepsGraph graph, DM& dm)
+  void compute(DepsGraph graph, DM& dm, TRAVERSE::Init init = TRAVERSE::Variable)
   {
     for (Vertex vertex : boost::make_iterator_range(vertices(graph))) {
       VertexProperty vertex_info = graph[vertex];
@@ -42,7 +49,7 @@ class Dependency {
         AlgebraicDependencies algs;
         AlgebraicDependencies alg_paths;
         cout << "Compute dependecies for: " << vertex_info.var() << endl;
-        paths(graph, vertex, variableRange(vertex_info.var()), var_deps, algs, alg_paths);
+        paths(graph, vertex, variableRange(vertex_info.var()), var_deps, algs, alg_paths, init);
         insert(dm, vertex_info, var_deps);
       }
     }
@@ -54,9 +61,9 @@ class Dependency {
 
   protected:
   void paths(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs,
-             AlgebraicDependencies& alg_paths, VariableDependency recursive_alg = VariableDependency());
-  void recursivePaths(DepsGraph graph, Vertex source_vertex, MDI source_range, AlgebraicDependencies& algs,
-                      AlgebraicDependencies& alg_paths);
+             AlgebraicDependencies& alg_paths, TRAVERSE::Init init, VariableDependency recursive_alg = VariableDependency());
+  bool recursivePaths(DepsGraph graph, Vertex source_vertex, MDI source_range, bool from_alg, AlgebraicDependencies& algs,
+                      AlgebraicDependencies& alg_paths, VertexInfo& node_info);
   VariableDependency getVariableDependency(string name, MDI dom, MDI ran, int id);
   MDI variableRange(Util::Variable var);
   template <class DM>
