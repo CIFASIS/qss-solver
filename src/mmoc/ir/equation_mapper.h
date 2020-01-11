@@ -31,6 +31,7 @@
 #include "../util/util.h"
 
 namespace MicroModelica {
+using namespace Deps;
 namespace IR {
 
 template <class EqGen>
@@ -38,27 +39,6 @@ class EquationMapper {
   public:
   EquationMapper(EqGen eq_gen, Util::Variable var, Deps::VariableDependencies deps) : _mapper(), _eq_gen(eq_gen) { initialize(deps); }
   ~EquationMapper() = default;
-  void processInf(Deps::Influences inf)
-  {
-    EquationTable derivatives = ModelConfig::instance().derivatives();
-    stringstream buffer;
-    FunctionPrinter fp;
-    Option<Equation> ifce = derivatives[inf.ifce.equationId()];
-    if (ifce) {
-      Index ifr = inf.ifr();
-      string idx_exp = ifr.print();
-      if (_mapper.find(idx_exp) == _mapper.end()) {
-        DepInfo d = DepInfo(ifr);
-        _mapper[idx_exp] = d;
-      }
-      Equation eq = _eq_gen.generate(ifce.get(), ifr);
-      buffer << fp.algebraics(inf.algs);
-      buffer << eq << endl;
-      DepInfo dep = _mapper[idx_exp];
-      dep.addDependency(buffer.str());
-      _mapper[idx_exp] = dep;
-    }
-  }
 
   std::string scalar() const
   {
@@ -78,6 +58,56 @@ class EquationMapper {
     for (Deps::Influences inf : deps) {
       processInf(inf);
     }
+  }
+
+  void processInf(Deps::Influences inf)
+  {
+    EquationTable derivatives = ModelConfig::instance().derivatives();
+    stringstream buffer;
+    FunctionPrinter fp;
+    Option<Equation> ifce = derivatives[inf.ifce.equationId()];
+    if (ifce) {
+      Equation orig_eq = ifce.get();
+      Index ifr = inf.ifr();
+      string idx_exp = ifr.print();
+      if (_mapper.find(idx_exp) == _mapper.end()) {
+        DepInfo d = DepInfo(ifr);
+        _mapper[idx_exp] = d;
+      }
+      Equation eq = _eq_gen.generate(ifce.get(), ifr);
+      buffer << nonStateAlgebraics(orig_eq, inf.algs);
+      buffer << fp.algebraics(inf.algs);
+      buffer << eq << endl;
+      DepInfo dep = _mapper[idx_exp];
+      dep.addDependency(buffer.str());
+      _mapper[idx_exp] = dep;
+    }
+  }
+
+  std::string nonStateAlgebraics(Equation eq, AlgebraicDependencies algs)
+  {
+    stringstream code;
+    EquationDependencyMatrix eqdm = eq.dependencyMatrix();
+    Option<VariableDependencies> eqd = eqdm[eq.id()];
+    if (eqd) {
+      VariableDependencies::iterator eq_it;
+      for (eq_it = eqd->begin(); eq_it != eqd->end(); eq_it++) {
+        bool found = false;
+        int alg_id = eq_it->ifce.equationId();
+        for (VariableDependency alg : algs) {
+          if (alg_id == alg.equationId()) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          FunctionPrinter fp;
+          code << fp.algebraic(alg_id, eq_it->ifce.isReduction());
+          code << fp.algebraics(eq_it->algs);
+        }
+      }
+    }
+    return code.str();
   }
 
   std::string dependencies(bool scalar) const
