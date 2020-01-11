@@ -343,7 +343,7 @@ string ModelInstance::componentDefinition(MODEL_INSTANCE::Component c)
     return "void MOD_jacobian(double *x, double *d, double *a, double t, "
            "double *jac)";
   case MODEL_INSTANCE::BdfModel:
-    return "void MOD_BDF_definition(double *x, double *d, double *alg, double t, double *dx, int *BDFMap, int nBDF)";
+    return "void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, int *BDFMap, int nBDF)";
   case MODEL_INSTANCE::CLC_Init:
     return "void CLC_initializeDataStructs(CLC_simulator simulator)";
   case MODEL_INSTANCE::QSS_Init:
