@@ -45,7 +45,11 @@ MDI VariableDependency::getImage(MDI sub_dom)
 
 void VariableDependency::setRange()
 {
-  _range.generate(_ran);
+  if (_is_reduction) {
+    _range.generate(_ifr_range);
+  } else {
+    _range.generate(_ran);
+  }
   _ifr_exp = Expression(_ifr.exp().expression(), Utils::instance().symbols());
   _ife_exp = Expression(_ife.exp().expression(), Utils::instance().symbols());
 }

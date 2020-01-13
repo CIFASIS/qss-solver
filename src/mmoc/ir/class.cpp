@@ -484,7 +484,6 @@ void Model::setEquations()
       }
     }
   }
-  cout << "New equations: " << new_eqs.size() << endl;
   _astEquations.insert(_astEquations.end(), new_eqs.begin(), new_eqs.end());
   for (it = _astEquations.begin(); it != _astEquations.end(); it++) {
     AST_Equation eq = current_element(it);

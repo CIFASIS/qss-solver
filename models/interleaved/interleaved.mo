@@ -1,7 +1,7 @@
 model interleaved
   constant Integer N = 4;
   parameter Real C = 1e-4, L = 1e-4, R = 10, U = 24, T = 1e-4, DC = 0.5, ROn = 1e-5, ROff = 1e5;
-  discrete Real Rd[N](each start=1e5), Rs[N](each start=1e5), nextT,lastT;
+  discrete Real Rd[N](each start=1e5), Rs[N](each start=1e5), nextT(start=1e-8),lastT;
   Real uC,iL[N];
 
   equation
@@ -32,14 +32,19 @@ model interleaved
         Rd[i] := ROff;
       end when;
     end for;
-  annotation(
-  experiment(
-    MMO_Description="",
-    MMO_Solver=LIQSS2,
-    MMO_Output={uC,iL},
-    StartTime=0.0,
-    StopTime=0.01,
-    Tolerance={1e-3},
-    AbsTolerance={1e-3}
-  ));
+	annotation(
+
+	experiment(
+		MMO_Description="",
+		MMO_Solver=LIQSS2,
+		MMO_PartitionMethod=Metis,
+		MMO_Output={uC,iL},
+		Jacobian=Dense,
+		MMO_BDF_PDepth=1,
+		MMO_BDF_Max_Step=0,
+		StartTime=0.0,
+		StopTime=0.01,
+		Tolerance={1e-3},
+		AbsTolerance={1e-3}
+	));
 end interleaved;

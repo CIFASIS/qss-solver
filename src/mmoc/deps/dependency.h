@@ -37,7 +37,7 @@ typedef std::list<std::pair<Vertex, MDI>> VertexInfo;
 
 class Dependency {
   public:
-  Dependency() : _ifr(), _ifr_dom(){};
+  Dependency() : _ifr(), _ifr_dom(), _ifr_range(){};
   ~Dependency() = default;
   template <class DM>
   void compute(DepsGraph graph, DM& dm, TRAVERSE::Init init = TRAVERSE::Variable)
@@ -85,6 +85,7 @@ class Dependency {
   private:
   IndexPair _ifr;
   MDI _ifr_dom;
+  MDI _ifr_range;
 };
 }  // namespace Deps
 }  // namespace MicroModelica
