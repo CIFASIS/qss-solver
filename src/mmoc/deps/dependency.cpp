@@ -199,6 +199,7 @@ void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, 
         // Store the influencer index pair.
         _ifr = lbl.Pair();
         _ifr_dom = intersection;
+        _ifr_range = source_range;
         algs.clear();
       }
       // First look if the target node is terminal.
@@ -216,8 +217,9 @@ void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, 
         VariableDependency var_dep = getVariableDependency(target_vertex_info.var().name(), _ifr_dom, ran, id);
         var_dep.setIfr(_ifr);
         var_dep.setIfe(lbl.Pair());
-        var_dep.setRange();
         var_dep.setReduction(isReduction(_ifr_dom, lbl.Pair().Dom()));
+        var_dep.setIfrRange(_ifr_range);
+        var_dep.setRange();
         Influences inf = {algs, var_dep};
         var_deps.push_back(inf);
       } else if (isRecursive(source_vertex_info, target_vertex_info)) {
