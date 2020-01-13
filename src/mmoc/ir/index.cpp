@@ -85,7 +85,7 @@ Variable Index::variable() const
   return Variable();
 }
 
-Range Index::range() { return Range(variable()); }
+Range Index::range() const { return Range(variable()); }
 
 Index Index::revert() const
 {
@@ -94,10 +94,10 @@ Index Index::revert() const
   return Index(Expression(revert.apply(_exp.expression()), symbols));
 }
 
-void Index::replace()
+Index Index::replace() const
 {
   ReplaceIndex replace = ReplaceIndex(range(), usage());
-  _exp = Expression(replace.apply(_exp.expression()), Utils::instance().symbols());
+  return Index(Expression(replace.apply(_exp.expression()), Utils::instance().symbols()));
 }
 
 string Index::usageExp() const { return _exp.usage(); }

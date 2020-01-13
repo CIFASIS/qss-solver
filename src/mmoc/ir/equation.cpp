@@ -398,8 +398,7 @@ string JacobianConfig::print() const
   tabs += TAB;
   if (range) {
     tabs = range->block();
-    Index lhs = Index(_eq.lhs()).revert();
-    lhs.replace();
+    Index lhs = Index(_eq.lhs()).revert().replace();
     arguments = lhs.usageExp();
   }
   tabs += TAB;
@@ -583,8 +582,7 @@ string DependencyConfig::print() const
       buffer << range.get();
       arguments = range.get().indexes();
     } else {
-      Index revert = _eq.usage().revert();
-      revert.replace();
+      Index revert = _eq.usage().revert().replace();
       arguments = revert.usageExp();
     }
   }

@@ -43,16 +43,14 @@ MDI VariableDependency::getImage(MDI sub_dom)
   }
 }
 
-VariableDependencyMatrix::VariableDependencyMatrix(MatrixConfig cfg) : _cfg(cfg), _mode(VDM::Normal), _method(VDM::Alloc) {}
-
 void VariableDependency::setRange()
 {
   _range.generate(_ran);
-  ReplaceIndex riIfr(_range, _ifr.GetUsage());
-  _ifr_exp = Expression(riIfr.apply(_ifr.exp().expression()), Utils::instance().symbols());
-  ReplaceIndex riIfe(_range, _ife.GetUsage());
-  _ife_exp = Expression(riIfe.apply(_ife.exp().expression()), Utils::instance().symbols());
+  _ifr_exp = Expression(_ifr.exp().expression(), Utils::instance().symbols());
+  _ife_exp = Expression(_ife.exp().expression(), Utils::instance().symbols());
 }
+
+VariableDependencyMatrix::VariableDependencyMatrix(MatrixConfig cfg) : _cfg(cfg), _mode(VDM::Normal), _method(VDM::Alloc) {}
 
 string VariableDependencyMatrix::print() const
 {
@@ -63,11 +61,11 @@ string VariableDependencyMatrix::print() const
   for (it = begin(); it != end(); it++) {
     VariableDependencies vds = it->second;
     for (auto vd : vds) {
-      Index ifr = vd.ifr();
-      Index ife = vd.ife();
+      Index ifr = vd.ifr().replace();
+      Index ife = vd.ife().replace();
       if (_mode == VDM::Transpose) {
-        ifr = vd.ife();
-        ife = vd.ifr();
+        ifr = vd.ife().replace();
+        ife = vd.ifr().replace();
       }
       Range range = vd.ifce.range();
       buffer << range;

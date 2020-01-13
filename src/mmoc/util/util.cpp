@@ -128,7 +128,7 @@ string Utils::getVarName(string name)
 string Utils::iteratorVar(int dim)
 {
   stringstream buffer;
-  buffer << "_it" << dim + 1;
+  buffer << "_d" << dim + 1;
   return buffer.str();
 }
 

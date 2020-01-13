@@ -23,6 +23,7 @@
 
 #include "../../ast/ast_builder.h"
 #include "../error.h"
+#include "../util.h"
 
 namespace MicroModelica {
 using namespace Deps;
@@ -67,7 +68,13 @@ AST_Expression ReplaceVar::foldTraverseElement(AST_Expression exp)
 {
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
-    return newAST_Expression_ComponentReferenceExp(newAST_String(_var));
+    VarSymbolTable symbols = Utils::instance().symbols();
+    Option<Variable> var = symbols[exp->getAsComponentReference()->name()];
+    assert(var);
+    if (!var->isConstant()) {
+      return newAST_Expression_ComponentReferenceExp(newAST_String(_var));
+    }
+    return exp;
   }
   default:
     break;
