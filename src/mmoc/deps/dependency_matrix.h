@@ -55,6 +55,7 @@ class VariableDependency {
   IR::Range range() { return _range; };
   inline void setIfr(IndexPair ifr) { _ifr = ifr; };
   inline void setIfe(IndexPair ife) { _ife = ife; };
+  inline void setIfrRange(MDI ifr_range) { _ifr_range = ifr_range; }
   void setRange();
   MDI dom() { return _dom; };
   MDI ran() { return _ran; };
@@ -78,6 +79,7 @@ class VariableDependency {
   int _equationId;
   std::string _variable;
   bool _is_reduction;
+  MDI _ifr_range;
 };
 
 // AlgebraicDependencies
