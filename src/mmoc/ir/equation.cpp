@@ -316,6 +316,7 @@ Equation Jacobian::generate(Equation eq, Index idx)
     }
     jac = Equation(lhs, j.second.expression(), _symbols, eq.range(), EQUATION::Jacobian, eq.id());
   }
+  jac.setUsage(idx);
   return jac;
 }
 
@@ -396,15 +397,27 @@ string JacobianConfig::print() const
   Option<Range> range = _eq.range();
   string arguments;
   tabs += TAB;
+  Index idx = _eq.usage();
+  // Case 1 -> N
+  const bool PRINT_EQ_RANGE = idx.isConstant() && range;
   if (range) {
     tabs = range->block();
-    Index lhs = Index(_eq.lhs()).revert().replace();
-    arguments = lhs.usageExp();
+    if (PRINT_EQ_RANGE) {
+      buffer << range.get();
+      arguments = range.get().indexes();
+    } else {
+      Index revert = Index(_eq.lhs()).revert().replace();
+      arguments = revert.usageExp();
+    }
   }
   tabs += TAB;
   buffer << fp.beginDimGuards(equationId(), arguments, range);
   buffer << tabs << prefix() << lhs() << " = " << _eq.rhs() << ";";
   buffer << endl << TAB << fp.endDimGuards(range);
+  if (PRINT_EQ_RANGE) {
+    buffer << range.get().end();
+  }
+
   return buffer.str();
 }
 
@@ -577,7 +590,6 @@ string DependencyConfig::print() const
   const bool PRINT_EQ_RANGE = idx.isConstant() && range;
   if (range) {
     tabs = range->block();
-    Index idx = _eq.usage();
     if (PRINT_EQ_RANGE) {
       buffer << range.get();
       arguments = range.get().indexes();
