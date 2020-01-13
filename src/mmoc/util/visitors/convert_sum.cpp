@@ -90,7 +90,7 @@ AST_Expression ConvertSum::foldTraverseElement(AST_Expression exp)
       }
       vector<int> s;
       s.push_back(variable->size());
-      TypePrefix eq_type = TP_EQ;
+      TypePrefix eq_type = TP_INPUT;
       Variable vi(newType_Real(), eq_type, nullptr, nullptr, s, true);
       vi.setName(var_name);
       _symbols.insert(var_name, vi);
