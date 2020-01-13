@@ -121,10 +121,10 @@ class Index {
   inline void setExp(Expression exp) { _exp = exp; };
   std::string print() const;
   std::string identifier() const;
-  Range range();
+  Range range() const;
   Deps::Usage usage() const;
   Index revert() const;
-  void replace();
+  Index replace() const;
   std::string usageExp() const;
   std::string modelicaExp() const;
   friend std::ostream& operator<<(std::ostream& out, const Index& i);
