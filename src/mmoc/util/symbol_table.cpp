@@ -244,7 +244,7 @@ string Variable::initialization(const VarSymbolTable &symbols)
       buffer << var << " = " << ex << ";";
     } else if (hasEachModifier()) {
       buffer << "for(" << index << " = 0; " << index << " <= " << size() << ";" << index << "++) {" << endl;
-      buffer << TAB << TAB << var << "[" << index << "]"
+      buffer << TAB << TAB << var << "(" << index << ")"
              << " = " << ex << ";" << endl;
       buffer << "}";
     }
