@@ -228,25 +228,22 @@ string Variable::variableExpression(const VarSymbolTable &symbols)
   return buffer.str();
 }
 
-/// @TODO: Add support for multiple dimension initialization.
 string Variable::initialization(const VarSymbolTable &symbols)
 {
   stringstream buffer;
   string index;
-  if (hasEachModifier()) {
-    index = Utils::instance().iteratorVar(0);
-    Utils::instance().addLocalSymbol("int " + index + ";");
-  }
   if (hasAssignment() || hasStartModifier() || hasEachModifier()) {
+    Range range = Range(*this);
     Expression ex(exp(), symbols);
     string var = variableExpression(symbols);
-    if (hasAssignment() || hasStartModifier()) {
-      buffer << var << " = " << ex << ";";
-    } else if (hasEachModifier()) {
-      buffer << "for(" << index << " = 0; " << index << " <= " << size() << ";" << index << "++) {" << endl;
+    if (hasEachModifier()) {
+      index = range.getDimensionVars();
+      buffer << range;
       buffer << TAB << TAB << var << "(" << index << ")"
              << " = " << ex << ";" << endl;
-      buffer << "}";
+      buffer << range.end();
+    } else if (hasAssignment() || hasStartModifier()) {
+      buffer << var << " = " << ex << ";";
     }
   }
   return buffer.str();
