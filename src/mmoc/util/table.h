@@ -82,6 +82,9 @@ class ModelTable {
   bool empty() { return _map.empty(); };
   const int size() const { return _map.size(); };
 
+  protected:
+  std::map<Key, Value> map() const { return _map; };
+
   private:
   std::map<Key, Value> _map;
 };
