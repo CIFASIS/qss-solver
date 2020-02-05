@@ -111,19 +111,22 @@ typedef ModelTable<int, Equation> EquationTable;
 
 class Jacobian {
   public:
-  Jacobian(Util::VarSymbolTable &symbols) : _symbols(symbols){};
+  Jacobian(Util::VarSymbolTable &symbols) : _symbols(symbols), _jac_terms(){};
   ~Jacobian() = default;
-  Equation generate(Equation eq, Index idx);
+  Equation generate(Equation eq, Index idx, Deps::AlgebraicDependencies algs);
+  list<Equation> terms();
 
   private:
   Util::VarSymbolTable _symbols;
+  list<Equation> _jac_terms;
 };
 
 class Dependency {
   public:
   Dependency(){};
   ~Dependency() = default;
-  Equation generate(Equation eq, Index idx);
+  Equation generate(Equation eq, Index idx, Deps::AlgebraicDependencies algs);
+  list<Equation> terms();
 };
 
 class EquationPrinter {
