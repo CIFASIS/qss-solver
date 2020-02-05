@@ -277,6 +277,15 @@ string FunctionPrinter::algebraic(int id, bool reduction)
   return buffer.str();
 }
 
+string FunctionPrinter::jacobianTerms(list<Equation> eqs)
+{
+  stringstream buffer;
+  for (Equation eq : eqs) {
+    buffer << eq;
+  }
+  return buffer.str();
+}
+
 string FunctionPrinter::algebraics(AlgebraicDependencies deps)
 {
   stringstream buffer;
