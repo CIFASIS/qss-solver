@@ -332,6 +332,23 @@ int Range::pos(string var)
   return 0;
 }
 
+MDI Range::getMDI()
+{
+  IntervalList intervals;
+  RangeDefinitionTable::iterator it;
+  for (RangeDefinition rd = _ranges.begin(it); !_ranges.end(it); rd = _ranges.next(it)) {
+    intervals.push_back(Interval(rd.begin(), rd.end(), rd.step()));
+  }
+  return MDI(intervals);
+}
+
+bool Range::intersect(Range other)
+{
+  MDI other_mdi = other.getMDI();
+  Option<MDI> intersect = getMDI().Intersection(other_mdi);
+  return intersect.is_initialized();
+}
+
 std::ostream& operator<<(std::ostream& out, const Range& r) { return out << r.print(); }
 }  // namespace IR
 }  // namespace MicroModelica

@@ -81,6 +81,7 @@ class Range {
   std::string iterator(int dim);
   std::string getDimensionVars() const;
   std::string getDimensionVar(int i) const;
+  bool intersect(Range other);
   friend std::ostream& operator<<(std::ostream& out, const Range& r);
 
   protected:
@@ -88,6 +89,7 @@ class Range {
 
   private:
   void setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);
+  Deps::MDI getMDI();
   RangeDefinitionTable _ranges;
   ModelTable<std::string, int> _indexPos;
   int _size;
