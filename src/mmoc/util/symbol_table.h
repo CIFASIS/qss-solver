@@ -82,6 +82,7 @@ class Variable {
   inline bool isOutput() const { return _tp & TP_OUTPUT; };
   inline bool isForType() const { return _tp & TP_FOR; };
   inline bool isEqType() const { return _tp & TP_EQ; };
+  inline bool isLocal() const { return _tp & TP_LOCAL; };
   inline bool isState() const { return _realType == State; };
   inline void setState() { unsetAssignment(); };
   inline bool isUnknown() { return _unknown; };
@@ -170,6 +171,7 @@ class VarSymbolTable : public ModelTable<VarName, Variable> {
   void initialize(TypeSymbolTable tst);
   void insert(VarName n, Variable vi);
   inline bool parameters() { return _parameters; };
+  Option<Variable> lookup(std::string name);
 
   private:
   bool _parameters;
