@@ -99,7 +99,12 @@ void LN_init(SC_scheduler scheduler, QSS_data simData, QSS_time simTime)
   simTime->time += simTime->minValue;
   scheduler->state->tUnit = (simData->ft - simData->it) / 100.0;
   scheduler->state->tOut = 1;
+#ifdef QSS_PARALLEL
+  scheduler->ops->update = LN_PAR_update;
+#else 
   scheduler->ops->update = LN_update;
+#endif
+
 }
 
 #ifdef QSS_PARALLEL
@@ -135,6 +140,7 @@ void LN_update(SC_scheduler scheduler, QSS_data simData, QSS_time simTime)
 #ifdef QSS_PARALLEL
         if (lp->eMap[j] > NOT_ASSIGNED) {
 #endif
+        
           if (simTime->nextEventTime[j] < minEvent) {
             minEvent = simTime->nextEventTime[j];
             minEventIdx = j;
