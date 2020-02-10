@@ -404,6 +404,7 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, s
   if (discretes) {
     cleanDoubleVector(p->d, 0, discretes);
   }
+  
   int same_DQMin = (settings->nDQMin == 1) ? TRUE : FALSE;
   int same_DQRel = (settings->nDQRel == 1) ? TRUE : FALSE;
 
