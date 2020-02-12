@@ -29,42 +29,50 @@
 #include "qss_log.h"
 
 #ifdef QSS_PARALLEL
-void F_PAR_init(LG_log log, QSS_data simData, SD_output simOutput)
+void F_PAR_init(LG_log log, QSS_data sim_data, SD_output sim_output)
 #else
-void F_init(LG_log log, QSS_data simData, SD_output simOutput)
+void F_init(LG_log log, QSS_data sim_data, SD_output sim_output)
 #endif
 {
-  int i, j, size, outputs = simOutput->outputs;
+  int i, j, size;
+  log->state->data = sim_data;
+  log->state->output = sim_output;
 #ifdef QSS_PARALLEL
-  QSS_LP_data lp = simData->lp;
+  QSS_LP_data lp = sim_data->lp;
   log->state->size = lp->outputs;
 #else
-  log->state->size = simOutput->outputs;
+  log->state->size = sim_output->outputs;
 #endif
-  size = log->state->size;
+  int init = log->state->batch_init;
+  int end = log->state->batch_end;
+  int total_outputs = log->state->output->outputs; 
+  size = end - init;
   if (size > 0) {
     log->state->files = (FILE **)malloc(size * sizeof(FILE *));
-    if (simOutput->commInterval == CI_Dense || simOutput->commInterval == CI_Sampled) {
+    if (sim_output->commInterval == CI_Dense || sim_output->commInterval == CI_Sampled) {
       log->state->values = (int *)checkedMalloc(size * sizeof(int));
     }
     j = 0;
-    for (i = 0; i < outputs; i++) {
+    for (i = init; i < total_outputs; i++) {
       char ext[128] = "";
 #ifdef QSS_PARALLEL
       if (lp->oMap[i] > NOT_ASSIGNED) {
-        if (simOutput->nOD[i] != 0) {
-          sprintf(ext, "-discrete-%d", simData->lp->id);
+        if (sim_output->nOD[i] != 0) {
+          sprintf(ext, "-discrete-%d", sim_data->lp->id);
         }
 #endif
-        sprintf(log->state->fileName, "%s%s.dat", simOutput->variable[i].name, ext);
+        sprintf(log->state->fileName, "%s%s.dat", sim_output->variable[i].name, ext);
         log->state->files[j] = fopen(log->state->fileName, "w+");
-        if (simOutput->commInterval == CI_Dense || simOutput->commInterval == CI_Sampled) {
-          log->state->values[j] = simOutput->nOS[i] * simData->order + simOutput->nOD[i];
+        if (sim_output->commInterval == CI_Dense || sim_output->commInterval == CI_Sampled) {
+          log->state->values[j] = sim_output->nOS[i] * sim_data->order + sim_output->nOD[i];
         }
         j++;
 #ifdef QSS_PARALLEL
       }
 #endif
+      if (j >= size) {
+          break;
+      } 
     }
 #ifdef QSS_PARALLEL
     log->ops->write = F_PAR_write;
@@ -84,7 +92,8 @@ void F_PAR_write(LG_log log, int i, double time, double value)
 void F_write(LG_log log, int i, double time, double value)
 #endif
 {
-  fprintf(log->state->files[i], "%.16lf\t%.16lf\n", time, value);
+  int index = i - log->state->batch_init;
+  fprintf(log->state->files[index], "%.16lf\t%.16lf\n", time, value);
 }
 
 #ifdef QSS_PARALLEL
@@ -93,12 +102,13 @@ void F_PAR_writeLine(LG_log log, int i, double time, double *value)
 void F_writeLine(LG_log log, int i, double time, double *value)
 #endif
 {
-  int j, values = log->state->values[i];
-  fprintf(log->state->files[i], "%16lf\t", time);
+  int index = i - log->state->batch_init;
+  int j, values = log->state->values[index];
+  fprintf(log->state->files[index], "%16lf\t", time);
   for (j = 0; j < values - 1; j++) {
-    fprintf(log->state->files[i], "%16lf\t", value[j]);
+    fprintf(log->state->files[index], "%16lf\t", value[j]);
   }
-  fprintf(log->state->files[i], "%16lf\n", value[log->state->values[i] - 1]);
+  fprintf(log->state->files[index], "%16lf\n", value[log->state->values[index] - 1]);
 }
 
 #ifdef QSS_PARALLEL
