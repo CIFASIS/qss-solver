@@ -55,7 +55,6 @@ AST_Expression ConvertSum::foldTraverseElement(AST_Expression exp)
         Error::instance().add(exp->lineNum(), EM_IR | EM_ARGUMENTS, ER_Error, "Expect variable for sum function");
       }
       AST_Expression_ComponentReference cr = arg->getAsComponentReference();
-      cout << "LOOKING FOR: " << cr->name() << endl;
       Option<Variable> variable = _symbols[cr->name()];
       if (!variable) {
         Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "convert_sum.cpp:61 %s", cr->name());

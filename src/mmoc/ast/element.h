@@ -289,6 +289,7 @@ class AST_Element_Component_ : public AST_Element_ {
   bool hasIndexes();
   bool isReal();
   bool isInteger();
+  bool isString();
 
   private:
   AST_DeclarationList _decl_list;

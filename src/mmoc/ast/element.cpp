@@ -291,3 +291,5 @@ AST_ExpressionList AST_Element_Component_::indexes() const { return _indexes; }
 bool AST_Element_Component_::isReal() { return _type == "Real"; }
 
 bool AST_Element_Component_::isInteger() { return _type == "Integer"; }
+
+bool AST_Element_Component_::isString() { return _type == "String"; }
