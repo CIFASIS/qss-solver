@@ -81,6 +81,10 @@ string Type_String_::print() const
   return ret.str();
 }
 
+Type_String newType_String() { return new Type_String_(); }
+
+void deleteType_String(Type_String m) { delete m; }
+
 string Type_Array_::print() const
 {
   stringstream ret(stringstream::out);
