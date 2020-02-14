@@ -83,6 +83,7 @@ class Variable {
   inline bool isForType() const { return _tp & TP_FOR; };
   inline bool isEqType() const { return _tp & TP_EQ; };
   inline bool isState() const { return _realType == State; };
+  inline bool isString() const { return _t->getType() == TYSTRING; };
   inline void setState() { unsetAssignment(); };
   inline bool isUnknown() { return _unknown; };
   inline void setUnknown() { _unknown = true; };
