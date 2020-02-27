@@ -51,7 +51,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/usr/bin/mmoc",
-            "args": ["-o /home/joaquin/work/qss-solver/build/sum_test/sum_test ", "/home/joaquin/work/qss-solver/models/sum_test.mo"],
+            "args": ["-o /home/joaquin/work/qss-solver/build/sum_test/sum_test ", "/home/joaquin/work/qss-solver/models/tests/sum_test.mo"],
             "cwd": "${workspaceFolder}/usr/bin/",
             "environment": [],
             "MIMode": "gdb",
