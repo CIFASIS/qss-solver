@@ -199,6 +199,7 @@ class Model : public Class {
   void addEquation(AST_Equation eq, Option<Range> range);
   void reduceEquation(AST_Equation_Equality eq, list<AST_Equation>& new_eqs);
   void addEvent(AST_Statement stm, Option<Range> range);
+  void reduceEvent(AST_Statement_When ev, list<AST_Statement>& new_stms);
   void addFunction(Util::SymbolTable symbols, FunctionTable& fs);
   void addInput(Equation eq);
   std::string _name;
@@ -218,8 +219,8 @@ class Model : public Class {
   Util::SymbolTable _libraryDirectories;
   Util::SymbolTable _linkLibraries;
   Util::SymbolTable _includeDirectories;
-  std::list<AST_Equation> _astEquations;
-  std::list<AST_Statement> _astStatements;
+  std::list<AST_Equation> _ast_equations;
+  std::list<AST_Statement> _ast_statements;
   unsigned int _stateNbr;
   unsigned int _discreteNbr;
   unsigned int _algebraicNbr;

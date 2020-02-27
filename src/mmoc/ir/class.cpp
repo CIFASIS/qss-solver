@@ -31,6 +31,8 @@
 #include "../ast/statement.h"
 #include "../util/error.h"
 #include "../util/visitors/convert_condition.h"
+#include "../util/visitors/convert_cont_red.h"
+#include "../util/visitors/convert_disc_red.h"
 #include "../util/visitors/convert_equation.h"
 #include "../util/visitors/convert_output_range.h"
 #include "../util/visitors/convert_statement.h"
@@ -200,8 +202,8 @@ Model::Model()
       _libraryDirectories(),
       _linkLibraries(),
       _includeDirectories(),
-      _astEquations(),
-      _astStatements(),
+      _ast_equations(),
+      _ast_statements(),
       _stateNbr(0),
       _discreteNbr(0),
       _algebraicNbr(0),
@@ -234,8 +236,8 @@ Model::Model(string name)
       _libraryDirectories(),
       _linkLibraries(),
       _includeDirectories(),
-      _astEquations(),
-      _astStatements(),
+      _ast_equations(),
+      _ast_statements(),
       _stateNbr(0),
       _discreteNbr(0),
       _algebraicNbr(0),
@@ -320,7 +322,7 @@ void Model::setRealVariables(AST_Equation eq)
 void Model::insert(AST_Equation eq)
 {
   AST_Equation teq = ConvertEquation(eq, _symbols).get();
-  _astEquations.push_back(teq);
+  _ast_equations.push_back(teq);
   if (teq->equationType() == EQEQUALITY) {
     setRealVariables(teq);
   } else if (teq->equationType() == EQFOR) {
@@ -349,7 +351,7 @@ void Model::insert(AST_Statement stm, bool initial)
   if (initial) {
     _initialCode.insert(_statementId++, Statement(stm, _symbols, initial));
   } else {
-    _astStatements.push_back(st);
+    _ast_statements.push_back(st);
   }
 }
 
@@ -455,7 +457,7 @@ void Model::addEquation(AST_Equation eq, Option<Range> range)
 
 void Model::reduceEquation(AST_Equation_Equality eq, list<AST_Equation> &new_eqs)
 {
-  ReductionFunctions<AST_Equation> reduction_functions(eq->right(), _symbols);
+  ReductionFunctions<AST_Equation, ConvertContRed> reduction_functions(eq->right(), _symbols, variable(eq->left()));
   AST_Expression new_exp = reduction_functions.apply();
   eq->setRight(new_exp);
   list<AST_Equation> code = reduction_functions.code();
@@ -470,7 +472,7 @@ void Model::setEquations()
 {
   list<AST_Equation> new_eqs;
   list<AST_Equation>::iterator it;
-  for (it = _astEquations.begin(); it != _astEquations.end(); it++) {
+  for (it = _ast_equations.begin(); it != _ast_equations.end(); it++) {
     AST_Equation eq = current_element(it);
     if (eq->equationType() == EQEQUALITY) {
       reduceEquation(eq->getAsEquality(), new_eqs);
@@ -484,8 +486,8 @@ void Model::setEquations()
       }
     }
   }
-  _astEquations.insert(_astEquations.end(), new_eqs.begin(), new_eqs.end());
-  for (it = _astEquations.begin(); it != _astEquations.end(); it++) {
+  _ast_equations.insert(_ast_equations.end(), new_eqs.begin(), new_eqs.end());
+  for (it = _ast_equations.begin(); it != _ast_equations.end(); it++) {
     AST_Equation eq = current_element(it);
     if (eq->equationType() == EQEQUALITY) {
       addEquation(eq, Option<Range>());
@@ -564,11 +566,53 @@ void Model::addEvent(AST_Statement stm, Option<Range> range)
   }
 }
 
+void Model::reduceEvents(AST_Statement_When ev, list<AST_Statement> &new_stms)
+{
+  assert(ev->statementType() == STWHEN);
+  AST_StatementList stl = ev->statements();
+  AST_StatementListIterator it;
+  foreach (it, stl) {
+    AST_Statement asg = current_element(it);
+    if (asg->statementType() == STASSING) {
+      ReductionFunctions<AST_Statement, ConvertDiscRed> reduction_functions(->right(), _symbols, variable(eq->left()));
+      AST_Expression new_exp = reduction_functions.apply();
+      eq->setRight(new_exp);
+      list<AST_Equation> code = reduction_functions.code();
+      new_eqs.insert(new_eqs.end(), code.begin(), code.end());
+    }
+  }
+  if (ev->hasElsewhen()) {
+    AST_Statement_ElseList ewl = sw->else_when();
+    AST_Statement_ElseListIterator ewit;
+    foreach (ewit, ewl) {
+      AST_Statement_Else se = current_element(ewit);
+      AST_StatementList stel = se->statements();
+      AST_StatementListIterator steit;
+      foreach (steit, stel) {
+        else_event.add(current_element(steit));
+      }
+    }
+  }
+}
+
 void Model::setEvents()
 {
-  list<AST_Statement>::iterator st;
-  for (st = _astStatements.begin(); st != _astStatements.end(); st++) {
+  list<AST_Statement>::iterator it;
+  for (it = _ast_statements.begin(); it != _ast_statements.end(); it++) {
     AST_Statement stm = *st;
+    if (stm->statementType() == STWHEN) {
+      reduceStatement(stm->getAsWhen());
+    } else if (stm->statementType() == STFOR) {
+      AST_Statement_For stf = stm->getAsFor();
+      AST_StatementList sts = stf->statements();
+      AST_StatementListIterator stit;
+      foreach (stit, sts) {
+        reduceEvents(current_element(it)->getAsWhen());
+      }
+    }
+  }
+  for (it = _ast_statements.begin(); it != _ast_statements.end(); it++) {
+    AST_Statement stm = *it;
     if (stm->statementType() == STWHEN) {
       addEvent(stm, Option<Range>());
     } else if (stm->statementType() == STFOR) {
