@@ -201,6 +201,7 @@ void QSS_SEQ_integrate(SIM_simulator simulate)
             if (elapsed > 0) {
               integrateState(infCf0, elapsed, q, qOrder);
             }
+            tq[j] = t;
           }
           nLHSSt = event[index].nLHSSt;
           for (i = 0; i < nLHSSt; i++) {
