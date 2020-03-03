@@ -88,6 +88,7 @@ void QSS_SEQ_integrate(SIM_simulator simulate)
     SD_print(simulator->simulationLog, "Begin Simulation:");
   }
 #endif
+  getTime(simulator->stats->iTime);
   while (t < ft) {
 #ifdef SYNC_RT
     /* Sync */
