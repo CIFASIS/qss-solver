@@ -321,6 +321,7 @@ bool Utils::checkCompiledFunctions(string name)
   return cf.is_initialized();
 }
 
-bool Utils::checkBuiltInFunctions(string name) { return BuiltInFunction::instance().isValid(name); }
+bool Utils::checkBuiltInFunctions(string name) { return BuiltInFunction::instance().lookup(name); }
+
 }  // namespace Util
 }  // namespace MicroModelica
