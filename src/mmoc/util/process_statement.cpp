@@ -63,7 +63,7 @@ AST_Statement processStatement(AST_Statement stm)
     }
     return newAST_Statement_If(sti->condition(), new_if_stms, new_stm_else_list, new_else_stms);
   }
-  case STASSING: {
+  case STASSIGN: {
     AST_Statement_Assign sa = stm->getAsAssign();
     if (sa->exp()->expressionType() == EXPCALLARG) {
       AST_Expression_CallArgs eca = sa->exp()->getAsCallArgs();
