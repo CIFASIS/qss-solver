@@ -126,6 +126,30 @@ bool Statement::checkStateAssignment(Expression exp) const
   return var->isState();
 }
 
+string Statement::printAssignment(AST_Statement_Assign asg) const
+{
+  stringstream code;
+  switch (asg->exp()->expressionType()) {
+  case EXPCALLARG:
+    code << "CMD_terminate();";
+    break;
+  default: {
+    Expression lhs(asg->lhs(), _symbols);
+    Expression rhs(asg->exp(), _symbols);
+    bool state_assignment = checkStateAssignment(lhs);
+    if (state_assignment) {
+      ModelConfig::instance().setInitialCode(true);
+    }
+    code << lhs << " = " << rhs << ";";
+    if (state_assignment) {
+      ModelConfig::instance().setInitialCode(false);
+    }
+    break;
+  }
+  }
+  return code.str();
+}
+
 string Statement::print() const
 {
   stringstream buffer;
@@ -165,17 +189,7 @@ string Statement::print() const
     break;
   }
   case STASSING: {
-    AST_Statement_Assign asg = _stm->getAsAssign();
-    Expression lhs(asg->lhs(), _symbols);
-    Expression rhs(asg->exp(), _symbols);
-    bool state_assignment = checkStateAssignment(lhs);
-    if (state_assignment) {
-      ModelConfig::instance().setInitialCode(true);
-    }
-    buffer << _block << lhs << " = " << rhs << ";";
-    if (state_assignment) {
-      ModelConfig::instance().setInitialCode(false);
-    }
+    buffer << _block << printAssignment(_stm->getAsAssign());
     break;
   }
   case STFOR: {

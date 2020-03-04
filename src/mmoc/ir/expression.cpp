@@ -43,7 +43,6 @@ string Expression::print() const
   if (!isEmpty()) {
     ExpressionPrinter printer(_symbols, ModelConfig::instance().isQss(), _order);
     exp << printer.apply(_exp);
-    buffer << printer.code();
     buffer << exp.str();
     return buffer.str();
   }

@@ -31,11 +31,6 @@ BuiltInFunction::BuiltInFunction() : _functions()
   SymbolTable s;
   _functions.insert("reinit", CompiledFunction("reinit", "", "", s));
   _functions.insert("terminate", CompiledFunction("terminate", "", "", s));
-  _functions.insert("sum", CompiledFunction("sum", "", "", s));
-  _functions.insert("__INNER_PRODUCT", CompiledFunction("__INNER_PRODUCT", "", "", s));
-  _functions.insert("product", CompiledFunction("product", "", "", s));
-  _functions.insert("min", CompiledFunction("min", "", "", s));
-  _functions.insert("max", CompiledFunction("max", "", "", s));
   _functions.insert("abs", CompiledFunction("abs", "", "", s));
   _functions.insert("sign", CompiledFunction("sign", "", "", s));
   _functions.insert("sqrt", CompiledFunction("sqrt", "", "", s));
@@ -59,38 +54,7 @@ BuiltInFunction::BuiltInFunction() : _functions()
   _functions.insert("GQLink_GetBx", CompiledFunction("GKLink_GetBx", "", "", s));
   _functions.insert("GQLink_GetBy", CompiledFunction("GKLink_GetBy", "", "", s));
   _functions.insert("GQLink_GetBz", CompiledFunction("GKLink_GetBz", "", "", s));
-  _reduction.insert("sum", SumFunction());
-  _reduction.insert("product", ProductFunction());
-  _reduction.insert("max", MaxFunction());
-  _reduction.insert("min", MinFunction());
-  _reduction.insert("__INNER_PRODUCT", InnerProductFunction());
 }
-
-std::ostream& operator<<(std::ostream& out, const BuiltInFunctionPrinter& b)
-{
-  out << b.print();
-  return out;
-}
-
-string MaxFunction::print() const { return ""; }
-
-string MaxFunction::code() { return ""; }
-
-string MinFunction::print() const { return ""; }
-
-string MinFunction::code() { return ""; }
-
-string SumFunction::print() const { return ""; }
-
-string SumFunction::code() { return ""; }
-
-string ProductFunction::print() const { return ""; }
-
-string ProductFunction::code() { return ""; }
-
-string InnerProductFunction::print() const { return ""; }
-
-string InnerProductFunction::code() { return ""; }
 
 }  // namespace IR
 }  // namespace MicroModelica
