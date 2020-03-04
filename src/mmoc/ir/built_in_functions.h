@@ -26,57 +26,6 @@
 namespace MicroModelica {
 namespace IR {
 
-class BuiltInFunctionPrinter {
-  public:
-  BuiltInFunctionPrinter(){};
-  ~BuiltInFunctionPrinter(){};
-  friend std::ostream& operator<<(std::ostream& out, const BuiltInFunctionPrinter& b);
-  virtual std::string print() const { return ""; };
-  virtual std::string code() { return ""; };
-};
-
-class MaxFunction : public BuiltInFunctionPrinter {
-  public:
-  MaxFunction(){};
-  ~MaxFunction(){};
-  std::string print() const;
-  std::string code();
-};
-
-class MinFunction : public BuiltInFunctionPrinter {
-  public:
-  MinFunction(){};
-  ~MinFunction(){};
-  std::string print() const;
-  std::string code();
-};
-
-class SumFunction : public BuiltInFunctionPrinter {
-  public:
-  SumFunction(){};
-  ~SumFunction(){};
-  std::string print() const;
-  std::string code();
-};
-
-class ProductFunction : public BuiltInFunctionPrinter {
-  public:
-  ProductFunction(){};
-  ~ProductFunction(){};
-  std::string print() const;
-  std::string code();
-};
-
-class InnerProductFunction : public BuiltInFunctionPrinter {
-  public:
-  InnerProductFunction(){};
-  ~InnerProductFunction(){};
-  std::string print() const;
-  std::string code();
-};
-
-typedef ModelTable<std::string, BuiltInFunctionPrinter> BuiltInFunctionPrinterTable;
-
 class BuiltInFunction {
   public:
   static BuiltInFunction& instance()
@@ -84,15 +33,14 @@ class BuiltInFunction {
     static BuiltInFunction _instance;
     return _instance;
   }
-  ~BuiltInFunction(){};
+  ~BuiltInFunction() = default;
   inline CompiledFunctionTable functions() { return _functions; };
-  inline Option<BuiltInFunctionPrinter> reductionFunctions(string name) { return _reduction[name]; };
   inline bool isValid(std::string func) { return _functions[func].is_initialized(); };
+  inline bool lookup(std::string func_name) { return _functions.lookup(func_name); };
 
   private:
   BuiltInFunction();
   CompiledFunctionTable _functions;
-  BuiltInFunctionPrinterTable _reduction;
 };
 }  // namespace IR
 }  // namespace MicroModelica
