@@ -2,6 +2,7 @@
 ROOT_DIR       := ../..
 SRC_DIR        := .
 UNIT_DIR	   := $(SRC_DIR)/unit
+UNIT_IR_DIR	   := $(UNIT_DIR)/ir	
 INT_DIR   	   := $(SRC_DIR)/integration
 MOCK_DIR 	   := $(SRC_DIR)/mock
 USR_DIR        := $(SRC_DIR)/usr
@@ -25,9 +26,11 @@ RUN_TESTS   := test-mmoc
 
 # Source files.
 MAIN_SRC = $(SRC_DIR)/main.cpp
-UNIT_SRC = $(UNIT_DIR)/dummy.cpp
+
+# Unit tests
+UNIT_SRC = $(UNIT_IR_DIR)/test_statement.cpp 	
+
 #INT_SRC = $(INT_DIR)/dummy.cpp
-#MOCK_SRC = $(MOCK_DIR)/dummy.cpp
 
 # Objects
 UNIT_OBJ=$(addprefix $(BUILD_DIR)/unit_, $(notdir $(UNIT_SRC:.cpp=.o)))
