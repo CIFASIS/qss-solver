@@ -35,26 +35,14 @@ namespace STATEMENT {
 typedef enum { LHS, RHS, LHS_DISCRETES, LHS_STATES } AssignTerm;
 }
 
-/**
- *
- */
 class Statement {
   public:
-  /**
-   *
-   * @param stm
-   */
   Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, bool initial = false, const std::string& block = "");
   Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, Option<Range> range, bool initial = false,
             const std::string& block = "");
-  /**
-   *
-   */
   Statement() : _stm(nullptr), _range(), _symbols(), _block(), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states(){};
-  /**
-   *
-   */
   ~Statement() = default;
+
   inline bool hasRange() { return _range.is_initialized(); };
   inline Util::SymbolTable calledFunctions() { return _calledFunctions; };
   friend std::ostream& operator<<(std::ostream& out, const Statement& s);
@@ -95,4 +83,5 @@ class Statement {
 typedef ModelTable<int, Statement> StatementTable;
 }  // namespace IR
 }  // namespace MicroModelica
+
 #endif /* MMO_STATEMENT_H_ */
