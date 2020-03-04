@@ -72,7 +72,6 @@ class CompiledFunction {
   friend std::ostream& operator<<(std::ostream& out, const CompiledFunction& cf);
   std::string print() const;
   void setArguments(AST_ExpressionList arguments) { _arguments = arguments; };
-  std::string code();
 
   private:
   string _name;

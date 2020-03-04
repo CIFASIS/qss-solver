@@ -31,7 +31,7 @@ using namespace IR;
 namespace Util {
 
 ExpressionPrinter::ExpressionPrinter(const VarSymbolTable& symbols, bool is_qss, int order)
-    : _symbols(symbols), _code(), _is_qss(is_qss), _order(order)
+    : _symbols(symbols), _is_qss(is_qss), _order(order)
 {
 }
 
@@ -53,13 +53,13 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
     CompiledFunctionTable fs = Utils::instance().compiledFunctions();
     Option<CompiledFunction> f = fs[*call->name()];
     if (!f) {
-      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "expression_printer.cpp:56 %s", call->name()->c_str());
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "Function definition: expression_printer.cpp:56 %s",
+                            call->name()->c_str());
       break;
     }
     Utils::instance().setSymbols(_symbols);
     f->setArguments(call->arguments());
     buffer << f.get();
-    _code = f->code();
     break;
   }
   case EXPCALLARG: {
