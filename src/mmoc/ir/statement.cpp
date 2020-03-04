@@ -105,7 +105,7 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
     }
     break;
   }
-  case STASSING: {
+  case STASSIGN: {
     if (asg == STATEMENT::LHS || asg == STATEMENT::LHS_DISCRETES || asg == STATEMENT::LHS_STATES) {
       asgs.push_back(Expression(_stm->getAsAssign()->lhs(), _symbols));
     } else {
@@ -216,7 +216,7 @@ string Statement::print() const
     }
     break;
   }
-  case STASSING: {
+  case STASSIGN: {
     buffer << _block << printAssignment(_stm->getAsAssign());
     break;
   }
@@ -247,7 +247,7 @@ string Statement::print() const
   return buffer.str();
 }
 
-bool Statement::isAssignment() const { return _stm->statementType() == STASSING; }
+bool Statement::isAssignment() const { return _stm->statementType() == STASSIGN; }
 
 Expression Statement::emptyRef()
 {
