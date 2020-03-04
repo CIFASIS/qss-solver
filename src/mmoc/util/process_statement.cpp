@@ -65,13 +65,16 @@ AST_Statement processStatement(AST_Statement stm)
   }
   case STASSING: {
     AST_Statement_Assign sa = stm->getAsAssign();
-    AST_Expression_ComponentReference cr = sa->lhs();
-    string name = cr->name();
     if (sa->exp()->expressionType() == EXPCALLARG) {
-      if (Utils::instance().checkBuiltInFunctions("reinit")) {
-        AST_Expression_CallArgs eca = sa->exp()->getAsCallArgs();
-        if (eca->arguments()->size() > 2) {
-          Error::instance().add(eca->lineNum(), EM_IR | EM_WRONG_EXP, ER_Error, "Expected 2 arguments, found %d", eca->arguments()->size());
+      AST_Expression_CallArgs eca = sa->exp()->getAsCallArgs();
+      AST_Expression_ComponentReference cr = sa->lhs();
+      int arg_num = eca->arguments()->size();
+      string function_name = cr->name();
+      const string REINIT = "reinit";
+      const string TERMINATE = "terminate";
+      if (function_name.compare(REINIT) == 0) {
+        if (arg_num > 2) {
+          Error::instance().add(eca->lineNum(), EM_IR | EM_WRONG_EXP, ER_Error, "Expected 2 arguments, found %d", arg_num);
         }
         AST_Expression e = AST_ListFirst(eca->arguments());
         AST_Expression_ComponentReference lhs = nullptr;
@@ -102,6 +105,12 @@ AST_Statement processStatement(AST_Statement stm)
             }
           }
           return newAST_Statement_Assign(lhs, rhs);
+        }
+      } else if (function_name.compare(TERMINATE) == 0) {
+        assert(sa->lhs() != nullptr);
+        assert(sa->exp() != nullptr);
+        if (arg_num) {
+          Error::instance().add(eca->lineNum(), EM_IR | EM_WRONG_EXP, ER_Error, "No arguments expected, found %d", arg_num);
         }
       }
     }
