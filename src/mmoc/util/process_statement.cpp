@@ -19,9 +19,11 @@
 
 #include "../ast/ast_builder.h"
 #include "../ir/helpers.h"
+#include "../ir/reduction_functions.h"
 #include "error.h"
 #include "util.h"
 #include "symbol_table.h"
+#include "./visitors/convert_disc_red.h"
 
 #include "process_statement.h"
 
@@ -122,6 +124,59 @@ AST_Statement processStatement(AST_Statement stm)
   }
   assert(false);
   return nullptr;
+}
+
+void applyReduction(AST_Statement_Assign asg, AST_StatementList stms, AST_StatementListIterator stm_it)
+{
+  VarSymbolTable symbols = Utils::instance().symbols();
+  ReductionFunctions<AST_Statement, ConvertDiscRed> reduction_functions(asg->exp(), symbols,
+                                                                        Utils::instance().variable(asg->lhs(), symbols));
+  AST_Expression new_exp = reduction_functions.apply();
+  asg->setExp(new_exp);
+  list<AST_Statement> code = reduction_functions.code();
+  if (code.size()) {
+    // In case of statements we only add one additional statement.
+    assert(code.size() == 1);
+    AST_Statement ast = code.front();
+    assert(ast != nullptr);
+    AST_ListInsert(stms, stm_it++, ast);
+  }
+}
+
+void reduceStatement(AST_Statement stm, AST_StatementList stms, AST_StatementListIterator stm_it)
+{
+  if (stm->statementType() == STASSING) {
+    AST_Statement_Assign asg = stm->getAsAssign();
+    applyReduction(asg, stms, stm_it);
+  } else if (stm->statementType() == STFOR) {
+    AST_Statement_For stf = stm->getAsFor();
+    AST_StatementList for_stms = stf->statements();
+    AST_StatementListIterator for_it;
+    foreach (for_it, for_stms) {
+      reduceStatement(current_element(for_it), for_stms, for_it);
+    }
+  } else if (stm->statementType() == STIF) {
+    AST_Statement_If stm_if = stm->getAsIf();
+    AST_StatementList if_stms = stm_if->statements();
+    AST_StatementListIterator if_it;
+    foreach (if_it, if_stms) {
+      reduceStatement(current_element(if_it), if_stms, if_it);
+    }
+    AST_Statement_ElseList else_if_stms = stm_if->else_if();
+    AST_Statement_ElseListIterator else_if_it;
+    foreach (else_if_it, else_if_stms) {
+      if_stms = current_element(else_if_it)->statements();
+      foreach (if_it, if_stms) {
+        reduceStatement(current_element(if_it), if_stms, if_it);
+      }
+    }
+    if_stms = stm_if->else_statements();
+    if (!if_stms->empty()) {
+      foreach (if_it, if_stms) {
+        reduceStatement(current_element(if_it), if_stms, if_it);
+      }
+    }
+  }
 }
 
 }  // namespace Util
