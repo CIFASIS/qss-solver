@@ -191,6 +191,9 @@ ModelAnnotation::ModelAnnotation(VarSymbolTable &symbolTable)
 
 void ModelAnnotation::eventComment(AST_Comment x)
 {
+  if (x == nullptr) {
+    return;
+  }
   _weight = -1;
   AST_ArgumentList al = x->arguments();
   AST_ArgumentListIterator it;
