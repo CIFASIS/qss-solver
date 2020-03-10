@@ -322,5 +322,27 @@ bool Utils::checkCompiledFunctions(string name)
 }
 
 bool Utils::checkBuiltInFunctions(string name) { return BuiltInFunction::instance().isValid(name); }
+
+Variable Utils::variable(AST_Expression exp, VarSymbolTable &symbols)
+{
+  string var_name;
+  ExpressionType type = exp->expressionType();
+  if (type == EXPCOMPREF) {
+    AST_Expression_ComponentReference var_exp = exp->getAsComponentReference();
+    var_name = *AST_ListFirst(var_exp->names());
+  } else if (type == EXPDERIVATIVE) {
+    AST_Expression_Derivative der = exp->getAsDerivative();
+    AST_Expression args = AST_ListFirst(der->arguments());
+    assert(args->expressionType() == EXPCOMPREF);
+    AST_Expression_ComponentReference var_exp = args->getAsComponentReference();
+    var_name = *AST_ListFirst(var_exp->names());
+  }
+  Option<Variable> var = symbols[var_name];
+  if (!var) {
+    Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "utils.cpp:342 %s", var_name.c_str());
+  }
+  return var.get();
+}
+
 }  // namespace Util
 }  // namespace MicroModelica
