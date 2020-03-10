@@ -219,6 +219,15 @@ string Statement::print() const
     buffer << range.end();
     break;
   }
+  case STOUTASSING: {
+    AST_Statement_OutputAssigment out_stm = _stm->getAsOutputAssigment();
+    SymbolTable s;
+    CompiledFunction comp_func(out_stm->function()->cname(), "", "", s);
+    comp_func.setArguments(out_stm->arguments());
+    buffer << comp_func << endl;
+    ;
+    break;
+  }
   default:
     break;
   }
