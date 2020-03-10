@@ -54,16 +54,8 @@ void ConvertDiscRed::setReduction(int red_operator)
   _code.clear();
   _variables.clear();
   _has_reduction = false;
-  switch (_reduction) {
-  case DiscReduction::MAX:
-    _oper = ">";
-    break;
-  case DiscReduction::MIN:
-    _oper = "<";
-    break;
-  default:
-    break;
-  }
+  string opers[] = {">", "<"};
+  _oper = opers[_reduction];
 }
 
 AST_Expression ConvertDiscRed::foldTraverseElement(AST_Expression exp)
@@ -85,7 +77,7 @@ AST_Expression ConvertDiscRed::foldTraverseElement(AST_Expression exp)
       AST_Expression_ComponentReference cr = arg->getAsComponentReference();
       Option<Variable> variable = _symbols[cr->name()];
       if (!variable) {
-        Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "convert_cont_red.cpp:61 %s", cr->name());
+        Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "convert_disc_red.cpp:61 %s", cr->name());
       }
       stringstream code;
       int res = 0;
@@ -94,11 +86,16 @@ AST_Expression ConvertDiscRed::foldTraverseElement(AST_Expression exp)
       if (res) {
         Error::instance().add(exp->lineNum(), EM_IR | EM_WRONG_EXP, ER_Error, "Generating %s reduction function code.", oper_name);
       }
+      cout << code.str() << endl;
+      code.str("");
       // @TODO check dimensions for variables.
       code << "for i in 2:" << variable->size() << " loop "
-           << "if " << cr->name() << "[i] " << _oper << _lhs << "then " << _lhs << " := " << cr->name() << "[i]; "
-           << "end if";
+           << "if " << cr->name() << "[i] " << _oper << " " << _lhs.name() << " then " << _lhs.name() << " := " << cr->name() << "[i]; "
+           << "end if; end for";
+      cout << code.str() << endl;
       AST_Statement stm = parseStatement(code.str(), &res);
+      cout << "TIPO DEL STM:" << endl;
+      cout << stm->statementType() << endl;
       if (res) {
         Error::instance().add(exp->lineNum(), EM_IR | EM_EQ_DEF, ER_Error, "Generating %s reduction function code.", oper_name);
       }
