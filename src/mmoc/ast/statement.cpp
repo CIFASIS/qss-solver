@@ -96,6 +96,8 @@ string AST_Statement_Assign_::print() const
   return ret.str();
 }
 
+void AST_Statement_Assign_::setExp(AST_Expression exp) { _exp = exp; };
+
 /* For statement Class */
 
 AST_Statement_For_::AST_Statement_For_(AST_ForIndexList index, AST_StatementList sts) : _sts(sts), _ind(index) {}

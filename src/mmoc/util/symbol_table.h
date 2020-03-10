@@ -169,7 +169,7 @@ class VarSymbolTable : public ModelTable<VarName, Variable> {
   VarSymbolTable();
   ~VarSymbolTable() = default;
   void initialize(TypeSymbolTable tst);
-  void insert(VarName n, Variable vi);
+  void insert(VarName name, Variable variable);
   inline bool parameters() { return _parameters; };
 
   private:

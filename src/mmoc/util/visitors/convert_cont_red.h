@@ -17,23 +17,34 @@
 
  ******************************************************************************/
 
-#ifndef CONVERT_SUM_H_
-#define CONVERT_SUM_H_
+#ifndef CONVERT_CONT_RED_H_
+#define CONVERT_CONT_RED_H_
 
 #include "../ast_util.h"
 
 namespace MicroModelica {
 namespace Util {
-class ConvertSum : public AST_Expression_Visitor<AST_Expression> {
+class ConvertContRed : public AST_Expression_Visitor<AST_Expression> {
   public:
-  ConvertSum(VarSymbolTable &symbols);
-  ~ConvertSum() = default;
+  typedef enum : int { SUM = 0, PROD, COUNT } ContReduction;
 
-  bool hasSum();
+  ConvertContRed(VarSymbolTable &symbols);
+  ~ConvertContRed() = default;
+
+  void setReduction(int red_operator);
+
+  bool hasReduction();
 
   list<AST_Equation> code();
 
   list<Variable> variables();
+
+  int operators() const;
+
+  void setLHS(Variable lhs);
+
+  protected:
+  std::string operatorTerm(std::string);
 
   private:
   AST_Expression foldTraverseElement(AST_Expression exp);
@@ -41,10 +52,13 @@ class ConvertSum : public AST_Expression_Visitor<AST_Expression> {
   AST_Expression foldTraverseElementUMinus(AST_Expression exp);
 
   VarSymbolTable &_symbols;
-  bool _has_sum;
+  bool _has_reduction;
   list<AST_Equation> _code;
   list<Variable> _variables;
+  ContReduction _reduction;
+  std::map<ContReduction, std::string> _oper_names;
+  std::string _oper;
 };
 }  // namespace Util
 }  // namespace MicroModelica
-#endif /* CONVERT_SUM_H_ */
+#endif /* CONVERT_CONT_RED_H_ */

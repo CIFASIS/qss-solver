@@ -47,13 +47,7 @@ typedef ModelTable<std::string, std::string> ImportTable;
 
 typedef ModelTable<std::string, std::string> SymbolTable;
 
-/**
- *
- */
 #define SLASH "/"
-/**
- *
- */
 #define BINOPS 18
 
 #if __x86_64__
@@ -64,9 +58,6 @@ typedef int grp_t;
 
 #define TAB "\t"
 
-/**
- *
- */
 class Utils {
   public:
   static Utils& instance()
@@ -115,6 +106,7 @@ class Utils {
   inline void unsetLocalInitSymbols() { _init_symbols = false; };
   inline std::string fileName() { return _file_name; };
   inline int id() { return _ids++; };
+  Variable variable(AST_Expression exp, VarSymbolTable& symbols);
 
   private:
   Utils();

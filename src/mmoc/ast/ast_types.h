@@ -652,6 +652,16 @@ list<T1> *AST_ListRemove(list<T1> *l, T1 e)
   return l;
 }
 
+template <typename T1>
+void AST_ListInsert(list<T1> *l1, typename std::list<T1>::iterator it, T1 e)
+{
+  typename std::list<T1>::iterator insert_it = it;
+  if (insert_it != l1->end()) {
+    insert_it++;
+  }
+  l1->insert(insert_it, 1, e);
+}
+
 /**
  *
  * @param l

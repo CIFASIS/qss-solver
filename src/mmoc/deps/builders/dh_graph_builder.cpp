@@ -52,7 +52,11 @@ void DHGraphBuilder::addStatements(StatementTable stms, DepsGraph& graph, Expres
       vp.setType(VERTEX::Statement);
       sv.setExp(e);
       sv.setEvent(exp);
-      if (range) {
+
+      if (stm.isForStatement()) {
+        assert(stm.range());
+        sv.setRange(stm.range().get());
+      } else if (range) {
         sv.setRange(range.get());
       }
       //      vp.stm.lhs = *it;

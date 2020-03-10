@@ -155,32 +155,17 @@ string ExpressionPrinter::foldTraverseElement(string l, string r, BinOpType bot)
   case BINOPADD:
     buffer << l << "+" << r;
     break;
-  case BINOPELADD:
-    buffer << l << "IMPLEMENT" << r;
-    break;
   case BINOPSUB:
     buffer << l << "-" << r;
-    break;
-  case BINOPELSUB:
-    buffer << l << "IMPLEMENT" << r;
     break;
   case BINOPDIV:
     buffer << l << "/" << r;
     break;
-  case BINOPELDIV:
-    buffer << l << "IMPLEMENT" << r;
-    break;
   case BINOPMULT:
     buffer << l << "*" << r;
     break;
-  case BINOPELMULT:
-    buffer << l << "IMPLEMENT" << r;
-    break;
   case BINOPEXP:
     buffer << "pow(" << l << "," << r << ")";
-    break;
-  case BINOPELEXP:
-    buffer << l << "IMPLEMENT" << r;
     break;
   default:
     return "NOT IMPLEMENTED";

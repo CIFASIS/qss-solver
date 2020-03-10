@@ -69,6 +69,7 @@ class Statement {
   ExpressionList lhsDiscretes() const { return _lhs_discretes; };
   ExpressionList lhsStates() const { return _lhs_states; };
   bool isAssignment() const;
+  bool isForStatement() const;
   inline Option<Range> range() { return _range; };
 
   protected:
@@ -77,6 +78,7 @@ class Statement {
   Expression emptyRef();
   bool checkStateAssignment(Expression exp) const;
   std::string printAssignment(AST_Statement_Assign asg) const;
+  void setRange();
 
   private:
   AST_Statement _stm;

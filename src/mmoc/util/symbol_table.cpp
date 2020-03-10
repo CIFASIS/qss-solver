@@ -271,11 +271,12 @@ void VarSymbolTable::initialize(TypeSymbolTable ty)
   insert("time", v);
 }
 
-void VarSymbolTable::insert(VarName n, Variable vi)
+void VarSymbolTable::insert(VarName name, Variable variable)
 {
-  vi.setName(n);
-  ModelTable<VarName, Variable>::insert(n, vi);
-  if (vi.isParameter()) {
+  assert(name != "");
+  variable.setName(name);
+  ModelTable<VarName, Variable>::insert(name, variable);
+  if (variable.isParameter()) {
     _parameters = true;
   }
 }

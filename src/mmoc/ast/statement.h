@@ -190,6 +190,7 @@ class AST_Statement_Assign_ : public AST_Statement_ {
    * @return
    */
   AST_Expression exp() const;
+  void setExp(AST_Expression exp);
   /**
    *
    * @return
