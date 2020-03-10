@@ -53,14 +53,11 @@ class ExternalFunction {
 
 typedef ModelTable<int, ExternalFunction> ExternalFunctionTable;
 
-/**
- *
- */
 class CompiledFunction {
   public:
   CompiledFunction();
   CompiledFunction(std::string name, std::string includeDir, std::string libraryDir, Util::SymbolTable& libraries, std::string prefix = "");
-  ~CompiledFunction(){};
+  ~CompiledFunction() = default;
   inline bool hasIncludeDirectory() const { return !_includeDirectory.empty(); };
   inline bool hasLibraryDirectory() const { return !_libraryDirectory.empty(); };
   inline bool hasLibraries() const { return _libraries.size() > 0; };
@@ -84,9 +81,6 @@ class CompiledFunction {
 
 typedef ModelTable<std::string, CompiledFunction> CompiledFunctionTable;
 
-/**
- *
- */
 class CompiledPackage {
   public:
   CompiledPackage();
@@ -117,8 +111,7 @@ typedef enum { Return, Break } ReturnStatementType;
 
 class FunctionPrinter {
   public:
-  FunctionPrinter(){};
-  ~FunctionPrinter(){};
+  ~FunctionPrinter() = default;
   std::string loop(int end);
   std::string endLoop();
   std::string beginSwitch();
@@ -205,6 +198,7 @@ class DepInfo {
   Index _index;
   list<std::string> _deps;
 };
+
 }  // namespace IR
 }  // namespace MicroModelica
 
