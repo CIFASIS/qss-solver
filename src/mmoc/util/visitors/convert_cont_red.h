@@ -57,6 +57,7 @@ class ConvertContRed : public AST_Expression_Visitor<AST_Expression> {
   list<Variable> _variables;
   ContReduction _reduction;
   std::map<ContReduction, std::string> _oper_names;
+  std::string _oper;
 };
 }  // namespace Util
 }  // namespace MicroModelica

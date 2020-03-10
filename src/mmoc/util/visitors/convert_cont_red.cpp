@@ -31,7 +31,7 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-ConvertContRed::ConvertContRed(VarSymbolTable &symbols) : _symbols(symbols), _has_reduction(false), _code(), _oper_names()
+ConvertContRed::ConvertContRed(VarSymbolTable &symbols) : _symbols(symbols), _has_reduction(false), _code(), _oper_names(), _oper()
 {
   _oper_names[ContReduction::SUM] = "sum";
   _oper_names[ContReduction::PROD] = "prod";
@@ -54,6 +54,8 @@ void ConvertContRed::setReduction(int red_operator)
   _code.clear();
   _variables.clear();
   _has_reduction = false;
+  string opers[] = {"+", "*"};
+  _oper = opers[_reduction];
 }
 
 AST_Expression ConvertContRed::foldTraverseElement(AST_Expression exp)
@@ -91,7 +93,8 @@ AST_Expression ConvertContRed::foldTraverseElement(AST_Expression exp)
       code.str("");
       _code.push_back(eq_1);
       // @TODO check dimensions for variables.
-      code << "for i in 2:" << variable->size() << " loop " << var_name << "[i] = " << var_name << "[i-1] + " << cr->name() << "[i]; "
+      code << "for i in 2:" << variable->size() << " loop " << var_name << "[i] = " << var_name << "[i-1] " << _oper << " " << cr->name()
+           << "[i]; "
            << "end for";
       AST_Equation eq_i = parseEquation(code.str(), &res);
       cout << code.str() << endl;
@@ -105,13 +108,13 @@ AST_Expression ConvertContRed::foldTraverseElement(AST_Expression exp)
       if (res) {
         Error::instance().add(exp->lineNum(), EM_IR | EM_WRONG_EXP, ER_Error, "Generating %s reduction function code.", oper_name);
       }
-      vector<int> s;
-      s.push_back(variable->size());
+      vector<int> size;
+      size.push_back(variable->size());
       TypePrefix eq_type = TP_INPUT;
-      Variable vi(newType_Real(), eq_type, nullptr, nullptr, s, true);
-      vi.setName(var_name);
-      _symbols.insert(var_name, vi);
-      _variables.push_back(vi);
+      Variable aux_var(newType_Real(), eq_type, nullptr, nullptr, size, true);
+      aux_var.setName(var_name);
+      _symbols.insert(var_name, aux_var);
+      _variables.push_back(aux_var);
       _has_reduction = true;
       return replace;
     }
