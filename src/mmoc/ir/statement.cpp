@@ -47,11 +47,22 @@ void Statement::initialize()
   StatementCalledFunctions cf;
   Utils::instance().setSymbols(_symbols);
   _stm = processStatement(_stm);
+  setRange();
   _calledFunctions = cf.apply(_stm);
   _lhs_assignments = generateExps(STATEMENT::LHS);
   _rhs_assignments = generateExps(STATEMENT::RHS);
   _lhs_discretes = generateExps(STATEMENT::LHS_DISCRETES);
   _lhs_states = generateExps(STATEMENT::LHS_STATES);
+}
+
+void Statement::setRange()
+{
+  // In case of for statements, the statement can have a range even if
+  // defined in  a single event, so change the range accordingly.
+  if (_stm->statementType() == STFOR) {
+    AST_Statement_For for_stm = _stm->getAsFor();
+    _range = Range(for_stm, _symbols);
+  }
 }
 
 ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
@@ -106,8 +117,9 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
     AST_Statement_For stf = _stm->getAsFor();
     AST_StatementList stms = stf->statements();
     AST_StatementListIterator stmit;
+    Range range(stf, _symbols);
     foreach (stmit, stms) {
-      Statement st(current_element(stmit), _symbols);
+      Statement st(current_element(stmit), _symbols, range);
       asgs.splice(asgs.end(), st.generateExps(asg));
     }
     break;
@@ -125,6 +137,8 @@ bool Statement::checkStateAssignment(Expression exp) const
   assert(var);
   return var->isState();
 }
+
+bool Statement::isForStatement() const { return _stm->statementType() == STFOR; }
 
 string Statement::print() const
 {

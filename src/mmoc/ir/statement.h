@@ -69,6 +69,7 @@ class Statement {
   ExpressionList lhsDiscretes() const { return _lhs_discretes; };
   ExpressionList lhsStates() const { return _lhs_states; };
   bool isAssignment() const;
+  bool isForStatement() const;
   inline Option<Range> range() { return _range; };
 
   protected:
@@ -76,6 +77,7 @@ class Statement {
   ExpressionList generateExps(STATEMENT::AssignTerm asg);
   Expression emptyRef();
   bool checkStateAssignment(Expression exp) const;
+  void setRange();
 
   private:
   AST_Statement _stm;
