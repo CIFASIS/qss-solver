@@ -69,6 +69,7 @@ class CompiledFunction {
   friend std::ostream& operator<<(std::ostream& out, const CompiledFunction& cf);
   std::string print() const;
   void setArguments(AST_ExpressionList arguments) { _arguments = arguments; };
+  void setOutputArguments(AST_ExpressionList output_arguments) { _output_arguments = output_arguments; };
 
   private:
   string _name;
@@ -77,6 +78,7 @@ class CompiledFunction {
   string _libraryDirectory;
   Util::SymbolTable _libraries;
   AST_ExpressionList _arguments;
+  AST_ExpressionList _output_arguments;
 };
 
 typedef ModelTable<std::string, CompiledFunction> CompiledFunctionTable;
