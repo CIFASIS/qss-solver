@@ -54,7 +54,7 @@ class Statement {
   /**
    *
    */
-  ~Statement(){};
+  ~Statement() = default;
   inline bool hasRange() { return _range.is_initialized(); };
   inline Util::SymbolTable calledFunctions() { return _calledFunctions; };
   friend std::ostream& operator<<(std::ostream& out, const Statement& s);
