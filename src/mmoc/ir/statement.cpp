@@ -124,6 +124,20 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
     }
     break;
   }
+  case STOUTASSING: {
+    AST_Statement_OutputAssigment out_stm = _stm->getAsOutputAssigment();
+    if (asg == STATEMENT::LHS || asg == STATEMENT::LHS_DISCRETES || asg == STATEMENT::LHS_STATES) {
+      AST_ExpressionList exps = out_stm->out_expressions();
+      AST_ExpressionListIterator exp_it;
+      foreach (exp_it, exps) {
+        asgs.push_back(Expression(current_element(exp_it), _symbols));
+      }
+    } else {
+      AST_Expression call_exp = newAST_Expression_Call(newAST_String(out_stm->function()->cname()), nullptr, out_stm->arguments());
+      asgs.push_back(Expression(call_exp, _symbols));
+    }
+    break;
+  }
   default:
     break;
   }
@@ -217,6 +231,14 @@ string Statement::print() const
       buffer << st << endl;
     }
     buffer << range.end();
+    break;
+  }
+  case STOUTASSING: {
+    AST_Statement_OutputAssigment out_stm = _stm->getAsOutputAssigment();
+    AST_Expression call_exp =
+        newAST_Expression_Call(newAST_String(out_stm->function()->cname()), nullptr, out_stm->arguments(), out_stm->out_expressions());
+    Expression call(call_exp, _symbols);
+    buffer << call << ";";
     break;
   }
   default:

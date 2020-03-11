@@ -23,6 +23,7 @@
 #include <string>
 
 #include "../ast/ast_types.h"
+#include "../ast/ast_builder.h"
 #include "../ast/expression.h"
 #include "../ast/statement.h"
 #include "../ast/equation.h"
@@ -288,11 +289,9 @@ class AST_Statement_Visitor {
       return c;
     }
     case STOUTASSING: {
-      AST_ExpressionListIterator it;
-      AST_ExpressionList l = stm->getAsOutputAssigment()->arguments();
-      foreach (it, l) {
-        c = foldTraverse(c, foldTraverse(_visitor.apply(current_element(it))));
-      }
+      AST_Statement_OutputAssigment out_stm = stm->getAsOutputAssigment();
+      AST_Expression call_exp = newAST_Expression_Call(new string(out_stm->function()->cname()), nullptr, out_stm->arguments());
+      c = foldTraverse(_visitor.apply(call_exp));
       return c;
     }
     default:

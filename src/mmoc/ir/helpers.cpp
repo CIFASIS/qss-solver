@@ -91,6 +91,14 @@ string CompiledFunction::print() const
     buffer << ex;
     buffer << (i < size ? "," : "");
   }
+  size = _output_arguments->size();
+  i = 0;
+  foreach (it, _output_arguments) {
+    i++;
+    Expression ex(current_element(it), Utils::instance().symbols());
+    buffer << "&" << ex;
+    buffer << (i < size ? "," : "");
+  }
   buffer << ")";
   return buffer.str();
 }

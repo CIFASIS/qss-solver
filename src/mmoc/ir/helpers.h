@@ -53,14 +53,11 @@ class ExternalFunction {
 
 typedef ModelTable<int, ExternalFunction> ExternalFunctionTable;
 
-/**
- *
- */
 class CompiledFunction {
   public:
   CompiledFunction();
   CompiledFunction(std::string name, std::string includeDir, std::string libraryDir, Util::SymbolTable& libraries, std::string prefix = "");
-  ~CompiledFunction(){};
+  ~CompiledFunction() = default;
   inline bool hasIncludeDirectory() const { return !_includeDirectory.empty(); };
   inline bool hasLibraryDirectory() const { return !_libraryDirectory.empty(); };
   inline bool hasLibraries() const { return _libraries.size() > 0; };
@@ -72,6 +69,7 @@ class CompiledFunction {
   friend std::ostream& operator<<(std::ostream& out, const CompiledFunction& cf);
   std::string print() const;
   void setArguments(AST_ExpressionList arguments) { _arguments = arguments; };
+  void setOutputArguments(AST_ExpressionList output_arguments) { _output_arguments = output_arguments; };
 
   private:
   string _name;
@@ -80,13 +78,11 @@ class CompiledFunction {
   string _libraryDirectory;
   Util::SymbolTable _libraries;
   AST_ExpressionList _arguments;
+  AST_ExpressionList _output_arguments;
 };
 
 typedef ModelTable<std::string, CompiledFunction> CompiledFunctionTable;
 
-/**
- *
- */
 class CompiledPackage {
   public:
   CompiledPackage();
@@ -117,8 +113,7 @@ typedef enum { Return, Break } ReturnStatementType;
 
 class FunctionPrinter {
   public:
-  FunctionPrinter(){};
-  ~FunctionPrinter(){};
+  ~FunctionPrinter() = default;
   std::string loop(int end);
   std::string endLoop();
   std::string beginSwitch();
@@ -205,6 +200,7 @@ class DepInfo {
   Index _index;
   list<std::string> _deps;
 };
+
 }  // namespace IR
 }  // namespace MicroModelica
 

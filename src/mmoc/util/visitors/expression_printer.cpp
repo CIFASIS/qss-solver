@@ -59,6 +59,7 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
     }
     Utils::instance().setSymbols(_symbols);
     f->setArguments(call->arguments());
+    f->setOutputArguments(call->outputArguments());
     buffer << f.get();
     break;
   }

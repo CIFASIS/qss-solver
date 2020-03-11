@@ -326,6 +326,11 @@ AST_Expression newAST_Expression_Call(AST_String name, AST_String rest, AST_Expr
   return new AST_Expression_Call_(name, args);
 }
 
+AST_Expression newAST_Expression_Call(AST_String name, AST_String rest, AST_ExpressionList args, AST_ExpressionList output_args)
+{
+  return new AST_Expression_Call_(name, args, output_args);
+}
+
 AST_Expression newAST_Expression_Colon() { return new AST_Expression_Colon_(); }
 
 AST_Expression newAST_Expression_BooleanNot(AST_Expression e) { return new AST_Expression_BooleanNot_(e); }

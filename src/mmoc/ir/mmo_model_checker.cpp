@@ -407,9 +407,6 @@ void ModelChecker::visit(AST_Statement x)
   case STBREAK:
     Error::instance().add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Break statement.");
     break;
-  case STOUTASSING:
-    Error::instance().add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Output assignment statement.");
-    break;
   case STFOR: {
     AST_Statement_For ef = x->getAsFor();
     if (ef->forIndexList()->size() == 0) {
