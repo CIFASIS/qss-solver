@@ -42,13 +42,10 @@ class CalledFunctions : public AST_Expression_Visitor<SymbolTable> {
   SymbolTable _symbols;
 };
 
-/**
- *
- */
 class StatementCalledFunctions : public AST_Statement_Visitor<SymbolTable, SymbolTable, CalledFunctions> {
   public:
   StatementCalledFunctions() : AST_Statement_Visitor(CalledFunctions()){};
-  ~StatementCalledFunctions(){};
+  ~StatementCalledFunctions() = default;
 
   private:
   inline SymbolTable foldTraverse(SymbolTable symbols) { return symbols; };
