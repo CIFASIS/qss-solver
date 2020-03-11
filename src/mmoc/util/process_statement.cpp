@@ -128,6 +128,9 @@ AST_Statement processStatement(AST_Statement stm)
     }
     return newAST_Statement_For(stf->forIndexList(), new_for_stms);
   }
+  case STOUTASSING: {
+    return stm;
+  }
   default:
     break;
   }
