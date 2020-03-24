@@ -197,7 +197,8 @@ enum TypePrefix {
   TP_STREAM = (1 << 6),
   TP_CONSTANT = (1 << 7),
   TP_FOR = (1 << 8),
-  TP_EQ = (1 << 9)
+  TP_EQ = (1 << 9),
+  TP_LOCAL = (1 << 10)
 };
 
 enum ArgumentType { AR_MODIFICATION, AR_REDECLARATION };
