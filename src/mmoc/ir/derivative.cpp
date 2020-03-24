@@ -56,6 +56,8 @@ AST_Equation_Equality EquationDerivator::derivate(AST_Equation_Equality eq)
   return (newAST_Equation_Equality(to_exp.convert(der_left), to_exp.convert(der_right))->getAsEquality());
 }
 
+list<Equation> ExpressionDerivator::terms() const { return _der_terms; };
+
 AST_Expression ExpressionDerivator::derivate(AST_Expression exp, Expression e)
 {
   VarSymbolTable symbols = Utils::instance().symbols();
@@ -77,10 +79,10 @@ string ExpressionDerivator::lookup(Index index, Option<Range> range)
     if (var->name() == usage.name()) {
       // Compare ranges to see if the replace is a match.
       Option<Range> eq_range = eq.range();
-      if (!eq_range && !range) {
+      if (!eq_range && !range) {  // Scalar value
         return terms.second;
-      } else if (eq_range && range) {
-        if (range->intersect(eq.range().get())) {
+      } else if (eq_range && range) {  // Look for intersections in this case.
+        if (eq_range->intersect(range.get())) {
           return terms.second;
         }
       }
@@ -98,10 +100,9 @@ AST_ExpressionList ExpressionDerivator::generateChainRule(list<JacAlgTerm> alg_t
   ReplaceDer replace_der(symbols);
   AST_ExpressionList crs = newAST_ExpressionList();
   for (JacAlgTerm jac_alg_term : alg_terms) {
-    AST_ExpressionListIterator it;
-    AST_ExpressionList alg_vars = jac_alg_term.algExps();
-    foreach (it, alg_vars) {
-      AST_Expression e = current_element(it);
+    JacAlgTerm::AlgTermList alg_vars = jac_alg_term.algExps();
+    for (JacAlgTerm::AlgTermInfo alg_term_info : alg_vars) {
+      AST_Expression e = alg_term_info.first;
       Index index = Index(Expression(e, symbols));
       string usage = index.modelicaExp();
       Variable variable = index.variable();
@@ -112,7 +113,7 @@ AST_ExpressionList ExpressionDerivator::generateChainRule(list<JacAlgTerm> alg_t
       GiNaC::symbol ginac_usage = dir[usage];
       GiNaC::ex der_exp = dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff(ginac_usage);
       AST_Expression jac_exp = replace_der.apply(to_exp.convert(der_exp));
-      string rep_var = lookup(index, jac_alg_term.range());
+      string rep_var = lookup(index, alg_term_info.second);
       AST_Expression rep = newAST_Expression_ComponentReferenceExp(newAST_String(rep_var));
       AST_Expression term = newAST_Expression_BinOp(jac_exp, rep, BINOPMULT);
       AST_ListAppend(crs, term);

@@ -46,7 +46,7 @@ class ExpressionDerivator {
   static AST_Expression derivate(AST_Expression exp, Expression e);
   Equation generateJacobianExp(Index index, Equation exp);
   void generateJacobianTerm(Index index, Deps::VariableDependency var);
-  list<Equation> terms() const { return _der_terms; };
+  list<Equation> terms() const;
 
   protected:
   Equation generateEquation(std::string usage, Expression exp, Equation orig);
