@@ -157,7 +157,7 @@ void applyReduction(AST_Statement_Assign asg, AST_StatementList stms, AST_Statem
 
 void reduceStatement(AST_Statement stm, AST_StatementList stms, AST_StatementListIterator stm_it)
 {
-  if (stm->statementType() == STASSING) {
+  if (stm->statementType() == STASSIGN) {
     AST_Statement_Assign asg = stm->getAsAssign();
     applyReduction(asg, stms, stm_it);
   } else if (stm->statementType() == STFOR) {

@@ -559,7 +559,6 @@ string AlgebraicConfig::print() const
 {
   stringstream buffer;
   string tabs = "";
-  FunctionPrinter fp;
   Option<Range> range = _eq.range();
   tabs += TAB;
   if (range) {
