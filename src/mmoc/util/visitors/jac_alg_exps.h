@@ -17,33 +17,51 @@
 
  ******************************************************************************/
 
-#ifndef ALGEBRAICS_H_
-#define ALGEBRAICS_H_
+#ifndef JAC_ALG_EXPS_H_
+#define JAC_ALG_EXPS_H_
 
 #include "../ast_util.h"
 
 namespace MicroModelica {
 namespace Util {
 
-class Algebraics : public AST_Expression_Visitor<bool> {
+class JacAlgTerm {
   public:
-  Algebraics();
-  ~Algebraics() = default;
+  typedef std::pair<AST_Expression, Option<IR::Range>> AlgTermInfo;
+  typedef std::list<AlgTermInfo> AlgTermList;
 
-  void exclude(Variable var);
+  JacAlgTerm(Option<IR::Range> range);
+  ~JacAlgTerm() = default;
 
-  AST_ExpressionList exps() const { return _exps; };
+  AST_Expression algTerm() const;
+  AlgTermList algExps() const;
+
+  void setAlgTerm(AST_Expression alg_term);
+  void setAlgExps(AST_ExpressionList alg_exps);
+
+  protected:
+  AST_Expression _alg_term;
+  AlgTermList _alg_exps;
+  Option<IR::Range> _range;
+};
+
+class JacAlgExps : public AST_Expression_Fold<AST_Expression> {
+  public:
+  JacAlgExps(Variable var, Option<IR::Range> range);
+  ~JacAlgExps() = default;
+
+  list<JacAlgTerm> algebraicTerms();
 
   private:
-  bool foldTraverseElement(AST_Expression exp);
-  bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l || r; };
-  bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
+  AST_Expression foldTraverseElement(AST_Expression);
+  AST_Expression foldTraverseElementUMinus(AST_Expression);
+  AST_Expression foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
 
-  VarSymbolTable _symbols;
-  AST_ExpressionList _exps;
+  list<JacAlgTerm> _alg_terms;
   Variable _var;
+  Option<IR::Range> _range;
 };
 }  // namespace Util
 }  // namespace MicroModelica
 
-#endif /* ALGEBRAICS_H_ */
+#endif /* JAC_ALG_EXPS_H */

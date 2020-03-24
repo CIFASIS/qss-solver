@@ -64,8 +64,9 @@ class Range {
   Range(AST_Equation_For eqf, Util::VarSymbolTable symbols, RANGE::Type type = RANGE::For);
   Range(AST_Statement_For stf, Util::VarSymbolTable symbols, RANGE::Type type = RANGE::For);
   Range(Util::Variable var, RANGE::Type type = RANGE::For);
+  Range(AST_Expression exp);
 
-  ~Range(){};
+  ~Range() = default;
   inline int size() const { return _size; };
   inline bool isEmpty() const { return _size == 0; };
   inline RangeDefinitionTable definition() const { return _ranges; };
@@ -81,13 +82,16 @@ class Range {
   std::string iterator(int dim);
   std::string getDimensionVars() const;
   std::string getDimensionVar(int i) const;
+  bool intersect(Range other);
   friend std::ostream& operator<<(std::ostream& out, const Range& r);
 
   protected:
   void generate(Util::Variable var);
+  void generate(AST_Expression exp);
 
   private:
   void setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);
+  Deps::MDI getMDI();
   RangeDefinitionTable _ranges;
   ModelTable<std::string, int> _indexPos;
   int _size;

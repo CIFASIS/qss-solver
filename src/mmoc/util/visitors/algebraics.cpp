@@ -19,8 +19,14 @@
 
 #include "algebraics.h"
 
+#include "../../ast/ast_builder.h"
+#include "../util.h"
 namespace MicroModelica {
 namespace Util {
+
+Algebraics::Algebraics() : _symbols(Utils::instance().symbols()), _exps(newAST_ExpressionList()), _var() {}
+
+void Algebraics::exclude(Variable var) { _var = var; }
 
 bool Algebraics::foldTraverseElement(AST_Expression e)
 {
@@ -29,8 +35,9 @@ bool Algebraics::foldTraverseElement(AST_Expression e)
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = e->getAsComponentReference();
     Option<Variable> var = _symbols[cr->name()];
-    if (var && var->isAlgebraic()) {
+    if (var && var->isAlgebraic() && (var->name() != _var.name())) {
       has_algebraics = true;
+      AST_ListAppend(_exps, e);
     }
     break;
   }
@@ -42,6 +49,16 @@ bool Algebraics::foldTraverseElement(AST_Expression e)
     }
     break;
   }
+  case EXPCALLARG: {
+    AST_Expression_CallArgs call = e->getAsCallArgs();
+    AST_ExpressionList el = call->arguments();
+    AST_ExpressionListIterator it;
+    foreach (it, el) {
+      has_algebraics = has_algebraics || apply(current_element(it));
+    }
+    break;
+  }
+
   default:
     return has_algebraics;
   }

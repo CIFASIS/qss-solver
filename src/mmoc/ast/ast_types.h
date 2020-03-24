@@ -515,9 +515,6 @@ enum StatementType {
   STOUTASSING  //!< STOUTASSING
 };
 
-/**
- *
- */
 enum TypePrefix {
   TP_INPUT = (1 << 1),      //!< TP_INPUT
   TP_OUTPUT = (1 << 2),     //!< TP_OUTPUT
@@ -527,20 +524,15 @@ enum TypePrefix {
   TP_STREAM = (1 << 6),     //!< TP_STREAM
   TP_CONSTANT = (1 << 7),   //!< TP_CONSTANT
   TP_FOR = (1 << 8),        //!< TP_FOR
-  TP_EQ = (1 << 9)          //!< TP_EQ
+  TP_EQ = (1 << 9),         //!< TP_EQ
+  TP_LOCAL = (1 << 10)
 };
 
-/**
- *
- */
 enum ArgumentType {
   AR_MODIFICATION,  //!< AR_MODIFICATION
   AR_REDECLARATION  //!< AR_REDECLARATION
 };
-/**
- *
- * @return
- */
+
 AST_TypePrefix newAST_TypePrefix();
 /**
  *

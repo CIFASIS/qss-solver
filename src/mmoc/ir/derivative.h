@@ -23,45 +23,44 @@
 #include <map>
 
 #include "../ast/ast_types.h"
-#include "util_types.h"
-#include "symbol_table.h"
-#include "../ir/expression.h"
+#include "../deps/dependency_matrix.h"
+#include "../util/util_types.h"
+#include "../util/visitors/jac_alg_exps.h"
+#include "index.h"
+#include "equation.h"
+#include "expression.h"
 
 namespace MicroModelica {
-namespace Util {
+namespace IR {
 
-class MMO_Expression;
-
-/**
- *
- */
 class EquationDerivator {
   public:
-  /**
-   *
-   * @param eq
-   * @param varEnv
-   * @return
-   */
-  static AST_Equation_Equality derivate(AST_Equation_Equality eq, const VarSymbolTable& symbols);
+  static AST_Equation_Equality derivate(AST_Equation_Equality eq);
 };
 
-/**
- *
- */
 class ExpressionDerivator {
   public:
-  /**
-   *
-   * @param exp
-   * @param varEnv
-   * @param e
-   * @return
-   */
-  static AST_Expression derivate(AST_Expression exp, const VarSymbolTable& symbols, IR::Expression e);
-  map<string, MicroModelica::IR::Expression> generateJacobianExps(Variable variable, std::string usage, AST_Expression exp,
-                                                                  const VarSymbolTable& symbols);
+  ExpressionDerivator();
+  ~ExpressionDerivator() = default;
+
+  static AST_Expression derivate(AST_Expression exp, Expression e);
+  Equation generateJacobianExp(Index index, Equation exp);
+  void generateJacobianTerm(Index index, Deps::VariableDependency var);
+  list<Equation> terms() const;
+
+  protected:
+  Equation generateEquation(std::string usage, Expression exp, Equation orig);
+  AST_ExpressionList generateChainRule(list<Util::JacAlgTerm> alg_terms);
+  AST_Expression jacobianExp(AST_Expression exp, AST_ExpressionList algs);
+  std::string termVariable();
+  std::string lookup(Index index, Option<Range> range);
+
+  list<pair<Equation, string>> _alg_terms;
+  list<Equation> _der_terms;
+  int _term_num;
 };
-}  // namespace Util
+
+}  // namespace IR
 }  // namespace MicroModelica
+
 #endif /* DERIVATIVE_H_ */

@@ -86,7 +86,8 @@ IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
 				$(IRDIR)/event.cpp  \
 				$(IRDIR)/stored_definition.cpp  \
 				$(IRDIR)/mmo_ir.cpp  \
-				$(IRDIR)/mmo_settings.cpp 
+				$(IRDIR)/mmo_settings.cpp \
+		  		$(IRDIR)/derivative.cpp
 
 PARSERSRC = $(PARSERDIR)/mocc_parser.cpp \
 			$(PARSERDIR)/mocc_scanner.cpp \
@@ -99,7 +100,6 @@ UTILSRC = $(UTILDIR)/util.cpp \
 		  $(UTILDIR)/error.cpp \
 		  $(UTILDIR)/debug.cpp \
 		  $(UTILDIR)/compile_flags.cpp \
-		  $(UTILDIR)/derivative.cpp \
 		  $(UTILDIR)/ginac_interface.cpp \
 		  $(UTILDIR)/graph.cpp \
 		  $(UTILDIR)/graph_profile.cpp \
@@ -131,6 +131,8 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
 			 $(VISITORDIR)/convert_cont_red.cpp \
 			 $(VISITORDIR)/convert_disc_red.cpp \
 			 $(VISITORDIR)/is_recursive_def.cpp
+			 $(VISITORDIR)/is_recursive_def.cpp \
+			 $(VISITORDIR)/jac_alg_exps.cpp
 
 DEPSSRC = $(DEPSDIR)/dependency.cpp \
 		  $(DEPSDIR)/model_dependencies.cpp  \

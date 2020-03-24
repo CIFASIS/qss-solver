@@ -76,7 +76,7 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
   }
   case EXPCOMPREF: {
     AST_Expression_ComponentReference ref = exp->getAsComponentReference();
-    Option<Variable> var = _symbols[ref->name()];
+    Option<Variable> var = _symbols.lookup(ref->name());
     if (!var) {
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "expression_printer.cpp:80 %s", ref->name().c_str());
       break;
@@ -190,6 +190,10 @@ VariablePrinter::VariablePrinter(Variable var, AST_Expression_ComponentReference
 void VariablePrinter::generate()
 {
   stringstream buffer;
+  if (_var.isLocal()) {
+    _exp = _var.name();
+    return;
+  }
   if (ModelConfig::instance().initialCode() && _var.isState()) {
     buffer << "_init";
   }

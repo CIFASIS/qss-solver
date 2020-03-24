@@ -146,6 +146,8 @@ Range::Range(AST_Statement_For stf, VarSymbolTable symbols, RANGE::Type type) : 
 
 Range::Range(Variable var, RANGE::Type type) : _ranges(), _indexPos(), _size(0), _type(type) { generate(var); }
 
+Range::Range(AST_Expression exp) : _ranges(), _indexPos(), _size(0), _type(RANGE::For) { generate(exp); }
+
 void Range::setRangeDefinition(AST_ForIndexList fil, VarSymbolTable symbols)
 {
   AST_ForIndexListIterator filit;
@@ -193,6 +195,34 @@ void Range::generate(Variable var)
     }
     Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
     Utils::instance().symbols().insert(index, vi);
+  }
+}
+
+void Range::generate(AST_Expression exp)
+{
+  assert(exp->expressionType() == EXPCOMPREF);
+  IsConstantIndex constant_index;
+  assert(constant_index.apply(exp));
+  AST_Expression_ComponentReference ref = exp->getAsComponentReference();
+  assert(ref->hasIndexes());
+  AST_ExpressionList indexes = ref->firstIndex();
+  AST_ExpressionListIterator it;
+  int size = indexes->size(), i = 0;
+  int pos = 0;
+  foreach (it, indexes) {
+    AST_Expression index_exp = current_element(it);
+    string index = getDimensionVar(i + 1);
+    EvalInitExp eval_exp(Utils::instance().symbols());
+    int scalar_value = eval_exp.apply(index_exp);
+    _ranges.insert(index, RangeDefinition(scalar_value, scalar_value));
+    _indexPos.insert(index, pos++);
+    Option<RangeDefinition> range = _ranges[index];
+    if (range) {
+      _size += range->size();
+      _rowSize.push_back(range->size());
+    } else {
+      _rowSize.push_back(1);
+    }
   }
 }
 
@@ -330,6 +360,23 @@ int Range::pos(string var)
     return boost::get<int>(p);
   }
   return 0;
+}
+
+MDI Range::getMDI()
+{
+  IntervalList intervals;
+  RangeDefinitionTable::iterator it;
+  for (RangeDefinition rd = _ranges.begin(it); !_ranges.end(it); rd = _ranges.next(it)) {
+    intervals.push_back(Interval(rd.begin(), rd.end(), rd.step()));
+  }
+  return MDI(intervals);
+}
+
+bool Range::intersect(Range other)
+{
+  MDI other_mdi = other.getMDI();
+  Option<MDI> intersect = getMDI().Intersection(other_mdi);
+  return intersect.is_initialized();
 }
 
 std::ostream& operator<<(std::ostream& out, const Range& r) { return out << r.print(); }

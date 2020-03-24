@@ -109,6 +109,14 @@
             "request": "launch",
             "program": "${workspaceFolder}/usr/bin/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/airconds/airconds ", "/home/joaquin/work/qss-solver/models/airs/airconds.mo"],
+        },
+        // Lota-Volterra test.
+        {
+            "name": "Lotka-Volterra Test.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/lotka-volterra/lotka_volterra ", "/home/joaquin/work/qss-solver/models/lotka-volterra/lotka_volterra.mo"],
             "cwd": "${workspaceFolder}/usr/bin/",
             "environment": [],
             "MIMode": "gdb",
@@ -120,6 +128,23 @@
                 }
             ]
         },
-
+        // RlTest
+        {
+            "name": "RL Test model.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/rltest/rltest ", "/home/joaquin/Downloads/rltest.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }  
     ]
 }

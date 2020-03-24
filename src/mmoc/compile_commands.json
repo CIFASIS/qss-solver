@@ -1,422 +1,427 @@
 [
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_ast_builder.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ast/ast_builder.cpp",
-        "directory": "/home/joaquin/work/qss-solver/src/mmoc",
-        "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/ast_builder.cpp"
-    },
-    {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_ast_node.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ast/ast_node.cpp",
-        "directory": "/home/joaquin/work/qss-solver/src/mmoc",
-        "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/ast_node.cpp"
-    },
-    {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_class.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ast/class.cpp",
-        "directory": "/home/joaquin/work/qss-solver/src/mmoc",
-        "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/class.cpp"
-    },
-    {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_composition.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ast/composition.cpp",
-        "directory": "/home/joaquin/work/qss-solver/src/mmoc",
-        "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/composition.cpp"
-    },
-    {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_element.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ast/element.cpp",
-        "directory": "/home/joaquin/work/qss-solver/src/mmoc",
-        "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/element.cpp"
-    },
-    {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_imports.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ast/imports.cpp",
-        "directory": "/home/joaquin/work/qss-solver/src/mmoc",
-        "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/imports.cpp"
-    },
-    {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_equation.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ast/equation.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_equation.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ast/equation.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/equation.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_expression.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ast/expression.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_expression.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ast/expression.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/expression.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_modification.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ast/modification.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_modification.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ast/modification.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/modification.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_statement.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ast/statement.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_statement.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ast/statement.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/statement.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_stored_definition.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ast/stored_definition.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_stored_definition.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ast/stored_definition.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/stored_definition.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/gen_files.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/generator/files.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/gen_files.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/generator/files.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/generator/files.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/gen_model_instance.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/generator/model_instance.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/gen_model_instance.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/generator/model_instance.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/generator/model_instance.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/gen_writer.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/generator/writer.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/gen_writer.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/generator/writer.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/generator/writer.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/gen_function.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/generator/function.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/gen_function.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/generator/function.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/generator/function.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/gen_package.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/generator/package.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/gen_package.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/generator/package.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/generator/package.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/gen_macros.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/generator/macros.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/gen_macros.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/generator/macros.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/generator/macros.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/gen_generator.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/generator/generator.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/gen_generator.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/generator/generator.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/generator/generator.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_mmo_model_checker.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ir/mmo_model_checker.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_mmo_model_checker.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ir/mmo_model_checker.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ir/mmo_model_checker.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_expression.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ir/expression.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_expression.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ir/expression.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ir/expression.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_equation.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ir/equation.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_equation.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ir/equation.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ir/equation.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_statement.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ir/statement.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_statement.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ir/statement.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ir/statement.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_helpers.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ir/helpers.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_helpers.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ir/helpers.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ir/helpers.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_built_in_functions.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ir/built_in_functions.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_built_in_functions.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ir/built_in_functions.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ir/built_in_functions.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_class.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ir/class.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_class.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ir/class.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ir/class.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_index.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ir/index.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_index.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ir/index.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ir/index.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_annotation.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ir/annotation.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_annotation.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ir/annotation.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ir/annotation.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_event.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ir/event.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_event.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ir/event.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ir/event.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_stored_definition.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ir/stored_definition.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_stored_definition.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ir/stored_definition.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ir/stored_definition.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_mmo_ir.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ir/mmo_ir.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_mmo_ir.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ir/mmo_ir.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ir/mmo_ir.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_mmo_settings.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/ir/mmo_settings.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_mmo_settings.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ir/mmo_settings.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/ir/mmo_settings.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/par_mocc_parser.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/parser/mocc_parser.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ir_derivative.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ir/derivative.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/mmoc",
+        "file": "/home/joaquin/work/qss-solver/src/mmoc/ir/derivative.cpp"
+    },
+    {
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/par_mocc_parser.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/parser/mocc_parser.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/parser/mocc_parser.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/par_mocc_scanner.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/parser/mocc_scanner.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/par_mocc_scanner.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/parser/mocc_scanner.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/parser/mocc_scanner.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/par_parse.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/parser/parse.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/par_parse.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/parser/parse.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/parser/parse.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_util.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/util.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_util.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/util.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/util.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_ast_util.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/ast_util.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_ast_util.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/ast_util.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/ast_util.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_type.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/type.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_type.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/type.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/type.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_symbol_table.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/symbol_table.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_symbol_table.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/symbol_table.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/symbol_table.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_error.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/error.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_error.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/error.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/error.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_debug.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/debug.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_debug.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/debug.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/debug.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_compile_flags.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/compile_flags.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_compile_flags.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/compile_flags.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/compile_flags.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_derivative.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/derivative.cpp",
-        "directory": "/home/joaquin/work/qss-solver/src/mmoc",
-        "file": "/home/joaquin/work/qss-solver/src/mmoc/util/derivative.cpp"
-    },
-    {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_ginac_interface.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/ginac_interface.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_ginac_interface.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/ginac_interface.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/ginac_interface.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_graph.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/graph.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_graph.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/graph.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/graph.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_graph_profile.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/graph_profile.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_graph_profile.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/graph_profile.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/graph_profile.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_process_statement.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/process_statement.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_process_statement.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/process_statement.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/process_statement.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_array_use.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/array_use.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_array_use.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/array_use.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/array_use.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_autonomous.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/autonomous.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_autonomous.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/autonomous.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/autonomous.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_called_functions.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/called_functions.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_called_functions.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/called_functions.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/called_functions.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_convert_condition.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_condition.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_convert_condition.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_condition.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_condition.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_convert_expression.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_expression.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_convert_expression.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_expression.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_expression.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_convert_equation.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_equation.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_convert_equation.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_equation.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_equation.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_convert_statement.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_statement.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_convert_statement.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_statement.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_statement.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_discrete_assignment.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/discrete_assignment.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_discrete_assignment.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/discrete_assignment.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/discrete_assignment.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_eval_exp.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/eval_exp.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_eval_exp.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/eval_exp.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/eval_exp.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_eval_init_exp.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/eval_init_exp.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_eval_init_exp.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/eval_init_exp.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/eval_init_exp.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_expression_printer.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/expression_printer.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_expression_printer.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/expression_printer.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/expression_printer.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_occurs.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/occurs.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_occurs.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/occurs.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/occurs.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_partial_eval_exp.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/partial_eval_exp.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_partial_eval_exp.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/partial_eval_exp.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/partial_eval_exp.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_replace_der.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/replace_der.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_replace_der.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/replace_der.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/replace_der.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_replace_index.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/replace_index.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_replace_index.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/replace_index.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/replace_index.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_replace_inner_product.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/replace_inner_product.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_replace_inner_product.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/replace_inner_product.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/replace_inner_product.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_variable_lookup.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/variable_lookup.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_variable_lookup.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/variable_lookup.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/variable_lookup.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_algebraics.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/algebraics.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_algebraics.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/algebraics.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/algebraics.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_get_index_usage.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/get_index_usage.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_get_index_usage.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/get_index_usage.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/get_index_usage.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_revert_index.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/revert_index.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_revert_index.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/revert_index.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/revert_index.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_is_constant_index.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/is_constant_index.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_is_constant_index.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/is_constant_index.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/is_constant_index.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_get_index_variables.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/get_index_variables.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_get_index_variables.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/get_index_variables.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/get_index_variables.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_convert_output_range.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_output_range.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_convert_output_range.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_output_range.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_output_range.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_convert_sum.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_sum.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_convert_sum.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_sum.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/convert_sum.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_is_recursive_def.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/util/visitors/is_recursive_def.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_is_recursive_def.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/is_recursive_def.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/is_recursive_def.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_dependency.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/deps/dependency.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/util_jac_alg_exps.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/util/visitors/jac_alg_exps.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/mmoc",
+        "file": "/home/joaquin/work/qss-solver/src/mmoc/util/visitors/jac_alg_exps.cpp"
+    },
+    {
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_dependency.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/deps/dependency.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/deps/dependency.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_model_dependencies.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/deps/model_dependencies.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_model_dependencies.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/deps/model_dependencies.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/deps/model_dependencies.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_dependency_matrix.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/deps/dependency_matrix.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_dependency_matrix.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/deps/dependency_matrix.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/deps/dependency_matrix.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_graph.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/deps/graph/graph.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_graph.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/deps/graph/graph.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/deps/graph/graph.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_graph_helpers.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/deps/graph/graph_helpers.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_graph_helpers.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/deps/graph/graph_helpers.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/deps/graph/graph_helpers.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_sd_graph_builder.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/deps/builders/sd_graph_builder.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_sd_graph_builder.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/deps/builders/sd_graph_builder.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/deps/builders/sd_graph_builder.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_so_graph_builder.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/deps/builders/so_graph_builder.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_so_graph_builder.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/deps/builders/so_graph_builder.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/deps/builders/so_graph_builder.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_ds_graph_builder.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/deps/builders/ds_graph_builder.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_ds_graph_builder.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/deps/builders/ds_graph_builder.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/deps/builders/ds_graph_builder.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_dh_graph_builder.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/deps/builders/dh_graph_builder.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_dh_graph_builder.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/deps/builders/dh_graph_builder.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/deps/builders/dh_graph_builder.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_sz_graph_builder.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/deps/builders/sz_graph_builder.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_sz_graph_builder.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/deps/builders/sz_graph_builder.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/deps/builders/sz_graph_builder.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_dz_graph_builder.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/deps/builders/dz_graph_builder.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_dz_graph_builder.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/deps/builders/dz_graph_builder.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/deps/builders/dz_graph_builder.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_ea_graph_builder.o -Wno-write-strings -Wall -std=c++11 /home/joaquin/work/qss-solver/src/mmoc/deps/builders/ea_graph_builder.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/deps_ea_graph_builder.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/deps/builders/ea_graph_builder.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/deps/builders/ea_graph_builder.cpp"
     },
     {
-        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -Wno-write-strings -Wall -std=c++11 -o ./usr/bin/mmoc ./usr/obj/ast_ast_builder.o ./usr/obj/ast_ast_node.o ./usr/obj/ast_class.o ./usr/obj/ast_composition.o ./usr/obj/ast_element.o ./usr/obj/ast_imports.o ./usr/obj/ast_equation.o ./usr/obj/ast_expression.o ./usr/obj/ast_modification.o ./usr/obj/ast_statement.o ./usr/obj/ast_stored_definition.o ./usr/obj/gen_files.o ./usr/obj/gen_model_instance.o ./usr/obj/gen_writer.o ./usr/obj/gen_function.o ./usr/obj/gen_package.o ./usr/obj/gen_macros.o ./usr/obj/gen_generator.o ./usr/obj/ir_mmo_model_checker.o ./usr/obj/ir_expression.o ./usr/obj/ir_equation.o ./usr/obj/ir_statement.o ./usr/obj/ir_helpers.o ./usr/obj/ir_built_in_functions.o ./usr/obj/ir_class.o ./usr/obj/ir_index.o ./usr/obj/ir_annotation.o ./usr/obj/ir_event.o ./usr/obj/ir_stored_definition.o ./usr/obj/ir_mmo_ir.o ./usr/obj/ir_mmo_settings.o ./usr/obj/par_mocc_parser.o ./usr/obj/par_mocc_scanner.o ./usr/obj/par_parse.o ./usr/obj/util_util.o ./usr/obj/util_ast_util.o ./usr/obj/util_type.o ./usr/obj/util_symbol_table.o ./usr/obj/util_error.o ./usr/obj/util_debug.o ./usr/obj/util_compile_flags.o ./usr/obj/util_derivative.o ./usr/obj/util_ginac_interface.o ./usr/obj/util_graph.o ./usr/obj/util_graph_profile.o ./usr/obj/util_process_statement.o ./usr/obj/util_array_use.o ./usr/obj/util_autonomous.o ./usr/obj/util_called_functions.o ./usr/obj/util_convert_condition.o ./usr/obj/util_convert_expression.o ./usr/obj/util_convert_equation.o ./usr/obj/util_convert_statement.o ./usr/obj/util_discrete_assignment.o ./usr/obj/util_eval_exp.o ./usr/obj/util_eval_init_exp.o ./usr/obj/util_expression_printer.o ./usr/obj/util_occurs.o ./usr/obj/util_partial_eval_exp.o ./usr/obj/util_replace_der.o ./usr/obj/util_replace_index.o ./usr/obj/util_replace_inner_product.o ./usr/obj/util_variable_lookup.o ./usr/obj/util_algebraics.o ./usr/obj/util_get_index_usage.o ./usr/obj/util_revert_index.o ./usr/obj/util_is_constant_index.o ./usr/obj/util_get_index_variables.o ./usr/obj/util_convert_output_range.o ./usr/obj/util_convert_sum.o ./usr/obj/util_is_recursive_def.o ./usr/obj/deps_dependency.o ./usr/obj/deps_model_dependencies.o ./usr/obj/deps_dependency_matrix.o ./usr/obj/deps_graph.o ./usr/obj/deps_graph_helpers.o ./usr/obj/deps_sd_graph_builder.o ./usr/obj/deps_so_graph_builder.o ./usr/obj/deps_ds_graph_builder.o ./usr/obj/deps_dh_graph_builder.o ./usr/obj/deps_sz_graph_builder.o ./usr/obj/deps_dz_graph_builder.o ./usr/obj/deps_ea_graph_builder.o /home/joaquin/work/qss-solver/src/mmoc/main.cpp",
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g -o ./usr/bin/mmoc ./usr/obj/ast_ast_builder.o ./usr/obj/ast_ast_node.o ./usr/obj/ast_class.o ./usr/obj/ast_composition.o ./usr/obj/ast_element.o ./usr/obj/ast_imports.o ./usr/obj/ast_equation.o ./usr/obj/ast_expression.o ./usr/obj/ast_modification.o ./usr/obj/ast_statement.o ./usr/obj/ast_stored_definition.o ./usr/obj/gen_files.o ./usr/obj/gen_model_instance.o ./usr/obj/gen_writer.o ./usr/obj/gen_function.o ./usr/obj/gen_package.o ./usr/obj/gen_macros.o ./usr/obj/gen_generator.o ./usr/obj/ir_mmo_model_checker.o ./usr/obj/ir_expression.o ./usr/obj/ir_equation.o ./usr/obj/ir_statement.o ./usr/obj/ir_helpers.o ./usr/obj/ir_built_in_functions.o ./usr/obj/ir_class.o ./usr/obj/ir_index.o ./usr/obj/ir_annotation.o ./usr/obj/ir_event.o ./usr/obj/ir_stored_definition.o ./usr/obj/ir_mmo_ir.o ./usr/obj/ir_mmo_settings.o ./usr/obj/ir_derivative.o ./usr/obj/par_mocc_parser.o ./usr/obj/par_mocc_scanner.o ./usr/obj/par_parse.o ./usr/obj/util_util.o ./usr/obj/util_ast_util.o ./usr/obj/util_type.o ./usr/obj/util_symbol_table.o ./usr/obj/util_error.o ./usr/obj/util_debug.o ./usr/obj/util_compile_flags.o ./usr/obj/util_ginac_interface.o ./usr/obj/util_graph.o ./usr/obj/util_graph_profile.o ./usr/obj/util_process_statement.o ./usr/obj/util_array_use.o ./usr/obj/util_autonomous.o ./usr/obj/util_called_functions.o ./usr/obj/util_convert_condition.o ./usr/obj/util_convert_expression.o ./usr/obj/util_convert_equation.o ./usr/obj/util_convert_statement.o ./usr/obj/util_discrete_assignment.o ./usr/obj/util_eval_exp.o ./usr/obj/util_eval_init_exp.o ./usr/obj/util_expression_printer.o ./usr/obj/util_occurs.o ./usr/obj/util_partial_eval_exp.o ./usr/obj/util_replace_der.o ./usr/obj/util_replace_index.o ./usr/obj/util_replace_inner_product.o ./usr/obj/util_variable_lookup.o ./usr/obj/util_algebraics.o ./usr/obj/util_get_index_usage.o ./usr/obj/util_revert_index.o ./usr/obj/util_is_constant_index.o ./usr/obj/util_get_index_variables.o ./usr/obj/util_convert_output_range.o ./usr/obj/util_convert_sum.o ./usr/obj/util_is_recursive_def.o ./usr/obj/util_jac_alg_exps.o ./usr/obj/deps_dependency.o ./usr/obj/deps_model_dependencies.o ./usr/obj/deps_dependency_matrix.o ./usr/obj/deps_graph.o ./usr/obj/deps_graph_helpers.o ./usr/obj/deps_sd_graph_builder.o ./usr/obj/deps_so_graph_builder.o ./usr/obj/deps_ds_graph_builder.o ./usr/obj/deps_dh_graph_builder.o ./usr/obj/deps_sz_graph_builder.o ./usr/obj/deps_dz_graph_builder.o ./usr/obj/deps_ea_graph_builder.o /home/joaquin/work/qss-solver/src/mmoc/main.cpp",
         "directory": "/home/joaquin/work/qss-solver/src/mmoc",
         "file": "/home/joaquin/work/qss-solver/src/mmoc/main.cpp"
+    },
+    {
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_ast_builder.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ast/ast_builder.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/mmoc",
+        "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/ast_builder.cpp"
+    },
+    {
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_ast_node.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ast/ast_node.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/mmoc",
+        "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/ast_node.cpp"
+    },
+    {
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_class.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ast/class.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/mmoc",
+        "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/class.cpp"
+    },
+    {
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_composition.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ast/composition.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/mmoc",
+        "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/composition.cpp"
+    },
+    {
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_element.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ast/element.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/mmoc",
+        "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/element.cpp"
+    },
+    {
+        "command": "c++ -c -I/home/joaquin/work/qss-solver/src/mmoc -I/home/joaquin/work/qss-solver/src/mmoc/usr/include -o usr/obj/ast_imports.o -Wno-write-strings -Wall -std=c++11 -DYY_MCC_Parser_DEBUG -g /home/joaquin/work/qss-solver/src/mmoc/ast/imports.cpp",
+        "directory": "/home/joaquin/work/qss-solver/src/mmoc",
+        "file": "/home/joaquin/work/qss-solver/src/mmoc/ast/imports.cpp"
     }
 ]
