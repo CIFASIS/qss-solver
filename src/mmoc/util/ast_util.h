@@ -251,7 +251,7 @@ class AST_Statement_Visitor {
       }
       return c;
     }
-    case STASSING:
+    case STASSIGN:
       if (_lhs) {
         return foldTraverse(foldTraverse(_visitor.apply(stm->getAsAssign()->lhs())),
                             foldTraverse(_visitor.apply(stm->getAsAssign()->exp())));

@@ -27,22 +27,21 @@
 
 namespace MicroModelica {
 namespace Util {
-/**
- *
- */
 class IsRecursiveDef : public AST_Expression_Visitor<bool> {
   public:
   IsRecursiveDef(std::string var_name);
-  ~IsRecursiveDef(){};
+  ~IsRecursiveDef() = default;
 
   private:
   bool foldTraverseElement(AST_Expression exp);
   inline bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
   inline bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l || r; }
+
   bool _in_index_list;
   std::string _var_name;
 };
 
 }  // namespace Util
 }  // namespace MicroModelica
+
 #endif /* IS_RECURSIVE_DEF_H_ */

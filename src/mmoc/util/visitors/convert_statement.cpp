@@ -66,7 +66,7 @@ AST_Statement_ElseList ConvertStatement::convert(AST_Statement_ElseList stel)
 
 AST_Statement ConvertStatement::convert(AST_Statement st)
 {
-  if (st->statementType() == STASSING) {
+  if (st->statementType() == STASSIGN) {
     ReplaceInnerProduct rip(_symbols);
     AST_Expression l = st->getAsAssign()->lhs();
     AST_Expression r = rip.apply(st->getAsAssign()->exp());

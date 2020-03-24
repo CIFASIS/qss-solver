@@ -65,7 +65,7 @@ AST_Statement processStatement(AST_Statement stm)
     }
     return newAST_Statement_If(sti->condition(), new_if_stms, new_stm_else_list, new_else_stms);
   }
-  case STASSING: {
+  case STASSIGN: {
     AST_Statement_Assign sa = stm->getAsAssign();
     if (sa->exp()->expressionType() == EXPCALLARG) {
       AST_Expression_CallArgs eca = sa->exp()->getAsCallArgs();
@@ -157,7 +157,7 @@ void applyReduction(AST_Statement_Assign asg, AST_StatementList stms, AST_Statem
 
 void reduceStatement(AST_Statement stm, AST_StatementList stms, AST_StatementListIterator stm_it)
 {
-  if (stm->statementType() == STASSING) {
+  if (stm->statementType() == STASSIGN) {
     AST_Statement_Assign asg = stm->getAsAssign();
     applyReduction(asg, stms, stm_it);
   } else if (stm->statementType() == STFOR) {
