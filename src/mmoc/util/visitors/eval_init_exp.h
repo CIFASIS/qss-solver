@@ -24,20 +24,11 @@
 
 namespace MicroModelica {
 namespace Util {
-/**
- *
- */
+
 class EvalInitExp : public AST_Expression_Fold<int> {
   public:
-  /**
-   *
-   * @param vt
-   */
   EvalInitExp(VarSymbolTable symbols);
-  /**
-   *
-   */
-  ~EvalInitExp(){};
+  ~EvalInitExp() = default;
 
   private:
   int foldTraverseElement(AST_Expression exp);
@@ -45,6 +36,7 @@ class EvalInitExp : public AST_Expression_Fold<int> {
   int foldTraverseElementUMinus(AST_Expression exp);
   VarSymbolTable _symbols;
 };
+
 }  // namespace Util
 }  // namespace MicroModelica
 
