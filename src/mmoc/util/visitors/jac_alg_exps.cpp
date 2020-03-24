@@ -26,22 +26,34 @@
 #include "../error.h"
 #include "../symbol_table.h"
 #include "algebraics.h"
+#include "is_constant_index.h"
 
 namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-JacAlgTerm::JacAlgTerm(Option<Range> range) : _alg_term(nullptr), _alg_exps(newAST_ExpressionList()), _range(range) {}
+JacAlgTerm::JacAlgTerm(Option<Range> range) : _alg_term(nullptr), _alg_exps(), _range(range) {}
 
 AST_Expression JacAlgTerm::algTerm() const { return _alg_term; }
 
-AST_ExpressionList JacAlgTerm::algExps() const { return _alg_exps; }
-
-Option<Range> JacAlgTerm::range() const { return _range; };
+JacAlgTerm::AlgTermList JacAlgTerm::algExps() const { return _alg_exps; }
 
 void JacAlgTerm::setAlgTerm(AST_Expression alg_term) { _alg_term = alg_term; }
 
-void JacAlgTerm::setAlgExps(AST_ExpressionList alg_exps) { _alg_exps = alg_exps; }
+void JacAlgTerm::setAlgExps(AST_ExpressionList alg_exps)
+{
+  AST_ExpressionListIterator it;
+  foreach (it, alg_exps) {
+    AST_Expression alg = current_element(it);
+    assert(alg->expressionType() == EXPCOMPREF);
+    IsConstantIndex constant_index;
+    if (constant_index.apply(alg)) {
+      _alg_exps.push_back(make_pair(alg, Range(alg)));
+    } else {
+      _alg_exps.push_back(make_pair(alg, _range));
+    }
+  }
+}
 
 JacAlgExps::JacAlgExps(Variable var, Option<Range> range) : _alg_terms(), _var(var), _range(range) {}
 

@@ -27,19 +27,21 @@ namespace Util {
 
 class JacAlgTerm {
   public:
+  typedef std::pair<AST_Expression, Option<IR::Range>> AlgTermInfo;
+  typedef std::list<AlgTermInfo> AlgTermList;
+
   JacAlgTerm(Option<IR::Range> range);
   ~JacAlgTerm() = default;
 
   AST_Expression algTerm() const;
-  AST_ExpressionList algExps() const;
-  Option<IR::Range> range() const;
+  AlgTermList algExps() const;
 
   void setAlgTerm(AST_Expression alg_term);
   void setAlgExps(AST_ExpressionList alg_exps);
 
   protected:
   AST_Expression _alg_term;
-  AST_ExpressionList _alg_exps;
+  AlgTermList _alg_exps;
   Option<IR::Range> _range;
 };
 
@@ -61,4 +63,5 @@ class JacAlgExps : public AST_Expression_Fold<AST_Expression> {
 };
 }  // namespace Util
 }  // namespace MicroModelica
+
 #endif /* JAC_ALG_EXPS_H */
