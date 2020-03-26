@@ -115,6 +115,8 @@ class Utils {
   inline void unsetLocalInitSymbols() { _init_symbols = false; };
   inline std::string fileName() { return _file_name; };
   inline int id() { return _ids++; };
+  Variable variable(AST_Expression exp, VarSymbolTable& symbols);
+  IR::Expression variableExpression(string name, Option<IR::Range> range, const VarSymbolTable& symbols);
 
   private:
   Utils();

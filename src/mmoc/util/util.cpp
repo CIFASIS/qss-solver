@@ -321,6 +321,45 @@ bool Utils::checkCompiledFunctions(string name)
   return cf.is_initialized();
 }
 
-bool Utils::checkBuiltInFunctions(string name) { return BuiltInFunction::instance().isValid(name); }
+bool Utils::checkBuiltInFunctions(string name) { return BuiltInFunction::instance().lookup(name); }
+
+Variable Utils::variable(AST_Expression exp, VarSymbolTable &symbols)
+{
+  string var_name;
+  ExpressionType type = exp->expressionType();
+  if (type == EXPCOMPREF) {
+    AST_Expression_ComponentReference var_exp = exp->getAsComponentReference();
+    var_name = *AST_ListFirst(var_exp->names());
+  } else if (type == EXPDERIVATIVE) {
+    AST_Expression_Derivative der = exp->getAsDerivative();
+    AST_Expression args = AST_ListFirst(der->arguments());
+    assert(args->expressionType() == EXPCOMPREF);
+    AST_Expression_ComponentReference var_exp = args->getAsComponentReference();
+    var_name = *AST_ListFirst(var_exp->names());
+  }
+  Option<Variable> var = symbols[var_name];
+  if (!var) {
+    Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "utils.cpp:342 %s", var_name.c_str());
+  }
+  return var.get();
+}
+
+Expression Utils::variableExpression(string name, Option<IR::Range> range, const VarSymbolTable &symbols)
+{
+  AST_Expression_ComponentReference var = newAST_Expression_ComponentReference();
+  if (range) {
+    RangeDefinitionTable ranges = range->definition();
+    AST_ExpressionList l = newAST_ExpressionList();
+    int dim = 0;
+    for (auto r : ranges) {
+      string idx_var = range->iterator(dim++);
+      AST_Expression idx = newAST_Expression_ComponentReferenceExp(newAST_String(idx_var));
+      l = AST_ListAppend(l, idx);
+    }
+    var = AST_Expression_ComponentReference_Add(var, newAST_String(name), l);
+  }
+  return Expression(var, symbols);
+}
+
 }  // namespace Util
 }  // namespace MicroModelica
