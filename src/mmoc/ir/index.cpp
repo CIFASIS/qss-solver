@@ -211,7 +211,7 @@ void Range::generate(AST_Expression exp)
   assert(ref->hasIndexes());
   AST_ExpressionList indexes = ref->firstIndex();
   AST_ExpressionListIterator it;
-  int size = indexes->size(), i = 0;
+  int i = 0;
   int pos = 0;
   foreach (it, indexes) {
     AST_Expression index_exp = current_element(it);
