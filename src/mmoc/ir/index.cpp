@@ -28,6 +28,7 @@
 #include "../util/visitors/eval_init_exp.h"
 #include "../util/visitors/get_index_usage.h"
 #include "../util/visitors/is_constant_index.h"
+#include "../util/visitors/partial_eval_exp.h"
 #include "../util/visitors/replace_index.h"
 #include "../util/visitors/revert_index.h"
 #include "../util/util.h"
@@ -116,7 +117,10 @@ string Index::modelicaExp() const
 string Index::print() const
 {
   stringstream buffer;
-  buffer << "_idx" << _exp;
+  VarSymbolTable symbols = Utils::instance().symbols();
+  PartialEvalExp partial_eval = PartialEvalExp(symbols);
+  Expression exp = Expression(partial_eval.apply(_exp.expression()), symbols);
+  buffer << "_idx" << exp;
   return buffer.str();
 }
 
@@ -207,7 +211,7 @@ void Range::generate(AST_Expression exp)
   assert(ref->hasIndexes());
   AST_ExpressionList indexes = ref->firstIndex();
   AST_ExpressionListIterator it;
-  int size = indexes->size(), i = 0;
+  int i = 0;
   int pos = 0;
   foreach (it, indexes) {
     AST_Expression index_exp = current_element(it);

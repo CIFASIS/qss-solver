@@ -220,27 +220,16 @@ string Variable::declaration(string prefix)
   return buffer.str();
 }
 
-string Variable::variableExpression(const VarSymbolTable &symbols)
-{
-  AST_Expression var = newAST_Expression_ComponentReferenceExp(newAST_String(name()));
-  stringstream buffer;
-  buffer << Expression(var, symbols);
-  return buffer.str();
-}
-
 string Variable::initialization(const VarSymbolTable &symbols)
 {
   stringstream buffer;
-  string index;
   if (hasAssignment() || hasStartModifier() || hasEachModifier()) {
     Range range = Range(*this);
     Expression ex(exp(), symbols);
-    string var = variableExpression(symbols);
+    Expression var = Utils::instance().variableExpression(name(), range, symbols);
     if (hasEachModifier()) {
-      index = range.getDimensionVars();
       buffer << range;
-      buffer << TAB << TAB << var << "(" << index << ")"
-             << " = " << ex << ";" << endl;
+      buffer << TAB << TAB << var << " = " << ex << ";" << endl;
       buffer << range.end();
     } else if (hasAssignment() || hasStartModifier()) {
       buffer << var << " = " << ex << ";";

@@ -344,5 +344,22 @@ Variable Utils::variable(AST_Expression exp, VarSymbolTable &symbols)
   return var.get();
 }
 
+Expression Utils::variableExpression(string name, Option<IR::Range> range, const VarSymbolTable &symbols)
+{
+  AST_Expression_ComponentReference var = newAST_Expression_ComponentReference();
+  if (range) {
+    RangeDefinitionTable ranges = range->definition();
+    AST_ExpressionList l = newAST_ExpressionList();
+    int dim = 0;
+    for (auto r : ranges) {
+      string idx_var = range->iterator(dim++);
+      AST_Expression idx = newAST_Expression_ComponentReferenceExp(newAST_String(idx_var));
+      l = AST_ListAppend(l, idx);
+    }
+    var = AST_Expression_ComponentReference_Add(var, newAST_String(name), l);
+  }
+  return Expression(var, symbols);
+}
+
 }  // namespace Util
 }  // namespace MicroModelica
