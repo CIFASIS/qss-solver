@@ -7,6 +7,27 @@
 
         // Generic per model configurations.
         
+        // Mixed mode buckt_term model
+        {
+            "name": "Mixed Mode buck term model.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/buck_term/buck_term ", "/home/joaquin/work/qss-solver/models/mixed-mode/buck_term.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+
+        
+
         // Advection
         {
             "name": "Advection model.",

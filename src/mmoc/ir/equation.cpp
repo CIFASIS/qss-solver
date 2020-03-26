@@ -96,17 +96,7 @@ void Equation::initialize(AST_Expression exp)
 {
   string model_variable = EquationVariable::modelVariables(_id, _type);
   if (_range) {
-    AST_Expression_ComponentReference lhs = newAST_Expression_ComponentReference();
-    AST_ExpressionList l = newAST_ExpressionList();
-    RangeDefinitionTable ranges = _range->definition();
-    int dim = 0;
-    for (auto range : ranges) {
-      string idx_var = _range->iterator(dim++);
-      AST_Expression idx = newAST_Expression_ComponentReferenceExp(newAST_String(idx_var));
-      l = AST_ListAppend(l, idx);
-    }
-    lhs = AST_Expression_ComponentReference_Add(lhs, newAST_String(model_variable), l);
-    _lhs = Expression(lhs, _symbols);
+    _lhs = Utils::instance().variableExpression(model_variable, _range, _symbols);
   } else {
     AST_Expression lhs = newAST_Expression_ComponentReferenceExp(newAST_String(model_variable));
     _lhs = Expression(lhs, _symbols);

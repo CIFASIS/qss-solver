@@ -125,7 +125,6 @@ class Variable {
   friend std::ostream& operator<<(std::ostream& out, const Variable& v);
 
   private:
-  std::string variableExpression(const VarSymbolTable& symbols);
   void processModification();
   void unsetAssignment() { _hasAssigment = false; };
   inline void unsetStartEach()
