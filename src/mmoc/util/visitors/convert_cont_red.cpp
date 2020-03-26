@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#include "convert_sum.h"
+#include "convert_cont_red.h"
 
 #include <sstream>
 
@@ -31,71 +31,91 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-ConvertSum::ConvertSum(VarSymbolTable &symbols) : _symbols(symbols), _has_sum(false), _code() {}
+ConvertContRed::ConvertContRed(VarSymbolTable &symbols) : _symbols(symbols), _has_reduction(false), _code(), _oper_names(), _oper()
+{
+  _oper_names[ContReduction::SUM] = "sum";
+  _oper_names[ContReduction::PROD] = "prod";
+}
 
-bool ConvertSum::hasSum() { return _has_sum; }
+bool ConvertContRed::hasReduction() { return _has_reduction; }
 
-list<AST_Equation> ConvertSum::code() { return _code; }
+list<AST_Equation> ConvertContRed::code() { return _code; }
 
-list<Variable> ConvertSum::variables() { return _variables; }
+list<Variable> ConvertContRed::variables() { return _variables; }
 
-AST_Expression ConvertSum::foldTraverseElement(AST_Expression exp)
+int ConvertContRed::operators() const { return ContReduction::COUNT; }
+
+void ConvertContRed::setLHS(Variable lhs) { return; }
+
+void ConvertContRed::setReduction(int red_operator)
+{
+  assert(red_operator < ContReduction::COUNT);
+  _reduction = static_cast<ContReduction>(red_operator);
+  _code.clear();
+  _variables.clear();
+  _has_reduction = false;
+  string opers[] = {"+", "*"};
+  _oper = opers[_reduction];
+}
+
+AST_Expression ConvertContRed::foldTraverseElement(AST_Expression exp)
 {
   switch (exp->expressionType()) {
   case EXPCALL: {
     AST_Expression_Call ec = exp->getAsCall();
     string name = *(ec->name());
-    if (!name.compare("sum")) {
+    string oper_name = _oper_names[_reduction];
+    if (!name.compare(oper_name)) {
       if (ec->arguments()->size() > 1) {
-        Error::instance().add(exp->lineNum(), EM_IR | EM_ARGUMENTS, ER_Error, "Wrong number of sum function arguments");
+        Error::instance().add(exp->lineNum(), EM_IR | EM_ARGUMENTS, ER_Error, "Wrong number of %s function arguments", oper_name);
       }
       // Get reduction function argument.
       AST_Expression arg = AST_ListFirst(ec->arguments());
       if (arg->expressionType() != EXPCOMPREF) {
-        Error::instance().add(exp->lineNum(), EM_IR | EM_ARGUMENTS, ER_Error, "Expect variable for sum function");
+        Error::instance().add(exp->lineNum(), EM_IR | EM_ARGUMENTS, ER_Error, "Expect variable for %s function", oper_name);
       }
       AST_Expression_ComponentReference cr = arg->getAsComponentReference();
-      cout << "LOOKING FOR: " << cr->name() << endl;
       Option<Variable> variable = _symbols[cr->name()];
       if (!variable) {
-        Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "convert_sum.cpp:61 %s", cr->name());
+        Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "convert_cont_red.cpp:61 %s", cr->name());
       }
       stringstream code;
       int res = 0;
-      code << "_sum_" << Utils::instance().id();
+      code << "_" << oper_name << "_" << Utils::instance().id();
       string var_name = code.str();
       code.str("");
       code << var_name << "[1] = " << cr->name() << "[1]";
       cout << code.str() << endl;
       AST_Equation eq_1 = parseEquation(code.str(), &res);
       if (res) {
-        Error::instance().add(exp->lineNum(), EM_IR | EM_EQ_DEF, ER_Error, "Generating sum reduction function code.");
+        Error::instance().add(exp->lineNum(), EM_IR | EM_EQ_DEF, ER_Error, "Generating %s reduction function code.", oper_name);
       }
       code.str("");
       _code.push_back(eq_1);
       // @TODO check dimensions for variables.
-      code << "for i in 2:" << variable->size() << " loop " << var_name << "[i] = " << var_name << "[i-1] + " << cr->name() << "[i]; "
+      code << "for i in 2:" << variable->size() << " loop " << var_name << "[i] = " << var_name << "[i-1] " << _oper << " " << cr->name()
+           << "[i]; "
            << "end for";
       AST_Equation eq_i = parseEquation(code.str(), &res);
       cout << code.str() << endl;
       if (res) {
-        Error::instance().add(exp->lineNum(), EM_IR | EM_EQ_DEF, ER_Error, "Generating sum reduction function code.");
+        Error::instance().add(exp->lineNum(), EM_IR | EM_EQ_DEF, ER_Error, "Generating %s reduction function code.", oper_name);
       }
       code.str("");
       _code.push_back(eq_i);
       code << var_name << "[" << variable->size() << "]";
       AST_Expression replace = parseExpression(code.str(), &res);
       if (res) {
-        Error::instance().add(exp->lineNum(), EM_IR | EM_WRONG_EXP, ER_Error, "Generating sum reduction function code.");
+        Error::instance().add(exp->lineNum(), EM_IR | EM_WRONG_EXP, ER_Error, "Generating %s reduction function code.", oper_name);
       }
-      vector<int> s;
-      s.push_back(variable->size());
+      vector<int> size;
+      size.push_back(variable->size());
       TypePrefix eq_type = TP_INPUT;
-      Variable vi(newType_Real(), eq_type, nullptr, nullptr, s, true);
-      vi.setName(var_name);
-      _symbols.insert(var_name, vi);
-      _variables.push_back(vi);
-      _has_sum = true;
+      Variable aux_var(newType_Real(), eq_type, nullptr, nullptr, size, true);
+      aux_var.setName(var_name);
+      _symbols.insert(var_name, aux_var);
+      _variables.push_back(aux_var);
+      _has_reduction = true;
       return replace;
     }
   } break;
@@ -109,12 +129,12 @@ AST_Expression ConvertSum::foldTraverseElement(AST_Expression exp)
   return exp;
 }
 
-AST_Expression ConvertSum::foldTraverseElementUMinus(AST_Expression exp)
+AST_Expression ConvertContRed::foldTraverseElementUMinus(AST_Expression exp)
 {
   return newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp()));
 }
 
-AST_Expression ConvertSum::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
+AST_Expression ConvertContRed::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
 {
   return newAST_Expression_BinOp(l, r, bot);
 }

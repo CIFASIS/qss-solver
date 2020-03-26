@@ -137,6 +137,9 @@ void ModelInstance::allocateOutput()
 
 void ModelInstance::configOutput()
 {
+  if (!_model.outputNbr()) {
+    return;
+  }
   stringstream buffer;
   buffer << "SD_allocOutputMatrix(";
   buffer << "modelOutput, ";

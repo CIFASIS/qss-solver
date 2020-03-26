@@ -69,7 +69,11 @@ string Function::prototype()
   string name = _function.name();
   for (Variable var = vst.begin(it); !vst.end(it); var = vst.next(it)) {
     if (var.isInput()) {
-      input << "double " << (var.isArray() ? "*" : "") << var.name() << ",";
+      if (var.isString()) {
+        input << "const char *" << var.name() << ",";
+      } else {
+        input << "double " << (var.isArray() ? "*" : "") << var.name() << ",";
+      }
     } else if (var.isOutput()) {
       output << "double *" << var.name() << ",";
       _returnVariable = var.name();

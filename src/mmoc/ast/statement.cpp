@@ -75,7 +75,7 @@ AST_Expression AST_Statement_Assign_::exp() const { return _exp; }
 
 AST_Expression_ComponentReference AST_Statement_Assign_::lhs() const { return _lhs; }
 
-StatementType AST_Statement_Assign_::statementType() { return STASSING; }
+StatementType AST_Statement_Assign_::statementType() { return STASSIGN; }
 
 string AST_Statement_Assign_::print() const
 {
@@ -95,6 +95,8 @@ string AST_Statement_Assign_::print() const
 
   return ret.str();
 }
+
+void AST_Statement_Assign_::setExp(AST_Expression exp) { _exp = exp; };
 
 /* For statement Class */
 

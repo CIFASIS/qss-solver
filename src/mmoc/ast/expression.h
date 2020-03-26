@@ -351,6 +351,7 @@ class AST_Expression_Call_ : public AST_Expression_ {
    * @param args
    */
   AST_Expression_Call_(AST_String name, AST_ExpressionList args);
+  AST_Expression_Call_(AST_String name, AST_ExpressionList args, AST_ExpressionList output_args);
   /**
    *
    * @return
@@ -366,6 +367,8 @@ class AST_Expression_Call_ : public AST_Expression_ {
    * @return
    */
   AST_ExpressionList arguments() const;
+  AST_ExpressionList outputArguments() const;
+
   /**
    *
    * @return
@@ -375,6 +378,7 @@ class AST_Expression_Call_ : public AST_Expression_ {
   private:
   AST_String _name;
   AST_ExpressionList _args;
+  AST_ExpressionList _output_args;
 };
 
 /**

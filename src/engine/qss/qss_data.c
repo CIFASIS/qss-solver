@@ -404,8 +404,10 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, s
   if (discretes) {
     cleanDoubleVector(p->d, 0, discretes);
   }
-  double sameDQMin = (settings->nDQMin == 1) ? settings->dqmin[0] : 0;
-  double sameDQRel = (settings->nDQRel == 1) ? settings->dqrel[0] : 0;
+  
+  int same_DQMin = (settings->nDQMin == 1) ? TRUE : FALSE;
+  int same_DQRel = (settings->nDQRel == 1) ? TRUE : FALSE;
+
   cleanDoubleVector(p->q, 0, states * xOrder);
   cleanDoubleVector(p->x, 0, states * xOrder);
   cleanDoubleVector(p->alg, 0, algs * xOrder);
@@ -418,17 +420,12 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, s
       cleanVector(p->nSH, 0, states);
     }
   }
-  if (sameDQMin == 0 || sameDQRel == 0) {
-    for (i = 0; i < states; i++) {
-      p->dQMin[i] = (sameDQMin) ? settings->dqmin[0] : settings->dqmin[i];
-      p->dQRel[i] = (sameDQRel) ? settings->dqrel[0] : settings->dqrel[i];
-    }
-  } else {
-    for (i = 0; i < states; i++) {
-      p->dQMin[i] = settings->dqmin[0];
-      p->dQRel[i] = settings->dqrel[0];
-    }
+
+  for (i = 0; i < states; i++) {
+    p->dQMin[i] = (same_DQMin) ? settings->dqmin[0] : settings->dqmin[i];
+    p->dQRel[i] = (same_DQRel) ? settings->dqrel[0] : settings->dqrel[i];
   }
+
   if (events) {
     cleanVector(p->nZS, 0, events);
     cleanVector(p->nHD, 0, events);

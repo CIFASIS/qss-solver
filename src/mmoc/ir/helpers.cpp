@@ -82,31 +82,25 @@ std::ostream& operator<<(std::ostream& out, const CompiledFunction& cf)
 string CompiledFunction::print() const
 {
   stringstream buffer;
-  Option<BuiltInFunctionPrinter> fp = BuiltInFunction::instance().reductionFunctions(_name);
-  if (fp) {
-    buffer << fp.get();
-  } else {
-    buffer << _name << "(";
-    AST_ExpressionListIterator it;
-    int size = _arguments->size(), i = 0;
-    foreach (it, _arguments) {
-      i++;
-      Expression ex(current_element(it), Utils::instance().symbols());
-      buffer << ex;
-      buffer << (i < size ? "," : "");
-    }
-    buffer << ")";
+  buffer << _name << "(";
+  AST_ExpressionListIterator it;
+  int size = _arguments->size(), i = 0;
+  foreach (it, _arguments) {
+    i++;
+    Expression ex(current_element(it), Utils::instance().symbols());
+    buffer << ex;
+    buffer << (i < size ? "," : "");
   }
+  size = _output_arguments->size();
+  i = 0;
+  foreach (it, _output_arguments) {
+    i++;
+    Expression ex(current_element(it), Utils::instance().symbols());
+    buffer << "&" << ex;
+    buffer << (i < size ? "," : "");
+  }
+  buffer << ")";
   return buffer.str();
-}
-
-string CompiledFunction::code()
-{
-  Option<BuiltInFunctionPrinter> fp = BuiltInFunction::instance().reductionFunctions(_name);
-  if (fp) {
-    return fp->code();
-  }
-  return "";
 }
 
 /* CompiledPackage Class Implementation */
@@ -273,6 +267,15 @@ string FunctionPrinter::algebraic(int id, bool reduction)
     }
   } else {
     Error::instance().add(0, EM_CG | EM_NO_EQ, ER_Error, "Algebraic equation not found.");
+  }
+  return buffer.str();
+}
+
+string FunctionPrinter::jacobianTerms(list<Equation> eqs)
+{
+  stringstream buffer;
+  for (Equation eq : eqs) {
+    buffer << eq;
   }
   return buffer.str();
 }

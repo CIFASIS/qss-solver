@@ -47,11 +47,22 @@ void Statement::initialize()
   StatementCalledFunctions cf;
   Utils::instance().setSymbols(_symbols);
   _stm = processStatement(_stm);
+  setRange();
   _calledFunctions = cf.apply(_stm);
   _lhs_assignments = generateExps(STATEMENT::LHS);
   _rhs_assignments = generateExps(STATEMENT::RHS);
   _lhs_discretes = generateExps(STATEMENT::LHS_DISCRETES);
   _lhs_states = generateExps(STATEMENT::LHS_STATES);
+}
+
+void Statement::setRange()
+{
+  // In case of for statements, the statement can have a range even if
+  // defined in  a single event, so change the range accordingly.
+  if (_stm->statementType() == STFOR) {
+    AST_Statement_For for_stm = _stm->getAsFor();
+    _range = Range(for_stm, _symbols);
+  }
 }
 
 ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
@@ -94,7 +105,7 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
     }
     break;
   }
-  case STASSING: {
+  case STASSIGN: {
     if (asg == STATEMENT::LHS || asg == STATEMENT::LHS_DISCRETES || asg == STATEMENT::LHS_STATES) {
       asgs.push_back(Expression(_stm->getAsAssign()->lhs(), _symbols));
     } else {
@@ -106,9 +117,24 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
     AST_Statement_For stf = _stm->getAsFor();
     AST_StatementList stms = stf->statements();
     AST_StatementListIterator stmit;
+    Range range(stf, _symbols);
     foreach (stmit, stms) {
-      Statement st(current_element(stmit), _symbols);
+      Statement st(current_element(stmit), _symbols, range);
       asgs.splice(asgs.end(), st.generateExps(asg));
+    }
+    break;
+  }
+  case STOUTASSING: {
+    AST_Statement_OutputAssigment out_stm = _stm->getAsOutputAssigment();
+    if (asg == STATEMENT::LHS || asg == STATEMENT::LHS_DISCRETES || asg == STATEMENT::LHS_STATES) {
+      AST_ExpressionList exps = out_stm->out_expressions();
+      AST_ExpressionListIterator exp_it;
+      foreach (exp_it, exps) {
+        asgs.push_back(Expression(current_element(exp_it), _symbols));
+      }
+    } else {
+      AST_Expression call_exp = newAST_Expression_Call(newAST_String(out_stm->function()->cname()), nullptr, out_stm->arguments());
+      asgs.push_back(Expression(call_exp, _symbols));
     }
     break;
   }
@@ -124,6 +150,32 @@ bool Statement::checkStateAssignment(Expression exp) const
   Option<Variable> var = exp.reference();
   assert(var);
   return var->isState();
+}
+
+bool Statement::isForStatement() const { return _stm->statementType() == STFOR; }
+
+string Statement::printAssignment(AST_Statement_Assign asg) const
+{
+  stringstream code;
+  switch (asg->exp()->expressionType()) {
+  case EXPCALLARG:
+    code << "CMD_terminate();";
+    break;
+  default: {
+    Expression lhs(asg->lhs(), _symbols);
+    Expression rhs(asg->exp(), _symbols);
+    bool state_assignment = checkStateAssignment(lhs);
+    if (state_assignment) {
+      ModelConfig::instance().setInitialCode(true);
+    }
+    code << lhs << " = " << rhs << ";";
+    if (state_assignment) {
+      ModelConfig::instance().setInitialCode(false);
+    }
+    break;
+  }
+  }
+  return code.str();
 }
 
 string Statement::print() const
@@ -164,18 +216,8 @@ string Statement::print() const
     }
     break;
   }
-  case STASSING: {
-    AST_Statement_Assign asg = _stm->getAsAssign();
-    Expression lhs(asg->lhs(), _symbols);
-    Expression rhs(asg->exp(), _symbols);
-    bool state_assignment = checkStateAssignment(lhs);
-    if (state_assignment) {
-      ModelConfig::instance().setInitialCode(true);
-    }
-    buffer << _block << lhs << " = " << rhs << ";";
-    if (state_assignment) {
-      ModelConfig::instance().setInitialCode(false);
-    }
+  case STASSIGN: {
+    buffer << _block << printAssignment(_stm->getAsAssign());
     break;
   }
   case STFOR: {
@@ -191,13 +233,21 @@ string Statement::print() const
     buffer << range.end();
     break;
   }
+  case STOUTASSING: {
+    AST_Statement_OutputAssigment out_stm = _stm->getAsOutputAssigment();
+    AST_Expression call_exp =
+        newAST_Expression_Call(newAST_String(out_stm->function()->cname()), nullptr, out_stm->arguments(), out_stm->out_expressions());
+    Expression call(call_exp, _symbols);
+    buffer << call << ";";
+    break;
+  }
   default:
     break;
   }
   return buffer.str();
 }
 
-bool Statement::isAssignment() const { return _stm->statementType() == STASSING; }
+bool Statement::isAssignment() const { return _stm->statementType() == STASSIGN; }
 
 Expression Statement::emptyRef()
 {

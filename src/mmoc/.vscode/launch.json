@@ -72,7 +72,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/usr/bin/mmoc",
-            "args": ["-o /home/joaquin/work/qss-solver/build/sum_test/sum_test ", "/home/joaquin/work/qss-solver/models/sum_test.mo"],
+            "args": ["-o /home/joaquin/work/qss-solver/build/sum_test/sum_test ", "/home/joaquin/work/qss-solver/models/tests/sum_test.mo"],
             "cwd": "${workspaceFolder}/usr/bin/",
             "environment": [],
             "MIMode": "gdb",
@@ -104,23 +104,68 @@
             ]
         },
 
-            // Simple algebraic test.
-            {
-                "name": "Simple Algebraic Test.",
-                "type": "cppdbg",
-                "request": "launch",
-                "program": "${workspaceFolder}/usr/bin/mmoc",
-                "args": ["-o /home/joaquin/work/qss-solver/build/simple_alg/simple_alg ", "/home/joaquin/work/qss-solver/models/simple_alg.mo"],
-                "cwd": "${workspaceFolder}/usr/bin/",
-                "environment": [],
-                "MIMode": "gdb",
-                "setupCommands": [
-                    {
-                        "description": "Enable pretty-printing for gdb",
-                        "text": "-enable-pretty-printing",
-                        "ignoreFailures": true
-                    }
-                ]
-            }
+        // Simple algebraic test.
+        {
+            "name": "Simple Algebraic Test.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/simple_alg/simple_alg ", "/home/joaquin/work/qss-solver/models/simple_alg.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }, 
+        
+        // Airconds simple.
+        {
+            "name": "Airconds simple Test.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/airconds/airconds ", "/home/joaquin/work/qss-solver/models/airs/airconds.mo"],
+        },
+        // Lota-Volterra test.
+        {
+            "name": "Lotka-Volterra Test.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/lotka-volterra/lotka_volterra ", "/home/joaquin/work/qss-solver/models/lotka-volterra/lotka_volterra.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        // RlTest
+        {
+            "name": "RL Test model.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/rltest/rltest ", "/home/joaquin/Downloads/rltest.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }  
     ]
 }

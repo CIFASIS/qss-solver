@@ -88,6 +88,7 @@ void QSS_SEQ_integrate(SIM_simulator simulate)
     SD_print(simulator->simulationLog, "Begin Simulation:");
   }
 #endif
+  getTime(simulator->stats->iTime);
   while (t < ft) {
 #ifdef SYNC_RT
     /* Sync */
@@ -201,6 +202,7 @@ void QSS_SEQ_integrate(SIM_simulator simulate)
             if (elapsed > 0) {
               integrateState(infCf0, elapsed, q, qOrder);
             }
+            tq[j] = t;
           }
           nLHSSt = event[index].nLHSSt;
           for (i = 0; i < nLHSSt; i++) {

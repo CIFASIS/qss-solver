@@ -31,7 +31,7 @@ using namespace IR;
 namespace Util {
 
 ExpressionPrinter::ExpressionPrinter(const VarSymbolTable& symbols, bool is_qss, int order)
-    : _symbols(symbols), _code(), _is_qss(is_qss), _order(order)
+    : _symbols(symbols), _is_qss(is_qss), _order(order)
 {
 }
 
@@ -53,13 +53,14 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
     CompiledFunctionTable fs = Utils::instance().compiledFunctions();
     Option<CompiledFunction> f = fs[*call->name()];
     if (!f) {
-      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "expression_printer.cpp:56 %s", call->name()->c_str());
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "Function definition: expression_printer.cpp:56 %s",
+                            call->name()->c_str());
       break;
     }
     Utils::instance().setSymbols(_symbols);
     f->setArguments(call->arguments());
+    f->setOutputArguments(call->outputArguments());
     buffer << f.get();
-    _code = f->code();
     break;
   }
   case EXPCALLARG: {
@@ -75,7 +76,7 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
   }
   case EXPCOMPREF: {
     AST_Expression_ComponentReference ref = exp->getAsComponentReference();
-    Option<Variable> var = _symbols[ref->name()];
+    Option<Variable> var = _symbols.lookup(ref->name());
     if (!var) {
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "expression_printer.cpp:80 %s", ref->name().c_str());
       break;
@@ -155,32 +156,17 @@ string ExpressionPrinter::foldTraverseElement(string l, string r, BinOpType bot)
   case BINOPADD:
     buffer << l << "+" << r;
     break;
-  case BINOPELADD:
-    buffer << l << "IMPLEMENT" << r;
-    break;
   case BINOPSUB:
     buffer << l << "-" << r;
-    break;
-  case BINOPELSUB:
-    buffer << l << "IMPLEMENT" << r;
     break;
   case BINOPDIV:
     buffer << l << "/" << r;
     break;
-  case BINOPELDIV:
-    buffer << l << "IMPLEMENT" << r;
-    break;
   case BINOPMULT:
     buffer << l << "*" << r;
     break;
-  case BINOPELMULT:
-    buffer << l << "IMPLEMENT" << r;
-    break;
   case BINOPEXP:
     buffer << "pow(" << l << "," << r << ")";
-    break;
-  case BINOPELEXP:
-    buffer << l << "IMPLEMENT" << r;
     break;
   default:
     return "NOT IMPLEMENTED";
@@ -204,6 +190,10 @@ VariablePrinter::VariablePrinter(Variable var, AST_Expression_ComponentReference
 void VariablePrinter::generate()
 {
   stringstream buffer;
+  if (_var.isLocal()) {
+    _exp = _var.name();
+    return;
+  }
   if (ModelConfig::instance().initialCode() && _var.isState()) {
     buffer << "_init";
   }

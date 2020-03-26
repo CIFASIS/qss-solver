@@ -121,6 +121,9 @@ void MicroModelicaIR::visit(AST_Element x)
         if ((tp & TP_PARAMETER) && c->isInteger()) {
           Variable vi(newType_Integer(), tp, current_element(it)->modification(), nullptr, size, array);
           _class->insert(current_element(it)->name(), vi, t);
+        } else if (c->isString()) {
+          Variable vi(newType_String(), tp, current_element(it)->modification(), nullptr, size, array);
+          _class->insert(current_element(it)->name(), vi, t);
         } else {
           Variable vi(newType_Real(), tp, current_element(it)->modification(), nullptr, size, array);
           _class->insert(current_element(it)->name(), vi, t);

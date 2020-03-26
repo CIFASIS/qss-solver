@@ -23,7 +23,6 @@
 #include <string>
 
 #include "ast_types.h"
-#include "../util/ast_util.h"
 
 /* Constructors */
 AST_ArgumentList newAST_ArgumentList();
@@ -149,6 +148,7 @@ AST_Expression newAST_Expression_Null();
 AST_Expression newAST_Expression_Colon();
 AST_Expression newAST_Expression_End();
 AST_Expression newAST_Expression_Call(AST_String, AST_String, AST_ExpressionList);
+AST_Expression newAST_Expression_Call(AST_String name, AST_String rest, AST_ExpressionList args, AST_ExpressionList output_args);
 AST_Expression newAST_Expression_DotCall(AST_String, AST_String, AST_ExpressionList);
 AST_Expression newAST_Expression_BooleanNot(AST_Expression);
 AST_Expression newAST_Expression_ElseIf(AST_Expression, AST_Expression);

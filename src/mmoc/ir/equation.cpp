@@ -26,7 +26,6 @@
 #include "../ast/equation.h"
 #include "../ast/expression.h"
 #include "../parser/parse.h"
-#include "../util/derivative.h"
 #include "../util/error.h"
 #include "../util/util.h"
 #include "../util/visitors/algebraics.h"
@@ -36,6 +35,7 @@
 #include "../util/visitors/is_recursive_def.h"
 #include "../util/visitors/replace_der.h"
 #include "../util/visitors/revert_index.h"
+#include "derivative.h"
 #include "helpers.h"
 
 namespace MicroModelica {
@@ -198,7 +198,7 @@ bool Equation::isRHSReference() const { return _rhs.isReference(); }
 bool Equation::hasAlgebraics()
 {
   assert(isValid());
-  Algebraics has_algebraics(_symbols);
+  Algebraics has_algebraics;
   return has_algebraics.apply(_rhs.expression());
 }
 
@@ -284,7 +284,7 @@ string Equation::print() const
   assert(false);
 }
 
-Equation Dependency::generate(Equation eq, Index idx)
+Equation Dependency::generate(Equation eq, Index idx, AlgebraicDependencies algs)
 {
   Equation dep = eq;
   dep.setType(EQUATION::Dependency);
@@ -292,23 +292,20 @@ Equation Dependency::generate(Equation eq, Index idx)
   return dep;
 }
 
-Equation Jacobian::generate(Equation eq, Index idx)
+list<Equation> Dependency::terms() { return list<Equation>(); }
+
+Equation Jacobian::generate(Equation eq, Index idx, AlgebraicDependencies algs)
 {
-  // @TODO use the first expression, change generate jacobian to return a pair.
   ExpressionDerivator exp_der;
-  map<string, Expression> jac_exps = exp_der.generateJacobianExps(idx.variable(), idx.modelicaExp(), eq.rhs().expression(), _symbols);
-  Equation jac;
-  for (auto j : jac_exps) {
-    int res = 0;
-    AST_Expression lhs = parseExpression(j.first, &res);
-    if (res) {
-      Error::instance().add(0, EM_IR | EM_PARSE_FILE, ER_Fatal, "Can't generate Jacobian equation left hand side for: %s", j.first.c_str());
-    }
-    jac = Equation(lhs, j.second.expression(), _symbols, eq.range(), EQUATION::Jacobian, eq.id());
+  for (VariableDependency var : algs) {
+    exp_der.generateJacobianTerm(idx, var);
   }
-  jac.setUsage(idx);
+  Equation jac = exp_der.generateJacobianExp(idx, eq);
+  _jac_terms = exp_der.terms();
   return jac;
 }
+
+list<Equation> Jacobian::terms() { return _jac_terms; }
 
 EquationPrinter::EquationPrinter(Equation eq, Util::VarSymbolTable symbols) : _eq(eq), _symbols(symbols), _identifier() { setup(); }
 
@@ -488,11 +485,11 @@ void EquationConfig::initializeDerivatives()
     ReplaceDer replace_der(_symbols);
     Expression rhs = _eq.rhs();
     cout << "Exression derivative: " << rhs << endl;
-    AST_Expression exp1 = ed.derivate(rhs.expression(), _symbols, rhs);
+    AST_Expression exp1 = ed.derivate(rhs.expression(), rhs);
     _derivatives[0] = Expression(exp1, _symbols);
-    AST_Expression exp2 = ed.derivate(exp1, _symbols, rhs);
+    AST_Expression exp2 = ed.derivate(exp1, rhs);
     _derivatives[1] = Expression(replace_der.apply(exp2), _symbols);
-    AST_Expression exp3 = ed.derivate(exp2, _symbols, rhs);
+    AST_Expression exp3 = ed.derivate(exp2, rhs);
     _derivatives[2] = Expression(replace_der.apply(exp3), _symbols);
   }
 }
@@ -552,7 +549,6 @@ string AlgebraicConfig::print() const
 {
   stringstream buffer;
   string tabs = "";
-  FunctionPrinter fp;
   Option<Range> range = _eq.range();
   tabs += TAB;
   if (range) {

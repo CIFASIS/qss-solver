@@ -198,13 +198,20 @@ string AST_Expression_BooleanNot_::print() const
 
 /* Function call Class */
 
-AST_Expression_Call_::AST_Expression_Call_(AST_String name, AST_ExpressionList args) : _name(name), _args(args) {}
+AST_Expression_Call_::AST_Expression_Call_(AST_String name, AST_ExpressionList args) : _name(name), _args(args), _output_args() {}
+
+AST_Expression_Call_::AST_Expression_Call_(AST_String name, AST_ExpressionList args, AST_ExpressionList output_args)
+    : _name(name), _args(args), _output_args(output_args)
+{
+}
 
 ExpressionType AST_Expression_Call_::expressionType() { return EXPCALL; }
 
 AST_String AST_Expression_Call_::name() const { return _name; }
 
 AST_ExpressionList AST_Expression_Call_::arguments() const { return _args; }
+
+AST_ExpressionList AST_Expression_Call_::outputArguments() const { return _output_args; }
 
 string AST_Expression_Call_::print() const
 {

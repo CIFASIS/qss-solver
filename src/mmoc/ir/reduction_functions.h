@@ -24,39 +24,53 @@
 
 #include "../util/symbol_table.h"
 #include "../util/util.h"
-#include "../util/visitors/convert_sum.h"
+#include "../util/visitors/convert_cont_red.h"
+#include "../util/visitors/convert_disc_red.h"
 #include "helpers.h"
 
 namespace MicroModelica {
 namespace IR {
 
-template <class T>
+template <class T, class C>
 class ReductionFunctions {
   public:
-  ReductionFunctions(AST_Expression expression, Util::VarSymbolTable &symbols)
-      : _has_reduction_function(false), _expression(expression), _symbols(symbols){};
+  ReductionFunctions(AST_Expression expression, Util::VarSymbolTable &symbols, Util::Variable lhs)
+      : _has_reduction_function(false), _expression(expression), _symbols(symbols), _lhs(lhs){};
+
   bool hasReductionFunctions() { return _has_reduction_function; };
+
   list<T> code() { return _code; };
+
   list<Util::Variable> variables() { return _variables; };
+
   AST_Expression apply()
   {
-    Util::ConvertSum convert_sum(_symbols);
-    AST_Expression converted_exp = convert_sum.apply(_expression);
-    _has_reduction_function = convert_sum.hasSum();
-    list<T> code = convert_sum.code();
-    _code.insert(_code.end(), code.begin(), code.end());
-    list<Util::Variable> variables = convert_sum.variables();
-    _variables.insert(_variables.end(), variables.begin(), variables.end());
-    cout << "Added code: " << _code.size() << endl;
+    C convert_red(_symbols);
+    convert_red.setLHS(_lhs);
+    AST_Expression converted_exp = _expression;
+    int operators = convert_red.operators();
+    for (int i = 0; i < operators; i++) {
+      convert_red.setReduction(i);
+      converted_exp = convert_red.apply(converted_exp);
+      _has_reduction_function |= convert_red.hasReduction();
+      insertCode(convert_red.code(), convert_red.variables());
+    }
     return converted_exp;
   };
 
   protected:
+  void insertCode(list<T> code, list<Util::Variable> variables)
+  {
+    _code.insert(_code.end(), code.begin(), code.end());
+    _variables.insert(_variables.end(), variables.begin(), variables.end());
+  }
+
   bool _has_reduction_function;
   AST_Expression _expression;
   list<T> _code;
   list<Util::Variable> _variables;
   Util::VarSymbolTable &_symbols;
+  Util::Variable _lhs;
 };
 
 }  // namespace IR

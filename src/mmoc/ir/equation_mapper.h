@@ -74,9 +74,13 @@ class EquationMapper {
         DepInfo d = DepInfo(ifr);
         _mapper[idx_exp] = d;
       }
-      Equation eq = _eq_gen.generate(ifce.get(), ifr);
-      buffer << nonStateAlgebraics(orig_eq, inf.algs);
-      buffer << fp.algebraics(inf.algs);
+      Equation eq = _eq_gen.generate(ifce.get(), ifr, inf.algs);
+      if (eq.isJacobian()) {
+        buffer << fp.jacobianTerms(_eq_gen.terms());
+      } else {
+        buffer << nonStateAlgebraics(orig_eq, inf.algs);
+        buffer << fp.algebraics(inf.algs);
+      }
       buffer << eq << endl;
       DepInfo dep = _mapper[idx_exp];
       dep.addDependency(buffer.str());

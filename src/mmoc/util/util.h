@@ -47,13 +47,7 @@ typedef ModelTable<std::string, std::string> ImportTable;
 
 typedef ModelTable<std::string, std::string> SymbolTable;
 
-/**
- *
- */
 #define SLASH "/"
-/**
- *
- */
 #define BINOPS 18
 
 #if __x86_64__
@@ -64,9 +58,6 @@ typedef int grp_t;
 
 #define TAB "\t"
 
-/**
- *
- */
 class Utils {
   public:
   static Utils& instance()

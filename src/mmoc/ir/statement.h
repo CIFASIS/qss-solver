@@ -35,26 +35,14 @@ namespace STATEMENT {
 typedef enum { LHS, RHS, LHS_DISCRETES, LHS_STATES } AssignTerm;
 }
 
-/**
- *
- */
 class Statement {
   public:
-  /**
-   *
-   * @param stm
-   */
   Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, bool initial = false, const std::string& block = "");
   Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, Option<Range> range, bool initial = false,
             const std::string& block = "");
-  /**
-   *
-   */
   Statement() : _stm(nullptr), _range(), _symbols(), _block(), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states(){};
-  /**
-   *
-   */
-  ~Statement(){};
+  ~Statement() = default;
+
   inline bool hasRange() { return _range.is_initialized(); };
   inline Util::SymbolTable calledFunctions() { return _calledFunctions; };
   friend std::ostream& operator<<(std::ostream& out, const Statement& s);
@@ -69,6 +57,7 @@ class Statement {
   ExpressionList lhsDiscretes() const { return _lhs_discretes; };
   ExpressionList lhsStates() const { return _lhs_states; };
   bool isAssignment() const;
+  bool isForStatement() const;
   inline Option<Range> range() { return _range; };
 
   protected:
@@ -76,6 +65,8 @@ class Statement {
   ExpressionList generateExps(STATEMENT::AssignTerm asg);
   Expression emptyRef();
   bool checkStateAssignment(Expression exp) const;
+  std::string printAssignment(AST_Statement_Assign asg) const;
+  void setRange();
 
   private:
   AST_Statement _stm;
@@ -92,4 +83,5 @@ class Statement {
 typedef ModelTable<int, Statement> StatementTable;
 }  // namespace IR
 }  // namespace MicroModelica
+
 #endif /* MMO_STATEMENT_H_ */

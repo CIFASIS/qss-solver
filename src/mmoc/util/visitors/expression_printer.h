@@ -30,7 +30,6 @@ class ExpressionPrinter : public AST_Expression_Visitor<std::string> {
   public:
   ExpressionPrinter(const VarSymbolTable &symbols, bool is_qss = false, int order = 0);
   ~ExpressionPrinter() = default;
-  inline std::string code() const { return _code; };
 
   private:
   std::string foldTraverseElement(AST_Expression exp);
@@ -38,7 +37,6 @@ class ExpressionPrinter : public AST_Expression_Visitor<std::string> {
   std::string foldTraverseElementUMinus(AST_Expression exp);
   VarSymbolTable _symbols;
   IR::Expression _exp;
-  std::string _code;
   bool _is_qss;
   int _order;
 };

@@ -26,134 +26,64 @@
 #include "../common/utils.h"
 #include "qss_data.h"
 
-/**
- *
- */
 #define NAME_SIZE 128
 
-/**
- *
- */
+#define MAX_OPEN_FILES 1000
+
 typedef struct LG_log_ *LG_log;
 
-/**
- *
- */
 typedef struct LG_logOps_ *LG_logOps;
 
-/**
- *
- */
 typedef struct LG_logState_ *LG_logState;
 
-/**
- *
- * @param
- * @param
- * @param
- */
 typedef void (*LG_writeFn)(LG_log, int, double, double);
 
-/**
- *
- * @param
- * @param
- * @param
- */
 typedef void (*LG_writeLineFn)(LG_log, int, double, double *);
 
-/**
- *
- */
 typedef void (*LG_toFileFn)();
 
-/**
- *
- */
 struct LG_log_ {
-  LG_logState state;  //!<
-  LG_logOps ops;      //!<
+  LG_logState state;
+  LG_logOps ops;
 };
 
-/**
- *
- */
 struct LG_logState_ {
-  list *states;              //!<
-  QSS_data data;             //!<
-  SD_output output;          //!<
-  FILE **files;              //!<
-  int size;                  //!<
-  char fileName[NAME_SIZE];  //!<
-  int *values;               //!<
+  list *states;
+  QSS_data data;
+  SD_output output;
+  FILE **files;
+  int size;
+  int batch_init;
+  int batch_end;
+  int max_open_files;
+  char fileName[NAME_SIZE];
+  int *values;
 };
 
-/**
- *
- */
 struct LG_logOps_ {
-  LG_writeFn write;          //!<
-  LG_writeLineFn writeLine;  //!<
-  LG_toFileFn toFile;        //!<
+  LG_writeFn write;
+  LG_writeLineFn writeLine;
+  LG_toFileFn toFile;
 };
 
-/**
- *
- * @return
- */
 LG_logState LG_LogState();
 
-/**
- *
- * @return
- */
 LG_logOps LG_LogOps();
 
-/**
- *
- * @param simData
- * @param simOutput
- * @return
- */
 LG_log LG_Log(QSS_data simData, SD_output simOutput);
 
-/**
- *
- * @param v
- */
+LG_log LG_copy(LG_log log, SD_StoreData store_data);
+
 void LG_freeLog(LG_log v);
 
-/**
- *
- * @param v
- */
 void LG_freeLogState(LG_logState v);
 
-/**
- *
- * @param v
- */
 void LG_freeLogOps(LG_logOps v);
 
-/**
- *
- * @param
- * @param
- * @param
- */
 void LG_write(LG_log log, int i, double time, double value);
 
-/**
- *
- * @param
- * @param
- * @param
- */
 void LG_writeLine(LG_log log, int i, double time, double *value);
 
-/**
- *
- */
 void LG_toFile(LG_log log);
 
 #endif /* QSS_LOG_H_ */
