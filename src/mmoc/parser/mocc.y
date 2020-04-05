@@ -708,7 +708,7 @@ opt_else_st:
 
 output_expression_list:
     /* empty */                             { $$ = newAST_ExpressionList(); }
-  | expression output_expression_list_more  { $$ = AST_ListAppend($2,$1); }
+  | expression output_expression_list_more  { $$ = AST_ListPrepend($2,$1); }
 ;
 
 output_expression_list_more:

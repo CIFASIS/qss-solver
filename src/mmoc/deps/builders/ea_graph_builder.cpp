@@ -51,15 +51,6 @@ EAGraphBuilder::EAGraphBuilder(EquationTable &equations, EquationTable &algebrai
 DepsGraph EAGraphBuilder::build()
 {
   DepsGraph graph;
-  VarSymbolTable::iterator it;
-  for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
-    if (var.isAlgebraic()) {
-      VertexProperty vp = VertexProperty();
-      vp.setType(VERTEX::Algebraic);
-      vp.setVar(var);
-      _sourceDescriptors.push_back(add_vertex(vp, graph));
-    }
-  }
 
   EventTable::iterator ev_it;
   for (Event ev = _events.begin(ev_it); !_events.end(ev_it); ev = _events.next(ev_it)) {
@@ -72,7 +63,7 @@ DepsGraph EAGraphBuilder::build()
       vp.setId(id);
       vp.setEq(zc);
       _equationDescriptors.push_back(add_vertex(vp, graph));
-
+      // Add influencer.
       VertexProperty ifr = VertexProperty();
       ifr.setType(VERTEX::Influencer);
       Option<Variable> assigned = zc.LHSVariable();
@@ -93,16 +84,22 @@ DepsGraph EAGraphBuilder::build()
       _equationDescriptors.push_back(add_vertex(vp, graph));
       Option<Variable> assigned = eq.LHSVariable();
       assert(assigned);
-      _ifrs[assigned->name()] = pair<Variable, int>(assigned.get(), eq.id());
+      VertexProperty ifr = VertexProperty();
+      ifr.setType(VERTEX::Influencer);
+      ifr.setVar(assigned.get());
+      ifr.setId(eq.id());
+      _sourceDescriptors.push_back(add_vertex(ifr, graph));
     }
   }
 
-  for (auto &inf : _ifrs) {
-    VertexProperty ifr = VertexProperty();
-    ifr.setType(VERTEX::Influencer);
-    ifr.setVar(inf.second.first);
-    ifr.setId(inf.second.second);
-    _sourceDescriptors.push_back(add_vertex(ifr, graph));
+  VarSymbolTable::iterator it;
+  for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
+    if (var.isAlgebraic()) {
+      VertexProperty vp = VertexProperty();
+      vp.setType(VERTEX::Algebraic);
+      vp.setVar(var);
+      _sourceDescriptors.push_back(add_vertex(vp, graph));
+    }
   }
 
   for (Equation eq = _algebraics.begin(eq_it); !_algebraics.end(eq_it); eq = _algebraics.next(eq_it)) {
@@ -151,6 +148,7 @@ DepsGraph EAGraphBuilder::build()
       }
     }
   }
+
   foreach_(EqVertex sink, _equationDescriptors)
   {
     foreach_(IfeVertex source, _algebraicDescriptors)
