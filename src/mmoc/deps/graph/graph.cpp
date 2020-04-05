@@ -372,7 +372,13 @@ void GenerateEdge::initialize()
 {
   Occurs occurs(_source.var().name(), _symbols);
   if (_eval == VERTEX::LHS) {
-    if (_source.type() == VERTEX::Influencer || (_source.type() == VERTEX::Algebraic && _dir == EDGE::Output)) {
+    if (_source.type() == VERTEX::Influencer && _sink.type() == VERTEX::Equation && !_sink.eq().isAlgebraic() &&
+        _source.id() == _sink.eq().id()) {
+      ExpressionList exps;
+      _exist = true;
+      exps.push_back(_sink.eq().lhs());
+      build(exps);
+    } else if (_source.type() == VERTEX::Algebraic && _dir == EDGE::Output) {
       _exist = occurs.apply(_sink.eq().lhs().expression());
       if (_exist) {
         build(occurs.occurrences());
@@ -448,7 +454,6 @@ void GenerateEdge::build(list<Expression> exps)
   for (Expression exp : exps) {
     cout << "BUILDER EXP: " << exp << endl;
     assert(exp.isReference());
-    cout << "Expressions: " << exp << endl;
     EvalOccur eval_occur(exp, _symbols, sink_range);
     MDI mdi_dom(eval_occur.intervals());
     MDI mdi_ran(sink_interval);
