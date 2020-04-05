@@ -484,7 +484,6 @@ void EquationConfig::initializeDerivatives()
     ExpressionDerivator ed;
     ReplaceDer replace_der(_symbols);
     Expression rhs = _eq.rhs();
-    cout << "Exression derivative: " << rhs << endl;
     AST_Expression exp1 = ed.derivate(rhs.expression(), rhs);
     _derivatives[0] = Expression(exp1, _symbols);
     AST_Expression exp2 = ed.derivate(exp1, rhs);

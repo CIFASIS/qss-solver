@@ -93,6 +93,7 @@ class Equation {
   void initialize(AST_Expression exp);
   void initialize(AST_Expression lhs, AST_Expression rhs);
   void setup();
+
   AST_Equation _eq;
   Expression _lhs;
   Expression _rhs;
