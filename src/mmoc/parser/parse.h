@@ -21,38 +21,12 @@
 
 #include "../ast/ast_types.h"
 
-/**
- *
- * @param
- * @param
- * @return
- */
 AST_StoredDefinition parseFile(string, int *);
-/**
- *
- * @param
- * @param
- * @return
- */
+
 AST_Class parseClass(string, int *);
-/**
- *
- * @param
- * @param
- * @return
- */
+
 AST_Expression parseExpression(string, int *);
-/**
- *
- * @param exp
- * @param r
- * @return
- */
+
 AST_Equation parseEquation(string exp, int *r);
-/**
- *
- * @param exp
- * @param r
- * @return
- */
+
 AST_Statement parseStatement(string exp, int *r);
