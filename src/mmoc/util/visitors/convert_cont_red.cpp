@@ -85,7 +85,6 @@ AST_Expression ConvertContRed::foldTraverseElement(AST_Expression exp)
       string var_name = code.str();
       code.str("");
       code << var_name << "[1] = " << cr->name() << "[1]";
-      cout << code.str() << endl;
       AST_Equation eq_1 = parseEquation(code.str(), &res);
       if (res) {
         Error::instance().add(exp->lineNum(), EM_IR | EM_EQ_DEF, ER_Error, "Generating %s reduction function code.", oper_name);
@@ -97,7 +96,6 @@ AST_Expression ConvertContRed::foldTraverseElement(AST_Expression exp)
            << "[i]; "
            << "end for";
       AST_Equation eq_i = parseEquation(code.str(), &res);
-      cout << code.str() << endl;
       if (res) {
         Error::instance().add(exp->lineNum(), EM_IR | EM_EQ_DEF, ER_Error, "Generating %s reduction function code.", oper_name);
       }
