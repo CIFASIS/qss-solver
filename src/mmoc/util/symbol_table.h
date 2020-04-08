@@ -90,11 +90,6 @@ class Variable {
   inline void setUnknown() { _unknown = true; };
   inline bool isTime() { return _name.compare("time") == 0; };
   inline bool isAlgebraic() const { return _realType == Algebraic; };
-  inline void setAlgebraic()
-  {
-    unsetAssignment();
-    unsetStartEach();
-  };
   inline void setValue(int val) { _value = val; };
   inline int value() { return _value; };
   unsigned int size();
