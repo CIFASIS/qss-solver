@@ -1,17 +1,22 @@
-#!/bin/bash
-echo "Apply clang format to commit"
+#!/usr/bin/env python
 
-format_file() {
-  file="${1}"
-  if [ -f $file ]; then
-    if [[ $file == *.cpp ]] || [[ $file == *.h ]]; then 
-      clang-format-7 -i ${STYLEARG} ${1}
-      git add ${1}
-    fi
-  fi
-}
+import subprocess
 
-for file in `git diff-index --cached --name-only HEAD` ; do
-    echo "Format file: " ${file}
-    format_file "${file}"
-done
+def get_files():
+    return subprocess.check_output(['git', 'diff-index','--cached',
+                                    '--name-only', 'HEAD']).split()
+
+def apply_code_style():
+    files = filter(lambda x: not x.find('test/integration/gt_data'), get_files())
+
+    files = filter(lambda x: x.endswith('.c') or
+                             x.endswith('.h') or
+                             x.endswith('.cpp'), files)
+    for f in files:
+      subprocess.check_output(['clang-format-7', '-i',f])
+
+def main():
+    apply_code_style()
+
+if (__name__ == '__main__'):
+    main()
