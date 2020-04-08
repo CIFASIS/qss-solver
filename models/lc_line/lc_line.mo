@@ -16,15 +16,19 @@ model lc_line
     elsewhen time <= 1 then
       d := 1;
     end when;
-  annotation(
+	annotation(
 
-  experiment(
-    MMO_Description="LC transmission line",
-    MMO_Solver=QSS3,
-    MMO_Output={x[1],x[N],x[101],x[100]},
-    StartTime=0,
-    StopTime=200,
-    Tolerance={ 1e-3},
-    AbsTolerance={ 1e-6}
-  ));
+	experiment(
+		MMO_Description="LC transmission line",
+		MMO_Solver=QSS3,
+		MMO_PartitionMethod=Metis,
+		MMO_Output={x[1],x[N],x[101],x[100]},
+		Jacobian=Dense,
+		MMO_BDF_PDepth=1,
+		MMO_BDF_Max_Step=0,
+		StartTime=0,
+		StopTime=200,
+		Tolerance={ 1e-3},
+		AbsTolerance={ 1e-6}
+	));
 end lc_line;

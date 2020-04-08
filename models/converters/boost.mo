@@ -28,15 +28,19 @@ model boost
       Rd := ROff;
       diodeon:=0;
     end when;
-  annotation(
+	annotation(
 
-  experiment(
-    MMO_Description="Boost Circuit.",
-    MMO_Solver=LIQSS2,
-    MMO_Output={uC,iL},
-    StartTime=0,
-    StopTime=0.01,
-    Tolerance={ 1e-3},
-    AbsTolerance={ 1e-3}
-  ));
+	experiment(
+		MMO_Description="Boost Circuit.",
+		MMO_Solver=LIQSS2,
+		MMO_PartitionMethod=Metis,
+		MMO_Output={uC,iL},
+		Jacobian=Dense,
+		MMO_BDF_PDepth=1,
+		MMO_BDF_Max_Step=0,
+		StartTime=0,
+		StopTime=0.01,
+		Tolerance={ 1e-3},
+		AbsTolerance={ 1e-3}
+	));
 end boost;

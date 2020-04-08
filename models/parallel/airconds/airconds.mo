@@ -56,21 +56,24 @@ model airconds
         noise[i] := 2*abs(sin(i*time))-1;
       end when;
     end for;
-  annotation(
+	annotation(
 
-  experiment(
-    MMO_Description="Power consumption  in a large population of air conditioners.",
-    MMO_Solver=QSS2,
-    MMO_Period={3000/5000},
-    MMO_Parallel=true,
-    MMO_PartitionMethod=Manual,
-    MMO_LPS=62,
-    MMO_DT_Synch=SD_DT_Fixed,
-    MMO_DT_Min=3000,
-    MMO_Output={th[1]},
-    StartTime=0,
-    StopTime=3000,
-    Tolerance={1e-3},
-    AbsTolerance={1e-3}
-  ));
+	experiment(
+		MMO_Description="Power consumption  in a large population of air conditioners.",
+		MMO_Solver=QSS2,
+		MMO_Period={3000/5000},
+		MMO_Parallel=true,
+		MMO_PartitionMethod=Manual,
+		MMO_LPS=62,
+		MMO_DT_Synch=SD_DT_Fixed,
+		MMO_DT_Min=3000,
+		MMO_Output={th[1]},
+		Jacobian=Dense,
+		MMO_BDF_PDepth=1,
+		MMO_BDF_Max_Step=0,
+		StartTime=0,
+		StopTime=3000,
+		Tolerance={1e-3},
+		AbsTolerance={1e-3}
+	));
 end airconds;

@@ -29,15 +29,19 @@ model spikings
         reinit(u[i],u[i]+d[i]);
       end when;
     end for;
-  annotation(
+	annotation(
 
-  experiment(
-    MMO_Description="Spiking Neurons.",
-    MMO_Solver=QSS3,
-    MMO_Output={v[1],v[2]},
-    StartTime=0,
-    StopTime=1000,
-    Tolerance={1e-3},
-    AbsTolerance={1e-3}
-  ));
+	experiment(
+		MMO_Description="Spiking Neurons.",
+		MMO_Solver=QSS3,
+		MMO_PartitionMethod=Metis,
+		MMO_Output={v[1],v[2]},
+		Jacobian=Dense,
+		MMO_BDF_PDepth=1,
+		MMO_BDF_Max_Step=0,
+		StartTime=0,
+		StopTime=1000,
+		Tolerance={1e-3},
+		AbsTolerance={1e-3}
+	));
 end spikings;

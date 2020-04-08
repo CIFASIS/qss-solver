@@ -55,21 +55,21 @@ algorithm
     Rd := ROff;
     diodeon:=0;
   end when;
-
-annotation(
-
-  experiment(
+	annotation(
+	experiment(
 		MMO_Description="Buck converter.",
+
 		MMO_Solver=LIQSS2,
 		MMO_Period={100/5000},
+		MMO_PartitionMethod=Metis,
 		MMO_Output={u[N/2]},
 		MMO_OutputType=CI_Sampled,
-		Jacobian=Sparse,
+		Jacobian=Dense,
 		MMO_BDF_PDepth=3,
+		MMO_BDF_Max_Step=0,
 		StartTime=0,
 		StopTime=60,
 		Tolerance={1e-3},
 		AbsTolerance={1e-3}
 	));
-
 end buck_term;

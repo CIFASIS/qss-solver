@@ -14,15 +14,19 @@ model rectifier
     when u > 0 then
       Rd:=Ron;
     end when;
+	annotation(
 
-  annotation(
-  experiment(
-    MMO_Description="Half wave rectifier.",
-    MMO_Solver=LIQSS2,
-    MMO_Output={iL,u},
-    StartTime=0,
-    StopTime=1,
-    Tolerance={1e-3},
-    AbsTolerance={1e-3}
-  ));
+	experiment(
+		MMO_Description="Half wave rectifier.",
+		MMO_Solver=LIQSS2,
+		MMO_PartitionMethod=Metis,
+		MMO_Output={iL,u},
+		Jacobian=Dense,
+		MMO_BDF_PDepth=1,
+		MMO_BDF_Max_Step=0,
+		StartTime=0,
+		StopTime=1,
+		Tolerance={1e-3},
+		AbsTolerance={1e-3}
+	));
 end rectifier;
