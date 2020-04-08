@@ -26,22 +26,22 @@ equation
   for i in 2:N-1 loop
     der(u[i])=-a*(u[i]-u[i-1])/dx+ d[i]*(u[i+1]-2*u[i]+u[i-1])/dx2+ r*(u[i]^2)*(1-u[i]);
   end for;
-
-annotation(
-
+	annotation(
 	experiment(
 		MMO_Description="Advection Reaction Diffusion problem.",
+
 		MMO_Solver=LIQSS_BDF,
+		MMO_Period={10/5000},
+		MMO_PartitionMethod=Metis,
 		MMO_Output={u[750]},
 		MMO_OutputType=CI_Sampled,
-		MMO_Period={10/5000},
-		Jacobian=Sparse,
+		Jacobian=Dense,
 		MMO_BDF_Part={u[N/2:N]},
 		MMO_BDF_PDepth=1,
+		MMO_BDF_Max_Step=0,
 		StartTime=0,
 		StopTime=10,
 		Tolerance={1e-3},
 		AbsTolerance={1e-3}
 	));
-
 end adr;

@@ -32,15 +32,19 @@ model cuk2
       Rd := ROff;
        diodeon:=0;
     end when;
-  annotation(
+	annotation(
 
-  experiment(
-    MMO_Description="Cuk converter with change of variables.",
-    MMO_Solver=LIQSS,
-    MMO_Output={iL,iL1,uC,uC1},
-    StartTime=0,
-    StopTime=0.01,
-    Tolerance={ 1e-3},
-    AbsTolerance={ 1e-3}
-  ));
+	experiment(
+		MMO_Description="Cuk converter with change of variables.",
+		MMO_Solver=LIQSS,
+		MMO_PartitionMethod=Metis,
+		MMO_Output={iL,iL1,uC,uC1},
+		Jacobian=Dense,
+		MMO_BDF_PDepth=1,
+		MMO_BDF_Max_Step=0,
+		StartTime=0,
+		StopTime=0.01,
+		Tolerance={ 1e-3},
+		AbsTolerance={ 1e-3}
+	));
 end cuk2;

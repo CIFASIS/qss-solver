@@ -55,15 +55,19 @@ model aircont
     ptotals := ptotal;
     dtref := Kp*(ptotals/pmax-pref)-Ki*ierr;
   end when;
-  annotation(
-  experiment(
+	annotation(
 
-    MMO_Description="Control of the power consumption of a large populaion of  air conditioners.",
-    MMO_Solver=DOPRI,
-    MMO_Output={ptotal},
-    StartTime=0,
-    StopTime=3000,
-    Tolerance={1e-4},
-    AbsTolerance={1e-4}
-  ));
+	experiment(
+		MMO_Description="Control of the power consumption of a large populaion of  air conditioners.",
+		MMO_Solver=DOPRI,
+		MMO_PartitionMethod=Metis,
+		MMO_Output={ptotal},
+		Jacobian=Dense,
+		MMO_BDF_PDepth=1,
+		MMO_BDF_Max_Step=0,
+		StartTime=0,
+		StopTime=3000,
+		Tolerance={1e-4},
+		AbsTolerance={1e-4}
+	));
 end aircont;

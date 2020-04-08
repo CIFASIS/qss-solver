@@ -15,15 +15,19 @@ model bball_downstairs
   when x - 11 +stair > 0 then
     stair := stair - 1;
   end when;
+	annotation(
 
-  annotation(
-  experiment(
-    MMO_Description="Ball bouncing downstairs.",
-    MMO_Solver=QSS3,
-    MMO_Output={y},
-    StartTime=0.0,
-    StopTime=30.0,
-    Tolerance={1e-6},
-    AbsTolerance={1e-9}
-  ));
+	experiment(
+		MMO_Description="Ball bouncing downstairs.",
+		MMO_Solver=QSS3,
+		MMO_PartitionMethod=Metis,
+		MMO_Output={y},
+		Jacobian=Dense,
+		MMO_BDF_PDepth=1,
+		MMO_BDF_Max_Step=0,
+		StartTime=0.0,
+		StopTime=30.0,
+		Tolerance={1e-6},
+		AbsTolerance={1e-9}
+	));
 end bball_downstairs;

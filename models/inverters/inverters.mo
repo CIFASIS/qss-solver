@@ -56,15 +56,19 @@ model inverters
         nextchange:=10000000000.0;
       end if;
     end when;
-  annotation(
+	annotation(
 
-  experiment(
-    MMO_Description="A chain of logical inverters",
-    MMO_Solver=LIQSS2,
-    MMO_Output={x[N],x[1]},
-    StartTime= 0,
-    StopTime= 200,
-    Tolerance={ 1e-3},
-    AbsTolerance={ 1e-3}
-  ));
+	experiment(
+		MMO_Description="A chain of logical inverters",
+		MMO_Solver=LIQSS2,
+		MMO_PartitionMethod=Metis,
+		MMO_Output={x[N],x[1]},
+		Jacobian=Dense,
+		MMO_BDF_PDepth=1,
+		MMO_BDF_Max_Step=0,
+		StartTime= 0,
+		StopTime= 200,
+		Tolerance={ 1e-3},
+		AbsTolerance={ 1e-3}
+	));
 end inverters;

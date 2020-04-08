@@ -3004,21 +3004,24 @@ model ar2d2
       der(u999[i])=(-u999[i]+u999[i-1])*vx*N+(-u999[i]+u998[i])*vy*M-mu*u999[i]*(u999[i]-alpha)*(u999[i]-1);
       der(u1000[i])=(-u1000[i]+u1000[i-1])*vx*N+(-u1000[i]+u999[i])*vy*M-mu*u1000[i]*(u1000[i]-alpha)*(u1000[i]-1);
     end for;
-  annotation(
+	annotation(
 
-  experiment(
-    MMO_Description="",
-    MMO_Solver=LIQSS2,
-    MMO_Period={2/5000},
-    MMO_Parallel=true,
-    MMO_PartitionMethod=Manual,
-    MMO_LPS=62,
-    MMO_DT_Min=100,
-    MMO_Output={u500[1:N/20:N]},
-    MMO_OutputType=CI_Sampled,
-    StartTime=0.0,
-    StopTime=2,
-    Tolerance={1e-3},
-    AbsTolerance={1e-3}
-  ));
+	experiment(
+		MMO_Description="",
+		MMO_Solver=LIQSS2,
+		MMO_Period={2/5000},
+		MMO_Parallel=true,
+		MMO_PartitionMethod=Manual,
+		MMO_LPS=62,
+		MMO_DT_Min=100,
+		MMO_Output={u500[1:N/20:N]},
+		MMO_OutputType=CI_Sampled,
+		Jacobian=Dense,
+		MMO_BDF_PDepth=1,
+		MMO_BDF_Max_Step=0,
+		StartTime=0.0,
+		StopTime=2,
+		Tolerance={1e-3},
+		AbsTolerance={1e-3}
+	));
 end ar2d2;

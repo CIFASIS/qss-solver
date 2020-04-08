@@ -907,17 +907,21 @@ model hres_stiff
       SOC:=batteryAndBockBoost_u;
       ptanque:=fCellAndElectro_tanque_p_tanque;
     end when;
-  annotation(
+	annotation(
 
-  experiment(
-    MMO_Description="",
-    MMO_Solver=LIQSS2,
-    MMO_Period={2},
-    MMO_Output={SOC},
-    MMO_OutputType=CI_Sampled,
-    StartTime=0.0,
-    StopTime=3000,
-    Tolerance={1e-5},
-    AbsTolerance={1e-5}
-  ));
+	experiment(
+		MMO_Description="",
+		MMO_Solver=LIQSS2,
+		MMO_Period={2},
+		MMO_PartitionMethod=Metis,
+		MMO_Output={SOC},
+		MMO_OutputType=CI_Sampled,
+		Jacobian=Dense,
+		MMO_BDF_PDepth=1,
+		MMO_BDF_Max_Step=0,
+		StartTime=0.0,
+		StopTime=3000,
+		Tolerance={1e-5},
+		AbsTolerance={1e-5}
+	));
 end hres_stiff;
