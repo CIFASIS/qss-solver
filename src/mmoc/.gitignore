@@ -6,6 +6,7 @@
 
 # Compiled test files.
 /tests/usr/
+/tests/integration/test_data
 
 # Tmp VIM files.
 /**/*.swp
