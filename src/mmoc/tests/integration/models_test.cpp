@@ -36,7 +36,7 @@ TEST_P(ITests, GenerateCode)
 {
   const std::string NAME = GetParam();
   std::cout << "Testing model: " << NAME << std::endl;
-  const std::string MODEL = " ../../../models/" + NAME + "/" + NAME + ".mo";
+  const std::string MODEL = " ./integration/gt_data/" + NAME + "/" + NAME + ".mo";
   const std::string MMOC = "../usr/bin/mmoc";
   const std::string ARGS = " -o ./integration/test_data/" + NAME;
   const std::string TEST_CMD = "./integration/test_results.sh " + NAME;
