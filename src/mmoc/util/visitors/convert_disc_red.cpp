@@ -86,16 +86,12 @@ AST_Expression ConvertDiscRed::foldTraverseElement(AST_Expression exp)
       if (res) {
         Error::instance().add(exp->lineNum(), EM_IR | EM_WRONG_EXP, ER_Error, "Generating %s reduction function code.", oper_name);
       }
-      cout << code.str() << endl;
       code.str("");
       // @TODO check dimensions for variables.
       code << "for i in 2:" << variable->size() << " loop "
            << "if " << cr->name() << "[i] " << _oper << " " << _lhs.name() << " then " << _lhs.name() << " := " << cr->name() << "[i]; "
            << "end if; end for";
-      cout << code.str() << endl;
       AST_Statement stm = parseStatement(code.str(), &res);
-      cout << "TIPO DEL STM:" << endl;
-      cout << stm->statementType() << endl;
       if (res) {
         Error::instance().add(exp->lineNum(), EM_IR | EM_EQ_DEF, ER_Error, "Generating %s reduction function code.", oper_name);
       }
