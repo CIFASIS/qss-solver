@@ -4,6 +4,8 @@
         "*.tcc": "cpp",
         "ostream": "cpp",
         "iosfwd": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "typeindex": "cpp",
+        "typeinfo": "cpp"
     }
 }

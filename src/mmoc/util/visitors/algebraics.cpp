@@ -49,6 +49,14 @@ bool Algebraics::foldTraverseElement(AST_Expression e)
     }
     break;
   }
+  case EXPCALL: {
+    AST_Expression_Call call = e->getAsCall();
+    AST_ExpressionListIterator it;
+    foreach (it, call->arguments()) {
+      has_algebraics = has_algebraics || apply(current_element(it));
+    }
+    break;
+  }
   case EXPCALLARG: {
     AST_Expression_CallArgs call = e->getAsCallArgs();
     AST_ExpressionList el = call->arguments();

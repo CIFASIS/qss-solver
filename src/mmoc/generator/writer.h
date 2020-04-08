@@ -30,14 +30,8 @@
 namespace MicroModelica {
 namespace Generator {
 
-/**
- *
- */
 #define SECTIONS 37
 namespace WRITER {
-/**
- *
- */
 typedef enum {
   Prologue,
   Epilogue,
@@ -119,9 +113,6 @@ class Writer {
 
 typedef std::shared_ptr<Writer> WriterPtr;
 
-/**
- *
- */
 class MemoryWriter : public Writer {
   public:
   MemoryWriter();
@@ -159,9 +150,6 @@ class MemoryWriter : public Writer {
   std::list<std::string>::iterator _removeIt;
 };
 
-/**
- *
- */
 class FileWriter : public Writer {
   public:
   FileWriter();

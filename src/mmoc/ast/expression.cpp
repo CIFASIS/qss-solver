@@ -198,7 +198,10 @@ string AST_Expression_BooleanNot_::print() const
 
 /* Function call Class */
 
-AST_Expression_Call_::AST_Expression_Call_(AST_String name, AST_ExpressionList args) : _name(name), _args(args), _output_args() {}
+AST_Expression_Call_::AST_Expression_Call_(AST_String name, AST_ExpressionList args)
+    : _name(name), _args(args), _output_args(newAST_ExpressionList())
+{
+}
 
 AST_Expression_Call_::AST_Expression_Call_(AST_String name, AST_ExpressionList args, AST_ExpressionList output_args)
     : _name(name), _args(args), _output_args(output_args)
