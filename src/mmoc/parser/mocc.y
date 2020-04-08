@@ -289,7 +289,7 @@ opt_language_specification:
 opt_external_function_call:
     /* empty */ 								 {$$ = nullptr;}
   	| TOKID TOKOPAREN expression_list TOKCPAREN  {$$ = newAST_Expression_Call($1,nullptr,$3);}
-  	| TOKID TOKOPAREN TOKCPAREN  {$$ = newAST_Expression_Call($1,nullptr,nullptr);}
+  	| TOKID TOKOPAREN TOKCPAREN  {$$ = newAST_Expression_Call($1,nullptr,newAST_ExpressionList());}
 	;
 
 opt_annotation_composition:
