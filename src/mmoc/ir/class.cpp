@@ -501,10 +501,10 @@ void Model::addVariable(int id, Option<Range> range, EQUATION::Type type, unsign
   if (type == EQUATION::Type::Output) {
     eq_type = TP_OUTPUT;
   }
-  Variable vi(newType_Integer(), eq_type, nullptr, nullptr, s, false);
-  string var = EquationVariable::modelVariables(id, type);
-  insert(var, vi);
-  Option<Variable> variable = _symbols[var];
+  Variable var(newType_Integer(), eq_type, nullptr, nullptr, s, false);
+  string var_name = EquationVariable::modelVariables(id, type);
+  insert(var_name, var);
+  Option<Variable> variable = _symbols[var_name];
   static bool DONT_INCREASE_OFFSET = false;
   setVariableOffset(variable.get(), offset, Variable::RealType::NotAssigned, DONT_INCREASE_OFFSET);
 }
@@ -542,7 +542,7 @@ void Model::addEvent(AST_Statement stm, Option<Range> range)
         }
         if (new_event) {
           _events.insert(_eventId++, else_event);
-        } else {
+        } else {  
           event = else_event;
         }
       }
