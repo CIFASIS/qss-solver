@@ -178,7 +178,7 @@ Equation ExpressionDerivator::generateJacobianExp(Index index, Equation eq)
   assert(lhs);
   JacAlgExps jac_alg_exps(lhs.get(), eq.range());
   AST_Expression state_terms = jac_alg_exps.apply(exp);
-  AST_ExpressionList alg_terms = generateChainRule(jac_alg_exps.algebraicTerms());
+  AST_ExpressionList alg_terms = newAST_ExpressionList(); // = generateChainRule(jac_alg_exps.algebraicTerms());
   GiNaC::ex dexp = to_ginac.convert(state_terms, false, true);
   map<string, GiNaC::symbol> dir = to_ginac.directory();
   GiNaC::symbol time = to_ginac.getTime();
