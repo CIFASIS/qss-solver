@@ -31,39 +31,31 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-AST_Statement processStatement(AST_Statement stm)
+void processStatement(AST_Statement stm)
 {
   switch (stm->statementType()) {
   case STIF: {
-    // New statement structs.
-    AST_StatementList new_if_stms = newAST_StatementList();
-    AST_StatementList new_else_stms = newAST_StatementList();
-    AST_Statement_ElseList new_stm_else_list = newAST_Statement_ElseList();
-
     AST_Statement_If sti = stm->getAsIf();
     AST_StatementList stl = sti->statements();
     AST_StatementListIterator stlit;
     foreach (stlit, stl) {
-      AST_ListAppend(new_if_stms, processStatement(current_element(stlit)));
+      processStatement(current_element(stlit));
     }
     AST_Statement_ElseList stelsel = sti->else_if();
     AST_Statement_ElseListIterator stelselit;
     foreach (stelselit, stelsel) {
       stl = current_element(stelselit)->statements();
-      AST_StatementList else_stms = newAST_StatementList();
       foreach (stlit, stl) {
-        AST_ListAppend(else_stms, processStatement(current_element(stlit)));
+        processStatement(current_element(stlit));
       }
-      AST_Statement_Else new_else = newAST_Statement_Else(current_element(stelselit)->condition(), else_stms);
-      AST_ListAppend(new_stm_else_list, new_else);
     }
     stl = sti->else_statements();
     if (!stl->empty()) {
       foreach (stlit, stl) {
-        AST_ListAppend(new_else_stms, processStatement(current_element(stlit)));
+        processStatement(current_element(stlit));
       }
     }
-    return newAST_Statement_If(sti->condition(), new_if_stms, new_stm_else_list, new_else_stms);
+    break;
   }
   case STASSIGN: {
     AST_Statement_Assign sa = stm->getAsAssign();
@@ -106,7 +98,8 @@ AST_Statement processStatement(AST_Statement stm)
               rhs = current_element(eli);
             }
           }
-          return newAST_Statement_Assign(lhs, rhs);
+          sa->setLHS(lhs);
+          sa->setExp(rhs);
         }
       } else if (function_name.compare(TERMINATE) == 0) {
         assert(sa->lhs() != nullptr);
@@ -116,26 +109,20 @@ AST_Statement processStatement(AST_Statement stm)
         }
       }
     }
-    return stm;
+    break;
   }
   case STFOR: {
     AST_Statement_For stf = stm->getAsFor();
     AST_StatementList stms = stf->statements();
     AST_StatementListIterator stmit;
-    AST_StatementList new_for_stms = newAST_StatementList();
     foreach (stmit, stms) {
-      AST_ListAppend(new_for_stms, processStatement(current_element(stmit)));
+      processStatement(current_element(stmit));
     }
-    return newAST_Statement_For(stf->forIndexList(), new_for_stms);
-  }
-  case STOUTASSING: {
-    return stm;
+    break;
   }
   default:
     break;
   }
-  assert(false);
-  return nullptr;
 }
 
 void applyReduction(AST_Statement_Assign asg, AST_StatementList stms, AST_StatementListIterator stm_it)
@@ -144,9 +131,9 @@ void applyReduction(AST_Statement_Assign asg, AST_StatementList stms, AST_Statem
   ReductionFunctions<AST_Statement, ConvertDiscRed> reduction_functions(asg->exp(), symbols,
                                                                         Utils::instance().variable(asg->lhs(), symbols));
   AST_Expression new_exp = reduction_functions.apply();
-  asg->setExp(new_exp);
-  list<AST_Statement> code = reduction_functions.code();
-  if (code.size()) {
+  if (reduction_functions.hasReductionFunctions()) {
+    asg->setExp(new_exp);
+    list<AST_Statement> code = reduction_functions.code();
     // In case of statements we only add one additional statement.
     assert(code.size() == 1);
     AST_Statement ast = code.front();
@@ -157,12 +144,13 @@ void applyReduction(AST_Statement_Assign asg, AST_StatementList stms, AST_Statem
 
 void reduceStatement(AST_Statement stm, AST_StatementList stms, AST_StatementListIterator stm_it)
 {
+  processStatement(stm);
   if (stm->statementType() == STASSIGN) {
     AST_Statement_Assign asg = stm->getAsAssign();
     applyReduction(asg, stms, stm_it);
   } else if (stm->statementType() == STFOR) {
-    AST_Statement_For stf = stm->getAsFor();
-    AST_StatementList for_stms = stf->statements();
+    AST_Statement_For stm_for = stm->getAsFor();
+    AST_StatementList for_stms = stm_for->statements();
     AST_StatementListIterator for_it;
     foreach (for_it, for_stms) {
       reduceStatement(current_element(for_it), for_stms, for_it);
