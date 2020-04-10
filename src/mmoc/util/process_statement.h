@@ -30,7 +30,7 @@ namespace STATEMENT {
 typedef enum { LHS, RHS, LHS_DISCRETES, LHS_STATES } AssignTerm;
 }
 
-AST_Statement processStatement(AST_Statement stm);
+void processStatement(AST_Statement stm);
 
 void applyReduction(AST_Statement_Assign asg, AST_StatementList stms, AST_StatementListIterator stm_it);
 

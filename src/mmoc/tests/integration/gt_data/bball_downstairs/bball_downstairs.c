@@ -1,0 +1,283 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+
+#include "bball_downstairs.h"
+#include <common/utils.h>
+#include <common/model.h>
+#include <common/commands.h>
+#include <qss/qss_model.h>
+#include <classic/classic_model.h>
+
+void MOD_settings(SD_simulationSettings settings)
+{
+	settings->debug = 0;
+	settings->parallel = FALSE;
+	settings->hybrid = TRUE;
+	settings->method = 6;
+}
+
+void MOD_definition(int idx, double *x, double *d, double *a, double t, double *dx)
+{
+	switch(idx) {
+		case _eval_y(0): {
+			_der_y(0) = _vy(0);
+			_der_y(1) = (_vy(1))/2;
+			_der_y(2) = (_vy(2))/6;
+			return;
+		}
+		case _eval_vy(0): {
+			_der_vy(0) = -9.8-0.1*_vy(0)-_contact*((_y(0)-_stair)*1e+06+_vy(0)*30);
+			_der_vy(1) = (-_contact*((1e+06)*_y(1)+30*_vy(1))-(0.1)*_vy(1))/2;
+			_der_vy(2) = (-_contact*((1e+06)*_y(2)+30*_vy(2))-(0.1)*_vy(2))/6;
+			return;
+		}
+		case _eval_x(0): {
+			_der_x(0) = _vx(0);
+			_der_x(1) = (_vx(1))/2;
+			_der_x(2) = (_vx(2))/6;
+			return;
+		}
+		case _eval_vx(0): {
+			_der_vx(0) = -0.1*_vx(0);
+			_der_vx(1) = (-(0.1)*_vx(1))/2;
+			_der_vx(2) = (-(0.1)*_vx(2))/6;
+			return;
+		}
+	}
+}
+
+void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)
+{
+	switch(idx) {
+		case _eval_event_1: {
+			_zc(0) = _y(0)-(_stair);
+			_zc(1) = (_y(1))/1;
+			_zc(2) = (_y(2))/2;
+			return;
+		}
+		case _eval_event_2: {
+			_zc(0) = _x(0)-11+_stair-(0);
+			_zc(1) = (_x(1))/1;
+			_zc(2) = (_x(2))/2;
+			return;
+		}
+	}
+}
+
+void MOD_handlerPos(int idx, double *x, double *d, double *a, double t)
+{
+	switch(idx) {
+		case _eval_event_1: {
+			_contact = 0;
+					return;
+		}
+		case _eval_event_2: {
+			_stair = _stair-1;
+					return;
+		}
+	}
+}
+
+void MOD_handlerNeg(int idx, double *x, double *d, double *a, double t)
+{
+	switch(idx) {
+		case _eval_event_1: {
+			_contact = 1;
+					return;
+		}
+	}
+}
+
+void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
+{
+	switch(idx) {
+		case _eval_out_exp_1: {
+			_out = _y(0);
+			return;
+		}
+	}
+}
+
+void MOD_jacobian(double *x, double *d, double *a, double t, double *jac)
+{
+	int idx;
+	int jit;
+	for (idx = 1; idx <=4; idx++) {
+	switch(idx) {
+		case _eval_vx(0): {
+			_jac(jit) = 1;
+		
+			_jac(jit) = -0.1;
+		
+		break;
+		}
+		case _eval_vy(0): {
+			_jac(jit) = 1;
+		
+			_jac(jit) = -0.1-30*_contact;
+		
+		break;
+		}
+		case _eval_y(0): {
+			_jac(jit) = -(1e+06)*_contact;
+		
+		break;
+		}
+	}
+	}
+}
+
+void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double *dx, int *map)
+{
+	switch(idx) {
+		case _eval_vx(0): {
+			_eval_dep_x(1) = _vx(0);
+			_eval_dep_x(2) = (_vx(1))/2;
+			_eval_dep_x(3) = (_vx(2))/6;	
+			_eval_dep_vx(1) = -0.1*_vx(0);
+			_eval_dep_vx(2) = (-(0.1)*_vx(1))/2;
+			_eval_dep_vx(3) = (-(0.1)*_vx(2))/6;	
+		break;
+		}
+		case _eval_vy(0): {
+			_eval_dep_y(1) = _vy(0);
+			_eval_dep_y(2) = (_vy(1))/2;
+			_eval_dep_y(3) = (_vy(2))/6;	
+			_eval_dep_vy(1) = -9.8-0.1*_vy(0)-_contact*((_y(0)-_stair)*1e+06+_vy(0)*30);
+			_eval_dep_vy(2) = (-(30*_vy(1)+(1e+06)*_y(1))*_contact-(0.1)*_vy(1))/2;
+			_eval_dep_vy(3) = (-_contact*((1e+06)*_y(2)+30*_vy(2))-(0.1)*_vy(2))/6;	
+		break;
+		}
+		case _eval_y(0): {
+			_eval_dep_vy(1) = -9.8-0.1*_vy(0)-_contact*((_y(0)-_stair)*1e+06+_vy(0)*30);
+			_eval_dep_vy(2) = (-(0.1)*_vy(1)-(30*_vy(1)+(1e+06)*_y(1))*_contact)/2;
+			_eval_dep_vy(3) = (-(0.1)*_vy(2)-_contact*((1e+06)*_y(2)+30*_vy(2)))/6;	
+		break;
+		}
+	}
+}
+
+void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, int *BDFMap, int nBDF)
+{
+	int idx;
+	int __bdf_it;
+	for(__bdf_it = 0; __bdf_it < nBDF; __bdf_it++) {
+	idx = BDFMap[__bdf_it];
+	switch(idx) {
+		case _eval_y(0): {
+			_der_y(0) = _vy(0);
+	
+			return;
+		}
+		case _eval_vy(0): {
+			_der_vy(0) = -9.8-0.1*_vy(0)-_contact*((_y(0)-_stair)*1e+06+_vy(0)*30);
+	
+			return;
+		}
+		case _eval_x(0): {
+			_der_x(0) = _vx(0);
+	
+			return;
+		}
+		case _eval_vx(0): {
+			_der_vx(0) = -0.1*_vx(0);
+	
+			return;
+		}
+	}
+	}
+}
+
+void QSS_initializeDataStructs(QSS_simulator simulator)
+{
+	simulator->data = QSS_Data(4,2,2,0,0,"bball_downstairs");
+	QSS_data modelData = simulator->data;
+	MODEL_DATA_ACCESS(modelData)
+	int* states = (int*) malloc(4*sizeof(int));
+	int* discretes = (int*) malloc(2*sizeof(int));
+	int* events = (int*) malloc(2*sizeof(int));
+	int* outputs = (int*) malloc(1*sizeof(int));
+	_stair = 10;
+	_init_vx(0) = 0.5;
+	_init_x(0) = 0.575;
+	_init_y(0) = 10.5;
+	modelData->nSD[_idx_vx(0)]++;
+	modelData->nSD[_idx_vx(0)]++;
+	modelData->nSD[_idx_vy(0)]++;
+	modelData->nSD[_idx_vy(0)]++;
+	modelData->nSD[_idx_y(0)]++;
+	modelData->nDS[_idx_x(0)]++;
+	modelData->nDS[_idx_vx(0)]++;
+	modelData->nDS[_idx_y(0)]++;
+	modelData->nDS[_idx_vy(0)]++;
+	modelData->nDS[_idx_vy(0)]++;
+	modelData->nSZ[_idx_x(0)]++;
+	modelData->nSZ[_idx_y(0)]++;
+	modelData->nZS[_idx_event_2]++;
+	modelData->nZS[_idx_event_1]++;
+	modelData->nHZ[_idx_event_2]++;
+	modelData->nHZ[_idx_event_2]++;
+	modelData->nHD[_idx_event_1]++;
+	modelData->nHD[_idx_event_1]++;
+	modelData->nHD[_idx_event_2]++;
+	modelData->event[_idx_event_1].nLHSDsc++;
+	modelData->event[_idx_event_1].nLHSDsc++;
+	modelData->event[_idx_event_2].nLHSDsc++;
+	QSS_allocDataMatrix(modelData);
+	cleanVector(states, 0, 4);
+	modelData->SD[_idx_vx(0)][states[_idx_vx(0)]++] = _idx_x(0);
+	modelData->SD[_idx_vx(0)][states[_idx_vx(0)]++] = _idx_vx(0);
+	modelData->SD[_idx_vy(0)][states[_idx_vy(0)]++] = _idx_y(0);
+	modelData->SD[_idx_vy(0)][states[_idx_vy(0)]++] = _idx_vy(0);
+	modelData->SD[_idx_y(0)][states[_idx_y(0)]++] = _idx_vy(0);
+	cleanVector(states, 0, 4);
+	modelData->DS[_idx_x(0)][states[_idx_x(0)]++] = _idx_vx(0);
+	modelData->DS[_idx_vx(0)][states[_idx_vx(0)]++] = _idx_vx(0);
+	modelData->DS[_idx_y(0)][states[_idx_y(0)]++] = _idx_vy(0);
+	modelData->DS[_idx_vy(0)][states[_idx_vy(0)]++] = _idx_vy(0);
+	modelData->DS[_idx_vy(0)][states[_idx_vy(0)]++] = _idx_y(0);
+	cleanVector(states, 0, 4);
+	modelData->SZ[_idx_x(0)][states[_idx_x(0)]++] = _idx_event_2;
+	modelData->SZ[_idx_y(0)][states[_idx_y(0)]++] = _idx_event_1;
+	cleanVector(events, 0, 2);
+	modelData->ZS[_idx_event_2][events[_idx_event_2]++] = _idx_x(0);
+	modelData->ZS[_idx_event_1][events[_idx_event_1]++] = _idx_y(0);
+	cleanVector(events, 0, 2);
+	modelData->HZ[_idx_event_2][events[_idx_event_2]++] = _idx_event_1;
+	modelData->HZ[_idx_event_2][events[_idx_event_2]++] = _idx_event_2;
+	cleanVector(events, 0, 2);
+	modelData->HD[_idx_event_1][events[_idx_event_1]++] = _idx_vy(0);
+	modelData->HD[_idx_event_1][events[_idx_event_1]++] = _idx_vy(0);
+	modelData->HD[_idx_event_2][events[_idx_event_2]++] = _idx_vy(0);
+	cleanVector(events, 0, 2);
+	modelData->event[_idx_event_1].LHSDsc[events[_idx_event_1]++] = _idx_contact;
+	modelData->event[_idx_event_1].LHSDsc[events[_idx_event_1]++] = _idx_contact;
+	modelData->event[_idx_event_2].LHSDsc[events[_idx_event_2]++] = _idx_stair;
+	modelData->event[_idx_event_1].direction = 0;
+	modelData->event[_idx_event_1].relation = 0;
+	modelData->event[_idx_event_2].direction = 1;
+	modelData->event[_idx_event_2].relation = 2;
+	simulator->time = QSS_Time(4,2,0,0,ST_Binary, NULL);
+	simulator->output = SD_Output("bball_downstairs",1,2,4,NULL,0,0,CI_Step,SD_Memory,MOD_output);
+	SD_output modelOutput = simulator->output;
+	modelOutput->nOS[_idx_out_exp_1]++;
+	modelOutput->nSO[_idx_y(0)]++;
+	SD_allocOutputMatrix(modelOutput, 4, 2);
+	sprintf(modelOutput->variable[_idx_out_exp_1].name, "y");
+	cleanVector(outputs, 0, 1);
+	modelOutput->OS[_idx_out_exp_1][outputs[_idx_out_exp_1]++] = _idx_y(0);
+	cleanVector(states, 0, 4);
+	modelOutput->SO[_idx_y(0)][states[_idx_y(0)]++] = _idx_out_exp_1;
+	simulator->model = QSS_Model(MOD_definition, MOD_dependencies, MOD_zeroCrossing, MOD_handlerPos, MOD_handlerNeg, MOD_jacobian, MOD_BDF_definition);
+	free(states);
+	free(discretes);
+	free(events);
+	free(outputs);
+}
+
+void CLC_initializeDataStructs(CLC_simulator simulator)
+{
+}
+

@@ -96,7 +96,22 @@ string AST_Statement_Assign_::print() const
   return ret.str();
 }
 
-void AST_Statement_Assign_::setExp(AST_Expression exp) { _exp = exp; };
+void AST_Statement_Assign_::setExp(AST_Expression exp)
+{
+  // @TODO: review why this memleak tleads to a segfault.
+  /*if(_exp != nullptr) {
+    delete _exp;
+  }*/
+  _exp = exp;
+}
+
+void AST_Statement_Assign_::setLHS(AST_Expression_ComponentReference lhs)
+{
+  /*if(_lhs != nullptr) {
+    delete _lhs;
+  }*/
+  _lhs = lhs;
+}
 
 /* For statement Class */
 

@@ -79,6 +79,7 @@ class AST_Statement_Assign_ : public AST_Statement_ {
   string print() const;
   AST_Expression exp() const;
   void setExp(AST_Expression exp);
+  void setLHS(AST_Expression_ComponentReference comp_ref);
   AST_Expression_ComponentReference lhs() const;
   virtual StatementType statementType();
 

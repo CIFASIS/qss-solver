@@ -111,6 +111,7 @@ AST_Expression ConvertContRed::foldTraverseElement(AST_Expression exp)
       TypePrefix eq_type = TP_INPUT;
       Variable aux_var(newType_Real(), eq_type, nullptr, nullptr, size, true);
       aux_var.setName(var_name);
+      aux_var.setRealType(Variable::RealType::Algebraic);
       _symbols.insert(var_name, aux_var);
       _variables.push_back(aux_var);
       _has_reduction = true;

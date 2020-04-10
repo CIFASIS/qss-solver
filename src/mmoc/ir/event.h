@@ -50,12 +50,12 @@ typedef enum {
 
 class Event {
   public:
-  Event(){};
+  Event();
   Event(AST_Expression cond, int id, int offset, Util::VarSymbolTable& symbols, Option<Range> range);
-  ~Event(){};
-  inline Equation zeroCrossing() { return _zeroCrossing; };
-  inline StatementTable positiveHandler() { return _positiveHandler; };
-  inline StatementTable negativeHandler() { return _negativeHandler; };
+  ~Event() = default;
+  inline Equation zeroCrossing() { return _zero_crossing; };
+  inline StatementTable positiveHandler() { return _positive_handler; };
+  inline StatementTable negativeHandler() { return _negative_handler; };
   std::string handler(EVENT::Type type) const;
   void add(AST_Statement);
   bool compare(AST_Expression zc);
@@ -71,22 +71,22 @@ class Event {
    * @return     Expression with the LHS used in graph builders.
    */
   Expression exp();
-  bool isValid() const { return _zeroCrossing.isValid(); };
+  bool isValid() const { return _zero_crossing.isValid(); };
   std::string config() const;
   inline Option<Range> range() const { return _range; };
 
   private:
   AST_Expression getExpression(AST_Expression zc);
-  Equation _zeroCrossing;
-  StatementTable _positiveHandler;
-  StatementTable _negativeHandler;
+  Equation _zero_crossing;
+  StatementTable _positive_handler;
+  StatementTable _negative_handler;
   EVENT::Type _type;
   EVENT::Type _current;
-  EVENT::Relation _zcRelation;
+  EVENT::Relation _zc_relation;
   Util::VarSymbolTable _symbols;
   Option<Range> _range;
-  int _positiveHandlerId;
-  int _negativeHandlerId;
+  int _positive_handler_id;
+  int _negative_handler_id;
   int _id;
   int _offset;
 };

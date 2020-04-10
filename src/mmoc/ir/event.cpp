@@ -31,34 +31,50 @@ namespace MicroModelica {
 using namespace Util;
 namespace IR {
 
-Event::Event(AST_Expression cond, int id, int offset, VarSymbolTable &symbols, Option<Range> range)
-    : _zeroCrossing(),
-      _positiveHandler(),
-      _negativeHandler(),
+Event::Event()
+    : _zero_crossing(),
+      _positive_handler(),
+      _negative_handler(),
       _type(EVENT::Zero),
       _current(EVENT::Zero),
-      _zcRelation(EVENT::GE),
+      _zc_relation(EVENT::GE),
+      _symbols(),
+      _range(),
+      _positive_handler_id(0),
+      _negative_handler_id(0),
+      _id(0),
+      _offset(0)
+{
+}
+
+Event::Event(AST_Expression cond, int id, int offset, VarSymbolTable &symbols, Option<Range> range)
+    : _zero_crossing(),
+      _positive_handler(),
+      _negative_handler(),
+      _type(EVENT::Zero),
+      _current(EVENT::Zero),
+      _zc_relation(EVENT::GE),
       _symbols(symbols),
       _range(range),
-      _positiveHandlerId(0),
-      _negativeHandlerId(0),
+      _positive_handler_id(0),
+      _negative_handler_id(0),
       _id(id),
       _offset(offset)
 {
   ConvertCondition cc;
-  _zeroCrossing = Equation(cc.apply(getExpression(cond)), symbols, range, EQUATION::ZeroCrossing, id, offset);
+  _zero_crossing = Equation(cc.apply(getExpression(cond)), symbols, range, EQUATION::ZeroCrossing, id, offset);
   _type = cc.zeroCrossing();
   _current = _type;
-  _zcRelation = cc.zeroCrossingRelation();
+  _zc_relation = cc.zeroCrossingRelation();
 }
 
 void Event::add(AST_Statement stm)
 {
   Statement s(stm, _symbols, _range);
   if (_current == EVENT::Positive) {
-    _positiveHandler.insert(_positiveHandlerId++, s);
+    _positive_handler.insert(_positive_handler_id++, s);
   } else if (_current == EVENT::Negative) {
-    _negativeHandler.insert(_negativeHandlerId++, s);
+    _negative_handler.insert(_negative_handler_id++, s);
   }
 }
 
@@ -67,7 +83,7 @@ bool Event::compare(AST_Expression zc)
   ConvertCondition cc;
   AST_Expression c = cc.apply(getExpression(zc));
   EqualExp ee(_symbols);
-  bool cr = ee.equalTraverse(c, _zeroCrossing.equation());
+  bool cr = ee.equalTraverse(c, _zero_crossing.equation());
   if (cr) {
     if (_current == EVENT::Positive) {
       _current = EVENT::Negative;
@@ -90,7 +106,7 @@ AST_Expression Event::getExpression(AST_Expression exp)
 
 string Event::handler(EVENT::Type type) const
 {
-  StatementTable stms = (type == EVENT::Positive ? _positiveHandler : _negativeHandler);
+  StatementTable stms = (type == EVENT::Positive ? _positive_handler : _negative_handler);
   if (stms.empty()) {
     return "";
   };
@@ -104,8 +120,8 @@ string Event::handler(EVENT::Type type) const
     arguments = _range->getDimensionVars();
   }
   block += TAB;
-  buffer << fp.beginExpression(_zeroCrossing.identifier(), _range);
-  buffer << fp.beginDimGuards(_zeroCrossing.identifier(), arguments, _range);
+  buffer << fp.beginExpression(_zero_crossing.identifier(), _range);
+  buffer << fp.beginDimGuards(_zero_crossing.identifier(), arguments, _range);
   StatementTable::iterator it;
   for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
     buffer << block << stm << endl;
@@ -115,12 +131,13 @@ string Event::handler(EVENT::Type type) const
   return buffer.str();
 }
 
-string Event::macro() const { return _zeroCrossing.macro(); }
+string Event::macro() const { return _zero_crossing.macro(); }
 
 Expression Event::exp()
 {
   assert(isValid());
-  return _zeroCrossing.lhs();
+  cout << "ZERO CROSSING VARIABLE: " << _zero_crossing.lhs() << endl;
+  return _zero_crossing.lhs();
 }
 
 string Event::config() const
@@ -132,8 +149,8 @@ string Event::config() const
     buffer << _range.get();
     tabs = _range->block();
   }
-  buffer << tabs << "modelData->event[" << _zeroCrossing.index() << "].direction = " << direction << ";" << endl;
-  buffer << tabs << "modelData->event[" << _zeroCrossing.index() << "].relation = " << _zcRelation << ";" << endl;
+  buffer << tabs << "modelData->event[" << _zero_crossing.index() << "].direction = " << direction << ";" << endl;
+  buffer << tabs << "modelData->event[" << _zero_crossing.index() << "].relation = " << _zc_relation << ";" << endl;
   if (_range) {
     buffer << _range->end();
     tabs = _range->block();

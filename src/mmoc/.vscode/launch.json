@@ -26,8 +26,6 @@
             ]
         },
 
-        
-
         // Advection
         {
             "name": "Advection model.",
@@ -47,6 +45,82 @@
             ]
         },
 
+        // Boost
+        {
+            "name": "Boost model.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/boost/boost ", "/home/joaquin/work/qss-solver/models/converters/boost.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+
+        // LC Line
+        {
+            "name": "LC Line model.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/lc_line/lc_line ", "/home/joaquin/work/qss-solver/models/lc_line/lc_line.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+
+        // Rectifier
+        {
+            "name": "Rectifier model.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/rectifier/rectifier ", "/home/joaquin/work/qss-solver/models/rectifier/rectifier.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },        
+
+        // Spikings
+        {
+            "name": "Spikings model.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/spikings/spikings ", "/home/joaquin/work/qss-solver/models/spikings/spikings.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        
         // Interleaved
         {
             "name": "Interleaved model.",

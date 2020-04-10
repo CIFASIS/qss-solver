@@ -26,7 +26,7 @@
 #include "../error.h"
 #include "../symbol_table.h"
 #include "algebraics.h"
-#include "is_constant_index.h"
+#include "has_scalar_index.h"
 
 namespace MicroModelica {
 using namespace IR;
@@ -46,8 +46,8 @@ void JacAlgTerm::setAlgExps(AST_ExpressionList alg_exps)
   foreach (it, alg_exps) {
     AST_Expression alg = current_element(it);
     assert(alg->expressionType() == EXPCOMPREF);
-    IsConstantIndex constant_index;
-    if (constant_index.apply(alg)) {
+    HasScalarIndex scalar_index;
+    if (scalar_index.apply(alg)) {
       _alg_exps.push_back(make_pair(alg, Range(alg)));
     } else {
       _alg_exps.push_back(make_pair(alg, _range));
