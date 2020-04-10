@@ -49,8 +49,9 @@ TEST_P(ITests, GenerateCode)
   std::ifstream result(RESULT_FILE.c_str());
   EXPECT_TRUE(result.good());
 }
- 
-const char* models[] = {"advection", "lc_line", "lotka_volterra", "bball_downstairs", "airconds", "aircont", "boost", "buck", "buckboost", "cuk", "cuk2", "buck_circuit", "inverters", "rectifier", "spikings"};
+
+const char* models[] = {"advection", "lc_line", "lotka_volterra", "bball_downstairs", "airconds",  "aircont",   "boost",   "buck",
+                        "buckboost", "cuk",     "cuk2",           "buck_circuit",     "inverters", "rectifier", "spikings"};
 
 INSTANTIATE_TEST_SUITE_P(Models, ITests, testing::ValuesIn(models));
 
