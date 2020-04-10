@@ -46,7 +46,6 @@ void Statement::initialize()
 {
   StatementCalledFunctions cf;
   Utils::instance().setSymbols(_symbols);
-  _stm = processStatement(_stm);
   setRange();
   _calledFunctions = cf.apply(_stm);
   _lhs_assignments = generateExps(STATEMENT::LHS);
