@@ -7,13 +7,14 @@ def get_files():
                                     '--name-only', 'HEAD']).split()
 
 def apply_code_style():
-    files = filter(lambda x: not x.find('test/integration/gt_data'), get_files())
+    files = filter(lambda x: x.find('test/integration/gt_data') == -1, get_files())
 
     files = filter(lambda x: x.endswith('.c') or
                              x.endswith('.h') or
                              x.endswith('.cpp'), files)
     for f in files:
-      subprocess.check_output(['clang-format-7', '-i',f])
+      print("Apply code style to: " + f)
+      subprocess.check_output(['clang-format-7', '-i', f])
 
 def main():
     apply_code_style()
