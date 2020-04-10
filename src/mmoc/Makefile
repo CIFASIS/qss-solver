@@ -131,7 +131,8 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
 			 $(VISITORDIR)/convert_cont_red.cpp \
 			 $(VISITORDIR)/convert_disc_red.cpp \
 			 $(VISITORDIR)/is_recursive_def.cpp \
-			 $(VISITORDIR)/jac_alg_exps.cpp
+			 $(VISITORDIR)/jac_alg_exps.cpp \
+			 $(VISITORDIR)/has_scalar_index.cpp
 
 DEPSSRC = $(DEPSDIR)/dependency.cpp \
 		  $(DEPSDIR)/model_dependencies.cpp  \
