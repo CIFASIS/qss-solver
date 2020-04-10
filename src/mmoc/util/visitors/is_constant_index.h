@@ -27,13 +27,10 @@
 
 namespace MicroModelica {
 namespace Util {
-/**
- *
- */
 class IsConstantIndex : public AST_Expression_Visitor<bool> {
   public:
   IsConstantIndex();
-  ~IsConstantIndex(){};
+  ~IsConstantIndex() = default;
 
   private:
   bool foldTraverseElement(AST_Expression exp);
