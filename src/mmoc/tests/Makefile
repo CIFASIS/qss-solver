@@ -37,8 +37,15 @@ TARGET      := $(BIN_DIR)/test-mmoc
 RUN_TESTS   := test-mmoc
 
 # Source files.
-MAIN_SRC = $(SRC_DIR)/main.cpp
-UNIT_SRC = $(UNIT_DIR)/algebraics_test.cpp
+MAIN_SRC = $(SRC_DIR)/main.cpp \
+		   $(SRC_DIR)/test_utils.cpp
+
+UNIT_SRC = $(UNIT_DIR)/algebraics_test.cpp \
+		   $(UNIT_DIR)/array_use_test.cpp \
+		   $(UNIT_DIR)/autonomous_test.cpp \
+		   $(UNIT_DIR)/called_functions_test.cpp \
+		   $(UNIT_DIR)/convert_cont_red_test.cpp	
+
 INT_SRC = $(INT_DIR)/models_test.cpp
 #MOCK_SRC = $(MOCK_DIR)/dummy.cpp
 
