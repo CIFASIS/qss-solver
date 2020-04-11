@@ -25,136 +25,33 @@
 #include "ast_node.h"
 #include "ast_types.h"
 
-/**
- *
- */
 class AST_Class_ : public AST_Node_ {
   public:
-  /**
-   *
-   * @param n
-   * @param comp
-   */
   AST_Class_(AST_String n, AST_Composition comp);
-  /**
-   *
-   */
   ~AST_Class_();
-  /**
-   *
-   */
   DEFINE_CLASS_PRINTER(AST_Class);
-  /**
-   *
-   * @param c
-   */
   void setComposition(AST_Composition c);
-  /**
-   *
-   * @return
-   */
   AST_Composition composition() const;
-  /**
-   *
-   * @return
-   */
   AST_String name() const;
-  /**
-   *
-   * @return
-   */
   AST_Element_ComponentList getComponents();
-  /**
-   *
-   * @return
-   */
   bool hasElementComponentList();
-  /**
-   *
-   * @param c
-   */
   void addComponent(AST_Element_Component c);
-  /**
-   *
-   * @param c
-   */
   void addClass(AST_Class c);
-  /**
-   *
-   * @return
-   */
   AST_ClassList getClasses();
-  /**
-   *
-   * @param c
-   */
   void setFather(AST_Class c);
-  /**
-   *
-   * @return
-   */
   bool hasFather();
-  /**
-   *
-   * @return
-   */
   AST_Class father() const;
-  /**
-   *
-   * @param e
-   */
   void addExtends(AST_String e);
-  /**
-   *
-   * @return
-   */
   AST_StringList getExtends();
-  /**
-   *
-   * @return
-   */
   bool isBasic();
-  /**
-   *
-   */
   void setBasic();
-  /**
-   *
-   */
   void setFinal();
-  /**
-   *
-   * @return
-   */
   bool isFinal();
-  /**
-   *
-   */
   void setEncapsulated();
-  /**
-   *
-   * @return
-   */
   bool isEncapsulated();
-  /**
-   *
-   * @return
-   */
   bool hasExtends();
-  /**
-   *
-   * @param cp
-   */
   void setPrefixes(AST_ClassPrefix cp);
-  /**
-   *
-   * @return
-   */
   AST_ClassPrefix prefix() const;
-  /**
-   *
-   * @param visitor
-   */
   void accept(AST_Visitor *visitor);
 
   private:
