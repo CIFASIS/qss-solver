@@ -30,3 +30,5 @@ AST_Expression parseExpression(string, int *);
 AST_Equation parseEquation(string exp, int *r);
 
 AST_Statement parseStatement(string exp, int *r);
+
+AST_ElementList parseVariables(string variable_definition, int *r);
