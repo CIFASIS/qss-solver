@@ -27,24 +27,29 @@ namespace Util {
 class ArrayUse : public AST_Expression_Visitor<bool> {
   public:
   ArrayUse(VarSymbolTable symbols) : _symbols(symbols){};
-  ~ArrayUse(){};
+  ~ArrayUse() = default;
+
+  protected:
+  ArrayUse() : _symbols() {}
+
+  VarSymbolTable _symbols;
 
   private:
   bool foldTraverseElement(AST_Expression exp);
   bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
   bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
-  VarSymbolTable _symbols;
 };
 
 class StatementArrayUse : public AST_Statement_Visitor<bool, bool, ArrayUse> {
   public:
-  StatementArrayUse(MicroModelica::Util::VarSymbolTable symbols) : AST_Statement_Visitor(ArrayUse(symbols)){};
-  ~StatementArrayUse(){};
+  StatementArrayUse(VarSymbolTable symbols) : AST_Statement_Visitor(ArrayUse(symbols)){};
+  ~StatementArrayUse() = default;
 
   private:
   inline bool foldTraverse(bool ret) { return ret; };
   inline bool foldTraverse(bool l, bool r) { return l && r; };
 };
+
 }  // namespace Util
 }  // namespace MicroModelica
 
