@@ -28,7 +28,7 @@ template <typename Key, typename Value>
 class ModelTable {
   public:
   ModelTable() : _map(){};
-  ~ModelTable(){};
+  ~ModelTable() = default;
   void insert(Key k, Value v)
   {
     _map.erase(k);
