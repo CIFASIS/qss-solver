@@ -32,24 +32,15 @@ class ConvertContRed : public AST_Expression_Visitor<AST_Expression> {
   ~ConvertContRed() = default;
 
   void setReduction(int red_operator);
-
   bool hasReduction();
-
   list<AST_Equation> code();
-
   list<Variable> variables();
-
   int operators() const;
-
   void setLHS(Variable lhs);
 
   protected:
+  void setOpers();
   std::string operatorTerm(std::string);
-
-  private:
-  AST_Expression foldTraverseElement(AST_Expression exp);
-  AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
-  AST_Expression foldTraverseElementUMinus(AST_Expression exp);
 
   VarSymbolTable &_symbols;
   bool _has_reduction;
@@ -58,6 +49,11 @@ class ConvertContRed : public AST_Expression_Visitor<AST_Expression> {
   ContReduction _reduction;
   std::map<ContReduction, std::string> _oper_names;
   std::string _oper;
+
+  private:
+  AST_Expression foldTraverseElement(AST_Expression exp);
+  AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+  AST_Expression foldTraverseElementUMinus(AST_Expression exp);
 };
 }  // namespace Util
 }  // namespace MicroModelica
