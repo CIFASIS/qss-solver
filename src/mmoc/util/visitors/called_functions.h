@@ -27,19 +27,15 @@
 namespace MicroModelica {
 namespace Util {
 
-/**
- *
- */
 class CalledFunctions : public AST_Expression_Visitor<SymbolTable> {
   public:
   CalledFunctions(){};
-  ~CalledFunctions(){};
+  ~CalledFunctions() = default;
 
   private:
   SymbolTable foldTraverseElement(AST_Expression exp);
   SymbolTable foldTraverseElement(SymbolTable l, SymbolTable r, BinOpType bot);
   SymbolTable foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
-  SymbolTable _symbols;
 };
 
 class StatementCalledFunctions : public AST_Statement_Visitor<SymbolTable, SymbolTable, CalledFunctions> {
