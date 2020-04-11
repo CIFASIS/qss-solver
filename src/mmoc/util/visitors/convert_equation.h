@@ -36,6 +36,8 @@ class ConvertEquation {
   AST_Equation _equation;
   MicroModelica::Util::VarSymbolTable _symbols;
 };
+
 }  // namespace Util
 }  // namespace MicroModelica
+
 #endif /* CONVERT_EQUATION_H_ */

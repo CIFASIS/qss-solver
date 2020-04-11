@@ -39,9 +39,6 @@ namespace Util {
 
 class VarSymbolTable;
 
-/**
- *
- */
 class Variable {
   public:
   Variable();
@@ -148,17 +145,11 @@ class Variable {
   RealType _realType;
 };
 
-/**
- *
- */
 class TypeSymbolTable : public ModelTable<TypeName, Type> {
   public:
   TypeSymbolTable();
 };
 
-/**
- *
- */
 class VarSymbolTable : public ModelTable<VarName, Variable> {
   public:
   VarSymbolTable();
@@ -171,6 +162,8 @@ class VarSymbolTable : public ModelTable<VarName, Variable> {
   private:
   bool _parameters;
 };
+
 }  // namespace Util
 }  // namespace MicroModelica
+
 #endif /* SYMBOL_TABLE_H_ */

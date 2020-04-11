@@ -17,30 +17,10 @@
 
  ******************************************************************************/
 
-#ifndef AUTONOMOUS_H_
-#define AUTONOMOUS_H_
+#pragma once
 
-#include "../ast_util.h"
+#include "util/util.h"
+#include "util/symbol_table.h"
+#include "parser/parse.h"
 
-namespace MicroModelica {
-namespace Util {
-class Autonomous : public AST_Expression_Visitor<bool> {
-  public:
-  Autonomous(VarSymbolTable symbols) : _symbols(symbols){};
-  ~Autonomous() = default;
-
-  protected:
-  Autonomous() : _symbols(){};
-
-  VarSymbolTable _symbols;
-
-  private:
-  bool foldTraverseElement(AST_Expression exp);
-  bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; };
-  bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
-};
-
-}  // namespace Util
-}  // namespace MicroModelica
-
-#endif /* AUTONOMOUS_H_ */
+MicroModelica::Util::VarSymbolTable getSymbols(string variable_definition);

@@ -18,16 +18,12 @@
  ******************************************************************************/
 
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include <iostream>
 
 #include "util/visitors/algebraics.h"
 #include "util/util.h"
 #include "util/symbol_table.h"
 #include "parser/parse.h"
-
-using ::testing::Return;
-using ::testing::StrictMock;
 
 /// @addtogroup QSSSolverUTests
 /// @{

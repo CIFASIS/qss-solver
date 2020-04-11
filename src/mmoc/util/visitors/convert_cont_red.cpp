@@ -33,6 +33,11 @@ namespace Util {
 
 ConvertContRed::ConvertContRed(VarSymbolTable &symbols) : _symbols(symbols), _has_reduction(false), _code(), _oper_names(), _oper()
 {
+  setOpers();
+}
+
+void ConvertContRed::setOpers()
+{
   _oper_names[ContReduction::SUM] = "sum";
   _oper_names[ContReduction::PROD] = "prod";
 }

@@ -23,6 +23,7 @@
 
 namespace MicroModelica {
 namespace Util {
+
 bool ArrayUse::foldTraverseElement(AST_Expression exp)
 {
   switch (exp->expressionType()) {
@@ -33,6 +34,7 @@ bool ArrayUse::foldTraverseElement(AST_Expression exp)
       if (AST_ListFirst(cr->indexes())->size() != var->dimensions()) {
         Error::instance().add(exp->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong array dimension, expected %d got %d.",
                               var->dimensions(), cr->indexes()->size());
+        return false;
       }
     }
     break;

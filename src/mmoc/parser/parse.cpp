@@ -125,6 +125,28 @@ AST_Statement parseStatement(string exp, int *r)
   return nullptr;
 }
 
+AST_ElementList parseVariables(string variable_definition, int *r)
+{
+  fstream in;
+  string tmpFile;
+#ifndef _WIN32
+  tmpFile = "/tmp/t";
+#else
+  tmpFile = "t";
+#endif
+  in.open(tmpFile.c_str(), fstream::out);
+  in << "model A " << variable_definition << " end A;";
+  in.close();
+  int ret;
+  AST_Class c = parseClass(tmpFile.c_str(), &ret);
+  if (ret == 0) {
+    *r = 0;
+    return c->composition()->elementList();
+  }
+  *r = -1;
+  return nullptr;
+}
+
 AST_Class parseClass(string filename, int *r)
 {
   AST_StoredDefinition sd = parseFile(filename, r);
