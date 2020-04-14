@@ -142,12 +142,16 @@ ex ConvertToGiNaC::foldTraverseElement(ex l, ex r, BinOpType b)
 {
   switch (b) {
   case BINOPADD:
+    cout << "LEFT: " << l << " RIGHT: " << r << endl;
     return l + r;
   case BINOPSUB:
+    cout << "LEFT: " << l << " RIGHT: " << r << endl;
     return l - r;
   case BINOPMULT:
+    cout << "LEFT: " << l << " RIGHT: " << r << endl;
     return l * r;
   case BINOPDIV:
+    cout << "LEFT: " << l << " RIGHT: " << r << endl;
     return l / r;
   case BINOPEXP:
     return pow(l, r);
@@ -317,6 +321,7 @@ AST_Expression ConvertToExpression::convert(ex exp)
     der_s << "der(" << ss << ")";
     e = parseExpression(der_s.str().c_str(), &r);
   } else {
+    cout << "Nueva expression " << s.str() << endl;
     e = parseExpression(s.str().c_str(), &r);
   }
   assert(e != nullptr && r == 0);
