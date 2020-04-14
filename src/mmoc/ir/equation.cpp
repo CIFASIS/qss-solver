@@ -84,8 +84,6 @@ Equation::Equation(AST_Equation eq, VarSymbolTable &symbols, Option<Range> r, EQ
   initialize(eq);
 }
 
-Equation::~Equation() {}
-
 void Equation::initialize(AST_Expression lhs, AST_Expression rhs)
 {
   _lhs = Expression(lhs, _symbols);
