@@ -166,6 +166,7 @@ Equation ExpressionDerivator::generateEquation(std::string usage, Expression exp
 
 Equation ExpressionDerivator::generateJacobianExp(Index index, Equation eq)
 {
+  cout << "Expression " << eq.rhs() << endl;
   AST_Expression exp = eq.rhs().expression();
   Variable variable = index.variable();
   string usage = index.modelicaExp();
@@ -186,6 +187,7 @@ Equation ExpressionDerivator::generateJacobianExp(Index index, Equation eq)
   GiNaC::symbol ginac_usage = dir[usage];
   GiNaC::ex der_exp = dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff(ginac_usage);
   AST_Expression jac_exp = jacobianExp(replace_der.apply(to_exp.convert(der_exp)), alg_terms);
+  cout << "Expression " << Expression(jac_exp, symbols) << endl;
   Equation jac = generateEquation(usage, Expression(jac_exp, symbols), eq);
   jac.setUsage(index);
   return jac;

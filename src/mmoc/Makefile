@@ -87,7 +87,8 @@ IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
 				$(IRDIR)/stored_definition.cpp  \
 				$(IRDIR)/mmo_ir.cpp  \
 				$(IRDIR)/mmo_settings.cpp \
-		  		$(IRDIR)/derivative.cpp
+		  		$(IRDIR)/derivative.cpp \
+				$(IRDRI)/equation_printer.cpp
 
 PARSERSRC = $(PARSERDIR)/mocc_parser.cpp \
 			$(PARSERDIR)/mocc_scanner.cpp \
