@@ -34,7 +34,6 @@ namespace IR {
 namespace EQUATION {
 typedef enum { ClassicDerivative, QSSDerivative, Algebraic, Dependency, Output, ZeroCrossing, Handler, Jacobian } Type;
 }
-
 class EquationVariable {
   public:
   static std::string modelVariables(int id, EQUATION::Type type)
@@ -76,7 +75,7 @@ class Equation {
   inline bool isOutput() const { return _type == EQUATION::Output; }
   inline bool isAlgebraic() const { return _type == EQUATION::Algebraic; }
   inline bool isJacobian() const { return _type == EQUATION::Jacobian; }
-  Option<Util::Variable> LHSVariable();
+  Option<Util::Variable> LHSVariable() const;
   friend std::ostream &operator<<(std::ostream &out, const Equation &e);
   bool isValid() const;
   bool hasAlgebraics();
@@ -85,15 +84,16 @@ class Equation {
   Deps::EquationDependencyMatrix dependencyMatrix() const;
   inline void setUsage(Index usage) { _usage = usage; };
   inline Index usage() const { return _usage; };
-  inline void setType(EQUATION::Type type) { _type = type; };
+  void setType(EQUATION::Type type);
   bool isRecursive() const;
 
-  private:
+  protected:
   void initialize(AST_Equation eq);
   void initialize(AST_Expression exp);
   void initialize(AST_Expression lhs, AST_Expression rhs);
   void setup();
 
+  private:
   AST_Equation _eq;
   Expression _lhs;
   Expression _rhs;
@@ -128,109 +128,6 @@ class Dependency {
   ~Dependency() = default;
   Equation generate(Equation eq, Index idx, Deps::AlgebraicDependencies algs);
   list<Equation> terms();
-};
-
-class EquationPrinter {
-  public:
-  EquationPrinter(Equation eq, Util::VarSymbolTable symbols);
-  ~EquationPrinter() = default;
-  virtual std::string print() const { return ""; };
-  virtual std::string macro() const { return ""; };
-  std::string identifier() const { return _identifier; };
-  std::string prefix() const;
-  std::string lhs(int order = 0) const;
-  virtual std::string equationId() const;
-
-  protected:
-  void setup();
-
-  private:
-  Equation _eq;
-  Util::VarSymbolTable _symbols;
-  std::string _identifier;
-};
-
-class JacobianConfig : public EquationPrinter {
-  public:
-  JacobianConfig(Equation eq, Util::VarSymbolTable symbols) : EquationPrinter(eq, symbols), _eq(eq){};
-  ~JacobianConfig() = default;
-  std::string print() const override;
-
-  private:
-  Equation _eq;
-};
-
-class EquationConfig : public EquationPrinter {
-  public:
-  EquationConfig(Equation eq, Util::VarSymbolTable symbols);
-  ~EquationConfig() = default;
-  std::string print() const override;
-  std::string macro() const override;
-  inline void factorialInit(int fact_init) { _fact_init = fact_init; };
-
-  protected:
-  void initializeDerivatives();
-  std::string generateDerivatives(std::string tabs, int init = 1) const;
-
-  private:
-  Equation _eq;
-  Util::VarSymbolTable _symbols;
-  Expression _derivatives[3];
-  int _fact_init;
-};
-
-class ClassicConfig : public EquationConfig {
-  public:
-  ClassicConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq){};
-  ~ClassicConfig() = default;
-  std::string print() const override;
-
-  private:
-  Equation _eq;
-};
-
-class OutputConfig : public EquationConfig {
-  public:
-  OutputConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq){};
-  ~OutputConfig() = default;
-  std::string print() const override;
-  std::string equationId() const override;
-
-  private:
-  Equation _eq;
-};
-
-class AlgebraicConfig : public EquationConfig {
-  public:
-  AlgebraicConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq) { factorialInit(0); };
-  ~AlgebraicConfig() = default;
-  std::string print() const override;
-
-  private:
-  Equation _eq;
-  Util::VarSymbolTable _symbols;
-};
-
-class DependencyConfig : public EquationConfig {
-  public:
-  DependencyConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq){};
-  ~DependencyConfig() = default;
-  std::string print() const override;
-
-  private:
-  Equation _eq;
-  Util::VarSymbolTable _symbols;
-};
-
-class ZeroCrossingConfig : public EquationConfig {
-  public:
-  ZeroCrossingConfig(Equation eq, Util::VarSymbolTable symbols) : EquationConfig(eq, symbols), _eq(eq) { factorialInit(1); };
-  ~ZeroCrossingConfig() = default;
-  std::string equationId() const override;
-
-  private:
-  Equation _eq;
-  Util::VarSymbolTable _symbols;
 };
 
 }  // namespace IR

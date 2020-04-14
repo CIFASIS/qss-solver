@@ -106,7 +106,7 @@ void MOD_jacobian(double *x, double *d, double *a, double t, double *jac)
 		case _eval_iL(0): {
 			_jac(jit) = (1/(_C));
 		
-			_jac(jit) = -(1/(_L))*_Rs*(1/(_Rs+_Rd))*_Rd;
+			_jac(jit) = -(1/(_Rs+_Rd))*_Rs*_Rd*(1/(_L));
 		
 		break;
 		}

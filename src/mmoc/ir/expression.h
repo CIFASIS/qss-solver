@@ -27,9 +27,6 @@
 namespace MicroModelica {
 namespace IR {
 
-/**
- *
- */
 class Expression {
   public:
   Expression();

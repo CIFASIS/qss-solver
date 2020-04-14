@@ -158,12 +158,12 @@ void MOD_jacobian(double *x, double *d, double *a, double t, double *jac)
 		_get_x_idxs(idx);
 		_apply_usage_eq_2(_d1);
 		if ((i >= 2 && i <= 502)) {
-			_jac(jit) = -1+2*(_x(i,0)-_x(i-1,0)+_UTH)*_G*_satdx(i-1);
+			_jac(jit) = -1-2*(_x(i-1,0)-_UTH-_x(i,0))*_satdx(i-1)*_G;
 		}
 	
 		_apply_usage_eq_2(_d1+1);
 		if ((i >= 2 && i <= 502)) {
-			_jac(jit) = 2*(_satdx(i-1)*(_x(i-1,0)-_UTH-_x(i,0))-_satx(i-1)*(_x(i-1,0)-_UTH))*_G;
+			_jac(jit) = -2*_G*(_satx(i-1)*(_x(i-1,0)-_UTH)+(_x(i,0)-_x(i-1,0)+_UTH)*_satdx(i-1));
 		}
 	
 		}

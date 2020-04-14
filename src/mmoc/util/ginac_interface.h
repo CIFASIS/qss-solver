@@ -33,69 +33,19 @@
 
 namespace MicroModelica {
 namespace Util {
-/**
- *
- */
 DECLARE_FUNCTION_2P(var)
-/**
- *
- */
 DECLARE_FUNCTION_2P(der)
-/**
- *
- */
 DECLARE_FUNCTION_2P(der2)
-/**
- *
- */
 DECLARE_FUNCTION_1P(der3)
-/**
- *
- */
 DECLARE_FUNCTION_1P(pre)
 
-/**
- *
- */
 class ConvertToGiNaC : public AST_Expression_Visitor<GiNaC::ex> {
   public:
-  /**
-   *
-   * @param varEnv
-   * @param forDerivation
-   * @param exp
-   */
   ConvertToGiNaC(VarSymbolTable varEnv, Option<IR::Expression> exp);
-  /**
-   *
-   * @param
-   * @param replaceDer
-   * @param generateIndexes
-   * @return
-   */
   GiNaC::ex convert(AST_Expression, bool replaceDer = true, bool generateIndexes = false);
-  /**
-   *
-   * @param
-   * @return
-   */
   GiNaC::symbol& getSymbol(AST_Expression_ComponentReference);
-  /**
-   *
-   * @param
-   * @return
-   */
   GiNaC::symbol& getSymbol(string);
-  /**
-   *
-   * @param
-   * @return
-   */
   GiNaC::symbol& getSymbol(AST_Expression_Derivative);
-  /**
-   *
-   * @return
-   */
   GiNaC::symbol& getTime();
   GiNaC::symbol& first();
   GiNaC::symbol& next();
@@ -104,29 +54,22 @@ class ConvertToGiNaC : public AST_Expression_Visitor<GiNaC::ex> {
   string identifier(string str);
 
   private:
-  virtual GiNaC::ex foldTraverseElement(AST_Expression);
-  virtual GiNaC::ex foldTraverseElementUMinus(AST_Expression);
-  virtual GiNaC::ex foldTraverseElement(GiNaC::ex, GiNaC::ex, BinOpType);
+  GiNaC::ex foldTraverseElement(AST_Expression);
+  GiNaC::ex foldTraverseElementUMinus(AST_Expression);
+  GiNaC::ex foldTraverseElement(GiNaC::ex, GiNaC::ex, BinOpType);
   GiNaC::ex expressionVariable();
   map<string, GiNaC::symbol> _directory;
   VarSymbolTable _symbols;
   bool _replaceDer;
   bool _generateIndexes;
-  Option<MicroModelica::IR::Expression> _exp;
+  Option<IR::Expression> _exp;
 };
 
-/**
- *
- */
 class ConvertToExpression {
   public:
-  /**
-   *
-   * @param
-   * @return
-   */
   static AST_Expression convert(GiNaC::ex);
 };
+
 }  // namespace Util
 }  // namespace MicroModelica
 

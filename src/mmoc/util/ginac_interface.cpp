@@ -108,7 +108,6 @@ ex ConvertToGiNaC::convert(AST_Expression e, bool replaceDer, bool generateIndex
   _replaceDer = replaceDer;
   _generateIndexes = generateIndexes;
   ex p = apply(e);
-  cout << "Expression: " << p << endl;
   return p;
 }
 

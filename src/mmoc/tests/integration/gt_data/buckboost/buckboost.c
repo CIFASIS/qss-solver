@@ -116,23 +116,23 @@ void MOD_jacobian(double *x, double *d, double *a, double t, double *jac)
 	for (idx = 1; idx <=2; idx++) {
 	switch(idx) {
 		case _eval_iL(0): {
-			_jac(jit) = (1/(_Rs+_Rd))*_Rs;
+			_jac(jit) = (1/(_Rd+_Rs))*_Rs;
 				_jac(jit) = 0;
 		
-			_jac(jit) = (1/(_Rs+_Rd))*_Rs;
+			_jac(jit) = _Rs*(1/(_Rs+_Rd));
 				_jac(jit) = 0;
 		
 		break;
 		}
 		case _eval_uC(0): {
-			_jac(jit) = (1/(_R))*(1/(_C));
+			_jac(jit) = (1/(_C))*(1/(_R));
 		
 			_jac(jit) = -(1/(_L));
 		
-			_jac(jit) = -(1/(_Rd+_Rs));
-				_jac(jit) = (1/(_R))*(1/(_C));
+			_jac(jit) = -(1/(_Rs+_Rd));
+				_jac(jit) = (1/(_C))*(1/(_R));
 		
-			_jac(jit) = -(1/(_Rd+_Rs));
+			_jac(jit) = -(1/(_Rs+_Rd));
 				_jac(jit) = -(1/(_L));
 		
 		break;
