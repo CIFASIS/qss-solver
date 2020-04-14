@@ -28,9 +28,6 @@
 #include "../parser/parse.h"
 #include "../util/error.h"
 #include "../util/util.h"
-#include "../util/visitors/algebraics.h"
-#include "../util/visitors/autonomous.h"
-#include "../util/visitors/called_functions.h"
 #include "../util/visitors/get_index_variables.h"
 #include "../util/visitors/is_recursive_def.h"
 #include "../util/visitors/replace_der.h"
@@ -151,8 +148,6 @@ string EquationPrinter::prefix() const
 JacobianPrinter::JacobianPrinter(Equation eq, Util::VarSymbolTable symbols)
     : EquationPrinter(eq, symbols), _usage(eq.usage()), _range(eq.range()), _lhs(eq.lhs()), _rhs(eq.rhs())
 {
-  cout << "ORIGINAL: " << eq.rhs() << endl;
-  cout << "COPIA: " << _rhs << endl;
 }
 
 string JacobianPrinter::print() const

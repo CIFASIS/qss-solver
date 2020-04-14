@@ -221,9 +221,7 @@ Equation Jacobian::generate(Equation eq, Index idx, AlgebraicDependencies algs)
   for (VariableDependency var : algs) {
     exp_der.generateJacobianTerm(idx, var);
   }
-  cout << "Equation ORIGINAL: " << eq.rhs() << endl;
   Equation jac = exp_der.generateJacobianExp(idx, eq);
-  cout << "JAC ORIGINAL: " << jac.rhs() << endl;
   _jac_terms = exp_der.terms();
   return jac;
 }
