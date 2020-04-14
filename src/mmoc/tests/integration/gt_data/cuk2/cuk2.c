@@ -147,17 +147,17 @@ void MOD_jacobian(double *x, double *d, double *a, double t, double *jac)
 			_jac(jit) = (1/(_C));
 		
 			_jac(jit) = _L*(1/(_L1));
-				_jac(jit) = (1/(_Rd+_Rs))*_Rs;
+				_jac(jit) = (1/(_Rs+_Rd))*_Rs;
 				_jac(jit) = (1/(_C1));
 		
 			_jac(jit) = _L*(1/(_L1));
-				_jac(jit) = (1/(_Rd+_Rs))*_Rs;
+				_jac(jit) = (1/(_Rs+_Rd))*_Rs;
 				_jac(jit) = 0;
 		
 			_jac(jit) = (1/(_Rs+_Rd))*_Rs;
 				_jac(jit) = (1/(_C1));
 		
-			_jac(jit) = _Rs*(1/(_Rs+_Rd));
+			_jac(jit) = (1/(_Rd+_Rs))*_Rs;
 				_jac(jit) = 0;
 		
 		break;
@@ -176,7 +176,7 @@ void MOD_jacobian(double *x, double *d, double *a, double t, double *jac)
 		case _eval_uC(0): {
 			_jac(jit) = (1/(_L));
 		
-			_jac(jit) = -(1/(_R))*(1/(_C));
+			_jac(jit) = -(1/(_C))*(1/(_R));
 		
 			_jac(jit) = -(1/(_L));
 		
@@ -185,7 +185,7 @@ void MOD_jacobian(double *x, double *d, double *a, double t, double *jac)
 		case _eval_uC1(0): {
 			_jac(jit) = -(1/(_L));
 		
-			_jac(jit) = -(1/(_Rd+_Rs));
+			_jac(jit) = -(1/(_Rs+_Rd));
 				_jac(jit) = 0;
 		
 			_jac(jit) = -(1/(_Rs+_Rd));
