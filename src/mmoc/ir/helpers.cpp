@@ -162,7 +162,7 @@ SymbolTable CompiledPackage::includeDirectories()
 string FunctionPrinter::loop(int end)
 {
   stringstream buffer;
-  buffer << "for (idx = 1; idx <=" << end << "; idx++) {";
+  buffer << "for (idx = 0; idx <" << end << "; idx++) {";
   return buffer.str();
 }
 
