@@ -229,7 +229,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/usr/bin/mmoc",
-            "args": ["-o /home/joaquin/work/qss-solver/build/rltest/rltest ", "/home/joaquin/Downloads/rltest.mo"],
+            "args": ["-o /home/joaquin/work/qss-solver/build/small_rltest/small_rltest ", "/home/joaquin/work/qss-solver/models/tests/small_rltest.mo"],
             "cwd": "${workspaceFolder}/usr/bin/",
             "environment": [],
             "MIMode": "gdb",
