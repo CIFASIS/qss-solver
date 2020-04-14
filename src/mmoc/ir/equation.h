@@ -57,7 +57,7 @@ class Equation {
   Equation(AST_Equation eq, Util::VarSymbolTable &symbols, EQUATION::Type type, int id);
   Equation(AST_Equation eq, Util::VarSymbolTable &symbols, Range r, EQUATION::Type type, int id);
   Equation(AST_Equation eq, Util::VarSymbolTable &symbols, Option<Range> r, EQUATION::Type type, int id);
-  ~Equation();
+  ~Equation() = default;
   inline bool hasRange() const { return _range.is_initialized(); };
   inline Expression lhs() const { return _lhs; };
   Index index() const;

@@ -44,31 +44,24 @@ namespace IR {
 EquationPrinter* getPrinter(Equation eq, Util::VarSymbolTable symbols)
 {
   switch (eq.type()) {
-  case EQUATION::ClassicDerivative: {
+  case EQUATION::ClassicDerivative:
     return new ClassicPrinter(eq, symbols);
-  }
-  case EQUATION::Output: {
+  case EQUATION::Output:
     return new OutputPrinter(eq, symbols);
-  }
-  case EQUATION::Algebraic: {
+  case EQUATION::Algebraic:
     if (ModelConfig::instance().isQss()) {
       return new AlgebraicPrinter(eq, symbols);
     } else {
       return new ClassicPrinter(eq, symbols);
     }
-  }
-  case EQUATION::Jacobian: {
+  case EQUATION::Jacobian:
     return new JacobianPrinter(eq, symbols);
-  }
-  case EQUATION::Dependency: {
+  case EQUATION::Dependency:
     return new DependencyPrinter(eq, symbols);
-  }
-  case EQUATION::ZeroCrossing: {
+  case EQUATION::ZeroCrossing:
     return new ZeroCrossingPrinter(eq, symbols);
-  }
-  default: {
+  default:
     return new DerivativePrinter(eq, symbols);
-  }
   }
 }
 

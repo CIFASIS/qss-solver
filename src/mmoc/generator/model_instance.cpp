@@ -433,7 +433,7 @@ void ModelInstance::freeVectors() const
 void ModelInstance::jacobian()
 {
   Utils::instance().clearLocalSymbols();
-  Utils::instance().addLocalSymbol("int jit;");
+  Utils::instance().addLocalSymbol("int jit = 0;");
   Utils::instance().addLocalSymbol("int idx;");
   FunctionPrinter fp;
   ModelDependencies deps = _model.dependencies();
@@ -738,6 +738,7 @@ void ClassicModelInstance::initializeDataStructures()
 {
   stringstream buffer;
   Utils::instance().setLocalInitSymbols();
+  Utils::instance().setSymbols(_model.symbols());
   allocateSolver();
   allocateVectors();
   freeVectors();
