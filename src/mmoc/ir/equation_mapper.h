@@ -37,7 +37,10 @@ namespace IR {
 template <class EqGen>
 class EquationMapper {
   public:
-  EquationMapper(EqGen eq_gen, Util::Variable var, Deps::VariableDependencies deps) : _mapper(), _eq_gen(eq_gen) { initialize(deps); }
+  EquationMapper(EqGen eq_gen, Util::Variable var, Deps::VariableDependencies deps) : _dict(), _mapper(), _eq_gen(eq_gen), _id(0)
+  {
+    initialize(deps);
+  }
   ~EquationMapper() = default;
 
   std::string scalar() const
@@ -70,9 +73,10 @@ class EquationMapper {
       Equation orig_eq = ifce.get();
       Index ifr = inf.ifr();
       string idx_exp = ifr.print();
-      if (_mapper.find(idx_exp) == _mapper.end()) {
+      if (_dict.find(idx_exp) == _dict.end()) {
         DepInfo d = DepInfo(ifr);
-        _mapper[idx_exp] = d;
+        _mapper[_id] = d;
+        _dict[idx_exp] = _id++;
       }
       Equation eq = _eq_gen.generate(ifce.get(), ifr, inf.algs);
       if (eq.isJacobian()) {
@@ -82,9 +86,10 @@ class EquationMapper {
         buffer << fp.algebraics(inf.algs);
       }
       buffer << eq << endl;
-      DepInfo dep = _mapper[idx_exp];
+      int id = _dict[idx_exp];
+      DepInfo dep = _mapper[id];
       dep.addDependency(buffer.str());
-      _mapper[idx_exp] = dep;
+      _mapper[id] = dep;
     }
   }
 
@@ -174,8 +179,10 @@ class EquationMapper {
   }
 
   private:
-  map<std::string, DepInfo> _mapper;
+  map<std::string, int> _dict;
+  map<int, DepInfo> _mapper;
   EqGen _eq_gen;
+  int _id;
 };
 }  // namespace IR
 }  // namespace MicroModelica
