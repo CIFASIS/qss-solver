@@ -289,11 +289,17 @@ SD_output SD_Output(string name, int outputs, int discretes, int states, double 
 
 void SD_allocOutputMatrix(SD_output output, int states, int discretes)
 {
-  assert(output->nSO != NULL);
-  assert(output->nDO != NULL);
-  assert(output->nOS != NULL);
-  assert(output->nOD != NULL);
+  if (states) {
+    assert(output->nSO != NULL);
+  }
+  if (discretes) {
+    assert(output->nDO != NULL);
+  }
   int i, outputs = output->outputs;
+  if (outputs) {
+    assert(output->nOS != NULL);
+    assert(output->nOD != NULL);
+  }
   for (i = 0; i < states; i++) {
     output->SO[i] = (output->nSO[i] > 0) ? (int *)malloc(output->nSO[i] * sizeof(int)) : NULL;
   }
