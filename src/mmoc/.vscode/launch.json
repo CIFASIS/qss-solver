@@ -242,13 +242,32 @@
                 }
             ]
         },
+        
+        // Small RlTest
+        {
+            "name": "Small RL Test model.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/small_rltest/small_rltest ", "/home/joaquin/work/qss-solver/models/tests/small_rltest.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
         // RlTest
         {
             "name": "RL Test model.",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/usr/bin/mmoc",
-            "args": ["-o /home/joaquin/work/qss-solver/build/small_rltest/small_rltest ", "/home/joaquin/work/qss-solver/models/tests/small_rltest.mo"],
+            "args": ["-o /home/joaquin/work/qss-solver/build/rltest/rltest ", "/home/joaquin/work/qss-solver/models/tests/rltest.mo"],
             "cwd": "${workspaceFolder}/usr/bin/",
             "environment": [],
             "MIMode": "gdb",
