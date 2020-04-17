@@ -52,6 +52,9 @@ class JacAlgExps : public AST_Expression_Fold<AST_Expression> {
 
   list<JacAlgTerm> algebraicTerms();
 
+  protected:
+  AST_Expression addJacAlgTerm(AST_Expression left, AST_Expression right, BinOpType bin_op);
+
   private:
   AST_Expression foldTraverseElement(AST_Expression);
   AST_Expression foldTraverseElementUMinus(AST_Expression);
