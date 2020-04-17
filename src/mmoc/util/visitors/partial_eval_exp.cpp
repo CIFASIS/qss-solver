@@ -31,7 +31,7 @@ namespace Util {
 
 /* Eval Expression class. */
 
-PartialEvalExp::PartialEvalExp(VarSymbolTable symbolTable) { _symbols = symbolTable; }
+PartialEvalExp::PartialEvalExp(VarSymbolTable symbols) { _symbols = symbols; }
 
 AST_Expression PartialEvalExp::foldTraverseElement(AST_Expression exp)
 {
@@ -47,17 +47,27 @@ AST_Expression PartialEvalExp::foldTraverseElement(AST_Expression exp)
       return newAST_Expression_Integer(var->value());
     }
     if (cr->hasIndexes()) {
-      AST_Expression_ComponentReference newCR = newAST_Expression_ComponentReference();
-      AST_ExpressionList indexes = cr->firstIndex();
+      AST_Expression_ComponentReference new_cr = newAST_Expression_ComponentReference();
+      AST_ExpressionList idxs = cr->firstIndex();
       AST_ExpressionListIterator it;
-      AST_ExpressionList newSubs = newAST_ExpressionList();
-      foreach (it, indexes) {
-        newSubs = AST_ListAppend(newSubs, apply(current_element(it)));
+      AST_ExpressionList new_idxs = newAST_ExpressionList();
+      foreach (it, idxs) {
+        new_idxs = AST_ListAppend(new_idxs, apply(current_element(it)));
       }
-      newCR = AST_Expression_ComponentReference_Add(newCR, newAST_String(cr->name()), newSubs);
-      return newCR;
+      new_cr = AST_Expression_ComponentReference_Add(new_cr, newAST_String(cr->name()), new_idxs);
+      return new_cr;
     }
     break;
+  }
+  case EXPOUTPUT: {
+    AST_Expression_Output output = exp->getAsOutput();
+    AST_ExpressionList new_outputs = newAST_ExpressionList();
+    AST_ExpressionList outputs = output->expressionList();
+    AST_ExpressionListIterator it;
+    foreach (it, outputs) {
+      new_outputs = AST_ListAppend(new_outputs, apply(current_element(it)));
+    }
+    return newAST_Expression_OutputExpressions(new_outputs);
   }
   default:
     return exp;
@@ -94,7 +104,7 @@ AST_Expression PartialEvalExp::foldTraverseElement(AST_Expression left, AST_Expr
     }
   case BINOPDIV:
     Util::ERROR_UNLESS(right != 0,
-                       "process_for_equations - evalExp:\n"
+                       "Partial evaluation:\n"
                        "Division by zero.\n");
     if (shouldReturnInteger(left, right)) {
       return (newAST_Expression_Integer(getValue(left) / getValue(right)));
@@ -109,11 +119,11 @@ AST_Expression PartialEvalExp::foldTraverseElement(AST_Expression left, AST_Expr
     }
   default:
     Util::ERROR(
-        "process_for_equations.cpp - evalBinOp:\n"
+        "Partial evaluation:\n"
         "Incorrect Binary operation type.\n");
   }
   Util::ERROR(
-      "process_for_equations.cpp - evalBinOp:\n"
+      "Partial evaluation::\n"
       "Incorrect Binary operation type.\n");
   return nullptr;
 }

@@ -21,11 +21,12 @@
 
 #include <sstream>
 
-#include "convert_expression.h"
-#include "replace_inner_product.h"
 #include "../../parser/parse.h"
 #include "../../ast/ast_types.h"
 #include "../../ast/ast_builder.h"
+#include "../visitors/replace_constant.h"
+#include "convert_expression.h"
+#include "replace_inner_product.h"
 
 namespace MicroModelica {
 using namespace IR;
@@ -35,6 +36,8 @@ ConvertStatement::ConvertStatement(AST_Statement statement, VarSymbolTable& symb
 {
   _statement = convert(statement);
 }
+
+AST_Statement ConvertStatement::get() { return _statement; }
 
 AST_StatementList ConvertStatement::convert(AST_StatementList sts)
 {
@@ -70,9 +73,13 @@ AST_Statement ConvertStatement::convert(AST_Statement st)
     ReplaceInnerProduct rip(_symbols);
     AST_Expression l = st->getAsAssign()->lhs();
     AST_Expression r = rip.apply(st->getAsAssign()->exp());
-    string transform = ConvertExpression(l, r, _symbols).get();
+    ConvertExpression convert_exp(l, r, _symbols);
+    l = convert_exp.left();
+    assert(l->expressionType() == EXPCOMPREF);
+    r = convert_exp.right();
+    string transform = convert_exp.get();
     if (transform.empty()) {
-      return newAST_Statement_Assign(st->getAsAssign()->lhs(), r);
+      return newAST_Statement_Assign(l->getAsComponentReference(), r);
     }
     int rValue;
     return parseStatement(transform, &rValue);
@@ -95,7 +102,9 @@ AST_Statement ConvertStatement::convert(AST_Statement st)
     AST_Statement_When stWhen = st->getAsWhen();
     AST_StatementList stList = convert(stWhen->statements());
     AST_Statement_ElseList stElseList = convert(stWhen->else_when());
-    AST_Statement retWhen = newAST_Statement_When(stWhen->condition(), stList, stElseList, stWhen->comment());
+    ReplaceConstant replace_constant(_symbols);
+    AST_Expression condition = replace_constant.apply(stWhen->condition());
+    AST_Statement retWhen = newAST_Statement_When(condition, stList, stElseList, stWhen->comment());
     return retWhen;
   }
   return st;

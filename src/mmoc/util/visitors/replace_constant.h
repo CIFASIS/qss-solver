@@ -17,32 +17,28 @@
 
  ******************************************************************************/
 
-#ifndef PARTIAL_EVAL_EXP_H_
-#define PARTIAL_EVAL_EXP_H_
+#ifndef REPLACE_CONSTANT_H_
+#define REPLACE_CONSTANT_H_
 
+#include "../../ast/ast_builder.h"
 #include "../ast_util.h"
 
 namespace MicroModelica {
 namespace Util {
-/**
- * Evaluates an arithmetic expression.
- */
-class PartialEvalExp : public AST_Expression_Visitor<AST_Expression> {
+class ReplaceConstant : public AST_Expression_Visitor<AST_Expression> {
   public:
-  PartialEvalExp(VarSymbolTable symbols);
+  ReplaceConstant(VarSymbolTable& symbols);
+  ~ReplaceConstant() = default;
 
   private:
-  AST_Expression foldTraverseElement(AST_Expression);
-  AST_Expression foldTraverseElementUMinus(AST_Expression);
-  AST_Expression foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
+  AST_Expression foldTraverseElement(AST_Expression exp);
+  AST_Expression foldTraverseElementUMinus(AST_Expression exp);
+  AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
 
-  bool shouldReturnInteger(AST_Expression left, AST_Expression right);
-  int getValue(AST_Expression exp);
-  bool isIntegerOrConstant(AST_Expression exp);
   VarSymbolTable _symbols;
 };
 
 }  // namespace Util
 }  // namespace MicroModelica
 
-#endif /* PARTIAL_EVAL_EXP_H_ */
+#endif /* REPLACE_CONSTANT_H_ */

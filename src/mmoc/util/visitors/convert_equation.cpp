@@ -40,7 +40,10 @@ AST_Equation ConvertEquation::convert(AST_Equation eq)
     ReplaceInnerProduct rip(_symbols);
     AST_Expression l = eq->getAsEquality()->left();
     AST_Expression r = rip.apply(eq->getAsEquality()->right());
-    string transform = ConvertExpression(l, r, _symbols).get();
+    ConvertExpression convert_exp = ConvertExpression(l, r, _symbols);
+    string transform = convert_exp.get();
+    l = convert_exp.left();
+    r = convert_exp.right();
     if (transform.empty()) {
       return newAST_Equation_Equality(l, r);
     }
