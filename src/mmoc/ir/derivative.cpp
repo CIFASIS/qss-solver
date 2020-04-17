@@ -156,6 +156,10 @@ Equation ExpressionDerivator::generateEquation(std::string usage, Expression exp
   if (orig.isAlgebraic()) {
     lhs_usage = termVariable();
     _alg_terms.push_back(make_pair(orig, lhs_usage));
+    Variable var(newType_Real(), TP_EQ, nullptr, nullptr, vector<int>(), false);
+    var.setRealType(Variable::RealType::Algebraic);
+    var.setName(lhs_usage);
+    Utils::instance().addVariable(lhs_usage, var);
   }
   AST_Expression lhs = parseExpression(lhs_usage, &res);
   if (res) {
