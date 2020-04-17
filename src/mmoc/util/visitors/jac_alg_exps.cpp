@@ -42,6 +42,7 @@ void JacAlgTerm::setAlgTerm(AST_Expression alg_term) { _alg_term = alg_term; }
 
 void JacAlgTerm::setAlgExps(AST_ExpressionList alg_exps)
 {
+  assert(alg_exps->size() > 0);
   AST_ExpressionListIterator it;
   foreach (it, alg_exps) {
     AST_Expression alg = current_element(it);
@@ -67,43 +68,41 @@ AST_Expression JacAlgExps::foldTraverseElementUMinus(AST_Expression exp)
   return (foldTraverseElement(zero, apply(exp->getAsUMinus()->exp()), BINOPSUB));
 }
 
-AST_Expression JacAlgExps::foldTraverseElement(AST_Expression left, AST_Expression right, BinOpType binOpType)
+AST_Expression JacAlgExps::addJacAlgTerm(AST_Expression left, AST_Expression right, BinOpType bin_op)
 {
   Algebraics algs;
   algs.exclude(_var);
+  const bool LEFT_ALGEBRAICS = algs.apply(left);
+  const bool RIGHT_ALGEBRAICS = algs.apply(right);
+  if (LEFT_ALGEBRAICS && RIGHT_ALGEBRAICS) {
+    JacAlgTerm jac_alg_term(_range);
+    jac_alg_term.setAlgExps(algs.exps());
+    jac_alg_term.setAlgTerm(newAST_Expression_BinOp(left, right, BINOPADD));
+    return newAST_Expression_Integer(0);
+  } else if (LEFT_ALGEBRAICS) {
+    JacAlgTerm jac_alg_term(_range);
+    jac_alg_term.setAlgExps(algs.exps());
+    jac_alg_term.setAlgTerm(left);
+    _alg_terms.push_back(jac_alg_term);
+    return right;
+  } else if (LEFT_ALGEBRAICS) {
+    JacAlgTerm jac_alg_term(_range);
+    jac_alg_term.setAlgExps(algs.exps());
+    jac_alg_term.setAlgTerm(right);
+    _alg_terms.push_back(jac_alg_term);
+    return left;
+  } else {
+    return newAST_Expression_BinOp(left, right, bin_op);
+  }
+}
+
+AST_Expression JacAlgExps::foldTraverseElement(AST_Expression left, AST_Expression right, BinOpType binOpType)
+{
   switch (binOpType) {
   case BINOPADD:
-    if (algs.apply(left)) {
-      JacAlgTerm jac_alg_term(_range);
-      jac_alg_term.setAlgExps(algs.exps());
-      jac_alg_term.setAlgTerm(left);
-      _alg_terms.push_back(jac_alg_term);
-      return right;
-    } else if (algs.apply(right)) {
-      JacAlgTerm jac_alg_term(_range);
-      jac_alg_term.setAlgExps(algs.exps());
-      jac_alg_term.setAlgTerm(right);
-      _alg_terms.push_back(jac_alg_term);
-      return left;
-    } else {
-      return newAST_Expression_BinOp(left, right, BINOPADD);
-    }
+    return addJacAlgTerm(left, right, BINOPADD);
   case BINOPSUB:
-    if (algs.apply(left)) {
-      JacAlgTerm jac_alg_term(_range);
-      jac_alg_term.setAlgExps(algs.exps());
-      jac_alg_term.setAlgTerm(left);
-      _alg_terms.push_back(jac_alg_term);
-      return right;
-    } else if (algs.apply(right)) {
-      JacAlgTerm jac_alg_term(_range);
-      jac_alg_term.setAlgExps(algs.exps());
-      jac_alg_term.setAlgTerm(right);
-      _alg_terms.push_back(jac_alg_term);
-      return left;
-    } else {
-      return newAST_Expression_BinOp(left, right, BINOPSUB);
-    }
+    return addJacAlgTerm(left, right, BINOPSUB);
   case BINOPMULT:
     return newAST_Expression_BinOp(left, right, BINOPMULT);
   case BINOPDIV:
