@@ -21,13 +21,14 @@
 
 #include <sstream>
 
-#include "../error.h"
-#include "../error.h"
-#include "../util.h"
 #include "../../parser/parse.h"
 #include "../../ast/ast_types.h"
 #include "../../ast/ast_builder.h"
 #include "../../ir/event.h"
+#include "../error.h"
+#include "../error.h"
+#include "../util.h"
+#include "../visitors/replace_constant.h"
 
 namespace MicroModelica {
 using namespace IR;
@@ -36,10 +37,19 @@ namespace Util {
 /* ConvertExpression Class */
 
 ConvertExpression::ConvertExpression(AST_Expression left, AST_Expression right, VarSymbolTable& symbols)
-    : _left(left), _right(right), _symbols(symbols), _convert()
+    : _left(nullptr), _right(nullptr), _symbols(symbols), _convert()
 {
+  ReplaceConstant replace_constant(_symbols);
+  _left = replace_constant.apply(left);
+  _right = replace_constant.apply(right);
   convert();
 }
+
+string ConvertExpression::get() { return _convert; }
+
+AST_Expression ConvertExpression::left() { return _left; }
+
+AST_Expression ConvertExpression::right() { return _right; }
 
 AST_Expression_ComponentReference ConvertExpression::componentReference(AST_Expression exp)
 {

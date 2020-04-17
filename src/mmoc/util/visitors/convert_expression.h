@@ -28,11 +28,11 @@ namespace Util {
 class ConvertExpression {
   public:
   ConvertExpression(AST_Expression left, AST_Expression right, MicroModelica::Util::VarSymbolTable& symbols);
-  /**
-   *
-   */
-  ~ConvertExpression(){};
-  inline std::string get() { return _convert; };
+  ~ConvertExpression() = default;
+
+  std::string get();
+  AST_Expression left();
+  AST_Expression right();
 
   private:
   AST_Expression_ComponentReference componentReference(AST_Expression exp);
@@ -40,6 +40,7 @@ class ConvertExpression {
   bool scalarExpression(AST_Expression exp);
   double scalarValue(AST_Expression exp);
   void convert();
+
   AST_Expression _left;
   AST_Expression _right;
   MicroModelica::Util::VarSymbolTable _symbols;
