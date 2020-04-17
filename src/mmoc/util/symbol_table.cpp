@@ -254,10 +254,14 @@ VarSymbolTable::VarSymbolTable() : _parameters(false) {}
 
 void VarSymbolTable::initialize(TypeSymbolTable ty)
 {
-  Variable v(ty["Real"].get(), 0, nullptr, nullptr, vector<int>(1, 0), false);
-  v.setBuiltIn();
-  v.setName("time");
-  insert("time", v);
+  Variable t(ty["Real"].get(), 0, nullptr, nullptr, vector<int>(1, 0), false);
+  t.setBuiltIn();
+  t.setName("time");
+  insert("time", t);
+  Variable reinit(ty["Real"].get(), 0, nullptr, nullptr, vector<int>(1, 0), false);
+  reinit.setBuiltIn();
+  reinit.setName("reinit");
+  insert("reinit", reinit);
 }
 
 void VarSymbolTable::insert(VarName name, Variable variable)
