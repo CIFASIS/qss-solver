@@ -114,7 +114,6 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
 			 $(VISITORDIR)/convert_equation.cpp \
 			 $(VISITORDIR)/convert_statement.cpp \
 			 $(VISITORDIR)/discrete_assignment.cpp \
-			 $(VISITORDIR)/eval_exp.cpp \
 			 $(VISITORDIR)/eval_init_exp.cpp \
 			 $(VISITORDIR)/expression_printer.cpp \
 			 $(VISITORDIR)/occurs.cpp \
