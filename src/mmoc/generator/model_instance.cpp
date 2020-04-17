@@ -819,11 +819,7 @@ void ClassicModelInstance::header()
     if (var.isState()) {
       stringstream buffer, arguments;
       Macros macros(_model, var);
-      if (var.isArray()) {
-        arguments << macros.parameters(MACROS::Engine);
-      } else {
-        arguments << var.offset();
-      }
+      arguments << macros.engineIndexArguments();
       buffer << "#define _der" << var << macros.parameters() << " dx[" << arguments.str() << "]";
       _writer->write(buffer, WRITER::Model_Header);
     }
