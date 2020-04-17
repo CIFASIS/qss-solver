@@ -20,6 +20,7 @@
 #include "is_constant_index.h"
 
 #include "../error.h"
+#include "../util.h"
 
 namespace MicroModelica {
 using namespace Deps;
@@ -35,6 +36,15 @@ bool IsConstantIndex::foldTraverseElement(AST_Expression exp)
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
     if (_in_index_list) {
+      VarSymbolTable symbols = Utils::instance().symbols();
+      Option<Variable> var = symbols[cr->name()];
+      if (!var) {
+        Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "partial_eval_exp.cpp:43 %s", cr->name().c_str());
+        break;
+      }
+      if (var->isConstant()) {
+        return true;
+      }
       ret = false;
     }
     if (cr->hasIndexes()) {
