@@ -27,23 +27,22 @@ namespace Util {
 /**
  * Evaluates an arithmetic expression.
  */
-class PartialEvalExp : public AST_Expression_Fold<AST_Expression> {
+class PartialEvalExp : public AST_Expression_Visitor<AST_Expression> {
   public:
-  /**
-   *
-   * @param symbolTable
-   */
-  PartialEvalExp(VarSymbolTable symbolTable);
+  PartialEvalExp(VarSymbolTable symbols);
 
   private:
   AST_Expression foldTraverseElement(AST_Expression);
   AST_Expression foldTraverseElementUMinus(AST_Expression);
   AST_Expression foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
+
   bool shouldReturnInteger(AST_Expression left, AST_Expression right);
   int getValue(AST_Expression exp);
   bool isIntegerOrConstant(AST_Expression exp);
   VarSymbolTable _symbols;
 };
+
 }  // namespace Util
 }  // namespace MicroModelica
+
 #endif /* PARTIAL_EVAL_EXP_H_ */
