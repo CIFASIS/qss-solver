@@ -100,6 +100,7 @@ class Utils {
       _local_symbols.insert(symbol, symbol);
     }
   };
+  inline void addVariable(VarName name, Variable var) { _symbols.insert(name, var); }
   inline void setSymbols(const VarSymbolTable& symbols) { _symbols = symbols; };
   inline void clearLocalSymbols() { _local_symbols.clear(); };
   inline void setLocalInitSymbols() { _init_symbols = true; };
