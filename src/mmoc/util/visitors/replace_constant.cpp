@@ -56,6 +56,16 @@ AST_Expression ReplaceConstant::foldTraverseElement(AST_Expression exp)
     }
     break;
   }
+  case EXPOUTPUT: {
+    AST_Expression_Output output = exp->getAsOutput();
+    AST_ExpressionList new_outputs = newAST_ExpressionList();
+    AST_ExpressionList outputs = output->expressionList();
+    AST_ExpressionListIterator it;
+    foreach (it, outputs) {
+      new_outputs = AST_ListAppend(new_outputs, apply(current_element(it)));
+    }
+    return newAST_Expression_OutputExpressions(new_outputs);
+  }
   default:
     break;
   }
