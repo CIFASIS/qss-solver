@@ -5,6 +5,7 @@
     "version": "0.2.0",
     "configurations": [ 
 
+
         // Generic per model configurations.
         
         // Mixed mode buckt_term model
@@ -218,12 +219,42 @@
         
         // Airconds simple.
         {
-            "name": "Airconds simple Test.",
+            "name": "Airconds simple.",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/usr/bin/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/airconds/airconds ", "/home/joaquin/work/qss-solver/models/airs/airconds.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
         },
+
+        // Aircont model.
+        {
+            "name": "Aircont model.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/aircont/aircont ", "/home/joaquin/work/qss-solver/models/airs/aircont.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+
         // Lota-Volterra test.
         {
             "name": "Lotka-Volterra Test.",
@@ -296,7 +327,25 @@
                     "ignoreFailures": true
                 }
             ]
-        }  
-          
+        }, 
+        
+        // Bball downstairs model
+        {
+            "name": "Bball downstairs model",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/bball/bball_downstairs ", "/home/joaquin/work/qss-solver/models/bball/bball_downstairs.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }   
     ]
 }
