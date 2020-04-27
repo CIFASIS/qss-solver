@@ -210,7 +210,7 @@ MDI Label::getImage(MDI intersection) const
     case INDEX_PAIR::R1_1:
       return Pair().Ran();
     case INDEX_PAIR::R1_N:
-      return Pair().Ran();
+      return intersection.revertImage(orig);
     case INDEX_PAIR::RN_1:
       return Pair().Ran();
     default:
@@ -396,10 +396,16 @@ void GenerateEdge::initialize()
         _exist = true;
         exps.push_back(_sink.stm().event());
         build(exps);
-      } else if (_source.id() == _sink.eq().id()) {
+      } else if (_source.id() >= 0 && _source.id() == _sink.eq().id()) {
         _exist = true;
         exps.push_back(_sink.eq().lhs());
         build(exps);
+      } else {
+        assert(_sink.type() == VERTEX::Equation);
+        _exist = occurs.apply(_sink.eq().equation());
+        if (_exist) {
+          build(occurs.occurrences());
+        }
       }
     }
   } else {
