@@ -37,19 +37,19 @@ typedef std::list<std::pair<Vertex, MDI>> VertexInfo;
 
 class Dependency {
   public:
-  Dependency() : _ifr(), _ifr_dom(), _ifr_range(){};
+  Dependency() : _ifr(), _ifr_dom(), _ifr_range(), _ifr_id(0), _equation_range(){};
   ~Dependency() = default;
   template <class DM>
-  void compute(DepsGraph graph, DM& dm, TRAVERSE::Init init = TRAVERSE::Variable)
+  void compute(DepsGraph graph, DM& dm, TRAVERSE::Init traverse = TRAVERSE::Variable)
   {
     for (Vertex vertex : boost::make_iterator_range(vertices(graph))) {
       VertexProperty vertex_info = graph[vertex];
       if (vertex_info.type() == VERTEX::Influencer) {
-        VariableDependencies var_deps;
-        AlgebraicDependencies algs;
-        AlgebraicDependencies alg_paths;
-        cout << "Compute dependecies for: " << vertex_info.var() << endl;
-        paths(graph, vertex, variableRange(vertex_info.var()), var_deps, algs, alg_paths, init);
+        Paths var_deps;
+        AlgebraicPath algs;
+        AlgebraicPath recursive_alg_paths;
+        cout << "Compute paths for: " << vertex_info.var() << endl;
+        paths(graph, vertex, variableRange(vertex_info.var()), var_deps, algs, recursive_alg_paths, traverse);
         insert(dm, vertex_info, var_deps);
       }
     }
@@ -60,14 +60,14 @@ class Dependency {
   void append(VariableDependencyMatrix& a, VariableDependencyMatrix& b);
 
   protected:
-  void paths(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs,
-             AlgebraicDependencies& alg_paths, TRAVERSE::Init init, VariableDependency recursive_alg = VariableDependency());
-  bool recursivePaths(DepsGraph graph, Vertex source_vertex, MDI source_range, bool from_alg, AlgebraicDependencies& algs,
-                      AlgebraicDependencies& alg_paths, VertexInfo& node_info);
+  void paths(DepsGraph graph, Vertex source_vertex, MDI source_range, Paths& var_deps, AlgebraicPath& algs, AlgebraicPath& alg_paths,
+             TRAVERSE::Init init, VariableDependency alg_dep = VariableDependency());
+  bool recursivePaths(DepsGraph graph, Vertex source_vertex, MDI source_range, bool from_alg, AlgebraicPath& algs, AlgebraicPath& alg_paths,
+                      VertexInfo& node_info);
   VariableDependency getVariableDependency(string name, MDI dom, MDI ran, int id);
   MDI variableRange(Util::Variable var);
   template <class DM>
-  void insert(DM& dm, VertexProperty vp, VariableDependencies var_deps)
+  void insert(DM& dm, VertexProperty vp, Paths var_deps)
   {
     if (!var_deps.empty()) {
       if (dm.keyType() == VDM::String_Key) {
@@ -77,6 +77,7 @@ class Dependency {
       }
     }
   }
+
   void print(DepsGraph graph);
   void printEdges(DepsGraph graph, Vertex source_vertex, MDI source_range);
   bool isRecursive(VertexProperty source, VertexProperty target);
@@ -86,6 +87,8 @@ class Dependency {
   IndexPair _ifr;
   MDI _ifr_dom;
   MDI _ifr_range;
+  int _ifr_id;
+  IR::Range _equation_range;
 };
 }  // namespace Deps
 }  // namespace MicroModelica
