@@ -19,6 +19,7 @@
 
 #include "dependency_matrix.h"
 
+#include "../ir/alg_usage.h"
 #include "../util/visitors/replace_index.h"
 #include "../util/util.h"
 
@@ -26,6 +27,25 @@ namespace MicroModelica {
 using namespace IR;
 using namespace Util;
 namespace Deps {
+
+VariableDependency::VariableDependency()
+    : _dom(),
+      _ran(),
+      _ifr(),
+      _ife(),
+      _ifr_exp(),
+      _ife_exp(),
+      _alg_usage(),
+      _range(),
+      _id(0),
+      _equationId(0),
+      _variable(),
+      _is_reduction(false),
+      _ifr_range(),
+      _swap_usage(false),
+      _equation_range()
+{
+}
 
 MDI VariableDependency::getImage(MDI sub_dom)
 {
@@ -50,57 +70,39 @@ void VariableDependency::setRange()
   } else {
     _range.generate(_ran);
   }
-  _ifr_exp = Expression(_ifr.exp().expression(), Utils::instance().symbols());
-  _ife_exp = Expression(_ife.exp().expression(), Utils::instance().symbols());
-}
-
-VariableDependencyMatrix::VariableDependencyMatrix(MatrixConfig cfg) : _cfg(cfg), _mode(VDM::Normal), _method(VDM::Alloc) {}
-
-string VariableDependencyMatrix::print() const
-{
-  stringstream buffer;
-  VariableDependencyMatrix::const_iterator it;
-  string matrix = _cfg.names[_method + _mode];
-  string access = _cfg.access[_mode];
-  for (it = begin(); it != end(); it++) {
-    VariableDependencies vds = it->second;
-    for (auto vd : vds) {
-      Index ifr = vd.ifr().replace();
-      Index ife = vd.ife().replace();
-      if (_mode == VDM::Transpose) {
-        ifr = vd.ife().replace();
-        ife = vd.ifr().replace();
-      }
-      Range range = vd.ifce.range();
-      buffer << range;
-      if (_method == VDM::Alloc) {
-        buffer << range.block() << _cfg.container << matrix << "[" << ifr << "]" << component() << "++;" << endl;
-      } else {
-        buffer << range.block() << _cfg.container << matrix << "[" << ifr << "]" << component() << "[" << access << "[" << ifr
-               << "]++] = " << ife << ";" << endl;
-      }
-      if (!range.empty()) {
-        buffer << range.end() << endl;
-      }
+  // First apply the incoming range to the variable
+  _ifr_exp = VariableUsage(_ifr.exp(), _range).usage();
+  _ife_exp = VariableUsage(_ife.exp(), _range).usage();
+  // If there's an algebraic usage in the variable dependency, apply the usage.
+  if (_alg_usage.isEmpty()) {
+    _alg_usage = _ife_exp;
+  } else {
+    if (_swap_usage) {
+      Expression tmp = _alg_usage;
+      _alg_usage = _ife_exp;
+      _ife_exp = tmp;
     }
+    _ife_exp = VariableUsage(_ife_exp, _ife_exp, Index(_alg_usage)).rhs();
   }
-  cout << buffer.str() << endl;
-  return buffer.str();
+  cout << "Rango en el que seaplica: " << _ran << endl;
+  cout << "Expression IFR original: " << _ifr.exp() << endl;
+  cout << "Expression IFE original: " << _ife.exp() << endl;
+  cout << "Expression IFR en la matriz: " << _ifr_exp << endl;
+  cout << "Expression IFE en la matriz: " << _ife_exp << endl;
 }
 
-string VariableDependencyMatrix::component() const
+void VariableDependency::setSwap(bool swap_usage) { _swap_usage = swap_usage; }
+
+Range VariableDependency::ifrRange()
 {
-  stringstream buffer;
-  string component = _cfg.component[0];
-  if (_method == VDM::Init) {
-    component = _cfg.component[1];
-  }
-  if (!component.empty()) {
-    buffer << "." << component;
-  }
-  return buffer.str();
+  Range range;
+  range.generate(_ifr_range);
+  return range;
 }
 
-ostream& operator<<(std::ostream& out, const VariableDependencyMatrix& d) { return out << d.print(); }
+void VariableDependency::setEquationRange(Range equation_range) { _equation_range = equation_range; }
+
+Range VariableDependency::equationRange() { return _equation_range; }
+
 }  // namespace Deps
 }  // namespace MicroModelica

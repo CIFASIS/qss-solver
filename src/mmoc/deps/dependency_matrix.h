@@ -37,13 +37,13 @@ typedef enum { Alloc = 0, Init = 2 } Method;
 typedef enum { String_Key, Int_Key } Key;
 }  // namespace VDM
 
-typedef int depId;
+typedef int equation_id;
 
-typedef std::string varId;
+typedef std::string variable_id;
 
 class VariableDependency {
   public:
-  VariableDependency(){};
+  VariableDependency();
   ~VariableDependency() = default;
   inline void setVariable(std::string var) { _variable = var; };
   inline void setDom(MDI dom) { _dom = dom; };
@@ -55,7 +55,10 @@ class VariableDependency {
   IR::Range range() { return _range; };
   inline void setIfr(IndexPair ifr) { _ifr = ifr; };
   inline void setIfe(IndexPair ife) { _ife = ife; };
+  inline void setAlgUsage(IR::Expression alg_usage) { _alg_usage = alg_usage; }
+  inline IR::Expression usage() const { return _alg_usage; };
   inline void setIfrRange(MDI ifr_range) { _ifr_range = ifr_range; }
+  IR::Range ifrRange();
   void setRange();
   MDI dom() { return _dom; };
   MDI ran() { return _ran; };
@@ -66,6 +69,11 @@ class VariableDependency {
   inline IndexPair ifePair() const { return _ife; };
   inline void setReduction(bool is_reduction) { _is_reduction = is_reduction; };
   inline bool isReduction() const { return _is_reduction; };
+  void setEquationRange(IR::Range equation_range);
+  IR::Range equationRange();
+
+  // Temp hack until graph migration is complete.
+  void setSwap(bool swap_usage);
 
   private:
   MDI _dom;
@@ -74,27 +82,31 @@ class VariableDependency {
   IndexPair _ife;
   IR::Expression _ifr_exp;
   IR::Expression _ife_exp;
+  IR::Expression _alg_usage;
   IR::Range _range;
   int _id;
   int _equationId;
   std::string _variable;
   bool _is_reduction;
   MDI _ifr_range;
+  // Delte this when the graphs are migrated.
+  bool _swap_usage;
+  IR::Range _equation_range;
 };
 
-// AlgebraicDependencies
-typedef list<VariableDependency> AlgebraicDependencies;
+// AlgebraicPath
+typedef list<VariableDependency> AlgebraicPath;
 
 typedef struct {
-  AlgebraicDependencies algs;
+  AlgebraicPath algs;
   VariableDependency ifce;
   inline const IR::Index ifr() { return ifce.ifr(); };
   inline const IR::Index ife() { return ifce.ife(); };
-} Influences;
+} Path;
 
-std::ostream& operator<<(std::ostream& out, const Influences& d);
+std::ostream& operator<<(std::ostream& out, const Path& d);
 
-typedef list<Influences> VariableDependencies;
+typedef list<Path> Paths;
 
 struct MatrixConfig {
   std::string container;
@@ -103,42 +115,120 @@ struct MatrixConfig {
   std::string component[2];
 };
 
-class VariableDependencyMatrix : public ModelTable<varId, VariableDependencies> {
-  public:
-  VariableDependencyMatrix(MatrixConfig cfg);
-  ~VariableDependencyMatrix(){};
-  void insert(varId id, VariableDependencies deps) { ModelTable::insert(id, deps); };
-  void insert(depId id, VariableDependencies deps){};
+static MatrixConfig EmptyCfg = {"", {}, {}, {}};
 
-  inline const VariableDependencyMatrix& alloc()
+template <typename ID>
+class DependencyMatrix : public ModelTable<ID, Paths> {
+  public:
+  DependencyMatrix(VDM::Key key) : _cfg(EmptyCfg), _mode(VDM::Normal), _method(VDM::Alloc), _key(key){};
+  DependencyMatrix(MatrixConfig cfg, VDM::Key key) : _cfg(cfg), _mode(VDM::Normal), _method(VDM::Alloc), _key(key){};
+  ~DependencyMatrix() = default;
+
+  inline const DependencyMatrix& alloc()
   {
     _method = VDM::Alloc;
     return *this;
   };
-  inline const VariableDependencyMatrix& init()
+
+  inline const DependencyMatrix& init()
   {
     _method = VDM::Init;
     return *this;
   };
+
   inline void setMode(VDM::Mode mode) { _mode = mode; };
-  std::string print() const;
+
+  IR::Range getRange(VariableDependency var_dep) const
+  {
+    if (_key == VDM::Int_Key && !var_dep.ife().isConstant()) {
+      return var_dep.equationRange();
+    }
+    return var_dep.range();
+  }
+
+  std::string print() const
+  {
+    stringstream buffer;
+    typename ModelTable<ID, Paths>::const_iterator it;
+    string matrix = _cfg.names[_method + _mode];
+    string access = _cfg.access[_mode];
+    for (it = ModelTable<ID, Paths>::begin(); it != ModelTable<ID, Paths>::end(); it++) {
+      Paths vds = it->second;
+      for (auto vd : vds) {
+        IR::Index ifr = vd.ifr().replace();
+        IR::Index ife = vd.ife().replace();
+        if (_mode == VDM::Transpose) {
+          ifr = vd.ife().replace();
+          ife = vd.ifr().replace();
+        }
+        IR::Range range = getRange(vd.ifce);
+        buffer << range;
+        if (_method == VDM::Alloc) {
+          buffer << range.block() << _cfg.container << matrix << "[" << ifr << "]" << component() << "++;" << endl;
+        } else {
+          buffer << range.block() << _cfg.container << matrix << "[" << ifr << "]" << component() << "[" << access << "[" << ifr
+                 << "]++] = " << ife << ";" << endl;
+        }
+        if (!range.empty()) {
+          buffer << range.end() << endl;
+        }
+      }
+    }
+    cout << buffer.str() << endl;
+    return buffer.str();
+  }
+
   inline std::string accessVector() const { return _cfg.access[_mode]; };
-  inline VDM::Key keyType() const { return VDM::String_Key; };
-  friend std::ostream& operator<<(std::ostream& out, const VariableDependencyMatrix& d);
+
+  string component() const
+  {
+    stringstream buffer;
+    string component = _cfg.component[0];
+    if (_method == VDM::Init) {
+      component = _cfg.component[1];
+    }
+    if (!component.empty()) {
+      buffer << "." << component;
+    }
+    return buffer.str();
+  }
+
+  template <typename U>
+  friend std::ostream& operator<<(std::ostream& out, const DependencyMatrix<U>& d);
 
   private:
   MatrixConfig _cfg;
   VDM::Mode _mode;
   VDM::Method _method;
-
-  std::string component() const;
+  VDM::Key _key;
 };
 
-class EquationDependencyMatrix : public ModelTable<depId, VariableDependencies> {
+template <typename ID>
+ostream& operator<<(std::ostream& out, const DependencyMatrix<ID>& d)
+{
+  return out << d.print();
+};
+
+class EquationDependencyMatrix : public DependencyMatrix<equation_id> {
   public:
+  EquationDependencyMatrix() : DependencyMatrix(VDM::Int_Key){};
+  EquationDependencyMatrix(MatrixConfig cfg) : DependencyMatrix(cfg, VDM::Int_Key){};
+  ~EquationDependencyMatrix() = default;
+
   inline VDM::Key keyType() const { return VDM::Int_Key; };
-  void insert(varId id, VariableDependencies deps){};
-  void insert(depId id, VariableDependencies deps) { ModelTable::insert(id, deps); };
+  void insert(variable_id id, Paths paths){};
+  void insert(equation_id id, Paths paths) { DependencyMatrix::insert(id, paths); };
+};
+
+class VariableDependencyMatrix : public DependencyMatrix<variable_id> {
+  public:
+  VariableDependencyMatrix() : DependencyMatrix(VDM::String_Key){};
+  VariableDependencyMatrix(MatrixConfig cfg) : DependencyMatrix(cfg, VDM::String_Key){};
+  ~VariableDependencyMatrix() = default;
+
+  inline VDM::Key keyType() const { return VDM::String_Key; };
+  void insert(equation_id id, Paths paths){};
+  void insert(variable_id id, Paths paths) { DependencyMatrix::insert(id, paths); };
 };
 
 }  // namespace Deps
