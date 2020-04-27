@@ -21,7 +21,6 @@
 #include "model_instance.h"
 
 #include <boost/optional/optional_io.hpp>
-#include <sstream>
 #include <utility>
 
 #include "../ast/expression.h"
@@ -44,6 +43,8 @@ namespace Generator {
 using namespace MicroModelica::IR;
 using namespace MicroModelica::Util;
 using namespace MicroModelica::Deps;
+
+ModelInstance::ModelInstance() : _model(), _flags(), _writer() {}
 
 ModelInstance::ModelInstance(Model &model, CompileFlags &flags, WriterPtr writer) : _model(model), _flags(flags), _writer(writer) {}
 
@@ -88,17 +89,6 @@ void ModelInstance::include()
   buffer << "#include <classic/classic_model.h>" << endl;
   buffer << endl;
   _writer->write(buffer, WRITER::Include);
-}
-
-void ModelInstance::initializeMatrix(VariableDependencyMatrix vdm, WRITER::Section alloc, WRITER::Section init, int size)
-{
-  _writer->write(vdm.alloc(), alloc);
-  if (!vdm.empty()) {
-    stringstream buffer;
-    buffer << "cleanVector(" << vdm.accessVector() << ", 0, " << size << ");";
-    _writer->write(buffer.str(), init);
-  }
-  _writer->write(vdm.init(), init);
 }
 
 void ModelInstance::allocateOutput()
@@ -277,6 +267,11 @@ void ModelInstance::header()
   for (Equation e = derivatives.begin(eqit); !derivatives.end(eqit); e = derivatives.next(eqit)) {
     _writer->write(e.macro(), WRITER::Model_Header);
   }
+  EquationTable algebraics = _model.algebraics();
+  _writer->write("\n// Algebraic Equations Macros\n", WRITER::Model_Header);
+  for (Equation e = algebraics.begin(eqit); !algebraics.end(eqit); e = algebraics.next(eqit)) {
+    _writer->write(e.macro(), WRITER::Model_Header);
+  }
   _writer->write("\n// Event Macros\n", WRITER::Model_Header);
   EventTable events = _model.events();
   EventTable::iterator eit;
@@ -437,18 +432,16 @@ void ModelInstance::jacobian()
   Utils::instance().addLocalSymbol("int idx;");
   FunctionPrinter fp;
   ModelDependencies deps = _model.dependencies();
-  VariableDependencyMatrix SD = deps.SD();
-  VariableDependencyMatrix::const_iterator it;
+  EquationDependencyMatrix DS = deps.DS();
+  EquationDependencyMatrix::const_iterator it;
   VarSymbolTable symbols = _model.symbols();
-  for (it = SD.begin(); it != SD.end(); it++) {
-    Option<Variable> var = symbols[it->first];
-    if (var) {
-      Jacobian jac = Jacobian(symbols);
-      EquationMapper<Jacobian> mapper(jac, var.get(), it->second);
-      _writer->write(mapper.scalar(), WRITER::Jacobian_Simple);
-      _writer->write(mapper.vector(), WRITER::Jacobian_Generic);
-    }
+  EquationMapper<Jacobian> mapper;
+  for (it = DS.begin(); it != DS.end(); it++) {
+    Jacobian jac = Jacobian(symbols);
+    mapper.compute(jac, it->second);
   }
+  _writer->write(mapper.scalar(), WRITER::Jacobian_Simple);
+  _writer->write(mapper.vector(), WRITER::Jacobian_Generic);
   _writer->write(Utils::instance().localSymbols(), WRITER::Jacobian);
   _writer->write(fp.loop(_model.stateNbr()), WRITER::Jacobian);
   if (!_writer->isEmpty(WRITER::Jacobian_Simple)) {
@@ -465,7 +458,7 @@ void ModelInstance::generate()
   handler();
   output();
   initialCode();
-  jacobian();
+  // jacobian();
   // Print generated Model Instance.
   _writer->print(WRITER::Include);
   _writer->print(componentDefinition(MODEL_INSTANCE::Model_Settings));
@@ -512,6 +505,8 @@ void ModelInstance::generate()
 }
 
 /* QSSModelInstance Model Instance class. */
+
+QSSModelInstance::QSSModelInstance() : ModelInstance(), _model(), _flags(), _writer() {}
 
 QSSModelInstance::QSSModelInstance(Model &model, CompileFlags &flags, WriterPtr writer)
     : ModelInstance(model, flags, writer), _model(model), _flags(flags), _writer(writer)
@@ -632,24 +627,22 @@ void QSSModelInstance::initializeDataStructures()
 void QSSModelInstance::dependencies()
 {
   ModelDependencies deps = _model.dependencies();
-  VariableDependencyMatrix SD = deps.SD();
-  VariableDependencyMatrix::const_iterator it;
+  EquationDependencyMatrix DS = deps.DS();
+  EquationDependencyMatrix::const_iterator it;
   VarSymbolTable symbols = _model.symbols();
   Utils::instance().clearLocalSymbols();
-  FunctionPrinter fp;
-  for (it = SD.begin(); it != SD.end(); it++) {
-    Option<Variable> var = symbols[it->first];
-    if (var) {
-      IR::Dependency dep;
-      EquationMapper<IR::Dependency> mapper(dep, var.get(), it->second);
-      _writer->write(mapper.scalar(), WRITER::Model_Deps_Simple);
-      _writer->write(mapper.vector(), WRITER::Model_Deps_Generic);
-    }
+  FunctionPrinter printer;
+  EquationMapper<IR::Dependency> mapper;
+  for (it = DS.begin(); it != DS.end(); it++) {
+    IR::Dependency dep;
+    mapper.compute(dep, it->second);
   }
+  _writer->write(mapper.scalar(), WRITER::Model_Deps_Simple);
+  _writer->write(mapper.vector(), WRITER::Model_Deps_Generic);
   _writer->write(Utils::instance().localSymbols(), WRITER::Model_Deps);
   if (!_writer->isEmpty(WRITER::Model_Deps_Simple)) {
-    _writer->write(fp.beginSwitch(), WRITER::Model_Deps);
-    _writer->write(fp.endSwitch(), WRITER::Model_Deps_Simple);
+    _writer->write(printer.beginSwitch(), WRITER::Model_Deps);
+    _writer->write(printer.endSwitch(), WRITER::Model_Deps_Simple);
   }
 }
 
