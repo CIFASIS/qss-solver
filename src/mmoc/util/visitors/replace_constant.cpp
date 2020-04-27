@@ -72,7 +72,10 @@ AST_Expression ReplaceConstant::foldTraverseElement(AST_Expression exp)
   return exp;
 }
 
-AST_Expression ReplaceConstant::foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
+AST_Expression ReplaceConstant::foldTraverseElementUMinus(AST_Expression exp)
+{
+  return newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp()));
+}
 
 AST_Expression ReplaceConstant::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
 {
