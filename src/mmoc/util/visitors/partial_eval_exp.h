@@ -32,13 +32,15 @@ class PartialEvalExp : public AST_Expression_Visitor<AST_Expression> {
   PartialEvalExp(VarSymbolTable symbols);
 
   private:
-  AST_Expression foldTraverseElement(AST_Expression);
-  AST_Expression foldTraverseElementUMinus(AST_Expression);
-  AST_Expression foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
+  AST_Expression foldTraverseElement(AST_Expression exp);
+  AST_Expression foldTraverseElementUMinus(AST_Expression exp);
+  AST_Expression foldTraverseElement(AST_Expression left, AST_Expression right, BinOpType type);
 
   bool shouldReturnInteger(AST_Expression left, AST_Expression right);
   int getValue(AST_Expression exp);
   bool isIntegerOrConstant(AST_Expression exp);
+  bool canReduce(AST_Expression exp);
+  AST_Expression reduce(AST_Expression reduce, AST_Expression term, BinOpType type);
   VarSymbolTable _symbols;
 };
 
