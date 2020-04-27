@@ -27,7 +27,7 @@ using namespace Util;
 namespace Deps {
 
 SDGraphBuilder::SDGraphBuilder(EquationTable &equations, EquationTable &algebraics, VarSymbolTable &symbols)
-    : _equationDescriptors(), _variableDescriptors(), _equations(equations), _algebraics(algebraics), _symbols(symbols)
+    : _equation_def_nodes(), _equation_lhs_nodes(), _state_nodes(), _equations(equations), _algebraics(algebraics), _symbols(symbols)
 {
 }
 
@@ -39,18 +39,16 @@ DepsGraph SDGraphBuilder::build()
   for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
     VertexProperty vp = VertexProperty();
     if (var.isState()) {
-      vp.setType(VERTEX::Influencer);
+      vp.setType(VERTEX::Influencee);
       vp.setVar(var);
-      _variableDescriptors.push_back(add_vertex(vp, graph));
-      VertexProperty icee = VertexProperty();
-      icee.setType(VERTEX::Influencee);
-      icee.setVar(var);
-      cout << "Adding influencee: " << var.name() << endl;
-      _derivativeDescriptors.push_back(add_vertex(icee, graph));
+      //  Use to differentiate from EA builders need to refactor Edge builder.
+      const int NOT_ASSIGNED = -1;
+      vp.setId(NOT_ASSIGNED);
+      _state_nodes.push_back(add_vertex(vp, graph));
     } else if (var.isAlgebraic()) {
       vp.setType(VERTEX::Algebraic);
       vp.setVar(var);
-      _variableDescriptors.push_back(add_vertex(vp, graph));
+      _equation_lhs_nodes.push_back(add_vertex(vp, graph));
     }
   }
   EquationTable::iterator eqit;
@@ -59,58 +57,63 @@ DepsGraph SDGraphBuilder::build()
     vp.setType(VERTEX::Equation);
     vp.setEq(eq);
     vp.setId(eq.id());
-    _equationDescriptors.push_back(add_vertex(vp, graph));
+    _equation_def_nodes.push_back(add_vertex(vp, graph));
+    Option<Variable> assigned = eq.LHSVariable();
+    assert(assigned);
+    VertexProperty ifr = VertexProperty();
+    ifr.setType(VERTEX::Influencer);
+    ifr.setVar(assigned.get());
+    ifr.setId(eq.id());
+    _equation_lhs_nodes.push_back(add_vertex(ifr, graph));
   }
   for (Equation eq = _algebraics.begin(eqit); !_algebraics.end(eqit); eq = _algebraics.next(eqit)) {
     VertexProperty vp = VertexProperty();
     vp.setType(VERTEX::Equation);
     vp.setEq(eq);
     vp.setId(eq.id());
-    _equationDescriptors.push_back(add_vertex(vp, graph));
+    _equation_def_nodes.push_back(add_vertex(vp, graph));
   }
 
-  foreach_(EqVertex sink, _equationDescriptors)
+  foreach_(EqVertex sink, _equation_def_nodes)
   {
-    foreach_(IfrVertex source, _variableDescriptors)
+    foreach_(IfrVertex source, _equation_lhs_nodes)
     {
-      GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
+      GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Output, VERTEX::LHS);
       if (edge.exists()) {
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {
           Label lbl(ip);
           add_edge(source, sink, lbl, graph);
-          cout << "Adding edge from: " << graph[source].var().name() << " to equation: " << graph[sink].eq().id() << endl;
+          cout << "Adding OUTPUT LHS edge from: " << graph[source].var().name() << " to equation: " << graph[sink].eq().id() << endl;
           cout << "Equation type: " << graph[sink].eq().type() << endl;
         }
       }
-      // Check LHS too if we are working with algebraics.
-      if (graph[source].type() == VERTEX::Algebraic && graph[sink].eq().type() == EQUATION::Algebraic) {
-        GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input);
+      // Check RHS too if we are working with algebraics.
+      if (graph[source].type() == VERTEX::Algebraic) {
+        GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input, VERTEX::LHS);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
             Label lbl(ip);
             add_edge(sink, source, lbl, graph);
-            cout << "Adding edge from equation: " << graph[sink].eq().id() << " to equation: " << graph[source].var().name() << endl;
+            cout << "Adding INPUT RHS edge from equation: " << graph[sink].eq().id()
+                 << " to algebraic variable: " << graph[source].var().name() << endl;
           }
         }
       }
     }
   }
-  // Generate der(var) --> var edges.
-  foreach_(EqVertex sink, _equationDescriptors)
+  foreach_(EqVertex sink, _equation_def_nodes)
   {
-    foreach_(IfeVertex source, _derivativeDescriptors)
+    foreach_(IfeVertex source, _state_nodes)
     {
-      if (graph[sink].eq().isDerivative()) {
-        GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
-        if (edge.exists()) {
-          IndexPairSet ips = edge.indexes();
-          for (auto ip : ips) {
-            Label lbl(ip);
-            add_edge(sink, source, lbl, graph);
-            cout << "Adding edge from equation: " << graph[sink].eq().id() << " to equation: " << graph[source].var().name() << endl;
-          }
+      GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input, VERTEX::LHS);
+      if (edge.exists()) {
+        IndexPairSet ips = edge.indexes();
+        for (auto ip : ips) {
+          Label lbl(ip);
+          add_edge(sink, source, lbl, graph);
+          cout << "Adding FINAL edge from equation: " << graph[sink].eq().id() << " to variable: " << graph[source].var().name() << endl;
         }
       }
     }

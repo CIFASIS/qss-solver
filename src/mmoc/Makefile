@@ -88,7 +88,8 @@ IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
 				$(IRDIR)/mmo_ir.cpp  \
 				$(IRDIR)/mmo_settings.cpp \
 		  		$(IRDIR)/derivative.cpp \
-				$(IRDRI)/equation_printer.cpp
+				$(IRDIR)/equation_printer.cpp \
+				$(IRDIR)/alg_usage.cpp
 
 PARSERSRC = $(PARSERDIR)/mocc_parser.cpp \
 			$(PARSERDIR)/mocc_scanner.cpp \
@@ -133,7 +134,9 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
 			 $(VISITORDIR)/is_recursive_def.cpp \
 			 $(VISITORDIR)/jac_alg_exps.cpp \
 			 $(VISITORDIR)/has_scalar_index.cpp \
-			 $(VISITORDIR)/replace_constant.cpp
+			 $(VISITORDIR)/replace_constant.cpp \
+			 $(VISITORDIR)/parse_index.cpp \
+			 $(VISITORDIR)/apply_alg_usage.cpp
 
 DEPSSRC = $(DEPSDIR)/dependency.cpp \
 		  $(DEPSDIR)/model_dependencies.cpp  \

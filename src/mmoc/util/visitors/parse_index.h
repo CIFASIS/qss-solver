@@ -16,30 +16,39 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
  ******************************************************************************/
-#ifndef SD_GRAPH_BUILDER_H
-#define SD_GRAPH_BUILDER_H
 
-#include "../../ir/class.h"
-#include "../../util/symbol_table.h"
-#include "../graph/graph.h"
+#ifndef PARSE_INDEX_H_
+#define PARSE_INDEX_H_
+
+#include "../../ast/ast_builder.h"
+#include "../ast_util.h"
 
 namespace MicroModelica {
-namespace Deps {
-class SDGraphBuilder {
+namespace Util {
+
+class ParseIndex : public AST_Expression_Visitor<AST_Expression> {
   public:
-  SDGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics, Util::VarSymbolTable &symbols);
-  ~SDGraphBuilder(){};
-  DepsGraph build();
+  ParseIndex();
+  ~ParseIndex() = default;
+
+  int constant();
+  int factor();
+  std::string variable();
+
+  protected:
+  int getConstant(AST_Expression left, AST_Expression right);
 
   private:
-  list<EqVertex> _equation_def_nodes;
-  list<IfrVertex> _equation_lhs_nodes;
-  list<IfeVertex> _state_nodes;
-  IR::EquationTable _equations;
-  IR::EquationTable _algebraics;
-  Util::VarSymbolTable _symbols;
+  AST_Expression foldTraverseElement(AST_Expression exp);
+  AST_Expression foldTraverseElementUMinus(AST_Expression exp);
+  AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+
+  int _constant;
+  int _factor;
+  std::string _variable;
 };
-}  // namespace Deps
+
+}  // namespace Util
 }  // namespace MicroModelica
 
-#endif /* SD_GRAPH_BUILDER_H */
+#endif /* PARSE_INDEX_H_ */

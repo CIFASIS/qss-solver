@@ -32,6 +32,7 @@
 #include "../util/visitors/is_recursive_def.h"
 #include "../util/visitors/replace_der.h"
 #include "../util/visitors/revert_index.h"
+#include "alg_usage.h"
 #include "derivative.h"
 #include "equation.h"
 #include "helpers.h"
@@ -261,7 +262,8 @@ string DerivativePrinter::print() const
   buffer << fp.beginDimGuards(equationId(), arguments, _range);
   buffer << fp.algebraics(_eq_dep_matrix, _id);
   buffer << tabs << prefix() << lhs() << " = " << _rhs << ";" << endl;
-  buffer << generateDerivatives(tabs);
+  buffer << generateDerivatives(tabs) << endl;
+  ;
   buffer << endl << TAB << fp.endDimGuards(_range);
   buffer << TAB << fp.endExpression(_range);
   return buffer.str();
@@ -319,7 +321,7 @@ string OutputPrinter::print() const
 }
 
 AlgebraicPrinter::AlgebraicPrinter(Equation eq, Util::VarSymbolTable symbols)
-    : DerivativePrinter(eq, symbols), _range(eq.range()), _rhs(eq.rhs())
+    : DerivativePrinter(eq, symbols), _range(eq.range()), _rhs(eq.rhs()), _lhs(eq.lhs()), _id(eq.id())
 {
   factorialInit(0);
 };
@@ -334,8 +336,15 @@ string AlgebraicPrinter::print() const
   } else {
     tabs += TAB;
   }
-  buffer << tabs << prefix() << lhs() << " = " << _rhs << ";" << endl;
-  buffer << generateDerivatives(tabs);
+  buffer << tabs << prefix() << _lhs << " = " << _rhs << ";" << endl;
+  buffer << generateDerivatives(tabs) << endl;
+  return buffer.str();
+}
+
+string AlgebraicPrinter::equationId() const
+{
+  stringstream buffer;
+  buffer << "_alg_eq_" << _id;
   return buffer.str();
 }
 

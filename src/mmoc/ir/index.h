@@ -43,7 +43,7 @@ class RangeDefinition {
   public:
   RangeDefinition(){};
   RangeDefinition(int begin, int end, int step = 1);
-  ~RangeDefinition(){};
+  ~RangeDefinition() = default;
   inline int begin() { return _begin; };
   inline int end() { return _end; };
   inline int step() { return _step; };
@@ -65,8 +65,8 @@ class Range {
   Range(AST_Statement_For stf, Util::VarSymbolTable symbols, RANGE::Type type = RANGE::For);
   Range(Util::Variable var, RANGE::Type type = RANGE::For);
   Range(AST_Expression exp);
-
   ~Range() = default;
+
   inline int size() const { return _size; };
   inline bool isEmpty() const { return _size == 0; };
   inline RangeDefinitionTable definition() const { return _ranges; };
@@ -83,6 +83,7 @@ class Range {
   std::string getDimensionVars() const;
   std::string getDimensionVar(int i) const;
   bool intersect(Range other);
+  Deps::MDI getMDI();
   friend std::ostream& operator<<(std::ostream& out, const Range& r);
 
   protected:
@@ -91,7 +92,6 @@ class Range {
 
   private:
   void setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);
-  Deps::MDI getMDI();
   RangeDefinitionTable _ranges;
   ModelTable<std::string, int> _indexPos;
   int _size;
@@ -102,27 +102,29 @@ class Range {
 class IndexDefinition {
   public:
   IndexDefinition();
-  ~IndexDefinition(){};
-
-  friend std::ostream& operator<<(std::ostream& out, const IndexDefinition& id);
+  IndexDefinition(std::string variable, int constant, int factor);
+  ~IndexDefinition() = default;
+  int constant();
+  int factor();
+  std::string variable();
 
   private:
   string _variable;
-  Expression _exp;
+  int _constant;
+  int _factor;
 };
 
 class Index {
   public:
-  Index() : _indexes(), _dim(0), _exp(){};
-  Index(IndexDefinition id);
+  Index() : _indexes(), _exp(){};
   Index(Expression exp);
-  ~Index(){};
+  ~Index() = default;
   void setMap(IR::Expression exp);
   bool hasMap() const;
   bool operator==(const Index& other) const;
   bool isConstant() const;
-  inline int dimension() { return _dim; };
-  inline void setExp(Expression exp) { _exp = exp; };
+  int dimension();
+  void setExp(Expression exp);
   std::string print() const;
   std::string identifier() const;
   Range range() const;
@@ -133,10 +135,20 @@ class Index {
   std::string modelicaExp() const;
   friend std::ostream& operator<<(std::ostream& out, const Index& i);
   Util::Variable variable() const;
+  bool hasVariable(int dim);
+  std::string variable(int dim);
+  bool hasFactor(int dim);
+  int factor(int dim);
+  bool hasConstant(int dim);
+  int constant(int dim);
+  Expression expression() const;
+  bool isEmpty() const;
+
+  protected:
+  void parseIndexes();
 
   private:
   map<int, IndexDefinition> _indexes;
-  int _dim;
   Expression _exp;
 };
 

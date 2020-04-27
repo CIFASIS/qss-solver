@@ -87,12 +87,20 @@ AST_Expression PartialEvalExp::foldTraverseElement(AST_Expression left, AST_Expr
   case BINOPADD:
     if (shouldReturnInteger(left, right)) {
       return (newAST_Expression_Integer(getValue(left) + getValue(right)));
+    } else if (canReduce(left)) {
+      return reduce(left, right, binOpType);
+    } else if (canReduce(right)) {
+      return reduce(right, left, binOpType);
     } else {
       return newAST_Expression_BinOp(left, right, BINOPADD);
     }
   case BINOPSUB:
     if (shouldReturnInteger(left, right)) {
       return (newAST_Expression_Integer(getValue(left) - getValue(right)));
+    } else if (canReduce(left)) {
+      return reduce(left, right, binOpType);
+    } else if (canReduce(right)) {
+      return reduce(right, left, binOpType);
     } else {
       return newAST_Expression_BinOp(left, right, BINOPSUB);
     }
@@ -126,6 +134,53 @@ AST_Expression PartialEvalExp::foldTraverseElement(AST_Expression left, AST_Expr
       "Partial evaluation::\n"
       "Incorrect Binary operation type.\n");
   return nullptr;
+}
+
+bool PartialEvalExp::canReduce(AST_Expression exp)
+{
+  if (exp->expressionType() == EXPBINOP) {
+    AST_Expression_BinOp bin_op = exp->getAsBinOp();
+    BinOpType type = bin_op->binopType();
+    AST_Expression left = bin_op->left();
+    AST_Expression right = bin_op->right();
+    switch (type) {
+    case BINOPADD:
+    case BINOPSUB:
+      return isIntegerOrConstant(left) || isIntegerOrConstant(right);
+    default:
+      break;
+    }
+  }
+  return false;
+}
+
+AST_Expression PartialEvalExp::reduce(AST_Expression reduce, AST_Expression term, BinOpType type)
+{
+  assert(reduce->expressionType() == EXPBINOP);
+  if (isIntegerOrConstant(term)) {
+    AST_Expression_BinOp bin_op = reduce->getAsBinOp();
+    AST_Expression left = bin_op->left();
+    AST_Expression right = bin_op->right();
+    int new_constant = 0;
+    int sign = (bin_op->binopType() == BINOPSUB) ? -1 : 1;
+    AST_Expression new_term = nullptr;
+    if (isIntegerOrConstant(left)) {
+      new_constant = sign * getValue(left);
+      new_term = right;
+    } else if (isIntegerOrConstant(right)) {
+      new_constant = sign * getValue(right);
+      new_term = left;
+    }
+    if (type == BINOPADD) {
+      new_constant += getValue(term);
+    } else {
+      new_constant -= getValue(term);
+    }
+    assert(new_term != nullptr);
+    BinOpType new_type = (new_constant >= 0) ? BINOPADD : BINOPSUB;
+    return newAST_Expression_BinOp(new_term, newAST_Expression_Integer(abs(new_constant)), new_type);
+  }
+  return newAST_Expression_BinOp(reduce, term, type);
 }
 
 bool PartialEvalExp::isIntegerOrConstant(AST_Expression exp)

@@ -35,6 +35,7 @@
 #include "../util/visitors/is_recursive_def.h"
 #include "../util/visitors/replace_der.h"
 #include "../util/visitors/revert_index.h"
+#include "alg_usage.h"
 #include "derivative.h"
 #include "equation_printer.h"
 #include "helpers.h"
@@ -155,6 +156,8 @@ EquationDependencyMatrix Equation::dependencyMatrix() const
 
 string Equation::identifier() const { return getPrinter(*this, _symbols)->identifier(); }
 
+string Equation::applyId() const { return getPrinter(*this, _symbols)->equationId(); }
+
 Option<Variable> Equation::LHSVariable() const
 {
   if (isDerivative() || isAlgebraic() || isZeroCrossing() || isOutput() || isJacobian()) {
@@ -203,7 +206,15 @@ string Equation::print() const { return getPrinter(*this, _symbols)->print(); }
 
 void Equation::setType(EQUATION::Type type) { _type = type; }
 
-Equation Dependency::generate(Equation eq, Index idx, AlgebraicDependencies algs)
+void Equation::applyUsage(Index usage)
+{
+  VariableUsage alg_usage(_lhs, _rhs, usage);
+  _rhs = alg_usage.rhs();
+  _lhs = alg_usage.lhs();
+  setup();
+}
+
+Equation Dependency::generate(Equation eq, Index idx, AlgebraicPath algs)
 {
   Equation dep = eq;
   dep.setType(EQUATION::Dependency);
@@ -213,7 +224,7 @@ Equation Dependency::generate(Equation eq, Index idx, AlgebraicDependencies algs
 
 list<Equation> Dependency::terms() { return list<Equation>(); }
 
-Equation Jacobian::generate(Equation eq, Index idx, AlgebraicDependencies algs)
+Equation Jacobian::generate(Equation eq, Index idx, AlgebraicPath algs)
 {
   ExpressionDerivator exp_der;
   for (VariableDependency var : algs) {

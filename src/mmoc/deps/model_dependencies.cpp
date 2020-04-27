@@ -42,8 +42,7 @@ static constexpr char *OUTPUTS = "outputs";
 static constexpr char *DISCRETES = "discretes";
 static string EMPTY_COMPONENT = {"", ""};
 
-static MatrixConfig EmptyCfg = {"", {}, {}, {}};
-static MatrixConfig SDCfg = {INT_CONTAINER, {"nSD", "nDS", "SD", "DS"}, {STATES, STATES}, EMPTY_COMPONENT};
+static MatrixConfig DSCfg = {INT_CONTAINER, {"nDS", "nSD", "DS", "SD"}, {STATES, STATES}, EMPTY_COMPONENT};
 static MatrixConfig SZCfg = {INT_CONTAINER, {"nSZ", "nZS", "SZ", "ZS"}, {STATES, EVENTS}, EMPTY_COMPONENT};
 static MatrixConfig SOCfg = {OUT_CONTAINER, {"nSO", "nOS", "SO", "OS"}, {STATES, OUTPUTS}, EMPTY_COMPONENT};
 static MatrixConfig DOCfg = {OUT_CONTAINER, {"nDO", "nOD", "DO", "OD"}, {DISCRETES, OUTPUTS}, EMPTY_COMPONENT};
@@ -55,7 +54,7 @@ static MatrixConfig LHSSTCfg = {INT_CONTAINER, {"event", "event", "event", "even
 static MatrixConfig RHSSTCfg = {INT_CONTAINER, {"event", "event", "event", "event"}, {EVENTS, EVENTS}, {"nRHSSt", "RHSSt"}};
 
 ModelDependencies::ModelDependencies()
-    : _SD(SDCfg),
+    : _DS(DSCfg),
       _SZ(SZCfg),
       _SO(SOCfg),
       _DO(DOCfg),
@@ -73,7 +72,7 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, Equati
 {
   Utils::instance().setSymbols(symbols);
   SDGraphBuilder SD = SDGraphBuilder(eqs, algs, symbols);
-  _deps.compute(SD.build(), _SD);
+  _deps.compute(SD.build(), _DS, TRAVERSE::Equation);
 
   VariableDependencyMatrix DS_int(EmptyCfg);
   DSGraphBuilder DS = DSGraphBuilder(eqs, algs, symbols);

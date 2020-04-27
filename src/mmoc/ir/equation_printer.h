@@ -124,10 +124,13 @@ class AlgebraicPrinter : public DerivativePrinter {
   AlgebraicPrinter(Equation eq, Util::VarSymbolTable symbols);
   ~AlgebraicPrinter() = default;
   std::string print() const override;
+  std::string equationId() const override;
 
   private:
   Option<Range> _range;
   Expression _rhs;
+  Expression _lhs;
+  int _id;
 };
 
 class DependencyPrinter : public DerivativePrinter {

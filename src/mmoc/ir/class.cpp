@@ -638,9 +638,9 @@ void Model::setInputs()
       continue;
     }
     EquationDependencyMatrix eqdm = _dependencies.DA();
-    Option<VariableDependencies> eqd = eqdm[_derivatives.key(it)];
+    Option<Paths> eqd = eqdm[_derivatives.key(it)];
     if (eqd) {
-      VariableDependencies::iterator eit;
+      Paths::iterator eit;
       for (eit = eqd->begin(); eit != eqd->end(); eit++) {
         Option<Equation> alg = _algebraics[eit->ifce.equationId()];
         if (alg && !alg->autonomous()) {

@@ -142,17 +142,12 @@ bool Dependency::isRecursive(VertexProperty source, VertexProperty target)
 
 bool Dependency::isReduction(MDI source_dom, MDI sink_dom) { return source_dom.reduction(sink_dom); }
 
-bool Dependency::recursivePaths(DepsGraph graph, Vertex source_vertex, MDI source_range, bool from_alg, AlgebraicDependencies& algs,
-                                AlgebraicDependencies& alg_paths, VertexInfo& node_info)
+bool Dependency::recursivePaths(DepsGraph graph, Vertex source_vertex, MDI source_range, bool from_alg, AlgebraicPath& algs,
+                                AlgebraicPath& recursive_paths, VertexInfo& node_info)
 {
   VertexProperty source_vertex_info = graph[source_vertex];
   boost::graph_traits<DepsGraph>::out_edge_iterator edge, out_edge_end;
   VariableDependency recursive;
-  if (from_alg) {
-    assert(algs.size());
-    recursive = algs.back();
-    algs.pop_back();
-  }
   bool rec = false;
   for (boost::tie(edge, out_edge_end) = out_edges(source_vertex, graph); edge != out_edge_end; ++edge) {
     Label lbl = graph[*edge];
@@ -169,22 +164,19 @@ bool Dependency::recursivePaths(DepsGraph graph, Vertex source_vertex, MDI sourc
           recursive = getVariableDependency(source_vertex_info.var().name(), intersection, ran, id);
         }
         recursive.setReduction(true);
-        algs.insert(algs.end(), alg_paths.begin(), alg_paths.end());
-        alg_paths.push_back(recursive);
+        algs.insert(algs.end(), recursive_paths.begin(), recursive_paths.end());
+        recursive_paths.push_back(recursive);
         rec = true;
       }
     } else {
       node_info.push_back(make_pair(target_vertex, dom));
     }
   }
-  if (rec || from_alg) {
-    algs.push_back(recursive);
-  }
   return rec;
 }
 
-void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, VariableDependencies& var_deps, AlgebraicDependencies& algs,
-                       AlgebraicDependencies& alg_paths, TRAVERSE::Init init, VariableDependency recursive_alg)
+void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, Paths& var_deps, AlgebraicPath& algs,
+                       AlgebraicPath& recursive_paths, TRAVERSE::Init traverse, VariableDependency alg_dep)
 {
   VertexProperty source_vertex_info = graph[source_vertex];
   boost::graph_traits<DepsGraph>::out_edge_iterator edge, out_edge_end;
@@ -195,61 +187,91 @@ void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, 
     if (intersect) {
       MDI intersection = intersect.get();
       auto target_vertex = boost::target(*edge, graph);
+      VertexProperty target_vertex_info = graph[target_vertex];
       if (source_vertex_info.type() == VERTEX::Influencer) {
         // Store the influencer index pair.
         _ifr = lbl.Pair();
         _ifr_dom = intersection;
         _ifr_range = source_range;
+        if (traverse == TRAVERSE::Equation) {
+          _ifr_id = source_vertex_info.id();
+          Option<IR::Range> range;
+          if (target_vertex_info.type() == VERTEX::Equation) {
+            range = target_vertex_info.eq().range();
+          } else if (target_vertex_info.type() == VERTEX::Statement) {
+            range = target_vertex_info.stm().range();
+          }
+          if (range) {
+            _equation_range.generate(range->getMDI());
+          }
+        }
         algs.clear();
       }
       // First look if the target node is terminal.
-      VertexProperty target_vertex_info = graph[target_vertex];
       MDI ran = lbl.getImage(intersection);
       if (target_vertex_info.type() == VERTEX::Influencee) {
         assert(source_vertex_info.type() == VERTEX::Equation || source_vertex_info.type() == VERTEX::Statement);
         int id = 0;
-        if (source_vertex_info.type() == VERTEX::Equation) {
+        if (traverse == TRAVERSE::Equation) {
+          id = _ifr_id;
+        } else if (source_vertex_info.type() == VERTEX::Equation) {
           id = source_vertex_info.eq().id();
-        } else {
-          // @TODO Set statement id.
-          id = 0;
         }
         VariableDependency var_dep = getVariableDependency(target_vertex_info.var().name(), _ifr_dom, ran, id);
         var_dep.setIfr(_ifr);
         var_dep.setIfe(lbl.Pair());
         var_dep.setReduction(isReduction(_ifr_dom, lbl.Pair().Dom()));
         var_dep.setIfrRange(_ifr_range);
+        var_dep.setAlgUsage(alg_dep.usage());
+        var_dep.setEquationRange(_equation_range);
+        if (traverse == TRAVERSE::Variable) {
+          var_dep.setSwap(false);
+        }
         var_dep.setRange();
-        Influences inf = {algs, var_dep};
+        Path inf = {algs, var_dep};
         var_deps.push_back(inf);
       } else if (isRecursive(source_vertex_info, target_vertex_info)) {
         continue;
       } else if (target_vertex_info.type() == VERTEX::Algebraic) {
         assert(source_vertex_info.type() == VERTEX::Equation);
-        VariableDependency var_dep;
+        int id = source_vertex_info.eq().id();
+        VariableDependency var_dep = getVariableDependency(target_vertex_info.var().name(), intersection, ran, id);
+        var_dep.setIfr(lbl.Pair());
+        var_dep.setIfe(lbl.Pair());
+        var_dep.setAlgUsage(alg_dep.usage());
+        var_dep.setRange();
         VertexInfo node_info;
         bool recursive;
         if (source_vertex_info.eq().type() == IR::EQUATION::Algebraic) {
-          int id = source_vertex_info.eq().id();
-          var_dep = getVariableDependency(target_vertex_info.var().name(), intersection, ran, id);
-          algs.push_back(var_dep);
-          recursive = recursivePaths(graph, target_vertex, ran, true, algs, alg_paths, node_info);
-          if (recursive && init == TRAVERSE::Equation) {
+          recursive = recursivePaths(graph, target_vertex, ran, true, algs, recursive_paths, node_info);
+          if (recursive && traverse == TRAVERSE::Equation) {
             for (auto& n : node_info) {
-              paths(graph, n.first, n.second, var_deps, algs, alg_paths, init, var_dep);
+              paths(graph, n.first, n.second, var_deps, algs, recursive_paths, traverse, var_dep);
             }
           }
         } else {  // The edge comes from a state equation or handler statement
-          recursive = recursivePaths(graph, target_vertex, ran, false, algs, alg_paths, node_info);
+          recursive = recursivePaths(graph, target_vertex, ran, false, algs, recursive_paths, node_info);
           if (recursive) {
             for (auto& n : node_info) {
-              paths(graph, n.first, n.second, var_deps, algs, alg_paths, init, var_dep);
+              paths(graph, n.first, n.second, var_deps, algs, recursive_paths, traverse, var_dep);
             }
           }
         }
-        paths(graph, target_vertex, ran, var_deps, algs, alg_paths, init, var_dep);
+        paths(graph, target_vertex, ran, var_deps, algs, recursive_paths, traverse, var_dep);
+      } else if (target_vertex_info.type() == VERTEX::Equation && source_vertex_info.type() == VERTEX::Algebraic) {
+        if (target_vertex_info.eq().type() == IR::EQUATION::Algebraic) {
+          alg_dep.setEquationId(target_vertex_info.eq().id());
+        } else {
+          alg_dep.setSwap(true);
+        }
+        alg_dep.setIfr(lbl.Pair());
+        alg_dep.setIfe(lbl.Pair());
+        alg_dep.setRange();
+        cout << "ALG EXPRESSION: " << alg_dep.ife() << endl;
+        algs.push_back(alg_dep);
+        paths(graph, target_vertex, ran, var_deps, algs, recursive_paths, traverse, alg_dep);
       } else {
-        paths(graph, target_vertex, ran, var_deps, algs, alg_paths, init);
+        paths(graph, target_vertex, ran, var_deps, algs, recursive_paths, traverse);
       }
     }
   }
@@ -268,12 +290,12 @@ void Dependency::merge(VariableDependencyMatrix& source, VariableDependencyMatri
   VariableDependencyMatrix::const_iterator source_it;
   for (source_it = source.begin(); source_it != source.end(); source_it++) {
     // First look if the source variable affects some equation in the target matrix.
-    Option<VariableDependencies> has_target_deps = target[source_it->first];
+    Option<Paths> has_target_deps = target[source_it->first];
     if (!has_target_deps) {
       continue;
     }
-    VariableDependencies target_var_deps = has_target_deps.get();
-    VariableDependencies source_var_deps = source_it->second;
+    Paths target_var_deps = has_target_deps.get();
+    Paths source_var_deps = source_it->second;
     for (auto source_var_dep : source_var_deps) {
       for (auto target_var_dep : target_var_deps) {
         // Intersect the merging variable
@@ -291,12 +313,12 @@ void Dependency::merge(VariableDependencyMatrix& source, VariableDependencyMatri
           var_dep.setRange();
 
           // Finally insert the new variable in the merge matrix.
-          Option<VariableDependencies> has_merge_deps = merge[source.variable()];
-          VariableDependencies new_merge_deps;
+          Option<Paths> has_merge_deps = merge[source.variable()];
+          Paths new_merge_deps;
           if (has_merge_deps) {
             new_merge_deps = has_merge_deps.get();
           }
-          Influences inf = {AlgebraicDependencies(), var_dep};
+          Path inf = {AlgebraicPath(), var_dep};
           new_merge_deps.push_back(inf);
           merge.insert(source.variable(), new_merge_deps);
         }

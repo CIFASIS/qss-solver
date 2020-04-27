@@ -6,6 +6,7 @@
         "iosfwd": "cpp",
         "random": "cpp",
         "typeindex": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "iostream": "cpp"
     }
 }

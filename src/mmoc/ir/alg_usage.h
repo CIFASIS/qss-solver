@@ -16,30 +16,41 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
  ******************************************************************************/
-#ifndef SD_GRAPH_BUILDER_H
-#define SD_GRAPH_BUILDER_H
 
-#include "../../ir/class.h"
-#include "../../util/symbol_table.h"
-#include "../graph/graph.h"
+#ifndef ALG_USAGE_H
+#define ALG_USAGE_H
+
+#include "index.h"
+#include "expression.h"
 
 namespace MicroModelica {
-namespace Deps {
-class SDGraphBuilder {
-  public:
-  SDGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics, Util::VarSymbolTable &symbols);
-  ~SDGraphBuilder(){};
-  DepsGraph build();
+namespace IR {
 
-  private:
-  list<EqVertex> _equation_def_nodes;
-  list<IfrVertex> _equation_lhs_nodes;
-  list<IfeVertex> _state_nodes;
-  IR::EquationTable _equations;
-  IR::EquationTable _algebraics;
-  Util::VarSymbolTable _symbols;
+class VariableUsage {
+  public:
+  VariableUsage(Expression lhs, Expression rhs, Index usage);
+  VariableUsage(Expression usage, Range range);
+  VariableUsage(Expression exp, Index usage);
+  ~VariableUsage() = default;
+
+  Expression lhs() const;
+  Expression rhs() const;
+  Expression usage() const;
+
+  protected:
+  void generateMapFromUsage();
+  void generateMapFromRange();
+  void generateMapFromLHS();
+
+  Expression _lhs;
+  Expression _rhs;
+  Expression _replaced;
+  Index _usage;
+  Range _range;
+  map<std::string, AST_Expression> _usage_map;
 };
-}  // namespace Deps
+
+}  // namespace IR
 }  // namespace MicroModelica
 
-#endif /* SD_GRAPH_BUILDER_H */
+#endif /* ALG_USAGE_H */

@@ -86,6 +86,8 @@ class Equation {
   inline Index usage() const { return _usage; };
   void setType(EQUATION::Type type);
   bool isRecursive() const;
+  void applyUsage(Index usage);
+  std::string applyId() const;
 
   protected:
   void initialize(AST_Equation eq);
@@ -112,9 +114,10 @@ typedef ModelTable<int, Equation> EquationTable;
 
 class Jacobian {
   public:
+  Jacobian() : _symbols(), _jac_terms(){};
   Jacobian(Util::VarSymbolTable &symbols) : _symbols(symbols), _jac_terms(){};
   ~Jacobian() = default;
-  Equation generate(Equation eq, Index idx, Deps::AlgebraicDependencies algs);
+  Equation generate(Equation eq, Index idx, Deps::AlgebraicPath algs);
   list<Equation> terms();
 
   private:
@@ -124,9 +127,8 @@ class Jacobian {
 
 class Dependency {
   public:
-  Dependency(){};
   ~Dependency() = default;
-  Equation generate(Equation eq, Index idx, Deps::AlgebraicDependencies algs);
+  Equation generate(Equation eq, Index idx, Deps::AlgebraicPath algs);
   list<Equation> terms();
 };
 

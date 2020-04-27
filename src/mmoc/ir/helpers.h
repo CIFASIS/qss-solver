@@ -121,8 +121,8 @@ class FunctionPrinter {
   std::string beginExpression(std::string token, Option<Range> range) const;
   std::string endExpression(Option<Range> range,
                             FUNCTION_PRINTER::ReturnStatementType ret = FUNCTION_PRINTER::ReturnStatementType::Return) const;
-  std::string algebraics(Deps::EquationDependencyMatrix eqdm, Deps::depId key);
-  std::string algebraics(Deps::AlgebraicDependencies deps);
+  std::string algebraics(Deps::EquationDependencyMatrix eqdm, Deps::equation_id key);
+  std::string algebraics(Deps::AlgebraicPath deps);
   std::string jacobianTerms(list<Equation> eqs);
   std::string getIndexes(string var, Option<Range> range, int offset, bool modelica_index) const;
   std::string beginDimGuards(std::string token, string args, Option<Range> range) const;
@@ -130,7 +130,10 @@ class FunctionPrinter {
   /// TODO: Review modelica_index parameter usage.
   std::string accessMacros(std::string token, int offset, Option<Range> range, bool modelica_index = true) const;
   std::string outputVariableName(Expression exp, Option<Range> range);
-  std::string algebraic(int id, bool reduction);
+  std::string algebraic(Equation alg, bool reduction);
+
+  protected:
+  map<std::string, std::string> _alg_dict;
 
   private:
   std::string mod(std::string var, int dim, Option<Range> range) const;

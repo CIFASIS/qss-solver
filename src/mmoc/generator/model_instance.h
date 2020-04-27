@@ -21,6 +21,7 @@
 #define MMO_MODEL_INSTANCE_H_
 
 #include <boost/variant/variant.hpp>
+#include <sstream>
 
 #include "../ir/class.h"
 #include "../util/compile_flags.h"
@@ -52,14 +53,12 @@ typedef enum {
 
 typedef enum { SD, SZ, HD, HZ, DD } NodeType;
 }  // namespace MODEL_INSTANCE
-/**
- *
- */
+
 class ModelInstance {
   public:
-  ModelInstance(){};
+  ModelInstance();
   ModelInstance(IR::Model &model, Util::CompileFlags &flags, WriterPtr writer);
-  virtual ~ModelInstance(){};
+  virtual ~ModelInstance() = default;
   void include();
   virtual void initializeDataStructures() = 0;
   void zeroCrossing();
@@ -78,14 +77,24 @@ class ModelInstance {
   std::string componentDefinition(MODEL_INSTANCE::Component c);
   void allocateOutput();
   void configOutput();
-  void initializeMatrix(Deps::VariableDependencyMatrix vdm, WRITER::Section alloc, WRITER::Section init, int size);
-  string algebraics(Deps::EquationDependencyMatrix eqdm, Deps::depId key);
+  string algebraics(Deps::EquationDependencyMatrix eqdm, Deps::equation_id key);
   void configEvents();
   void allocateVectors() const;
   void freeVectors() const;
   std::string allocateModel();
   void allocateVector(std::string name, int size) const;
   void freeVector(std::string name, int size) const;
+  template <class DM>
+  void initializeMatrix(DM vdm, WRITER::Section alloc, WRITER::Section init, int size)
+  {
+    _writer->write(vdm.alloc(), alloc);
+    if (!vdm.empty()) {
+      std::stringstream buffer;
+      buffer << "cleanVector(" << vdm.accessVector() << ", 0, " << size << ");";
+      _writer->write(buffer.str(), init);
+    }
+    _writer->write(vdm.init(), init);
+  }
 
   private:
   IR::Model _model;
@@ -93,14 +102,11 @@ class ModelInstance {
   WriterPtr _writer;
 };
 
-/**
- *
- */
 class QSSModelInstance : public ModelInstance {
   public:
-  QSSModelInstance(){};
+  QSSModelInstance();
   QSSModelInstance(IR::Model &model, Util::CompileFlags &flags, WriterPtr writer);
-  ~QSSModelInstance(){};
+  ~QSSModelInstance() = default;
   void initializeDataStructures();
   Graph computationalGraph();
   void generate();
@@ -115,18 +121,16 @@ class QSSModelInstance : public ModelInstance {
   void initTime();
   void allocateSolver();
   std::string allocateModel();
+
   IR::Model _model;
   Util::CompileFlags _flags;
   WriterPtr _writer;
 };
 
-/**
- *
- */
 class ClassicModelInstance : public ModelInstance {
   public:
   ClassicModelInstance(IR::Model &model, Util::CompileFlags &flags, WriterPtr writer);
-  ~ClassicModelInstance(){};
+  ~ClassicModelInstance() = default;
   void initializeDataStructures();
   void generate();
   void header();
@@ -137,6 +141,7 @@ class ClassicModelInstance : public ModelInstance {
   private:
   void allocateSolver();
   std::string allocateModel();
+
   IR::Model _model;
   Util::CompileFlags _flags;
   WriterPtr _writer;

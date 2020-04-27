@@ -16,30 +16,30 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
  ******************************************************************************/
-#ifndef SD_GRAPH_BUILDER_H
-#define SD_GRAPH_BUILDER_H
 
-#include "../../ir/class.h"
-#include "../../util/symbol_table.h"
-#include "../graph/graph.h"
+#ifndef APPLY_ALG_USAGE_H_
+#define APPLY_ALG_USAGE_H_
+
+#include "../../ast/ast_builder.h"
+#include "../ast_util.h"
 
 namespace MicroModelica {
-namespace Deps {
-class SDGraphBuilder {
+namespace Util {
+
+class ApplyVariableUsage : public AST_Expression_Visitor<AST_Expression> {
   public:
-  SDGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics, Util::VarSymbolTable &symbols);
-  ~SDGraphBuilder(){};
-  DepsGraph build();
+  ApplyVariableUsage(std::map<std::string, AST_Expression> usage_map);
+  ~ApplyVariableUsage() = default;
 
   private:
-  list<EqVertex> _equation_def_nodes;
-  list<IfrVertex> _equation_lhs_nodes;
-  list<IfeVertex> _state_nodes;
-  IR::EquationTable _equations;
-  IR::EquationTable _algebraics;
-  Util::VarSymbolTable _symbols;
+  AST_Expression foldTraverseElement(AST_Expression exp);
+  AST_Expression foldTraverseElementUMinus(AST_Expression exp);
+  AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+
+  std::map<std::string, AST_Expression> _usage_map;
 };
-}  // namespace Deps
+
+}  // namespace Util
 }  // namespace MicroModelica
 
-#endif /* SD_GRAPH_BUILDER_H */
+#endif /* APPLY_ALG_USAGE_H_ */

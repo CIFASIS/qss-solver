@@ -17,8 +17,9 @@
 
  ******************************************************************************/
 
-#include "replace_constant.h"
+#include "apply_alg_usage.h"
 
+#include "../../ast/ast_builder.h"
 #include "../error.h"
 #include "../util.h"
 #include "partial_eval_exp.h"
@@ -27,20 +28,16 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-ReplaceConstant::ReplaceConstant(VarSymbolTable &symbols) : _symbols(symbols) {}
+ApplyVariableUsage::ApplyVariableUsage(std::map<std::string, AST_Expression> usage_map) : _usage_map(usage_map) {}
 
-AST_Expression ReplaceConstant::foldTraverseElement(AST_Expression exp)
+AST_Expression ApplyVariableUsage::foldTraverseElement(AST_Expression exp)
 {
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-    Option<Variable> var = _symbols[cr->name()];
-    if (!var) {
-      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "partial_eval_exp.cpp:43 %s", cr->name().c_str());
-      break;
-    }
-    if (var->isConstant()) {
-      return newAST_Expression_Integer(var->value());
+    string var_name = cr->name();
+    if (_usage_map.find(var_name) != _usage_map.end()) {
+      return _usage_map[var_name];
     }
     if (cr->hasIndexes()) {
       AST_Expression_ComponentReference ret = newAST_Expression_ComponentReference();
@@ -48,8 +45,7 @@ AST_Expression ReplaceConstant::foldTraverseElement(AST_Expression exp)
       AST_ExpressionListIterator it;
       AST_ExpressionList l = newAST_ExpressionList();
       foreach (it, indexes) {
-        PartialEvalExp partial_eval(_symbols);
-        l = AST_ListAppend(l, partial_eval.apply(current_element(it)));
+        l = AST_ListAppend(l, apply(current_element(it)));
       }
       ret = AST_Expression_ComponentReference_Add(ret, newAST_String(cr->name()), l);
       return ret;
@@ -66,18 +62,43 @@ AST_Expression ReplaceConstant::foldTraverseElement(AST_Expression exp)
     }
     return newAST_Expression_OutputExpressions(new_outputs);
   }
+  case EXPCALL: {
+    AST_Expression_Call call = exp->getAsCall();
+    AST_ExpressionList args = call->arguments();
+    AST_ExpressionList new_args = newAST_ExpressionList();
+    AST_ExpressionListIterator it;
+    foreach (it, args) {
+      new_args = AST_ListAppend(new_args, apply(current_element(it)));
+    }
+    args = call->outputArguments();
+    AST_ExpressionList new_output_args = newAST_ExpressionList();
+    foreach (it, args) {
+      new_output_args = AST_ListAppend(new_output_args, apply(current_element(it)));
+    }
+    return newAST_Expression_Call(call->name(), nullptr, new_args, new_output_args);
+  }
+  case EXPCALLARG: {
+    AST_Expression_CallArgs call = exp->getAsCallArgs();
+    AST_ExpressionList args = call->arguments();
+    AST_ExpressionList new_args = newAST_ExpressionList();
+    AST_ExpressionListIterator it;
+    foreach (it, args) {
+      new_args = AST_ListAppend(new_args, apply(current_element(it)));
+    }
+    return newAST_Expression_FunctionCallArgs(new_args);
+  }
   default:
     break;
   }
   return exp;
 }
 
-AST_Expression ReplaceConstant::foldTraverseElementUMinus(AST_Expression exp)
+AST_Expression ApplyVariableUsage::foldTraverseElementUMinus(AST_Expression exp)
 {
   return newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp()));
 }
 
-AST_Expression ReplaceConstant::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
+AST_Expression ApplyVariableUsage::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
 {
   return newAST_Expression_BinOp(l, r, bot);
 }
