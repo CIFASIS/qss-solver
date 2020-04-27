@@ -33,15 +33,15 @@ class ModelDependencies {
   public:
   ModelDependencies();
   ~ModelDependencies() = default;
-  inline VariableDependencyMatrix SD()
+  inline EquationDependencyMatrix SD()
   {
-    _SD.setMode(VDM::Normal);
-    return _SD;
+    _DS.setMode(VDM::Transpose);
+    return _DS;
   };
-  inline VariableDependencyMatrix DS()
+  inline EquationDependencyMatrix DS()
   {
-    _SD.setMode(VDM::Transpose);
-    return _SD;
+    _DS.setMode(VDM::Normal);
+    return _DS;
   };
   inline VariableDependencyMatrix SZ()
   {
@@ -120,7 +120,7 @@ class ModelDependencies {
                Util::VarSymbolTable symbols);
 
   private:
-  VariableDependencyMatrix _SD;
+  EquationDependencyMatrix _DS;
   VariableDependencyMatrix _SZ;
   VariableDependencyMatrix _SO;
   VariableDependencyMatrix _DO;
