@@ -32,9 +32,9 @@ class SDGraphBuilder {
   DepsGraph build();
 
   private:
-  list<EqVertex> _equationDescriptors;
-  list<IfrVertex> _variableDescriptors;
-  list<IfeVertex> _derivativeDescriptors;
+  list<EqVertex> _equation_def_nodes;
+  list<IfrVertex> _equation_lhs_nodes;
+  list<IfeVertex> _state_nodes;
   IR::EquationTable _equations;
   IR::EquationTable _algebraics;
   Util::VarSymbolTable _symbols;
