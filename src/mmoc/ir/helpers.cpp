@@ -247,26 +247,18 @@ string FunctionPrinter::beginDimGuards(string token, string args, Option<Range> 
   return buffer.str();
 }
 
-string FunctionPrinter::algebraic(int id, bool reduction)
+string FunctionPrinter::algebraic(Equation alg, bool reduction)
 {
   stringstream buffer;
-  EquationTable algebraic = ModelConfig::instance().algebraics();
-  Option<Equation> alg = algebraic[id];
-  if (alg) {
-    Equation a = alg.get();
-    Option<Range> range = a.range();
-    bool reduction_range = reduction && range;
-    if (reduction_range) {
-      buffer << range.get();
-      cout << buffer.str() << endl;
-    }
-    buffer << a << endl;
-    if (reduction_range) {
-      buffer << range.get().end() << endl;
-      cout << buffer.str() << endl;
-    }
-  } else {
-    Error::instance().add(0, EM_CG | EM_NO_EQ, ER_Error, "Algebraic equation not found.");
+  Option<Range> range = alg.range();
+  bool reduction_range = reduction && range;
+  if (reduction_range) {
+    buffer << range.get();
+  }
+  buffer << TAB << alg;
+  cout << buffer.str() << endl;
+  if (reduction_range) {
+    buffer << range.get().end() << endl;
   }
   return buffer.str();
 }
@@ -280,23 +272,37 @@ string FunctionPrinter::jacobianTerms(list<Equation> eqs)
   return buffer.str();
 }
 
-string FunctionPrinter::algebraics(AlgebraicDependencies deps)
+string FunctionPrinter::algebraics(AlgebraicPath deps)
 {
   stringstream buffer;
-  for (VariableDependency d : deps) {
-    buffer << algebraic(d.equationId(), d.isReduction());
+  AlgebraicPath::reverse_iterator it;
+  EquationTable algebraic_eqs = ModelConfig::instance().algebraics();
+  for (it = deps.rbegin(); it != deps.rend(); it++) {
+    VariableDependency dep = *it;
+    Index dep_idx = dep.ife();
+    string idx_exp = dep_idx.print();
+    Option<Equation> alg = algebraic_eqs[dep.equationId()];
+    if (alg) {
+      Equation a = alg.get();
+      a.applyUsage(dep_idx);
+      if (_alg_dict.find(idx_exp) == _alg_dict.end()) {
+        _alg_dict[idx_exp] = idx_exp;
+        buffer << algebraic(a, dep.isReduction());
+      }
+    } else {
+      Error::instance().add(0, EM_CG | EM_NO_EQ, ER_Error, "Algebraic equation not found.");
+    }
   }
   return buffer.str();
 }
 
-string FunctionPrinter::algebraics(EquationDependencyMatrix eqdm, depId key)
+string FunctionPrinter::algebraics(EquationDependencyMatrix eqdm, equation_id key)
 {
   stringstream buffer;
-  Option<VariableDependencies> eqd = eqdm[key];
+  Option<Paths> eqd = eqdm[key];
   if (eqd) {
-    VariableDependencies::iterator eq_it;
+    Paths::iterator eq_it;
     for (eq_it = eqd->begin(); eq_it != eqd->end(); eq_it++) {
-      buffer << algebraic(eq_it->ifce.equationId(), eq_it->ifce.isReduction());
       buffer << algebraics(eq_it->algs);
     }
   }
