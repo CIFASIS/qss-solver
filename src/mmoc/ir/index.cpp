@@ -28,6 +28,7 @@
 #include "../util/visitors/eval_init_exp.h"
 #include "../util/visitors/get_index_usage.h"
 #include "../util/visitors/is_constant_index.h"
+#include "../util/visitors/parse_index.h"
 #include "../util/visitors/partial_eval_exp.h"
 #include "../util/visitors/replace_index.h"
 #include "../util/visitors/revert_index.h"
@@ -39,13 +40,41 @@ using namespace Deps;
 using namespace Util;
 namespace IR {
 
-IndexDefinition::IndexDefinition() {}
+IndexDefinition::IndexDefinition() : _variable(), _constant(0), _factor(1) {}
 
-std::ostream& operator<<(std::ostream& out, const IndexDefinition& id) { return out; }
+IndexDefinition::IndexDefinition(string variable, int constant, int factor) : _variable(variable), _constant(constant), _factor(factor) {}
 
-Index::Index(Expression exp) : _indexes(), _dim(0), _exp(exp) {}
+int IndexDefinition::constant() { return _constant; }
 
-Index::Index(IndexDefinition id) : _indexes(), _dim(0), _exp() { _indexes[_dim++] = id; }
+int IndexDefinition::factor() { return _factor; }
+
+string IndexDefinition::variable() { return _variable; }
+
+Index::Index(Expression exp) : _indexes(), _exp(exp) { parseIndexes(); }
+
+void Index::parseIndexes()
+{
+  // Iterate over the expression indexes and generate IndexDefinition for each one.
+  AST_Expression exp = _exp.expression();
+  assert(exp->expressionType() == EXPCOMPREF);
+  AST_Expression_ComponentReference ref = exp->getAsComponentReference();
+  int dim = 0;
+  if (ref->hasIndexes()) {
+    AST_ExpressionList indexes = ref->firstIndex();
+    AST_ExpressionListIterator it;
+    foreach (it, indexes) {
+      ParseIndex parse_index;
+      VarSymbolTable symbols = Utils::instance().symbols();
+      PartialEvalExp partial_eval(symbols);
+      parse_index.apply(partial_eval.apply(current_element(it)));
+      _indexes[dim++] = IndexDefinition(parse_index.variable(), parse_index.constant(), parse_index.factor());
+    }
+  }
+}
+
+int Index::dimension() { return _indexes.size(); }
+
+Expression Index::expression() const { return _exp; }
 
 void Index::setMap(Expression exp) {}
 
@@ -65,6 +94,12 @@ Usage Index::usage() const
   return usage.apply(_exp.expression());
 }
 
+void Index::setExp(Expression exp)
+{
+  _exp = exp;
+  parseIndexes();
+}
+
 string Index::identifier() const
 {
   stringstream buffer;
@@ -79,11 +114,8 @@ string Index::identifier() const
 Variable Index::variable() const
 {
   Option<Variable> var = _exp.reference();
-  if (var) {
-    return var.get();
-  }
-  assert(false);
-  return Variable();
+  assert(var);
+  return var.get();
 }
 
 Range Index::range() const { return Range(variable()); }
@@ -123,6 +155,20 @@ string Index::print() const
   buffer << "_idx" << exp;
   return buffer.str();
 }
+
+bool Index::hasVariable(int dim) { return !_indexes[dim].variable().empty(); }
+
+string Index::variable(int dim) { return _indexes[dim].variable(); }
+
+bool Index::hasFactor(int dim) { return _indexes[dim].factor() != 1; }
+
+int Index::factor(int dim) { return _indexes[dim].factor(); }
+
+bool Index::hasConstant(int dim) { return _indexes[dim].constant() != 0; }
+
+int Index::constant(int dim) { return _indexes[dim].constant(); }
+
+bool Index::isEmpty() const { return _exp.isEmpty(); }
 
 std::ostream& operator<<(std::ostream& out, const Index& i)
 {
