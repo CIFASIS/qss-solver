@@ -458,7 +458,7 @@ void ModelInstance::generate()
   handler();
   output();
   initialCode();
-  // jacobian();
+  jacobian();
   // Print generated Model Instance.
   _writer->print(WRITER::Include);
   _writer->print(componentDefinition(MODEL_INSTANCE::Model_Settings));
