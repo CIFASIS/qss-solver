@@ -143,6 +143,7 @@ EquationDependencyMatrix Equation::dependencyMatrix() const
   switch (_type) {
   case EQUATION::ClassicDerivative:
   case EQUATION::QSSDerivative:
+  case EQUATION::Dependency:
     return deps.DA();
   case EQUATION::ZeroCrossing:
     return deps.ZCA();
@@ -211,7 +212,28 @@ void Equation::applyUsage(Index usage)
   VariableUsage alg_usage(_lhs, _rhs, usage);
   _rhs = alg_usage.rhs();
   _lhs = alg_usage.lhs();
+  if (usage.isConstant()) {
+    _range = Option<Range>();
+  }
   setup();
+}
+
+Equation Equation::genAlgEquation(Equation der_eq, Index rhs_usage, Index lhs_usage)
+{
+  Equation a = *this;
+  a.applyUsage(rhs_usage);
+  if (lhs_usage.isConstant()) {
+    if (!rhs_usage.isConstant()) {
+      Expression new_usage = VariableUsage(der_eq.lhs(), rhs_usage.expression(), lhs_usage).rhs();
+      a.applyUsage(new_usage);
+    }
+  } else {
+    // Compute new LHS.
+    Expression map_usage = rhs_usage.revert().expression();
+    Expression new_usage = VariableUsage(map_usage, lhs_usage.revert()).usage();
+    a.applyUsage(Index(new_usage));
+  }
+  return a;
 }
 
 Equation Dependency::generate(Equation eq, Index idx, AlgebraicPath algs)
@@ -219,6 +241,11 @@ Equation Dependency::generate(Equation eq, Index idx, AlgebraicPath algs)
   Equation dep = eq;
   dep.setType(EQUATION::Dependency);
   dep.setUsage(idx);
+  if (!algs.empty() && dep.hasRange() && idx.isConstant()) {
+    VariableDependency var = algs.back();
+    Expression new_usage = VariableUsage(var.usage(), dep.lhs(), var.ife()).rhs();
+    dep.applyUsage(Index(new_usage));
+  }
   return dep;
 }
 
