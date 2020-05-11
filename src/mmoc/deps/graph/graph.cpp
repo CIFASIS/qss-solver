@@ -187,35 +187,13 @@ void Label::RemoveDuplicates()
 
 MDI Label::getImage(MDI intersection) const
 {
-  // We need to generate a new pair with the intersection as Dom
-  // then get the type and handle the different cases there.
   IndexPair orig = Pair();
   IndexPair p(intersection, orig.Ran(), orig.GetOffset(), orig.GetUsage(), orig.exp());
   INDEX_PAIR::Rel rel = p.Type();
   if (_dir == EDGE::Input) {
-    assert(rel != INDEX_PAIR::RN_1);
-    assert(rel != INDEX_PAIR::R1_N);
-    switch (rel) {
-    case INDEX_PAIR::RN_N:
-      return intersection.getImage(orig);  // ApplyOffset(Pair().GetOffset());
-    case INDEX_PAIR::R1_1:
-      return Pair().Ran();
-    default:
-      return MDI();
-    }
+    return intersection.getImage(orig);
   } else {
-    switch (rel) {
-    case INDEX_PAIR::RN_N:
-      return intersection.revertImage(orig);  // RevertOffset(Pair().GetOffset(), Pair().GetUsage(), Pair().Ran());
-    case INDEX_PAIR::R1_1:
-      return Pair().Ran();
-    case INDEX_PAIR::R1_N:
-      return intersection.revertImage(orig);
-    case INDEX_PAIR::RN_1:
-      return Pair().Ran();
-    default:
-      return MDI();
-    }
+    return intersection.revertImage(orig);
   }
 }
 
