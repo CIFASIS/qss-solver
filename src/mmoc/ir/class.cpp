@@ -652,11 +652,14 @@ void Model::setInputs()
   }
 }
 
-void Model::computeDependencies() { _dependencies.compute(derivatives(), outputs(), algebraics(), events(), _symbols); }
+void Model::computeDependencies()
+{
+  _dependencies.compute(derivatives(), outputs(), algebraics(), events(), _symbols);
+  ModelConfig::instance().setDependencies(_dependencies);
+}
 
 void Model::setModelConfig()
 {
-  ModelConfig::instance().setDependencies(_dependencies);
   ModelConfig::instance().setAlgebraics(_algebraics);
   ModelConfig::instance().setModelAnnotations(_annotations);
   ModelConfig::instance().setDerivatives(_derivatives);
