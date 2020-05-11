@@ -26,13 +26,10 @@
 
 namespace MicroModelica {
 namespace Util {
-/**
- *
- */
 class GetIndexVariables : public AST_Expression_Visitor<list<std::string>> {
   public:
   GetIndexVariables();
-  ~GetIndexVariables(){};
+  ~GetIndexVariables() = default;
 
   private:
   list<std::string> foldTraverseElement(AST_Expression exp);
