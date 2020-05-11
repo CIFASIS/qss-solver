@@ -256,7 +256,6 @@ string FunctionPrinter::algebraic(Equation alg, bool reduction)
     buffer << range.get();
   }
   buffer << TAB << alg;
-  cout << buffer.str() << endl;
   if (reduction_range) {
     buffer << range.get().end() << endl;
   }
@@ -274,7 +273,7 @@ string FunctionPrinter::jacobianTerms(list<Equation> eqs)
 
 string FunctionPrinter::algebraics(AlgebraicPath deps)
 {
-  stringstream buffer;
+  stringstream code;
   AlgebraicPath::reverse_iterator it;
   EquationTable algebraic_eqs = ModelConfig::instance().algebraics();
   for (it = deps.rbegin(); it != deps.rend(); it++) {
@@ -283,17 +282,24 @@ string FunctionPrinter::algebraics(AlgebraicPath deps)
     string idx_exp = dep_idx.print();
     Option<Equation> alg = algebraic_eqs[dep.equationId()];
     if (alg) {
-      Equation a = alg.get();
+      FunctionPrinter printer;
+      Equation orig_alg = alg.get();
+      Equation a = orig_alg;
       a.applyUsage(dep_idx);
+      if (dep_idx.isConstant()) {
+        orig_alg = a;
+      }
       if (_alg_dict.find(idx_exp) == _alg_dict.end()) {
         _alg_dict[idx_exp] = idx_exp;
-        buffer << algebraic(a, dep.isReduction());
+        code << printer.printAlgebraicGuards(orig_alg, dep_idx);
+        code << algebraic(orig_alg, dep.isReduction());
+        code << printer.endDimGuards(orig_alg.range());
       }
     } else {
       Error::instance().add(0, EM_CG | EM_NO_EQ, ER_Error, "Algebraic equation not found.");
     }
   }
-  return buffer.str();
+  return code.str();
 }
 
 string FunctionPrinter::algebraics(EquationDependencyMatrix eqdm, equation_id key)
@@ -326,6 +332,20 @@ string FunctionPrinter::getIndexes(string var, Option<Range> range, int offset, 
       i++;
     }
   }
+  return buffer.str();
+}
+
+string FunctionPrinter::printAlgebraicGuards(Equation alg, Index usage)
+{
+  stringstream buffer;
+  string arguments;
+  FunctionPrinter printer;
+  Option<Range> range = alg.range();
+  if (range) {
+    Index revert = usage.replace();
+    arguments = revert.usageExp();
+  }
+  buffer << printer.beginDimGuards(alg.applyId(), arguments, range);
   return buffer.str();
 }
 
