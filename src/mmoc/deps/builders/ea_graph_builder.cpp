@@ -129,8 +129,9 @@ DepsGraph EAGraphBuilder::build()
         for (auto ip : ips) {
           Label lbl(ip);
           add_edge(source, sink, lbl, graph);
-          cout << "Adding edge from: " << graph[source].var().name() << " to equation: " << graph[sink].eq().id() << endl;
+          cout << "Adding OUTPUT LHS edge from: " << graph[source].var().name() << " to equation: " << graph[sink].eq().id() << endl;
           cout << "Equation type: " << graph[sink].eq().type() << endl;
+          cout << "With Domain: " << lbl.Pair().Dom() << " and Range: " << lbl.Pair().Ran() << endl;
         }
       }
       // Check RHS too if we are working with algebraics.
@@ -139,10 +140,11 @@ DepsGraph EAGraphBuilder::build()
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
-            Label lbl(ip);
+            Label lbl(ip, EDGE::Input);
             add_edge(sink, source, lbl, graph);
-            cout << "Adding edge from equation: " << graph[sink].eq().id() << " to algebraic: " << graph[source].var().name() << endl;
-            cout << "Equation type: " << graph[sink].eq().type() << endl;
+            cout << "Adding INPUT RHS edge from equation: " << graph[sink].eq().id()
+                 << " to algebraic variable: " << graph[source].var().name() << endl;
+            cout << "With Domain: " << lbl.Pair().Dom() << " and Range: " << lbl.Pair().Ran() << endl;
           }
         }
       }
@@ -158,9 +160,10 @@ DepsGraph EAGraphBuilder::build()
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
-            Label lbl(ip);
+            Label lbl(ip, EDGE::Input);
             add_edge(sink, source, lbl, graph);
-            cout << "Adding edge from equation: " << graph[sink].eq().id() << " to algebraic: " << graph[source].var().name() << endl;
+            cout << "Adding FINAL edge from equation: " << graph[sink].eq().id() << " to variable: " << graph[source].var().name() << endl;
+            cout << "With Domain: " << lbl.Pair().Dom() << " and Range: " << lbl.Pair().Ran() << endl;
           }
         }
       }
