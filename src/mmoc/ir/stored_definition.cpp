@@ -53,9 +53,9 @@ void StoredDefinition::postProcess()
     model().setEvents();
     model().setOutputs();
     model().setCalledFunctions(_functions);
-    model().computeDependencies();
     model().setInputs();
     model().setModelConfig();
+    model().computeDependencies();
   } else {
     package().setFunctions(_functions);
   }
