@@ -45,6 +45,8 @@ class VariableDependency {
   public:
   VariableDependency();
   ~VariableDependency() = default;
+  bool operator==(const VariableDependency& other) const;
+  bool operator<(const VariableDependency& other) const;
   inline void setVariable(std::string var) { _variable = var; };
   inline void setDom(MDI dom) { _dom = dom; };
   inline void setRan(MDI ran) { _ran = ran; };
@@ -59,7 +61,7 @@ class VariableDependency {
   inline IR::Expression usage() const { return _alg_usage; };
   inline void setIfrRange(MDI ifr_range) { _ifr_range = ifr_range; }
   IR::Range ifrRange();
-  void setRange();
+  void setRange(int equation_id = 0);
   MDI dom() { return _dom; };
   MDI ran() { return _ran; };
   std::string variable() { return _variable; };
@@ -138,14 +140,6 @@ class DependencyMatrix : public ModelTable<ID, Paths> {
 
   inline void setMode(VDM::Mode mode) { _mode = mode; };
 
-  IR::Range getRange(VariableDependency var_dep) const
-  {
-    if (_key == VDM::Int_Key && !var_dep.ife().isConstant()) {
-      return var_dep.equationRange();
-    }
-    return var_dep.range();
-  }
-
   std::string print() const
   {
     stringstream buffer;
@@ -161,7 +155,7 @@ class DependencyMatrix : public ModelTable<ID, Paths> {
           ifr = vd.ife().replace();
           ife = vd.ifr().replace();
         }
-        IR::Range range = getRange(vd.ifce);
+        IR::Range range = vd.ifce.range();
         buffer << range;
         if (_method == VDM::Alloc) {
           buffer << range.block() << _cfg.container << matrix << "[" << ifr << "]" << component() << "++;" << endl;
