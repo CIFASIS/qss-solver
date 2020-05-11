@@ -88,6 +88,7 @@ class Equation {
   bool isRecursive() const;
   void applyUsage(Index usage);
   std::string applyId() const;
+  Equation genAlgEquation(Equation der_eq, Index rhs_usage, Index lhs_usage);
 
   protected:
   void initialize(AST_Equation eq);
