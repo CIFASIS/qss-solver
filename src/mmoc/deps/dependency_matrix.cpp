@@ -20,6 +20,7 @@
 #include "dependency_matrix.h"
 
 #include "../ir/alg_usage.h"
+#include "../ir/helpers.h"
 #include "../util/visitors/replace_index.h"
 #include "../util/util.h"
 
@@ -47,6 +48,54 @@ VariableDependency::VariableDependency()
 {
 }
 
+bool VariableDependency::operator==(const VariableDependency &other) const
+{
+  string dep_value;
+  string other_dep_value;
+  dep_value = _ifr_exp.print();
+  other_dep_value = other._ifr_exp.print();
+  if (dep_value.compare(other_dep_value)) {
+    return false;
+  }
+  dep_value = _ife_exp.print();
+  other_dep_value = other._ife_exp.print();
+  if (dep_value.compare(other_dep_value)) {
+    return false;
+  }
+  dep_value = _alg_usage.print();
+  other_dep_value = other._alg_usage.print();
+  if (dep_value.compare(other_dep_value)) {
+    return false;
+  }
+  if (_dom != other._dom) {
+    return false;
+  }
+  if (_ran != other._ran) {
+    return false;
+  }
+  return true;
+}
+
+bool VariableDependency::operator<(const VariableDependency &other) const
+{
+  string dep_value;
+  string other_dep_value;
+  dep_value = _ifr_exp.print();
+  other_dep_value = other._ifr_exp.print();
+  if (dep_value.compare(other_dep_value) < 0) {
+    return true;
+  }
+  dep_value = _ife_exp.print();
+  other_dep_value = other._ife_exp.print();
+  if (dep_value.compare(other_dep_value) < 0) {
+    return true;
+  }
+  if (_dom < other._dom) {
+    return true;
+  }
+  return false;
+}
+
 MDI VariableDependency::getImage(MDI sub_dom)
 {
   IndexPair p(sub_dom, _ran, _ifr.GetOffset(), _ifr.GetUsage(), _ifr.exp());
@@ -63,13 +112,14 @@ MDI VariableDependency::getImage(MDI sub_dom)
   }
 }
 
-void VariableDependency::setRange()
+void VariableDependency::setRange(int equation_id)
 {
   if (_is_reduction) {
     _range.generate(_ifr_range);
   } else {
     _range.generate(_ran);
   }
+  cout << "Rango generado: " << _ran << endl;
   // First apply the incoming range to the variable
   _ifr_exp = VariableUsage(_ifr.exp(), _range).usage();
   _ife_exp = VariableUsage(_ife.exp(), _range).usage();
@@ -82,9 +132,20 @@ void VariableDependency::setRange()
       _alg_usage = _ife_exp;
       _ife_exp = tmp;
     }
-    _ife_exp = VariableUsage(_ife_exp, _ife_exp, Index(_alg_usage)).rhs();
+    EquationTable algebraics = ModelConfig::instance().algebraics();
+    Option<Equation> alg = algebraics[equation_id];
+    if (alg) {
+      Expression eq_lhs = alg->lhs();
+      cout << "LHS de la ecuacion: " << eq_lhs << endl;
+      cout << "Uso algebraico: " << _alg_usage << endl;
+      cout << "Se aplica a: " << _ife_exp << endl;
+      _ife_exp = VariableUsage(eq_lhs, _ife_exp, Index(_alg_usage)).rhs();
+    } else {
+      _ife_exp = VariableUsage(_ife_exp, _ife_exp, Index(_alg_usage)).rhs();
+    }
   }
-  cout << "Rango en el que seaplica: " << _ran << endl;
+  _range.applyUsage(ife().revert());
+  cout << "Rango en el que se aplica: " << _ran << endl;
   cout << "Expression IFR original: " << _ifr.exp() << endl;
   cout << "Expression IFE original: " << _ife.exp() << endl;
   cout << "Expression IFR en la matriz: " << _ifr_exp << endl;
