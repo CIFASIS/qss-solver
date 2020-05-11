@@ -259,11 +259,10 @@ string DerivativePrinter::print() const
   }
   tabs += TAB;
   buffer << fp.beginExpression(identifier(), _range);
-  buffer << fp.beginDimGuards(equationId(), arguments, _range);
   buffer << fp.algebraics(_eq_dep_matrix, _id);
+  buffer << fp.beginDimGuards(equationId(), arguments, _range);
   buffer << tabs << prefix() << lhs() << " = " << _rhs << ";" << endl;
   buffer << generateDerivatives(tabs) << endl;
-  ;
   buffer << endl << TAB << fp.endDimGuards(_range);
   buffer << TAB << fp.endExpression(_range);
   return buffer.str();

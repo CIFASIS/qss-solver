@@ -6,6 +6,8 @@
     "configurations": [ 
 
 
+
+
         // Generic per model configurations.
         
         // Mixed mode buckt_term model
@@ -292,6 +294,26 @@
                 }
             ]
         },
+        
+        // Simple Alg RlTest
+        {
+            "name": "Simple Alg RL Test model.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/rltest_simple_alg/rltest_simple_alg ", "/home/joaquin/work/qss-solver/models/tests/rltest_simple_alg.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+
         // RlTest
         {
             "name": "RL Test model.",

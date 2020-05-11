@@ -39,6 +39,8 @@ namespace INDEX {
 typedef enum { Iterator, Dimension } Type;
 }
 
+class Index;
+
 class RangeDefinition {
   public:
   RangeDefinition(){};
@@ -48,6 +50,8 @@ class RangeDefinition {
   inline int end() { return _end; };
   inline int step() { return _step; };
   inline int size() const { return (_begin == _end) ? 1 : (_end - _begin + 1) / _step; };
+  void setBegin(int begin);
+  void setEnd(int end);
   friend std::ostream& operator<<(std::ostream& out, const RangeDefinition& rd);
 
   private:
@@ -84,6 +88,7 @@ class Range {
   std::string getDimensionVar(int i) const;
   bool intersect(Range other);
   Deps::MDI getMDI();
+  void applyUsage(Index usage);
   friend std::ostream& operator<<(std::ostream& out, const Range& r);
 
   protected:

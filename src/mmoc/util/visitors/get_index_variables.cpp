@@ -34,6 +34,7 @@ GetIndexVariables::GetIndexVariables() : _in_index_list(false) {}
 list<string> GetIndexVariables::foldTraverseElement(AST_Expression exp)
 {
   list<string> ret;
+  ExpressionType t = exp->expressionType();
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
@@ -46,9 +47,17 @@ list<string> GetIndexVariables::foldTraverseElement(AST_Expression exp)
       AST_ExpressionList indexes = cr->firstIndex();
       AST_ExpressionListIterator it;
       foreach (it, indexes) {
-        ret.splice(ret.end(), foldTraverseElement(current_element(it)));
+        ret.splice(ret.end(), apply(current_element(it)));
       }
       _in_index_list = false;
+    }
+    break;
+  }
+  case EXPOUTPUT: {
+    AST_Expression_Output out = exp->getAsOutput();
+    AST_ExpressionListIterator it;
+    foreach (it, out->expressionList()) {
+      ret.splice(ret.end(), apply(current_element(it)));
     }
     break;
   }

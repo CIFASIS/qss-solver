@@ -178,6 +178,10 @@ std::ostream& operator<<(std::ostream& out, const Index& i)
 
 RangeDefinition::RangeDefinition(int begin, int end, int step) : _begin(begin), _end(end), _step(step) {}
 
+void RangeDefinition::setBegin(int begin) { _begin = begin; }
+
+void RangeDefinition::setEnd(int end) { _end = end; }
+
 std::ostream& operator<<(std::ostream& out, const RangeDefinition& rd) { return out; }
 
 Range::Range() : _ranges(), _indexPos(), _size(0), _type(RANGE::For) {}
@@ -427,6 +431,22 @@ bool Range::intersect(Range other)
   MDI other_mdi = other.getMDI();
   Option<MDI> intersect = getMDI().Intersection(other_mdi);
   return intersect.is_initialized();
+}
+
+void Range::applyUsage(Index usage)
+{
+  int dimension = usage.dimension();
+  assert(_ranges.size() == dimension);
+  RangeDefinitionTable::iterator it;
+  int i = 0;
+  for (RangeDefinition r = _ranges.begin(it); !_ranges.end(it); r = _ranges.next(it), i++) {
+    if (usage.hasVariable(i)) {
+      int new_begin = r.begin() * usage.factor(i) + usage.constant(i);
+      int new_end = r.end() * usage.factor(i) + usage.constant(i);
+      RangeDefinition new_range(new_begin, new_end, r.step());
+      _ranges.insert(_ranges.key(it), new_range);
+    }
+  }
 }
 
 std::ostream& operator<<(std::ostream& out, const Range& r) { return out << r.print(); }

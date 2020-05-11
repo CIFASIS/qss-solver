@@ -37,7 +37,7 @@ typedef std::list<std::pair<Vertex, MDI>> VertexInfo;
 
 class Dependency {
   public:
-  Dependency() : _ifr(), _ifr_dom(), _ifr_range(), _ifr_id(0), _equation_range(){};
+  Dependency() : _ifr(), _ifr_dom(), _ifr_range(), _ifr_id(0), _equation_range(), _visited(){};
   ~Dependency() = default;
   template <class DM>
   void compute(DepsGraph graph, DM& dm, TRAVERSE::Init traverse = TRAVERSE::Variable)
@@ -89,6 +89,10 @@ class Dependency {
   MDI _ifr_range;
   int _ifr_id;
   IR::Range _equation_range;
+  struct Visited {
+    bool visited = false;
+  };
+  map<VariableDependency, Visited> _visited;
 };
 }  // namespace Deps
 }  // namespace MicroModelica

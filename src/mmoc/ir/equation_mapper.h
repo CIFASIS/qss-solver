@@ -65,17 +65,16 @@ class EquationMapper {
   }
 
   protected:
-  std::string traversePath(Equation eq, Equation orig_eq, Index ife, AlgebraicPath path)
+  std::string traversePath(Equation eq, Equation der_eq, Index ife, AlgebraicPath path)
   {
     stringstream code;
     FunctionPrinter printer;
     if (eq.isJacobian()) {
       code << printer.jacobianTerms(_eq_gen.terms());
     } else {
-      // Meter la guarda
-      code << nonStateAlgebraics(orig_eq, ife);
+      code << nonStateAlgebraics(eq, der_eq, ife);
       for (VariableDependency d : path) {
-        code << insert(d, ife);
+        code << insert(d, der_eq, ife);
       }
     }
     return code.str();
@@ -117,26 +116,6 @@ class EquationMapper {
     return false;
   }
 
-  Equation getEquation(int id, Index rhs_usage, Index lhs_usage)
-  {
-    EquationTable algebraic_eqs = ModelConfig::instance().algebraics();
-    Option<Equation> alg = algebraic_eqs[id];
-    if (alg) {
-      Equation a = alg.get();
-      a.applyUsage(rhs_usage);
-      if (!lhs_usage.isConstant()) {
-        // Compute new LHS.
-        Expression map_usage = rhs_usage.expression();
-        Expression new_usage = VariableUsage(map_usage, lhs_usage.revert()).usage();
-        a.applyUsage(Index(new_usage));
-      }
-      return a;
-    } else {
-      Error::instance().add(0, EM_CG | EM_NO_EQ, ER_Error, "Algebraic equation not found.");
-    }
-    return Equation();
-  }
-
   Equation getAlgEquation(int id)
   {
     EquationTable algebraic_eqs = ModelConfig::instance().algebraics();
@@ -149,25 +128,12 @@ class EquationMapper {
     return Equation();
   }
 
-  std::string printAlgebraicGuards(Equation alg, Index usage)
-  {
-    stringstream buffer;
-    string arguments;
-    FunctionPrinter printer;
-    Option<Range> range = alg.range();
-    if (range) {
-      Index revert = usage.replace();
-      arguments = revert.usageExp();
-    }
-    buffer << printer.beginDimGuards(alg.applyId(), arguments, range);
-    return buffer.str();
-  }
-
-  std::string insert(VariableDependency alg, Index ife)
+  std::string insert(VariableDependency alg, Equation der_eq, Index ife)
   {
     FunctionPrinter printer;
     stringstream code;
-    Equation alg_eq = getEquation(alg.equationId(), alg.ife(), ife);
+    Equation orig_alg = getAlgEquation(alg.equationId());
+    Equation alg_eq = orig_alg.genAlgEquation(der_eq, alg.ife(), ife);
     Index alg_idx(alg_eq.lhs());
     string local_key = alg_idx.print();
     if (ife.isConstant()) {
@@ -179,7 +145,7 @@ class EquationMapper {
       string global_key = ife.variable().name();
       if (updateDict(global_key, local_key, _vector_alg_dict)) {
         Equation orig_equation = getAlgEquation(alg.equationId());
-        code << printAlgebraicGuards(orig_equation, alg_idx);
+        code << printer.printAlgebraicGuards(orig_equation, alg_idx);
         code << printer.algebraic(orig_equation, alg.isReduction());
         code << printer.endDimGuards(orig_equation.range());
       }
@@ -187,7 +153,7 @@ class EquationMapper {
     return code.str();
   }
 
-  std::string nonStateAlgebraics(Equation ifr, Index ife)
+  std::string nonStateAlgebraics(Equation ifr, Equation der_eq, Index ife)
   {
     stringstream code;
     EquationDependencyMatrix eqdm = ifr.dependencyMatrix();
@@ -198,7 +164,7 @@ class EquationMapper {
         AlgebraicPath algs = eq_it->algs;
         AlgebraicPath::reverse_iterator dep_it;
         for (dep_it = algs.rbegin(); dep_it != algs.rend(); dep_it++) {
-          code << insert(*dep_it, ife);
+          code << insert(*dep_it, der_eq, ife);
         }
       }
     }

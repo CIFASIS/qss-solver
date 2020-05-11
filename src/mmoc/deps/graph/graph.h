@@ -103,7 +103,7 @@ class VertexProperty {
 
 class Label {
   public:
-  inline Label(){};
+  Label(){};
   Label(IndexPairSet ips, EDGE::Direction dir = EDGE::Output);
   Label(IndexPair ip, EDGE::Direction dir = EDGE::Output);
   void RemovePairs(IndexPairSet ips);

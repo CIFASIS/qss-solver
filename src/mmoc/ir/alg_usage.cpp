@@ -97,7 +97,6 @@ void VariableUsage::generateMapFromUsage()
     } else if (LHS_VARIABLE && !RHS_VARIABLE) {
       int new_constant = (_usage.constant(i) - lhs_index.constant(i)) / lhs_index.factor(i);
       _usage_map[lhs_index.variable(i)] = newAST_Expression_Integer(new_constant);
-      ;
     }
   }
   ApplyVariableUsage var_usage(_usage_map);
