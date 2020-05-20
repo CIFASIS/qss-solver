@@ -50,13 +50,11 @@ EquationPrinter* getPrinter(Equation eq, Util::VarSymbolTable symbols)
   case EQUATION::Output:
     return new OutputPrinter(eq, symbols);
   case EQUATION::Algebraic:
-    if (ModelConfig::instance().isQss()) {
-      return new AlgebraicPrinter(eq, symbols);
-    } else {
-      return new ClassicPrinter(eq, symbols);
-    }
+    return new AlgebraicPrinter(eq, symbols);
   case EQUATION::Jacobian:
     return new JacobianPrinter(eq, symbols);
+  case EQUATION::JacobianTerm:
+    return new JacobianTermPrinter(eq, symbols);
   case EQUATION::Dependency:
     return new DependencyPrinter(eq, symbols);
   case EQUATION::ZeroCrossing:
@@ -159,7 +157,7 @@ string JacobianPrinter::print() const
       buffer << _range.get();
       arguments = _range.get().indexes();
     } else {
-      Index revert = Index(_lhs).revert().replace();
+      Index revert = _usage.revert().replace();
       arguments = revert.usageExp();
     }
   }
@@ -170,6 +168,70 @@ string JacobianPrinter::print() const
   if (PRINT_EQ_RANGE) {
     buffer << _range.get().end();
   }
+  return buffer.str();
+}
+
+JacobianTermPrinter::JacobianTermPrinter(Equation eq, Util::VarSymbolTable symbols)
+    : EquationPrinter(eq, symbols),
+      _usage(eq.usage()),
+      _range(eq.range()),
+      _lhs(eq.lhs()),
+      _rhs(eq.rhs()),
+      _id(eq.id()),
+      _type(JacChainRule)
+{
+  string lhs_var = _lhs.print();
+  if (lhs_var.compare("__chain_rule")) {
+    _type = JacExp;
+  }
+}
+
+string JacobianTermPrinter::op() const
+{
+  AST_Expression rhs = _rhs.expression();
+  if (_type == JacChainRule) {
+    return " = ";
+  } else if (rhs->expressionType() == EXPINTEGER && rhs->getAsInteger()->val() == 0) {
+    return " = ";
+  }
+  return " += ";
+}
+
+string JacobianTermPrinter::print() const
+{
+  stringstream buffer;
+  string tabs = "";
+  FunctionPrinter fp;
+  string arguments;
+  tabs += TAB;
+  const bool PRINT_EQ_RANGE = _usage.isConstant() && _range;
+  if (_range) {
+    tabs = _range->block();
+    if (PRINT_EQ_RANGE) {
+      buffer << _range.get();
+      arguments = _range.get().indexes();
+    } else {
+      Index revert = _usage.revert().replace();
+      arguments = revert.usageExp();
+    }
+  }
+  tabs += TAB;
+  buffer << fp.beginDimGuards(equationId(), arguments, _range);
+  buffer << tabs << prefix() << _lhs << op() << _rhs << ";";
+  buffer << endl << TAB << fp.endDimGuards(_range);
+  if (PRINT_EQ_RANGE) {
+    buffer << _range.get().end();
+  }
+  return buffer.str();
+}
+
+string JacobianTermPrinter::equationId() const
+{
+  stringstream buffer;
+  if (_type == JacChainRule) {
+    buffer << "_alg";
+  }
+  buffer << "_eq_" << _id;
   return buffer.str();
 }
 
@@ -330,13 +392,20 @@ string AlgebraicPrinter::print() const
   stringstream buffer;
   string tabs = "";
   tabs += TAB;
+  const bool CLASSIC_MODEL = !ModelConfig::instance().isQss();
   if (_range) {
     tabs = _range->block();
+    if (CLASSIC_MODEL) {
+      buffer << _range.get();
+    }
   } else {
     tabs += TAB;
   }
   buffer << tabs << prefix() << _lhs << " = " << _rhs << ";" << endl;
   buffer << generateDerivatives(tabs) << endl;
+  if (_range && CLASSIC_MODEL) {
+    buffer << _range->end();
+  }
   return buffer.str();
 }
 
