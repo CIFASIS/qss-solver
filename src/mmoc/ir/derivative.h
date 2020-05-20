@@ -44,20 +44,17 @@ class ExpressionDerivator {
   ~ExpressionDerivator() = default;
 
   static AST_Expression derivate(AST_Expression exp, Expression e);
-  Equation generateJacobianExp(Index index, Equation exp);
-  void generateJacobianTerm(Index index, Deps::VariableDependency var);
+  void generateJacobian(Index index, Equation eq, Deps::AlgebraicPath path);
+  AST_Expression jacobianVariable(std::string name);
   list<Equation> terms() const;
 
   protected:
-  Equation generateEquation(std::string usage, Expression exp, Equation orig);
-  AST_ExpressionList generateChainRule(list<Util::JacAlgTerm> alg_terms);
-  AST_Expression jacobianExp(AST_Expression exp, AST_ExpressionList algs);
-  std::string termVariable();
-  std::string lookup(Index index, Option<Range> range);
+  AST_Expression generateJacobianExp(Index index, Equation exp);
+  Equation generateEquation(AST_Expression lhs, AST_Expression rhs, Option<Range> range, int id);
 
-  list<pair<Equation, string>> _alg_terms;
-  list<Equation> _der_terms;
-  int _term_num;
+  bool checkExpression(AST_Expression exp);
+
+  list<Equation> _chain_rule_terms;
 };
 
 }  // namespace IR
