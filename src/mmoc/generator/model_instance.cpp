@@ -430,25 +430,27 @@ void ModelInstance::jacobian()
   Utils::instance().clearLocalSymbols();
   Utils::instance().addLocalSymbol("int jit = 0;");
   Utils::instance().addLocalSymbol("int idx;");
-  FunctionPrinter fp;
+  Utils::instance().addLocalSymbol("double __chain_rule = 0;");
+  Utils::instance().addLocalSymbol("double __jac_exp = 0;");
+  FunctionPrinter printer;
   ModelDependencies deps = _model.dependencies();
-  EquationDependencyMatrix DS = deps.DS();
+  EquationDependencyMatrix JAC = deps.JAC();
   EquationDependencyMatrix::const_iterator it;
   VarSymbolTable symbols = _model.symbols();
   EquationMapper<Jacobian> mapper;
-  for (it = DS.begin(); it != DS.end(); it++) {
+  for (it = JAC.begin(); it != JAC.end(); it++) {
     Jacobian jac = Jacobian(symbols);
     mapper.compute(jac, it->second);
   }
   _writer->write(mapper.scalar(), WRITER::Jacobian_Simple);
   _writer->write(mapper.vector(), WRITER::Jacobian_Generic);
   _writer->write(Utils::instance().localSymbols(), WRITER::Jacobian);
-  _writer->write(fp.loop(_model.stateNbr()), WRITER::Jacobian);
+  _writer->write(printer.loop(_model.stateNbr()), WRITER::Jacobian);
   if (!_writer->isEmpty(WRITER::Jacobian_Simple)) {
-    _writer->write(fp.beginSwitch(), WRITER::Jacobian);
-    _writer->write(fp.endSwitch(), WRITER::Jacobian_Simple);
+    _writer->write(printer.beginSwitch(), WRITER::Jacobian);
+    _writer->write(printer.endSwitch(), WRITER::Jacobian_Simple);
   }
-  _writer->write(fp.endLoop(), WRITER::Jacobian_Generic);
+  _writer->write(printer.endLoop(), WRITER::Jacobian_Generic);
 }
 
 void ModelInstance::generate()
