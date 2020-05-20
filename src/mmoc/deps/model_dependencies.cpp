@@ -64,6 +64,7 @@ ModelDependencies::ModelDependencies()
       _LHSSt(LHSSTCfg),
       _RHSSt(RHSSTCfg),
       _HH(HHCfg),
+      _JAC(EmptyCfg),
       _deps()
 {
 }
@@ -72,7 +73,11 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, Equati
 {
   Utils::instance().setSymbols(symbols);
   SDGraphBuilder SD = SDGraphBuilder(eqs, algs, symbols);
-  _deps.compute(SD.build(), _DS, TRAVERSE::Equation);
+  DepsGraph SD_graph = SD.build();
+  const bool KEEP_VISITED = false;
+  _deps.compute(SD_graph, _DS, TRAVERSE::Equation, KEEP_VISITED);
+
+  _deps.compute(SD_graph, _JAC, TRAVERSE::Equation, KEEP_VISITED);
 
   VariableDependencyMatrix DS_int(EmptyCfg);
   DSGraphBuilder DS = DSGraphBuilder(eqs, algs, symbols);
