@@ -84,6 +84,9 @@ bool Index::operator==(const Index& other) const { return false; }
 
 bool Index::isConstant() const
 {
+  if (isEmpty()) {
+    return false;
+  }
   IsConstantIndex constant_index;
   return constant_index.apply(_exp.expression());
 }
