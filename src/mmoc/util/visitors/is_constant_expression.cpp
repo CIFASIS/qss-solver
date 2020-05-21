@@ -42,7 +42,9 @@ bool IsConstantExpression::foldTraverseElement(AST_Expression exp)
                             cr->name().c_str());
       break;
     }
-    ret = false;
+    if (!var->isConstant() && !var->isParameter() && (var->name() != "_chain_rule")) {
+      ret = false;
+    }
     break;
   }
   case EXPOUTPUT: {
