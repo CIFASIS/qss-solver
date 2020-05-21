@@ -86,9 +86,8 @@ DepsGraph OutputGraphBuilder::build()
       if (edge.exists()) {
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {
-          Label lbl(ip);
+          Label lbl(ip, EDGE::Input);
           add_edge(source, sink, lbl, graph);
-          cout << ip.Ran() << " " << ip.Dom() << endl;
           if (graph[sink].eq().type() == EQUATION::Output && out_degree(sink, graph) == 0) {
             IndexPair out_pair(ip.Ran(), ip.Ran(), Offset(), Usage(), graph[sink].eq().lhs());
             Label out_lbl(out_pair, EDGE::Input);
