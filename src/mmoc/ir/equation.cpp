@@ -253,30 +253,36 @@ Equation Equation::genAlgEquation(Equation der_eq, Index rhs_usage, Index lhs_us
   return a;
 }
 
+void Equation::dependencyUsage(VariableDependency var_dep, Index index)
+{
+  if (hasRange() && index.isConstant()) {
+    Expression new_usage = VariableUsage(var_dep.usage(), lhs(), var_dep.ife()).rhs();
+    applyUsage(Index(new_usage));
+  }
+}
+
 Equation Dependency::generate(Equation eq, Index idx, AlgebraicPath algs)
 {
   Equation dep = eq;
   dep.setType(EQUATION::Dependency);
   dep.setUsage(idx);
-  if (!algs.empty() && dep.hasRange() && idx.isConstant()) {
-    VariableDependency var = algs.back();
-    Expression new_usage = VariableUsage(var.usage(), dep.lhs(), var.ife()).rhs();
-    dep.applyUsage(Index(new_usage));
+  if (!algs.empty()) {
+    dep.dependencyUsage(algs.back(), idx);
   }
   return dep;
 }
 
 list<Equation> Dependency::terms() { return list<Equation>(); }
 
+EQUATION::Type Dependency::type() const { return EQUATION::Dependency; }
+
 Equation Jacobian::generate(Equation eq, Index idx, AlgebraicPath algs)
 {
   ExpressionDerivator exp_der;
   Equation jac(eq.lhs().expression(), exp_der.jacobianVariable("_jac_exp"), _symbols, eq.range(), EQUATION::Jacobian, eq.id());
   jac.setUsage(idx);
-  if (!algs.empty() && jac.hasRange() && idx.isConstant()) {
-    VariableDependency var = algs.back();
-    Expression new_usage = VariableUsage(var.usage(), jac.lhs(), var.ife()).rhs();
-    jac.applyUsage(Index(new_usage));
+  if (!algs.empty()) {
+    jac.dependencyUsage(algs.back(), idx);
   }
   exp_der.generateJacobian(idx, eq, algs);
   _jac_terms = exp_der.terms();
@@ -284,6 +290,8 @@ Equation Jacobian::generate(Equation eq, Index idx, AlgebraicPath algs)
 }
 
 list<Equation> Jacobian::terms() { return _jac_terms; }
+
+EQUATION::Type Jacobian::type() const { return EQUATION::Jacobian; }
 
 }  // namespace IR
 }  // namespace MicroModelica

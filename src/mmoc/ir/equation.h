@@ -90,6 +90,7 @@ class Equation {
   bool isEmpty() const;
   std::string applyId() const;
   Equation genAlgEquation(Equation der_eq, Index rhs_usage, Index lhs_usage);
+  void dependencyUsage(Deps::VariableDependency var_dep, Index index);
 
   protected:
   void initialize(AST_Equation eq);
@@ -121,6 +122,7 @@ class Jacobian {
   ~Jacobian() = default;
   Equation generate(Equation eq, Index idx, Deps::AlgebraicPath algs);
   list<Equation> terms();
+  EQUATION::Type type() const;
 
   private:
   Util::VarSymbolTable _symbols;
@@ -132,6 +134,7 @@ class Dependency {
   ~Dependency() = default;
   Equation generate(Equation eq, Index idx, Deps::AlgebraicPath algs);
   list<Equation> terms();
+  EQUATION::Type type() const;
 };
 
 }  // namespace IR
