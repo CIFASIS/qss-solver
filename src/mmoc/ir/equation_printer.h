@@ -71,6 +71,26 @@ class JacobianPrinter : public EquationPrinter {
   Expression _rhs;
 };
 
+class JacobianTermPrinter : public EquationPrinter {
+  public:
+  JacobianTermPrinter(Equation eq, Util::VarSymbolTable symbols);
+  ~JacobianTermPrinter() = default;
+  std::string print() const override;
+  std::string equationId() const override;
+
+  protected:
+  std::string op() const;
+  typedef enum { JacExp, JacChainRule } Type;
+
+  private:
+  Index _usage;
+  Option<Range> _range;
+  Expression _lhs;
+  Expression _rhs;
+  int _id;
+  Type _type;
+};
+
 class DerivativePrinter : public EquationPrinter {
   public:
   DerivativePrinter(Equation eq, Util::VarSymbolTable symbols);

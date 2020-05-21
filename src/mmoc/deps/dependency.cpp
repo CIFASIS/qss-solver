@@ -175,8 +175,8 @@ bool Dependency::recursivePaths(DepsGraph graph, Vertex source_vertex, MDI sourc
   return rec;
 }
 
-void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, Paths& var_deps, AlgebraicPath& algs,
-                       AlgebraicPath& recursive_paths, TRAVERSE::Init traverse, VariableDependency alg_dep)
+void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, Paths& var_deps, AlgebraicPath algs,
+                       AlgebraicPath recursive_paths, TRAVERSE::Init traverse, VariableDependency alg_dep)
 {
   VertexProperty source_vertex_info = graph[source_vertex];
   boost::graph_traits<DepsGraph>::out_edge_iterator edge, out_edge_end;
@@ -238,14 +238,17 @@ void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, 
           var_dep.setSwap(false);
         }
         var_dep.setRange(alg_dep.equationId());
-        Visited dep = _visited[var_dep];
-        Range test = var_dep.range();
-        if (!dep.visited) {
-          dep.visited = true;
+        if (_remove_visited) {
+          Visited dep = _visited[var_dep];
+          if (!dep.visited) {
+            dep.visited = true;
+            Path inf = {algs, var_dep};
+            var_deps.push_back(inf);
+            _visited[var_dep] = dep;
+          }
+        } else {
           Path inf = {algs, var_dep};
-          test = inf.ifce.range();
           var_deps.push_back(inf);
-          _visited[var_dep] = dep;
         }
       } else if (isRecursive(source_vertex_info, target_vertex_info)) {
         continue;

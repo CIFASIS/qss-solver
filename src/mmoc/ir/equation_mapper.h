@@ -40,15 +40,21 @@ namespace IR {
 template <class EqGen>
 class EquationMapper {
   public:
-  EquationMapper() : _dict(), _mapper(), _scalar_alg_dict(), _vector_alg_dict(), _eq_gen(), _id(0) {}
+  EquationMapper() : _dict(), _mapper(), _scalar_alg_dict(), _vector_alg_dict(), _eq_gen(), _id(0), _jacobian(false) {}
 
   ~EquationMapper() = default;
 
   void compute(EqGen eq_gen, Deps::Paths deps)
   {
     _eq_gen = eq_gen;
+    _jacobian = _eq_gen.type() == EQUATION::Jacobian;
     for (Deps::Path inf : deps) {
       processPath(inf);
+    }
+    if (_jacobian) {
+      for (Deps::Path inf : deps) {
+        postProcessPath(inf);
+      }
     }
   }
 
@@ -68,16 +74,45 @@ class EquationMapper {
   std::string traversePath(Equation eq, Equation der_eq, Index ife, AlgebraicPath path)
   {
     stringstream code;
-    FunctionPrinter printer;
-    if (eq.isJacobian()) {
-      code << printer.jacobianTerms(_eq_gen.terms());
+    if (_jacobian) {
+      list<Equation> equations = _eq_gen.terms();
+      for (Equation eq : equations) {
+        code << eq;
+      }
     } else {
       code << nonStateAlgebraics(eq, der_eq, ife);
       for (VariableDependency d : path) {
         code << insert(d, der_eq, ife);
       }
+      code << eq << endl;
     }
     return code.str();
+  }
+
+  void postProcessPath(Deps::Path inf)
+  {
+    AST_Expression jac_exp_lhs = newAST_Expression_ComponentReferenceExp(newAST_String("_jac_exp"));
+    AST_Expression init_rhs = newAST_Expression_Integer(0);
+    VarSymbolTable symbols = Utils::instance().symbols();
+    Equation jac_init(jac_exp_lhs, init_rhs, symbols, Option<Range>(), EQUATION::JacobianTerm, 0);
+    string jac_init_code = jac_init.print();
+    EquationTable derivatives = ModelConfig::instance().derivatives();
+    stringstream buffer;
+    Option<Equation> ifce = derivatives[inf.ifce.equationId()];
+    if (ifce) {
+      Equation ife_eq = ifce.get();
+      Index ife = inf.ife();
+      string local_key = ife.print();
+      string global_key = ife.variable().name();
+      if (updateDict(global_key, local_key, _scalar_alg_dict)) {
+        int id = _dict[local_key];
+        DepInfo dep = _mapper[id];
+        const bool PREPEND = false;
+        dep.addDependency(jac_init_code, PREPEND);
+        dep.addDependency(dep.equation().print());
+        _mapper[id] = dep;
+      }
+    }
   }
 
   void processPath(Deps::Path inf)
@@ -89,7 +124,6 @@ class EquationMapper {
       Equation ife_eq = ifce.get();
       Index ife = inf.ife();
       string idx_exp = ife.print();
-      string test = inf.ifr().print();
       if (_dict.find(idx_exp) == _dict.end()) {
         DepInfo d = DepInfo(ife);
         _mapper[_id] = d;
@@ -97,10 +131,10 @@ class EquationMapper {
       }
       Equation eq = _eq_gen.generate(ife_eq, ife, inf.algs);
       buffer << traversePath(eq, ife_eq, ife, inf.algs);
-      buffer << eq << endl;
       int id = _dict[idx_exp];
       DepInfo dep = _mapper[id];
       dep.addDependency(buffer.str());
+      dep.addEquation(eq);
       _mapper[id] = dep;
     }
   }
@@ -237,6 +271,7 @@ class EquationMapper {
   map<std::string, map<std::string, std::string>> _vector_alg_dict;
   EqGen _eq_gen;
   int _id;
+  bool _jacobian;
 };
 }  // namespace IR
 }  // namespace MicroModelica

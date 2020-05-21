@@ -37,11 +37,12 @@ typedef std::list<std::pair<Vertex, MDI>> VertexInfo;
 
 class Dependency {
   public:
-  Dependency() : _ifr(), _ifr_dom(), _ifr_range(), _ifr_id(0), _equation_range(), _visited(){};
+  Dependency() : _ifr(), _ifr_dom(), _ifr_range(), _ifr_id(0), _equation_range(), _visited(), _remove_visited(true){};
   ~Dependency() = default;
   template <class DM>
-  void compute(DepsGraph graph, DM& dm, TRAVERSE::Init traverse = TRAVERSE::Variable)
+  void compute(DepsGraph graph, DM& dm, TRAVERSE::Init traverse = TRAVERSE::Variable, bool remove_visited = true)
   {
+    _remove_visited = remove_visited;
     for (Vertex vertex : boost::make_iterator_range(vertices(graph))) {
       VertexProperty vertex_info = graph[vertex];
       if (vertex_info.type() == VERTEX::Influencer) {
@@ -60,7 +61,7 @@ class Dependency {
   void append(VariableDependencyMatrix& a, VariableDependencyMatrix& b);
 
   protected:
-  void paths(DepsGraph graph, Vertex source_vertex, MDI source_range, Paths& var_deps, AlgebraicPath& algs, AlgebraicPath& alg_paths,
+  void paths(DepsGraph graph, Vertex source_vertex, MDI source_range, Paths& var_deps, AlgebraicPath algs, AlgebraicPath alg_paths,
              TRAVERSE::Init init, VariableDependency alg_dep = VariableDependency());
   bool recursivePaths(DepsGraph graph, Vertex source_vertex, MDI source_range, bool from_alg, AlgebraicPath& algs, AlgebraicPath& alg_paths,
                       VertexInfo& node_info);
@@ -93,6 +94,7 @@ class Dependency {
     bool visited = false;
   };
   map<VariableDependency, Visited> _visited;
+  bool _remove_visited;
 };
 }  // namespace Deps
 }  // namespace MicroModelica

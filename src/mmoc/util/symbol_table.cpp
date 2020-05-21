@@ -262,6 +262,14 @@ void VarSymbolTable::initialize(TypeSymbolTable ty)
   reinit.setBuiltIn();
   reinit.setName("reinit");
   insert("reinit", reinit);
+  Variable chain_rule(ty["Real"].get(), 0, nullptr, nullptr, vector<int>(1, 0), false);
+  chain_rule.setBuiltIn();
+  chain_rule.setName("_chain_rule");
+  insert("_chain_rule", chain_rule);
+  Variable jac_exp(ty["Real"].get(), 0, nullptr, nullptr, vector<int>(1, 0), false);
+  jac_exp.setBuiltIn();
+  jac_exp.setName("_jac_exp");
+  insert("_jac_exp", jac_exp);
 }
 
 void VarSymbolTable::insert(VarName name, Variable variable)
@@ -280,16 +288,6 @@ Option<Variable> VarSymbolTable::lookup(string name)
   Option<Variable> var = table[name];
   if (var) {
     return var;
-  }
-  static const string TERM_PREFIX = "__cr";
-  size_t found = name.find(TERM_PREFIX);
-  if (found != string::npos) {
-    Variable local_var = Variable(newType_Real(), TP_LOCAL, nullptr, nullptr, vector<int>(), false);
-    local_var.setName(name);
-    stringstream code;
-    code << "double " << name << ";";
-    Utils::instance().addLocalSymbol(code.str());
-    return local_var;
   }
   return Option<Variable>();
 }

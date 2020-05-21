@@ -113,6 +113,7 @@ class ModelDependencies {
     _RHSSt.setMode(VDM::Transpose);
     return _RHSSt;
   };
+  inline EquationDependencyMatrix JAC() { return _JAC; }
   inline EquationDependencyMatrix OA() { return _OA; };
   inline EquationDependencyMatrix ZCA() { return _ZCA; };
   inline EquationDependencyMatrix DA() { return _DA; };
@@ -130,6 +131,7 @@ class ModelDependencies {
   VariableDependencyMatrix _LHSSt;
   VariableDependencyMatrix _RHSSt;
   VariableDependencyMatrix _HH;
+  EquationDependencyMatrix _JAC;
 
   EquationDependencyMatrix _OA;
   EquationDependencyMatrix _ZCA;

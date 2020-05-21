@@ -496,9 +496,7 @@ MDI GenerateEdge::getScalarMDI()
 {
   if (_sink.type() == VERTEX::Equation && (_sink.eq().isDerivative() || _sink.eq().isAlgebraic())) {
     return getScalarMDI(_sink.eq().lhs());
-  } /* if (_sink.type == VERTEX::Statement && _eval == VERTEX::RHS) {
-     return getScalarMDI(_sink.stm.lhs);
-   }*/
+  }
   return MDI(0);
 }
 

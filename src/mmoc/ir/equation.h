@@ -32,7 +32,7 @@ typedef ModelTable<std::string, std::string> SymbolTable;
 
 namespace IR {
 namespace EQUATION {
-typedef enum { ClassicDerivative, QSSDerivative, Algebraic, Dependency, Output, ZeroCrossing, Handler, Jacobian } Type;
+typedef enum { ClassicDerivative, QSSDerivative, Algebraic, Dependency, Output, ZeroCrossing, Handler, Jacobian, JacobianTerm } Type;
 }
 class EquationVariable {
   public:
@@ -51,7 +51,7 @@ class EquationVariable {
 
 class Equation {
   public:
-  Equation(){};
+  Equation();
   Equation(AST_Expression lhs, AST_Expression rhs, Util::VarSymbolTable &symbols, Option<Range> range, EQUATION::Type type, int id);
   Equation(AST_Expression eq, Util::VarSymbolTable &symbols, Option<Range> range, EQUATION::Type type, int id, int offset);
   Equation(AST_Equation eq, Util::VarSymbolTable &symbols, EQUATION::Type type, int id);
@@ -87,8 +87,10 @@ class Equation {
   void setType(EQUATION::Type type);
   bool isRecursive() const;
   void applyUsage(Index usage);
+  bool isEmpty() const;
   std::string applyId() const;
   Equation genAlgEquation(Equation der_eq, Index rhs_usage, Index lhs_usage);
+  void dependencyUsage(Deps::VariableDependency var_dep, Index index);
 
   protected:
   void initialize(AST_Equation eq);
@@ -120,6 +122,7 @@ class Jacobian {
   ~Jacobian() = default;
   Equation generate(Equation eq, Index idx, Deps::AlgebraicPath algs);
   list<Equation> terms();
+  EQUATION::Type type() const;
 
   private:
   Util::VarSymbolTable _symbols;
@@ -131,6 +134,7 @@ class Dependency {
   ~Dependency() = default;
   Equation generate(Equation eq, Index idx, Deps::AlgebraicPath algs);
   list<Equation> terms();
+  EQUATION::Type type() const;
 };
 
 }  // namespace IR
