@@ -607,10 +607,10 @@ void Model::setEvents()
 
 void Model::setOutputs()
 {
-  list<AST_Expression> astOutputs = _annotations.output();
+  list<AST_Expression> ast_outputs = _annotations.output();
   list<AST_Expression>::iterator it;
-  for (it = astOutputs.begin(); it != astOutputs.end(); it++) {
-    ConvertOutputRange convert = ConvertOutputRange(_symbols);
+  for (it = ast_outputs.begin(); it != ast_outputs.end(); it++) {
+    ConvertOutputRange convert(_symbols);
     AST_Expression converted = convert.apply(*it);
     Option<Range> range = convert.range();
     addVariable(_outputId, range, EQUATION::Type::Output, _outputNbr);

@@ -311,8 +311,6 @@ MDI MDI::RevertOffset(Offset offset, Usage usage, MDI ran) const
 
 MDI MDI::RevertUsage(Usage usage, MDI dom) const
 {
-  //    ERROR_UNLESS(usage.Size()==dom.Dimension(), "Dimension error reverting
-  //    usage");
   if (usage.Size() == 0 || usage.isUnused() || dom.Dimension() == 0) {
     return dom;
   } else {
