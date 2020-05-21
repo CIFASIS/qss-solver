@@ -99,18 +99,15 @@ bool ExpressionDerivator::checkExpression(AST_Expression exp)
 
 void ExpressionDerivator::generateJacobian(Index index, Equation eq, Deps::AlgebraicPath path)
 {
-  Equation init_eq;
-  AST_Expression jac_exp_lhs = jacobianVariable("_jac_exp");
-  AST_Expression init_rhs = newAST_Expression_Integer(0);
-  VarSymbolTable symbols = Utils::instance().symbols();
-  _chain_rule_terms.push_back(Equation(jac_exp_lhs, init_rhs, symbols, Option<Range>(), EQUATION::JacobianTerm, 0));
   bool chain_rule = false;
+  AST_Expression jac_exp_lhs = jacobianVariable("_jac_exp");
   AST_Expression lhs = jacobianVariable("_chain_rule");
   Index alg_index;
   Index ch_alg_index;
   AlgebraicPath::reverse_iterator it;
+  VariableDependency var;
   for (it = path.rbegin(); it != path.rend(); it++) {
-    VariableDependency var = *it;
+    var = *it;
     EquationTable algebraic_eqs = ModelConfig::instance().algebraics();
     Option<Equation> alg = algebraic_eqs[var.equationId()];
     if (alg) {
@@ -136,9 +133,11 @@ void ExpressionDerivator::generateJacobian(Index index, Equation eq, Deps::Algeb
   AST_Expression exp = generateJacobianExp(index, eq);
   Equation jac_eq;
   if (chain_rule) {
-    AST_Expression mult = newAST_Expression_BinOp(generateJacobianExp(alg_index, eq), lhs, BINOPMULT);
+    Equation usage_eq = eq;
+    usage_eq.dependencyUsage(var, alg_index);
+    AST_Expression mult = newAST_Expression_BinOp(generateJacobianExp(alg_index, usage_eq), lhs, BINOPMULT);
     AST_Expression sum = newAST_Expression_BinOp(mult, exp, BINOPADD);
-    jac_eq = generateEquation(jac_exp_lhs, sum, eq.range(), eq.id());
+    jac_eq = generateEquation(jac_exp_lhs, sum, usage_eq.range(), usage_eq.id());
   } else {
     jac_eq = generateEquation(jac_exp_lhs, exp, eq.range(), eq.id());
   }
