@@ -175,8 +175,8 @@ bool Dependency::recursivePaths(DepsGraph graph, Vertex source_vertex, MDI sourc
   return rec;
 }
 
-void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, Paths& var_deps, AlgebraicPath& algs,
-                       AlgebraicPath& recursive_paths, TRAVERSE::Init traverse, VariableDependency alg_dep)
+void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, Paths& var_deps, AlgebraicPath algs,
+                       AlgebraicPath recursive_paths, TRAVERSE::Init traverse, VariableDependency alg_dep)
 {
   VertexProperty source_vertex_info = graph[source_vertex];
   boost::graph_traits<DepsGraph>::out_edge_iterator edge, out_edge_end;

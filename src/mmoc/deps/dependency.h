@@ -61,7 +61,7 @@ class Dependency {
   void append(VariableDependencyMatrix& a, VariableDependencyMatrix& b);
 
   protected:
-  void paths(DepsGraph graph, Vertex source_vertex, MDI source_range, Paths& var_deps, AlgebraicPath& algs, AlgebraicPath& alg_paths,
+  void paths(DepsGraph graph, Vertex source_vertex, MDI source_range, Paths& var_deps, AlgebraicPath algs, AlgebraicPath alg_paths,
              TRAVERSE::Init init, VariableDependency alg_dep = VariableDependency());
   bool recursivePaths(DepsGraph graph, Vertex source_vertex, MDI source_range, bool from_alg, AlgebraicPath& algs, AlgebraicPath& alg_paths,
                       VertexInfo& node_info);
