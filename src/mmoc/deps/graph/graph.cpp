@@ -188,8 +188,6 @@ void Label::RemoveDuplicates()
 MDI Label::getImage(MDI intersection) const
 {
   IndexPair orig = Pair();
-  IndexPair p(intersection, orig.Ran(), orig.GetOffset(), orig.GetUsage(), orig.exp());
-  INDEX_PAIR::Rel rel = p.Type();
   if (_dir == EDGE::Input) {
     return intersection.getImage(orig);
   } else {

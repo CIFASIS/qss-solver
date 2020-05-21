@@ -30,6 +30,8 @@ using namespace IR;
 using namespace Deps;
 namespace Util {
 
+ConvertOutputRange::ConvertOutputRange(VarSymbolTable& symbols) : _symbols(symbols), _range(), _intervals(), _dim(0), _var(){};
+
 AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
 {
   switch (exp->expressionType()) {

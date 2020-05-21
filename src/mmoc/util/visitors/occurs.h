@@ -24,13 +24,10 @@
 
 namespace MicroModelica {
 namespace Util {
-/**
- *
- */
 class Occurs : public AST_Expression_Visitor<bool> {
   public:
   Occurs(std::string var, VarSymbolTable symbols) : _symbols(symbols), _occs(), _var(var){};
-  ~Occurs(){};
+  ~Occurs() = default;
   list<IR::Expression> occurrences();
 
   private:
@@ -41,21 +38,6 @@ class Occurs : public AST_Expression_Visitor<bool> {
   std::map<std::string, IR::Expression> _occs;
   std::string _var;
 };
-
-/**
- *
- */
-/*    class StatementOccurs: public AST_Statement_Visitor<SymbolTable, SymbolTable, CalledFunctions>
-    {
-      public:
-        StatementOccurs() : AST_Statement_Visitor(CalledFunctions()) {};
-        ~StatementOccurs() {};
-      private:
-        inline SymbolTable
-        foldTraverse(SymbolTable symbols) { return symbols; };
-        SymbolTable
-        foldTraverse(SymbolTable s1, SymbolTable s2);
-    };*/
 
 }  // namespace Util
 }  // namespace MicroModelica

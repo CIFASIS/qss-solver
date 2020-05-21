@@ -142,7 +142,7 @@ typedef DepsGraph::edge_descriptor Edge;
 class EvalOccur {
   public:
   EvalOccur(IR::Expression exp, Util::VarSymbolTable symbols, Option<IR::Range> range);
-  ~EvalOccur(){};
+  ~EvalOccur() = default;
   bool hasIndex();
   IntervalList intervals();
   Usage usages();
