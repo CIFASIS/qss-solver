@@ -29,7 +29,7 @@ namespace MicroModelica {
 namespace Util {
 class ConvertOutputRange : public AST_Expression_Visitor<AST_Expression> {
   public:
-  ConvertOutputRange(VarSymbolTable& symbols) : _symbols(symbols), _range(), _intervals(), _dim(0), _var(){};
+  ConvertOutputRange(VarSymbolTable& symbols);
   ~ConvertOutputRange() = default;
   Option<IR::Range> range();
 
