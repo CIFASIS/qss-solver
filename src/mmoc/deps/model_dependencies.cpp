@@ -74,9 +74,8 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, Equati
   Utils::instance().setSymbols(symbols);
   SDGraphBuilder SD = SDGraphBuilder(eqs, algs, symbols);
   DepsGraph SD_graph = SD.build();
+  _deps.compute(SD_graph, _DS, TRAVERSE::Equation);
   const bool KEEP_VISITED = false;
-  _deps.compute(SD_graph, _DS, TRAVERSE::Equation, KEEP_VISITED);
-
   _deps.compute(SD_graph, _JAC, TRAVERSE::Equation, KEEP_VISITED);
 
   VariableDependencyMatrix DS_int(EmptyCfg);
