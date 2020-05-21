@@ -193,17 +193,27 @@ class ModelConfig {
 
 class DepInfo {
   public:
-  DepInfo() : _index(), _deps(){};
+  DepInfo() : _index(), _deps(), _eq(){};
   DepInfo(Index index) : _index(index), _deps(){};
   ~DepInfo() = default;
   inline bool isScalar() const { return _index.isConstant(); };
-  inline void addDependency(string dep) { _deps.push_back(dep); };
+  inline void addDependency(string dep, bool back = true)
+  {
+    if (back) {
+      _deps.push_back(dep);
+    } else {
+      _deps.push_front(dep);
+    }
+  };
   inline list<std::string> deps() { return _deps; };
   inline Index index() { return _index; };
+  inline void addEquation(Equation eq) { _eq = eq; };
+  inline Equation equation() const { return _eq; };
 
   private:
   Index _index;
   list<std::string> _deps;
+  Equation _eq;
 };
 
 }  // namespace IR
