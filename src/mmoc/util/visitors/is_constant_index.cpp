@@ -39,10 +39,10 @@ bool IsConstantIndex::foldTraverseElement(AST_Expression exp)
       VarSymbolTable symbols = Utils::instance().symbols();
       Option<Variable> var = symbols[cr->name()];
       if (!var) {
-        Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "partial_eval_exp.cpp:43 %s", cr->name().c_str());
+        Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "is_constant_index.cpp:42 %s", cr->name().c_str());
         break;
       }
-      if (var->isConstant()) {
+      if (var->isConstant() || var->isParameter()) {
         return true;
       }
       ret = false;
