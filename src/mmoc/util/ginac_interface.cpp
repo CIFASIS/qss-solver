@@ -115,12 +115,6 @@ static ex var_derivative(const ex& x, const ex& y, unsigned diff_param) { return
 
 REGISTER_FUNCTION(var, derivative_func(var_derivative))
 
-GiNaC::symbol& ConvertToGiNaC::first() { return getSymbol(""); }
-
-GiNaC::symbol& ConvertToGiNaC::next() { return getSymbol(""); }
-
-bool ConvertToGiNaC::end() { return true; }
-
 map<string, GiNaC::symbol> ConvertToGiNaC::directory() { return _directory; }
 
 string ConvertToGiNaC::identifier(string str)

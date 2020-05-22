@@ -47,9 +47,6 @@ class ConvertToGiNaC : public AST_Expression_Visitor<GiNaC::ex> {
   GiNaC::symbol& getSymbol(string);
   GiNaC::symbol& getSymbol(AST_Expression_Derivative);
   GiNaC::symbol& getTime();
-  GiNaC::symbol& first();
-  GiNaC::symbol& next();
-  bool end();
   map<string, GiNaC::symbol> directory();
   string identifier(string str);
 
