@@ -25,7 +25,8 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 	switch(idx) {
 		case _eval_u(1,0): {
 			_der_u(1,0) = (-_u(1,0)+1)*20000-_mu*_u(1,0)*(_u(1,0)-_alpha)*(_u(1,0)-1);
-			_der_u(1,1) = (-_u(1,1)*_mu*(_u(1,0)-_alpha)*(-1+_u(1,0))-_u(1,1)*20000-_u(1,1)*_mu*_u(1,0)*(-1+_u(1,0))-_u(1,1)*_mu*(_u(1,0)-_alpha)*_u(1,0))/2;
+			_der_u(1,1) = (-_u(1,1)*_mu*(_u(1,0)-_alpha)*(-1+_u(1,0))-20000*_u(1,1)-_u(1,1)*_mu*_u(1,0)*(-1+_u(1,0))-_u(1,1)*_mu*(_u(1,0)-_alpha)*_u(1,0))/2;
+	
 			return;
 		}
 	}
@@ -34,7 +35,8 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 		_apply_usage_eq_2(_d1);
 		if ((j >= 2 && j <= 20000)) {
 			_der_u(j,0) = (-_u(j,0)+_u(j-1,0))*20000-_mu*_u(j,0)*(_u(j,0)-_alpha)*(_u(j,0)-1);
-			_der_u(j,1) = (-20000*(_u(j,1)-_u(j-1,1))-_u(j,1)*(-1+_u(j,0))*_mu*(_u(j,0)-_alpha)-_u(j,1)*_u(j,0)*(-1+_u(j,0))*_mu-_u(j,1)*_u(j,0)*_mu*(_u(j,0)-_alpha))/2;
+			_der_u(j,1) = (-_u(j,0)*_u(j,1)*(_u(j,0)-_alpha)*_mu-_u(j,0)*(-1+_u(j,0))*_u(j,1)*_mu-(-1+_u(j,0))*_u(j,1)*(_u(j,0)-_alpha)*_mu-20000*_u(j,1)+20000*_u(j-1,1))/2;
+	
 		}
 		return;
 	}
@@ -64,30 +66,38 @@ void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
 
 void MOD_jacobian(double *x, double *d, double *a, double t, double *jac)
 {
+	double __chain_rule = 0;
+	double __jac_exp = 0;
 	int _d1;
 	int idx;
 	int j;
-	int jit;
-	for (idx = 1; idx <=20000; idx++) {
+	int jit = 0;
+	for (idx = 0; idx <20000; idx++) {
 	switch(idx) {
 		case _eval_u(1,0): {
-			_jac(jit) = -_mu*(_u(1,0)-_alpha)*_u(1,0)-_mu*(-1+_u(1,0))*(_u(1,0)-_alpha)-20000-_mu*(-1+_u(1,0))*_u(1,0);
-		
-		break;
+			__jac_exp = 0;
+				__jac_exp += -20000+(_alpha-_u(1,0))*_mu*_u(1,0)+(_alpha-_u(1,0))*(-1+_u(1,0))*_mu-(-1+_u(1,0))*_mu*_u(1,0);
+				_jac(jit) = __jac_exp;
+			break;
 		}
 	}
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
+			__jac_exp = 0;
+				__jac_exp += 20000;
+			_apply_usage_eq_2(_d1+1);
+		if ((j >= 2 && j <= 20000)) {
+			_jac(jit) = __jac_exp;
+		}
+			__jac_exp = 0;
+			_apply_usage_eq_2(_d1);
+		if ((j >= 2 && j <= 20000)) {
+			__jac_exp += -20000-_mu*(_u(j,0)-_alpha)*_u(j,0)-_mu*_u(j,0)*(-1+_u(j,0))-_mu*(_u(j,0)-_alpha)*(-1+_u(j,0));
+		}
 		_apply_usage_eq_2(_d1);
 		if ((j >= 2 && j <= 20000)) {
-			_jac(jit) = _mu*_u(j,0)*(_alpha-_u(j,0))+(-1+_u(j,0))*_mu*(_alpha-_u(j,0))-(-1+_u(j,0))*_mu*_u(j,0)-20000;
+			_jac(jit) = __jac_exp;
 		}
-	
-		_apply_usage_eq_2(_d1+1);
-		if ((j >= 2 && j <= 20000)) {
-			_jac(jit) = 20000;
-		}
-	
 		}
 	}
 }
@@ -99,21 +109,21 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 	switch(idx) {
 		case _eval_u(1,0): {
 			_eval_dep_u(1,1) = (-_u(1,0)+1)*20000-_mu*_u(1,0)*(_u(1,0)-_alpha)*(_u(1,0)-1);
-			_eval_dep_u(1,2) = ((_alpha-_u(1,0))*_u(1,1)*(-1+_u(1,0))*_mu-_u(1,1)*20000-_u(1,1)*(-1+_u(1,0))*_mu*_u(1,0)+(_alpha-_u(1,0))*_u(1,1)*_mu*_u(1,0))/2;	
+			_eval_dep_u(1,2) = (-(-1+_u(1,0))*_u(1,1)*_mu*_u(1,0)-20000*_u(1,1)+(_alpha-_u(1,0))*(-1+_u(1,0))*_u(1,1)*_mu+(_alpha-_u(1,0))*_u(1,1)*_mu*_u(1,0))/2;	
 		break;
 		}
 	}
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
-		_apply_usage_eq_2(_d1);
-		if ((j >= 2 && j <= 20000)) {
-			_eval_dep_u(j,1) = (-_u(j,0)+_u(j-1,0))*20000-_mu*_u(j,0)*(_u(j,0)-_alpha)*(_u(j,0)-1);
-			_eval_dep_u(j,2) = ((_u(j-1,1)-_u(j,1))*20000-_u(j,0)*_mu*(-1+_u(j,0))*_u(j,1)-(_u(j,0)-_alpha)*_mu*(-1+_u(j,0))*_u(j,1)-_u(j,0)*(_u(j,0)-_alpha)*_mu*_u(j,1))/2;	}
-	
 		_apply_usage_eq_2(_d1+1);
 		if ((j >= 2 && j <= 20000)) {
 			_eval_dep_u(j,1) = (-_u(j,0)+_u(j-1,0))*20000-_mu*_u(j,0)*(_u(j,0)-_alpha)*(_u(j,0)-1);
-			_eval_dep_u(j,2) = (-_mu*(-1+_u(j,0))*_u(j,0)*_u(j,1)-_mu*(-1+_u(j,0))*(_u(j,0)-_alpha)*_u(j,1)+20000*(_u(j-1,1)-_u(j,1))-_mu*_u(j,0)*(_u(j,0)-_alpha)*_u(j,1))/2;	}
+			_eval_dep_u(j,2) = (-_mu*_u(j,1)*(_u(j,0)-_alpha)*_u(j,0)+20000*_u(j-1,1)-20000*_u(j,1)-_mu*_u(j,1)*(-1+_u(j,0))*_u(j,0)-_mu*_u(j,1)*(-1+_u(j,0))*(_u(j,0)-_alpha))/2;	}
+	
+		_apply_usage_eq_2(_d1);
+		if ((j >= 2 && j <= 20000)) {
+			_eval_dep_u(j,1) = (-_u(j,0)+_u(j-1,0))*20000-_mu*_u(j,0)*(_u(j,0)-_alpha)*(_u(j,0)-1);
+			_eval_dep_u(j,2) = (-20000*_u(j,1)-_u(j,1)*_u(j,0)*_mu*(_u(j,0)-_alpha)-_u(j,1)*_u(j,0)*(-1+_u(j,0))*_mu-_u(j,1)*(-1+_u(j,0))*_mu*(_u(j,0)-_alpha)+20000*_u(j-1,1))/2;	}
 	
 		}
 }
@@ -130,6 +140,7 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		case _eval_u(1,0): {
 			_der_u(1,0) = (-_u(1,0)+1)*20000-_mu*_u(1,0)*(_u(1,0)-_alpha)*(_u(1,0)-1);
 	
+	
 			return;
 		}
 	}
@@ -138,6 +149,7 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		_apply_usage_eq_2(_d1);
 		if ((j >= 2 && j <= 20000)) {
 			_der_u(j,0) = (-_u(j,0)+_u(j-1,0))*20000-_mu*_u(j,0)*(_u(j,0)-_alpha)*(_u(j,0)-1);
+	
 	
 		}
 		return;

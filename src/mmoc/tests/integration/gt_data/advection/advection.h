@@ -31,6 +31,8 @@ double __PAR__mu;
 #define _apply_usage_eq_2(_d1) \
 	j = _d1;
 
+// Algebraic Equations Macros
+
 // Event Macros
 
 // Output Equations Macros
