@@ -21,6 +21,7 @@
 
 #include "../error.h"
 #include "../util.h"
+#include "is_constant_index.h"
 
 namespace MicroModelica {
 using namespace Deps;
@@ -42,7 +43,10 @@ bool IsConstantExpression::foldTraverseElement(AST_Expression exp)
                             cr->name().c_str());
       break;
     }
-    if (!var->isConstant() && !var->isParameter() && (var->name() != "_chain_rule")) {
+    if (var->isParameter() && cr->hasIndexes()) {
+      IsConstantIndex constant_index;
+      ret = constant_index.apply(exp);
+    } else if (!var->isConstant() && !var->isParameter() && (var->name() != "_chain_rule")) {
       ret = false;
     }
     break;
