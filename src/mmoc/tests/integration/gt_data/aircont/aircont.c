@@ -37,15 +37,18 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		case _eval_event_2: {
 			_zc = _time-(1000);
 	
+	
 			return;
 		}
 		case _eval_event_3: {
 			_zc = _time-(2000);
 	
+	
 			return;
 		}
 		case _eval_event_4: {
 			_zc = _time-(_nextSample);
+	
 	
 			return;
 		}
@@ -55,6 +58,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		_apply_usage_event_1(_d1);
 		if ((i >= 1 && i <= 200)) {
 			_zc = _th(i)-_tref-_dtref+_on(i)-0.5-(0);
+	
 	
 		}
 		return;
@@ -120,18 +124,24 @@ void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
 
 void MOD_jacobian(double *x, double *d, double *a, double t, double *jac)
 {
+	double __chain_rule = 0;
+	double __jac_exp = 0;
 	int _d1;
 	int i;
 	int idx;
-	int jit;
-	for (idx = 1; idx <=201; idx++) {
+	int jit = 0;
+	for (idx = 0; idx <201; idx++) {
 	if (_is_var_th(idx)) {
 		_get_th_idxs(idx);
+			__jac_exp = 0;
+			_apply_usage_eq_1(_d1);
+		if ((i >= 1 && i <= 200)) {
+			__jac_exp += -(1/(_CAP(i)))*(1/(_RES(i)));
+		}
 		_apply_usage_eq_1(_d1);
 		if ((i >= 1 && i <= 200)) {
-			_jac(jit) = -(1/(_CAP(i)))*(1/(_RES(i)));
+			_jac(jit) = __jac_exp;
 		}
-	
 		}
 	}
 }

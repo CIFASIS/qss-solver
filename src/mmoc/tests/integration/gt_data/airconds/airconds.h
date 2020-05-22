@@ -74,6 +74,8 @@ double __PAR__pmax;
 #define _apply_usage_eq_1(_d1) \
 	i = _d1;
 
+// Algebraic Equations Macros
+
 // Event Macros
 #define _apply_usage_event_1(_d1) \
 	i = _d1;

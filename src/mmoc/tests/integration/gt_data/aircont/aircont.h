@@ -66,6 +66,8 @@ double __PAR__tref;
 #define _apply_usage_eq_1(_d1) \
 	i = _d1;
 
+// Algebraic Equations Macros
+
 // Event Macros
 #define _apply_usage_event_1(_d1) \
 	i = _d1;
@@ -83,4 +85,4 @@ double __PAR__tref;
 
 // Derivative Macros definition. 
 #define _der_ierr dx[200]
-#define _der_th(d1) dx[(d1-1)]
+#define _der_th(d1) dx[((d1-1))]

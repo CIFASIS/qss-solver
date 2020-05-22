@@ -30,6 +30,7 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 			_der_th(i,0) = (_THA/_RES(i)-_POT(i)*_on(i)-_th(i,0)/_RES(i)+_noise(i)/_RES(i))/_CAP(i);
 			_der_th(i,1) = (-(1/(_CAP(i)))*_th(i,1)*(1/(_RES(i))))/2;
 			_der_th(i,2) = (-(1/(_CAP(i)))*(1/(_RES(i)))*_th(i,2))/6;
+	
 		}
 		return;
 	}
@@ -46,6 +47,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 			_zc(0) = _th(i,0)-_tref(i)+_on(i)-0.5-(0);
 			_zc(1) = (_th(i,1))/1;
 			_zc(2) = (_th(i,2))/2;
+	
 		}
 		return;
 	}
@@ -56,6 +58,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 			_zc(0) = _time-(1000);
 			_zc(1) = (1)/1;
 			_zc(2) = (0)/2;
+	
 		}
 		return;
 	}
@@ -66,6 +69,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 			_zc(0) = _time-(2000);
 			_zc(1) = (1)/1;
 			_zc(2) = (0)/2;
+	
 		}
 		return;
 	}
@@ -76,6 +80,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 			_zc(0) = _time-(_nextSample(i));
 			_zc(1) = (1)/1;
 			_zc(2) = (0)/2;
+	
 		}
 		return;
 	}
@@ -152,18 +157,24 @@ void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
 
 void MOD_jacobian(double *x, double *d, double *a, double t, double *jac)
 {
+	double __chain_rule = 0;
+	double __jac_exp = 0;
 	int _d1;
 	int i;
 	int idx;
-	int jit;
-	for (idx = 1; idx <=20000; idx++) {
+	int jit = 0;
+	for (idx = 0; idx <20000; idx++) {
 	if (_is_var_th(idx)) {
 		_get_th_idxs(idx);
+			__jac_exp = 0;
+			_apply_usage_eq_1(_d1);
+		if ((i >= 1 && i <= 20000)) {
+			__jac_exp += -(1/(_RES(i)))*(1/(_CAP(i)));
+		}
 		_apply_usage_eq_1(_d1);
 		if ((i >= 1 && i <= 20000)) {
-			_jac(jit) = -(1/(_RES(i)))*(1/(_CAP(i)));
+			_jac(jit) = __jac_exp;
 		}
-	
 		}
 	}
 }
@@ -196,6 +207,7 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		_apply_usage_eq_1(_d1);
 		if ((i >= 1 && i <= 20000)) {
 			_der_th(i,0) = (_THA/_RES(i)-_POT(i)*_on(i)-_th(i,0)/_RES(i)+_noise(i)/_RES(i))/_CAP(i);
+	
 	
 		}
 		return;
