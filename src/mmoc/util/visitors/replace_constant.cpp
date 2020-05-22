@@ -36,7 +36,7 @@ AST_Expression ReplaceConstant::foldTraverseElement(AST_Expression exp)
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
     Option<Variable> var = _symbols[cr->name()];
     if (!var) {
-      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "partial_eval_exp.cpp:43 %s", cr->name().c_str());
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "replace_constant.cpp:39 %s", cr->name().c_str());
       break;
     }
     if (var->isConstant()) {
@@ -62,7 +62,7 @@ AST_Expression ReplaceConstant::foldTraverseElement(AST_Expression exp)
     AST_ExpressionList outputs = output->expressionList();
     AST_ExpressionListIterator it;
     foreach (it, outputs) {
-      new_outputs = AST_ListAppend(new_outputs, apply(current_element(it)));
+      new_outputs = AST_ListPrepend(new_outputs, apply(current_element(it)));
     }
     return newAST_Expression_OutputExpressions(new_outputs);
   }
