@@ -44,7 +44,6 @@ void DHGraphBuilder::addStatements(StatementTable stms, DepsGraph& graph, Expres
   for (Statement stm = stms.begin(stm_it); !stms.end(stm_it); stm = stms.next(stm_it)) {
     ExpressionList lhs_discretes = stm.lhsDiscretes();
     ExpressionList assignments = stm.assignments(_search);
-    //    assert(assignments.size() == lhs_discretes.size());
     ExpressionList::iterator it = lhs_discretes.begin();
     for (Expression e : assignments) {
       VertexProperty vp = VertexProperty();
@@ -52,16 +51,13 @@ void DHGraphBuilder::addStatements(StatementTable stms, DepsGraph& graph, Expres
       vp.setType(VERTEX::Statement);
       sv.setExp(e);
       sv.setEvent(exp);
-
       if (stm.isForStatement()) {
         assert(stm.range());
         sv.setRange(stm.range().get());
       } else if (range) {
         sv.setRange(range.get());
       }
-      //      vp.stm.lhs = *it;
       vp.setId(id);
-      //      it++;
       vp.setStm(sv);
       _statementDescriptors.push_back(add_vertex(vp, graph));
     }
@@ -115,7 +111,7 @@ DepsGraph DHGraphBuilder::build()
       if (edge.exists()) {
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {
-          Label lbl(ip);
+          Label lbl(ip, EDGE::Input);
           add_edge(source, sink, lbl, graph);
         }
       }
@@ -125,7 +121,7 @@ DepsGraph DHGraphBuilder::build()
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
-            Label lbl(ip);
+            Label lbl(ip, EDGE::Input);
             add_edge(sink, source, lbl, graph);
           }
         }
