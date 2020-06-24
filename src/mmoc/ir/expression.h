@@ -40,6 +40,8 @@ class Expression {
   bool isValid() const { return _exp != nullptr; };
   Option<Util::Variable> reference() const;
   bool isScalar() const;
+  list<Expression> indexes() const;
+  static Expression generate(std::string var_name, std::vector<std::string> indices);
 
   friend std::ostream& operator<<(std::ostream& out, const Expression& s);
 
