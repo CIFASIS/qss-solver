@@ -156,4 +156,5 @@ void CLC_allocDataMatrix(CLC_data data)
     data->SD[i] = (data->nSD[i] > 0) ? (int*)malloc(data->nSD[i] * sizeof(int)) : NULL;
     data->DS[i] = (data->nDS[i] > 0) ? (int*)malloc(data->nDS[i] * sizeof(int)) : NULL;
   }
+  SD_allocJacMatrices(data->jac_matrices);
 }

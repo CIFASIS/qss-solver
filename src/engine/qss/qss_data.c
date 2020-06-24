@@ -717,6 +717,7 @@ void QSS_allocDataMatrix(QSS_data data)
     }
   }
   data->maxRHS = mRHS;
+  SD_allocJacMatrices(data->jac_matrices);
 }
 
 int QSS_intCmp(const void *x, const void *y)
