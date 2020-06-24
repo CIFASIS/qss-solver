@@ -422,7 +422,7 @@ SD_jacMatrix SD_JacMatrix(int variables)
   SD_jacMatrix p = checkedMalloc(sizeof(*p));
   p->variables = variables;
   p->size = (int *)malloc(variables * sizeof(int));
-  cleanVector(p->size, 0, variables);
+  cleanDoubleVector(p->size, 0, variables);
   p->index = (int **)malloc(variables * sizeof(int *));
   p->value = (double **)malloc(variables * sizeof(double *));
   return p;
