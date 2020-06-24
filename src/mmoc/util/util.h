@@ -109,6 +109,7 @@ class Utils {
   inline int id() { return _ids++; };
   Variable variable(AST_Expression exp, VarSymbolTable& symbols);
   IR::Expression variableExpression(string name, Option<IR::Range> range, const VarSymbolTable& symbols);
+  std::string tabs(int t);
 
   private:
   Utils();
