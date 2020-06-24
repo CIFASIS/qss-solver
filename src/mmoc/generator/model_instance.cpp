@@ -31,6 +31,7 @@
 #include "../ir/equation_mapper.h"
 #include "../ir/event.h"
 #include "../ir/expression.h"
+#include "../ir/jacobian.h"
 #include "../ir/statement.h"
 #include "../util/error.h"
 #include "../util/util.h"
@@ -339,7 +340,7 @@ string ModelInstance::componentDefinition(MODEL_INSTANCE::Component c)
            "t, double *out)";
   case MODEL_INSTANCE::Jacobian:
     return "void MOD_jacobian(double *x, double *d, double *a, double t, "
-           "double *jac)";
+           "SD_jac_matrix dvdx, double *jac)";
   case MODEL_INSTANCE::BdfModel:
     return "void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, int *BDFMap, int nBDF)";
   case MODEL_INSTANCE::CLC_Init:
@@ -427,30 +428,14 @@ void ModelInstance::freeVectors() const
 
 void ModelInstance::jacobian()
 {
-  Utils::instance().clearLocalSymbols();
-  Utils::instance().addLocalSymbol("int jit = 0;");
-  Utils::instance().addLocalSymbol("int idx;");
-  Utils::instance().addLocalSymbol("double __chain_rule = 0;");
-  Utils::instance().addLocalSymbol("double __jac_exp = 0;");
-  FunctionPrinter printer;
-  ModelDependencies deps = _model.dependencies();
-  EquationDependencyMatrix JAC = deps.JAC();
-  EquationDependencyMatrix::const_iterator it;
-  VarSymbolTable symbols = _model.symbols();
-  EquationMapper<Jacobian> mapper;
-  for (it = JAC.begin(); it != JAC.end(); it++) {
-    Jacobian jac = Jacobian(symbols);
-    mapper.compute(jac, it->second);
-  }
-  _writer->write(mapper.scalar(), WRITER::Jacobian_Simple);
-  _writer->write(mapper.vector(), WRITER::Jacobian_Generic);
+  Jacobian jac;
+  jac.build();
+  _writer->write("int row, row_g;", WRITER::Jacobian);
+  _writer->write("int col, col_g;", WRITER::Jacobian);
+  _writer->write("int x_ind, r;", WRITER::Jacobian);
+  _writer->write("double aux;", WRITER::Jacobian);
   _writer->write(Utils::instance().localSymbols(), WRITER::Jacobian);
-  _writer->write(printer.loop(_model.stateNbr()), WRITER::Jacobian);
-  if (!_writer->isEmpty(WRITER::Jacobian_Simple)) {
-    _writer->write(printer.beginSwitch(), WRITER::Jacobian);
-    _writer->write(printer.endSwitch(), WRITER::Jacobian_Simple);
-  }
-  _writer->write(printer.endLoop(), WRITER::Jacobian_Generic);
+  _writer->write(jac.code(), WRITER::Jacobian);
 }
 
 void ModelInstance::generate()
@@ -500,8 +485,6 @@ void ModelInstance::generate()
   _writer->print(componentDefinition(MODEL_INSTANCE::Jacobian));
   _writer->beginBlock();
   _writer->print(WRITER::Jacobian);
-  _writer->print(WRITER::Jacobian_Simple);
-  _writer->print(WRITER::Jacobian_Generic);
   _writer->endBlock();
   _writer->write(Utils::instance().localInitSymbols(), WRITER::Prologue);
 }
@@ -602,6 +585,9 @@ void QSSModelInstance::initializeDataStructures()
   initializeMatrix(deps.SD(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
   initializeMatrix(deps.DS(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
   inputs();
+
+  // Initialize Jacobian matrices.
+  initializeMatrix(deps.JAC(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
 
   // Initialize Event Data Structures.
   initializeMatrix(deps.SZ(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
@@ -743,7 +729,11 @@ void ClassicModelInstance::initializeDataStructures()
   initializeMatrix(deps.DS(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
   configEvents();
   inputs();
+  // Initialize Jacobian matrices.
+  initializeMatrix(deps.JAC(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+
   _writer->write("CLC_allocDataMatrix(modelData);", WRITER::Alloc_Data);
+
   // Initialize Output Data Structures.
   allocateOutput();
   initializeMatrix(deps.OS(), WRITER::Alloc_Output, WRITER::Init_Output, _model.outputNbr());
