@@ -233,6 +233,7 @@ struct QSS_data_ {
   SD_eventData event;
   SD_parameters params;
   QSS_LP_data lp;
+  SD_jacMatrices jac_matrices;
 };
 
 QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, string name);

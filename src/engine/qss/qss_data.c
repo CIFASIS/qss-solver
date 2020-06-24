@@ -404,7 +404,7 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, s
   if (discretes) {
     cleanDoubleVector(p->d, 0, discretes);
   }
-  
+
   int same_DQMin = (settings->nDQMin == 1) ? TRUE : FALSE;
   int same_DQRel = (settings->nDQRel == 1) ? TRUE : FALSE;
 
@@ -444,6 +444,7 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, s
   if (settings->lps > 0) {
     QSS_setReinitBuffer(TRUE);
   }
+  p->jac_matrices = SD_JacMatrices(states, algs);
   freeSettings(settings);
   return p;
 }
