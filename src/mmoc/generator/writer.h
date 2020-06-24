@@ -30,7 +30,7 @@
 namespace MicroModelica {
 namespace Generator {
 
-#define SECTIONS 37
+#define SECTIONS 35
 namespace WRITER {
 typedef enum {
   Prologue,
@@ -61,8 +61,6 @@ typedef enum {
   Handler_Neg_Simple,
   Handler_Neg_Generic,
   Jacobian,
-  Jacobian_Simple,
-  Jacobian_Generic,
   Output,
   Output_Simple,
   Output_Generic,
