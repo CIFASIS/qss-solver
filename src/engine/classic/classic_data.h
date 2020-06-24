@@ -83,6 +83,7 @@ struct CLC_data_ {
   SD_Solver solver;
   SD_eventData event;
   SD_parameters params;
+  SD_jacMatrices jac_matrices;
 };
 
 CLC_data CLC_Data(int states, int discretes, int events, int inputs, int algebraics, string name);

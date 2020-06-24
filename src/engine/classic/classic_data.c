@@ -95,10 +95,11 @@ CLC_data CLC_Data(int states, int discretes, int events, int inputs, int algebra
   p->totalStepsDASSL = 0;
   p->totalSteps = 0;
   p->totalEvents = 0;
-  freeSettings(settings);
   if (events) {
     p->fired = (char*)malloc(events);
   }
+  p->jac_matrices = SD_JacMatrices(states, algebraics);
+  freeSettings(settings);
   return p;
 }
 
