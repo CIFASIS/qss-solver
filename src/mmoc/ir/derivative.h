@@ -44,17 +44,7 @@ class ExpressionDerivator {
   ~ExpressionDerivator() = default;
 
   static AST_Expression derivate(AST_Expression exp, Expression e);
-  void generateJacobian(Index index, Equation eq, Deps::AlgebraicPath path);
-  AST_Expression jacobianVariable(std::string name);
-  list<Equation> terms() const;
-
-  protected:
-  AST_Expression generateJacobianExp(Index index, Equation exp);
-  Equation generateEquation(AST_Expression lhs, AST_Expression rhs, Option<Range> range, int id);
-
-  bool checkExpression(AST_Expression exp);
-
-  list<Equation> _chain_rule_terms;
+  static Expression partialDerivative(Equation eq, Index variable);
 };
 
 }  // namespace IR
