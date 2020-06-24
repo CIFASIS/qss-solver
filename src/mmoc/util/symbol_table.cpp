@@ -193,7 +193,7 @@ unsigned int Variable::rowSize(unsigned int dim) const
 string Variable::print() const
 {
   stringstream buffer;
-  if (isForType() || isInput() || isOutput() || isEqType()) {
+  if (isForType() || isInput() || isOutput() || isEqType() || isLocal()) {
     buffer << _name;
   } else if (isConstant()) {
     buffer << _value;
@@ -262,14 +262,14 @@ void VarSymbolTable::initialize(TypeSymbolTable ty)
   reinit.setBuiltIn();
   reinit.setName("reinit");
   insert("reinit", reinit);
-  Variable chain_rule(ty["Real"].get(), 0, nullptr, nullptr, vector<int>(1, 0), false);
+  Variable chain_rule(ty["Real"].get(), TP_LOCAL, nullptr, nullptr, vector<int>(1, 0), false);
   chain_rule.setBuiltIn();
-  chain_rule.setName("_chain_rule");
-  insert("_chain_rule", chain_rule);
-  Variable jac_exp(ty["Real"].get(), 0, nullptr, nullptr, vector<int>(1, 0), false);
-  jac_exp.setBuiltIn();
-  jac_exp.setName("_jac_exp");
-  insert("_jac_exp", jac_exp);
+  chain_rule.setName("aux");
+  insert("aux", chain_rule);
+  Variable row(ty["Integer"].get(), TP_LOCAL, nullptr, nullptr, vector<int>(1, 0), false);
+  row.setBuiltIn();
+  row.setName("row");
+  insert("row", row);
 }
 
 void VarSymbolTable::insert(VarName name, Variable variable)
