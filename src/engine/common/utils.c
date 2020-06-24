@@ -127,6 +127,17 @@ int sign(double x)
   }
 }
 
+int pos(int *array, int size, int value)
+{
+  int i;
+  for (i = 0; i < size; i++) {
+    if (array[i] == value) {
+      return i;
+    }
+  }
+  return NOT_ASSIGNED;
+}
+
 double minPosRoot(double *coeff, int order)
 {
   double mpr = -1;
