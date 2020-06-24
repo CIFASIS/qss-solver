@@ -25,6 +25,7 @@
 #include "../util/symbol_table.h"
 #include "dependency_matrix.h"
 #include "dependency.h"
+#include "sb_dependencies.h"
 
 namespace MicroModelica {
 namespace Deps {
@@ -113,10 +114,10 @@ class ModelDependencies {
     _RHSSt.setMode(VDM::Transpose);
     return _RHSSt;
   };
-  inline EquationDependencyMatrix JAC() { return _JAC; }
   inline EquationDependencyMatrix OA() { return _OA; };
   inline EquationDependencyMatrix ZCA() { return _ZCA; };
   inline EquationDependencyMatrix DA() { return _DA; };
+  inline JacobianMatrix JAC() { return _JAC; }
   void compute(IR::EquationTable eqs, IR::EquationTable outputs, IR::EquationTable algs, IR::EventTable events,
                Util::VarSymbolTable symbols);
 
@@ -131,11 +132,12 @@ class ModelDependencies {
   VariableDependencyMatrix _LHSSt;
   VariableDependencyMatrix _RHSSt;
   VariableDependencyMatrix _HH;
-  EquationDependencyMatrix _JAC;
 
   EquationDependencyMatrix _OA;
   EquationDependencyMatrix _ZCA;
   EquationDependencyMatrix _DA;
+  JacobianMatrix _JAC;
+
   Dependency _deps;
 };
 }  // namespace Deps
