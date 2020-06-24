@@ -264,4 +264,30 @@ void SD_freeStatistics(SD_statistics stats);
 
 void SD_setStatisticsLPS(SD_statistics stats, int lps);
 
+typedef struct SD_jacMatrix_ *SD_jacMatrix;
+
+struct SD_jacMatrix_ {
+  int *size;
+  int **index;
+  double **value;
+};
+
+SD_jacMatrix SD_JacMatrix(int variables);
+
+void SD_allocJacMatrix(int variables);
+
+void SD_freeJacMatrix(int variables);
+
+typedef struct SD_jacMatrices_ *SD_jacMatrices;
+struct SD_jacMatrices_ {
+  SD_jacMatrix dfdx;
+  SD_jacMatrix dgdx;
+};
+
+SD_jacMatrices SD_JacMatrices(int states, int algs);
+
+void SD_allocJacMatrices(int states, int algs);
+
+void SD_freeJacMatrices(int states, int algs);
+
 #endif /* DATA_H_ */
