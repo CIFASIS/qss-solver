@@ -95,10 +95,11 @@ CLC_data CLC_Data(int states, int discretes, int events, int inputs, int algebra
   p->totalStepsDASSL = 0;
   p->totalSteps = 0;
   p->totalEvents = 0;
-  freeSettings(settings);
   if (events) {
     p->fired = (char*)malloc(events);
   }
+  p->jac_matrices = SD_JacMatrices(states, algebraics);
+  freeSettings(settings);
   return p;
 }
 
@@ -155,4 +156,5 @@ void CLC_allocDataMatrix(CLC_data data)
     data->SD[i] = (data->nSD[i] > 0) ? (int*)malloc(data->nSD[i] * sizeof(int)) : NULL;
     data->DS[i] = (data->nDS[i] > 0) ? (int*)malloc(data->nDS[i] * sizeof(int)) : NULL;
   }
+  SD_allocJacMatrices(data->jac_matrices);
 }
