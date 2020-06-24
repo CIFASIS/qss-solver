@@ -176,7 +176,7 @@ string Equation::applyId() const { return getPrinter(*this, _symbols)->equationI
 
 Option<Variable> Equation::LHSVariable() const
 {
-  if (isDerivative() || isAlgebraic() || isZeroCrossing() || isOutput() || isJacobian()) {
+  if (isDerivative() || isAlgebraic() || isZeroCrossing() || isOutput()) {
     return _lhs.reference();
   }
   return Option<Variable>();
@@ -276,7 +276,7 @@ list<Equation> Dependency::terms() { return list<Equation>(); }
 
 EQUATION::Type Dependency::type() const { return EQUATION::Dependency; }
 
-Equation Jacobian::generate(Equation eq, Index idx, AlgebraicPath algs)
+/*Equation Jacobian::generate(Equation eq, Index idx, AlgebraicPath algs)
 {
   ExpressionDerivator exp_der;
   Equation jac(eq.lhs().expression(), exp_der.jacobianVariable("_jac_exp"), _symbols, eq.range(), EQUATION::Jacobian, eq.id());
@@ -292,6 +292,6 @@ Equation Jacobian::generate(Equation eq, Index idx, AlgebraicPath algs)
 list<Equation> Jacobian::terms() { return _jac_terms; }
 
 EQUATION::Type Jacobian::type() const { return EQUATION::Jacobian; }
-
+*/
 }  // namespace IR
 }  // namespace MicroModelica
