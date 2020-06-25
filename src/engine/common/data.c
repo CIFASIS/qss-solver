@@ -422,7 +422,7 @@ SD_jacMatrix SD_JacMatrix(int variables)
   SD_jacMatrix p = checkedMalloc(sizeof(*p));
   p->variables = variables;
   p->size = (int *)malloc(variables * sizeof(int));
-  cleanDoubleVector(p->size, 0, variables);
+  cleanVector(p->size, 0, variables);
   p->index = (int **)malloc(variables * sizeof(int *));
   p->value = (double **)malloc(variables * sizeof(double *));
   return p;
@@ -452,23 +452,39 @@ void SD_freeJacMatrix(SD_jacMatrix jac_matrix)
   free(jac_matrix);
 }
 
-SD_jacMatrices SD_JacMatrices(int states, int algs)
+SD_jacMatrices SD_JacMatrices(int state_eqs, int states, int alg_eqs, int algs)
 {
   SD_jacMatrices p = checkedMalloc(sizeof(*p));
-  p->df_dx = SD_JacMatrix(states);
-  p->dg_dx = SD_JacMatrix(algs);
+  p->state_eqs = state_eqs;
+  p->alg_eqs = alg_eqs;
+  p->df_dx = (SD_jacMatrix)malloc(state_eqs * sizeof(struct SD_jacMatrix_));
+  p->dg_dx = (SD_jacMatrix)malloc(alg_eqs * sizeof(struct SD_jacMatrix_));
   return p;
 }
 
 void SD_allocJacMatrices(SD_jacMatrices jac_matrices)
 {
-  SD_allocJacMatrix(jac_matrices->df_dx);
-  SD_allocJacMatrix(jac_matrices->dg_dx);
+  int i, eqs = jac_matrices->state_eqs;
+  for (i = 0; i < eqs; i++) {
+    SD_allocJacMatrix(&(jac_matrices->df_dx[i]));
+  }
+  eqs = jac_matrices->alg_eqs;
+  for (i = 0; i < eqs; i++) {
+    SD_allocJacMatrix(&(jac_matrices->dg_dx[i]));
+  }
 }
 
 void SD_freeJacMatrices(SD_jacMatrices jac_matrices)
 {
-  SD_freeJacMatrix(jac_matrices->df_dx);
-  SD_freeJacMatrix(jac_matrices->df_dx);
+  int i, eqs = jac_matrices->state_eqs;
+  for (i = 0; i < eqs; i++) {
+    SD_freeJacMatrix(&(jac_matrices->df_dx[i]));
+  }
+  free(jac_matrices->df_dx);
+  eqs = jac_matrices->alg_eqs;
+  for (i = 0; i < eqs; i++) {
+    SD_freeJacMatrix(&(jac_matrices->dg_dx[i]));
+  }
+  free(jac_matrices->dg_dx);
   free(jac_matrices);
 }
