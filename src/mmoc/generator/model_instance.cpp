@@ -340,7 +340,7 @@ string ModelInstance::componentDefinition(MODEL_INSTANCE::Component c)
            "t, double *out)";
   case MODEL_INSTANCE::Jacobian:
     return "void MOD_jacobian(double *x, double *d, double *a, double t, "
-           "SD_jac_matrix dvdx, double *jac)";
+           "SD_jacMatrices dvdx, double *jac)";
   case MODEL_INSTANCE::BdfModel:
     return "void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, int *BDFMap, int nBDF)";
   case MODEL_INSTANCE::CLC_Init:
@@ -547,7 +547,9 @@ void QSSModelInstance::allocateSolver()
   buffer << _model.discreteNbr() << ",";
   buffer << _model.eventNbr() << ",";
   buffer << _model.inputNbr() << ",";
-  buffer << _model.algebraicNbr() << ",\"";
+  buffer << _model.algebraicNbr() << ",";
+  buffer << _model.derivatives().size() << ",";
+  buffer << _model.algebraics().size() << ",\"";
   buffer << _model.name() << "\");" << endl;
   buffer << "QSS_data modelData = simulator->data;" << endl;
   buffer << "MODEL_DATA_ACCESS(modelData)" << endl;
@@ -753,7 +755,9 @@ void ClassicModelInstance::allocateSolver()
   buffer << _model.discreteNbr() << ",";
   buffer << _model.eventNbr() << ",";
   buffer << _model.inputNbr() << ",";
-  buffer << _model.algebraicNbr() << ",\"";
+  buffer << _model.algebraicNbr() << ",";
+  buffer << _model.derivatives().size() << ",";
+  buffer << _model.algebraics().size() << ",\"";
   buffer << _model.name() << "\");" << endl;
   buffer << "CLC_data modelData = simulator->data;" << endl;
   buffer << "MODEL_DATA_ACCESS(modelData)" << endl;
