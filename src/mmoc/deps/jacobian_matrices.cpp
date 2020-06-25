@@ -31,7 +31,7 @@ using namespace IR;
 using namespace Util;
 namespace Deps {
 
-JacMatrixGenerator::JacMatrixGenerator() : _matrix(), _df_dx(), _dg_dx() {}
+JacMatrixGenerator::JacMatrixGenerator() : _matrix(), _df_dx(), _dg_dx(), _tabs(0) {}
 
 void JacMatrixGenerator::postProcess(SBG::VertexProperty vertex) {}
 
@@ -41,10 +41,12 @@ void JacMatrixGenerator::init(SBG::VertexProperty vertex)
   code << "for(row = 1; row <= " << vertex.size() << "; row++) {" << endl;
   _matrix.alloc.append(code.str());
   _matrix.init.append(code.str());
+  _tabs++;
 }
 
 void JacMatrixGenerator::end()
 {
+  _tabs--;
   _matrix.alloc.append("}\n");
   _matrix.init.append("}\n");
 }
@@ -59,19 +61,25 @@ void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SB
   Expression i_exp = Expression::generate(var_dep.var().name(), exps);
   Index x_ind(i_exp);
   string x_ind_exp = x_ind.print();
-  if (der_matrix.find(eq.id()) == der_matrix.end()) {
-    code << range.in(exps);
-    code << "x_ind = " << x_ind_exp << endl;
+  string tabs = Utils::instance().tabs(_tabs);
+  string inner_tabs = tabs + TAB;
+  if (der_matrix.find(eq.arrayId()) == der_matrix.end()) {
+    code << tabs << range.in(exps);
+    code << inner_tabs << "x_ind = " << x_ind_exp << ";" << endl;
   }
   string code_guards = code.str();
   if (!code_guards.empty()) {
     _matrix.alloc.append(code_guards);
     _matrix.init.append(code_guards);
     code.str("");
-    code << "dvdx->dfdx[" << eq.id() << "].size[row]++;" << endl;
+    code << inner_tabs << "modelData->jac_matrices->df_dx[" << eq.arrayId() << "].size[row]++;" << endl;
     _matrix.alloc.append(code.str());
     code.str("");
-    code << "dvdx->dfdx[" << eq.id() << "].index[row][col] = x_ind;" << endl;
+    code << inner_tabs << "modelData->jac_matrices->df_dx[" << eq.arrayId() << "].index[row][states[x_ind]++] = x_ind;" << endl;
+    _matrix.init.append(code.str());
+    code.str("");
+    code << tabs << range.end() << endl;
+    _matrix.alloc.append(code.str());
     _matrix.init.append(code.str());
   }
   cout << _matrix.init << endl;
@@ -96,7 +104,7 @@ string JacobianMatrix::alloc() { return _jac_matrix_def.alloc; }
 
 string JacobianMatrix::init() { return _jac_matrix_def.init; }
 
-string JacobianMatrix::accessVector() { return ""; }
+string JacobianMatrix::accessVector() { return "states"; }
 
 bool JacobianMatrix::empty() { return _jac_matrix_def.alloc.empty(); }
 

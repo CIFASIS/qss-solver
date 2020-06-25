@@ -52,6 +52,7 @@ class JacMatrixGenerator {
   JacMatrixDef _matrix;
   std::map<int, std::string> _df_dx;
   std::map<int, std::string> _dg_dx;
+  int _tabs;
 };
 
 class JacobianMatrix {
