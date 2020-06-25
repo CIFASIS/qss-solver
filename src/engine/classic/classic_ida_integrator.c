@@ -65,7 +65,7 @@ static int IDA_Jac(realtype t, realtype cj, N_Vector y, N_Vector fy, N_Vector re
   int *rowvals = *JacMat->rowvals;
 
   SparseSetMatToZero(JacMat);
-  clcModel->jac(NV_DATA_S(y), clcData->d, clcData->alg, t, JacMat->data);
+  clcModel->jac(NV_DATA_S(y), clcData->d, clcData->alg, t, clcData->jac_matrices, JacMat->data);
   for (i = 0; i < size; i++) {
     colptrs[i] = n;
     for (m = 0; m < clcData->nSD[i]; m++) {

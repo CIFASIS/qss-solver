@@ -61,7 +61,7 @@ static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat, void *user_da
   int *rowvals = *JacMat->rowvals;
 
   SparseSetMatToZero(JacMat);
-  clcModel->jac(NV_DATA_S(y), clcData->d, clcData->alg, t, JacMat->data);
+  clcModel->jac(NV_DATA_S(y), clcData->d, clcData->alg, t, clcData->jac_matrices, JacMat->data);
   for (i = 0; i < size; i++) {
     colptrs[i] = n;
     for (m = 0; m < clcData->nSD[i]; m++) rowvals[m + n] = clcData->SD[i][m];
