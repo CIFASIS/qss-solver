@@ -297,7 +297,7 @@ QSS_event QSS_Event(QSS_zc zeroCrossing, QSS_hnd handlerPos, QSS_hnd handlerNeg)
 
 void QSS_freeEvent(QSS_event events) { free(events); }
 
-QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, string name)
+QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, int state_eqs, int alg_eqs, string name)
 {
   char fileName[256];
   strcpy(fileName, name);
@@ -444,7 +444,7 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, s
   if (settings->lps > 0) {
     QSS_setReinitBuffer(TRUE);
   }
-  p->jac_matrices = SD_JacMatrices(states, algs);
+  p->jac_matrices = SD_JacMatrices(state_eqs, states, alg_eqs, algs);
   freeSettings(settings);
   return p;
 }

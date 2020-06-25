@@ -86,7 +86,7 @@ struct CLC_data_ {
   SD_jacMatrices jac_matrices;
 };
 
-CLC_data CLC_Data(int states, int discretes, int events, int inputs, int algebraics, string name);
+CLC_data CLC_Data(int states, int discretes, int events, int inputs, int algebraics, int state_eqs, int alg_eqs, string name);
 
 void CLC_freeData(CLC_data data);
 

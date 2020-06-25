@@ -35,7 +35,7 @@ CLC_event CLC_Event(CLC_zc zeroCrossing, CLC_hnd handlerPos, CLC_hnd handlerNeg)
 
 void CLC_freeEvent(CLC_event events) { free(events); }
 
-CLC_data CLC_Data(int states, int discretes, int events, int inputs, int algebraics, string name)
+CLC_data CLC_Data(int states, int discretes, int events, int inputs, int algebraics, int state_eqs, int alg_eqs, string name)
 {
   char fileName[256];
   strcpy(fileName, name);
@@ -98,7 +98,7 @@ CLC_data CLC_Data(int states, int discretes, int events, int inputs, int algebra
   if (events) {
     p->fired = (char*)malloc(events);
   }
-  p->jac_matrices = SD_JacMatrices(states, algebraics);
+  p->jac_matrices = SD_JacMatrices(state_eqs, states, alg_eqs, algebraics);
   freeSettings(settings);
   return p;
 }
