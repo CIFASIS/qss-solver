@@ -45,9 +45,9 @@ void JacGenerator::postProcess(SBG::VertexProperty vertex)
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
   code << tab << "r = 0;" << endl;
-  code << tab << "for (col = 0; col < dvdx.dfdx[" << id << "].size[r]; col++) {" << endl;
+  code << tab << "for (col = 0; col < dvdx->df_dx[" << id << "].size[r]; col++) {" << endl;
   code << tab << "  for (row = r; row < r + " << size << "; row++) {" << endl;
-  code << tab << "    jac(jit) = dvdx.dfdx[].value[row-r][col];" << endl;
+  code << tab << "    jac(jit) = dvdx->df_dx[" << id << "].value[row-r][col];" << endl;
   code << tab << "  }" << endl;
   code << tab << "}" << endl;
   code << tab << "r += " << size << endl;
@@ -97,9 +97,9 @@ void JacGenerator::generatePos(int id, EQUATION::Type type, string row, string c
   string tab = Utils::instance().tabs(_tabs);
   code << tab << col << " = pos(dvdx->";
   if (type == EQUATION::Algebraic) {
-    code << "dgdx";
+    code << "dg_dx";
   } else {
-    code << "dfdx";
+    code << "df_dx";
   }
   code << "[" << id << "].index[" << row << "], x_ind);" << endl;
   _jac_def.code.append(code.str());
@@ -109,7 +109,7 @@ void JacGenerator::generateEquation(int id, EQUATION::Type type)
 {
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
-  string mat = (type == EQUATION::Algebraic) ? "dgdx" : "dfdx";
+  string mat = (type == EQUATION::Algebraic) ? "dg_dx" : "df_dx";
   code << tab << "dvdx->" << mat << "[" << id << "].value[row][col] +=  aux;" << endl;
   _jac_def.code.append(code.str());
 }
@@ -118,9 +118,9 @@ void JacGenerator::generateEquation(int v_id, int g_id, EQUATION::Type type)
 {
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
-  string mat = (type == EQUATION::Algebraic) ? "dgdx" : "dfdx";
-  code << tab << "dvdx->" << mat << "dfdx[" << v_id << "].value[row][col] += ";
-  code << "aux * dvdx->dgdx[" << g_id << "].value[row_g][col_g];" << endl;
+  string mat = (type == EQUATION::Algebraic) ? "dg_dx" : "df_dx";
+  code << tab << "dvdx->" << mat << "df_dx[" << v_id << "].value[row][col] += ";
+  code << "aux * dvdx->dg_dx[" << g_id << "].value[row_g][col_g];" << endl;
   _jac_def.code.append(code.str());
 }
 
