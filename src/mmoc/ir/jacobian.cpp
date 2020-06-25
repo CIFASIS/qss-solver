@@ -44,13 +44,12 @@ void JacGenerator::postProcess(SBG::VertexProperty vertex)
   int id = vertex.id();
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
-  code << tab << "r = 0;" << endl;
   code << tab << "for (col = 0; col < dvdx->df_dx[" << id << "].size[r]; col++) {" << endl;
   code << tab << "  for (row = r; row < r + " << size << "; row++) {" << endl;
-  code << tab << "    jac(jit) = dvdx->df_dx[" << id << "].value[row-r][col];" << endl;
+  code << tab << "    _jac(jit) = dvdx->df_dx[" << id << "].value[row-r][col];" << endl;
   code << tab << "  }" << endl;
   code << tab << "}" << endl;
-  code << tab << "r += " << size << endl;
+  code << tab << "r += " << size << ";" << endl;
   _jac_def.code.append(code.str());
 }
 
@@ -95,13 +94,13 @@ void JacGenerator::generatePos(int id, EQUATION::Type type, string row, string c
 {
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
+  string type_str = "df_dx";
   code << tab << col << " = pos(dvdx->";
   if (type == EQUATION::Algebraic) {
-    code << "dg_dx";
-  } else {
-    code << "df_dx";
+    type_str = "dg_dx";
   }
-  code << "[" << id << "].index[" << row << "], x_ind);" << endl;
+  code << type_str << "[" << id << "].index[" << row << "], ";
+  code << "dvdx->" << type_str << "[" << id << "].size[" << row << "], x_ind);" << endl;
   _jac_def.code.append(code.str());
 }
 
@@ -119,7 +118,7 @@ void JacGenerator::generateEquation(int v_id, int g_id, EQUATION::Type type)
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
   string mat = (type == EQUATION::Algebraic) ? "dg_dx" : "df_dx";
-  code << tab << "dvdx->" << mat << "df_dx[" << v_id << "].value[row][col] += ";
+  code << tab << "dvdx->" << mat << "[" << v_id << "].value[row][col] += ";
   code << "aux * dvdx->dg_dx[" << g_id << "].value[row_g][col_g];" << endl;
   _jac_def.code.append(code.str());
 }
@@ -130,10 +129,10 @@ void JacGenerator::visitF(Equation eq, SBG::VariableDep var_dep, SBG::Map map)
   VarSymbolTable symbols = Utils::instance().symbols();
   dependencyPrologue(eq, var_dep, map);
   string tab = Utils::instance().tabs(_tabs);
-  generatePos(eq.id(), eq.type());
+  generatePos(eq.arrayId(), eq.type());
   code << tab << "aux = " << ExpressionDerivator::partialDerivative(eq, Index(map.exp())) << ";" << endl;
   _jac_def.code.append(code.str());
-  generateEquation(eq.id(), eq.type());
+  generateEquation(eq.arrayId(), eq.type());
   dependencyEpilogue();
 }
 
@@ -141,7 +140,7 @@ void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep
 {
   stringstream code;
   dependencyPrologue(g_eq, var_dep, n_map);
-  generatePos(v_eq.id(), v_eq.type());
+  generatePos(v_eq.arrayId(), v_eq.type());
   vector<string> variables;
   variables.push_back("row");
   vector<string> exps = map_m.exps(variables);
@@ -153,8 +152,8 @@ void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep
   }
   code << ";" << endl;
   _jac_def.code.append(code.str());
-  generatePos(g_eq.id(), g_eq.type(), "row_g", "col_g");
-  generateEquation(v_eq.id(), g_eq.id(), v_eq.type());
+  generatePos(g_eq.arrayId(), g_eq.type(), "row_g", "col_g");
+  generateEquation(v_eq.arrayId(), g_eq.arrayId(), v_eq.type());
   dependencyEpilogue();
 }
 
@@ -162,7 +161,7 @@ void JacGenerator::initG(Equation eq, SBG::Map map_m)
 {
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
-  code << tab << "aux = " << ExpressionDerivator::partialDerivative(eq, Index(map_m.exp())) << endl;
+  code << tab << "aux = " << ExpressionDerivator::partialDerivative(eq, Index(map_m.exp())) << ";" << endl;
   _jac_def.code.append(code.str());
 }
 
