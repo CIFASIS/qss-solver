@@ -432,10 +432,14 @@ void ModelInstance::jacobian()
   jac.build();
   _writer->write("int row, row_g;", WRITER::Jacobian);
   _writer->write("int col, col_g;", WRITER::Jacobian);
-  _writer->write("int x_ind, r;", WRITER::Jacobian);
+  _writer->write("int x_ind, r = 0;", WRITER::Jacobian);
+  _writer->write("int jit = 0;", WRITER::Jacobian);
   _writer->write("double aux;", WRITER::Jacobian);
   _writer->write(Utils::instance().localSymbols(), WRITER::Jacobian);
   _writer->write(jac.code(), WRITER::Jacobian);
+  // Add local variables to the initialization procedure prologue.
+  _writer->write("int row;", WRITER::Prologue);
+  _writer->write("int x_ind;", WRITER::Prologue);
 }
 
 void ModelInstance::generate()
