@@ -90,6 +90,7 @@ class Equation {
   std::string applyId() const;
   Equation genAlgEquation(Equation der_eq, Index rhs_usage, Index lhs_usage);
   void dependencyUsage(Deps::VariableDependency var_dep, Index index);
+  int arrayId() const;
 
   protected:
   void initialize(AST_Equation eq);

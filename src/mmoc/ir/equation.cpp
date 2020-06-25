@@ -261,6 +261,8 @@ void Equation::dependencyUsage(VariableDependency var_dep, Index index)
   }
 }
 
+int Equation::arrayId() const { return _id - 1; }
+
 Equation Dependency::generate(Equation eq, Index idx, AlgebraicPath algs)
 {
   Equation dep = eq;
