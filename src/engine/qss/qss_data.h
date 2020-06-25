@@ -72,7 +72,7 @@ typedef void (*QSS_hnd)(int, double *, double *, double *, double);
 
 typedef void (*QSS_input)(double, double *);
 
-typedef void (*QSS_jac)(double *, double *, double *, double, double *);
+typedef void (*QSS_jac)(double *, double *, double *, double, SD_jacMatrices, double *);
 
 typedef void (*QSS_fmodel)(double *, double *, double *, double, double *, int *, int);
 

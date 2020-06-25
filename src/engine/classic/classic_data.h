@@ -45,7 +45,7 @@ struct CLC_event_ {
   CLC_hnd handlerNeg;
 };
 
-typedef void (*CLC_jac)(double *x, double *d, double *alg, double t, double *j);
+typedef void (*CLC_jac)(double *, double *, double *, double, SD_jacMatrices, double *);
 
 CLC_event CLC_Event(CLC_zc zeroCrossing, CLC_hnd handlerPos, CLC_hnd handlerNeg);
 
