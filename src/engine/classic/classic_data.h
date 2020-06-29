@@ -45,7 +45,7 @@ struct CLC_event_ {
   CLC_hnd handlerNeg;
 };
 
-typedef void (*CLC_jac)(double *x, double *d, double *alg, double t, double *j);
+typedef void (*CLC_jac)(double *, double *, double *, double, SD_jacMatrices, double *);
 
 CLC_event CLC_Event(CLC_zc zeroCrossing, CLC_hnd handlerPos, CLC_hnd handlerNeg);
 
@@ -86,7 +86,7 @@ struct CLC_data_ {
   SD_jacMatrices jac_matrices;
 };
 
-CLC_data CLC_Data(int states, int discretes, int events, int inputs, int algebraics, string name);
+CLC_data CLC_Data(int states, int discretes, int events, int inputs, int algebraics, int state_eqs, int alg_eqs, string name);
 
 void CLC_freeData(CLC_data data);
 

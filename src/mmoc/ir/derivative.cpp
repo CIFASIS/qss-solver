@@ -42,7 +42,7 @@ using namespace Util;
 using namespace Deps;
 namespace IR {
 
-ExpressionDerivator::ExpressionDerivator() : _chain_rule_terms() {}
+ExpressionDerivator::ExpressionDerivator() {}
 
 AST_Equation_Equality EquationDerivator::derivate(AST_Equation_Equality eq)
 {
@@ -57,8 +57,6 @@ AST_Equation_Equality EquationDerivator::derivate(AST_Equation_Equality eq)
   return (newAST_Equation_Equality(to_exp.convert(der_left), to_exp.convert(der_right))->getAsEquality());
 }
 
-list<Equation> ExpressionDerivator::terms() const { return _chain_rule_terms; };
-
 AST_Expression ExpressionDerivator::derivate(AST_Expression exp, Expression e)
 {
   VarSymbolTable symbols = Utils::instance().symbols();
@@ -70,101 +68,23 @@ AST_Expression ExpressionDerivator::derivate(AST_Expression exp, Expression e)
   return to_exp.convert(der_exp);
 }
 
-Equation ExpressionDerivator::generateEquation(AST_Expression lhs, AST_Expression rhs, Option<Range> range, int id)
+Expression ExpressionDerivator::partialDerivative(Equation eq, Index variable)
 {
-  VarSymbolTable symbols = Utils::instance().symbols();
-  IsConstantExpression constant_exp;
-  Option<Range> eq_range;
-  if (!constant_exp.apply(rhs)) {
-    eq_range = range;
-  }
-  Equation eq(lhs, rhs, symbols, eq_range, EQUATION::JacobianTerm, id);
-  if (!checkExpression(rhs)) {
-    return Equation();
-  }
-  return eq;
-}
-
-AST_Expression ExpressionDerivator::jacobianVariable(string name) { return newAST_Expression_ComponentReferenceExp(newAST_String(name)); }
-
-bool ExpressionDerivator::checkExpression(AST_Expression exp)
-{
-  if (exp->expressionType() == EXPINTEGER) {
-    if (exp->getAsInteger()->val() == 0) {
-      return false;
-    }
-  }
-  return true;
-}
-
-void ExpressionDerivator::generateJacobian(Index index, Equation eq, Deps::AlgebraicPath path)
-{
-  bool chain_rule = false;
-  AST_Expression jac_exp_lhs = jacobianVariable("_jac_exp");
-  AST_Expression lhs = jacobianVariable("_chain_rule");
-  Index alg_index;
-  Index ch_alg_index;
-  AlgebraicPath::reverse_iterator it;
-  VariableDependency var;
-  for (it = path.rbegin(); it != path.rend(); it++) {
-    var = *it;
-    EquationTable algebraic_eqs = ModelConfig::instance().algebraics();
-    Option<Equation> alg = algebraic_eqs[var.equationId()];
-    if (alg) {
-      alg_index = var.ife();
-      Equation alg_usage = alg.get();
-      alg_usage.applyUsage(alg_index);
-      Equation chain_rule_eq;
-      if (chain_rule) {
-        AST_Expression exp = generateJacobianExp(ch_alg_index, alg_usage);
-        chain_rule_eq = generateEquation(lhs, newAST_Expression_BinOp(exp, lhs, BINOPMULT), alg_usage.range(), alg->id());
-      } else {
-        AST_Expression exp = generateJacobianExp(index, alg_usage);
-        chain_rule_eq = generateEquation(lhs, exp, alg_usage.range(), alg->id());
-        chain_rule = !chain_rule_eq.isEmpty();
-      }
-      if (!chain_rule_eq.isEmpty()) {
-        ch_alg_index = alg_index;
-        chain_rule_eq.setUsage(alg_index);
-        _chain_rule_terms.push_back(chain_rule_eq);
-      }
-    }
-  }
-  AST_Expression exp = generateJacobianExp(index, eq);
-  Equation jac_eq;
-  if (chain_rule) {
-    Equation usage_eq = eq;
-    usage_eq.dependencyUsage(var, alg_index);
-    AST_Expression mult = newAST_Expression_BinOp(generateJacobianExp(alg_index, usage_eq), lhs, BINOPMULT);
-    AST_Expression sum = newAST_Expression_BinOp(mult, exp, BINOPADD);
-    jac_eq = generateEquation(jac_exp_lhs, sum, usage_eq.range(), usage_eq.id());
-  } else {
-    jac_eq = generateEquation(jac_exp_lhs, exp, eq.range(), eq.id());
-  }
-  jac_eq.setUsage(index);
-  _chain_rule_terms.push_back(jac_eq);
-}
-
-AST_Expression ExpressionDerivator::generateJacobianExp(Index index, Equation eq)
-{
-  Equation usage_eq = eq;
-  AST_Expression rhs_exp = usage_eq.rhs().expression();
-  Variable variable = index.variable();
-  string usage = index.modelicaExp();
+  Variable var_usage = variable.variable();
+  assert(var_usage.isState() || var_usage.isAlgebraic());
+  AST_Expression rhs_exp = eq.rhs().expression();
+  string usage = variable.modelicaExp();
   VarSymbolTable symbols = Utils::instance().symbols();
   ConvertToGiNaC to_ginac(symbols, Option<Expression>());
   ConvertToExpression to_exp;
   ReplaceDer replace_der(symbols);
-  Option<Variable> lhs = eq.LHSVariable();
-  assert(lhs);
   GiNaC::ex dexp = to_ginac.convert(rhs_exp, false, true);
   map<string, GiNaC::symbol> dir = to_ginac.directory();
   GiNaC::symbol time = to_ginac.getTime();
-  assert(variable.isState() || variable.isAlgebraic());
   GiNaC::symbol ginac_usage = dir[usage];
   GiNaC::ex der_exp = dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff(ginac_usage);
   AST_Expression jac_exp = replace_der.apply(to_exp.convert(der_exp));
-  return jac_exp;
+  return Expression(jac_exp, symbols);
 }
 
 }  // namespace IR

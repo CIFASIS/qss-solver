@@ -281,11 +281,13 @@ void SD_freeJacMatrix(SD_jacMatrix jac_matrix);
 
 typedef struct SD_jacMatrices_ *SD_jacMatrices;
 struct SD_jacMatrices_ {
+  int state_eqs;
+  int alg_eqs;
   SD_jacMatrix df_dx;
   SD_jacMatrix dg_dx;
 };
 
-SD_jacMatrices SD_JacMatrices(int states, int algs);
+SD_jacMatrices SD_JacMatrices(int state_eqs, int states, int alg_eqs, int algs);
 
 void SD_allocJacMatrices(SD_jacMatrices jac_matrices);
 

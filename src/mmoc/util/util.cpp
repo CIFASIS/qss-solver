@@ -361,5 +361,14 @@ Expression Utils::variableExpression(string name, Option<IR::Range> range, const
   return Expression(var, symbols);
 }
 
+string Utils::tabs(int t)
+{
+  string tab;
+  for (int i = 0; i < t; i++) {
+    tab.append(TAB);
+  }
+  return tab;
+}
+
 }  // namespace Util
 }  // namespace MicroModelica

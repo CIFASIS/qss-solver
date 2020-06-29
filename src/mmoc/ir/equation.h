@@ -32,7 +32,7 @@ typedef ModelTable<std::string, std::string> SymbolTable;
 
 namespace IR {
 namespace EQUATION {
-typedef enum { ClassicDerivative, QSSDerivative, Algebraic, Dependency, Output, ZeroCrossing, Handler, Jacobian, JacobianTerm } Type;
+typedef enum { ClassicDerivative, QSSDerivative, Algebraic, Dependency, Output, ZeroCrossing, _Function_handler } Type;
 }
 class EquationVariable {
   public:
@@ -74,7 +74,6 @@ class Equation {
   inline bool isZeroCrossing() const { return _type == EQUATION::ZeroCrossing; }
   inline bool isOutput() const { return _type == EQUATION::Output; }
   inline bool isAlgebraic() const { return _type == EQUATION::Algebraic; }
-  inline bool isJacobian() const { return _type == EQUATION::Jacobian; }
   Option<Util::Variable> LHSVariable() const;
   friend std::ostream &operator<<(std::ostream &out, const Equation &e);
   bool isValid() const;
@@ -91,6 +90,7 @@ class Equation {
   std::string applyId() const;
   Equation genAlgEquation(Equation der_eq, Index rhs_usage, Index lhs_usage);
   void dependencyUsage(Deps::VariableDependency var_dep, Index index);
+  int arrayId() const;
 
   protected:
   void initialize(AST_Equation eq);
@@ -115,7 +115,7 @@ class Equation {
 
 typedef ModelTable<int, Equation> EquationTable;
 
-class Jacobian {
+/*class Jacobian {
   public:
   Jacobian() : _symbols(), _jac_terms(){};
   Jacobian(Util::VarSymbolTable &symbols) : _symbols(symbols), _jac_terms(){};
@@ -127,7 +127,7 @@ class Jacobian {
   private:
   Util::VarSymbolTable _symbols;
   list<Equation> _jac_terms;
-};
+};*/
 
 class Dependency {
   public:

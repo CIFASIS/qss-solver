@@ -756,18 +756,6 @@ bool IndexPair::operator<(const IndexPair &other) const
 std::ostream &operator<<(std::ostream &os, const IndexPair &ip)
 {
   os << "(" << ip.Dom() << ", " << ip.Ran() << ")";
-  /*if (ip.OS().Size()) {
-    os << "Offset = {";
-    for (int i: ip.OS())
-      os << i << " ";
-    os << "}";
-  }
-  if (ip.GetUsage().Size()) {
-    os << "Usage = {";
-    for (int i: ip.GetUsage())
-      os << i << " ";
-    os << "}";
-  } */
   return os;
 }
 

@@ -205,6 +205,8 @@ Range::Range(Variable var, RANGE::Type type) : _ranges(), _indexPos(), _size(0),
 
 Range::Range(AST_Expression exp) : _ranges(), _indexPos(), _size(0), _type(RANGE::For) { generate(exp); }
 
+Range::Range(SBG::MDI mdi) : _ranges(), _indexPos(), _size(0), _type(RANGE::For) { generate(mdi); }
+
 void Range::setRangeDefinition(AST_ForIndexList fil, VarSymbolTable symbols)
 {
   AST_ForIndexListIterator filit;
@@ -280,6 +282,30 @@ void Range::generate(AST_Expression exp)
     } else {
       _rowSize.push_back(1);
     }
+  }
+}
+
+void Range::generate(SBG::MDI mdi)
+{
+  int pos = 0;
+  for (auto interval : mdi.intervals()) {
+    int begin = interval.lower();
+    int end = interval.upper();
+    if (end < begin) {
+      Error::instance().add(0, EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong range in dependency matrix.");
+    }
+    string index = Utils::instance().iteratorVar(pos);
+    _ranges.insert(index, RangeDefinition(begin, end));
+    _indexPos.insert(index, pos++);
+    Option<RangeDefinition> range = _ranges[index];
+    if (range) {
+      _size += range->size();
+      _rowSize.push_back(range->size());
+    } else {
+      _rowSize.push_back(1);
+    }
+    Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
+    Utils::instance().symbols().insert(index, vi);
   }
 }
 
@@ -450,6 +476,30 @@ void Range::applyUsage(Index usage)
       _ranges.insert(_ranges.key(it), new_range);
     }
   }
+}
+
+string Range::in(ExpressionList exps)
+{
+  vector<string> str_exps;
+  for (auto e : exps) {
+    str_exps.push_back(e.print());
+  }
+  return in(str_exps);
+}
+
+string Range::in(vector<string> exps)
+{
+  assert(exps.size() == _ranges.size());
+  stringstream code;
+  RangeDefinitionTable::iterator it;
+  code << "if (";
+  int i = 0;
+  for (RangeDefinition r = _ranges.begin(it); !_ranges.end(it); r = _ranges.next(it), i++) {
+    string exp_str = exps[i];
+    code << "(" << r.begin() << " <= " << exp_str << " && " << exp_str << " <= " << r.end() << ")";
+  }
+  code << ") {" << endl;
+  return code.str();
 }
 
 std::ostream& operator<<(std::ostream& out, const Range& r) { return out << r.print(); }

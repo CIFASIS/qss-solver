@@ -17,37 +17,35 @@
 
  ******************************************************************************/
 
-#ifndef DERIVATIVE_H_
-#define DERIVATIVE_H_
+#ifndef SD_SB_GRAPH_BUILDER_H
+#define SD_SB_GRAPH_BUILDER_H
 
-#include <map>
-
-#include "../ast/ast_types.h"
-#include "../deps/dependency_matrix.h"
-#include "../util/util_types.h"
-#include "../util/visitors/jac_alg_exps.h"
-#include "index.h"
-#include "equation.h"
-#include "expression.h"
+#include "../../ir/class.h"
+#include "../../util/symbol_table.h"
+#include "../graph/sb_graph.h"
 
 namespace MicroModelica {
-namespace IR {
+namespace Deps {
 
-class EquationDerivator {
+class SDSBGraphBuilder {
   public:
-  static AST_Equation_Equality derivate(AST_Equation_Equality eq);
+  SDSBGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics, Util::VarSymbolTable &symbols);
+  ~SDSBGraphBuilder() = default;
+  SBG::SBGraph build();
+
+  protected:
+  std::string nodeName(IR::Equation eq);
+
+  private:
+  list<SBG::F_Vertex> _equation_def_nodes;
+  list<SBG::S_Vertex> _equation_lhs_nodes;
+  list<SBG::S_Vertex> _state_nodes;
+  IR::EquationTable _equations;
+  IR::EquationTable _algebraics;
+  Util::VarSymbolTable _symbols;
+  std::map<std::string, int> _node_names;
 };
-
-class ExpressionDerivator {
-  public:
-  ExpressionDerivator();
-  ~ExpressionDerivator() = default;
-
-  static AST_Expression derivate(AST_Expression exp, Expression e);
-  static Expression partialDerivative(Equation eq, Index variable);
-};
-
-}  // namespace IR
+}  // namespace Deps
 }  // namespace MicroModelica
 
-#endif /* DERIVATIVE_H_ */
+#endif /* SD_SB_GRAPH_BUILDER_H */

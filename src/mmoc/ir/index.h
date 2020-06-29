@@ -25,6 +25,7 @@
 
 #include "expression.h"
 #include "../deps/graph/graph_helpers.h"
+#include "../deps/graph/sb_graph_helpers.h"
 #include "../util/symbol_table.h"
 #include "../util/table.h"
 
@@ -69,6 +70,7 @@ class Range {
   Range(AST_Statement_For stf, Util::VarSymbolTable symbols, RANGE::Type type = RANGE::For);
   Range(Util::Variable var, RANGE::Type type = RANGE::For);
   Range(AST_Expression exp);
+  Range(Deps::SBG::MDI mdi);
   ~Range() = default;
 
   inline int size() const { return _size; };
@@ -89,11 +91,14 @@ class Range {
   bool intersect(Range other);
   Deps::MDI getMDI();
   void applyUsage(Index usage);
+  std::string in(ExpressionList exps);
+  std::string in(std::vector<std::string> exps);
   friend std::ostream& operator<<(std::ostream& out, const Range& r);
 
   protected:
   void generate(Util::Variable var);
   void generate(AST_Expression exp);
+  void generate(Deps::SBG::MDI mdi);
 
   private:
   void setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);

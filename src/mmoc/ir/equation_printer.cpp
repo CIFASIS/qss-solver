@@ -51,10 +51,6 @@ EquationPrinter* getPrinter(Equation eq, Util::VarSymbolTable symbols)
     return new OutputPrinter(eq, symbols);
   case EQUATION::Algebraic:
     return new AlgebraicPrinter(eq, symbols);
-  case EQUATION::Jacobian:
-    return new JacobianPrinter(eq, symbols);
-  case EQUATION::JacobianTerm:
-    return new JacobianTermPrinter(eq, symbols);
   case EQUATION::Dependency:
     return new DependencyPrinter(eq, symbols);
   case EQUATION::ZeroCrossing:
@@ -110,8 +106,6 @@ string EquationPrinter::lhs(int order) const
     }
     break;
   }
-  case EQUATION::Jacobian:
-    return "_jac(jit)";
   default:
     return "";
   }
@@ -135,104 +129,6 @@ string EquationPrinter::prefix() const
     return "";
   }
   return "";
-}
-
-JacobianPrinter::JacobianPrinter(Equation eq, Util::VarSymbolTable symbols)
-    : EquationPrinter(eq, symbols), _usage(eq.usage()), _range(eq.range()), _lhs(eq.lhs()), _rhs(eq.rhs())
-{
-}
-
-string JacobianPrinter::print() const
-{
-  stringstream buffer;
-  string tabs = "";
-  FunctionPrinter fp;
-  string arguments;
-  tabs += TAB;
-  // Case 1 -> N
-  const bool PRINT_EQ_RANGE = _usage.isConstant() && _range;
-  if (_range) {
-    tabs = _range->block();
-    if (PRINT_EQ_RANGE) {
-      buffer << _range.get();
-      arguments = _range.get().indexes();
-    } else {
-      Index revert = _usage.revert().replace();
-      arguments = revert.usageExp();
-    }
-  }
-  tabs += TAB;
-  buffer << fp.beginDimGuards(equationId(), arguments, _range);
-  buffer << tabs << prefix() << lhs() << " = " << _rhs << ";";
-  buffer << endl << TAB << fp.endDimGuards(_range);
-  if (PRINT_EQ_RANGE) {
-    buffer << _range.get().end();
-  }
-  return buffer.str();
-}
-
-JacobianTermPrinter::JacobianTermPrinter(Equation eq, Util::VarSymbolTable symbols)
-    : EquationPrinter(eq, symbols),
-      _usage(eq.usage()),
-      _range(eq.range()),
-      _lhs(eq.lhs()),
-      _rhs(eq.rhs()),
-      _id(eq.id()),
-      _type(JacChainRule)
-{
-  string lhs_var = _lhs.print();
-  if (lhs_var.compare("__chain_rule")) {
-    _type = JacExp;
-  }
-}
-
-string JacobianTermPrinter::op() const
-{
-  AST_Expression rhs = _rhs.expression();
-  if (_type == JacChainRule) {
-    return " = ";
-  } else if (rhs->expressionType() == EXPINTEGER && rhs->getAsInteger()->val() == 0) {
-    return " = ";
-  }
-  return " += ";
-}
-
-string JacobianTermPrinter::print() const
-{
-  stringstream buffer;
-  string tabs = "";
-  FunctionPrinter fp;
-  string arguments;
-  tabs += TAB;
-  const bool PRINT_EQ_RANGE = _usage.isConstant() && _range;
-  if (_range) {
-    tabs = _range->block();
-    if (PRINT_EQ_RANGE) {
-      buffer << _range.get();
-      arguments = _range.get().indexes();
-    } else {
-      Index revert = _usage.revert().replace();
-      arguments = revert.usageExp();
-    }
-  }
-  tabs += TAB;
-  buffer << fp.beginDimGuards(equationId(), arguments, _range);
-  buffer << tabs << prefix() << _lhs << op() << _rhs << ";";
-  buffer << endl << TAB << fp.endDimGuards(_range);
-  if (PRINT_EQ_RANGE) {
-    buffer << _range.get().end();
-  }
-  return buffer.str();
-}
-
-string JacobianTermPrinter::equationId() const
-{
-  stringstream buffer;
-  if (_type == JacChainRule) {
-    buffer << "_alg";
-  }
-  buffer << "_eq_" << _id;
-  return buffer.str();
 }
 
 DerivativePrinter::DerivativePrinter(Equation eq, VarSymbolTable symbols)

@@ -17,37 +17,29 @@
 
  ******************************************************************************/
 
-#ifndef DERIVATIVE_H_
-#define DERIVATIVE_H_
+#ifndef INDEX_SHIFT_BUILDER_H
+#define INDEX_SHIFT_BUILDER_H
 
-#include <map>
-
-#include "../ast/ast_types.h"
-#include "../deps/dependency_matrix.h"
-#include "../util/util_types.h"
-#include "../util/visitors/jac_alg_exps.h"
-#include "index.h"
-#include "equation.h"
-#include "expression.h"
+#include "../../ir/equation.h"
+#include "../../util/symbol_table.h"
+#include "../graph/sb_graph_helpers.h"
 
 namespace MicroModelica {
-namespace IR {
+namespace Deps {
 
-class EquationDerivator {
+class IndexShiftBuilder {
   public:
-  static AST_Equation_Equality derivate(AST_Equation_Equality eq);
+  IndexShiftBuilder(IR::EquationTable &algebraics, Util::VarSymbolTable &symbols);
+  ~IndexShiftBuilder() = default;
+  SBG::IndexShift build();
+
+  private:
+  IR::EquationTable _algebraics;
+  Util::VarSymbolTable _symbols;
+  SBG::IndexShift _index_shift;
 };
 
-class ExpressionDerivator {
-  public:
-  ExpressionDerivator();
-  ~ExpressionDerivator() = default;
-
-  static AST_Expression derivate(AST_Expression exp, Expression e);
-  static Expression partialDerivative(Equation eq, Index variable);
-};
-
-}  // namespace IR
+}  // namespace Deps
 }  // namespace MicroModelica
 
-#endif /* DERIVATIVE_H_ */
+#endif /* INDEX_SHIFT_BUILDER_H */

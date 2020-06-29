@@ -25,7 +25,9 @@
 #include "builders/ds_graph_builder.h"
 #include "builders/dz_graph_builder.h"
 #include "builders/ea_graph_builder.h"
+#include "builders/index_shift_builder.h"
 #include "builders/sd_graph_builder.h"
+#include "builders/sd_sb_graph_builder.h"
 #include "builders/so_graph_builder.h"
 #include "builders/sz_graph_builder.h"
 
@@ -64,7 +66,7 @@ ModelDependencies::ModelDependencies()
       _LHSSt(LHSSTCfg),
       _RHSSt(RHSSTCfg),
       _HH(HHCfg),
-      _JAC(EmptyCfg),
+      _JAC(),
       _deps()
 {
 }
@@ -75,8 +77,8 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, Equati
   SDGraphBuilder SD = SDGraphBuilder(eqs, algs, symbols);
   DepsGraph SD_graph = SD.build();
   _deps.compute(SD_graph, _DS, TRAVERSE::Equation);
-  const bool KEEP_VISITED = false;
-  _deps.compute(SD_graph, _JAC, TRAVERSE::Equation, KEEP_VISITED);
+
+  _JAC.build();
 
   VariableDependencyMatrix DS_int(EmptyCfg);
   DSGraphBuilder DS = DSGraphBuilder(eqs, algs, symbols);

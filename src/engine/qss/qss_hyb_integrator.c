@@ -85,7 +85,7 @@ static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat, void *user_da
     bdfQ[cf0] = Ith(y, i);
   }
   SparseSetMatToZero(JacMat);
-  clcModel->jac(bdfQ, clcData->d, clcData->alg, t, clcData->jac);
+  clcModel->jac(bdfQ, clcData->d, clcData->alg, t, clcData->jac_matrices, clcData->jac);
   int jval = 0, jcol = 0;
   for (i = 0, jacIt = 0; i < nBDF; i++) {
     colptrs[i] = n;
@@ -189,7 +189,7 @@ void QSS_HYB_initialize(SIM_simulator simulate)
 
   QSS_model qssModel = simulator->model;
   if (qssModel->jac != NULL) {
-    qssModel->jac(x, qssData->d, qssData->alg, t, qssData->jac);
+    qssModel->jac(x, qssData->d, qssData->alg, t, qssData->jac_matrices, qssData->jac);
   }
   QSS_BDF_partition(qssData, simulator->output);
   QSS_SEQ_initialize(simulate);

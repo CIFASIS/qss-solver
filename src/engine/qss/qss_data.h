@@ -72,7 +72,7 @@ typedef void (*QSS_hnd)(int, double *, double *, double *, double);
 
 typedef void (*QSS_input)(double, double *);
 
-typedef void (*QSS_jac)(double *, double *, double *, double, double *);
+typedef void (*QSS_jac)(double *, double *, double *, double, SD_jacMatrices, double *);
 
 typedef void (*QSS_fmodel)(double *, double *, double *, double, double *, int *, int);
 
@@ -236,7 +236,7 @@ struct QSS_data_ {
   SD_jacMatrices jac_matrices;
 };
 
-QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, string name);
+QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, int state_eqs, int alg_eqs, string name);
 
 QSS_data QSS_copyData(QSS_data data);
 
