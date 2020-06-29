@@ -436,6 +436,7 @@ void ModelInstance::jacobian()
   _writer->write("int jit = 0;", WRITER::Jacobian);
   _writer->write("double aux;", WRITER::Jacobian);
   _writer->write(Utils::instance().localSymbols(), WRITER::Jacobian);
+  _writer->write("SD_cleanJacMatrices(dvdx);", WRITER::Jacobian);
   _writer->write(jac.code(), WRITER::Jacobian);
   // Add local variables to the initialization procedure prologue.
   _writer->write("int row;", WRITER::Prologue);
