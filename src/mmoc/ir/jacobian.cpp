@@ -123,6 +123,25 @@ void JacGenerator::generateEquation(int v_id, int g_id, EQUATION::Type type)
   _jac_def.code.append(code.str());
 }
 
+string JacGenerator::getVariableIndexes(Equation eq, Deps::SBG::Map map)
+{
+  stringstream code;
+  string tab = Utils::instance().tabs(_tabs);
+  if (eq.hasRange()) {
+    Option<Variable> var = eq.LHSVariable();
+    if (eq.isAlgebraic()) {
+      assert(map.exp().isReference());
+      var = map.exp().reference();
+    }
+    assert(var);
+    string args = eq.range()->getDimensionVars();
+    code << tab << "_get" << var.get() << "_idxs(row-1);" << endl;
+    code << tab << "_apply_usage" << eq.applyId() << "(" << args << ");" << endl;
+    eq.range()->addLocalVariables();
+  }
+  return code.str();
+}
+
 void JacGenerator::visitF(Equation eq, SBG::VariableDep var_dep, SBG::Map map)
 {
   stringstream code;
@@ -130,6 +149,7 @@ void JacGenerator::visitF(Equation eq, SBG::VariableDep var_dep, SBG::Map map)
   dependencyPrologue(eq, var_dep, map);
   string tab = Utils::instance().tabs(_tabs);
   generatePos(eq.arrayId(), eq.type());
+  code << getVariableIndexes(eq, map);
   code << tab << "aux = " << ExpressionDerivator::partialDerivative(eq, Index(map.exp())) << ";" << endl;
   _jac_def.code.append(code.str());
   generateEquation(eq.arrayId(), eq.type());
@@ -161,6 +181,7 @@ void JacGenerator::initG(Equation eq, SBG::Map map_m)
 {
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
+  code << getVariableIndexes(eq, map_m);
   code << tab << "aux = " << ExpressionDerivator::partialDerivative(eq, Index(map_m.exp())) << ";" << endl;
   _jac_def.code.append(code.str());
 }

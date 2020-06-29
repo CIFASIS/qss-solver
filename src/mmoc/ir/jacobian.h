@@ -59,6 +59,7 @@ class JacGenerator {
   void generatePos(int id, EQUATION::Type type, std::string row = "row", std::string col = "col");
   void generateEquation(int id, EQUATION::Type type);
   void generateEquation(int v_id, int g_id, EQUATION::Type type);
+  std::string getVariableIndexes(Equation eq, Deps::SBG::Map map);
 
   JacDef _jac_def;
   int _tabs;
