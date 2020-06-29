@@ -65,7 +65,6 @@ void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SB
   string inner_tabs = tabs + TAB;
   if (der_matrix.find(eq.arrayId()) == der_matrix.end()) {
     code << tabs << range.in(exps);
-    code << inner_tabs << "x_ind = " << x_ind_exp << ";" << endl;
   }
   string code_guards = code.str();
   if (!code_guards.empty()) {
@@ -75,6 +74,7 @@ void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SB
     code << inner_tabs << "modelData->jac_matrices->df_dx[" << eq.arrayId() << "].size[row]++;" << endl;
     _matrix.alloc.append(code.str());
     code.str("");
+    code << inner_tabs << "x_ind = " << x_ind_exp << ";" << endl;
     code << inner_tabs << "modelData->jac_matrices->df_dx[" << eq.arrayId() << "].index[row][states[x_ind]++] = x_ind;" << endl;
     _matrix.init.append(code.str());
     code.str("");
