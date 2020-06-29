@@ -437,6 +437,16 @@ void SD_allocJacMatrix(SD_jacMatrix jac_matrix)
   }
 }
 
+void SD_cleanJacMatrix(SD_jacMatrix jac_matrix)
+{
+  int i, variables = jac_matrix->variables;
+  for (i = 0; i < variables; i++) {
+    if (jac_matrix->size[i] > 0) {
+      cleanVector(jac_matrix->value[i], 0, jac_matrix->size[i]);
+    }
+  }
+}
+
 void SD_freeJacMatrix(SD_jacMatrix jac_matrix)
 {
   int i, variables = jac_matrix->variables;
@@ -471,6 +481,18 @@ void SD_allocJacMatrices(SD_jacMatrices jac_matrices)
   eqs = jac_matrices->alg_eqs;
   for (i = 0; i < eqs; i++) {
     SD_allocJacMatrix(&(jac_matrices->dg_dx[i]));
+  }
+}
+
+void SD_cleanJacMatrices(SD_jacMatrices jac_matrices)
+{
+  int i, eqs = jac_matrices->state_eqs;
+  for (i = 0; i < eqs; i++) {
+    SD_cleanJacMatrix(&(jac_matrices->df_dx[i]));
+  }
+  eqs = jac_matrices->alg_eqs;
+  for (i = 0; i < eqs; i++) {
+    SD_cleanJacMatrix(&(jac_matrices->dg_dx[i]));
   }
 }
 
