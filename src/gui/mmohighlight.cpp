@@ -293,7 +293,10 @@ MmoHighlighter::MmoHighlighter(QTextDocument *parent, h_type file) : QSyntaxHigh
                     << "\\bZero\\b"
                     << "\\bLP\\b"
                     << "\\bstep\\b"
-                    << "\\bcost\\b";
+                    << "\\bcost\\b"
+                    << "\\bNewton\\b"
+                    << "\\biterations\\b"
+                    << "\\bperformed\\b";
     foreach (const QString &pattern, keywordPatterns) {
       rule.pattern = QRegExp(pattern);
       rule.format = keywordFormat;

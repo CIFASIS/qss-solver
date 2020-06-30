@@ -25,24 +25,10 @@
 #include <QHash>
 #include <QTextCharFormat>
 
-/**
- *
- */
 class MmoHighlighter : public QSyntaxHighlighter {
   Q_OBJECT
   public:
-  /**
-   *
-   */
-  typedef enum {
-    MMO_MODEL,  //!< MMO_MODEL
-    MMO_LOG     //!< MMO_LOG
-  } h_type;
-  /**
-   *
-   * @param parent
-   * @param file
-   */
+  typedef enum { MMO_MODEL, MMO_LOG } h_type;
   MmoHighlighter(QTextDocument *parent = 0, h_type file = MMO_MODEL);
 
   protected:
