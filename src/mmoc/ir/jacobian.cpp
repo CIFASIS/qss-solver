@@ -57,6 +57,7 @@ void JacGenerator::init(SBG::VertexProperty vertex)
 {
   stringstream code;
   code << "for(row = 1; row <= " << vertex.size() << "; row++) {" << endl;
+  code << TAB << "c_row = _c_index(row);" << endl;
   _tabs++;
   _jac_def.code.append(code.str());
 }
@@ -109,7 +110,7 @@ void JacGenerator::generateEquation(int id, EQUATION::Type type)
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
   string mat = (type == EQUATION::Algebraic) ? "dg_dx" : "df_dx";
-  code << tab << "dvdx->" << mat << "[" << id << "].value[row][col] +=  aux;" << endl;
+  code << tab << "dvdx->" << mat << "[" << id << "].value[c_row][col] +=  aux;" << endl;
   _jac_def.code.append(code.str());
 }
 
@@ -118,8 +119,8 @@ void JacGenerator::generateEquation(int v_id, int g_id, EQUATION::Type type)
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
   string mat = (type == EQUATION::Algebraic) ? "dg_dx" : "df_dx";
-  code << tab << "dvdx->" << mat << "[" << v_id << "].value[row][col] += ";
-  code << "aux * dvdx->dg_dx[" << g_id << "].value[row_g][col_g];" << endl;
+  code << tab << "dvdx->" << mat << "[" << v_id << "].value[c_row][col] += ";
+  code << "aux * dvdx->dg_dx[" << g_id << "].value[c_row_g][col_g];" << endl;
   _jac_def.code.append(code.str());
 }
 
@@ -135,7 +136,7 @@ string JacGenerator::getVariableIndexes(Equation eq, Deps::SBG::Map map)
     }
     assert(var);
     string args = eq.range()->getDimensionVars();
-    code << tab << "_get" << var.get() << "_idxs(row-1);" << endl;
+    code << tab << "_get" << var.get() << "_idxs(c_row);" << endl;
     code << tab << "_apply_usage" << eq.applyId() << "(" << args << ");" << endl;
     eq.range()->addLocalVariables();
   }
@@ -171,8 +172,9 @@ void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep
     code << map << " - " << shift;
   }
   code << ";" << endl;
+  code << tab << "c_row_g = _c_index(row_g);" << endl;
   _jac_def.code.append(code.str());
-  generatePos(g_eq.arrayId(), g_eq.type(), "row_g", "col_g");
+  generatePos(g_eq.arrayId(), g_eq.type(), "c_row_g", "col_g");
   generateEquation(v_eq.arrayId(), g_eq.arrayId(), v_eq.type());
   dependencyEpilogue();
 }

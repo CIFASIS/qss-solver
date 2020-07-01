@@ -56,7 +56,7 @@ class JacGenerator {
   void dependencyPrologue(Equation eq, Deps::SBG::VariableDep var_dep, Deps::SBG::Map map);
   void dependencyEpilogue();
   void updateMatrix(std::map<std::string, std::set<std::string>>& matrix);
-  void generatePos(int id, EQUATION::Type type, std::string row = "row", std::string col = "col");
+  void generatePos(int id, EQUATION::Type type, std::string row = "c_row", std::string col = "col");
   void generateEquation(int id, EQUATION::Type type);
   void generateEquation(int v_id, int g_id, EQUATION::Type type);
   std::string getVariableIndexes(Equation eq, Deps::SBG::Map map);
