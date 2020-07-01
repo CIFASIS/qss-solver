@@ -304,6 +304,8 @@ void ModelInstance::header()
   _writer->write(buffer, WRITER::Model_Header);
   buffer << "#define _jac(i) jac[i++]";
   _writer->write(buffer, WRITER::Model_Header);
+  buffer << "#define _c_index(i) (i-1)";
+  _writer->write(buffer, WRITER::Model_Header);
   buffer << endl;
   buffer << "#define _time t";
   _writer->write(buffer, WRITER::Model_Header);
@@ -430,7 +432,7 @@ void ModelInstance::jacobian()
 {
   Jacobian jac;
   jac.build();
-  _writer->write("int row, row_g;", WRITER::Jacobian);
+  _writer->write("int row, row_g, c_row, c_row_g;", WRITER::Jacobian);
   _writer->write("int col, col_g;", WRITER::Jacobian);
   _writer->write("int x_ind, r = 0;", WRITER::Jacobian);
   _writer->write("int jit = 0;", WRITER::Jacobian);
@@ -439,7 +441,7 @@ void ModelInstance::jacobian()
   _writer->write("SD_cleanJacMatrices(dvdx);", WRITER::Jacobian);
   _writer->write(jac.code(), WRITER::Jacobian);
   // Add local variables to the initialization procedure prologue.
-  _writer->write("int row;", WRITER::Prologue);
+  _writer->write("int row, c_row;", WRITER::Prologue);
   _writer->write("int x_ind;", WRITER::Prologue);
 }
 
