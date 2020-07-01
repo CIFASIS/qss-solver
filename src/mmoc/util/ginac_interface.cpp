@@ -67,7 +67,7 @@ void my_print_power_dflt(const power& p, const print_dflt& c, unsigned level)
   if (p.op(1).match(-1)) {
     c.s << "(1/(" << p.op(0) << "))";
   } else {
-    c.s << "(" << p.op(0) << "^" << p.op(1) << ")";
+    c.s << "((" << p.op(0) << ")^" << p.op(1) << ")";
   }
 }
 
