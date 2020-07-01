@@ -275,6 +275,7 @@ std::ostream& operator<<(std::ostream& os, const Offset& offset)
   for (int i = 0; i < size; i++) {
     stringstream buffer;
     buffer << offset[i];
+    offsets.push_back(buffer.str());
   }
   os << boost::algorithm::join(offsets, ",");
   return os;
@@ -296,7 +297,7 @@ vector<string> LinearFunction::apply(vector<string> variable) const
   int size = (int)_factor.size();
   for (int i = 0; i < size; i++) {
     stringstream code;
-    if (_factor[i] != 1) {
+    /*if (_factor[i] != 1) {
       code << _factor[i] << " * ";
     }
     code << variable[i];
@@ -304,7 +305,8 @@ vector<string> LinearFunction::apply(vector<string> variable) const
       code << " + " << _constant[i];
     } else if (_constant[i] < 0) {
       code << _constant[i];
-    }
+    }*/
+    code << _factor[i] << " * " << variable[i] << " + " << _constant[i];
     exps.push_back(code.str());
   }
   return exps;
@@ -364,6 +366,9 @@ Map Map::compose(const Map& other)
 {
   Offset new_factor = other._linear_function.factor() * _linear_function.factor();
   Offset new_constant = _linear_function.factor() * other._linear_function.constant() + _linear_function.constant();
+  cout << "DEF CONSTANT: " << _linear_function.constant() << endl;
+  cout << "OTHER CONSTANT: " << other._linear_function.constant() << endl;
+  cout << "NEW CONSTANT: " << new_constant << endl;
   LinearFunction new_linear_function(new_constant, new_factor);
   return Map(_usage, new_constant, _exp, new_linear_function);
 }

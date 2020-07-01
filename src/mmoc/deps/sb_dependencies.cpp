@@ -99,7 +99,7 @@ void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V)
     Label edge_label = graph[*edge];
     SBVertex A = boost::target(*edge, graph);
     if (graph[A].type() == VERTEX::Algebraic) {
-      // For all map_n in E_V
+      // For all map_n in E_VA
       for (Pair pair : edge_label.pairs()) {
         Map map_m = pair.map();
         _gen.initG(graph[V].eq(), map_m);

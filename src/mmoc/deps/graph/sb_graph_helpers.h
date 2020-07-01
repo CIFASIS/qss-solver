@@ -113,7 +113,7 @@ class Offset {
   iterator begin();
   iterator end();
   unsigned int size() const;
-  friend std::ostream& operator<<(std::ostream& os, const Offset offset);
+  friend std::ostream& operator<<(std::ostream& os, const Offset& offset);
 
   protected:
   std::vector<int> _offset;
