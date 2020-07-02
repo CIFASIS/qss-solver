@@ -285,8 +285,9 @@ typedef struct SD_jacMatrices_ *SD_jacMatrices;
 struct SD_jacMatrices_ {
   int state_eqs;
   int alg_eqs;
-  SD_jacMatrix df_dx;
-  SD_jacMatrix dg_dx;
+  SD_jacMatrix *df_dx;
+  SD_jacMatrix *df_dx_t;
+  SD_jacMatrix *dg_dx;
 };
 
 SD_jacMatrices SD_JacMatrices(int state_eqs, int states, int alg_eqs, int algs);
@@ -296,5 +297,7 @@ void SD_allocJacMatrices(SD_jacMatrices jac_matrices);
 void SD_freeJacMatrices(SD_jacMatrices jac_matrices);
 
 void SD_cleanJacMatrices(SD_jacMatrices jac_matrices);
+
+void SD_setupJacMatrices(SD_jacMatrices jac_matrices);
 
 #endif /* DATA_H_ */
