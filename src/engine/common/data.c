@@ -456,19 +456,17 @@ void SD_transposeJacMatrix(SD_jacMatrix m, SD_jacMatrix m_t)
       m_t->size[m->index[i][j]]++;
     }
   }
-  cols_t[0] = 0;
-  for (i = 1; i < variables; i++) {
-    cols_t[i] = m_t->size[i - 1]++;
-  }
+  cleanVector(cols_t, 0, variables);
   void SD_allocJacMatrix(m_t);
   for (i = 0; i < variables; i++) {
     free(m_t->value[i]);
   }
   free(m_t->value);
+  m_t->value = NULL;
   for (i = 0; i < variables; i++) {
     for (j = 0; j < m->size[i]; j++) {
       int v = m->index[i][j];
-      m_t->index[v][cols_t[i]] = 0;
+      m_t->index[v][cols_t[i]++] = j;
     }
   }
   free(cols_t);
