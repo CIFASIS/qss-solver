@@ -72,11 +72,11 @@ void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SB
     _matrix.alloc.append(code_guards);
     _matrix.init.append(code_guards);
     code.str("");
-    code << inner_tabs << "modelData->jac_matrices->df_dx[" << eq.arrayId() << "].size[c_row]++;" << endl;
+    code << inner_tabs << "modelData->jac_matrices->df_dx[" << eq.arrayId() << "]->size[c_row]++;" << endl;
     _matrix.alloc.append(code.str());
     code.str("");
     code << inner_tabs << "x_ind = " << x_ind_exp << ";" << endl;
-    code << inner_tabs << "modelData->jac_matrices->df_dx[" << eq.arrayId() << "].index[c_row][states[x_ind]++] = x_ind;" << endl;
+    code << inner_tabs << "modelData->jac_matrices->df_dx[" << eq.arrayId() << "]->index[c_row][states[x_ind]++] = x_ind;" << endl;
     _matrix.init.append(code.str());
     code.str("");
     code << tabs << range.end() << endl;
