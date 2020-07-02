@@ -433,7 +433,7 @@ void ModelInstance::jacobian()
   Jacobian jac;
   jac.build();
   _writer->write("int row, row_g, c_row, c_row_g;", WRITER::Jacobian);
-  _writer->write("int col, col_g;", WRITER::Jacobian);
+  _writer->write("int col, col_g, col_t;", WRITER::Jacobian);
   _writer->write("int x_ind, r = 0;", WRITER::Jacobian);
   _writer->write("int jit = 0;", WRITER::Jacobian);
   _writer->write("double aux;", WRITER::Jacobian);
@@ -609,6 +609,7 @@ void QSSModelInstance::initializeDataStructures()
   initializeMatrix(deps.RHSSt(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
   configEvents();
   _writer->write("QSS_allocDataMatrix(modelData);", WRITER::Alloc_Data);
+  _writer->write("SD_setupJacMatrices(modelData->jac_matrices);", WRITER::Init_Data);
   // Initialize Output Data Structures.
   allocateOutput();
   initializeMatrix(deps.OS(), WRITER::Alloc_Output, WRITER::Init_Output, _model.outputNbr());
@@ -742,6 +743,7 @@ void ClassicModelInstance::initializeDataStructures()
   initializeMatrix(deps.JAC(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
 
   _writer->write("CLC_allocDataMatrix(modelData);", WRITER::Alloc_Data);
+  _writer->write("SD_setupJacMatrices(modelData->jac_matrices);", WRITER::Init_Data);
 
   // Initialize Output Data Structures.
   allocateOutput();
