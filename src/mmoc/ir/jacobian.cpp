@@ -44,13 +44,15 @@ void JacGenerator::postProcess(SBG::VertexProperty vertex)
   int id = vertex.id() - 1;
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
-  code << tab << "for (row = r; row < r + " << size << "; row++) {" << endl;
-  code << tab << "  for (col_t = 0; col_t < dvdx->df_dx_t[" << id << "]->size[r]; col_t++) {" << endl;
-  code << tab << "    col = dvdx->df_dx_t[" << id << "]->index[row-r][col_t];" << endl;
-  code << tab << "    _jac(jit) = dvdx->df_dx[" << id << "]->value[row-r][col];" << endl;
+  code << endl;
+  code << "// Assign Jacobian Matrix values" << endl;
+  code << endl;
+  code << tab << "for (row = 0; row < " << size << "; row++) {" << endl;
+  code << tab << "  for (col = 0; col < dvdx->df_dx[" << id << "]->size[row]; col++) {" << endl;
+  code << tab << "    row_t = dvdx->df_dx[" << id << "]->index[row][col];" << endl;
+  code << tab << "    _assign_jac(" << id << ", row_t, col, dvdx->df_dx[" << id << "]->value[row][col]);" << endl;
   code << tab << "  }" << endl;
   code << tab << "}" << endl;
-  code << tab << "r += " << size << ";" << endl;
   _jac_def.code.append(code.str());
 }
 
