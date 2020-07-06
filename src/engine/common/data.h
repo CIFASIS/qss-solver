@@ -300,4 +300,6 @@ void SD_cleanJacMatrices(SD_jacMatrices jac_matrices);
 
 void SD_setupJacMatrices(SD_jacMatrices jac_matrices);
 
+void SD_cleanTransJacMatrices(SD_jacMatrices jac_matrices);
+
 #endif /* DATA_H_ */
