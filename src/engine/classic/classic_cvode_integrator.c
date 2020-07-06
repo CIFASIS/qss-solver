@@ -51,12 +51,10 @@ static SD_output simOutput = NULL;
 
 int is_sampled;
 
-//#ifdef USE_JACOBIAN
-
 static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat, void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3)
 {
   int n = 0;
-  int size = clcData->states, i, m;
+  int size = clcData->states, i, j;
   int *colptrs = *JacMat->colptrs;
   int *rowvals = *JacMat->rowvals;
 
@@ -64,15 +62,14 @@ static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat, void *user_da
   clcModel->jac(NV_DATA_S(y), clcData->d, clcData->alg, t, clcData->jac_matrices, JacMat->data);
   for (i = 0; i < size; i++) {
     colptrs[i] = n;
+
     for (m = 0; m < clcData->nSD[i]; m++) rowvals[m + n] = clcData->SD[i][m];
     n += clcData->nSD[i];
   }
   colptrs[i] = n;
 
-  // SparsePrintMat(JacMat,stdout);
   return 0;
 }
-//#endif
 
 /* Test jacobian */
 static int check_flag(void *flagvalue, const char *funcname, int opt, CLC_simulator simulator)
