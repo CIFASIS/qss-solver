@@ -305,6 +305,7 @@ void ModelInstance::header()
   buffer << "#define _assign_jac(id, r, c, val) \\" << endl;
   buffer << "    col_t = dvdx->df_dx_t[id]->size[r]; \\" << endl;
   buffer << "    col_t += dvdx->df_dx_t[id]->index[r][0]; \\" << endl;
+  buffer << "    dvdx->df_dx_t[id]->index[r][0]++; \\" << endl;
   buffer << "    jac[col_t] = val;";
   _writer->write(buffer, WRITER::Model_Header);
   buffer << "#define _c_index(i) (i-1)";
@@ -437,7 +438,7 @@ void ModelInstance::jacobian()
   jac.build();
   _writer->write("int row, row_t, row_g, c_row, c_row_g;", WRITER::Jacobian);
   _writer->write("int col, col_g, col_t;", WRITER::Jacobian);
-  _writer->write("int x_ind, r = 0;", WRITER::Jacobian);
+  _writer->write("int x_ind;", WRITER::Jacobian);
   _writer->write("double aux;", WRITER::Jacobian);
   _writer->write(Utils::instance().localSymbols(), WRITER::Jacobian);
   _writer->write("SD_cleanJacMatrices(dvdx);", WRITER::Jacobian);
