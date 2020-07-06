@@ -51,28 +51,50 @@ static SD_output simOutput = NULL;
 
 int is_sampled;
 
-//#ifdef USE_JACOBIAN
+int jac_struct_initialized = FALSE;
+
+void assignJacStruct(SlsMat JacMat)
+{
+  int size = clcData->states, i, j, eq, eqs, tot_rows = 0, tot_cols = 0;
+  int *col_ptrs = *JacMat->colptrs;
+  int *row_vals = *JacMat->rowvals;
+  SparseSetMatToZero(JacMat);
+
+  // Check that the initial pointer values are cleared.
+
+  eqs = clcData->jac_matrices->state_eqs;
+
+  SD_cleanTransJacMatrices(clcData->jac_matrices);
+
+  for (eq = 0; eq < eqs; eq++) {
+    SD_jacMatrix jac = clcData->jac_matrices->df_dx[eq];
+    SD_jacMatrix jac_t = clcData->jac_matrices->df_dx_t[eq];
+    int row, col, rows = jac->variables;
+
+    for (row = 0; row < rows; row++) {
+      tot_cols += jac_t->size[row];
+      for (col = 0; col < jac->size[row]; col++) {
+        int row_t = jac->index[row][col];
+        col_ptrs[row] += jac_t->size[row_t];
+        int col_t = jac_t->size[row_t] + jac_t->index[row_t][0];
+        jac_t->index[row_t][0]++;
+        row_vals[col_t] = tot_rows + row;
+      }
+    }
+    tot_rows += rows;
+  }
+  col_ptrs[size] = tot_cols;
+}
 
 static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat, void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3)
 {
-  int n = 0;
-  int size = clcData->states, i, m;
-  int *colptrs = *JacMat->colptrs;
-  int *rowvals = *JacMat->rowvals;
-
-  SparseSetMatToZero(JacMat);
-  clcModel->jac(NV_DATA_S(y), clcData->d, clcData->alg, t, clcData->jac_matrices, JacMat->data);
-  for (i = 0; i < size; i++) {
-    colptrs[i] = n;
-    for (m = 0; m < clcData->nSD[i]; m++) rowvals[m + n] = clcData->SD[i][m];
-    n += clcData->nSD[i];
+  if (jac_struct_initialized == FALSE) {
+    jac_struct_initialized = TRUE;
+    assignJacStruct(JacMat);
   }
-  colptrs[i] = n;
-
-  // SparsePrintMat(JacMat,stdout);
+  clcModel->jac(NV_DATA_S(y), clcData->d, clcData->alg, t, clcData->jac_matrices, JacMat->data);
   return 0;
 }
-//#endif
 
 /* Test jacobian */
 static int check_flag(void *flagvalue, const char *funcname, int opt, CLC_simulator simulator)
