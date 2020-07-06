@@ -41,15 +41,18 @@ JacGenerator::JacGenerator() : _jac_def(), _tabs(0) {}
 void JacGenerator::postProcess(SBG::VertexProperty vertex)
 {
   int size = vertex.size();
-  int id = vertex.id();
+  int id = vertex.id() - 1;
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
-  code << tab << "for (col = 0; col < dvdx->df_dx[" << id << "].size[r]; col++) {" << endl;
-  code << tab << "  for (row = r; row < r + " << size << "; row++) {" << endl;
-  code << tab << "    _jac(jit) = dvdx->df_dx[" << id << "].value[row-r][col];" << endl;
+  code << endl;
+  code << "// Assign Jacobian Matrix values" << endl;
+  code << endl;
+  code << tab << "for (row = 0; row < " << size << "; row++) {" << endl;
+  code << tab << "  for (col = 0; col < dvdx->df_dx[" << id << "]->size[row]; col++) {" << endl;
+  code << tab << "    row_t = dvdx->df_dx[" << id << "]->index[row][col];" << endl;
+  code << tab << "    _assign_jac(" << id << ", row_t, col, dvdx->df_dx[" << id << "]->value[row][col]);" << endl;
   code << tab << "  }" << endl;
   code << tab << "}" << endl;
-  code << tab << "r += " << size << ";" << endl;
   _jac_def.code.append(code.str());
 }
 
@@ -100,8 +103,8 @@ void JacGenerator::generatePos(int id, EQUATION::Type type, string row, string c
   if (type == EQUATION::Algebraic) {
     type_str = "dg_dx";
   }
-  code << type_str << "[" << id << "].index[" << row << "], ";
-  code << "dvdx->" << type_str << "[" << id << "].size[" << row << "], x_ind);" << endl;
+  code << type_str << "[" << id << "]->index[" << row << "], ";
+  code << "dvdx->" << type_str << "[" << id << "]->size[" << row << "], x_ind);" << endl;
   _jac_def.code.append(code.str());
 }
 
@@ -110,7 +113,7 @@ void JacGenerator::generateEquation(int id, EQUATION::Type type)
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
   string mat = (type == EQUATION::Algebraic) ? "dg_dx" : "df_dx";
-  code << tab << "dvdx->" << mat << "[" << id << "].value[c_row][col] +=  aux;" << endl;
+  code << tab << "dvdx->" << mat << "[" << id << "]->value[c_row][col] +=  aux;" << endl;
   _jac_def.code.append(code.str());
 }
 
@@ -119,8 +122,8 @@ void JacGenerator::generateEquation(int v_id, int g_id, EQUATION::Type type)
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
   string mat = (type == EQUATION::Algebraic) ? "dg_dx" : "df_dx";
-  code << tab << "dvdx->" << mat << "[" << v_id << "].value[c_row][col] += ";
-  code << "aux * dvdx->dg_dx[" << g_id << "].value[c_row_g][col_g];" << endl;
+  code << tab << "dvdx->" << mat << "[" << v_id << "]->value[c_row][col] += ";
+  code << "aux * dvdx->dg_dx[" << g_id << "]->value[c_row_g][col_g];" << endl;
   _jac_def.code.append(code.str());
 }
 

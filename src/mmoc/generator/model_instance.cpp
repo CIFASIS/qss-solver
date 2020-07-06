@@ -302,7 +302,11 @@ void ModelInstance::header()
   }
   buffer << endl << "// Jacobian Macros definition. ";
   _writer->write(buffer, WRITER::Model_Header);
-  buffer << "#define _jac(i) jac[i++]";
+  buffer << "#define _assign_jac(id, r, c, val) \\" << endl;
+  buffer << "    col_t = dvdx->df_dx_t[id]->size[r]; \\" << endl;
+  buffer << "    col_t += dvdx->df_dx_t[id]->index[r][0]; \\" << endl;
+  buffer << "    dvdx->df_dx_t[id]->index[r][0]++; \\" << endl;
+  buffer << "    jac[col_t] = val;";
   _writer->write(buffer, WRITER::Model_Header);
   buffer << "#define _c_index(i) (i-1)";
   _writer->write(buffer, WRITER::Model_Header);
@@ -432,10 +436,9 @@ void ModelInstance::jacobian()
 {
   Jacobian jac;
   jac.build();
-  _writer->write("int row, row_g, c_row, c_row_g;", WRITER::Jacobian);
-  _writer->write("int col, col_g;", WRITER::Jacobian);
-  _writer->write("int x_ind, r = 0;", WRITER::Jacobian);
-  _writer->write("int jit = 0;", WRITER::Jacobian);
+  _writer->write("int row, row_t, row_g, c_row, c_row_g;", WRITER::Jacobian);
+  _writer->write("int col, col_g, col_t;", WRITER::Jacobian);
+  _writer->write("int x_ind;", WRITER::Jacobian);
   _writer->write("double aux;", WRITER::Jacobian);
   _writer->write(Utils::instance().localSymbols(), WRITER::Jacobian);
   _writer->write("SD_cleanJacMatrices(dvdx);", WRITER::Jacobian);
@@ -609,6 +612,7 @@ void QSSModelInstance::initializeDataStructures()
   initializeMatrix(deps.RHSSt(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
   configEvents();
   _writer->write("QSS_allocDataMatrix(modelData);", WRITER::Alloc_Data);
+  _writer->write("SD_setupJacMatrices(modelData->jac_matrices);", WRITER::Init_Data);
   // Initialize Output Data Structures.
   allocateOutput();
   initializeMatrix(deps.OS(), WRITER::Alloc_Output, WRITER::Init_Output, _model.outputNbr());
@@ -742,6 +746,7 @@ void ClassicModelInstance::initializeDataStructures()
   initializeMatrix(deps.JAC(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
 
   _writer->write("CLC_allocDataMatrix(modelData);", WRITER::Alloc_Data);
+  _writer->write("SD_setupJacMatrices(modelData->jac_matrices);", WRITER::Init_Data);
 
   // Initialize Output Data Structures.
   allocateOutput();
