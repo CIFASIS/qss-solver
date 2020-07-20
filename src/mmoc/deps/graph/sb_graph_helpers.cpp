@@ -275,6 +275,7 @@ std::ostream& operator<<(std::ostream& os, const Offset& offset)
   for (int i = 0; i < size; i++) {
     stringstream buffer;
     buffer << offset[i];
+    offsets.push_back(buffer.str());
   }
   os << boost::algorithm::join(offsets, ",");
   return os;
@@ -289,6 +290,14 @@ LinearFunction::LinearFunction(Offset constant, Offset factor) : _constant(const
   assert(_constant.size() == _factor.size());
 }
 
+LinearFunction& LinearFunction::operator=(const LinearFunction& other)
+{
+  _constant = other._constant;
+  _factor = other._factor;
+
+  return *this;
+}
+
 vector<string> LinearFunction::apply(vector<string> variable) const
 {
   assert(_factor.size() == variable.size());
@@ -296,13 +305,16 @@ vector<string> LinearFunction::apply(vector<string> variable) const
   int size = (int)_factor.size();
   for (int i = 0; i < size; i++) {
     stringstream code;
-    if (_factor[i] != 1) {
-      code << _factor[i] << " * ";
+    if (_factor[i] != 0) {
+      if (_factor[i] != 1) {
+        code << _factor[i] << " * ";
+      }
+      code << variable[i];
+      if (_constant[i] > 0) {
+        code << " + ";
+      }
     }
-    code << variable[i];
-    if (_constant[i] > 0) {
-      code << " + " << _constant[i];
-    } else if (_constant[i] < 0) {
+    if (_constant[i]) {
       code << _constant[i];
     }
     exps.push_back(code.str());
@@ -324,6 +336,13 @@ vector<int> LinearFunction::apply(vector<int> variable) const
 Offset LinearFunction::factor() const { return _factor; }
 
 Offset LinearFunction::constant() const { return _constant; }
+
+std::ostream& operator<<(std::ostream& os, const LinearFunction& function)
+{
+  os << "Constant: " << function._constant << endl;
+  os << "Factor: " << function._factor << endl;
+  return os;
+}
 
 /* SBGraph Map interface */
 
@@ -370,9 +389,9 @@ Map Map::compose(const Map& other)
 
 Map Map::applyIndexShift(Offset index_shift)
 {
-  Offset new_offset = _offset - index_shift;
-  LinearFunction new_linear_function(new_offset, _linear_function.factor());
-  return Map(_usage, new_offset, _exp, new_linear_function);
+  Offset new_constant = _linear_function.constant() - index_shift;
+  LinearFunction new_linear_function(new_constant, _linear_function.factor());
+  return Map(_usage, _offset, _exp, new_linear_function);
 }
 
 vector<string> Map::exps(vector<string> variables) const { return _linear_function.apply(variables); }
@@ -384,6 +403,14 @@ bool Map::operator==(const Map& other) const { return this->_offset == other._of
 bool Map::operator!=(const Map& other) const { return this->_offset != other._offset || this->_usage != other._usage; }
 
 bool Map::operator<(const Map& other) const { return this->_offset < other._offset; }
+
+std::ostream& operator<<(std::ostream& os, const Map& map)
+{
+  os << "Expression: " << map._exp << endl;
+  os << "Offset: " << map._offset << endl;
+  os << "Linear Function: " << map._linear_function << endl;
+  return os;
+}
 
 /* SBGraph Pair interface */
 

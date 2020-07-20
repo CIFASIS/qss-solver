@@ -113,7 +113,7 @@ class Offset {
   iterator begin();
   iterator end();
   unsigned int size() const;
-  friend std::ostream& operator<<(std::ostream& os, const Offset offset);
+  friend std::ostream& operator<<(std::ostream& os, const Offset& offset);
 
   protected:
   std::vector<int> _offset;
@@ -156,10 +156,13 @@ class LinearFunction {
   public:
   LinearFunction();
   LinearFunction(Offset constant, Offset factor);
+  LinearFunction& operator=(const LinearFunction& other);
+
   std::vector<std::string> apply(std::vector<std::string> variable) const;
   std::vector<int> apply(std::vector<int> variable) const;
   Offset factor() const;
   Offset constant() const;
+  friend std::ostream& operator<<(std::ostream& os, const LinearFunction& function);
 
   protected:
   Offset _constant;
@@ -184,6 +187,7 @@ class Map {
   bool operator<(const Map& other) const;
   bool operator==(const Map& other) const;
   bool operator!=(const Map& other) const;
+  friend std::ostream& operator<<(std::ostream& os, const Map& map);
 
   protected:
   Usage _usage;

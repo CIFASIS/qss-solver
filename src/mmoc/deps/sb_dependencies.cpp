@@ -86,7 +86,6 @@ void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V)
         for (boost::tie(alg_edge, alg_out_edge_end) = out_edges(A, graph); alg_edge != alg_out_edge_end; ++alg_edge) {
           SBVertex G = boost::target(*alg_edge, graph);
           if (graph[G].eq().type() == IR::EQUATION::Algebraic) {
-            cout << "Evaluate node: " << graph[G].name() << endl;
             paths(graph, G);
           }
         }
@@ -100,13 +99,10 @@ void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V)
     Label edge_label = graph[*edge];
     SBVertex A = boost::target(*edge, graph);
     if (graph[A].type() == VERTEX::Algebraic) {
-      // For all map_n in E_V
+      // For all map_n in E_VA
       for (Pair pair : edge_label.pairs()) {
         Map map_m = pair.map();
         _gen.initG(graph[V].eq(), map_m);
-        cout << "Traverse algebraics: " << pair.map().exp() << endl;
-        cout << pair.dom() << endl;
-        cout << pair.ran() << endl;
         boost::graph_traits<SBGraph>::out_edge_iterator alg_edge, alg_out_edge_end;
         // For all G in Succ(A_i)
         for (boost::tie(alg_edge, alg_out_edge_end) = out_edges(A, graph); alg_edge != alg_out_edge_end; ++alg_edge) {
@@ -115,7 +111,7 @@ void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V)
             int dep, deps = graph[G].numDeps();
             for (dep = 1; dep <= deps; dep++) {
               Map g_map = graph[G].map(dep);
-              Map n_map = map_m.compose(g_map.applyIndexShift(_index_shift[graph[G].eq().id()]));
+              Map n_map = g_map.applyIndexShift(_index_shift[graph[G].eq().id()]).compose(map_m);
               MDI range = n_map.apply(pair.dom(), pair.ran());
               VariableDep state_dep = graph[G].depStates(dep);
               MDI state_range = state_dep.mdi();
@@ -147,11 +143,6 @@ void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V)
         graph[V].setDepState(num_gen, var_dep);
         graph[V].setMap(num_gen, map);
         _gen.visitF(graph[V].eq(), var_dep, map);
-        cout << pair.map().exp() << endl;
-        cout << pair.dom() << endl;
-        cout << pair.ran() << endl;
-        cout << range << endl;
-        cout << "num_gen " << num_gen << endl;
       }
     }
   }

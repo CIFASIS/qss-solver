@@ -127,7 +127,7 @@ MDI VariableDep::mdi() { return _range; }
 Variable VariableDep::var() { return _var; }
 
 EvalOccur::EvalOccur(Expression exp, VarSymbolTable symbols, Option<Range> range)
-    : _exp(exp), _cr(nullptr), _symbols(symbols), _range(range), _offsets(), _factors(), _usages(), _intervals()
+    : _exp(exp), _cr(nullptr), _symbols(symbols), _range(range), _offsets(), _factors(), _constants(), _usages(), _intervals()
 {
   if (_exp.expression()->expressionType() == EXPCOMPREF) {
     _cr = _exp.expression()->getAsComponentReference();
@@ -212,7 +212,8 @@ void EvalOccur::initialize()
         _intervals.push_back(Interval(v, v));
         _usages.push_back(-1);
         _offsets.push_back(0);
-        _factors.push_back(1);
+        _factors.push_back(0);
+        _constants.push_back(v);
       } else if (cur->expressionType() == EXPCOMPREF) {
         AST_Expression_ComponentReference cr = cur->getAsComponentReference();
         Option<Variable> var = _symbols[cr->name()];
@@ -229,11 +230,13 @@ void EvalOccur::initialize()
           _usages.push_back(_range->pos(var->name()));
           _offsets.push_back(0);
           _factors.push_back(1);
+          _constants.push_back(0);
         } else if (var->isConstant()) {
           _intervals.push_back(Interval(var->value(), var->value()));
           _usages.push_back(-1);
           _offsets.push_back(0);
-          _factors.push_back(1);
+          _factors.push_back(0);
+          _constants.push_back(var->value());
         } else {
           cout << "Wrong index expression." << endl;
           assert(false);
@@ -241,6 +244,7 @@ void EvalOccur::initialize()
           _usages.push_back(-1);
           _offsets.push_back(0);
           _factors.push_back(1);
+          _constants.push_back(0);
         }
       } else if (cur->expressionType() == EXPBINOP) {
         int offset = constant(cur);
@@ -259,6 +263,7 @@ void EvalOccur::initialize()
           _usages.push_back(_range->pos(name));
           _offsets.push_back(offset);
           _factors.push_back(s);
+          _constants.push_back(offset);
         }
       }
     }
@@ -273,7 +278,7 @@ Usage EvalOccur::usages() { return _usages; }
 
 Offset EvalOccur::offsets() { return Offset(_offsets); }
 
-LinearFunction EvalOccur::linearFunctions() { return LinearFunction(_offsets, _factors); }
+LinearFunction EvalOccur::linearFunctions() { return LinearFunction(_constants, _factors); }
 
 BuildEdge::BuildEdge(VertexProperty source, VertexProperty sink, VarSymbolTable symbols, EDGE::Direction dir, VERTEX::Eval eval)
     : _source(source), _sink(sink), _exist(false), _symbols(symbols), _pairs(), _dir(dir), _eval(eval)
