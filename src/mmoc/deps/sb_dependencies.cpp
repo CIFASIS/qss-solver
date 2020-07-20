@@ -111,7 +111,7 @@ void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V)
             int dep, deps = graph[G].numDeps();
             for (dep = 1; dep <= deps; dep++) {
               Map g_map = graph[G].map(dep);
-              Map n_map = map_m.compose(g_map.applyIndexShift(_index_shift[graph[G].eq().id()]));
+              Map n_map = g_map.applyIndexShift(_index_shift[graph[G].eq().id()]).compose(map_m);
               MDI range = n_map.apply(pair.dom(), pair.ran());
               VariableDep state_dep = graph[G].depStates(dep);
               MDI state_range = state_dep.mdi();
