@@ -169,6 +169,7 @@ class EvalOccur {
   Option<IR::Range> _range;
   std::vector<int> _offsets;
   std::vector<int> _factors;
+  std::vector<int> _constants;
   Usage _usages;
   IntervalList _intervals;
 };
