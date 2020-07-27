@@ -368,6 +368,25 @@
                     "ignoreFailures": true
                 }
             ]
-        }   
+        },
+        
+        // Advection 2D model
+        {
+            "name": "Advection 2D model",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/advection2D ", "/home/joaquin/work/writings/structure/models/advection2D/advection2D.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }           
     ]
 }
