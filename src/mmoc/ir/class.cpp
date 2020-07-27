@@ -663,6 +663,7 @@ void Model::setModelConfig()
   ModelConfig::instance().setAlgebraics(_algebraics);
   ModelConfig::instance().setModelAnnotations(_annotations);
   ModelConfig::instance().setDerivatives(_derivatives);
+  ModelConfig::instance().setStateNbr(_stateNbr);
 }
 }  // namespace IR
 }  // namespace MicroModelica
