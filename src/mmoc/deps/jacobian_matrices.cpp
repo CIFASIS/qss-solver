@@ -31,7 +31,7 @@ using namespace IR;
 using namespace Util;
 namespace Deps {
 
-JacMatrixGenerator::JacMatrixGenerator() : _matrix(), _df_dx(), _dg_dx(), _tabs(0) {}
+JacMatrixGenerator::JacMatrixGenerator() : _matrix(), _dv_dx(), _tabs(0) {}
 
 void JacMatrixGenerator::postProcess(SBG::VertexProperty vertex) {}
 
@@ -47,12 +47,15 @@ void JacMatrixGenerator::init(SBG::VertexProperty vertex)
 
 void JacMatrixGenerator::end()
 {
+  stringstream code;
   _tabs--;
   _matrix.alloc.append("}\n");
   _matrix.init.append("}\n");
+  code << "cleanVector(states, 0, " << ModelConfig::instance().stateNbr() << ");" << endl;
+  _matrix.init.append(code.str());
 }
 
-void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SBG::Map map, std::map<int, std::string>& der_matrix)
+void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SBG::Map map)
 {
   stringstream code;
   Range range(var_dep.mdi());
@@ -64,35 +67,45 @@ void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SB
   string x_ind_exp = x_ind.print();
   string tabs = Utils::instance().tabs(_tabs);
   string inner_tabs = tabs + TAB;
-  if (der_matrix.find(eq.arrayId()) == der_matrix.end()) {
-    code << tabs << range.in(exps);
+  stringstream matrix_eq_id;
+  if (eq.type() == EQUATION::Algebraic) {
+    matrix_eq_id << "dg_dx";
+  } else {
+    matrix_eq_id << "df_dx";
   }
+  matrix_eq_id << "[" << eq.arrayId() << "]";
+  string eq_id = matrix_eq_id.str();
+
+  // if (_dv_dx.find(eq_id) == _dv_dx.end()) {
+  code << tabs << range.in(exps);
+  //  _dv_dx[eq_id] = code.str();
+  //}
   string code_guards = code.str();
-  if (!code_guards.empty()) {
-    _matrix.alloc.append(code_guards);
-    _matrix.init.append(code_guards);
-    code.str("");
-    code << inner_tabs << "modelData->jac_matrices->df_dx[" << eq.arrayId() << "]->size[c_row]++;" << endl;
-    _matrix.alloc.append(code.str());
-    code.str("");
-    code << inner_tabs << "x_ind = " << x_ind_exp << ";" << endl;
-    code << inner_tabs << "modelData->jac_matrices->df_dx[" << eq.arrayId() << "]->index[c_row][states[x_ind]++] = x_ind;" << endl;
-    _matrix.init.append(code.str());
-    code.str("");
-    code << tabs << range.end() << endl;
-    _matrix.alloc.append(code.str());
-    _matrix.init.append(code.str());
-  }
+  // if (!code_guards.empty()) {
+  _matrix.alloc.append(code_guards);
+  _matrix.init.append(code_guards);
+  code.str("");
+  code << inner_tabs << "modelData->jac_matrices->" << eq_id << "->size[c_row]++;" << endl;
+  _matrix.alloc.append(code.str());
+  code.str("");
+  code << inner_tabs << "x_ind = " << x_ind_exp << ";" << endl;
+  code << inner_tabs << "modelData->jac_matrices->" << eq_id << "->index[c_row][states[c_row]++] = x_ind;" << endl;
+  _matrix.init.append(code.str());
+  code.str("");
+  code << tabs << range.end() << endl;
+  _matrix.alloc.append(code.str());
+  _matrix.init.append(code.str());
+  //}
   cout << _matrix.init << endl;
   cout << _matrix.alloc << endl;
 }
 
-void JacMatrixGenerator::visitF(Equation eq, SBG::VariableDep var_dep, SBG::Map map) { addDependency(eq, var_dep, map, _df_dx); }
+void JacMatrixGenerator::visitF(Equation eq, SBG::VariableDep var_dep, SBG::Map map) { addDependency(eq, var_dep, map); }
 
 void JacMatrixGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep, SBG::Map n_map, SBG::Map map_m,
                                 SBG::Offset index_shift)
 {
-  addDependency(g_eq, var_dep, n_map, _df_dx);
+  addDependency(v_eq, var_dep, n_map);
 }
 
 void JacMatrixGenerator::initG(Equation eq, SBG::Map map_m) {}
