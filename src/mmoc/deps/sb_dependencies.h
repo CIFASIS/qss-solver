@@ -48,6 +48,7 @@ class SBDependencies {
 
   protected:
   void paths(SBGraph graph, SBVertex V);
+
   IndexShift _index_shift;
   IGenerator _gen;
 };

@@ -181,6 +181,8 @@ class ModelConfig {
   inline EquationTable derivatives() { return _derivatives; };
   inline void setInitialCode(bool initial_code) { _initial_code = initial_code; };
   inline bool initialCode() { return _initial_code; };
+  inline void setStateNbr(int state_nbr) { _state_nbr = state_nbr; }
+  inline int stateNbr() const { return _state_nbr; }
 
   private:
   ModelConfig();
@@ -189,6 +191,7 @@ class ModelConfig {
   Deps::ModelDependencies _dependencies;
   EquationTable _derivatives;
   bool _initial_code;
+  int _state_nbr;
 };
 
 class DepInfo {

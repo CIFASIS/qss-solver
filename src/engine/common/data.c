@@ -461,7 +461,9 @@ void SD_transposeJacMatrix(SD_jacMatrix m, SD_jacMatrix m_t)
   free(m_t->value);
   m_t->value = NULL;
   for (i = 0; i < variables; i++) {
-    m_t->index[i][0] = 0;
+    if (m_t->size[j] > 0) {
+      m_t->index[j][0] = 0;
+    }
   }
 }
 
