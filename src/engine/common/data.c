@@ -433,7 +433,7 @@ void SD_allocJacMatrix(SD_jacMatrix jac_matrix)
   int i, variables = jac_matrix->variables;
   for (i = 0; i < variables; i++) {
     jac_matrix->index[i] = (jac_matrix->size[i] > 0) ? (int *)malloc(jac_matrix->size[i] * sizeof(int)) : NULL;
-    jac_matrix->value[i] = (jac_matrix->size[i] > 0) ? (double *)malloc(jac_matrix->size[i] * sizeof(int)) : NULL;
+    jac_matrix->value[i] = (jac_matrix->size[i] > 0) ? (double *)malloc(jac_matrix->size[i] * sizeof(double)) : NULL;
   }
 }
 
@@ -442,27 +442,7 @@ void SD_cleanJacMatrix(SD_jacMatrix jac_matrix)
   int i, variables = jac_matrix->variables;
   for (i = 0; i < variables; i++) {
     if (jac_matrix->size[i] > 0) {
-      cleanVector(jac_matrix->value[i], 0, jac_matrix->size[i]);
-    }
-  }
-}
-
-void SD_transposeJacMatrix(SD_jacMatrix m, SD_jacMatrix m_t)
-{
-  int i, j, variables = m->variables;
-  for (i = 0; i < variables; i++) {
-    for (j = 0; j < m->size[i]; j++) {
-      m_t->size[m->index[i][j]]++;
-    }
-  }
-  for (i = 0; i < variables; i++) {
-    m_t->index[i] = (m_t->size[i] > 0) ? (int *)malloc(sizeof(int)) : NULL;
-  }
-  free(m_t->value);
-  m_t->value = NULL;
-  for (i = 0; i < variables; i++) {
-    if (m_t->size[j] > 0) {
-      m_t->index[j][0] = 0;
+      cleanDoubleVector(jac_matrix->value[i], 0, jac_matrix->size[i]);
     }
   }
 }
@@ -489,12 +469,12 @@ SD_jacMatrices SD_JacMatrices(int state_eqs, int states, int alg_eqs, int algs)
   p->state_eqs = state_eqs;
   p->alg_eqs = alg_eqs;
   p->df_dx = (SD_jacMatrix *)malloc(state_eqs * sizeof(struct SD_jacMatrix_));
-  p->df_dx_t = (SD_jacMatrix *)malloc(state_eqs * sizeof(struct SD_jacMatrix_));
+  p->df_dx_t = (SD_jacMatrix)malloc(sizeof(struct SD_jacMatrix_));
   p->dg_dx = (SD_jacMatrix *)malloc(alg_eqs * sizeof(struct SD_jacMatrix_));
   for (i = 0; i < state_eqs; i++) {
     p->df_dx[i] = SD_JacMatrix(states);
-    p->df_dx_t[i] = SD_JacMatrix(states);
   }
+  p->df_dx_t = SD_JacMatrix(states);
   for (i = 0; i < alg_eqs; i++) {
     p->dg_dx[i] = SD_JacMatrix(algs);
   }
@@ -515,15 +495,10 @@ void SD_allocJacMatrices(SD_jacMatrices jac_matrices)
 
 void SD_cleanTransJacMatrices(SD_jacMatrices jac_matrices)
 {
-  int i, eqs = jac_matrices->state_eqs;
-  for (i = 0; i < eqs; i++) {
-    SD_jacMatrix m_t = jac_matrices->df_dx_t[i];
-    int j, variables = m_t->variables;
-    for (j = 0; j < variables; j++) {
-      if (m_t->size[j] > 0) {
-        m_t->index[j][0] = 0;
-      }
-    }
+  SD_jacMatrix m_t = jac_matrices->df_dx_t;
+  int j, variables = m_t->variables;
+  for (j = 0; j < variables; j++) {
+    m_t->index[j][0] = 0;
   }
 }
 
@@ -542,10 +517,44 @@ void SD_cleanJacMatrices(SD_jacMatrices jac_matrices)
 
 void SD_setupJacMatrices(SD_jacMatrices jac_matrices)
 {
-  int i, eqs = jac_matrices->state_eqs;
-  for (i = 0; i < eqs; i++) {
-    SD_transposeJacMatrix(jac_matrices->df_dx[i], jac_matrices->df_dx_t[i]);
+  SD_jacMatrix m_t = jac_matrices->df_dx_t;
+  int eq, eqs = jac_matrices->state_eqs;
+  int variables = m_t->variables;
+  int i, j;
+  printf("Generating transpose matrix: \n");
+  int *inits = (int *)malloc(variables * sizeof(int));
+  int *dups = (int *)malloc(variables * sizeof(int));
+  cleanVector(inits, 0, variables);
+  for (eq = 0; eq < eqs; eq++) {
+    SD_jacMatrix m = jac_matrices->df_dx[eq];
+    printf("Evaluate equation: %d \n", eq);
+    for (i = 0; i < variables; i++) {
+      printf("Size defined for variable: %d %d\n", i, m->size[i]);
+      cleanVector(dups, 0, variables);
+      for (j = 0; j < m->size[i]; j++) {
+        int var_t = m->index[i][j];
+        if (dups[var_t] == 0) {
+          printf("Transpose increase variable: %d\n", m->index[i][j]);
+          inits[var_t]++;
+          dups[var_t]++;
+        }
+      }
+    }
   }
+  m_t->size[0] = 0;
+  for (i = 1; i < variables; i++) {
+    m_t->size[i] = inits[i - 1] + m_t->size[i - 1];
+  }
+  for (i = 0; i < variables; i++) {
+    m_t->index[i] = (int *)malloc(sizeof(int));
+  }
+  free(m_t->value);
+  m_t->value = NULL;
+  for (i = 0; i < variables; i++) {
+    m_t->index[i][0] = 0;
+  }
+  free(inits);
+  free(dups);
 }
 
 void SD_freeJacMatrices(SD_jacMatrices jac_matrices)
@@ -555,6 +564,7 @@ void SD_freeJacMatrices(SD_jacMatrices jac_matrices)
     SD_freeJacMatrix(jac_matrices->df_dx[i]);
   }
   free(jac_matrices->df_dx);
+  free(jac_matrices->df_dx_t);
   eqs = jac_matrices->alg_eqs;
   for (i = 0; i < eqs; i++) {
     SD_freeJacMatrix(jac_matrices->dg_dx[i]);
