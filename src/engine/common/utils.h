@@ -126,6 +126,8 @@ int sign(double x);
 
 int pos(int *array, int size, int value);
 
+int in(int *array, int size, int value);
+
 /** List data structures */
 
 /** \brief Default node size for memory list

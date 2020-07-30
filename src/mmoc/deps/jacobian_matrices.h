@@ -48,6 +48,7 @@ class JacMatrixGenerator {
 
   protected:
   void addDependency(IR::Equation eq, SBG::VariableDep var_dep, SBG::Map map);
+  std::string guard(std::string exp, std::string id);
 
   JacMatrixDef _matrix;
   std::map<std::string, std::string> _dv_dx;
