@@ -138,6 +138,14 @@ int pos(int *array, int size, int value)
   return NOT_ASSIGNED;
 }
 
+int in(int *array, int size, int value)
+{
+  if (pos(array, size, value) == NOT_ASSIGNED) {
+    return FALSE;
+  }
+  return TRUE;
+}
+
 double minPosRoot(double *coeff, int order)
 {
   double mpr = -1;
