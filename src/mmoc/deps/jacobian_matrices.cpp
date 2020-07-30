@@ -55,6 +55,18 @@ void JacMatrixGenerator::end()
   _matrix.init.append(code.str());
 }
 
+string JacMatrixGenerator::guard(string exp, string id)
+{
+  stringstream code;
+  string inner_tabs = Utils::instance().tabs(_tabs + 1);
+  code << inner_tabs << "x_ind = " << exp << ";" << endl;
+  code << inner_tabs << "if(in("
+       << "modelData->jac_matrices->" << id << "->size,"
+       << "modelData->jac_matrices->" << id << "->size[c_row], x_ind))"
+       << "{" << endl;
+  return code.str();
+}
+
 void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SBG::Map map)
 {
   stringstream code;
@@ -76,26 +88,25 @@ void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SB
   matrix_eq_id << "[" << eq.arrayId() << "]";
   string eq_id = matrix_eq_id.str();
 
-  // if (_dv_dx.find(eq_id) == _dv_dx.end()) {
   code << tabs << range.in(exps);
-  //  _dv_dx[eq_id] = code.str();
-  //}
   string code_guards = code.str();
-  // if (!code_guards.empty()) {
+  string include_guard = guard(x_ind_exp, eq_id);
   _matrix.alloc.append(code_guards);
   _matrix.init.append(code_guards);
   code.str("");
   code << inner_tabs << "modelData->jac_matrices->" << eq_id << "->size[c_row]++;" << endl;
   _matrix.alloc.append(code.str());
   code.str("");
-  code << inner_tabs << "x_ind = " << x_ind_exp << ";" << endl;
-  code << inner_tabs << "modelData->jac_matrices->" << eq_id << "->index[c_row][states[c_row]++] = x_ind;" << endl;
+  code << include_guard;
+  code << TAB << inner_tabs << "modelData->jac_matrices->" << eq_id << "->size[c_row]--;" << endl;
+  code << inner_tabs << "} else {" << endl;
+  code << TAB << inner_tabs << "modelData->jac_matrices->" << eq_id << "->index[c_row][states[c_row]++] = x_ind;" << endl;
+  code << inner_tabs << "}" << endl;
   _matrix.init.append(code.str());
   code.str("");
   code << tabs << range.end() << endl;
   _matrix.alloc.append(code.str());
   _matrix.init.append(code.str());
-  //}
   cout << _matrix.init << endl;
   cout << _matrix.alloc << endl;
 }
