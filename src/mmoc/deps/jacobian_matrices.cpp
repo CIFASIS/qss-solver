@@ -61,7 +61,7 @@ string JacMatrixGenerator::guard(string exp, string id)
   string inner_tabs = Utils::instance().tabs(_tabs + 1);
   code << inner_tabs << "x_ind = " << exp << ";" << endl;
   code << inner_tabs << "if(in("
-       << "modelData->jac_matrices->" << id << "->size,"
+       << "modelData->jac_matrices->" << id << "->index[c_row],"
        << "modelData->jac_matrices->" << id << "->size[c_row], x_ind))"
        << "{" << endl;
   return code.str();
