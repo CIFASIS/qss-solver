@@ -432,8 +432,15 @@ void SD_allocJacMatrix(SD_jacMatrix jac_matrix)
 {
   int i, variables = jac_matrix->variables;
   for (i = 0; i < variables; i++) {
-    jac_matrix->index[i] = (jac_matrix->size[i] > 0) ? (int *)malloc(jac_matrix->size[i] * sizeof(int)) : NULL;
-    jac_matrix->value[i] = (jac_matrix->size[i] > 0) ? (double *)malloc(jac_matrix->size[i] * sizeof(double)) : NULL;
+    int size = jac_matrix->size[i];
+    if (size > 0) {
+      jac_matrix->index[i] = (int *)malloc(size * sizeof(int));
+      cleanVector(jac_matrix->index[i], NOT_ASSIGNED, size);
+      jac_matrix->value[i] = (double *)malloc(size * sizeof(double));
+    } else {
+      jac_matrix->index[i] = NULL;
+      jac_matrix->value[i] = NULL;
+    }
   }
 }
 
@@ -521,23 +528,14 @@ void SD_setupJacMatrices(SD_jacMatrices jac_matrices)
   int eq, eqs = jac_matrices->state_eqs;
   int variables = m_t->variables;
   int i, j;
-  printf("Generating transpose matrix: \n");
   int *inits = (int *)malloc(variables * sizeof(int));
-  int *dups = (int *)malloc(variables * sizeof(int));
   cleanVector(inits, 0, variables);
   for (eq = 0; eq < eqs; eq++) {
     SD_jacMatrix m = jac_matrices->df_dx[eq];
-    printf("Evaluate equation: %d \n", eq);
     for (i = 0; i < variables; i++) {
-      printf("Size defined for variable: %d %d\n", i, m->size[i]);
-      cleanVector(dups, 0, variables);
       for (j = 0; j < m->size[i]; j++) {
         int var_t = m->index[i][j];
-        if (dups[var_t] == 0) {
-          printf("Transpose increase variable: %d\n", m->index[i][j]);
-          inits[var_t]++;
-          dups[var_t]++;
-        }
+        inits[var_t]++;
       }
     }
   }
@@ -554,7 +552,6 @@ void SD_setupJacMatrices(SD_jacMatrices jac_matrices)
     m_t->index[i][0] = 0;
   }
   free(inits);
-  free(dups);
 }
 
 void SD_freeJacMatrices(SD_jacMatrices jac_matrices)
