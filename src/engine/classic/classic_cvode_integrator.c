@@ -53,39 +53,30 @@ int is_sampled;
 
 int jac_struct_initialized = FALSE;
 
-int *dups;
+SlsMat init_jac_matrix = NULL;
 
 void assignJacStruct(SlsMat JacMat)
 {
   int size = clcData->states, glob_row, row, col, eq, eqs;
   int *col_ptrs = *JacMat->colptrs;
   int *row_vals = *JacMat->rowvals;
-  // SparseSetMatToZero(JacMat);
 
   // Check that the initial pointer values are cleared.
-
   eqs = clcData->jac_matrices->state_eqs;
 
   SD_cleanTransJacMatrices(clcData->jac_matrices);
 
   SD_jacMatrix jac_t = clcData->jac_matrices->df_dx_t;
-  printf("Generating CRC pointers for CV_ODE\n");
   glob_row = 0;
   for (eq = 0; eq < eqs; eq++) {
     SD_jacMatrix jac = clcData->jac_matrices->df_dx[eq];
     for (row = 0; row < size; row++) {
-      cleanVector(dups, 0, size);
       for (col = 0; col < jac->size[row]; col++) {
         int row_t = jac->index[row][col];
-        if (dups[row_t] == 0) {
-          int col_t = jac_t->size[row_t] + jac_t->index[row_t][0];
-          jac_t->index[row_t][0]++;
-          row_vals[col_t] = glob_row;
-          dups[row_t]++;
-          printf("Assigning row_vals[%d] = %d\n", col_t, glob_row);
-        }
+        int col_t = jac_t->size[row_t] + jac_t->index[row_t][0];
+        jac_t->index[row_t][0]++;
+        row_vals[col_t] = glob_row;
       }
-      printf("Size for row[%d] = %d\n", row, jac->size[row]);
       if (jac->size[row] > 0) {
         glob_row++;
       }
@@ -95,25 +86,22 @@ void assignJacStruct(SlsMat JacMat)
   col_ptrs[0] = 0;
   for (row = 0; row < size; row++) {
     col_ptrs[row] = jac_t->size[row];
-    printf("Assigning cols_prts[%d] = %d\n", row, col_ptrs[row]);
   }
   col_ptrs[size] = JacMat->NNZ;
-  ;
-  printf("Assigning cols_prts[%d] = %d\n", size, col_ptrs[size]);
 
-  for (row = 0; row < 30; row++) {
-    printf("Ordered row_vals[%d] = %d\n", row, row_vals[row]);
-  }
+  init_jac_matrix = SparseNewMat(JacMat->M, JacMat->N, JacMat->NNZ, CSC_MAT);
+  SparseCopyMat(JacMat, init_jac_matrix);
 }
 
 static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat, void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3)
 {
   if (jac_struct_initialized == FALSE) {
     jac_struct_initialized = TRUE;
-    SparseSetMatToZero(JacMat);
     assignJacStruct(JacMat);
-    SparsePrintMat(JacMat, stdout);
+  } else {
+    SparseCopyMat(init_jac_matrix, JacMat);
   }
+
   clcModel->jac(NV_DATA_S(y), clcData->d, clcData->alg, t, clcData->jac_matrices, JacMat->data);
   return 0;
 }
@@ -191,7 +179,6 @@ void CVODE_integrate(SIM_simulator simulate)
   double *solution_time = malloc(sizeof(double) * num_steps);
   double **outvar = malloc(sizeof(double) * simOutput->outputs);
   int *jroot = malloc(sizeof(int) * clcData->events), flag;
-  dups = (int *)malloc(size * sizeof(int));
 
   double rel_tol = dQRel, abs_tol = dQMin;
   realtype reltol = rel_tol, t = clcData->it, tout;
@@ -363,8 +350,11 @@ void CVODE_integrate(SIM_simulator simulate)
   free(outvar);
   free(solution_time);
   free(jroot);
-  free(dups);
-  for (i = 0; i < simOutput->outputs; i++) free(solution[i]);
+  for (i = 0; i < simOutput->outputs; i++) {
+    free(solution[i]);
+  }
   free(solution);
-  if (temp_y) N_VDestroy_Serial(temp_y);
+  if (temp_y) {
+    N_VDestroy_Serial(temp_y);
+  }
 }
