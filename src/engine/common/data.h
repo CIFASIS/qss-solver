@@ -286,7 +286,7 @@ struct SD_jacMatrices_ {
   int state_eqs;
   int alg_eqs;
   SD_jacMatrix *df_dx;
-  SD_jacMatrix *df_dx_t;
+  SD_jacMatrix df_dx_t;
   SD_jacMatrix *dg_dx;
 };
 

@@ -50,7 +50,7 @@ void JacGenerator::postProcess(SBG::VertexProperty vertex)
   code << tab << "for (row = 0; row < " << size << "; row++) {" << endl;
   code << tab << "  for (col = 0; col < dvdx->df_dx[" << id << "]->size[row]; col++) {" << endl;
   code << tab << "    row_t = dvdx->df_dx[" << id << "]->index[row][col];" << endl;
-  code << tab << "    _assign_jac(" << id << ", row_t, col, dvdx->df_dx[" << id << "]->value[row][col]);" << endl;
+  code << tab << "    _assign_jac(row_t, dvdx->df_dx[" << id << "]->value[row][col]);" << endl;
   code << tab << "  }" << endl;
   code << tab << "}" << endl;
   _jac_def.code.append(code.str());

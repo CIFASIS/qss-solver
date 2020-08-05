@@ -53,37 +53,44 @@ int is_sampled;
 
 int jac_struct_initialized = FALSE;
 
+SlsMat init_jac_matrix = NULL;
+
 void assignJacStruct(SlsMat JacMat)
 {
-  int size = clcData->states, i, j, eq, eqs, tot_rows = 0, tot_cols = 0;
+  int size = clcData->states, glob_row, row, col, eq, eqs;
   int *col_ptrs = *JacMat->colptrs;
   int *row_vals = *JacMat->rowvals;
-  SparseSetMatToZero(JacMat);
 
   // Check that the initial pointer values are cleared.
-
   eqs = clcData->jac_matrices->state_eqs;
 
   SD_cleanTransJacMatrices(clcData->jac_matrices);
 
+  SD_jacMatrix jac_t = clcData->jac_matrices->df_dx_t;
+  glob_row = 0;
   for (eq = 0; eq < eqs; eq++) {
     SD_jacMatrix jac = clcData->jac_matrices->df_dx[eq];
-    SD_jacMatrix jac_t = clcData->jac_matrices->df_dx_t[eq];
-    int row, col, rows = jac->variables;
-
-    for (row = 0; row < rows; row++) {
-      tot_cols += jac_t->size[row];
+    for (row = 0; row < size; row++) {
       for (col = 0; col < jac->size[row]; col++) {
         int row_t = jac->index[row][col];
-        col_ptrs[row] += jac_t->size[row_t];
         int col_t = jac_t->size[row_t] + jac_t->index[row_t][0];
         jac_t->index[row_t][0]++;
-        row_vals[col_t] = tot_rows + row;
+        row_vals[col_t] = glob_row;
+      }
+      if (jac->size[row] > 0) {
+        glob_row++;
       }
     }
-    tot_rows += rows;
   }
-  col_ptrs[size] = tot_cols;
+
+  col_ptrs[0] = 0;
+  for (row = 0; row < size; row++) {
+    col_ptrs[row] = jac_t->size[row];
+  }
+  col_ptrs[size] = JacMat->NNZ;
+
+  init_jac_matrix = SparseNewMat(JacMat->M, JacMat->N, JacMat->NNZ, CSC_MAT);
+  SparseCopyMat(JacMat, init_jac_matrix);
 }
 
 static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat, void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3)
@@ -91,7 +98,10 @@ static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat, void *user_da
   if (jac_struct_initialized == FALSE) {
     jac_struct_initialized = TRUE;
     assignJacStruct(JacMat);
+  } else {
+    SparseCopyMat(init_jac_matrix, JacMat);
   }
+
   clcModel->jac(NV_DATA_S(y), clcData->d, clcData->alg, t, clcData->jac_matrices, JacMat->data);
   return 0;
 }
@@ -200,11 +210,12 @@ void CVODE_integrate(SIM_simulator simulate)
 
   if (simulator->data->params->jacobian == 0) {
     nnz = 0;
-    for (i = 0; i < size; i++) nnz += clcData->nSD[i];
-
+    for (i = 0; i < size; i++) {
+      nnz += clcData->nSD[i];
+    }
     flag = CVKLU(cvode_mem, size, nnz, CSC_MAT);
     if (check_flag(&flag, "CVKLU", 1, simulator)) return;
-    /* Set the Jacobian routine to Jac (user-supplied) */
+    /* Set the Jacobian routine to Jac */
     flag = CVSlsSetSparseJacFn(cvode_mem, Jac);
     if (check_flag(&flag, "CVSlsSetSparseJacFn", 1, simulator)) return;
   } else {
@@ -339,7 +350,11 @@ void CVODE_integrate(SIM_simulator simulate)
   free(outvar);
   free(solution_time);
   free(jroot);
-  for (i = 0; i < simOutput->outputs; i++) free(solution[i]);
+  for (i = 0; i < simOutput->outputs; i++) {
+    free(solution[i]);
+  }
   free(solution);
-  if (temp_y) N_VDestroy_Serial(temp_y);
+  if (temp_y) {
+    N_VDestroy_Serial(temp_y);
+  }
 }

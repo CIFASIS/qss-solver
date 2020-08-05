@@ -302,11 +302,10 @@ void ModelInstance::header()
   }
   buffer << endl << "// Jacobian Macros definition. ";
   _writer->write(buffer, WRITER::Model_Header);
-  buffer << "#define _assign_jac(id, r, c, val) \\" << endl;
-  buffer << "    col_t = dvdx->df_dx_t[id]->size[r]; \\" << endl;
-  buffer << "    col_t += dvdx->df_dx_t[id]->index[r][0]; \\" << endl;
-  buffer << "    dvdx->df_dx_t[id]->index[r][0]++; \\" << endl;
-  buffer << "    jac[col_t] = val;";
+  buffer << "#define _assign_jac(r, val) \\" << endl;
+  buffer << "    col_t = dvdx->df_dx_t->size[r] + dvdx->df_dx_t->index[r][0]; \\" << endl;
+  buffer << "    dvdx->df_dx_t->index[r][0]++; \\" << endl;
+  buffer << "    jac[col_t] = val;" << endl;
   _writer->write(buffer, WRITER::Model_Header);
   buffer << "#define _c_index(i) (i-1)";
   _writer->write(buffer, WRITER::Model_Header);
