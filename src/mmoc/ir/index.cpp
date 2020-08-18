@@ -492,13 +492,11 @@ string Range::in(vector<string> exps)
   assert(exps.size() == _ranges.size());
   stringstream code;
   RangeDefinitionTable::iterator it;
-  code << "if (";
   int i = 0;
   for (RangeDefinition r = _ranges.begin(it); !_ranges.end(it); r = _ranges.next(it), i++) {
     string exp_str = exps[i];
     code << "(" << r.begin() << " <= " << exp_str << " && " << exp_str << " <= " << r.end() << ")";
   }
-  code << ") {" << endl;
   return code.str();
 }
 

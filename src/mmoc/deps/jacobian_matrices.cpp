@@ -67,10 +67,10 @@ string JacMatrixGenerator::guard(string exp, string id)
   return code.str();
 }
 
-void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SBG::Map map)
+void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SBG::Map map, string g_map_dom)
 {
   stringstream code;
-  Range range(var_dep.mdi());
+  Range range(var_dep.range());
   vector<string> variables;
   variables.push_back("row");
   vector<string> exps = map.exps(variables);
@@ -88,7 +88,11 @@ void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SB
   matrix_eq_id << "[" << eq.arrayId() << "]";
   string eq_id = matrix_eq_id.str();
 
-  code << tabs << range.in(exps);
+  code << tabs << "if( " << range.in(exps);
+  if (!g_map_dom.empty()) {
+    code << endl << tabs << "&& " << g_map_dom;
+  }
+  code << ") {" << endl;
   string code_guards = code.str();
   string include_guard = guard(x_ind_exp, eq_id);
   _matrix.alloc.append(code_guards);
@@ -111,12 +115,22 @@ void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SB
   cout << _matrix.alloc << endl;
 }
 
+std::string JacMatrixGenerator::guard(SBG::MDI dom, SBG::Map map)
+{
+  Range range(dom);
+  stringstream code;
+  vector<string> variables;
+  variables.push_back("row");
+  vector<string> exps = map.exps(variables);
+  return range.in(exps);
+}
+
 void JacMatrixGenerator::visitF(Equation eq, SBG::VariableDep var_dep, SBG::Map map) { addDependency(eq, var_dep, map); }
 
 void JacMatrixGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep, SBG::Map n_map, SBG::Map map_m,
                                 SBG::Offset index_shift)
 {
-  addDependency(v_eq, var_dep, n_map);
+  addDependency(v_eq, var_dep, n_map, guard(var_dep.dom(), map_m));
 }
 
 void JacMatrixGenerator::initG(Equation eq, SBG::Map map_m) {}

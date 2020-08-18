@@ -71,15 +71,29 @@ void JacGenerator::end()
   _tabs--;
 }
 
-void JacGenerator::dependencyPrologue(Equation eq, SBG::VariableDep var_dep, SBG::Map map)
+std::string JacGenerator::guard(SBG::MDI dom, SBG::Map map)
 {
+  Range range(dom);
   stringstream code;
-  string tab = Utils::instance().tabs(_tabs);
-  Range range(var_dep.mdi());
   vector<string> variables;
   variables.push_back("row");
   vector<string> exps = map.exps(variables);
-  code << tab << range.in(exps);
+  return range.in(exps);
+}
+
+void JacGenerator::dependencyPrologue(Equation eq, SBG::VariableDep var_dep, SBG::Map map, std::string guard)
+{
+  stringstream code;
+  string tab = Utils::instance().tabs(_tabs);
+  Range range(var_dep.range());
+  vector<string> variables;
+  variables.push_back("row");
+  vector<string> exps = map.exps(variables);
+  code << tab << "if(" << range.in(exps);
+  if (!guard.empty()) {
+    code << tab << "&& " << guard;
+  }
+  code << ") {" << endl;
   Expression i_exp = Expression::generate(var_dep.var().name(), exps);
   Index x_ind(i_exp);
   code << tab << tab << "x_ind = " << x_ind << ";" << endl;
@@ -163,7 +177,8 @@ void JacGenerator::visitF(Equation eq, SBG::VariableDep var_dep, SBG::Map map)
 void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep, SBG::Map n_map, Map map_m, SBG::Offset index_shift)
 {
   stringstream code;
-  dependencyPrologue(g_eq, var_dep, n_map);
+  string dom_guard = guard(var_dep.dom(), map_m);
+  dependencyPrologue(g_eq, var_dep, n_map, dom_guard);
   generatePos(v_eq.arrayId(), v_eq.type());
   vector<string> variables;
   variables.push_back("row");

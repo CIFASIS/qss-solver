@@ -52,14 +52,14 @@ class JacGenerator {
 
   protected:
   IR::Expression generateExp(string var_name, vector<string> indices);
-  void dependencyPrologue(Equation eq, Deps::SBG::VariableDep var_dep, Deps::SBG::Map map, Deps::SBG::Offset index_shift);
-  void dependencyPrologue(Equation eq, Deps::SBG::VariableDep var_dep, Deps::SBG::Map map);
+  void dependencyPrologue(Equation eq, Deps::SBG::VariableDep var_dep, Deps::SBG::Map map, std::string guard = "");
   void dependencyEpilogue();
   void updateMatrix(std::map<std::string, std::set<std::string>>& matrix);
   void generatePos(int id, EQUATION::Type type, std::string row = "c_row", std::string col = "col");
   void generateEquation(int id, EQUATION::Type type);
   void generateEquation(int v_id, int g_id, EQUATION::Type type);
   std::string getVariableIndexes(Equation eq, Deps::SBG::Map map);
+  std::string guard(Deps::SBG::MDI dom, Deps::SBG::Map map);
 
   JacDef _jac_def;
   int _tabs;
