@@ -110,18 +110,25 @@ void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V)
           if (graph[G].eq().type() == IR::EQUATION::Algebraic) {
             int dep, deps = graph[G].numDeps();
             for (dep = 1; dep <= deps; dep++) {
-              Map g_map = graph[G].map(dep);
-              Map n_map = g_map.applyIndexShift(_index_shift[graph[G].eq().id()]).compose(map_m);
-              MDI range = n_map.apply(pair.dom(), pair.ran());
-              VariableDep state_dep = graph[G].depStates(dep);
-              MDI state_range = state_dep.mdi();
-              Option<MDI> intersect = range.intersection(state_range);
-              if (intersect) {
-                num_gen++;
-                VariableDep var_dep(state_dep.var(), intersect.get());
-                graph[V].setDepState(num_gen, var_dep);
-                graph[V].setMap(num_gen, n_map);
-                _gen.visitG(graph[V].eq(), graph[G].eq(), var_dep, n_map, map_m, _index_shift[graph[G].eq().id()]);
+              // First get the dom of G for the algebraic equation
+              Offset index_shift = _index_shift[graph[G].eq().id()];
+              MDI g_dom = graph[G].dom(dep).applyOffset(index_shift);
+              MDI v_range = pair.map().apply(pair.dom(), pair.ran());
+              Option<MDI> d_intersect = g_dom.intersection(v_range);
+              if (d_intersect) {
+                Map g_map = graph[G].map(dep);
+                Map n_map = g_map.applyIndexShift(index_shift).compose(map_m);
+                MDI range = n_map.apply(pair.dom(), pair.ran());
+                VariableDep state_dep = graph[G].depStates(dep);
+                MDI state_range = state_dep.range();
+                Option<MDI> r_intersect = range.intersection(state_range);
+                if (r_intersect) {
+                  num_gen++;
+                  VariableDep var_dep(state_dep.var(), d_intersect.get(), r_intersect.get());
+                  graph[V].setDepState(num_gen, var_dep);
+                  graph[V].setMap(num_gen, n_map);
+                  _gen.visitG(graph[V].eq(), graph[G].eq(), var_dep, n_map, map_m, _index_shift[graph[G].eq().id()]);
+                }
               }
             }
           }
@@ -139,9 +146,10 @@ void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V)
         Map map = pair.map();
         MDI range = pair.map().apply(pair.dom(), pair.ran());
         num_gen++;
-        VariableDep var_dep(graph[X].var(), range);
+        VariableDep var_dep(graph[X].var(), pair.dom(), range);
         graph[V].setDepState(num_gen, var_dep);
         graph[V].setMap(num_gen, map);
+        graph[V].setDom(num_gen, pair.dom());
         _gen.visitF(graph[V].eq(), var_dep, map);
       }
     }
