@@ -49,13 +49,15 @@ typedef enum { Input, Output } Direction;
 class VariableDep {
   public:
   VariableDep();
-  VariableDep(Util::Variable var, MDI range);
+  VariableDep(Util::Variable var, MDI dom, MDI range);
   ~VariableDep() = default;
-  MDI mdi();
+  MDI range();
+  MDI dom();
   Util::Variable var();
 
   protected:
   Util::Variable _var;
+  MDI _dom;
   MDI _range;
 };
 
@@ -111,6 +113,8 @@ class VertexProperty {
   int size();
   std::string name() const;
   void setName(std::string name);
+  MDI dom(int id);
+  void setDom(int id, MDI dom);
 
   private:
   VERTEX::Type _type;
@@ -124,6 +128,7 @@ class VertexProperty {
   VariableDeps _var_deps;
   Maps _maps;
   std::string _name;
+  MDIs _dom;
 };
 
 class Label {
