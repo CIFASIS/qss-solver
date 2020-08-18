@@ -333,6 +333,20 @@ vector<int> LinearFunction::apply(vector<int> variable) const
   return exps;
 }
 
+int LinearFunction::apply(int value, int dim) const { return _factor[dim] * value + _constant[dim]; }
+
+MDI LinearFunction::apply(MDI dom) const
+{
+  assert(dom.intervals().size() == _factor.size());
+  int size = (int)_factor.size();
+  IntervalVector new_ran(size);
+  IntervalVector doms = dom.intervals();
+  for (int i = 0; i < size; i++) {
+    new_ran[i] = Interval(apply(doms[i].lower(), i), apply(doms[i].upper(), i), doms[i].step());
+  }
+  return MDI(new_ran);
+}
+
 Offset LinearFunction::factor() const { return _factor; }
 
 Offset LinearFunction::constant() const { return _constant; }
@@ -361,15 +375,14 @@ Map& Map::operator=(const Map& other)
   _offset = other._offset;
   _exp = other._exp;
   _linear_function = other._linear_function;
-
   return *this;
 }
 
 MDI Map::apply(MDI dom, MDI ran) const
 {
-  MDI mdi = dom.applyUsage(_usage, ran);
-  mdi = mdi.applyOffset(_offset);
-  return mdi.applyStep(ran);
+  MDI new_dom = dom.applyUsage(_usage, ran);
+  new_dom = new_dom.applyStep(ran);
+  return _linear_function.apply(new_dom);
 }
 
 MDI Map::revert(MDI dom, MDI ran) const
@@ -384,7 +397,7 @@ Map Map::compose(const Map& other)
   Offset new_factor = other._linear_function.factor() * _linear_function.factor();
   Offset new_constant = _linear_function.factor() * other._linear_function.constant() + _linear_function.constant();
   LinearFunction new_linear_function(new_constant, new_factor);
-  return Map(_usage, new_constant, _exp, new_linear_function);
+  return Map(_usage, _offset, _exp, new_linear_function);
 }
 
 Map Map::applyIndexShift(Offset index_shift)

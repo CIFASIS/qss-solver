@@ -148,6 +148,8 @@ class MDI {
   IntervalVector _intervals;
 };
 
+typedef std::map<int, MDI> MDIs;
+
 namespace PAIR {
 typedef enum { RN_N, RN_1, R1_N, R1_1 } Rel;
 }
@@ -160,11 +162,14 @@ class LinearFunction {
 
   std::vector<std::string> apply(std::vector<std::string> variable) const;
   std::vector<int> apply(std::vector<int> variable) const;
+  MDI apply(MDI dom) const;
   Offset factor() const;
   Offset constant() const;
   friend std::ostream& operator<<(std::ostream& os, const LinearFunction& function);
 
   protected:
+  int apply(int value, int dim) const;
+
   Offset _constant;
   Offset _factor;
 };
