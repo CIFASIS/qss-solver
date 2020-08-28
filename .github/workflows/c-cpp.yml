@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install deps.
+      run: apt-get install libcln-dev  
     - name: Build
       run: | 
         cd src
