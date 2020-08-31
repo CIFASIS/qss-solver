@@ -18,7 +18,6 @@
 #       VERSION: 3.2
 #===================================================================================
 
-rm -rf qss-solver-i386.deb
 rm -rf qss-solver-amd64.deb
 
 cd ../../
@@ -27,13 +26,16 @@ echo "Retrieving latest from Git";
 ./deploy/common/repos.sh pull
 VM=`head ./doc/version.major -c 4`
 VMC=`head ./doc/version.major -c 3`
-if [ "$ARCH" == "x86_64" ]; then
-  ./deploy/common/repos.sh tag ${VM} 
-fi
+
+./deploy/common/repos.sh tag ${VM} 
+
 REV=`./deploy/common/repos.sh version`
+
 cat ./deploy/linux/qss-solver.ini.in > ./deploy/linux/qss-solver.ini
 ./deploy/common/setRevision.sh ./deploy/linux/qss-solver.ini $REV $VMC
+
 VER=$VM$REV
+
 echo "Building QSS Solver DEB package for $ARCH version $VER";
 echo "Building Binaries";
 cd ./src
@@ -55,16 +57,10 @@ mkdir ./tmp_deb/opt/qss-solver/build
 mkdir ./tmp_deb/opt/qss-solver/output
 mkdir ./tmp_deb/opt/qss-solver/lib/
 cp ./tmp/deploy/linux/scripts/* ./tmp_deb/opt/qss-solver/bin/
-if [ "$ARCH" == "i686" ]; then
-  cat ./tmp_deb/DEBIAN/control.i386 | awk -v VERSION="$VER" '{ if(index($0,"Version: ")>=1) print "Version: " VERSION ; else print $0;}' >  ./tmp_deb/DEBIAN/control
-  rm ./tmp_deb/DEBIAN/control.amd64; 
-  rm ./tmp_deb/DEBIAN/control.i386; 
-fi
-if [ "$ARCH" == "x86_64" ]; then
-  cat ./tmp_deb/DEBIAN/control.amd64 | awk -v VERSION="$VER" '{ if(index($0,"Version: ")>=1) print "Version: " VERSION ; else print $0;}' >  ./tmp_deb/DEBIAN/control
-  rm ./tmp_deb/DEBIAN/control.amd64; 
-  rm ./tmp_deb/DEBIAN/control.i386; 
-fi
+
+cat ./tmp_deb/DEBIAN/control.amd64 | awk -v VERSION="$VER" '{ if(index($0,"Version: ")>=1) print "Version: " VERSION ; else print $0;}' >  ./tmp_deb/DEBIAN/control
+rm ./tmp_deb/DEBIAN/control.amd64; 
+
 cp bin/mmoc  ./tmp_deb/opt/qss-solver/bin/ 
 cp bin/qss-solver ./tmp_deb/opt/qss-solver/bin/ 
 cp bin/translate-sbml  ./tmp_deb/opt/qss-solver/bin/
@@ -99,20 +95,12 @@ rm -rf ./tmp_deb/opt/qss-solver/src/usr/lib
 rm -rf ./tmp_deb/opt/qss-solver/src/interfaces/sbml/usr
 rm -rf ./tmp_deb/opt/qss-solver/src/gui/usr
 
-if [ "$ARCH" == "i686" ]; then
-	cp /usr/lib/libsbml.so.5.12.0 ./tmp_deb/opt/qss-solver/lib/libsbml.so.5
-	cp src/engine/3rd-party/partitioners/patoh/Linux-i386/libpatoh.a ./tmp_deb/opt/qss-solver/lib/libpatoh.a
-	cp src/engine/3rd-party/partitioners/metis/Linux-i386/libmetis.a ./tmp_deb/opt/qss-solver/lib/libmetis.a
-	cp src/engine/3rd-party/partitioners/scotch/Linux-i386/libscotch.a ./tmp_deb/opt/qss-solver/lib/libscotch.a
-	cp src/engine/3rd-party/partitioners/scotch/Linux-i386/libscotcherr.a ./tmp_deb/opt/qss-solver/lib/libscotcherr.a
-fi
-if [ "$ARCH" == "x86_64" ]; then
-	cp /usr/lib/libsbml.so.5.12.0 ./tmp_deb/opt/qss-solver/lib/libsbml.so.5
-	cp src/engine/3rd-party/partitioners/patoh/Linux-x86_64/libpatoh.a ./tmp_deb/opt/qss-solver/lib/libpatoh.a
-	cp src/engine/3rd-party/partitioners/metis/Linux-x86_64/libmetis.a ./tmp_deb/opt/qss-solver/lib/libmetis.a
-	cp src/engine/3rd-party/partitioners/scotch/Linux-x86_64/libscotch.a ./tmp_deb/opt/qss-solver/lib/libscotch.a
-	cp src/engine/3rd-party/partitioners/scotch/Linux-x86_64/libscotcherr.a ./tmp_deb/opt/qss-solver/lib/libscotcherr.a
-fi
+cp /usr/lib/libsbml.so.5.12.0 ./tmp_deb/opt/qss-solver/lib/libsbml.so.5
+cp src/engine/3rd-party/partitioners/patoh/Linux-x86_64/libpatoh.a ./tmp_deb/opt/qss-solver/lib/libpatoh.a
+cp src/engine/3rd-party/partitioners/metis/Linux-x86_64/libmetis.a ./tmp_deb/opt/qss-solver/lib/libmetis.a
+cp src/engine/3rd-party/partitioners/scotch/Linux-x86_64/libscotch.a ./tmp_deb/opt/qss-solver/lib/libscotch.a
+cp src/engine/3rd-party/partitioners/scotch/Linux-x86_64/libscotcherr.a ./tmp_deb/opt/qss-solver/lib/libscotcherr.a
+
 chmod 0644 `find tmp_deb/ -iname *.cpp`
 chmod 0644 `find tmp_deb/ -iname *.c`
 chmod 0644 `find tmp_deb/ -iname *.h`
@@ -125,12 +113,7 @@ chmod 0644 `find tmp_deb/opt/qss-solver/packages/ -type f`
 chmod 0644 `find tmp_deb/opt/qss-solver/src/usr/ -type f`
 chmod 0755 `find tmp_deb/ -type d`
 fakeroot dpkg -b tmp_deb qss-solver.deb
-if [ "$ARCH" == "i686" ]; then
-  mv qss-solver.deb ./deploy/linux/qss-solver-i386.deb
-fi
-if [ "$ARCH" == "x86_64" ]; then
-  mv qss-solver.deb ./deploy/linux/qss-solver-amd64.deb
-fi
+mv qss-solver.deb ./deploy/linux/qss-solver-amd64.deb
 rm -rf tmp_deb
 rm -rf tmp
 cd deploy/linux
