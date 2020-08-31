@@ -297,7 +297,6 @@ MDI MDI::ApplyUsage(Usage usage, MDI ran) const
 
 MDI MDI::RevertOffset(Offset offset, Usage usage, MDI ran) const
 {
-  MDI tmp = ApplyUsage(usage, ran);
   if (this->Dimension() == 0 || offset.Size() == 0) {
     // nothing to apply
     return *this;
@@ -314,7 +313,8 @@ MDI MDI::RevertUsage(Usage usage, MDI dom) const
   if (usage.Size() == 0 || usage.isUnused() || dom.Dimension() == 0) {
     return dom;
   } else {
-    IntervalVector newIntervals(usage.Size());
+    int dims = dom.Dimension();
+    IntervalVector newIntervals(dims);
     int usages = 0;
     for (int i = 0; i < usage.Size(); i++) {
       if (usage[i] >= 0) {
@@ -330,30 +330,24 @@ MDI MDI::RevertUsage(Usage usage, MDI dom) const
 MDI MDI::DomToRan(IndexPair ip) const
 {
   MDI rta = this->ApplyUsage(ip.GetUsage(), ip.Ran());
+  rta = rta.applyStep(ip.Ran());
   rta = rta.ApplyOffset(ip.GetOffset());
   return rta;
 }
 
 MDI MDI::RanToDom(IndexPair ip) const
 {
-  MDI rta = this->RevertUsage(ip.GetUsage(), ip.Dom());
-  rta = rta.ApplyOffset(-ip.GetOffset());
+  MDI rta = ApplyOffset(-ip.GetOffset());
+  rta = rta.revertStep(ip.Dom());
+  rta = rta.RevertUsage(ip.GetUsage(), ip.Dom());
   return rta;
 }
 
-MDI MDI::getImage(IndexPair p)
-{
-  MDI ret = DomToRan(p);
-  return ret.applyStep(p.Ran());
-}
+MDI MDI::getImage(IndexPair p) { return DomToRan(p); }
 
-MDI MDI::revertImage(IndexPair p)
-{
-  MDI ret = RanToDom(p);
-  return ret.revertStep(p.Dom());
-}
+MDI MDI::revertImage(IndexPair p) { return RanToDom(p); }
 
-MDI MDI::applyStep(MDI other)
+MDI MDI::applyStep(MDI other) const
 {
   assert(this->Dimension() == other.Dimension());
   if (this->Dimension() == 0) {
@@ -364,12 +358,12 @@ MDI MDI::applyStep(MDI other)
   IntervalVector other_intervals = other.Intervals();
   for (int i = 0; i < (int)copy_intervals.size(); i++) {
     int step = other_intervals[i].step();
-    copy_intervals[i] = Interval(copy_intervals[i].lower() * step, copy_intervals[i].upper() * step);
+    copy_intervals[i] = Interval(copy_intervals[i].lower() * step, copy_intervals[i].upper() * step, step);
   }
   return MDI(copy_intervals);
 }
 
-MDI MDI::revertStep(MDI other)
+MDI MDI::revertStep(MDI other) const
 {
   assert(this->Dimension() == other.Dimension());
   if (this->Dimension() == 0) {
@@ -796,7 +790,6 @@ INDEX_PAIR::Rel IndexPair::Type() const
   } else if (dom.Size() < ran.Size()) {
     return INDEX_PAIR::RN_N;
   }
-  cout << "Dom size " << dom.Size() << " ran size " << ran.Size() << endl;
   assert(false);
 }
 

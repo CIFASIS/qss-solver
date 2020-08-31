@@ -145,8 +145,8 @@ class MDI {  // Multi-Dimensional Interval
   MDI RevertOffset(Offset offset, Usage usage, MDI ran) const;
   MDI ApplyUsage(Usage, MDI ran = MDI({})) const;
   MDI RevertUsage(Usage usage, MDI dom = MDI({})) const;
-  MDI applyStep(MDI other);
-  MDI revertStep(MDI other);
+  MDI applyStep(MDI other) const;
+  MDI revertStep(MDI other) const;
   // karupayun - Para moverse usando la info de la conexion entre Dom y Ran
   MDI DomToRan(IndexPair ip) const;
   MDI RanToDom(IndexPair ip) const;
