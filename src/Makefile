@@ -1,7 +1,4 @@
-# Target OS variables
-ifneq ($(OS), Windows_NT)
-OS = $(shell uname)
-endif
+# Target variables
 CORES ?= $(shell nproc)
 MODE ?= Debug
 ARCH = $(shell uname -m)
@@ -93,11 +90,6 @@ else
 endif
 	@echo "Installing GTEST libraries."
 	ln -s $(ROOT)/src/3rd-party/gtest/usr/lib/*.a $(ROOT)/lib/
-else
-ifeq ($(OS),Windows_NT)
-	@cp $(ROOT)/deploy/windows/scripts/* $(ROOT)/bin/
-	@cp $(ROOT)/deploy/windows/qss-solver.ini.in $(ROOT)/bin/qss-solver.ini
-endif
 endif
 	
 .PHONY: clean all 

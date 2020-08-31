@@ -1,7 +1,4 @@
 # Makefile config variables
-ifneq ($(OS), Windows_NT)
-OS = $(shell uname)
-endif
 MODE ?= Debug
 
 # Compiler and Linker
@@ -21,17 +18,11 @@ TARGET      := $(BINDIR)/translate-sbml
 
 # Flags, Libraries and Includes
 LIB 		 		:= -lsbml
-ifeq ($(OS),Windows_NT)
-LIB 				:= -L/usr/local/lib -lsbml -lxml2
-endif
 CXXFLAGS 			:= -Wall -Wabi-tag -lm -msse2 -mfpmath=sse 
 ifeq ($(MODE),Debug)
 CXXFLAGS 			:= -g
 endif
 INC 				:= -I. 
-ifeq ($(OS),Windows_NT)
-INC 				+= -I/usr/local/include
-endif
 RMS 				:= rm -rf
 
 # Source files.
