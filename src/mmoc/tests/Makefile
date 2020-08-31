@@ -1,8 +1,3 @@
-# Target OS variables
-ifneq ($(OS), Windows_NT)
-OS = $(shell uname)
-endif
-
 # The Directories, Source, Includes, Objects, Binary 
 ROOT_DIR       := ../..
 MMOC_DIR       := ..
@@ -23,9 +18,6 @@ GOOGLE_TEST_INSTALL = $(ROOT_DIR)/3rd-party/gtest
 GOOGLE_TEST_LIB = gtest
 GOOGLE_MOCK_LIB = gmock
 GOOGLE_TEST_INCLUDE = $(GOOGLE_TEST_INSTALL)/usr/local/include
-ifeq ($(OS), Windows_NT)
-LIB 		:= -L/usr/lib
-endif
 LIB 		+= -L$(MMOC_LIB_DIR) -lginac -lcln -lgmp  
 G++ = g++
 G++_FLAGS = -c -Wall -I $(GOOGLE_TEST_INCLUDE) -std=c++11 -I $(MMOC_DIR)
