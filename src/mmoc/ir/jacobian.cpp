@@ -61,6 +61,12 @@ void JacGenerator::init(SBG::VertexProperty vertex)
   stringstream code;
   code << "for(row = 1; row <= " << vertex.size() << "; row++) {" << endl;
   code << TAB << "c_row = _c_index(row);" << endl;
+  Equation eq = vertex.eq();
+  if (eq.hasRange()) {
+    Option<Variable> var = eq.LHSVariable();
+    assert(var);
+    code << TAB << "_get" << var.get() << "_idxs(c_row);" << endl;
+  }
   _tabs++;
   _jac_def.code.append(code.str());
 }
@@ -75,9 +81,7 @@ std::string JacGenerator::guard(SBG::MDI dom, SBG::Map map)
 {
   Range range(dom);
   stringstream code;
-  vector<string> variables;
-  variables.push_back("row");
-  vector<string> exps = map.exps(variables);
+  vector<string> exps = map.exps(range.getDimensionVars());
   return range.in(exps);
 }
 
@@ -86,9 +90,7 @@ void JacGenerator::dependencyPrologue(Equation eq, SBG::VariableDep var_dep, SBG
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
   Range range(var_dep.range());
-  vector<string> variables;
-  variables.push_back("row");
-  vector<string> exps = map.exps(variables);
+  vector<string> exps = map.exps(range.getDimensionVars());
   code << tab << "if(" << range.in(exps);
   if (!guard.empty()) {
     code << tab << "&& " << guard;
@@ -144,16 +146,9 @@ void JacGenerator::generateEquation(int v_id, int g_id, EQUATION::Type type)
 string JacGenerator::getVariableIndexes(Equation eq, Deps::SBG::Map map)
 {
   stringstream code;
-  string tab = Utils::instance().tabs(_tabs);
   if (eq.hasRange()) {
-    Option<Variable> var = eq.LHSVariable();
-    if (eq.isAlgebraic()) {
-      assert(map.exp().isReference());
-      var = map.exp().reference();
-    }
-    assert(var);
-    string args = eq.range()->getDimensionVars();
-    code << tab << "_get" << var.get() << "_idxs(c_row);" << endl;
+    string tab = Utils::instance().tabs(_tabs);
+    string args = eq.range()->getDimensionVarsString();
     code << tab << "_apply_usage" << eq.applyId() << "(" << args << ");" << endl;
     eq.range()->addLocalVariables();
   }
