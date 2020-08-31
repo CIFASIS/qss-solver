@@ -170,12 +170,15 @@ void Macros::initialize()
       _macros << init_code.str();
     }
   }
+
+  int offset = _variable.offset();
+  Range range = Range(_variable);
+  FunctionPrinter fp = FunctionPrinter();
   if (_variable.isState() || _variable.isOutput() || _variable.isEqType()) {
-    FunctionPrinter fp = FunctionPrinter();
-    int offset = _variable.offset();
-    Range range = Range(_variable);
     _macros << "#define _eval" << _variable << parameters() << " ";
     _macros << engineIndexArguments() << endl;
+    _macros << fp.accessMacros(_variable.print(), offset, range);
+  } else if (_variable.isAlgebraic()) {
     _macros << fp.accessMacros(_variable.print(), offset, range);
   }
   if (_is_qss && _variable.isState()) {

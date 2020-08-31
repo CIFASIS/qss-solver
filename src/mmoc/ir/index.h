@@ -86,7 +86,8 @@ class Range {
   void generate(Deps::MDI mdi);
   inline bool empty() { return _size == 0; };
   std::string iterator(int dim);
-  std::string getDimensionVars() const;
+  std::string getDimensionVarsString() const;
+  std::vector<std::string> getDimensionVars() const;
   std::string getDimensionVar(int i) const;
   bool intersect(Range other);
   Deps::MDI getMDI();

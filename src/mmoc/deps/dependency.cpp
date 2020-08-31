@@ -186,6 +186,7 @@ void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, 
     Option<MDI> intersect = source_range.Intersection(dom);
     cout << "Starting traverse with source range: " << source_range << endl;
     cout << "And node domain: " << dom << endl;
+    cout << "And node range: " << lbl.Pair().Ran() << endl;
     if (intersect) {
       MDI intersection = intersect.get();
       cout << "Node intersection: " << intersection << endl;
