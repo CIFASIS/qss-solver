@@ -41,14 +41,11 @@
 namespace MicroModelica {
 namespace IR {
 
-typedef enum {
-  DEC_PUBLIC,  //!< DEC_PUBLIC
-  DEC_LOCAL    //!< DEC_LOCAL
-} DEC_Type;
+typedef enum { DEC_PUBLIC, DEC_LOCAL } DEC_Type;
 
 class Class {
   public:
-  ~Class(){};
+  ~Class() = default;
   virtual string name() const = 0;
   virtual void insert(string n) = 0;
   virtual void insert(AST_Equation eq) = 0;
@@ -62,9 +59,6 @@ class Class {
   virtual Util::ImportTable imports() const = 0;
 };
 
-/**
- *
- */
 class Function : public Class {
   public:
   Function(){};
@@ -107,14 +101,11 @@ class Function : public Class {
 
 typedef ModelTable<std::string, Function> FunctionTable;
 
-/**
- *
- */
 class Package : public Class {
   public:
   Package(){};
   Package(string name);
-  ~Package(){};
+  ~Package() = default;
   Util::VarSymbolTable symbols() const;
   string name() const;
   void insert(string n);
@@ -137,14 +128,11 @@ class Package : public Class {
   FunctionTable _functions;
 };
 
-/**
- *
- */
 class Model : public Class {
   public:
   Model();
   Model(string name);
-  ~Model(){};
+  ~Model() = default;
   inline string name() const { return _name; };
   void insert(string n);
   void insert(VarName n, Util::Variable& vi, DEC_Type type);
