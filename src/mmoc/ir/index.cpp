@@ -343,7 +343,7 @@ string Range::iterator(int dim)
   return "";
 }
 
-string Range::getDimensionVars() const
+string Range::getDimensionVarsString() const
 {
   stringstream buffer;
   int size = _ranges.size();
@@ -351,6 +351,16 @@ string Range::getDimensionVars() const
     buffer << getDimensionVar(i) << (i + 1 < size ? "," : "");
   }
   return buffer.str();
+}
+
+vector<string> Range::getDimensionVars() const
+{
+  vector<string> buffer;
+  int size = _ranges.size();
+  for (int i = 1; i <= size; i++) {
+    buffer.push_back(getDimensionVar(i));
+  }
+  return buffer;
 }
 
 string Range::getDimensionVar(int i) const
