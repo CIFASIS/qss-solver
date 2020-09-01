@@ -43,6 +43,7 @@ AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
       AST_ExpressionListIterator it;
       int i = 0;
       AST_ExpressionList l = newAST_ExpressionList();
+      assert(indexes->size() == _usage.Size());
       foreach (it, indexes) {
         if (_usage.isUsed(i)) {
           string var = _range.iterator(i);
@@ -64,6 +65,18 @@ AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
   return exp;
 }
 
+AST_Expression ReplaceIndex::foldTraverseElementUMinus(AST_Expression exp)
+{
+  return newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp()));
+}
+
+AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
+{
+  return newAST_Expression_BinOp(l, r, bot);
+}
+
+ReplaceVar::ReplaceVar(string var) : _var(var) {}
+
 AST_Expression ReplaceVar::foldTraverseElement(AST_Expression exp)
 {
   switch (exp->expressionType()) {
@@ -81,5 +94,16 @@ AST_Expression ReplaceVar::foldTraverseElement(AST_Expression exp)
   }
   return exp;
 }
+
+AST_Expression ReplaceVar::foldTraverseElementUMinus(AST_Expression exp)
+{
+  return newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp()));
+}
+
+AST_Expression ReplaceVar::foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
+{
+  return newAST_Expression_BinOp(l, r, bot);
+}
+
 }  // namespace Util
 }  // namespace MicroModelica
