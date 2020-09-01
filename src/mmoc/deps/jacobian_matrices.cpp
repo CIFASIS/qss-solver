@@ -112,7 +112,7 @@ void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SB
   code << inner_tabs << "}" << endl;
   _matrix.init.append(code.str());
   code.str("");
-  code << tabs << range.end() << endl;
+  code << tabs << "}" << endl;
   _matrix.alloc.append(code.str());
   _matrix.init.append(code.str());
   cout << _matrix.init << endl;
