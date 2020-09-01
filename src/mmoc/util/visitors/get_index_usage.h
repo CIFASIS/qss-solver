@@ -28,25 +28,20 @@
 
 namespace MicroModelica {
 namespace Util {
-/**
- *
- */
+
 class GetIndexUsage : public AST_Expression_Visitor<Deps::Usage> {
   public:
   GetIndexUsage();
-  ~GetIndexUsage(){};
+  ~GetIndexUsage() = default;
 
   private:
   Deps::Usage foldTraverseElement(AST_Expression exp);
-  inline Deps::Usage foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
-  inline Deps::Usage foldTraverseElement(Deps::Usage l, Deps::Usage r, BinOpType bot)
-  {
-    l.join(r);
-    return l;
-  }
+  Deps::Usage foldTraverseElementUMinus(AST_Expression exp);
+  Deps::Usage foldTraverseElement(Deps::Usage l, Deps::Usage r, BinOpType bot);
   bool _in_index_list;
 };
 
 }  // namespace Util
 }  // namespace MicroModelica
+
 #endif /* GET_INDEX_USAGE_H_ */
