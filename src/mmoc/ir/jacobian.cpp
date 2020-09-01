@@ -148,7 +148,7 @@ string JacGenerator::getVariableIndexes(Equation eq, Deps::SBG::Map map)
   stringstream code;
   if (eq.hasRange()) {
     string tab = Utils::instance().tabs(_tabs);
-    string args = eq.range()->getDimensionVarsString();
+    string args = Index(eq.lhs()).replace().usageExp();
     code << tab << "_apply_usage" << eq.applyId() << "(" << args << ");" << endl;
     eq.range()->addLocalVariables();
   }

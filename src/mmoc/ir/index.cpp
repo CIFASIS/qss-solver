@@ -141,10 +141,10 @@ string Index::usageExp() const { return _exp.usage(); }
 string Index::modelicaExp() const
 {
   stringstream buffer;
-  string usage_exp = usageExp();
+  string usage_exp = _exp.usage();
   buffer << variable().name();
   if (!usage_exp.empty()) {
-    buffer << "[" << usageExp() << "]";
+    buffer << "[" << usage_exp << "]";
   }
   return buffer.str();
 }
@@ -348,7 +348,7 @@ string Range::getDimensionVarsString() const
   stringstream buffer;
   int size = _ranges.size();
   for (int i = 1; i <= size; i++) {
-    buffer << getDimensionVar(i) << (i + 1 < size ? "," : "");
+    buffer << getDimensionVar(i) << (i + 1 <= size ? "," : "");
   }
   return buffer.str();
 }
@@ -503,9 +503,11 @@ string Range::in(vector<string> exps)
   stringstream code;
   RangeDefinitionTable::iterator it;
   int i = 0;
+  int size = _ranges.size();
   for (RangeDefinition r = _ranges.begin(it); !_ranges.end(it); r = _ranges.next(it), i++) {
     string exp_str = exps[i];
     code << "(" << r.begin() << " <= " << exp_str << " && " << exp_str << " <= " << r.end() << ")";
+    code << ((i + 1 < size) ? " && " : "");
   }
   return code.str();
 }

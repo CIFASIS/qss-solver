@@ -81,19 +81,40 @@ Option<Variable> Expression::reference() const
 string Expression::usage() const
 {
   stringstream buffer;
+  vector<Expression> exps = usageExps();
+  int size = exps.size(), i = 0;
+  for (Expression exp : exps) {
+    buffer << exp << (++i < size ? "," : "");
+  }
+  return buffer.str();
+}
+
+string Expression::dimVariables() const
+{
+  stringstream buffer;
+  vector<Expression> exps = usageExps();
+  int size = exps.size(), i = 1;
+  for (Expression exp : exps) {
+    buffer << "_d" << i << (i < size ? "," : "");
+    i++;
+  }
+  return buffer.str();
+}
+
+vector<Expression> Expression::usageExps() const
+{
+  vector<Expression> exps;
   if (isReference()) {
     AST_Expression_ComponentReference cr = _exp->getAsComponentReference();
     if (cr->hasIndexes()) {
       AST_ExpressionList indexes = cr->firstIndex();
       AST_ExpressionListIterator it;
-      int size = indexes->size(), i = 0;
       foreach (it, indexes) {
-        Expression idx = Expression(current_element(it), _symbols);
-        buffer << idx << (++i < size ? "," : "");
+        exps.push_back(Expression(current_element(it), _symbols));
       }
     }
   }
-  return buffer.str();
+  return exps;
 }
 
 list<Expression> Expression::indexes() const

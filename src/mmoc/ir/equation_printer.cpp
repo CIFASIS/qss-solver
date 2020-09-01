@@ -150,12 +150,12 @@ string DerivativePrinter::macro() const
   if (_range) {
     GetIndexVariables index_usage;
     buffer << "#define _apply_usage" << equationId();
-    buffer << "(" << _range->getDimensionVarsString() << ") \\" << endl;
+    buffer << "(" << _lhs.dimVariables() << ") \\" << endl;
     list<string> usage = index_usage.apply(_lhs.expression());
     int i = 1, size = usage.size();
     for (string index : usage) {
-      buffer << TAB << index << " = " << _range->getDimensionVar(i++) << ";";
-      buffer << ((i + 1 <= size) ? " \\" : "");
+      buffer << TAB << index << " = " << _range->getDimensionVar(i) << ";";
+      buffer << ((++i <= size) ? " \\" : "");
       buffer << endl;
     }
   }
@@ -213,7 +213,7 @@ string DerivativePrinter::print() const
   tabs += TAB;
   if (_range) {
     tabs = _range->block();
-    arguments = _range->getDimensionVarsString();
+    arguments = _lhs.dimVariables();
   }
   tabs += TAB;
   buffer << fp.beginExpression(identifier(), _range);

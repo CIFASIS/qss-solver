@@ -31,37 +31,27 @@ namespace Util {
 class ReplaceIndex : public AST_Expression_Visitor<AST_Expression> {
   public:
   ReplaceIndex(IR::Range range, Deps::Usage usage);
-  ~ReplaceIndex(){};
+  ~ReplaceIndex() = default;
 
   private:
   AST_Expression foldTraverseElement(AST_Expression exp);
-  inline AST_Expression foldTraverseElementUMinus(AST_Expression exp)
-  {
-    return newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp()));
-  }
-  inline AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
-  {
-    return newAST_Expression_BinOp(l, r, bot);
-  }
+  AST_Expression foldTraverseElementUMinus(AST_Expression exp);
+  AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+
   IR::Range _range;
   Deps::Usage _usage;
 };
 
 class ReplaceVar : public AST_Expression_Visitor<AST_Expression> {
   public:
-  ReplaceVar(std::string var) : _var(var){};
-  ~ReplaceVar(){};
+  ReplaceVar(std::string var);
+  ~ReplaceVar() = default;
 
   private:
   AST_Expression foldTraverseElement(AST_Expression exp);
-  inline AST_Expression foldTraverseElementUMinus(AST_Expression exp)
-  {
-    return newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp()));
-  }
-  inline AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot)
-  {
-    return newAST_Expression_BinOp(l, r, bot);
-  }
+  AST_Expression foldTraverseElementUMinus(AST_Expression exp);
+  AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+
   std::string _var;
 };
 
