@@ -36,6 +36,7 @@ class Expression {
   inline AST_Expression expression() const { return _exp; };
   bool isReference() const;
   std::string usage() const;
+  std::string dimVariables() const;
   bool isEmpty() const { return _exp == nullptr; };
   bool isValid() const { return _exp != nullptr; };
   Option<Util::Variable> reference() const;
@@ -44,6 +45,9 @@ class Expression {
   static Expression generate(std::string var_name, std::vector<std::string> indices);
 
   friend std::ostream& operator<<(std::ostream& out, const Expression& s);
+
+  protected:
+  std::vector<Expression> usageExps() const;
 
   private:
   AST_Expression _exp;
