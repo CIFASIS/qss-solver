@@ -30,6 +30,7 @@ jobs:
         sudo apt-get install pkgconf
         sudo apt-get install python
         sudo apt-get install qt5-default
+        sudo apt-get install libboost1.58-dev
           
     - name: Build
       working-directory: ./src
