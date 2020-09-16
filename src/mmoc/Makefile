@@ -1,15 +1,10 @@
 # Target OS variables
-ifneq ($(OS), Windows_NT)
-OS = $(shell uname)
-endif
 MODE ?= Debug
 
 # Compiler and Linker
 CXX         := g++
-ifneq ($(OS), Windows_NT)
 BISON 		:= bison++
 FLEX 		:= flex++
-endif
 
 # The Directories, Source, Includes, Objects, Binary 
 SRCDIR         := .
@@ -34,23 +29,14 @@ OBJEXT         := o
 
 # The Target Binary Program
 TARGET      := $(BINDIR)/mmoc
-ifeq ($(MODE),Debug)
-RUN_TESTS 	:= @cd tests && $(MAKE)  
-endif
 
 # Flags, Libraries and Includes
-ifeq ($(OS), Windows_NT)
-LIB 		:= -L/usr/lib
-endif
 LIB 		+= -L$(LIBDIR) -lginac -lcln -lgmp   
 CXXFLAGS 	:= -Wno-write-strings -Wall -std=c++11
 ifeq ($(MODE),Debug)
 CXXFLAGS 	+= -DYY_MCC_Parser_DEBUG -g  
 endif
 INC         := -I$(SRCDIR) -I$(INCDIR)
-ifeq ($(OS), Windows_NT)
-INC 		+= -I/usr/include
-endif
 RMS 		:= rm -rf
 
 # Source files.
@@ -191,6 +177,8 @@ DEPS = $(ASTOBJ:.o=.d) \
  	   $(DEPSGRAPHOBJ:.o=.d) \
  	   $(DEPSBUILDEROBJ:.o=.d)
 
+all: lib-ginac mmoc tests 
+
 default: mmoc 
 
 # Deterministic Ginac Library. 
@@ -243,13 +231,18 @@ mmoc: | $(libginac) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $
 	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ) $(LIB) 
 	$(RUN_TESTS)
 
-ifneq ($(OS), Windows_NT)
+lib-ginac: $(libginac)
+
+tests: 
+	@echo Running MMOC tests
+	@cd tests && $(MAKE)
+	@echo Done
+
 $(PARSERDIR)/mocc_parser.cpp: parser/mocc.y
 	$(BISON) -t -d -v -hparser/mocc_parser.h -o parser/mocc_parser.cpp parser/mocc.y
 
 $(PARSERDIR)/mocc_scanner.cpp: parser/mocc.lex parser/mocc_parser.cpp
 	$(FLEX) -d -oparser/mocc_scanner.cpp parser/mocc.lex
-endif
 
 $(ASTOBJ): | $(BUILDDIR)
 
@@ -271,11 +264,6 @@ $(BUILDDIR):
 	@mkdir -p $(LIBDIR)
 	@mkdir -p $(BUILDDIR)
 
-run-tests:
-	@echo Compile and Run tests.
-	@cd tests && $(MAKE) 
-	@echo Done
-
 doc:
 	@mkdir -p $(USRDIR)/doc
 	@mkdir -p $(USRDIR)/doc/html
@@ -286,11 +274,7 @@ doc:
 .PHONY: clean
 
 clean:
-ifeq ($(OS), Windows_NT)
-	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(DEPSOBJ) $(VISITOROBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ)
-else
 	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(DEPSOBJ) $(VISITOROBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h 
-endif
 
 help:
 	@echo "make MODE=<Debug|Release>"

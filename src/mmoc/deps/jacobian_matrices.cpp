@@ -40,6 +40,12 @@ void JacMatrixGenerator::init(SBG::VertexProperty vertex)
   stringstream code;
   code << "for(row = 1; row <= " << vertex.size() << "; row++) {" << endl;
   code << TAB << "c_row = _c_index(row);" << endl;
+  Equation eq = vertex.eq();
+  if (eq.hasRange()) {
+    Option<Variable> var = eq.LHSVariable();
+    assert(var);
+    code << TAB << "_get" << var.get() << "_idxs(c_row);" << endl;
+  }
   _matrix.alloc.append(code.str());
   _matrix.init.append(code.str());
   _tabs++;
@@ -71,9 +77,7 @@ void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SB
 {
   stringstream code;
   Range range(var_dep.range());
-  vector<string> variables;
-  variables.push_back("row");
-  vector<string> exps = map.exps(variables);
+  vector<string> exps = map.exps(range.getDimensionVars());
   Expression i_exp = Expression::generate(var_dep.var().name(), exps);
   Index x_ind(i_exp);
   string x_ind_exp = x_ind.print();
@@ -108,7 +112,7 @@ void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SB
   code << inner_tabs << "}" << endl;
   _matrix.init.append(code.str());
   code.str("");
-  code << tabs << range.end() << endl;
+  code << tabs << "}" << endl;
   _matrix.alloc.append(code.str());
   _matrix.init.append(code.str());
   cout << _matrix.init << endl;
@@ -119,9 +123,7 @@ std::string JacMatrixGenerator::guard(SBG::MDI dom, SBG::Map map)
 {
   Range range(dom);
   stringstream code;
-  vector<string> variables;
-  variables.push_back("row");
-  vector<string> exps = map.exps(variables);
+  vector<string> exps = map.exps(range.getDimensionVars());
   return range.in(exps);
 }
 

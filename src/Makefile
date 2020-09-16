@@ -1,7 +1,4 @@
-# Target OS variables
-ifneq ($(OS), Windows_NT)
-OS = $(shell uname)
-endif
+# Target variables
 CORES ?= $(shell nproc)
 MODE ?= Debug
 ARCH = $(shell uname -m)
@@ -76,29 +73,15 @@ install:
 	@install $(ROOT)/src/gui/usr/bin/qss-solver $(ROOT)/bin/
 	@echo "Installing user libraries."
 	ln -s $(ROOT)/src/usr/lib/* $(ROOT)/lib/
-ifeq ($(OS),Linux)
 	@install $(ROOT)/deploy/linux/scripts/* $(ROOT)/bin/
 	@install $(ROOT)/deploy/linux/qss-solver.ini.in $(ROOT)/bin/qss-solver.ini
 	@install $(ROOT)/src/engine/3rd-party/partitioners/hmetis/khmetis $(ROOT)/bin/
-ifeq ($(ARCH),i686)
-	@install $(ROOT)/src/engine/3rd-party/partitioners/patoh/Linux-i386/libpatoh.a $(ROOT)/lib/
-	@install $(ROOT)/src/engine/3rd-party/partitioners/metis/Linux-i386/libmetis.a $(ROOT)/lib/
-	@install $(ROOT)/src/engine/3rd-party/partitioners/scotch/Linux-i386/libscotch.a $(ROOT)/lib/
-	@install $(ROOT)/src/engine/3rd-party/partitioners/scotch/Linux-i386/libscotcherr.a $(ROOT)/lib/
-else
 	@install $(ROOT)/src/engine/3rd-party/partitioners/patoh/Linux-x86_64/libpatoh.a $(ROOT)/lib/
 	@install $(ROOT)/src/engine/3rd-party/partitioners/metis/Linux-x86_64/libmetis.a $(ROOT)/lib/
 	@install $(ROOT)/src/engine/3rd-party/partitioners/scotch/Linux-x86_64/libscotch.a $(ROOT)/lib/
 	@install $(ROOT)/src/engine/3rd-party/partitioners/scotch/Linux-x86_64/libscotcherr.a $(ROOT)/lib/
-endif
 	@echo "Installing GTEST libraries."
 	ln -s $(ROOT)/src/3rd-party/gtest/usr/lib/*.a $(ROOT)/lib/
-else
-ifeq ($(OS),Windows_NT)
-	@cp $(ROOT)/deploy/windows/scripts/* $(ROOT)/bin/
-	@cp $(ROOT)/deploy/windows/qss-solver.ini.in $(ROOT)/bin/qss-solver.ini
-endif
-endif
 	
 .PHONY: clean all 
 

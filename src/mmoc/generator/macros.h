@@ -42,7 +42,7 @@ class Macros {
   public:
   Macros(IR::Model& model, Util::Variable& variable);
   Macros() : _model(), _variable(){};
-  ~Macros(){};
+  ~Macros() = default;
   std::string print() const { return _macros.str(); };
   std::string parameters(MACROS::Offset offset = MACROS::Modelica) const;
   std::string engineIndex() const;

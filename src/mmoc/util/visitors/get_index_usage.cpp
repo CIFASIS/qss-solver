@@ -45,7 +45,19 @@ Usage GetIndexUsage::foldTraverseElement(AST_Expression exp)
       AST_ExpressionList indexes = cr->firstIndex();
       AST_ExpressionListIterator it;
       foreach (it, indexes) {
-        ret.join(apply(current_element(it)));
+        Usage dim_usage = apply(current_element(it));
+        bool used_dim = false;
+        for (int u : dim_usage) {
+          if (u == USED) {
+            used_dim = true;
+            break;
+          }
+        }
+        if (used_dim) {
+          ret.push_back(USED);
+        } else {
+          ret.push_back(UNUSED);
+        }
       }
       _in_index_list = false;
     }
@@ -58,6 +70,14 @@ Usage GetIndexUsage::foldTraverseElement(AST_Expression exp)
     break;
   }
   return ret;
+}
+
+Usage GetIndexUsage::foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
+
+Usage GetIndexUsage::foldTraverseElement(Usage l, Usage r, BinOpType bot)
+{
+  l.join(r);
+  return l;
 }
 
 }  // namespace Util

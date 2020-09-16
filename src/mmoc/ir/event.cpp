@@ -117,7 +117,7 @@ string Event::handler(EVENT::Type type) const
   block += TAB;
   if (_range) {
     block = _range->block();
-    arguments = _range->getDimensionVars();
+    arguments = _range->getDimensionVarsString();
   }
   block += TAB;
   buffer << fp.beginExpression(_zero_crossing.identifier(), _range);
@@ -136,7 +136,6 @@ string Event::macro() const { return _zero_crossing.macro(); }
 Expression Event::exp()
 {
   assert(isValid());
-  cout << "ZERO CROSSING VARIABLE: " << _zero_crossing.lhs() << endl;
   return _zero_crossing.lhs();
 }
 
