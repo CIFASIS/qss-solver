@@ -32,6 +32,5 @@ jobs:
         sudo apt-get install qt5-default
           
     - name: Build
-      run: | 
-        cd src
-        make
+      working-directory: ./src
+      run: make
