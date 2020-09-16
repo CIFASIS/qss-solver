@@ -12,7 +12,7 @@ BIN_DIR        := $(USR_DIR)/bin
 GOOGLE_TEST_INSTALL = $(ROOT_DIR)/3rd-party/gtest
 GOOGLE_TEST_LIB = gtest
 GOOGLE_MOCK_LIB = gmock
-GOOGLE_TEST_INCLUDE = $(GOOGLE_TEST_INSTALL)/usr/local/include
+GOOGLE_TEST_INCLUDE = $(GOOGLE_TEST_INSTALL)/usr/include
 
 G++ = g++
 G++_FLAGS = -c -Wall -I $(GOOGLE_TEST_INCLUDE) -std=c++11
