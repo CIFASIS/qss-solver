@@ -20,8 +20,8 @@ LD_FLAGS = -L $(GOOGLE_TEST_INSTALL)/usr/lib -l $(GOOGLE_TEST_LIB) -l $(GOOGLE_M
 RM = rm -rf
 
 # The Target Binary Program
-TARGET      := $(BIN_DIR)/test-engine
-RUN_TESTS   := test-engine
+TARGET      := $(BIN_DIR)/test-gui
+RUN_TESTS   := test-gui
 
 # Source files.
 MAIN_SRC = $(SRC_DIR)/main.cpp
