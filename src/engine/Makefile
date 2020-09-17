@@ -159,7 +159,7 @@ default: compile-all
 $(LIBCVODE): | $(BUILDDIR)
 	tar xvzf $(3RDPARTYDIR)/cvode/cvode-2.9.0.tar.gz
 	mkdir -p ./cvode-2.9.0/build
-	cd ./cvode-2.9.0/build; cmake .. -G "MSYS Makefiles" -DLAPACK_ENABLE=ON -DLAPACK_LIBRARIES=/mingw32/lib/libopenblas.dll.a -DCMAKE_BUILD_TYPE=Release  -DKLU_ENABLE=ON -DKLU_LIBRARY=/usr/local/lib/libklu.a -DKLU_INCLUDE_DIR=/usr/local/include -DAMD_LIBRARY=/usr/local/lib/libamd.a  -DCOLAMD_LIBRARY=/usr/local/lib/libcolamd.a  -DBTF_LIBRARY=/usr/local/lib/libbtf.a  -DSUITESPARSECONFIG_LIBRARY=/usr/local/lib/libsuitesparseconfig.a  -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr
+	cd ./cvode-2.9.0/build; cmake .. -DLAPACK_ENABLE=ON -DCMAKE_BUILD_TYPE=Release  -DKLU_ENABLE=ON -DKLU_INCLUDE_DIR=$(KLUINCDIR) -DKLU_LIBRARY_DIR=$(KLULIBDIR)  -DCMAKE_INSTALL_PREFIX=/usr
 	make -C ./cvode-2.9.0/build install DESTDIR=`pwd`
 	rm -rf ./cvode-2.9.0
 	rm -rf ./examples
@@ -172,7 +172,7 @@ $(LIBGSL): | $(BUILDDIR)
 $(LIBIDA): | $(BUILDDIR)
 	tar xvzf $(3RDPARTYDIR)/ida/ida-2.9.0.tar.gz
 	mkdir -p ./ida-2.9.0/build
-	cd ./ida-2.9.0/build; cmake .. -G "MSYS Makefiles" -DLAPACK_ENABLE=ON -DLAPACK_LIBRARIES=/mingw32/lib/libopenblas.dll.a -DCMAKE_BUILD_TYPE=Release  -DKLU_ENABLE=ON -DKLU_LIBRARY=/usr/local/lib/libklu.a -DKLU_INCLUDE_DIR=/usr/local/include -DAMD_LIBRARY=/usr/local/lib/libamd.a  -DCOLAMD_LIBRARY=/usr/local/lib/libcolamd.a  -DBTF_LIBRARY=/usr/local/lib/libbtf.a  -DSUITESPARSECONFIG_LIBRARY=/usr/local/lib/libsuitesparseconfig.a  -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr
+	cd ./ida-2.9.0/build; cmake .. -DLAPACK_ENABLE=ON -DCMAKE_BUILD_TYPE=Release  -DKLU_ENABLE=ON -DKLU_INCLUDE_DIR=$(KLUINCDIR) -DKLU_LIBRARY_DIR=$(KLULIBDIR) -DCMAKE_INSTALL_PREFIX=/usr
 	make -C ./ida-2.9.0/build install DESTDIR=`pwd`
 	rm -rf ./ida-2.9.0
 	rm -rf ./examples
