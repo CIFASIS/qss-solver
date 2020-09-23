@@ -78,8 +78,8 @@ DepsGraph DSGraphBuilder::build()
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {
           Label lbl(ip);
-          cout << "Agrega arista desde la var: " << graph[source].var() << " a la ecuacion: " << graph[sink].eq().id() << endl;
-          cout << "Ecuacion: " << graph[sink].eq().type() << endl;
+          // cout << "Agrega arista desde la var: " << graph[source].var() << " a la ecuacion: " << graph[sink].eq().id() << endl;
+          // cout << "Ecuacion: " << graph[sink].eq().type() << endl;
           add_edge(source, sink, lbl, graph);
         }
       }
@@ -90,9 +90,9 @@ DepsGraph DSGraphBuilder::build()
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
             Label lbl(ip);
-            cout << "Agrega arista desde la ecuacion algebraica: " << graph[sink].eq().id() << " a la variable: " << graph[source].var()
-                 << endl;
-            cout << "Ecuacion algebraica: " << graph[sink].eq().type() << endl;
+            // cout << "Agrega arista desde la ecuacion algebraica: " << graph[sink].eq().id() << " a la variable: " << graph[source].var()
+            //     << endl;
+            // cout << "Ecuacion algebraica: " << graph[sink].eq().type() << endl;
             add_edge(sink, source, lbl, graph);
           }
         }
@@ -110,9 +110,9 @@ DepsGraph DSGraphBuilder::build()
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
             Label lbl(ip);
-            cout << "Agrega arista desde la ecuacion derivada: " << graph[sink].eq().id() << " a la derivada: " << graph[source].var()
-                 << endl;
-            cout << "Ecuacion algebraica: " << graph[sink].eq().type() << endl;
+            // cout << "Agrega arista desde la ecuacion derivada: " << graph[sink].eq().id() << " a la derivada: " << graph[source].var()
+            //     << endl;
+            // cout << "Ecuacion algebraica: " << graph[sink].eq().type() << endl;
             add_edge(sink, source, lbl, graph);
           }
         }

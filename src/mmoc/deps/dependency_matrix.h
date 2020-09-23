@@ -168,7 +168,7 @@ class DependencyMatrix : public ModelTable<ID, Paths> {
         }
       }
     }
-    cout << buffer.str() << endl;
+    // cout << buffer.str() << endl;
     return buffer.str();
   }
 

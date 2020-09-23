@@ -56,7 +56,7 @@ void SBDependencies<IDependencies, R>::compute(SBGraph graph, IndexShift index_s
     if (vertex_info.type() == VERTEX::Influencer) {
       auto edge = *out_edges(vertex, graph).first;
       SBVertex f_vertex = boost::target(edge, graph);
-      cout << "Compute paths for equation: " << graph[f_vertex].name() << endl;
+      // cout << "Compute paths for equation: " << graph[f_vertex].name() << endl;
       paths(graph, f_vertex);
     }
   }

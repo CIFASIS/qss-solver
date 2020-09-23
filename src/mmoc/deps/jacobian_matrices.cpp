@@ -115,8 +115,8 @@ void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SB
   code << tabs << "}" << endl;
   _matrix.alloc.append(code.str());
   _matrix.init.append(code.str());
-  cout << _matrix.init << endl;
-  cout << _matrix.alloc << endl;
+  // cout << _matrix.init << endl;
+  // cout << _matrix.alloc << endl;
 }
 
 std::string JacMatrixGenerator::guard(SBG::MDI dom, SBG::Map map)

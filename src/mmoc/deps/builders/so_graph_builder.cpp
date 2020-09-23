@@ -76,7 +76,7 @@ DepsGraph OutputGraphBuilder::build()
     _equationDescriptors.push_back(add_vertex(vp, graph));
   }
 
-  cout << "Output GRAPH" << endl;
+  // cout << "Output GRAPH" << endl;
 
   foreach_(EqVertex sink, _equationDescriptors)
   {

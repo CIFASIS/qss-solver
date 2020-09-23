@@ -245,7 +245,7 @@ void EvalOccur::initialize()
           _factors.push_back(0);
           _constants.push_back(var->value());
         } else {
-          cout << "Wrong index expression." << endl;
+          // cout << "Wrong index expression." << endl;
           assert(false);
           _intervals.push_back(Interval(0, 0));
           _usages.push_back(-1);

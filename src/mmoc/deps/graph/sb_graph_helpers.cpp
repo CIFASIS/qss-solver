@@ -231,7 +231,7 @@ Offset Offset::operator-() const
 
 Offset Offset::operator-(const Offset& other) const
 {
-  cout << size() << " " << other.size() << endl;
+  // cout << size() << " " << other.size() << endl;
   assert(size() == other.size());
   std::vector<int> ret(_offset.size());
   for (int i = 0; i < (int)_offset.size(); i++) {
@@ -612,8 +612,8 @@ MDI MDI::revertStep(MDI other)
 Option<MDI> MDI::operator&(const MDI& other) const
 {
   if (this->dimension() != other.dimension()) {
-    std::cout << *this << " " << other << std::endl;
-    std::cout << this->dimension() << " " << other.dimension() << std::endl;
+    // std::cout << *this << " " << other << std::endl;
+    // std::cout << this->dimension() << " " << other.dimension() << std::endl;
     return Option<MDI>();
   }
   IntervalList intersection;
