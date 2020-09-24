@@ -187,25 +187,25 @@ void RangeDefinition::setEnd(int end) { _end = end; }
 
 std::ostream& operator<<(std::ostream& out, const RangeDefinition& rd) { return out; }
 
-Range::Range() : _ranges(), _indexPos(), _size(0), _type(RANGE::For) {}
+Range::Range() : _ranges(), _indexPos(), _size(1), _type(RANGE::For) {}
 
-Range::Range(AST_Equation_For eqf, VarSymbolTable symbols, RANGE::Type type) : _ranges(), _indexPos(), _size(0), _type(type)
+Range::Range(AST_Equation_For eqf, VarSymbolTable symbols, RANGE::Type type) : _ranges(), _indexPos(), _size(1), _type(type)
 {
   AST_ForIndexList fil = eqf->forIndexList();
   setRangeDefinition(fil, symbols);
 }
 
-Range::Range(AST_Statement_For stf, VarSymbolTable symbols, RANGE::Type type) : _ranges(), _indexPos(), _size(0), _type(type)
+Range::Range(AST_Statement_For stf, VarSymbolTable symbols, RANGE::Type type) : _ranges(), _indexPos(), _size(1), _type(type)
 {
   AST_ForIndexList fil = stf->forIndexList();
   setRangeDefinition(fil, symbols);
 }
 
-Range::Range(Variable var, RANGE::Type type) : _ranges(), _indexPos(), _size(0), _type(type) { generate(var); }
+Range::Range(Variable var, RANGE::Type type) : _ranges(), _indexPos(), _size(1), _type(type) { generate(var); }
 
-Range::Range(AST_Expression exp) : _ranges(), _indexPos(), _size(0), _type(RANGE::For) { generate(exp); }
+Range::Range(AST_Expression exp) : _ranges(), _indexPos(), _size(1), _type(RANGE::For) { generate(exp); }
 
-Range::Range(SBG::MDI mdi) : _ranges(), _indexPos(), _size(0), _type(RANGE::For) { generate(mdi); }
+Range::Range(SBG::MDI mdi) : _ranges(), _indexPos(), _size(1), _type(RANGE::For) { generate(mdi); }
 
 void Range::setRangeDefinition(AST_ForIndexList fil, VarSymbolTable symbols)
 {
