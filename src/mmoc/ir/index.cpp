@@ -228,7 +228,7 @@ void Range::setRangeDefinition(AST_ForIndexList fil, VarSymbolTable symbols)
     _indexPos.insert(index, pos++);
     Option<RangeDefinition> range = _ranges[index];
     if (range) {
-      _size += range->size();
+      _size *= range->size();
       _rowSize.push_back(range->size());
     } else {
       _rowSize.push_back(1);
@@ -247,7 +247,7 @@ void Range::generate(Variable var)
     _indexPos.insert(index, pos++);
     Option<RangeDefinition> range = _ranges[index];
     if (range) {
-      _size += range->size();
+      _size *= range->size();
       _rowSize.push_back(range->size());
     } else {
       _rowSize.push_back(1);
@@ -277,7 +277,7 @@ void Range::generate(AST_Expression exp)
     _indexPos.insert(index, pos++);
     Option<RangeDefinition> range = _ranges[index];
     if (range) {
-      _size += range->size();
+      _size *= range->size();
       _rowSize.push_back(range->size());
     } else {
       _rowSize.push_back(1);
@@ -299,7 +299,7 @@ void Range::generate(SBG::MDI mdi)
     _indexPos.insert(index, pos++);
     Option<RangeDefinition> range = _ranges[index];
     if (range) {
-      _size += range->size();
+      _size *= range->size();
       _rowSize.push_back(range->size());
     } else {
       _rowSize.push_back(1);
@@ -323,7 +323,7 @@ void Range::generate(MDI mdi)
     _indexPos.insert(index, pos++);
     Option<RangeDefinition> range = _ranges[index];
     if (range) {
-      _size += range->size();
+      _size *= range->size();
       _rowSize.push_back(range->size());
     } else {
       _rowSize.push_back(1);
