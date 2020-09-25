@@ -310,6 +310,18 @@ string FunctionPrinter::getIndexes(string var, Option<Range> range, int offset, 
 {
   stringstream buffer;
   if (range) {
+    map<string, string> parsed_indexes = parseIndexes(var, range, offset, modelica_index);
+    for (auto index_def : parsed_indexes) {
+      buffer << index_def.first << " = " << index_def.second;
+    }
+  }
+  return buffer.str();
+}
+
+map<string, string> FunctionPrinter::parseIndexes(string var, Option<Range> range, int offset, bool modelica_index) const
+{
+  map<string, string> parsed_indexes;
+  if (range) {
     RangeDefinitionTable rdt = range->definition();
     RangeDefinitionTable::iterator it;
     int size = rdt.size(), i = 0, idx = 0;
@@ -317,13 +329,16 @@ string FunctionPrinter::getIndexes(string var, Option<Range> range, int offset, 
     offset_var << "(" << var << "-" << offset << ")";
     string alligned_var = offset_var.str();
     for (RangeDefinition rd = rdt.begin(it); !rdt.end(it); rd = rdt.next(it), idx++) {
-      buffer << TAB << rdt.key(it) << " = "
-             << (i + 1 < size ? div(mod(alligned_var, idx - 1, range), idx, range) : mod(alligned_var, idx - 1, range))
-             << (modelica_index ? "+ 1;" : ";") << (i + 1 < size ? " \\" : "") << endl;
+      stringstream key;
+      stringstream def;
+      key << TAB << rdt.key(it);
+      def << (i + 1 < size ? div(mod(alligned_var, idx - 1, range), idx, range) : mod(alligned_var, idx - 1, range))
+          << (modelica_index ? "+ 1;" : ";") << (i + 1 < size ? " \\" : "") << endl;
+      parsed_indexes[key.str()] = def.str();
       i++;
     }
   }
-  return buffer.str();
+  return parsed_indexes;
 }
 
 string FunctionPrinter::printAlgebraicGuards(Equation alg, Index usage)
