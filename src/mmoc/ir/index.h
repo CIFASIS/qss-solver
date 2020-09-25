@@ -73,8 +73,8 @@ class Range {
   Range(Deps::SBG::MDI mdi);
   ~Range() = default;
 
-  inline int size() const { return _size; };
-  inline bool isEmpty() const { return _size == 0; };
+  int size() const;
+  bool isEmpty() const;
   inline RangeDefinitionTable definition() const { return _ranges; };
   std::string print() const;
   std::string end() const;
@@ -100,14 +100,15 @@ class Range {
   void generate(Util::Variable var);
   void generate(AST_Expression exp);
   void generate(Deps::SBG::MDI mdi);
+  void updateRangeDefinition(std::string index_def, RangeDefinition def, int pos);
 
   private:
   void setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);
   RangeDefinitionTable _ranges;
-  ModelTable<std::string, int> _indexPos;
+  ModelTable<std::string, int> _index_pos;
   int _size;
   RANGE::Type _type;
-  std::vector<int> _rowSize;
+  std::vector<int> _row_size;
 };
 
 class IndexDefinition {
