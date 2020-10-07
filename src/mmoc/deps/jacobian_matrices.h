@@ -36,7 +36,7 @@ struct JacMatrixDef {
 class JacMatrixGenerator {
   public:
   JacMatrixGenerator();
-  ~JacMatrixGenerator() = default;
+  ~JacMatrixGenerator();
 
   void init(SBG::VertexProperty vertex);
   void end();
