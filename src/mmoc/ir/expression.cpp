@@ -89,12 +89,15 @@ string Expression::usage() const
   return buffer.str();
 }
 
-string Expression::dimVariables() const
+string Expression::dimVariables(bool range_idxs) const
 {
   stringstream buffer;
   vector<Expression> exps = usageExps();
   int size = exps.size(), i = 1;
   for (Expression exp : exps) {
+    if (range_idxs) {
+      buffer << "_rg";
+    }
     buffer << "_d" << i << (i < size ? "," : "");
     i++;
   }
@@ -137,7 +140,9 @@ list<Expression> Expression::indexes() const
 Expression Expression::generate(string var_name, vector<string> indices)
 {
   stringstream code;
-  code << var_name << "[";
+  if (indices.size()) {
+    code << var_name << "[";
+  }
   int i = 0, size = indices.size();
   for (string exp : indices) {
     code << exp << ((++i == size) ? "]" : ",");
