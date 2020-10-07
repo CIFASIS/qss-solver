@@ -107,6 +107,7 @@ class Offset {
   Offset operator-(const Offset& other) const;
   Offset operator+(const Offset& other) const;
   Offset operator*(const Offset& other) const;
+  Offset operator/(const Offset& other) const;
   typedef std::vector<int>::iterator iterator;
   typedef std::vector<int>::const_iterator const_iterator;
   const_iterator begin() const;
@@ -186,6 +187,7 @@ class Map {
   MDI apply(MDI dom, MDI ran) const;
   MDI revert(MDI dom, MDI ran) const;
   Map compose(const Map& other);
+  Map solve(const Map& other);
   Map applyIndexShift(Offset index_shift);
   IR::Expression exp() const;
   std::vector<std::string> exps(std::vector<std::string> variables) const;

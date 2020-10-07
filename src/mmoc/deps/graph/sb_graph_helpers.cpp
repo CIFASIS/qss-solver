@@ -260,6 +260,20 @@ Offset Offset::operator*(const Offset& other) const
   return ret;
 };
 
+Offset Offset::operator/(const Offset& other) const
+{
+  assert(size() == other.size());
+  std::vector<int> ret(_offset.size());
+  for (int i = 0; i < (int)_offset.size(); i++) {
+    if (other._offset[i] == 0) {
+      ret[i] = 0;
+    } else {
+      ret[i] = _offset[i] / other._offset[i];
+    }
+  }
+  return ret;
+};
+
 Offset::const_iterator Offset::begin() const { return _offset.begin(); }
 
 Offset::iterator Offset::begin() { return _offset.begin(); }
@@ -396,6 +410,14 @@ Map Map::compose(const Map& other)
 {
   Offset new_factor = other._linear_function.factor() * _linear_function.factor();
   Offset new_constant = _linear_function.factor() * other._linear_function.constant() + _linear_function.constant();
+  LinearFunction new_linear_function(new_constant, new_factor);
+  return Map(_usage, _offset, _exp, new_linear_function);
+}
+
+Map Map::solve(const Map& other)
+{
+  Offset new_factor = other._linear_function.factor() / _linear_function.factor();
+  Offset new_constant = (other._linear_function.constant() - _linear_function.constant()) / _linear_function.factor();
   LinearFunction new_linear_function(new_constant, new_factor);
   return Map(_usage, _offset, _exp, new_linear_function);
 }
