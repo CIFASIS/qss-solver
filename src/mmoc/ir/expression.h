@@ -36,7 +36,7 @@ class Expression {
   inline AST_Expression expression() const { return _exp; };
   bool isReference() const;
   std::string usage() const;
-  std::string dimVariables() const;
+  std::string dimVariables(bool range_idxs = false) const;
   bool isEmpty() const { return _exp == nullptr; };
   bool isValid() const { return _exp != nullptr; };
   Option<Util::Variable> reference() const;

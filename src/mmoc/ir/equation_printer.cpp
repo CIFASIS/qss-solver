@@ -148,16 +148,22 @@ string DerivativePrinter::macro() const
 {
   stringstream buffer;
   if (_range) {
+    stringstream apply_buffer;
     GetIndexVariables index_usage;
-    buffer << "#define _apply_usage" << equationId();
-    buffer << "(" << _lhs.dimVariables() << ") \\" << endl;
-    list<string> usage = index_usage.apply(_lhs.expression());
+    FunctionPrinter function_printer;
+    RangeDefinitionTable range_def = _range->definition();
+    apply_buffer << "#define _apply_usage" << equationId();
+    apply_buffer << "(" << _lhs.dimVariables() << ") \\" << endl;
+    map<string, int> usage = index_usage.apply(_lhs.expression());
     int i = 1, size = usage.size();
-    for (string index : usage) {
-      buffer << TAB << index << " = " << _range->getDimensionVar(i) << ";";
-      buffer << ((++i <= size) ? " \\" : "");
-      buffer << endl;
+    for (auto index : usage) {
+      apply_buffer << TAB << index.first << " = " << _range->getDimensionVar(index.second) << ";";
+      apply_buffer << ((i + 1 <= size) ? "\\" : "");
+      apply_buffer << endl;
+      i++;
     }
+    buffer << apply_buffer.str();
+    buffer << function_printer.equationVariableMacros(_range, _lhs, equationId());
   }
   return buffer.str();
 }

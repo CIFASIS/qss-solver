@@ -119,7 +119,7 @@ void VariableDependency::setRange(int equation_id)
   } else {
     _range.generate(_ran);
   }
-  cout << "Rango generado: " << _ran << endl;
+  // cout << "Rango generado: " << _ran << endl;
   // First apply the incoming range to the variable
   _ifr_exp = VariableUsage(_ifr.exp(), _range).usage();
   _ife_exp = VariableUsage(_ife.exp(), _range).usage();
@@ -136,20 +136,20 @@ void VariableDependency::setRange(int equation_id)
     Option<Equation> alg = algebraics[equation_id];
     if (alg) {
       Expression eq_lhs = alg->lhs();
-      cout << "LHS de la ecuacion: " << eq_lhs << endl;
-      cout << "Uso algebraico: " << _alg_usage << endl;
-      cout << "Se aplica a: " << _ife_exp << endl;
+      // cout << "LHS de la ecuacion: " << eq_lhs << endl;
+      // cout << "Uso algebraico: " << _alg_usage << endl;
+      // cout << "Se aplica a: " << _ife_exp << endl;
       _ife_exp = VariableUsage(eq_lhs, _ife_exp, Index(_alg_usage)).rhs();
     } else {
       _ife_exp = VariableUsage(_ife_exp, _ife_exp, Index(_alg_usage)).rhs();
     }
   }
   _range.applyUsage(ife().revert());
-  cout << "Rango en el que se aplica: " << _ran << endl;
-  cout << "Expression IFR original: " << _ifr.exp() << endl;
-  cout << "Expression IFE original: " << _ife.exp() << endl;
-  cout << "Expression IFR en la matriz: " << _ifr_exp << endl;
-  cout << "Expression IFE en la matriz: " << _ife_exp << endl;
+  // cout << "Rango en el que se aplica: " << _ran << endl;
+  // cout << "Expression IFR original: " << _ifr.exp() << endl;
+  // cout << "Expression IFE original: " << _ife.exp() << endl;
+  // cout << "Expression IFR en la matriz: " << _ifr_exp << endl;
+  // cout << "Expression IFE en la matriz: " << _ife_exp << endl;
 }
 
 void VariableDependency::setSwap(bool swap_usage) { _swap_usage = swap_usage; }

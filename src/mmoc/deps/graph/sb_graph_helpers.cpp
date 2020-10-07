@@ -231,7 +231,7 @@ Offset Offset::operator-() const
 
 Offset Offset::operator-(const Offset& other) const
 {
-  cout << size() << " " << other.size() << endl;
+  // cout << size() << " " << other.size() << endl;
   assert(size() == other.size());
   std::vector<int> ret(_offset.size());
   for (int i = 0; i < (int)_offset.size(); i++) {
@@ -256,6 +256,20 @@ Offset Offset::operator*(const Offset& other) const
   std::vector<int> ret(_offset.size());
   for (int i = 0; i < (int)_offset.size(); i++) {
     ret[i] = _offset[i] * other._offset[i];
+  }
+  return ret;
+};
+
+Offset Offset::operator/(const Offset& other) const
+{
+  assert(size() == other.size());
+  std::vector<int> ret(_offset.size());
+  for (int i = 0; i < (int)_offset.size(); i++) {
+    if (other._offset[i] == 0) {
+      ret[i] = 0;
+    } else {
+      ret[i] = _offset[i] / other._offset[i];
+    }
   }
   return ret;
 };
@@ -396,6 +410,14 @@ Map Map::compose(const Map& other)
 {
   Offset new_factor = other._linear_function.factor() * _linear_function.factor();
   Offset new_constant = _linear_function.factor() * other._linear_function.constant() + _linear_function.constant();
+  LinearFunction new_linear_function(new_constant, new_factor);
+  return Map(_usage, _offset, _exp, new_linear_function);
+}
+
+Map Map::solve(const Map& other)
+{
+  Offset new_factor = other._linear_function.factor() / _linear_function.factor();
+  Offset new_constant = (other._linear_function.constant() - _linear_function.constant()) / _linear_function.factor();
   LinearFunction new_linear_function(new_constant, new_factor);
   return Map(_usage, _offset, _exp, new_linear_function);
 }
@@ -612,8 +634,8 @@ MDI MDI::revertStep(MDI other)
 Option<MDI> MDI::operator&(const MDI& other) const
 {
   if (this->dimension() != other.dimension()) {
-    std::cout << *this << " " << other << std::endl;
-    std::cout << this->dimension() << " " << other.dimension() << std::endl;
+    // std::cout << *this << " " << other << std::endl;
+    // std::cout << this->dimension() << " " << other.dimension() << std::endl;
     return Option<MDI>();
   }
   IntervalList intersection;

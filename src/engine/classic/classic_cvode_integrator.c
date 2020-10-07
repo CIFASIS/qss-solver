@@ -57,7 +57,7 @@ SlsMat init_jac_matrix = NULL;
 
 void assignJacStruct(SlsMat JacMat)
 {
-  int size = clcData->states, glob_row, row, col, eq, eqs;
+  int size = clcData->states, row, col, eq, eqs;
   int *col_ptrs = *JacMat->colptrs;
   int *row_vals = *JacMat->rowvals;
 
@@ -67,27 +67,23 @@ void assignJacStruct(SlsMat JacMat)
   SD_cleanTransJacMatrices(clcData->jac_matrices);
 
   SD_jacMatrix jac_t = clcData->jac_matrices->df_dx_t;
-  glob_row = 0;
   for (eq = 0; eq < eqs; eq++) {
     SD_jacMatrix jac = clcData->jac_matrices->df_dx[eq];
     for (row = 0; row < size; row++) {
       for (col = 0; col < jac->size[row]; col++) {
         int row_t = jac->index[row][col];
         int col_t = jac_t->size[row_t] + jac_t->index[row_t][0];
+        row_vals[col_t] = clcData->SD[row_t][jac_t->index[row_t][0]];
         jac_t->index[row_t][0]++;
-        row_vals[col_t] = glob_row;
-      }
-      if (jac->size[row] > 0) {
-        glob_row++;
       }
     }
   }
 
-  col_ptrs[0] = 0;
   for (row = 0; row < size; row++) {
     col_ptrs[row] = jac_t->size[row];
   }
-  col_ptrs[size] = JacMat->NNZ;
+
+  col_ptrs[size] = col_ptrs[size - 1] + clcData->nSD[size - 1];
 
   init_jac_matrix = SparseNewMat(JacMat->M, JacMat->N, JacMat->NNZ, CSC_MAT);
   SparseCopyMat(JacMat, init_jac_matrix);
@@ -103,6 +99,7 @@ static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat, void *user_da
   }
 
   clcModel->jac(NV_DATA_S(y), clcData->d, clcData->alg, t, clcData->jac_matrices, JacMat->data);
+  // SparsePrintMat(JacMat,stdout);
   return 0;
 }
 

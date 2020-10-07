@@ -130,9 +130,9 @@ Index Index::revert() const
   return Index(Expression(revert.apply(_exp.expression()), symbols));
 }
 
-Index Index::replace() const
+Index Index::replace(bool range_idx) const
 {
-  ReplaceIndex replace = ReplaceIndex(range(), usage());
+  ReplaceIndex replace = ReplaceIndex(range(), usage(), range_idx);
   return Index(Expression(replace.apply(_exp.expression()), Utils::instance().symbols()));
 }
 
@@ -187,25 +187,35 @@ void RangeDefinition::setEnd(int end) { _end = end; }
 
 std::ostream& operator<<(std::ostream& out, const RangeDefinition& rd) { return out; }
 
-Range::Range() : _ranges(), _indexPos(), _size(0), _type(RANGE::For) {}
+Range::Range() : _ranges(), _index_pos(), _size(1), _type(RANGE::For) {}
 
-Range::Range(AST_Equation_For eqf, VarSymbolTable symbols, RANGE::Type type) : _ranges(), _indexPos(), _size(0), _type(type)
+Range::Range(AST_Equation_For eqf, VarSymbolTable symbols, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type)
 {
   AST_ForIndexList fil = eqf->forIndexList();
   setRangeDefinition(fil, symbols);
 }
 
-Range::Range(AST_Statement_For stf, VarSymbolTable symbols, RANGE::Type type) : _ranges(), _indexPos(), _size(0), _type(type)
+Range::Range(AST_Statement_For stf, VarSymbolTable symbols, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type)
 {
   AST_ForIndexList fil = stf->forIndexList();
   setRangeDefinition(fil, symbols);
 }
 
-Range::Range(Variable var, RANGE::Type type) : _ranges(), _indexPos(), _size(0), _type(type) { generate(var); }
+Range::Range(Variable var, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type) { generate(var); }
 
-Range::Range(AST_Expression exp) : _ranges(), _indexPos(), _size(0), _type(RANGE::For) { generate(exp); }
+Range::Range(AST_Expression exp) : _ranges(), _index_pos(), _size(1), _type(RANGE::For) { generate(exp); }
 
-Range::Range(SBG::MDI mdi) : _ranges(), _indexPos(), _size(0), _type(RANGE::For) { generate(mdi); }
+Range::Range(SBG::MDI mdi) : _ranges(), _index_pos(), _size(1), _type(RANGE::For) { generate(mdi); }
+
+void Range::updateRangeDefinition(std::string index_def, RangeDefinition def, int pos)
+{
+  _ranges.insert(index_def, def);
+  _index_pos.insert(index_def, pos);
+  Option<RangeDefinition> range = _ranges[index_def];
+  assert(range);
+  _size *= range->size();
+  _row_size.push_back(range->size());
+}
 
 void Range::setRangeDefinition(AST_ForIndexList fil, VarSymbolTable symbols)
 {
@@ -224,15 +234,8 @@ void Range::setRangeDefinition(AST_ForIndexList fil, VarSymbolTable symbols)
       Error::instance().add(AST_ListFirst(el)->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong equation range.");
     }
     string index = fi->variable()->c_str();
-    _ranges.insert(index, (size == 2 ? RangeDefinition(begin, end) : RangeDefinition(begin, end, eval.apply(AST_ListAt(el, 1)))));
-    _indexPos.insert(index, pos++);
-    Option<RangeDefinition> range = _ranges[index];
-    if (range) {
-      _size += range->size();
-      _rowSize.push_back(range->size());
-    } else {
-      _rowSize.push_back(1);
-    }
+    updateRangeDefinition(index, (size == 2 ? RangeDefinition(begin, end) : RangeDefinition(begin, end, eval.apply(AST_ListAt(el, 1)))),
+                          pos++);
   }
 }
 
@@ -243,15 +246,7 @@ void Range::generate(Variable var)
     string index = getDimensionVar(i + 1);
     int begin = 1;
     int end = var.size(i);
-    _ranges.insert(index, RangeDefinition(begin, end));
-    _indexPos.insert(index, pos++);
-    Option<RangeDefinition> range = _ranges[index];
-    if (range) {
-      _size += range->size();
-      _rowSize.push_back(range->size());
-    } else {
-      _rowSize.push_back(1);
-    }
+    updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
     Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
     Utils::instance().symbols().insert(index, vi);
   }
@@ -273,15 +268,7 @@ void Range::generate(AST_Expression exp)
     string index = getDimensionVar(i + 1);
     EvalInitExp eval_exp(Utils::instance().symbols());
     int scalar_value = eval_exp.apply(index_exp);
-    _ranges.insert(index, RangeDefinition(scalar_value, scalar_value));
-    _indexPos.insert(index, pos++);
-    Option<RangeDefinition> range = _ranges[index];
-    if (range) {
-      _size += range->size();
-      _rowSize.push_back(range->size());
-    } else {
-      _rowSize.push_back(1);
-    }
+    updateRangeDefinition(index, RangeDefinition(scalar_value, scalar_value), pos++);
   }
 }
 
@@ -295,15 +282,7 @@ void Range::generate(SBG::MDI mdi)
       Error::instance().add(0, EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong range in dependency matrix.");
     }
     string index = Utils::instance().iteratorVar(pos);
-    _ranges.insert(index, RangeDefinition(begin, end));
-    _indexPos.insert(index, pos++);
-    Option<RangeDefinition> range = _ranges[index];
-    if (range) {
-      _size += range->size();
-      _rowSize.push_back(range->size());
-    } else {
-      _rowSize.push_back(1);
-    }
+    updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
     Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
     Utils::instance().symbols().insert(index, vi);
   }
@@ -319,23 +298,18 @@ void Range::generate(MDI mdi)
       Error::instance().add(0, EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong range in dependency matrix.");
     }
     string index = Utils::instance().iteratorVar(pos);
-    _ranges.insert(index, RangeDefinition(begin, end));
-    _indexPos.insert(index, pos++);
-    Option<RangeDefinition> range = _ranges[index];
-    if (range) {
-      _size += range->size();
-      _rowSize.push_back(range->size());
-    } else {
-      _rowSize.push_back(1);
-    }
+    updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
     Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
     Utils::instance().symbols().insert(index, vi);
   }
 }
 
-string Range::iterator(int dim)
+string Range::iterator(int dim, bool range_idx)
 {
-  for (auto ip : _indexPos) {
+  if (range_idx) {
+    return getDimensionVar(dim + 1, range_idx);
+  }
+  for (auto ip : _index_pos) {
     if (ip.second == dim) {
       return ip.first;
     }
@@ -353,19 +327,22 @@ string Range::getDimensionVarsString() const
   return buffer.str();
 }
 
-vector<string> Range::getDimensionVars() const
+vector<string> Range::getDimensionVars(bool range) const
 {
   vector<string> buffer;
   int size = _ranges.size();
   for (int i = 1; i <= size; i++) {
-    buffer.push_back(getDimensionVar(i));
+    buffer.push_back(getDimensionVar(i, range));
   }
   return buffer;
 }
 
-string Range::getDimensionVar(int i) const
+string Range::getDimensionVar(int i, bool range) const
 {
   stringstream buffer;
+  if (range) {
+    buffer << "_rg";
+  }
   buffer << "_d" << i;
   return buffer.str();
 }
@@ -424,11 +401,24 @@ void Range::addLocalVariables() const
   }
 }
 
+void Range::addRangeLocalVariables() const
+{
+  RangeDefinitionTable ranges = _ranges;
+  RangeDefinitionTable::iterator it;
+  int i = 1;
+  for (RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it)) {
+    Variable range_var(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
+    string index = getDimensionVar(i++, true);
+    Utils::instance().symbols().insert(index, range_var);
+    Utils::instance().addLocalSymbol("int " + index + ";");
+  }
+}
+
 int Range::rowSize(int dim) const
 {
   int total = 1;
-  for (int it = _rowSize.size() - 1; it > dim; it--) {
-    total *= _rowSize.at(it);
+  for (int it = _row_size.size() - 1; it > dim; it--) {
+    total *= _row_size.at(it);
   }
   return total;
 }
@@ -448,7 +438,7 @@ string Range::block(int dim) const
 
 int Range::pos(string var)
 {
-  Option<int> p = _indexPos[var];
+  Option<int> p = _index_pos[var];
   if (p) {
     return boost::get<int>(p);
   }
@@ -511,6 +501,10 @@ string Range::in(vector<string> exps)
   }
   return code.str();
 }
+
+int Range::size() const { return _size; };
+
+bool Range::isEmpty() const { return _row_size.size() == 0; };
 
 std::ostream& operator<<(std::ostream& out, const Range& r) { return out << r.print(); }
 }  // namespace IR

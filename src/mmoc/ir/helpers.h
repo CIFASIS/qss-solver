@@ -125,11 +125,15 @@ class FunctionPrinter {
   std::string algebraics(Deps::AlgebraicPath deps);
   std::string jacobianTerms(list<Equation> eqs);
   std::string getIndexes(string var, Option<Range> range, int offset, bool modelica_index) const;
+  std::map<std::string, std::string> parseIndexes(string var, Option<Range> range, int offset, bool modelica_index = true) const;
+  std::map<int, std::string> parseConstants(Expression ref) const;
   std::string beginDimGuards(std::string token, string args, Option<Range> range) const;
   std::string endDimGuards(Option<Range> range) const;
   std::string printAlgebraicGuards(Equation alg, Index usage);
   /// TODO: Review modelica_index parameter usage.
   std::string accessMacros(std::string token, int offset, Option<Range> range, bool modelica_index = true) const;
+  std::string equationVariableMacros(Option<Range> range, Expression lhs, std::string id) const;
+  std::string jacMacrosAccess(Equation eq) const;
   std::string outputVariableName(Expression exp, Option<Range> range);
   std::string algebraic(Equation alg, bool reduction);
 

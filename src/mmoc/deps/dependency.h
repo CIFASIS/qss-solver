@@ -49,7 +49,7 @@ class Dependency {
         Paths var_deps;
         AlgebraicPath algs;
         AlgebraicPath recursive_alg_paths;
-        cout << "Compute paths for: " << vertex_info.var() << endl;
+        // cout << "Compute paths for: " << vertex_info.var() << endl;
         paths(graph, vertex, variableRange(vertex_info.var()), var_deps, algs, recursive_alg_paths, traverse);
         insert(dm, vertex_info, var_deps);
       }

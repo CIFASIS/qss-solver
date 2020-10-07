@@ -31,21 +31,19 @@ using namespace IR;
 using namespace Util;
 namespace Deps {
 
-JacMatrixGenerator::JacMatrixGenerator() : _matrix(), _dv_dx(), _tabs(0) {}
+JacMatrixGenerator::JacMatrixGenerator() : _matrix(), _dv_dx(), _tabs(0) { Utils::instance().setLocalInitSymbols(); }
+
+JacMatrixGenerator::~JacMatrixGenerator() { Utils::instance().unsetLocalInitSymbols(); }
 
 void JacMatrixGenerator::postProcess(SBG::VertexProperty vertex) {}
 
 void JacMatrixGenerator::init(SBG::VertexProperty vertex)
 {
   stringstream code;
+  FunctionPrinter function_printer;
   code << "for(row = 1; row <= " << vertex.size() << "; row++) {" << endl;
   code << TAB << "c_row = _c_index(row);" << endl;
-  Equation eq = vertex.eq();
-  if (eq.hasRange()) {
-    Option<Variable> var = eq.LHSVariable();
-    assert(var);
-    code << TAB << "_get" << var.get() << "_idxs(c_row);" << endl;
-  }
+  code << function_printer.jacMacrosAccess(vertex.eq());
   _matrix.alloc.append(code.str());
   _matrix.init.append(code.str());
   _tabs++;
@@ -115,8 +113,8 @@ void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SB
   code << tabs << "}" << endl;
   _matrix.alloc.append(code.str());
   _matrix.init.append(code.str());
-  cout << _matrix.init << endl;
-  cout << _matrix.alloc << endl;
+  // cout << _matrix.init << endl;
+  // cout << _matrix.alloc << endl;
 }
 
 std::string JacMatrixGenerator::guard(SBG::MDI dom, SBG::Map map)
