@@ -108,16 +108,20 @@ void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V)
         for (boost::tie(alg_edge, alg_out_edge_end) = out_edges(A, graph); alg_edge != alg_out_edge_end; ++alg_edge) {
           SBVertex G = boost::target(*alg_edge, graph);
           if (graph[G].eq().type() == IR::EQUATION::Algebraic) {
+            Label alg_label = graph[*alg_edge];
             int dep, deps = graph[G].numDeps();
             for (dep = 1; dep <= deps; dep++) {
               // First get the dom of G for the algebraic equation
               Offset index_shift = _index_shift[graph[G].eq().id()];
-              MDI g_dom = graph[G].dom(dep).applyOffset(index_shift);
+              // Ai -> Gij labels must contain only one pair.
+              assert(alg_label.pairs().size() == 1);
+              MDI g_dom = alg_label.pairs().begin()->dom();
+              Map G_map = alg_label.pairs().begin()->map();
               MDI v_range = pair.map().apply(pair.dom(), pair.ran());
               Option<MDI> d_intersect = g_dom.intersection(v_range);
               if (d_intersect) {
                 Map g_map = graph[G].map(dep);
-                Map n_map = g_map.applyIndexShift(index_shift).compose(map_m);
+                Map n_map = g_map.compose(G_map.solve(map_m));
                 MDI range = n_map.apply(pair.dom(), pair.ran());
                 VariableDep state_dep = graph[G].depStates(dep);
                 MDI state_range = state_dep.range();
@@ -149,7 +153,6 @@ void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V)
         VariableDep var_dep(graph[X].var(), pair.dom(), range);
         graph[V].setDepState(num_gen, var_dep);
         graph[V].setMap(num_gen, map);
-        graph[V].setDom(num_gen, pair.dom());
         _gen.visitF(graph[V].eq(), var_dep, map);
       }
     }
