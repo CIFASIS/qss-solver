@@ -45,7 +45,7 @@ std::ostream &operator<<(std::ostream &os, const Label &label)
 }
 
 VertexProperty::VertexProperty()
-    : _type(VERTEX::Equation), _exp(), _eq(), _stm(), _id(0), _var(), _visited(false), _num_deps(0), _var_deps(), _maps(), _name(), _dom()
+    : _type(VERTEX::Equation), _exp(), _eq(), _stm(), _id(0), _var(), _visited(false), _num_deps(0), _var_deps(), _maps(), _name()
 {
 }
 
@@ -62,7 +62,6 @@ VertexProperty::VertexProperty(const VertexProperty &other)
   _var_deps = other._var_deps;
   _maps = other._maps;
   _name = other._name;
-  _dom = other._dom;
 }
 
 Util::Variable VertexProperty::var() { return _var; }
@@ -118,10 +117,6 @@ int VertexProperty::size()
 string VertexProperty::name() const { return _name; }
 
 void VertexProperty::setName(string name) { _name = name; }
-
-MDI VertexProperty::dom(int id) { return _dom[id]; }
-
-void VertexProperty::setDom(int id, MDI dom) { _dom[id] = dom; }
 
 VariableDep::VariableDep() : _var(), _dom(), _range() {}
 

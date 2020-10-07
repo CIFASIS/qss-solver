@@ -113,8 +113,6 @@ class VertexProperty {
   int size();
   std::string name() const;
   void setName(std::string name);
-  MDI dom(int id);
-  void setDom(int id, MDI dom);
 
   private:
   VERTEX::Type _type;
@@ -128,7 +126,6 @@ class VertexProperty {
   VariableDeps _var_deps;
   Maps _maps;
   std::string _name;
-  MDIs _dom;
 };
 
 class Label {
