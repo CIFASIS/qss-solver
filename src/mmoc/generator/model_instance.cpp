@@ -262,9 +262,7 @@ void ModelInstance::header()
   }
   EquationTable derivatives = _model.derivatives();
   EquationTable::iterator eqit;
-  if (!_model.annotations().isClassic()) {
-    _writer->write("\n// Derivative Equations Macros\n", WRITER::Model_Header);
-  }
+  _writer->write("\n// Derivative Equations Macros\n", WRITER::Model_Header);
   for (Equation e = derivatives.begin(eqit); !derivatives.end(eqit); e = derivatives.next(eqit)) {
     _writer->write(e.macro(), WRITER::Model_Header);
   }
@@ -434,8 +432,9 @@ void ModelInstance::freeVectors() const
 void ModelInstance::jacobian()
 {
   Jacobian jac;
+  Utils::instance().clearLocalSymbols();
   jac.build();
-  _writer->write("int row, row_t, row_g, c_row, c_row_g;", WRITER::Jacobian);
+  _writer->write("int row, row_t, eq_var, c_row, c_row_g;", WRITER::Jacobian);
   _writer->write("int col, col_g, col_t;", WRITER::Jacobian);
   _writer->write("int x_ind;", WRITER::Jacobian);
   _writer->write("double aux;", WRITER::Jacobian);
@@ -443,7 +442,7 @@ void ModelInstance::jacobian()
   _writer->write("SD_cleanJacMatrices(dvdx);", WRITER::Jacobian);
   _writer->write(jac.code(), WRITER::Jacobian);
   // Add local variables to the initialization procedure prologue.
-  _writer->write("int row, c_row;", WRITER::Prologue);
+  _writer->write("int row, eq_var, c_row;", WRITER::Prologue);
   _writer->write("int x_ind;", WRITER::Prologue);
 }
 
