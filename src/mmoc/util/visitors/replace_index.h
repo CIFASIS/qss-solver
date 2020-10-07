@@ -30,7 +30,7 @@ namespace Util {
 
 class ReplaceIndex : public AST_Expression_Visitor<AST_Expression> {
   public:
-  ReplaceIndex(IR::Range range, Deps::Usage usage);
+  ReplaceIndex(IR::Range range, Deps::Usage usage, bool range_idxs);
   ~ReplaceIndex() = default;
 
   private:
@@ -40,6 +40,7 @@ class ReplaceIndex : public AST_Expression_Visitor<AST_Expression> {
 
   IR::Range _range;
   Deps::Usage _usage;
+  bool _range_idxs;
 };
 
 class ReplaceVar : public AST_Expression_Visitor<AST_Expression> {

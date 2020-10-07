@@ -30,7 +30,7 @@ using namespace Deps;
 using namespace IR;
 namespace Util {
 
-ReplaceIndex::ReplaceIndex(Range range, Usage usage) : _range(range), _usage(usage) {}
+ReplaceIndex::ReplaceIndex(Range range, Usage usage, bool range_idxs) : _range(range), _usage(usage), _range_idxs(range_idxs) {}
 
 AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
 {
@@ -46,7 +46,7 @@ AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
       assert(indexes->size() == _usage.Size());
       foreach (it, indexes) {
         if (_usage.isUsed(i)) {
-          string var = _range.iterator(i);
+          string var = _range.iterator(i, _range_idxs);
           ReplaceVar rv(var);
           l = AST_ListAppend(l, rv.apply(current_element(it)));
         } else {
