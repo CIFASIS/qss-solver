@@ -130,9 +130,9 @@ Index Index::revert() const
   return Index(Expression(revert.apply(_exp.expression()), symbols));
 }
 
-Index Index::replace() const
+Index Index::replace(bool range_idx) const
 {
-  ReplaceIndex replace = ReplaceIndex(range(), usage());
+  ReplaceIndex replace = ReplaceIndex(range(), usage(), range_idx);
   return Index(Expression(replace.apply(_exp.expression()), Utils::instance().symbols()));
 }
 
@@ -304,8 +304,11 @@ void Range::generate(MDI mdi)
   }
 }
 
-string Range::iterator(int dim)
+string Range::iterator(int dim, bool range_idx)
 {
+  if (range_idx) {
+    return getDimensionVar(dim + 1, range_idx);
+  }
   for (auto ip : _index_pos) {
     if (ip.second == dim) {
       return ip.first;
@@ -324,19 +327,22 @@ string Range::getDimensionVarsString() const
   return buffer.str();
 }
 
-vector<string> Range::getDimensionVars() const
+vector<string> Range::getDimensionVars(bool range) const
 {
   vector<string> buffer;
   int size = _ranges.size();
   for (int i = 1; i <= size; i++) {
-    buffer.push_back(getDimensionVar(i));
+    buffer.push_back(getDimensionVar(i, range));
   }
   return buffer;
 }
 
-string Range::getDimensionVar(int i) const
+string Range::getDimensionVar(int i, bool range) const
 {
   stringstream buffer;
+  if (range) {
+    buffer << "_rg";
+  }
   buffer << "_d" << i;
   return buffer.str();
 }
@@ -392,6 +398,19 @@ void Range::addLocalVariables() const
     string var = ranges.key(it);
     Utils::instance().addLocalSymbol("int " + var + ";");
     Utils::instance().addLocalSymbol("int " + getDimensionVar(i++) + ";");
+  }
+}
+
+void Range::addRangeLocalVariables() const
+{
+  RangeDefinitionTable ranges = _ranges;
+  RangeDefinitionTable::iterator it;
+  int i = 1;
+  for (RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it)) {
+    Variable range_var(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
+    string index = getDimensionVar(i++, true);
+    Utils::instance().symbols().insert(index, range_var);
+    Utils::instance().addLocalSymbol("int " + index + ";");
   }
 }
 

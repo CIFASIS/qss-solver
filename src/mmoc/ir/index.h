@@ -48,7 +48,9 @@ class RangeDefinition {
   RangeDefinition(int begin, int end, int step = 1);
   ~RangeDefinition() = default;
   inline int begin() { return _begin; };
+  inline int cBegin() { return begin() - 1; }
   inline int end() { return _end; };
+  inline int cEnd() { return end() - 1; };
   inline int step() { return _step; };
   inline int size() const { return (_begin == _end) ? 1 : (_end - _begin + 1) / _step; };
   void setBegin(int begin);
@@ -80,15 +82,16 @@ class Range {
   std::string end() const;
   string indexes() const;
   void addLocalVariables() const;
+  void addRangeLocalVariables() const;
   int rowSize(int dim) const;
   std::string block(int dim = -1) const;
   int pos(std::string var);
   void generate(Deps::MDI mdi);
   inline bool empty() { return _size == 0; };
-  std::string iterator(int dim);
+  std::string iterator(int dim, bool range_idx = false);
   std::string getDimensionVarsString() const;
-  std::vector<std::string> getDimensionVars() const;
-  std::string getDimensionVar(int i) const;
+  std::vector<std::string> getDimensionVars(bool range = false) const;
+  std::string getDimensionVar(int i, bool range = false) const;
   bool intersect(Range other);
   Deps::MDI getMDI();
   void applyUsage(Index usage);
@@ -142,7 +145,7 @@ class Index {
   Range range() const;
   Deps::Usage usage() const;
   Index revert() const;
-  Index replace() const;
+  Index replace(bool range_idx = false) const;
   std::string usageExp() const;
   std::string modelicaExp() const;
   friend std::ostream& operator<<(std::ostream& out, const Index& i);
