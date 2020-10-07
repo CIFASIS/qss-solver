@@ -26,6 +26,8 @@
 #include "../generator/macros.h"
 #include "../util/error.h"
 #include "../util/util.h"
+#include "../util/visitors/get_index_variables.h"
+#include "../util/visitors/is_constant_expression.h"
 
 namespace MicroModelica {
 using namespace Deps;
@@ -312,10 +314,25 @@ string FunctionPrinter::getIndexes(string var, Option<Range> range, int offset, 
   if (range) {
     map<string, string> parsed_indexes = parseIndexes(var, range, offset, modelica_index);
     for (auto index_def : parsed_indexes) {
-      buffer << index_def.first << " = " << index_def.second;
+      buffer << TAB << index_def.first << " = " << index_def.second << endl;
     }
   }
   return buffer.str();
+}
+
+map<int, string> FunctionPrinter::parseConstants(Expression ref) const
+{
+  map<int, string> ctes;
+  list<Expression> indexes = ref.indexes();
+  int i = 1;
+  for (Expression exp : indexes) {
+    IsConstantExpression constant_exp;
+    if (constant_exp.apply(exp.expression())) {
+      ctes[i] = exp.print();
+    }
+    i++;
+  }
+  return ctes;
 }
 
 map<string, string> FunctionPrinter::parseIndexes(string var, Option<Range> range, int offset, bool modelica_index) const
@@ -326,14 +343,18 @@ map<string, string> FunctionPrinter::parseIndexes(string var, Option<Range> rang
     RangeDefinitionTable::iterator it;
     int size = rdt.size(), i = 0, idx = 0;
     stringstream offset_var;
-    offset_var << "(" << var << "-" << offset << ")";
+    offset_var << "(" << var;
+    if (offset > 0) {
+      offset_var << "-" << offset;
+    }
+    offset_var << ")";
     string alligned_var = offset_var.str();
     for (RangeDefinition rd = rdt.begin(it); !rdt.end(it); rd = rdt.next(it), idx++) {
       stringstream key;
       stringstream def;
-      key << TAB << rdt.key(it);
+      key << rdt.key(it);
       def << (i + 1 < size ? div(mod(alligned_var, idx - 1, range), idx, range) : mod(alligned_var, idx - 1, range))
-          << (modelica_index ? "+ 1;" : ";") << (i + 1 < size ? " \\" : "") << endl;
+          << (modelica_index ? "+ 1;" : ";") << (i + 1 < size ? "\\" : "");
       parsed_indexes[key.str()] = def.str();
       i++;
     }
@@ -362,7 +383,7 @@ string FunctionPrinter::accessMacros(string token, int offset, Option<Range> ran
     macros << "#define _is_var" << token << "(idx) ";
     macros << "idx >= " << offset << " && ";
     macros << "idx < " << offset + range->size() << endl;
-    macros << "#define _get" << token << "_idxs(idx) \\" << endl;
+    macros << "#define _get" << token << "_idxs(idx)\\" << endl;
     macros << TAB << getIndexes("idx", range, offset, modelica_index);
   }
   return macros.str();
@@ -403,6 +424,53 @@ string FunctionPrinter::outputVariableName(Expression exp, Option<Range> range)
     buffer << exp.usage() << "\"";
   }
   return buffer.str();
+}
+
+string FunctionPrinter::equationVariableMacros(Option<Range> range, Expression lhs, string id) const
+{
+  stringstream buffer;
+  if (range) {
+    GetIndexVariables index_usage;
+    RangeDefinitionTable range_def = range->definition();
+    buffer << "#define _get" << id << "_var_idxs";
+    buffer << "(row, var)\\" << endl;
+    map<string, int> usage = index_usage.apply(lhs.expression());
+    map<string, string> parse_row = parseIndexes("row", range, 1);
+    map<int, string> ctes = parseConstants(lhs);
+    int i = 1, size = usage.size();
+    static const bool USE_RANGE_DIM_VARS = true;
+    for (auto index : usage) {
+      string local_range_var = range->getDimensionVar(index.second, USE_RANGE_DIM_VARS);
+      buffer << TAB << local_range_var << " = ";
+      buffer << range_def[index.first]->cBegin() << " + " << parse_row[index.first];
+      buffer << ((i + 1 <= size) ? "\n" : "\\\n");
+      i++;
+    }
+    size = ctes.size();
+    for (auto index : ctes) {
+      string local_range_var = range->getDimensionVar(index.first, USE_RANGE_DIM_VARS);
+      buffer << TAB << local_range_var << " = " << index.second << ";\\\n";
+    }
+    vector<string> exps;
+    exps.push_back(lhs.dimVariables(USE_RANGE_DIM_VARS));
+    Expression a_exp = Expression::generate(lhs.reference()->name(), exps);
+    Index var_ind(a_exp);
+    buffer << TAB << "var = " << var_ind << ";";
+  }
+  return buffer.str();
+}
+
+string FunctionPrinter::jacMacrosAccess(Equation eq) const
+{
+  stringstream code;
+  if (eq.hasRange()) {
+    Option<Variable> var = eq.LHSVariable();
+    assert(var);
+    code << TAB << "_get" << eq.applyId() << "_var_idxs(row, eq_var);" << endl;
+    code << TAB << "_get" << var.get() << "_idxs(eq_var);" << endl;
+    eq.range()->addRangeLocalVariables();
+  }
+  return code.str();
 }
 
 Input::Input(Index idx, Option<Range> range, int id) : _idx(idx), _range(range), _id(id) {}
