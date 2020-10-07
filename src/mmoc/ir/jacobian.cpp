@@ -59,14 +59,10 @@ void JacGenerator::postProcess(SBG::VertexProperty vertex)
 void JacGenerator::init(SBG::VertexProperty vertex)
 {
   stringstream code;
+  FunctionPrinter function_printer;
   code << "for(row = 1; row <= " << vertex.size() << "; row++) {" << endl;
   code << TAB << "c_row = _c_index(row);" << endl;
-  Equation eq = vertex.eq();
-  if (eq.hasRange()) {
-    Option<Variable> var = eq.LHSVariable();
-    assert(var);
-    code << TAB << "_get" << var.get() << "_idxs(c_row);" << endl;
-  }
+  code << function_printer.jacMacrosAccess(vertex.eq());
   _tabs++;
   _jac_def.code.append(code.str());
 }
@@ -176,16 +172,25 @@ void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep
   dependencyPrologue(g_eq, var_dep, n_map, dom_guard);
   generatePos(v_eq.arrayId(), v_eq.type());
   vector<string> variables;
-  variables.push_back("row");
-  vector<string> exps = map_m.exps(variables);
   int shift = index_shift[0];
   string tab = Utils::instance().tabs(_tabs);
-  code << tab << "row_g = ";
-  for (string map : exps) {
-    code << map << " - " << shift;
+  static const bool USE_RANGE_IDXS = true;
+  vector<string> exps;
+  if (v_eq.hasRange()) {
+    exps = map_m.exps(v_eq.range()->getDimensionVars(USE_RANGE_IDXS));
+  } else {
+    Option<Variable> lhs = v_eq.LHSVariable();
+    if (lhs->isArray()) {
+      for (Expression exp : v_eq.lhs().indexes()) {
+        exps.push_back(exp.print());
+      }
+    }
   }
+  Expression a_exp = Expression::generate(g_eq.LHSVariable()->name(), exps);
+  Index a_ind(a_exp);
+  code << tab << "c_row_g = ";
+  code << a_ind << " - " << shift;
   code << ";" << endl;
-  code << tab << "c_row_g = _c_index(row_g);" << endl;
   _jac_def.code.append(code.str());
   generatePos(g_eq.arrayId(), g_eq.type(), "c_row_g", "col_g");
   generateEquation(v_eq.arrayId(), g_eq.arrayId(), v_eq.type());
