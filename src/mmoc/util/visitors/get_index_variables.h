@@ -26,20 +26,22 @@
 
 namespace MicroModelica {
 namespace Util {
-class GetIndexVariables : public AST_Expression_Visitor<list<std::string>> {
+class GetIndexVariables : public AST_Expression_Visitor<map<std::string, int>> {
   public:
   GetIndexVariables();
   ~GetIndexVariables() = default;
 
   private:
-  list<std::string> foldTraverseElement(AST_Expression exp);
-  inline list<std::string> foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
-  inline list<std::string> foldTraverseElement(list<std::string> l, list<std::string> r, BinOpType bot)
+  map<std::string, int> foldTraverseElement(AST_Expression exp);
+  inline map<std::string, int> foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
+  inline map<std::string, int> foldTraverseElement(map<std::string, int> l, map<std::string, int> r, BinOpType bot)
   {
-    l.splice(l.end(), r);
+    l.insert(r.begin(), r.end());
     return l;
   }
+  /// Note that these markers only work for arrays with scalar index expressions.
   bool _in_index_list;
+  int _pos;
 };
 
 }  // namespace Util

@@ -29,25 +29,27 @@ using namespace Deps;
 using namespace IR;
 namespace Util {
 
-GetIndexVariables::GetIndexVariables() : _in_index_list(false) {}
+GetIndexVariables::GetIndexVariables() : _in_index_list(false), _pos(0) {}
 
-list<string> GetIndexVariables::foldTraverseElement(AST_Expression exp)
+map<std::string, int> GetIndexVariables::foldTraverseElement(AST_Expression exp)
 {
-  list<string> ret;
-  ExpressionType t = exp->expressionType();
+  map<std::string, int> ret;
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
     if (_in_index_list) {
-      ret.push_back(cr->name());
+      ret.insert(std::make_pair(cr->name(), _pos));
     }
     if (cr->hasIndexes()) {
       assert(!_in_index_list);
       _in_index_list = true;
       AST_ExpressionList indexes = cr->firstIndex();
       AST_ExpressionListIterator it;
+      _pos = 1;
       foreach (it, indexes) {
-        ret.splice(ret.end(), apply(current_element(it)));
+        map<std::string, int> args = apply(current_element(it));
+        ret.insert(args.begin(), args.end());
+        _pos++;
       }
       _in_index_list = false;
     }
@@ -57,7 +59,8 @@ list<string> GetIndexVariables::foldTraverseElement(AST_Expression exp)
     AST_Expression_Output out = exp->getAsOutput();
     AST_ExpressionListIterator it;
     foreach (it, out->expressionList()) {
-      ret.splice(ret.end(), apply(current_element(it)));
+      map<std::string, int> args = apply(current_element(it));
+      ret.insert(args.begin(), args.end());
     }
     break;
   }
