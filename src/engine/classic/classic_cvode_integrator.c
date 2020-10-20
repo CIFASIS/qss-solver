@@ -55,6 +55,19 @@ int jac_struct_initialized = FALSE;
 
 SlsMat init_jac_matrix = NULL;
 
+int cmpfunc(const void *a, const void *b) { return (*(int *)a - *(int *)b); }
+
+void order(SlsMat JacMat)
+{
+  int size = clcData->states, row, cols;
+  int *col_ptrs = *JacMat->colptrs;
+  int *row_vals = *JacMat->rowvals;
+  for (row = 0; row < size; row++) {
+    cols = col_ptrs[row + 1] - col_ptrs[row];
+    qsort(&(row_vals[col_ptrs[row]]), cols, sizeof(int), cmpfunc);
+  }
+}
+
 void assignJacStruct(SlsMat JacMat)
 {
   int size = clcData->states, row, col, eq, eqs;
@@ -85,6 +98,8 @@ void assignJacStruct(SlsMat JacMat)
 
   col_ptrs[size] = col_ptrs[size - 1] + clcData->nSD[size - 1];
 
+  order(JacMat);
+
   init_jac_matrix = SparseNewMat(JacMat->M, JacMat->N, JacMat->NNZ, CSC_MAT);
   SparseCopyMat(JacMat, init_jac_matrix);
 }
@@ -92,8 +107,8 @@ void assignJacStruct(SlsMat JacMat)
 static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat, void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3)
 {
   if (jac_struct_initialized == FALSE) {
-    jac_struct_initialized = TRUE;
     assignJacStruct(JacMat);
+    jac_struct_initialized = TRUE;
   } else {
     SparseCopyMat(init_jac_matrix, JacMat);
   }
