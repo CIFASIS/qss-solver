@@ -282,6 +282,8 @@ Offset::iterator Offset::end() { return _offset.end(); }
 
 unsigned int Offset::size() const { return _offset.size(); }
 
+void Offset::add(int offset) { _offset.push_back(offset); }
+
 std::ostream& operator<<(std::ostream& os, const Offset& offset)
 {
   list<string> offsets;
