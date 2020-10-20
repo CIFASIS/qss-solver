@@ -114,6 +114,7 @@ class Variable {
   inline int offset() const { return _offset; };
   inline bool isModelVar() const { return isState() || isDiscrete() || isAlgebraic() || isParameter() || isEqType() || isOutput(); };
   std::string print() const;
+  static int eval(Variable var, std::vector<int> index);
   friend std::ostream& operator<<(std::ostream& out, const Variable& v);
 
   private:

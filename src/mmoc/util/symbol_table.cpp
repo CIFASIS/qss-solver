@@ -238,6 +238,21 @@ string Variable::initialization(const VarSymbolTable &symbols)
   return buffer.str();
 }
 
+int Variable::eval(Variable var, vector<int> index)
+{
+  assert(index.size() == var.dimensions());
+  int dims = var.dimensions();
+  int eval = 0;
+  for (int i = 0; i < dims; i++) {
+    if (i + 1 < dims) {
+      eval += var.size(i) * index.at(i);
+    } else {
+      eval += index.at(i);
+    }
+  }
+  return eval;
+}
+
 /* TypeSymbolTable_ class.*/
 
 TypeSymbolTable::TypeSymbolTable()
