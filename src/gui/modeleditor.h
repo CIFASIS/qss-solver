@@ -20,7 +20,7 @@
 #ifndef MODELEDITOR_H_
 #define MODELEDITOR_H_
 
-#include <QWidget>
+#include <QTabWidget>
 #include <QTextCursor>
 #include <ui/ui_modeleditor.h>
 #include <utils.h>
