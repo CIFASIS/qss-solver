@@ -10,6 +10,7 @@ In order to be able to install and compile the QSS Solver,
 the following  dependencies must be installed: 
 
     * bison++
+    * boost1.71
     * cmake 
     * g++
     * gfortran 
@@ -17,12 +18,14 @@ the following  dependencies must be installed:
     * libatlas-base-dev
     * libcln-dev
     * libconfig-dev
+    * libginac-dev
     * libgsl-dev
     * libsbml5-dev
+    * libscotch-dev
     * libsuitesparse-dev
     * pkgconf
     * python
-    * qt4-default or higher.
+    * qt5-default
      
 
 Basic Installation
@@ -30,22 +33,22 @@ Basic Installation
 
 The simplest way to compile this package is:
 
-  1. `cd' to the directory containing the package's source code and type
-     `make ' to compile the binaries and libraries.
+  1. `cd` to the directory containing the package's source code and type
+     `make` to compile the binaries and libraries.
   
-  2. Type `make install' to install all the binary files and the libraries.
+  2. Type `make install` to install all the binary files and the libraries.
      The binaries are located in the bin folder and the libraries are located
      in the lib folder. 
   
   3. You can remove the program binaries and object files from the
-     source code directory by typing `make clean'.  
+     source code directory by typing `make clean`.  
 
 Makefile options
 ================
 
 The makefile script accepts the following options:
 
-	* MODE = <Debug|Release> 	When set to Debug, adds the compiler's debug flags. Default value Debug.
+	* MODE = <Debug|Release> 	When set to Debug (default), adds the compiler's debug flags.
 	
 Makefile targets
 ================
