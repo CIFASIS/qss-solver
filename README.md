@@ -1,4 +1,4 @@
-QSS Solver 3.2
+QSS Solver 4.0
 --------------
 
 The QSS Solver is a modeling and simulation environment for 
@@ -35,8 +35,8 @@ etc.).
 Components
 ----------
 
-MicroModelica Compiler 3.2
---------------------------
+MicroModelica Compiler
+----------------------
 
 The MicroModelica compiler allows the user to describe models 
 using a subset of the standard Modelica language called μ–Modelica 
@@ -50,8 +50,8 @@ together with all the configuration files (makefiles, config, etc.).
 The compiler documentation can be found at: 
 http://www.cifasis-conicet.gov.ar/jfernandez/mmoc/
 
-QSS Engine 3.2
---------------
+QSS Engine
+----------
 
 The QSS Engine is a library that allows the simulation of continuous and hybrid 
 systems and it's optimized for large scale model simulation. 
@@ -83,7 +83,7 @@ http://www.cifasis-conicet.gov.ar/jfernandez/engine/
 Finally, the file containing the model has to be compiled and linked with the 
 engine library.
 
-QSS Solver GUI 3.2
+QSS Solver GUI
 --------------
 
 The QSS Solver GUI is a simple interface that allows the end-user
@@ -148,6 +148,7 @@ In order to be able to install and compile the QSS Solver,
 the following  dependencies must be installed: 
 
     * bison++
+    * boost1.71
     * cmake 
     * g++
     * gfortran 
@@ -155,12 +156,14 @@ the following  dependencies must be installed:
     * libatlas-base-dev
     * libcln-dev
     * libconfig-dev
+    * libginac-dev
     * libgsl-dev
     * libsbml5-dev
+    * libscotch-dev
     * libsuitesparse-dev
     * pkgconf
     * python
-    * qt4-default or higher.
+    * qt5-default
      
 
 Basic Installation
@@ -168,22 +171,22 @@ Basic Installation
 
 The simplest way to compile this package is:
 
-  1. `cd' to the directory containing the package's source code and type
-     `make ' to compile the binaries and libraries.
+  1. `cd` to the directory containing the package's source code and type
+     `make` to compile the binaries and libraries.
   
-  2. Type `make install' to install all the binary files and the libraries.
+  2. Type `make install` to install all the binary files and the libraries.
      The binaries are located in the bin folder and the libraries are located
      in the lib folder. 
   
   3. You can remove the program binaries and object files from the
-     source code directory by typing `make clean'.  
+     source code directory by typing `make clean`.  
 
 Makefile options
 ----------------
 
 The makefile script accepts the following options:
 
-	* MODE = <Debug|Release> 	When set to Debug, adds the compiler's debug flags. Default value Debug.
+	* MODE = <Debug|Release> 	When set to Debug (default), adds the compiler's debug flags.
 	
 Makefile targets
 ----------------
