@@ -177,19 +177,9 @@ DEPS = $(ASTOBJ:.o=.d) \
  	   $(DEPSGRAPHOBJ:.o=.d) \
  	   $(DEPSBUILDEROBJ:.o=.d)
 
-all: lib-ginac mmoc tests 
+all: mmoc tests 
 
 default: mmoc 
-
-# Deterministic Ginac Library. 
-
-libginac 	:= $(LIBDIR)/libginac.a 
-
-$(libginac):
-	echo "Building deterministic GiNaC" 
-	cd $(3RDPARTYDIR)/ginac; tar xvjf ginac-1.7.0.tar.bz2
-	cd $(3RDPARTYDIR)/ginac/ginac-1.7.0; ./configure --prefix=`pwd`/../../../usr --disable-shared; make -j 4 install
-	rm -rf $(3RDPARTYDIR)/ginac/ginac-1.7.0
 
 $(BUILDDIR)/ast_%.o : $(ASTDIR)/%.cpp $(ASTDIR)/%.h $(PARSERDIR)/mocc_parser.cpp $(PARSERDIR)/mocc_scanner.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
@@ -227,11 +217,9 @@ $(BUILDDIR)/deps_%.o : $(DEPSBUILDERDIR)/%.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
 
-mmoc: | $(libginac) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ)
+mmoc: | $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ)
 	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ) $(LIB) 
 	$(RUN_TESTS)
-
-lib-ginac: $(libginac)
 
 tests: 
 	@echo Running MMOC tests

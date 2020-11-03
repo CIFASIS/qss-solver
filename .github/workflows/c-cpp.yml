@@ -9,14 +9,14 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
     - name: Install deps.
       run: | 
-        sudo apt-get install libcln-dev
         sudo apt-get install bison++
+        sudo apt-get install boost1.71
         sudo apt-get install cmake 
         sudo apt-get install g++
         sudo apt-get install gfortran
@@ -24,13 +24,14 @@ jobs:
         sudo apt-get install libatlas-base-dev
         sudo apt-get install libcln-dev
         sudo apt-get install libconfig-dev
+        sudo apt-get install libginac-dev
         sudo apt-get install libgsl-dev
         sudo apt-get install libsbml5-dev
+        sudo apt-get install libscotch-dev
         sudo apt-get install libsuitesparse-dev
         sudo apt-get install pkgconf
         sudo apt-get install python
         sudo apt-get install qt5-default
-        sudo apt-get install libboost1.58-dev
           
     - name: Build
       working-directory: ./src
