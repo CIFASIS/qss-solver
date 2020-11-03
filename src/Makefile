@@ -78,8 +78,6 @@ install:
 	@install $(ROOT)/src/engine/3rd-party/partitioners/hmetis/khmetis $(ROOT)/bin/
 	@install $(ROOT)/src/engine/3rd-party/partitioners/patoh/Linux-x86_64/libpatoh.a $(ROOT)/lib/
 	@install $(ROOT)/src/engine/3rd-party/partitioners/metis/Linux-x86_64/libmetis.a $(ROOT)/lib/
-	@install $(ROOT)/src/engine/3rd-party/partitioners/scotch/Linux-x86_64/libscotch.a $(ROOT)/lib/
-	@install $(ROOT)/src/engine/3rd-party/partitioners/scotch/Linux-x86_64/libscotcherr.a $(ROOT)/lib/
 	@echo "Installing GTEST libraries."
 	ln -s $(ROOT)/src/3rd-party/gtest/usr/lib/*.a $(ROOT)/lib/
 	
