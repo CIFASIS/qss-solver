@@ -1,2 +1,6 @@
-Changelog
-=========
+## Changelog
+
+## [3.2] 
+### Added
+- Implemented parallel simulation strategy
+- Implemented new mixed mode QSS-BDF algorithm.
