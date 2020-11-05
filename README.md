@@ -229,7 +229,7 @@ The makefile script accepts the following targets:
 
 ## [3.2] 
 ### Added
-- Implemented parallel simulation strategy
+- Implemented Discrete Event parallel simulation algorithm.
 - Implemented new mixed mode QSS-BDF algorithm.
 
 ## Licensing
