@@ -1,5 +1,4 @@
-QSS Solver 4.0
---------------
+## QSS Solver 4.0
 
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
@@ -32,11 +31,39 @@ The GUI has the following features:
   * It shows statistics about simulations (number of steps, simulation time,
 etc.).
 
-Components
-----------
+## Related Publications
 
-MicroModelica Compiler
-----------------------
+[1] Joaquin Fernandez, Ernesto Kofman.
+**A stand-alone quantized state system solver for continuous system simulation**
+Simulation 
+
+[2] Federico Bergero, Xenofon Floros, Joaquin Fernandez, Ernesto Kofman, Francois Cellier.
+**Simulating Modelica models with a Stand–Alone Quantized State Systems Solver**
+Proceedings of the 9th International Modelica Conference
+
+[3] Joaquin Fernandez, Ernesto Kofman, Federico Bergero.
+**A parallel Quantized State System Solver for ODEs**
+Journal of Parallel and Distributed Computing
+
+[4] Federico Bergero, Francesco Casella, Ernesto Kofman, Joaquin Fernandez.
+**On the efficiency of quantization-based integration methods for building simulation**
+Building Simulation
+
+[5] Federico Bergero, Joaquin Fernandez, Ernesto Kofman, Margarita Portapila.
+**Time discretization versus state quantization in the simulation of a one-dimensional advection–diffusion–reaction equation**
+Simulation
+
+[5] Gustavo Migoni, Ernesto Kofman, Federico Bergero, Joaquin Fernandez.
+**Quantization-based simulation of switched mode power supplies**
+Simulation
+
+[6] Franco Di Pietro, Joaquin Fernandez, Gustavo Migoni, Ernesto Kofman.
+**Mixed-mode state–time discretization in ODE numerical integration**
+Journal of Computational and Applied Mathematics 
+
+## Components
+
+## MicroModelica Compiler
 
 The MicroModelica compiler allows the user to describe models 
 using a subset of the standard Modelica language called μ–Modelica 
@@ -50,8 +77,7 @@ together with all the configuration files (makefiles, config, etc.).
 The compiler documentation can be found at: 
 http://www.cifasis-conicet.gov.ar/jfernandez/mmoc/
 
-QSS Engine
-----------
+## QSS Engine
 
 The QSS Engine is a library that allows the simulation of continuous and hybrid 
 systems and it's optimized for large scale model simulation. 
@@ -71,7 +97,7 @@ following functions must be provided:
   * Model definition.
   * Model settings.
   * Model dependencies (for QSS methods).
-  * Model Jacobian (for IDA and CVODE).
+  * Model Jacobian.
   * Model zero-crossing function.
   * Model event handlers.
   * A function in charge of the simulator data structure initialization.
@@ -83,8 +109,7 @@ http://www.cifasis-conicet.gov.ar/jfernandez/engine/
 Finally, the file containing the model has to be compiled and linked with the 
 engine library.
 
-QSS Solver GUI
---------------
+## QSS Solver GUI
 
 The QSS Solver GUI is a simple interface that allows the end-user
 of the QSS Solver to access all the developed tools in a
@@ -103,8 +128,7 @@ The GUI documentation can be found in:
 http://www.cifasis-conicet.gov.ar/jfernandez/gui/
 
 
-Distributed MicroModelica User Packages
----------------------------------------
+## Distributed MicroModelica User Packages
 
 MicroModelica packages with math helper functions and file manipulation functions that uses the C user libraries described bellow. 
 
@@ -118,8 +142,7 @@ Available packages:
 
 Both files are located in the `packages` folder in the root install location.
 
-C User Libraries
-----------------
+## C User Libraries
 
 C libraries that contains helper functions used in MicroModelica packages. The Makefile included compiles the source 
 files and generates the static library in the lib folder of the qss-solver. 
@@ -136,13 +159,11 @@ To compile a new user library, follow these steps:
 The generated lib is stored in the default path that the MMOC looks for, so the lib can be directly accesed from MicroModelica
 functions.  
 
-Installation
-------------
+## Installation
 
 These are generic installation instructions.
 
-Dependences
------------
+## Dependences
 
 In order to be able to install and compile the QSS Solver, 
 the following  dependencies must be installed: 
@@ -166,8 +187,7 @@ the following  dependencies must be installed:
     * qt5-default
      
 
-Basic Installation
-------------------
+## Basic Installation
 
 The simplest way to compile this package is:
 
@@ -181,15 +201,13 @@ The simplest way to compile this package is:
   3. You can remove the program binaries and object files from the
      source code directory by typing `make clean`.  
 
-Makefile options
-----------------
+## Makefile options
 
 The makefile script accepts the following options:
 
 	* MODE = <Debug|Release> 	When set to Debug (default), adds the compiler's debug flags.
 	
-Makefile targets
-----------------
+## Makefile targets
 
 The makefile script accepts the following targets:
 
@@ -206,17 +224,18 @@ The makefile script accepts the following targets:
   * qss-solver-doc: Builds the documentation for the QSS solver libraries,
                     the MicroModelica compiler and the QSS solver GUI.
 			   
-Licensing
----------
+
+## Changelog
+
+## [3.2] 
+### Added
+- Implemented Discrete Event parallel simulation algorithm.
+- Implemented new mixed mode QSS-BDF algorithm.
+
+## Licensing
 
 Please see the file called LICENSE.
 
-ChangeLog
-----------
-
-Please see the file called CHANGELOG.
-
-Bug Reporting
--------------
+## Bug Reporting
 
 Report bugs to: fernandez@cifasis-conicet.gov.ar
