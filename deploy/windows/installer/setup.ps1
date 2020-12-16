@@ -20,6 +20,8 @@ if ($ubuntu_installed.Status -eq "Ok") {
     ubuntu2004 install --root
 }
 
+cp .\qss-solver.deb $InstallDir\scripts\
+
 cd $InstallDir
 
 # Remove Windows EOF extra characters, needed by Jenkins installer.
@@ -43,5 +45,3 @@ ubuntu2004.exe config --default-user qsssolver
 
 Write-Host Configure QSS Solver
 bash.exe ./scripts/qss-solver-config.sh
-
-powershell.exe -ExecutionPolicy ByPass -File .\scripts\check-qss-solver.ps1 -Install
