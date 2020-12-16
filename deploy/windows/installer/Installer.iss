@@ -11,13 +11,12 @@
 #define test_wsl           "test-wsl.ps1"
 #define check_vcxsrv       "check-vcxsrv.ps1"
 #define test_vcxsrv        "test-vcxsrv.ps1"
-#define migrate_settings   "migrate-settings.ps1"
 #define setup              "setup.ps1"
 #define ubuntu             "Ubuntu_2004.appx"
+#define qss_solver_deb     "qss-solver.deb"
 #define qss_solver_setup   "qss-solver-setup.sh"
 #define qss_solver_config  "qss-solver-config.sh"
-#define check_qss_solver   "check-qss-solver.ps1"
-#define qss_solver_icon    "qss-solver-icon.ico"
+#define qss_solver_icon    "integrator.ico"
 #define export_vcxsrv_vars "export-vcxsrv-vars.sh"
 #define export_vcxsrv_ps   "export-vcxsrv-vars.ps1"
 #define enable_opengl      "enable-opengl.ps1"
@@ -49,6 +48,7 @@ PrivilegesRequired=lowest
 [Files]
 ; Installation dependencies.
 Source: {#BUILD_DIR}\{#ubuntu}; DestDir: {tmp} 
+Source: {#BUILD_DIR}\{#qss_solver_deb}; DestDir: {tmp} 
 
 ; Installation helpers.
 Source: {#BUILD_DIR}\{#test_wsl}; DestDir: {tmp}
@@ -61,10 +61,8 @@ Source: {#BUILD_DIR}\{#test_vcxsrv}; DestDir: {app}\scripts
 Source: {#BUILD_DIR}\{#test_wsl}; DestDir: {app}\scripts
 Source: {#BUILD_DIR}\{#enable_opengl}; DestDir: {app}\scripts
 Source: {#BUILD_DIR}\{#disable_opengl}; DestDir: {app}\scripts
-Source: {#BUILD_DIR}\{#migrate_settings}; DestDir: {app}\scripts  
 Source: {#BUILD_DIR}\{#qss_solver_setup}; DestDir: {app}\scripts; 
 Source: {#BUILD_DIR}\{#qss_solver_config}; DestDir: {app}\scripts; 
-Source: {#BUILD_DIR}\{#check_qss_solver}; DestDir: {app}\scripts;
 Source: {#BUILD_DIR}\{#export_vcxsrv_vars}; DestDir: {app}\scripts;
 Source: {#BUILD_DIR}\{#export_vcxsrv_ps}; DestDir: {app}\scripts;
 Source: {#BUILD_DIR}\{#config_opengl}; DestDir: {app}\scripts;
@@ -77,10 +75,10 @@ Source: {#BUILD_DIR}\{#config}; DestDir: {app}\bin
 Source: {#BUILD_DIR}\{#qss_solver_icon}; DestDir: {app}\bin
 
 [Icons]
-Name: {group}\{#appname}; Filename: {app}\bin\{#mainexe}; WorkingDir: {app}\bin; IconFilename: "{app}\bin\qss-solver-icon.ico";
+Name: {group}\{#appname}; Filename: {app}\bin\{#mainexe}; WorkingDir: {app}\bin; IconFilename: "{app}\bin\integrator.ico";
 Name: {group}\Uninstall; Filename: {uninstallexe};
-Name: {userdesktop}\{#appname}; Filename: {app}\bin\{#mainexe}; WorkingDir: {app}\bin; Tasks: "desktopicon\user"; IconFilename: "{app}\bin\qss-solver-icon.ico";
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#appname}"; Filename: {app}\bin\{#mainexe}; Tasks: quicklaunchicon; IconFilename: "{app}\bin\qss-solver-icon.ico";
+Name: {userdesktop}\{#appname}; Filename: {app}\bin\{#mainexe}; WorkingDir: {app}\bin; Tasks: "desktopicon\user"; IconFilename: "{app}\bin\integrator.ico";
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#appname}"; Filename: {app}\bin\{#mainexe}; Tasks: quicklaunchicon; IconFilename: "{app}\bin\integrator.ico";
 
 [Tasks]
 Name: desktopicon; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"
@@ -103,7 +101,7 @@ Type: filesandordirs; Name: {app}\scripts
 const
   QuitMessageError = '***ERROR***'#13#10#13#10 +
                      'Required dependencies are not installed.'#13#10 +
-                     'Please download and run the initial setup installer from: ADD LINK'#13#10 +
+                     'Please download and run the initial setup installer'#13#10 +
                      'first and then run this installer again.'#13#10#13#10;
   
 var
@@ -112,9 +110,6 @@ var
 procedure CleanInstallationRegistryKeys;
 begin
   RegDeleteKeyIncludingSubKeys(HKCU, 'Software\QSSSolver\WSLEnabled');
-  RegDeleteKeyIncludingSubKeys(HKCU, 'Software\QSSSolver\NetworkConnFailed');
-  RegDeleteKeyIncludingSubKeys(HKCU, 'Software\QSSSolver\VPNConnFailed');
-  RegDeleteKeyIncludingSubKeys(HKCU, 'Software\QSSSolver\QSSSolverInstallFailed');
 end;
 
 procedure testWSL; 
@@ -155,8 +150,6 @@ begin
 end;
 
 function InitializeSetup(): Boolean;
-var
-
 begin
   if not QSSSolverDependencies() then
   begin
@@ -173,8 +166,6 @@ var
 FileName: String;
 Params: String;
 ScriptParams: String;
-NetworkConnFailed: Boolean;
-QSSSolverInstallFailed: Boolean;
 ResultCode: Integer;
 
 begin
@@ -189,19 +180,7 @@ begin
     CancelWithoutPrompt := true;
     WizardForm.Close;
   end;
-  NetworkConnFailed := RegKeyExists(HKCU, 'Software\QSSSolver\NetworkConnFailed');
-  QSSSolverInstallFailed := RegKeyExists(HKCU, 'Software\QSSSolver\QSSSolverInstallFailed');
   CleanInstallationRegistryKeys;
-  if NetworkConnFailed then begin
-    MsgBox('Network connection failed. Please check your connection and run the installer again',mbError,MB_OK)
-    CancelWithoutPrompt := true;
-    WizardForm.Close;
-  end;
-  if QSSSolverInstallFailed then begin
-    MsgBox('QSS Solver installation failed. Please check your connection and run the installer again',mbError,MB_OK)
-    CancelWithoutPrompt := true;
-    WizardForm.Close;
-  end;  
 end;
 
 procedure CancelButtonClick(CurPageID: Integer; var Cancel, Confirm: Boolean);
