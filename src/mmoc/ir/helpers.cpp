@@ -417,7 +417,7 @@ string FunctionPrinter::outputVariableName(Expression exp, Option<Range> range)
     buffer << "[";
   }
   if (range) {
-    buffer << "%d]\"," << exp.usage();
+    buffer << range->getPrintDimensionVarsString() << "]\"," << exp.usage();
   } else if (var->isArray()) {
     buffer << exp.usage() << "]\"";
   } else {
