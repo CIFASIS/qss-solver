@@ -317,6 +317,16 @@ string Range::iterator(int dim, bool range_idx)
   return "";
 }
 
+string Range::getPrintDimensionVarsString() const
+{
+  stringstream buffer;
+  int size = _ranges.size();
+  for (int i = 1; i <= size; i++) {
+    buffer << "%d" << (i + 1 <= size ? "," : "");
+  }
+  return buffer.str();
+}
+
 string Range::getDimensionVarsString() const
 {
   stringstream buffer;
