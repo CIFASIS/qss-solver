@@ -89,6 +89,7 @@ class Range {
   void generate(Deps::MDI mdi);
   inline bool empty() { return _size == 0; };
   std::string iterator(int dim, bool range_idx = false);
+  std::string getPrintDimensionVarsString() const;
   std::string getDimensionVarsString() const;
   std::vector<std::string> getDimensionVars(bool range = false) const;
   std::string getDimensionVar(int i, bool range = false) const;
