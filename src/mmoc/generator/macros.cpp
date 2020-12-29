@@ -69,13 +69,16 @@ string Macros::arguments(bool state) const
   }
   if (dim) {
     arguments << "(";
+    if (_variable.offset()) {
+      arguments << _variable.offset() << "+";
+    }
     for (int i = 0; i < dim; i++) {
       stringstream variable;
+      stringstream index;
+      index << i + 1 << index_offset;
       variable << "*" << _variable.rowSize(i) << "+";
-      if (_variable.offset()) {
-        arguments << _variable.offset() << "+";
-      }
-      arguments << "(d" << i + 1 << index_offset << ")" << (i == dim - 1 ? ")" + end.str() : variable.str());
+      arguments << (_variable.size(i) == 1 ? "0" : "(d" + index.str() + ")");
+      arguments << (i == dim - 1 ? ")" + end.str() : variable.str());
     }
   } else if (_variable.isDiscrete() || _variable.isState() || _variable.isAlgebraic() || _variable.isOutput() || _variable.isEqType()) {
     arguments << _variable.offset() << end.str();
@@ -91,12 +94,12 @@ string Macros::engineIndexArguments() const
   stringstream end;
   if (dim) {
     arguments << "(";
+    if (_variable.offset()) {
+      arguments << _variable.offset() << "+";
+    }
     for (int i = 0; i < dim; i++) {
       stringstream variable;
       variable << "*" << _variable.rowSize(i) << "+";
-      if (_variable.offset()) {
-        arguments << _variable.offset() << "+";
-      }
       arguments << "(d" << i + 1 << "-1)" << (i == dim - 1 ? ")" + end.str() : variable.str());
     }
   } else {
