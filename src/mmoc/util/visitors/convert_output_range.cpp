@@ -70,6 +70,8 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
       }
       ret->append(newAST_String(cr->name()), new_indexes);
       return ret;
+    } else if (var->isConstant()) {
+      _intervals.push_back(Interval(var->value(), var->value()));
     }
     return exp;
   }
@@ -134,6 +136,16 @@ AST_Expression ConvertOutputRange::generateIndexVariable(int size)
 Option<Range> ConvertOutputRange::range()
 {
   if (_intervals.empty()) {
+    return Option<Range>();
+  }
+  bool constant = true;
+  for (Interval i : _intervals) {
+    if (i.lower() != i.upper()) {
+      constant = false;
+      break;
+    }
+  }
+  if (constant) {
     return Option<Range>();
   }
   _range.generate(MDI(_intervals));
