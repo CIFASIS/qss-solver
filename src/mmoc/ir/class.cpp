@@ -495,7 +495,11 @@ void Model::addVariable(int id, Option<Range> range, EQUATION::Type type, unsign
 {
   vector<int> s;
   if (range) {
-    s.push_back(range->size());
+    RangeDefinitionTable ranges = range->definition();
+    RangeDefinitionTable::iterator it;
+    for (RangeDefinition def = ranges.begin(it); !ranges.end(it); def = ranges.next(it)) {
+      s.push_back(def.size());
+    }
   }
   TypePrefix eq_type = TP_EQ;
   if (type == EQUATION::Type::Output) {
