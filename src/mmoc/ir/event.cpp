@@ -38,7 +38,6 @@ Event::Event()
       _type(EVENT::Zero),
       _current(EVENT::Zero),
       _zc_relation(EVENT::GE),
-      _symbols(),
       _range(),
       _positive_handler_id(0),
       _negative_handler_id(0),
@@ -47,14 +46,13 @@ Event::Event()
 {
 }
 
-Event::Event(AST_Expression cond, int id, int offset, VarSymbolTable &symbols, Option<Range> range)
+Event::Event(AST_Expression cond, int id, int offset, Option<Range> range)
     : _zero_crossing(),
       _positive_handler(),
       _negative_handler(),
       _type(EVENT::Zero),
       _current(EVENT::Zero),
       _zc_relation(EVENT::GE),
-      _symbols(symbols),
       _range(range),
       _positive_handler_id(0),
       _negative_handler_id(0),
@@ -82,7 +80,7 @@ bool Event::compare(AST_Expression zc)
 {
   ConvertCondition cc;
   AST_Expression c = cc.apply(getExpression(zc));
-  EqualExp ee(_symbols);
+  EqualExp ee;
   bool cr = ee.equalTraverse(c, _zero_crossing.equation());
   if (cr) {
     if (_current == EVENT::Positive) {

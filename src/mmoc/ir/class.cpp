@@ -525,7 +525,7 @@ void Model::addEvent(AST_Statement stm, Option<Range> range)
     AST_Statement_When sw = stm->getAsWhen();
     _annotations.eventComment(sw->comment());
     addVariable(_eventId, range, EQUATION::Type::ZeroCrossing, _eventNbr);
-    Event event(sw->condition(), _eventId, _eventNbr, _symbols, range);
+    Event event(sw->condition(), _eventId, _eventNbr, range);
     _eventNbr += (range ? range->size() : 1);
     AST_StatementList stl = sw->statements();
     AST_StatementListIterator it;
@@ -541,7 +541,7 @@ void Model::addEvent(AST_Statement stm, Option<Range> range)
         Event else_event = event;
         if (!else_event.compare(se->condition())) {
           addVariable(_eventId + 1, range, EQUATION::Type::ZeroCrossing, _eventNbr);
-          else_event = Event(se->condition(), _eventId + 1, _eventNbr, _symbols, range);
+          else_event = Event(se->condition(), _eventId + 1, _eventNbr, range);
           _eventNbr += (range ? range->size() : 1);
           new_event = true;
         }

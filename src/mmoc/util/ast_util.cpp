@@ -38,6 +38,7 @@
 #include "debug.h"
 #include "error.h"
 #include "macros.h"
+#include "model_config.h"
 #include "symbol_table.h"
 #include "type.h"
 #include "util.h"
@@ -87,7 +88,7 @@ AST_Expression AST_Expression_Traverse::apply(AST_Expression e)
   return e2;
 }
 
-EqualExp::EqualExp(VarSymbolTable symbolTable) { _symbolTable = symbolTable; }
+EqualExp::EqualExp() {}
 
 bool EqualExp::equalTraverse(AST_Expression a, AST_Expression b)
 {
@@ -128,7 +129,7 @@ bool EqualExp::equalTraverseElement(AST_Expression a, AST_Expression b)
   switch (a->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference compRefA = a->getAsComponentReference();
-    Option<Variable> varInfoA = _symbolTable[CREF_NAME(compRefA)];
+    Option<Variable> varInfoA = ModelConfig::instance().lookup(CREF_NAME(compRefA));
     if (varInfoA && varInfoA->type()->getType() == TYARRAY) {
       return compareArrays(compRefA, b->getAsComponentReference());
     } else {
@@ -206,9 +207,9 @@ Option<Variable> EqualExp::getVarInfo(AST_Expression_ComponentReference compRef)
                  "EqualExp::getVariable\n"
                  "AST_Component_Reference with names list bigger than 1 are not supported yet.\n");
     AST_String name = names->front();
-    varInfo = _symbolTable[*name];
+    varInfo = ModelConfig::instance().lookup(*name);
   } else {
-    varInfo = _symbolTable[compRef->name()];
+    varInfo = ModelConfig::instance().lookup(compRef->name());
   }
   return varInfo;
 }
@@ -272,7 +273,7 @@ AST_Expression ReplaceExp::replaceExp(AST_Expression rep, AST_Expression for_exp
 
 AST_Expression ReplaceExp::mapTraverseElement(AST_Expression e)
 {
-  EqualExp *equalExp = new EqualExp(_symbol_table);
+  EqualExp *equalExp = new EqualExp();
   if (equalExp->equalTraverse(e, _rep)) {
     return _for_exp;
   }
