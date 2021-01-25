@@ -31,14 +31,14 @@ namespace MicroModelica {
 using namespace Util;
 namespace IR {
 
-Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, Option<Range> range, bool initial, const string& block)
-    : _stm(stm), _range(range), _symbols(symbols), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states()
+Statement::Statement(AST_Statement stm, Option<Range> range, bool initial, const string& block)
+    : _stm(stm), _range(range), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states()
 {
   initialize();
 }
 
-Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, bool initial, const string& block)
-    : _stm(stm), _range(), _symbols(symbols), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states()
+Statement::Statement(AST_Statement stm, bool initial, const string& block)
+    : _stm(stm), _range(), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states()
 {
   initialize();
 }
@@ -60,7 +60,7 @@ void Statement::setRange()
   // defined in  a single event, so change the range accordingly.
   if (_stm->statementType() == STFOR) {
     AST_Statement_For for_stm = _stm->getAsFor();
-    _range = Range(for_stm, _symbols);
+    _range = Range(for_stm);
   }
 }
 
@@ -78,7 +78,7 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
       asgs.push_back(emptyRef());
     }
     foreach (stlit, stl) {
-      Statement st(current_element(stlit), _symbols);
+      Statement st(current_element(stlit));
       asgs.splice(asgs.end(), st.generateExps(asg));
     }
     AST_Statement_ElseList stelsel = sti->else_if();
@@ -91,14 +91,14 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
       }
       stl = current_element(stelselit)->statements();
       foreach (stlit, stl) {
-        Statement st(current_element(stlit), _symbols);
+        Statement st(current_element(stlit));
         asgs.splice(asgs.end(), st.generateExps(asg));
       }
     }
     stl = sti->else_statements();
     if (!stl->empty()) {
       foreach (stlit, stl) {
-        Statement st(current_element(stlit), _symbols);
+        Statement st(current_element(stlit));
         asgs.splice(asgs.end(), st.generateExps(asg));
       }
     }
@@ -116,9 +116,9 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
     AST_Statement_For stf = _stm->getAsFor();
     AST_StatementList stms = stf->statements();
     AST_StatementListIterator stmit;
-    Range range(stf, _symbols);
+    Range range(stf);
     foreach (stmit, stms) {
-      Statement st(current_element(stmit), _symbols, range);
+      Statement st(current_element(stmit), range);
       asgs.splice(asgs.end(), st.generateExps(asg));
     }
     break;
@@ -188,7 +188,7 @@ string Statement::print() const
     AST_StatementList stl = sti->statements();
     AST_StatementListIterator stlit;
     foreach (stlit, stl) {
-      Statement st(current_element(stlit), _symbols, false, _block + TAB);
+      Statement st(current_element(stlit), false, _block + TAB);
       buffer << st << endl;
     }
     buffer << _block << "}";
@@ -199,7 +199,7 @@ string Statement::print() const
       buffer << _block << "else if(" << eifcond << ") {" << endl;
       stl = current_element(stelselit)->statements();
       foreach (stlit, stl) {
-        Statement st(current_element(stlit), _symbols, false, _block + TAB);
+        Statement st(current_element(stlit), false, _block + TAB);
         buffer << st << endl;
       }
       buffer << _block << "}";
@@ -208,7 +208,7 @@ string Statement::print() const
     if (!stl->empty()) {
       buffer << _block << "else {" << endl;
       foreach (stlit, stl) {
-        Statement st(current_element(stlit), _symbols, false, _block + TAB);
+        Statement st(current_element(stlit), false, _block + TAB);
         buffer << st << endl;
       }
       buffer << _block << "}";
@@ -221,12 +221,12 @@ string Statement::print() const
   }
   case STFOR: {
     AST_Statement_For stf = _stm->getAsFor();
-    Range range(stf, _symbols);
+    Range range(stf);
     buffer << range;
     AST_StatementList stms = stf->statements();
     AST_StatementListIterator stmit;
     foreach (stmit, stms) {
-      Statement st(current_element(stmit), _symbols, false, range.block());
+      Statement st(current_element(stmit), false, range.block());
       buffer << st << endl;
     }
     buffer << range.end();

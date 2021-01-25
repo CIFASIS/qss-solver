@@ -189,16 +189,16 @@ std::ostream& operator<<(std::ostream& out, const RangeDefinition& rd) { return 
 
 Range::Range() : _ranges(), _index_pos(), _size(1), _type(RANGE::For) {}
 
-Range::Range(AST_Equation_For eqf, VarSymbolTable symbols, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type)
+Range::Range(AST_Equation_For eqf, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type)
 {
   AST_ForIndexList fil = eqf->forIndexList();
-  setRangeDefinition(fil, symbols);
+  setRangeDefinition(fil);
 }
 
-Range::Range(AST_Statement_For stf, VarSymbolTable symbols, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type)
+Range::Range(AST_Statement_For stf, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type)
 {
   AST_ForIndexList fil = stf->forIndexList();
-  setRangeDefinition(fil, symbols);
+  setRangeDefinition(fil);
 }
 
 Range::Range(Variable var, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type) { generate(var); }
@@ -217,7 +217,7 @@ void Range::updateRangeDefinition(std::string index_def, RangeDefinition def, in
   _row_size.push_back(range->size());
 }
 
-void Range::setRangeDefinition(AST_ForIndexList fil, VarSymbolTable symbols)
+void Range::setRangeDefinition(AST_ForIndexList fil)
 {
   AST_ForIndexListIterator filit;
   int pos = 0;
@@ -226,7 +226,7 @@ void Range::setRangeDefinition(AST_ForIndexList fil, VarSymbolTable symbols)
     AST_Expression in = fi->in_exp();
     AST_ExpressionList el = in->getAsRange()->expressionList();
     AST_ExpressionListIterator eli;
-    EvalInitExp eval(symbols);
+    EvalInitExp eval;
     int size = el->size();
     int begin = eval.apply(AST_ListFirst(el));
     int end = eval.apply(AST_ListAt(el, size - 1));
@@ -266,7 +266,7 @@ void Range::generate(AST_Expression exp)
   foreach (it, indexes) {
     AST_Expression index_exp = current_element(it);
     string index = getDimensionVar(i + 1);
-    EvalInitExp eval_exp(ModelConfig::instance().symbols());
+    EvalInitExp eval_exp;
     int scalar_value = eval_exp.apply(index_exp);
     updateRangeDefinition(index, RangeDefinition(scalar_value, scalar_value), pos++);
   }
@@ -300,7 +300,7 @@ void Range::generate(MDI mdi)
     string index = Utils::instance().iteratorVar(pos);
     updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
     Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-    ModelConfig::instance().symbols().insert(index, vi);
+    ModelConfig::instance().addVariable(index, vi);
   }
 }
 

@@ -70,7 +70,7 @@ Event::Event(AST_Expression cond, int id, int offset, VarSymbolTable &symbols, O
 
 void Event::add(AST_Statement stm)
 {
-  Statement s(stm, _symbols, _range);
+  Statement s(stm, _range);
   if (_current == EVENT::Positive) {
     _positive_handler.insert(_positive_handler_id++, s);
   } else if (_current == EVENT::Negative) {

@@ -78,7 +78,7 @@ void Function::insert(string n)
 
 void Function::insert(AST_Equation eq) { return; }
 
-void Function::insert(AST_Statement stm) { _statements.insert(++_statementId, Statement(stm, _symbols)); }
+void Function::insert(AST_Statement stm) { _statements.insert(++_statementId, Statement(stm)); }
 
 void Function::insert(AST_Statement stm, bool initial) { insert(stm); }
 
@@ -109,7 +109,7 @@ void Function::insert(AST_External_Function_Call efc)
 
 void Function::insert(VarName n, Variable &vi, DEC_Type type)
 {
-  EvalInitExp eval(_symbols);
+  EvalInitExp eval;
   vi.setName(n);
   if (vi.typePrefix() & TP_CONSTANT) {
     vi.setValue(eval.apply(vi.modification()->getAsEqual()->exp()));
@@ -266,7 +266,7 @@ void Model::insert(VarName n, Variable &vi)
 {
   vi.setName(n);
   if (vi.typePrefix() & TP_CONSTANT) {
-    EvalInitExp eval(_symbols);
+    EvalInitExp eval;
     vi.setValue(eval.apply(vi.exp()));
   }
   if (vi.typePrefix() & TP_DISCRETE) {
@@ -341,7 +341,7 @@ void Model::insert(AST_Statement stm, bool initial)
 {
   AST_Statement st = ConvertStatement(stm, _symbols).get();
   if (initial) {
-    _initialCode.insert(_statementId++, Statement(stm, _symbols, initial));
+    _initialCode.insert(_statementId++, Statement(stm, initial));
   } else {
     _ast_statements.push_back(st);
   }
@@ -487,7 +487,7 @@ void Model::setEquations()
     } else if (eq->equationType() == EQFOR) {
       vector<int> begin, end;
       AST_Equation_For eqf = eq->getAsFor();
-      Range range(eqf, _symbols);
+      Range range(eqf);
       AST_EquationList eqs = eqf->equationList();
       AST_EquationListIterator it;
       foreach (it, eqs) {
@@ -604,7 +604,7 @@ void Model::setEvents()
       addEvent(stm, Option<Range>());
     } else if (stm->statementType() == STFOR) {
       AST_Statement_For stf = stm->getAsFor();
-      Range range(stf, _symbols);
+      Range range(stf);
       AST_StatementList sts = stf->statements();
       AST_StatementListIterator stit;
       foreach (stit, sts) {

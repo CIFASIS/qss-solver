@@ -106,7 +106,7 @@ void MicroModelicaIR::visit(AST_Element x)
       vector<int> size;
       bool array = current_element(it)->hasIndexes();
       if (array) {
-        EvalInitExp eval(_class->symbols());
+        EvalInitExp eval;
         AST_ExpressionList elist = current_element(it)->indexes();
         AST_ExpressionListIterator elistit;
         foreach (elistit, elist) {

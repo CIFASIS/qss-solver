@@ -28,7 +28,7 @@
 namespace MicroModelica {
 namespace Util {
 
-ReplaceDer::ReplaceDer() : {}
+ReplaceDer::ReplaceDer() {}
 
 AST_Expression ReplaceDer::foldTraverseElement(AST_Expression exp)
 {

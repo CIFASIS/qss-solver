@@ -20,12 +20,13 @@
 #include "eval_init_exp.h"
 
 #include "../error.h"
+#include "../model_config.h"
 #include "../symbol_table.h"
 
 namespace MicroModelica {
 namespace Util {
 
-EvalInitExp::EvalInitExp(VarSymbolTable symbols) : _symbols(symbols) {}
+EvalInitExp::EvalInitExp() {}
 
 int EvalInitExp::foldTraverseElement(AST_Expression exp)
 {
@@ -33,7 +34,7 @@ int EvalInitExp::foldTraverseElement(AST_Expression exp)
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-    Option<Variable> var = _symbols[cr->name()];
+    Option<Variable> var = ModelConfig::instance().lookup(cr->name());
     if (!var) {
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "eval_init_exp.cpp:38 %s", cr->name().c_str());
       return ret;

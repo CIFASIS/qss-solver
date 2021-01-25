@@ -80,7 +80,7 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
     AST_ExpressionListIterator it;
     int count = 0;
     int range[3];
-    EvalInitExp eval_init_exp = EvalInitExp(_symbols);
+    EvalInitExp eval_init_exp;
     foreach (it, range_exps) {
       range[count++] = eval_init_exp.apply(current_element(it));
     }
