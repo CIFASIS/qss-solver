@@ -74,7 +74,6 @@ ModelDependencies::ModelDependencies()
 
 void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, EquationTable algs, EventTable events, VarSymbolTable symbols)
 {
-  ModelConfig::instance().setSymbols(symbols);
   SDGraphBuilder SD = SDGraphBuilder(eqs, algs, symbols);
   DepsGraph SD_graph = SD.build();
   _deps.compute(SD_graph, _DS, TRAVERSE::Equation);

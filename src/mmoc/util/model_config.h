@@ -63,6 +63,7 @@ class ModelConfig {
   inline VarSymbolTable& symbols() { return _symbols; };
   inline SymbolTable localSymbols() { return _local_symbols; };
   inline SymbolTable localInitSymbols() { return _local_init_symbols; };
+  inline Option<Variable> lookup(std::string var_name) { return _symbols[var_name]; };
   inline void addLocalSymbol(std::string symbol)
   {
     if (_init_symbols) {

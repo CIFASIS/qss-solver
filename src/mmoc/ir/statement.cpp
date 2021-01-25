@@ -46,7 +46,6 @@ Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, bool init
 void Statement::initialize()
 {
   StatementCalledFunctions cf;
-  ModelConfig::instance().setSymbols(_symbols);
   setRange();
   _calledFunctions = cf.apply(_stm);
   _lhs_assignments = generateExps(STATEMENT::LHS);

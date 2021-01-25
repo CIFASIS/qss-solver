@@ -58,7 +58,6 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
                             call->name()->c_str());
       break;
     }
-    ModelConfig::instance().setSymbols(_symbols);
     f->setArguments(call->arguments());
     f->setOutputArguments(call->outputArguments());
     buffer << f.get();

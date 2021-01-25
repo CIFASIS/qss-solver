@@ -586,7 +586,6 @@ void QSSModelInstance::initializeDataStructures()
 {
   stringstream buffer;
   ModelConfig::instance().setLocalInitSymbols();
-  ModelConfig::instance().setSymbols(_model.symbols());
   allocateSolver();
   allocateVectors();
   freeVectors();
@@ -730,7 +729,6 @@ void ClassicModelInstance::initializeDataStructures()
 {
   stringstream buffer;
   ModelConfig::instance().setLocalInitSymbols();
-  ModelConfig::instance().setSymbols(_model.symbols());
   allocateSolver();
   allocateVectors();
   freeVectors();

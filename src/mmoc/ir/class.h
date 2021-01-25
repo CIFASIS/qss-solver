@@ -143,7 +143,7 @@ class Model : public Class {
   void setCalledFunctions(FunctionTable& fs);
   void insert(AST_External_Function_Call efc);
   void insert(AST_Argument_Modification x);
-  inline Util::VarSymbolTable symbols() const { return _symbols; };
+  Util::VarSymbolTable symbols() const;
   inline Util::ImportTable imports() const { return _imports; };
   inline ModelAnnotation annotations() const { return _annotations; };
   inline FunctionTable calledFunctions() const { return _calledFunctions; };

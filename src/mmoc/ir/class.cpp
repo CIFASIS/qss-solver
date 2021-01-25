@@ -61,11 +61,12 @@ Function::Function(string name)
       _statementId(0),
       _externalFunctions()
 {
+  ModelConfig::instance().setSymbols(_symbols);
 }
 
 Function::~Function() {}
 
-VarSymbolTable Function::symbols() const { return _symbols; }
+VarSymbolTable Function::symbols() const { return ModelConfig::instance().symbols(); }
 
 void Function::insert(string n)
 {
@@ -113,7 +114,7 @@ void Function::insert(VarName n, Variable &vi, DEC_Type type)
   if (vi.typePrefix() & TP_CONSTANT) {
     vi.setValue(eval.apply(vi.modification()->getAsEqual()->exp()));
   }
-  _symbols.insert(n, vi);
+  ModelConfig::instance().addVariable(n, vi);
   if (type == DEC_PUBLIC) {
     if (vi.isOutput()) {
       _outputNbr++;
@@ -219,6 +220,7 @@ Model::Model()
       _externalFunctions(false)
 {
   _symbols.initialize(_types);
+  ModelConfig::instance().setSymbols(_symbols);
 }
 
 Model::Model(string name)
@@ -253,7 +255,10 @@ Model::Model(string name)
       _externalFunctions(false)
 {
   _symbols.initialize(_types);
+  ModelConfig::instance().setSymbols(_symbols);
 }
+
+VarSymbolTable Model::symbols() const { return ModelConfig::instance().symbols(); };
 
 void Model::insert(VarName n, Variable &vi, DEC_Type type) { insert(n, vi); }
 
@@ -268,7 +273,7 @@ void Model::insert(VarName n, Variable &vi)
     vi.setOffset(_discreteNbr);
     _discreteNbr += vi.size();
   }
-  _symbols.insert(n, vi);
+  ModelConfig::instance().addVariable(n, vi);
 }
 
 void Model::setVariableOffset(Variable var, unsigned int &offset, Util::Variable::RealType type, bool set_variable_count)
@@ -280,7 +285,7 @@ void Model::setVariableOffset(Variable var, unsigned int &offset, Util::Variable
       offset += var.size();
     }
   }
-  _symbols.insert(var.name(), var);
+  ModelConfig::instance().addVariable(var.name(), var);
 }
 
 void Model::setRealVariables(AST_Equation eq)
@@ -509,7 +514,7 @@ void Model::addVariable(int id, Option<Range> range, EQUATION::Type type, unsign
   Variable var(newType_Integer(), eq_type, nullptr, nullptr, s, false);
   string var_name = EquationVariable::modelVariables(id, type);
   insert(var_name, var);
-  Option<Variable> variable = _symbols[var_name];
+  Option<Variable> variable = ModelConfig::instance().lookup(var_name);
   static bool DONT_INCREASE_OFFSET = false;
   setVariableOffset(variable.get(), offset, Variable::RealType::NotAssigned, DONT_INCREASE_OFFSET);
 }
@@ -579,7 +584,6 @@ void Model::reduceEvent(AST_Statement_When event)
 
 void Model::setEvents()
 {
-  ModelConfig::instance().setSymbols(_symbols);
   list<AST_Statement>::iterator it;
   for (it = _ast_statements.begin(); it != _ast_statements.end(); it++) {
     AST_Statement stm = *it;
