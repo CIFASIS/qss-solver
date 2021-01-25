@@ -73,7 +73,7 @@ void VariableUsage::generateMapFromRange()
   }
   ApplyVariableUsage var_usage(_usage_map);
   VarSymbolTable symbols = ModelConfig::instance().symbols();
-  _replaced = Expression(var_usage.apply(_lhs.expression()), symbols);
+  _replaced = Expression(var_usage.apply(_lhs.expression()));
 }
 
 void VariableUsage::generateMapFromUsage()
@@ -103,7 +103,7 @@ void VariableUsage::generateMapFromUsage()
   ApplyVariableUsage var_usage(_usage_map);
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   PartialEvalExp partial_eval(symbols);
-  _rhs = Expression(partial_eval.apply(var_usage.apply(_rhs.expression())), symbols);
+  _rhs = Expression(partial_eval.apply(var_usage.apply(_rhs.expression())));
 }
 
 void VariableUsage::generateMapFromLHS()
@@ -124,7 +124,7 @@ void VariableUsage::generateMapFromLHS()
   ApplyVariableUsage var_usage(_usage_map);
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   PartialEvalExp partial_eval(symbols);
-  _replaced = Expression(partial_eval.apply(var_usage.apply(_rhs.expression())), symbols);
+  _replaced = Expression(partial_eval.apply(var_usage.apply(_rhs.expression())));
 }
 
 }  // namespace IR

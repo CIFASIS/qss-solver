@@ -85,7 +85,7 @@ Expression ExpressionDerivator::partialDerivative(Equation eq, Index variable)
   GiNaC::symbol ginac_usage = dir[usage];
   GiNaC::ex der_exp = dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff(ginac_usage);
   AST_Expression jac_exp = replace_der.apply(to_exp.convert(der_exp));
-  return Expression(jac_exp, symbols);
+  return Expression(jac_exp);
 }
 
 }  // namespace IR

@@ -354,7 +354,7 @@ Expression Utils::variableExpression(string name, Option<IR::Range> range, const
     }
     var = AST_Expression_ComponentReference_Add(var, newAST_String(name), l);
   }
-  return Expression(var, symbols);
+  return Expression(var);
 }
 
 string Utils::tabs(int t)

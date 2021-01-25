@@ -97,7 +97,7 @@ string EquationPrinter::lhs(int order) const
   case EQUATION::ClassicDerivative:
   case EQUATION::Dependency:
   case EQUATION::QSSDerivative: {
-    Expression exp = Expression(_lhs.expression(), _symbols, order);
+    Expression exp = Expression(_lhs.expression(), order);
     buffer << exp;
     break;
   }
@@ -175,11 +175,11 @@ void DerivativePrinter::initializeDerivatives()
     ExpressionDerivator ed;
     ReplaceDer replace_der(_symbols);
     AST_Expression exp1 = ed.derivate(_rhs.expression(), _rhs);
-    _derivatives[0] = Expression(exp1, _symbols);
+    _derivatives[0] = Expression(exp1);
     AST_Expression exp2 = ed.derivate(exp1, _rhs);
-    _derivatives[1] = Expression(replace_der.apply(exp2), _symbols);
+    _derivatives[1] = Expression(replace_der.apply(exp2));
     AST_Expression exp3 = ed.derivate(exp2, _rhs);
-    _derivatives[2] = Expression(replace_der.apply(exp3), _symbols);
+    _derivatives[2] = Expression(replace_der.apply(exp3));
   }
 }
 

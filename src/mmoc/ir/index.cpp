@@ -127,14 +127,13 @@ Range Index::range() const { return Range(variable()); }
 Index Index::revert() const
 {
   RevertIndex revert;
-  VarSymbolTable symbols = ModelConfig::instance().symbols();
-  return Index(Expression(revert.apply(_exp.expression()), symbols));
+  return Index(Expression(revert.apply(_exp.expression())));
 }
 
 Index Index::replace(bool range_idx) const
 {
   ReplaceIndex replace = ReplaceIndex(range(), usage(), range_idx);
-  return Index(Expression(replace.apply(_exp.expression()), ModelConfig::instance().symbols()));
+  return Index(Expression(replace.apply(_exp.expression())));
 }
 
 string Index::usageExp() const { return _exp.usage(); }
@@ -155,7 +154,7 @@ string Index::print() const
   stringstream buffer;
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   PartialEvalExp partial_eval = PartialEvalExp(symbols);
-  Expression exp = Expression(partial_eval.apply(_exp.expression()), symbols);
+  Expression exp = Expression(partial_eval.apply(_exp.expression()));
   buffer << "_idx" << exp;
   return buffer.str();
 }

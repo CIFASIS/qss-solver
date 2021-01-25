@@ -73,7 +73,7 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
     AST_StatementList stl = sti->statements();
     AST_StatementListIterator stlit;
     if (asg == STATEMENT::RHS) {
-      asgs.push_back(Expression(sti->condition(), _symbols));
+      asgs.push_back(Expression(sti->condition()));
     } else if (asg == STATEMENT::LHS_DISCRETES || asg == STATEMENT::LHS_STATES) {
       asgs.push_back(emptyRef());
     }
@@ -85,7 +85,7 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
     AST_Statement_ElseListIterator stelselit;
     foreach (stelselit, stelsel) {
       if (asg == STATEMENT::RHS) {
-        asgs.push_back(Expression(current_element(stelselit)->condition(), _symbols));
+        asgs.push_back(Expression(current_element(stelselit)->condition()));
       } else if (asg == STATEMENT::LHS_DISCRETES || asg == STATEMENT::LHS_STATES) {
         asgs.push_back(emptyRef());
       }
@@ -106,9 +106,9 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
   }
   case STASSIGN: {
     if (asg == STATEMENT::LHS || asg == STATEMENT::LHS_DISCRETES || asg == STATEMENT::LHS_STATES) {
-      asgs.push_back(Expression(_stm->getAsAssign()->lhs(), _symbols));
+      asgs.push_back(Expression(_stm->getAsAssign()->lhs()));
     } else {
-      asgs.push_back(Expression(_stm->getAsAssign()->exp(), _symbols));
+      asgs.push_back(Expression(_stm->getAsAssign()->exp()));
     }
     break;
   }
@@ -129,11 +129,11 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
       AST_ExpressionList exps = out_stm->out_expressions();
       AST_ExpressionListIterator exp_it;
       foreach (exp_it, exps) {
-        asgs.push_back(Expression(current_element(exp_it), _symbols));
+        asgs.push_back(Expression(current_element(exp_it)));
       }
     } else {
       AST_Expression call_exp = newAST_Expression_Call(newAST_String(out_stm->function()->cname()), nullptr, out_stm->arguments());
-      asgs.push_back(Expression(call_exp, _symbols));
+      asgs.push_back(Expression(call_exp));
     }
     break;
   }
@@ -161,8 +161,8 @@ string Statement::printAssignment(AST_Statement_Assign asg) const
     code << "CMD_terminate();";
     break;
   default: {
-    Expression lhs(asg->lhs(), _symbols);
-    Expression rhs(asg->exp(), _symbols);
+    Expression lhs(asg->lhs());
+    Expression rhs(asg->exp());
     bool state_assignment = checkStateAssignment(lhs);
     if (state_assignment) {
       ModelConfig::instance().setInitialCode(true);
@@ -183,7 +183,7 @@ string Statement::print() const
   switch (_stm->statementType()) {
   case STIF: {
     AST_Statement_If sti = _stm->getAsIf();
-    Expression ifcond(sti->condition(), _symbols);
+    Expression ifcond(sti->condition());
     buffer << _block << "if(" << ifcond << ") {" << endl;
     AST_StatementList stl = sti->statements();
     AST_StatementListIterator stlit;
@@ -195,7 +195,7 @@ string Statement::print() const
     AST_Statement_ElseList stelsel = sti->else_if();
     AST_Statement_ElseListIterator stelselit;
     foreach (stelselit, stelsel) {
-      Expression eifcond(current_element(stelselit)->condition(), _symbols);
+      Expression eifcond(current_element(stelselit)->condition());
       buffer << _block << "else if(" << eifcond << ") {" << endl;
       stl = current_element(stelselit)->statements();
       foreach (stlit, stl) {
@@ -236,7 +236,7 @@ string Statement::print() const
     AST_Statement_OutputAssigment out_stm = _stm->getAsOutputAssigment();
     AST_Expression call_exp =
         newAST_Expression_Call(newAST_String(out_stm->function()->cname()), nullptr, out_stm->arguments(), out_stm->out_expressions());
-    Expression call(call_exp, _symbols);
+    Expression call(call_exp);
     buffer << call << ";";
     break;
   }
@@ -251,7 +251,7 @@ bool Statement::isAssignment() const { return _stm->statementType() == STASSIGN;
 Expression Statement::emptyRef()
 {
   AST_Expression lhs = newAST_Expression_ComponentReferenceExp(newAST_String("dummy"));
-  return Expression(lhs, _symbols);
+  return Expression(lhs);
 }
 
 ExpressionList Statement::assignments(STATEMENT::AssignTerm asg) const

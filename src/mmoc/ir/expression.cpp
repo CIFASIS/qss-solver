@@ -35,15 +35,15 @@ using namespace Util;
 namespace IR {
 
 /* MMO_Expression class. */
-Expression::Expression(AST_Expression exp, const VarSymbolTable& symbols, int order) : _exp(exp), _symbols(symbols), _order(order) {}
+Expression::Expression(AST_Expression exp, int order) : _exp(exp), _order(order) {}
 
-Expression::Expression() : _exp(nullptr), _symbols(), _order(0) {}
+Expression::Expression() : _exp(nullptr), _order(0) {}
 
 string Expression::print() const
 {
   stringstream buffer, exp;
   if (!isEmpty()) {
-    ExpressionPrinter printer(_symbols, ModelConfig::instance().isQss(), _order);
+    ExpressionPrinter printer(_order);
     exp << printer.apply(_exp);
     buffer << exp.str();
     return buffer.str();
@@ -76,7 +76,7 @@ Option<Variable> Expression::reference() const
 {
   assert(isReference());
   AST_Expression_ComponentReference cr = _exp->getAsComponentReference();
-  return _symbols[cr->name()];
+  return ModelConfig::instance().lookup(cr->name());
 }
 
 string Expression::usage() const
@@ -114,7 +114,7 @@ vector<Expression> Expression::usageExps() const
       AST_ExpressionList indexes = cr->firstIndex();
       AST_ExpressionListIterator it;
       foreach (it, indexes) {
-        exps.push_back(Expression(current_element(it), _symbols));
+        exps.push_back(Expression(current_element(it)));
       }
     }
   }
@@ -130,7 +130,7 @@ list<Expression> Expression::indexes() const
       AST_ExpressionList indexes = cr->firstIndex();
       AST_ExpressionListIterator it;
       foreach (it, indexes) {
-        Expression idx = Expression(current_element(it), _symbols);
+        Expression idx = Expression(current_element(it));
         exps.push_back(idx);
       }
     }
@@ -150,7 +150,7 @@ Expression Expression::generate(string var_name, vector<string> indices)
   }
   AST_Expression ast_exp = parseExpression(code.str(), &i);
   assert(i == 0);
-  return Expression(ast_exp, ModelConfig::instance().symbols());
+  return Expression(ast_exp);
 }
 
 std::ostream& operator<<(std::ostream& out, const Expression& s)

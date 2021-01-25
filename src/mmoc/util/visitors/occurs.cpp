@@ -32,7 +32,7 @@ bool Occurs::foldTraverseElement(AST_Expression exp)
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
     Option<Variable> var = _symbols[cr->name()];
     if (var && (var->name() == _var)) {
-      Expression ep(exp, _symbols);
+      Expression ep(exp);
       _occs[ep.print()] = ep;
       return true;
     }

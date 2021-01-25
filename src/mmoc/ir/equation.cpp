@@ -103,8 +103,8 @@ Equation::Equation(AST_Equation eq, VarSymbolTable &symbols, Option<Range> r, EQ
 
 void Equation::initialize(AST_Expression lhs, AST_Expression rhs)
 {
-  _lhs = Expression(lhs, _symbols);
-  _rhs = Expression(rhs, _symbols);
+  _lhs = Expression(lhs);
+  _rhs = Expression(rhs);
   setup();
 }
 
@@ -115,9 +115,9 @@ void Equation::initialize(AST_Expression exp)
     _lhs = Utils::instance().variableExpression(model_variable, _range, _symbols);
   } else {
     AST_Expression lhs = newAST_Expression_ComponentReferenceExp(newAST_String(model_variable));
-    _lhs = Expression(lhs, _symbols);
+    _lhs = Expression(lhs);
   }
-  _rhs = Expression(exp, _symbols);
+  _rhs = Expression(exp);
   setup();
 }
 
@@ -125,15 +125,15 @@ void Equation::initialize(AST_Equation eq)
 {
   AST_Equation_Equality eqe = eq->getAsEquality();
   if (eqe->left()->expressionType() == EXPDERIVATIVE) {
-    _lhs = Expression(AST_ListFirst(eqe->left()->getAsDerivative()->arguments()), _symbols);
-    _rhs = Expression(eqe->right(), _symbols);
+    _lhs = Expression(AST_ListFirst(eqe->left()->getAsDerivative()->arguments()));
+    _rhs = Expression(eqe->right());
   } else if (eqe->left()->expressionType() == EXPCOMPREF) {
-    _lhs = Expression(eqe->left(), _symbols);
-    _rhs = Expression(eqe->right(), _symbols);
+    _lhs = Expression(eqe->left());
+    _rhs = Expression(eqe->right());
   } else if (eqe->left()->expressionType() == EXPOUTPUT) {
     AST_Expression_Output eout = eqe->left()->getAsOutput();
-    _lhs = Expression(eout, _symbols);
-    _rhs = Expression(eqe->right(), _symbols);
+    _lhs = Expression(eout);
+    _rhs = Expression(eqe->right());
   }
   setup();
 }

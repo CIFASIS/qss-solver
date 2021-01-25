@@ -31,8 +31,8 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-ExpressionPrinter::ExpressionPrinter(const VarSymbolTable& symbols, bool is_qss, int order)
-    : _symbols(symbols), _is_qss(is_qss), _order(order)
+ExpressionPrinter::ExpressionPrinter(int order)
+    : _order(order)
 {
 }
 
@@ -76,12 +76,12 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
   }
   case EXPCOMPREF: {
     AST_Expression_ComponentReference ref = exp->getAsComponentReference();
-    Option<Variable> var = _symbols.lookup(ref->name());
+    Option<Variable> var = ModelConfig::instance().lookup(ref->name());
     if (!var) {
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "expression_printer.cpp:80 %s", ref->name().c_str());
       break;
     }
-    VariablePrinter var_printer(var.get(), ref, _symbols, _is_qss, _order);
+    VariablePrinter var_printer(var.get(), ref, _order);
     buffer << var_printer;
     break;
   }
@@ -181,8 +181,8 @@ string ExpressionPrinter::foldTraverseElementUMinus(AST_Expression exp)
   return buffer.str();
 }
 
-VariablePrinter::VariablePrinter(Variable var, AST_Expression_ComponentReference ref, const VarSymbolTable& symbols, bool is_qss, int order)
-    : _var(var), _ref(ref), _is_qss(is_qss), _order(order), _exp(), _symbols(symbols)
+VariablePrinter::VariablePrinter(Variable var, AST_Expression_ComponentReference ref, int order)
+    : _var(var), _ref(ref), _order(order), _exp()
 {
   generate();
 }
@@ -198,10 +198,10 @@ void VariablePrinter::generate()
     buffer << "_init";
   }
   buffer << _var;
-  const bool PRINT_COEFF = _is_qss && (_var.isState() || _var.isAlgebraic());
+  const bool PRINT_COEFF = ModelConfig::instance().isQss() && (_var.isState() || _var.isAlgebraic());
   const bool HAS_INDEXES = _ref->hasIndexes();
   if (HAS_INDEXES) {
-    ExpressionPrinter printer(_symbols, _is_qss, _order);
+    ExpressionPrinter printer(_order);
     AST_ExpressionList indexes = _ref->firstIndex();
     AST_ExpressionListIterator it;
     int size = indexes->size(), i = 0;

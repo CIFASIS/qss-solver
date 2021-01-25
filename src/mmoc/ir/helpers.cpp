@@ -55,7 +55,7 @@ std::ostream& operator<<(std::ostream& out, const ExternalFunction& e)
     AST_ExpressionListIterator it;
     unsigned int count = 0;
     foreach (it, e._args) {
-      Expression ex(current_element(it), e._symbols);
+      Expression ex(current_element(it));
       buffer << ex;
       if (++count < e._args->size()) {
         buffer << ",";
@@ -90,7 +90,7 @@ string CompiledFunction::print() const
   int size = _arguments->size(), i = 0;
   foreach (it, _arguments) {
     i++;
-    Expression ex(current_element(it), ModelConfig::instance().symbols());
+    Expression ex(current_element(it));
     buffer << ex;
     buffer << (i < size ? "," : "");
   }
@@ -98,7 +98,7 @@ string CompiledFunction::print() const
   i = 0;
   foreach (it, _output_arguments) {
     i++;
-    Expression ex(current_element(it), ModelConfig::instance().symbols());
+    Expression ex(current_element(it));
     buffer << "&" << ex;
     buffer << (i < size ? "," : "");
   }

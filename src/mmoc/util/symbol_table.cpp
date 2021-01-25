@@ -225,7 +225,7 @@ string Variable::initialization(const VarSymbolTable &symbols)
   stringstream buffer;
   if (hasAssignment() || hasStartModifier() || hasEachModifier()) {
     Range range = Range(*this);
-    Expression ex(exp(), symbols);
+    Expression ex(exp());
     Expression var = Utils::instance().variableExpression(name(), range, symbols);
     if (hasEachModifier()) {
       buffer << range;
