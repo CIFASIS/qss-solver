@@ -25,8 +25,9 @@
 #include "../parser/parse.h"
 #include "../util/visitors/expression_printer.h"
 #include "../util/visitors/is_constant_index.h"
-#include "../util/util.h"
 #include "../util/error.h"
+#include "../util/model_config.h"
+#include "../util/util.h"
 #include "helpers.h"
 
 namespace MicroModelica {
@@ -149,7 +150,7 @@ Expression Expression::generate(string var_name, vector<string> indices)
   }
   AST_Expression ast_exp = parseExpression(code.str(), &i);
   assert(i == 0);
-  return Expression(ast_exp, Utils::instance().symbols());
+  return Expression(ast_exp, ModelConfig::instance().symbols());
 }
 
 std::ostream& operator<<(std::ostream& out, const Expression& s)

@@ -29,6 +29,7 @@
 #include "helpers.h"
 #include "../deps/dependency_matrix.h"
 #include "../util/error.h"
+#include "../util/model_config.h"
 #include "../util/symbol_table.h"
 #include "../util/util.h"
 

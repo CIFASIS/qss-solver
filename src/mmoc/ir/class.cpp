@@ -30,6 +30,7 @@
 #include "../ast/modification.h"
 #include "../ast/statement.h"
 #include "../util/error.h"
+#include "../util/model_config.h"
 #include "../util/process_statement.h"
 #include "../util/visitors/convert_condition.h"
 #include "../util/visitors/convert_cont_red.h"
@@ -578,7 +579,7 @@ void Model::reduceEvent(AST_Statement_When event)
 
 void Model::setEvents()
 {
-  Utils::instance().setSymbols(_symbols);
+  ModelConfig::instance().setSymbols(_symbols);
   list<AST_Statement>::iterator it;
   for (it = _ast_statements.begin(); it != _ast_statements.end(); it++) {
     AST_Statement stm = *it;

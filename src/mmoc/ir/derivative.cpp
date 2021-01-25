@@ -30,6 +30,7 @@
 #include "../ir/expression.h"
 #include "../parser/parse.h"
 #include "../util/error.h"
+#include "../util/model_config.h"
 #include "../util/ginac_interface.h"
 #include "../util/util.h"
 #include "../util/symbol_table.h"
@@ -46,7 +47,7 @@ ExpressionDerivator::ExpressionDerivator() {}
 
 AST_Equation_Equality EquationDerivator::derivate(AST_Equation_Equality eq)
 {
-  VarSymbolTable symbols = Utils::instance().symbols();
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
   ConvertToGiNaC to_ginac(symbols, Option<Expression>());
   ConvertToExpression to_exp;
   GiNaC::ex left = to_ginac.convert(eq->left());
@@ -59,7 +60,7 @@ AST_Equation_Equality EquationDerivator::derivate(AST_Equation_Equality eq)
 
 AST_Expression ExpressionDerivator::derivate(AST_Expression exp, Expression e)
 {
-  VarSymbolTable symbols = Utils::instance().symbols();
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
   ConvertToGiNaC to_ginac(symbols, e);
   ConvertToExpression to_exp;
   GiNaC::ex dexp = to_ginac.convert(exp, false, true);
@@ -74,7 +75,7 @@ Expression ExpressionDerivator::partialDerivative(Equation eq, Index variable)
   assert(var_usage.isState() || var_usage.isAlgebraic());
   AST_Expression rhs_exp = eq.rhs().expression();
   string usage = variable.modelicaExp();
-  VarSymbolTable symbols = Utils::instance().symbols();
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
   ConvertToGiNaC to_ginac(symbols, Option<Expression>());
   ConvertToExpression to_exp;
   ReplaceDer replace_der(symbols);

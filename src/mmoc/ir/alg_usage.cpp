@@ -21,6 +21,7 @@
 
 #include "../util/visitors/apply_alg_usage.h"
 #include "../util/visitors/partial_eval_exp.h"
+#include "../util/model_config.h"
 #include "../util/util.h"
 #include "expression.h"
 
@@ -71,7 +72,7 @@ void VariableUsage::generateMapFromRange()
     }
   }
   ApplyVariableUsage var_usage(_usage_map);
-  VarSymbolTable symbols = Utils::instance().symbols();
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
   _replaced = Expression(var_usage.apply(_lhs.expression()), symbols);
 }
 
@@ -100,7 +101,7 @@ void VariableUsage::generateMapFromUsage()
     }
   }
   ApplyVariableUsage var_usage(_usage_map);
-  VarSymbolTable symbols = Utils::instance().symbols();
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
   PartialEvalExp partial_eval(symbols);
   _rhs = Expression(partial_eval.apply(var_usage.apply(_rhs.expression())), symbols);
 }
@@ -121,7 +122,7 @@ void VariableUsage::generateMapFromLHS()
     }
   }
   ApplyVariableUsage var_usage(_usage_map);
-  VarSymbolTable symbols = Utils::instance().symbols();
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
   PartialEvalExp partial_eval(symbols);
   _replaced = Expression(partial_eval.apply(var_usage.apply(_rhs.expression())), symbols);
 }

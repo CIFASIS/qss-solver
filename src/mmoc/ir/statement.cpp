@@ -20,6 +20,7 @@
 
 #include "../ast/ast_builder.h"
 #include "../ast/statement.h"
+#include "../util/model_config.h"
 #include "../util/util.h"
 #include "../util/process_statement.h"
 #include "../util/visitors/called_functions.h"
@@ -45,7 +46,7 @@ Statement::Statement(AST_Statement stm, const VarSymbolTable& symbols, bool init
 void Statement::initialize()
 {
   StatementCalledFunctions cf;
-  Utils::instance().setSymbols(_symbols);
+  ModelConfig::instance().setSymbols(_symbols);
   setRange();
   _calledFunctions = cf.apply(_stm);
   _lhs_assignments = generateExps(STATEMENT::LHS);

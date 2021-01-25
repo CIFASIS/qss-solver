@@ -20,6 +20,7 @@
 #include "is_constant_expression.h"
 
 #include "../error.h"
+#include "../model_config.h"
 #include "../util.h"
 
 namespace MicroModelica {
@@ -35,7 +36,7 @@ bool IsConstantExpression::foldTraverseElement(AST_Expression exp)
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-    VarSymbolTable symbols = Utils::instance().symbols();
+    VarSymbolTable symbols = ModelConfig::instance().symbols();
     Option<Variable> var = symbols[cr->name()];
     if (!var) {
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "is_constant_expression.cpp:41 %s",

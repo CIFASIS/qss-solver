@@ -27,6 +27,7 @@
 #include "../ast/expression.h"
 #include "../parser/parse.h"
 #include "../util/error.h"
+#include "../util/model_config.h"
 #include "../util/util.h"
 #include "../util/visitors/get_index_variables.h"
 #include "../util/visitors/is_recursive_def.h"

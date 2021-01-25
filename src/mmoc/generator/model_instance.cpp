@@ -54,12 +54,12 @@ void ModelInstance::output()
   stringstream buffer;
   EquationTable outputs = _model.outputs();
   EquationTable::iterator it;
-  Utils::instance().clearLocalSymbols();
+  ModelConfig::instance().clearLocalSymbols();
   FunctionPrinter fp;
   for (Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it)) {
     _writer->write(out, (out.hasRange() ? WRITER::Output_Generic : WRITER::Output_Simple));
   }
-  _writer->write(Utils::instance().localSymbols(), WRITER::Output);
+  _writer->write(ModelConfig::instance().localSymbols(), WRITER::Output);
   if (!_writer->isEmpty(WRITER::Output_Simple)) {
     _writer->write(fp.beginSwitch(), WRITER::Output);
     _writer->write(fp.endSwitch(), WRITER::Output_Simple);
@@ -165,12 +165,12 @@ void ModelInstance::zeroCrossing()
   EventTable events = _model.events();
   EventTable::iterator it;
   FunctionPrinter fp;
-  Utils::instance().clearLocalSymbols();
+  ModelConfig::instance().clearLocalSymbols();
   for (Event event = events.begin(it); !events.end(it); event = events.next(it)) {
     Equation zc = event.zeroCrossing();
     _writer->write(zc, (zc.hasRange() ? WRITER::ZC_Generic : WRITER::ZC_Simple));
   }
-  _writer->write(Utils::instance().localSymbols(), WRITER::Zero_Crossing);
+  _writer->write(ModelConfig::instance().localSymbols(), WRITER::Zero_Crossing);
   if (!_writer->isEmpty(WRITER::ZC_Simple)) {
     _writer->write(fp.beginSwitch(), WRITER::Zero_Crossing);
     _writer->write(fp.endSwitch(), WRITER::ZC_Simple);
@@ -184,16 +184,16 @@ void ModelInstance::handler()
   VarSymbolTable symbols = _model.symbols();
   stringstream buffer;
   FunctionPrinter fp;
-  Utils::instance().clearLocalSymbols();
+  ModelConfig::instance().clearLocalSymbols();
   for (Event event = events.begin(it); !events.end(it); event = events.next(it)) {
     _writer->write(event.handler(EVENT::Positive), (event.hasRange() ? WRITER::Handler_Pos_Generic : WRITER::Handler_Pos_Simple));
     _writer->write(event.handler(EVENT::Negative), (event.hasRange() ? WRITER::Handler_Neg_Generic : WRITER::Handler_Neg_Simple));
   }
   if (!_writer->isEmpty(WRITER::Handler_Pos_Generic)) {
-    _writer->write(Utils::instance().localSymbols(), WRITER::Handler_Pos);
+    _writer->write(ModelConfig::instance().localSymbols(), WRITER::Handler_Pos);
   }
   if (!_writer->isEmpty(WRITER::Handler_Neg_Generic)) {
-    _writer->write(Utils::instance().localSymbols(), WRITER::Handler_Neg);
+    _writer->write(ModelConfig::instance().localSymbols(), WRITER::Handler_Neg);
   }
   if (!_writer->isEmpty(WRITER::Handler_Pos_Simple)) {
     _writer->write(fp.beginSwitch(), WRITER::Handler_Pos);
@@ -359,7 +359,7 @@ void ModelInstance::initialCode()
   StatementTable stms = _model.initialCode();
   StatementTable::iterator it;
   stringstream buffer;
-  Utils::instance().setLocalInitSymbols();
+  ModelConfig::instance().setLocalInitSymbols();
   ModelConfig::instance().setInitialCode(true);
   VarSymbolTable symbols = _model.symbols();
   VarSymbolTable::iterator var_it;
@@ -373,7 +373,7 @@ void ModelInstance::initialCode()
     _writer->write(stm, WRITER::Init_Code);
   }
   ModelConfig::instance().setInitialCode(false);
-  Utils::instance().unsetLocalInitSymbols();
+  ModelConfig::instance().unsetLocalInitSymbols();
 }
 
 void ModelInstance::inputs()
@@ -432,13 +432,13 @@ void ModelInstance::freeVectors() const
 void ModelInstance::jacobian()
 {
   Jacobian jac;
-  Utils::instance().clearLocalSymbols();
+  ModelConfig::instance().clearLocalSymbols();
   jac.build();
   _writer->write("int row, row_t, eq_var, c_row, c_row_g;", WRITER::Jacobian);
   _writer->write("int col, col_g, col_t;", WRITER::Jacobian);
   _writer->write("int x_ind;", WRITER::Jacobian);
   _writer->write("double aux;", WRITER::Jacobian);
-  _writer->write(Utils::instance().localSymbols(), WRITER::Jacobian);
+  _writer->write(ModelConfig::instance().localSymbols(), WRITER::Jacobian);
   _writer->write("SD_cleanJacMatrices(dvdx);", WRITER::Jacobian);
   _writer->write(jac.code(), WRITER::Jacobian);
   // Add local variables to the initialization procedure prologue.
@@ -494,7 +494,7 @@ void ModelInstance::generate()
   _writer->beginBlock();
   _writer->print(WRITER::Jacobian);
   _writer->endBlock();
-  _writer->write(Utils::instance().localInitSymbols(), WRITER::Prologue);
+  _writer->write(ModelConfig::instance().localInitSymbols(), WRITER::Prologue);
 }
 
 /* QSSModelInstance Model Instance class. */
@@ -510,12 +510,12 @@ void QSSModelInstance::definition()
 {
   EquationTable derivatives = _model.derivatives();
   EquationTable::iterator it;
-  Utils::instance().clearLocalSymbols();
+  ModelConfig::instance().clearLocalSymbols();
   FunctionPrinter fp;
   for (Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it)) {
     _writer->write(der, (der.hasRange() ? WRITER::Model_Generic : WRITER::Model_Simple));
   }
-  _writer->write(Utils::instance().localSymbols(), WRITER::Model);
+  _writer->write(ModelConfig::instance().localSymbols(), WRITER::Model);
   if (!_writer->isEmpty(WRITER::Model_Simple)) {
     _writer->write(fp.beginSwitch(), WRITER::Model);
     _writer->write(fp.endSwitch(), WRITER::Model_Simple);
@@ -529,12 +529,12 @@ void QSSModelInstance::bdfDefinition()
   ModelConfig::instance().setModelAnnotations(annot);
   EquationTable derivatives = _model.derivatives();
   EquationTable::iterator it;
-  Utils::instance().clearLocalSymbols();
+  ModelConfig::instance().clearLocalSymbols();
   FunctionPrinter fp;
   for (Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it)) {
     _writer->write(der, (der.hasRange() ? WRITER::Model_Bdf_Generic : WRITER::Model_Bdf_Simple));
   }
-  _writer->write(Utils::instance().localSymbols(), WRITER::Model_Bdf);
+  _writer->write(ModelConfig::instance().localSymbols(), WRITER::Model_Bdf);
   _writer->write("int idx;", WRITER::Model_Bdf);
   _writer->write("int __bdf_it;", WRITER::Model_Bdf);
   _writer->write("for(__bdf_it = 0; __bdf_it < nBDF; __bdf_it++) {", WRITER::Model_Bdf);
@@ -585,8 +585,8 @@ void QSSModelInstance::initTime()
 void QSSModelInstance::initializeDataStructures()
 {
   stringstream buffer;
-  Utils::instance().setLocalInitSymbols();
-  Utils::instance().setSymbols(_model.symbols());
+  ModelConfig::instance().setLocalInitSymbols();
+  ModelConfig::instance().setSymbols(_model.symbols());
   allocateSolver();
   allocateVectors();
   freeVectors();
@@ -620,7 +620,7 @@ void QSSModelInstance::initializeDataStructures()
   initTime();
   configOutput();
   allocateModel();
-  Utils::instance().unsetLocalInitSymbols();
+  ModelConfig::instance().unsetLocalInitSymbols();
 }
 
 void QSSModelInstance::dependencies()
@@ -629,7 +629,7 @@ void QSSModelInstance::dependencies()
   EquationDependencyMatrix DS = deps.DS();
   EquationDependencyMatrix::const_iterator it;
   VarSymbolTable symbols = _model.symbols();
-  Utils::instance().clearLocalSymbols();
+  ModelConfig::instance().clearLocalSymbols();
   FunctionPrinter printer;
   EquationMapper<IR::Dependency> mapper;
   for (it = DS.begin(); it != DS.end(); it++) {
@@ -638,7 +638,7 @@ void QSSModelInstance::dependencies()
   }
   _writer->write(mapper.scalar(), WRITER::Model_Deps_Simple);
   _writer->write(mapper.vector(), WRITER::Model_Deps_Generic);
-  _writer->write(Utils::instance().localSymbols(), WRITER::Model_Deps);
+  _writer->write(ModelConfig::instance().localSymbols(), WRITER::Model_Deps);
   if (!_writer->isEmpty(WRITER::Model_Deps_Simple)) {
     _writer->write(printer.beginSwitch(), WRITER::Model_Deps);
     _writer->write(printer.endSwitch(), WRITER::Model_Deps_Simple);
@@ -716,21 +716,21 @@ void ClassicModelInstance::definition()
   EquationTable::iterator it;
   VarSymbolTable symbols = _model.symbols();
   stringstream buffer;
-  Utils::instance().clearLocalSymbols();
+  ModelConfig::instance().clearLocalSymbols();
   for (Equation alg = algebraics.begin(it); !algebraics.end(it); alg = algebraics.next(it)) {
     _writer->write(alg, WRITER::Model_Simple);
   }
   for (Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it)) {
     _writer->write(der, WRITER::Model_Simple);
   }
-  _writer->write(Utils::instance().localSymbols(), WRITER::Model);
+  _writer->write(ModelConfig::instance().localSymbols(), WRITER::Model);
 }
 
 void ClassicModelInstance::initializeDataStructures()
 {
   stringstream buffer;
-  Utils::instance().setLocalInitSymbols();
-  Utils::instance().setSymbols(_model.symbols());
+  ModelConfig::instance().setLocalInitSymbols();
+  ModelConfig::instance().setSymbols(_model.symbols());
   allocateSolver();
   allocateVectors();
   freeVectors();
@@ -754,7 +754,7 @@ void ClassicModelInstance::initializeDataStructures()
   initializeMatrix(deps.DO(), WRITER::Alloc_Output, WRITER::Init_Output, _model.discreteNbr());
   configOutput();
   allocateModel();
-  Utils::instance().unsetLocalInitSymbols();
+  ModelConfig::instance().unsetLocalInitSymbols();
 }
 
 void ClassicModelInstance::allocateSolver()

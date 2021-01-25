@@ -21,6 +21,7 @@
 #include "../ir/helpers.h"
 #include "../ir/reduction_functions.h"
 #include "error.h"
+#include "model_config.h"
 #include "util.h"
 #include "symbol_table.h"
 #include "./visitors/convert_disc_red.h"
@@ -78,7 +79,7 @@ void processStatement(AST_Statement stm)
                                 "Only variables references allowed, expressions not allowed.");
         } else {
           lhs = e->getAsComponentReference();
-          VarSymbolTable symbols = Utils::instance().symbols();
+          VarSymbolTable symbols = ModelConfig::instance().symbols();
           string sname = lhs->name();
           Option<Variable> var = symbols[sname];
           if (!var) {
@@ -127,7 +128,7 @@ void processStatement(AST_Statement stm)
 
 void applyReduction(AST_Statement_Assign asg, AST_StatementList stms, AST_StatementListIterator stm_it)
 {
-  VarSymbolTable symbols = Utils::instance().symbols();
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
   ReductionFunctions<AST_Statement, ConvertDiscRed> reduction_functions(asg->exp(), symbols,
                                                                         Utils::instance().variable(asg->lhs(), symbols));
   AST_Expression new_exp = reduction_functions.apply();

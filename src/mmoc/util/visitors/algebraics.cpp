@@ -20,11 +20,13 @@
 #include "algebraics.h"
 
 #include "../../ast/ast_builder.h"
+#include "../model_config.h"
 #include "../util.h"
+
 namespace MicroModelica {
 namespace Util {
 
-Algebraics::Algebraics() : _symbols(Utils::instance().symbols()), _exps(newAST_ExpressionList()), _var() {}
+Algebraics::Algebraics() : _symbols(ModelConfig::instance().symbols()), _exps(newAST_ExpressionList()), _var() {}
 
 void Algebraics::exclude(Variable var) { _var = var; }
 

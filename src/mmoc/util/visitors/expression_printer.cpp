@@ -23,8 +23,9 @@
 
 #include "../../ast/ast_builder.h"
 #include "../../ir/helpers.h"
-#include "../util.h"
 #include "../error.h"
+#include "../model_config.h"
+#include "../util.h"
 
 namespace MicroModelica {
 using namespace IR;
@@ -57,7 +58,7 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
                             call->name()->c_str());
       break;
     }
-    Utils::instance().setSymbols(_symbols);
+    ModelConfig::instance().setSymbols(_symbols);
     f->setArguments(call->arguments());
     f->setOutputArguments(call->outputArguments());
     buffer << f.get();
