@@ -25,6 +25,7 @@
 #include "equation.h"
 #include "../generator/macros.h"
 #include "../util/error.h"
+#include "../util/model_config.h"
 #include "../util/util.h"
 #include "../util/visitors/get_index_variables.h"
 #include "../util/visitors/is_constant_expression.h"
@@ -89,7 +90,7 @@ string CompiledFunction::print() const
   int size = _arguments->size(), i = 0;
   foreach (it, _arguments) {
     i++;
-    Expression ex(current_element(it), Utils::instance().symbols());
+    Expression ex(current_element(it), ModelConfig::instance().symbols());
     buffer << ex;
     buffer << (i < size ? "," : "");
   }
@@ -97,7 +98,7 @@ string CompiledFunction::print() const
   i = 0;
   foreach (it, _output_arguments) {
     i++;
-    Expression ex(current_element(it), Utils::instance().symbols());
+    Expression ex(current_element(it), ModelConfig::instance().symbols());
     buffer << "&" << ex;
     buffer << (i < size ? "," : "");
   }
@@ -509,10 +510,6 @@ ostream& operator<<(std::ostream& out, const Input& i)
   out << i.print();
   return out;
 }
-
-ModelConfig::ModelConfig() : _model_annotations(), _algebraics(), _dependencies(), _initial_code(false) {}
-
-bool ModelConfig::generateDerivatives() { return _model_annotations.symDiff() && isQss(); }
 
 }  // namespace IR
 }  // namespace MicroModelica
