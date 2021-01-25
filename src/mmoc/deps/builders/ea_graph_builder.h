@@ -27,8 +27,8 @@ namespace MicroModelica {
 namespace Deps {
 class EAGraphBuilder {
   public:
-  EAGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics, Util::VarSymbolTable &symbols);
-  EAGraphBuilder(IR::EventTable &events, IR::EquationTable &algebraics, Util::VarSymbolTable &symbols);
+  EAGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics);
+  EAGraphBuilder(IR::EventTable &events, IR::EquationTable &algebraics);
   ~EAGraphBuilder() = default;
   DepsGraph build();
 
@@ -39,7 +39,6 @@ class EAGraphBuilder {
   IR::EventTable _events;
   IR::EquationTable _algebraics;
   IR::EquationTable _equations;
-  Util::VarSymbolTable _symbols;
 };
 }  // namespace Deps
 }  // namespace MicroModelica

@@ -19,6 +19,7 @@
 
 #include "ds_graph_builder.h"
 
+#include "../../util/model_config.h"
 #include "../../util/util_types.h"
 
 namespace MicroModelica {
@@ -26,8 +27,8 @@ using namespace IR;
 using namespace Util;
 namespace Deps {
 
-DSGraphBuilder::DSGraphBuilder(EquationTable &equations, EquationTable &algebraics, VarSymbolTable &symbols)
-    : _equationDescriptors(), _variableDescriptors(), _equations(equations), _algebraics(algebraics), _symbols(symbols)
+DSGraphBuilder::DSGraphBuilder(EquationTable &equations, EquationTable &algebraics)
+    : _equationDescriptors(), _variableDescriptors(), _equations(equations), _algebraics(algebraics)
 {
 }
 
@@ -36,7 +37,8 @@ DepsGraph DSGraphBuilder::build()
   DepsGraph graph;
   // First, add the symbols as vertex.
   VarSymbolTable::iterator it;
-  for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
+  for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     VertexProperty vp = VertexProperty();
     if (var.isDiscrete()) {
       vp.setType(VERTEX::Influencer);
@@ -73,7 +75,7 @@ DepsGraph DSGraphBuilder::build()
   {
     foreach_(IfrVertex source, _variableDescriptors)
     {
-      GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
+      GenerateEdge edge = GenerateEdge(graph[source], graph[sink]);
       if (edge.exists()) {
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {
@@ -85,7 +87,7 @@ DepsGraph DSGraphBuilder::build()
       }
       // Check LHS too if we are working with algebraics.
       if (graph[source].type() == VERTEX::Algebraic && graph[sink].eq().type() == EQUATION::Algebraic) {
-        edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input);
+        edge = GenerateEdge(graph[source], graph[sink], EDGE::Input);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
@@ -105,7 +107,7 @@ DepsGraph DSGraphBuilder::build()
     foreach_(IfeVertex source, _derivativeDescriptors)
     {
       if (graph[sink].eq().isDerivative()) {
-        GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
+        GenerateEdge edge = GenerateEdge(graph[source], graph[sink]);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {

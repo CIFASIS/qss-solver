@@ -90,7 +90,7 @@ SBGraph SDSBGraphBuilder::build()
   {
     foreach_(S_Vertex source, _equation_lhs_nodes)
     {
-      BuildEdge edge = BuildEdge(graph[source], graph[sink], _symbols, SBG::EDGE::Output, SBG::VERTEX::LHS);
+      BuildEdge edge = BuildEdge(graph[source], graph[sink], SBG::EDGE::Output, SBG::VERTEX::LHS);
       if (edge.exists()) {
         PairSet pairs = edge.indexes();
         SBG::Label edge_label(pairs);
@@ -98,7 +98,7 @@ SBGraph SDSBGraphBuilder::build()
       }
       // Check RHS too if we are working with algebraics.
       if (graph[source].type() == SBG::VERTEX::Algebraic) {
-        BuildEdge edge = BuildEdge(graph[source], graph[sink], _symbols, SBG::EDGE::Input, SBG::VERTEX::LHS);
+        BuildEdge edge = BuildEdge(graph[source], graph[sink], SBG::EDGE::Input, SBG::VERTEX::LHS);
         if (edge.exists()) {
           PairSet pairs = edge.indexes();
           SBG::Label edge_label(pairs, SBG::EDGE::Input);
@@ -111,7 +111,7 @@ SBGraph SDSBGraphBuilder::build()
   {
     foreach_(S_Vertex source, _state_nodes)
     {
-      BuildEdge edge = BuildEdge(graph[source], graph[sink], _symbols, SBG::EDGE::Input, SBG::VERTEX::LHS);
+      BuildEdge edge = BuildEdge(graph[source], graph[sink], SBG::EDGE::Input, SBG::VERTEX::LHS);
       if (edge.exists()) {
         PairSet pairs = edge.indexes();
         SBG::Label edge_label(pairs, SBG::EDGE::Input);

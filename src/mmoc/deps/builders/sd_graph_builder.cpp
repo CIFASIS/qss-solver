@@ -26,8 +26,8 @@ using namespace IR;
 using namespace Util;
 namespace Deps {
 
-SDGraphBuilder::SDGraphBuilder(EquationTable &equations, EquationTable &algebraics, VarSymbolTable &symbols)
-    : _equation_def_nodes(), _equation_lhs_nodes(), _state_nodes(), _equations(equations), _algebraics(algebraics), _symbols(symbols)
+SDGraphBuilder::SDGraphBuilder(EquationTable &equations, EquationTable &algebraics)
+    : _equation_def_nodes(), _equation_lhs_nodes(), _state_nodes(), _equations(equations), _algebraics(algebraics)
 {
 }
 
@@ -78,7 +78,7 @@ DepsGraph SDGraphBuilder::build()
   {
     foreach_(IfrVertex source, _equation_lhs_nodes)
     {
-      GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Output, VERTEX::LHS);
+      GenerateEdge edge = GenerateEdge(graph[source], graph[sink], EDGE::Output, VERTEX::LHS);
       if (edge.exists()) {
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {
@@ -91,7 +91,7 @@ DepsGraph SDGraphBuilder::build()
       }
       // Check RHS too if we are working with algebraics.
       if (graph[source].type() == VERTEX::Algebraic) {
-        GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input, VERTEX::LHS);
+        GenerateEdge edge = GenerateEdge(graph[source], graph[sink], EDGE::Input, VERTEX::LHS);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
@@ -109,7 +109,7 @@ DepsGraph SDGraphBuilder::build()
   {
     foreach_(IfeVertex source, _state_nodes)
     {
-      GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input, VERTEX::LHS);
+      GenerateEdge edge = GenerateEdge(graph[source], graph[sink], EDGE::Input, VERTEX::LHS);
       if (edge.exists()) {
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {

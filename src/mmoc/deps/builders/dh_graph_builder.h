@@ -33,9 +33,9 @@ typedef enum { State, Discrete } IfrType;
 
 class DHGraphBuilder {
   public:
-  DHGraphBuilder(IR::EventTable& events, IR::EquationTable& algebraics, Util::VarSymbolTable& symbols,
+  DHGraphBuilder(IR::EventTable& events, IR::EquationTable& algebraics,
                  IR::STATEMENT::AssignTerm search = IR::STATEMENT::LHS, DHGRAPHBUILDER::IfrType ifr_type = DHGRAPHBUILDER::Discrete);
-  ~DHGraphBuilder(){};
+  ~DHGraphBuilder() = default;
   DepsGraph build();
 
   protected:
@@ -47,7 +47,6 @@ class DHGraphBuilder {
   list<IfeVertex> _eventDescriptors;
   IR::EventTable _events;
   IR::EquationTable _algebraics;
-  Util::VarSymbolTable _symbols;
   IR::STATEMENT::AssignTerm _search;
   DHGRAPHBUILDER::IfrType _ifr_type;
 };

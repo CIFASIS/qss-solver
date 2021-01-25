@@ -72,56 +72,56 @@ ModelDependencies::ModelDependencies()
 {
 }
 
-void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, EquationTable algs, EventTable events, VarSymbolTable symbols)
+void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, EquationTable algs, EventTable events)
 {
-  SDGraphBuilder SD = SDGraphBuilder(eqs, algs, symbols);
+  SDGraphBuilder SD = SDGraphBuilder(eqs, algs);
   DepsGraph SD_graph = SD.build();
   _deps.compute(SD_graph, _DS, TRAVERSE::Equation);
 
   _JAC.build();
 
   VariableDependencyMatrix DS_int(EmptyCfg);
-  DSGraphBuilder DS = DSGraphBuilder(eqs, algs, symbols);
+  DSGraphBuilder DS = DSGraphBuilder(eqs, algs);
   _deps.compute(DS.build(), DS_int);
-  DHGraphBuilder LHSDsc = DHGraphBuilder(events, algs, symbols);
+  DHGraphBuilder LHSDsc = DHGraphBuilder(events, algs);
   _deps.compute(LHSDsc.build(), _LHSDsc);
   _deps.merge(_LHSDsc, DS_int, _HD);
 
   VariableDependencyMatrix DZ_int(HHCfg);
-  DZGraphBuilder DZ = DZGraphBuilder(events, algs, symbols);
+  DZGraphBuilder DZ = DZGraphBuilder(events, algs);
   _deps.compute(DZ.build(), DZ_int);
   _deps.merge(_LHSDsc, DZ_int, _HZ);
 
-  DHGraphBuilder LHSSt = DHGraphBuilder(events, algs, symbols, STATEMENT::LHS, DHGRAPHBUILDER::State);
+  DHGraphBuilder LHSSt = DHGraphBuilder(events, algs, STATEMENT::LHS, DHGRAPHBUILDER::State);
   _deps.compute(LHSSt.build(), _LHSSt);
 
-  DHGraphBuilder RHSSt = DHGraphBuilder(events, algs, symbols, STATEMENT::RHS, DHGRAPHBUILDER::State);
+  DHGraphBuilder RHSSt = DHGraphBuilder(events, algs, STATEMENT::RHS, DHGRAPHBUILDER::State);
   _deps.compute(RHSSt.build(), _RHSSt);
 
   VariableDependencyMatrix DD_int(EmptyCfg);
-  DHGraphBuilder RHSDsc = DHGraphBuilder(events, algs, symbols, STATEMENT::RHS);
+  DHGraphBuilder RHSDsc = DHGraphBuilder(events, algs, STATEMENT::RHS);
   _deps.compute(RHSDsc.build(), DD_int);
   _deps.merge(_LHSDsc, DD_int, _HH);
 
-  SZGraphBuilder SZ = SZGraphBuilder(events, algs, symbols);
+  SZGraphBuilder SZ = SZGraphBuilder(events, algs);
   _deps.compute(SZ.build(), _SZ);
 
   VariableDependencyMatrix HZ_int(HHCfg);
   _deps.merge(_LHSSt, _SZ, HZ_int);
   _deps.append(_HZ, HZ_int);
 
-  OutputGraphBuilder SO = OutputGraphBuilder(outputs, algs, symbols);
+  OutputGraphBuilder SO = OutputGraphBuilder(outputs, algs);
   _deps.compute(SO.build(), _SO);
-  OutputGraphBuilder DO = OutputGraphBuilder(outputs, algs, symbols, OUTPUT::DO);
+  OutputGraphBuilder DO = OutputGraphBuilder(outputs, algs, OUTPUT::DO);
   _deps.compute(DO.build(), _DO);
 
-  EAGraphBuilder DA = EAGraphBuilder(eqs, algs, symbols);
+  EAGraphBuilder DA = EAGraphBuilder(eqs, algs);
   _deps.compute(DA.build(), _DA, TRAVERSE::Equation);
 
-  EAGraphBuilder ZCA = EAGraphBuilder(events, algs, symbols);
+  EAGraphBuilder ZCA = EAGraphBuilder(events, algs);
   _deps.compute(ZCA.build(), _ZCA, TRAVERSE::Equation);
 
-  EAGraphBuilder OA = EAGraphBuilder(outputs, algs, symbols);
+  EAGraphBuilder OA = EAGraphBuilder(outputs, algs);
   _deps.compute(OA.build(), _OA, TRAVERSE::Equation);
 }
 }  // namespace Deps

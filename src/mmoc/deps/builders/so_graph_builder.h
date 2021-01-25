@@ -32,8 +32,8 @@ typedef enum { SO, DO } Type;
 
 class OutputGraphBuilder {
   public:
-  OutputGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics, Util::VarSymbolTable &symbols, OUTPUT::Type = OUTPUT::SO);
-  ~OutputGraphBuilder(){};
+  OutputGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics, OUTPUT::Type = OUTPUT::SO);
+  ~OutputGraphBuilder() = default;
   DepsGraph build();
 
   private:
@@ -42,7 +42,6 @@ class OutputGraphBuilder {
   map<int, IfeVertex> _outputDescriptors;
   IR::EquationTable _equations;
   IR::EquationTable _algebraics;
-  Util::VarSymbolTable _symbols;
   OUTPUT::Type _type;
 };
 }  // namespace Deps
