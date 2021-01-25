@@ -62,7 +62,7 @@ Event::Event(AST_Expression cond, int id, int offset, VarSymbolTable &symbols, O
       _offset(offset)
 {
   ConvertCondition cc;
-  _zero_crossing = Equation(cc.apply(getExpression(cond)), symbols, range, EQUATION::ZeroCrossing, id, offset);
+  _zero_crossing = Equation(cc.apply(getExpression(cond)), range, EQUATION::ZeroCrossing, id, offset);
   _type = cc.zeroCrossing();
   _current = _type;
   _zc_relation = cc.zeroCrossingRelation();

@@ -43,26 +43,26 @@ using namespace Util;
 using namespace Deps;
 namespace IR {
 
-EquationPrinter* getPrinter(Equation eq, Util::VarSymbolTable symbols)
+EquationPrinter* getPrinter(Equation eq)
 {
   switch (eq.type()) {
   case EQUATION::ClassicDerivative:
-    return new ClassicPrinter(eq, symbols);
+    return new ClassicPrinter(eq);
   case EQUATION::Output:
-    return new OutputPrinter(eq, symbols);
+    return new OutputPrinter(eq);
   case EQUATION::Algebraic:
-    return new AlgebraicPrinter(eq, symbols);
+    return new AlgebraicPrinter(eq);
   case EQUATION::Dependency:
-    return new DependencyPrinter(eq, symbols);
+    return new DependencyPrinter(eq);
   case EQUATION::ZeroCrossing:
-    return new ZeroCrossingPrinter(eq, symbols);
+    return new ZeroCrossingPrinter(eq);
   default:
-    return new DerivativePrinter(eq, symbols);
+    return new DerivativePrinter(eq);
   }
 }
 
-EquationPrinter::EquationPrinter(Equation eq, Util::VarSymbolTable symbols)
-    : _symbols(symbols), _identifier(), _id(eq.id()), _type(eq.type()), _lhs(eq.lhs())
+EquationPrinter::EquationPrinter(Equation eq)
+    : _identifier(), _id(eq.id()), _type(eq.type()), _lhs(eq.lhs())
 {
   setup(eq);
 }
@@ -132,9 +132,8 @@ string EquationPrinter::prefix() const
   return "";
 }
 
-DerivativePrinter::DerivativePrinter(Equation eq, VarSymbolTable symbols)
-    : EquationPrinter(eq, symbols),
-      _symbols(symbols),
+DerivativePrinter::DerivativePrinter(Equation eq)
+    : EquationPrinter(eq),
       _fact_init(2),
       _id(eq.id()),
       _range(eq.range()),
@@ -173,7 +172,7 @@ void DerivativePrinter::initializeDerivatives()
 {
   if (ModelConfig::instance().generateDerivatives()) {
     ExpressionDerivator ed;
-    ReplaceDer replace_der(_symbols);
+    ReplaceDer replace_der;
     AST_Expression exp1 = ed.derivate(_rhs.expression(), _rhs);
     _derivatives[0] = Expression(exp1);
     AST_Expression exp2 = ed.derivate(exp1, _rhs);
@@ -233,8 +232,8 @@ string DerivativePrinter::print() const
   return buffer.str();
 }
 
-ClassicPrinter::ClassicPrinter(Equation eq, Util::VarSymbolTable symbols)
-    : DerivativePrinter(eq, symbols), _range(eq.range()), _rhs(eq.rhs())
+ClassicPrinter::ClassicPrinter(Equation eq)
+    : DerivativePrinter(eq), _range(eq.range()), _rhs(eq.rhs())
 {
 }
 
@@ -253,8 +252,8 @@ string ClassicPrinter::print() const
   return buffer.str();
 }
 
-OutputPrinter::OutputPrinter(Equation eq, Util::VarSymbolTable symbols)
-    : DerivativePrinter(eq, symbols), _id(eq.id()), _range(eq.range()), _rhs(eq.rhs()), _eq_dep_matrix(eq.dependencyMatrix()){};
+OutputPrinter::OutputPrinter(Equation eq)
+    : DerivativePrinter(eq), _id(eq.id()), _range(eq.range()), _rhs(eq.rhs()), _eq_dep_matrix(eq.dependencyMatrix()){};
 
 string OutputPrinter::equationId() const
 {
@@ -284,8 +283,8 @@ string OutputPrinter::print() const
   return buffer.str();
 }
 
-AlgebraicPrinter::AlgebraicPrinter(Equation eq, Util::VarSymbolTable symbols)
-    : DerivativePrinter(eq, symbols), _range(eq.range()), _rhs(eq.rhs()), _lhs(eq.lhs()), _id(eq.id())
+AlgebraicPrinter::AlgebraicPrinter(Equation eq)
+    : DerivativePrinter(eq), _range(eq.range()), _rhs(eq.rhs()), _lhs(eq.lhs()), _id(eq.id())
 {
   factorialInit(0);
 };
@@ -319,8 +318,8 @@ string AlgebraicPrinter::equationId() const
   return buffer.str();
 }
 
-DependencyPrinter::DependencyPrinter(Equation eq, Util::VarSymbolTable symbols)
-    : DerivativePrinter(eq, symbols), _usage(eq.usage()), _range(eq.range()), _rhs(eq.rhs()){};
+DependencyPrinter::DependencyPrinter(Equation eq)
+    : DerivativePrinter(eq), _usage(eq.usage()), _range(eq.range()), _rhs(eq.rhs()) {};
 
 string DependencyPrinter::print() const
 {
@@ -354,7 +353,7 @@ string DependencyPrinter::print() const
   return buffer.str();
 }
 
-ZeroCrossingPrinter::ZeroCrossingPrinter(Equation eq, Util::VarSymbolTable symbols) : DerivativePrinter(eq, symbols), _id(eq.id())
+ZeroCrossingPrinter::ZeroCrossingPrinter(Equation eq) : DerivativePrinter(eq), _id(eq.id())
 {
   factorialInit(1);
 };

@@ -26,13 +26,8 @@ namespace MicroModelica {
 namespace Util {
 class Autonomous : public AST_Expression_Visitor<bool> {
   public:
-  Autonomous(VarSymbolTable symbols) : _symbols(symbols){};
+  Autonomous() {};
   ~Autonomous() = default;
-
-  protected:
-  Autonomous() : _symbols(){};
-
-  VarSymbolTable _symbols;
 
   private:
   bool foldTraverseElement(AST_Expression exp);

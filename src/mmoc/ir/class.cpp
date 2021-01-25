@@ -426,10 +426,10 @@ void Model::addEquation(AST_Equation eq, Option<Range> range)
   AST_Equation_Equality eqe = eq->getAsEquality();
   EQUATION::Type t = (_annotations.isClassic() ? EQUATION::ClassicDerivative : EQUATION::QSSDerivative);
   if (eqe->left()->expressionType() == EXPDERIVATIVE) {
-    Equation mse(eq, _symbols, range, t, _derivativeId);
+    Equation mse(eq, range, t, _derivativeId);
     _derivatives.insert(_derivativeId++, mse);
   } else if (eqe->left()->expressionType() == EXPCOMPREF) {
-    Equation mse(eq, _symbols, range, EQUATION::Algebraic, _algebraicId);
+    Equation mse(eq, range, EQUATION::Algebraic, _algebraicId);
     _algebraics.insert(_algebraicId++, mse);
   } else if (eqe->left()->expressionType() == EXPOUTPUT) {
     if (eqe->right()->expressionType() != EXPCALL) {
@@ -439,7 +439,7 @@ void Model::addEquation(AST_Equation eq, Option<Range> range)
     AST_ExpressionList el = eout->expressionList();
     AST_ExpressionListIterator it;
     foreach (it, el) {
-      Equation mse(eq, _symbols, range, EQUATION::Algebraic, _algebraicId);
+      Equation mse(eq, range, EQUATION::Algebraic, _algebraicId);
       _algebraics.insert(_algebraicId++, mse);
     }
   } else {
@@ -623,7 +623,7 @@ void Model::setOutputs()
     AST_Expression converted = convert.apply(*it);
     Option<Range> range = convert.range();
     addVariable(_outputId, range, EQUATION::Type::Output, _outputNbr);
-    Equation eq(converted, _symbols, range, EQUATION::Output, _outputId, _outputNbr);
+    Equation eq(converted, range, EQUATION::Output, _outputId, _outputNbr);
     _outputNbr += (range ? range->size() : 1);
     _outputs.insert(_outputId++, eq);
   }

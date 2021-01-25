@@ -20,11 +20,13 @@
 #include <sstream>
 
 #include "function.h"
+#include "../util/model_config.h"
 
 namespace MicroModelica {
 using namespace IR;
 using namespace Util;
 namespace Generator {
+  
 Function::Function(IR::Function& function, CompileFlags& flags, WriterPtr writer)
     : _function(function), _flags(flags), _writer(writer), _prefix(), _include()
 {
@@ -126,23 +128,25 @@ void Function::localSymbols()
   list<string> ret;
   stringstream buffer;
   VarSymbolTable localSymbols = _function.localSymbols();
+  VarSymbolTable symbols = _function.symbols();
+  ModelConfig::instance().setSymbols(localSymbols);
   VarSymbolTable::iterator it;
   for (Variable var = localSymbols.begin(it); !localSymbols.end(it); var = localSymbols.next(it)) {
     if (var.isConstant()) {
       continue;
     }
     _writer->write(var.declaration(), WRITER::Function_Code);
-    _writer->write(var.initialization(_function.localSymbols()), WRITER::Function_Code);
+    _writer->write(var.initialization(), WRITER::Function_Code);
   }
   if (_function.outputNbr() == 1) {
-    VarSymbolTable symbols = _function.symbols();
     for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
       if (var.isOutput()) {
         _writer->write(var.declaration(), WRITER::Function_Code);
-        _writer->write(var.initialization(_function.localSymbols()), WRITER::Function_Code);
+        _writer->write(var.initialization(), WRITER::Function_Code);
       }
     }
   }
+  ModelConfig::instance().setSymbols(symbols);
 }
 
 void Function::setPrefix(string prefix) { _prefix = prefix; }

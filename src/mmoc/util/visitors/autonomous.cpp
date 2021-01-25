@@ -18,6 +18,7 @@
  ******************************************************************************/
 
 #include "autonomous.h"
+#include "../model_config.h"
 
 namespace MicroModelica {
 namespace Util {
@@ -36,7 +37,7 @@ bool Autonomous::foldTraverseElement(AST_Expression e)
   }
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = e->getAsComponentReference();
-    Option<Variable> var = _symbols[cr->name()];
+    Option<Variable> var = ModelConfig::instance().lookup(cr->name());
     if (var && var->isTime()) {
       autonomous = false;
     }

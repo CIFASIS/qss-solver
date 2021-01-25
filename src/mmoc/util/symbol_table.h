@@ -104,7 +104,7 @@ class Variable {
   unsigned int rowSize(unsigned int dim) const;
   inline unsigned int dimensions() const { return _size.size(); };
   std::string declaration(std::string prefix = "");
-  std::string initialization(const VarSymbolTable& symbols);
+  std::string initialization();
   inline bool hasOffset() { return _hasOffset; };
   inline void setOffset(int offset)
   {

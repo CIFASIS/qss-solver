@@ -340,7 +340,7 @@ Variable Utils::variable(AST_Expression exp, VarSymbolTable &symbols)
   return var.get();
 }
 
-Expression Utils::variableExpression(string name, Option<IR::Range> range, const VarSymbolTable &symbols)
+Expression Utils::variableExpression(string name, Option<IR::Range> range)
 {
   AST_Expression_ComponentReference var = newAST_Expression_ComponentReference();
   if (range) {

@@ -367,7 +367,7 @@ void ModelInstance::initialCode()
     if (var.isConstant()) {
       continue;
     }
-    _writer->write(var.initialization(symbols), WRITER::Init_Code);
+    _writer->write(var.initialization(), WRITER::Init_Code);
   }
   for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
     _writer->write(stm, WRITER::Init_Code);

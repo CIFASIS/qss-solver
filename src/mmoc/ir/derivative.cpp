@@ -78,7 +78,7 @@ Expression ExpressionDerivator::partialDerivative(Equation eq, Index variable)
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   ConvertToGiNaC to_ginac(symbols, Option<Expression>());
   ConvertToExpression to_exp;
-  ReplaceDer replace_der(symbols);
+  ReplaceDer replace_der;
   GiNaC::ex dexp = to_ginac.convert(rhs_exp, false, true);
   map<string, GiNaC::symbol> dir = to_ginac.directory();
   GiNaC::symbol time = to_ginac.getTime();

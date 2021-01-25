@@ -36,7 +36,7 @@ class Equation;
 
 class EquationPrinter {
   public:
-  EquationPrinter(Equation eq, Util::VarSymbolTable symbols);
+  EquationPrinter(Equation eq);
   virtual ~EquationPrinter() = default;
   virtual std::string print() const { return ""; };
   virtual std::string macro() const { return ""; };
@@ -49,18 +49,17 @@ class EquationPrinter {
   void setup(Equation eq);
 
   private:
-  Util::VarSymbolTable _symbols;
   std::string _identifier;
   int _id;
   int _type;
   Expression _lhs;
 };
 
-EquationPrinter* getPrinter(Equation eq, Util::VarSymbolTable symbols);
+EquationPrinter* getPrinter(Equation eq);
 
 class DerivativePrinter : public EquationPrinter {
   public:
-  DerivativePrinter(Equation eq, Util::VarSymbolTable symbols);
+  DerivativePrinter(Equation eq);
   ~DerivativePrinter() = default;
   std::string print() const override;
   std::string macro() const override;
@@ -71,7 +70,6 @@ class DerivativePrinter : public EquationPrinter {
   std::string generateDerivatives(std::string tabs, int init = 1) const;
 
   private:
-  Util::VarSymbolTable _symbols;
   Expression _derivatives[3];
   int _fact_init;
   int _id;
@@ -83,7 +81,7 @@ class DerivativePrinter : public EquationPrinter {
 
 class ClassicPrinter : public DerivativePrinter {
   public:
-  ClassicPrinter(Equation eq, Util::VarSymbolTable symbols);
+  ClassicPrinter(Equation eq);
   ~ClassicPrinter() = default;
   std::string print() const override;
 
@@ -94,8 +92,9 @@ class ClassicPrinter : public DerivativePrinter {
 
 class OutputPrinter : public DerivativePrinter {
   public:
-  OutputPrinter(Equation eq, Util::VarSymbolTable symbols);
+  OutputPrinter(Equation eq);
   ~OutputPrinter() = default;
+
   std::string print() const override;
   std::string equationId() const override;
 
@@ -108,7 +107,7 @@ class OutputPrinter : public DerivativePrinter {
 
 class AlgebraicPrinter : public DerivativePrinter {
   public:
-  AlgebraicPrinter(Equation eq, Util::VarSymbolTable symbols);
+  AlgebraicPrinter(Equation eq);
   ~AlgebraicPrinter() = default;
   std::string print() const override;
   std::string equationId() const override;
@@ -122,7 +121,7 @@ class AlgebraicPrinter : public DerivativePrinter {
 
 class DependencyPrinter : public DerivativePrinter {
   public:
-  DependencyPrinter(Equation eq, Util::VarSymbolTable symbols);
+  DependencyPrinter(Equation eq);
   ~DependencyPrinter() = default;
   std::string print() const override;
 
@@ -134,7 +133,7 @@ class DependencyPrinter : public DerivativePrinter {
 
 class ZeroCrossingPrinter : public DerivativePrinter {
   public:
-  ZeroCrossingPrinter(Equation eq, Util::VarSymbolTable symbols);
+  ZeroCrossingPrinter(Equation eq);
   ~ZeroCrossingPrinter() = default;
   std::string equationId() const override;
 

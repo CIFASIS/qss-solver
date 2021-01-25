@@ -27,15 +27,15 @@ namespace Util {
 
 class ReplaceDer : public AST_Expression_Visitor<AST_Expression> {
   public:
-  ReplaceDer(VarSymbolTable symbols);
+  ReplaceDer();
   ~ReplaceDer() = default;
 
   private:
   AST_Expression foldTraverseElement(AST_Expression exp);
   AST_Expression foldTraverseElementUMinus(AST_Expression exp);
   AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
-  VarSymbolTable _symbols;
 };
+
 }  // namespace Util
 }  // namespace MicroModelica
 #endif /* REPLACE_DER_H_ */
