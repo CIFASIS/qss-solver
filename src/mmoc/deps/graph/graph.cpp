@@ -23,6 +23,7 @@
 
 #include "../../ast/ast_builder.h"
 #include "../../ir/expression.h"
+#include "../../util/model_config.h"
 #include "../../util/visitors/occurs.h"
 #include "../../util/visitors/partial_eval_exp.h"
 
@@ -195,8 +196,8 @@ MDI Label::getImage(MDI intersection) const
   }
 }
 
-EvalOccur::EvalOccur(Expression exp, VarSymbolTable symbols, Option<Range> range)
-    : _exp(exp), _cr(nullptr), _symbols(symbols), _range(range)
+EvalOccur::EvalOccur(Expression exp, Option<Range> range)
+    : _exp(exp), _cr(nullptr), _range(range)
 {
   if (_exp.expression()->expressionType() == EXPCOMPREF) {
     _cr = _exp.expression()->getAsComponentReference();
@@ -275,7 +276,7 @@ void EvalOccur::initialize()
     AST_ExpressionList indexes = _cr->firstIndex();
     AST_ExpressionListIterator it;
     foreach (it, indexes) {
-      PartialEvalExp pexp(_symbols);
+      PartialEvalExp pexp;
       AST_Expression cur = pexp.apply(current_element(it));
       if (cur->expressionType() == EXPINTEGER) {
         int v = cur->getAsInteger()->val();
@@ -284,7 +285,7 @@ void EvalOccur::initialize()
         _offsets.push_back(0);
       } else if (cur->expressionType() == EXPCOMPREF) {
         AST_Expression_ComponentReference cr = cur->getAsComponentReference();
-        Option<Variable> var = _symbols[cr->name()];
+        Option<Variable> var = ModelConfig::instance().lookup(cr->name());
         if (var && _range) {
           RangeDefinitionTable rdt = _range->definition();
           Option<RangeDefinition> rd = rdt[var->name()];
@@ -312,7 +313,7 @@ void EvalOccur::initialize()
         int offset = constant(cur);
         string name = reference(cur);
         int s = step(cur);
-        Option<Variable> var = _symbols[name];
+        Option<Variable> var = ModelConfig::instance().lookup(name);
         if (var && _range) {
           RangeDefinitionTable rdt = _range->definition();
           Option<RangeDefinition> rd = rdt[name];
@@ -338,15 +339,15 @@ Usage EvalOccur::usages() { return _usages; }
 
 Offset EvalOccur::offsets() { return Offset(_offsets); }
 
-GenerateEdge::GenerateEdge(VertexProperty source, VertexProperty sink, VarSymbolTable symbols, EDGE::Direction dir, VERTEX::Eval eval)
-    : _source(source), _sink(sink), _exist(false), _symbols(symbols), _ips(), _dir(dir), _eval(eval)
+GenerateEdge::GenerateEdge(VertexProperty source, VertexProperty sink, EDGE::Direction dir, VERTEX::Eval eval)
+    : _source(source), _sink(sink), _exist(false), _ips(), _dir(dir), _eval(eval)
 {
   initialize();
 }
 
 void GenerateEdge::initialize()
 {
-  Occurs occurs(_source.var().name(), _symbols);
+  Occurs occurs(_source.var().name());
   if (_eval == VERTEX::LHS) {
     if (_source.type() == VERTEX::Influencer && _sink.type() == VERTEX::Equation && !_sink.eq().isAlgebraic() &&
         _source.id() == _sink.eq().id()) {
@@ -436,7 +437,7 @@ void GenerateEdge::build(list<Expression> exps)
   for (Expression exp : exps) {
     // cout << "BUILDER EXP: " << exp << endl;
     assert(exp.isReference());
-    EvalOccur eval_occur(exp, _symbols, sink_range);
+    EvalOccur eval_occur(exp, sink_range);
     MDI mdi_dom(eval_occur.intervals());
     MDI mdi_ran(sink_interval);
     if (_dir == EDGE::Input) {
@@ -476,7 +477,7 @@ MDI GenerateEdge::getScalarMDI(Expression exp)
     AST_ExpressionList indexes = cr->firstIndex();
     AST_ExpressionListIterator it;
     foreach (it, indexes) {
-      PartialEvalExp pexp(_symbols);
+      PartialEvalExp pexp;
       AST_Expression cur = pexp.apply(current_element(it));
       if (cur->expressionType() == EXPINTEGER) {
         int v = cur->getAsInteger()->val();

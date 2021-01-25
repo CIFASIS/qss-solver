@@ -37,7 +37,7 @@ IndexShift IndexShiftBuilder::build()
 {
   EquationTable::iterator eq_it;
   for (Equation eq = _algebraics.begin(eq_it); !_algebraics.end(eq_it); eq = _algebraics.next(eq_it)) {
-    EvalOccur eval_occur(eq.lhs(), _symbols, eq.range());
+    EvalOccur eval_occur(eq.lhs(), eq.range());
     if (eval_occur.hasIndex()) {
       _index_shift[eq.id()] = eval_occur.offsets();
     }
