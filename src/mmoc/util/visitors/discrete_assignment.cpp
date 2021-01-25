@@ -20,6 +20,7 @@
 #include "discrete_assignment.h"
 
 #include "../error.h"
+#include "../model_config.h"
 #include "../symbol_table.h"
 
 namespace MicroModelica {
@@ -30,7 +31,7 @@ bool DiscreteAssignment::foldTraverseElement(AST_Expression exp)
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-    Option<Variable> var = _symbols[cr->name()];
+    Option<Variable> var = ModelConfig::instance().lookup(cr->name());
     if (var && var->isDiscrete()) {
       Error::instance().add(cr->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Can not assign discrete variable in equation.");
     }

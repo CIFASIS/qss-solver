@@ -32,15 +32,15 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-ConvertEquation::ConvertEquation(AST_Equation equation, VarSymbolTable& symbols) : _symbols(symbols) { _equation = convert(equation); }
+ConvertEquation::ConvertEquation(AST_Equation equation) { _equation = convert(equation); }
 
 AST_Equation ConvertEquation::convert(AST_Equation eq)
 {
   if (eq->equationType() == EQEQUALITY) {
-    ReplaceInnerProduct rip(_symbols);
+    ReplaceInnerProduct rip;
     AST_Expression l = eq->getAsEquality()->left();
     AST_Expression r = rip.apply(eq->getAsEquality()->right());
-    ConvertExpression convert_exp = ConvertExpression(l, r, _symbols);
+    ConvertExpression convert_exp = ConvertExpression(l, r);
     string transform = convert_exp.get();
     l = convert_exp.left();
     r = convert_exp.right();

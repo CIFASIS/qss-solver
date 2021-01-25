@@ -102,7 +102,7 @@ void VariableUsage::generateMapFromUsage()
   }
   ApplyVariableUsage var_usage(_usage_map);
   VarSymbolTable symbols = ModelConfig::instance().symbols();
-  PartialEvalExp partial_eval(symbols);
+  PartialEvalExp partial_eval;
   _rhs = Expression(partial_eval.apply(var_usage.apply(_rhs.expression())));
 }
 
@@ -123,7 +123,7 @@ void VariableUsage::generateMapFromLHS()
   }
   ApplyVariableUsage var_usage(_usage_map);
   VarSymbolTable symbols = ModelConfig::instance().symbols();
-  PartialEvalExp partial_eval(symbols);
+  PartialEvalExp partial_eval;
   _replaced = Expression(partial_eval.apply(var_usage.apply(_rhs.expression())));
 }
 

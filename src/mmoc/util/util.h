@@ -33,6 +33,7 @@
 #include "table.h"
 
 namespace MicroModelica {
+
 namespace IR {
 class Equation;
 class CompiledPackage;
@@ -41,6 +42,7 @@ typedef ModelTable<std::string, CompiledPackage> CompiledPackageTable;
 typedef ModelTable<std::string, CompiledFunction> CompiledFunctionTable;
 typedef ModelTable<int, Equation> EquationTable;
 }  // namespace IR
+
 namespace Util {
 
 typedef ModelTable<std::string, std::string> ImportTable;
@@ -91,7 +93,7 @@ class Utils {
   bool checkBuiltInFunctions(std::string name);
   inline std::string fileName() { return _file_name; };
   inline int id() { return _ids++; };
-  Variable variable(AST_Expression exp, VarSymbolTable& symbols);
+  Variable variable(AST_Expression exp);
   IR::Expression variableExpression(string name, Option<IR::Range> range);
   std::string tabs(int t);
 

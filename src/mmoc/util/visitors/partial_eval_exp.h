@@ -29,7 +29,7 @@ namespace Util {
  */
 class PartialEvalExp : public AST_Expression_Visitor<AST_Expression> {
   public:
-  PartialEvalExp(VarSymbolTable symbols);
+  PartialEvalExp();
 
   private:
   AST_Expression foldTraverseElement(AST_Expression exp);
@@ -41,7 +41,6 @@ class PartialEvalExp : public AST_Expression_Visitor<AST_Expression> {
   bool isIntegerOrConstant(AST_Expression exp);
   bool canReduce(AST_Expression exp);
   AST_Expression reduce(AST_Expression reduce, AST_Expression term, BinOpType type);
-  VarSymbolTable _symbols;
 };
 
 }  // namespace Util

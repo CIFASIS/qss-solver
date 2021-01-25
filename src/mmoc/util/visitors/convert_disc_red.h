@@ -28,7 +28,7 @@ class ConvertDiscRed : public AST_Expression_Visitor<AST_Expression> {
   public:
   typedef enum : int { MAX = 0, MIN, COUNT } DiscReduction;
 
-  ConvertDiscRed(VarSymbolTable &symbols);
+  ConvertDiscRed();
   ~ConvertDiscRed() = default;
 
   void setReduction(int red_operator);
@@ -51,7 +51,6 @@ class ConvertDiscRed : public AST_Expression_Visitor<AST_Expression> {
   AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
   AST_Expression foldTraverseElementUMinus(AST_Expression exp);
 
-  VarSymbolTable &_symbols;
   bool _has_reduction;
   list<AST_Statement> _code;
   list<Variable> _variables;

@@ -26,7 +26,7 @@
 namespace MicroModelica {
 namespace Util {
 
-Algebraics::Algebraics() : _symbols(ModelConfig::instance().symbols()), _exps(newAST_ExpressionList()), _var() {}
+Algebraics::Algebraics() : _exps(newAST_ExpressionList()), _var() {}
 
 void Algebraics::exclude(Variable var) { _var = var; }
 
@@ -36,7 +36,7 @@ bool Algebraics::foldTraverseElement(AST_Expression e)
   switch (e->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = e->getAsComponentReference();
-    Option<Variable> var = _symbols[cr->name()];
+    Option<Variable> var = ModelConfig::instance().lookup(cr->name());
     if (var && var->isAlgebraic() && (var->name() != _var.name())) {
       has_algebraics = true;
       AST_ListAppend(_exps, e);

@@ -34,8 +34,8 @@ namespace IR {
 template <class T, class C>
 class ReductionFunctions {
   public:
-  ReductionFunctions(AST_Expression expression, Util::VarSymbolTable &symbols, Util::Variable lhs)
-      : _has_reduction_function(false), _expression(expression), _symbols(symbols), _lhs(lhs){};
+  ReductionFunctions(AST_Expression expression, Util::Variable lhs)
+      : _has_reduction_function(false), _expression(expression), _lhs(lhs){};
 
   bool hasReductionFunctions() { return _has_reduction_function; };
 
@@ -45,7 +45,7 @@ class ReductionFunctions {
 
   AST_Expression apply()
   {
-    C convert_red(_symbols);
+    C convert_red;
     convert_red.setLHS(_lhs);
     AST_Expression converted_exp = _expression;
     int operators = convert_red.operators();
@@ -69,7 +69,6 @@ class ReductionFunctions {
   AST_Expression _expression;
   list<T> _code;
   list<Util::Variable> _variables;
-  Util::VarSymbolTable &_symbols;
   Util::Variable _lhs;
 };
 

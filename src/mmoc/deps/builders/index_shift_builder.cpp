@@ -28,8 +28,8 @@ using namespace Util;
 namespace Deps {
 using namespace SBG;
 
-IndexShiftBuilder::IndexShiftBuilder(EquationTable &algebraics, VarSymbolTable &symbols)
-    : _algebraics(algebraics), _symbols(symbols), _index_shift()
+IndexShiftBuilder::IndexShiftBuilder(EquationTable &algebraics)
+    : _algebraics(algebraics), _index_shift()
 {
 }
 

@@ -29,7 +29,7 @@ namespace Deps {
 
 class SDSBGraphBuilder {
   public:
-  SDSBGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics, Util::VarSymbolTable &symbols);
+  SDSBGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics);
   ~SDSBGraphBuilder() = default;
   SBG::SBGraph build();
 
@@ -42,7 +42,6 @@ class SDSBGraphBuilder {
   list<SBG::S_Vertex> _state_nodes;
   IR::EquationTable _equations;
   IR::EquationTable _algebraics;
-  Util::VarSymbolTable _symbols;
   std::map<std::string, int> _node_names;
 };
 }  // namespace Deps

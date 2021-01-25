@@ -20,6 +20,7 @@
 #include "sd_sb_graph_builder.h"
 
 #include "../graph/sb_graph_helpers.h"
+#include "../../util/model_config.h"
 #include "../../util/util_types.h"
 
 namespace MicroModelica {
@@ -28,13 +29,12 @@ using namespace Util;
 namespace Deps {
 using namespace SBG;
 
-SDSBGraphBuilder::SDSBGraphBuilder(EquationTable &equations, EquationTable &algebraics, VarSymbolTable &symbols)
+SDSBGraphBuilder::SDSBGraphBuilder(EquationTable &equations, EquationTable &algebraics)
     : _equation_def_nodes(),
       _equation_lhs_nodes(),
       _state_nodes(),
       _equations(equations),
       _algebraics(algebraics),
-      _symbols(symbols),
       _node_names()
 {
 }
@@ -44,7 +44,8 @@ SBGraph SDSBGraphBuilder::build()
   SBGraph graph;
   // First, add the symbols as vertex.
   VarSymbolTable::iterator it;
-  for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
+  for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     SBG::VertexProperty vp = SBG::VertexProperty();
     if (var.isState()) {
       vp.setType(SBG::VERTEX::Influencee);

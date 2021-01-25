@@ -48,7 +48,7 @@ ExpressionDerivator::ExpressionDerivator() {}
 AST_Equation_Equality EquationDerivator::derivate(AST_Equation_Equality eq)
 {
   VarSymbolTable symbols = ModelConfig::instance().symbols();
-  ConvertToGiNaC to_ginac(symbols, Option<Expression>());
+  ConvertToGiNaC to_ginac= ConvertToGiNaC(Option<Expression>());
   ConvertToExpression to_exp;
   GiNaC::ex left = to_ginac.convert(eq->left());
   GiNaC::ex right = to_ginac.convert(eq->right());
@@ -61,7 +61,7 @@ AST_Equation_Equality EquationDerivator::derivate(AST_Equation_Equality eq)
 AST_Expression ExpressionDerivator::derivate(AST_Expression exp, Expression e)
 {
   VarSymbolTable symbols = ModelConfig::instance().symbols();
-  ConvertToGiNaC to_ginac(symbols, e);
+  ConvertToGiNaC to_ginac = ConvertToGiNaC(e);
   ConvertToExpression to_exp;
   GiNaC::ex dexp = to_ginac.convert(exp, false, true);
   GiNaC::symbol time = to_ginac.getTime();
@@ -75,8 +75,7 @@ Expression ExpressionDerivator::partialDerivative(Equation eq, Index variable)
   assert(var_usage.isState() || var_usage.isAlgebraic());
   AST_Expression rhs_exp = eq.rhs().expression();
   string usage = variable.modelicaExp();
-  VarSymbolTable symbols = ModelConfig::instance().symbols();
-  ConvertToGiNaC to_ginac(symbols, Option<Expression>());
+  ConvertToGiNaC to_ginac= ConvertToGiNaC(Option<Expression>());
   ConvertToExpression to_exp;
   ReplaceDer replace_der;
   GiNaC::ex dexp = to_ginac.convert(rhs_exp, false, true);

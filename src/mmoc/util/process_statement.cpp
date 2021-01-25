@@ -129,8 +129,8 @@ void processStatement(AST_Statement stm)
 void applyReduction(AST_Statement_Assign asg, AST_StatementList stms, AST_StatementListIterator stm_it)
 {
   VarSymbolTable symbols = ModelConfig::instance().symbols();
-  ReductionFunctions<AST_Statement, ConvertDiscRed> reduction_functions(asg->exp(), symbols,
-                                                                        Utils::instance().variable(asg->lhs(), symbols));
+  ReductionFunctions<AST_Statement, ConvertDiscRed> reduction_functions(asg->exp(),
+                                                                        Utils::instance().variable(asg->lhs()));
   AST_Expression new_exp = reduction_functions.apply();
   if (reduction_functions.hasReductionFunctions()) {
     asg->setExp(new_exp);

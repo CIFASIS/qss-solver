@@ -154,8 +154,8 @@ void JacobianMatrix::build()
   EquationTable derivatives = ModelConfig::instance().derivatives();
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   SBG::JacobianMatrixBuilder jac_matrix;
-  IndexShiftBuilder index_shifts(algebraics, symbols);
-  SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(derivatives, algebraics, symbols);
+  IndexShiftBuilder index_shifts(algebraics);
+  SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(derivatives, algebraics);
   jac_matrix.compute(SDSBGraph.build(), index_shifts.build());
   _jac_matrix_def = jac_matrix.deps();
 }

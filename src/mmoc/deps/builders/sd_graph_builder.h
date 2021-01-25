@@ -37,7 +37,6 @@ class SDGraphBuilder {
   list<IfeVertex> _state_nodes;
   IR::EquationTable _equations;
   IR::EquationTable _algebraics;
-  Util::VarSymbolTable _symbols;
 };
 }  // namespace Deps
 }  // namespace MicroModelica

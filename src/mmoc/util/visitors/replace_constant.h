@@ -27,7 +27,7 @@ namespace MicroModelica {
 namespace Util {
 class ReplaceConstant : public AST_Expression_Visitor<AST_Expression> {
   public:
-  ReplaceConstant(VarSymbolTable& symbols);
+  ReplaceConstant();
   ~ReplaceConstant() = default;
 
   private:
@@ -35,7 +35,6 @@ class ReplaceConstant : public AST_Expression_Visitor<AST_Expression> {
   AST_Expression foldTraverseElementUMinus(AST_Expression exp);
   AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
 
-  VarSymbolTable _symbols;
 };
 
 }  // namespace Util

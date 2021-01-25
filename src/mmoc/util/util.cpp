@@ -33,6 +33,7 @@
 #include "../ir/index.h"
 #include "compile_flags.h"
 #include "error.h"
+#include "model_config.h"
 #include "symbol_table.h"
 
 namespace MicroModelica {
@@ -319,7 +320,7 @@ bool Utils::checkCompiledFunctions(string name)
 
 bool Utils::checkBuiltInFunctions(string name) { return BuiltInFunction::instance().lookup(name); }
 
-Variable Utils::variable(AST_Expression exp, VarSymbolTable &symbols)
+Variable Utils::variable(AST_Expression exp)
 {
   string var_name;
   ExpressionType type = exp->expressionType();
@@ -333,7 +334,7 @@ Variable Utils::variable(AST_Expression exp, VarSymbolTable &symbols)
     AST_Expression_ComponentReference var_exp = args->getAsComponentReference();
     var_name = *AST_ListFirst(var_exp->names());
   }
-  Option<Variable> var = symbols[var_name];
+  Option<Variable> var = ModelConfig::instance().lookup(var_name);
   if (!var) {
     Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "utils.cpp:342 %s", var_name.c_str());
   }

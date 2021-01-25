@@ -21,8 +21,9 @@
 
 #include <sstream>
 
-#include "../util.h"
 #include "../error.h"
+#include "../model_config.h"
+#include "../util.h"
 #include "eval_init_exp.h"
 
 namespace MicroModelica {
@@ -30,7 +31,7 @@ using namespace IR;
 using namespace Deps;
 namespace Util {
 
-ConvertOutputRange::ConvertOutputRange(VarSymbolTable& symbols) : _symbols(symbols), _range(), _intervals(), _dim(0), _var(){};
+ConvertOutputRange::ConvertOutputRange() : _range(), _intervals(), _dim(0), _var(){};
 
 AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
 {
@@ -38,7 +39,7 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
     _var = cr->name();
-    Option<Variable> var = _symbols[_var];
+    Option<Variable> var = ModelConfig::instance().lookup(_var);
     if (!var) {
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "Convert output expression: %s", cr->name().c_str());
     }
@@ -50,7 +51,7 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
       foreach (it, indexes) {
         string index = Utils::instance().iteratorVar(_dim);
         Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-        _symbols.insert(index, vi);
+        ModelConfig::instance().addVariable(index, vi);
         AST_ListAppend(new_indexes, apply(current_element(it)));
         _dim++;
       }
@@ -64,7 +65,7 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
       for (int i = 0; i < dims; i++) {
         string index = Utils::instance().iteratorVar(_dim);
         Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-        _symbols.insert(index, vi);
+        ModelConfig::instance().addVariable(index, vi);
         AST_ListAppend(new_indexes, generateIndexVariable(var->size(_dim)));
         _dim++;
       }
@@ -112,7 +113,7 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
     }
   }
   case EXPCOLON: {
-    Option<Variable> var = _symbols[_var];
+    Option<Variable> var = ModelConfig::instance().lookup(_var);
     if (!var) {
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "Convert output expression: %s", _var.c_str());
     }

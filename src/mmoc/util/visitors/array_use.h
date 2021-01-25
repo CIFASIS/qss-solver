@@ -26,13 +26,8 @@ namespace MicroModelica {
 namespace Util {
 class ArrayUse : public AST_Expression_Visitor<bool> {
   public:
-  ArrayUse(VarSymbolTable symbols) : _symbols(symbols){};
+  ArrayUse() {};
   ~ArrayUse() = default;
-
-  protected:
-  ArrayUse() : _symbols() {}
-
-  VarSymbolTable _symbols;
 
   private:
   bool foldTraverseElement(AST_Expression exp);
@@ -42,7 +37,7 @@ class ArrayUse : public AST_Expression_Visitor<bool> {
 
 class StatementArrayUse : public AST_Statement_Visitor<bool, bool, ArrayUse> {
   public:
-  StatementArrayUse(VarSymbolTable symbols) : AST_Statement_Visitor(ArrayUse(symbols)){};
+  StatementArrayUse() : AST_Statement_Visitor(ArrayUse()){};
   ~StatementArrayUse() = default;
 
   private:

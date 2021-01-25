@@ -18,8 +18,9 @@
  ******************************************************************************/
 
 #include "occurs.h"
-#include "../symbol_table.h"
 #include "../error.h"
+#include "../model_config.h"
+#include "../symbol_table.h"
 
 namespace MicroModelica {
 using namespace IR;
@@ -30,7 +31,7 @@ bool Occurs::foldTraverseElement(AST_Expression exp)
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-    Option<Variable> var = _symbols[cr->name()];
+    Option<Variable> var = ModelConfig::instance().lookup(cr->name());
     if (var && (var->name() == _var)) {
       Expression ep(exp);
       _occs[ep.print()] = ep;

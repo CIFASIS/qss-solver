@@ -38,8 +38,8 @@ namespace IR {
 
 /* ExternalFunction Class Implementation */
 
-ExternalFunction::ExternalFunction(string lvalue, string name, AST_ExpressionList args, const VarSymbolTable& symbols)
-    : _lvalue(lvalue), _name(name), _args(args), _symbols(symbols)
+ExternalFunction::ExternalFunction(string lvalue, string name, AST_ExpressionList args)
+    : _lvalue(lvalue), _name(name), _args(args)
 {
 }
 

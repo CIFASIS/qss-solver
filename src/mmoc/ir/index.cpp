@@ -66,7 +66,7 @@ void Index::parseIndexes()
     foreach (it, indexes) {
       ParseIndex parse_index;
       VarSymbolTable symbols = ModelConfig::instance().symbols();
-      PartialEvalExp partial_eval(symbols);
+      PartialEvalExp partial_eval;
       parse_index.apply(partial_eval.apply(current_element(it)));
       _indexes[dim++] = IndexDefinition(parse_index.variable(), parse_index.constant(), parse_index.factor());
     }
@@ -153,7 +153,7 @@ string Index::print() const
 {
   stringstream buffer;
   VarSymbolTable symbols = ModelConfig::instance().symbols();
-  PartialEvalExp partial_eval = PartialEvalExp(symbols);
+  PartialEvalExp partial_eval;
   Expression exp = Expression(partial_eval.apply(_exp.expression()));
   buffer << "_idx" << exp;
   return buffer.str();

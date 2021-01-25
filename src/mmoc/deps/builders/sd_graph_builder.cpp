@@ -19,6 +19,7 @@
 
 #include "sd_graph_builder.h"
 
+#include "../../util/model_config.h"
 #include "../../util/util_types.h"
 
 namespace MicroModelica {
@@ -36,7 +37,8 @@ DepsGraph SDGraphBuilder::build()
   DepsGraph graph;
   // First, add the symbols as vertex.
   VarSymbolTable::iterator it;
-  for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
+  for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     VertexProperty vp = VertexProperty();
     if (var.isState()) {
       vp.setType(VERTEX::Influencee);

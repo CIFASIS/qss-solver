@@ -167,8 +167,9 @@ class AST_Statement_Visitor {
       return c;
     }
     default:
-      return c;
+      break;
     }
+    return c;
   };
 
   private:

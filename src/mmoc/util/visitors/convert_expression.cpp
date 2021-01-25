@@ -26,7 +26,7 @@
 #include "../../ast/ast_builder.h"
 #include "../../ir/event.h"
 #include "../error.h"
-#include "../error.h"
+#include "../model_config.h"
 #include "../util.h"
 #include "../visitors/replace_constant.h"
 
@@ -36,10 +36,10 @@ namespace Util {
 
 /* ConvertExpression Class */
 
-ConvertExpression::ConvertExpression(AST_Expression left, AST_Expression right, VarSymbolTable& symbols)
-    : _left(nullptr), _right(nullptr), _symbols(symbols), _convert()
+ConvertExpression::ConvertExpression(AST_Expression left, AST_Expression right)
+    : _left(nullptr), _right(nullptr), _convert()
 {
-  ReplaceConstant replace_constant(_symbols);
+  ReplaceConstant replace_constant;
   _left = replace_constant.apply(left);
   _right = replace_constant.apply(right);
   convert();
@@ -64,7 +64,7 @@ AST_Expression_ComponentReference ConvertExpression::componentReference(AST_Expr
 
 Variable ConvertExpression::variable(AST_Expression_ComponentReference exp)
 {
-  Option<Variable> var = _symbols[exp->name()];
+  Option<Variable> var = ModelConfig::instance().lookup(exp->name());
   if (!var) {
     Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "%s", exp->name().c_str());
   }
@@ -121,7 +121,7 @@ void ConvertExpression::convert()
                                     "Different array size in element-wise operation");
             }
             Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-            _symbols["i"] = vi;
+            ModelConfig::instance().addVariable("i", vi);
             stringstream buffer;
             buffer << "for i in 1:" << elvi.size() << " loop" << endl;
             buffer << prefix << eleft->name() << "[i]" << postfix << " = " << cleft->name() << "[i] " << Utils::instance().opString(type);
@@ -134,7 +134,7 @@ void ConvertExpression::convert()
                                     "Different array size in element-wise operation");
             }
             Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-            _symbols["i"] = vi;
+            ModelConfig::instance().addVariable("i", vi);
             stringstream buffer;
             buffer << "for i in 1:" << elvi.size() << " loop" << endl;
             buffer << prefix << eleft->name() << "[i]" << postfix << " = " << cleft->name() << Utils::instance().opString(type);
@@ -147,7 +147,7 @@ void ConvertExpression::convert()
                                     "Different array size in element-wise operation");
             }
             Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-            _symbols["i"] = vi;
+            ModelConfig::instance().addVariable("i", vi);
             stringstream buffer;
             buffer << "for i in 1:" << elvi.size() << " loop" << endl;
             buffer << prefix << eleft->name() << "[i]" << postfix << " = " << cleft->name() << "[i]" << Utils::instance().opString(type);
@@ -166,7 +166,7 @@ void ConvertExpression::convert()
                                   "Different array size in element-wise operation");
           }
           Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-          _symbols["i"] = vi;
+          ModelConfig::instance().addVariable("i", vi);
           stringstream buffer;
           buffer << "for i in 1:" << elvi.size() << " loop" << endl;
           buffer << prefix << eleft->name() << "[i]" << postfix << " = " << cleft->name() << "[i]" << Utils::instance().opString(type);
@@ -184,7 +184,7 @@ void ConvertExpression::convert()
                                   "Different array size in element-wise operation");
           }
           Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-          _symbols["i"] = vi;
+          ModelConfig::instance().addVariable("i", vi);
           stringstream buffer;
           buffer << "for i in 1:" << elvi.size() << " loop" << endl;
           buffer << prefix << eleft->name() << "[i]" << postfix << " = " << scalarValue(left) << Utils::instance().opString(type);

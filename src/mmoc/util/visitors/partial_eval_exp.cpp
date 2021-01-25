@@ -24,6 +24,7 @@
 #include "../../ast/ast_builder.h"
 #include "../debug.h"
 #include "../error.h"
+#include "../model_config.h"
 #include "../symbol_table.h"
 
 namespace MicroModelica {
@@ -31,14 +32,14 @@ namespace Util {
 
 /* Eval Expression class. */
 
-PartialEvalExp::PartialEvalExp(VarSymbolTable symbols) { _symbols = symbols; }
+PartialEvalExp::PartialEvalExp() {}
 
 AST_Expression PartialEvalExp::foldTraverseElement(AST_Expression exp)
 {
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-    Option<Variable> var = _symbols[cr->name()];
+    Option<Variable> var = ModelConfig::instance().lookup(cr->name());
     if (!var) {
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "partial_eval_exp.cpp:43 %s", cr->name().c_str());
       break;
@@ -189,7 +190,7 @@ bool PartialEvalExp::isIntegerOrConstant(AST_Expression exp)
     return true;
   } else if (exp->expressionType() == EXPCOMPREF) {
     AST_Expression_ComponentReference ref = exp->getAsComponentReference();
-    Option<Variable> var = _symbols[ref->name()];
+    Option<Variable> var = ModelConfig::instance().lookup(ref->name());
     if (var) {
       return var->isConstant();
     }
@@ -208,7 +209,7 @@ int PartialEvalExp::getValue(AST_Expression exp)
     return exp->getAsInteger()->val();
   } else if (exp->expressionType() == EXPCOMPREF) {
     AST_Expression_ComponentReference ref = exp->getAsComponentReference();
-    Option<Variable> var = _symbols[ref->name()];
+    Option<Variable> var = ModelConfig::instance().lookup(ref->name());
     if (!var) {
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "partial_eval_exp.cpp:148 %s", ref->name().c_str());
       return 0;

@@ -27,14 +27,14 @@ namespace Util {
 
 class ConvertEquation {
   public:
-  ConvertEquation(AST_Equation equation, MicroModelica::Util::VarSymbolTable& symbols);
-  ~ConvertEquation(){};
+  ConvertEquation(AST_Equation equation);
+  ~ConvertEquation() = default;
   inline AST_Equation get() { return _equation; };
 
   private:
   AST_Equation convert(AST_Equation eq);
+
   AST_Equation _equation;
-  MicroModelica::Util::VarSymbolTable _symbols;
 };
 
 }  // namespace Util

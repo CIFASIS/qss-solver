@@ -29,13 +29,12 @@ namespace Deps {
 
 class IndexShiftBuilder {
   public:
-  IndexShiftBuilder(IR::EquationTable &algebraics, Util::VarSymbolTable &symbols);
+  IndexShiftBuilder(IR::EquationTable &algebraics);
   ~IndexShiftBuilder() = default;
   SBG::IndexShift build();
 
   private:
   IR::EquationTable _algebraics;
-  Util::VarSymbolTable _symbols;
   SBG::IndexShift _index_shift;
 };
 

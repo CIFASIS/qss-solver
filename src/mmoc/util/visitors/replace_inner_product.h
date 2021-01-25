@@ -24,27 +24,17 @@
 
 namespace MicroModelica {
 namespace Util {
-/**
- *
- */
+
 class ReplaceInnerProduct : public AST_Expression_Visitor<AST_Expression> {
   public:
-  /**
-   *
-   * @param vt
-   */
-  ReplaceInnerProduct(MicroModelica::Util::VarSymbolTable& vt);
-  /**
-   *
-   */
-  ~ReplaceInnerProduct(){};
+  ReplaceInnerProduct();
+  ~ReplaceInnerProduct() = default;
 
   private:
   bool controlArray(AST_Expression exp);
   AST_Expression foldTraverseElement(AST_Expression exp);
   AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
   AST_Expression foldTraverseElementUMinus(AST_Expression exp);
-  MicroModelica::Util::VarSymbolTable _symbols;
 };
 }  // namespace Util
 }  // namespace MicroModelica
