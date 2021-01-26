@@ -17,14 +17,14 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 4.0
+#       VERSION: 3.2
 #===================================================================================
 
 
 if [ ! -d $HOME/qss-solver ]
 then
   # No previous instalation and first run
-	echo "Installing QSS Solver..."
+	echo "Installing MicroModelica Solver..."
 	cp -a /opt/qss-solver $HOME/qss-solver
 	rm $HOME/qss-solver/bin/run.sh
   cd $HOME/qss-solver/bin
@@ -42,7 +42,7 @@ else
     ./qss-solver
   else
     # Previous instalation and different version
-    OW=`zenity --question --text "There is a different version of QSS Solver on your home folder (ver. $VERHOME). Do you wish to overwrite it with ver. $VEROPT?\nNOTE: you will not lose your models."; echo $?`
+    OW=`zenity --question --text "There is a different version of MicroModelica Solver on your home folder (ver. $VERHOME). Do you wish to overwrite it with ver. $VEROPT?\nNOTE: you will not lose your models."; echo $?`
     if [ $OW == 0 ];
     then 
 	    cp -a -f /opt/qss-solver/* $HOME/qss-solver
