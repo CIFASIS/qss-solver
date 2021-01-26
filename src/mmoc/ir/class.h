@@ -86,11 +86,9 @@ class Function : public Class {
   private:
   Util::ImportTable _imports;
   std::string _name;
-  Util::VarSymbolTable _symbols;
   Util::VarSymbolTable _localSymbols;
   FunctionAnnotation _annotations;
   StatementTable _statements;
-  Util::TypeSymbolTable _types;
   CompiledPackageTable _packages;
   Util::VarSymbolTable _arguments;
   unsigned int _outputNbr;
@@ -192,8 +190,6 @@ class Model : public Class {
 
   std::string _name;
   Util::ImportTable _imports;
-  Util::VarSymbolTable _symbols;
-  Util::TypeSymbolTable _types;
   ModelAnnotation _annotations;
   FunctionTable _calledFunctions;
   EquationTable _derivatives;

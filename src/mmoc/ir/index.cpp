@@ -419,7 +419,7 @@ void Range::addRangeLocalVariables() const
   for (RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it)) {
     Variable range_var(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
     string index = getDimensionVar(i++, true);
-    ModelConfig::instance().symbols().insert(index, range_var);
+    ModelConfig::instance().addVariable(index, range_var);
     ModelConfig::instance().addLocalSymbol("int " + index + ";");
   }
 }

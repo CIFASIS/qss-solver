@@ -50,10 +50,8 @@ namespace IR {
 Function::Function(string name)
     : _imports(),
       _name(name),
-      _symbols(),
       _localSymbols(),
       _statements(),
-      _types(),
       _packages(),
       _arguments(),
       _outputNbr(0),
@@ -61,7 +59,6 @@ Function::Function(string name)
       _statementId(0),
       _externalFunctions()
 {
-  ModelConfig::instance().setSymbols(_symbols);
 }
 
 Function::~Function() {}
@@ -191,8 +188,6 @@ string Package::prefix() { return "__" + _name + "__"; }
 Model::Model()
     : _name(),
       _imports(),
-      _symbols(),
-      _types(),
       _annotations(),
       _calledFunctions(),
       _derivatives(),
@@ -219,15 +214,11 @@ Model::Model()
       _inputId(1),
       _externalFunctions(false)
 {
-  _symbols.initialize(_types);
-  ModelConfig::instance().setSymbols(_symbols);
 }
 
 Model::Model(string name)
     : _name(name),
       _imports(),
-      _symbols(),
-      _types(),
       _annotations(),
       _calledFunctions(),
       _derivatives(),
@@ -254,8 +245,6 @@ Model::Model(string name)
       _inputId(1),
       _externalFunctions(false)
 {
-  _symbols.initialize(_types);
-  ModelConfig::instance().setSymbols(_symbols);
 }
 
 VarSymbolTable Model::symbols() const { return ModelConfig::instance().symbols(); };

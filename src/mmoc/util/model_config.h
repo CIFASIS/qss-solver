@@ -88,7 +88,9 @@ class ModelConfig {
         _symbols(),
         _local_symbols(),
         _local_init_symbols(),
-        _init_symbols(false){};
+        _init_symbols(false),
+        _types()
+        { _symbols.initialize(_types); };
 
   IR::ModelAnnotation _model_annotations;
   IR::EquationTable _algebraics;
@@ -100,6 +102,7 @@ class ModelConfig {
   SymbolTable _local_symbols;
   SymbolTable _local_init_symbols;
   bool _init_symbols;
+  TypeSymbolTable _types;
 };
 
 }  // namespace Util
