@@ -140,8 +140,9 @@ list<Expression> Expression::indexes() const
 Expression Expression::generate(string var_name, vector<string> indices)
 {
   stringstream code;
+  code << var_name;
   if (indices.size()) {
-    code << var_name << "[";
+    code << "[";
   }
   int i = 0, size = indices.size();
   for (string exp : indices) {
