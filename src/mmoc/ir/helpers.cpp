@@ -431,10 +431,11 @@ string FunctionPrinter::equationVariableMacros(Option<Range> range, Expression l
 {
   stringstream buffer;
   if (range) {
+    range->addRangeLocalVariables();
     GetIndexVariables index_usage;
     RangeDefinitionTable range_def = range->definition();
     buffer << "#define _get" << id << "_var_idxs";
-    buffer << "(row, var)\\" << endl;
+    buffer << "(row, var)\\" << endl; 
     map<string, int> usage = index_usage.apply(lhs.expression());
     map<string, string> parse_row = parseIndexes("row", range, 1);
     map<int, string> ctes = parseConstants(lhs);
@@ -451,7 +452,7 @@ string FunctionPrinter::equationVariableMacros(Option<Range> range, Expression l
     for (auto index : ctes) {
       string local_range_var = range->getDimensionVar(index.first, USE_RANGE_DIM_VARS);
       buffer << TAB << local_range_var << " = " << index.second << ";\\\n";
-    }
+    } 
     vector<string> exps;
     exps.push_back(lhs.dimVariables(USE_RANGE_DIM_VARS));
     Expression a_exp = Expression::generate(lhs.reference()->name(), exps);
@@ -469,7 +470,6 @@ string FunctionPrinter::jacMacrosAccess(Equation eq) const
     assert(var);
     code << TAB << "_get" << eq.applyId() << "_var_idxs(row, eq_var);" << endl;
     code << TAB << "_get" << var.get() << "_idxs(eq_var);" << endl;
-    eq.range()->addRangeLocalVariables();
   }
   return code.str();
 }
