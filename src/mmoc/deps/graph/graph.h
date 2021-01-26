@@ -141,7 +141,7 @@ typedef DepsGraph::edge_descriptor Edge;
 
 class EvalOccur {
   public:
-  EvalOccur(IR::Expression exp, Util::VarSymbolTable symbols, Option<IR::Range> range);
+  EvalOccur(IR::Expression exp, Option<IR::Range> range);
   ~EvalOccur() = default;
   bool hasIndex();
   IntervalList intervals();
@@ -157,7 +157,6 @@ class EvalOccur {
 
   IR::Expression _exp;
   AST_Expression_ComponentReference _cr;
-  Util::VarSymbolTable _symbols;
   Option<IR::Range> _range;
   std::vector<int> _offsets;
   Usage _usages;
@@ -166,7 +165,7 @@ class EvalOccur {
 
 class GenerateEdge {
   public:
-  GenerateEdge(struct VertexProperty source, struct VertexProperty sink, Util::VarSymbolTable symbols, EDGE::Direction dir = EDGE::Output,
+  GenerateEdge(struct VertexProperty source, struct VertexProperty sink, EDGE::Direction dir = EDGE::Output,
                VERTEX::Eval eval = VERTEX::RHS);
   ~GenerateEdge() = default;
   inline bool exists() { return _exist; };
@@ -193,7 +192,6 @@ class GenerateEdge {
   VertexProperty _source;
   VertexProperty _sink;
   bool _exist;
-  Util::VarSymbolTable _symbols;
   IndexPairSet _ips;
   EDGE::Direction _dir;
   VERTEX::Eval _eval;

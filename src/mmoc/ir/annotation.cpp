@@ -25,6 +25,7 @@
 #include "../ast/expression.h"
 #include "../ast/modification.h"
 #include "../util/error.h"
+#include "../util/model_config.h"
 #include "../util/symbol_table.h"
 #include "../util/util.h"
 
@@ -116,7 +117,7 @@ SymbolTable FunctionAnnotation::libraries() const { return _libraries; }
 
 string FunctionAnnotation::libraryDirectory() { return _libraryDirectory; }
 
-ModelAnnotation::ModelAnnotation(VarSymbolTable &symbolTable)
+ModelAnnotation::ModelAnnotation()
     : _solver(LIQSS2),
       _solverString("LIQSS2"),
       _commInterval("CI_Step"),
@@ -151,8 +152,7 @@ ModelAnnotation::ModelAnnotation(VarSymbolTable &symbolTable)
       _jacobian(0),
       _BDFPartition(),
       _BDFPartitionDepth(),
-      _BDFMaxStep(0),
-      _symbolTable(symbolTable)
+      _BDFMaxStep(0)
 {
   _annotations.insert(pair<string, ModelAnnotation::type>("experiment", EXPERIMENT));
   _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Description", DESC));
@@ -260,7 +260,7 @@ bool ModelAnnotation::insert(AST_Argument_Modification x)
 void ModelAnnotation::processList(AST_Expression x, list<double> *l)
 {
   l->clear();
-  EvalAnnotation ea(_symbolTable);
+  EvalAnnotation ea;
   AnnotationValue av;
   if (x->expressionType() == EXPBRACE) {
     AST_Expression_Brace b = x->getAsBrace();
@@ -279,7 +279,7 @@ void ModelAnnotation::processList(AST_Expression x, list<double> *l)
 void ModelAnnotation::processList(AST_Expression x, list<string> *l)
 {
   l->clear();
-  EvalAnnotation ea(_symbolTable);
+  EvalAnnotation ea;
   AnnotationValue av;
   if (x->expressionType() == EXPBRACE) {
     AST_Expression_Brace b = x->getAsBrace();
@@ -407,7 +407,7 @@ void ModelAnnotation::processAnnotation(string annot, AST_Modification_Equal x)
   if (itf == _annotations.end()) {
     Error::instance().add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Warning, "%s", annot.c_str());
   }
-  EvalAnnotation ea(_symbolTable);
+  EvalAnnotation ea;
   AnnotationValue av;
   if (itf->second != DQMIN && itf->second != DQREL && itf->second != STEP_SIZE) {
     av = ea.apply(x->exp());
@@ -648,7 +648,7 @@ void AnnotationValue::setStr(string s) { _str = s; }
 
 /* EvalAnnotation class */
 
-EvalAnnotation::EvalAnnotation(VarSymbolTable st) : _st(st), _tokens()
+EvalAnnotation::EvalAnnotation() : _tokens()
 {
   _tokens.insert(pair<string, string>("QSS", "QSS"));
   _tokens.insert(pair<string, string>("CQSS", "CQSS"));
@@ -695,7 +695,7 @@ AnnotationValue EvalAnnotation::foldTraverseElement(AST_Expression e)
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = e->getAsComponentReference();
     string name = cr->name();
-    Option<Variable> vi = _st[name];
+    Option<Variable> vi = ModelConfig::instance().lookup(name);
     if (vi) {
       if (vi->isConstant()) {
         av.setInteger(vi->value());

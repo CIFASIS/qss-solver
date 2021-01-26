@@ -150,7 +150,7 @@ typedef SBGraph::edge_descriptor SBEdge;
 
 class EvalOccur {
   public:
-  EvalOccur(IR::Expression exp, Util::VarSymbolTable symbols, Option<IR::Range> range);
+  EvalOccur(IR::Expression exp, Option<IR::Range> range);
   ~EvalOccur() = default;
   bool hasIndex();
   IntervalList intervals();
@@ -167,7 +167,6 @@ class EvalOccur {
 
   IR::Expression _exp;
   AST_Expression_ComponentReference _cr;
-  Util::VarSymbolTable _symbols;
   Option<IR::Range> _range;
   std::vector<int> _offsets;
   std::vector<int> _factors;
@@ -178,7 +177,7 @@ class EvalOccur {
 
 class BuildEdge {
   public:
-  BuildEdge(struct VertexProperty source, struct VertexProperty sink, Util::VarSymbolTable symbols, EDGE::Direction dir = EDGE::Output,
+  BuildEdge(struct VertexProperty source, struct VertexProperty sink, EDGE::Direction dir = EDGE::Output,
             VERTEX::Eval eval = VERTEX::RHS);
   ~BuildEdge() = default;
 
@@ -206,7 +205,6 @@ class BuildEdge {
   VertexProperty _source;
   VertexProperty _sink;
   bool _exist;
-  Util::VarSymbolTable _symbols;
   PairSet _pairs;
   EDGE::Direction _dir;
   VERTEX::Eval _eval;

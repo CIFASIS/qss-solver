@@ -20,6 +20,7 @@
 #include "sd_sb_graph_builder.h"
 
 #include "../graph/sb_graph_helpers.h"
+#include "../../util/model_config.h"
 #include "../../util/util_types.h"
 
 namespace MicroModelica {
@@ -28,13 +29,12 @@ using namespace Util;
 namespace Deps {
 using namespace SBG;
 
-SDSBGraphBuilder::SDSBGraphBuilder(EquationTable &equations, EquationTable &algebraics, VarSymbolTable &symbols)
+SDSBGraphBuilder::SDSBGraphBuilder(EquationTable &equations, EquationTable &algebraics)
     : _equation_def_nodes(),
       _equation_lhs_nodes(),
       _state_nodes(),
       _equations(equations),
       _algebraics(algebraics),
-      _symbols(symbols),
       _node_names()
 {
 }
@@ -44,7 +44,8 @@ SBGraph SDSBGraphBuilder::build()
   SBGraph graph;
   // First, add the symbols as vertex.
   VarSymbolTable::iterator it;
-  for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
+  for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     SBG::VertexProperty vp = SBG::VertexProperty();
     if (var.isState()) {
       vp.setType(SBG::VERTEX::Influencee);
@@ -90,7 +91,7 @@ SBGraph SDSBGraphBuilder::build()
   {
     foreach_(S_Vertex source, _equation_lhs_nodes)
     {
-      BuildEdge edge = BuildEdge(graph[source], graph[sink], _symbols, SBG::EDGE::Output, SBG::VERTEX::LHS);
+      BuildEdge edge = BuildEdge(graph[source], graph[sink], SBG::EDGE::Output, SBG::VERTEX::LHS);
       if (edge.exists()) {
         PairSet pairs = edge.indexes();
         SBG::Label edge_label(pairs);
@@ -98,7 +99,7 @@ SBGraph SDSBGraphBuilder::build()
       }
       // Check RHS too if we are working with algebraics.
       if (graph[source].type() == SBG::VERTEX::Algebraic) {
-        BuildEdge edge = BuildEdge(graph[source], graph[sink], _symbols, SBG::EDGE::Input, SBG::VERTEX::LHS);
+        BuildEdge edge = BuildEdge(graph[source], graph[sink], SBG::EDGE::Input, SBG::VERTEX::LHS);
         if (edge.exists()) {
           PairSet pairs = edge.indexes();
           SBG::Label edge_label(pairs, SBG::EDGE::Input);
@@ -111,7 +112,7 @@ SBGraph SDSBGraphBuilder::build()
   {
     foreach_(S_Vertex source, _state_nodes)
     {
-      BuildEdge edge = BuildEdge(graph[source], graph[sink], _symbols, SBG::EDGE::Input, SBG::VERTEX::LHS);
+      BuildEdge edge = BuildEdge(graph[source], graph[sink], SBG::EDGE::Input, SBG::VERTEX::LHS);
       if (edge.exists()) {
         PairSet pairs = edge.indexes();
         SBG::Label edge_label(pairs, SBG::EDGE::Input);

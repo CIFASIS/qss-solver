@@ -19,6 +19,7 @@
 
 #include "dh_graph_builder.h"
 
+#include "../../util/model_config.h"
 #include "../../util/util_types.h"
 
 namespace MicroModelica {
@@ -26,13 +27,12 @@ using namespace IR;
 using namespace Util;
 namespace Deps {
 
-DHGraphBuilder::DHGraphBuilder(EventTable& events, EquationTable& algebraics, VarSymbolTable& symbols, STATEMENT::AssignTerm search,
+DHGraphBuilder::DHGraphBuilder(EventTable& events, EquationTable& algebraics, STATEMENT::AssignTerm search,
                                DHGRAPHBUILDER::IfrType ifr_type)
     : _statementDescriptors(),
       _variableDescriptors(),
       _events(events),
       _algebraics(algebraics),
-      _symbols(symbols),
       _search(search),
       _ifr_type(ifr_type)
 {
@@ -45,7 +45,7 @@ void DHGraphBuilder::addStatements(StatementTable stms, DepsGraph& graph, Expres
     ExpressionList lhs_discretes = stm.lhsDiscretes();
     ExpressionList assignments = stm.assignments(_search);
     //    assert(assignments.size() == lhs_discretes.size());
-    ExpressionList::iterator it = lhs_discretes.begin();
+    //ExpressionList::iterator it = lhs_discretes.begin();
     for (Expression e : assignments) {
       VertexProperty vp = VertexProperty();
       StatementVertex sv = StatementVertex();
@@ -73,7 +73,8 @@ DepsGraph DHGraphBuilder::build()
   DepsGraph graph;
   // First, add the symbols as vertex.
   VarSymbolTable::iterator it;
-  for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
+  for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     VertexProperty vp = VertexProperty();
     bool add_influencer = (_ifr_type == DHGRAPHBUILDER::State) ? var.isState() : var.isDiscrete();
     if (add_influencer) {
@@ -111,7 +112,7 @@ DepsGraph DHGraphBuilder::build()
   {
     foreach_(IfrVertex source, _variableDescriptors)
     {
-      GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
+      GenerateEdge edge = GenerateEdge(graph[source], graph[sink]);
       if (edge.exists()) {
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {
@@ -121,7 +122,7 @@ DepsGraph DHGraphBuilder::build()
       }
       // Check LHS too if we are working with algebraics.
       if (graph[source].type() == VERTEX::Algebraic && graph[sink].eq().type() == EQUATION::Algebraic) {
-        edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input);
+        edge = GenerateEdge(graph[source], graph[sink], EDGE::Input);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
@@ -137,7 +138,7 @@ DepsGraph DHGraphBuilder::build()
     foreach_(IfeVertex source, _eventDescriptors)
     {
       if (graph[sink].type() == VERTEX::Statement) {
-        GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
+        GenerateEdge edge = GenerateEdge(graph[source], graph[sink]);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {

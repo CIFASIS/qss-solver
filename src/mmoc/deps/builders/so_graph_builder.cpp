@@ -21,6 +21,7 @@
 
 #include <boost/graph/adjacency_list.hpp>
 
+#include "../../util/model_config.h"
 #include "../../util/util_types.h"
 
 namespace MicroModelica {
@@ -28,13 +29,12 @@ using namespace IR;
 using namespace Util;
 namespace Deps {
 
-OutputGraphBuilder::OutputGraphBuilder(EquationTable &equations, EquationTable &algebraics, VarSymbolTable &symbols, OUTPUT::Type type)
+OutputGraphBuilder::OutputGraphBuilder(EquationTable &equations, EquationTable &algebraics, OUTPUT::Type type)
     : _equationDescriptors(),
       _variableDescriptors(),
       _outputDescriptors(),
       _equations(equations),
       _algebraics(algebraics),
-      _symbols(symbols),
       _type(type)
 {
 }
@@ -44,7 +44,8 @@ DepsGraph OutputGraphBuilder::build()
   DepsGraph graph;
   // First, add the symbols as vertex.
   VarSymbolTable::iterator it;
-  for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
+  for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     VertexProperty vp = VertexProperty();
     bool varType = _type == OUTPUT::SO ? var.isState() : var.isDiscrete();
     if (varType) {
@@ -82,7 +83,7 @@ DepsGraph OutputGraphBuilder::build()
   {
     foreach_(IfrVertex source, _variableDescriptors)
     {
-      GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols);
+      GenerateEdge edge = GenerateEdge(graph[source], graph[sink]);
       if (edge.exists()) {
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {
@@ -97,7 +98,7 @@ DepsGraph OutputGraphBuilder::build()
       }
       // Check LHS too if we are working with algebraics.
       if (graph[source].type() == VERTEX::Algebraic && graph[sink].eq().type() == EQUATION::Algebraic) {
-        GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input);
+        GenerateEdge edge = GenerateEdge(graph[source], graph[sink], EDGE::Input);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {

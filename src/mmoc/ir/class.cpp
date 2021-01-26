@@ -30,6 +30,7 @@
 #include "../ast/modification.h"
 #include "../ast/statement.h"
 #include "../util/error.h"
+#include "../util/model_config.h"
 #include "../util/process_statement.h"
 #include "../util/visitors/convert_condition.h"
 #include "../util/visitors/convert_cont_red.h"
@@ -49,10 +50,8 @@ namespace IR {
 Function::Function(string name)
     : _imports(),
       _name(name),
-      _symbols(),
       _localSymbols(),
       _statements(),
-      _types(),
       _packages(),
       _arguments(),
       _outputNbr(0),
@@ -64,7 +63,7 @@ Function::Function(string name)
 
 Function::~Function() {}
 
-VarSymbolTable Function::symbols() const { return _symbols; }
+VarSymbolTable Function::symbols() const { return ModelConfig::instance().symbols(); }
 
 void Function::insert(string n)
 {
@@ -76,14 +75,14 @@ void Function::insert(string n)
 
 void Function::insert(AST_Equation eq) { return; }
 
-void Function::insert(AST_Statement stm) { _statements.insert(++_statementId, Statement(stm, _symbols)); }
+void Function::insert(AST_Statement stm) { _statements.insert(++_statementId, Statement(stm)); }
 
 void Function::insert(AST_Statement stm, bool initial) { insert(stm); }
 
 void Function::insert(AST_External_Function_Call efc)
 {
   string lvalue;
-  VariableLookup vl(_symbols, _localSymbols);
+  VariableLookup vl(symbols(), localSymbols());
   if (efc->hasComponentReference()) {
     AST_Expression_ComponentReference cr = efc->componentReference();
     if (!vl.apply(cr)) {
@@ -102,17 +101,17 @@ void Function::insert(AST_External_Function_Call efc)
       }
     }
   }
-  _externalFunctions.insert(++_externalFunctionId, ExternalFunction(lvalue, efc->name(), efc->args(), _symbols));
+  _externalFunctions.insert(++_externalFunctionId, ExternalFunction(lvalue, efc->name(), efc->args()));
 }
 
 void Function::insert(VarName n, Variable &vi, DEC_Type type)
 {
-  EvalInitExp eval(_symbols);
+  EvalInitExp eval;
   vi.setName(n);
   if (vi.typePrefix() & TP_CONSTANT) {
     vi.setValue(eval.apply(vi.modification()->getAsEqual()->exp()));
   }
-  _symbols.insert(n, vi);
+  ModelConfig::instance().addVariable(n, vi);
   if (type == DEC_PUBLIC) {
     if (vi.isOutput()) {
       _outputNbr++;
@@ -189,9 +188,7 @@ string Package::prefix() { return "__" + _name + "__"; }
 Model::Model()
     : _name(),
       _imports(),
-      _symbols(),
-      _types(),
-      _annotations(_symbols),
+      _annotations(),
       _calledFunctions(),
       _derivatives(),
       _algebraics(),
@@ -217,15 +214,12 @@ Model::Model()
       _inputId(1),
       _externalFunctions(false)
 {
-  _symbols.initialize(_types);
 }
 
 Model::Model(string name)
     : _name(name),
       _imports(),
-      _symbols(),
-      _types(),
-      _annotations(_symbols),
+      _annotations(),
       _calledFunctions(),
       _derivatives(),
       _algebraics(),
@@ -251,8 +245,9 @@ Model::Model(string name)
       _inputId(1),
       _externalFunctions(false)
 {
-  _symbols.initialize(_types);
 }
+
+VarSymbolTable Model::symbols() const { return ModelConfig::instance().symbols(); };
 
 void Model::insert(VarName n, Variable &vi, DEC_Type type) { insert(n, vi); }
 
@@ -260,14 +255,14 @@ void Model::insert(VarName n, Variable &vi)
 {
   vi.setName(n);
   if (vi.typePrefix() & TP_CONSTANT) {
-    EvalInitExp eval(_symbols);
+    EvalInitExp eval;
     vi.setValue(eval.apply(vi.exp()));
   }
   if (vi.typePrefix() & TP_DISCRETE) {
     vi.setOffset(_discreteNbr);
     _discreteNbr += vi.size();
   }
-  _symbols.insert(n, vi);
+  ModelConfig::instance().addVariable(n, vi);
 }
 
 void Model::setVariableOffset(Variable var, unsigned int &offset, Util::Variable::RealType type, bool set_variable_count)
@@ -279,7 +274,7 @@ void Model::setVariableOffset(Variable var, unsigned int &offset, Util::Variable
       offset += var.size();
     }
   }
-  _symbols.insert(var.name(), var);
+  ModelConfig::instance().addVariable(var.name(), var);
 }
 
 void Model::setRealVariables(AST_Equation eq)
@@ -288,9 +283,9 @@ void Model::setRealVariables(AST_Equation eq)
   if (eqe->left()->expressionType() == EXPDERIVATIVE) {
     AST_Expression_Derivative ed = eqe->left()->getAsDerivative();
     AST_Expression derArg = AST_ListFirst(ed->arguments());
-    setVariableOffset(Utils::instance().variable(derArg, _symbols), _stateNbr, Variable::RealType::State);
+    setVariableOffset(Utils::instance().variable(derArg), _stateNbr, Variable::RealType::State);
   } else if (eqe->left()->expressionType() == EXPCOMPREF) {
-    setVariableOffset(Utils::instance().variable(eqe->left(), _symbols), _algebraicNbr, Variable::RealType::Algebraic);
+    setVariableOffset(Utils::instance().variable(eqe->left()), _algebraicNbr, Variable::RealType::Algebraic);
   } else if (eqe->left()->expressionType() == EXPOUTPUT) {
     AST_Expression_Output eout = eqe->left()->getAsOutput();
     AST_ExpressionList el = eout->expressionList();
@@ -298,7 +293,7 @@ void Model::setRealVariables(AST_Equation eq)
     list<string> lvars;
     list<Index> lidx;
     foreach (it, el) {
-      setVariableOffset(Utils::instance().variable(current_element(it), _symbols), _algebraicNbr, Variable::RealType::Algebraic);
+      setVariableOffset(Utils::instance().variable(current_element(it)), _algebraicNbr, Variable::RealType::Algebraic);
     }
   } else {
     Error::instance().add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Insert model equation.");
@@ -307,7 +302,7 @@ void Model::setRealVariables(AST_Equation eq)
 
 void Model::insert(AST_Equation eq)
 {
-  AST_Equation teq = ConvertEquation(eq, _symbols).get();
+  AST_Equation teq = ConvertEquation(eq).get();
   _ast_equations.push_back(teq);
   if (teq->equationType() == EQEQUALITY) {
     setRealVariables(teq);
@@ -333,9 +328,9 @@ void Model::insert(AST_External_Function_Call efc) { return; }
 
 void Model::insert(AST_Statement stm, bool initial)
 {
-  AST_Statement st = ConvertStatement(stm, _symbols).get();
+  AST_Statement st = ConvertStatement(stm).get();
   if (initial) {
-    _initialCode.insert(_statementId++, Statement(stm, _symbols, initial));
+    _initialCode.insert(_statementId++, Statement(stm, initial));
   } else {
     _ast_statements.push_back(st);
   }
@@ -420,10 +415,10 @@ void Model::addEquation(AST_Equation eq, Option<Range> range)
   AST_Equation_Equality eqe = eq->getAsEquality();
   EQUATION::Type t = (_annotations.isClassic() ? EQUATION::ClassicDerivative : EQUATION::QSSDerivative);
   if (eqe->left()->expressionType() == EXPDERIVATIVE) {
-    Equation mse(eq, _symbols, range, t, _derivativeId);
+    Equation mse(eq, range, t, _derivativeId);
     _derivatives.insert(_derivativeId++, mse);
   } else if (eqe->left()->expressionType() == EXPCOMPREF) {
-    Equation mse(eq, _symbols, range, EQUATION::Algebraic, _algebraicId);
+    Equation mse(eq, range, EQUATION::Algebraic, _algebraicId);
     _algebraics.insert(_algebraicId++, mse);
   } else if (eqe->left()->expressionType() == EXPOUTPUT) {
     if (eqe->right()->expressionType() != EXPCALL) {
@@ -433,7 +428,7 @@ void Model::addEquation(AST_Equation eq, Option<Range> range)
     AST_ExpressionList el = eout->expressionList();
     AST_ExpressionListIterator it;
     foreach (it, el) {
-      Equation mse(eq, _symbols, range, EQUATION::Algebraic, _algebraicId);
+      Equation mse(eq, range, EQUATION::Algebraic, _algebraicId);
       _algebraics.insert(_algebraicId++, mse);
     }
   } else {
@@ -443,8 +438,8 @@ void Model::addEquation(AST_Equation eq, Option<Range> range)
 
 void Model::reduceEquation(AST_Equation_Equality eq, list<AST_Equation> &new_eqs)
 {
-  ReductionFunctions<AST_Equation, ConvertContRed> reduction_functions(eq->right(), _symbols,
-                                                                       Utils::instance().variable(eq->left(), _symbols));
+  ReductionFunctions<AST_Equation, ConvertContRed> reduction_functions(eq->right(), 
+                                                                       Utils::instance().variable(eq->left()));
   AST_Expression new_exp = reduction_functions.apply();
   eq->setRight(new_exp);
   list<AST_Equation> code = reduction_functions.code();
@@ -481,7 +476,7 @@ void Model::setEquations()
     } else if (eq->equationType() == EQFOR) {
       vector<int> begin, end;
       AST_Equation_For eqf = eq->getAsFor();
-      Range range(eqf, _symbols);
+      Range range(eqf);
       AST_EquationList eqs = eqf->equationList();
       AST_EquationListIterator it;
       foreach (it, eqs) {
@@ -508,7 +503,7 @@ void Model::addVariable(int id, Option<Range> range, EQUATION::Type type, unsign
   Variable var(newType_Integer(), eq_type, nullptr, nullptr, s, false);
   string var_name = EquationVariable::modelVariables(id, type);
   insert(var_name, var);
-  Option<Variable> variable = _symbols[var_name];
+  Option<Variable> variable = ModelConfig::instance().lookup(var_name);
   static bool DONT_INCREASE_OFFSET = false;
   setVariableOffset(variable.get(), offset, Variable::RealType::NotAssigned, DONT_INCREASE_OFFSET);
 }
@@ -519,7 +514,7 @@ void Model::addEvent(AST_Statement stm, Option<Range> range)
     AST_Statement_When sw = stm->getAsWhen();
     _annotations.eventComment(sw->comment());
     addVariable(_eventId, range, EQUATION::Type::ZeroCrossing, _eventNbr);
-    Event event(sw->condition(), _eventId, _eventNbr, _symbols, range);
+    Event event(sw->condition(), _eventId, _eventNbr, range);
     _eventNbr += (range ? range->size() : 1);
     AST_StatementList stl = sw->statements();
     AST_StatementListIterator it;
@@ -535,7 +530,7 @@ void Model::addEvent(AST_Statement stm, Option<Range> range)
         Event else_event = event;
         if (!else_event.compare(se->condition())) {
           addVariable(_eventId + 1, range, EQUATION::Type::ZeroCrossing, _eventNbr);
-          else_event = Event(se->condition(), _eventId + 1, _eventNbr, _symbols, range);
+          else_event = Event(se->condition(), _eventId + 1, _eventNbr, range);
           _eventNbr += (range ? range->size() : 1);
           new_event = true;
         }
@@ -578,7 +573,6 @@ void Model::reduceEvent(AST_Statement_When event)
 
 void Model::setEvents()
 {
-  Utils::instance().setSymbols(_symbols);
   list<AST_Statement>::iterator it;
   for (it = _ast_statements.begin(); it != _ast_statements.end(); it++) {
     AST_Statement stm = *it;
@@ -599,7 +593,7 @@ void Model::setEvents()
       addEvent(stm, Option<Range>());
     } else if (stm->statementType() == STFOR) {
       AST_Statement_For stf = stm->getAsFor();
-      Range range(stf, _symbols);
+      Range range(stf);
       AST_StatementList sts = stf->statements();
       AST_StatementListIterator stit;
       foreach (stit, sts) {
@@ -614,11 +608,11 @@ void Model::setOutputs()
   list<AST_Expression> ast_outputs = _annotations.output();
   list<AST_Expression>::iterator it;
   for (it = ast_outputs.begin(); it != ast_outputs.end(); it++) {
-    ConvertOutputRange convert(_symbols);
+    ConvertOutputRange convert;
     AST_Expression converted = convert.apply(*it);
     Option<Range> range = convert.range();
     addVariable(_outputId, range, EQUATION::Type::Output, _outputNbr);
-    Equation eq(converted, _symbols, range, EQUATION::Output, _outputId, _outputNbr);
+    Equation eq(converted, range, EQUATION::Output, _outputId, _outputNbr);
     _outputNbr += (range ? range->size() : 1);
     _outputs.insert(_outputId++, eq);
   }
@@ -658,7 +652,7 @@ void Model::setInputs()
 
 void Model::computeDependencies()
 {
-  _dependencies.compute(derivatives(), outputs(), algebraics(), events(), _symbols);
+  _dependencies.compute(derivatives(), outputs(), algebraics(), events());
   ModelConfig::instance().setDependencies(_dependencies);
 }
 

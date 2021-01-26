@@ -37,10 +37,10 @@ typedef enum { LHS, RHS, LHS_DISCRETES, LHS_STATES } AssignTerm;
 
 class Statement {
   public:
-  Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, bool initial = false, const std::string& block = "");
-  Statement(AST_Statement stm, const Util::VarSymbolTable& symbols, Option<Range> range, bool initial = false,
+  Statement(AST_Statement stm, bool initial = false, const std::string& block = "");
+  Statement(AST_Statement stm, Option<Range> range, bool initial = false,
             const std::string& block = "");
-  Statement() : _stm(nullptr), _range(), _symbols(), _block(), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states(){};
+  Statement() : _stm(nullptr), _range(), _block(), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states(){};
   ~Statement() = default;
 
   inline bool hasRange() { return _range.is_initialized(); };
@@ -71,7 +71,6 @@ class Statement {
   private:
   AST_Statement _stm;
   Option<Range> _range;
-  Util::VarSymbolTable _symbols;
   Util::SymbolTable _calledFunctions;
   std::string _block;
   ExpressionList _lhs_assignments;

@@ -30,21 +30,14 @@ namespace Util {
  */
 class VariableLookup : public AST_Expression_Fold<bool> {
   public:
-  /**
-   *
-   * @param st
-   * @param lst
-   */
   VariableLookup(MicroModelica::Util::VarSymbolTable st, MicroModelica::Util::VarSymbolTable lst);
-  /**
-   *
-   */
-  ~VariableLookup(){};
+  ~VariableLookup() = default;
 
   private:
   bool foldTraverseElement(AST_Expression);
   bool foldTraverseElement(bool, bool, BinOpType);
   bool foldTraverseElementUMinus(AST_Expression);
+  
   VarSymbolTable _st;
   VarSymbolTable _lst;
 };

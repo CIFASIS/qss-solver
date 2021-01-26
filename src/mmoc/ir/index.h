@@ -68,8 +68,8 @@ typedef ModelTable<std::string, RangeDefinition> RangeDefinitionTable;
 class Range {
   public:
   Range();
-  Range(AST_Equation_For eqf, Util::VarSymbolTable symbols, RANGE::Type type = RANGE::For);
-  Range(AST_Statement_For stf, Util::VarSymbolTable symbols, RANGE::Type type = RANGE::For);
+  Range(AST_Equation_For eqf, RANGE::Type type = RANGE::For);
+  Range(AST_Statement_For stf, RANGE::Type type = RANGE::For);
   Range(Util::Variable var, RANGE::Type type = RANGE::For);
   Range(AST_Expression exp);
   Range(Deps::SBG::MDI mdi);
@@ -107,7 +107,7 @@ class Range {
   void updateRangeDefinition(std::string index_def, RangeDefinition def, int pos);
 
   private:
-  void setRangeDefinition(AST_ForIndexList fil, Util::VarSymbolTable symbols);
+  void setRangeDefinition(AST_ForIndexList fil);
   RangeDefinitionTable _ranges;
   ModelTable<std::string, int> _index_pos;
   int _size;

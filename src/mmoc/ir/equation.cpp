@@ -27,6 +27,7 @@
 #include "../ast/expression.h"
 #include "../parser/parse.h"
 #include "../util/error.h"
+#include "../util/model_config.h"
 #include "../util/util.h"
 #include "../util/visitors/algebraics.h"
 #include "../util/visitors/autonomous.h"
@@ -51,7 +52,6 @@ Equation::Equation()
       _rhs(),
       _range(),
       _autonomous(true),
-      _symbols(),
       _type(EQUATION::QSSDerivative),
       _id(0),
       _offset(0),
@@ -60,19 +60,18 @@ Equation::Equation()
 {
 }
 
-Equation::Equation(AST_Expression lhs, AST_Expression rhs, VarSymbolTable &symbols, Option<Range> range, EQUATION::Type type, int id)
-    : _eq(), _lhs(), _rhs(), _range(range), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
+Equation::Equation(AST_Expression lhs, AST_Expression rhs, Option<Range> range, EQUATION::Type type, int id)
+    : _eq(), _lhs(), _rhs(), _range(range), _autonomous(true), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
 {
   initialize(lhs, rhs);
 }
 
-Equation::Equation(AST_Expression eq, VarSymbolTable &symbols, Option<Range> range, EQUATION::Type type, int id, int offset)
+Equation::Equation(AST_Expression eq, Option<Range> range, EQUATION::Type type, int id, int offset)
     : _eq(),
       _lhs(),
       _rhs(),
       _range(range),
       _autonomous(true),
-      _symbols(symbols),
       _type(type),
       _id(id),
       _offset(offset),
@@ -82,28 +81,28 @@ Equation::Equation(AST_Expression eq, VarSymbolTable &symbols, Option<Range> ran
   initialize(eq);
 }
 
-Equation::Equation(AST_Equation eq, VarSymbolTable &symbols, EQUATION::Type type, int id)
-    : _eq(eq), _lhs(), _rhs(), _range(), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
+Equation::Equation(AST_Equation eq, EQUATION::Type type, int id)
+    : _eq(eq), _lhs(), _rhs(), _range(), _autonomous(true), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
 {
   initialize(eq);
 }
 
-Equation::Equation(AST_Equation eq, VarSymbolTable &symbols, Range r, EQUATION::Type type, int id)
-    : _eq(eq), _lhs(), _rhs(), _range(r), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
+Equation::Equation(AST_Equation eq, Range r, EQUATION::Type type, int id)
+    : _eq(eq), _lhs(), _rhs(), _range(r), _autonomous(true), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
 {
   initialize(eq);
 }
 
-Equation::Equation(AST_Equation eq, VarSymbolTable &symbols, Option<Range> r, EQUATION::Type type, int id)
-    : _eq(eq), _lhs(), _rhs(), _range(r), _autonomous(true), _symbols(symbols), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
+Equation::Equation(AST_Equation eq, Option<Range> r, EQUATION::Type type, int id)
+    : _eq(eq), _lhs(), _rhs(), _range(r), _autonomous(true), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
 {
   initialize(eq);
 }
 
 void Equation::initialize(AST_Expression lhs, AST_Expression rhs)
 {
-  _lhs = Expression(lhs, _symbols);
-  _rhs = Expression(rhs, _symbols);
+  _lhs = Expression(lhs);
+  _rhs = Expression(rhs);
   setup();
 }
 
@@ -111,12 +110,12 @@ void Equation::initialize(AST_Expression exp)
 {
   string model_variable = EquationVariable::modelVariables(_id, _type);
   if (_range) {
-    _lhs = Utils::instance().variableExpression(model_variable, _range, _symbols);
+    _lhs = Utils::instance().variableExpression(model_variable, _range);
   } else {
     AST_Expression lhs = newAST_Expression_ComponentReferenceExp(newAST_String(model_variable));
-    _lhs = Expression(lhs, _symbols);
+    _lhs = Expression(lhs);
   }
-  _rhs = Expression(exp, _symbols);
+  _rhs = Expression(exp);
   setup();
 }
 
@@ -124,15 +123,15 @@ void Equation::initialize(AST_Equation eq)
 {
   AST_Equation_Equality eqe = eq->getAsEquality();
   if (eqe->left()->expressionType() == EXPDERIVATIVE) {
-    _lhs = Expression(AST_ListFirst(eqe->left()->getAsDerivative()->arguments()), _symbols);
-    _rhs = Expression(eqe->right(), _symbols);
+    _lhs = Expression(AST_ListFirst(eqe->left()->getAsDerivative()->arguments()));
+    _rhs = Expression(eqe->right());
   } else if (eqe->left()->expressionType() == EXPCOMPREF) {
-    _lhs = Expression(eqe->left(), _symbols);
-    _rhs = Expression(eqe->right(), _symbols);
+    _lhs = Expression(eqe->left());
+    _rhs = Expression(eqe->right());
   } else if (eqe->left()->expressionType() == EXPOUTPUT) {
     AST_Expression_Output eout = eqe->left()->getAsOutput();
-    _lhs = Expression(eout, _symbols);
-    _rhs = Expression(eqe->right(), _symbols);
+    _lhs = Expression(eout);
+    _rhs = Expression(eqe->right());
   }
   setup();
 }
@@ -140,7 +139,7 @@ void Equation::initialize(AST_Equation eq)
 void Equation::setup()
 {
   stringstream buffer;
-  Autonomous autonomous(_symbols);
+  Autonomous autonomous;
   _autonomous = autonomous.apply(_rhs.expression());
   CalledFunctions cf;
   _calledFunctions = cf.apply(_rhs.expression());
@@ -170,9 +169,9 @@ EquationDependencyMatrix Equation::dependencyMatrix() const
   return EquationDependencyMatrix();
 }
 
-string Equation::identifier() const { return getPrinter(*this, _symbols)->identifier(); }
+string Equation::identifier() const { return getPrinter(*this)->identifier(); }
 
-string Equation::applyId() const { return getPrinter(*this, _symbols)->equationId(); }
+string Equation::applyId() const { return getPrinter(*this)->equationId(); }
 
 Option<Variable> Equation::LHSVariable() const
 {
@@ -218,9 +217,9 @@ bool Equation::hasAlgebraics()
   return has_algebraics.apply(_rhs.expression());
 }
 
-string Equation::macro() const { return getPrinter(*this, _symbols)->macro(); }
+string Equation::macro() const { return getPrinter(*this)->macro(); }
 
-string Equation::print() const { return getPrinter(*this, _symbols)->print(); }
+string Equation::print() const { return getPrinter(*this)->print(); }
 
 void Equation::setType(EQUATION::Type type) { _type = type; }
 

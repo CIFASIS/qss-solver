@@ -39,6 +39,7 @@
 #include "../ast/expression.h"
 #include "../ir/expression.h"
 #include "../parser/parse.h"
+#include "model_config.h"
 #include "symbol_table.h"
 #include "util.h"
 
@@ -98,8 +99,8 @@ void my_print_add_dflt(const add& s, const print_dflt& c, unsigned level)
   if (level >= power_prec) c.s << ')';
 }
 
-ConvertToGiNaC::ConvertToGiNaC(VarSymbolTable symbols, Option<Expression> exp)
-    : _symbols(symbols), _replaceDer(true), _generateIndexes(false), _exp(exp)
+ConvertToGiNaC::ConvertToGiNaC(Option<Expression> exp)
+    : _replaceDer(true), _generateIndexes(false), _exp(exp)
 {
 }
 
@@ -219,7 +220,7 @@ ex ConvertToGiNaC::foldTraverseElement(AST_Expression e)
   case EXPINTEGER:
     return ex(e->getAsInteger()->val());
   case EXPCOMPREF: {
-    Option<Variable> v = _symbols[e->getAsComponentReference()->name()];
+    Option<Variable> v = ModelConfig::instance().lookup(e->getAsComponentReference()->name());
     if (v->isParameter() || v->isDiscrete() || v->isConstant() || v->isForType())
       return getSymbol(e->getAsComponentReference());
     else if (v->builtIn() && !v->name().compare("time"))

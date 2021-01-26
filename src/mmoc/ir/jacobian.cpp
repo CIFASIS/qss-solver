@@ -24,6 +24,7 @@
 #include "../deps/builders/sd_sb_graph_builder.h"
 #include "../deps/sb_dependencies.h"
 #include "../parser/parse.h"
+#include "../util/model_config.h"
 #include "../util/util.h"
 #include "../util/symbol_table.h"
 #include "derivative.h"
@@ -154,7 +155,7 @@ string JacGenerator::getVariableIndexes(Equation eq, Deps::SBG::Map map)
 void JacGenerator::visitF(Equation eq, SBG::VariableDep var_dep, SBG::Map map)
 {
   stringstream code;
-  VarSymbolTable symbols = Utils::instance().symbols();
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
   dependencyPrologue(eq, var_dep, map);
   string tab = Utils::instance().tabs(_tabs);
   generatePos(eq.arrayId(), eq.type());
@@ -214,10 +215,10 @@ void Jacobian::build()
 {
   EquationTable algebraics = ModelConfig::instance().algebraics();
   EquationTable derivatives = ModelConfig::instance().derivatives();
-  VarSymbolTable symbols = Utils::instance().symbols();
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
   JacobianBuilder jac;
-  IndexShiftBuilder index_shifts(algebraics, symbols);
-  SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(derivatives, algebraics, symbols);
+  IndexShiftBuilder index_shifts(algebraics);
+  SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(derivatives, algebraics);
   jac.compute(SDSBGraph.build(), index_shifts.build());
   _jac_def = jac.deps();
 }

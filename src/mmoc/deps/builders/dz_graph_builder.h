@@ -27,8 +27,9 @@ namespace MicroModelica {
 namespace Deps {
 class DZGraphBuilder {
   public:
-  DZGraphBuilder(IR::EventTable &events, IR::EquationTable &algebraics, Util::VarSymbolTable &symbols);
-  ~DZGraphBuilder(){};
+  DZGraphBuilder(IR::EventTable &events, IR::EquationTable &algebraics);
+  ~DZGraphBuilder() = default;
+  
   DepsGraph build();
 
   private:
@@ -37,7 +38,6 @@ class DZGraphBuilder {
   list<IfeVertex> _eventDescriptors;
   IR::EventTable _events;
   IR::EquationTable _algebraics;
-  Util::VarSymbolTable _symbols;
 };
 }  // namespace Deps
 }  // namespace MicroModelica

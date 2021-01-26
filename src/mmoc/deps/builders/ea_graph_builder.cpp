@@ -19,6 +19,7 @@
 
 #include "ea_graph_builder.h"
 
+#include "../../util/model_config.h"
 #include "../../util/util_types.h"
 
 namespace MicroModelica {
@@ -26,25 +27,23 @@ using namespace IR;
 using namespace Util;
 namespace Deps {
 
-EAGraphBuilder::EAGraphBuilder(EventTable &events, EquationTable &algebraics, VarSymbolTable &symbols)
+EAGraphBuilder::EAGraphBuilder(EventTable &events, EquationTable &algebraics)
     : _equationDescriptors(),
       _sourceDescriptors(),
       _algebraicDescriptors(),
       _events(events),
       _algebraics(algebraics),
-      _equations(),
-      _symbols(symbols)
+      _equations()
 {
 }
 
-EAGraphBuilder::EAGraphBuilder(EquationTable &equations, EquationTable &algebraics, VarSymbolTable &symbols)
+EAGraphBuilder::EAGraphBuilder(EquationTable &equations, EquationTable &algebraics)
     : _equationDescriptors(),
       _sourceDescriptors(),
       _algebraicDescriptors(),
       _events(),
       _algebraics(algebraics),
-      _equations(equations),
-      _symbols(symbols)
+      _equations(equations)
 {
 }
 
@@ -93,7 +92,8 @@ DepsGraph EAGraphBuilder::build()
   }
 
   VarSymbolTable::iterator it;
-  for (Variable var = _symbols.begin(it); !_symbols.end(it); var = _symbols.next(it)) {
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
+  for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     if (var.isAlgebraic()) {
       VertexProperty vp = VertexProperty();
       vp.setType(VERTEX::Algebraic);
@@ -123,7 +123,7 @@ DepsGraph EAGraphBuilder::build()
   {
     foreach_(IfrVertex source, _sourceDescriptors)
     {
-      GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Output, VERTEX::LHS);
+      GenerateEdge edge = GenerateEdge(graph[source], graph[sink], EDGE::Output, VERTEX::LHS);
       if (edge.exists()) {
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {
@@ -136,7 +136,7 @@ DepsGraph EAGraphBuilder::build()
       }
       // Check RHS too if we are working with algebraics.
       if (graph[source].type() == VERTEX::Algebraic) {
-        edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input, VERTEX::LHS);
+        edge = GenerateEdge(graph[source], graph[sink], EDGE::Input, VERTEX::LHS);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
@@ -156,7 +156,7 @@ DepsGraph EAGraphBuilder::build()
     foreach_(IfeVertex source, _algebraicDescriptors)
     {
       if (graph[sink].type() == VERTEX::Equation && graph[sink].eq().type() == EQUATION::Algebraic) {
-        GenerateEdge edge = GenerateEdge(graph[source], graph[sink], _symbols, EDGE::Input, VERTEX::LHS);
+        GenerateEdge edge = GenerateEdge(graph[source], graph[sink], EDGE::Input, VERTEX::LHS);
         if (edge.exists()) {
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {

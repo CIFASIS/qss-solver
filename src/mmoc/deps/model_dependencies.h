@@ -118,8 +118,7 @@ class ModelDependencies {
   inline EquationDependencyMatrix ZCA() { return _ZCA; };
   inline EquationDependencyMatrix DA() { return _DA; };
   inline JacobianMatrix JAC() { return _JAC; }
-  void compute(IR::EquationTable eqs, IR::EquationTable outputs, IR::EquationTable algs, IR::EventTable events,
-               Util::VarSymbolTable symbols);
+  void compute(IR::EquationTable eqs, IR::EquationTable outputs, IR::EquationTable algs, IR::EventTable events);
 
   private:
   EquationDependencyMatrix _DS;

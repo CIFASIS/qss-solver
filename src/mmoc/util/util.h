@@ -33,6 +33,7 @@
 #include "table.h"
 
 namespace MicroModelica {
+
 namespace IR {
 class Equation;
 class CompiledPackage;
@@ -41,6 +42,7 @@ typedef ModelTable<std::string, CompiledPackage> CompiledPackageTable;
 typedef ModelTable<std::string, CompiledFunction> CompiledFunctionTable;
 typedef ModelTable<int, Equation> EquationTable;
 }  // namespace IR
+
 namespace Util {
 
 typedef ModelTable<std::string, std::string> ImportTable;
@@ -89,26 +91,10 @@ class Utils {
   void addCompiledFunctions(IR::CompiledFunctionTable fs);
   bool checkCompiledFunctions(std::string name);
   bool checkBuiltInFunctions(std::string name);
-  inline VarSymbolTable& symbols() { return _symbols; };
-  inline SymbolTable localSymbols() { return _local_symbols; };
-  inline SymbolTable localInitSymbols() { return _local_init_symbols; };
-  inline void addLocalSymbol(std::string symbol)
-  {
-    if (_init_symbols) {
-      _local_init_symbols.insert(symbol, symbol);
-    } else {
-      _local_symbols.insert(symbol, symbol);
-    }
-  };
-  inline void addVariable(VarName name, Variable var) { _symbols.insert(name, var); }
-  inline void setSymbols(const VarSymbolTable& symbols) { _symbols = symbols; };
-  inline void clearLocalSymbols() { _local_symbols.clear(); };
-  inline void setLocalInitSymbols() { _init_symbols = true; };
-  inline void unsetLocalInitSymbols() { _init_symbols = false; };
   inline std::string fileName() { return _file_name; };
   inline int id() { return _ids++; };
-  Variable variable(AST_Expression exp, VarSymbolTable& symbols);
-  IR::Expression variableExpression(string name, Option<IR::Range> range, const VarSymbolTable& symbols);
+  Variable variable(AST_Expression exp);
+  IR::Expression variableExpression(string name, Option<IR::Range> range);
   std::string tabs(int t);
 
   private:
@@ -122,11 +108,7 @@ class Utils {
   map<std::string, int> _annotations;
   std::string _binop[BINOPS];
   IR::CompiledFunctionTable _compiled_functions;
-  VarSymbolTable _symbols;
-  SymbolTable _local_symbols;
-  SymbolTable _local_init_symbols;
   std::string _file_name;
-  bool _init_symbols;
   int _ids;
 };
 

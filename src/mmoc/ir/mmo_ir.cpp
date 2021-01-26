@@ -106,7 +106,7 @@ void MicroModelicaIR::visit(AST_Element x)
       vector<int> size;
       bool array = current_element(it)->hasIndexes();
       if (array) {
-        EvalInitExp eval(_class->symbols());
+        EvalInitExp eval;
         AST_ExpressionList elist = current_element(it)->indexes();
         AST_ExpressionListIterator elistit;
         foreach (elistit, elist) {
@@ -165,9 +165,9 @@ void MicroModelicaIR::visit(AST_Equation x)
     }
   } else {
     AST_Equation_Equality eqe = x->getAsEquality();
-    DiscreteAssignment da(_class->symbols());
+    DiscreteAssignment da;
     da.apply(eqe->left());
-    ArrayUse au(_class->symbols());
+    ArrayUse au;
     au.apply(eqe->left());
     au.apply(eqe->right());
   }
@@ -203,7 +203,7 @@ void MicroModelicaIR::visit(AST_Statement x)
       visit(current_element(it));
     }
   }
-  StatementArrayUse au(_class->symbols());
+  StatementArrayUse au;
   au.apply(x);
   _class->insert(x, _initialCode);
 }

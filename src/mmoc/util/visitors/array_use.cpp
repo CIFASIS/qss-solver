@@ -18,8 +18,9 @@
  ******************************************************************************/
 
 #include "array_use.h"
-#include "../symbol_table.h"
 #include "../error.h"
+#include "../model_config.h"
+#include "../symbol_table.h"
 
 namespace MicroModelica {
 namespace Util {
@@ -29,7 +30,7 @@ bool ArrayUse::foldTraverseElement(AST_Expression exp)
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-    Option<Variable> var = _symbols[cr->name()];
+    Option<Variable> var = ModelConfig::instance().lookup(cr->name());
     if (cr->hasIndexes() && var) {
       if (AST_ListFirst(cr->indexes())->size() != var->dimensions()) {
         Error::instance().add(exp->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Wrong array dimension, expected %d got %d.",

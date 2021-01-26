@@ -52,12 +52,13 @@ class EquationVariable {
 class Equation {
   public:
   Equation();
-  Equation(AST_Expression lhs, AST_Expression rhs, Util::VarSymbolTable &symbols, Option<Range> range, EQUATION::Type type, int id);
-  Equation(AST_Expression eq, Util::VarSymbolTable &symbols, Option<Range> range, EQUATION::Type type, int id, int offset);
-  Equation(AST_Equation eq, Util::VarSymbolTable &symbols, EQUATION::Type type, int id);
-  Equation(AST_Equation eq, Util::VarSymbolTable &symbols, Range r, EQUATION::Type type, int id);
-  Equation(AST_Equation eq, Util::VarSymbolTable &symbols, Option<Range> r, EQUATION::Type type, int id);
+  Equation(AST_Expression lhs, AST_Expression rhs, Option<Range> range, EQUATION::Type type, int id);
+  Equation(AST_Expression eq, Option<Range> range, EQUATION::Type type, int id, int offset);
+  Equation(AST_Equation eq, EQUATION::Type type, int id);
+  Equation(AST_Equation eq, Range r, EQUATION::Type type, int id);
+  Equation(AST_Equation eq, Option<Range> r, EQUATION::Type type, int id);
   ~Equation() = default;
+
   inline bool hasRange() const { return _range.is_initialized(); };
   inline Expression lhs() const { return _lhs; };
   Index index() const;
@@ -104,7 +105,6 @@ class Equation {
   Expression _rhs;
   Option<Range> _range;
   bool _autonomous;
-  Util::VarSymbolTable _symbols;
   Util::SymbolTable _calledFunctions;
   EQUATION::Type _type;
   int _id;
@@ -114,20 +114,6 @@ class Equation {
 };
 
 typedef ModelTable<int, Equation> EquationTable;
-
-/*class Jacobian {
-  public:
-  Jacobian() : _symbols(), _jac_terms(){};
-  Jacobian(Util::VarSymbolTable &symbols) : _symbols(symbols), _jac_terms(){};
-  ~Jacobian() = default;
-  Equation generate(Equation eq, Index idx, Deps::AlgebraicPath algs);
-  list<Equation> terms();
-  EQUATION::Type type() const;
-
-  private:
-  Util::VarSymbolTable _symbols;
-  list<Equation> _jac_terms;
-};*/
 
 class Dependency {
   public:

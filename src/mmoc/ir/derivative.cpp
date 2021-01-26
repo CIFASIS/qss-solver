@@ -30,6 +30,7 @@
 #include "../ir/expression.h"
 #include "../parser/parse.h"
 #include "../util/error.h"
+#include "../util/model_config.h"
 #include "../util/ginac_interface.h"
 #include "../util/util.h"
 #include "../util/symbol_table.h"
@@ -46,8 +47,8 @@ ExpressionDerivator::ExpressionDerivator() {}
 
 AST_Equation_Equality EquationDerivator::derivate(AST_Equation_Equality eq)
 {
-  VarSymbolTable symbols = Utils::instance().symbols();
-  ConvertToGiNaC to_ginac(symbols, Option<Expression>());
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
+  ConvertToGiNaC to_ginac= ConvertToGiNaC(Option<Expression>());
   ConvertToExpression to_exp;
   GiNaC::ex left = to_ginac.convert(eq->left());
   GiNaC::ex right = to_ginac.convert(eq->right());
@@ -59,8 +60,8 @@ AST_Equation_Equality EquationDerivator::derivate(AST_Equation_Equality eq)
 
 AST_Expression ExpressionDerivator::derivate(AST_Expression exp, Expression e)
 {
-  VarSymbolTable symbols = Utils::instance().symbols();
-  ConvertToGiNaC to_ginac(symbols, e);
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
+  ConvertToGiNaC to_ginac = ConvertToGiNaC(e);
   ConvertToExpression to_exp;
   GiNaC::ex dexp = to_ginac.convert(exp, false, true);
   GiNaC::symbol time = to_ginac.getTime();
@@ -74,17 +75,16 @@ Expression ExpressionDerivator::partialDerivative(Equation eq, Index variable)
   assert(var_usage.isState() || var_usage.isAlgebraic());
   AST_Expression rhs_exp = eq.rhs().expression();
   string usage = variable.modelicaExp();
-  VarSymbolTable symbols = Utils::instance().symbols();
-  ConvertToGiNaC to_ginac(symbols, Option<Expression>());
+  ConvertToGiNaC to_ginac= ConvertToGiNaC(Option<Expression>());
   ConvertToExpression to_exp;
-  ReplaceDer replace_der(symbols);
+  ReplaceDer replace_der;
   GiNaC::ex dexp = to_ginac.convert(rhs_exp, false, true);
   map<string, GiNaC::symbol> dir = to_ginac.directory();
   GiNaC::symbol time = to_ginac.getTime();
   GiNaC::symbol ginac_usage = dir[usage];
   GiNaC::ex der_exp = dexp.subs(var(GiNaC::wild(), time) == GiNaC::wild()).diff(ginac_usage);
   AST_Expression jac_exp = replace_der.apply(to_exp.convert(der_exp));
-  return Expression(jac_exp, symbols);
+  return Expression(jac_exp);
 }
 
 }  // namespace IR

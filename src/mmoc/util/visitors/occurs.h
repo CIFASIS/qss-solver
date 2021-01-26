@@ -26,15 +26,16 @@ namespace MicroModelica {
 namespace Util {
 class Occurs : public AST_Expression_Visitor<bool> {
   public:
-  Occurs(std::string var, VarSymbolTable symbols) : _symbols(symbols), _occs(), _var(var){};
+  Occurs(std::string var) : _occs(), _var(var){};
   ~Occurs() = default;
+
   list<IR::Expression> occurrences();
 
   private:
   bool foldTraverseElement(AST_Expression exp);
   bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l || r; };
   bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
-  VarSymbolTable _symbols;
+  
   std::map<std::string, IR::Expression> _occs;
   std::string _var;
 };

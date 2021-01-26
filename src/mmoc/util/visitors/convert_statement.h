@@ -27,7 +27,7 @@ namespace Util {
 
 class ConvertStatement {
   public:
-  ConvertStatement(AST_Statement statement, MicroModelica::Util::VarSymbolTable& symbols);
+  ConvertStatement(AST_Statement statement);
   ~ConvertStatement() = default;
 
   AST_Statement get();
@@ -38,7 +38,6 @@ class ConvertStatement {
   AST_Statement_ElseList convert(AST_Statement_ElseList stel);
 
   AST_Statement _statement;
-  MicroModelica::Util::VarSymbolTable _symbols;
 };
 
 }  // namespace Util

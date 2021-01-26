@@ -167,8 +167,9 @@ class AST_Statement_Visitor {
       return c;
     }
     default:
-      return c;
+      break;
     }
+    return c;
   };
 
   private:
@@ -239,7 +240,7 @@ class AST_Visitor {
 
 class EqualExp {
   public:
-  EqualExp(MicroModelica::Util::VarSymbolTable symbolTable);
+  EqualExp();
   bool equalTraverse(AST_Expression a, AST_Expression b);
 
   private:
@@ -247,7 +248,6 @@ class EqualExp {
   bool equalTraverseElement(AST_Expression a, AST_Expression b);
   Option<MicroModelica::Util::Variable> getVarInfo(AST_Expression_ComponentReference compRef);
   bool compareArrays(AST_Expression_ComponentReference arrayA, AST_Expression_ComponentReference arrayB);
-  MicroModelica::Util::VarSymbolTable _symbolTable;
 };
 
 class IsConstant : public AST_Expression_Fold<bool> {

@@ -22,6 +22,7 @@
 #include <sstream>
 
 #include "../error.h"
+#include "../model_config.h"
 #include "../util.h"
 #include "../../parser/parse.h"
 #include "../../ast/ast_types.h"
@@ -31,7 +32,7 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-ConvertDiscRed::ConvertDiscRed(VarSymbolTable &symbols) : _symbols(symbols), _has_reduction(false), _code(), _oper_names(), _lhs(), _oper()
+ConvertDiscRed::ConvertDiscRed() : _has_reduction(false), _code(), _oper_names(), _lhs(), _oper()
 {
   _oper_names[DiscReduction::MAX] = "max";
   _oper_names[DiscReduction::MIN] = "min";
@@ -75,7 +76,7 @@ AST_Expression ConvertDiscRed::foldTraverseElement(AST_Expression exp)
         Error::instance().add(exp->lineNum(), EM_IR | EM_ARGUMENTS, ER_Error, "Expect variable for %s function", oper_name);
       }
       AST_Expression_ComponentReference cr = arg->getAsComponentReference();
-      Option<Variable> variable = _symbols[cr->name()];
+      Option<Variable> variable = ModelConfig::instance().lookup(cr->name());
       if (!variable) {
         Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "convert_disc_red.cpp:61 %s", cr->name());
       }

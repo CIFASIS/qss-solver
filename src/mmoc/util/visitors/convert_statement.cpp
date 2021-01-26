@@ -32,7 +32,7 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-ConvertStatement::ConvertStatement(AST_Statement statement, VarSymbolTable& symbols) : _symbols(symbols)
+ConvertStatement::ConvertStatement(AST_Statement statement)
 {
   _statement = convert(statement);
 }
@@ -70,10 +70,10 @@ AST_Statement_ElseList ConvertStatement::convert(AST_Statement_ElseList stel)
 AST_Statement ConvertStatement::convert(AST_Statement st)
 {
   if (st->statementType() == STASSIGN) {
-    ReplaceInnerProduct rip(_symbols);
+    ReplaceInnerProduct rip;
     AST_Expression l = st->getAsAssign()->lhs();
     AST_Expression r = rip.apply(st->getAsAssign()->exp());
-    ConvertExpression convert_exp(l, r, _symbols);
+    ConvertExpression convert_exp(l, r);
     l = convert_exp.left();
     assert(l->expressionType() == EXPCOMPREF);
     r = convert_exp.right();
@@ -102,7 +102,7 @@ AST_Statement ConvertStatement::convert(AST_Statement st)
     AST_Statement_When stWhen = st->getAsWhen();
     AST_StatementList stList = convert(stWhen->statements());
     AST_Statement_ElseList stElseList = convert(stWhen->else_when());
-    ReplaceConstant replace_constant(_symbols);
+    ReplaceConstant replace_constant;
     AST_Expression condition = replace_constant.apply(stWhen->condition());
     AST_Statement retWhen = newAST_Statement_When(condition, stList, stElseList, stWhen->comment());
     return retWhen;

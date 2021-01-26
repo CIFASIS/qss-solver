@@ -220,13 +220,13 @@ string Variable::declaration(string prefix)
   return buffer.str();
 }
 
-string Variable::initialization(const VarSymbolTable &symbols)
+string Variable::initialization()
 {
   stringstream buffer;
   if (hasAssignment() || hasStartModifier() || hasEachModifier()) {
     Range range = Range(*this);
-    Expression ex(exp(), symbols);
-    Expression var = Utils::instance().variableExpression(name(), range, symbols);
+    Expression ex(exp());
+    Expression var = Utils::instance().variableExpression(name(), range);
     if (hasEachModifier()) {
       buffer << range;
       buffer << TAB << TAB << var << " = " << ex << ";" << endl;

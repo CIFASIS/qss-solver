@@ -27,7 +27,7 @@ namespace Util {
 
 class ConvertExpression {
   public:
-  ConvertExpression(AST_Expression left, AST_Expression right, MicroModelica::Util::VarSymbolTable& symbols);
+  ConvertExpression(AST_Expression left, AST_Expression right);
   ~ConvertExpression() = default;
 
   std::string get();
@@ -43,7 +43,6 @@ class ConvertExpression {
 
   AST_Expression _left;
   AST_Expression _right;
-  MicroModelica::Util::VarSymbolTable _symbols;
   std::string _convert;
 };
 }  // namespace Util

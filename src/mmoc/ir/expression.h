@@ -30,7 +30,7 @@ namespace IR {
 class Expression {
   public:
   Expression();
-  Expression(AST_Expression exp, const Util::VarSymbolTable& symbols, int order = 0);
+  Expression(AST_Expression exp, int order = 0);
   ~Expression() = default;
   std::string print() const;
   inline AST_Expression expression() const { return _exp; };
@@ -51,7 +51,6 @@ class Expression {
 
   private:
   AST_Expression _exp;
-  Util::VarSymbolTable _symbols;
   int _order;
 };
 

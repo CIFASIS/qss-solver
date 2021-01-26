@@ -20,6 +20,7 @@
 #include "replace_constant.h"
 
 #include "../error.h"
+#include "../model_config.h"
 #include "../util.h"
 #include "partial_eval_exp.h"
 
@@ -27,14 +28,14 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-ReplaceConstant::ReplaceConstant(VarSymbolTable &symbols) : _symbols(symbols) {}
+ReplaceConstant::ReplaceConstant() {}
 
 AST_Expression ReplaceConstant::foldTraverseElement(AST_Expression exp)
 {
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-    Option<Variable> var = _symbols[cr->name()];
+    Option<Variable> var = ModelConfig::instance().lookup(cr->name());
     if (!var) {
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "partial_eval_exp.cpp:43 %s", cr->name().c_str());
       break;
@@ -48,7 +49,7 @@ AST_Expression ReplaceConstant::foldTraverseElement(AST_Expression exp)
       AST_ExpressionListIterator it;
       AST_ExpressionList l = newAST_ExpressionList();
       foreach (it, indexes) {
-        PartialEvalExp partial_eval(_symbols);
+        PartialEvalExp partial_eval;
         l = AST_ListAppend(l, partial_eval.apply(current_element(it)));
       }
       ret = AST_Expression_ComponentReference_Add(ret, newAST_String(cr->name()), l);

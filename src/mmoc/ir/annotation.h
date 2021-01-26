@@ -70,13 +70,9 @@ class FunctionAnnotation {
   std::string _libraryDirectory;
 };
 
-/**
- *
- */
 class ModelAnnotation {
   public:
-  ModelAnnotation(Util::VarSymbolTable &symbolTable);
-  ModelAnnotation(){};
+  ModelAnnotation();
   ~ModelAnnotation() = default;
   void eventComment(AST_Comment x);
   bool insert(AST_Argument_Modification x);
@@ -218,7 +214,6 @@ class ModelAnnotation {
   list<AST_Expression> _BDFPartition;
   int _BDFPartitionDepth;
   double _BDFMaxStep;
-  Util::VarSymbolTable _symbolTable;
 };
 
 typedef boost::variant<ModelAnnotation, FunctionAnnotation> AnnotationType;
@@ -242,7 +237,7 @@ class AnnotationValue {
 
 class EvalAnnotation : public AST_Expression_Fold<AnnotationValue> {
   public:
-  EvalAnnotation(MicroModelica::Util::VarSymbolTable st);
+  EvalAnnotation();
   ~EvalAnnotation() = default;
 
   private:
@@ -250,7 +245,6 @@ class EvalAnnotation : public AST_Expression_Fold<AnnotationValue> {
   AnnotationValue foldTraverseElement(AST_Expression);
   AnnotationValue foldTraverseElement(AnnotationValue, AnnotationValue, BinOpType);
   AnnotationValue foldTraverseElementUMinus(AST_Expression);
-  MicroModelica::Util::VarSymbolTable _st;
   map<string, string> _tokens;
 };
 }  // namespace IR

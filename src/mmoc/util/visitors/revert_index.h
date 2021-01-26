@@ -27,13 +27,11 @@
 
 namespace MicroModelica {
 namespace Util {
-/**
- *
- */
+
 class RevertIndex : public AST_Expression_Visitor<AST_Expression> {
   public:
   RevertIndex();
-  ~RevertIndex(){};
+  ~RevertIndex() = default;
 
   private:
   AST_Expression foldTraverseElement(AST_Expression exp);

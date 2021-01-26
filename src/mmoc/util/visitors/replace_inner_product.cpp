@@ -21,12 +21,13 @@
 
 #include "../../ast/ast_builder.h"
 #include "../error.h"
+#include "../model_config.h"
 #include "../symbol_table.h"
 
 namespace MicroModelica {
 namespace Util {
 
-ReplaceInnerProduct::ReplaceInnerProduct(VarSymbolTable& symbols) : _symbols(symbols) {}
+ReplaceInnerProduct::ReplaceInnerProduct() {}
 
 AST_Expression ReplaceInnerProduct::foldTraverseElement(AST_Expression exp)
 {
@@ -96,7 +97,7 @@ bool ReplaceInnerProduct::controlArray(AST_Expression exp)
 {
   if (exp->expressionType() == EXPCOMPREF) {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-    Option<Variable> vi = _symbols[cr->name()];
+    Option<Variable> vi = ModelConfig::instance().lookup(cr->name());
     if (!vi) {
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "Control Array: %s", cr->name().c_str());
     }

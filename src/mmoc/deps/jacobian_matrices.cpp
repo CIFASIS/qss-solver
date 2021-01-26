@@ -23,17 +23,18 @@
 #include "../deps/sb_dependencies.h"
 #include "../ir/alg_usage.h"
 #include "../ir/helpers.h"
-#include "../util/visitors/replace_index.h"
+#include "../util/model_config.h"
 #include "../util/util.h"
+#include "../util/visitors/replace_index.h"
 
 namespace MicroModelica {
 using namespace IR;
 using namespace Util;
 namespace Deps {
 
-JacMatrixGenerator::JacMatrixGenerator() : _matrix(), _dv_dx(), _tabs(0) { Utils::instance().setLocalInitSymbols(); }
+JacMatrixGenerator::JacMatrixGenerator() : _matrix(), _dv_dx(), _tabs(0) { ModelConfig::instance().setLocalInitSymbols(); }
 
-JacMatrixGenerator::~JacMatrixGenerator() { Utils::instance().unsetLocalInitSymbols(); }
+JacMatrixGenerator::~JacMatrixGenerator() { ModelConfig::instance().unsetLocalInitSymbols(); }
 
 void JacMatrixGenerator::postProcess(SBG::VertexProperty vertex) {}
 
@@ -151,10 +152,10 @@ void JacobianMatrix::build()
 {
   EquationTable algebraics = ModelConfig::instance().algebraics();
   EquationTable derivatives = ModelConfig::instance().derivatives();
-  VarSymbolTable symbols = Utils::instance().symbols();
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
   SBG::JacobianMatrixBuilder jac_matrix;
-  IndexShiftBuilder index_shifts(algebraics, symbols);
-  SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(derivatives, algebraics, symbols);
+  IndexShiftBuilder index_shifts(algebraics);
+  SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(derivatives, algebraics);
   jac_matrix.compute(SDSBGraph.build(), index_shifts.build());
   _jac_matrix_def = jac_matrix.deps();
 }

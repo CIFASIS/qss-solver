@@ -86,11 +86,9 @@ class Function : public Class {
   private:
   Util::ImportTable _imports;
   std::string _name;
-  Util::VarSymbolTable _symbols;
   Util::VarSymbolTable _localSymbols;
   FunctionAnnotation _annotations;
   StatementTable _statements;
-  Util::TypeSymbolTable _types;
   CompiledPackageTable _packages;
   Util::VarSymbolTable _arguments;
   unsigned int _outputNbr;
@@ -143,7 +141,7 @@ class Model : public Class {
   void setCalledFunctions(FunctionTable& fs);
   void insert(AST_External_Function_Call efc);
   void insert(AST_Argument_Modification x);
-  inline Util::VarSymbolTable symbols() const { return _symbols; };
+  Util::VarSymbolTable symbols() const;
   inline Util::ImportTable imports() const { return _imports; };
   inline ModelAnnotation annotations() const { return _annotations; };
   inline FunctionTable calledFunctions() const { return _calledFunctions; };
@@ -192,8 +190,6 @@ class Model : public Class {
 
   std::string _name;
   Util::ImportTable _imports;
-  Util::VarSymbolTable _symbols;
-  Util::TypeSymbolTable _types;
   ModelAnnotation _annotations;
   FunctionTable _calledFunctions;
   EquationTable _derivatives;

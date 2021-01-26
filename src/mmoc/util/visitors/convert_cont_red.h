@@ -28,7 +28,7 @@ class ConvertContRed : public AST_Expression_Visitor<AST_Expression> {
   public:
   typedef enum : int { SUM = 0, PROD, COUNT } ContReduction;
 
-  ConvertContRed(VarSymbolTable &symbols);
+  ConvertContRed();
   ~ConvertContRed() = default;
 
   void setReduction(int red_operator);
@@ -42,7 +42,6 @@ class ConvertContRed : public AST_Expression_Visitor<AST_Expression> {
   void setOpers();
   std::string operatorTerm(std::string);
 
-  VarSymbolTable &_symbols;
   bool _has_reduction;
   list<AST_Equation> _code;
   list<Variable> _variables;

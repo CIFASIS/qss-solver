@@ -25,6 +25,9 @@
 #include "../ast/expression.h"
 #include "../ast/equation.h"
 #include "../ast/statement.h"
+#include "../util/error.h"
+#include "../util/model_config.h"
+#include "../util/util.h"
 #include "../util/visitors/eval_init_exp.h"
 #include "../util/visitors/get_index_usage.h"
 #include "../util/visitors/is_constant_index.h"
@@ -32,8 +35,6 @@
 #include "../util/visitors/partial_eval_exp.h"
 #include "../util/visitors/replace_index.h"
 #include "../util/visitors/revert_index.h"
-#include "../util/util.h"
-#include "../util/error.h"
 
 namespace MicroModelica {
 using namespace Deps;
@@ -64,8 +65,8 @@ void Index::parseIndexes()
     AST_ExpressionListIterator it;
     foreach (it, indexes) {
       ParseIndex parse_index;
-      VarSymbolTable symbols = Utils::instance().symbols();
-      PartialEvalExp partial_eval(symbols);
+      VarSymbolTable symbols = ModelConfig::instance().symbols();
+      PartialEvalExp partial_eval;
       parse_index.apply(partial_eval.apply(current_element(it)));
       _indexes[dim++] = IndexDefinition(parse_index.variable(), parse_index.constant(), parse_index.factor());
     }
@@ -126,14 +127,13 @@ Range Index::range() const { return Range(variable()); }
 Index Index::revert() const
 {
   RevertIndex revert;
-  VarSymbolTable symbols = Utils::instance().symbols();
-  return Index(Expression(revert.apply(_exp.expression()), symbols));
+  return Index(Expression(revert.apply(_exp.expression())));
 }
 
 Index Index::replace(bool range_idx) const
 {
   ReplaceIndex replace = ReplaceIndex(range(), usage(), range_idx);
-  return Index(Expression(replace.apply(_exp.expression()), Utils::instance().symbols()));
+  return Index(Expression(replace.apply(_exp.expression())));
 }
 
 string Index::usageExp() const { return _exp.usage(); }
@@ -152,9 +152,9 @@ string Index::modelicaExp() const
 string Index::print() const
 {
   stringstream buffer;
-  VarSymbolTable symbols = Utils::instance().symbols();
-  PartialEvalExp partial_eval = PartialEvalExp(symbols);
-  Expression exp = Expression(partial_eval.apply(_exp.expression()), symbols);
+  VarSymbolTable symbols = ModelConfig::instance().symbols();
+  PartialEvalExp partial_eval;
+  Expression exp = Expression(partial_eval.apply(_exp.expression()));
   buffer << "_idx" << exp;
   return buffer.str();
 }
@@ -189,16 +189,16 @@ std::ostream& operator<<(std::ostream& out, const RangeDefinition& rd) { return 
 
 Range::Range() : _ranges(), _index_pos(), _size(1), _type(RANGE::For) {}
 
-Range::Range(AST_Equation_For eqf, VarSymbolTable symbols, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type)
+Range::Range(AST_Equation_For eqf, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type)
 {
   AST_ForIndexList fil = eqf->forIndexList();
-  setRangeDefinition(fil, symbols);
+  setRangeDefinition(fil);
 }
 
-Range::Range(AST_Statement_For stf, VarSymbolTable symbols, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type)
+Range::Range(AST_Statement_For stf, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type)
 {
   AST_ForIndexList fil = stf->forIndexList();
-  setRangeDefinition(fil, symbols);
+  setRangeDefinition(fil);
 }
 
 Range::Range(Variable var, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type) { generate(var); }
@@ -217,7 +217,7 @@ void Range::updateRangeDefinition(std::string index_def, RangeDefinition def, in
   _row_size.push_back(range->size());
 }
 
-void Range::setRangeDefinition(AST_ForIndexList fil, VarSymbolTable symbols)
+void Range::setRangeDefinition(AST_ForIndexList fil)
 {
   AST_ForIndexListIterator filit;
   int pos = 0;
@@ -226,7 +226,7 @@ void Range::setRangeDefinition(AST_ForIndexList fil, VarSymbolTable symbols)
     AST_Expression in = fi->in_exp();
     AST_ExpressionList el = in->getAsRange()->expressionList();
     AST_ExpressionListIterator eli;
-    EvalInitExp eval(symbols);
+    EvalInitExp eval;
     int size = el->size();
     int begin = eval.apply(AST_ListFirst(el));
     int end = eval.apply(AST_ListAt(el, size - 1));
@@ -248,7 +248,7 @@ void Range::generate(Variable var)
     int end = var.size(i);
     updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
     Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-    Utils::instance().symbols().insert(index, vi);
+    ModelConfig::instance().symbols().insert(index, vi);
   }
 }
 
@@ -266,7 +266,7 @@ void Range::generate(AST_Expression exp)
   foreach (it, indexes) {
     AST_Expression index_exp = current_element(it);
     string index = getDimensionVar(i + 1);
-    EvalInitExp eval_exp(Utils::instance().symbols());
+    EvalInitExp eval_exp;
     int scalar_value = eval_exp.apply(index_exp);
     updateRangeDefinition(index, RangeDefinition(scalar_value, scalar_value), pos++);
   }
@@ -284,7 +284,7 @@ void Range::generate(SBG::MDI mdi)
     string index = Utils::instance().iteratorVar(pos);
     updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
     Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-    Utils::instance().symbols().insert(index, vi);
+    ModelConfig::instance().addVariable(index, vi);
   }
 }
 
@@ -300,7 +300,7 @@ void Range::generate(MDI mdi)
     string index = Utils::instance().iteratorVar(pos);
     updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
     Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-    Utils::instance().symbols().insert(index, vi);
+    ModelConfig::instance().addVariable(index, vi);
   }
 }
 
@@ -406,8 +406,8 @@ void Range::addLocalVariables() const
   int i = 1;
   for (RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it)) {
     string var = ranges.key(it);
-    Utils::instance().addLocalSymbol("int " + var + ";");
-    Utils::instance().addLocalSymbol("int " + getDimensionVar(i++) + ";");
+    ModelConfig::instance().addLocalSymbol("int " + var + ";");
+    ModelConfig::instance().addLocalSymbol("int " + getDimensionVar(i++) + ";");
   }
 }
 
@@ -419,8 +419,8 @@ void Range::addRangeLocalVariables() const
   for (RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it)) {
     Variable range_var(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
     string index = getDimensionVar(i++, true);
-    Utils::instance().symbols().insert(index, range_var);
-    Utils::instance().addLocalSymbol("int " + index + ";");
+    ModelConfig::instance().addVariable(index, range_var);
+    ModelConfig::instance().addLocalSymbol("int " + index + ";");
   }
 }
 

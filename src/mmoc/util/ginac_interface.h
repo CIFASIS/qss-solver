@@ -41,7 +41,7 @@ DECLARE_FUNCTION_1P(pre)
 
 class ConvertToGiNaC : public AST_Expression_Visitor<GiNaC::ex> {
   public:
-  ConvertToGiNaC(VarSymbolTable varEnv, Option<IR::Expression> exp);
+  ConvertToGiNaC(Option<IR::Expression> exp);
   GiNaC::ex convert(AST_Expression, bool replaceDer = true, bool generateIndexes = false);
   GiNaC::symbol& getSymbol(AST_Expression_ComponentReference);
   GiNaC::symbol& getSymbol(string);
@@ -59,7 +59,6 @@ class ConvertToGiNaC : public AST_Expression_Visitor<GiNaC::ex> {
   GiNaC::ex foldTraverseElement(GiNaC::ex, GiNaC::ex, BinOpType);
   GiNaC::ex expressionVariable();
   map<string, GiNaC::symbol> _directory;
-  VarSymbolTable _symbols;
   bool _replaceDer;
   bool _generateIndexes;
   Option<IR::Expression> _exp;

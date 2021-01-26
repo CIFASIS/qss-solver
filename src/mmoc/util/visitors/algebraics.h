@@ -34,9 +34,6 @@ class Algebraics : public AST_Expression_Visitor<bool> {
 
   AST_ExpressionList exps() const { return _exps; };
 
-  protected:
-  VarSymbolTable _symbols;
-
   private:
   bool foldTraverseElement(AST_Expression exp);
   bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l || r; };

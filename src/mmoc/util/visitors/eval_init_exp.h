@@ -27,14 +27,13 @@ namespace Util {
 
 class EvalInitExp : public AST_Expression_Fold<int> {
   public:
-  EvalInitExp(VarSymbolTable symbols);
+  EvalInitExp();
   ~EvalInitExp() = default;
 
   private:
   int foldTraverseElement(AST_Expression exp);
   int foldTraverseElement(int l, int r, BinOpType bot);
   int foldTraverseElementUMinus(AST_Expression exp);
-  VarSymbolTable _symbols;
 };
 
 }  // namespace Util

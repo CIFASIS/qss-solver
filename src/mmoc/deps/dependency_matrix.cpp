@@ -21,8 +21,9 @@
 
 #include "../ir/alg_usage.h"
 #include "../ir/helpers.h"
-#include "../util/visitors/replace_index.h"
+#include "../util/model_config.h"
 #include "../util/util.h"
+#include "../util/visitors/replace_index.h"
 
 namespace MicroModelica {
 using namespace IR;
