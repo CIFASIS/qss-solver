@@ -9,7 +9,7 @@ ROOT   	        := ..
 GTEST_DIR      := googletest-release-1.10.0
 GTEST_CODE      := $(GTEST_DIR).tar.gz
 
-all: mmo-compiler mmo-interfaces qss-engine qss-solver-gui qss-user-libs lib-gtest
+all: mmo-compiler mmo-interfaces qss-engine qss-solver-gui qss-user-libs
 
 mmo-interfaces: create-dirs 
 	@echo BUILDING MMO-SBML INTERFACE
@@ -55,6 +55,13 @@ ifeq ("$(wildcard $(3RD_PARTY_DIR)/gtest/usr/lib)","")
 	rm -rf $(3RD_PARTY_DIR)/gtest/$(GTEST_DIR)
 	rm -rf $(3RD_PARTY_DIR)/gtest/build
 endif
+
+test:
+	@echo COMPILE AND RUN TESTS
+	@cd mmoc && $(MAKE) test
+	@cd engine && $(MAKE) test
+	@cd gui && $(MAKE) -f gui.makefile test
+	@echo Done
 
 create-dirs:
 	@mkdir -p $(ROOT)/bin

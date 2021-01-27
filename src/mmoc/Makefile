@@ -29,9 +29,6 @@ OBJEXT         := o
 
 # The Target Binary Program
 TARGET      := $(BINDIR)/mmoc
-ifeq ($(MODE),Debug)
-RUN_TESTS 	:= @cd tests && $(MAKE)  
-endif
 
 # Flags, Libraries and Includes
 LIB 		+= -L$(LIBDIR) -lginac -lcln -lgmp   
@@ -222,7 +219,6 @@ $(BUILDDIR)/deps_%.o : $(DEPSBUILDERDIR)/%.cpp
 
 mmoc: | $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ)
 	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ) $(LIB) 
-	$(RUN_TESTS)
 
 test: 
 	@echo Running MMOC tests

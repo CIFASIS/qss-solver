@@ -13,13 +13,15 @@ default: build
 build: | $(BUILDDIR)
 	qmake
 	$(MAKE)
-ifeq ($(MODE),Debug)
-	@cd tests && $(MAKE)  
-endif
 
 $(BUILDDIR):
 	@mkdir -p $(OBJDIR) 
 	@mkdir -p $(BINDIR) 
+
+test:
+	@echo Compile and Run tests.
+	@cd tests && $(MAKE) 
+	@echo Done
 
 doc:
 	@mkdir -p $(DOCDIR)

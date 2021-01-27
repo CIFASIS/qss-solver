@@ -223,9 +223,6 @@ $(BUILDDIR):
 # Rules
 	
 compile-all: $(LIBCVODE) $(LIBIDA) $(LIBGSL) $(LIBQSS) $(LIBTIMESTEP)
-ifeq ($(MODE),Debug)
-	@cd tests && $(MAKE)  
-endif
 
 cvode: $(LIBCVODE)
 
