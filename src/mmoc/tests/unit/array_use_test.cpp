@@ -21,6 +21,7 @@
 #include <gmock/gmock.h>
 #include <iostream>
 
+#include "util/model_config.h"
 #include "util/visitors/array_use.h"
 #include "util/symbol_table.h"
 #include "tests/test_utils.h"
@@ -44,7 +45,7 @@ TEST_F(ArrayUseTest, testCorrectArrayUse)
   stringstream variables;
   int res;
   variables << "Real a[10,10];";
-  _symbols = getSymbols(variables.str());
+  ModelConfig::instance().setSymbols(getSymbols(variables.str()));
   code << "a[1,2]" << endl;
   AST_Expression exp = parseExpression(code.str(), &res);
   EXPECT_EQ(res, 0);
@@ -60,7 +61,7 @@ TEST_F(ArrayUseTest, testWrongArrayUse)
   code << "a[1,2]" << endl;
   AST_Expression exp = parseExpression(code.str(), &res);
   EXPECT_EQ(res, 0);
-  _symbols = getSymbols(variables.str());
+  ModelConfig::instance().setSymbols(getSymbols(variables.str()));
   EXPECT_FALSE(apply(exp));
 }
 

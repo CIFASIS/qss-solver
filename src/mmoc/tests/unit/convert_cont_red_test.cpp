@@ -21,6 +21,7 @@
 #include <iostream>
 
 #include "util/visitors/convert_cont_red.h"
+#include "util/model_config.h"
 #include "util/util.h"
 #include "util/symbol_table.h"
 #include "tests/test_utils.h"
@@ -33,7 +34,7 @@ using namespace MicroModelica::Util;
 /// Unit tests for ConvertContRed variable visitor.
 class ConvertContRedTest : public ::testing::Test, public ConvertContRed {
   public:
-  ConvertContRedTest() : ConvertContRed(Utils::instance().symbols()) {}
+  ConvertContRedTest() {}
 
   virtual ~ConvertContRedTest() {}
 };
@@ -61,9 +62,9 @@ TEST_F(ConvertContRedTest, testSumReductionExp)
   code << "sum(x)" << endl;
   AST_Expression exp = parseExpression(code.str(), &res);
   EXPECT_EQ(res, 0);
-  _symbols = getSymbols(variables.str());
+  ModelConfig::instance().setSymbols(getSymbols(variables.str()));
   setReduction(0);
-  AST_Expression mod_exp = apply(exp);
+  apply(exp);
   EXPECT_TRUE(hasReduction());
   EXPECT_EQ(_code.size(), 2);
   EXPECT_EQ(_variables.size(), 1);
