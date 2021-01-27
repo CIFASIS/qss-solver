@@ -36,3 +36,7 @@ jobs:
     - name: Build
       working-directory: ./src
       run: make
+
+    - name: Tests
+      working-directory: .
+      run: make test
