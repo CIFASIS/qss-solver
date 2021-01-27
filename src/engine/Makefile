@@ -237,7 +237,7 @@ qss: $(LIBQSS)
 
 time-step: $(LIBTIMESTEP)
 
-run-tests:
+test:
 	@echo Compile and Run tests.
 	@cd tests && $(MAKE) 
 	@echo Done
