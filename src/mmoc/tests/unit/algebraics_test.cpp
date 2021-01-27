@@ -20,6 +20,7 @@
 #include <gtest/gtest.h>
 #include <iostream>
 
+#include "util/model_config.h"
 #include "util/visitors/algebraics.h"
 #include "util/util.h"
 #include "util/symbol_table.h"
@@ -51,7 +52,7 @@ TEST_F(AlgebraicsTest, testSimpleAlgebraicExp)
   var.setRealType(Variable::RealType::Algebraic);
   var.setName("a");
   symbols.insert("a", var);
-  _symbols = symbols;
+  ModelConfig::instance().setSymbols(symbols);
   EXPECT_TRUE(apply(exp));
 }
 
@@ -68,7 +69,7 @@ TEST_F(AlgebraicsTest, testSimpleStateExp)
   var.setRealType(Variable::RealType::State);
   var.setName("a");
   symbols.insert("a", var);
-  _symbols = symbols;
+  ModelConfig::instance().setSymbols(symbols);
   EXPECT_FALSE(apply(exp));
 }
 
@@ -89,7 +90,7 @@ TEST_F(AlgebraicsTest, testMixedExp)
   b.setRealType(Variable::RealType::State);
   b.setName("b");
   symbols.insert("b", a);
-  _symbols = symbols;
+  ModelConfig::instance().setSymbols(symbols);
   EXPECT_TRUE(apply(exp));
 }
 
@@ -106,7 +107,7 @@ TEST_F(AlgebraicsTest, testExcludeExp)
   var.setRealType(Variable::RealType::Algebraic);
   var.setName("a");
   symbols.insert("a", var);
-  _symbols = symbols;
+  ModelConfig::instance().setSymbols(symbols);
   exclude(var);
   EXPECT_FALSE(apply(exp));
 }
@@ -124,7 +125,7 @@ TEST_F(AlgebraicsTest, testOutputExp)
   var.setRealType(Variable::RealType::Algebraic);
   var.setName("a");
   symbols.insert("a", var);
-  _symbols = symbols;
+  ModelConfig::instance().setSymbols(symbols);
   EXPECT_TRUE(apply(exp));
 }
 
@@ -141,7 +142,7 @@ TEST_F(AlgebraicsTest, testFunctionCallExp)
   var.setRealType(Variable::RealType::Algebraic);
   var.setName("a");
   symbols.insert("a", var);
-  _symbols = symbols;
+  ModelConfig::instance().setSymbols(symbols);
   EXPECT_TRUE(apply(exp));
 }
 

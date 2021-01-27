@@ -177,9 +177,7 @@ DEPS = $(ASTOBJ:.o=.d) \
  	   $(DEPSGRAPHOBJ:.o=.d) \
  	   $(DEPSBUILDEROBJ:.o=.d)
 
-all: mmoc tests 
-
-default: mmoc 
+all: mmoc 
 
 $(BUILDDIR)/ast_%.o : $(ASTDIR)/%.cpp $(ASTDIR)/%.h $(PARSERDIR)/mocc_parser.cpp $(PARSERDIR)/mocc_scanner.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
@@ -219,9 +217,8 @@ $(BUILDDIR)/deps_%.o : $(DEPSBUILDERDIR)/%.cpp
 
 mmoc: | $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ)
 	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ) $(LIB) 
-	$(RUN_TESTS)
 
-tests: 
+test: 
 	@echo Running MMOC tests
 	@cd tests && $(MAKE)
 	@echo Done

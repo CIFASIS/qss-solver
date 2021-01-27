@@ -223,9 +223,6 @@ $(BUILDDIR):
 # Rules
 	
 compile-all: $(LIBCVODE) $(LIBIDA) $(LIBGSL) $(LIBQSS) $(LIBTIMESTEP)
-ifeq ($(MODE),Debug)
-	@cd tests && $(MAKE)  
-endif
 
 cvode: $(LIBCVODE)
 
@@ -237,7 +234,7 @@ qss: $(LIBQSS)
 
 time-step: $(LIBTIMESTEP)
 
-run-tests:
+test:
 	@echo Compile and Run tests.
 	@cd tests && $(MAKE) 
 	@echo Done

@@ -30,7 +30,7 @@ void insert(VarName name, Variable &var, VarSymbolTable &symbols)
 {
   var.setName(name);
   if (var.typePrefix() & TP_CONSTANT) {
-    EvalInitExp eval(symbols);
+    EvalInitExp eval;
     var.setValue(eval.apply(var.exp()));
   }
   symbols.insert(name, var);
@@ -56,7 +56,7 @@ VarSymbolTable getSymbols(string variable_definition)
         vector<int> size;
         bool array = dec->hasIndexes();
         if (array) {
-          EvalInitExp eval(symbols);
+          EvalInitExp eval;
           AST_ExpressionList exps = dec->indexes();
           AST_ExpressionListIterator exp_it;
           foreach (exp_it, exps) {
