@@ -17,7 +17,7 @@ BIN_DIR        := $(USR_DIR)/bin
 GOOGLE_TEST_INSTALL = $(ROOT_DIR)/3rd-party/gtest
 GOOGLE_TEST_LIB = gtest
 GOOGLE_MOCK_LIB = gmock
-GOOGLE_TEST_INCLUDE = $(GOOGLE_TEST_INSTALL)/usr/local/include
+GOOGLE_TEST_INCLUDE = $(GOOGLE_TEST_INSTALL)/usr/include
 LIB 		+= -L$(MMOC_LIB_DIR) -lginac -lcln -lgmp  
 G++ = g++
 G++_FLAGS = -c -Wall -I $(GOOGLE_TEST_INCLUDE) -std=c++11 -I $(MMOC_DIR)
@@ -38,7 +38,7 @@ UNIT_SRC = $(UNIT_DIR)/algebraics_test.cpp \
 		   $(UNIT_DIR)/called_functions_test.cpp \
 		   $(UNIT_DIR)/convert_cont_red_test.cpp	
 
-INT_SRC = $(INT_DIR)/models_test.cpp
+#INT_SRC = $(INT_DIR)/models_test.cpp
 #MOCK_SRC = $(MOCK_DIR)/dummy.cpp
 
 # Objects
