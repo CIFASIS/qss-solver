@@ -177,9 +177,7 @@ DEPS = $(ASTOBJ:.o=.d) \
  	   $(DEPSGRAPHOBJ:.o=.d) \
  	   $(DEPSBUILDEROBJ:.o=.d)
 
-all: mmoc test 
-
-default: mmoc 
+all: mmoc 
 
 $(BUILDDIR)/ast_%.o : $(ASTDIR)/%.cpp $(ASTDIR)/%.h $(PARSERDIR)/mocc_parser.cpp $(PARSERDIR)/mocc_scanner.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
