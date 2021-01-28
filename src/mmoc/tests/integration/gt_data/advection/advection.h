@@ -19,8 +19,8 @@
 #define _init_u(d1,coeff) x[_state_idx_u(d1,coeff)]
 #define _eval_u(d1,coeff) ((d1-1))
 #define _is_var_u(idx) idx >= 0 && idx < 20000
-#define _get_u_idxs(idx) \
-		_d1 = (idx-0)+ 1;
+#define _get_u_idxs(idx)\
+		_d1 = (idx)+ 1;
 #define _eval_dep_u(d1,coeff) dx[_state_idx_u(d1,coeff)]
 
 // Model Parameters Declaration
@@ -30,6 +30,11 @@ double __PAR__mu;
 // Derivative Equations Macros
 #define _apply_usage_eq_2(_d1) \
 	j = _d1;
+#define _get_eq_2_var_idxs(row, var)\
+	_rg_d1 = 1 + (row-1)+ 1;\
+	var = _idx_u(_rg_d1,0);
+
+// Algebraic Equations Macros
 
 // Event Macros
 
@@ -39,7 +44,11 @@ double __PAR__mu;
 // Input Matrix Macros
 
 // Jacobian Macros definition. 
-#define _jac(i) jac[i++]
+#define _assign_jac(r, val) \
+    col_t = dvdx->df_dx_t->size[r] + dvdx->df_dx_t->index[r][0]; \
+    dvdx->df_dx_t->index[r][0]++; \
+    jac[col_t] = val;
+#define _c_index(i) (i-1)
 
 #define _time t
 
