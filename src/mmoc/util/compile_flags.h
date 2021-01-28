@@ -29,207 +29,52 @@
 namespace MicroModelica {
 namespace Util {
 
-/**
- *
- */
 class CompileFlags {
   public:
-  /**
-   *
-   */
   CompileFlags();
-  /**
-   *
-   */
-  ~CompileFlags();
-  /**
-   *
-   * @param l
-   */
+  ~CompileFlags() = default;
   void addLibraryPath(string l);
-  /**
-   *
-   * @param o
-   */
   void addObject(string o);
-  /**
-   *
-   * @return
-   */
   int debug();
-  /**
-   *
-   * @return
-   */
   string enginePath();
-  /**
-   *
-   * @return
-   */
   string engineLibs();
-  /**
-   *
-   * @return
-   */
   bool externalFunctions();
-  /**
-   *
-   * @return
-   */
   bool hasObjects();
-  /**
-   *
-   * @return
-   */
   bool hasOutputFile();
-  /**
-   *
-   * @return
-   */
   bool incidenceMatrices();
-  /**
-   *
-   * @return
-   */
   list<string> libraryPaths();
-  /**
-   *
-   * @return
-   */
   list<string> objects();
-  /**
-   *
-   * @return
-   */
   bool optimizeQSS();
-  /**
-   *
-   * @return
-   */
   bool externalStructureFile();
-  /**
-   *
-   * @return
-   */
   bool output();
-  /**
-   *
-   * @return
-   */
   string outputFile();
-  /**
-   *
-   * @return
-   */
   string outputFileName();
-  /**
-   *
-   * @return
-   */
   string outputFilePath();
-  /**
-   *
-   * @return
-   */
   bool parallel();
-  /**
-   *
-   * @return
-   */
   string path();
-  /**
-   *
-   * @return
-   */
   bool store();
-  /**
-   *
-   * @param s
-   */
   void setDebug(int s);
-  /**
-   *
-   * @param s
-   */
   void setDebug(string s);
-  /**
-   *
-   * @param p
-   */
   void setEngineLibs(string p);
-  /**
-   *
-   * @param p
-   */
   void setEnginePath(string p);
-  /**
-   *
-   * @param s
-   */
   void setExternalFunctions(bool s);
-  /**
-   *
-   * @param p
-   */
   void setExternalLibs(string p);
-  /**
-   *
-   * @param im
-   */
   void setIncidenceMatrices(bool im);
-  /**
-   *
-   * @param s
-   */
   void setOptimizeQSS(bool s);
-  /**
-   *
-   *     @param s
-   */
   void setOutput(bool s);
-  /**
-   *
-   * @param outputFile
-   */
   void setOutputFile(string outputFile);
-  /**
-   *
-   * @param s
-   */
   void setParallel(bool s);
-  /**
-   *
-   * @param s
-   */
   void setExternalStructureFile(bool s);
-  /**
-   *
-   * @param p
-   */
   void setPath(string p);
-  /**
-   *
-   * @param s
-   */
   void setStore(bool s);
-  /**
-   *
-   * @return
-   */
   string externalLibs();
-  /**
-   *
-   * @return
-   */
   int lps() const { return _lps; }
-  /**
-   *
-   * @param lps
-   */
   void setLps(int lps) { _lps = lps; }
   void setGraph(bool g);
   bool graph();
-
+  void setTesting(bool testing);
+  bool testing();
+  
   private:
   bool _store;
   bool _parallel;
@@ -246,6 +91,7 @@ class CompileFlags {
   int _lps;
   map<string, int> _debugOptions;
   bool _graph;
+  bool _testing;
 };
 }  // namespace Util
 }  // namespace MicroModelica

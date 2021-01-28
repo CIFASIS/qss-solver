@@ -431,7 +431,7 @@ string FunctionPrinter::equationVariableMacros(Option<Range> range, Expression l
 {
   stringstream buffer;
   if (range) {
-    range->addRangeLocalVariables();
+    range->addRangeVariables();
     GetIndexVariables index_usage;
     RangeDefinitionTable range_def = range->definition();
     buffer << "#define _get" << id << "_var_idxs";
@@ -470,6 +470,7 @@ string FunctionPrinter::jacMacrosAccess(Equation eq) const
     assert(var);
     code << TAB << "_get" << eq.applyId() << "_var_idxs(row, eq_var);" << endl;
     code << TAB << "_get" << var.get() << "_idxs(eq_var);" << endl;
+    eq.range()->addRangeLocalVariables();
   }
   return code.str();
 }

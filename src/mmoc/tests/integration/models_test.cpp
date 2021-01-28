@@ -38,7 +38,7 @@ TEST_P(ITests, GenerateCode)
   std::cout << "Testing model: " << NAME << std::endl;
   const std::string MODEL = " ./integration/gt_data/" + NAME + "/" + NAME + ".mo";
   const std::string MMOC = "../usr/bin/mmoc";
-  const std::string ARGS = " -o ./integration/test_data/" + NAME;
+  const std::string ARGS = " -o ./integration/test_data/" + NAME + " --test";
   const std::string TEST_CMD = "./integration/test_results.sh " + NAME;
   const std::string RESULT_FILE = "./integration/test_data/" + NAME + ".passed";
   const std::string COMP_CMD = MMOC + ARGS + MODEL + " > /dev/null";
@@ -50,8 +50,10 @@ TEST_P(ITests, GenerateCode)
   EXPECT_TRUE(result.good());
 }
 
-const char* models[] = {"advection", "lc_line", "lotka_volterra", "bball_downstairs", "airconds",  "aircont",   "boost",   "buck",
-                        "buckboost", "cuk",     "cuk2",           "buck_circuit",     "inverters", "rectifier", "spikings"};
+//const char* models[] = {"advection", "lc_line", "lotka_volterra", "bball_downstairs", "airconds",  "aircont",   "boost",   "buck",
+//                        "buckboost", "cuk",     "cuk2",           "buck_circuit",     "inverters", "rectifier", "spikings"};
+const char* models[] = {"advection"};
+
 
 INSTANTIATE_TEST_SUITE_P(Models, ITests, testing::ValuesIn(models));
 

@@ -96,7 +96,8 @@ class Utils {
   Variable variable(AST_Expression exp);
   IR::Expression variableExpression(string name, Option<IR::Range> range);
   std::string tabs(int t);
-
+  CompileFlags compileFlags();
+  
   private:
   Utils();
   bool checkCodeFiles(std::string name, std::string ext);

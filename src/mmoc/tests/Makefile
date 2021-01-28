@@ -38,7 +38,7 @@ UNIT_SRC = $(UNIT_DIR)/algebraics_test.cpp \
 		   $(UNIT_DIR)/called_functions_test.cpp \
 		   $(UNIT_DIR)/convert_cont_red_test.cpp	
 
-#INT_SRC = $(INT_DIR)/models_test.cpp
+INT_SRC = $(INT_DIR)/models_test.cpp
 #MOCK_SRC = $(MOCK_DIR)/dummy.cpp
 
 # Objects
@@ -62,7 +62,7 @@ all: $(TARGET) $(RUN_TESTS)
 $(TARGET): $(MAIN_OBJ) $(UNIT_OBJ) $(INT_OBJ) $(MMOC_OBJ) $(BUILD_DIR)
 		g++ -o $(TARGET) $(MAIN_OBJ) $(UNIT_OBJ) $(INT_OBJ) $(MMOC_OBJ) $(LD_FLAGS) $(LIB)
 
-$(RUN_TESTS): $(TARGET)
+$(RUN_TESTS): $(TARGET) $(BUILD_DIR)
 		@echo Clean up test data dir.
 		@rm -rf $(DATA_DIR)/*
 		@echo Done
