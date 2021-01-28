@@ -367,5 +367,11 @@ string Utils::tabs(int t)
   return tab;
 }
 
+CompileFlags Utils::compileFlags()
+{
+  return _flags;
+}
+
+
 }  // namespace Util
 }  // namespace MicroModelica

@@ -83,6 +83,8 @@ void usage()
   cout << "                Generate code for parallel simulation." << endl;
   cout << "-s, --settings-only" << endl;
   cout << "                Generate only the settings (.ini) file." << endl;
+  cout << "-t, --test" << endl;
+  cout << "                Don't generate GiNaC expressions for testing code structure." << endl;
   cout << "-v, --version   Display version information and exit" << endl;
   cout << endl;
   cout << "Report bugs to: joaquin.f.fernandez@gmail.com" << endl;
@@ -170,11 +172,12 @@ int main(int argc, char** argv)
                                            {"settings-only", no_argument, 0, 's'},
                                            {"optimize", no_argument, 0, 'O'},
                                            {"parallel", no_argument, 0, 'p'},
+                                           {"test", no_argument, 0, 't'},
                                            {"debug", required_argument, 0, 'd'},
                                            {"output", required_argument, 0, 'o'},
                                            {0, 0, 0, 0}};
     int option_index = 0;
-    opt = getopt_long(argc, argv, "vhmfsOpi:d:o:", long_options, &option_index);
+    opt = getopt_long(argc, argv, "vhmfsOpit:d:o:", long_options, &option_index);
     if (opt == EOF) break;
     switch (opt) {
     case 'v':
@@ -210,6 +213,9 @@ int main(int argc, char** argv)
       break;
     case 'O':
       flags.setOptimizeQSS(true);
+      break;
+    case 't':
+      flags.setTesting(true);
       break;
     case '?':
       usage();

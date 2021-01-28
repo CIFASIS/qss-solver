@@ -54,8 +54,6 @@ CompileFlags::CompileFlags()
   _debugOptions["SD_DBG_Dt"] = 1 << 8;
 }
 
-CompileFlags::~CompileFlags() {}
-
 bool CompileFlags::store() { return _store; }
 
 void CompileFlags::setStore(bool s) { _store = s; }
@@ -137,5 +135,10 @@ void CompileFlags::setDebug(string s)
 void CompileFlags::setGraph(bool g) { _graph = g; }
 
 bool CompileFlags::graph() { return _graph; }
+
+void CompileFlags::setTesting(bool testing) { _testing = testing; }
+
+bool CompileFlags::testing() { return _testing; }
+
 }  // namespace Util
 }  // namespace MicroModelica
