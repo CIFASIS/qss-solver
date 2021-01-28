@@ -354,6 +354,9 @@ string Range::getDimensionVar(int i, bool range) const
     buffer << "_rg";
   }
   buffer << "_d" << i;
+  if (range) {
+    addRangeVariables(i, buffer.str());
+  }
   return buffer.str();
 }
 
@@ -422,16 +425,10 @@ void Range::addRangeLocalVariables() const
   }
 }
 
-void Range::addRangeVariables() const
+void Range::addRangeVariables(int i, string index) const
 {
-  RangeDefinitionTable ranges = _ranges;
-  RangeDefinitionTable::iterator it;
-  int i = 1;
-  for (RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it)) {
-    Variable range_var(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-    string index = getDimensionVar(i++, true);
-    ModelConfig::instance().addVariable(index, range_var);
-  }
+  Variable range_var(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
+  ModelConfig::instance().addVariable(index, range_var);
 }
 
 int Range::rowSize(int dim) const

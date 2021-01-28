@@ -83,7 +83,6 @@ class Range {
   string indexes() const;
   void addLocalVariables() const;
   void addRangeLocalVariables() const;
-  void addRangeVariables() const;
   int rowSize(int dim) const;
   std::string block(int dim = -1) const;
   int pos(std::string var);
@@ -106,6 +105,7 @@ class Range {
   void generate(AST_Expression exp);
   void generate(Deps::SBG::MDI mdi);
   void updateRangeDefinition(std::string index_def, RangeDefinition def, int pos);
+  void addRangeVariables(int i, string index) const;
 
   private:
   void setRangeDefinition(AST_ForIndexList fil);

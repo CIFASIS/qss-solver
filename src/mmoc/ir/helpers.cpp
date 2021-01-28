@@ -431,7 +431,6 @@ string FunctionPrinter::equationVariableMacros(Option<Range> range, Expression l
 {
   stringstream buffer;
   if (range) {
-    range->addRangeVariables();
     GetIndexVariables index_usage;
     RangeDefinitionTable range_def = range->definition();
     buffer << "#define _get" << id << "_var_idxs";
