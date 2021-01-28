@@ -41,7 +41,7 @@ TEST_P(ITests, GenerateCode)
   const std::string ARGS = " -o ./integration/test_data/" + NAME + " --test";
   const std::string TEST_CMD = "./integration/test_results.sh " + NAME;
   const std::string RESULT_FILE = "./integration/test_data/" + NAME + ".passed";
-  const std::string COMP_CMD = MMOC + ARGS + MODEL + " > /dev/null";
+  const std::string COMP_CMD = MMOC + ARGS + MODEL + " > ./integration/test_data/" + NAME + ".log";
 
   std::system(COMP_CMD.c_str());
   std::system(TEST_CMD.c_str());
@@ -52,7 +52,7 @@ TEST_P(ITests, GenerateCode)
 
 //const char* models[] = {"advection", "lc_line", "lotka_volterra", "bball_downstairs", "airconds",  "aircont",   "boost",   "buck",
 //                        "buckboost", "cuk",     "cuk2",           "buck_circuit",     "inverters", "rectifier", "spikings"};
-const char* models[] = {"advection"};
+const char* models[] = {"advection", "advection2D", "rltest"};
 
 
 INSTANTIATE_TEST_SUITE_P(Models, ITests, testing::ValuesIn(models));
