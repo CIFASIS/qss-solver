@@ -248,7 +248,7 @@ void Range::generate(Variable var)
     int end = var.size(i);
     updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
     Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-    ModelConfig::instance().symbols().insert(index, vi);
+    ModelConfig::instance().addVariable(index, vi);
   }
 }
 
@@ -417,10 +417,20 @@ void Range::addRangeLocalVariables() const
   RangeDefinitionTable::iterator it;
   int i = 1;
   for (RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it)) {
+    string index = getDimensionVar(i++, true);
+    ModelConfig::instance().addLocalSymbol("int " + index + ";");
+  }
+}
+
+void Range::addRangeVariables() const
+{
+  RangeDefinitionTable ranges = _ranges;
+  RangeDefinitionTable::iterator it;
+  int i = 1;
+  for (RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it)) {
     Variable range_var(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
     string index = getDimensionVar(i++, true);
     ModelConfig::instance().addVariable(index, range_var);
-    ModelConfig::instance().addLocalSymbol("int " + index + ";");
   }
 }
 

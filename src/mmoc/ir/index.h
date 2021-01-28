@@ -83,6 +83,7 @@ class Range {
   string indexes() const;
   void addLocalVariables() const;
   void addRangeLocalVariables() const;
+  void addRangeVariables() const;
   int rowSize(int dim) const;
   std::string block(int dim = -1) const;
   int pos(std::string var);
