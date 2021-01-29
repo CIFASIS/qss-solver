@@ -184,7 +184,7 @@ unsigned int Variable::size()
 unsigned int Variable::rowSize(unsigned int dim) const
 {
   unsigned int total = 1;
-  for (unsigned int it = _size.size() - 1; it > dim; it--) {
+  for (unsigned int it = dim + 1; it < _size.size(); it++) {
     total *= _size.at(it);
   }
   return total;

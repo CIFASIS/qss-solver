@@ -123,7 +123,7 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
 			 $(VISITORDIR)/has_scalar_index.cpp \
 			 $(VISITORDIR)/replace_constant.cpp \
 			 $(VISITORDIR)/parse_index.cpp \
-			 $(VISITORDIR)/apply_alg_usage.cpp\
+			 $(VISITORDIR)/apply_var_usage.cpp\
 			 $(VISITORDIR)/is_constant_expression.cpp
 
 DEPSSRC = $(DEPSDIR)/dependency.cpp \

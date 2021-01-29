@@ -221,7 +221,13 @@ class EquationMapper {
     if (begin) {
       buffer << fp.beginExpression(index.identifier(), range);
     } else {
+      if (dep.isScalar()) {
+        buffer << TAB;
+      } 
       buffer << TAB << fp.endExpression(range, FUNCTION_PRINTER::Break);
+      if (dep.isScalar()) {
+        buffer << endl;
+      }
     }
     return buffer.str();
   }

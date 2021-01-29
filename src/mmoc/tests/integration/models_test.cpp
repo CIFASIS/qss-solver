@@ -52,7 +52,7 @@ TEST_P(ITests, GenerateCode)
 
 //const char* models[] = {"advection", "lc_line", "lotka_volterra", "bball_downstairs", "airconds",  "aircont",   "boost",   "buck",
 //                        "buckboost", "cuk",     "cuk2",           "buck_circuit",     "inverters", "rectifier", "spikings"};
-const char* models[] = {"advection", "advection2D", "rltest"};
+const char* models[] = {"advection", "advection2D", "bball_downstairs", "lc_line", "lotka_volterra", "rltest"};
 
 
 INSTANTIATE_TEST_SUITE_P(Models, ITests, testing::ValuesIn(models));

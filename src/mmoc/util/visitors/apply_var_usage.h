@@ -17,8 +17,8 @@
 
  ******************************************************************************/
 
-#ifndef APPLY_ALG_USAGE_H_
-#define APPLY_ALG_USAGE_H_
+#ifndef APPLY_VAR_USAGE_H_
+#define APPLY_VAR_USAGE_H_
 
 #include "../../ast/ast_builder.h"
 #include "../ast_util.h"
@@ -42,4 +42,4 @@ class ApplyVariableUsage : public AST_Expression_Visitor<AST_Expression> {
 }  // namespace Util
 }  // namespace MicroModelica
 
-#endif /* APPLY_ALG_USAGE_H_ */
+#endif /* APPLY_VAR_USAGE_H_ */

@@ -23,6 +23,10 @@ fi
 for i in $TEST_FILES; do
     GT_FILE=${GT_MODEL}${i}
     TEST_FILE=${TEST_MODEL}${i}
+    if ! [ -f "$TEST_FILE" ]; then
+        echo "Model " $MODEL " test failed for " $TEST_FILE
+        echo "File " $TEST_FILE " don't exist." > $TEST_FILE.failed
+    fi
     test_results
 done
 

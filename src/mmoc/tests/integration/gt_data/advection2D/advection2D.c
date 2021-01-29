@@ -150,36 +150,28 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 			dvdx->df_dx[3]->value[c_row][col] +=  aux;
 		}
 	}
-	
-	// Assign Jacobian Matrix values
-	
+	// Assign Jacobian Matrix values for equation: 0
 	for (row = 0; row < 1; row++) {
 	  for (col = 0; col < dvdx->df_dx[0]->size[row]; col++) {
 	    row_t = dvdx->df_dx[0]->index[row][col];
 	    _assign_jac(row_t, dvdx->df_dx[0]->value[row][col]);
 	  }
 	}
-	
-	// Assign Jacobian Matrix values
-	
+	// Assign Jacobian Matrix values for equation: 1
 	for (row = 0; row < 19; row++) {
 	  for (col = 0; col < dvdx->df_dx[1]->size[row]; col++) {
 	    row_t = dvdx->df_dx[1]->index[row][col];
 	    _assign_jac(row_t, dvdx->df_dx[1]->value[row][col]);
 	  }
 	}
-	
-	// Assign Jacobian Matrix values
-	
+	// Assign Jacobian Matrix values for equation: 2
 	for (row = 0; row < 19; row++) {
 	  for (col = 0; col < dvdx->df_dx[2]->size[row]; col++) {
 	    row_t = dvdx->df_dx[2]->index[row][col];
 	    _assign_jac(row_t, dvdx->df_dx[2]->value[row][col]);
 	  }
 	}
-	
-	// Assign Jacobian Matrix values
-	
+	// Assign Jacobian Matrix values for equation: 3
 	for (row = 0; row < 361; row++) {
 	  for (col = 0; col < dvdx->df_dx[3]->size[row]; col++) {
 	    row_t = dvdx->df_dx[3]->index[row][col];
@@ -503,26 +495,18 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	simulator->output = SD_Output("advection2D",2,0,400,NULL,0,0,CI_Step,SD_Memory,MOD_output);
 	SD_output modelOutput = simulator->output;
 	modelOutput->nOS[_idx_out_exp_1]++;
-	
 	modelOutput->nOS[_idx_out_exp_2]++;
-	
 	modelOutput->nSO[_idx_u(20,20)]++;
-	
 	modelOutput->nSO[_idx_u(1,1)]++;
-	
 	SD_allocOutputMatrix(modelOutput, 400, 0);
 	sprintf(modelOutput->variable[_idx_out_exp_1].name, "u[20,20]");
 	sprintf(modelOutput->variable[_idx_out_exp_2].name, "u[1,1]");
 	cleanVector(outputs, 0, 2);
 	modelOutput->OS[_idx_out_exp_1][outputs[_idx_out_exp_1]++] = _idx_u(20,20);
-	
 	modelOutput->OS[_idx_out_exp_2][outputs[_idx_out_exp_2]++] = _idx_u(1,1);
-	
 	cleanVector(states, 0, 400);
 	modelOutput->SO[_idx_u(20,20)][states[_idx_u(20,20)]++] = _idx_out_exp_1;
-	
 	modelOutput->SO[_idx_u(1,1)][states[_idx_u(1,1)]++] = _idx_out_exp_2;
-	
 	simulator->model = CLC_Model(MOD_definition, MOD_zeroCrossing, MOD_handlerPos, MOD_handlerNeg, MOD_jacobian);
 	free(states);
 	free(outputs);

@@ -129,7 +129,7 @@ std::string JacMatrixGenerator::guard(SBG::MDI dom, SBG::Map map)
 void JacMatrixGenerator::visitF(Equation eq, SBG::VariableDep var_dep, SBG::Map map) { addDependency(eq, var_dep, map); }
 
 void JacMatrixGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep, SBG::Map n_map, SBG::Map map_m,
-                                SBG::Offset index_shift)
+                                int index_shift)
 {
   addDependency(v_eq, var_dep, n_map, guard(var_dep.dom(), map_m));
 }

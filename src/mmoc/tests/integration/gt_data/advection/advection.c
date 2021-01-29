@@ -102,18 +102,14 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 			dvdx->df_dx[1]->value[c_row][col] +=  aux;
 		}
 	}
-	
-	// Assign Jacobian Matrix values
-	
+	// Assign Jacobian Matrix values for equation: 0
 	for (row = 0; row < 1; row++) {
 	  for (col = 0; col < dvdx->df_dx[0]->size[row]; col++) {
 	    row_t = dvdx->df_dx[0]->index[row][col];
 	    _assign_jac(row_t, dvdx->df_dx[0]->value[row][col]);
 	  }
 	}
-	
-	// Assign Jacobian Matrix values
-	
+	// Assign Jacobian Matrix values for equation: 1
 	for (row = 0; row < 19999; row++) {
 	  for (col = 0; col < dvdx->df_dx[1]->size[row]; col++) {
 	    row_t = dvdx->df_dx[1]->index[row][col];
@@ -130,7 +126,7 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 		case _eval_u(1,0): {
 			_eval_dep_u(1,1) = (-_u(1,0)+1)*20000-_mu*_u(1,0)*(_u(1,0)-_alpha)*(_u(1,0)-1);
 			_eval_dep_u(1,2) = (0)/2;	
-		break;
+			break;
 		}
 	}
 	if (_is_var_u(idx)) {
@@ -290,17 +286,13 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	simulator->output = SD_Output("advection",1,0,20000,NULL,0,0,CI_Step,SD_Memory,MOD_output);
 	SD_output modelOutput = simulator->output;
 	modelOutput->nOS[_idx_out_exp_1]++;
-	
 	modelOutput->nSO[_idx_u(20000,0)]++;
-	
 	SD_allocOutputMatrix(modelOutput, 20000, 0);
 	sprintf(modelOutput->variable[_idx_out_exp_1].name, "u[20000]");
 	cleanVector(outputs, 0, 1);
 	modelOutput->OS[_idx_out_exp_1][outputs[_idx_out_exp_1]++] = _idx_u(20000,0);
-	
 	cleanVector(states, 0, 20000);
 	modelOutput->SO[_idx_u(20000,0)][states[_idx_u(20000,0)]++] = _idx_out_exp_1;
-	
 	simulator->model = QSS_Model(MOD_definition, MOD_dependencies, MOD_zeroCrossing, MOD_handlerPos, MOD_handlerNeg, MOD_jacobian, MOD_BDF_definition);
 	free(states);
 	free(outputs);

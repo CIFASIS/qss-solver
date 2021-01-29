@@ -87,7 +87,6 @@ class Range {
   std::string block(int dim = -1) const;
   int pos(std::string var);
   void generate(Deps::MDI mdi);
-  inline bool empty() { return _size == 0; };
   std::string iterator(int dim, bool range_idx = false);
   std::string getPrintDimensionVarsString() const;
   std::string getDimensionVarsString() const;
@@ -98,6 +97,7 @@ class Range {
   void applyUsage(Index usage);
   std::string in(ExpressionList exps);
   std::string in(std::vector<std::string> exps);
+  map<std::string, AST_Expression> initExps();
   friend std::ostream& operator<<(std::ostream& out, const Range& r);
 
   protected:

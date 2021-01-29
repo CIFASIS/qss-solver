@@ -357,7 +357,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/usr/bin/mmoc",
-            "args": ["-o /home/joaquin/work/qss-solver/build/bball/bball_downstairs ", "/home/joaquin/work/qss-solver/models/bball/bball_downstairs.mo"],
+            "args": ["-o /home/joaquin/work/qss-solver/build/bball_downstairs ", "/home/joaquin/work/qss-solver/models/bball/bball_downstairs.mo"],
             "cwd": "${workspaceFolder}/usr/bin/",
             "environment": [],
             "MIMode": "gdb",

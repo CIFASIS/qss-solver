@@ -46,7 +46,7 @@ class JacGenerator {
   void postProcess(Deps::SBG::VertexProperty vertex);
   void visitF(Equation eq, Deps::SBG::VariableDep var_dep, Deps::SBG::Map map);
   void visitG(Equation v_eq, Equation g_eq, Deps::SBG::VariableDep var_dep, Deps::SBG::Map n_map, Deps::SBG::Map map_m,
-              Deps::SBG::Offset index_shift);
+              int index_shift);
   void initG(Equation eq, Deps::SBG::Map map_m);
   JacDef deps();
 

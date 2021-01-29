@@ -45,9 +45,7 @@ void JacGenerator::postProcess(SBG::VertexProperty vertex)
   int id = vertex.id() - 1;
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
-  code << endl;
-  code << "// Assign Jacobian Matrix values" << endl;
-  code << endl;
+  code << "// Assign Jacobian Matrix values for equation: " << id << endl;
   code << tab << "for (row = 0; row < " << size << "; row++) {" << endl;
   code << tab << "  for (col = 0; col < dvdx->df_dx[" << id << "]->size[row]; col++) {" << endl;
   code << tab << "    row_t = dvdx->df_dx[" << id << "]->index[row][col];" << endl;
@@ -166,14 +164,13 @@ void JacGenerator::visitF(Equation eq, SBG::VariableDep var_dep, SBG::Map map)
   dependencyEpilogue();
 }
 
-void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep, SBG::Map n_map, Map map_m, SBG::Offset index_shift)
+void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep, SBG::Map n_map, Map map_m, int index_shift)
 {
   stringstream code;
   string dom_guard = guard(var_dep.dom(), map_m);
   dependencyPrologue(g_eq, var_dep, n_map, dom_guard);
   generatePos(v_eq.arrayId(), v_eq.type());
   vector<string> variables;
-  int shift = index_shift[0];
   string tab = Utils::instance().tabs(_tabs);
   static const bool USE_RANGE_IDXS = true;
   vector<string> exps;
@@ -190,7 +187,7 @@ void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep
   Expression a_exp = Expression::generate(g_eq.LHSVariable()->name(), exps);
   Index a_ind(a_exp);
   code << tab << "c_row_g = ";
-  code << a_ind << " - " << shift;
+  code << a_ind << " - " << index_shift;
   code << ";" << endl;
   _jac_def.code.append(code.str());
   generatePos(g_eq.arrayId(), g_eq.type(), "c_row_g", "col_g");

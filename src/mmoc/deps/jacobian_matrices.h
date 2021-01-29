@@ -42,7 +42,7 @@ class JacMatrixGenerator {
   void end();
   void postProcess(SBG::VertexProperty vertex);
   void visitF(IR::Equation eq, SBG::VariableDep var_dep, SBG::Map map);
-  void visitG(IR::Equation v_eq, IR::Equation g_eq, SBG::VariableDep var_dep, SBG::Map n_map, SBG::Map map_m, SBG::Offset index_shift);
+  void visitG(IR::Equation v_eq, IR::Equation g_eq, SBG::VariableDep var_dep, SBG::Map n_map, SBG::Map map_m, int index_shift);
   void initG(IR::Equation eq, SBG::Map map);
   JacMatrixDef deps();
 

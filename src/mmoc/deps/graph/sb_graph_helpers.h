@@ -175,7 +175,7 @@ class LinearFunction {
   Offset _factor;
 };
 
-typedef std::map<int, Offset> IndexShift;
+typedef std::map<int, int> IndexShift;
 
 class Map {
   public:

@@ -181,27 +181,21 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 			dvdx->df_dx[2]->value[c_row][col] +=  aux;
 		}
 	}
-	
-	// Assign Jacobian Matrix values
-	
+	// Assign Jacobian Matrix values for equation: 0
 	for (row = 0; row < 9; row++) {
 	  for (col = 0; col < dvdx->df_dx[0]->size[row]; col++) {
 	    row_t = dvdx->df_dx[0]->index[row][col];
 	    _assign_jac(row_t, dvdx->df_dx[0]->value[row][col]);
 	  }
 	}
-	
-	// Assign Jacobian Matrix values
-	
+	// Assign Jacobian Matrix values for equation: 1
 	for (row = 0; row < 1; row++) {
 	  for (col = 0; col < dvdx->df_dx[1]->size[row]; col++) {
 	    row_t = dvdx->df_dx[1]->index[row][col];
 	    _assign_jac(row_t, dvdx->df_dx[1]->value[row][col]);
 	  }
 	}
-	
-	// Assign Jacobian Matrix values
-	
+	// Assign Jacobian Matrix values for equation: 2
 	for (row = 0; row < 1; row++) {
 	  for (col = 0; col < dvdx->df_dx[2]->size[row]; col++) {
 	    row_t = dvdx->df_dx[2]->index[row][col];
@@ -520,12 +514,10 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 		modelOutput->nOS[_idx_out_exp_1(_d1)]++;
 	}
 	modelOutput->nOS[_idx_out_exp_2]++;
-	
 	for(_d1 = 1; _d1<=9; _d1+=1) {
 		modelOutput->nSO[_idx_x1(_d1)]++;
 	}
 	modelOutput->nSO[_idx_x2(1)]++;
-	
 	SD_allocOutputMatrix(modelOutput, 11, 0);
 	for(_d1 = 1; _d1<=9; _d1+=1) {
 		sprintf(modelOutput->variable[_idx_out_exp_1(_d1)].name, "x1[%d]",_d1);
@@ -536,13 +528,11 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 		modelOutput->OS[_idx_out_exp_1(_d1)][outputs[_idx_out_exp_1(_d1)]++] = _idx_x1(_d1);
 	}
 	modelOutput->OS[_idx_out_exp_2][outputs[_idx_out_exp_2]++] = _idx_x2(1);
-	
 	cleanVector(states, 0, 11);
 	for(_d1 = 1; _d1<=9; _d1+=1) {
 		modelOutput->SO[_idx_x1(_d1)][states[_idx_x1(_d1)]++] = _idx_out_exp_1(_d1);
 	}
 	modelOutput->SO[_idx_x2(1)][states[_idx_x2(1)]++] = _idx_out_exp_2;
-	
 	simulator->model = CLC_Model(MOD_definition, MOD_zeroCrossing, MOD_handlerPos, MOD_handlerNeg, MOD_jacobian);
 	free(states);
 	free(outputs);

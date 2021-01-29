@@ -19,7 +19,7 @@
 
 #include "alg_usage.h"
 
-#include "../util/visitors/apply_alg_usage.h"
+#include "../util/visitors/apply_var_usage.h"
 #include "../util/visitors/partial_eval_exp.h"
 #include "../util/model_config.h"
 #include "../util/util.h"

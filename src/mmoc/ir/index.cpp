@@ -22,6 +22,7 @@
 #include <sstream>
 
 #include "helpers.h"
+#include "../ast/ast_builder.h"
 #include "../ast/expression.h"
 #include "../ast/equation.h"
 #include "../ast/statement.h"
@@ -507,6 +508,10 @@ string Range::in(ExpressionList exps)
 string Range::in(vector<string> exps)
 {
   assert(exps.size() == _ranges.size());
+  // If empty generate a default true condition to handle scalar cases.
+  if (exps.empty()) {
+    return "1";
+  }
   stringstream code;
   RangeDefinitionTable::iterator it;
   int i = 0;
@@ -522,6 +527,18 @@ string Range::in(vector<string> exps)
 int Range::size() const { return _size; };
 
 bool Range::isEmpty() const { return _row_size.size() == 0; };
+
+map<std::string, AST_Expression> Range::initExps()
+{
+  map<string, AST_Expression> init_exps;
+  RangeDefinitionTable::iterator it;
+  int i = 0;
+  int size = _ranges.size();
+  for (RangeDefinition r = _ranges.begin(it); !_ranges.end(it); r = _ranges.next(it), i++) {
+    init_exps[_ranges.key(it)] = newAST_Expression_Integer(r.begin());  
+  }
+  return init_exps;
+}
 
 std::ostream& operator<<(std::ostream& out, const Range& r) { return out << r.print(); }
 }  // namespace IR

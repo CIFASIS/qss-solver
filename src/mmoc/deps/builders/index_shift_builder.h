@@ -31,7 +31,11 @@ class IndexShiftBuilder {
   public:
   IndexShiftBuilder(IR::EquationTable &algebraics);
   ~IndexShiftBuilder() = default;
+  
   SBG::IndexShift build();
+
+  protected:
+  int flatter(Util::Variable variable, std::vector<int> usage);
 
   private:
   IR::EquationTable _algebraics;

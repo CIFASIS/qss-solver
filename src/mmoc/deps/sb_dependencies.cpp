@@ -111,10 +111,9 @@ void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V)
             Label alg_label = graph[*alg_edge];
             int dep, deps = graph[G].numDeps();
             for (dep = 1; dep <= deps; dep++) {
-              // First get the dom of G for the algebraic equation
-              Offset index_shift = _index_shift[graph[G].eq().id()];
               // Ai -> Gij labels must contain only one pair.
               assert(alg_label.pairs().size() == 1);
+              // First get the dom of G for the algebraic equation
               MDI g_dom = alg_label.pairs().begin()->dom();
               Map G_map = alg_label.pairs().begin()->map();
               MDI v_range = pair.map().apply(pair.dom(), pair.ran());

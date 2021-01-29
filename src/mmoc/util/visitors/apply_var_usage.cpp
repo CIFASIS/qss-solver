@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#include "apply_alg_usage.h"
+#include "apply_var_usage.h"
 
 #include "../../ast/ast_builder.h"
 #include "../error.h"

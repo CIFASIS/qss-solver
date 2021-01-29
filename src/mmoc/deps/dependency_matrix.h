@@ -163,12 +163,11 @@ class DependencyMatrix : public ModelTable<ID, Paths> {
           buffer << range.block() << _cfg.container << matrix << "[" << ifr << "]" << component() << "[" << access << "[" << ifr
                  << "]++] = " << ife << ";" << endl;
         }
-        if (!range.empty()) {
+        if (!range.isEmpty()) {
           buffer << range.end() << endl;
         }
       }
     }
-    // cout << buffer.str() << endl;
     return buffer.str();
   }
 
