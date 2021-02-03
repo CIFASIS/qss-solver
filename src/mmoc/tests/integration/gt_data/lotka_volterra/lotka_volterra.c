@@ -201,19 +201,19 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	}
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if( (1 <= 1 && 1 <= 1)) {
+		if((1 <= 1 && 1 <= 1)) {
 			modelData->jac_matrices->df_dx[0]->size[c_row]++;
 		}
-		if( (2 <= 2 && 2 <= 2)) {
+		if((2 <= 2 && 2 <= 2)) {
 			modelData->jac_matrices->df_dx[0]->size[c_row]++;
 		}
 	}
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if( (1 <= 1 && 1 <= 1)) {
+		if((1 <= 1 && 1 <= 1)) {
 			modelData->jac_matrices->df_dx[1]->size[c_row]++;
 		}
-		if( (2 <= 2 && 2 <= 2)) {
+		if((2 <= 2 && 2 <= 2)) {
 			modelData->jac_matrices->df_dx[1]->size[c_row]++;
 		}
 	}
@@ -247,7 +247,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	cleanVector(states, 0, 2);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if( (1 <= 1 && 1 <= 1)) {
+		if((1 <= 1 && 1 <= 1)) {
 			x_ind = _idx_x(1,0);
 			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[0]->size[c_row]--;
@@ -255,7 +255,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 				modelData->jac_matrices->df_dx[0]->index[c_row][states[c_row]++] = x_ind;
 			}
 		}
-		if( (2 <= 2 && 2 <= 2)) {
+		if((2 <= 2 && 2 <= 2)) {
 			x_ind = _idx_x(2,0);
 			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[0]->size[c_row]--;
@@ -267,7 +267,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	cleanVector(states, 0, 2);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if( (1 <= 1 && 1 <= 1)) {
+		if((1 <= 1 && 1 <= 1)) {
 			x_ind = _idx_x(1,0);
 			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[1]->size[c_row]--;
@@ -275,7 +275,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
 			}
 		}
-		if( (2 <= 2 && 2 <= 2)) {
+		if((2 <= 2 && 2 <= 2)) {
 			x_ind = _idx_x(2,0);
 			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[1]->size[c_row]--;

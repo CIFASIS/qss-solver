@@ -288,22 +288,22 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		c_row = _c_index(row);
 		_get_eq_1_var_idxs(row, eq_var);
 		_get_x_idxs(eq_var);
-		if( (1 <= _d1-1 && _d1-1 <= 198)) {
+		if((1 <= _d1-1 && _d1-1 <= 198)) {
 			modelData->jac_matrices->df_dx[0]->size[c_row]++;
 		}
-		if( (3 <= _d1 + 1 && _d1 + 1 <= 200)) {
+		if((3 <= _d1 + 1 && _d1 + 1 <= 200)) {
 			modelData->jac_matrices->df_dx[0]->size[c_row]++;
 		}
 	}
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if( (2 <= 2 && 2 <= 2)) {
+		if((2 <= 2 && 2 <= 2)) {
 			modelData->jac_matrices->df_dx[1]->size[c_row]++;
 		}
 	}
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if( (199 <= 199 && 199 <= 199)) {
+		if((199 <= 199 && 199 <= 199)) {
 			modelData->jac_matrices->df_dx[2]->size[c_row]++;
 		}
 	}
@@ -341,7 +341,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		c_row = _c_index(row);
 		_get_eq_1_var_idxs(row, eq_var);
 		_get_x_idxs(eq_var);
-		if( (1 <= _d1-1 && _d1-1 <= 198)) {
+		if((1 <= _d1-1 && _d1-1 <= 198)) {
 			x_ind = _idx_x(_d1-1,0);
 			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[0]->size[c_row]--;
@@ -349,7 +349,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 				modelData->jac_matrices->df_dx[0]->index[c_row][states[c_row]++] = x_ind;
 			}
 		}
-		if( (3 <= _d1 + 1 && _d1 + 1 <= 200)) {
+		if((3 <= _d1 + 1 && _d1 + 1 <= 200)) {
 			x_ind = _idx_x(_d1+1,0);
 			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[0]->size[c_row]--;
@@ -361,7 +361,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	cleanVector(states, 0, 200);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if( (2 <= 2 && 2 <= 2)) {
+		if((2 <= 2 && 2 <= 2)) {
 			x_ind = _idx_x(2,0);
 			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[1]->size[c_row]--;
@@ -373,7 +373,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	cleanVector(states, 0, 200);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if( (199 <= 199 && 199 <= 199)) {
+		if((199 <= 199 && 199 <= 199)) {
 			x_ind = _idx_x(199,0);
 			if(in(modelData->jac_matrices->df_dx[2]->index[c_row],modelData->jac_matrices->df_dx[2]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[2]->size[c_row]--;

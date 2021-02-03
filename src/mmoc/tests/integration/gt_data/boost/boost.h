@@ -72,6 +72,8 @@ double __PAR__U;
 
 // Derivative Equations Macros
 
+// Algebraic Equations Macros
+
 // Event Macros
 #define _zc(coeff) zc[coeff]
 
@@ -81,7 +83,11 @@ double __PAR__U;
 // Input Matrix Macros
 
 // Jacobian Macros definition. 
-#define _jac(i) jac[i++]
+#define _assign_jac(r, val) \
+    col_t = dvdx->df_dx_t->size[r] + dvdx->df_dx_t->index[r][0]; \
+    dvdx->df_dx_t->index[r][0]++; \
+    jac[col_t] = val;
+#define _c_index(i) (i-1)
 
 #define _time t
 
