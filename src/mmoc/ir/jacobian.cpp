@@ -88,7 +88,7 @@ void JacGenerator::dependencyPrologue(Equation eq, SBG::VariableDep var_dep, SBG
   vector<string> exps = map.exps(range.getDimensionVars());
   code << tab << "if(" << range.in(exps);
   if (!guard.empty()) {
-    code << tab << "&& " << guard;
+    code << " && " << guard;
   }
   code << ") {" << endl;
   Expression i_exp = Expression::generate(var_dep.var().name(), exps);

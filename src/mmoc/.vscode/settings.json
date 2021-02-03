@@ -54,6 +54,7 @@
         "utility": "cpp",
         "valarray": "cpp",
         "algorithm": "cpp",
-        "memory": "cpp"
+        "memory": "cpp",
+        "math.h": "c"
     }
 }
