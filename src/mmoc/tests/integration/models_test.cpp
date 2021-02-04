@@ -38,7 +38,7 @@ TEST_P(ITests, GenerateCode)
   std::cout << "Testing model: " << NAME << std::endl;
   const std::string MODEL = " ./integration/gt_data/" + NAME + "/" + NAME + ".mo";
   const std::string MMOC = "../usr/bin/mmoc";
-  const std::string ARGS = " -o ./integration/test_data/" + NAME + " --test -i ../../../packages ";
+  const std::string ARGS = " -o ./integration/test_data/" + NAME + " -t -i ../../../packages ";
   const std::string TEST_CMD = "./integration/test_results.sh " + NAME;
   const std::string RESULT_FILE = "./integration/test_data/" + NAME + ".passed";
   const std::string COMP_CMD = MMOC + ARGS + MODEL + " > ./integration/test_data/" + NAME + ".log";
