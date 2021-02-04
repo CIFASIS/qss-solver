@@ -177,7 +177,7 @@ int main(int argc, char** argv)
                                            {"output", required_argument, 0, 'o'},
                                            {0, 0, 0, 0}};
     int option_index = 0;
-    opt = getopt_long(argc, argv, "vhmfsOpit:d:o:", long_options, &option_index);
+    opt = getopt_long(argc, argv, "vhmfsOpti:e:d:o:", long_options, &option_index);
     if (opt == EOF) break;
     switch (opt) {
     case 'v':
