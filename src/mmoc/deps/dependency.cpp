@@ -175,6 +175,15 @@ bool Dependency::recursivePaths(DepsGraph graph, Vertex source_vertex, MDI sourc
   return rec;
 }
 
+Option<MDI> Dependency::intersection(VertexProperty source_vertex_info, MDI source, MDI sink, TRAVERSE::Init traverse)
+{
+  if ((source_vertex_info.type() == VERTEX::Equation || source_vertex_info.type() == VERTEX::Statement)
+      && source.isEmpty() && traverse == TRAVERSE::Variable) {
+    return sink;    
+  }
+  return source.Intersection(sink);
+}
+
 void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, Paths& var_deps, AlgebraicPath algs,
                        AlgebraicPath recursive_paths, TRAVERSE::Init traverse, VariableDependency alg_dep)
 {
@@ -183,13 +192,14 @@ void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, 
   for (boost::tie(edge, out_edge_end) = out_edges(source_vertex, graph); edge != out_edge_end; ++edge) {
     Label lbl = graph[*edge];
     MDI dom = lbl.Pair().Dom();
-    Option<MDI> intersect = source_range.Intersection(dom);
-    // cout << "Starting traverse with source range: " << source_range << endl;
-    // cout << "And node domain: " << dom << endl;
-    // cout << "And node range: " << lbl.Pair().Ran() << endl;
+    //Option<MDI> intersect = source_range.Intersection(dom);
+    Option<MDI> intersect = intersection(source_vertex_info, source_range, dom, traverse);
+    //cout << "Starting traverse with source range: " << source_range << endl;
+    //cout << "And node domain: " << dom << endl;
+    //cout << "And node range: " << lbl.Pair().Ran() << endl;
     if (intersect) {
       MDI intersection = intersect.get();
-      // cout << "Node intersection: " << intersection << endl;
+      //cout << "Node intersection: " << intersection << endl;
       auto target_vertex = boost::target(*edge, graph);
       VertexProperty target_vertex_info = graph[target_vertex];
       if (source_vertex_info.type() == VERTEX::Influencer) {
@@ -209,10 +219,10 @@ void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, 
             _equation_range.generate(range->getMDI());
           }
         }
-        // cout << "Traverse influencer node: " << source_vertex_info.var().name() << endl;
-        // cout << "Intersection with initial domain: " << _ifr_dom << endl;
-        // cout << "Source Range: " << _ifr_range << endl;
-        // cout << "Equation range: " << _equation_range.getMDI() << endl << endl;
+        //cout << "Traverse influencer node: " << source_vertex_info.var().name() << endl;
+        //cout << "Intersection with initial domain: " << _ifr_dom << endl;
+        //cout << "Source Range: " << _ifr_range << endl;
+        //cout << "Equation range: " << _equation_range.getMDI() << endl << endl;
         algs.clear();
         _visited.clear();
       }
@@ -227,8 +237,8 @@ void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, 
           id = source_vertex_info.eq().id();
         }
         VariableDependency var_dep = getVariableDependency(target_vertex_info.var().name(), _ifr_dom, ran, id);
-        // cout << "Arrived Final state variable: " << target_vertex_info.var().name() << endl;
-        // cout << "With Range: " << ran << endl;
+        //cout << "Arrived Final state variable: " << target_vertex_info.var().name() << endl;
+        //cout << "With Range: " << ran << endl;
         var_dep.setIfr(_ifr);
         var_dep.setIfe(lbl.Pair());
         var_dep.setReduction(isReduction(_ifr_dom, lbl.Pair().Dom()));
@@ -278,8 +288,8 @@ void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, 
             }
           }
         }
-        // cout << "Arrived at algebraic variable: " << target_vertex_info.var().name() << endl;
-        // cout << "With Range: " << ran << endl;
+        //cout << "Arrived at algebraic variable: " << target_vertex_info.var().name() << endl;
+        //cout << "With Range: " << ran << endl;
         paths(graph, target_vertex, ran, var_deps, algs, recursive_paths, traverse, var_dep);
       } else if (target_vertex_info.type() == VERTEX::Equation && source_vertex_info.type() == VERTEX::Algebraic) {
         if (target_vertex_info.eq().type() == IR::EQUATION::Algebraic) {
@@ -296,8 +306,8 @@ void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, 
         algs.push_back(alg_dep);
         paths(graph, target_vertex, ran, var_deps, algs, recursive_paths, traverse, alg_dep);
       } else {
-        // cout << "Traverse equation from variable: " << source_vertex_info.var().name() << endl;
-        // cout << "With Range: " << ran << endl;
+        //cout << "Traverse equation from variable: " << source_vertex_info.var().name() << endl;
+        //cout << "With Range: " << ran << endl;
         paths(graph, target_vertex, ran, var_deps, algs, recursive_paths, traverse);
       }
     }

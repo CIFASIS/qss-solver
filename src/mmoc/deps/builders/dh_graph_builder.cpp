@@ -117,6 +117,7 @@ DepsGraph DHGraphBuilder::build()
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {
           Label lbl(ip);
+          //cout << "Agrega arista desde la var: " << graph[source].var() << " al evento: " << graph[sink].id() << endl;
           add_edge(source, sink, lbl, graph);
         }
       }
@@ -143,6 +144,7 @@ DepsGraph DHGraphBuilder::build()
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
             Label lbl(ip);
+            //cout << "Agrega arista desde el evento: " << graph[source].id() << " a la variable: " << graph[sink].var() << endl;
             add_edge(sink, source, lbl, graph);
           }
         }
