@@ -170,39 +170,31 @@ class EquationMapper {
   std::string dependencies(bool scalar) const
   {
     stringstream code, buffer, begin_exp, end_exp;
-    bool generate_guards = true;
     static constexpr bool BEGIN = true;
     static constexpr bool END = false;
     for (auto mapper : _mapper) {
       DepInfo dep = mapper.second;
       if (dep.isScalar() == scalar) {
-        if (generate_guards) {
           begin_exp << generateGuards(dep, BEGIN);
           end_exp << generateGuards(dep, END);
-        }
         for (string eq : dep.deps()) {
           buffer << eq;
         }
-        if (scalar) {
-          code << generate(begin_exp, buffer, end_exp);
-        }
-        if (!scalar && generate_guards) {
-          generate_guards = false;
-        }
+          code << generate(begin_exp, buffer, end_exp, scalar);
       }
-    }
-    if (!scalar) {
-      code << generate(begin_exp, buffer, end_exp);
     }
     return code.str();
   }
 
-  std::string generate(std::stringstream& begin, std::stringstream& code, std::stringstream& end) const
+  std::string generate(std::stringstream& begin, std::stringstream& code, std::stringstream& end, bool scalar) const
   {
     stringstream buffer;
     buffer << begin.str();
     buffer << code.str();
     buffer << end.str();
+    if (!scalar) {
+      buffer << endl;
+    }
     begin.str("");
     code.str("");
     end.str("");
