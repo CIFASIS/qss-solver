@@ -4,7 +4,6 @@
 #include <math.h>
 
 #include "aircont.h"
-#include "pkg_math.h"
 #include <common/utils.h>
 #include <common/model.h>
 #include <common/commands.h>
@@ -80,7 +79,7 @@ void MOD_handlerPos(int idx, double *x, double *d, double *a, double t)
 		}
 		case _eval_event_4: {
 			_nextSample = _nextSample+1;
-			_noise = __math__rand(2)-1;
+			_noise = 2-1;
 			_ptotals = _ptotal;
 			_dtref = _Kp*(_ptotals/_pmax-_pref)-_Ki*_ierr;
 					return;
@@ -181,15 +180,15 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	_Kp = 1;
 	_THA = 32;
 	_nextSample = 1;
-	_noise = __math__rand(2)-1;
+	_noise = 2-1;
 	_pmax = 0;
 	_pref = 0.5;
 	_tref = 20;
 	for(i = 1; i<=200; i+=1) {
-		_init_th(i) = __math__rand(4)+18;
-		_CAP(i) = __math__rand(100)+550;
-		_RES(i) = __math__rand(0.4)+1.8;
-		_POT(i) = __math__rand(0.2)+13;
+		_init_th(i) = 4+18;
+		_CAP(i) = 100+550;
+		_RES(i) = 0.4+1.8;
+		_POT(i) = 0.2+13;
 		_pmax = _pmax+_POT(i);
 	}
 	for(i = 1; i<=200; i+=1) {

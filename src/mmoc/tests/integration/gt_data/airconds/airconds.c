@@ -4,7 +4,6 @@
 #include <math.h>
 
 #include "airconds.h"
-#include "pkg_math.h"
 #include <common/utils.h>
 #include <common/model.h>
 #include <common/commands.h>
@@ -120,7 +119,7 @@ void MOD_handlerPos(int idx, double *x, double *d, double *a, double t)
 		_apply_usage_event_4(_d1);
 		if ((i >= 1 && i <= 20000)) {
 			_nextSample(i) = _nextSample(i)+1;
-			_noise(i) = __math__rand(2)-1;
+			_noise(i) = 2-1;
 			}
 			return;
 	}
@@ -239,13 +238,13 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	_THA = 32;
 	_pmax = 0;
 	for(i = 1; i<=20000; i+=1) {
-		_init_th(i,0) = __math__rand(4)+18;
-		_CAP(i) = __math__rand(100)+550;
-		_RES(i) = __math__rand(0.4)+1.8;
-		_POT(i) = __math__rand(2)+13;
+		_init_th(i,0) = 4+18;
+		_CAP(i) = 100+550;
+		_RES(i) = 0.4+1.8;
+		_POT(i) = 2+13;
 		_pmax = _pmax+_POT(i);
 		_nextSample(i) = 1;
-		_noise(i) = __math__rand(2)-1;
+		_noise(i) = 2-1;
 		_tref(i) = 20;
 	}
 	for(i = 1; i<=20000; i+=1) {
