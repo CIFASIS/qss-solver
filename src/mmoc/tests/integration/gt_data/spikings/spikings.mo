@@ -1,5 +1,5 @@
 model spikings
-  import math;
+  import math_test;
   constant Integer N=1000;
   Real v[N];
   Real u[N];
