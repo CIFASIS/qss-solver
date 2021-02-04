@@ -435,7 +435,7 @@ void GenerateEdge::build(list<Expression> exps)
     }
   }
   for (Expression exp : exps) {
-    // cout << "BUILDER EXP: " << exp << endl;
+    //cout << "BUILDER EXP: " << exp << endl;
     assert(exp.isReference());
     EvalOccur eval_occur(exp, sink_range);
     MDI mdi_dom(eval_occur.intervals());
@@ -446,10 +446,10 @@ void GenerateEdge::build(list<Expression> exps)
     }
     if (sink_range) {
       if (eval_occur.hasIndex()) {  // N N also includes 1 N
-        // cout << "Intenta agregar caso 0: " << exp << endl;
+        //cout << "Intenta agregar caso 0: " << exp << endl;
         _ips.insert(IndexPair(mdi_dom, mdi_ran, eval_occur.offsets(), eval_occur.usages(), exp));
       } else {  // 1 N
-        // cout << "Intenta agregar caso 1: " << exp << endl;
+        //cout << "Intenta agregar caso 1: " << exp << endl;
         _ips.insert(IndexPair(MDI(0), mdi_ran, Offset(), Usage(), exp));
       }
     } else {
@@ -457,14 +457,14 @@ void GenerateEdge::build(list<Expression> exps)
         mdi_ran = getScalarMDI();
       }
       if (eval_occur.hasIndex()) {  // 1 1 In this case the index must be an integer expression.
-        // cout << "Intenta agregar caso 2:" << exp << endl;
+        //cout << "Intenta agregar caso 2:" << exp << endl;
         _ips.insert(IndexPair(mdi_dom, mdi_ran, eval_occur.offsets(), eval_occur.usages(), exp));
       } else {  // 1 1
-        // cout << "Intenta agregar caso 3:" << exp << endl;
+        //cout << "Intenta agregar caso 3:" << exp << endl;
         _ips.insert(IndexPair(MDI(0), mdi_ran, Offset(), Usage(), exp));
       }
     }
-    // cout << "Indexes: " << _ips.size() << endl;
+    //cout << "Indexes: " << _ips.size() << endl;
   }
 }
 

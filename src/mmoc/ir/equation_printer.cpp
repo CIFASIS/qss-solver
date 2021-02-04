@@ -300,10 +300,11 @@ string AlgebraicPrinter::print() const
     if (CLASSIC_MODEL) {
       buffer << _range.get();
     }
-  } else {
-    tabs += TAB;
   }
   buffer << tabs << prefix() << _lhs << " = " << _rhs << ";" << endl;
+  if (!_range) {
+    tabs += TAB;
+  }
   buffer << generateDerivatives(tabs) << endl;
   if (_range && CLASSIC_MODEL) {
     buffer << _range->end();

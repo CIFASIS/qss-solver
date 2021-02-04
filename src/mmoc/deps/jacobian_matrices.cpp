@@ -91,9 +91,9 @@ void JacMatrixGenerator::addDependency(Equation eq, SBG::VariableDep var_dep, SB
   matrix_eq_id << "[" << eq.arrayId() << "]";
   string eq_id = matrix_eq_id.str();
 
-  code << tabs << "if( " << range.in(exps);
+  code << tabs << "if(" << range.in(exps);
   if (!g_map_dom.empty()) {
-    code << endl << tabs << "&& " << g_map_dom;
+    code << " && " << g_map_dom;
   }
   code << ") {" << endl;
   string code_guards = code.str();

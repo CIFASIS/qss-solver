@@ -23,28 +23,32 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 	switch(idx) {
 		case _eval_uC1(0): {
 			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = -(_uC1(1)-_Rs*(_iL1(1)+_iL(1)))*(1/(_Rs+_Rd));
+			_iD(1) = 0;
 			_der_uC1(0) = (_iD(0)-_iL(0))/_C1;
-			_der_uC1(1) = (-(_iL(1)-_iD(1))*(1/(_C1)))/2;
+			_der_uC1(1) = (0)/2;
+	
 			return;
 		}
 		case _eval_iL1(0): {
 			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = -(1/(_Rs+_Rd))*(_uC1(1)-(_iL(1)+_iL1(1))*_Rs);
+			_iD(1) = 0;
 			_der_iL1(0) = (_U-_uC1(0)-_iD(0)*_Rd)/_L1;
-			_der_iL1(1) = (-(1/(_L1))*(_iD(1)*_Rd+_uC1(1)))/2;
+			_der_iL1(1) = (0)/2;
+	
 			return;
 		}
 		case _eval_uC(0): {
 			_der_uC(0) = (_iL(0)-_uC(0)/_R)/_C;
-			_der_uC(1) = ((_iL(1)-(1/(_R))*_uC(1))*(1/(_C)))/2;
+			_der_uC(1) = (0)/2;
+	
 			return;
 		}
 		case _eval_iL(0): {
 			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = -(1/(_Rs+_Rd))*(_uC1(1)-(_iL(1)+_iL1(1))*_Rs);
+			_iD(1) = 0;
 			_der_iL(0) = (-_uC(0)-_iD(0)*_Rd)/_L;
-			_der_iL(1) = (-(1/(_L))*(_uC(1)+_Rd*_iD(1)))/2;
+			_der_iL(1) = (0)/2;
+	
 			return;
 		}
 	}
@@ -55,21 +59,24 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 	switch(idx) {
 		case _eval_event_1: {
 			_zc(0) = _time-(_nextT);
-			_zc(1) = (1)/1;
+			_zc(1) = (0)/1;
+	
 			return;
 		}
 		case _eval_event_2: {
 			_zc(0) = _time-_lastT-_DC*_T-(0);
-			_zc(1) = (1)/1;
+			_zc(1) = (0)/1;
+	
 			return;
 		}
 		case _eval_event_3: {
 			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = (_Rs*(_iL1(1)+_iL(1))-_uC1(1))*(1/(_Rs+_Rd));
+			_iD(1) = 0;
 			_s(0) = _diodeon*_iD(0)+(1-_diodeon)*_iD(0)*_Rd;
-			_s(1) = -_Rd*(-1+_diodeon)*_iD(1)+_diodeon*_iD(1);
+			_s(1) = 0;
 			_zc(0) = _s(0)-(0);
-			_zc(1) = (_s(1))/1;
+			_zc(1) = (0)/1;
+	
 			return;
 		}
 	}
@@ -129,62 +136,169 @@ void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
 	}
 }
 
-void MOD_jacobian(double *x, double *d, double *a, double t, double *jac)
+void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx, double *jac)
 {
-	int idx;
-	int jit;
-	for (idx = 1; idx <=4; idx++) {
-	switch(idx) {
-		case _eval_iL(0): {
-			_jac(jit) = (1/(_C1));
-		
-			_jac(jit) = (1/(_C));
-		
-			_jac(jit) = _Rs*(1/(_Rd+_Rs));
-				_jac(jit) = (1/(_C1));
-		
-			_jac(jit) = _Rs*(1/(_Rs+_Rd));
-				_jac(jit) = 0;
-		
-			_jac(jit) = (1/(_Rd+_Rs))*_Rs;
-				_jac(jit) = 0;
-		
-		break;
+	int row, row_t, eq_var, c_row, c_row_g;
+	int col, col_g, col_t;
+	int x_ind;
+	double aux;
+	SD_cleanJacMatrices(dvdx);
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+		if(1) {
+			x_ind = _idx_iL(0);
+			col = pos(dvdx->dg_dx[0]->index[c_row], dvdx->dg_dx[0]->size[c_row], x_ind);
+			aux = 0;
+			dvdx->dg_dx[0]->value[c_row][col] +=  aux;
 		}
-		case _eval_iL1(0): {
-			_jac(jit) = _Rs*(1/(_Rs+_Rd));
-				_jac(jit) = 0;
-		
-			_jac(jit) = _Rs*(1/(_Rs+_Rd));
-				_jac(jit) = 0;
-		
-			_jac(jit) = _Rs*(1/(_Rs+_Rd));
-				_jac(jit) = 0;
-		
-		break;
+		if(1) {
+			x_ind = _idx_iL1(0);
+			col = pos(dvdx->dg_dx[0]->index[c_row], dvdx->dg_dx[0]->size[c_row], x_ind);
+			aux = 0;
+			dvdx->dg_dx[0]->value[c_row][col] +=  aux;
 		}
-		case _eval_uC(0): {
-			_jac(jit) = -(1/(_C))*(1/(_R));
-		
-			_jac(jit) = -(1/(_L));
-		
-		break;
-		}
-		case _eval_uC1(0): {
-			_jac(jit) = -(1/(_L1));
-		
-			_jac(jit) = -(1/(_Rs+_Rd));
-				_jac(jit) = 0;
-		
-			_jac(jit) = -(1/(_Rs+_Rd));
-				_jac(jit) = -(1/(_L1));
-		
-			_jac(jit) = -(1/(_Rs+_Rd));
-				_jac(jit) = 0;
-		
-		break;
+		if(1) {
+			x_ind = _idx_uC1(0);
+			col = pos(dvdx->dg_dx[0]->index[c_row], dvdx->dg_dx[0]->size[c_row], x_ind);
+			aux = 0;
+			dvdx->dg_dx[0]->value[c_row][col] +=  aux;
 		}
 	}
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+		aux = 0;
+		if(1 && 1) {
+			x_ind = _idx_iL(0);
+			col = pos(dvdx->df_dx[0]->index[c_row], dvdx->df_dx[0]->size[c_row], x_ind);
+			c_row_g = _idx_iD(0) - 0;
+			col_g = pos(dvdx->dg_dx[0]->index[c_row_g], dvdx->dg_dx[0]->size[c_row_g], x_ind);
+			dvdx->df_dx[0]->value[c_row][col] += aux * dvdx->dg_dx[0]->value[c_row_g][col_g];
+		}
+		if(1 && 1) {
+			x_ind = _idx_iL1(0);
+			col = pos(dvdx->df_dx[0]->index[c_row], dvdx->df_dx[0]->size[c_row], x_ind);
+			c_row_g = _idx_iD(0) - 0;
+			col_g = pos(dvdx->dg_dx[0]->index[c_row_g], dvdx->dg_dx[0]->size[c_row_g], x_ind);
+			dvdx->df_dx[0]->value[c_row][col] += aux * dvdx->dg_dx[0]->value[c_row_g][col_g];
+		}
+		if(1 && 1) {
+			x_ind = _idx_uC1(0);
+			col = pos(dvdx->df_dx[0]->index[c_row], dvdx->df_dx[0]->size[c_row], x_ind);
+			c_row_g = _idx_iD(0) - 0;
+			col_g = pos(dvdx->dg_dx[0]->index[c_row_g], dvdx->dg_dx[0]->size[c_row_g], x_ind);
+			dvdx->df_dx[0]->value[c_row][col] += aux * dvdx->dg_dx[0]->value[c_row_g][col_g];
+		}
+		if(1) {
+			x_ind = _idx_iL(0);
+			col = pos(dvdx->df_dx[0]->index[c_row], dvdx->df_dx[0]->size[c_row], x_ind);
+			aux = 0;
+			dvdx->df_dx[0]->value[c_row][col] +=  aux;
+		}
+	}
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+		aux = 0;
+		if(1 && 1) {
+			x_ind = _idx_iL(0);
+			col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
+			c_row_g = _idx_iD(0) - 0;
+			col_g = pos(dvdx->dg_dx[0]->index[c_row_g], dvdx->dg_dx[0]->size[c_row_g], x_ind);
+			dvdx->df_dx[1]->value[c_row][col] += aux * dvdx->dg_dx[0]->value[c_row_g][col_g];
+		}
+		if(1 && 1) {
+			x_ind = _idx_iL1(0);
+			col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
+			c_row_g = _idx_iD(0) - 0;
+			col_g = pos(dvdx->dg_dx[0]->index[c_row_g], dvdx->dg_dx[0]->size[c_row_g], x_ind);
+			dvdx->df_dx[1]->value[c_row][col] += aux * dvdx->dg_dx[0]->value[c_row_g][col_g];
+		}
+		if(1 && 1) {
+			x_ind = _idx_uC1(0);
+			col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
+			c_row_g = _idx_iD(0) - 0;
+			col_g = pos(dvdx->dg_dx[0]->index[c_row_g], dvdx->dg_dx[0]->size[c_row_g], x_ind);
+			dvdx->df_dx[1]->value[c_row][col] += aux * dvdx->dg_dx[0]->value[c_row_g][col_g];
+		}
+		if(1) {
+			x_ind = _idx_uC1(0);
+			col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
+			aux = 0;
+			dvdx->df_dx[1]->value[c_row][col] +=  aux;
+		}
+	}
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+		if(1) {
+			x_ind = _idx_iL(0);
+			col = pos(dvdx->df_dx[2]->index[c_row], dvdx->df_dx[2]->size[c_row], x_ind);
+			aux = 0;
+			dvdx->df_dx[2]->value[c_row][col] +=  aux;
+		}
+		if(1) {
+			x_ind = _idx_uC(0);
+			col = pos(dvdx->df_dx[2]->index[c_row], dvdx->df_dx[2]->size[c_row], x_ind);
+			aux = 0;
+			dvdx->df_dx[2]->value[c_row][col] +=  aux;
+		}
+	}
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+		aux = 0;
+		if(1 && 1) {
+			x_ind = _idx_iL(0);
+			col = pos(dvdx->df_dx[3]->index[c_row], dvdx->df_dx[3]->size[c_row], x_ind);
+			c_row_g = _idx_iD(0) - 0;
+			col_g = pos(dvdx->dg_dx[0]->index[c_row_g], dvdx->dg_dx[0]->size[c_row_g], x_ind);
+			dvdx->df_dx[3]->value[c_row][col] += aux * dvdx->dg_dx[0]->value[c_row_g][col_g];
+		}
+		if(1 && 1) {
+			x_ind = _idx_iL1(0);
+			col = pos(dvdx->df_dx[3]->index[c_row], dvdx->df_dx[3]->size[c_row], x_ind);
+			c_row_g = _idx_iD(0) - 0;
+			col_g = pos(dvdx->dg_dx[0]->index[c_row_g], dvdx->dg_dx[0]->size[c_row_g], x_ind);
+			dvdx->df_dx[3]->value[c_row][col] += aux * dvdx->dg_dx[0]->value[c_row_g][col_g];
+		}
+		if(1 && 1) {
+			x_ind = _idx_uC1(0);
+			col = pos(dvdx->df_dx[3]->index[c_row], dvdx->df_dx[3]->size[c_row], x_ind);
+			c_row_g = _idx_iD(0) - 0;
+			col_g = pos(dvdx->dg_dx[0]->index[c_row_g], dvdx->dg_dx[0]->size[c_row_g], x_ind);
+			dvdx->df_dx[3]->value[c_row][col] += aux * dvdx->dg_dx[0]->value[c_row_g][col_g];
+		}
+		if(1) {
+			x_ind = _idx_uC(0);
+			col = pos(dvdx->df_dx[3]->index[c_row], dvdx->df_dx[3]->size[c_row], x_ind);
+			aux = 0;
+			dvdx->df_dx[3]->value[c_row][col] +=  aux;
+		}
+	}
+	// Assign Jacobian Matrix values for equation: 0
+	for (row = 0; row < 1; row++) {
+	  for (col = 0; col < dvdx->df_dx[0]->size[row]; col++) {
+	    row_t = dvdx->df_dx[0]->index[row][col];
+	    _assign_jac(row_t, dvdx->df_dx[0]->value[row][col]);
+	  }
+	}
+	// Assign Jacobian Matrix values for equation: 1
+	for (row = 0; row < 1; row++) {
+	  for (col = 0; col < dvdx->df_dx[1]->size[row]; col++) {
+	    row_t = dvdx->df_dx[1]->index[row][col];
+	    _assign_jac(row_t, dvdx->df_dx[1]->value[row][col]);
+	  }
+	}
+	// Assign Jacobian Matrix values for equation: 2
+	for (row = 0; row < 1; row++) {
+	  for (col = 0; col < dvdx->df_dx[2]->size[row]; col++) {
+	    row_t = dvdx->df_dx[2]->index[row][col];
+	    _assign_jac(row_t, dvdx->df_dx[2]->value[row][col]);
+	  }
+	}
+	// Assign Jacobian Matrix values for equation: 3
+	for (row = 0; row < 1; row++) {
+	  for (col = 0; col < dvdx->df_dx[3]->size[row]; col++) {
+	    row_t = dvdx->df_dx[3]->index[row][col];
+	    _assign_jac(row_t, dvdx->df_dx[3]->value[row][col]);
+	  }
 	}
 }
 
@@ -193,67 +307,47 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 	switch(idx) {
 		case _eval_iL(0): {
 			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = (1/(_Rd+_Rs))*((_iL(1)+_iL1(1))*_Rs-_uC1(1));
+			_iD(1) = 0;
 			_eval_dep_uC1(1) = (_iD(0)-_iL(0))/_C1;
-			_eval_dep_uC1(2) = ((_iD(1)-_iL(1))*(1/(_C1)))/2;	
-			_eval_dep_uC(1) = (_iL(0)-_uC(0)/_R)/_C;
-			_eval_dep_uC(2) = (-((1/(_R))*_uC(1)-_iL(1))*(1/(_C)))/2;	
-			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = -(1/(_Rd+_Rs))*(_uC1(1)-(_iL1(1)+_iL(1))*_Rs);
-			_eval_dep_uC1(1) = (_iD(0)-_iL(0))/_C1;
-			_eval_dep_uC1(2) = ((1/(_C1))*(_iD(1)-_iL(1)))/2;	
-			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = (1/(_Rs+_Rd))*(_Rs*(_iL1(1)+_iL(1))-_uC1(1));
+			_eval_dep_uC1(2) = (0)/2;	
 			_eval_dep_iL1(1) = (_U-_uC1(0)-_iD(0)*_Rd)/_L1;
-			_eval_dep_iL1(2) = (-(_iD(1)*_Rd+_uC1(1))*(1/(_L1)))/2;	
-			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = -(_uC1(1)-_Rs*(_iL(1)+_iL1(1)))*(1/(_Rs+_Rd));
+			_eval_dep_iL1(2) = (0)/2;	
+			_eval_dep_uC(1) = (_iL(0)-_uC(0)/_R)/_C;
+			_eval_dep_uC(2) = (0)/2;	
 			_eval_dep_iL(1) = (-_uC(0)-_iD(0)*_Rd)/_L;
-			_eval_dep_iL(2) = (-(_uC(1)+_Rd*_iD(1))*(1/(_L)))/2;	
-		break;
+			_eval_dep_iL(2) = (0)/2;	
+			break;
 		}
 		case _eval_iL1(0): {
 			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = ((_iL1(1)+_iL(1))*_Rs-_uC1(1))*(1/(_Rd+_Rs));
+			_iD(1) = 0;
 			_eval_dep_uC1(1) = (_iD(0)-_iL(0))/_C1;
-			_eval_dep_uC1(2) = (-(1/(_C1))*(_iL(1)-_iD(1)))/2;	
-			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = -(1/(_Rs+_Rd))*(_uC1(1)-_Rs*(_iL1(1)+_iL(1)));
+			_eval_dep_uC1(2) = (0)/2;	
 			_eval_dep_iL1(1) = (_U-_uC1(0)-_iD(0)*_Rd)/_L1;
-			_eval_dep_iL1(2) = (-(_iD(1)*_Rd+_uC1(1))*(1/(_L1)))/2;	
-			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = (1/(_Rs+_Rd))*((_iL(1)+_iL1(1))*_Rs-_uC1(1));
+			_eval_dep_iL1(2) = (0)/2;	
 			_eval_dep_iL(1) = (-_uC(0)-_iD(0)*_Rd)/_L;
-			_eval_dep_iL(2) = (-(1/(_L))*(_uC(1)+_Rd*_iD(1)))/2;	
-		break;
-		}
-		case _eval_uC(0): {
-			_eval_dep_uC(1) = (_iL(0)-_uC(0)/_R)/_C;
-			_eval_dep_uC(2) = (-(1/(_C))*((1/(_R))*_uC(1)-_iL(1)))/2;	
-			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = (_Rs*(_iL1(1)+_iL(1))-_uC1(1))*(1/(_Rs+_Rd));
-			_eval_dep_iL(1) = (-_uC(0)-_iD(0)*_Rd)/_L;
-			_eval_dep_iL(2) = (-(_iD(1)*_Rd+_uC(1))*(1/(_L)))/2;	
-		break;
+			_eval_dep_iL(2) = (0)/2;	
+			break;
 		}
 		case _eval_uC1(0): {
 			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = -(_uC1(1)-_Rs*(_iL(1)+_iL1(1)))*(1/(_Rs+_Rd));
-			_eval_dep_iL1(1) = (_U-_uC1(0)-_iD(0)*_Rd)/_L1;
-			_eval_dep_iL1(2) = (-(1/(_L1))*(_uC1(1)+_Rd*_iD(1)))/2;	
-			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = -(_uC1(1)-_Rs*(_iL1(1)+_iL(1)))*(1/(_Rs+_Rd));
+			_iD(1) = 0;
 			_eval_dep_uC1(1) = (_iD(0)-_iL(0))/_C1;
-			_eval_dep_uC1(2) = (-(1/(_C1))*(_iL(1)-_iD(1)))/2;	
-			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = (1/(_Rs+_Rd))*(_Rs*(_iL1(1)+_iL(1))-_uC1(1));
+			_eval_dep_uC1(2) = (0)/2;	
 			_eval_dep_iL1(1) = (_U-_uC1(0)-_iD(0)*_Rd)/_L1;
-			_eval_dep_iL1(2) = (-(_Rd*_iD(1)+_uC1(1))*(1/(_L1)))/2;	
-			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-			_iD(1) = -(1/(_Rd+_Rs))*(_uC1(1)-(_iL(1)+_iL1(1))*_Rs);
+			_eval_dep_iL1(2) = (0)/2;	
 			_eval_dep_iL(1) = (-_uC(0)-_iD(0)*_Rd)/_L;
-			_eval_dep_iL(2) = (-(_iD(1)*_Rd+_uC(1))*(1/(_L)))/2;	
-		break;
+			_eval_dep_iL(2) = (0)/2;	
+			break;
+		}
+		case _eval_uC(0): {
+			_eval_dep_uC(1) = (_iL(0)-_uC(0)/_R)/_C;
+			_eval_dep_uC(2) = (0)/2;	
+			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
+			_iD(1) = 0;
+			_eval_dep_iL(1) = (-_uC(0)-_iD(0)*_Rd)/_L;
+			_eval_dep_iL(2) = (0)/2;	
+			break;
 		}
 	}
 }
@@ -270,6 +364,7 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 	
 			_der_uC1(0) = (_iD(0)-_iL(0))/_C1;
 	
+	
 			return;
 		}
 		case _eval_iL1(0): {
@@ -277,10 +372,12 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 	
 			_der_iL1(0) = (_U-_uC1(0)-_iD(0)*_Rd)/_L1;
 	
+	
 			return;
 		}
 		case _eval_uC(0): {
 			_der_uC(0) = (_iL(0)-_uC(0)/_R)/_C;
+	
 	
 			return;
 		}
@@ -288,6 +385,7 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
 	
 			_der_iL(0) = (-_uC(0)-_iD(0)*_Rd)/_L;
+	
 	
 			return;
 		}
@@ -297,13 +395,15 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 
 void QSS_initializeDataStructs(QSS_simulator simulator)
 {
-	simulator->data = QSS_Data(4,5,3,0,2,"cuk");
+	simulator->data = QSS_Data(4,5,3,0,2,4,2,"cuk");
 	QSS_data modelData = simulator->data;
 	MODEL_DATA_ACCESS(modelData)
 	int* states = (int*) malloc(4*sizeof(int));
 	int* discretes = (int*) malloc(5*sizeof(int));
 	int* events = (int*) malloc(3*sizeof(int));
 	int* outputs = (int*) malloc(4*sizeof(int));
+	int row, eq_var, c_row;
+	int x_ind;
 	_C = 0.0001;
 	_C1 = 0.0001;
 	_DC = 0.25;
@@ -318,33 +418,95 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	_U = 24;
 	_nextT = _T;
 	modelData->nSD[_idx_iL(0)]++;
-	modelData->nSD[_idx_iL(0)]++;
-	modelData->nSD[_idx_iL(0)]++;
-	modelData->nSD[_idx_iL(0)]++;
+	modelData->nSD[_idx_iL1(0)]++;
+	modelData->nSD[_idx_uC1(0)]++;
 	modelData->nSD[_idx_iL(0)]++;
 	modelData->nSD[_idx_iL1(0)]++;
-	modelData->nSD[_idx_iL1(0)]++;
-	modelData->nSD[_idx_iL1(0)]++;
+	modelData->nSD[_idx_uC1(0)]++;
+	modelData->nSD[_idx_iL(0)]++;
 	modelData->nSD[_idx_uC(0)]++;
+	modelData->nSD[_idx_iL(0)]++;
+	modelData->nSD[_idx_iL1(0)]++;
+	modelData->nSD[_idx_uC1(0)]++;
 	modelData->nSD[_idx_uC(0)]++;
-	modelData->nSD[_idx_uC1(0)]++;
-	modelData->nSD[_idx_uC1(0)]++;
-	modelData->nSD[_idx_uC1(0)]++;
-	modelData->nSD[_idx_uC1(0)]++;
 	modelData->nDS[_idx_uC1(0)]++;
+	modelData->nDS[_idx_uC1(0)]++;
+	modelData->nDS[_idx_uC1(0)]++;
+	modelData->nDS[_idx_iL1(0)]++;
+	modelData->nDS[_idx_iL1(0)]++;
+	modelData->nDS[_idx_iL1(0)]++;
 	modelData->nDS[_idx_uC(0)]++;
-	modelData->nDS[_idx_uC1(0)]++;
-	modelData->nDS[_idx_iL1(0)]++;
-	modelData->nDS[_idx_iL(0)]++;
-	modelData->nDS[_idx_uC1(0)]++;
-	modelData->nDS[_idx_iL1(0)]++;
-	modelData->nDS[_idx_iL(0)]++;
 	modelData->nDS[_idx_uC(0)]++;
 	modelData->nDS[_idx_iL(0)]++;
-	modelData->nDS[_idx_iL1(0)]++;
-	modelData->nDS[_idx_uC1(0)]++;
-	modelData->nDS[_idx_iL1(0)]++;
 	modelData->nDS[_idx_iL(0)]++;
+	modelData->nDS[_idx_iL(0)]++;
+	modelData->nDS[_idx_iL(0)]++;
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+		if(1) {
+			modelData->jac_matrices->dg_dx[0]->size[c_row]++;
+		}
+		if(1) {
+			modelData->jac_matrices->dg_dx[0]->size[c_row]++;
+		}
+		if(1) {
+			modelData->jac_matrices->dg_dx[0]->size[c_row]++;
+		}
+	}
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+		if(1 && 1) {
+			modelData->jac_matrices->df_dx[0]->size[c_row]++;
+		}
+		if(1 && 1) {
+			modelData->jac_matrices->df_dx[0]->size[c_row]++;
+		}
+		if(1 && 1) {
+			modelData->jac_matrices->df_dx[0]->size[c_row]++;
+		}
+		if(1) {
+			modelData->jac_matrices->df_dx[0]->size[c_row]++;
+		}
+	}
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+		if(1 && 1) {
+			modelData->jac_matrices->df_dx[1]->size[c_row]++;
+		}
+		if(1 && 1) {
+			modelData->jac_matrices->df_dx[1]->size[c_row]++;
+		}
+		if(1 && 1) {
+			modelData->jac_matrices->df_dx[1]->size[c_row]++;
+		}
+		if(1) {
+			modelData->jac_matrices->df_dx[1]->size[c_row]++;
+		}
+	}
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+		if(1) {
+			modelData->jac_matrices->df_dx[2]->size[c_row]++;
+		}
+		if(1) {
+			modelData->jac_matrices->df_dx[2]->size[c_row]++;
+		}
+	}
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+		if(1 && 1) {
+			modelData->jac_matrices->df_dx[3]->size[c_row]++;
+		}
+		if(1 && 1) {
+			modelData->jac_matrices->df_dx[3]->size[c_row]++;
+		}
+		if(1 && 1) {
+			modelData->jac_matrices->df_dx[3]->size[c_row]++;
+		}
+		if(1) {
+			modelData->jac_matrices->df_dx[3]->size[c_row]++;
+		}
+	}
 	modelData->nSZ[_idx_iL(0)]++;
 	modelData->nSZ[_idx_iL1(0)]++;
 	modelData->nSZ[_idx_uC1(0)]++;
@@ -388,34 +550,187 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	QSS_allocDataMatrix(modelData);
 	cleanVector(states, 0, 4);
 	modelData->SD[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_uC1(0);
-	modelData->SD[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_uC(0);
-	modelData->SD[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_uC1(0);
-	modelData->SD[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_iL1(0);
-	modelData->SD[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_iL(0);
 	modelData->SD[_idx_iL1(0)][states[_idx_iL1(0)]++] = _idx_uC1(0);
-	modelData->SD[_idx_iL1(0)][states[_idx_iL1(0)]++] = _idx_iL1(0);
-	modelData->SD[_idx_iL1(0)][states[_idx_iL1(0)]++] = _idx_iL(0);
-	modelData->SD[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_uC(0);
-	modelData->SD[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(0);
-	modelData->SD[_idx_uC1(0)][states[_idx_uC1(0)]++] = _idx_iL1(0);
 	modelData->SD[_idx_uC1(0)][states[_idx_uC1(0)]++] = _idx_uC1(0);
+	modelData->SD[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_iL1(0);
+	modelData->SD[_idx_iL1(0)][states[_idx_iL1(0)]++] = _idx_iL1(0);
 	modelData->SD[_idx_uC1(0)][states[_idx_uC1(0)]++] = _idx_iL1(0);
+	modelData->SD[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_uC(0);
+	modelData->SD[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_uC(0);
+	modelData->SD[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_iL(0);
+	modelData->SD[_idx_iL1(0)][states[_idx_iL1(0)]++] = _idx_iL(0);
 	modelData->SD[_idx_uC1(0)][states[_idx_uC1(0)]++] = _idx_iL(0);
+	modelData->SD[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(0);
 	cleanVector(states, 0, 4);
 	modelData->DS[_idx_uC1(0)][states[_idx_uC1(0)]++] = _idx_iL(0);
-	modelData->DS[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(0);
-	modelData->DS[_idx_uC1(0)][states[_idx_uC1(0)]++] = _idx_iL(0);
-	modelData->DS[_idx_iL1(0)][states[_idx_iL1(0)]++] = _idx_iL(0);
-	modelData->DS[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_iL(0);
 	modelData->DS[_idx_uC1(0)][states[_idx_uC1(0)]++] = _idx_iL1(0);
-	modelData->DS[_idx_iL1(0)][states[_idx_iL1(0)]++] = _idx_iL1(0);
-	modelData->DS[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_iL1(0);
-	modelData->DS[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_uC(0);
-	modelData->DS[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_uC(0);
-	modelData->DS[_idx_iL1(0)][states[_idx_iL1(0)]++] = _idx_uC1(0);
 	modelData->DS[_idx_uC1(0)][states[_idx_uC1(0)]++] = _idx_uC1(0);
+	modelData->DS[_idx_iL1(0)][states[_idx_iL1(0)]++] = _idx_iL(0);
+	modelData->DS[_idx_iL1(0)][states[_idx_iL1(0)]++] = _idx_iL1(0);
 	modelData->DS[_idx_iL1(0)][states[_idx_iL1(0)]++] = _idx_uC1(0);
+	modelData->DS[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(0);
+	modelData->DS[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_uC(0);
+	modelData->DS[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_iL(0);
+	modelData->DS[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_iL1(0);
 	modelData->DS[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_uC1(0);
+	modelData->DS[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_uC(0);
+	cleanVector(states, 0, 4);
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+		if(1) {
+			x_ind = _idx_iL(0);
+			if(in(modelData->jac_matrices->dg_dx[0]->index[c_row],modelData->jac_matrices->dg_dx[0]->size[c_row], x_ind)){
+				modelData->jac_matrices->dg_dx[0]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->dg_dx[0]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+		if(1) {
+			x_ind = _idx_iL1(0);
+			if(in(modelData->jac_matrices->dg_dx[0]->index[c_row],modelData->jac_matrices->dg_dx[0]->size[c_row], x_ind)){
+				modelData->jac_matrices->dg_dx[0]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->dg_dx[0]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+		if(1) {
+			x_ind = _idx_uC1(0);
+			if(in(modelData->jac_matrices->dg_dx[0]->index[c_row],modelData->jac_matrices->dg_dx[0]->size[c_row], x_ind)){
+				modelData->jac_matrices->dg_dx[0]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->dg_dx[0]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+	}
+	cleanVector(states, 0, 4);
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+		if(1 && 1) {
+			x_ind = _idx_iL(0);
+			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[0]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[0]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+		if(1 && 1) {
+			x_ind = _idx_iL1(0);
+			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[0]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[0]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+		if(1 && 1) {
+			x_ind = _idx_uC1(0);
+			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[0]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[0]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+		if(1) {
+			x_ind = _idx_iL(0);
+			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[0]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[0]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+	}
+	cleanVector(states, 0, 4);
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+		if(1 && 1) {
+			x_ind = _idx_iL(0);
+			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[1]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+		if(1 && 1) {
+			x_ind = _idx_iL1(0);
+			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[1]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+		if(1 && 1) {
+			x_ind = _idx_uC1(0);
+			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[1]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+		if(1) {
+			x_ind = _idx_uC1(0);
+			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[1]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+	}
+	cleanVector(states, 0, 4);
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+		if(1) {
+			x_ind = _idx_iL(0);
+			if(in(modelData->jac_matrices->df_dx[2]->index[c_row],modelData->jac_matrices->df_dx[2]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[2]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[2]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+		if(1) {
+			x_ind = _idx_uC(0);
+			if(in(modelData->jac_matrices->df_dx[2]->index[c_row],modelData->jac_matrices->df_dx[2]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[2]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[2]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+	}
+	cleanVector(states, 0, 4);
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+		if(1 && 1) {
+			x_ind = _idx_iL(0);
+			if(in(modelData->jac_matrices->df_dx[3]->index[c_row],modelData->jac_matrices->df_dx[3]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[3]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[3]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+		if(1 && 1) {
+			x_ind = _idx_iL1(0);
+			if(in(modelData->jac_matrices->df_dx[3]->index[c_row],modelData->jac_matrices->df_dx[3]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[3]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[3]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+		if(1 && 1) {
+			x_ind = _idx_uC1(0);
+			if(in(modelData->jac_matrices->df_dx[3]->index[c_row],modelData->jac_matrices->df_dx[3]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[3]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[3]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+		if(1) {
+			x_ind = _idx_uC(0);
+			if(in(modelData->jac_matrices->df_dx[3]->index[c_row],modelData->jac_matrices->df_dx[3]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[3]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[3]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+	}
+	cleanVector(states, 0, 4);
 	cleanVector(states, 0, 4);
 	modelData->SZ[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_event_3;
 	modelData->SZ[_idx_iL1(0)][states[_idx_iL1(0)]++] = _idx_event_3;
@@ -467,6 +782,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	modelData->event[_idx_event_2].relation = 2;
 	modelData->event[_idx_event_3].direction = 0;
 	modelData->event[_idx_event_3].relation = 2;
+	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->time = QSS_Time(4,3,0,0,ST_Binary, NULL);
 	simulator->output = SD_Output("cuk",4,5,4,NULL,0,0,CI_Step,SD_Memory,MOD_output);
 	SD_output modelOutput = simulator->output;
