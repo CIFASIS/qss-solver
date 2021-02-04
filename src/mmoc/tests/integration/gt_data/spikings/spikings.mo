@@ -1,5 +1,4 @@
 model spikings
-  import math_test;
   constant Integer N=1000;
   Real v[N];
   Real u[N];
@@ -11,10 +10,10 @@ model spikings
     for i in 1:N loop
       v[i]:=-60;
       u[i]:=0;
-      r[i]:=rand(1);
+      r[i]:=1;
       c[i]:=-65+15*r[i]^2;
       d[i]:=8-6*r[i]^2;
-      I[i]:=rand(10);
+      I[i]:=10;
     end for;
   equation
     for i in 1:N loop

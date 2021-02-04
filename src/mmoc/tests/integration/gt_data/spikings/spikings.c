@@ -4,7 +4,6 @@
 #include <math.h>
 
 #include "spikings.h"
-#include "pkg_math.h"
 #include <common/utils.h>
 #include <common/model.h>
 #include <common/commands.h>
@@ -246,10 +245,10 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(i = 1; i<=1000; i+=1) {
 		_init_v(i,0) = -60;
 		_init_u(i,0) = 0;
-		_r(i) = __math__rand(1);
+		_r(i) = 1;
 		_c(i) = -65+15*pow(_r(i),2);
 		_d(i) = 8-6*pow(_r(i),2);
-		_I(i) = __math__rand(10);
+		_I(i) = 10;
 	}
 	for(_d1 = 1; _d1<=1000; _d1+=1) {
 		modelData->nSD[_idx_u(_d1,0)]++;
