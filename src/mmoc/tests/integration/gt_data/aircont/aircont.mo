@@ -1,5 +1,4 @@
 model aircont
-  import math;
   constant Integer N = 200;
   parameter Real CAP[N], RES[N], POT[N], THA = 32,pmax=0,Kp=1,Ki=1,tref=20;
   Real th[N];
@@ -8,15 +7,15 @@ model aircont
   discrete Real on[N];
   discrete Real dtref,pref(start=0.5);
   discrete Real nextSample(start=1);
-  discrete Real noise(start=rand(2)-1);
+  discrete Real noise(start=2-1);
 
 
   initial algorithm
   for i in 1:N loop
-    th[i] := rand(4)+ 18;
-    CAP[i] := rand(100)+ 550;
-    RES[i] := rand(0.4)+ 1.8;
-    POT[i] := rand(0.2)+ 13;
+    th[i] := 4+ 18;
+    CAP[i] := 100+ 550;
+    RES[i] := 0.4+ 1.8;
+    POT[i] := 0.2+ 13;
     pmax:=pmax+POT[i];
   end for;
 
@@ -51,7 +50,7 @@ model aircont
   end when;
   when time > nextSample then
     nextSample := nextSample+1;
-    noise := rand(2)-1;
+    noise := 2-1;
     ptotals := ptotal;
     dtref := Kp*(ptotals/pmax-pref)-Ki*ierr;
   end when;

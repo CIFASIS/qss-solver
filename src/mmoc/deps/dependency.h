@@ -49,7 +49,7 @@ class Dependency {
         Paths var_deps;
         AlgebraicPath algs;
         AlgebraicPath recursive_alg_paths;
-        // cout << "Compute paths for: " << vertex_info.var() << endl;
+        //cout << "Compute paths for: " << vertex_info.var() << endl;
         paths(graph, vertex, variableRange(vertex_info.var()), var_deps, algs, recursive_alg_paths, traverse);
         insert(dm, vertex_info, var_deps);
       }
@@ -83,6 +83,7 @@ class Dependency {
   void printEdges(DepsGraph graph, Vertex source_vertex, MDI source_range);
   bool isRecursive(VertexProperty source, VertexProperty target);
   bool isReduction(MDI source_dom, MDI sink_dom);
+  Option<MDI> intersection(VertexProperty source_vertex_info, MDI source, MDI sink, TRAVERSE::Init traverse);
 
   private:
   IndexPair _ifr;

@@ -1,5 +1,4 @@
 model airconds
-  import math;
   constant Integer N = 20000;
   parameter Real CAP[N], RES[N], POT[N], THA = 32,pmax=0;
   Real th[N];
@@ -11,13 +10,13 @@ model airconds
 
   initial algorithm
   for i in 1:N loop
-    th[i] := rand(4)+ 18;
-    CAP[i] := rand(100)+ 550;
-    RES[i] := rand(0.4)+ 1.8;
-    POT[i] := rand(2)+ 13;
+    th[i] := 4+ 18;
+    CAP[i] := 100+ 550;
+    RES[i] := 0.4+ 1.8;
+    POT[i] := 2+ 13;
     pmax:=pmax+POT[i];
     nextSample[i] := 1;
-    noise[i] := rand(2)-1;
+    noise[i] := 2-1;
     tref[i] := 20;
   end for;
   for i in 1:N loop
@@ -56,7 +55,7 @@ end for;
   for i  in 1:N loop
     when time > nextSample[i] then
       nextSample[i] := nextSample[i]+1;
-      noise[i] := rand(2)-1;
+      noise[i] := 2-1;
     end when;
   end for;
 	annotation(

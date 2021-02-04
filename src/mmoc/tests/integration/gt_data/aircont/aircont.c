@@ -4,7 +4,6 @@
 #include <math.h>
 
 #include "aircont.h"
-#include "pkg_math.h"
 #include <common/utils.h>
 #include <common/model.h>
 #include <common/commands.h>
@@ -37,15 +36,18 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		case _eval_event_2: {
 			_zc = _time-(1000);
 	
+	
 			return;
 		}
 		case _eval_event_3: {
 			_zc = _time-(2000);
 	
+	
 			return;
 		}
 		case _eval_event_4: {
 			_zc = _time-(_nextSample);
+	
 	
 			return;
 		}
@@ -55,6 +57,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		_apply_usage_event_1(_d1);
 		if ((i >= 1 && i <= 200)) {
 			_zc = _th(i)-_tref-_dtref+_on(i)-0.5-(0);
+	
 	
 		}
 		return;
@@ -76,7 +79,7 @@ void MOD_handlerPos(int idx, double *x, double *d, double *a, double t)
 		}
 		case _eval_event_4: {
 			_nextSample = _nextSample+1;
-			_noise = __math__rand(2)-1;
+			_noise = 2-1;
 			_ptotals = _ptotal;
 			_dtref = _Kp*(_ptotals/_pmax-_pref)-_Ki*_ierr;
 					return;
@@ -118,48 +121,74 @@ void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
 	}
 }
 
-void MOD_jacobian(double *x, double *d, double *a, double t, double *jac)
+void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx, double *jac)
 {
+	int row, row_t, eq_var, c_row, c_row_g;
+	int col, col_g, col_t;
+	int x_ind;
+	double aux;
 	int _d1;
+	int _rg_d1;
 	int i;
-	int idx;
-	int jit;
-	for (idx = 1; idx <=201; idx++) {
-	if (_is_var_th(idx)) {
-		_get_th_idxs(idx);
-		_apply_usage_eq_1(_d1);
-		if ((i >= 1 && i <= 200)) {
-			_jac(jit) = -(1/(_CAP(i)))*(1/(_RES(i)));
+	SD_cleanJacMatrices(dvdx);
+	for(row = 1; row <= 200; row++) {
+		c_row = _c_index(row);
+		_get_eq_1_var_idxs(row, eq_var);
+		_get_th_idxs(eq_var);
+		if((1 <= _d1 && _d1 <= 200)) {
+			x_ind = _idx_th(_d1);
+			col = pos(dvdx->df_dx[0]->index[c_row], dvdx->df_dx[0]->size[c_row], x_ind);
+			_apply_usage_eq_1(_d1);
+			aux = 0;
+			dvdx->df_dx[0]->value[c_row][col] +=  aux;
 		}
-	
-		}
+	}
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+	}
+	// Assign Jacobian Matrix values for equation: 0
+	for (row = 0; row < 200; row++) {
+	  for (col = 0; col < dvdx->df_dx[0]->size[row]; col++) {
+	    row_t = dvdx->df_dx[0]->index[row][col];
+	    _assign_jac(row_t, dvdx->df_dx[0]->value[row][col]);
+	  }
+	}
+	// Assign Jacobian Matrix values for equation: 1
+	for (row = 0; row < 1; row++) {
+	  for (col = 0; col < dvdx->df_dx[1]->size[row]; col++) {
+	    row_t = dvdx->df_dx[1]->index[row][col];
+	    _assign_jac(row_t, dvdx->df_dx[1]->value[row][col]);
+	  }
 	}
 }
 
 void CLC_initializeDataStructs(CLC_simulator simulator)
 {
-	simulator->data = CLC_Data(201,206,203,0,0,"aircont");
+	simulator->data = CLC_Data(201,206,203,0,0,2,0,"aircont");
 	CLC_data modelData = simulator->data;
 	MODEL_DATA_ACCESS(modelData)
 	int* states = (int*) malloc(201*sizeof(int));
 	int* discretes = (int*) malloc(206*sizeof(int));
 	int* events = (int*) malloc(203*sizeof(int));
 	int* outputs = (int*) malloc(1*sizeof(int));
+	int row, eq_var, c_row;
+	int x_ind;
 	int _d1;
+	int _rg_d1;
 	int i;
 	_Ki = 1;
 	_Kp = 1;
 	_THA = 32;
 	_nextSample = 1;
-	_noise = __math__rand(2)-1;
+	_noise = 2-1;
 	_pmax = 0;
 	_pref = 0.5;
 	_tref = 20;
 	for(i = 1; i<=200; i+=1) {
-		_init_th(i) = __math__rand(4)+18;
-		_CAP(i) = __math__rand(100)+550;
-		_RES(i) = __math__rand(0.4)+1.8;
-		_POT(i) = __math__rand(0.2)+13;
+		_init_th(i) = 4+18;
+		_CAP(i) = 100+550;
+		_RES(i) = 0.4+1.8;
+		_POT(i) = 0.2+13;
 		_pmax = _pmax+_POT(i);
 	}
 	for(i = 1; i<=200; i+=1) {
@@ -173,6 +202,17 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	}
 	for(_d1 = 1; _d1<=200; _d1+=1) {
 		modelData->nDS[_idx_th(_d1)]++;
+	}
+	for(row = 1; row <= 200; row++) {
+		c_row = _c_index(row);
+		_get_eq_1_var_idxs(row, eq_var);
+		_get_th_idxs(eq_var);
+		if((1 <= _d1 && _d1 <= 200)) {
+			modelData->jac_matrices->df_dx[0]->size[c_row]++;
+		}
+	}
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
 	}
 	CLC_allocDataMatrix(modelData);
 	cleanVector(states, 0, 201);
@@ -193,6 +233,26 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	modelData->event[_idx_event_3].relation = 2;
 	modelData->event[_idx_event_4].direction = 1;
 	modelData->event[_idx_event_4].relation = 2;
+	cleanVector(states, 0, 201);
+	for(row = 1; row <= 200; row++) {
+		c_row = _c_index(row);
+		_get_eq_1_var_idxs(row, eq_var);
+		_get_th_idxs(eq_var);
+		if((1 <= _d1 && _d1 <= 200)) {
+			x_ind = _idx_th(_d1);
+			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[0]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[0]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+	}
+	cleanVector(states, 0, 201);
+	for(row = 1; row <= 1; row++) {
+		c_row = _c_index(row);
+	}
+	cleanVector(states, 0, 201);
+	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->output = SD_Output("aircont",1,206,201,NULL,0,0,CI_Step,SD_Memory,MOD_output);
 	SD_output modelOutput = simulator->output;
 	modelOutput->nOD[_idx_out_exp_1]++;
