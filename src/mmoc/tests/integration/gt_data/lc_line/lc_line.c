@@ -202,6 +202,9 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 			_eval_dep_x(i,2) = (0)/2;
 			_eval_dep_x(i,3) = (0)/6;	}
 	
+		}
+	if (_is_var_x(idx)) {
+		_get_x_idxs(idx);
 		_apply_usage_eq_1(_d1-1);
 		if ((i >= 2 && i <= 199)) {
 			_eval_dep_x(i,1) = _x(i-1,0)-_x(i+1,0);

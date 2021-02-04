@@ -136,6 +136,9 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 			_eval_dep_u(j,1) = (-_u(j,0)+_u(j-1,0))*20000-_mu*_u(j,0)*(_u(j,0)-_alpha)*(_u(j,0)-1);
 			_eval_dep_u(j,2) = (0)/2;	}
 	
+		}
+	if (_is_var_u(idx)) {
+		_get_u_idxs(idx);
 		_apply_usage_eq_2(_d1);
 		if ((j >= 2 && j <= 20000)) {
 			_eval_dep_u(j,1) = (-_u(j,0)+_u(j-1,0))*20000-_mu*_u(j,0)*(_u(j,0)-_alpha)*(_u(j,0)-1);
