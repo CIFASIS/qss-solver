@@ -45,7 +45,6 @@ void QSS_BDF_initJacobianVector(QSS_data simData)
   for (i = 0; i < states; i++) {
     if (BDF[i] != NOT_ASSIGNED) {
       jac += simData->nSD[i];
-      continue;
     }
   }
   simData->JacIt = (int *)malloc(jac * sizeof(int));

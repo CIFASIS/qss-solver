@@ -66,44 +66,120 @@ static double *qssTQ = NULL;
 
 static double NEXT_BDF_T = 0;
 
-static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat, void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3)
+static int jac_struct_initialized = FALSE;
+
+static SlsMat init_jac_matrix = NULL;
+
+int HYB_cmpfunc(const void *a, const void *b) { return (*(int *)a - *(int *)b); }
+
+void HYB_order(SlsMat JacMat)
 {
-  int n = 0;
-  int jacIt = 0, i, j;
-  int *colptrs = *JacMat->colptrs;
-  int *rowvals = *JacMat->rowvals;
+  int size = clcData->nBDF, row, cols;
+  int *col_ptrs = *JacMat->colptrs;
+  int *row_vals = *JacMat->rowvals;
+  for (row = 0; row < size; row++) {
+    cols = col_ptrs[row + 1] - col_ptrs[row];
+    qsort(&(row_vals[col_ptrs[row]]), cols, sizeof(int), HYB_cmpfunc);
+  }
+}
+
+void HYB_assignJacStruct(SlsMat JacMat)
+{
+  int size = clcData->states, row, col, eq, eqs;
+  int *col_ptrs = *JacMat->colptrs;
+  int *row_vals = *JacMat->rowvals;
   int nBDF = clcData->nBDF;
   int *BDF = clcData->BDF;
   int *BDFMap = clcData->BDFMap;
+
+  eqs = clcData->jac_matrices->state_eqs;
+
+  // Check that the initial pointer values are cleared.
+  SD_cleanTransJacMatrices(clcData->jac_matrices);
+
+  // Assign Jacobian transpose size values to BDF partition.
+  col_ptrs[0] = 0;
+  for (row = 0; row < nBDF; row++) {
+    int glob_row = BDFMap[row];
+    int nsd = clcData->nSD[glob_row];
+    for (col = 0; col < nsd; col++) {
+      int sd = clcData->SD[glob_row][col];
+      if (BDF[sd] != NOT_ASSIGNED) {
+        col_ptrs[row+1]++;
+      }
+    }
+  }
+  for (row = 1; row <= nBDF; row++) {
+    col_ptrs[row] += col_ptrs[row-1];
+  }
+
+  SD_jacMatrix jac_t = clcData->jac_matrices->df_dx_t;
+  for (eq = 0; eq < eqs; eq++) {
+    SD_jacMatrix jac = clcData->jac_matrices->df_dx[eq];
+    for (row = 0; row < size; row++) {
+      for (col = 0; col < jac->size[row]; col++) {
+        /// Get the variable column from the original Jac matrix.
+        int row_t = jac->index[row][col];
+        // If the row is computed by CV_ODE, then look at the columns.
+        int bdf_row = BDF[row_t];
+        if (bdf_row != NOT_ASSIGNED) {
+          int col_t = clcData->SD[row_t][jac_t->index[row_t][0]];
+          if (BDF[col_t] != NOT_ASSIGNED) {
+            col_t = col_ptrs[bdf_row] + jac_t->index[row_t][0];
+            row_vals[col_t] = clcData->SD[row_t][jac_t->index[row_t][0]];
+            printf("%d, %d -> %d\n", row_t, col_t, row_vals[col_t]);
+          }
+          jac_t->index[row_t][0]++;
+        }
+      }
+    }
+  }
+  
+  HYB_order(JacMat);
+
+  init_jac_matrix = SparseNewMat(JacMat->M, JacMat->N, JacMat->NNZ, CSC_MAT);
+  SparseCopyMat(JacMat, init_jac_matrix);
+}
+
+static int Jac(realtype t, N_Vector y, N_Vector fy, SlsMat JacMat, void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3)
+{
+  int jac_col_nbr = 0, i, j;
+  int nBDF = clcData->nBDF;
+  int *BDF = clcData->BDF;
   int *nSD = clcData->nSD;
   int **SD = clcData->SD;
   int *JacIt = clcData->JacIt;
+  int *BDFMap = clcData->BDFMap;
   const int coeffs = clcData->order + 1;
   for (i = 0; i < nBDF; i++) {
     int bdfVar = BDFMap[i];
     int cf0 = bdfVar * coeffs;
     bdfQ[cf0] = Ith(y, i);
   }
-  SparseSetMatToZero(JacMat);
+  
   clcModel->jac(bdfQ, clcData->d, clcData->alg, t, clcData->jac_matrices, clcData->jac);
-  int jval = 0, jcol = 0;
-  for (i = 0, jacIt = 0; i < nBDF; i++) {
-    colptrs[i] = n;
+  
+  if (jac_struct_initialized == FALSE) {
+    HYB_assignJacStruct(JacMat);
+    jac_struct_initialized = TRUE;
+  } else {
+    SparseCopyMat(init_jac_matrix, JacMat);
+  }
+
+  /// Assign the BDF computed part of the Jacobian to the CV_ODE jac vector.
+  int cv_ode_col = 0;
+  for (i = 0, jac_col_nbr = 0; i < nBDF; i++) {
     int row = BDFMap[i];
     int nsd = nSD[row];
-    jcol = 0;
-    for (j = 0; j < nsd; j++, jacIt++) {
+    for (j = 0; j < nsd; j++, jac_col_nbr++) {
       int sd = SD[row][j];
       int col = BDF[sd];
       if (col != NOT_ASSIGNED) {
-        JacMat->data[jval++] = clcData->jac[JacIt[jacIt]];
-        rowvals[jcol + n] = col;
-        jcol++;
-      }
+        JacMat->data[cv_ode_col++] = clcData->jac[JacIt[jac_col_nbr]];
+      } 
     }
-    n += jcol;
   }
-  colptrs[i] = n;
+  //SparsePrintMat(JacMat,stdout);
   return 0;
 }
 
@@ -186,7 +262,7 @@ void QSS_HYB_initialize(SIM_simulator simulate)
   qssTQ = (double *)malloc(qssData->states * sizeof(double));
   bdfQ = (double *)malloc(qssData->states * (qssData->order + 1) * sizeof(double));
   Q = (double *)malloc(qssData->states * sizeof(double));
-
+  
   QSS_model qssModel = simulator->model;
   if (qssModel->jac != NULL) {
     qssModel->jac(x, qssData->d, qssData->alg, t, qssData->jac_matrices, qssData->jac);
