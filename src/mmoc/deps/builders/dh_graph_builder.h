@@ -40,6 +40,7 @@ class DHGraphBuilder {
 
   protected:
   void addStatements(IR::StatementTable stms, DepsGraph& graph, IR::Expression exp, int id, Option<IR::Range> range);
+  bool addNewEvent(VertexProperty source, VertexProperty sink);
 
   private:
   list<EqVertex> _statementDescriptors;
@@ -49,6 +50,7 @@ class DHGraphBuilder {
   IR::EquationTable _algebraics;
   IR::STATEMENT::AssignTerm _search;
   DHGRAPHBUILDER::IfrType _ifr_type;
+  std::map<string, std::vector<int>> _pushed_vars;
 };
 }  // namespace Deps
 }  // namespace MicroModelica
