@@ -282,9 +282,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelData->nHZ[_idx_event_1(_d1)]++;
 	}
 	for(_d1 = 1; _d1<=20000; _d1+=1) {
-		modelData->nHZ[_idx_event_1(_d1)]++;
-	}
-	for(_d1 = 1; _d1<=20000; _d1+=1) {
 		modelData->nHZ[_idx_event_2(_d1)]++;
 	}
 	for(_d1 = 1; _d1<=20000; _d1+=1) {
@@ -297,19 +294,10 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelData->nHD[_idx_event_1(_d1)]++;
 	}
 	for(_d1 = 1; _d1<=20000; _d1+=1) {
-		modelData->nHD[_idx_event_1(_d1)]++;
-	}
-	for(_d1 = 1; _d1<=20000; _d1+=1) {
 		modelData->event[_idx_event_4(_d1)].nLHSDsc++;
 	}
 	for(_d1 = 1; _d1<=20000; _d1+=1) {
 		modelData->event[_idx_event_4(_d1)].nLHSDsc++;
-	}
-	for(_d1 = 1; _d1<=20000; _d1+=1) {
-		modelData->event[_idx_event_1(_d1)].nLHSDsc++;
-	}
-	for(_d1 = 1; _d1<=20000; _d1+=1) {
-		modelData->event[_idx_event_1(_d1)].nLHSDsc++;
 	}
 	for(_d1 = 1; _d1<=20000; _d1+=1) {
 		modelData->event[_idx_event_1(_d1)].nLHSDsc++;
@@ -363,9 +351,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelData->HZ[_idx_event_1(_d1)][events[_idx_event_1(_d1)]++] = _idx_event_1(_d1);
 	}
 	for(_d1 = 1; _d1<=20000; _d1+=1) {
-		modelData->HZ[_idx_event_1(_d1)][events[_idx_event_1(_d1)]++] = _idx_event_1(_d1);
-	}
-	for(_d1 = 1; _d1<=20000; _d1+=1) {
 		modelData->HZ[_idx_event_2(_d1)][events[_idx_event_2(_d1)]++] = _idx_event_1(_d1);
 	}
 	for(_d1 = 1; _d1<=20000; _d1+=1) {
@@ -374,9 +359,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	cleanVector(events, 0, 80000);
 	for(_d1 = 1; _d1<=20000; _d1+=1) {
 		modelData->HD[_idx_event_4(_d1)][events[_idx_event_4(_d1)]++] = _idx_th(_d1,0);
-	}
-	for(_d1 = 1; _d1<=20000; _d1+=1) {
-		modelData->HD[_idx_event_1(_d1)][events[_idx_event_1(_d1)]++] = _idx_th(_d1,0);
 	}
 	for(_d1 = 1; _d1<=20000; _d1+=1) {
 		modelData->HD[_idx_event_1(_d1)][events[_idx_event_1(_d1)]++] = _idx_th(_d1,0);
@@ -390,12 +372,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	}
 	for(_d1 = 1; _d1<=20000; _d1+=1) {
 		modelData->event[_idx_event_1(_d1)].LHSDsc[events[_idx_event_1(_d1)]++] = _idx_on(_d1);
-	}
-	for(_d1 = 1; _d1<=20000; _d1+=1) {
-		modelData->event[_idx_event_1(_d1)].LHSDsc[events[_idx_event_1(_d1)]++] = _idx_on(_d1);
-	}
-	for(_d1 = 1; _d1<=20000; _d1+=1) {
-		modelData->event[_idx_event_1(_d1)].LHSDsc[events[_idx_event_1(_d1)]++] = _idx_ptotal;
 	}
 	for(_d1 = 1; _d1<=20000; _d1+=1) {
 		modelData->event[_idx_event_1(_d1)].LHSDsc[events[_idx_event_1(_d1)]++] = _idx_ptotal;

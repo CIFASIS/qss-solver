@@ -309,9 +309,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	modelData->nHZ[_idx_event_2]++;
 	modelData->nHZ[_idx_event_2]++;
 	modelData->nHD[_idx_event_1]++;
-	modelData->nHD[_idx_event_1]++;
 	modelData->nHD[_idx_event_2]++;
-	modelData->event[_idx_event_1].nLHSDsc++;
 	modelData->event[_idx_event_1].nLHSDsc++;
 	modelData->event[_idx_event_2].nLHSDsc++;
 	QSS_allocDataMatrix(modelData);
@@ -395,10 +393,8 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	modelData->HZ[_idx_event_2][events[_idx_event_2]++] = _idx_event_2;
 	cleanVector(events, 0, 2);
 	modelData->HD[_idx_event_1][events[_idx_event_1]++] = _idx_vy(0);
-	modelData->HD[_idx_event_1][events[_idx_event_1]++] = _idx_vy(0);
 	modelData->HD[_idx_event_2][events[_idx_event_2]++] = _idx_vy(0);
 	cleanVector(events, 0, 2);
-	modelData->event[_idx_event_1].LHSDsc[events[_idx_event_1]++] = _idx_contact;
 	modelData->event[_idx_event_1].LHSDsc[events[_idx_event_1]++] = _idx_contact;
 	modelData->event[_idx_event_2].LHSDsc[events[_idx_event_2]++] = _idx_stair;
 	modelData->event[_idx_event_1].direction = 0;

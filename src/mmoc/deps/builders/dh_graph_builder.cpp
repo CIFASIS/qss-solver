@@ -34,7 +34,8 @@ DHGraphBuilder::DHGraphBuilder(EventTable& events, EquationTable& algebraics, ST
       _events(events),
       _algebraics(algebraics),
       _search(search),
-      _ifr_type(ifr_type)
+      _ifr_type(ifr_type),
+      _pushed_vars()
 {
 }
 
@@ -66,6 +67,18 @@ void DHGraphBuilder::addStatements(StatementTable stms, DepsGraph& graph, Expres
       _statementDescriptors.push_back(add_vertex(vp, graph));
     }
   }
+}
+
+bool DHGraphBuilder::addNewEvent(VertexProperty source, VertexProperty sink)
+{
+  string var = source.var().name();
+  vector<int> ids = _pushed_vars[var]; 
+  if (std::find(ids.begin(), ids.end(), sink.id()) == ids.end()) {
+    ids.push_back(sink.id());
+    _pushed_vars[var] = ids;
+    return true;
+  }
+  return false;
 }
 
 DepsGraph DHGraphBuilder::build()
@@ -114,11 +127,13 @@ DepsGraph DHGraphBuilder::build()
     {
       GenerateEdge edge = GenerateEdge(graph[source], graph[sink]);
       if (edge.exists()) {
-        IndexPairSet ips = edge.indexes();
-        for (auto ip : ips) {
-          Label lbl(ip);
-          //cout << "Agrega arista desde la var: " << graph[source].var() << " al evento: " << graph[sink].id() << endl;
-          add_edge(source, sink, lbl, graph);
+        if (addNewEvent(graph[source], graph[sink])) {
+          IndexPairSet ips = edge.indexes();
+          for (auto ip : ips) {
+            Label lbl(ip);
+            //cout << "Agrega arista desde la var: " << graph[source].var() << " al evento: " << graph[sink].id() << endl;
+            add_edge(source, sink, lbl, graph);
+          }
         }
       }
       // Check LHS too if we are working with algebraics.
