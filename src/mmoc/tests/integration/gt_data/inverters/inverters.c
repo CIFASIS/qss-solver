@@ -211,6 +211,9 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 			_eval_dep_x(i,1) = _UOP-_x(i,0)-_G*(_satx(i-1)*pow((_x(i-1,0)-_UTH),2)-_satdx(i-1)*pow((_x(i-1,0)-_x(i,0)-_UTH),2));
 			_eval_dep_x(i,2) = (0)/2;	}
 	
+		}
+	if (_is_var_x(idx)) {
+		_get_x_idxs(idx);
 		_apply_usage_eq_2(_d1);
 		if ((i >= 2 && i <= 502)) {
 			_eval_dep_x(i,1) = _UOP-_x(i,0)-_G*(_satx(i-1)*pow((_x(i-1,0)-_UTH),2)-_satdx(i-1)*pow((_x(i-1,0)-_x(i,0)-_UTH),2));
