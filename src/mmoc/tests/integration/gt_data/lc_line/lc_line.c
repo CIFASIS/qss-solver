@@ -313,10 +313,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(_d1 = 1; _d1<=1; _d1+=1) {
 		modelData->nHD[_idx_event_1]++;
 	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->nHD[_idx_event_1]++;
-	}
-	modelData->event[_idx_event_1].nLHSDsc++;
 	modelData->event[_idx_event_1].nLHSDsc++;
 	QSS_allocDataMatrix(modelData);
 	cleanVector(states, 0, 200);
@@ -396,11 +392,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(_d1 = 1; _d1<=1; _d1+=1) {
 		modelData->HD[_idx_event_1][events[_idx_event_1]++] = _idx_x(1,0);
 	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->HD[_idx_event_1][events[_idx_event_1]++] = _idx_x(1,0);
-	}
 	cleanVector(events, 0, 1);
-	modelData->event[_idx_event_1].LHSDsc[events[_idx_event_1]++] = _idx_d;
 	modelData->event[_idx_event_1].LHSDsc[events[_idx_event_1]++] = _idx_d;
 	modelData->event[_idx_event_1].direction = 0;
 	modelData->event[_idx_event_1].relation = 2;
