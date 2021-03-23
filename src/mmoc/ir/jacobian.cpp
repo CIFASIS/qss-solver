@@ -182,6 +182,12 @@ void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep
       for (Expression exp : v_eq.lhs().indexes()) {
         exps.push_back(exp.print());
       }
+    } else {  
+      // Scalar equation so if the algebraic use is an array we must apply the n_map to get the alg use.  
+      Option<Variable> lhs = g_eq.LHSVariable();
+      if (lhs->isArray()) {
+        exps = n_map.exps(g_eq.range()->getDimensionVars(USE_RANGE_IDXS));
+      }
     }
   }
   Expression a_exp = Expression::generate(g_eq.LHSVariable()->name(), exps);
