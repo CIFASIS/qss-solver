@@ -83,26 +83,40 @@ std::string JacGenerator::guard(SBG::MDI dom, SBG::Map map)
 void JacGenerator::dependencyPrologue(Equation eq, SBG::VariableDep var_dep, SBG::Map map, std::string guard)
 {
   stringstream code;
-  string tab = Utils::instance().tabs(_tabs);
+  string tabs = Utils::instance().tabs(_tabs);
   Range range(var_dep.range());
+  if (var_dep.isRecursive()) {
+    FunctionPrinter printer;
+    code << tabs << eq.range().get();
+    _tabs++;
+    tabs = Utils::instance().tabs(_tabs);
+    vector<string> exps = eq.range()->getIndexes();
+    Expression a_exp = Expression::generate(eq.LHSVariable()->name(), exps);
+    Index a_ind(a_exp);
+    code << TAB << printer.jacMacrosAccess(eq, a_ind.print());
+  }
   vector<string> exps = map.exps(range.getDimensionVars());
-  code << tab << "if(" << range.in(exps);
+  code << tabs << "if(" << range.in(exps);
   if (!guard.empty()) {
     code << " && " << guard;
   }
   code << ") {" << endl;
   Expression i_exp = Expression::generate(var_dep.var().name(), exps);
   Index x_ind(i_exp);
-  code << tab << tab << "x_ind = " << x_ind << ";" << endl;
+  code << tabs << TAB << "x_ind = " << x_ind << ";" << endl;
   _jac_def.code.append(code.str());
   _tabs++;
 }
 
-void JacGenerator::dependencyEpilogue()
+void JacGenerator::dependencyEpilogue(Equation eq, Deps::SBG::VariableDep var_dep)
 {
+  stringstream code;
   _tabs--;
-  string end = Utils::instance().tabs(_tabs) + "}\n";
-  _jac_def.code.append(end);
+  code << Utils::instance().tabs(_tabs) + "}\n";
+  if (var_dep.isRecursive()) {
+    code << eq.range()->end();
+  }
+  _jac_def.code.append(code.str());
 }
 
 void JacGenerator::generatePos(int id, EQUATION::Type type, string row, string col)
@@ -161,7 +175,7 @@ void JacGenerator::visitF(Equation eq, SBG::VariableDep var_dep, SBG::Map map)
   code << tab << "aux = " << ExpressionDerivator::partialDerivative(eq, Index(map.exp())) << ";" << endl;
   _jac_def.code.append(code.str());
   generateEquation(eq.arrayId(), eq.type());
-  dependencyEpilogue();
+  dependencyEpilogue(eq, var_dep);
 }
 
 void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep, SBG::Map n_map, Map map_m, int index_shift)
@@ -177,18 +191,19 @@ void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep
   if (v_eq.hasRange()) {
     exps = map_m.exps(v_eq.range()->getDimensionVars(USE_RANGE_IDXS));
   } else {
-    Option<Variable> lhs = v_eq.LHSVariable();
-    if (lhs->isArray()) {
+    Option<Variable> v_lhs = v_eq.LHSVariable();
+    Option<Variable> g_lhs = g_eq.LHSVariable();
+    if (var_dep.isRecursive()) {
+      Range range(var_dep.range());
+      exps = n_map.exps(range.getDimensionVars(USE_RANGE_IDXS));
+    } else if (g_lhs->isArray()) {  
+      // Scalar equation so if the algebraic use is an array we must apply the n_map to get the alg use.  
+      exps = n_map.exps(g_eq.range()->getDimensionVars(USE_RANGE_IDXS));
+    } else if (v_lhs->isArray()) {
       for (Expression exp : v_eq.lhs().indexes()) {
         exps.push_back(exp.print());
       }
-    } else {  
-      // Scalar equation so if the algebraic use is an array we must apply the n_map to get the alg use.  
-      Option<Variable> lhs = g_eq.LHSVariable();
-      if (lhs->isArray()) {
-        exps = n_map.exps(g_eq.range()->getDimensionVars(USE_RANGE_IDXS));
-      }
-    }
+    } 
   }
   Expression a_exp = Expression::generate(g_eq.LHSVariable()->name(), exps);
   Index a_ind(a_exp);
@@ -198,7 +213,7 @@ void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep
   _jac_def.code.append(code.str());
   generatePos(g_eq.arrayId(), g_eq.type(), "c_row_g", "col_g");
   generateEquation(v_eq.arrayId(), g_eq.arrayId(), v_eq.type());
-  dependencyEpilogue();
+  dependencyEpilogue(g_eq, var_dep);
 }
 
 void JacGenerator::initG(Equation eq, SBG::Map map_m)

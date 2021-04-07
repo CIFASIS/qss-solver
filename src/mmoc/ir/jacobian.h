@@ -53,7 +53,7 @@ class JacGenerator {
   protected:
   IR::Expression generateExp(string var_name, vector<string> indices);
   void dependencyPrologue(Equation eq, Deps::SBG::VariableDep var_dep, Deps::SBG::Map map, std::string guard = "");
-  void dependencyEpilogue();
+  void dependencyEpilogue(Equation eq, Deps::SBG::VariableDep var_dep);
   void updateMatrix(std::map<std::string, std::set<std::string>>& matrix);
   void generatePos(int id, EQUATION::Type type, std::string row = "c_row", std::string col = "col");
   void generateEquation(int id, EQUATION::Type type);
