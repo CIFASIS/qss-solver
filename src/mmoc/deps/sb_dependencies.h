@@ -25,6 +25,7 @@
 #include "../ir/equation.h"
 #include "../ir/expression.h"
 #include "../ir/jacobian.h"
+#include "../util/symbol_table.h"
 #include "builders/index_shift_builder.h"
 #include "graph/sb_graph_helpers.h"
 #include "graph/sb_graph.h"
@@ -47,7 +48,7 @@ class SBDependencies {
   R deps();
 
   protected:
-  void paths(SBGraph graph, SBVertex V);
+  void paths(SBGraph graph, SBVertex V, Util::Variable visiting_alg);
 
   IndexShift _index_shift;
   IGenerator _gen;
