@@ -126,6 +126,10 @@ Variable &Variable::operator=(const Variable &other)
   return *this;
 }
 
+bool Variable::operator==(const Variable &other) { return print() == other.print(); }
+
+bool Variable::operator!=(const Variable &other) { return !((*this) == other); }
+
 /*! \brief Process the argument modification to determine the variable modifiers if any.
  *
  * 	\note{We don't look for errors here, if there's an error in the code, it should be detected in
