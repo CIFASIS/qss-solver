@@ -53,6 +53,7 @@ class Interval {
   bool intersects(const Interval& other) const;
   bool isEmpty() const;
   int step() const;
+  Interval cup(const Interval& other) const;
 
   protected:
   int getStep(const Interval& other) const;
@@ -143,6 +144,7 @@ class MDI {
   bool unique() const;
   bool isEmpty() const;
   bool reduction(MDI other);
+  MDI cup(const MDI& other) const;
   friend std::ostream& operator<<(std::ostream& os, const MDI mdi);
 
   private:
