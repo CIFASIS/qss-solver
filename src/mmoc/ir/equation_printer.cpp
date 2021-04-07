@@ -214,7 +214,7 @@ string DerivativePrinter::print() const
 {
   stringstream buffer;
   string tabs = "";
-  FunctionPrinter fp;
+  FunctionPrinter printer;
   string arguments;
   tabs += TAB;
   if (_range) {
@@ -222,13 +222,13 @@ string DerivativePrinter::print() const
     arguments = _lhs.dimVariables();
   }
   tabs += TAB;
-  buffer << fp.beginExpression(identifier(), _range);
-  buffer << fp.algebraics(_eq_dep_matrix, _id);
-  buffer << fp.beginDimGuards(equationId(), arguments, _range);
+  buffer << printer.beginExpression(identifier(), _range);
+  buffer << printer.algebraics(_eq_dep_matrix, _id);
+  buffer << printer.beginDimGuards(equationId(), arguments, _range);
   buffer << tabs << prefix() << lhs() << " = " << _rhs << ";" << endl;
   buffer << generateDerivatives(tabs) << endl;
-  buffer << endl << TAB << fp.endDimGuards(_range);
-  buffer << TAB << fp.endExpression(_range);
+  buffer << endl << TAB << printer.endDimGuards(_range);
+  buffer << TAB << printer.endExpression(_range);
   return buffer.str();
 }
 

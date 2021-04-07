@@ -511,14 +511,14 @@ void QSSModelInstance::definition()
   EquationTable derivatives = _model.derivatives();
   EquationTable::iterator it;
   ModelConfig::instance().clearLocalSymbols();
-  FunctionPrinter fp;
+  FunctionPrinter printer;
   for (Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it)) {
     _writer->write(der, (der.hasRange() ? WRITER::Model_Generic : WRITER::Model_Simple));
   }
   _writer->write(ModelConfig::instance().localSymbols(), WRITER::Model);
   if (!_writer->isEmpty(WRITER::Model_Simple)) {
-    _writer->write(fp.beginSwitch(), WRITER::Model);
-    _writer->write(fp.endSwitch(), WRITER::Model_Simple);
+    _writer->write(printer.beginSwitch(), WRITER::Model);
+    _writer->write(printer.endSwitch(), WRITER::Model_Simple);
   }
 }
 
