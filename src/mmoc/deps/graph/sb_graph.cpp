@@ -121,13 +121,17 @@ void VertexProperty::setName(string name) { _name = name; }
 
 VariableDep::VariableDep() : _var(), _dom(), _range() {}
 
-VariableDep::VariableDep(Variable var, MDI dom, MDI range) : _var(var), _dom(dom), _range(range) {}
+VariableDep::VariableDep(Variable var, MDI dom, MDI range) : _var(var), _dom(dom), _range(range), _recursive(false) {}
+
+VariableDep::VariableDep(Variable var, MDI dom, MDI range, bool recursive) : _var(var), _dom(dom), _range(range), _recursive(recursive) {}
 
 MDI VariableDep::dom() { return _dom; }
 
 MDI VariableDep::range() { return _range; }
 
 Variable VariableDep::var() { return _var; }
+
+bool VariableDep::isRecursive() const { return _recursive; }
 
 EvalOccur::EvalOccur(Expression exp, Option<Range> range)
     : _exp(exp), _cr(nullptr), _range(range), _offsets(), _factors(), _constants(), _usages(), _intervals()

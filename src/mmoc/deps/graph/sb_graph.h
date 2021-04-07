@@ -44,21 +44,25 @@ typedef enum { RHS, LHS } Eval;
 
 namespace EDGE {
 typedef enum { Input, Output } Direction;
-}
+} 
 
 class VariableDep {
   public:
   VariableDep();
   VariableDep(Util::Variable var, MDI dom, MDI range);
+  VariableDep(Util::Variable var, MDI dom, MDI range, bool recursive);
   ~VariableDep() = default;
+  
   MDI range();
   MDI dom();
   Util::Variable var();
-
+  bool isRecursive() const;
+  
   protected:
   Util::Variable _var;
   MDI _dom;
   MDI _range;
+  bool _recursive;
 };
 
 typedef std::map<int, VariableDep> VariableDeps;
