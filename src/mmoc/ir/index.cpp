@@ -393,14 +393,24 @@ string Range::print() const
 string Range::indexes() const
 {
   stringstream buffer;
-  RangeDefinitionTable ranges = _ranges;
-  RangeDefinitionTable::iterator it;
-  int size = ranges.size(), i = 0;
-  for (RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it)) {
-    string var = ranges.key(it);
-    buffer << var << (++i < size ? "," : "");
+  vector<string> indexes = getIndexes();
+  long unsigned int size = _ranges.size(), i = 0;
+  for (string index : indexes) {
+    buffer << index << (++i < size ? "," : "");
   }
   return buffer.str();
+}
+
+vector<string> Range::getIndexes() const
+{
+  vector<string> indexes;
+  RangeDefinitionTable ranges = _ranges;
+  RangeDefinitionTable::iterator it;
+  for (RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it)) {
+    string var = ranges.key(it);
+    indexes.push_back(var);
+  }
+  return indexes;
 }
 
 void Range::addLocalVariables() const
