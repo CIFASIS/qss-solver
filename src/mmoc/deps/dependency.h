@@ -48,9 +48,8 @@ class Dependency {
       if (vertex_info.type() == VERTEX::Influencer) {
         Paths var_deps;
         AlgebraicPath algs;
-        AlgebraicPath recursive_alg_paths;
         //cout << "Compute paths for: " << vertex_info.var() << endl;
-        paths(graph, vertex, variableRange(vertex_info.var()), var_deps, algs, recursive_alg_paths, traverse);
+        paths(graph, vertex, variableRange(vertex_info.var()), var_deps, algs, traverse);
         insert(dm, vertex_info, var_deps);
       }
     }
@@ -61,10 +60,9 @@ class Dependency {
   void append(VariableDependencyMatrix& a, VariableDependencyMatrix& b);
 
   protected:
-  void paths(DepsGraph graph, Vertex source_vertex, MDI source_range, Paths& var_deps, AlgebraicPath algs, AlgebraicPath alg_paths,
+  void paths(DepsGraph graph, Vertex source_vertex, MDI source_range, Paths& var_deps, AlgebraicPath algs,
              TRAVERSE::Init init, VariableDependency alg_dep = VariableDependency());
-  bool recursivePaths(DepsGraph graph, Vertex source_vertex, MDI source_range, bool from_alg, AlgebraicPath& algs, AlgebraicPath& alg_paths,
-                      VertexInfo& node_info);
+  bool recursivePaths(DepsGraph graph, Vertex source_vertex, MDI source_range, VertexInfo& node_info);
   VariableDependency getVariableDependency(string name, MDI dom, MDI ran, int id);
   MDI variableRange(Util::Variable var);
   template <class DM>
@@ -82,7 +80,6 @@ class Dependency {
   void print(DepsGraph graph);
   void printEdges(DepsGraph graph, Vertex source_vertex, MDI source_range);
   bool isRecursive(VertexProperty source, VertexProperty target);
-  bool isReduction(MDI source_dom, MDI sink_dom);
   Option<MDI> intersection(VertexProperty source_vertex_info, MDI source, MDI sink, TRAVERSE::Init traverse);
 
   private:
