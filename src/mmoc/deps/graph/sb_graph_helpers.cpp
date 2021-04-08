@@ -455,7 +455,7 @@ std::ostream& operator<<(std::ostream& os, const Map& map)
 
 Pair::Pair(){};
 
-Pair::Pair(MDI dom, MDI ran, Map map, IR::Expression exp) : _dom(dom), _ran(ran), _map(map){};
+Pair::Pair(MDI dom, MDI ran, Map map) : _dom(dom), _ran(ran), _map(map) {};
 
 MDI Pair::dom() const { return _dom; }
 

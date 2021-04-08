@@ -210,7 +210,7 @@ typedef std::map<int, Map> Maps;
 class Pair {
   public:
   Pair();
-  Pair(MDI dom, MDI ran, Map map, IR::Expression exp = IR::Expression());
+  Pair(MDI dom, MDI ran, Map map);
   MDI dom() const;
   MDI ran() const;
   Map map() const;
