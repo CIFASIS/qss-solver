@@ -119,15 +119,35 @@ string VertexProperty::name() const { return _name; }
 
 void VertexProperty::setName(string name) { _name = name; }
 
-VariableDep::VariableDep() : _var(), _dom(), _range() {}
+VariableDep::VariableDep() : _var(), _dom(), _range(), _recursive(false), _alg_dom(), _alg_eq(), _alg_dep(false) {}
 
-VariableDep::VariableDep(Variable var, MDI dom, MDI range) : _var(var), _dom(dom), _range(range) {}
+VariableDep::VariableDep(Variable var, MDI dom, MDI range)
+    : _var(var), _dom(dom), _range(range), _recursive(false), _alg_dom(), _alg_eq(), _alg_dep(false)
+{
+}
+
+VariableDep::VariableDep(Variable var, MDI dom, MDI range, bool recursive)
+    : _var(var), _dom(dom), _range(range), _recursive(recursive), _alg_dom(), _alg_eq(), _alg_dep(false)
+{
+}
 
 MDI VariableDep::dom() { return _dom; }
 
 MDI VariableDep::range() { return _range; }
 
 Variable VariableDep::var() { return _var; }
+
+bool VariableDep::isRecursive() const { return _recursive; }
+
+void VariableDep::setAlgDom(MDI alg_dom) { _alg_dom = alg_dom; }
+
+MDI VariableDep::algDom() const { return _alg_dom; }
+  
+Equation VariableDep::algEq() const { return _alg_eq; }
+
+void VariableDep::setAlgEq(Equation eq) { _alg_eq = eq; _alg_dep = true; }
+
+bool VariableDep::hasAlgDeps() const { return _alg_dep; }
 
 EvalOccur::EvalOccur(Expression exp, Option<Range> range)
     : _exp(exp), _cr(nullptr), _range(range), _offsets(), _factors(), _constants(), _usages(), _intervals()

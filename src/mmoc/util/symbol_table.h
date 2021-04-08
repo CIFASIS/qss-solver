@@ -45,6 +45,8 @@ class Variable {
   Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c);
   Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array);
   Variable& operator=(const Variable& other);
+  bool operator==(const Variable& other);
+  bool operator!=(const Variable& other);
 
   typedef enum { State, Algebraic, NotAssigned } RealType;
 

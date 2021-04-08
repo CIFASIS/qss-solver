@@ -278,15 +278,19 @@ string FunctionPrinter::algebraics(AlgebraicPath deps)
     if (alg) {
       FunctionPrinter printer;
       Equation orig_alg = alg.get();
-      Equation a = orig_alg;
-      a.applyUsage(dep_idx);
-      if (dep_idx.isConstant()) {
+      if (dep_idx.isConstant() && !dep.isReduction()) {
+        Equation a = orig_alg;
+        a.applyUsage(dep_idx);
         orig_alg = a;
       }
       if (_alg_dict.find(idx_exp) == _alg_dict.end()) {
         _alg_dict[idx_exp] = idx_exp;
+      }   
+      if (!dep.isReduction()) {
         code << printer.printAlgebraicGuards(orig_alg, dep_idx);
-        code << algebraic(orig_alg, dep.isReduction());
+      }
+      code << algebraic(orig_alg, dep.isReduction());
+      if (!dep.isReduction()) {
         code << printer.endDimGuards(orig_alg.range());
       }
     } else {
@@ -461,14 +465,14 @@ string FunctionPrinter::equationVariableMacros(Option<Range> range, Expression l
   return buffer.str();
 }
 
-string FunctionPrinter::jacMacrosAccess(Equation eq) const
+string FunctionPrinter::jacMacrosAccess(Equation eq, string index, string tab) const
 {
   stringstream code;
   if (eq.hasRange()) {
     Option<Variable> var = eq.LHSVariable();
     assert(var);
-    code << TAB << "_get" << eq.applyId() << "_var_idxs(row, eq_var);" << endl;
-    code << TAB << "_get" << var.get() << "_idxs(eq_var);" << endl;
+    code << tab << "_get" << eq.applyId() << "_var_idxs(" << index << ", eq_var);" << endl;
+    code << tab << "_get" << var.get() << "_idxs(eq_var);" << endl;
     eq.range()->addRangeLocalVariables();
   }
   return code.str();

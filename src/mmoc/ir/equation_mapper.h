@@ -130,6 +130,9 @@ class EquationMapper {
     stringstream code;
     Equation orig_alg = getAlgEquation(alg.equationId());
     Equation alg_eq = orig_alg.genAlgEquation(der_eq, alg.ife(), ife);
+    if (alg.isReduction()) {
+      alg_eq = orig_alg;
+    }
     Index alg_idx(alg_eq.lhs());
     string local_key = alg_idx.print();
     if (ife.isConstant()) {

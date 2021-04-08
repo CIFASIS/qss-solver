@@ -80,7 +80,9 @@ class Range {
   inline RangeDefinitionTable definition() const { return _ranges; };
   std::string print() const;
   std::string end() const;
-  string indexes() const;
+  std::string indexes() const;
+  std::vector<std::string> getIndexes() const;
+  std::vector<std::string> getInitValues() const;
   void addLocalVariables() const;
   void addRangeLocalVariables() const;
   int rowSize(int dim) const;

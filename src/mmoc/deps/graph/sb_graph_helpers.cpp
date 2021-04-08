@@ -99,6 +99,8 @@ bool Interval::checkStepIntersection(const Interval& other) const
   return !(no_common_div && lower_even && lower_odd && new_step_even);
 }
 
+Interval Interval::cup(const Interval& other) const { return ICL::hull(_interval, other._interval); } 
+
 Interval Interval::operator&(const Interval& other) const
 {
   DiscreteInterval intersection = _interval & other._interval;
@@ -145,6 +147,8 @@ int Interval::step() const { return _step; };
 bool Interval::isEven(int n) const { return (n % 2) == 0; }
 
 bool Interval::isOdd(int n) const { return !isEven(n); }
+
+
 
 /* SBGraph Usage interface */
 
@@ -451,7 +455,7 @@ std::ostream& operator<<(std::ostream& os, const Map& map)
 
 Pair::Pair(){};
 
-Pair::Pair(MDI dom, MDI ran, Map map, IR::Expression exp) : _dom(dom), _ran(ran), _map(map){};
+Pair::Pair(MDI dom, MDI ran, Map map) : _dom(dom), _ran(ran), _map(map) {};
 
 MDI Pair::dom() const { return _dom; }
 
@@ -655,6 +659,21 @@ Option<MDI> MDI::operator&(const MDI& other) const
   // All intervals intersect with its corresponding interval in the other MDI:
   // return the resulting intersection MDI
   return MDI(intersection);
+}
+
+MDI MDI::cup(const MDI& other) const
+{
+  if (this->dimension() != other.dimension()) {
+    // std::cout << *this << " " << other << std::endl;
+    // std::cout << this->dimension() << " " << other.dimension() << std::endl;
+    return MDI();
+  }
+  IntervalList U;
+  for (int i = 0; i < dimension(); i++) {
+    Interval Ui = _intervals[i].cup(other._intervals[i]);
+    U.push_back(Ui);
+  }
+  return MDI(U);
 }
 
 bool MDI::unique() const { return size() == 1; }

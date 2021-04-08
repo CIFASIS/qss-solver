@@ -28,7 +28,6 @@
 #include "../ir/index.h"
 #include "../parser/parse.h"
 #include "../util/util.h"
-#include "../util/symbol_table.h"
 
 using namespace std;
 
@@ -56,8 +55,8 @@ void SBDependencies<IDependencies, R>::compute(SBGraph graph, IndexShift index_s
     if (vertex_info.type() == VERTEX::Influencer) {
       auto edge = *out_edges(vertex, graph).first;
       SBVertex f_vertex = boost::target(edge, graph);
-      // cout << "Compute paths for equation: " << graph[f_vertex].name() << endl;
-      paths(graph, f_vertex);
+      //cout << "Compute paths for equation: " << graph[f_vertex].name() << endl;
+      paths(graph, f_vertex, Variable());
     }
   }
   for (SBVertex vertex : boost::make_iterator_range(vertices(graph))) {
@@ -71,22 +70,27 @@ void SBDependencies<IDependencies, R>::compute(SBGraph graph, IndexShift index_s
 }
 
 template <typename IDependencies, typename R>
-void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V)
+void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V, Variable visiting_alg)
 {
   int num_gen = 0;
   boost::graph_traits<SBGraph>::out_edge_iterator edge, out_edge_end;
+  list<Map> rec_alg_use_maps;
   // For all A_i in Succ(V)
   for (boost::tie(edge, out_edge_end) = out_edges(V, graph); edge != out_edge_end; ++edge) {
     Label edge_label = graph[*edge];
     SBVertex A = boost::target(*edge, graph);
-    if (graph[A].type() == VERTEX::Algebraic) {
+    if (graph[A].var() == visiting_alg) {
+      for (Pair pair : edge_label.pairs()) {
+        rec_alg_use_maps.push_back(pair.map());
+      }
+    } else if (graph[A].type() == VERTEX::Algebraic) {
       if (!graph[A].visited()) {
         boost::graph_traits<SBGraph>::out_edge_iterator alg_edge, alg_out_edge_end;
         // For all G in Succ(A_i)
         for (boost::tie(alg_edge, alg_out_edge_end) = out_edges(A, graph); alg_edge != alg_out_edge_end; ++alg_edge) {
           SBVertex G = boost::target(*alg_edge, graph);
           if (graph[G].eq().type() == IR::EQUATION::Algebraic) {
-            paths(graph, G);
+            paths(graph, G, graph[A].var());
           }
         }
         graph[A].setVisited(true);
@@ -94,11 +98,11 @@ void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V)
     }
   }
   _gen.init(graph[V]);
-  // For A_i in Succ(V)
+  // For A_i in Succ(V) 
   for (boost::tie(edge, out_edge_end) = out_edges(V, graph); edge != out_edge_end; ++edge) {
     Label edge_label = graph[*edge];
     SBVertex A = boost::target(*edge, graph);
-    if (graph[A].type() == VERTEX::Algebraic) {
+    if (graph[A].type() == VERTEX::Algebraic) { 
       // For all map_n in E_VA
       for (Pair pair : edge_label.pairs()) {
         Map map_m = pair.map();
@@ -127,10 +131,25 @@ void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V)
                 Option<MDI> r_intersect = range.intersection(state_range);
                 if (r_intersect) {
                   num_gen++;
-                  VariableDep var_dep(state_dep.var(), d_intersect.get(), r_intersect.get());
+                  MDI dep_dom = d_intersect.get();
+                  MDI dep_ran = r_intersect.get();
+                  Map dep_map = n_map;
+                  if (state_dep.isRecursive()) {
+                    dep_map = g_map;
+                    dep_dom = g_dom;
+                    dep_ran = state_dep.range();  
+                  }
+                  VariableDep var_dep(state_dep.var(), dep_dom, dep_ran, state_dep.isRecursive());
+                  if (graph[A].var() == visiting_alg) {
+                    var_dep.setAlgDom(dep_dom);
+                    var_dep.setAlgEq(graph[G].eq());
+                  } else if (state_dep.hasAlgDeps()) {
+                    var_dep.setAlgDom(state_dep.algDom());
+                    var_dep.setAlgEq(state_dep.algEq());
+                  }
                   graph[V].setDepState(num_gen, var_dep);
-                  graph[V].setMap(num_gen, n_map);
-                  _gen.visitG(graph[V].eq(), graph[G].eq(), var_dep, n_map, map_m, _index_shift[graph[G].eq().id()]);
+                  graph[V].setMap(num_gen, dep_map);
+                  _gen.visitG(graph[V].eq(), graph[G].eq(), var_dep, dep_map, map_m, _index_shift[graph[G].eq().id()]);
                 }
               }
             }
@@ -153,6 +172,19 @@ void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V)
         graph[V].setDepState(num_gen, var_dep);
         graph[V].setMap(num_gen, map);
         _gen.visitF(graph[V].eq(), var_dep, map);
+        /// Add algebraic recursive uses.
+        for (Map rec_alg_use: rec_alg_use_maps) {
+          num_gen++;
+          Map use_map = rec_alg_use.compose(map);
+          MDI applied_map = use_map.apply(pair.dom(), pair.ran());
+          Option<MDI> range = pair.dom().intersection(applied_map);
+          assert(range);
+          const bool RECURSIVE = true;
+          VariableDep rec_alg_dep(graph[X].var(), pair.dom(), range.get(), RECURSIVE);
+          graph[V].setDepState(num_gen, rec_alg_dep);
+          graph[V].setMap(num_gen, use_map);
+          _gen.visitF(graph[V].eq(), VariableDep(graph[X].var(), pair.dom(), range.get()), use_map);
+        }
       }
     }
   }
