@@ -196,9 +196,14 @@ void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep
     if (var_dep.isRecursive()) {
       Range range(var_dep.range());
       exps = n_map.exps(range.getDimensionVars(USE_RANGE_IDXS));
-    } else if (g_lhs->isArray()) {  
-      // Scalar equation so if the algebraic use is an array we must apply the n_map to get the alg use.  
-      exps = n_map.exps(g_eq.range()->getDimensionVars(USE_RANGE_IDXS));
+    } else if (g_lhs->isArray()) { 
+      if (var_dep.hasAlgDeps()) {
+        Range range(var_dep.algDom());
+        exps = range.getInitValues();
+      } else {
+        Range range(var_dep.dom());
+        exps = range.getInitValues();
+      }
     } else if (v_lhs->isArray()) {
       for (Expression exp : v_eq.lhs().indexes()) {
         exps.push_back(exp.print());
@@ -211,8 +216,12 @@ void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep
   code << a_ind << " - " << index_shift;
   code << ";" << endl;
   _jac_def.code.append(code.str());
-  generatePos(g_eq.arrayId(), g_eq.type(), "c_row_g", "col_g");
-  generateEquation(v_eq.arrayId(), g_eq.arrayId(), v_eq.type());
+  int g_eq_id = g_eq.arrayId();
+  if (var_dep.hasAlgDeps()) {
+    g_eq_id = var_dep.algEq().arrayId();
+  } 
+  generatePos(g_eq_id, g_eq.type(), "c_row_g", "col_g");
+  generateEquation(v_eq.arrayId(), g_eq_id, v_eq.type());
   dependencyEpilogue(g_eq, var_dep);
 }
 
