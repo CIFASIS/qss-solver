@@ -57,12 +57,20 @@ class VariableDep {
   MDI dom();
   Util::Variable var();
   bool isRecursive() const;
+  bool hasAlgDeps() const;
+  void setAlgDom(MDI alg_dom);
+  MDI algDom() const;
+  IR::Equation algEq() const;
+  void setAlgEq(IR::Equation eq);
   
   protected:
   Util::Variable _var;
   MDI _dom;
   MDI _range;
   bool _recursive;
+  MDI _alg_dom;
+  IR::Equation _alg_eq;
+  bool _alg_dep;
 };
 
 typedef std::map<int, VariableDep> VariableDeps;
