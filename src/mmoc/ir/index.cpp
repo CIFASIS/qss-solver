@@ -401,6 +401,20 @@ string Range::indexes() const
   return buffer.str();
 }
 
+vector<string> Range::getInitValues() const
+{
+  vector<string> indexes;
+  RangeDefinitionTable ranges = _ranges;
+  RangeDefinitionTable::iterator it;
+  for (RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it)) {
+    stringstream val;
+    val << r.begin();
+    indexes.push_back(val.str());
+  }
+  return indexes;
+}
+
+
 vector<string> Range::getIndexes() const
 {
   vector<string> indexes;
