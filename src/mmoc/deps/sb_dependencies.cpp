@@ -137,9 +137,16 @@ void SBDependencies<IDependencies, R>::paths(SBGraph graph, SBVertex V, Variable
                   if (state_dep.isRecursive()) {
                     dep_map = g_map;
                     dep_dom = g_dom;
-                    dep_ran = state_dep.range();
+                    dep_ran = state_dep.range();  
                   }
                   VariableDep var_dep(state_dep.var(), dep_dom, dep_ran, state_dep.isRecursive());
+                  if (graph[A].var() == visiting_alg) {
+                    var_dep.setAlgDom(dep_dom);
+                    var_dep.setAlgEq(graph[G].eq());
+                  } else if (state_dep.hasAlgDeps()) {
+                    var_dep.setAlgDom(state_dep.algDom());
+                    var_dep.setAlgEq(state_dep.algEq());
+                  }
                   graph[V].setDepState(num_gen, var_dep);
                   graph[V].setMap(num_gen, dep_map);
                   _gen.visitG(graph[V].eq(), graph[G].eq(), var_dep, dep_map, map_m, _index_shift[graph[G].eq().id()]);
