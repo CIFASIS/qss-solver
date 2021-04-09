@@ -183,6 +183,10 @@ Option<MDI> Dependency::intersection(VertexProperty source_vertex_info, MDI sour
       traverse == TRAVERSE::Variable) {
     return sink;
   }
+  if ((source_vertex_info.type() == VERTEX::Equation || source_vertex_info.type() == VERTEX::Statement) && sink.isEmpty() &&
+      traverse == TRAVERSE::Equation) {
+    return source;
+  }
   return source.Intersection(sink);
 }
 
@@ -218,7 +222,11 @@ void Dependency::paths(DepsGraph graph, Vertex source_vertex, MDI source_range, 
           }
           if (range) {
             _equation_range.generate(range->getMDI());
+          } else {
+            _equation_range = Range();  
           }
+        } else {
+          _equation_range = Range();
         }
         // cout << "Traverse influencer node: " << source_vertex_info.var().name() << endl;
         // cout << "Intersection with initial domain: " << _ifr_dom << endl;

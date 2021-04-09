@@ -139,7 +139,7 @@ class DependencyMatrix : public ModelTable<ID, Paths> {
   };
 
   inline void setMode(VDM::Mode mode) { _mode = mode; };
-
+  
   std::string print() const
   {
     stringstream buffer;
@@ -156,6 +156,15 @@ class DependencyMatrix : public ModelTable<ID, Paths> {
           ife = vd.ifr().replace();
         }
         IR::Range range = vd.ifce.range();
+        // 1 -> N 
+        if (IR::Index(vd.ifce.usage()).isConstant() && !vd.ifce.equationRange().isEmpty()) {
+          range = vd.ifce.equationRange();
+          if (_mode == VDM::Transpose) {
+            ife = IR::Index(vd.ifce.ifrPair().exp()).replace();
+          } else {
+            ifr = IR::Index(vd.ifce.ifrPair().exp()).replace();
+          }
+        }
         buffer << range;
         if (_method == VDM::Alloc) {
           buffer << range.block() << _cfg.container << matrix << "[" << ifr << "]" << component() << "++;" << endl;
