@@ -299,6 +299,12 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 	}
 			_eval_dep_uC(1) = (_sum_0(4,0)-_uC(0)/_R)/_C;
 			_eval_dep_uC(2) = (0)/2;	
+	for(i = 1; i<=4; i+=1) {
+		_apply_usage_eq_2(i);
+		if ((i >= 1 && i <= 4)) {
+			_eval_dep_iL(i,1) = (((_U/_Rs(i))-_iL(i,0))*(_Rs(i)*_Rd(i)/(_Rs(i)+_Rd(i)))-_uC(0))/_L;
+			_eval_dep_iL(i,2) = (0)/2;	}
+	}
 			break;
 		}
 	}
@@ -399,6 +405,9 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->nSD[_idx_iL(_d1,0)]++;
 	}
+	for(_d1 = 1; _d1<=4; _d1+=1) {
+		modelData->nSD[_idx_uC(0)]++;
+	}
 	for(_d1 = 1; _d1<=1; _d1+=1) {
 		modelData->nDS[_idx_uC(0)]++;
 	}
@@ -406,6 +415,9 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelData->nDS[_idx_uC(0)]++;
 	}
 	modelData->nDS[_idx_uC(0)]++;
+	for(_d1 = 1; _d1<=4; _d1+=1) {
+		modelData->nDS[_idx_iL(_d1,0)]++;
+	}
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->nDS[_idx_iL(_d1,0)]++;
 	}
@@ -515,6 +527,9 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->SD[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_iL(_d1,0);
 	}
+	for(_d1 = 1; _d1<=4; _d1+=1) {
+		modelData->SD[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(_d1,0);
+	}
 	cleanVector(states, 0, 5);
 	for(_d1 = 1; _d1<=1; _d1+=1) {
 		modelData->DS[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(1,0);
@@ -525,6 +540,9 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	modelData->DS[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_uC(0);
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->DS[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_iL(_d1,0);
+	}
+	for(_d1 = 1; _d1<=4; _d1+=1) {
+		modelData->DS[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_uC(0);
 	}
 	cleanVector(states, 0, 5);
 	for(row = 1; row <= 1; row++) {
