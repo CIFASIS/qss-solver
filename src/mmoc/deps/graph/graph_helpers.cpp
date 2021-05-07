@@ -398,7 +398,8 @@ std::list<MDI> MDI::operator-(const MDI &other)
 
 Option<MDI> MDI::operator&(const MDI &other) const
 {
-  assert(this->Dimension() != other.Dimension());
+  // TODO: Add this assertion when pad dimensions is done.
+  // assert(this->Dimension() != other.Dimension());
   IntervalList intersection;
   for (int i = 0; i < this->Dimension(); i++) {
     // If i-th interval does not intersect with its corresponding interval in
