@@ -83,81 +83,39 @@ namespace Util {
 #define EM_ANNOTATION_NOT_FOUND 0x00002000
 #define EM_ANNOTATION_TYPE 0x00003000
 
-/**
- *
- */
 typedef enum {
   ER_Warning,  //!< ER_Warning
   ER_Error,    //!< ER_Error
   ER_Fatal     //!< ER_Fatal
 } ER_Type;
 
-/**
- *
- */
 class Error {
   public:
-  /**
-   *
-   * @return
-   */
   static Error& instance()
   {
     static Error _instance;
     return _instance;
   }
-  /**
-   *
-   */
-  ~Error();
-  /**
-   *
-   * @param pos
-   * @param code
-   * @param t
-   * @param message
-   */
+  ~Error() = default;
+
   void add(int pos, unsigned int code, ER_Type t, const std::string message, ...);
-  /**
-   *
-   */
   void show();
-  /**
-   *
-   * @param className
-   */
-  void setClassName(std::string className);
-  /**
-   *
-   * @return
-   */
+  void setClassName(std::string class_name);
   std::string className();
-  /**
-   *
-   * @param s
-   */
   void setFile(std::string s);
-  /**
-   *
-   * @return
-   */
   std::string file();
-  /**
-   *
-   * @return
-   */
   int errors();
 
   private:
   Error();
-  std::string _typeString(ER_Type t);
-  std::string _printCode(int code);
+  std::string typeString(ER_Type t);
+  std::string printCode(int code);
   std::map<unsigned int, std::string> _errors;
   std::map<unsigned int, std::string> _warnings;
-  int _numErrors;
-  int _numWarnings;
-  std::string _stdDef;
-  std::string _className;
+  int _num_errors;
+  int _num_warnings;
+  std::string _std_def;
+  std::string _class_name;
 };
 }  // namespace Util
 }  // namespace MicroModelica

@@ -23,8 +23,11 @@
 #include <iostream>
 #include <stdarg.h>
 
+#include <util/logger.h>
+
 namespace MicroModelica {
 using namespace IR;
+using namespace Util;
 namespace Deps {
 namespace SBG {
 
@@ -235,7 +238,6 @@ Offset Offset::operator-() const
 
 Offset Offset::operator-(const Offset& other) const
 {
-  // cout << size() << " " << other.size() << endl;
   assert(size() == other.size());
   std::vector<int> ret(_offset.size());
   for (int i = 0; i < (int)_offset.size(); i++) {
@@ -638,8 +640,6 @@ MDI MDI::revertStep(MDI other)
 Option<MDI> MDI::operator&(const MDI& other) const
 {
   if (this->dimension() != other.dimension()) {
-    // std::cout << *this << " " << other << std::endl;
-    // std::cout << this->dimension() << " " << other.dimension() << std::endl;
     return Option<MDI>();
   }
   IntervalList intersection;
@@ -664,8 +664,6 @@ Option<MDI> MDI::operator&(const MDI& other) const
 MDI MDI::cup(const MDI& other) const
 {
   if (this->dimension() != other.dimension()) {
-    // std::cout << *this << " " << other << std::endl;
-    // std::cout << this->dimension() << " " << other.dimension() << std::endl;
     return MDI();
   }
   IntervalList U;

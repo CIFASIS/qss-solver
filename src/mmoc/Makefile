@@ -92,6 +92,7 @@ UTILSRC = $(UTILDIR)/util.cpp \
 		  $(UTILDIR)/ginac_interface.cpp \
 		  $(UTILDIR)/graph.cpp \
 		  $(UTILDIR)/graph_profile.cpp \
+		  $(UTILDIR)/logger.cpp \
 		  $(UTILDIR)/process_statement.cpp
 
 VISITORSRC = $(VISITORDIR)/array_use.cpp \

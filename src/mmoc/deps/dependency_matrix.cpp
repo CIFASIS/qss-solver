@@ -21,6 +21,7 @@
 
 #include "../ir/alg_usage.h"
 #include "../ir/helpers.h"
+#include "../util/logger.h"
 #include "../util/model_config.h"
 #include "../util/util.h"
 #include "../util/visitors/replace_index.h"
@@ -136,9 +137,9 @@ void VariableDependency::setRange(int equation_id)
     Option<Equation> alg = algebraics[equation_id];
     if (alg) {
       Expression eq_lhs = alg->lhs();
-      //cout << "LHS de la ecuacion: " << eq_lhs << endl;
-      //cout << "Uso algebraico: " << _alg_usage << endl;
-      //cout << "Se aplica a: " << _ife_exp << endl;
+      LOG << "Equation LHS: " << eq_lhs << endl;
+      LOG << "Algebraic use: " << _alg_usage << endl;
+      LOG << "Apply to: " << _ife_exp << endl;
       _ife_exp = VariableUsage(eq_lhs, _ife_exp, Index(_alg_usage)).rhs();
     } else {
       _ife_exp = VariableUsage(_ife_exp, _ife_exp, Index(_alg_usage)).rhs();
@@ -149,11 +150,11 @@ void VariableDependency::setRange(int equation_id)
   if (!reverted_index.isConstant()) {
     _range.applyUsage(ife().revert());
   }
-  // cout << "Rango en el que se aplica: " << _ran << endl;
-  // cout << "Expression IFR original: " << _ifr.exp() << endl;
-  // cout << "Expression IFE original: " << _ife.exp() << endl;
-  // cout << "Expression IFR en la matriz: " << _ifr_exp << endl;
-  // cout << "Expression IFE en la matriz: " << _ife_exp << endl;
+  LOG << "Applied range: " << _ran << endl;
+  LOG << "Original IFR expression: " << _ifr.exp() << endl;
+  LOG << "Original IFE expression: " << _ife.exp() << endl;
+  LOG << "Matrix IFR expression: " << _ifr_exp << endl;
+  LOG << "Matrix IFE expression: " << _ife_exp << endl;
 }
 
 void VariableDependency::setSwap(bool swap_usage) { _swap_usage = swap_usage; }

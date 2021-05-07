@@ -80,8 +80,8 @@ DepsGraph DSGraphBuilder::build()
         IndexPairSet ips = edge.indexes();
         for (auto ip : ips) {
           Label lbl(ip);
-          // cout << "Agrega arista desde la var: " << graph[source].var() << " a la ecuacion: " << graph[sink].eq().id() << endl;
-          // cout << "Ecuacion: " << graph[sink].eq().type() << endl;
+          LOG << "Adding edge from var: " << graph[source].var() << " to equation: " << graph[sink].eq().id() << endl;
+          LOG << "Equation type: " << graph[sink].eq().type() << endl;
           add_edge(source, sink, lbl, graph);
         }
       }
@@ -92,9 +92,9 @@ DepsGraph DSGraphBuilder::build()
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
             Label lbl(ip);
-            // cout << "Agrega arista desde la ecuacion algebraica: " << graph[sink].eq().id() << " a la variable: " << graph[source].var()
-            //     << endl;
-            // cout << "Ecuacion algebraica: " << graph[sink].eq().type() << endl;
+            LOG << "Adding edge from algebraic equation: " << graph[sink].eq().id() << " to var: " << graph[source].var()
+                << endl;
+            LOG << "Algebraic equation type: " << graph[sink].eq().type() << endl;
             add_edge(sink, source, lbl, graph);
           }
         }
@@ -112,9 +112,9 @@ DepsGraph DSGraphBuilder::build()
           IndexPairSet ips = edge.indexes();
           for (auto ip : ips) {
             Label lbl(ip);
-            // cout << "Agrega arista desde la ecuacion derivada: " << graph[sink].eq().id() << " a la derivada: " << graph[source].var()
-            //     << endl;
-            // cout << "Ecuacion algebraica: " << graph[sink].eq().type() << endl;
+            LOG << "Adding edge from derivative equation: " << graph[sink].eq().id() << " to derivative: " << graph[source].var()
+                << endl;
+            LOG << "Algebraic equation: " << graph[sink].eq().type() << endl;
             add_edge(sink, source, lbl, graph);
           }
         }

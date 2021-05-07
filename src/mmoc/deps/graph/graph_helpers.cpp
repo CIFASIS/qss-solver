@@ -242,7 +242,6 @@ std::list<MDI> MDI::Filter(std::list<MDI> mdiList, MDI mdi)
   for (MDI m : mdiList) {
     // ERROR_UNLESS(m.Dimension()==mdi.Dimension(), "Dimension error #1");
     if (m.Dimension() != mdi.Dimension()) {
-      std::cout << "Dimension error #2\n";
       abort();
     }
     MDI::iterator iterXS = m.begin();
@@ -399,11 +398,8 @@ std::list<MDI> MDI::operator-(const MDI &other)
 
 Option<MDI> MDI::operator&(const MDI &other) const
 {
-  if (this->Dimension() != other.Dimension()) {
-    std::cout << *this << " " << other << std::endl;
-    std::cout << this->Dimension() << " " << other.Dimension() << std::endl;
-    // ERROR("Dimension error #5\n");
-  }
+  // TODO: Add this assertion when pad dimensions is done.
+  // assert(this->Dimension() != other.Dimension());
   IntervalList intersection;
   for (int i = 0; i < this->Dimension(); i++) {
     // If i-th interval does not intersect with its corresponding interval in

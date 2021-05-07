@@ -34,6 +34,7 @@
 #include "parser/parse.h"
 #include "util/compile_flags.h"
 #include "util/error.h"
+#include "util/logger.h"
 #include "util/symbol_table.h"
 #include "util/util.h"
 #include "util/util_types.h"
@@ -75,10 +76,6 @@ void usage()
   cout << "                Include <path> in the library path search.          " << endl;
   cout << "-o <file>, --output <file>" << endl;
   cout << "                Sets the output to <file>" << endl;
-  cout << "-O, --optimize" << endl;
-  cout
-      << "                Try to avoid the calculation of the next time of change for influenced variables in QSS algorithms (experimental)"
-      << endl;
   cout << "-p, --parallel" << endl;
   cout << "                Generate code for parallel simulation." << endl;
   cout << "-s, --settings-only" << endl;
@@ -109,12 +106,12 @@ int parsePackages(AST_StringList imports, CompileFlags& flags, bool recompile)
     string p = Utils::instance().packagePath(i, flags);
     flags.addObject(p + SLASH + Utils::instance().packageName(i) + ".c");
     if (!Utils::instance().searchCompiledPackage(i, flags) || recompile) {
-      string fileName = p + SLASH + i + ".mo";
+      string file_name = p + SLASH + i + ".mo";
       AST_StoredDefinition sd = nullptr;
-      sd = parseFile(fileName, &r);
-      Error::instance().setFile(fileName);
+      sd = parseFile(file_name, &r);
+      Error::instance().setFile(file_name);
       if (r == 0) {
-        ModelChecker mmo(fileName);
+        ModelChecker mmo(file_name);
         r = mmo.apply(sd);
         if (r == 0) {
           flg.setOutputFile(p + SLASH + i);
@@ -124,9 +121,9 @@ int parsePackages(AST_StringList imports, CompileFlags& flags, bool recompile)
           for (list<string>::iterator it = objects.begin(); it != objects.end(); it++) {
             flags.addObject(*it);
           }
-          Error::instance().setFile(fileName);
+          Error::instance().setFile(file_name);
           Utils::instance().setCompileFlags(flg);
-          MicroModelicaIR ir(fileName);
+          MicroModelicaIR ir(file_name);
           r = ir.apply(sd);
           if (r == 0) {
             Generator gen(ir.definition(), flg);
@@ -159,7 +156,7 @@ int main(int argc, char** argv)
   int r = 0;
   int opt;
   extern char* optarg;
-  char strArg[128];
+  char str_arg[128];
   bool recompile = false;
   bool settings = false;
   CompileFlags flags;
@@ -170,14 +167,13 @@ int main(int argc, char** argv)
                                            {"external-structure-file", required_argument, 0, 'e'},
                                            {"force", no_argument, 0, 'f'},
                                            {"settings-only", no_argument, 0, 's'},
-                                           {"optimize", no_argument, 0, 'O'},
                                            {"parallel", no_argument, 0, 'p'},
                                            {"test", no_argument, 0, 't'},
                                            {"debug", required_argument, 0, 'd'},
                                            {"output", required_argument, 0, 'o'},
                                            {0, 0, 0, 0}};
     int option_index = 0;
-    opt = getopt_long(argc, argv, "vhmfsOpti:e:d:o:", long_options, &option_index);
+    opt = getopt_long(argc, argv, "vhmfspti:e:d:o:", long_options, &option_index);
     if (opt == EOF) break;
     switch (opt) {
     case 'v':
@@ -190,8 +186,8 @@ int main(int argc, char** argv)
       flags.setIncidenceMatrices(true);
       break;
     case 'd':
-      sscanf(optarg, "%s", strArg);
-      flags.setDebug(strArg);
+      sscanf(optarg, "%s", str_arg);
+      flags.setDebug(str_arg);
       break;
     case 'o':
       flags.setOutputFile(optarg);
@@ -211,9 +207,6 @@ int main(int argc, char** argv)
     case 's':
       settings = true;
       break;
-    case 'O':
-      flags.setOptimizeQSS(true);
-      break;
     case 't':
       flags.setTesting(true);
       break;
@@ -230,24 +223,25 @@ int main(int argc, char** argv)
     flags.addLibraryPath(pkg);
   }
   AST_StoredDefinition sd;
-  string fileName;
+  string file_name;
   if (argv[optind] != nullptr) {
-    fileName = argv[optind];
-    string path = Utils::instance().getFilePath(fileName);
+    file_name = argv[optind];
+    string path = Utils::instance().getFilePath(file_name);
     flags.setPath(path);
-    sd = parseFile(fileName, &r);
-    Error::instance().setFile(fileName);
+    sd = parseFile(file_name, &r);
+    Error::instance().setFile(file_name);
     if (r == 0) {
-      ModelChecker mmo(fileName);
+      ModelChecker mmo(file_name);
       r = mmo.apply(sd);
       if (r == 0) {
         if (settings) {
-          Settings set(fileName);
+          Settings set(file_name);
           set.apply(sd);
-          Files sc(fileName, flags);
+          Files sc(file_name, flags);
           sc.settings(set.annotations());
           return 0;
         }
+        Logger::instance().setFile(file_name);
         int res = parsePackages(sd->imports(), flags, recompile);
         if (res != 0) {
           Error::instance().show();
@@ -255,8 +249,9 @@ int main(int argc, char** argv)
           return res;
         }
         Utils::instance().setCompileFlags(flags);
-        Error::instance().setFile(fileName);
-        MicroModelicaIR ir(fileName);
+        Error::instance().setFile(file_name);
+        MicroModelicaIR ir(file_name);
+
         r = ir.apply(sd);
         if (r == 0) {
           Generator gen(ir.definition(), flags);

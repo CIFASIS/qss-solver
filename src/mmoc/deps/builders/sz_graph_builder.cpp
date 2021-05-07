@@ -75,8 +75,6 @@ DepsGraph SZGraphBuilder::build()
     _equationDescriptors.push_back(add_vertex(vp, graph));
   }
 
-  // cout << "GENERATE SZ GRAPH" << endl;
-
   foreach_(EqVertex sink, _equationDescriptors)
   {
     foreach_(IfrVertex source, _variableDescriptors)

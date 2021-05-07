@@ -306,6 +306,17 @@ string Utils::getFileName(string file)
   return fn;
 }
 
+string Utils::baseFileName(string file)
+{
+  string base_file = getFileName(file);
+  size_t f = base_file.rfind(".");
+  if (f == std::string::npos) {
+    return base_file;
+  }
+  base_file.erase(base_file.begin() + f, base_file.end());
+  return base_file;
+}
+
 CompiledFunctionTable Utils::compiledFunctions() { return _compiled_functions; }
 
 void Utils::addCompiledFunction(CompiledFunction f) { _compiled_functions.insert(f.name(), f); }

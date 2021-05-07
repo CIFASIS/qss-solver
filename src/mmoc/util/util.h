@@ -85,6 +85,7 @@ class Utils {
   std::string environmentVariable(std::string ev);
   std::string getFilePath(std::string file);
   std::string getFileName(std::string file);
+  std::string baseFileName(std::string file);
   bool checkGKLinkFunctions(std::string name) { return false; };
   IR::CompiledFunctionTable compiledFunctions();
   void addCompiledFunction(IR::CompiledFunction f);
@@ -98,7 +99,7 @@ class Utils {
   std::string tabs(int t);
   CompileFlags compileFlags();
   
-  private:
+  protected:
   Utils();
   bool checkCodeFiles(std::string name, std::string ext);
   SymbolTable getValue(fstream* package, std::string token);
