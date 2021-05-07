@@ -24,10 +24,11 @@
 #include <stdio.h>
 #include <iostream>
 
-#include "../ir/helpers.h"
-#include "../ir/index.h"
-#include "../parser/parse.h"
-#include "../util/util.h"
+#include <ir/helpers.h>
+#include <ir/index.h>
+#include <parser/parse.h>
+#include <util/logger.h>
+#include <util/util.h>
 
 using namespace std;
 
@@ -55,7 +56,7 @@ void SBDependencies<IDependencies, R>::compute(SBGraph graph, IndexShift index_s
     if (vertex_info.type() == VERTEX::Influencer) {
       auto edge = *out_edges(vertex, graph).first;
       SBVertex f_vertex = boost::target(edge, graph);
-      //cout << "Compute paths for equation: " << graph[f_vertex].name() << endl;
+      LOG << "Compute paths for equation: " << graph[f_vertex].name() << endl;
       paths(graph, f_vertex, Variable());
     }
   }

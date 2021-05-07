@@ -129,9 +129,9 @@ DepsGraph EAGraphBuilder::build()
         for (auto ip : ips) {
           Label lbl(ip);
           add_edge(source, sink, lbl, graph);
-          // cout << "Adding OUTPUT LHS edge from: " << graph[source].var().name() << " to equation: " << graph[sink].eq().id() << endl;
-          // cout << "Equation type: " << graph[sink].eq().type() << endl;
-          // cout << "With Domain: " << lbl.Pair().Dom() << " and Range: " << lbl.Pair().Ran() << endl;
+          LOG << "Adding OUTPUT LHS edge from: " << graph[source].var().name() << " to equation: " << graph[sink].eq().id() << endl;
+          LOG << "Equation type: " << graph[sink].eq().type() << endl;
+          LOG << "With Domain: " << lbl.Pair().Dom() << " and Range: " << lbl.Pair().Ran() << endl;
         }
       }
       // Check RHS too if we are working with algebraics.
@@ -142,9 +142,9 @@ DepsGraph EAGraphBuilder::build()
           for (auto ip : ips) {
             Label lbl(ip, EDGE::Input);
             add_edge(sink, source, lbl, graph);
-            // cout << "Adding INPUT RHS edge from equation: " << graph[sink].eq().id()
-            //     << " to algebraic variable: " << graph[source].var().name() << endl;
-            // cout << "With Domain: " << lbl.Pair().Dom() << " and Range: " << lbl.Pair().Ran() << endl;
+            LOG << "Adding INPUT RHS edge from equation: " << graph[sink].eq().id()
+                << " to algebraic variable: " << graph[source].var().name() << endl;
+            LOG << "With Domain: " << lbl.Pair().Dom() << " and Range: " << lbl.Pair().Ran() << endl;
           }
         }
       }
@@ -162,8 +162,9 @@ DepsGraph EAGraphBuilder::build()
           for (auto ip : ips) {
             Label lbl(ip, EDGE::Input);
             add_edge(sink, source, lbl, graph);
-            // cout << "Adding FINAL edge from equation: " << graph[sink].eq().id() << " to variable: " << graph[source].var().name() <<
-            // endl; cout << "With Domain: " << lbl.Pair().Dom() << " and Range: " << lbl.Pair().Ran() << endl;
+            LOG << "Adding FINAL edge from equation: " << graph[sink].eq().id() << " to variable: " << graph[source].var().name()
+                << endl; 
+            LOG << "With Domain: " << lbl.Pair().Dom() << " and Range: " << lbl.Pair().Ran() << endl;
           }
         }
       }

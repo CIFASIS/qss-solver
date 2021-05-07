@@ -22,9 +22,10 @@
 
 #include <string>
 
-#include "dependency_matrix.h"
-#include "graph/graph_helpers.h"
-#include "graph/graph.h"
+#include <deps/dependency_matrix.h>
+#include <deps/graph/graph_helpers.h>
+#include <deps/graph/graph.h>
+#include <util/logger.h>
 
 namespace MicroModelica {
 namespace Deps {
@@ -48,7 +49,7 @@ class Dependency {
       if (vertex_info.type() == VERTEX::Influencer) {
         Paths var_deps;
         AlgebraicPath algs;
-        //cout << "Compute paths for: " << vertex_info.var() << endl;
+        Util::LOG << "Compute paths for: " << vertex_info.var() << endl;
         paths(graph, vertex, variableRange(vertex_info.var()), var_deps, algs, traverse);
         insert(dm, vertex_info, var_deps);
       }
