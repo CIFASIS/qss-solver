@@ -29,17 +29,15 @@ using namespace std;
 
 namespace MicroModelica {
 namespace Util {
-Error::Error() : _errors(), _warnings(), _numErrors(0), _numWarnings(0), _stdDef() {}
+Error::Error() : _errors(), _warnings(), _num_errors(0), _num_warnings(0), _std_def() {}
 
-Error::~Error() {}
+void Error::setFile(string s) { _std_def = s; }
 
-void Error::setFile(string s) { _stdDef = s; }
+string Error::file() { return _std_def; }
 
-string Error::file() { return _stdDef; }
+void Error::setClassName(string class_name) { _class_name = class_name; }
 
-void Error::setClassName(string className) { _className = className; }
-
-string Error::className() { return _className; }
+string Error::className() { return _class_name; }
 
 void Error::add(int pos, unsigned int code, ER_Type t, const string message, ...)
 {
@@ -47,17 +45,17 @@ void Error::add(int pos, unsigned int code, ER_Type t, const string message, ...
   ostringstream msg;
   char local[1024];
   int size = 100;
-  msg << "Line: " << pos << " Class: " << _className << endl;
-  msg << _typeString(t) << "(" << hex << uppercase << code << ")" << endl;
+  msg << "Line: " << pos << " Class: " << _class_name << endl;
+  msg << typeString(t) << "(" << hex << uppercase << code << ")" << endl;
   va_start(ap, message);
   vsnprintf((char *)local, size, message.c_str(), ap);
   va_end(ap);
-  msg << _printCode(code) << endl;
+  msg << printCode(code) << endl;
   msg << local << endl;
   if (t == ER_Error) {
-    _errors[_numErrors++] = msg.str();
+    _errors[_num_errors++] = msg.str();
   } else {
-    _warnings[_numWarnings++] = msg.str();
+    _warnings[_num_warnings++] = msg.str();
   }
   if (t == ER_Fatal) {
     show();
@@ -68,7 +66,7 @@ void Error::add(int pos, unsigned int code, ER_Type t, const string message, ...
 void Error::show()
 {
   if (!_errors.empty() || !_warnings.empty()) {
-    cout << "File: " << _stdDef << endl;
+    cout << "File: " << _std_def << endl;
   }
   map<unsigned int, string>::iterator it;
   for (it = _warnings.begin(); it != _warnings.end(); it++) {
@@ -79,7 +77,7 @@ void Error::show()
   }
 }
 
-string Error::_typeString(ER_Type t)
+string Error::typeString(ER_Type t)
 {
   switch (t) {
   case ER_Warning:
@@ -92,7 +90,7 @@ string Error::_typeString(ER_Type t)
   return "";
 }
 
-string Error::_printCode(int code)
+string Error::printCode(int code)
 {
   int module_code = code & EM_MODULE;
   int message_code = code & EM_MESSAGE;
@@ -256,6 +254,6 @@ string Error::_printCode(int code)
   return message;
 }
 
-int Error::errors() { return _numErrors; }
+int Error::errors() { return _num_errors; }
 }  // namespace Util
 }  // namespace MicroModelica
