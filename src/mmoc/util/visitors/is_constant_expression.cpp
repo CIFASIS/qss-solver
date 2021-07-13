@@ -19,16 +19,17 @@
 
 #include "is_constant_expression.h"
 
-#include "../error.h"
-#include "../model_config.h"
-#include "../util.h"
+#include <util/error.h>
+#include <util/model_config.h>
+#include <util/util.h>
 
 namespace MicroModelica {
-using namespace Deps;
 using namespace IR;
 namespace Util {
 
-IsConstantExpression::IsConstantExpression() : _in_index_list(false) {}
+IsConstantExpression::IsConstantExpression() : _in_index_list(false), _eval_int(false) {}
+
+IsConstantExpression::IsConstantExpression(bool eval_int) : _in_index_list(false), _eval_int(eval_int) {}
 
 bool IsConstantExpression::foldTraverseElement(AST_Expression exp)
 {
@@ -45,6 +46,12 @@ bool IsConstantExpression::foldTraverseElement(AST_Expression exp)
     }
     if (!var->isConstant() && !var->isParameter() && (var->name() != "_chain_rule")) {
       ret = false;
+    }
+    break;
+  }
+  case EXPINTEGER: {
+    if (_eval_int) {
+      ret = true;
     }
     break;
   }

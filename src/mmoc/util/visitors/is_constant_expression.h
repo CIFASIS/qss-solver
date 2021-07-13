@@ -17,19 +17,17 @@
 
  ******************************************************************************/
 
-#ifndef IS_CONSTANT_EXPRESSION_H_
-#define IS_CONSTANT_EXPRESSION_H_
+#pragma once 
 
-#include "../../ast/ast_builder.h"
-#include "../../deps/graph/graph_helpers.h"
-#include "../../ir/index.h"
-#include "../ast_util.h"
+#include <ast/ast_builder.h>
+#include <util/ast_util.h>
 
 namespace MicroModelica {
 namespace Util {
 class IsConstantExpression : public AST_Expression_Visitor<bool> {
   public:
   IsConstantExpression();
+  IsConstantExpression(bool eval_int);
   ~IsConstantExpression() = default;
 
   private:
@@ -37,8 +35,8 @@ class IsConstantExpression : public AST_Expression_Visitor<bool> {
   inline bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
   inline bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; }
   bool _in_index_list;
+  bool _eval_int;
 };
 
 }  // namespace Util
 }  // namespace MicroModelica
-#endif /* IS_CONSTANT_EXPRESSION_H_ */
