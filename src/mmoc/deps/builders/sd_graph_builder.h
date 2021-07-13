@@ -16,12 +16,11 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
  ******************************************************************************/
-#ifndef SD_GRAPH_BUILDER_H
-#define SD_GRAPH_BUILDER_H
+#pragma once
 
-#include "../../ir/class.h"
-#include "../../util/symbol_table.h"
-#include "../graph/graph.h"
+#include <ir/class.h>
+#include <util/symbol_table.h>
+#include <deps/graph/graph.h>
 
 namespace MicroModelica {
 namespace Deps {
@@ -41,4 +40,3 @@ class SDGraphBuilder {
 }  // namespace Deps
 }  // namespace MicroModelica
 
-#endif /* SD_GRAPH_BUILDER_H */
