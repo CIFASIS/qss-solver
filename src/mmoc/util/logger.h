@@ -36,10 +36,18 @@ class Logger {
     return _instance;
   }
   ~Logger();
+
   void setFile(std::string file_name);
+
+  std::string getLoggerFile() const;
+  std::string getLogsPath() const;
 
   std::ofstream log;
   
+  protected:
+  std::string _log_file;
+  std::string _logs_path;
+
   private:
   Logger();
 };

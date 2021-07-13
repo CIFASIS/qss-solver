@@ -25,7 +25,7 @@ using namespace std;
 
 namespace MicroModelica {
 namespace Util {
-Logger::Logger() {}
+Logger::Logger() : _log_file(), _logs_path() {}
 
 Logger::~Logger() { log.close(); }
 
@@ -33,9 +33,14 @@ void Logger::setFile(string file_name)
 {
     string build_path = Utils::instance().environmentVariable("MMOC_BUILD");
     string base_name = Utils::instance().baseFileName(file_name);
-    string log_file = build_path + SLASH + base_name + SLASH + base_name + ".log";
-    log.open(log_file, std::ofstream::out);
+    _logs_path = build_path + SLASH + base_name + SLASH; 
+    _log_file = _logs_path + base_name + ".log";
+    log.open(_log_file, std::ofstream::out);
 }
+
+std::string Logger::getLoggerFile() const  { return _log_file; }
+
+std::string Logger::getLogsPath() const  { return _logs_path; }
 
 }  // namespace Util
 }  // namespace MicroModelica
