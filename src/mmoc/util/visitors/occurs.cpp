@@ -34,7 +34,7 @@ bool Occurs::foldTraverseElement(AST_Expression exp)
     Option<Variable> var = ModelConfig::instance().lookup(cr->name());
     if (var && (var->name() == _var)) {
       Expression ep(exp);
-      _occs[ep.print()] = ep;
+      _occs.insert(ep);
       return true;
     }
     break;
@@ -74,12 +74,7 @@ bool Occurs::foldTraverseElement(AST_Expression exp)
   return false;
 }
 
-list<Expression> Occurs::occurrences()
-{
-  list<Expression> exps;
-  std::for_each(_occs.begin(), _occs.end(), [&exps](const std::map<std::string, Expression>::value_type& p) { exps.push_back(p.second); });
-  return exps;
-}
+set<Expression> Occurs::occurrences() { return _occs; }
 
 }  // namespace Util
 }  // namespace MicroModelica

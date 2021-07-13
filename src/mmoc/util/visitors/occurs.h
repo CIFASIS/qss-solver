@@ -17,30 +17,27 @@
 
  ******************************************************************************/
 
-#ifndef OCCURS_H_
-#define OCCURS_H_
+#pragma once 
 
-#include "../ast_util.h"
+#include <util/ast_util.h>
 
 namespace MicroModelica {
 namespace Util {
 class Occurs : public AST_Expression_Visitor<bool> {
   public:
-  Occurs(std::string var) : _occs(), _var(var){};
+  Occurs(std::string var) : _occs(), _var(var) {};
   ~Occurs() = default;
 
-  list<IR::Expression> occurrences();
+  std::set<IR::Expression> occurrences();
 
   private:
   bool foldTraverseElement(AST_Expression exp);
   bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l || r; };
   bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); };
   
-  std::map<std::string, IR::Expression> _occs;
+  std::set<IR::Expression> _occs;
   std::string _var;
 };
 
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif /* OCCURS_H_ */
