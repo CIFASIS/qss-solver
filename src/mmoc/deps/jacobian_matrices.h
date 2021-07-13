@@ -17,13 +17,12 @@
 
  ******************************************************************************/
 
-#ifndef JACOBIAN_MATRICES_H_
-#define JACOBIAN_MATRICES_H_
+#pragma once
 
 #include <map>
 
-#include "../deps/graph/sb_graph.h"
-#include "../ir/equation.h"
+#include <deps/sbg_graph/deps_graph.h>
+#include <ir/equation.h>
 
 namespace MicroModelica {
 namespace Deps {
@@ -38,17 +37,17 @@ class JacMatrixGenerator {
   JacMatrixGenerator();
   ~JacMatrixGenerator();
 
-  void init(SBG::VertexProperty vertex);
+  void init(SB::Deps::SetVertex vertex);
   void end();
-  void postProcess(SBG::VertexProperty vertex);
-  void visitF(IR::Equation eq, SBG::VariableDep var_dep, SBG::Map map);
-  void visitG(IR::Equation v_eq, IR::Equation g_eq, SBG::VariableDep var_dep, SBG::Map n_map, SBG::Map map_m, int index_shift);
-  void initG(IR::Equation eq, SBG::Map map);
+  void postProcess(SB::Deps::SetVertex vertex);
+  void visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep);
+  void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift);
+  void initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge);
   JacMatrixDef deps();
 
   protected:
-  void addDependency(IR::Equation v_eq, IR::Equation g_eq, SBG::VariableDep var_dep, SBG::Map map, std::string g_map_dom = "");
-  std::string guard(SBG::MDI dom, SBG::Map map);
+  void addDependency(IR::Equation v_eq, IR::Equation g_eq, SB::Deps::VariableDep var_dep, std::string g_map_dom = "");
+  std::string guard(SB::Set dom, int offset, SB::Deps::LMapExp map);
   std::string guard(std::string exp, std::string id);
 
   JacMatrixDef _matrix;
@@ -74,5 +73,3 @@ class JacobianMatrix {
 
 }  // namespace Deps
 }  // namespace MicroModelica
-
-#endif /* JACOBIAN_MATRICES_H_ */

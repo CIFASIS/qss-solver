@@ -19,16 +19,18 @@
 
 #include "jacobian_matrices.h"
 
-#include "../deps/builders/sd_sb_graph_builder.h"
-#include "../deps/sb_dependencies.h"
-#include "../ir/alg_usage.h"
-#include "../ir/helpers.h"
-#include "../util/model_config.h"
-#include "../util/util.h"
-#include "../util/visitors/replace_index.h"
+#include <deps/builders/sd_sb_graph_builder.h>
+#include <deps/sbg_graph/build_from_exps.h>
+#include <deps/sb_dependencies.h>
+#include <ir/alg_usage.h>
+#include <ir/helpers.h>
+#include <util/model_config.h>
+#include <util/util.h>
+#include <util/visitors/replace_index.h>
 
 namespace MicroModelica {
 using namespace IR;
+using namespace SB;
 using namespace Util;
 namespace Deps {
 
@@ -36,15 +38,16 @@ JacMatrixGenerator::JacMatrixGenerator() : _matrix(), _dv_dx(), _tabs(0) { Model
 
 JacMatrixGenerator::~JacMatrixGenerator() { ModelConfig::instance().unsetLocalInitSymbols(); }
 
-void JacMatrixGenerator::postProcess(SBG::VertexProperty vertex) {}
+void JacMatrixGenerator::postProcess(SB::Deps::SetVertex vertex) {}
 
-void JacMatrixGenerator::init(SBG::VertexProperty vertex)
+void JacMatrixGenerator::init(SB::Deps::SetVertex vertex)
 {
   stringstream code;
   FunctionPrinter function_printer;
-  code << "for(row = 1; row <= " << vertex.size() << "; row++) {" << endl;
+  Equation eq = getEquation(vertex);
+  code << "for(row = 1; row <= " << vertex.range().size() << "; row++) {" << endl;
   code << TAB << "c_row = _c_index(row);" << endl;
-  code << function_printer.jacMacrosAccess(vertex.eq());
+  code << function_printer.jacMacrosAccess(eq);
   _matrix.alloc.append(code.str());
   _matrix.init.append(code.str());
   _tabs++;
@@ -72,11 +75,13 @@ string JacMatrixGenerator::guard(string exp, string id)
   return code.str();
 }
 
-void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep, SBG::Map map, string g_map_dom)
+void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SB::Deps::VariableDep var_dep, string g_map_dom)
 {
   stringstream code;
-  Range range(var_dep.range());
-  vector<string> exps = map.exps(range.getDimensionVars());
+  SB::Deps::LMapExp map = var_dep.nMap();
+  Range range(var_dep.variables(), var_dep.varOffset());  
+
+  vector<string> exps = map.apply(range.getDimensionVars());
   Expression i_exp = Expression::generate(var_dep.var().name(), exps);
   Index x_ind(i_exp);
   string x_ind_exp = x_ind.print();
@@ -99,11 +104,15 @@ void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SBG::Variab
       Index a_ind(a_exp);
       code << TAB << printer.jacMacrosAccess(g_eq, a_ind.print());
   }
-  code << tabs << "if(" << range.in(exps);
-  if (!g_map_dom.empty()) {
-    code << " && " << g_map_dom;
+  if (!map.constantExp()) {
+    code << tabs << "if(" << range.in(exps);
+    if (!g_map_dom.empty()) {
+      code << " && " << g_map_dom;
+    }
+    code << ") {" << endl;
+  } else if (!g_map_dom.empty()) {
+    code << tabs << " if(" << g_map_dom << ") {" << endl;
   }
-  code << ") {" << endl;
   string code_guards = code.str();
   string include_guard = guard(x_ind_exp, eq_id);
   _matrix.alloc.append(code_guards);
@@ -119,31 +128,40 @@ void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SBG::Variab
   code << inner_tabs << "}" << endl;
   _matrix.init.append(code.str());
   code.str("");
-  code << tabs << "}" << endl;
-  if (var_dep.isRecursive()) {
-    code << g_eq.range()->end();
+  if (!map.constantExp() || !g_map_dom.empty()) {
+    code << tabs << "}" << endl;
+    if (var_dep.isRecursive()) {
+      code << g_eq.range()->end();
+    }
   }
   _matrix.alloc.append(code.str());
   _matrix.init.append(code.str());
 }
 
-std::string JacMatrixGenerator::guard(SBG::MDI dom, SBG::Map map)
+std::string JacMatrixGenerator::guard(SB::Set dom, int offset, SB::Deps::LMapExp map)
 {
-  Range range(dom);
-  stringstream code;
-  vector<string> exps = map.exps(range.getDimensionVars());
+  if (map.constantExp()) {
+    return "";
+  }
+  Range range(dom, offset);
+  vector<string> exps = map.apply(range.getDimensionVars());
   return range.in(exps);
 }
 
-void JacMatrixGenerator::visitF(Equation eq, SBG::VariableDep var_dep, SBG::Map map) { addDependency(eq, eq,var_dep, map); }
-
-void JacMatrixGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep, SBG::Map n_map, SBG::Map map_m,
-                                int index_shift)
-{
-  addDependency(v_eq, g_eq, var_dep, n_map, guard(var_dep.dom(), map_m));
+void JacMatrixGenerator::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep)
+{ 
+  Equation eq = getEquation(vertex);
+  addDependency(eq, eq,var_dep);
 }
 
-void JacMatrixGenerator::initG(Equation eq, SBG::Map map_m) {}
+void JacMatrixGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift)
+{
+  Equation v_eq = getEquation(v_vertex);
+  Equation g_eq = getEquation(g_vertex);
+  addDependency(v_eq, g_eq, var_dep, guard(var_dep.equations(), var_dep.eqOffset(), var_dep.mMap()));
+}
+
+void JacMatrixGenerator::initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge) {}
 
 JacMatrixDef JacMatrixGenerator::deps() { return _matrix; }
 
@@ -162,7 +180,7 @@ void JacobianMatrix::build()
   EquationTable algebraics = ModelConfig::instance().algebraics();
   EquationTable derivatives = ModelConfig::instance().derivatives();
   VarSymbolTable symbols = ModelConfig::instance().symbols();
-  SBG::JacobianMatrixBuilder jac_matrix;
+  JacobianMatrixBuilder jac_matrix;
   IndexShiftBuilder index_shifts(algebraics);
   SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(derivatives, algebraics);
   jac_matrix.compute(SDSBGraph.build(), index_shifts.build());
