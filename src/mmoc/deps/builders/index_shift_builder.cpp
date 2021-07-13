@@ -19,16 +19,17 @@
 
 #include "index_shift_builder.h"
 
-#include "../graph/sb_graph.h"
-#include "../../util/util_types.h"
-#include "../../util/visitors/apply_var_usage.h"
-#include "../../util/visitors/eval_init_exp.h"
+#include <deps/sbg_graph/graph.h>
+#include <util/util_types.h>
+#include <util/visitors/apply_var_usage.h>
+#include <util/visitors/eval_init_exp.h>
+
+using namespace SB;
 
 namespace MicroModelica {
 using namespace IR;
 using namespace Util;
 namespace Deps {
-using namespace SBG;
 
 IndexShiftBuilder::IndexShiftBuilder(EquationTable &algebraics)
     : _algebraics(algebraics), _index_shift()
@@ -45,7 +46,7 @@ int IndexShiftBuilder::flatter(Variable variable, vector<int> usage)
   return flatt;
 }
 
-IndexShift IndexShiftBuilder::build()
+SB::Deps::IndexShift IndexShiftBuilder::build()
 {
   EquationTable::iterator eq_it;
   map<string, map<int, int> > variable_shifts;
