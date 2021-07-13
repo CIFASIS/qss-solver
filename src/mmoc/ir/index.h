@@ -23,11 +23,12 @@
 #include <string>
 #include <map>
 
-#include "expression.h"
-#include "../deps/graph/graph_helpers.h"
-#include "../deps/graph/sb_graph_helpers.h"
-#include "../util/symbol_table.h"
-#include "../util/table.h"
+#include <ir/expression.h>
+#include <deps/graph/graph_helpers.h>
+#include <deps/graph/sb_graph_helpers.h>
+#include <deps/sbg_graph/deps_graph.h>
+#include <util/symbol_table.h>
+#include <util/table.h>
 
 namespace MicroModelica {
 namespace IR {
@@ -73,6 +74,7 @@ class Range {
   Range(Util::Variable var, RANGE::Type type = RANGE::For);
   Range(AST_Expression exp);
   Range(Deps::SBG::MDI mdi);
+  Range(SB::Set set, int offset);
   ~Range() = default;
 
   int size() const;
@@ -106,6 +108,7 @@ class Range {
   void generate(Util::Variable var);
   void generate(AST_Expression exp);
   void generate(Deps::SBG::MDI mdi);
+  void generate(SB::Set set, int offset);
   void updateRangeDefinition(std::string index_def, RangeDefinition def, int pos);
   void addRangeVariables(int i, string index) const;
 
