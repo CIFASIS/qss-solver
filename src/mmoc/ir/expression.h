@@ -17,12 +17,12 @@
 
  ******************************************************************************/
 
-#ifndef MMO_EXPRESSION_H_
-#define MMO_EXPRESSION_H_
+#pragma once
 
 #include <string>
-#include "../ast/ast_types.h"
-#include "../util/symbol_table.h"
+
+#include <ast/ast_types.h>
+#include <util/symbol_table.h>
 
 namespace MicroModelica {
 namespace IR {
@@ -43,6 +43,7 @@ class Expression {
   bool isScalar() const;
   list<Expression> indexes() const;
   static Expression generate(std::string var_name, std::vector<std::string> indices);
+  bool operator<(const Expression &other) const;
 
   friend std::ostream& operator<<(std::ostream& out, const Expression& s);
 
@@ -57,4 +58,3 @@ class Expression {
 typedef list<Expression> ExpressionList;
 }  // namespace IR
 }  // namespace MicroModelica
-#endif /* EXPRESSION_H_ */
