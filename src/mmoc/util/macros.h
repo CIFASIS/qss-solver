@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef DEFINITIONS_H_
-#define DEFINITIONS_H_
+#pragma once 
 
 using namespace std;
 
@@ -52,4 +51,15 @@ using namespace std;
   }                                               \
   CLASSP_PRINTER_IMP(X)
 
-#endif /*  DEFINITIONS_H_ */
+/* Define order relation */
+#define DEFINE_ORDER_REL(X) bool operator<(const X##_ &other) const;
+#define ORDER_REL_IMP(X)                     \
+  bool X##_::operator<(const X##_ &other) const    \
+  {                                          \
+    std::stringstream cmp_this;              \
+    std::stringstream cmp_other;             \
+    cmp_this << *this;                       \
+    cmp_other << other;                      \
+    return cmp_this.str() < cmp_other.str(); \
+  }                                            
+
