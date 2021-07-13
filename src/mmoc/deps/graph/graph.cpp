@@ -32,158 +32,18 @@ namespace MicroModelica {
 using namespace IR;
 using namespace Util;
 namespace Deps {
+
 /*****************************************************************************
  ****                              LABEL                                  ****
  *****************************************************************************/
-Label::Label(IndexPairSet ips, EDGE::Direction dir) : ips(ips), _ip(), _dir(dir) { this->RemoveDuplicates(); }
+Label::Label(IndexPairSet ips, EDGE::Direction dir) : ips(ips), _ip(), _dir(dir) {}
 
 Label::Label(IndexPair ip, EDGE::Direction dir) : ips(), _ip(ip), _dir(dir) {}
-
-void Label::RemovePairs(IndexPairSet ipsToRemove)
-{
-  IndexPairSet newIps;
-  foreach_(IndexPair ipRemove, ipsToRemove)
-  {
-    foreach_(IndexPair ip, this->ips)
-    {
-      //        newIps.erase(ip);
-      foreach_(IndexPair ipRemaining, (ip - ipRemove)) { newIps.insert(ipRemaining); }
-    }
-  }
-  this->ips = newIps;
-}
-
-void Label::RemoveUnknowns(MDI const mdi)
-{
-  IndexPairSet newIps;
-  for (IndexPair ip : this->ips) {
-    IndexPairSet afterRemove = ip.RemoveUnknowns(mdi);
-    newIps.insert(afterRemove.begin(), afterRemove.end());
-  }
-  this->ips = newIps;
-}
-
-void Label::RemoveEquations(MDI const mdi)
-{
-  IndexPairSet newIps;
-  for (IndexPair ipOld : this->ips) {
-    for (IndexPair ipNew : ipOld.RemoveEquations(mdi)) {
-      newIps.insert(ipNew);
-    }
-  }
-  this->ips = newIps;
-}
 
 std::ostream &operator<<(std::ostream &os, const Label &label)
 {
   os << label._ip;
   return os;
-}
-
-void Label::RemoveDuplicates()
-{
-  bool removeSomething = true;
-  IndexPairSet newIPS = ips;
-  while (removeSomething) {
-    for (IndexPairSet::iterator checkingIP = ips.begin(); checkingIP != ips.end(); checkingIP++) {
-      // Ignore pairs 1-1 => should not be equal pairs in a set
-      if (checkingIP->Dom().Size() == 1 && checkingIP->Ran().Size() == 1) continue;
-      for (IndexPairSet::iterator otherIP = ips.begin(); otherIP != ips.end(); otherIP++) {
-        // Ignore the same pair
-        if (checkingIP == otherIP) continue;
-        switch (checkingIP->Type()) {
-        case INDEX_PAIR::RN_N:
-          switch (otherIP->Type()) {
-          case INDEX_PAIR::RN_N:
-            if (checkingIP->GetUsage() == otherIP->GetUsage()) {
-              if (checkingIP->GetOffset() == otherIP->GetOffset()) {  // Same usage same offset => are equals: SHOULD NOT EvalOccur
-                // ERROR("This case should not EvalOccur since should not be equal pairs in a set");
-                abort();
-              } else {  // Same usage different offset => there is no intersection, nothing to remove
-                removeSomething = false;
-                continue;
-              }
-            } else {  // Different usage => ERROR: Not supported yet
-              // ERROR("Multiple usages of a same vector with different index usages in a same for equation not supported");
-              abort();
-            }
-          case INDEX_PAIR::RN_1:
-            if (checkingIP->Ran().Contains(otherIP->Ran())) {  // There is intersection => remove it from the N-1 Index Pair
-              newIPS.erase(*otherIP);
-              MDI domToRemove = otherIP->Ran().RevertUsage(checkingIP->GetUsage(), checkingIP->Dom()).ApplyOffset(checkingIP->GetOffset());
-              for (MDI remainingDom : otherIP->Dom() - domToRemove) {
-                newIPS.insert(IndexPair(remainingDom, otherIP->Ran(), otherIP->GetOffset(), otherIP->GetUsage()));
-              }
-              removeSomething = true;
-              continue;
-            } else {  // No intersection => nothing to remove
-              removeSomething = false;
-              continue;
-            }
-          case INDEX_PAIR::R1_N:
-            if (checkingIP->Dom().Contains(
-                    otherIP->Dom())) {  // There is intersection => remove the N-N Index Pair, since it must be a 1-1 pair.
-              newIPS.erase(*checkingIP);
-              removeSomething = true;
-              continue;
-            }
-          }
-        case INDEX_PAIR::RN_1:
-          switch (otherIP->Type()) {
-          case INDEX_PAIR::RN_N:
-            if (otherIP->Ran().Contains(checkingIP->Ran())) {  // There is intersection => remove it from the N-1 Index Pair
-              newIPS.erase(*checkingIP);
-              MDI domToRemove = checkingIP->Ran().RevertUsage(otherIP->GetUsage(), otherIP->Dom()).ApplyOffset(otherIP->GetOffset());
-              for (MDI remainingDom : checkingIP->Dom() - domToRemove) {
-                newIPS.insert(IndexPair(remainingDom, checkingIP->Ran(), checkingIP->GetOffset(), checkingIP->GetUsage()));
-              }
-              removeSomething = true;
-              continue;
-            } else {  // No intersection => nothing to remove
-              removeSomething = false;
-              continue;
-            }
-          case INDEX_PAIR::RN_1:
-            if (checkingIP->Ran() == otherIP->Ran()) {  // Same range => are equals: SHOULD NOT EvalOccur
-              // ERROR("This case should not EvalOccur since should not be equal pairs in a set");
-              abort();
-            } else {  // No intersection => nothing to remove
-              removeSomething = false;
-              continue;
-            }
-          case INDEX_PAIR::R1_N:
-            // This case should not EvalOccur
-            // ERROR("This case should not EvalOccur since should could not be N-1 and 1-N pairs in a same label");
-            abort();
-          }
-        case INDEX_PAIR::R1_N:
-          switch (otherIP->Type()) {
-          case INDEX_PAIR::RN_N:
-            if (otherIP->Dom().Contains(
-                    checkingIP->Dom())) {  // There is intersection => remove the N-N Index Pair, since it must be a 1-1 pair.
-              newIPS.erase(*otherIP);
-              removeSomething = true;
-              continue;
-            }
-          case INDEX_PAIR::RN_1:
-            // This case should not EvalOccur
-            // ERROR("This case should not EvalOccur since should could not be N-1 and 1-N pairs in a same label");
-            abort();
-          case INDEX_PAIR::R1_N:
-            if (checkingIP->Dom() == otherIP->Dom()) {  // Same range => are equals: SHOULD NOT EvalOccur
-              // ERROR("This case should not EvalOccur since should not be equal pairs in a set");
-              abort();
-            } else {  // No intersection => nothing to remove
-              removeSomething = false;
-              continue;
-            }
-          }
-        }
-      }
-    }
-    removeSomething = false;
-  }
-  ips = newIPS;
 }
 
 MDI Label::getImage(MDI intersection) const
@@ -351,9 +211,9 @@ void GenerateEdge::initialize()
   if (_eval == VERTEX::LHS) {
     if (_source.type() == VERTEX::Influencer && _sink.type() == VERTEX::Equation && !_sink.eq().isAlgebraic() &&
         _source.id() == _sink.eq().id()) {
-      ExpressionList exps;
+      set<Expression> exps;
       _exist = true;
-      exps.push_back(_sink.eq().lhs());
+      exps.insert(_sink.eq().lhs());
       build(exps);
     } else if (_source.type() == VERTEX::Algebraic && _dir == EDGE::Output) {
       _exist = occurs.apply(_sink.eq().lhs().expression());
@@ -368,14 +228,14 @@ void GenerateEdge::initialize()
       }
     } else if (_source.type() == VERTEX::Influencee) {
       assert(_sink.type() == VERTEX::Equation);
-      ExpressionList exps;
+      set<Expression> exps;
       if (sinkIsEvent() && _source.id() == _sink.id()) {
         _exist = true;
-        exps.push_back(_sink.stm().event());
+        exps.insert(_sink.stm().event());
         build(exps);
       } else if (_source.id() >= 0 && _source.id() == _sink.eq().id()) {
         _exist = true;
-        exps.push_back(_sink.eq().lhs());
+        exps.insert(_sink.eq().lhs());
         build(exps);
       } else {
         assert(_sink.type() == VERTEX::Equation);
@@ -402,17 +262,17 @@ void GenerateEdge::initialize()
         build(occurs.occurrences());
       }
     } else if (_source.type() == VERTEX::Influencee) {
-      ExpressionList exps;
+      set<Expression> exps;
       if (sinkIsEvent()) {
         if (_source.id() == _sink.id()) {
           _exist = true;
-          exps.push_back(_sink.stm().event());
+          exps.insert(_sink.stm().event());
           build(exps);
         }
       } else if (sinkIsOutput()) {
         if (_source.id() == _sink.eq().id()) {
           _exist = true;
-          exps.push_back(_sink.eq().lhs());
+          exps.insert(_sink.eq().lhs());
           build(exps);
         }
       } else {
@@ -425,7 +285,7 @@ void GenerateEdge::initialize()
   }
 }
 
-void GenerateEdge::build(list<Expression> exps)
+void GenerateEdge::build(set<Expression> exps)
 {
   Option<Range> sink_range = range(_sink);
   IntervalList sink_interval;
