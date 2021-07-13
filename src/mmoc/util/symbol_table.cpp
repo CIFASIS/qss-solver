@@ -254,7 +254,7 @@ TypeSymbolTable::TypeSymbolTable()
 
 /* VarSymbolTable class */
 
-VarSymbolTable::VarSymbolTable() : _parameters(false) {}
+VarSymbolTable::VarSymbolTable() : _parameters(false), _max_dims(1) {}
 
 void VarSymbolTable::initialize(TypeSymbolTable ty)
 {
@@ -284,6 +284,9 @@ void VarSymbolTable::insert(VarName name, Variable variable)
   if (variable.isParameter()) {
     _parameters = true;
   }
+  if (variable.dimensions() > _max_dims) {
+    _max_dims = variable.dimensions();
+  }
 }
 
 Option<Variable> VarSymbolTable::lookup(string name)
@@ -295,5 +298,8 @@ Option<Variable> VarSymbolTable::lookup(string name)
   }
   return Option<Variable>();
 }
+
+unsigned int VarSymbolTable::maxDim() const { return _max_dims; }
+
 }  // namespace Util
 }  // namespace MicroModelica
