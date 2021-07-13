@@ -20,6 +20,7 @@
 #include "ast_node.h"
 
 #include <iostream>
+#include <sstream>
 
 #include "../parser/mocc_parser.h"
 
@@ -32,6 +33,8 @@ ostream &operator<<(ostream &os, const AST_Node_ &n)
   os << "Printing not implemented!!" << endl;
   return os;
 };
+
+ORDER_REL_IMP(AST_Node);
 
 void AST_Node_::setLineNum(int linenum) { _linenum = linenum; }
 
