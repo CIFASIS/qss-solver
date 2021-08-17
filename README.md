@@ -61,6 +61,10 @@ Simulation
 **Mixed-mode state–time discretization in ODE numerical integration**
 Journal of Computational and Applied Mathematics 
 
+[7] Ernesto Kofman, Joaquin Fernandez, Denise Marzorati.
+**Compact sparse symbolic Jacobian computation in large systems of ODEs**
+Applied Mathematics and Computation
+
 ## Components
 
 ## MicroModelica Compiler
