@@ -33,33 +33,38 @@ etc.).
 
 ## Related Publications
 
-[1] Joaquin Fernandez, Ernesto Kofman.
-**A stand-alone quantized state system solver for continuous system simulation**
-Simulation 
+[8] Ernesto Kofman, Joaquin Fernandez, Denise Marzorati.
+**Compact sparse symbolic Jacobian computation in large systems of ODEs**
+Applied Mathematics and Computation
 
-[2] Federico Bergero, Xenofon Floros, Joaquin Fernandez, Ernesto Kofman, Francois Cellier.
-**Simulating Modelica models with a Stand–Alone Quantized State Systems Solver**
-Proceedings of the 9th International Modelica Conference
+[7] Franco Di Pietro, Joaquin Fernandez, Gustavo Migoni, Ernesto Kofman.
+**Mixed-mode state–time discretization in ODE numerical integration**
+Journal of Computational and Applied Mathematics 
 
-[3] Joaquin Fernandez, Ernesto Kofman, Federico Bergero.
-**A parallel Quantized State System Solver for ODEs**
-Journal of Parallel and Distributed Computing
-
-[4] Federico Bergero, Francesco Casella, Ernesto Kofman, Joaquin Fernandez.
-**On the efficiency of quantization-based integration methods for building simulation**
-Building Simulation
+[6] Gustavo Migoni, Ernesto Kofman, Federico Bergero, Joaquin Fernandez.
+**Quantization-based simulation of switched mode power supplies**
+Simulation
 
 [5] Federico Bergero, Joaquin Fernandez, Ernesto Kofman, Margarita Portapila.
 **Time discretization versus state quantization in the simulation of a one-dimensional advection–diffusion–reaction equation**
 Simulation
 
-[5] Gustavo Migoni, Ernesto Kofman, Federico Bergero, Joaquin Fernandez.
-**Quantization-based simulation of switched mode power supplies**
-Simulation
+[4] Federico Bergero, Francesco Casella, Ernesto Kofman, Joaquin Fernandez.
+**On the efficiency of quantization-based integration methods for building simulation**
+Building Simulation
 
-[6] Franco Di Pietro, Joaquin Fernandez, Gustavo Migoni, Ernesto Kofman.
-**Mixed-mode state–time discretization in ODE numerical integration**
-Journal of Computational and Applied Mathematics 
+[3] Joaquin Fernandez, Ernesto Kofman, Federico Bergero.
+**A parallel Quantized State System Solver for ODEs**
+Journal of Parallel and Distributed Computing
+
+[2] Federico Bergero, Xenofon Floros, Joaquin Fernandez, Ernesto Kofman, Francois Cellier.
+**Simulating Modelica models with a Stand–Alone Quantized State Systems Solver**
+Proceedings of the 9th International Modelica Conference
+
+[1] Joaquin Fernandez, Ernesto Kofman.
+**A stand-alone quantized state system solver for continuous system simulation**
+Simulation 
+
 
 ## Components
 
