@@ -153,8 +153,8 @@ bool LMapExp::constantExp() const
 
 std::vector<std::string> LMapExp::apply(std::vector<std::string> variable) const
 {
-  assert(_slopes.size() == variable.size());
-  std::cout << "slopes: " << _slopes.size() << std::endl;
+  assert(_slopes.size() == variable.size() || _slopes.size() == 0);
+  
   std::vector<std::string> exps;
   int size = (int)_slopes.size();
   if (size == 0) {
