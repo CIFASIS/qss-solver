@@ -39,7 +39,7 @@ struct PWAtomLMapImp {
       _dom = empty_set;
       _lmap = empty_map;
     } else {
-      CT<Interval> intervals = dom.atomicSets().intervals();
+      CT<Interval> intervals = dom.atomicSetsRef().intervals();
       CT<Real> slopes = lmap.slopes();
       typename CT<Real>::iterator slope_it = slopes.begin();
       CT<Real> constants = lmap.constants();

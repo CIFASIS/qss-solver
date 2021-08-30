@@ -62,6 +62,8 @@ struct MultiIntervalImp {
 
   CT1<Interval> intervals() { return _intervals; }
 
+  CT1<Interval>& intervals_ref() { return _intervals; }
+
   int dims() { return _dims; }
 
   void addInter(Interval interval)
@@ -96,7 +98,7 @@ struct MultiIntervalImp {
     CT1<Interval> res;
     IntervalIt it_res = res.begin();
 
-    IntervalIt it = other.intervals().begin();
+    IntervalIt it = other.intervals_ref().begin();
     if (_dims == other.dims()) {
       for (Interval inter : _intervals) {
         Interval cap_res = inter.cap(*it);
