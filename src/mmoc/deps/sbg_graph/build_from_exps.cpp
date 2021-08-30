@@ -82,6 +82,7 @@ Set buildSet(Variable variable, int offset, size_t max_dim)
 Set buildSet(Equation eq, string eq_id, int offset, size_t max_dim, EqUsage& eq_usage)
 {
   Usage usage;
+  DimRange dim_range;
   MultiInterval equation_intervals;
   if (eq.hasRange()) {
     RangeDefinitionTable ranges = eq.range()->definition();
@@ -91,11 +92,24 @@ Set buildSet(Equation eq, string eq_id, int offset, size_t max_dim, EqUsage& eq_
       Real upper = range.second.end();
       Real end = offset + upper - lower;
       Interval interval(offset, step, end);
-      equation_intervals.addInter(interval);
       LOG << "Variable: " << range.first << " Lower: " << lower << endl;
       usage[range.first] = lower;
+      dim_range[range.first] = interval;
     }
-    addDims(max_dim, ranges.size(), equation_intervals, offset);
+    Expression lhs = eq.lhs();
+    ExpressionList indexes = lhs.indexes();
+    for (Expression idx : indexes) {
+      PWLMapValues pwl_map_values;
+      pwl_map_values.apply(idx.expression());
+      if (pwl_map_values.isScalar()) { // Scalar index
+        Interval interval(offset, 1, offset);
+        equation_intervals.addInter(interval);
+      } else {
+        Interval interval = dim_range[pwl_map_values.variable()];
+        equation_intervals.addInter(interval);
+      }
+    }
+    addDims(max_dim, indexes.size(), equation_intervals, offset);
     eq_usage[eq_id] = usage;
   } else {
     addDims(max_dim, 0, equation_intervals, offset);
@@ -221,12 +235,16 @@ EdgeMaps generatePWLMaps(Expression exp, Set dom, Set unk_dom, int offset, strin
     } else {
       exp_init_values.insert(offset);
     }
+    constant_pwl_map_u_it++;
+    slope_pwl_map_u_it++;
     min_elem++;
   }
   if (indexes.empty()) {  // Scalar variable.
     Integer set_vertex_init = *min_elem - 1;
     constant_pwl_map_u_it = constant_pwl_map_u.insert(constant_pwl_map_u_it, -map_offset + set_vertex_init);
     slope_pwl_map_u_it = slope_pwl_map_u.insert(slope_pwl_map_u_it, 1);
+    constant_pwl_map_u_it++;
+    slope_pwl_map_u_it++;
     addDims(max_dim, 1, constant_pwl_map_u, slope_pwl_map_u);
   } else {
     addDims(max_dim, indexes.size(), constant_pwl_map_u, slope_pwl_map_u);
@@ -235,6 +253,8 @@ EdgeMaps generatePWLMaps(Expression exp, Set dom, Set unk_dom, int offset, strin
     Integer set_vertex_init = init - 1;
     constant_pwl_map_f_it = constant_pwl_map_f.insert(constant_pwl_map_f_it, -map_offset + set_vertex_init);
     slope_pwl_map_f_it = slope_pwl_map_f.insert(slope_pwl_map_f_it, 1);
+    constant_pwl_map_f_it++;
+    slope_pwl_map_f_it++;
   }
   addDims(max_dim, dom.minElem().size(), constant_pwl_map_f, slope_pwl_map_f);
   maps.F = buildPWLMap(constant_pwl_map_f, slope_pwl_map_f, map_dom);

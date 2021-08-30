@@ -33,6 +33,7 @@ typedef std::pair<Deps::Vertex, MicroModelica::IR::Equation> EquationDesc;
 typedef std::list<EquationDesc> EquationDescList;
 typedef std::map<std::string, int> Usage;
 typedef std::map<std::string, Usage> EqUsage;
+typedef std::map<std::string, Interval> DimRange;
 
 struct EdgeMaps {
   PWLMap F;
