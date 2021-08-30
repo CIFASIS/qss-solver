@@ -276,8 +276,6 @@ PWLMap minInv(PWLMap &pw, Set &s)
 
       ++itlm;
     }
-
-    // cout << "pw2: " << pw2 << "\n";
     return pw2;
   }
 
