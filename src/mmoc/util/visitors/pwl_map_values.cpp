@@ -115,5 +115,7 @@ int PWLMapValues::slope() const  { return _slope; }
 
 std::string PWLMapValues::variable() const  { return _variable; }
 
+bool PWLMapValues::isScalar() const { return _slope == 0;}
+
 }  // namespace Util
 }  // namespace MicroModelica

@@ -31,6 +31,7 @@ class PWLMapValues : public AST_Expression_Visitor<AST_Expression> {
   int constant() const;
   int slope() const;
   std::string variable() const;
+  bool isScalar() const;
 
   protected:
   void assign(AST_Expression left, AST_Expression right, bool var_left, bool var_right, int sign);
