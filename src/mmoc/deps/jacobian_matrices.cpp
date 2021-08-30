@@ -78,7 +78,7 @@ string JacMatrixGenerator::guard(string exp, string id)
 void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SB::Deps::VariableDep var_dep, string g_map_dom)
 {
   stringstream code;
-  SB::Deps::LMapExp map = var_dep.nMap();
+  SB::Deps::LMapExp map = var_dep.nMap();  
   Range range(var_dep.variables(), var_dep.varOffset());  
 
   vector<string> exps = map.apply(range.getDimensionVars());
@@ -138,13 +138,15 @@ void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SB::Deps::V
   _matrix.init.append(code.str());
 }
 
-std::string JacMatrixGenerator::guard(SB::Set dom, int offset, SB::Deps::LMapExp map)
+std::string JacMatrixGenerator::guard(SB::Set dom, int offset, SB::Deps::LMapExp map, std::string var_name)
 {
   if (map.constantExp()) {
     return "";
   }
   Range range(dom, offset);
   vector<string> exps = map.apply(range.getDimensionVars());
+  Expression map_exp = Expression::generate(var_name, exps);
+  range.applyUsage(Index(map_exp));
   return range.in(exps);
 }
 
@@ -158,7 +160,7 @@ void JacMatrixGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVerte
 {
   Equation v_eq = getEquation(v_vertex);
   Equation g_eq = getEquation(g_vertex);
-  addDependency(v_eq, g_eq, var_dep, guard(var_dep.equations(), var_dep.eqOffset(), var_dep.mMap()));
+  addDependency(v_eq, g_eq, var_dep, guard(var_dep.equations(), var_dep.eqOffset(), var_dep.mMap(), var_dep.var().name()));
 }
 
 void JacMatrixGenerator::initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge) {}
