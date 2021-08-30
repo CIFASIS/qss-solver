@@ -27,6 +27,8 @@ struct AtomSetImp {
 
   MultiInterval atomicSets() { return _atom_set; }
 
+  MultiInterval& atomicSetsRef() { return _atom_set; }
+
   int dims() { return _dims; }
 
   bool empty() { return _atom_set.empty(); }
