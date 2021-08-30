@@ -78,12 +78,10 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 	SD_cleanJacMatrices(dvdx);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if((1 <= 1 && 1 <= 1)) {
-			x_ind = _idx_x1(1);
-			col = pos(dvdx->dg_dx[0]->index[c_row], dvdx->dg_dx[0]->size[c_row], x_ind);
-			aux = 0;
-			dvdx->dg_dx[0]->value[c_row][col] +=  aux;
-		}
+		x_ind = _idx_x1(1);
+		col = pos(dvdx->dg_dx[0]->index[c_row], dvdx->dg_dx[0]->size[c_row], x_ind);
+		aux = 0;
+		dvdx->dg_dx[0]->value[c_row][col] +=  aux;
 	}
 	for(row = 1; row <= 9; row++) {
 		c_row = _c_index(row);
@@ -110,7 +108,7 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 		_get_x1_idxs(eq_var);
 		_apply_usage_eq_1(_d1);
 		aux = 0;
-		if((1 <= 1 && 1 <= 1) && (1 <= _d1 && _d1 <= 1)) {
+		 if((1 <= _d1 && _d1 <= 1)) {
 			x_ind = _idx_x1(1);
 			col = pos(dvdx->df_dx[0]->index[c_row], dvdx->df_dx[0]->size[c_row], x_ind);
 			c_row_g = _idx_a1(_rg_d1) - 0;
@@ -151,35 +149,27 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
 		aux = 0;
-		if((9 <= 9 && 9 <= 9) && (10 <= 10 && 10 <= 10)) {
-			x_ind = _idx_x1(9);
-			col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
-			c_row_g = _idx_a1(10) - 1;
-			col_g = pos(dvdx->dg_dx[1]->index[c_row_g], dvdx->dg_dx[1]->size[c_row_g], x_ind);
-			dvdx->df_dx[1]->value[c_row][col] += aux * dvdx->dg_dx[1]->value[c_row_g][col_g];
-		}
-		if((10 <= 10 && 10 <= 10) && (10 <= 10 && 10 <= 10)) {
-			x_ind = _idx_x1(10);
-			col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
-			c_row_g = _idx_a1(10) - 1;
-			col_g = pos(dvdx->dg_dx[1]->index[c_row_g], dvdx->dg_dx[1]->size[c_row_g], x_ind);
-			dvdx->df_dx[1]->value[c_row][col] += aux * dvdx->dg_dx[1]->value[c_row_g][col_g];
-		}
-		if((1 <= 1 && 1 <= 1)) {
-			x_ind = _idx_x2(1);
-			col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
-			aux = 0;
-			dvdx->df_dx[1]->value[c_row][col] +=  aux;
-		}
+		x_ind = _idx_x1(9);
+		col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
+		c_row_g = _idx_a1(9) - 1;
+		col_g = pos(dvdx->dg_dx[1]->index[c_row_g], dvdx->dg_dx[1]->size[c_row_g], x_ind);
+		dvdx->df_dx[1]->value[c_row][col] += aux * dvdx->dg_dx[1]->value[c_row_g][col_g];
+		x_ind = _idx_x1(10);
+		col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
+		c_row_g = _idx_a1(10) - 1;
+		col_g = pos(dvdx->dg_dx[1]->index[c_row_g], dvdx->dg_dx[1]->size[c_row_g], x_ind);
+		dvdx->df_dx[1]->value[c_row][col] += aux * dvdx->dg_dx[1]->value[c_row_g][col_g];
+		x_ind = _idx_x2(1);
+		col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
+		aux = 0;
+		dvdx->df_dx[1]->value[c_row][col] +=  aux;
 	}
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if((10 <= 10 && 10 <= 10)) {
-			x_ind = _idx_x1(10);
-			col = pos(dvdx->df_dx[2]->index[c_row], dvdx->df_dx[2]->size[c_row], x_ind);
-			aux = 0;
-			dvdx->df_dx[2]->value[c_row][col] +=  aux;
-		}
+		x_ind = _idx_x1(10);
+		col = pos(dvdx->df_dx[2]->index[c_row], dvdx->df_dx[2]->size[c_row], x_ind);
+		aux = 0;
+		dvdx->df_dx[2]->value[c_row][col] +=  aux;
 	}
 	// Assign Jacobian Matrix values for equation: 0
 	for (row = 0; row < 9; row++) {
@@ -268,9 +258,7 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	}
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if((1 <= 1 && 1 <= 1)) {
 			modelData->jac_matrices->dg_dx[0]->size[c_row]++;
-		}
 	}
 	for(row = 1; row <= 9; row++) {
 		c_row = _c_index(row);
@@ -287,7 +275,7 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 		c_row = _c_index(row);
 		_get_eq_1_var_idxs(row, eq_var);
 		_get_x1_idxs(eq_var);
-		if((1 <= 1 && 1 <= 1) && (1 <= _d1 && _d1 <= 1)) {
+		 if((1 <= _d1 && _d1 <= 1)) {
 			modelData->jac_matrices->df_dx[0]->size[c_row]++;
 		}
 		if((1 <= _d1-1 && _d1-1 <= 8) && (2 <= _d1 && _d1 <= 9)) {
@@ -305,21 +293,13 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	}
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if((9 <= 9 && 9 <= 9) && (10 <= 10 && 10 <= 10)) {
 			modelData->jac_matrices->df_dx[1]->size[c_row]++;
-		}
-		if((10 <= 10 && 10 <= 10) && (10 <= 10 && 10 <= 10)) {
 			modelData->jac_matrices->df_dx[1]->size[c_row]++;
-		}
-		if((1 <= 1 && 1 <= 1)) {
 			modelData->jac_matrices->df_dx[1]->size[c_row]++;
-		}
 	}
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if((10 <= 10 && 10 <= 10)) {
 			modelData->jac_matrices->df_dx[2]->size[c_row]++;
-		}
 	}
 	CLC_allocDataMatrix(modelData);
 	cleanVector(states, 0, 11);
@@ -375,14 +355,12 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	cleanVector(states, 0, 11);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if((1 <= 1 && 1 <= 1)) {
 			x_ind = _idx_x1(1);
 			if(in(modelData->jac_matrices->dg_dx[0]->index[c_row],modelData->jac_matrices->dg_dx[0]->size[c_row], x_ind)){
 				modelData->jac_matrices->dg_dx[0]->size[c_row]--;
 			} else {
 				modelData->jac_matrices->dg_dx[0]->index[c_row][states[c_row]++] = x_ind;
 			}
-		}
 	}
 	cleanVector(states, 0, 11);
 	for(row = 1; row <= 9; row++) {
@@ -411,7 +389,7 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 		c_row = _c_index(row);
 		_get_eq_1_var_idxs(row, eq_var);
 		_get_x1_idxs(eq_var);
-		if((1 <= 1 && 1 <= 1) && (1 <= _d1 && _d1 <= 1)) {
+		 if((1 <= _d1 && _d1 <= 1)) {
 			x_ind = _idx_x1(1);
 			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[0]->size[c_row]--;
@@ -455,42 +433,34 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	cleanVector(states, 0, 11);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if((9 <= 9 && 9 <= 9) && (10 <= 10 && 10 <= 10)) {
 			x_ind = _idx_x1(9);
 			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[1]->size[c_row]--;
 			} else {
 				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
 			}
-		}
-		if((10 <= 10 && 10 <= 10) && (10 <= 10 && 10 <= 10)) {
 			x_ind = _idx_x1(10);
 			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[1]->size[c_row]--;
 			} else {
 				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
 			}
-		}
-		if((1 <= 1 && 1 <= 1)) {
 			x_ind = _idx_x2(1);
 			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[1]->size[c_row]--;
 			} else {
 				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
 			}
-		}
 	}
 	cleanVector(states, 0, 11);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if((10 <= 10 && 10 <= 10)) {
 			x_ind = _idx_x1(10);
 			if(in(modelData->jac_matrices->df_dx[2]->index[c_row],modelData->jac_matrices->df_dx[2]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[2]->size[c_row]--;
 			} else {
 				modelData->jac_matrices->df_dx[2]->index[c_row][states[c_row]++] = x_ind;
 			}
-		}
 	}
 	cleanVector(states, 0, 11);
 	SD_setupJacMatrices(modelData->jac_matrices);
