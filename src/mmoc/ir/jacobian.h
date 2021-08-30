@@ -56,7 +56,7 @@ class JacGenerator {
   void generateEquation(int id, EQUATION::Type type);
   void generateEquation(int v_id, int g_id, EQUATION::Type type);
   std::string getVariableIndexes(Equation eq);
-  std::string guard(SB::Set dom, int offset, SB::Deps::LMapExp map);
+  std::string guard(SB::Set dom, int offset, std::string var_name, SB::Deps::LMapExp map);
 
   JacDef _jac_def;
   int _tabs;

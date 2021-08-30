@@ -75,7 +75,7 @@ void JacGenerator::end()
   _tabs--;
 }
 
-std::string JacGenerator::guard(SB::Set dom, int offset, SB::Deps::LMapExp map)
+std::string JacGenerator::guard(SB::Set dom, int offset, std::string var_name, SB::Deps::LMapExp map)
 {
   if (map.constantExp()) {
     return "";
@@ -83,6 +83,8 @@ std::string JacGenerator::guard(SB::Set dom, int offset, SB::Deps::LMapExp map)
   Range range(dom, offset);
   stringstream code;
   vector<string> exps = map.apply(range.getDimensionVars());
+  Expression map_exp = Expression::generate(var_name, exps);
+  range.applyUsage(Index(map_exp));
   return range.in(exps);
 }
 
@@ -92,12 +94,6 @@ void JacGenerator::dependencyPrologue(Equation eq, SB::Deps::VariableDep var_dep
   string tabs = Utils::instance().tabs(_tabs);
   SB::Deps::LMapExp map = var_dep.nMap(); 
   Range range(var_dep.variables(), var_dep.varOffset());
-  SB::Set s = var_dep.variables();
-  cout << "Variables " << s << endl;
-  cout << "Variables offset " << var_dep.varOffset() << endl;
-  s = var_dep.equations();
-  cout << "Equations " << s << endl;
-  cout << "Equation offset " << var_dep.eqOffset() << endl;
   if (var_dep.isRecursive()) {
     FunctionPrinter printer;
     code << tabs << eq.range().get();
@@ -209,8 +205,7 @@ void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_ve
   // Generate composed expression for guards
   SB::Deps::LMapExp map_m = var_dep.mMap();
   SB::Deps::LMapExp n_map = var_dep.nMap();
-  string dom_guard = guard(var_dep.equations(), var_dep.eqOffset(), map_m);
-  cout << dom_guard << endl;
+  string dom_guard = guard(var_dep.equations(), var_dep.eqOffset(), var_dep.var().name(), map_m);
   dependencyPrologue(g_eq, var_dep, dom_guard);
   generatePos(v_eq.arrayId(), v_eq.type());
   vector<string> variables;
