@@ -17,10 +17,9 @@
 
  ******************************************************************************/
 
-#ifndef PARTIAL_EVAL_EXP_H_
-#define PARTIAL_EVAL_EXP_H_
+#pragma once
 
-#include "../ast_util.h"
+#include <util/ast_util.h>
 
 namespace MicroModelica {
 namespace Util {
@@ -30,6 +29,8 @@ namespace Util {
 class PartialEvalExp : public AST_Expression_Visitor<AST_Expression> {
   public:
   PartialEvalExp();
+  bool isIntegerOrConstant(AST_Expression exp);
+  int getValue(AST_Expression exp);
 
   private:
   AST_Expression foldTraverseElement(AST_Expression exp);
@@ -37,13 +38,9 @@ class PartialEvalExp : public AST_Expression_Visitor<AST_Expression> {
   AST_Expression foldTraverseElement(AST_Expression left, AST_Expression right, BinOpType type);
 
   bool shouldReturnInteger(AST_Expression left, AST_Expression right);
-  int getValue(AST_Expression exp);
-  bool isIntegerOrConstant(AST_Expression exp);
   bool canReduce(AST_Expression exp);
   AST_Expression reduce(AST_Expression reduce, AST_Expression term, BinOpType type);
 };
 
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif /* PARTIAL_EVAL_EXP_H_ */

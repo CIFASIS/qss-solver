@@ -17,19 +17,18 @@
 
  ******************************************************************************/
 
-#ifndef DEPS_GRAPH_H_
-#define DEPS_GRAPH_H_
+#pragma once
 
 #include <iostream>
 #include <utility>
 #include <boost/config.hpp>
 #include <boost/graph/adjacency_list.hpp>
 
-#include "../../ir/expression.h"
-#include "../../ir/equation.h"
-#include "../../ir/index.h"
-#include "../../ir/statement.h"
-#include "../../util/symbol_table.h"
+#include <ir/expression.h>
+#include <ir/equation.h>
+#include <ir/index.h>
+#include <ir/statement.h>
+#include <util/symbol_table.h>
 #include "graph_helpers.h"
 
 namespace MicroModelica {
@@ -69,7 +68,7 @@ class StatementVertex {
 
 class VertexProperty {
   public:
-  VertexProperty() : _type(VERTEX::Equation), _exp(), _eq(), _stm(), _id(0), _var() {}
+  VertexProperty() : _type(VERTEX::Equation), _exp(), _eq(), _stm(), _id(0), _var(), _offset(1) {}
   VertexProperty(const VertexProperty& other)
   {
     _type = other._type;
@@ -79,6 +78,16 @@ class VertexProperty {
     _stm = other._stm;
     _id = other._id;
   }
+  VertexProperty(VERTEX::Type type, IR::Equation eq, int id, int offset)
+      : _type(type), _exp(), _eq(eq), _stm(), _id(id), _var(), _offset(offset)
+  {
+  }
+
+  VertexProperty(VERTEX::Type type, Util::Variable var, int id, int offset)
+      : _type(type), _exp(), _eq(), _stm(), _id(id), _var(var), _offset(offset)
+  {
+  }
+  
   Util::Variable var() { return _var; }
   void setVar(Util::Variable var) { _var = var; }
   VERTEX::Type type() { return _type; }
@@ -91,6 +100,8 @@ class VertexProperty {
   void setStm(StatementVertex stm) { _stm = stm; }
   int id() { return _id; }
   void setId(int id) { _id = id; }
+  int offset() const;
+  void setOffset(int offset) { _offset = offset; }
 
   private:
   VERTEX::Type _type;
@@ -99,17 +110,14 @@ class VertexProperty {
   StatementVertex _stm;
   int _id;
   Util::Variable _var;
+  int _offset;
 };
 
 class Label {
   public:
-  Label(){};
+  Label() = default;
   Label(IndexPairSet ips, EDGE::Direction dir = EDGE::Output);
   Label(IndexPair ip, EDGE::Direction dir = EDGE::Output);
-  void RemovePairs(IndexPairSet ips);
-  void RemoveUnknowns(MDI const unk2remove);
-  void RemoveEquations(MDI const mdi);
-  unsigned long int EdgeCount();
   inline bool IsEmpty() { return ips.size() == 0; }
   inline const IndexPairSet& Pairs() const { return ips; }
   inline const IndexPair& Pair() const { return _ip; }
@@ -117,9 +125,7 @@ class Label {
 
   friend std::ostream& operator<<(std::ostream& os, const Label& label);
 
-  private:
-  void RemoveDuplicates();
-
+  protected:
   IndexPairSet ips;
   IndexPair _ip;
   EDGE::Direction _dir;
@@ -173,7 +179,7 @@ class GenerateEdge {
 
   protected:
   void initialize();
-  void build(list<IR::Expression> exps);
+  void build(set<IR::Expression> exps);
   Option<IR::Range> range(struct VertexProperty sink);
   /**
    * @brief      Checks wheter the node belong to an event handler of zc.
@@ -199,4 +205,3 @@ class GenerateEdge {
 
 }  // namespace Deps
 }  // namespace MicroModelica
-#endif

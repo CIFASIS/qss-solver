@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef SYMBOL_TABLE_H_
-#define SYMBOL_TABLE_H_
+#pragma once
 
 #include <functional>
 #include <iostream>
@@ -27,11 +26,11 @@
 #include <string>
 #include <vector>
 
-#include "../ast/ast_types.h"
-#include "../ast/element.h"
-#include "../ast/modification.h"
-#include "type.h"
-#include "table.h"
+#include <ast/ast_types.h>
+#include <ast/element.h>
+#include <ast/modification.h>
+#include <util/type.h>
+#include <util/table.h>
 
 namespace MicroModelica {
 
@@ -160,12 +159,12 @@ class VarSymbolTable : public ModelTable<VarName, Variable> {
   void insert(VarName name, Variable variable);
   inline bool parameters() { return _parameters; };
   Option<Variable> lookup(std::string name);
+  unsigned int maxDim() const;
 
   private:
   bool _parameters;
+  unsigned int _max_dims;
 };
 
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif /* SYMBOL_TABLE_H_ */

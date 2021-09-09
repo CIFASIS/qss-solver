@@ -17,12 +17,11 @@
 
  ******************************************************************************/
 
-#ifndef INDEX_SHIFT_BUILDER_H
-#define INDEX_SHIFT_BUILDER_H
+#pragma once
 
 #include "../../ir/equation.h"
 #include "../../util/symbol_table.h"
-#include "../graph/sb_graph_helpers.h"
+#include <deps/sbg_graph/deps_graph.h>
 
 namespace MicroModelica {
 namespace Deps {
@@ -32,17 +31,15 @@ class IndexShiftBuilder {
   IndexShiftBuilder(IR::EquationTable &algebraics);
   ~IndexShiftBuilder() = default;
   
-  SBG::IndexShift build();
+  SB::Deps::IndexShift build();
 
   protected:
   int flatter(Util::Variable variable, std::vector<int> usage);
 
   private:
   IR::EquationTable _algebraics;
-  SBG::IndexShift _index_shift;
+  SB::Deps::IndexShift _index_shift;
 };
 
 }  // namespace Deps
 }  // namespace MicroModelica
-
-#endif /* INDEX_SHIFT_BUILDER_H */

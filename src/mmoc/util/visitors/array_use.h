@@ -17,16 +17,15 @@
 
  ******************************************************************************/
 
-#ifndef ARRAY_USE_H_
-#define ARRAY_USE_H_
+#pragma once
 
-#include "../ast_util.h"
+#include <util/ast_util.h>
 
 namespace MicroModelica {
 namespace Util {
 class ArrayUse : public AST_Expression_Visitor<bool> {
   public:
-  ArrayUse() {};
+  ArrayUse() = default;
   ~ArrayUse() = default;
 
   private:
@@ -47,5 +46,3 @@ class StatementArrayUse : public AST_Statement_Visitor<bool, bool, ArrayUse> {
 
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif /* ARRAY_USE_H_ */

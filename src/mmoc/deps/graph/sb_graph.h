@@ -198,7 +198,7 @@ class BuildEdge {
 
   protected:
   void initialize();
-  void build(list<IR::Expression> exps);
+  void build(set<IR::Expression> exps);
   Option<IR::Range> range(struct VertexProperty sink);
   /**
    * @brief      Checks wheter the node belong to an event handler of zc.

@@ -17,59 +17,24 @@
 
  ******************************************************************************/
 
-#ifndef STORED_DEFINITION_H_
-#define STORED_DEFINITION_H_
+#pragma once 
 
-#include "../util/macros.h"
-#include "../util/util_types.h"
-#include "ast_node.h"
-#include "ast_types.h"
+#include <util/macros.h>
+#include <util/util_types.h>
+#include <ast/ast_node.h>
+#include <ast/ast_types.h>
 
 class AST_Imports;
 
-/**
- *
- */
 class AST_StoredDefinition_ : public AST_Node_ {
   public:
-  /**
-   *
-   * @param ml
-   * @param within
-   */
   AST_StoredDefinition_(AST_ClassList ml, AST_String within);
-  /**
-   *
-   */
   virtual ~AST_StoredDefinition_(){};
-  /**
-   *
-   */
   DEFINE_CLASS_PRINTER(AST_StoredDefinition);
-  /**
-   *
-   * @return
-   */
   AST_ClassList models() const;
-  /**
-   *
-   * @return
-   */
   AST_String within() const;
-  /**
-   *
-   * @param visitor
-   */
   void accept(AST_Visitor *visitor);
-  /**
-   *
-   * @return
-   */
   bool hasWithin();
-  /**
-   *
-   * @return
-   */
   AST_StringList imports();
 
   private:
@@ -77,5 +42,3 @@ class AST_StoredDefinition_ : public AST_Node_ {
   AST_String _within;
   AST_Imports *_imports;
 };
-
-#endif /* STORED_DEFINITION_H_ */

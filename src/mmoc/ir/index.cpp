@@ -208,6 +208,8 @@ Range::Range(AST_Expression exp) : _ranges(), _index_pos(), _size(1), _type(RANG
 
 Range::Range(SBG::MDI mdi) : _ranges(), _index_pos(), _size(1), _type(RANGE::For) { generate(mdi); }
 
+Range::Range(SB::Set set, int offset) : _ranges(), _index_pos(), _size(1), _type(RANGE::For) { generate(set, offset); }
+
 void Range::updateRangeDefinition(std::string index_def, RangeDefinition def, int pos)
 {
   _ranges.insert(index_def, def);
@@ -286,6 +288,26 @@ void Range::generate(SBG::MDI mdi)
     updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
     Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
     ModelConfig::instance().addVariable(index, vi);
+  }
+}
+
+void Range::generate(SB::Set set, int offset)
+{
+  int pos = 0;
+  SB::UnordAtomSet a_sets = set.atomicSets();
+  for (SB::AtomSet a_set : a_sets) {
+    SB::MultiInterval intervals =  a_set.atomicSets();
+    for(SB::Interval interval : intervals.intervals()) {
+      int begin = interval.lo() - offset + 1;
+      int end = begin + interval.hi() - interval.lo();
+      if (end < begin) {
+        Error::instance().add(0, EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong range in dependency matrix.");
+      }
+      string index = Utils::instance().iteratorVar(pos);
+      updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
+      Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
+      ModelConfig::instance().addVariable(index, vi);
+    }
   }
 }
 
@@ -531,7 +553,7 @@ string Range::in(ExpressionList exps)
 
 string Range::in(vector<string> exps)
 {
-  assert(exps.size() == _ranges.size());
+  assert(exps.size() == (size_t)_ranges.size());
   // If empty generate a default true condition to handle scalar cases.
   if (exps.empty()) {
     return "1";
@@ -557,7 +579,6 @@ map<std::string, AST_Expression> Range::initExps()
   map<string, AST_Expression> init_exps;
   RangeDefinitionTable::iterator it;
   int i = 0;
-  int size = _ranges.size();
   for (RangeDefinition r = _ranges.begin(it); !_ranges.end(it); r = _ranges.next(it), i++) {
     init_exps[_ranges.key(it)] = newAST_Expression_Integer(r.begin());  
   }

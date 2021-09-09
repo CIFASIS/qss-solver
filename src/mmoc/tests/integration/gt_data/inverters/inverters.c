@@ -169,15 +169,15 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 		c_row = _c_index(row);
 		_get_eq_2_var_idxs(row, eq_var);
 		_get_x_idxs(eq_var);
-		if((1 <= _d1-1 && _d1-1 <= 501)) {
-			x_ind = _idx_x(_d1-1,0);
+		if((2 <= _d1 && _d1 <= 502)) {
+			x_ind = _idx_x(_d1,0);
 			col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
 			_apply_usage_eq_2(_d1);
 			aux = 0;
 			dvdx->df_dx[1]->value[c_row][col] +=  aux;
 		}
-		if((2 <= _d1 && _d1 <= 502)) {
-			x_ind = _idx_x(_d1,0);
+		if((1 <= _d1-1 && _d1-1 <= 501)) {
+			x_ind = _idx_x(_d1-1,0);
 			col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
 			_apply_usage_eq_2(_d1);
 			aux = 0;
@@ -304,10 +304,10 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		c_row = _c_index(row);
 		_get_eq_2_var_idxs(row, eq_var);
 		_get_x_idxs(eq_var);
-		if((1 <= _d1-1 && _d1-1 <= 501)) {
+		if((2 <= _d1 && _d1 <= 502)) {
 			modelData->jac_matrices->df_dx[1]->size[c_row]++;
 		}
-		if((2 <= _d1 && _d1 <= 502)) {
+		if((1 <= _d1-1 && _d1-1 <= 501)) {
 			modelData->jac_matrices->df_dx[1]->size[c_row]++;
 		}
 	}
@@ -371,16 +371,16 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		c_row = _c_index(row);
 		_get_eq_2_var_idxs(row, eq_var);
 		_get_x_idxs(eq_var);
-		if((1 <= _d1-1 && _d1-1 <= 501)) {
-			x_ind = _idx_x(_d1-1,0);
+		if((2 <= _d1 && _d1 <= 502)) {
+			x_ind = _idx_x(_d1,0);
 			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[1]->size[c_row]--;
 			} else {
 				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
 			}
 		}
-		if((2 <= _d1 && _d1 <= 502)) {
-			x_ind = _idx_x(_d1,0);
+		if((1 <= _d1-1 && _d1-1 <= 501)) {
+			x_ind = _idx_x(_d1-1,0);
 			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[1]->size[c_row]--;
 			} else {

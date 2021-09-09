@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef AST_BUILDER_H_
-#define AST_BUILDER_H_
+#pragma once 
 
 #include <string>
 
@@ -189,5 +188,3 @@ AST_StoredDefinition newAST_StoredDefinition(AST_ClassList, AST_String);
 AST_TypePrefix newAST_TypePrefix();
 AST_TypePrefix newAST_TypePrefix(AST_TypePrefix);
 AST_TypePrefix AST_TypePrefixAdd(AST_TypePrefix, AST_TypePrefix);
-
-#endif /* AST_BUILDER_H_ */

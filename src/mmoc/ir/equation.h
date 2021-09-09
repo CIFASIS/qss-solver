@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef EQUATION_H_
-#define EQUATION_H_
+#pragma once
 
 #include "../ast/ast_types.h"
 #include "../deps/dependency_matrix.h"
@@ -125,5 +124,3 @@ class Dependency {
 
 }  // namespace IR
 }  // namespace MicroModelica
-
-#endif /* EQUATION_H_ */

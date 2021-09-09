@@ -44,7 +44,7 @@ AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
       AST_ExpressionListIterator it;
       int i = 0;
       AST_ExpressionList l = newAST_ExpressionList();
-      assert(indexes->size() == _usage.Size());
+      assert(indexes->size() == (size_t)_usage.Size());
       foreach (it, indexes) {
         if (_usage.isUsed(i)) {
           string var = _range.iterator(i, _range_idxs);

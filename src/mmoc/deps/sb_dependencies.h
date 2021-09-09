@@ -17,25 +17,20 @@
 
  ******************************************************************************/
 
-#ifndef DEP_SB_DEPENDENCIES_H_
-#define DEP_SB_DEPENDENCIES_H_
+#pragma once
 
 #include <string>
 
-#include "../ir/equation.h"
-#include "../ir/expression.h"
-#include "../ir/jacobian.h"
-#include "../util/symbol_table.h"
-#include "builders/index_shift_builder.h"
-#include "graph/sb_graph_helpers.h"
-#include "graph/sb_graph.h"
-#include "jacobian_matrices.h"
+#include <ir/jacobian.h>
+#include <util/symbol_table.h>
+#include <deps/builders/index_shift_builder.h>
+#include <deps/sbg_graph/deps_graph.h>
+#include <deps/jacobian_matrices.h>
 
 namespace MicroModelica {
 namespace Deps {
-namespace SBG {
 
-typedef std::list<std::pair<SBVertex, MDI>> VertexInfo;
+//typedef std::list<std::pair<SBG::Deps::SetVertex, MDI>> VertexInfo;
 
 template <typename IGenerator, typename R>
 class SBDependencies {
@@ -43,15 +38,18 @@ class SBDependencies {
   SBDependencies();
   ~SBDependencies() = default;
 
-  void compute(SBGraph graph, IndexShift index_shift);
+  void compute(SB::Deps::Graph graph, SB::Deps::IndexShift index_shift);
 
   R deps();
 
   protected:
-  void paths(SBGraph graph, SBVertex V, Util::Variable visiting_alg);
+  void paths(SB::Deps::Graph graph, SB::Deps::Vertex V, Util::Variable visiting_alg);
+  void recursiveDeps(SB::Deps::Graph graph, SB::PWLMap map_u, SB::Deps::Vertex V, SB::Deps::Vertex X, int num_gen, list<SB::Deps::SetEdge> rec_alg_use_maps);
 
-  IndexShift _index_shift;
+  SB::Deps::IndexShift _index_shift;
   IGenerator _gen;
+  SB::PWLMap _map_F;
+  SB::PWLMap _map_U;
 };
 
 // Typedef for concrete clases.
@@ -59,8 +57,5 @@ class SBDependencies {
 typedef SBDependencies<Deps::JacMatrixGenerator, Deps::JacMatrixDef> JacobianMatrixBuilder;
 typedef SBDependencies<MicroModelica::IR::JacGenerator, MicroModelica::IR::JacDef> JacobianBuilder;
 
-}  // namespace SBG
 }  // namespace Deps
 }  // namespace MicroModelica
-
-#endif  // DEP_SB_DEPENDENCIES_H

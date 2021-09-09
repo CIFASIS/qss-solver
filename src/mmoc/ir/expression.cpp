@@ -21,20 +21,19 @@
 
 #include <sstream>
 
-#include "../ast/expression.h"
-#include "../parser/parse.h"
-#include "../util/visitors/expression_printer.h"
-#include "../util/visitors/is_constant_index.h"
-#include "../util/error.h"
-#include "../util/model_config.h"
-#include "../util/util.h"
-#include "helpers.h"
+#include <ast/expression.h>
+#include <parser/parse.h>
+#include <util/visitors/expression_printer.h>
+#include <util/visitors/is_constant_index.h>
+#include <util/error.h>
+#include <util/model_config.h>
+#include <util/util.h>
+#include <ir/helpers.h>
 
 namespace MicroModelica {
 using namespace Util;
 namespace IR {
 
-/* MMO_Expression class. */
 Expression::Expression(AST_Expression exp, int order) : _exp(exp), _order(order) {}
 
 Expression::Expression() : _exp(nullptr), _order(0) {}
@@ -158,6 +157,14 @@ std::ostream& operator<<(std::ostream& out, const Expression& s)
 {
   out << s.print();
   return out;
+}
+bool Expression::operator<(const Expression &other) const
+{                                          
+  std::stringstream cmp_this;
+  std::stringstream cmp_other;
+  cmp_this << *this;
+  cmp_other << other;
+  return cmp_this.str() < cmp_other.str();
 }
 
 }  // namespace IR

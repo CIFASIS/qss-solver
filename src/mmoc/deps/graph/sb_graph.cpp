@@ -315,9 +315,9 @@ void BuildEdge::initialize()
   if (_eval == VERTEX::LHS) {
     if (_source.type() == VERTEX::Influencer && _sink.type() == VERTEX::Equation && !_sink.eq().isAlgebraic() &&
         _source.id() == _sink.eq().id()) {
-      ExpressionList exps;
+      set<Expression> exps;
       _exist = true;
-      exps.push_back(_sink.eq().lhs());
+      exps.insert(_sink.eq().lhs());
       build(exps);
     } else if (_source.type() == VERTEX::Algebraic && _dir == EDGE::Output) {
       _exist = occurs.apply(_sink.eq().lhs().expression());
@@ -332,14 +332,14 @@ void BuildEdge::initialize()
       }
     } else if (_source.type() == VERTEX::Influencee) {
       assert(_sink.type() == VERTEX::Equation);
-      ExpressionList exps;
+      set<Expression> exps;
       if (sinkIsEvent() && _source.id() == _sink.id()) {
         _exist = true;
-        exps.push_back(_sink.stm().event());
+        exps.insert(_sink.stm().event());
         build(exps);
       } else if (_source.id() >= 0 && _source.id() == _sink.eq().id()) {
         _exist = true;
-        exps.push_back(_sink.eq().lhs());
+        exps.insert(_sink.eq().lhs());
         build(exps);
       } else {
         assert(_sink.type() == VERTEX::Equation);
@@ -366,17 +366,17 @@ void BuildEdge::initialize()
         build(occurs.occurrences());
       }
     } else if (_source.type() == VERTEX::Influencee) {
-      ExpressionList exps;
+      set<Expression> exps;
       if (sinkIsEvent()) {
         if (_source.id() == _sink.id()) {
           _exist = true;
-          exps.push_back(_sink.stm().event());
+          exps.insert(_sink.stm().event());
           build(exps);
         }
       } else if (sinkIsOutput()) {
         if (_source.id() == _sink.eq().id()) {
           _exist = true;
-          exps.push_back(_sink.eq().lhs());
+          exps.insert(_sink.eq().lhs());
           build(exps);
         }
       } else {
@@ -389,7 +389,7 @@ void BuildEdge::initialize()
   }
 }
 
-void BuildEdge::build(list<Expression> exps)
+void BuildEdge::build(set<Expression> exps)
 {
   Option<Range> sink_range = range(_sink);
   IntervalList sink_interval;

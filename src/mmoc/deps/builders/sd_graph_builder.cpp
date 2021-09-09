@@ -19,8 +19,8 @@
 
 #include "sd_graph_builder.h"
 
-#include "../../util/model_config.h"
-#include "../../util/util_types.h"
+#include <util/model_config.h>
+#include <util/util_types.h>
 
 namespace MicroModelica {
 using namespace IR;
@@ -38,8 +38,11 @@ DepsGraph SDGraphBuilder::build()
   // First, add the symbols as vertex.
   VarSymbolTable::iterator it;
   VarSymbolTable symbols = ModelConfig::instance().symbols();
+  int dom_offset = 1;
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     VertexProperty vp = VertexProperty();
+    vp.setOffset(dom_offset);
+    dom_offset += var.size();
     if (var.isState()) {
       vp.setType(VERTEX::Influencee);
       vp.setVar(var);
@@ -55,24 +58,15 @@ DepsGraph SDGraphBuilder::build()
   }
   EquationTable::iterator eqit;
   for (Equation eq = _equations.begin(eqit); !_equations.end(eqit); eq = _equations.next(eqit)) {
-    VertexProperty vp = VertexProperty();
-    vp.setType(VERTEX::Equation);
-    vp.setEq(eq);
-    vp.setId(eq.id());
+    VertexProperty vp = VertexProperty(VERTEX::Equation, eq, eq.id(), dom_offset);
     _equation_def_nodes.push_back(add_vertex(vp, graph));
     Option<Variable> assigned = eq.LHSVariable();
     assert(assigned);
-    VertexProperty ifr = VertexProperty();
-    ifr.setType(VERTEX::Influencer);
-    ifr.setVar(assigned.get());
-    ifr.setId(eq.id());
+    VertexProperty ifr = VertexProperty(VERTEX::Influencer, assigned.get(), eq.id(), dom_offset);
     _equation_lhs_nodes.push_back(add_vertex(ifr, graph));
   }
   for (Equation eq = _algebraics.begin(eqit); !_algebraics.end(eqit); eq = _algebraics.next(eqit)) {
-    VertexProperty vp = VertexProperty();
-    vp.setType(VERTEX::Equation);
-    vp.setEq(eq);
-    vp.setId(eq.id());
+    VertexProperty vp = VertexProperty(VERTEX::Equation, eq, eq.id(), dom_offset);
     _equation_def_nodes.push_back(add_vertex(vp, graph));
   }
 

@@ -21,28 +21,30 @@
 
 #include <sstream>
 
-#include "../deps/builders/sd_sb_graph_builder.h"
-#include "../deps/sb_dependencies.h"
-#include "../parser/parse.h"
-#include "../util/model_config.h"
-#include "../util/util.h"
-#include "../util/symbol_table.h"
-#include "derivative.h"
-#include "helpers.h"
-#include "index.h"
+#include <deps/builders/sd_sb_graph_builder.h>
+#include <deps/sbg_graph/build_from_exps.h>
+#include <deps/sb_dependencies.h>
+#include <parser/parse.h>
+#include <util/model_config.h>
+#include <util/util.h>
+#include <util/symbol_table.h>
+#include <ir/derivative.h>
+#include <ir/helpers.h>
+#include <ir/index.h>
 
 namespace MicroModelica {
 using namespace Deps;
 using namespace Deps::SBG;
+using namespace SB;
 using namespace Util;
 namespace IR {
 
 JacGenerator::JacGenerator() : _jac_def(), _tabs(0) {}
 
-void JacGenerator::postProcess(SBG::VertexProperty vertex)
+void JacGenerator::postProcess(SB::Deps::SetVertex vertex)
 {
-  int size = vertex.size();
-  int id = vertex.id() - 1;
+  int size = vertex.range().size();
+  int id = vertex.index() - 1;
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
   code << "// Assign Jacobian Matrix values for equation: " << id << endl;
@@ -55,13 +57,14 @@ void JacGenerator::postProcess(SBG::VertexProperty vertex)
   _jac_def.code.append(code.str());
 }
 
-void JacGenerator::init(SBG::VertexProperty vertex)
+void JacGenerator::init(SB::Deps::SetVertex vertex)
 {
   stringstream code;
   FunctionPrinter function_printer;
-  code << "for(row = 1; row <= " << vertex.size() << "; row++) {" << endl;
+  Equation eq = getEquation(vertex);
+  code << "for(row = 1; row <= " << vertex.range().size() << "; row++) {" << endl;
   code << TAB << "c_row = _c_index(row);" << endl;
-  code << function_printer.jacMacrosAccess(vertex.eq());
+  code << function_printer.jacMacrosAccess(eq);
   _tabs++;
   _jac_def.code.append(code.str());
 }
@@ -72,20 +75,26 @@ void JacGenerator::end()
   _tabs--;
 }
 
-std::string JacGenerator::guard(SBG::MDI dom, SBG::Map map)
+std::string JacGenerator::guard(SB::Set dom, int offset, std::string var_name, SB::Deps::LMapExp map)
 {
-  Range range(dom);
+  if (map.constantExp()) {
+    return "";
+  }
+  Range range(dom, offset);
   stringstream code;
-  vector<string> exps = map.exps(range.getDimensionVars());
+  vector<string> exps = map.apply(range.getDimensionVars());
+  Expression map_exp = Expression::generate(var_name, exps);
+  range.applyUsage(Index(map_exp));
   return range.in(exps);
 }
 
-void JacGenerator::dependencyPrologue(Equation eq, SBG::VariableDep var_dep, SBG::Map map, std::string guard)
+void JacGenerator::dependencyPrologue(Equation eq, SB::Deps::VariableDep var_dep, std::string guard)
 {
   stringstream code;
   string tabs = Utils::instance().tabs(_tabs);
-  Range range(var_dep.range());
-  if (var_dep.isRecursive()) {
+  SB::Deps::LMapExp map = var_dep.nMap(); 
+  Range range(var_dep.variables(), var_dep.varOffset());
+  if (var_dep.isRecursive() && eq.hasRange()) {
     FunctionPrinter printer;
     code << tabs << eq.range().get();
     _tabs++;
@@ -95,25 +104,34 @@ void JacGenerator::dependencyPrologue(Equation eq, SBG::VariableDep var_dep, SBG
     Index a_ind(a_exp);
     code << TAB << printer.jacMacrosAccess(eq, a_ind.print());
   }
-  vector<string> exps = map.exps(range.getDimensionVars());
-  code << tabs << "if(" << range.in(exps);
-  if (!guard.empty()) {
-    code << " && " << guard;
+  vector<string> exps = map.apply(range.getDimensionVars());
+  if (!map.constantExp()) {
+    code << tabs << "if(" << range.in(exps);
+    if (!guard.empty()) {
+      code << " && " << guard;
+    }
+    code << ") {" << endl;
+  } else if (!guard.empty()) {
+    code << tabs << " if(" << guard << ") {" << endl;
   }
-  code << ") {" << endl;
   Expression i_exp = Expression::generate(var_dep.var().name(), exps);
   Index x_ind(i_exp);
-  code << tabs << TAB << "x_ind = " << x_ind << ";" << endl;
+  if (!map.constantExp() || !guard.empty()) {
+    _tabs++;
+    tabs = tabs + TAB;
+  }
+  code << tabs << "x_ind = " << x_ind << ";" << endl;
   _jac_def.code.append(code.str());
-  _tabs++;
 }
 
-void JacGenerator::dependencyEpilogue(Equation eq, Deps::SBG::VariableDep var_dep)
+void JacGenerator::dependencyEpilogue(Equation eq, SB::Deps::VariableDep var_dep)
 {
   stringstream code;
-  _tabs--;
-  code << Utils::instance().tabs(_tabs) + "}\n";
-  if (var_dep.isRecursive()) {
+  if (!var_dep.nMap().constantExp() || !var_dep.mMap().constantExp()) {
+    _tabs--;
+    code << Utils::instance().tabs(_tabs) + "}\n";
+  }
+  if (var_dep.isRecursive() && eq.hasRange()) {
     code << eq.range()->end();
   }
   _jac_def.code.append(code.str());
@@ -152,7 +170,7 @@ void JacGenerator::generateEquation(int v_id, int g_id, EQUATION::Type type)
   _jac_def.code.append(code.str());
 }
 
-string JacGenerator::getVariableIndexes(Equation eq, Deps::SBG::Map map)
+string JacGenerator::getVariableIndexes(Equation eq)
 {
   stringstream code;
   if (eq.hasRange()) {
@@ -164,46 +182,59 @@ string JacGenerator::getVariableIndexes(Equation eq, Deps::SBG::Map map)
   return code.str();
 }
 
-void JacGenerator::visitF(Equation eq, SBG::VariableDep var_dep, SBG::Map map)
+void JacGenerator::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep)
+{
+  Equation eq = getEquation(vertex);
+  Fvisitor(vertex, var_dep, eq.arrayId());
+}
+
+void JacGenerator::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex)
+{
+  Equation eq = getEquation(gen_vertex);
+  Fvisitor(vertex, var_dep, eq.arrayId());
+}
+
+void JacGenerator::Fvisitor(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, int eq_id)
 {
   stringstream code;
   VarSymbolTable symbols = ModelConfig::instance().symbols();
-  dependencyPrologue(eq, var_dep, map);
+  Equation eq = getEquation(vertex);
+  dependencyPrologue(eq, var_dep);
   string tab = Utils::instance().tabs(_tabs);
-  generatePos(eq.arrayId(), eq.type());
-  code << getVariableIndexes(eq, map);
-  code << tab << "aux = " << ExpressionDerivator::partialDerivative(eq, Index(map.exp())) << ";" << endl;
+  generatePos(eq_id, eq.type());
+  code << getVariableIndexes(eq);
+  code << tab << "aux = " << ExpressionDerivator::partialDerivative(eq, Index(var_dep.exp())) << ";" << endl;
   _jac_def.code.append(code.str());
-  generateEquation(eq.arrayId(), eq.type());
+  generateEquation(eq_id, eq.type());
   dependencyEpilogue(eq, var_dep);
 }
 
-void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep, SBG::Map n_map, Map map_m, int index_shift)
+void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift)
 {
   stringstream code;
-  string dom_guard = guard(var_dep.dom(), map_m);
-  dependencyPrologue(g_eq, var_dep, n_map, dom_guard);
+  Equation v_eq = getEquation(v_vertex);
+  Equation g_eq = getEquation(g_vertex);
+  // Generate composed expression for guards
+  SB::Deps::LMapExp map_m = var_dep.mMap();
+  SB::Deps::LMapExp n_map = var_dep.nMap();
+  string dom_guard = guard(var_dep.equations(), var_dep.eqOffset(), var_dep.var().name(), map_m);
+  dependencyPrologue(g_eq, var_dep, dom_guard);
   generatePos(v_eq.arrayId(), v_eq.type());
   vector<string> variables;
   string tab = Utils::instance().tabs(_tabs);
   static const bool USE_RANGE_IDXS = true;
   vector<string> exps;
   if (v_eq.hasRange()) {
-    exps = map_m.exps(v_eq.range()->getDimensionVars(USE_RANGE_IDXS));
+    exps = map_m.apply(v_eq.range()->getDimensionVars(USE_RANGE_IDXS));
   } else {
     Option<Variable> v_lhs = v_eq.LHSVariable();
     Option<Variable> g_lhs = g_eq.LHSVariable();
     if (var_dep.isRecursive()) {
-      Range range(var_dep.range());
-      exps = n_map.exps(range.getDimensionVars(USE_RANGE_IDXS));
+      Range range(var_dep.variables(), var_dep.varOffset());
+      exps = n_map.apply(range.getDimensionVars(USE_RANGE_IDXS));
     } else if (g_lhs->isArray()) { 
-      if (var_dep.hasAlgDeps()) {
-        Range range(var_dep.algDom());
-        exps = range.getInitValues();
-      } else {
-        Range range(var_dep.dom());
-        exps = range.getInitValues();
-      }
+      Range range(var_dep.variables(), var_dep.varOffset());
+      exps = range.getInitValues();
     } else if (v_lhs->isArray()) {
       for (Expression exp : v_eq.lhs().indexes()) {
         exps.push_back(exp.print());
@@ -217,20 +248,18 @@ void JacGenerator::visitG(Equation v_eq, Equation g_eq, SBG::VariableDep var_dep
   code << ";" << endl;
   _jac_def.code.append(code.str());
   int g_eq_id = g_eq.arrayId();
-  if (var_dep.hasAlgDeps()) {
-    g_eq_id = var_dep.algEq().arrayId();
-  } 
   generatePos(g_eq_id, g_eq.type(), "c_row_g", "col_g");
   generateEquation(v_eq.arrayId(), g_eq_id, v_eq.type());
   dependencyEpilogue(g_eq, var_dep);
 }
 
-void JacGenerator::initG(Equation eq, SBG::Map map_m)
+void JacGenerator::initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge)
 {
   stringstream code;
   string tab = Utils::instance().tabs(_tabs);
-  code << getVariableIndexes(eq, map_m);
-  code << tab << "aux = " << ExpressionDerivator::partialDerivative(eq, Index(map_m.exp())) << ";" << endl;
+  Equation eq = getEquation(vertex);
+  code << getVariableIndexes(eq);
+  code << tab << "aux = " << ExpressionDerivator::partialDerivative(eq, Index(edge.desc().exp())) << ";" << endl;
   _jac_def.code.append(code.str());
 }
 

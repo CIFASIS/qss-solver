@@ -17,17 +17,15 @@
 
  ******************************************************************************/
 
-#ifndef JACOBIAN_H_
-#define JACOBIAN_H_
+#pragma once
 
 #include <string>
 #include <map>
 
-#include "equation.h"
-#include "../deps/graph/sb_graph.h"
-#include "../deps/graph/sb_graph_helpers.h"
-#include "../util/symbol_table.h"
-#include "../util/table.h"
+#include <ir/equation.h>
+#include <deps/sbg_graph/deps_graph.h>
+#include <util/symbol_table.h>
+#include <util/table.h>
 
 namespace MicroModelica {
 namespace IR {
@@ -41,26 +39,26 @@ class JacGenerator {
   JacGenerator();
   ~JacGenerator() = default;
 
-  void init(Deps::SBG::VertexProperty vertex);
+  void init(SB::Deps::SetVertex vertex);
   void end();
-  void postProcess(Deps::SBG::VertexProperty vertex);
-  void visitF(Equation eq, Deps::SBG::VariableDep var_dep, Deps::SBG::Map map);
-  void visitG(Equation v_eq, Equation g_eq, Deps::SBG::VariableDep var_dep, Deps::SBG::Map n_map, Deps::SBG::Map map_m,
-              int index_shift);
-  void initG(Equation eq, Deps::SBG::Map map_m);
+  void postProcess(SB::Deps::SetVertex vertex);
+  void visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep);
+  void visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex);
+  void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift);
+  void initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge);
   JacDef deps();
 
   protected:
   IR::Expression generateExp(string var_name, vector<string> indices);
-  void dependencyPrologue(Equation eq, Deps::SBG::VariableDep var_dep, Deps::SBG::Map map, std::string guard = "");
-  void dependencyEpilogue(Equation eq, Deps::SBG::VariableDep var_dep);
+  void dependencyPrologue(Equation eq, SB::Deps::VariableDep var_dep, std::string guard = "");
+  void dependencyEpilogue(Equation eq, SB::Deps::VariableDep var_dep);
   void updateMatrix(std::map<std::string, std::set<std::string>>& matrix);
   void generatePos(int id, EQUATION::Type type, std::string row = "c_row", std::string col = "col");
   void generateEquation(int id, EQUATION::Type type);
   void generateEquation(int v_id, int g_id, EQUATION::Type type);
-  std::string getVariableIndexes(Equation eq, Deps::SBG::Map map);
-  std::string guard(Deps::SBG::MDI dom, Deps::SBG::Map map);
-
+  std::string getVariableIndexes(Equation eq);
+  std::string guard(SB::Set dom, int offset, std::string var_name, SB::Deps::LMapExp map);
+  void Fvisitor(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, int eq_id);
   JacDef _jac_def;
   int _tabs;
 };
@@ -80,5 +78,3 @@ class Jacobian {
 
 }  // namespace IR
 }  // namespace MicroModelica
-
-#endif /* JACOBIAN_H_ */

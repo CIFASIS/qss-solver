@@ -20,7 +20,7 @@ GOOGLE_MOCK_LIB = gmock
 GOOGLE_TEST_INCLUDE = $(GOOGLE_TEST_INSTALL)/usr/include
 LIB 		+= -L$(MMOC_LIB_DIR) -lginac -lcln -lgmp  
 G++ = g++
-G++_FLAGS = -c -Wall -I $(GOOGLE_TEST_INCLUDE) -std=c++11 -I $(MMOC_DIR)
+G++_FLAGS = -c -Wall -I $(GOOGLE_TEST_INCLUDE) -std=c++17 -I $(MMOC_DIR)
 LD_FLAGS = -L $(GOOGLE_TEST_INSTALL)/usr/lib -l $(GOOGLE_TEST_LIB) -l $(GOOGLE_MOCK_LIB) -l pthread 
 RM = rm -rf
 

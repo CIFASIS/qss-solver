@@ -18,6 +18,7 @@ VISITORDIR 	   := $(UTILDIR)/visitors
 DEPSDIR        := $(SRCDIR)/deps
 DEPSBUILDERDIR := $(DEPSDIR)/builders
 DEPSGRAPHDIR   := $(DEPSDIR)/graph
+DEPSSBGGRAPHDIR:= $(DEPSDIR)/sbg_graph
 USRDIR 		   := $(SRCDIR)/usr
 BUILDDIR       := $(USRDIR)/obj
 LIBDIR         := $(USRDIR)/lib
@@ -32,7 +33,7 @@ TARGET      := $(BINDIR)/mmoc
 
 # Flags, Libraries and Includes
 LIB 		+= -L$(LIBDIR) -lginac -lcln -lgmp   
-CXXFLAGS 	:= -Wno-write-strings -Wall -std=c++11
+CXXFLAGS 	:= -Wno-write-strings -Wall -std=c++17
 ifeq ($(MODE),Debug)
 CXXFLAGS 	+= -DYY_MCC_Parser_DEBUG -g  
 endif
@@ -125,13 +126,19 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
 			 $(VISITORDIR)/replace_constant.cpp \
 			 $(VISITORDIR)/parse_index.cpp \
 			 $(VISITORDIR)/apply_var_usage.cpp\
-			 $(VISITORDIR)/is_constant_expression.cpp
+			 $(VISITORDIR)/is_constant_expression.cpp \
+			 $(VISITORDIR)/pwl_map_values.cpp
 
 DEPSSRC = $(DEPSDIR)/dependency.cpp \
 		  $(DEPSDIR)/sb_dependencies.cpp \
 		  $(DEPSDIR)/model_dependencies.cpp \
 		  $(DEPSDIR)/dependency_matrix.cpp \
 		  $(DEPSDIR)/jacobian_matrices.cpp
+
+DEPSSBGGRAPHSRC = $(DEPSSBGGRAPHDIR)/build_from_exps.cpp \
+				  $(DEPSSBGGRAPHDIR)/map_operations.cpp \
+				  $(DEPSSBGGRAPHDIR)/lmap_exp.cpp \
+				  $(DEPSSBGGRAPHDIR)/printers.cpp
 
 DEPSGRAPHSRC = $(DEPSGRAPHDIR)/graph.cpp \
 			   $(DEPSGRAPHDIR)/graph_helpers.cpp \
@@ -165,6 +172,8 @@ DEPSOBJ=$(addprefix $(BUILDDIR)/deps_, $(notdir $(DEPSSRC:.cpp=.o)))
 
 DEPSGRAPHOBJ=$(addprefix $(BUILDDIR)/deps_, $(notdir $(DEPSGRAPHSRC:.cpp=.o)))
 
+DEPSSBGGRAPHOBJ=$(addprefix $(BUILDDIR)/deps_, $(notdir $(DEPSSBGGRAPHSRC:.cpp=.o)))
+
 DEPSBUILDEROBJ=$(addprefix $(BUILDDIR)/deps_, $(notdir $(DEPSBUILDERSRC:.cpp=.o)))
 
 # Make dependencies
@@ -176,6 +185,7 @@ DEPS = $(ASTOBJ:.o=.d) \
  	   $(VISITOROBJ:.o=.d) \
  	   $(DEPSOBJ:.o=.d) \
  	   $(DEPSGRAPHOBJ:.o=.d) \
+	   $(DEPSSBGGRAPHOBJ:.o=.d) \
  	   $(DEPSBUILDEROBJ:.o=.d)
 
 all: mmoc 
@@ -212,12 +222,16 @@ $(BUILDDIR)/deps_%.o : $(DEPSGRAPHDIR)/%.cpp
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
 
+$(BUILDDIR)/deps_%.o : $(DEPSSBGGRAPHDIR)/%.cpp 
+	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
+
 $(BUILDDIR)/deps_%.o : $(DEPSBUILDERDIR)/%.cpp 
 	$(CXX) $(INC) $(CXXFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	$(CXX) $(INC) -c $< -o $@ $(CXXFLAGS) 
 
-mmoc: | $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ)
-	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ) $(LIB) 
+mmoc: | $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSSBGGRAPHOBJ) $(DEPSBUILDEROBJ)
+	$(CXX) $(INC) $(CXXFLAGS) main.cpp -o $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(VISITOROBJ) $(DEPSOBJ) $(DEPSGRAPHOBJ) $(DEPSSBGGRAPHOBJ) $(DEPSBUILDEROBJ) $(LIB) 
 
 test: 
 	@echo Running MMOC tests

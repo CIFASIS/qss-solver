@@ -111,33 +111,25 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 	SD_cleanJacMatrices(dvdx);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if(1) {
-			x_ind = _idx_iL(0);
-			col = pos(dvdx->df_dx[0]->index[c_row], dvdx->df_dx[0]->size[c_row], x_ind);
-			aux = 0;
-			dvdx->df_dx[0]->value[c_row][col] +=  aux;
-		}
-		if(1) {
-			x_ind = _idx_uC(0);
-			col = pos(dvdx->df_dx[0]->index[c_row], dvdx->df_dx[0]->size[c_row], x_ind);
-			aux = 0;
-			dvdx->df_dx[0]->value[c_row][col] +=  aux;
-		}
+		x_ind = _idx_iL(0);
+		col = pos(dvdx->df_dx[0]->index[c_row], dvdx->df_dx[0]->size[c_row], x_ind);
+		aux = 0;
+		dvdx->df_dx[0]->value[c_row][col] +=  aux;
+		x_ind = _idx_uC(0);
+		col = pos(dvdx->df_dx[0]->index[c_row], dvdx->df_dx[0]->size[c_row], x_ind);
+		aux = 0;
+		dvdx->df_dx[0]->value[c_row][col] +=  aux;
 	}
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if(1) {
-			x_ind = _idx_iL(0);
-			col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
-			aux = 0;
-			dvdx->df_dx[1]->value[c_row][col] +=  aux;
-		}
-		if(1) {
-			x_ind = _idx_uC(0);
-			col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
-			aux = 0;
-			dvdx->df_dx[1]->value[c_row][col] +=  aux;
-		}
+		x_ind = _idx_iL(0);
+		col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
+		aux = 0;
+		dvdx->df_dx[1]->value[c_row][col] +=  aux;
+		x_ind = _idx_uC(0);
+		col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
+		aux = 0;
+		dvdx->df_dx[1]->value[c_row][col] +=  aux;
 	}
 	// Assign Jacobian Matrix values for equation: 0
 	for (row = 0; row < 1; row++) {
@@ -233,21 +225,13 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	modelData->nDS[_idx_iL(0)]++;
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if(1) {
 			modelData->jac_matrices->df_dx[0]->size[c_row]++;
-		}
-		if(1) {
 			modelData->jac_matrices->df_dx[0]->size[c_row]++;
-		}
 	}
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if(1) {
 			modelData->jac_matrices->df_dx[1]->size[c_row]++;
-		}
-		if(1) {
 			modelData->jac_matrices->df_dx[1]->size[c_row]++;
-		}
 	}
 	modelData->nSZ[_idx_iL(0)]++;
 	modelData->nZS[_idx_event_3]++;
@@ -279,42 +263,34 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	cleanVector(states, 0, 2);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if(1) {
 			x_ind = _idx_iL(0);
 			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[0]->size[c_row]--;
 			} else {
 				modelData->jac_matrices->df_dx[0]->index[c_row][states[c_row]++] = x_ind;
 			}
-		}
-		if(1) {
 			x_ind = _idx_uC(0);
 			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[0]->size[c_row]--;
 			} else {
 				modelData->jac_matrices->df_dx[0]->index[c_row][states[c_row]++] = x_ind;
 			}
-		}
 	}
 	cleanVector(states, 0, 2);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
-		if(1) {
 			x_ind = _idx_iL(0);
 			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[1]->size[c_row]--;
 			} else {
 				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
 			}
-		}
-		if(1) {
 			x_ind = _idx_uC(0);
 			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[1]->size[c_row]--;
 			} else {
 				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
 			}
-		}
 	}
 	cleanVector(states, 0, 2);
 	cleanVector(states, 0, 2);

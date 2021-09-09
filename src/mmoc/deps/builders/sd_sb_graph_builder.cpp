@@ -19,120 +19,73 @@
 
 #include "sd_sb_graph_builder.h"
 
-#include "../graph/sb_graph_helpers.h"
-#include "../../util/model_config.h"
-#include "../../util/util_types.h"
+#include <util/model_config.h>
+#include <util/logger.h>
+#include <util/util_types.h>
+
+using namespace SB;
+
+using namespace SB::Deps;
 
 namespace MicroModelica {
 using namespace IR;
 using namespace Util;
 namespace Deps {
-using namespace SBG;
 
 SDSBGraphBuilder::SDSBGraphBuilder(EquationTable &equations, EquationTable &algebraics)
-    : _equation_def_nodes(),
-      _equation_lhs_nodes(),
-      _state_nodes(),
+    : _F_nodes(),
+      _G_nodes(),
+      _g_nodes(),
+      _u_nodes(),
       _equations(equations),
       _algebraics(algebraics),
-      _node_names()
+      _node_names(),
+      _usage()
 {
 }
 
-SBGraph SDSBGraphBuilder::build()
+SB::Deps::Graph SDSBGraphBuilder::build()
 {
-  SBGraph graph;
+  LOG << endl << "Creating SD Graph: " << endl;
+  SB::Deps::Graph graph;
+  int edge_dom_offset = 1;
+  int max_dims = ModelConfig::instance().symbols().maxDim();
   // First, add the symbols as vertex.
   VarSymbolTable::iterator it;
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
-    SBG::VertexProperty vp = SBG::VertexProperty();
     if (var.isState()) {
-      vp.setType(SBG::VERTEX::Influencee);
-      vp.setVar(var);
-      //  Use to differentiate from EA builders need to refactor Edge builder.
-      const int NOT_ASSIGNED = -1;
-      vp.setId(NOT_ASSIGNED);
-      vp.setName(var.name());
-      _state_nodes.push_back(add_vertex(vp, graph));
+      SB::Deps::SetVertex state_node = createSetVertex(var, edge_dom_offset, max_dims, SB::Deps::VERTEX::Influencee);      
+      _u_nodes.push_back(addVertex(state_node, graph));
     } else if (var.isAlgebraic()) {
-      vp.setType(SBG::VERTEX::Algebraic);
-      vp.setVar(var);
-      vp.setName(var.name());
-      _equation_lhs_nodes.push_back(add_vertex(vp, graph));
+      SB::Deps::SetVertex alg_node = createSetVertex(var, edge_dom_offset, max_dims, SB::Deps::VERTEX::Algebraic);      
+      _g_nodes.push_back(addVertex(alg_node, graph));
     }
   }
-  EquationTable::iterator eqit;
-  for (Equation eq = _equations.begin(eqit); !_equations.end(eqit); eq = _equations.next(eqit)) {
-    SBG::VertexProperty vp = SBG::VertexProperty();
-    vp.setType(SBG::VERTEX::Equation);
-    vp.setEq(eq);
-    vp.setId(eq.id());
-    vp.setName(nodeName(eq));
-    _equation_def_nodes.push_back(add_vertex(vp, graph));
-    Option<Variable> assigned = eq.LHSVariable();
-    assert(assigned);
-    SBG::VertexProperty ifr = SBG::VertexProperty();
-    ifr.setType(SBG::VERTEX::Influencer);
-    ifr.setVar(assigned.get());
-    ifr.setId(eq.id());
-    _equation_lhs_nodes.push_back(add_vertex(ifr, graph));
+  EquationTable::iterator eq_it;
+  for (Equation eq = _equations.begin(eq_it); !_equations.end(eq_it); eq = _equations.next(eq_it)) {
+    SB::Deps::SetVertex ifr_node = createSetVertex(eq, edge_dom_offset, max_dims, SB::Deps::VERTEX::Influencer, _usage);
+    _F_nodes.push_back(addVertex(ifr_node, graph));
   }
-  for (Equation eq = _algebraics.begin(eqit); !_algebraics.end(eqit); eq = _algebraics.next(eqit)) {
-    SBG::VertexProperty vp = SBG::VertexProperty();
-    vp.setType(SBG::VERTEX::Equation);
-    vp.setEq(eq);
-    vp.setId(eq.id());
-    vp.setName(nodeName(eq));
-    _equation_def_nodes.push_back(add_vertex(vp, graph));
+  for (Equation eq = _algebraics.begin(eq_it); !_algebraics.end(eq_it); eq = _algebraics.next(eq_it)) {
+    SB::Deps::SetVertex alg_node = createSetVertex(eq, edge_dom_offset, max_dims, SB::Deps::VERTEX::Equation, _usage);
+    _G_nodes.push_back(addVertex(alg_node, graph));
   }
 
-  foreach_(F_Vertex sink, _equation_def_nodes)
-  {
-    foreach_(S_Vertex source, _equation_lhs_nodes)
-    {
-      BuildEdge edge = BuildEdge(graph[source], graph[sink], SBG::EDGE::Output, SBG::VERTEX::LHS);
-      if (edge.exists()) {
-        PairSet pairs = edge.indexes();
-        SBG::Label edge_label(pairs);
-        add_edge(source, sink, edge_label, graph);
-      }
-      // Check RHS too if we are working with algebraics.
-      if (graph[source].type() == SBG::VERTEX::Algebraic) {
-        BuildEdge edge = BuildEdge(graph[source], graph[sink], SBG::EDGE::Input, SBG::VERTEX::LHS);
-        if (edge.exists()) {
-          PairSet pairs = edge.indexes();
-          SBG::Label edge_label(pairs, SBG::EDGE::Input);
-          add_edge(sink, source, edge_label, graph);
-        }
-      }
-    }
-  }
-  foreach_(F_Vertex sink, _equation_def_nodes)
-  {
-    foreach_(S_Vertex source, _state_nodes)
-    {
-      BuildEdge edge = BuildEdge(graph[source], graph[sink], SBG::EDGE::Input, SBG::VERTEX::LHS);
-      if (edge.exists()) {
-        PairSet pairs = edge.indexes();
-        SBG::Label edge_label(pairs, SBG::EDGE::Input);
-        add_edge(sink, source, edge_label, graph);
-      }
-    }
-  }
+  computeOutputEdges(_F_nodes, _u_nodes, graph, max_dims, _usage, edge_dom_offset);
+
+  computeOutputEdges(_F_nodes, _g_nodes, graph, max_dims, _usage, edge_dom_offset);
+
+  computeOutputEdges(_G_nodes, _u_nodes, graph, max_dims, _usage, edge_dom_offset);
+
+  computeInputOutputEdges(_G_nodes, _g_nodes, graph, max_dims, _usage, edge_dom_offset);
+
+  SB::Deps::GraphPrinter printer(graph);
+
+  printer.printGraph(Logger::instance().getLogsPath()+ "SDGraph.dot");
+
   return graph;
 }
 
-string SDSBGraphBuilder::nodeName(Equation eq)
-{
-  Option<Variable> var = eq.LHSVariable();
-  assert(var);
-  string name = var->name();
-  stringstream node_name;
-  int eq_num = _node_names[name];
-  node_name << name << "_" << ++eq_num;
-  _node_names[name] = eq_num;
-  return node_name.str();
-}
 }  // namespace Deps
 }  // namespace MicroModelica
