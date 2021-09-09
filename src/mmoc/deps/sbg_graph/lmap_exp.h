@@ -45,6 +45,7 @@ class CoeffContainer {
   const_iterator begin() const;
   iterator begin();
   iterator end();
+  const_iterator end() const;
   unsigned int size() const;
   friend std::ostream& operator<<(std::ostream& os, const CoeffContainer& CoeffContainer);
 
@@ -75,6 +76,7 @@ class LMapExp {
 
   protected:
   int apply(int value, int dim) const;
+  int nonZeroSlopes() const;
 
   Constants _constants;
   Slopes _slopes;

@@ -109,6 +109,8 @@ CoeffContainer::iterator CoeffContainer::begin() { return _coeffs.begin(); }
 
 CoeffContainer::iterator CoeffContainer::end() { return _coeffs.end(); }
 
+CoeffContainer::const_iterator CoeffContainer::end() const { return _coeffs.end(); }
+
 unsigned int CoeffContainer::size() const { return _coeffs.size(); }
 
 std::ostream& operator<<(std::ostream& os, const CoeffContainer& coeffs)
@@ -151,9 +153,20 @@ bool LMapExp::constantExp() const
   return true;
 }
 
+int LMapExp::nonZeroSlopes() const
+{
+  int nzl = 0;
+  for (int i : _slopes) {
+    if (i != 0) {
+      nzl++;
+    }
+  }
+  return nzl;
+}
+
 std::vector<std::string> LMapExp::apply(std::vector<std::string> variable) const
 {
-  assert(_slopes.size() == variable.size() || _slopes.size() == 0);
+  assert(_slopes.size() == variable.size() || nonZeroSlopes() == 0);
   
   std::vector<std::string> exps;
   int size = (int)_slopes.size();
