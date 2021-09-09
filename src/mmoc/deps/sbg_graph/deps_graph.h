@@ -45,66 +45,65 @@ struct VariableDep {
         _map_f(),
         _map_u(),
         _recursive(false),
-        _alg_dom(),
-        _alg_eq(),
-        _alg_dep(false),
         _exp(),
         _u_dom(),
         _f_dom(),
         _n_map(),
         _m_map(),
         _var_offset(0),
-        _eq_offset(0){};
+        _eq_offset(0),
+        _recursive_deps(){};
   VariableDep(MicroModelica::Util::Variable var, SB::PWLMap map_f, SB::PWLMap map_u, MicroModelica::IR::Expression exp, LMapExp n_map,
               int var_offset, int eq_offset)
       : _var(var),
         _map_f(map_f),
         _map_u(map_u),
         _recursive(false),
-        _alg_dom(),
-        _alg_eq(),
-        _alg_dep(false),
         _exp(exp),
         _u_dom(),
         _f_dom(),
         _n_map(n_map),
         _m_map(),
         _var_offset(var_offset),
-        _eq_offset(eq_offset)
+        _eq_offset(eq_offset),
+        _recursive_deps()
   {
     _u_dom = _map_u.wholeDom();
     _f_dom = _map_f.wholeDom();
   };
+  VariableDep(MicroModelica::Util::Variable var, SB::PWLMap map_f, SB::PWLMap map_u, MicroModelica::IR::Expression exp, bool recursive,
+              SB::Set f_dom, SB::Set u_dom, LMapExp n_map, int var_offset, int eq_offset)
+      : _var(var),
+        _map_f(map_f),
+        _map_u(map_u),
+        _recursive(recursive),
+        _exp(exp),
+        _u_dom(u_dom),
+        _f_dom(f_dom),
+        _n_map(n_map),
+        _m_map(),
+        _var_offset(var_offset),
+        _eq_offset(eq_offset),
+        _recursive_deps(){};
   VariableDep(MicroModelica::Util::Variable var, SB::PWLMap map_f, SB::PWLMap map_u, MicroModelica::IR::Expression exp, bool recursive,
               SB::Set f_dom, SB::Set u_dom, LMapExp n_map, LMapExp m_map, int var_offset, int eq_offset)
       : _var(var),
         _map_f(map_f),
         _map_u(map_u),
         _recursive(recursive),
-        _alg_dom(),
-        _alg_eq(),
-        _alg_dep(false),
         _exp(exp),
         _u_dom(u_dom),
         _f_dom(f_dom),
         _n_map(n_map),
         _m_map(m_map),
         _var_offset(var_offset),
-        _eq_offset(eq_offset){};
+        _eq_offset(eq_offset),
+        _recursive_deps(){};
 
   PWLMap mapF() const { return _map_f; };
   PWLMap mapU() const { return _map_u; };
   MicroModelica::Util::Variable var() const { return _var; };
   bool isRecursive() const { return _recursive; };
-  bool hasAlgDeps() const { return _alg_dep; };
-  void setAlgDom(SB::Set alg_dom) { _alg_dom = alg_dom; };
-  SB::Set algDom() const { return _alg_dom; };
-  int algEq() const { return _alg_eq; };
-  void setAlgEq(int id)
-  {
-    _alg_eq = id;
-    _alg_dep = true;
-  };
   MicroModelica::IR::Expression exp() const { return _exp; };
   SB::Set range()
   {
@@ -124,15 +123,36 @@ struct VariableDep {
   LMapExp mMap() const { return _m_map; }
   int varOffset() const { return _var_offset; }
   int eqOffset() const { return _eq_offset; }
+  list<VariableDep> recursiveDeps() const
+  { 
+    list<VariableDep> ret;
+    for (const auto &item : _recursive_deps)
+    {
+      ret.push_back(item.second);
+    } 
+    return ret; 
+  };
+  void addRecursiveDep(VariableDep rec_dep)
+  {
+    SB::Set dom = rec_dep.uDom();
+    assert(!dom.empty());
+    OrdIntegerCT init_elems = dom.minElem();
+    OrdIntegerCT::iterator min_elem = init_elems.begin();
+    _recursive_deps[*min_elem] = rec_dep;
+  };
+  
+  void setRecursiveDeps(list<VariableDep> recursive_deps)
+  {
+    for (VariableDep var_dep : recursive_deps) {
+      addRecursiveDep(var_dep);
+    } 
+  }
 
   protected:
   MicroModelica::Util::Variable _var;
   PWLMap _map_f;
   PWLMap _map_u;
   bool _recursive;
-  SB::Set _alg_dom;
-  int _alg_eq;
-  bool _alg_dep;
   MicroModelica::IR::Expression _exp;
   SB::Set _u_dom;
   SB::Set _f_dom;
@@ -140,6 +160,7 @@ struct VariableDep {
   LMapExp _m_map;
   int _var_offset;
   int _eq_offset;
+  map<int, VariableDep> _recursive_deps;
 };
 
 struct VertexDesc {
