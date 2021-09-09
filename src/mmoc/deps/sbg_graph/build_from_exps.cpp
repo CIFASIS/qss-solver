@@ -165,7 +165,7 @@ Deps::SetVertex createSetVertex(Variable variable, int& offset, size_t max_dim, 
 Deps::SetVertex createSetVertex(Equation eq, int& offset, size_t max_dim, VERTEX::Type type, EqUsage& usage)
 {
   std::stringstream eq_name;
-  eq_name << "EQ_" << eq.id();
+  eq_name << "EQ_" << eq.type() << "_" << eq.id();
   Set range = buildSet(eq, eq_name.str(), offset, max_dim, usage);
   Deps::SetVertex node = Deps::SetVertex(eq_name.str(), offset, range, eq.id(), Deps::VertexDesc(type));
   offset += range.size();
