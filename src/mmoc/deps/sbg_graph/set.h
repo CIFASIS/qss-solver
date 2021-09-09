@@ -71,6 +71,17 @@ struct SetImp {
 
   SetType atomicSets() const { return _atomic_sets; }
 
+  OrdCT<SetImp> atomize()
+  {
+    OrdCT<SetImp> atomize;
+    for (AtomSet as : _atomic_sets) {
+      SetImp s;
+      s.addAtomSet(as);
+      atomize.push_back(s);
+    } 
+    return atomize;
+  }
+
   int dims() const { return _dims; }
 
   bool empty()
