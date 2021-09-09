@@ -94,7 +94,7 @@ void JacGenerator::dependencyPrologue(Equation eq, SB::Deps::VariableDep var_dep
   string tabs = Utils::instance().tabs(_tabs);
   SB::Deps::LMapExp map = var_dep.nMap(); 
   Range range(var_dep.variables(), var_dep.varOffset());
-  if (var_dep.isRecursive()) {
+  if (var_dep.isRecursive() && eq.hasRange()) {
     FunctionPrinter printer;
     code << tabs << eq.range().get();
     _tabs++;
@@ -131,7 +131,7 @@ void JacGenerator::dependencyEpilogue(Equation eq, SB::Deps::VariableDep var_dep
     _tabs--;
     code << Utils::instance().tabs(_tabs) + "}\n";
   }
-  if (var_dep.isRecursive()) {
+  if (var_dep.isRecursive() && eq.hasRange()) {
     code << eq.range()->end();
   }
   _jac_def.code.append(code.str());
@@ -184,16 +184,28 @@ string JacGenerator::getVariableIndexes(Equation eq)
 
 void JacGenerator::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep)
 {
+  Equation eq = getEquation(vertex);
+  Fvisitor(vertex, var_dep, eq.arrayId());
+}
+
+void JacGenerator::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex)
+{
+  Equation eq = getEquation(gen_vertex);
+  Fvisitor(vertex, var_dep, eq.arrayId());
+}
+
+void JacGenerator::Fvisitor(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, int eq_id)
+{
   stringstream code;
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   Equation eq = getEquation(vertex);
   dependencyPrologue(eq, var_dep);
   string tab = Utils::instance().tabs(_tabs);
-  generatePos(eq.arrayId(), eq.type());
+  generatePos(eq_id, eq.type());
   code << getVariableIndexes(eq);
   code << tab << "aux = " << ExpressionDerivator::partialDerivative(eq, Index(var_dep.exp())) << ";" << endl;
   _jac_def.code.append(code.str());
-  generateEquation(eq.arrayId(), eq.type());
+  generateEquation(eq_id, eq.type());
   dependencyEpilogue(eq, var_dep);
 }
 
@@ -221,13 +233,8 @@ void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_ve
       Range range(var_dep.variables(), var_dep.varOffset());
       exps = n_map.apply(range.getDimensionVars(USE_RANGE_IDXS));
     } else if (g_lhs->isArray()) { 
-      if (var_dep.hasAlgDeps()) {
-        Range range(var_dep.algDom(), var_dep.eqOffset());
-        exps = range.getInitValues();
-      } else {
-        Range range(var_dep.variables(), var_dep.varOffset());
-        exps = range.getInitValues();
-      }
+      Range range(var_dep.variables(), var_dep.varOffset());
+      exps = range.getInitValues();
     } else if (v_lhs->isArray()) {
       for (Expression exp : v_eq.lhs().indexes()) {
         exps.push_back(exp.print());
@@ -241,9 +248,6 @@ void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_ve
   code << ";" << endl;
   _jac_def.code.append(code.str());
   int g_eq_id = g_eq.arrayId();
-  if (var_dep.hasAlgDeps()) {
-    g_eq_id = var_dep.algEq();
-  } 
   generatePos(g_eq_id, g_eq.type(), "c_row_g", "col_g");
   generateEquation(v_eq.arrayId(), g_eq_id, v_eq.type());
   dependencyEpilogue(g_eq, var_dep);

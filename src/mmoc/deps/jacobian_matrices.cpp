@@ -75,12 +75,11 @@ string JacMatrixGenerator::guard(string exp, string id)
   return code.str();
 }
 
-void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SB::Deps::VariableDep var_dep, string g_map_dom)
+void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SB::Deps::VariableDep var_dep, int id, string g_map_dom)
 {
   stringstream code;
   SB::Deps::LMapExp map = var_dep.nMap();  
   Range range(var_dep.variables(), var_dep.varOffset());  
-
   vector<string> exps = map.apply(range.getDimensionVars());
   Expression i_exp = Expression::generate(var_dep.var().name(), exps);
   Index x_ind(i_exp);
@@ -93,9 +92,9 @@ void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SB::Deps::V
   } else {
     matrix_eq_id << "df_dx";
   }
-  matrix_eq_id << "[" << v_eq.arrayId() << "]";
+  matrix_eq_id << "[" << id << "]";
   string eq_id = matrix_eq_id.str();
-  if ((v_eq.type() == EQUATION::ClassicDerivative || v_eq.type() == EQUATION::QSSDerivative) && var_dep.isRecursive()) {
+  if (var_dep.isRecursive() && g_eq.hasRange()) {
       code << tabs << g_eq.range().get();
       tabs = Utils::instance().tabs(_tabs+1);
       vector<string> exps = g_eq.range()->getIndexes();
@@ -130,7 +129,7 @@ void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SB::Deps::V
   code.str("");
   if (!map.constantExp() || !g_map_dom.empty()) {
     code << tabs << "}" << endl;
-    if (var_dep.isRecursive()) {
+    if (var_dep.isRecursive() && g_eq.hasRange()) {
       code << g_eq.range()->end();
     }
   }
@@ -153,14 +152,21 @@ std::string JacMatrixGenerator::guard(SB::Set dom, int offset, SB::Deps::LMapExp
 void JacMatrixGenerator::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep)
 { 
   Equation eq = getEquation(vertex);
-  addDependency(eq, eq,var_dep);
+  addDependency(eq, eq,var_dep, eq.arrayId());
+}
+
+void JacMatrixGenerator::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex)
+{ 
+  Equation eq = getEquation(vertex);
+  Equation gen_eq = getEquation(gen_vertex);
+  addDependency(eq, eq,var_dep, gen_eq.arrayId());
 }
 
 void JacMatrixGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift)
 {
   Equation v_eq = getEquation(v_vertex);
   Equation g_eq = getEquation(g_vertex);
-  addDependency(v_eq, g_eq, var_dep, guard(var_dep.equations(), var_dep.eqOffset(), var_dep.mMap(), var_dep.var().name()));
+  addDependency(v_eq, g_eq, var_dep, v_eq.arrayId(), guard(var_dep.equations(), var_dep.eqOffset(), var_dep.mMap(), var_dep.var().name()));
 }
 
 void JacMatrixGenerator::initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge) {}

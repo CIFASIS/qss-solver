@@ -43,6 +43,7 @@ class JacGenerator {
   void end();
   void postProcess(SB::Deps::SetVertex vertex);
   void visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep);
+  void visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex);
   void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift);
   void initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge);
   JacDef deps();
@@ -57,7 +58,7 @@ class JacGenerator {
   void generateEquation(int v_id, int g_id, EQUATION::Type type);
   std::string getVariableIndexes(Equation eq);
   std::string guard(SB::Set dom, int offset, std::string var_name, SB::Deps::LMapExp map);
-
+  void Fvisitor(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, int eq_id);
   JacDef _jac_def;
   int _tabs;
 };
