@@ -266,7 +266,7 @@ EdgeMaps generatePWLMaps(Expression exp, Set dom, Set unk_dom, int offset, strin
 Equation getEquation(Deps::SetVertex n)
 {
   EquationTable equations = ModelConfig::instance().derivatives();
-  ;
+  
   if (n.desc().type() == SB::Deps::VERTEX::Equation) {
     equations = ModelConfig::instance().algebraics();
   }

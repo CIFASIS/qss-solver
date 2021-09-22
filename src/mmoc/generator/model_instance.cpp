@@ -32,6 +32,7 @@
 #include "../ir/event.h"
 #include "../ir/expression.h"
 #include "../ir/jacobian.h"
+#include "../ir/qss_model.h"
 #include "../ir/statement.h"
 #include "../util/error.h"
 #include "../util/util.h"
@@ -508,13 +509,12 @@ QSSModelInstance::QSSModelInstance(Model &model, CompileFlags &flags, WriterPtr 
 
 void QSSModelInstance::definition()
 {
-  EquationTable derivatives = _model.derivatives();
-  EquationTable::iterator it;
+  QSSModel qss_model;
   ModelConfig::instance().clearLocalSymbols();
   FunctionPrinter printer;
-  for (Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it)) {
-    _writer->write(der, (der.hasRange() ? WRITER::Model_Generic : WRITER::Model_Simple));
-  }
+  qss_model.build();
+  _writer->write(qss_model.simpleDef(), WRITER::Model_Simple);
+  _writer->write(qss_model.genericDef(), WRITER::Model_Generic);
   _writer->write(ModelConfig::instance().localSymbols(), WRITER::Model);
   if (!_writer->isEmpty(WRITER::Model_Simple)) {
     _writer->write(printer.beginSwitch(), WRITER::Model);
