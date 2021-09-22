@@ -43,9 +43,9 @@ template <typename IDependencies, typename R>
 SBDependencies<IDependencies, R>::SBDependencies() : _index_shift(){};
 
 template <typename IDependencies, typename R>
-R SBDependencies<IDependencies, R>::deps()
+R SBDependencies<IDependencies, R>::def()
 {
-  return _gen.deps();
+  return _gen.def();
 }
 
 template <typename IDependencies, typename R>
@@ -158,18 +158,19 @@ void SBDependencies<IDependencies, R>::paths(SB::Deps::Graph graph, SB::Deps::Ve
         SB::Deps::Vertex G = boost::target(*alg_edge, graph);
         if (graph[G].desc().type() == SB::Deps::VERTEX::Equation) {
           SB::Deps::SetEdge alg_label = graph[*alg_edge];
-          int dep, deps = graph[G].desc().numDeps();
-          for (dep = 1; dep <= deps; dep++) {
-            // Ai -> Gij labels must contain only one pair.
-            // Get the subset of algebraic variables from F.
-            SB::Set map_u_dom = map_m_u.wholeDom();
-            SB::Set a_subset = map_m_u.image(map_u_dom);
-            // Get the preimage of the algebraic variables to match against the out edges to equation definitions.
-            SB::Set alg_variable_dom_edges = _map_U.preImage(a_subset);
-            SB::Set alg_label_dom = alg_label.mapU().wholeDom();
-            SB::Set d_intersect = alg_label_dom.cap(alg_variable_dom_edges);
-            SB::Deps::LMapExp G_map = alg_label.desc().mapExp();
-            if (!d_intersect.empty()) {
+          // Ai -> Gij labels must contain only one pair.
+          // Get the subset of algebraic variables from F.
+          SB::Set map_u_dom = map_m_u.wholeDom();
+          SB::Set a_subset = map_m_u.image(map_u_dom);
+          // Get the preimage of the algebraic variables to match against the out edges to equation definitions.
+          SB::Set alg_variable_dom_edges = _map_U.preImage(a_subset);
+          SB::Set alg_label_dom = alg_label.mapU().wholeDom();
+          SB::Set d_intersect = alg_label_dom.cap(alg_variable_dom_edges);
+          SB::Deps::LMapExp G_map = alg_label.desc().mapExp();
+          if (!d_intersect.empty()) {
+            _gen.visitG(graph[V], graph[G], map_m_u, map_m,  alg_label.mapU(), G_map,  d_intersect);
+            int dep, deps = graph[G].desc().numDeps();
+            for (dep = 1; dep <= deps; dep++) {            
               // Get the map exp for the intersection
               SB::Deps::LMapExp g_map = graph[G].desc().depState(dep).nMap();
               SB::Deps::LMapExp n_map = g_map.compose(G_map.solve(map_m));
@@ -279,6 +280,8 @@ void SBDependencies<IDependencies, R>::recursiveDeps(SB::Deps::Graph graph, SB::
 template class SBDependencies<JacMatrixGenerator, JacMatrixDef>;
 
 template class SBDependencies<JacGenerator, JacDef>;
+
+template class SBDependencies<QSSModelGenerator, QSSModelDef>;
 
 }  // namespace Deps
 }  // namespace MicroModelica
