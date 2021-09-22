@@ -68,6 +68,7 @@ class Equation {
   std::string print() const;
   std::string macro() const;
   inline Option<Range> range() const { return _range; };
+  inline void setRange(Option<Range> range) { _range = range; };
   inline int id() const { return _id; };
   inline EQUATION::Type type() const { return _type; }
   inline bool isDerivative() const { return _type == EQUATION::QSSDerivative || _type == EQUATION::ClassicDerivative; }
@@ -91,6 +92,8 @@ class Equation {
   Equation genAlgEquation(Equation der_eq, Index rhs_usage, Index lhs_usage);
   void dependencyUsage(Deps::VariableDependency var_dep, Index index);
   int arrayId() const;
+  void setAlgCode(std::string alg_code);
+  std::string algCode() const;
 
   protected:
   void initialize(AST_Equation eq);
@@ -110,6 +113,7 @@ class Equation {
   int _offset;
   std::string _lhs_exp;
   Index _usage;
+  std::string _alg_code;
 };
 
 typedef ModelTable<int, Equation> EquationTable;
