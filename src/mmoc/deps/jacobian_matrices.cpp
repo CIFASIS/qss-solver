@@ -169,9 +169,15 @@ void JacMatrixGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVerte
   addDependency(v_eq, g_eq, var_dep, v_eq.arrayId(), guard(var_dep.equations(), var_dep.eqOffset(), var_dep.mMap(), var_dep.var().name()));
 }
 
+void JacMatrixGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp, SB::PWLMap def_map,
+              SB::Deps::LMapExp def_map_exp, SB::Set intersection)
+{
+
+}
+
 void JacMatrixGenerator::initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge) {}
 
-JacMatrixDef JacMatrixGenerator::deps() { return _matrix; }
+JacMatrixDef JacMatrixGenerator::def() { return _matrix; }
 
 JacobianMatrix::JacobianMatrix() : _jac_matrix_def() {}
 
@@ -192,7 +198,7 @@ void JacobianMatrix::build()
   IndexShiftBuilder index_shifts(algebraics);
   SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(derivatives, algebraics);
   jac_matrix.compute(SDSBGraph.build(), index_shifts.build());
-  _jac_matrix_def = jac_matrix.deps();
+  _jac_matrix_def = jac_matrix.def();
 }
 
 }  // namespace Deps
