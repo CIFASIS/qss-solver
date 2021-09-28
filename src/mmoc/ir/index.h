@@ -80,7 +80,7 @@ class Range {
   int size() const;
   bool isEmpty() const;
   inline RangeDefinitionTable definition() const { return _ranges; };
-  std::string print() const;
+  std::string print(bool range = false, bool c_index = false) const;
   std::string end() const;
   std::string indexes() const;
   std::vector<std::string> getIndexes() const;
@@ -93,7 +93,7 @@ class Range {
   void generate(Deps::MDI mdi);
   std::string iterator(int dim, bool range_idx = false);
   std::string getPrintDimensionVarsString() const;
-  std::string getDimensionVarsString() const;
+  std::string getDimensionVarsString(bool range = false) const;
   std::vector<std::string> getDimensionVars(bool range = false) const;
   std::string getDimensionVar(int i, bool range = false) const;
   bool intersect(Range other);
