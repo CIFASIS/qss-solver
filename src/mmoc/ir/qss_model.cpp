@@ -50,17 +50,37 @@ string QSSModelGenerator::addAlgDeps(int id, std::map<int, list<DefAlgUse>> alg_
   }
   for (DefAlgUse alg : algs) {
     // Add offset
-    Range range(alg.range, 0);
+    SB::Set var_range = alg.use.image(alg.range);
+    Range range(var_range, alg.offset);
     EquationTable equations = ModelConfig::instance().algebraics();
     Option<Equation> eq = equations[alg.id];
     assert(eq);
     Equation gen_eq = eq.get();
-    gen_eq.setRange(range);
-    code << gen_eq;
+    Index use_idx = Index(alg.exp);
+    if (gen_eq.hasRange() && alg.recursive) {
+      code << gen_eq.range()->print(true, true);
+      code << "_get" << gen_eq.LHSVariable().get() << "_idxs(" << range.getDimensionVarsString(true) << ");" << endl;
+      use_idx = Index(gen_eq.lhs());
+    }
+    if (eq->hasRange()) {
+      gen_eq.setRange(range);
+    }
+    FunctionPrinter printer;
+    
+    if (use_idx.isConstant() && gen_eq.hasRange()) {
+      Equation a = gen_eq;
+      a.applyUsage(use_idx);
+      gen_eq = a;
+    }
+    code << printer.printAlgebraicGuards(gen_eq, use_idx);
+    code << TAB << gen_eq;
+    code << printer.endDimGuards(gen_eq.range());
+    if (gen_eq.hasRange() && alg.recursive) {
+      code << TAB << gen_eq.range()->end() << endl;
+    }
   }
   return code.str();
 }
-
 
 void QSSModelGenerator::postProcess(SB::Deps::SetVertex vertex)
 {
@@ -69,7 +89,7 @@ void QSSModelGenerator::postProcess(SB::Deps::SetVertex vertex)
   std::stringstream simple;
   std::stringstream generic;
   for (Equation der = equations.begin(it); !equations.end(it); der = equations.next(it)) {
-    string alg_code  = addAlgDeps(der.id(), _der_deps);
+    string alg_code = addAlgDeps(der.id(), _der_deps);
     der.setAlgCode(alg_code);
     if (der.hasRange()) {
       generic << der << endl;
@@ -91,17 +111,35 @@ void QSSModelGenerator::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep
 
 void QSSModelGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift)
 {
+  if (var_dep.isRecursive()) {
+    Equation v_eq = getEquation(v_vertex);
+    Equation g_eq = getEquation(g_vertex);
+    DefAlgUse new_dep;
+    new_dep.id = g_eq.id();
+    new_dep.use = var_dep.mapF();
+    new_dep.range = var_dep.mapF().wholeDom();
+    new_dep.exp = var_dep.exp();
+    new_dep.offset = g_vertex.id();
+    new_dep.recursive = true;
+    list<DefAlgUse> algs = _der_deps[v_eq.id()];
+    algs.push_back(new_dep);
+    _der_deps[v_eq.id()] = algs;
+  }
 }
 
-void QSSModelGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp, SB::PWLMap def_map,
-              SB::Deps::LMapExp def_map_exp, SB::Set intersection)
+void QSSModelGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map,
+                               SB::Deps::LMapExp use_map_exp, Expression use_exp, SB::PWLMap def_map, SB::Deps::LMapExp def_map_exp,
+                               SB::Set intersection)
 {
   Equation v_eq = getEquation(v_vertex);
-  Equation g_eq = getEquation(g_vertex);  
+  Equation g_eq = getEquation(g_vertex);
   DefAlgUse new_dep;
   new_dep.id = g_eq.id();
-  new_dep.use = def_map_exp;
+  new_dep.use = def_map;
   new_dep.range = intersection;
+  new_dep.exp = use_exp;
+  new_dep.offset = g_vertex.id();
+  new_dep.recursive = false;
   if (v_eq.type() == IR::EQUATION::Algebraic) {
     list<DefAlgUse> algs = _alg_deps[v_eq.id()];
     algs.push_back(new_dep);
@@ -134,7 +172,6 @@ void QSSModel::build()
 string QSSModel::simpleDef() { return _qss_model_def.simple; }
 
 string QSSModel::genericDef() { return _qss_model_def.generic; }
-
 
 }  // namespace IR
 }  // namespace MicroModelica
