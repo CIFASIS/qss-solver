@@ -168,7 +168,6 @@ void SBDependencies<IDependencies, R>::paths(SB::Deps::Graph graph, SB::Deps::Ve
           SB::Set d_intersect = alg_label_dom.cap(alg_variable_dom_edges);
           SB::Deps::LMapExp G_map = alg_label.desc().mapExp();
           if (!d_intersect.empty()) {
-            _gen.visitG(graph[V], graph[G], map_m_u, map_m,  alg_label.mapU(), G_map,  d_intersect);
             int dep, deps = graph[G].desc().numDeps();
             for (dep = 1; dep <= deps; dep++) {            
               // Get the map exp for the intersection
@@ -206,6 +205,7 @@ void SBDependencies<IDependencies, R>::paths(SB::Deps::Graph graph, SB::Deps::Ve
                 _gen.visitG(graph[V], graph[G], var_dep, _index_shift[graph[G].index()]);                
               }
             }
+            _gen.visitG(graph[V], graph[G], map_m_u, map_m, edge_label.desc().exp(), alg_label.mapF(), G_map,  d_intersect);
           }
         }
       }
