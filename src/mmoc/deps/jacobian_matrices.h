@@ -23,6 +23,7 @@
 
 #include <deps/sbg_graph/deps_graph.h>
 #include <ir/equation.h>
+#include <ir/equation.h>
 
 namespace MicroModelica {
 namespace Deps {
@@ -43,7 +44,7 @@ class JacMatrixGenerator {
   void visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep);
   void visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex);
   void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift);
-  void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp, SB::PWLMap def_map,
+  void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp, IR::Expression use_exp, SB::PWLMap def_map,
               SB::Deps::LMapExp def_map_exp, SB::Set intersection);
 
   void initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge);
