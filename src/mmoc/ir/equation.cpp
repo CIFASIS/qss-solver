@@ -56,12 +56,13 @@ Equation::Equation()
       _id(0),
       _offset(0),
       _lhs_exp(),
-      _usage()
+      _usage(),
+      _alg_code()
 {
 }
 
 Equation::Equation(AST_Expression lhs, AST_Expression rhs, Option<Range> range, EQUATION::Type type, int id)
-    : _eq(), _lhs(), _rhs(), _range(range), _autonomous(true), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
+    : _eq(), _lhs(), _rhs(), _range(range), _autonomous(true), _type(type), _id(id), _offset(0), _lhs_exp(), _usage(), _alg_code()
 {
   initialize(lhs, rhs);
 }
@@ -76,25 +77,26 @@ Equation::Equation(AST_Expression eq, Option<Range> range, EQUATION::Type type, 
       _id(id),
       _offset(offset),
       _lhs_exp(),
-      _usage()
+      _usage(),
+      _alg_code()
 {
   initialize(eq);
 }
 
 Equation::Equation(AST_Equation eq, EQUATION::Type type, int id)
-    : _eq(eq), _lhs(), _rhs(), _range(), _autonomous(true), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
+    : _eq(eq), _lhs(), _rhs(), _range(), _autonomous(true), _type(type), _id(id), _offset(0), _lhs_exp(), _usage(), _alg_code()
 {
   initialize(eq);
 }
 
 Equation::Equation(AST_Equation eq, Range r, EQUATION::Type type, int id)
-    : _eq(eq), _lhs(), _rhs(), _range(r), _autonomous(true), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
+    : _eq(eq), _lhs(), _rhs(), _range(r), _autonomous(true), _type(type), _id(id), _offset(0), _lhs_exp(), _usage(), _alg_code()
 {
   initialize(eq);
 }
 
 Equation::Equation(AST_Equation eq, Option<Range> r, EQUATION::Type type, int id)
-    : _eq(eq), _lhs(), _rhs(), _range(r), _autonomous(true), _type(type), _id(id), _offset(0), _lhs_exp(), _usage()
+    : _eq(eq), _lhs(), _rhs(), _range(r), _autonomous(true), _type(type), _id(id), _offset(0), _lhs_exp(), _usage(), _alg_code()
 {
   initialize(eq);
 }
@@ -262,6 +264,10 @@ void Equation::dependencyUsage(VariableDependency var_dep, Index index)
 
 int Equation::arrayId() const { return _id - 1; }
 
+void Equation::setAlgCode(std::string alg_code) { _alg_code = alg_code; }
+
+std::string Equation::algCode() const { return _alg_code; }
+
 Equation Dependency::generate(Equation eq, Index idx, AlgebraicPath algs)
 {
   Equation dep = eq;
@@ -276,6 +282,7 @@ Equation Dependency::generate(Equation eq, Index idx, AlgebraicPath algs)
 list<Equation> Dependency::terms() { return list<Equation>(); }
 
 EQUATION::Type Dependency::type() const { return EQUATION::Dependency; }
+
 
 }  // namespace IR
 }  // namespace MicroModelica

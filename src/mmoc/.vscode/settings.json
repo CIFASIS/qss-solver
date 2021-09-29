@@ -55,6 +55,19 @@
         "valarray": "cpp",
         "algorithm": "cpp",
         "memory": "cpp",
-        "math.h": "c"
+        "math.h": "c",
+        "bit": "cpp",
+        "condition_variable": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "iterator": "cpp",
+        "memory_resource": "cpp",
+        "optional": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "future": "cpp",
+        "mutex": "cpp",
+        "variant": "cpp",
+        "boost.h": "c"
     }
 }

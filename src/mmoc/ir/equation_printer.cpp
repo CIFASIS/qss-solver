@@ -62,7 +62,7 @@ EquationPrinter* getPrinter(Equation eq)
 }
 
 EquationPrinter::EquationPrinter(Equation eq)
-    : _identifier(), _id(eq.id()), _type(eq.type()), _lhs(eq.lhs())
+    : _identifier(), _id(eq.id()), _type(eq.type()), _lhs(eq.lhs()), _alg_code(eq.algCode())
 {
   setup(eq);
 }
@@ -223,7 +223,12 @@ string DerivativePrinter::print() const
   }
   tabs += TAB;
   buffer << printer.beginExpression(identifier(), _range);
-  buffer << printer.algebraics(_eq_dep_matrix, _id);
+  string alg_code = algCode();
+  if (alg_code.empty()) {
+    buffer << printer.algebraics(_eq_dep_matrix, _id);
+  } else {
+    buffer << alg_code;
+  }
   buffer << printer.beginDimGuards(equationId(), arguments, _range);
   buffer << tabs << prefix() << lhs() << " = " << _rhs << ";" << endl;
   buffer << generateDerivatives(tabs) << endl;

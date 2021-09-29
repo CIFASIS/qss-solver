@@ -34,9 +34,7 @@ namespace MicroModelica {
 namespace Generator {
 
 namespace MODEL_INSTANCE {
-/**
- *
- */
+
 typedef enum {
   Model_Settings,
   Model,

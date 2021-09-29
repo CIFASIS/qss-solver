@@ -21,17 +21,22 @@ void MOD_settings(SD_simulationSettings settings)
 void MOD_definition(int idx, double *x, double *d, double *a, double t, double *dx)
 {
 	int _d1;
+	int _rg_d1;
 	int i;
 	switch(idx) {
 		case _eval_uC(0): {
 			_sum_0(1,0) = _iL(1,0);
 			_sum_0(1,1) = 0;
-	for(i = 2; i<=4; i+=1) {
+	for(_rg_d1 = 1; _rg_d1<=3; _rg_d1+=1) {
+	_get_sum_0_idxs(_rg_d1);
+		_apply_usage_alg_eq_2(_d1);
+		if ((_d1 >= 1 && _d1 <= 3)) {
 			_sum_0(i,0) = _sum_0(i-1,0)+_iL(i,0);
 		_sum_0(i,1) = 0;
 	}
-			_sum_0(1,0) = _iL(1,0);
-			_sum_0(1,1) = 0;
+		}
+			_sum_0(4,0) = _sum_0(3,0)+_iL(4,0);
+			_sum_0(4,1) = 0;
 			_der_uC(0) = (_sum_0(4,0)-_uC(0)/_R)/_C;
 			_der_uC(1) = (0)/2;
 	

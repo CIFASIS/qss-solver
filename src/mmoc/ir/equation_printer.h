@@ -41,6 +41,7 @@ class EquationPrinter {
   virtual std::string print() const { return ""; };
   virtual std::string macro() const { return ""; };
   std::string identifier() const { return _identifier; };
+  std::string algCode() const { return _alg_code; }
   std::string prefix() const;
   std::string lhs(int order = 0) const;
   virtual std::string equationId() const;
@@ -53,6 +54,7 @@ class EquationPrinter {
   int _id;
   int _type;
   Expression _lhs;
+  std::string _alg_code;
 };
 
 EquationPrinter* getPrinter(Equation eq);

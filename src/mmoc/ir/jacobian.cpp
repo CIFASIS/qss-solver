@@ -106,7 +106,7 @@ void JacGenerator::dependencyPrologue(Equation eq, SB::Deps::VariableDep var_dep
   }
   vector<string> exps = map.apply(range.getDimensionVars());
   if (!map.constantExp()) {
-    code << tabs << "if(" << range.in(exps);
+    code << tabs << "if(" << range.in(exps); 
     if (!guard.empty()) {
       code << " && " << guard;
     }
@@ -253,6 +253,12 @@ void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_ve
   dependencyEpilogue(g_eq, var_dep);
 }
 
+void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp, Expression use_exp, SB::PWLMap def_map,
+              SB::Deps::LMapExp def_map_exp, SB::Set intersection)
+{
+
+}
+
 void JacGenerator::initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge)
 {
   stringstream code;
@@ -263,7 +269,7 @@ void JacGenerator::initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge)
   _jac_def.code.append(code.str());
 }
 
-JacDef JacGenerator::deps() { return _jac_def; }
+JacDef JacGenerator::def() { return _jac_def; }
 
 Jacobian::Jacobian() {}
 
@@ -276,7 +282,7 @@ void Jacobian::build()
   IndexShiftBuilder index_shifts(algebraics);
   SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(derivatives, algebraics);
   jac.compute(SDSBGraph.build(), index_shifts.build());
-  _jac_def = jac.deps();
+  _jac_def = jac.def();
 }
 
 string Jacobian::code() { return _jac_def.code; }

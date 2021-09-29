@@ -350,12 +350,12 @@ string Range::getPrintDimensionVarsString() const
   return buffer.str();
 }
 
-string Range::getDimensionVarsString() const
+string Range::getDimensionVarsString(bool range) const
 {
   stringstream buffer;
   int size = _ranges.size();
   for (int i = 1; i <= size; i++) {
-    buffer << getDimensionVar(i) << (i + 1 <= size ? "," : "");
+    buffer << getDimensionVar(i, range) << (i + 1 <= size ? "," : "");
   }
   return buffer.str();
 }
@@ -393,22 +393,34 @@ string Range::end() const
   return buffer.str();
 }
 
-string Range::print() const
+string Range::print(bool range, bool c_index) const
 {
   stringstream buffer;
   RangeDefinitionTable ranges = _ranges;
   RangeDefinitionTable::iterator it;
   string block = "";
+  int idx_count = 0;
+  vector<string> idxs = getIndexes();
+  if (range) {
+    idxs = getDimensionVars(range);
+  }
   for (RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it)) {
     if (_type == RANGE::For) {
-      string idx = ranges.key(it);
-      buffer << block << "for(" << idx << " = " << r.begin() << "; ";
-      buffer << idx << "<=" << r.end() << "; ";
+      string idx = idxs[idx_count];
+      int begin = (c_index) ? r.cBegin() : r.begin();
+      int end = (c_index) ? r.cEnd() : r.end();
+      buffer << block << "for(" << idx << " = " << begin << "; ";
+      buffer << idx << "<=" << end << "; ";
       buffer << idx << "+=" << r.step() << ") {" << endl;
       block += TAB;
+      idx_count++;
     }
   }
-  addLocalVariables();
+  if (range) {
+    addRangeLocalVariables();
+  } else {
+    addLocalVariables();
+  }
   return buffer.str();
 }
 

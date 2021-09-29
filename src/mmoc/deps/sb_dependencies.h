@@ -22,6 +22,7 @@
 #include <string>
 
 #include <ir/jacobian.h>
+#include <ir/qss_model.h>
 #include <util/symbol_table.h>
 #include <deps/builders/index_shift_builder.h>
 #include <deps/sbg_graph/deps_graph.h>
@@ -40,7 +41,7 @@ class SBDependencies {
 
   void compute(SB::Deps::Graph graph, SB::Deps::IndexShift index_shift);
 
-  R deps();
+  R def();
 
   protected:
   void paths(SB::Deps::Graph graph, SB::Deps::Vertex V, Util::Variable visiting_alg);
@@ -56,6 +57,7 @@ class SBDependencies {
 
 typedef SBDependencies<Deps::JacMatrixGenerator, Deps::JacMatrixDef> JacobianMatrixBuilder;
 typedef SBDependencies<MicroModelica::IR::JacGenerator, MicroModelica::IR::JacDef> JacobianBuilder;
+typedef SBDependencies<MicroModelica::IR::QSSModelGenerator, MicroModelica::IR::QSSModelDef> QSSModelBuilder;
 
 }  // namespace Deps
 }  // namespace MicroModelica
