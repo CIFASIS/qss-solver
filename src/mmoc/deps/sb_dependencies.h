@@ -23,6 +23,7 @@
 
 #include <ir/jacobian.h>
 #include <ir/qss_model.h>
+#include <ir/qss_model_deps.h>
 #include <util/symbol_table.h>
 #include <deps/builders/index_shift_builder.h>
 #include <deps/sbg_graph/deps_graph.h>
@@ -45,7 +46,7 @@ class SBDependencies {
 
   protected:
   void paths(SB::Deps::Graph graph, SB::Deps::Vertex V, Util::Variable visiting_alg);
-  void recursiveDeps(SB::Deps::Graph graph, SB::PWLMap map_u, SB::Deps::Vertex V, SB::Deps::Vertex X, int num_gen, list<SB::Deps::SetEdge> rec_alg_use_maps);
+  bool recursiveDeps(SB::Deps::Graph graph, SB::PWLMap map_u, SB::Deps::Vertex V, SB::Deps::Vertex X, int num_gen, list<SB::Deps::SetEdge> rec_alg_use_maps, bool visit);
 
   SB::Deps::IndexShift _index_shift;
   IGenerator _gen;
@@ -58,6 +59,7 @@ class SBDependencies {
 typedef SBDependencies<Deps::JacMatrixGenerator, Deps::JacMatrixDef> JacobianMatrixBuilder;
 typedef SBDependencies<MicroModelica::IR::JacGenerator, MicroModelica::IR::JacDef> JacobianBuilder;
 typedef SBDependencies<MicroModelica::IR::QSSModelGenerator, MicroModelica::IR::QSSModelDef> QSSModelBuilder;
+typedef SBDependencies<MicroModelica::IR::QSSModelDepsGenerator, MicroModelica::IR::QSSModelDepsDef> QSSModelDepsBuilder;
 
 }  // namespace Deps
 }  // namespace MicroModelica

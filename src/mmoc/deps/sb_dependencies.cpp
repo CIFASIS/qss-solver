@@ -190,6 +190,7 @@ void SBDependencies<IDependencies, R>::paths(SB::Deps::Graph graph, SB::Deps::Ve
                 SB::Set f_dom = inf_eq_dom;
                 SB::Deps::VariableDep var_dep(state_dep.var(), map_m_f, state_dep.mapU(), alg_label.desc().exp(), false,
                                               f_dom, u_dom, n_map, map_m, state_dep.varOffset(), graph[V].id());
+                var_dep.setReduction(state_dep.isReduction());
                 list<SB::Deps::VariableDep> recursive_deps = state_dep.recursiveDeps(); 
                 // Visit recursive deps.
                 for (SB::Deps::VariableDep var_d : recursive_deps) {
@@ -222,11 +223,15 @@ void SBDependencies<IDependencies, R>::paths(SB::Deps::Graph graph, SB::Deps::Ve
       SB::Deps::VertexDesc update_desc = graph[V].desc();
       SB::Deps::VariableDep var_dep(graph[X].desc().var(), edge_label.mapF(), edge_label.mapU(), edge_label.desc().exp(),
                                     edge_label.desc().mapExp(), graph[X].id(), graph[V].id());
+      bool red = recursiveDeps(graph, map_u, V, X, num_gen, rec_alg_use_maps, false);
+      var_dep.setReduction(red);
       update_desc.setDepState(num_gen, var_dep);
       graph[V].updateDesc(update_desc);
       _gen.visitF(graph[V], var_dep);
       /// Add algebraic recursive uses.
-      recursiveDeps(graph, map_u, V, X, num_gen, rec_alg_use_maps);
+      if (red) {
+        recursiveDeps(graph, map_u, V, X, num_gen, rec_alg_use_maps, true);
+      }
     }
   }
   SB::Deps::updateNumDeps(graph, V, num_gen);
@@ -234,7 +239,7 @@ void SBDependencies<IDependencies, R>::paths(SB::Deps::Graph graph, SB::Deps::Ve
 }
 
 template <typename IDependencies, typename R>
-void SBDependencies<IDependencies, R>::recursiveDeps(SB::Deps::Graph graph, SB::PWLMap map_u, SB::Deps::Vertex V, SB::Deps::Vertex X, int num_gen, list<SB::Deps::SetEdge> rec_alg_use_maps)
+bool SBDependencies<IDependencies, R>::recursiveDeps(SB::Deps::Graph graph, SB::PWLMap map_u, SB::Deps::Vertex V, SB::Deps::Vertex X, int num_gen, list<SB::Deps::SetEdge> rec_alg_use_maps, bool visit)
 {
   for (SB::Deps::SetEdge rec_alg_use: rec_alg_use_maps) {
     // Get the whole vertex of the influenced variable.
@@ -270,11 +275,16 @@ void SBDependencies<IDependencies, R>::recursiveDeps(SB::Deps::Graph graph, SB::
           orig_var_dep.addRecursiveDep(rec_var_dep);
           update_desc.setDepState(num_gen, orig_var_dep);
           graph[V].updateDesc(update_desc);
-          _gen.visitF(graph[*F_vertex_it], rec_var_dep, graph[V]);
+          if (visit) {
+            _gen.visitF(graph[*F_vertex_it], rec_var_dep, graph[V]);
+          } else { 
+            return true;
+          }
         }
       }
     }
   }
+  return false;
 }
 
 template class SBDependencies<JacMatrixGenerator, JacMatrixDef>;
@@ -282,6 +292,8 @@ template class SBDependencies<JacMatrixGenerator, JacMatrixDef>;
 template class SBDependencies<JacGenerator, JacDef>;
 
 template class SBDependencies<QSSModelGenerator, QSSModelDef>;
+
+template class SBDependencies<QSSModelDepsGenerator, QSSModelDepsDef>;
 
 }  // namespace Deps
 }  // namespace MicroModelica
