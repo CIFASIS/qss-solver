@@ -330,12 +330,11 @@ DependencyPrinter::DependencyPrinter(Equation eq)
 string DependencyPrinter::print() const
 {
   stringstream buffer;
-  string tabs = "";
+  string tabs = TAB;
   static constexpr int FIRST_ORDER = 1;
   static constexpr int SECOND_ORDER = 2;
-  FunctionPrinter fp;
+  FunctionPrinter printer;
   string arguments;
-  tabs += TAB;
   // Case 1 -> N
   const bool PRINT_EQ_RANGE = _usage.isConstant() && _range;
   if (_range) {
@@ -349,10 +348,10 @@ string DependencyPrinter::print() const
     }
   }
   tabs += TAB;
-  buffer << fp.beginDimGuards(equationId(), arguments, _range);
+  buffer << printer.beginDimGuards(equationId(), arguments, _range);
   buffer << tabs << prefix() << lhs(FIRST_ORDER) << " = " << _rhs << ";" << endl;
-  buffer << generateDerivatives(tabs, SECOND_ORDER);
-  buffer << TAB << fp.endDimGuards(_range);
+  buffer << generateDerivatives(tabs, SECOND_ORDER) << endl;
+  buffer << TAB << printer.endDimGuards(_range);
   if (PRINT_EQ_RANGE) {
     buffer << _range.get().end();
   }
