@@ -233,7 +233,7 @@ EdgeMaps generatePWLMaps(Expression exp, Set dom, Set unk_dom, int offset, strin
     if (range_init_value == 0) { // Scalar index
       exp_init_values.insert(pwl_map_values.constant());
     } else {
-      exp_init_values.insert(offset);
+      exp_init_values.insert(range_init_value);
     }
     constant_pwl_map_u_it++;
     slope_pwl_map_u_it++;
