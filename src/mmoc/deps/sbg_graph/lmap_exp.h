@@ -62,6 +62,7 @@ class LMapExp {
   LMapExp();
   LMapExp(Constants constants, Slopes slopes, InitValues init_values);
   LMapExp& operator=(const LMapExp& other);
+  bool operator<(const LMapExp& other) const;
 
   std::vector<std::string> apply(std::vector<std::string> variable) const;
   std::vector<int> apply(std::vector<int> variable) const;

@@ -142,6 +142,18 @@ LMapExp& LMapExp::operator=(const LMapExp& other)
   return *this;
 }
 
+bool LMapExp::operator<(const LMapExp& other) const
+{
+  assert(_init_values.size() == other._init_values.size());
+  int size = (int)_init_values.size();
+  for (int i = 0; i < size; i++) {
+    if (_init_values[i] < other._init_values[i]) {
+      return true;
+    }
+  }
+  return false;
+}
+
 bool LMapExp::constantExp() const
 {
   int size = (int)_slopes.size();
