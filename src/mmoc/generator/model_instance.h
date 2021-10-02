@@ -26,6 +26,7 @@
 #include "../ir/class.h"
 #include "../util/compile_flags.h"
 #include "../util/graph.h"
+#include <util/model_config.h>
 #include "../util/symbol_table.h"
 #include "../util/util_types.h"
 #include "writer.h"
@@ -93,6 +94,21 @@ class ModelInstance {
     }
     _writer->write(vdm.init(), init);
   }
+  template<class Builder> 
+  void generateDef(WRITER::Section model_def, WRITER::Section simple, WRITER::Section generic) {
+    Builder model;
+    Util::ModelConfig::instance().clearLocalSymbols();
+    IR::FunctionPrinter printer;
+    model.build();
+    _writer->write(model.simpleDef(), simple);
+    _writer->write(model.genericDef(), generic);
+    _writer->write(Util::ModelConfig::instance().localSymbols(), model_def);
+    if (!_writer->isEmpty(simple)) {
+      _writer->write(printer.beginSwitch(), model_def);
+      _writer->write(printer.endSwitch(), simple);
+    }
+  }
+
 
   private:
   IR::Model _model;
