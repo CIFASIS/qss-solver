@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef ALGEBRAICS_H_
-#define ALGEBRAICS_H_
+#pragma once
 
 #include "../ast_util.h"
 
@@ -27,7 +26,7 @@ namespace Util {
 
 class Algebraics : public AST_Expression_Visitor<bool> {
   public:
-  Algebraics();
+  Algebraics(bool state = false);
   ~Algebraics() = default;
 
   void exclude(Variable var);
@@ -41,8 +40,8 @@ class Algebraics : public AST_Expression_Visitor<bool> {
 
   AST_ExpressionList _exps;
   Variable _var;
+  bool _state;
 };
 }  // namespace Util
 }  // namespace MicroModelica
 
-#endif /* ALGEBRAICS_H_ */
