@@ -46,7 +46,7 @@ class SBDependencies {
 
   protected:
   void paths(SB::Deps::Graph graph, SB::Deps::Vertex V, Util::Variable visiting_alg);
-  bool recursiveDeps(SB::Deps::Graph graph, SB::PWLMap map_u, SB::Deps::Vertex V, SB::Deps::Vertex X, int num_gen, list<SB::Deps::SetEdge> rec_alg_use_maps, bool visit);
+  void recursiveDeps(SB::Deps::Graph graph, SB::PWLMap map_u, SB::Deps::Vertex V, SB::Deps::Vertex X, int num_gen, list<SB::Deps::SetEdge> rec_alg_use_maps);
 
   SB::Deps::IndexShift _index_shift;
   IGenerator _gen;
