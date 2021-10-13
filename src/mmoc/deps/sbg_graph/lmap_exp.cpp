@@ -59,6 +59,15 @@ CoeffContainer CoeffContainer::operator-() const
   return ret;
 };
 
+CoeffContainer CoeffContainer::id(int size)
+{
+  std::vector<int> ret(size);
+  for (int i = 0; i < size; i++) {
+    ret[i] = 1;
+  }
+  return ret;
+};
+
 CoeffContainer CoeffContainer::operator-(const CoeffContainer& other) const
 {
   assert(size() == other.size());
@@ -133,6 +142,8 @@ LMapExp::LMapExp(Constants constants, Slopes slopes, InitValues init_values) : _
   assert(_constants.size() == _slopes.size());
 }
 
+bool LMapExp::isEmpty() const { return _init_values.size() == 0; }
+
 LMapExp& LMapExp::operator=(const LMapExp& other)
 {
   _constants = other._constants;
@@ -142,16 +153,14 @@ LMapExp& LMapExp::operator=(const LMapExp& other)
   return *this;
 }
 
+bool LMapExp::operator==(const LMapExp& other) const
+{
+  return (_constants == other._constants) && (_slopes == other._slopes) && (_init_values == other._init_values);
+}
+
 bool LMapExp::operator<(const LMapExp& other) const
 {
-  assert(_init_values.size() == other._init_values.size());
-  int size = (int)_init_values.size();
-  for (int i = 0; i < size; i++) {
-    if (_init_values[i] < other._init_values[i]) {
-      return true;
-    }
-  }
-  return false;
+  return print() < other.print();
 }
 
 bool LMapExp::constantExp() const
@@ -195,8 +204,10 @@ std::vector<std::string> LMapExp::apply(std::vector<std::string> variable) const
       if (_constants[i] > 0) {
         code << " + ";
       }
-    }
-    if (_constants[i]) {
+      if (_constants[i]) {
+        code << _constants[i];
+     }
+    } else {
       code << _constants[i];
     }
     exps.push_back(code.str());
@@ -225,6 +236,9 @@ InitValues LMapExp::initValues() const { return _init_values; }
 
 LMapExp LMapExp::compose(const LMapExp& other)
 {
+  if (other.isEmpty()) {
+    return *this;
+  }
   Slopes new_slopes = other.slopes() * slopes();
   Constants new_constants = slopes() * other.constants() + constants();
   return LMapExp(new_constants, new_slopes, initValues());
@@ -232,8 +246,19 @@ LMapExp LMapExp::compose(const LMapExp& other)
 
 LMapExp LMapExp::solve(const LMapExp& other)
 {
+  if (other.isEmpty()) {
+    return *this;
+  }
   Slopes new_slopes = other.slopes() / slopes();
-  Constants new_constants = (other.constants() - constants()) / slopes();
+  Constants new_constants = (slopes().isZeros()) ? other.constants() - constants() : (other.constants() - constants()) / slopes();
+  return LMapExp(new_constants, new_slopes, initValues());
+}
+
+LMapExp LMapExp::revert()
+{
+  Slopes ids;
+  Slopes new_slopes = ids.id(slopes().size()) / slopes();
+  Constants new_constants = (slopes().isZeros()) ? -constants() : (-constants()) / slopes();
   return LMapExp(new_constants, new_slopes, initValues());
 }
 
@@ -243,10 +268,28 @@ LMapExp LMapExp::applyIndexShift(Constants index_shift)
   return LMapExp(new_constants, slopes(), initValues());
 }
 
+std::string LMapExp::print() const
+{
+  std::stringstream code;
+  int size = _slopes.size();
+  std::vector<std::string> variables;
+  int dim = 1;
+  for(int i = 0; i < size; i++) {
+    std::stringstream var_name;
+    var_name << "_d" << dim++;
+    variables.push_back(var_name.str());
+  }
+  std::vector<std::string> exps = apply(variables);
+  size = 0;
+  for(std::string exp : exps) {
+    code << exp << ((size++ == exps.size())? "" : " , ");
+  }
+  return code.str();
+}
+
 std::ostream& operator<<(std::ostream& os, const LMapExp& function)
 {
-  os << "Constant: " << function._constants << std::endl;
-  os << "Factor: " << function._slopes << std::endl;
+  os << function.print();
   return os;
 }
 
