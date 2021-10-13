@@ -52,8 +52,7 @@ struct VariableDep {
         _m_map(),
         _var_offset(0),
         _eq_offset(0),
-        _recursive_deps(),
-        _reduction(){};
+        _recursive_deps(){};
   VariableDep(MicroModelica::Util::Variable var, SB::PWLMap map_f, SB::PWLMap map_u, MicroModelica::IR::Expression exp, LMapExp n_map,
               int var_offset, int eq_offset)
       : _var(var),
@@ -67,8 +66,7 @@ struct VariableDep {
         _m_map(),
         _var_offset(var_offset),
         _eq_offset(eq_offset),
-        _recursive_deps(),
-        _reduction()
+        _recursive_deps()
   {
     _u_dom = _map_u.wholeDom();
     _f_dom = _map_f.wholeDom();
@@ -86,8 +84,7 @@ struct VariableDep {
         _m_map(),
         _var_offset(var_offset),
         _eq_offset(eq_offset),
-        _recursive_deps(),
-        _reduction(){};
+        _recursive_deps(){};
   VariableDep(MicroModelica::Util::Variable var, SB::PWLMap map_f, SB::PWLMap map_u, MicroModelica::IR::Expression exp, bool recursive,
               SB::Set f_dom, SB::Set u_dom, LMapExp n_map, LMapExp m_map, int var_offset, int eq_offset)
       : _var(var),
@@ -101,8 +98,7 @@ struct VariableDep {
         _m_map(m_map),
         _var_offset(var_offset),
         _eq_offset(eq_offset),
-        _recursive_deps(),
-        _reduction(){};
+        _recursive_deps(){};
 
   PWLMap mapF() const { return _map_f; };
   PWLMap mapU() const { return _map_u; };
@@ -152,9 +148,6 @@ struct VariableDep {
     } 
   }
 
-  void setReduction(bool reduction) { _reduction = reduction; }
-  bool isReduction() { return _reduction; }
-
   protected:
   MicroModelica::Util::Variable _var;
   PWLMap _map_f;
@@ -168,7 +161,6 @@ struct VariableDep {
   int _var_offset;
   int _eq_offset;
   map<int, VariableDep> _recursive_deps;
-  bool _reduction;
 };
 
 struct VertexDesc {
