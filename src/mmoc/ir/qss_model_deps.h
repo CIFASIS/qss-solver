@@ -22,6 +22,7 @@
 #include <string>
 #include <map>
 
+#include <ir/compute_algs.h>
 #include <ir/equation.h>
 #include <deps/sbg_graph/deps_graph.h>
 #include <util/symbol_table.h>
@@ -35,34 +36,18 @@ struct QSSModelDepsDef {
   std::string generic;
 };
 
-struct DefAlgDepsUse {
-  int id;
-  SB::PWLMap use;
-  SB::Deps::LMapExp use_map;
-  SB::Set range;
-  Expression exp;
-  int offset;
-  bool recursive;
-};
-
-struct CompDef {
-  bool operator() (const DefAlgDepsUse& lhs, const DefAlgDepsUse& rhs) const
-  {return lhs.use_map < rhs.use_map;}
-};
-
 struct DepData {
   int id;
   SB::Deps::VariableDep var_dep;
 };
 
 struct DepCode {
-  std::string begin;
-  std::string end;
+  vector<std::string> begin;
+  vector<std::string> end;
   vector<std::string> code;
   vector<std::string> alg_code;
   bool scalar;
 };
-
 
 class QSSModelDepsGenerator {
   public:
@@ -81,17 +66,17 @@ class QSSModelDepsGenerator {
   QSSModelDepsDef def();
 
   protected:
-  string addAlgDeps(int id, std::map<int, set<DefAlgDepsUse,CompDef>> alg_deps);
   void addCode(DepCode dep_code, std::stringstream& code);
   bool findDep(DepData dep_data);
   Expression getUseExp(Util::Variable variable, DepData dep_data);
-  Option<Range> getUseRange(Util::Variable variable, DepData dep_data);
+  Option<Range> getUseRange(Util::Variable variable, DepData dep_data, Equation eq);
 
   QSSModelDepsDef _qss_model_deps_def;
   int _tabs;
-  std::map<int, set<DefAlgDepsUse,CompDef>> _der_deps;
-  std::map<int, set<DefAlgDepsUse,CompDef>>_alg_deps;
+  AlgDepsMap _der_deps;
+  AlgDepsMap _alg_deps;
   std::map<std::string, list<DepData>> _deps;
+  bool _post_process_eval;
 };
 
 class QSSModelDeps {
