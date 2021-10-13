@@ -299,11 +299,8 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
 	
 			_eval_dep_uC1(1) = (_iD(0)-_iL(0))/_C1;
-		
 			_eval_dep_uC(1) = (_iL(0)-_uC(0)/_R)/_C;
-		
 			_eval_dep_iL(1) = (-_uC(0)-_iD(0)*_Rd)/_L;
-		
 			break;
 		}
 		case _eval_phi(0): {
@@ -312,9 +309,17 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
 	
 			_eval_dep_uC1(1) = (_iD(0)-_iL(0))/_C1;
-		
 			_eval_dep_iL(1) = (-_uC(0)-_iD(0)*_Rd)/_L;
-		
+			break;
+		}
+		case _eval_uC(0): {
+			_iL1(0) = (_L*_phi(0)+_L*_iL(0))/_L1;
+	
+			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
+	
+			_eval_dep_phi(1) = (_U+_uC(0)-_uC1(0))/_L;
+			_eval_dep_uC(1) = (_iL(0)-_uC(0)/_R)/_C;
+			_eval_dep_iL(1) = (-_uC(0)-_iD(0)*_Rd)/_L;
 			break;
 		}
 		case _eval_uC1(0): {
@@ -323,24 +328,8 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
 	
 			_eval_dep_uC1(1) = (_iD(0)-_iL(0))/_C1;
-		
 			_eval_dep_phi(1) = (_U+_uC(0)-_uC1(0))/_L;
-		
 			_eval_dep_iL(1) = (-_uC(0)-_iD(0)*_Rd)/_L;
-		
-			break;
-		}
-		case _eval_uC(0): {
-			_eval_dep_phi(1) = (_U+_uC(0)-_uC1(0))/_L;
-		
-			_eval_dep_uC(1) = (_iL(0)-_uC(0)/_R)/_C;
-		
-			_iL1(0) = (_L*_phi(0)+_L*_iL(0))/_L1;
-	
-			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
-	
-			_eval_dep_iL(1) = (-_uC(0)-_iD(0)*_Rd)/_L;
-		
 			break;
 		}
 	}

@@ -114,19 +114,19 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 		case _eval_x(1,0): {
 			_eval_dep_x(1,1) = 0.1*_x(1,0)-0.1*_x(1,0)*_x(2,0);
 			_eval_dep_x(1,2) = (0)/2;
-			_eval_dep_x(1,3) = (0)/6;	
+			_eval_dep_x(1,3) = (0)/6;
 			_eval_dep_x(2,1) = 0.1*_x(1,0)*_x(2,0)-0.1*_x(2,0);
 			_eval_dep_x(2,2) = (0)/2;
-			_eval_dep_x(2,3) = (0)/6;	
+			_eval_dep_x(2,3) = (0)/6;
 			break;
 		}
 		case _eval_x(2,0): {
 			_eval_dep_x(1,1) = 0.1*_x(1,0)-0.1*_x(1,0)*_x(2,0);
 			_eval_dep_x(1,2) = (0)/2;
-			_eval_dep_x(1,3) = (0)/6;	
+			_eval_dep_x(1,3) = (0)/6;
 			_eval_dep_x(2,1) = 0.1*_x(1,0)*_x(2,0)-0.1*_x(2,0);
 			_eval_dep_x(2,2) = (0)/2;
-			_eval_dep_x(2,3) = (0)/6;	
+			_eval_dep_x(2,3) = (0)/6;
 			break;
 		}
 	}

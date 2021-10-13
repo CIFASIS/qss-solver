@@ -123,8 +123,16 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 	switch(idx) {
 		case _eval_u(1,0): {
 			_eval_dep_u(1,1) = (-_u(1,0)+1)*20000-_mu*_u(1,0)*(_u(1,0)-_alpha)*(_u(1,0)-1);
-			_eval_dep_u(1,2) = (0)/2;	
+			_eval_dep_u(1,2) = (0)/2;
 			break;
+		}
+	}
+	if (_is_var_u(idx)) {
+		_get_u_idxs(idx);
+		_apply_usage_eq_2(_d1);
+		if ((j >= 2 && j <= 20000)) {
+			_eval_dep_u(j,1) = (-_u(j,0)+_u(j-1,0))*20000-_mu*_u(j,0)*(_u(j,0)-_alpha)*(_u(j,0)-1);
+			_eval_dep_u(j,2) = (0)/2;
 		}
 	}
 	if (_is_var_u(idx)) {
@@ -132,17 +140,9 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 		_apply_usage_eq_2(_d1+1);
 		if ((j >= 2 && j <= 20000)) {
 			_eval_dep_u(j,1) = (-_u(j,0)+_u(j-1,0))*20000-_mu*_u(j,0)*(_u(j,0)-_alpha)*(_u(j,0)-1);
-			_eval_dep_u(j,2) = (0)/2;	}
-	
+			_eval_dep_u(j,2) = (0)/2;
 		}
-	if (_is_var_u(idx)) {
-		_get_u_idxs(idx);
-		_apply_usage_eq_2(_d1);
-		if ((j >= 2 && j <= 20000)) {
-			_eval_dep_u(j,1) = (-_u(j,0)+_u(j-1,0))*20000-_mu*_u(j,0)*(_u(j,0)-_alpha)*(_u(j,0)-1);
-			_eval_dep_u(j,2) = (0)/2;	}
-	
-		}
+	}
 }
 
 void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, int *BDFMap, int nBDF)
