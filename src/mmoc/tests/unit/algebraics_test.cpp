@@ -34,7 +34,7 @@ using namespace MicroModelica::Util;
 /// Unit tests for algebraics variable visitor.
 class AlgebraicsTest : public ::testing::Test, public Algebraics {
   public:
-  AlgebraicsTest() : Algebraics() {}
+  AlgebraicsTest() : Algebraics(false) {}
 
   virtual ~AlgebraicsTest() {}
 };

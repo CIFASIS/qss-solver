@@ -152,16 +152,16 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 	switch(idx) {
 		case _eval_iL(0): {
 			_eval_dep_uC(1) = (_iL(0)-_uC(0)/_R)/_C;
-			_eval_dep_uC(2) = (0)/2;	
+			_eval_dep_uC(2) = (0)/2;
 			_eval_dep_iL(1) = (((_U/_Rs)-_iL(0))*(_Rs*_Rd/(_Rs+_Rd))-_uC(0))/_L;
-			_eval_dep_iL(2) = (0)/2;	
+			_eval_dep_iL(2) = (0)/2;
 			break;
 		}
 		case _eval_uC(0): {
 			_eval_dep_uC(1) = (_iL(0)-_uC(0)/_R)/_C;
-			_eval_dep_uC(2) = (0)/2;	
+			_eval_dep_uC(2) = (0)/2;
 			_eval_dep_iL(1) = (((_U/_Rs)-_iL(0))*(_Rs*_Rd/(_Rs+_Rd))-_uC(0))/_L;
-			_eval_dep_iL(2) = (0)/2;	
+			_eval_dep_iL(2) = (0)/2;
 			break;
 		}
 	}

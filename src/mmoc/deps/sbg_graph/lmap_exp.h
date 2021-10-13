@@ -40,6 +40,7 @@ class CoeffContainer {
   CoeffContainer operator+(const CoeffContainer& other) const;
   CoeffContainer operator*(const CoeffContainer& other) const;
   CoeffContainer operator/(const CoeffContainer& other) const;
+  CoeffContainer id(int size);
   typedef std::vector<int>::iterator iterator;
   typedef std::vector<int>::const_iterator const_iterator;
   const_iterator begin() const;
@@ -62,6 +63,8 @@ class LMapExp {
   LMapExp();
   LMapExp(Constants constants, Slopes slopes, InitValues init_values);
   LMapExp& operator=(const LMapExp& other);
+  bool operator==(const LMapExp& other) const;
+  bool operator<(const LMapExp& other) const;
 
   std::vector<std::string> apply(std::vector<std::string> variable) const;
   std::vector<int> apply(std::vector<int> variable) const;
@@ -70,8 +73,11 @@ class LMapExp {
   InitValues initValues() const;
   LMapExp compose(const LMapExp& other);
   LMapExp solve(const LMapExp& other);
+  LMapExp revert();
   LMapExp applyIndexShift(CoeffContainer index_shift);
   bool constantExp() const;
+  bool isEmpty() const;
+  std::string print() const;
   friend std::ostream& operator<<(std::ostream& os, const LMapExp& map);
 
   protected:

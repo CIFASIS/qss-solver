@@ -177,17 +177,26 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 	int _d1;
 	int i;
 	switch(idx) {
-		case _eval_x(2,0): {
-			_eval_dep_x(1,1) = _d-_x(2,0);
-			_eval_dep_x(1,2) = (0)/2;
-			_eval_dep_x(1,3) = (0)/6;	
-			break;
-		}
 		case _eval_x(199,0): {
 			_eval_dep_x(200,1) = _x(199,0);
 			_eval_dep_x(200,2) = (0)/2;
-			_eval_dep_x(200,3) = (0)/6;	
+			_eval_dep_x(200,3) = (0)/6;
 			break;
+		}
+		case _eval_x(2,0): {
+			_eval_dep_x(1,1) = _d-_x(2,0);
+			_eval_dep_x(1,2) = (0)/2;
+			_eval_dep_x(1,3) = (0)/6;
+			break;
+		}
+	}
+	if (_is_var_x(idx)) {
+		_get_x_idxs(idx);
+		_apply_usage_eq_1(_d1-1);
+		if ((i >= 2 && i <= 199)) {
+			_eval_dep_x(i,1) = _x(i-1,0)-_x(i+1,0);
+			_eval_dep_x(i,2) = (0)/2;
+			_eval_dep_x(i,3) = (0)/6;
 		}
 	}
 	if (_is_var_x(idx)) {
@@ -196,18 +205,9 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 		if ((i >= 2 && i <= 199)) {
 			_eval_dep_x(i,1) = _x(i-1,0)-_x(i+1,0);
 			_eval_dep_x(i,2) = (0)/2;
-			_eval_dep_x(i,3) = (0)/6;	}
-	
+			_eval_dep_x(i,3) = (0)/6;
 		}
-	if (_is_var_x(idx)) {
-		_get_x_idxs(idx);
-		_apply_usage_eq_1(_d1-1);
-		if ((i >= 2 && i <= 199)) {
-			_eval_dep_x(i,1) = _x(i-1,0)-_x(i+1,0);
-			_eval_dep_x(i,2) = (0)/2;
-			_eval_dep_x(i,3) = (0)/6;	}
-	
-		}
+	}
 }
 
 void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, int *BDFMap, int nBDF)

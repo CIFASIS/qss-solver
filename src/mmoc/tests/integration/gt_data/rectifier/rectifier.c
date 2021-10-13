@@ -132,16 +132,16 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double *dx, int *map)
 {
 	switch(idx) {
-		case _eval_u(0): {
-			_eval_dep_u(1) = 1000*(_U*sin(_w*_time)-_u(0));
-			_eval_dep_u(2) = (0)/2;	
-			_eval_dep_iL(1) = (_u(0)-_iL(0)*(_R+_Rd))/_L;
-			_eval_dep_iL(2) = (0)/2;	
-			break;
-		}
 		case _eval_iL(0): {
 			_eval_dep_iL(1) = (_u(0)-_iL(0)*(_R+_Rd))/_L;
-			_eval_dep_iL(2) = (0)/2;	
+			_eval_dep_iL(2) = (0)/2;
+			break;
+		}
+		case _eval_u(0): {
+			_eval_dep_u(1) = 1000*(_U*sin(_w*_time)-_u(0));
+			_eval_dep_u(2) = (0)/2;
+			_eval_dep_iL(1) = (_u(0)-_iL(0)*(_R+_Rd))/_L;
+			_eval_dep_iL(2) = (0)/2;
 			break;
 		}
 	}

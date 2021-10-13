@@ -178,28 +178,28 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double *dx, int *map)
 {
 	switch(idx) {
+		case _eval_vx(0): {
+			_eval_dep_x(1) = _vx(0);
+			_eval_dep_x(2) = (0)/2;
+			_eval_dep_x(3) = (0)/6;
+			_eval_dep_vx(1) = -0.1*_vx(0);
+			_eval_dep_vx(2) = (0)/2;
+			_eval_dep_vx(3) = (0)/6;
+			break;
+		}
 		case _eval_vy(0): {
 			_eval_dep_y(1) = _vy(0);
 			_eval_dep_y(2) = (0)/2;
-			_eval_dep_y(3) = (0)/6;	
+			_eval_dep_y(3) = (0)/6;
 			_eval_dep_vy(1) = -9.8-0.1*_vy(0)-_contact*((_y(0)-_stair)*1e+06+_vy(0)*30);
 			_eval_dep_vy(2) = (0)/2;
-			_eval_dep_vy(3) = (0)/6;	
+			_eval_dep_vy(3) = (0)/6;
 			break;
 		}
 		case _eval_y(0): {
 			_eval_dep_vy(1) = -9.8-0.1*_vy(0)-_contact*((_y(0)-_stair)*1e+06+_vy(0)*30);
 			_eval_dep_vy(2) = (0)/2;
-			_eval_dep_vy(3) = (0)/6;	
-			break;
-		}
-		case _eval_vx(0): {
-			_eval_dep_x(1) = _vx(0);
-			_eval_dep_x(2) = (0)/2;
-			_eval_dep_x(3) = (0)/6;	
-			_eval_dep_vx(1) = -0.1*_vx(0);
-			_eval_dep_vx(2) = (0)/2;
-			_eval_dep_vx(3) = (0)/6;	
+			_eval_dep_vy(3) = (0)/6;
 			break;
 		}
 	}

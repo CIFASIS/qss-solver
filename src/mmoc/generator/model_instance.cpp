@@ -33,6 +33,7 @@
 #include "../ir/expression.h"
 #include "../ir/jacobian.h"
 #include "../ir/qss_model.h"
+#include "../ir/qss_model_deps.h"
 #include "../ir/statement.h"
 #include "../util/error.h"
 #include "../util/util.h"
@@ -507,19 +508,11 @@ QSSModelInstance::QSSModelInstance(Model &model, CompileFlags &flags, WriterPtr 
 {
 }
 
-void QSSModelInstance::definition()
+void QSSModelInstance::definition() { generateDef<QSSModel>(WRITER::Model, WRITER::Model_Simple, WRITER::Model_Generic); }
+
+void QSSModelInstance::dependencies()
 {
-  QSSModel qss_model;
-  ModelConfig::instance().clearLocalSymbols();
-  FunctionPrinter printer;
-  qss_model.build();
-  _writer->write(qss_model.simpleDef(), WRITER::Model_Simple);
-  _writer->write(qss_model.genericDef(), WRITER::Model_Generic);
-  _writer->write(ModelConfig::instance().localSymbols(), WRITER::Model);
-  if (!_writer->isEmpty(WRITER::Model_Simple)) {
-    _writer->write(printer.beginSwitch(), WRITER::Model);
-    _writer->write(printer.endSwitch(), WRITER::Model_Simple);
-  }
+  generateDef<QSSModelDeps>(WRITER::Model_Deps, WRITER::Model_Deps_Simple, WRITER::Model_Deps_Generic);
 }
 
 void QSSModelInstance::bdfDefinition()
@@ -620,28 +613,6 @@ void QSSModelInstance::initializeDataStructures()
   configOutput();
   allocateModel();
   ModelConfig::instance().unsetLocalInitSymbols();
-}
-
-void QSSModelInstance::dependencies()
-{
-  ModelDependencies deps = _model.dependencies();
-  EquationDependencyMatrix DS = deps.DS();
-  EquationDependencyMatrix::const_iterator it;
-  VarSymbolTable symbols = _model.symbols();
-  ModelConfig::instance().clearLocalSymbols();
-  FunctionPrinter printer;
-  EquationMapper<IR::Dependency> mapper;
-  for (it = DS.begin(); it != DS.end(); it++) {
-    IR::Dependency dep;
-    mapper.compute(dep, it->second);
-  }
-  _writer->write(mapper.scalar(), WRITER::Model_Deps_Simple);
-  _writer->write(mapper.vector(), WRITER::Model_Deps_Generic);
-  _writer->write(ModelConfig::instance().localSymbols(), WRITER::Model_Deps);
-  if (!_writer->isEmpty(WRITER::Model_Deps_Simple)) {
-    _writer->write(printer.beginSwitch(), WRITER::Model_Deps);
-    _writer->write(printer.endSwitch(), WRITER::Model_Deps_Simple);
-  }
 }
 
 Graph QSSModelInstance::computationalGraph() { return Graph(0, 0); }

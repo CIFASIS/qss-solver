@@ -170,30 +170,36 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 		if ((i >= 1 && i <= 1000)) {
 			_eval_dep_v(i,1) = 0.04*_v(i,0)*_v(i,0)+5*_v(i,0)+140-_u(i,0)+_I(i);
 			_eval_dep_v(i,2) = (0)/2;
-			_eval_dep_v(i,3) = (0)/6;	}
-	
+			_eval_dep_v(i,3) = (0)/6;
+		}
+	}
+	if (_is_var_u(idx)) {
+		_get_u_idxs(idx);
 		_apply_usage_eq_2(_d1);
 		if ((i >= 1 && i <= 1000)) {
 			_eval_dep_u(i,1) = _a*(_b*_v(i,0)-_u(i,0));
 			_eval_dep_u(i,2) = (0)/2;
-			_eval_dep_u(i,3) = (0)/6;	}
-	
+			_eval_dep_u(i,3) = (0)/6;
 		}
+	}
 	if (_is_var_v(idx)) {
 		_get_v_idxs(idx);
 		_apply_usage_eq_1(_d1);
 		if ((i >= 1 && i <= 1000)) {
 			_eval_dep_v(i,1) = 0.04*_v(i,0)*_v(i,0)+5*_v(i,0)+140-_u(i,0)+_I(i);
 			_eval_dep_v(i,2) = (0)/2;
-			_eval_dep_v(i,3) = (0)/6;	}
-	
+			_eval_dep_v(i,3) = (0)/6;
+		}
+	}
+	if (_is_var_v(idx)) {
+		_get_v_idxs(idx);
 		_apply_usage_eq_2(_d1);
 		if ((i >= 1 && i <= 1000)) {
 			_eval_dep_u(i,1) = _a*(_b*_v(i,0)-_u(i,0));
 			_eval_dep_u(i,2) = (0)/2;
-			_eval_dep_u(i,3) = (0)/6;	}
-	
+			_eval_dep_u(i,3) = (0)/6;
 		}
+	}
 }
 
 void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, int *BDFMap, int nBDF)

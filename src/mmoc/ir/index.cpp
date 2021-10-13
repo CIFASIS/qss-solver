@@ -160,6 +160,21 @@ string Index::print() const
   return buffer.str();
 }
 
+vector<string> Index::variables()
+{
+  vector<string> vars;
+  for(unsigned int i = 0; i < _indexes.size(); i++){
+    if (_indexes[i].variable().empty()) {
+      stringstream constant;
+      constant << _indexes[i].constant();
+      vars.push_back(constant.str());
+    } else {
+      vars.push_back(_indexes[i].variable());
+    }
+  }
+  return vars;
+}
+
 bool Index::hasVariable(int dim) { return !_indexes[dim].variable().empty(); }
 
 string Index::variable(int dim) { return _indexes[dim].variable(); }
@@ -208,7 +223,7 @@ Range::Range(AST_Expression exp) : _ranges(), _index_pos(), _size(1), _type(RANG
 
 Range::Range(SBG::MDI mdi) : _ranges(), _index_pos(), _size(1), _type(RANGE::For) { generate(mdi); }
 
-Range::Range(SB::Set set, int offset) : _ranges(), _index_pos(), _size(1), _type(RANGE::For) { generate(set, offset); }
+Range::Range(SB::Set set, int offset, vector<string> vars) : _ranges(), _index_pos(), _size(1), _type(RANGE::For) { generate(set, offset, vars); }
 
 void Range::updateRangeDefinition(std::string index_def, RangeDefinition def, int pos)
 {
@@ -291,7 +306,19 @@ void Range::generate(SBG::MDI mdi)
   }
 }
 
-void Range::generate(SB::Set set, int offset)
+bool Range::isVariable(std::string var)
+{
+  bool not_number = true;
+  try
+  {
+      std::stoi(var);
+      not_number = false;
+  }
+  catch(const std::exception &) {}
+  return not_number;
+}
+
+void Range::generate(SB::Set set, int offset, vector<string> vars)
 {
   int pos = 0;
   SB::UnordAtomSet a_sets = set.atomicSets();
@@ -304,6 +331,9 @@ void Range::generate(SB::Set set, int offset)
         Error::instance().add(0, EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong range in dependency matrix.");
       }
       string index = Utils::instance().iteratorVar(pos);
+      if (!vars.empty() && isVariable(vars[pos])) {
+        index = vars[pos];
+      } 
       updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
       Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
       ModelConfig::instance().addVariable(index, vi);
@@ -552,6 +582,26 @@ void Range::applyUsage(Index usage)
       _ranges.insert(_ranges.key(it), new_range);
     }
   }
+}
+
+bool Range::checkUsage(Index usage, Index def)
+{
+  int dimension = def.dimension();
+  assert(_ranges.size() == dimension);
+  assert(usage.isConstant());
+  RangeDefinitionTable::iterator it;
+  int i = 0;
+  for (RangeDefinition r = _ranges.begin(it); !_ranges.end(it); r = _ranges.next(it), i++) {
+    if (def.hasVariable(i)) {
+      int new_begin = r.begin() * def.factor(i) + def.constant(i);
+      int new_end = r.end() * def.factor(i) + def.constant(i);
+      int usage_val = usage.constant(i);
+      if (usage_val < new_begin || usage_val > new_end) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 string Range::in(ExpressionList exps)

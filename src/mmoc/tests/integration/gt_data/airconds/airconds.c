@@ -195,9 +195,9 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 		if ((i >= 1 && i <= 20000)) {
 			_eval_dep_th(i,1) = (_THA/_RES(i)-_POT(i)*_on(i)-_th(i,0)/_RES(i)+_noise(i)/_RES(i))/_CAP(i);
 			_eval_dep_th(i,2) = (0)/2;
-			_eval_dep_th(i,3) = (0)/6;	}
-	
+			_eval_dep_th(i,3) = (0)/6;
 		}
+	}
 }
 
 void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, int *BDFMap, int nBDF)

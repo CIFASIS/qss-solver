@@ -78,7 +78,9 @@ IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
 				$(IRDIR)/equation_printer.cpp \
 				$(IRDIR)/alg_usage.cpp \
 				$(IRDIR)/jacobian.cpp \
-				$(IRDIR)/qss_model.cpp
+				$(IRDIR)/qss_model.cpp \
+				$(IRDIR)/qss_model_deps.cpp \
+				$(IRDIR)/compute_algs.cpp
 
 PARSERSRC = $(PARSERDIR)/mocc_parser.cpp \
 			$(PARSERDIR)/mocc_scanner.cpp \
