@@ -74,7 +74,7 @@ class Range {
   Range(Util::Variable var, RANGE::Type type = RANGE::For);
   Range(AST_Expression exp);
   Range(Deps::SBG::MDI mdi);
-  Range(SB::Set set, int offset);
+  Range(SB::Set set, int offset, std::vector<std::string> vars = std::vector<std::string>());
   ~Range() = default;
 
   int size() const;
@@ -99,6 +99,7 @@ class Range {
   bool intersect(Range other);
   Deps::MDI getMDI();
   void applyUsage(Index usage);
+  bool checkUsage(Index usage, Index def);
   std::string in(ExpressionList exps);
   std::string in(std::vector<std::string> exps);
   map<std::string, AST_Expression> initExps();
@@ -108,9 +109,10 @@ class Range {
   void generate(Util::Variable var);
   void generate(AST_Expression exp);
   void generate(Deps::SBG::MDI mdi);
-  void generate(SB::Set set, int offset);
+  void generate(SB::Set set, int offset, std::vector<std::string> vars);
   void updateRangeDefinition(std::string index_def, RangeDefinition def, int pos);
   void addRangeVariables(int i, string index) const;
+  bool isVariable(std::string var);
 
   private:
   void setRangeDefinition(AST_ForIndexList fil);
@@ -165,6 +167,7 @@ class Index {
   int constant(int dim);
   Expression expression() const;
   bool isEmpty() const;
+  std::vector<std::string> variables();
 
   protected:
   void parseIndexes();
