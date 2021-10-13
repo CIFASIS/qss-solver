@@ -22,6 +22,7 @@
 #include <string>
 #include <map>
 
+#include <ir/compute_algs.h>
 #include <ir/equation.h>
 #include <deps/sbg_graph/deps_graph.h>
 #include <util/symbol_table.h>
@@ -35,14 +36,6 @@ struct QSSModelDef {
   std::string generic;
 };
 
-struct DefAlgUse {
-  int id;
-  SB::PWLMap use;
-  SB::Set range;
-  Expression exp;
-  int offset;
-  bool recursive;
-};
 
 class QSSModelGenerator {
   public:
@@ -61,12 +54,11 @@ class QSSModelGenerator {
   QSSModelDef def();
 
   protected:
-  string addAlgDeps(int id, std::map<int, list<DefAlgUse>> alg_deps);
-
   QSSModelDef _qss_model_def;
   int _tabs;
-  std::map<int, list<DefAlgUse>> _der_deps;
-  std::map<int, list<DefAlgUse>>_alg_deps;
+  AlgDepsMap _der_deps;
+  AlgDepsMap _alg_deps;
+  bool _post_process_eval;
 };
 
 class QSSModel {

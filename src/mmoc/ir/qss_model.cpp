@@ -39,57 +39,20 @@ using namespace SB;
 using namespace Util;
 namespace IR {
 
-QSSModelGenerator::QSSModelGenerator() : _qss_model_def(), _tabs(0) {}
-
-string QSSModelGenerator::addAlgDeps(int id, std::map<int, list<DefAlgUse>> alg_deps)
-{
-  list<DefAlgUse> algs = alg_deps[id];
-  stringstream code;
-  for (DefAlgUse alg : algs) {
-    code << addAlgDeps(alg.id, _alg_deps);
-  }
-  for (DefAlgUse alg : algs) {
-    // Add offset
-    SB::Set var_range = alg.use.image(alg.range);
-    Range range(var_range, alg.offset);
-    EquationTable equations = ModelConfig::instance().algebraics();
-    Option<Equation> eq = equations[alg.id];
-    assert(eq);
-    Equation gen_eq = eq.get();
-    Index use_idx = Index(alg.exp);
-    if (gen_eq.hasRange() && alg.recursive) {
-      code << gen_eq.range()->print(true, true);
-      code << "_get" << gen_eq.LHSVariable().get() << "_idxs(" << range.getDimensionVarsString(true) << ");" << endl;
-      use_idx = Index(gen_eq.lhs());
-    }
-    if (eq->hasRange()) {
-      gen_eq.setRange(range);
-    }
-    FunctionPrinter printer;
-    
-    if (use_idx.isConstant() && gen_eq.hasRange()) {
-      Equation a = gen_eq;
-      a.applyUsage(use_idx);
-      gen_eq = a;
-    }
-    code << printer.printAlgebraicGuards(gen_eq, use_idx);
-    code << TAB << gen_eq;
-    code << printer.endDimGuards(gen_eq.range());
-    if (gen_eq.hasRange() && alg.recursive) {
-      code << TAB << gen_eq.range()->end() << endl;
-    }
-  }
-  return code.str();
-}
+QSSModelGenerator::QSSModelGenerator() : _qss_model_def(), _tabs(0), _post_process_eval(false) {}
 
 void QSSModelGenerator::postProcess(SB::Deps::SetVertex vertex)
 {
+  if (_post_process_eval) {
+    return;
+  }
   EquationTable equations = ModelConfig::instance().derivatives();
   EquationTable::iterator it;
   std::stringstream simple;
   std::stringstream generic;
   for (Equation der = equations.begin(it); !equations.end(it); der = equations.next(it)) {
-    string alg_code = addAlgDeps(der.id(), _der_deps);
+    PrintedDeps printed_deps;
+    string alg_code = addAlgDeps(der, SB::Deps::LMapExp(), _der_deps, _alg_deps, printed_deps);
     der.setAlgCode(alg_code);
     if (der.hasRange()) {
       generic << der << endl;
@@ -99,6 +62,7 @@ void QSSModelGenerator::postProcess(SB::Deps::SetVertex vertex)
   }
   _qss_model_def.simple = simple.str();
   _qss_model_def.generic = generic.str();
+  _post_process_eval = true;
 }
 
 void QSSModelGenerator::init(SB::Deps::SetVertex vertex) {}
@@ -114,16 +78,8 @@ void QSSModelGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex
   if (var_dep.isRecursive()) {
     Equation v_eq = getEquation(v_vertex);
     Equation g_eq = getEquation(g_vertex);
-    DefAlgUse new_dep;
-    new_dep.id = g_eq.id();
-    new_dep.use = var_dep.mapF();
-    new_dep.range = var_dep.mapF().wholeDom();
-    new_dep.exp = var_dep.exp();
-    new_dep.offset = g_vertex.id();
-    new_dep.recursive = true;
-    list<DefAlgUse> algs = _der_deps[v_eq.id()];
-    algs.push_back(new_dep);
-    _der_deps[v_eq.id()] = algs;
+    DefAlgDepsUse new_dep(g_eq, var_dep);
+    insertAlg(_der_deps, v_eq.id(), new_dep);
   }
 }
 
@@ -133,22 +89,8 @@ void QSSModelGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex
 {
   Equation v_eq = getEquation(v_vertex);
   Equation g_eq = getEquation(g_vertex);
-  DefAlgUse new_dep;
-  new_dep.id = g_eq.id();
-  new_dep.use = def_map;
-  new_dep.range = intersection;
-  new_dep.exp = use_exp;
-  new_dep.offset = g_vertex.id();
-  new_dep.recursive = false;
-  if (v_eq.type() == IR::EQUATION::Algebraic) {
-    list<DefAlgUse> algs = _alg_deps[v_eq.id()];
-    algs.push_back(new_dep);
-    _alg_deps[v_eq.id()] = algs;
-  } else {
-    list<DefAlgUse> algs = _der_deps[v_eq.id()];
-    algs.push_back(new_dep);
-    _der_deps[v_eq.id()] = algs;
-  }
+  DefAlgDepsUse new_dep(g_eq, def_map, use_exp, use_map_exp, def_map_exp, g_vertex.id());
+  insertAlg(((v_eq.type() == IR::EQUATION::Algebraic) ? _alg_deps : _der_deps), v_eq.id(), new_dep);
 }
 
 void QSSModelGenerator::initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge) {}
