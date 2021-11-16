@@ -80,7 +80,10 @@ IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
 				$(IRDIR)/jacobian.cpp \
 				$(IRDIR)/qss_model.cpp \
 				$(IRDIR)/qss_model_deps.cpp \
-				$(IRDIR)/compute_algs.cpp
+				$(IRDIR)/compute_deps.cpp \
+				$(IRDIR)/model_matrix.cpp \
+				$(IRDIR)/model_matrix_gen.cpp \
+				$(IRDIR)/node_selector.cpp
 
 PARSERSRC = $(PARSERDIR)/mocc_parser.cpp \
 			$(PARSERDIR)/mocc_scanner.cpp \
@@ -149,7 +152,8 @@ DEPSGRAPHSRC = $(DEPSGRAPHDIR)/graph.cpp \
 			   $(DEPSGRAPHDIR)/sb_graph_helpers.cpp	
 
 DEPSBUILDERSRC = $(DEPSBUILDERDIR)/sd_graph_builder.cpp \
-				 $(DEPSBUILDERDIR)/sd_sb_graph_builder.cpp \
+				 $(DEPSBUILDERDIR)/eq_graph_builder.cpp \
+				 $(DEPSBUILDERDIR)/ev_graph_builder.cpp \
 				 $(DEPSBUILDERDIR)/so_graph_builder.cpp \
 				 $(DEPSBUILDERDIR)/ds_graph_builder.cpp \
 				 $(DEPSBUILDERDIR)/dh_graph_builder.cpp \
