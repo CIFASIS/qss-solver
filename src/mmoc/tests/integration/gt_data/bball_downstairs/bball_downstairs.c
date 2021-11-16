@@ -255,16 +255,16 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	_init_vx(0) = 0.5;
 	_init_x(0) = 0.575;
 	_init_y(0) = 10.5;
+	modelData->nSD[_idx_vx(0)]++;
+	modelData->nSD[_idx_vx(0)]++;
 	modelData->nSD[_idx_vy(0)]++;
 	modelData->nSD[_idx_vy(0)]++;
 	modelData->nSD[_idx_y(0)]++;
-	modelData->nSD[_idx_vx(0)]++;
-	modelData->nSD[_idx_vx(0)]++;
+	modelData->nDS[_idx_x(0)]++;
+	modelData->nDS[_idx_vx(0)]++;
 	modelData->nDS[_idx_y(0)]++;
 	modelData->nDS[_idx_vy(0)]++;
 	modelData->nDS[_idx_vy(0)]++;
-	modelData->nDS[_idx_x(0)]++;
-	modelData->nDS[_idx_vx(0)]++;
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
 			modelData->jac_matrices->df_dx[0]->size[c_row]++;
@@ -294,17 +294,17 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	modelData->event[_idx_event_2].nLHSDsc++;
 	QSS_allocDataMatrix(modelData);
 	cleanVector(states, 0, 4);
+	modelData->SD[_idx_vx(0)][states[_idx_vx(0)]++] = _idx_x(0);
+	modelData->SD[_idx_vx(0)][states[_idx_vx(0)]++] = _idx_vx(0);
 	modelData->SD[_idx_vy(0)][states[_idx_vy(0)]++] = _idx_y(0);
 	modelData->SD[_idx_vy(0)][states[_idx_vy(0)]++] = _idx_vy(0);
 	modelData->SD[_idx_y(0)][states[_idx_y(0)]++] = _idx_vy(0);
-	modelData->SD[_idx_vx(0)][states[_idx_vx(0)]++] = _idx_x(0);
-	modelData->SD[_idx_vx(0)][states[_idx_vx(0)]++] = _idx_vx(0);
 	cleanVector(states, 0, 4);
+	modelData->DS[_idx_x(0)][states[_idx_x(0)]++] = _idx_vx(0);
+	modelData->DS[_idx_vx(0)][states[_idx_vx(0)]++] = _idx_vx(0);
 	modelData->DS[_idx_y(0)][states[_idx_y(0)]++] = _idx_vy(0);
 	modelData->DS[_idx_vy(0)][states[_idx_vy(0)]++] = _idx_vy(0);
 	modelData->DS[_idx_vy(0)][states[_idx_vy(0)]++] = _idx_y(0);
-	modelData->DS[_idx_x(0)][states[_idx_x(0)]++] = _idx_vx(0);
-	modelData->DS[_idx_vx(0)][states[_idx_vx(0)]++] = _idx_vx(0);
 	cleanVector(states, 0, 4);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);

@@ -336,22 +336,25 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 
 void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, int *BDFMap, int nBDF)
 {
-	int _d1;
-	int i;
 	int idx;
 	int __bdf_it;
 	for(__bdf_it = 0; __bdf_it < nBDF; __bdf_it++) {
 	idx = BDFMap[__bdf_it];
+	int _d1;
+	int _rg_d1;
+	int i;
 	switch(idx) {
 		case _eval_uC(0): {
 			_sum_0(1,0) = _iL(1,0);
 	
-	for(i = 2; i<=4; i+=1) {
+	for(_rg_d1 = 1; _rg_d1<=3; _rg_d1+=1) {
+	_get_sum_0_idxs(_rg_d1);
+		_apply_usage_alg_eq_2(_d1);
+		if ((i >= 2 && i <= 4)) {
 			_sum_0(i,0) = _sum_0(i-1,0)+_iL(i,0);
 	
 	}
-			_sum_0(1,0) = _iL(1,0);
-	
+		}
 			_der_uC(0) = (_sum_0(4,0)-_uC(0)/_R)/_C;
 	
 	
@@ -400,28 +403,24 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	_T = 0.0001;
 	_U = 24;
 	_nextT = 1e-08;
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->nSD[_idx_iL(1,0)]++;
-	}
-	for(_d1 = 2; _d1<=4; _d1+=1) {
-		modelData->nSD[_idx_iL(_d1,0)]++;
-	}
+	modelData->nSD[_idx_iL(4,0)]++;
 	modelData->nSD[_idx_uC(0)]++;
 	for(_d1 = 1; _d1<=4; _d1+=1) {
+	modelData->nSD[_idx_uC(0)]++;
+	}
+	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->nSD[_idx_iL(_d1,0)]++;
 	}
 	for(_d1 = 1; _d1<=4; _d1+=1) {
-		modelData->nSD[_idx_uC(0)]++;
-	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->nDS[_idx_uC(0)]++;
-	}
-	for(_d1 = 2; _d1<=4; _d1+=1) {
-		modelData->nDS[_idx_uC(0)]++;
+		modelData->nSD[_idx_iL(_d1,0)]++;
 	}
 	modelData->nDS[_idx_uC(0)]++;
+	modelData->nDS[_idx_uC(0)]++;
 	for(_d1 = 1; _d1<=4; _d1+=1) {
-		modelData->nDS[_idx_iL(_d1,0)]++;
+	modelData->nDS[_idx_iL(_d1,0)]++;
+	}
+	for(_d1 = 1; _d1<=4; _d1+=1) {
+		modelData->nDS[_idx_uC(0)]++;
 	}
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->nDS[_idx_iL(_d1,0)]++;
@@ -513,32 +512,28 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	modelData->event[_idx_event_1].nLHSDsc++;
 	QSS_allocDataMatrix(modelData);
 	cleanVector(states, 0, 5);
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->SD[_idx_iL(1,0)][states[_idx_iL(1,0)]++] = _idx_uC(0);
+	modelData->SD[_idx_iL(4,0)][states[_idx_iL(4,0)]++] = _idx_uC(0);
+	modelData->SD[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_uC(0);
+	for(_d1 = 1; _d1<=4; _d1+=1) {
+	modelData->SD[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(_d1,0);
 	}
-	for(_d1 = 2; _d1<=4; _d1+=1) {
+	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->SD[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_uC(0);
 	}
-	modelData->SD[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_uC(0);
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->SD[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_iL(_d1,0);
 	}
-	for(_d1 = 1; _d1<=4; _d1+=1) {
-		modelData->SD[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(_d1,0);
-	}
 	cleanVector(states, 0, 5);
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->DS[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(1,0);
-	}
-	for(_d1 = 2; _d1<=4; _d1+=1) {
-		modelData->DS[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(_d1,0);
-	}
+	modelData->DS[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(4,0);
 	modelData->DS[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_uC(0);
 	for(_d1 = 1; _d1<=4; _d1+=1) {
-		modelData->DS[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_iL(_d1,0);
+	modelData->DS[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_uC(0);
 	}
 	for(_d1 = 1; _d1<=4; _d1+=1) {
-		modelData->DS[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_uC(0);
+		modelData->DS[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(_d1,0);
+	}
+	for(_d1 = 1; _d1<=4; _d1+=1) {
+		modelData->DS[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_iL(_d1,0);
 	}
 	cleanVector(states, 0, 5);
 	for(row = 1; row <= 1; row++) {
@@ -703,29 +698,29 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	simulator->time = QSS_Time(5,13,0,0,ST_Binary, NULL);
 	simulator->output = SD_Output("interleaved",5,10,5,NULL,0,0,CI_Step,SD_Memory,MOD_output);
 	SD_output modelOutput = simulator->output;
+	modelOutput->nOS[_idx_out_exp_1]++;
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelOutput->nOS[_idx_out_exp_2(_d1)]++;
 	}
-	modelOutput->nOS[_idx_out_exp_1]++;
+	modelOutput->nSO[_idx_uC(0)]++;
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelOutput->nSO[_idx_iL(_d1,0)]++;
 	}
-	modelOutput->nSO[_idx_uC(0)]++;
 	SD_allocOutputMatrix(modelOutput, 5, 10);
 	sprintf(modelOutput->variable[_idx_out_exp_1].name, "uC");
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		sprintf(modelOutput->variable[_idx_out_exp_2(_d1)].name, "iL[%d]",_d1);
 	}
 	cleanVector(outputs, 0, 5);
+	modelOutput->OS[_idx_out_exp_1][outputs[_idx_out_exp_1]++] = _idx_uC(0);
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelOutput->OS[_idx_out_exp_2(_d1)][outputs[_idx_out_exp_2(_d1)]++] = _idx_iL(_d1,0);
 	}
-	modelOutput->OS[_idx_out_exp_1][outputs[_idx_out_exp_1]++] = _idx_uC(0);
 	cleanVector(states, 0, 5);
+	modelOutput->SO[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_out_exp_1;
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelOutput->SO[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_out_exp_2(_d1);
 	}
-	modelOutput->SO[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_out_exp_1;
 	simulator->model = QSS_Model(MOD_definition, MOD_dependencies, MOD_zeroCrossing, MOD_handlerPos, MOD_handlerNeg, MOD_jacobian, MOD_BDF_definition);
 	free(states);
 	free(discretes);

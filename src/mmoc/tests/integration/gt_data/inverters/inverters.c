@@ -224,12 +224,12 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 
 void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, int *BDFMap, int nBDF)
 {
-	int _d1;
-	int i;
 	int idx;
 	int __bdf_it;
 	for(__bdf_it = 0; __bdf_it < nBDF; __bdf_it++) {
 	idx = BDFMap[__bdf_it];
+	int _d1;
+	int i;
 	switch(idx) {
 		case _eval_x(1,0): {
 			_der_x(1,0) = _uslope;
@@ -286,10 +286,10 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		}
 	}
 	for(_d1 = 2; _d1<=502; _d1+=1) {
-		modelData->nSD[_idx_x(_d1-1,0)]++;
+		modelData->nSD[_idx_x(_d1,0)]++;
 	}
 	for(_d1 = 2; _d1<=502; _d1+=1) {
-		modelData->nSD[_idx_x(_d1,0)]++;
+		modelData->nSD[_idx_x(_d1-1,0)]++;
 	}
 	for(_d1 = 2; _d1<=502; _d1+=1) {
 		modelData->nDS[_idx_x(_d1,0)]++;
@@ -315,10 +315,10 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelData->nSZ[_idx_x(_d1,0)]++;
 	}
 	for(_d1 = 1; _d1<=501; _d1+=1) {
-		modelData->nSZ[_idx_x(_d1,0)]++;
+		modelData->nSZ[_idx_x(_d1+1,0)]++;
 	}
 	for(_d1 = 1; _d1<=501; _d1+=1) {
-		modelData->nSZ[_idx_x(_d1+1,0)]++;
+		modelData->nSZ[_idx_x(_d1,0)]++;
 	}
 	for(_d1 = 1; _d1<=501; _d1+=1) {
 		modelData->nZS[_idx_event_1(_d1)]++;
@@ -340,27 +340,27 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelData->nHD[_idx_event_3]++;
 	}
 	modelData->event[_idx_event_3].nLHSDsc++;
+	modelData->event[_idx_event_3].nLHSDsc++;
 	for(_d1 = 1; _d1<=501; _d1+=1) {
 		modelData->event[_idx_event_2(_d1)].nLHSDsc++;
 	}
 	for(_d1 = 1; _d1<=501; _d1+=1) {
 		modelData->event[_idx_event_1(_d1)].nLHSDsc++;
 	}
-	modelData->event[_idx_event_3].nLHSDsc++;
 	QSS_allocDataMatrix(modelData);
 	cleanVector(states, 0, 502);
 	for(_d1 = 2; _d1<=502; _d1+=1) {
-		modelData->SD[_idx_x(_d1-1,0)][states[_idx_x(_d1-1,0)]++] = _idx_x(_d1,0);
+		modelData->SD[_idx_x(_d1,0)][states[_idx_x(_d1,0)]++] = _idx_x(_d1,0);
 	}
 	for(_d1 = 2; _d1<=502; _d1+=1) {
-		modelData->SD[_idx_x(_d1,0)][states[_idx_x(_d1,0)]++] = _idx_x(_d1,0);
+		modelData->SD[_idx_x(_d1-1,0)][states[_idx_x(_d1-1,0)]++] = _idx_x(_d1,0);
 	}
 	cleanVector(states, 0, 502);
 	for(_d1 = 2; _d1<=502; _d1+=1) {
-		modelData->DS[_idx_x(_d1,0)][states[_idx_x(_d1,0)]++] = _idx_x(_d1-1,0);
+		modelData->DS[_idx_x(_d1,0)][states[_idx_x(_d1,0)]++] = _idx_x(_d1,0);
 	}
 	for(_d1 = 2; _d1<=502; _d1+=1) {
-		modelData->DS[_idx_x(_d1,0)][states[_idx_x(_d1,0)]++] = _idx_x(_d1,0);
+		modelData->DS[_idx_x(_d1,0)][states[_idx_x(_d1,0)]++] = _idx_x(_d1-1,0);
 	}
 	cleanVector(states, 0, 502);
 	for(row = 1; row <= 1; row++) {
@@ -394,20 +394,20 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelData->SZ[_idx_x(_d1,0)][states[_idx_x(_d1,0)]++] = _idx_event_1(_d1);
 	}
 	for(_d1 = 1; _d1<=501; _d1+=1) {
-		modelData->SZ[_idx_x(_d1,0)][states[_idx_x(_d1,0)]++] = _idx_event_2(_d1);
+		modelData->SZ[_idx_x(_d1+1,0)][states[_idx_x(_d1+1,0)]++] = _idx_event_2(_d1);
 	}
 	for(_d1 = 1; _d1<=501; _d1+=1) {
-		modelData->SZ[_idx_x(_d1+1,0)][states[_idx_x(_d1+1,0)]++] = _idx_event_2(_d1);
+		modelData->SZ[_idx_x(_d1,0)][states[_idx_x(_d1,0)]++] = _idx_event_2(_d1);
 	}
 	cleanVector(events, 0, 1003);
 	for(_d1 = 1; _d1<=501; _d1+=1) {
 		modelData->ZS[_idx_event_1(_d1)][events[_idx_event_1(_d1)]++] = _idx_x(_d1,0);
 	}
 	for(_d1 = 1; _d1<=501; _d1+=1) {
-		modelData->ZS[_idx_event_2(_d1)][events[_idx_event_2(_d1)]++] = _idx_x(_d1,0);
+		modelData->ZS[_idx_event_2(_d1)][events[_idx_event_2(_d1)]++] = _idx_x(_d1+1,0);
 	}
 	for(_d1 = 1; _d1<=501; _d1+=1) {
-		modelData->ZS[_idx_event_2(_d1)][events[_idx_event_2(_d1)]++] = _idx_x(_d1+1,0);
+		modelData->ZS[_idx_event_2(_d1)][events[_idx_event_2(_d1)]++] = _idx_x(_d1,0);
 	}
 	cleanVector(events, 0, 1003);
 	modelData->HZ[_idx_event_3][events[_idx_event_3]++] = _idx_event_3;
@@ -423,13 +423,13 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	}
 	cleanVector(events, 0, 1003);
 	modelData->event[_idx_event_3].LHSDsc[events[_idx_event_3]++] = _idx_nextchange;
+	modelData->event[_idx_event_3].LHSDsc[events[_idx_event_3]++] = _idx_uslope;
 	for(_d1 = 1; _d1<=501; _d1+=1) {
 		modelData->event[_idx_event_2(_d1)].LHSDsc[events[_idx_event_2(_d1)]++] = _idx_satdx(_d1);
 	}
 	for(_d1 = 1; _d1<=501; _d1+=1) {
 		modelData->event[_idx_event_1(_d1)].LHSDsc[events[_idx_event_1(_d1)]++] = _idx_satx(_d1);
 	}
-	modelData->event[_idx_event_3].LHSDsc[events[_idx_event_3]++] = _idx_uslope;
 	for(i = 1; i<=501; i+=1) {
 		modelData->event[_idx_event_1(i)].direction = 0;
 		modelData->event[_idx_event_1(i)].relation = 2;
@@ -444,19 +444,19 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	simulator->time = QSS_Time(502,1003,0,0,ST_Binary, NULL);
 	simulator->output = SD_Output("inverters",2,1004,502,NULL,0,0,CI_Step,SD_Memory,MOD_output);
 	SD_output modelOutput = simulator->output;
-	modelOutput->nOS[_idx_out_exp_1]++;
 	modelOutput->nOS[_idx_out_exp_2]++;
-	modelOutput->nSO[_idx_x(501,0)]++;
+	modelOutput->nOS[_idx_out_exp_1]++;
 	modelOutput->nSO[_idx_x(1,0)]++;
+	modelOutput->nSO[_idx_x(501,0)]++;
 	SD_allocOutputMatrix(modelOutput, 502, 1004);
 	sprintf(modelOutput->variable[_idx_out_exp_1].name, "x[501]");
 	sprintf(modelOutput->variable[_idx_out_exp_2].name, "x[1]");
 	cleanVector(outputs, 0, 2);
-	modelOutput->OS[_idx_out_exp_1][outputs[_idx_out_exp_1]++] = _idx_x(501,0);
 	modelOutput->OS[_idx_out_exp_2][outputs[_idx_out_exp_2]++] = _idx_x(1,0);
+	modelOutput->OS[_idx_out_exp_1][outputs[_idx_out_exp_1]++] = _idx_x(501,0);
 	cleanVector(states, 0, 502);
-	modelOutput->SO[_idx_x(501,0)][states[_idx_x(501,0)]++] = _idx_out_exp_1;
 	modelOutput->SO[_idx_x(1,0)][states[_idx_x(1,0)]++] = _idx_out_exp_2;
+	modelOutput->SO[_idx_x(501,0)][states[_idx_x(501,0)]++] = _idx_out_exp_1;
 	simulator->model = QSS_Model(MOD_definition, MOD_dependencies, MOD_zeroCrossing, MOD_handlerPos, MOD_handlerNeg, MOD_jacobian, MOD_BDF_definition);
 	free(states);
 	free(discretes);

@@ -147,12 +147,12 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 
 void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, int *BDFMap, int nBDF)
 {
-	int _d1;
-	int j;
 	int idx;
 	int __bdf_it;
 	for(__bdf_it = 0; __bdf_it < nBDF; __bdf_it++) {
 	idx = BDFMap[__bdf_it];
+	int _d1;
+	int j;
 	switch(idx) {
 		case _eval_u(1,0): {
 			_der_u(1,0) = (-_u(1,0)+1)*20000-_mu*_u(1,0)*(_u(1,0)-_alpha)*(_u(1,0)-1);
@@ -191,18 +191,14 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(i = 1; i<=6666; i+=1) {
 		_init_u(i,0) = 1;
 	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->nSD[_idx_u(1,0)]++;
+	modelData->nSD[_idx_u(1,0)]++;
+	for(_d1 = 2; _d1<=20000; _d1+=1) {
+		modelData->nSD[_idx_u(_d1,0)]++;
 	}
 	for(_d1 = 2; _d1<=20000; _d1+=1) {
 		modelData->nSD[_idx_u(_d1-1,0)]++;
 	}
-	for(_d1 = 2; _d1<=20000; _d1+=1) {
-		modelData->nSD[_idx_u(_d1,0)]++;
-	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->nDS[_idx_u(1,0)]++;
-	}
+	modelData->nDS[_idx_u(1,0)]++;
 	for(_d1 = 2; _d1<=20000; _d1+=1) {
 		modelData->nDS[_idx_u(_d1,0)]++;
 	}
@@ -226,24 +222,20 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	}
 	QSS_allocDataMatrix(modelData);
 	cleanVector(states, 0, 20000);
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->SD[_idx_u(1,0)][states[_idx_u(1,0)]++] = _idx_u(1,0);
+	modelData->SD[_idx_u(1,0)][states[_idx_u(1,0)]++] = _idx_u(1,0);
+	for(_d1 = 2; _d1<=20000; _d1+=1) {
+		modelData->SD[_idx_u(_d1,0)][states[_idx_u(_d1,0)]++] = _idx_u(_d1,0);
 	}
 	for(_d1 = 2; _d1<=20000; _d1+=1) {
 		modelData->SD[_idx_u(_d1-1,0)][states[_idx_u(_d1-1,0)]++] = _idx_u(_d1,0);
 	}
-	for(_d1 = 2; _d1<=20000; _d1+=1) {
-		modelData->SD[_idx_u(_d1,0)][states[_idx_u(_d1,0)]++] = _idx_u(_d1,0);
-	}
 	cleanVector(states, 0, 20000);
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->DS[_idx_u(1,0)][states[_idx_u(1,0)]++] = _idx_u(1,0);
+	modelData->DS[_idx_u(1,0)][states[_idx_u(1,0)]++] = _idx_u(1,0);
+	for(_d1 = 2; _d1<=20000; _d1+=1) {
+		modelData->DS[_idx_u(_d1,0)][states[_idx_u(_d1,0)]++] = _idx_u(_d1,0);
 	}
 	for(_d1 = 2; _d1<=20000; _d1+=1) {
 		modelData->DS[_idx_u(_d1,0)][states[_idx_u(_d1,0)]++] = _idx_u(_d1-1,0);
-	}
-	for(_d1 = 2; _d1<=20000; _d1+=1) {
-		modelData->DS[_idx_u(_d1,0)][states[_idx_u(_d1,0)]++] = _idx_u(_d1,0);
 	}
 	cleanVector(states, 0, 20000);
 	for(row = 1; row <= 1; row++) {
