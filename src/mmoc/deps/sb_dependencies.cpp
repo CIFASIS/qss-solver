@@ -39,17 +39,29 @@ using namespace Util;
 using namespace IR;
 namespace Deps {
 
-template <typename IDependencies, typename R>
-SBDependencies<IDependencies, R>::SBDependencies() : _index_shift(){};
+template <typename IDependencies, typename R, typename S>
+SBDependencies<IDependencies, R, S>::SBDependencies() : _index_shift(){};
 
-template <typename IDependencies, typename R>
-R SBDependencies<IDependencies, R>::def()
+template <typename IDependencies, typename R, typename S>
+R SBDependencies<IDependencies, R, S>::def()
 {
   return _gen.def();
 }
 
-template <typename IDependencies, typename R>
-void SBDependencies<IDependencies, R>::compute(SB::Deps::Graph graph, SB::Deps::IndexShift index_shift)
+template <typename IDependencies, typename R, typename S>
+void SBDependencies<IDependencies, R, S>::setup(S config)
+{
+  return _gen.setup(config);
+}
+
+template <typename IDependencies, typename R, typename S>
+S SBDependencies<IDependencies, R, S>::config()
+{
+  return _gen.config();
+}
+
+template <typename IDependencies, typename R, typename S>
+void SBDependencies<IDependencies, R, S>::compute(SB::Deps::Graph graph, SB::Deps::IndexShift index_shift)
 {
   _index_shift = index_shift;
   SB::Deps::EdgeIt ei_start, ei_end;
@@ -79,39 +91,8 @@ void SBDependencies<IDependencies, R>::compute(SB::Deps::Graph graph, SB::Deps::
   }
 }
 
-// Temporary helper functions until we add graph helpers.
-
-VertexIt findSetVertex(SB::Deps::Graph& graph, Set matched)
-{
-  // Find the set-vertex where matched subset is included
-  VertexIt vi_start, vi_end;
-  boost::tie(vi_start, vi_end) = vertices(graph);
-
-  for (; vi_start != vi_end; ++vi_start) {
-    SetVertex v = graph[*vi_start];
-    Set vs = v.range();
-    Set inter = vs.cap(matched);
-    if (!inter.empty()) {
-      return vi_start;
-    }
-  }
-  // A given subset should be included in one of the graph vertex, this should never happen.
-  assert(false);
-  return vi_start;
-}
-
-Set wholeVertex(SB::Deps::Graph& graph, Set matched_subset)
-{
-  Set whole_vertex;
-  // Find the set-vertex where the matched subset is included
-  VertexIt matched_vertex = findSetVertex(graph, matched_subset);
-  SetVertex v = graph[*matched_vertex];
-  SB::Set r = v.range();
-  return v.range();
-}
-
-template <typename IDependencies, typename R>
-void SBDependencies<IDependencies, R>::paths(SB::Deps::Graph graph, SB::Deps::Vertex V, Variable visiting_alg)
+template <typename IDependencies, typename R, typename S>
+void SBDependencies<IDependencies, R, S>::paths(SB::Deps::Graph graph, SB::Deps::Vertex V, Variable visiting_alg)
 {
   int num_gen = 0;
   boost::graph_traits<SB::Deps::Graph>::out_edge_iterator edge, out_edge_end;
@@ -233,9 +214,9 @@ void SBDependencies<IDependencies, R>::paths(SB::Deps::Graph graph, SB::Deps::Ve
   _gen.end();
 }
 
-template <typename IDependencies, typename R>
-void SBDependencies<IDependencies, R>::recursiveDeps(SB::Deps::Graph graph, SB::PWLMap map_u, SB::Deps::Vertex V, SB::Deps::Vertex X,
-                                                     int num_gen, list<SB::Deps::SetEdge> rec_alg_use_maps)
+template <typename IDependencies, typename R, typename S>
+void SBDependencies<IDependencies, R, S>::recursiveDeps(SB::Deps::Graph graph, SB::PWLMap map_u, SB::Deps::Vertex V, SB::Deps::Vertex X,
+                                                        int num_gen, list<SB::Deps::SetEdge> rec_alg_use_maps)
 {
   for (SB::Deps::SetEdge rec_alg_use : rec_alg_use_maps) {
     // Get the whole vertex of the influenced variable.
@@ -279,13 +260,17 @@ void SBDependencies<IDependencies, R>::recursiveDeps(SB::Deps::Graph graph, SB::
   }
 }
 
-template class SBDependencies<JacMatrixGenerator, JacMatrixDef>;
+template class SBDependencies<JacMatrixGenerator, JacMatrixDef, EquationTable>;
 
-template class SBDependencies<JacGenerator, JacDef>;
+template class SBDependencies<JacGenerator, JacDef, EquationTable>;
 
-template class SBDependencies<QSSModelGenerator, QSSModelDef>;
+template class SBDependencies<QSSModelGenerator, QSSModelDef, EquationTable>;
 
-template class SBDependencies<QSSModelDepsGenerator, QSSModelDepsDef>;
+template class SBDependencies<QSSModelDepsGenerator, QSSModelDepsDef, EquationTable>;
+
+template class SBDependencies<ModelMatrixGenerator<EquationTable, Equation, MATRIX::EQMatrixConfig>, ModelMatrixDef,
+                              MATRIX::EQMatrixConfig>;
+template class SBDependencies<ModelMatrixGenerator<EventTable, Event, MATRIX::EVMatrixConfig>, ModelMatrixDef, MATRIX::EVMatrixConfig>;
 
 }  // namespace Deps
 }  // namespace MicroModelica
