@@ -647,6 +647,32 @@ map<std::string, AST_Expression> Range::initExps()
   return init_exps;
 }
 
+void Range::replace(Index usage)
+{
+  vector<string> variables = usage.variables();
+  set<string> added_vars;
+  vector<string> old_keys;
+  int pos = 1;
+  for (string var : variables) {
+    if (isVariable(var)) {
+      if (added_vars.find(var) == added_vars.end()) {
+        added_vars.insert(var);
+        Option<RangeDefinition> r = _ranges[var];
+        assert(r);
+        string index = getDimensionVar(pos);
+        if (index != var) {
+          old_keys.push_back(var);
+          _ranges.insert(index, r.get());
+        }
+      }
+    }
+    pos++;
+  }
+  for (string key : old_keys) {
+    _ranges.remove(key);
+  }
+}
+
 std::ostream& operator<<(std::ostream& out, const Range& r) { return out << r.print(); }
 }  // namespace IR
 }  // namespace MicroModelica

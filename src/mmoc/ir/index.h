@@ -103,6 +103,7 @@ class Range {
   std::string in(ExpressionList exps);
   std::string in(std::vector<std::string> exps);
   map<std::string, AST_Expression> initExps();
+  void replace(Index usage);
   friend std::ostream& operator<<(std::ostream& out, const Range& r);
 
   protected:
