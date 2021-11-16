@@ -91,9 +91,49 @@ struct PrintedDep {
 
 typedef list<PrintedDep> PrintedDeps;
 
+struct DepData {
+  DepData(int id_exp, SB::Deps::VariableDep var_dep_exp) : id(id_exp), var_dep(var_dep_exp), from_alg(false) {}
+  DepData(int id_exp, SB::Deps::VariableDep var_dep_exp, bool from_alg_exp) : id(id_exp), var_dep(var_dep_exp), from_alg(from_alg_exp) {}
+  int id;
+  SB::Deps::VariableDep var_dep;
+  bool from_alg;
+};
+
+typedef list<DepData> DepsData;
+
+typedef std::map<std::string, DepsData> DepsMap;
+
 string addAlgDeps(Equation eq, SB::Deps::LMapExp eq_use, std::map<int, AlgDeps> der_deps, std::map<int, AlgDeps> alg_deps, PrintedDeps& printed_deps);
 
 void insertAlg(AlgDepsMap& map, int id, DefAlgDepsUse new_dep);
+
+Expression getUseExp(Util::Variable variable, DepData dep_data);
+
+template<typename N>
+Option<Range> getUseRange(Util::Variable variable, DepData dep_data, N node)
+{
+  Expression use_exp = dep_data.var_dep.exp();
+  const bool SCALAR_EXP = dep_data.var_dep.nMap().constantExp();
+  if (dep_data.var_dep.isRecursive()) {
+    return Range(dep_data.var_dep.var());
+  }
+  if (variable.isScalar() || SCALAR_EXP) {
+    return Option<Range>();
+  }
+  if (!SCALAR_EXP) {
+    if (dep_data.from_alg) {
+      Index use_idx(dep_data.var_dep.exp());
+      return Range(dep_data.var_dep.equations(),dep_data.var_dep.eqOffset(), use_idx.variables());
+    }
+    return node.range();
+  }
+  assert(false);
+  return Option<Range>();
+}
+
+Option<Range> getUseRange(Util::Variable variable, DepData dep_data);
+
+bool findDep(DepsMap deps, DepData dep_data, bool multiple_nodes = false);
 
 }  // namespace IR
 }  // namespace MicroModelica
