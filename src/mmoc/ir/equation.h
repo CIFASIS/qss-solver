@@ -19,10 +19,10 @@
 
 #pragma once
 
-#include "../ast/ast_types.h"
-#include "../deps/dependency_matrix.h"
-#include "../util/table.h"
-#include "index.h"
+#include <ast/ast_types.h>
+#include <deps/dependency_matrix.h>
+#include <util/table.h>
+#include <ir/index.h>
 
 namespace MicroModelica {
 namespace Util {
@@ -81,7 +81,6 @@ class Equation {
   bool hasAlgebraics();
   std::string identifier() const;
   bool isRHSReference() const;
-  Deps::EquationDependencyMatrix dependencyMatrix() const;
   inline void setUsage(Index usage) { _usage = usage; };
   inline Index usage() const { return _usage; };
   void setType(EQUATION::Type type);

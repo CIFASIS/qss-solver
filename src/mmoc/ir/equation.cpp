@@ -153,24 +153,6 @@ void Equation::setup()
   _lhs_exp = buffer.str();
 }
 
-EquationDependencyMatrix Equation::dependencyMatrix() const
-{
-  ModelDependencies deps = ModelConfig::instance().dependencies();
-  switch (_type) {
-  case EQUATION::ClassicDerivative:
-  case EQUATION::QSSDerivative:
-  case EQUATION::Dependency:
-    return deps.DA();
-  case EQUATION::ZeroCrossing:
-    return deps.ZCA();
-  case EQUATION::Output:
-    return deps.OA();
-  default:
-    return EquationDependencyMatrix();
-  }
-  return EquationDependencyMatrix();
-}
-
 string Equation::identifier() const { return getPrinter(*this)->identifier(); }
 
 string Equation::applyId() const { return getPrinter(*this)->equationId(); }
