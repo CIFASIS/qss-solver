@@ -23,6 +23,7 @@
 #include <boost/optional/optional_io.hpp>
 #include <utility>
 
+#include <deps/builders/eq_graph_builder.h>
 #include "../ast/expression.h"
 #include "../deps/dependency_matrix.h"
 #include "../ir/annotation.h"
@@ -50,23 +51,6 @@ using namespace MicroModelica::Deps;
 ModelInstance::ModelInstance() : _model(), _flags(), _writer() {}
 
 ModelInstance::ModelInstance(Model &model, CompileFlags &flags, WriterPtr writer) : _model(model), _flags(flags), _writer(writer) {}
-
-void ModelInstance::output()
-{
-  stringstream buffer;
-  EquationTable outputs = _model.outputs();
-  EquationTable::iterator it;
-  ModelConfig::instance().clearLocalSymbols();
-  FunctionPrinter fp;
-  for (Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it)) {
-    _writer->write(out, (out.hasRange() ? WRITER::Output_Generic : WRITER::Output_Simple));
-  }
-  _writer->write(ModelConfig::instance().localSymbols(), WRITER::Output);
-  if (!_writer->isEmpty(WRITER::Output_Simple)) {
-    _writer->write(fp.beginSwitch(), WRITER::Output);
-    _writer->write(fp.endSwitch(), WRITER::Output_Simple);
-  }
-}
 
 void ModelInstance::include()
 {
@@ -162,21 +146,16 @@ void ModelInstance::configOutput()
   }
 }
 
+void ModelInstance::output()
+{
+  generateDef<OutputModelGen>(_model.outputs(), WRITER::Output, WRITER::Output_Simple,
+                                                WRITER::Output_Generic);
+}
+
 void ModelInstance::zeroCrossing()
 {
-  EventTable events = _model.events();
-  EventTable::iterator it;
-  FunctionPrinter fp;
-  ModelConfig::instance().clearLocalSymbols();
-  for (Event event = events.begin(it); !events.end(it); event = events.next(it)) {
-    Equation zc = event.zeroCrossing();
-    _writer->write(zc, (zc.hasRange() ? WRITER::ZC_Generic : WRITER::ZC_Simple));
-  }
-  _writer->write(ModelConfig::instance().localSymbols(), WRITER::Zero_Crossing);
-  if (!_writer->isEmpty(WRITER::ZC_Simple)) {
-    _writer->write(fp.beginSwitch(), WRITER::Zero_Crossing);
-    _writer->write(fp.endSwitch(), WRITER::ZC_Simple);
-  }
+  generateDef<ZCModelGen>(zeroCrossingTable(_model.events()), WRITER::Zero_Crossing, WRITER::ZC_Simple,
+                                                WRITER::ZC_Generic);
 }
 
 void ModelInstance::handler()
@@ -508,11 +487,14 @@ QSSModelInstance::QSSModelInstance(Model &model, CompileFlags &flags, WriterPtr 
 {
 }
 
-void QSSModelInstance::definition() { generateDef<QSSModel>(WRITER::Model, WRITER::Model_Simple, WRITER::Model_Generic); }
+void QSSModelInstance::definition()
+{
+  generateDef<QSSModelGen>(_model.derivatives(), WRITER::Model, WRITER::Model_Simple, WRITER::Model_Generic);
+}
 
 void QSSModelInstance::dependencies()
 {
-  generateDef<QSSModelDeps>(WRITER::Model_Deps, WRITER::Model_Deps_Simple, WRITER::Model_Deps_Generic);
+  generateDef<QSSModelDeps>(_model.derivatives(), WRITER::Model_Deps, WRITER::Model_Deps_Simple, WRITER::Model_Deps_Generic);
 }
 
 void QSSModelInstance::bdfDefinition()
@@ -520,22 +502,11 @@ void QSSModelInstance::bdfDefinition()
   ModelAnnotation annot = _model.annotations();
   annot.setSymDiff(false);
   ModelConfig::instance().setModelAnnotations(annot);
-  EquationTable derivatives = _model.derivatives();
-  EquationTable::iterator it;
-  ModelConfig::instance().clearLocalSymbols();
-  FunctionPrinter fp;
-  for (Equation der = derivatives.begin(it); !derivatives.end(it); der = derivatives.next(it)) {
-    _writer->write(der, (der.hasRange() ? WRITER::Model_Bdf_Generic : WRITER::Model_Bdf_Simple));
-  }
-  _writer->write(ModelConfig::instance().localSymbols(), WRITER::Model_Bdf);
   _writer->write("int idx;", WRITER::Model_Bdf);
   _writer->write("int __bdf_it;", WRITER::Model_Bdf);
   _writer->write("for(__bdf_it = 0; __bdf_it < nBDF; __bdf_it++) {", WRITER::Model_Bdf);
   _writer->write("idx = BDFMap[__bdf_it];", WRITER::Model_Bdf);
-  if (!_writer->isEmpty(WRITER::Model_Bdf_Simple)) {
-    _writer->write(fp.beginSwitch(), WRITER::Model_Bdf);
-    _writer->write(fp.endSwitch(), WRITER::Model_Bdf_Simple);
-  }
+  generateDef<QSSModelGen>(_model.derivatives(), WRITER::Model_Bdf, WRITER::Model_Bdf_Simple, WRITER::Model_Bdf_Generic);
   _writer->write("}", WRITER::Model_Bdf_Generic);
   ModelConfig::instance().setModelAnnotations(_model.annotations());
 }
