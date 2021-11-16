@@ -21,7 +21,7 @@
 
 #include <sstream>
 
-#include <deps/builders/sd_sb_graph_builder.h>
+#include <deps/builders/eq_graph_builder.h>
 #include <deps/sbg_graph/build_from_exps.h>
 #include <deps/sb_dependencies.h>
 #include <parser/parse.h>
