@@ -635,18 +635,6 @@ void Model::setInputs()
       addInput(eq);
       continue;
     }
-    EquationDependencyMatrix eqdm = _dependencies.DA();
-    Option<Paths> eqd = eqdm[_derivatives.key(it)];
-    if (eqd) {
-      Paths::iterator eit;
-      for (eit = eqd->begin(); eit != eqd->end(); eit++) {
-        Option<Equation> alg = _algebraics[eit->ifce.equationId()];
-        if (alg && !alg->autonomous()) {
-          addInput(eq);
-          break;
-        }
-      }
-    }
   }
 }
 
@@ -662,6 +650,7 @@ void Model::setModelConfig()
   ModelConfig::instance().setModelAnnotations(_annotations);
   ModelConfig::instance().setDerivatives(_derivatives);
   ModelConfig::instance().setStateNbr(_stateNbr);
+  ModelConfig::instance().setEvents(_events);
 }
 }  // namespace IR
 }  // namespace MicroModelica
