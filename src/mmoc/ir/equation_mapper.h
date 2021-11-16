@@ -155,7 +155,7 @@ class EquationMapper {
   std::string nonStateAlgebraics(Equation ifr, Equation der_eq, Index ife)
   {
     stringstream code;
-    EquationDependencyMatrix eqdm = ifr.dependencyMatrix();
+    /*EquationDependencyMatrix eqdm = ifr.dependencyMatrix();
     Option<Paths> paths = eqdm[ifr.id()];
     if (paths) {
       Paths::iterator eq_it;
@@ -166,7 +166,7 @@ class EquationMapper {
           code << insert(*dep_it, der_eq, ife);
         }
       }
-    }
+    }*/
     return code.str();
   }
 
