@@ -138,8 +138,7 @@ DerivativePrinter::DerivativePrinter(Equation eq)
       _id(eq.id()),
       _range(eq.range()),
       _lhs(eq.lhs()),
-      _rhs(eq.rhs()),
-      _eq_dep_matrix(eq.dependencyMatrix())
+      _rhs(eq.rhs())
 {
   initializeDerivatives();
 }
@@ -223,12 +222,7 @@ string DerivativePrinter::print() const
   }
   tabs += TAB;
   buffer << printer.beginExpression(identifier(), _range);
-  string alg_code = algCode();
-  if (alg_code.empty()) {
-    buffer << printer.algebraics(_eq_dep_matrix, _id);
-  } else {
-    buffer << alg_code;
-  }
+  buffer << algCode();
   buffer << printer.beginDimGuards(equationId(), arguments, _range);
   buffer << tabs << prefix() << lhs() << " = " << _rhs << ";" << endl;
   buffer << generateDerivatives(tabs) << endl;
@@ -258,7 +252,7 @@ string ClassicPrinter::print() const
 }
 
 OutputPrinter::OutputPrinter(Equation eq)
-    : DerivativePrinter(eq), _id(eq.id()), _range(eq.range()), _rhs(eq.rhs()), _eq_dep_matrix(eq.dependencyMatrix()){};
+    : DerivativePrinter(eq), _id(eq.id()), _range(eq.range()), _rhs(eq.rhs()) {};
 
 string OutputPrinter::equationId() const
 {
@@ -281,7 +275,7 @@ string OutputPrinter::print() const
   block += TAB;
   buffer << fp.beginExpression(identifier(), _range);
   buffer << fp.beginDimGuards(equationId(), arguments, _range);
-  buffer << fp.algebraics(_eq_dep_matrix, _id);
+  buffer << algCode();
   buffer << block << prefix() << lhs() << " = " << _rhs << ";";
   buffer << endl << TAB << fp.endDimGuards(_range);
   buffer << TAB << fp.endExpression(_range);
