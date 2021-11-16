@@ -19,7 +19,6 @@
 
 #pragma once
 
-#include <ir/class.h>
 #include <util/symbol_table.h>
 #include <deps/sbg_graph/build_from_exps.h>
 #include <deps/sbg_graph/deps_graph.h>
@@ -27,24 +26,51 @@
 namespace MicroModelica {
 namespace Deps {
 
-class SDSBGraphBuilder {
+template<typename S, typename T>
+class EQGraphBuilder : public S {
   public:
-  SDSBGraphBuilder(IR::EquationTable &equations, IR::EquationTable &algebraics);
-  ~SDSBGraphBuilder() = default;
+  EQGraphBuilder(T &equations, IR::EquationTable &algebraics, IR::STATEMENT::AssignTerm search);
+  EQGraphBuilder(T &equations, IR::EquationTable &algebraics);
+  ~EQGraphBuilder() = default;
   SB::Deps::Graph build();
-
-  protected:
-  std::string nodeName(IR::Equation eq);
 
   private:
   list<SB::Deps::Vertex> _F_nodes;
   list<SB::Deps::Vertex> _G_nodes;
   list<SB::Deps::Vertex> _g_nodes;
   list<SB::Deps::Vertex> _u_nodes;
-  IR::EquationTable _equations;
+  T _equations;
   IR::EquationTable _algebraics;
   std::map<std::string, int> _node_names;
   SB::EqUsage _usage;
 };
+
+// Typedef for concrete clases.
+
+struct SDG {
+  std::string name() { return "SD Graph";}
+};
+
+struct SZG {
+  std::string name() { return "SZ Graph";}
+};
+
+struct SOG {
+  std::string name() { return "SO Graph";}
+};
+
+struct DOG {
+  std::string name() { return "DO Graph";}
+};
+
+typedef EQGraphBuilder<SB::StateSelector<SDG>, IR::EquationTable> SDSBGraphBuilder;
+
+typedef EQGraphBuilder<SB::StateSelector<SZG>, IR::EquationTable> SZSBGraphBuilder;
+
+typedef EQGraphBuilder<SB::StateSelector<SOG>, IR::EquationTable> SOSBGraphBuilder;
+
+typedef EQGraphBuilder<SB::DiscreteSelector<DOG>, IR::EquationTable> DOSBGraphBuilder;
+
+
 }  // namespace Deps
 }  // namespace MicroModelica

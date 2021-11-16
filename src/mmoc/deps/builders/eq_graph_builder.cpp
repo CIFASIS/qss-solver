@@ -17,7 +17,7 @@
 
 ******************************************************************************/
 
-#include "sd_sb_graph_builder.h"
+#include "eq_graph_builder.h"
 
 #include <util/model_config.h>
 #include <util/logger.h>
@@ -32,7 +32,28 @@ using namespace IR;
 using namespace Util;
 namespace Deps {
 
-SDSBGraphBuilder::SDSBGraphBuilder(EquationTable &equations, EquationTable &algebraics)
+struct EqNodes {
+  EqNodes(EquationTable eqs) : _equations(eqs) {}
+  list<Expression> getExpressions(SB::Deps::SetVertex n, SB::Deps::EDGE::Type type)
+  {
+    list<Expression> exps;
+    Equation eq = getEquation(n, _equations);
+    exps.push_back((type == SB::Deps::EDGE::Output) ? eq.rhs() : eq.lhs());
+    return exps;    
+  }
+
+  protected:
+  IR::EquationTable _equations;
+};
+
+template<typename S, typename T>
+EQGraphBuilder<S, T>::EQGraphBuilder(T &equations, EquationTable &algebraics, IR::STATEMENT::AssignTerm search) 
+    : EQGraphBuilder(equations, algebraics)
+{
+}
+
+template<typename S, typename T>
+EQGraphBuilder<S, T>::EQGraphBuilder(T &equations, EquationTable &algebraics) 
     : _F_nodes(),
       _G_nodes(),
       _g_nodes(),
@@ -44,9 +65,10 @@ SDSBGraphBuilder::SDSBGraphBuilder(EquationTable &equations, EquationTable &alge
 {
 }
 
-SB::Deps::Graph SDSBGraphBuilder::build()
+template<typename S, typename T>
+SB::Deps::Graph EQGraphBuilder<S, T>::build()
 {
-  LOG << endl << "Creating SD Graph: " << endl;
+  LOG << endl << "Building " << S::name() << endl;
   SB::Deps::Graph graph;
   int edge_dom_offset = 1;
   int max_dims = ModelConfig::instance().symbols().maxDim();
@@ -54,7 +76,7 @@ SB::Deps::Graph SDSBGraphBuilder::build()
   VarSymbolTable::iterator it;
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
-    if (var.isState()) {
+    if (S::selectVariable(var)) {
       SB::Deps::SetVertex state_node = createSetVertex(var, edge_dom_offset, max_dims, SB::Deps::VERTEX::Influencee);      
       _u_nodes.push_back(addVertex(state_node, graph));
     } else if (var.isAlgebraic()) {
@@ -72,20 +94,30 @@ SB::Deps::Graph SDSBGraphBuilder::build()
     _G_nodes.push_back(addVertex(alg_node, graph));
   }
 
-  computeOutputEdges(_F_nodes, _u_nodes, graph, max_dims, _usage, edge_dom_offset);
+  EqNodes nodes(_equations);
 
-  computeOutputEdges(_F_nodes, _g_nodes, graph, max_dims, _usage, edge_dom_offset);
+  computeOutputEdges<EqNodes>(_F_nodes, _u_nodes, graph, max_dims, _usage, edge_dom_offset, nodes);
 
-  computeOutputEdges(_G_nodes, _u_nodes, graph, max_dims, _usage, edge_dom_offset);
+  computeOutputEdges<EqNodes>(_F_nodes, _g_nodes, graph, max_dims, _usage, edge_dom_offset, nodes);
 
-  computeInputOutputEdges(_G_nodes, _g_nodes, graph, max_dims, _usage, edge_dom_offset);
+  computeOutputEdges<EqNodes>(_G_nodes, _u_nodes, graph, max_dims, _usage, edge_dom_offset, nodes);
+
+  computeInputOutputEdges<EqNodes>(_G_nodes, _g_nodes, graph, max_dims, _usage, edge_dom_offset, nodes);
 
   SB::Deps::GraphPrinter printer(graph);
 
-  printer.printGraph(Logger::instance().getLogsPath()+ "SDGraph.dot");
+  printer.printGraph(Logger::instance().getLogsPath()+ S::name() + ".dot");
 
   return graph;
 }
+
+template class EQGraphBuilder<SB::StateSelector<SDG>, IR::EquationTable>;
+
+template class EQGraphBuilder<SB::StateSelector<SZG>, IR::EquationTable>;
+
+template class EQGraphBuilder<SB::StateSelector<SOG>, IR::EquationTable>;
+
+template class EQGraphBuilder<SB::DiscreteSelector<DOG>, IR::EquationTable>;
 
 }  // namespace Deps
 }  // namespace MicroModelica
