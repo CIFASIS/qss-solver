@@ -69,7 +69,11 @@ SZMatrix ModelDependencies::ZS()
   return _SZ;
 }
 
-SOMatrix ModelDependencies::SO() { return _SO; }
+SOMatrix ModelDependencies::SO()
+{
+  _SO.setMode(IR::MATRIX::Normal);
+  return _SO;
+}
 
 SOMatrix ModelDependencies::OS()
 {
@@ -77,7 +81,11 @@ SOMatrix ModelDependencies::OS()
   return _SO;
 }
 
-DOMatrix ModelDependencies::DO() { return _DO; }
+DOMatrix ModelDependencies::DO()
+{
+  _DO.setMode(IR::MATRIX::Normal);
+  return _DO;
+}
 
 DOMatrix ModelDependencies::OD()
 {
