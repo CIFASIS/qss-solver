@@ -96,5 +96,12 @@ template class ModelMatrix<Deps::LHSStGraphBuilder, Deps::EVModelMatrixBuilder, 
 
 template class ModelMatrix<Deps::RHSStGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable>;
 
+template class ModelMatrix<Deps::HDGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable>;
+
+template class ModelMatrix<Deps::HZGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable>;
+
+template class ModelMatrix<Deps::HHGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable>;
+
+
 }  // namespace IR
 }  // namespace MicroModelica

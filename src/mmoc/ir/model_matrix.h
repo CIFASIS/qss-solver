@@ -23,6 +23,7 @@
 
 #include <deps/builders/eq_graph_builder.h>
 #include <deps/builders/ev_graph_builder.h>
+#include <deps/builders/merge_graph_builder.h>
 #include <deps/sb_dependencies.h>
 #include <ir/model_matrix_gen.h>
 
@@ -62,6 +63,12 @@ typedef ModelMatrix<Deps::DSCGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::E
 typedef ModelMatrix<Deps::LHSStGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable> LHSSTMatrix;
 
 typedef ModelMatrix<Deps::RHSStGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable> RHSSTMatrix;
+
+typedef ModelMatrix<Deps::HDGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable> HDMatrix;
+
+typedef ModelMatrix<Deps::HZGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable> HZMatrix;
+
+typedef ModelMatrix<Deps::HHGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable> HHMatrix;
 
 }  // namespace IR
 }  // namespace MicroModelica
