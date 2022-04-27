@@ -28,7 +28,7 @@ namespace Deps {
 template<typename S>
 class EvGraphBuilder : public S {
   public:
-  EvGraphBuilder(IR::EventTable &events, IR::EquationTable &algebraics, IR::STATEMENT::AssignTerm search);
+  EvGraphBuilder(IR::EventTable events, IR::EquationTable algebraics, IR::STATEMENT::AssignTerm search);
   ~EvGraphBuilder() = default;
   SB::Deps::Graph build();
 
@@ -58,11 +58,17 @@ struct DHG {
   std::string name() { return "Handler LHS Discrete Graph"; }
 };
 
+struct DRHG {
+  std::string name() { return "Handler RHS Discrete Graph"; }
+};
+
 typedef EvGraphBuilder<SB::StateSelector<STLG>> LHSStGraphBuilder;
 
 typedef EvGraphBuilder<SB::StateSelector<STRG>> RHSStGraphBuilder;
 
 typedef EvGraphBuilder<SB::DiscreteSelector<DHG>> DSCGraphBuilder;
+
+typedef EvGraphBuilder<SB::DiscreteSelector<DRHG>> DSCRHSGraphBuilder;
 
 }  // namespace Deps
 }  // namespace MicroModelica

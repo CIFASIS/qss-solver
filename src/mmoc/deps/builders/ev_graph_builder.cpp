@@ -71,7 +71,7 @@ struct EvNodes {
 };
 
 template<typename S>
-EvGraphBuilder<S>::EvGraphBuilder(EventTable &events, EquationTable &algebraics, IR::STATEMENT::AssignTerm search) 
+EvGraphBuilder<S>::EvGraphBuilder(EventTable events, EquationTable algebraics, IR::STATEMENT::AssignTerm search) 
     : _F_nodes(),
       _G_nodes(),
       _g_nodes(),
@@ -137,6 +137,8 @@ template class EvGraphBuilder<StateSelector<STLG>>;
 template class EvGraphBuilder<StateSelector<STRG>>;
 
 template class EvGraphBuilder<DiscreteSelector<DHG>>;
+
+template class EvGraphBuilder<SB::DiscreteSelector<DRHG>>;
 
 }  // namespace Deps
 }  // namespace MicroModelica
