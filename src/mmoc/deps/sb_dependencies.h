@@ -29,6 +29,7 @@
 #include <ir/qss_model_deps.h>
 #include <util/symbol_table.h>
 #include <deps/builders/index_shift_builder.h>
+#include <deps/builders/merge_graph_builder.h>
 #include <deps/sbg_graph/deps_graph.h>
 #include <deps/jacobian_matrices.h>
 
@@ -72,6 +73,9 @@ typedef SBDependencies<IR::ModelMatrixGenerator<IR::EquationTable, IR::Equation,
 typedef SBDependencies<IR::ModelMatrixGenerator<IR::EventTable, IR::Event, IR::MATRIX::EVMatrixConfig>, IR::ModelMatrixDef,
                        IR::MATRIX::EVMatrixConfig>
     EVModelMatrixBuilder;
+
+typedef SBDependencies<Deps::MergeGraphGenerator, SB::Deps::Graph, IR::EquationTable> MergeGraphBuilder;
+
 
 }  // namespace Deps
 }  // namespace MicroModelica

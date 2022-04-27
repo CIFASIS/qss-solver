@@ -272,5 +272,8 @@ template class SBDependencies<ModelMatrixGenerator<EquationTable, Equation, MATR
                               MATRIX::EQMatrixConfig>;
 template class SBDependencies<ModelMatrixGenerator<EventTable, Event, MATRIX::EVMatrixConfig>, ModelMatrixDef, MATRIX::EVMatrixConfig>;
 
+template class SBDependencies<Deps::MergeGraphGenerator, SB::Deps::Graph, IR::EquationTable>;
+
+
 }  // namespace Deps
 }  // namespace MicroModelica
