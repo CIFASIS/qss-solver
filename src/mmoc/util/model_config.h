@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef UTIL_MODEL_CONFIG_H
-#define UTIL_MODEL_CONFIG_H
+#pragma once
 
 #include <string>
 
@@ -79,7 +78,7 @@ class ModelConfig {
   inline void unsetLocalInitSymbols() { _init_symbols = false; };
 
   inline void setEvents(IR::EventTable events) { _events = events; }
-  inline IR::EventTable events() { return _events; }
+  inline IR::EventTable events() const { return _events; }
   private:
   ModelConfig()
       : _model_annotations(),
@@ -112,5 +111,3 @@ class ModelConfig {
 
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif  // UTIL_MODEL_CONFIG_H
