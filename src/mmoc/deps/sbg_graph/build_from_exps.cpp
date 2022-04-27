@@ -400,6 +400,47 @@ VertexIt findSetVertex(SB::Deps::Graph& graph, Set matched)
   return vi_start;
 }
 
+VertexIt findSetVertexByName(SB::Deps::Graph& graph, string name)
+{
+  // Find the set-vertex where matched subset is included
+  VertexIt vi_start, vi_end;
+  boost::tie(vi_start, vi_end) = vertices(graph);
+
+  for (; vi_start != vi_end; ++vi_start) {
+    SetVertex v = graph[*vi_start];
+    if (v.name() == name) {
+      return vi_start;
+    }
+  }
+  // A given subset should be included in one of the graph vertex, this should never happen.
+  assert(false);
+  return vi_start;
+}
+
+std::list<Edge> inputEdges(SB::Deps::Graph& graph, string name)
+{
+  // Find the set-vertex where matched subset is included
+  VertexIt vi_start, vi_end;
+  boost::tie(vi_start, vi_end) = vertices(graph);
+  std::list<Edge> edges;
+
+  for (; vi_start != vi_end; ++vi_start) {
+    SetVertex v = graph[*vi_start];
+    boost::graph_traits<SB::Deps::Graph>::out_edge_iterator edge, out_edge_end;
+    // As a second step, look for all the input edges that arrives to the discrete variable.
+    for (boost::tie(edge, out_edge_end) = out_edges(*vi_start, graph); edge != out_edge_end; ++edge) {
+      SB::Deps::SetEdge edge_label = graph[*edge];
+      SB::Deps::Vertex target = boost::target(*edge, graph);
+      SB::Deps::SetVertex target_set_vertex = graph[target]; 
+      if (target_set_vertex.name() == name) {
+        edges.push_back(*edge);
+      }
+    }
+  }
+  return edges;
+}
+
+
 Set wholeVertex(SB::Deps::Graph& graph, Set matched_subset)
 {
   Set whole_vertex;

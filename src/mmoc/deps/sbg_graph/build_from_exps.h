@@ -142,6 +142,10 @@ void updateNumDeps(SB::Deps::Graph& graph, SB::Deps::Vertex vertex, int num_deps
 
 VertexIt findSetVertex(SB::Deps::Graph& graph, Set matched);
 
+VertexIt findSetVertexByName(SB::Deps::Graph& graph, string name);
+
+std::list<Edge> inputEdges(SB::Deps::Graph& graph, string name);
+
 Set wholeVertex(SB::Deps::Graph& graph, Set matched_subset);
 
 }  // namespace Deps
