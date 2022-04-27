@@ -62,11 +62,15 @@ class ModelDependencies {
   IR::LHSSTMatrix _LHSSt;
   IR::RHSSTMatrix _RHSSt;
   IR::LHSDSCMatrix _LHSDsc;
-  VariableDependencyMatrix _HD;
-  VariableDependencyMatrix _HZ;
-  VariableDependencyMatrix _HH;
-
+  IR::HDMatrix _HD;
+  IR::HZMatrix _HZ;
+  IR::HHMatrix _HH;
   JacobianMatrix _JAC;
+
+
+  VariableDependencyMatrix __HD;
+  VariableDependencyMatrix __HZ;
+  VariableDependencyMatrix __HH;
 
   Dependency _deps;
 };
