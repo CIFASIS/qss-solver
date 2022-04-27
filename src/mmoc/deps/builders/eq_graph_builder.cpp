@@ -47,13 +47,13 @@ struct EqNodes {
 };
 
 template<typename S, typename T>
-EQGraphBuilder<S, T>::EQGraphBuilder(T &equations, EquationTable &algebraics, IR::STATEMENT::AssignTerm search) 
+EQGraphBuilder<S, T>::EQGraphBuilder(T equations, EquationTable algebraics, IR::STATEMENT::AssignTerm search) 
     : EQGraphBuilder(equations, algebraics)
 {
 }
 
 template<typename S, typename T>
-EQGraphBuilder<S, T>::EQGraphBuilder(T &equations, EquationTable &algebraics) 
+EQGraphBuilder<S, T>::EQGraphBuilder(T equations, EquationTable algebraics) 
     : _F_nodes(),
       _G_nodes(),
       _g_nodes(),
@@ -118,6 +118,10 @@ template class EQGraphBuilder<SB::StateSelector<SZG>, IR::EquationTable>;
 template class EQGraphBuilder<SB::StateSelector<SOG>, IR::EquationTable>;
 
 template class EQGraphBuilder<SB::DiscreteSelector<DOG>, IR::EquationTable>;
+
+template class EQGraphBuilder<SB::DiscreteSelector<DDG>, IR::EquationTable>;
+
+template class EQGraphBuilder<SB::DiscreteSelector<DZG>, IR::EquationTable>;
 
 }  // namespace Deps
 }  // namespace MicroModelica

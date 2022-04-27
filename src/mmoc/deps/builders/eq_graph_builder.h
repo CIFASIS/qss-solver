@@ -29,8 +29,8 @@ namespace Deps {
 template<typename S, typename T>
 class EQGraphBuilder : public S {
   public:
-  EQGraphBuilder(T &equations, IR::EquationTable &algebraics, IR::STATEMENT::AssignTerm search);
-  EQGraphBuilder(T &equations, IR::EquationTable &algebraics);
+  EQGraphBuilder(T equations, IR::EquationTable algebraics, IR::STATEMENT::AssignTerm search);
+  EQGraphBuilder(T equations, IR::EquationTable algebraics);
   ~EQGraphBuilder() = default;
   SB::Deps::Graph build();
 
@@ -51,8 +51,16 @@ struct SDG {
   std::string name() { return "SD Graph";}
 };
 
+struct DDG {
+  std::string name() { return "DD Graph";}
+};
+
 struct SZG {
   std::string name() { return "SZ Graph";}
+};
+
+struct DZG {
+  std::string name() { return "DZ Graph";}
 };
 
 struct SOG {
@@ -71,6 +79,9 @@ typedef EQGraphBuilder<SB::StateSelector<SOG>, IR::EquationTable> SOSBGraphBuild
 
 typedef EQGraphBuilder<SB::DiscreteSelector<DOG>, IR::EquationTable> DOSBGraphBuilder;
 
+typedef EQGraphBuilder<SB::DiscreteSelector<DDG>, IR::EquationTable> DDSBGraphBuilder;
+
+typedef EQGraphBuilder<SB::DiscreteSelector<DZG>, IR::EquationTable> DZSBGraphBuilder;
 
 }  // namespace Deps
 }  // namespace MicroModelica
