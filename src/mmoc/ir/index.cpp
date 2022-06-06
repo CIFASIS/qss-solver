@@ -233,6 +233,8 @@ void Range::updateRangeDefinition(std::string index_def, RangeDefinition def, in
   assert(range);
   _size *= range->size();
   _row_size.push_back(range->size());
+  Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
+  ModelConfig::instance().addVariable(index_def, vi);
 }
 
 void Range::setRangeDefinition(AST_ForIndexList fil)
@@ -265,8 +267,6 @@ void Range::generate(Variable var)
     int begin = 1;
     int end = var.size(i);
     updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
-    Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-    ModelConfig::instance().addVariable(index, vi);
   }
 }
 
@@ -301,8 +301,6 @@ void Range::generate(SBG::MDI mdi)
     }
     string index = Utils::instance().iteratorVar(pos);
     updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
-    Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-    ModelConfig::instance().addVariable(index, vi);
   }
 }
 
@@ -335,8 +333,6 @@ void Range::generate(SB::Set set, int offset, vector<string> vars)
         index = vars[pos];
       } 
       updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
-      Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-      ModelConfig::instance().addVariable(index, vi);
     }
   }
 }
@@ -352,8 +348,6 @@ void Range::generate(MDI mdi)
     }
     string index = Utils::instance().iteratorVar(pos);
     updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
-    Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-    ModelConfig::instance().addVariable(index, vi);
   }
 }
 
@@ -615,7 +609,7 @@ string Range::in(ExpressionList exps)
 
 string Range::in(vector<string> exps)
 {
-  assert(exps.size() == (size_t)_ranges.size());
+  assert(exps.size() <= (size_t)_ranges.size());
   // If empty generate a default true condition to handle scalar cases.
   if (exps.empty()) {
     return "1";
@@ -624,8 +618,10 @@ string Range::in(vector<string> exps)
   RangeDefinitionTable::iterator it;
   int i = 0;
   int size = _ranges.size();
+  int exps_size = exps.size();
   for (RangeDefinition r = _ranges.begin(it); !_ranges.end(it); r = _ranges.next(it), i++) {
-    string exp_str = exps[i];
+    string exp_str = (i < exps_size) ? exps[i] : getDimensionVar(i);     
+  
     code << "(" << r.begin() << " <= " << exp_str << " && " << exp_str << " <= " << r.end() << ")";
     code << ((i + 1 < size) ? " && " : "");
   }
@@ -650,6 +646,10 @@ map<std::string, AST_Expression> Range::initExps()
 void Range::replace(Index usage)
 {
   vector<string> variables = usage.variables();
+  // In case of a scalar usage in N<->1 relations.
+  if (variables.empty()) {
+    variables = getIndexes();
+  }
   set<string> added_vars;
   vector<string> old_keys;
   int pos = 1;
