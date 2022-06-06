@@ -58,7 +58,7 @@ Real getValue(MicroModelica::IR::Expression exp);
 
 void addDims(size_t max_dim, size_t exp_dim, MultiInterval& intervals, int offset);
 
-void addDims(size_t max_dim, size_t exp_dim, OrdRealCT& constants, OrdRealCT& slopes);
+void addDims(size_t max_dim, size_t exp_dim, OrdRealCT& constants, OrdRealCT& slopes, int offset);
 
 Set buildSet(MultiInterval intervals);
 

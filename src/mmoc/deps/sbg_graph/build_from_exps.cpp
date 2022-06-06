@@ -42,13 +42,13 @@ void addDims(size_t max_dim, size_t exp_dim, MultiInterval& intervals, int offse
   }
 }
 
-void addDims(size_t max_dim, size_t exp_dim, OrdRealCT& constants, OrdRealCT& slopes)
+void addDims(size_t max_dim, size_t exp_dim, OrdRealCT& constants, OrdRealCT& slopes, int offset)
 {
   OrdRealCT::iterator constant_it = constants.end();
   OrdRealCT::iterator slope_it = slopes.end();
   if (max_dim > exp_dim) {
     for (size_t i = exp_dim; i < max_dim; i++) {
-      constant_it = constants.insert(constant_it, 0);
+      constant_it = constants.insert(constant_it, offset);
       slope_it = slopes.insert(slope_it, 0);
     }
   }
@@ -94,13 +94,14 @@ void setupUsage(Range range, Usage& usage, DimRange& dim_range, int offset)
   }
 }
 
-void setupIntervals(Expression exp, MultiInterval& intervals, DimRange& dim_range, int offset, size_t max_dim)
+void setupIntervals(Expression exp, MultiInterval& intervals, DimRange& dim_range, int offset, size_t max_dim, Option<Range> range = Option<Range>())
 {
   ExpressionList indexes = exp.indexes();
+  size_t index_size = indexes.size();
   for (Expression idx : indexes) {
     PWLMapValues pwl_map_values;
     pwl_map_values.apply(idx.expression());
-    if (pwl_map_values.isScalar()) {  // Scalar index
+    if (pwl_map_values.isScalar() && !range) {  // Scalar index
       Interval interval(offset, 1, offset);
       intervals.addInter(interval);
     } else {
@@ -108,7 +109,19 @@ void setupIntervals(Expression exp, MultiInterval& intervals, DimRange& dim_rang
       intervals.addInter(interval);
     }
   }
-  addDims(max_dim, indexes.size(), intervals, offset);
+  if (indexes.empty() && range) {
+    RangeDefinitionTable ranges = range->definition();
+    for (auto range : ranges) {
+      Real lower = range.second.begin();
+      Real step = range.second.step();
+      Real upper = range.second.end();
+      Real end = offset + upper - lower;
+      Interval interval(offset, step, end);
+      intervals.addInter(interval);
+    }
+    index_size = ranges.size();
+  }
+  addDims(max_dim, index_size, intervals, offset);
 }
 
 Set buildSet(Equation eq, string eq_id, int offset, size_t max_dim, EqUsage& eq_usage)
@@ -127,14 +140,17 @@ Set buildSet(Equation eq, string eq_id, int offset, size_t max_dim, EqUsage& eq_
   return buildSet(equation_intervals);
 }
 
-Set buildSet(Expression exp, string stm_id, int offset, size_t max_dim, EqUsage& eq_usage, Option<Range> range)
+Set buildSet(Expression exp, string stm_id, int offset, size_t max_dim, EqUsage& eq_usage, Option<Range> range, Option<Range> ev_range)
 {
   Usage usage;
   DimRange dim_range;
   MultiInterval ev_intervals;
   if (range) {
     setupUsage(range.get(), usage, dim_range, offset);
-    setupIntervals(exp, ev_intervals, dim_range, offset, max_dim);
+    if (ev_range) {
+      setupUsage(ev_range.get(), usage, dim_range, offset);  
+    }
+    setupIntervals(exp, ev_intervals, dim_range, offset, max_dim, range);
     eq_usage[stm_id] = usage;
   } else {
     addDims(max_dim, 0, ev_intervals, offset);
@@ -208,8 +224,9 @@ void addStatements(StatementTable stms, list<Deps::SetVertex>& nodes, Option<Ran
     for (Expression asg : assignments) {
       std::stringstream ev_name;
       Option<Range> stm_range = (stm.isForStatement()) ? stm.range() : ev_range;
+      Option<Range> stm_ev_range = (stm.isForStatement()) ? ev_range : Option<Range>();
       ev_name << "EV_" << id << "_" << token << "_" << stm_count << "_" << asg_nbr++;
-      Set range = buildSet(asg, ev_name.str(), offset, max_dim, usage, stm_range);
+      Set range = buildSet(asg, ev_name.str(), offset, max_dim, usage, stm_range, stm_ev_range);
       Deps::SetVertex node = Deps::SetVertex(ev_name.str(), offset, range, id, Deps::VertexDesc(type));
       offset += range.size();
       nodes.push_back(node);
@@ -262,8 +279,9 @@ EdgeMaps generatePWLMaps(Expression exp, Set dom, Set unk_dom, int offset, strin
 
   ExpressionList indexes = exp.indexes();
   OrdIntegerCT init_elems = unk_dom.minElem();
-  assert(init_elems.size() == indexes.size() || indexes.size() == 0);
+  assert(init_elems.size() == indexes.size() || indexes.size() == 0 || indexes.size() < max_dim);
   OrdIntegerCT::iterator min_elem = init_elems.begin();
+  Integer unk_offset = *min_elem;
   Constants exp_constants;
   Slopes exp_slopes;
   InitValues exp_init_values;
@@ -295,14 +313,14 @@ EdgeMaps generatePWLMaps(Expression exp, Set dom, Set unk_dom, int offset, strin
     min_elem++;
   }
   if (indexes.empty()) {  // Scalar variable.
-    Integer set_vertex_init = *min_elem - 1;
-    constant_pwl_map_u_it = constant_pwl_map_u.insert(constant_pwl_map_u_it, -map_offset + set_vertex_init);
-    slope_pwl_map_u_it = slope_pwl_map_u.insert(slope_pwl_map_u_it, 1);
+    Integer set_vertex_init = *min_elem;
+    constant_pwl_map_u_it = constant_pwl_map_u.insert(constant_pwl_map_u_it, set_vertex_init);
+    slope_pwl_map_u_it = slope_pwl_map_u.insert(slope_pwl_map_u_it, 0);
     constant_pwl_map_u_it++;
     slope_pwl_map_u_it++;
-    addDims(max_dim, 1, constant_pwl_map_u, slope_pwl_map_u);
+    addDims(max_dim, 1, constant_pwl_map_u, slope_pwl_map_u, unk_offset);
   } else {
-    addDims(max_dim, indexes.size(), constant_pwl_map_u, slope_pwl_map_u);
+    addDims(max_dim, indexes.size(), constant_pwl_map_u, slope_pwl_map_u, unk_offset);
   }
   for (Integer init : dom.minElem()) {
     Integer set_vertex_init = init - 1;
@@ -311,7 +329,7 @@ EdgeMaps generatePWLMaps(Expression exp, Set dom, Set unk_dom, int offset, strin
     constant_pwl_map_f_it++;
     slope_pwl_map_f_it++;
   }
-  addDims(max_dim, dom.minElem().size(), constant_pwl_map_f, slope_pwl_map_f);
+  addDims(max_dim, dom.minElem().size(), constant_pwl_map_f, slope_pwl_map_f, offset);
   maps.F = buildPWLMap(constant_pwl_map_f, slope_pwl_map_f, map_dom);
   maps.U = buildPWLMap(constant_pwl_map_u, slope_pwl_map_u, map_dom);
   maps.map_exp = LMapExp(exp_constants, exp_slopes, exp_init_values);
