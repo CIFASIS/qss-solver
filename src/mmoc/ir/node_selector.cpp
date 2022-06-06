@@ -26,7 +26,7 @@ using namespace IR;
 
 namespace Deps {
 
-EQSelector::EQSelector(EquationTable eqs) : _eqs(eqs){};
+EQSelector::EQSelector(EquationTable eqs) : _eqs(eqs), _select_states(false), _lhs_states(false) {};
 
 IR::EquationTable EQSelector::getNodes() const { return _eqs; };
 
@@ -68,6 +68,26 @@ IR::Expression EQSelector::exp(Equation eq) { return eq.lhs(); }
 
 bool EQSelector::multipleNodes() const { return false; }
 
+bool EQSelector::lhsStates() { return _lhs_states; }
+
+std::string EQSelector::nodeName(int id) { return getNode(id).LHSVariable()->name(); }
+
+bool EQSelector::validVariable(Util::Variable var)
+{
+  if (_select_states) {
+    return var.isState();
+  }
+  return (var.name().find("_event_") != std::string::npos);
+}
+
+SB::PWLMap EQSelector::mapU() { return _map_u; }
+
+SB::PWLMap EQSelector::mapF() { return _map_f; }
+
+void EQSelector::setMapU(SB::PWLMap map_u) { _map_u = map_u; }
+
+void EQSelector::setMapF(SB::PWLMap map_f) { _map_f = map_f; }
+
 EVSelector::EVSelector(IR::EventTable evs) : _evs(evs) {}
 
 IR::EventTable EVSelector::getNodes() const { return _evs; }
@@ -100,6 +120,20 @@ int EVSelector::id(SB::Deps::SetVertex vertex)
 IR::Expression EVSelector::exp(Event ev) { return ev.zeroCrossing().index().expression(); }
 
 bool EVSelector::multipleNodes() const { return true; }
+
+bool EVSelector::lhsStates() { return false; }
+
+std::string EVSelector::nodeName(int id) { return getNode(id).zeroCrossing().LHSVariable()->name(); }
+
+bool EVSelector::validVariable(Util::Variable var) { return (var.name().find("_event_") != std::string::npos); }
+
+SB::PWLMap EVSelector::mapU() { return _map_u; }
+
+SB::PWLMap EVSelector::mapF() { return _map_f; }
+
+void EVSelector::setMapU(SB::PWLMap map_u) { _map_u = map_u; }
+
+void EVSelector::setMapF(SB::PWLMap map_f) { _map_f = map_f; }
 
 }  // namespace Deps
 }  // namespace MicroModelica

@@ -24,13 +24,15 @@
 #include <ir/expression.h>
 #include <ir/event.h>
 #include <deps/sbg_graph/deps_graph.h>
+#include <util/symbol_table.h>
 
 namespace MicroModelica {
 namespace Deps {
 
 class EQSelector {
   public:
-  EQSelector() : _eqs() {};
+  EQSelector() : _eqs(), _select_states(false), _lhs_states(false) {};
+  EQSelector(IR::EquationTable eqs, bool select_states, bool lhs_states) : _eqs(eqs), _select_states(select_states), _lhs_states(lhs_states) {};
   EQSelector(IR::EquationTable eqs);
   ~EQSelector() = default;
   IR::EquationTable getNodes() const;
@@ -41,9 +43,20 @@ class EQSelector {
   bool isAlgebraic(SB::Deps::SetVertex vertex);
   bool multipleNodes() const;
   int id(SB::Deps::SetVertex vertex);
-  
+  bool lhsStates();
+  std::string nodeName(int id);
+  bool validVariable(Util::Variable var);
+  SB::PWLMap mapU();
+  SB::PWLMap mapF();
+  void setMapU(SB::PWLMap map_u);
+  void setMapF(SB::PWLMap map_f);
+
   protected:
   IR::EquationTable _eqs;
+  bool _select_states;
+  bool _lhs_states;
+  SB::PWLMap _map_u;
+  SB::PWLMap _map_f;
 };
 
 class EVSelector {
@@ -59,9 +72,18 @@ class EVSelector {
   bool isAlgebraic(SB::Deps::SetVertex vertex);
   bool multipleNodes() const;
   int id(SB::Deps::SetVertex vertex);
+  bool lhsStates();
+  std::string nodeName(int id);
+  bool validVariable(Util::Variable var);
+  SB::PWLMap mapU();
+  SB::PWLMap mapF();
+  void setMapU(SB::PWLMap map_u);
+  void setMapF(SB::PWLMap map_f);
 
   protected:
   IR::EventTable _evs;
+  SB::PWLMap _map_u;
+  SB::PWLMap _map_f;
 };
 
 }  // namespace Deps
