@@ -117,12 +117,18 @@ Option<Range> getUseRange(Util::Variable variable, DepData dep_data, N node)
   if (dep_data.var_dep.isRecursive()) {
     return Range(dep_data.var_dep.var());
   }
+  Index use_idx(use_exp);
+  std::vector<std::string> var_names = (use_idx.isConstant() && node.range()) ? node.range()->getIndexes() : use_idx.variables();
+  if (dep_data.var_dep.equations().size() == 1 && dep_data.var_dep.variables().size() > 1) {
+      return Range(dep_data.var_dep.variables(),dep_data.var_dep.varOffset(), var_names);
+  } else if (dep_data.var_dep.equations().size() > 1 && dep_data.var_dep.variables().size() == 1) {
+      return Range(dep_data.var_dep.equations(),dep_data.var_dep.eqOffset(), var_names);
+  }
   if (variable.isScalar() || SCALAR_EXP) {
-    return Option<Range>();
+    return Option<Range>(); 
   }
   if (!SCALAR_EXP) {
     if (dep_data.from_alg) {
-      Index use_idx(dep_data.var_dep.exp());
       return Range(dep_data.var_dep.equations(),dep_data.var_dep.eqOffset(), use_idx.variables());
     }
     return node.range();
