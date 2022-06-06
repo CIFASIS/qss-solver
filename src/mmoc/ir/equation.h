@@ -20,7 +20,6 @@
 #pragma once
 
 #include <ast/ast_types.h>
-#include <deps/dependency_matrix.h>
 #include <util/table.h>
 #include <ir/index.h>
 
@@ -89,7 +88,6 @@ class Equation {
   bool isEmpty() const;
   std::string applyId() const;
   Equation genAlgEquation(Equation der_eq, Index rhs_usage, Index lhs_usage);
-  void dependencyUsage(Deps::VariableDependency var_dep, Index index);
   int arrayId() const;
   void setAlgCode(std::string alg_code);
   std::string algCode() const;
@@ -116,14 +114,6 @@ class Equation {
 };
 
 typedef ModelTable<int, Equation> EquationTable;
-
-class Dependency {
-  public:
-  ~Dependency() = default;
-  Equation generate(Equation eq, Index idx, Deps::AlgebraicPath algs);
-  list<Equation> terms();
-  EQUATION::Type type() const;
-};
 
 }  // namespace IR
 }  // namespace MicroModelica

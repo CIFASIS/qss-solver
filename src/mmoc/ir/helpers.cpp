@@ -265,54 +265,6 @@ string FunctionPrinter::algebraic(Equation alg, bool reduction)
   return buffer.str();
 }
 
-string FunctionPrinter::algebraics(AlgebraicPath deps)
-{
-  stringstream code;
-  AlgebraicPath::reverse_iterator it;
-  EquationTable algebraic_eqs = ModelConfig::instance().algebraics();
-  for (it = deps.rbegin(); it != deps.rend(); it++) {
-    VariableDependency dep = *it;
-    Index dep_idx = dep.ife();
-    string idx_exp = dep_idx.print();
-    Option<Equation> alg = algebraic_eqs[dep.equationId()];
-    if (alg) {
-      FunctionPrinter printer;
-      Equation orig_alg = alg.get();
-      if (dep_idx.isConstant() && !dep.isReduction()) {
-        Equation a = orig_alg;
-        a.applyUsage(dep_idx);
-        orig_alg = a;
-      }
-      if (_alg_dict.find(idx_exp) == _alg_dict.end()) {
-        _alg_dict[idx_exp] = idx_exp;
-      }   
-      if (!dep.isReduction()) {
-        code << printer.printAlgebraicGuards(orig_alg, dep_idx);
-      }
-      code << algebraic(orig_alg, dep.isReduction());
-      if (!dep.isReduction()) {
-        code << printer.endDimGuards(orig_alg.range());
-      }
-    } else {
-      Error::instance().add(0, EM_CG | EM_NO_EQ, ER_Error, "Algebraic equation not found.");
-    }
-  }
-  return code.str();
-}
-
-string FunctionPrinter::algebraics(EquationDependencyMatrix eqdm, equation_id key)
-{
-  stringstream buffer;
-  Option<Paths> eqd = eqdm[key];
-  if (eqd) {
-    Paths::iterator eq_it;
-    for (eq_it = eqd->begin(); eq_it != eqd->end(); eq_it++) {
-      buffer << algebraics(eq_it->algs);
-    }
-  }
-  return buffer.str();
-}
-
 string FunctionPrinter::getIndexes(string var, Option<Range> range, int offset, bool modelica_index) const
 {
   stringstream buffer;

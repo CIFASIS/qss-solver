@@ -17,10 +17,8 @@
 
  ******************************************************************************/
 
-#ifndef GET_INDEX_VARIABLES_H_
-#define GET_INDEX_VARIABLES_H_
+#pragma once
 
-#include "../../deps/graph/graph_helpers.h"
 #include "../../ir/index.h"
 #include "../ast_util.h"
 
@@ -46,4 +44,3 @@ class GetIndexVariables : public AST_Expression_Visitor<map<std::string, int>> {
 
 }  // namespace Util
 }  // namespace MicroModelica
-#endif /* GET_INDEX_VARIABLES_H_ */

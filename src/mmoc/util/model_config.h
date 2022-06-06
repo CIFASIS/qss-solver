@@ -21,7 +21,6 @@
 
 #include <string>
 
-#include "../deps/dependency_matrix.h"
 #include "../ir/annotation.h"
 #include "../ir/index.h"
 #include "../ir/equation.h"

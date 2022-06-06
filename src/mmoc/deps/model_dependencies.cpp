@@ -22,13 +22,6 @@
 #include <util/model_config.h>
 #include <util/util.h>
 
-#include "builders/dh_graph_builder.h"
-#include "builders/ds_graph_builder.h"
-#include "builders/dz_graph_builder.h"
-#include "builders/ea_graph_builder.h"
-#include "builders/sd_graph_builder.h"
-#include "builders/so_graph_builder.h"
-#include "builders/sz_graph_builder.h"
 #include <deps/builders/index_shift_builder.h>
 
 namespace MicroModelica {

@@ -35,6 +35,7 @@ ReplaceIndex::ReplaceIndex(Range range, Usage usage, bool range_idxs) : _range(r
 
 AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
 {
+  static constexpr int USED = 1;
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
@@ -44,9 +45,9 @@ AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
       AST_ExpressionListIterator it;
       int i = 0;
       AST_ExpressionList l = newAST_ExpressionList();
-      assert(indexes->size() == (size_t)_usage.Size());
+      assert(indexes->size() == (size_t)_usage.size());
       foreach (it, indexes) {
-        if (_usage.isUsed(i)) {
+        if (_usage[i] == USED) {
           string var = _range.iterator(i, _range_idxs);
           ReplaceVar rv(var);
           l = AST_ListAppend(l, rv.apply(current_element(it)));

@@ -25,11 +25,9 @@
 
 #include <deps/builders/eq_graph_builder.h>
 #include "../ast/expression.h"
-#include "../deps/dependency_matrix.h"
 #include "../ir/annotation.h"
 #include "../ir/class.h"
 #include "../ir/equation.h"
-#include "../ir/equation_mapper.h"
 #include "../ir/event.h"
 #include "../ir/expression.h"
 #include "../ir/jacobian.h"

@@ -17,13 +17,12 @@
 
  ******************************************************************************/
 
-#ifndef CONVERT_OUTPUT_RANGE_H_
-#define CONVERT_OUTPUT_RANGE_H_
+#pragma once
 
-#include "../../ast/ast_builder.h"
-#include "../../deps/graph/graph_helpers.h"
-#include "../../ir/index.h"
-#include "../ast_util.h"
+#include <ast/ast_builder.h>
+#include <deps/sbg_graph/multi_interval.h>
+#include <ir/index.h>
+#include <util/ast_util.h>
 
 namespace MicroModelica {
 namespace Util {
@@ -44,12 +43,10 @@ class ConvertOutputRange : public AST_Expression_Visitor<AST_Expression> {
   AST_Expression generateIndexVariable(int size);
 
   IR::Range _range;
-  Deps::IntervalList _intervals;
+  SB::MultiInterval _intervals;
   int _dim;
   std::string _var;
 };
 
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif /* CONVERT_OUTPUT_RANGE_H_ */

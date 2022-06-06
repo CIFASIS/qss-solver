@@ -17,11 +17,9 @@
 
  ******************************************************************************/
 
-#ifndef IS_RECURSIVE_DEF_H_
-#define IS_RECURSIVE_DEF_H_
+#pragma once
 
 #include "../../ast/ast_builder.h"
-#include "../../deps/graph/graph_helpers.h"
 #include "../../ir/index.h"
 #include "../ast_util.h"
 
@@ -43,5 +41,3 @@ class IsRecursiveDef : public AST_Expression_Visitor<bool> {
 
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif /* IS_RECURSIVE_DEF_H_ */

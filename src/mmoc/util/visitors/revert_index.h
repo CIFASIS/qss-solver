@@ -17,11 +17,9 @@
 
  ******************************************************************************/
 
-#ifndef REVERT_INDEX_H_
-#define REVERT_INDEX_H_
+#pragma once
 
 #include "../../ast/ast_builder.h"
-#include "../../deps/graph/graph_helpers.h"
 #include "../../ir/index.h"
 #include "../ast_util.h"
 
@@ -41,4 +39,3 @@ class RevertIndex : public AST_Expression_Visitor<AST_Expression> {
 
 }  // namespace Util
 }  // namespace MicroModelica
-#endif /* REVERT_INDEX_H_ */

@@ -96,10 +96,10 @@ Intersections MergeGraphGenerator<S>::computeIntersections(SB::Set variables)
   VertexIt dsc_vertex_it = SB::Deps::findSetVertex(_lhs_dsc_graph, variables);
   SB::Deps::SetVertex dsc_vertex = _lhs_dsc_graph[*dsc_vertex_it];
   SB::Set intersection = dsc_vertex.range().cap(variables);
-  list<Edge> edges  = SB::Deps::inputEdges(_lhs_dsc_graph, dsc_vertex.name());
+  list<SB::Deps::Edge> edges  = SB::Deps::inputEdges(_lhs_dsc_graph, dsc_vertex.name());
 
   // As a second step, look for all the input edges that arrives to the discrete variable.
-  for (Edge edge : edges) {
+  for (SB::Deps::Edge edge : edges) {
     SB::Deps::SetEdge edge_label = _lhs_dsc_graph[edge];
     SB::Deps::Vertex E = boost::source(edge, _lhs_dsc_graph);
     SB::Deps::SetVertex EV = _lhs_dsc_graph[E]; 

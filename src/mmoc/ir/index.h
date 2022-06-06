@@ -17,15 +17,12 @@
 
  ******************************************************************************/
 
-#ifndef INDEX_H_
-#define INDEX_H_
+#pragma once
 
 #include <string>
 #include <map>
 
 #include <ir/expression.h>
-#include <deps/graph/graph_helpers.h>
-#include <deps/graph/sb_graph_helpers.h>
 #include <deps/sbg_graph/deps_graph.h>
 #include <util/symbol_table.h>
 #include <util/table.h>
@@ -42,6 +39,8 @@ typedef enum { Iterator, Dimension } Type;
 }
 
 class Index;
+
+typedef vector<int> Usage;
 
 class RangeDefinition {
   public:
@@ -73,7 +72,6 @@ class Range {
   Range(AST_Statement_For stf, RANGE::Type type = RANGE::For);
   Range(Util::Variable var, RANGE::Type type = RANGE::For);
   Range(AST_Expression exp);
-  Range(Deps::SBG::MDI mdi);
   Range(SB::Set set, int offset, std::vector<std::string> vars = std::vector<std::string>());
   ~Range() = default;
 
@@ -90,14 +88,12 @@ class Range {
   int rowSize(int dim) const;
   std::string block(int dim = -1) const;
   int pos(std::string var);
-  void generate(Deps::MDI mdi);
   std::string iterator(int dim, bool range_idx = false);
   std::string getPrintDimensionVarsString() const;
   std::string getDimensionVarsString(bool range = false) const;
   std::vector<std::string> getDimensionVars(bool range = false) const;
   std::string getDimensionVar(int i, bool range = false) const;
   bool intersect(Range other);
-  Deps::MDI getMDI();
   void applyUsage(Index usage);
   bool checkUsage(Index usage, Index def);
   std::string in(ExpressionList exps);
@@ -105,12 +101,11 @@ class Range {
   map<std::string, AST_Expression> initExps();
   void replace(Index usage);
   friend std::ostream& operator<<(std::ostream& out, const Range& r);
+  void generate(SB::Set set, int offset, std::vector<std::string> vars);
 
   protected:
   void generate(Util::Variable var);
   void generate(AST_Expression exp);
-  void generate(Deps::SBG::MDI mdi);
-  void generate(SB::Set set, int offset, std::vector<std::string> vars);
   void updateRangeDefinition(std::string index_def, RangeDefinition def, int pos);
   void addRangeVariables(int i, string index) const;
   bool isVariable(std::string var);
@@ -153,7 +148,6 @@ class Index {
   std::string print() const;
   std::string identifier() const;
   Range range() const;
-  Deps::Usage usage() const;
   Index revert() const;
   Index replace(bool range_idx = false) const;
   std::string usageExp() const;
@@ -182,4 +176,3 @@ typedef ModelTable<std::string, Index> IndexTable;
 
 }  // namespace IR
 }  // namespace MicroModelica
-#endif /* INDEX_H_ */

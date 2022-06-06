@@ -26,7 +26,6 @@
 
 namespace MicroModelica {
 using namespace Deps;
-using namespace Deps::SBG;
 using namespace SB;
 using namespace Util;
 namespace IR {

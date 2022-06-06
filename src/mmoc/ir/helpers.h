@@ -119,8 +119,6 @@ class FunctionPrinter {
   std::string beginExpression(std::string token, Option<Range> range) const;
   std::string endExpression(Option<Range> range,
                             FUNCTION_PRINTER::ReturnStatementType ret = FUNCTION_PRINTER::ReturnStatementType::Return) const;
-  std::string algebraics(Deps::EquationDependencyMatrix eqdm, Deps::equation_id key);
-  std::string algebraics(Deps::AlgebraicPath deps);
   std::string jacobianTerms(list<Equation> eqs);
   std::string getIndexes(string var, Option<Range> range, int offset, bool modelica_index) const;
   std::map<std::string, std::string> parseIndexes(string var, Option<Range> range, int offset, bool modelica_index = true) const;

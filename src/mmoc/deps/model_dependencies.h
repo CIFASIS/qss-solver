@@ -23,8 +23,6 @@
 #include <ir/event.h>
 #include <ir/model_matrix.h>
 #include <util/symbol_table.h>
-#include "dependency_matrix.h"
-#include "dependency.h"
 #include <deps/sb_dependencies.h>
 
 namespace MicroModelica {

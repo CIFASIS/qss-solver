@@ -76,7 +76,6 @@ class ModelInstance {
   std::string componentDefinition(MODEL_INSTANCE::Component c);
   void allocateOutput();
   void configOutput();
-  string algebraics(Deps::EquationDependencyMatrix eqdm, Deps::equation_id key);
   void configEvents();
   void allocateVectors() const;
   void freeVectors() const;

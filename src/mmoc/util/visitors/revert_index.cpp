@@ -25,7 +25,6 @@
 #include "../error.h"
 
 namespace MicroModelica {
-using namespace Deps;
 using namespace IR;
 namespace Util {
 

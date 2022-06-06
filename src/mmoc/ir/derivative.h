@@ -17,13 +17,11 @@
 
  ******************************************************************************/
 
-#ifndef DERIVATIVE_H_
-#define DERIVATIVE_H_
+#pragma once
 
 #include <map>
 
 #include "../ast/ast_types.h"
-#include "../deps/dependency_matrix.h"
 #include "../util/util_types.h"
 #include "../util/visitors/jac_alg_exps.h"
 #include "index.h"
@@ -49,5 +47,3 @@ class ExpressionDerivator {
 
 }  // namespace IR
 }  // namespace MicroModelica
-
-#endif /* DERIVATIVE_H_ */

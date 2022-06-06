@@ -76,7 +76,7 @@ void SBDependencies<IDependencies, R, S>::compute(SB::Deps::Graph graph, SB::Dep
     _map_U = _map_U.concat(u_map);
   }
 
-  for (Deps::Vertex vertex : boost::make_iterator_range(vertices(graph))) {
+  for (SB::Deps::Vertex vertex : boost::make_iterator_range(vertices(graph))) {
     SB::Deps::SetVertex vertex_info = graph[vertex];
     if (vertex_info.desc().type() == SB::Deps::VERTEX::Influencer) {
       LOG << "Compute paths for equation: " << graph[vertex].name() << endl;

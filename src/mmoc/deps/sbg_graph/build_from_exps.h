@@ -144,7 +144,7 @@ VertexIt findSetVertex(SB::Deps::Graph& graph, Set matched);
 
 VertexIt findSetVertexByName(SB::Deps::Graph& graph, string name);
 
-std::list<Edge> inputEdges(SB::Deps::Graph& graph, string name);
+std::list<SB::Deps::Edge> inputEdges(SB::Deps::Graph& graph, string name);
 
 Set wholeVertex(SB::Deps::Graph& graph, Set matched_subset);
 

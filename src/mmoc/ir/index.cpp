@@ -93,12 +93,6 @@ bool Index::isConstant() const
   return constant_index.apply(_exp.expression());
 }
 
-Usage Index::usage() const
-{
-  GetIndexUsage usage;
-  return usage.apply(_exp.expression());
-}
-
 void Index::setExp(Expression exp)
 {
   _exp = exp;
@@ -133,7 +127,8 @@ Index Index::revert() const
 
 Index Index::replace(bool range_idx) const
 {
-  ReplaceIndex replace = ReplaceIndex(range(), usage(), range_idx);
+  GetIndexUsage usage;
+  ReplaceIndex replace = ReplaceIndex(range(), usage.apply(_exp.expression()), range_idx);
   return Index(Expression(replace.apply(_exp.expression())));
 }
 
@@ -221,8 +216,6 @@ Range::Range(Variable var, RANGE::Type type) : _ranges(), _index_pos(), _size(1)
 
 Range::Range(AST_Expression exp) : _ranges(), _index_pos(), _size(1), _type(RANGE::For) { generate(exp); }
 
-Range::Range(SBG::MDI mdi) : _ranges(), _index_pos(), _size(1), _type(RANGE::For) { generate(mdi); }
-
 Range::Range(SB::Set set, int offset, vector<string> vars) : _ranges(), _index_pos(), _size(1), _type(RANGE::For) { generate(set, offset, vars); }
 
 void Range::updateRangeDefinition(std::string index_def, RangeDefinition def, int pos)
@@ -290,7 +283,7 @@ void Range::generate(AST_Expression exp)
   }
 }
 
-void Range::generate(SBG::MDI mdi)
+/*void Range::generate(SBG::MDI mdi)
 {
   int pos = 0;
   for (auto interval : mdi.intervals()) {
@@ -302,7 +295,7 @@ void Range::generate(SBG::MDI mdi)
     string index = Utils::instance().iteratorVar(pos);
     updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
   }
-}
+}*/
 
 bool Range::isVariable(std::string var)
 {
@@ -337,7 +330,7 @@ void Range::generate(SB::Set set, int offset, vector<string> vars)
   }
 }
 
-void Range::generate(MDI mdi)
+/*void Range::generate(MDI mdi)
 {
   int pos = 0;
   for (auto interval : mdi.mdi()) {
@@ -349,7 +342,7 @@ void Range::generate(MDI mdi)
     string index = Utils::instance().iteratorVar(pos);
     updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
   }
-}
+}*/
 
 string Range::iterator(int dim, bool range_idx)
 {
@@ -545,22 +538,12 @@ int Range::pos(string var)
   return 0;
 }
 
-MDI Range::getMDI()
-{
-  IntervalList intervals;
-  RangeDefinitionTable::iterator it;
-  for (RangeDefinition rd = _ranges.begin(it); !_ranges.end(it); rd = _ranges.next(it)) {
-    intervals.push_back(Interval(rd.begin(), rd.end(), rd.step()));
-  }
-  return MDI(intervals);
-}
-
-bool Range::intersect(Range other)
+/*bool Range::intersect(Range other)
 {
   MDI other_mdi = other.getMDI();
   Option<MDI> intersect = getMDI().Intersection(other_mdi);
   return intersect.is_initialized();
-}
+}*/
 
 void Range::applyUsage(Index usage)
 {

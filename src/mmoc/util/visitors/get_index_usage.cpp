@@ -22,7 +22,6 @@
 #include "../error.h"
 
 namespace MicroModelica {
-using namespace Deps;
 using namespace IR;
 namespace Util {
 
@@ -76,7 +75,9 @@ Usage GetIndexUsage::foldTraverseElementUMinus(AST_Expression exp) { return appl
 
 Usage GetIndexUsage::foldTraverseElement(Usage l, Usage r, BinOpType bot)
 {
-  l.join(r);
+  for (auto e : r) {
+    l.push_back(e);
+  }
   return l;
 }
 

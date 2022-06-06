@@ -17,11 +17,9 @@
 
  ******************************************************************************/
 
-#ifndef HAS_SCALAR_INDEX_H_
-#define HAS_SCALAR_INDEX_H_
+#pragma once
 
 #include "../../ast/ast_builder.h"
-#include "../../deps/graph/graph_helpers.h"
 #include "../../ir/index.h"
 #include "../ast_util.h"
 
@@ -40,4 +38,3 @@ class HasScalarIndex : public AST_Expression_Visitor<bool> {
 
 }  // namespace Util
 }  // namespace MicroModelica
-#endif /* HAS_SCALAR_INDEX_H_ */
