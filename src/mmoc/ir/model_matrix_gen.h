@@ -41,7 +41,8 @@ class MatrixConfig {
   public:
   MatrixConfig<S>(std::string cont, std::vector<std::string> n, std::vector<std::string> ac, std::vector<std::string> comp, S sel)
       : container(cont), names(n), access(ac), component(comp), search(IR::STATEMENT::LHS), selector(sel){};
-  MatrixConfig<S>(std::string cont, std::vector<std::string> n, std::vector<std::string> ac, std::vector<std::string> comp, IR::STATEMENT::AssignTerm s, S sel)
+  MatrixConfig<S>(std::string cont, std::vector<std::string> n, std::vector<std::string> ac, std::vector<std::string> comp,
+                  IR::STATEMENT::AssignTerm s, S sel)
       : container(cont), names(n), access(ac), component(comp), search(s), selector(sel){};
   MatrixConfig<S>(){};
   std::string container;
