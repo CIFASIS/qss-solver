@@ -52,7 +52,10 @@ struct VariableDep {
         _m_map(),
         _var_offset(0),
         _eq_offset(0),
-        _recursive_deps(){};
+        _recursive_deps(),
+        _alg_label_map_u(),
+        _alg_label_map_f() {};
+        
   VariableDep(MicroModelica::Util::Variable var, SB::PWLMap map_f, SB::PWLMap map_u, MicroModelica::IR::Expression exp, LMapExp n_map,
               int var_offset, int eq_offset)
       : _var(var),
@@ -66,11 +69,14 @@ struct VariableDep {
         _m_map(),
         _var_offset(var_offset),
         _eq_offset(eq_offset),
-        _recursive_deps()
+        _recursive_deps(),
+        _alg_label_map_u(),
+        _alg_label_map_f()
   {
     _u_dom = _map_u.wholeDom();
     _f_dom = _map_f.wholeDom();
   };
+
   VariableDep(MicroModelica::Util::Variable var, SB::PWLMap map_f, SB::PWLMap map_u, MicroModelica::IR::Expression exp, bool recursive,
               SB::Set f_dom, SB::Set u_dom, LMapExp n_map, int var_offset, int eq_offset)
       : _var(var),
@@ -84,9 +90,13 @@ struct VariableDep {
         _m_map(),
         _var_offset(var_offset),
         _eq_offset(eq_offset),
-        _recursive_deps(){};
+        _recursive_deps(),
+        _alg_label_map_u(),
+        _alg_label_map_f() {};
+
   VariableDep(MicroModelica::Util::Variable var, SB::PWLMap map_f, SB::PWLMap map_u, MicroModelica::IR::Expression exp, bool recursive,
-              SB::Set f_dom, SB::Set u_dom, LMapExp n_map, LMapExp m_map, int var_offset, int eq_offset)
+              SB::Set f_dom, SB::Set u_dom, LMapExp n_map, LMapExp m_map, int var_offset, int eq_offset, list<SB::PWLMap> alg_label_map_f, 
+              list<SB::PWLMap> alg_label_map_u)
       : _var(var),
         _map_f(map_f),
         _map_u(map_u),
@@ -98,7 +108,9 @@ struct VariableDep {
         _m_map(m_map),
         _var_offset(var_offset),
         _eq_offset(eq_offset),
-        _recursive_deps(){};
+        _recursive_deps(),
+        _alg_label_map_u(alg_label_map_u),
+        _alg_label_map_f(alg_label_map_f) {};
 
   PWLMap mapF() const { return _map_f; };
   PWLMap mapU() const { return _map_u; };
@@ -148,6 +160,10 @@ struct VariableDep {
     } 
   }
 
+  list<PWLMap> algLabelMapU() { return _alg_label_map_u; }
+
+  list<PWLMap> algLabelMapF() { return _alg_label_map_f; }
+
   protected:
   MicroModelica::Util::Variable _var;
   PWLMap _map_f;
@@ -161,6 +177,8 @@ struct VariableDep {
   int _var_offset;
   int _eq_offset;
   map<int, VariableDep> _recursive_deps;
+  list<PWLMap> _alg_label_map_u;
+  list<PWLMap> _alg_label_map_f;
 };
 
 struct VertexDesc {
