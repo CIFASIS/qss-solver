@@ -387,6 +387,45 @@
                     "ignoreFailures": true
                 }
             ]
-        }           
+        },           
+
+        // Neurons ST
+        {
+            "name": "Neurons ST model",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/neuronsST ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/neuronsST/neuronsST.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        
+        // Cuk2
+        {
+            "name": "Cuk2 model",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/cuk2 ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/cuk2/cuk2.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }                   
+
     ]
 }
