@@ -155,6 +155,7 @@ DEPSBUILDERSRC = $(DEPSBUILDERDIR)/sd_graph_builder.cpp \
 				 $(DEPSBUILDERDIR)/eq_graph_builder.cpp \
 				 $(DEPSBUILDERDIR)/ev_graph_builder.cpp \
 				 $(DEPSBUILDERDIR)/merge_graph_builder.cpp \
+				 $(DEPSBUILDERDIR)/merge_graph.cpp \
 				 $(DEPSBUILDERDIR)/so_graph_builder.cpp \
 				 $(DEPSBUILDERDIR)/ds_graph_builder.cpp \
 				 $(DEPSBUILDERDIR)/dh_graph_builder.cpp \

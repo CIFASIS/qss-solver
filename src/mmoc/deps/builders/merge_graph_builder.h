@@ -26,6 +26,7 @@
 #include <deps/sbg_graph/deps_graph.h>
 #include <ir/equation.h>
 #include <ir/event.h>
+#include <ir/node_selector.h>
 #include <ir/statement.h>
 
 namespace MicroModelica {
@@ -33,12 +34,15 @@ namespace Deps {
 
 struct IntersectInfo {
   SB::Deps::VertexIt node;
+  SB::Deps::SetVertex orig_node;
   SB::Deps::SetEdge edge;
   SB::Set intersection;
 };
 
 typedef list<IntersectInfo> Intersections;
 
+
+template <typename S>
 class MergeGraphGenerator {
   public:
   MergeGraphGenerator();
@@ -50,41 +54,31 @@ class MergeGraphGenerator {
   void visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep);
   void visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex);
   void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift);
-  void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp, IR::Expression use_exp, SB::PWLMap def_map,
-              SB::Deps::LMapExp def_map_exp, SB::Set intersection);
+  void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp,
+              IR::Expression use_exp, SB::PWLMap def_map, SB::Deps::LMapExp def_map_exp, SB::Set intersection);
 
   void initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge);
   SB::Deps::Graph def();
-  void setup(IR::EquationTable eqs) {};
-  IR::EquationTable config() { return IR::EquationTable(); }
+  void setup(S config);
+  S config();
 
   protected:
   Intersections computeIntersections(SB::Set variables);
+  SB::PWLMap buildMap(SB::Set dom, int convert_offset, SB::Set dom_map, int graph_offset);
+  SB::Deps::LMapExp buildLMapExp(IR::Expression dom, SB::Deps::LMapExp use_map);
+  SB::EdgeMaps generatePWLMaps(IntersectInfo inter_info, SB::Deps::SetVertex orig_ife_vertex, SB::Deps::SetVertex ife_vertex,
+                               SB::Deps::VariableDep var_dep);
+  void addEdges(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep);
+  SB::Deps::SetVertex findAlgVertex(SB::Set variables);
+
   Deps::DSCGraphBuilder _lhs_dsc_graph_builder;
+  Deps::LHSStGraphBuilder _lhs_state_graph_builder;
   SB::Deps::Graph _lhs_dsc_graph;
   SB::Deps::Graph _graph;
   int _edge_dom_offset;
+  S _config;
+  list<SB::Deps::SetVertex> _nodes;
 };
-
-template<class SBGraph, class Table>
-class MergeGraph {
-  public:
-  MergeGraph(Table table, IR::EquationTable algebraics, IR::STATEMENT::AssignTerm search);
-  ~MergeGraph() = default;
-
-  SB::Deps::Graph build();
-
-  protected:
-  Table _table;
-  IR::EquationTable _algebraics;
-  IR::STATEMENT::AssignTerm _search;
-};
-
-typedef MergeGraph<Deps::DDSBGraphBuilder, IR::EquationTable> HDGraphBuilder;
-
-typedef MergeGraph<Deps::DZSBGraphBuilder, IR::EquationTable> HZGraphBuilder;
-
-typedef MergeGraph<Deps::DSCRHSGraphBuilder,IR::EventTable> HHGraphBuilder;
 
 }  // namespace Deps
 }  // namespace MicroModelica
