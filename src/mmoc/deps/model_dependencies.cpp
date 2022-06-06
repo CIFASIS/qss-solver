@@ -42,14 +42,9 @@ static constexpr char *STATES = "states";
 static constexpr char *EVENTS = "events";
 static constexpr char *OUTPUTS = "outputs";
 static constexpr char *DISCRETES = "discretes";
-static string EMPTY_COMPONENT = {"", ""};
-
-static MatrixConfig _HHCfg = {INT_CONTAINER, {"nHE", "nEH", "HE", "EH"}, {EVENTS, EVENTS}, EMPTY_COMPONENT};
-static MatrixConfig _HDCfg = {INT_CONTAINER, {"nHD", "nDH", "HD", "DH"}, {EVENTS, STATES}, EMPTY_COMPONENT};
-static MatrixConfig _HZCfg = {INT_CONTAINER, {"nHZ", "nZH", "HZ", "ZH"}, {EVENTS, EVENTS}, EMPTY_COMPONENT};
 
 ModelDependencies::ModelDependencies()
-    : _SD(), _SO(), _DO(), _SZ(), _LHSSt(), _RHSSt(), _LHSDsc(), _HD(), _HZ(), _HH(), _JAC(), __HD(_HDCfg), __HZ(_HZCfg), __HH(_HHCfg), _deps()
+    : _SD(), _SO(), _DO(), _SZ(), _LHSSt(), _RHSSt(), _LHSDsc(), _HD(), _HZ(), _HH(), _JAC()
 {
 }
 
@@ -93,34 +88,34 @@ DOMatrix ModelDependencies::OD()
   return _DO;
 }
 
-VariableDependencyMatrix ModelDependencies::HD()
+HDMatrix ModelDependencies::HD()
 {
-  __HD.setMode(VDM::Normal);
-  return __HD;
+  _HD.setMode(IR::MATRIX::Transpose);
+  return _HD;
 }
 
-VariableDependencyMatrix ModelDependencies::DH()
+HDMatrix ModelDependencies::DH()
 {
-  __HD.setMode(VDM::Transpose);
-  return __HD;
+  _HD.setMode(IR::MATRIX::Normal);
+  return _HD;
 }
 
-VariableDependencyMatrix ModelDependencies::HZ()
+HZMatrix ModelDependencies::HZ()
 {
-  __HZ.setMode(VDM::Normal);
-  return __HZ;
+  _HZ.setMode(IR::MATRIX::Transpose);
+  return _HZ;
 }
 
-VariableDependencyMatrix ModelDependencies::ZH()
+HZMatrix ModelDependencies::ZH()
 {
-  __HZ.setMode(VDM::Transpose);
-  return __HZ;
+  _HZ.setMode(IR::MATRIX::Normal);
+  return _HZ;
 }
 
-VariableDependencyMatrix ModelDependencies::HH()
+IR::HHMatrix ModelDependencies::HH()
 {
-  __HH.setMode(VDM::Normal);
-  return __HH;
+  _HH.setMode(IR::MATRIX::Normal);
+  return _HH;
 }
 
 LHSDSCMatrix ModelDependencies::LHSDsc()
@@ -179,55 +174,23 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, Equati
                                        vector<string>{"nLHSDsc", "LHSDsc"}, STATEMENT::LHS, EVSelector(events));
   _LHSDsc.build(LHSDSCCfg);
 
-  IR::MATRIX::EQMatrixConfig HDCfg(INT_CONTAINER, vector<string>{"nHD", "nDH", "HD", "DH"}, vector<string>{EVENTS, STATES},
-                                       vector<string>{"", ""}, STATEMENT::LHS, EQSelector(eqs));
+  IR::MATRIX::EVMatrixConfig HDCfg(INT_CONTAINER, vector<string>{"nDH", "nHD", "DH", "HD"}, vector<string>{STATES, EVENTS},
+                                       vector<string>{"", ""}, STATEMENT::LHS, EVSelector(events));
   _HD.build(HDCfg);
 
-  IR::MATRIX::EQMatrixConfig HZCfg(INT_CONTAINER, vector<string>{"nHZ", "nZH", "HZ", "ZH"}, vector<string>{EVENTS, EVENTS},
-                                       vector<string>{"", ""}, STATEMENT::LHS, EQSelector(zeroCrossingTable(events)));
+  IR::MATRIX::EVMatrixConfig HZCfg(INT_CONTAINER, vector<string>{"nZH", "nHZ", "ZH", "HZ"}, vector<string>{EVENTS, EVENTS},
+                                       vector<string>{"", ""}, STATEMENT::LHS, EVSelector(events));
   _HZ.build(HZCfg);
 
-  IR::MATRIX::EVMatrixConfig HHCfg(INT_CONTAINER, vector<string>{"nHE", "nEH", "HE", "EH"}, vector<string>{EVENTS, EVENTS},
+  IR::HZSTMatrix HZST;
+  HZST.build(HZCfg);
+  _HZ.append(HZST.def());
+
+  IR::MATRIX::EVMatrixConfig HHCfg(INT_CONTAINER, vector<string>{"nHH", "nHH", "HH", "HH"}, vector<string>{EVENTS, EVENTS},
                                        vector<string>{"", ""}, STATEMENT::LHS, EVSelector(events));
   _HH.build(HHCfg);
 
   ModelConfig::instance().unsetLocalInitSymbols();
-
-  VariableDependencyMatrix DS_int(EmptyCfg);
-  DSGraphBuilder DS = DSGraphBuilder(eqs, algs);
-  _deps.compute(DS.build(), DS_int);
-  DHGraphBuilder LHSDsc = DHGraphBuilder(events, algs);
-  MatrixConfig LHSDSCCfg_int = {INT_CONTAINER, {"event", "event", "event", "event"}, {EVENTS, EVENTS}, {"nLHSDsc", "LHSDsc"}};
-  VariableDependencyMatrix LHSDsc_int(LHSDSCCfg_int);
-
-  _deps.compute(LHSDsc.build(), LHSDsc_int);
-  _deps.merge(LHSDsc_int, DS_int, __HD);
-
-  VariableDependencyMatrix DZ_int(_HHCfg);
-  DZGraphBuilder DZ = DZGraphBuilder(events, algs);
-  _deps.compute(DZ.build(), DZ_int);
-  _deps.merge(LHSDsc_int, DZ_int, __HZ);
-
-  DHGraphBuilder LHSSt = DHGraphBuilder(events, algs, STATEMENT::LHS, DHGRAPHBUILDER::State);
-  MatrixConfig LHSSTCfg_int = {INT_CONTAINER, {"event", "event", "event", "event"}, {EVENTS, EVENTS}, {"nLHSSt", "LHSSt"}};
-  VariableDependencyMatrix LHSSt_int(LHSSTCfg_int);
-
-  _deps.compute(LHSSt.build(), LHSSt_int);
-
-  VariableDependencyMatrix DD_int(EmptyCfg);
-  DHGraphBuilder RHSDsc = DHGraphBuilder(events, algs, STATEMENT::RHS);
-  _deps.compute(RHSDsc.build(), DD_int);
-  _deps.merge(LHSDsc_int, DD_int, __HH);
-
-  SZGraphBuilder SZ = SZGraphBuilder(events, algs);
-  MatrixConfig SZCfg_int = {INT_CONTAINER, {"nSZ", "nZS", "SZ", "ZS"}, {STATES, EVENTS}, EMPTY_COMPONENT};
-
-  VariableDependencyMatrix SZ_int(SZCfg_int);
-  _deps.compute(SZ.build(), SZ_int);
-
-  VariableDependencyMatrix HZ_int(_HHCfg);
-  _deps.merge(LHSSt_int, SZ_int, HZ_int);
-  _deps.append(__HZ, HZ_int);
 }
 }  // namespace Deps
 }  // namespace MicroModelica

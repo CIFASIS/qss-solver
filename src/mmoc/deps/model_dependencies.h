@@ -42,11 +42,11 @@ class ModelDependencies {
   IR::SOMatrix OS();
   IR::DOMatrix DO();
   IR::DOMatrix OD();
-  VariableDependencyMatrix HD();
-  VariableDependencyMatrix DH();
-  VariableDependencyMatrix HZ();
-  VariableDependencyMatrix ZH();
-  VariableDependencyMatrix HH();
+  IR::HDMatrix HD();
+  IR::HDMatrix DH();
+  IR::HZMatrix HZ();
+  IR::HZMatrix ZH();
+  IR::HHMatrix HH();
   IR::LHSDSCMatrix LHSDsc();
   IR::LHSSTMatrix LHSSt();
   IR::RHSSTMatrix RHSSt();
@@ -66,13 +66,6 @@ class ModelDependencies {
   IR::HZMatrix _HZ;
   IR::HHMatrix _HH;
   JacobianMatrix _JAC;
-
-
-  VariableDependencyMatrix __HD;
-  VariableDependencyMatrix __HZ;
-  VariableDependencyMatrix __HH;
-
-  Dependency _deps;
 };
 }  // namespace Deps
 }  // namespace MicroModelica
