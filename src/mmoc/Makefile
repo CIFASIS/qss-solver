@@ -146,11 +146,6 @@ DEPSSBGGRAPHSRC = $(DEPSSBGGRAPHDIR)/build_from_exps.cpp \
 				  $(DEPSSBGGRAPHDIR)/lmap_exp.cpp \
 				  $(DEPSSBGGRAPHDIR)/printers.cpp
 
-DEPSGRAPHSRC = $(DEPSGRAPHDIR)/graph.cpp \
-			   $(DEPSGRAPHDIR)/graph_helpers.cpp \
-			   $(DEPSGRAPHDIR)/sb_graph.cpp \
-			   $(DEPSGRAPHDIR)/sb_graph_helpers.cpp	
-
 DEPSBUILDERSRC = $(DEPSBUILDERDIR)/sd_graph_builder.cpp \
 				 $(DEPSBUILDERDIR)/eq_graph_builder.cpp \
 				 $(DEPSBUILDERDIR)/ev_graph_builder.cpp \
