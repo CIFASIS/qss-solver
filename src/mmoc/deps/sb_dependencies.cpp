@@ -164,13 +164,44 @@ void SBDependencies<IDependencies, R, S>::paths(SB::Deps::Graph graph, SB::Deps:
               // Get the pre-image for the F maps.
               SB::Set g_pre_image = _map_F.preImage(g_subset);
               SB::Deps::VariableDep state_dep = graph[G].desc().depState(dep);
-              SB::Set state_intersection = state_dep.mapF().wholeDom().cap(g_pre_image);
+              SB::Set state_intersection = state_dep.mapF().wholeDom().cap(g_pre_image);             
               if (!state_intersection.empty()) {
                 num_gen++;
                 SB::Set u_dom = state_intersection;
+                // Get variables from the state intersection, it's an algebraic variable.
+                if (state_dep.mapU().image(state_intersection).empty()){
+                  list<SB::PWLMap> alg_maps_u = state_dep.algLabelMapU();
+                  list<SB::PWLMap> alg_maps_f = state_dep.algLabelMapF(); 
+                  list<SB::PWLMap>::iterator alg_maps_f_it = alg_maps_f.begin(); 
+                  SB::Set vars_alg_eq_defs;
+                  for (SB::PWLMap alg_mu : alg_maps_u) {
+                    SB::Set alg_mu_dom = alg_mu.wholeDom();
+                    SB::Set alg_mu_image = alg_mu.image(alg_mu_dom);
+                    SB::Set new_alg_inter = vars_alg_eq_defs.cup(alg_mu_image); 
+                    if (!new_alg_inter.empty()) {
+                      state_intersection = alg_mu.preImage(new_alg_inter);    
+                    }
+                    SB::Set inf_vars_from_int = _map_U.image(state_intersection);
+                    SB::Set orig_inf_alg_var = alg_mu.preImage(inf_vars_from_int);
+                    SB::Set orig_inf_alg_eqs = alg_maps_f_it->image(orig_inf_alg_var);
+                    SB::Set source_alg_eq_defs = _map_F.preImage(orig_inf_alg_eqs);
+                    vars_alg_eq_defs = _map_U.image(source_alg_eq_defs);
+                    SB::Set eqs = state_dep.mapU().wholeDom();
+                    u_dom = source_alg_eq_defs.cap(eqs);
+                    alg_maps_f_it++;
+                    if (!u_dom.empty()) {
+                      break;
+                    }
+                  }
+                }
                 SB::Set f_dom = inf_eq_dom;
+                list<SB::PWLMap> new_alg_maps_u = state_dep.algLabelMapU();
+                list<SB::PWLMap> new_alg_maps_f = state_dep.algLabelMapF();
+                new_alg_maps_u.push_front(alg_label.mapU());
+                new_alg_maps_f.push_front(alg_label.mapF());
                 SB::Deps::VariableDep var_dep(state_dep.var(), map_m_f, state_dep.mapU(), alg_label.desc().exp(), false, f_dom, u_dom,
-                                              n_map, map_m, state_dep.varOffset(), graph[V].id());
+                                              n_map, map_m, state_dep.varOffset(), graph[V].id(), new_alg_maps_f,
+                                              new_alg_maps_u);
                 list<SB::Deps::VariableDep> recursive_deps = state_dep.recursiveDeps();
                 // Visit recursive deps.
                 for (SB::Deps::VariableDep var_d : recursive_deps) {
@@ -201,7 +232,7 @@ void SBDependencies<IDependencies, R, S>::paths(SB::Deps::Graph graph, SB::Deps:
       num_gen++;
       SB::PWLMap map_u = edge_label.mapU();
       SB::Deps::VertexDesc update_desc = graph[V].desc();
-      SB::Deps::VariableDep var_dep(graph[X].desc().var(), edge_label.mapF(), edge_label.mapU(), edge_label.desc().exp(),
+      SB::Deps::VariableDep var_dep(graph[X].desc().var(), edge_label.mapF(), map_u, edge_label.desc().exp(),
                                     edge_label.desc().mapExp(), graph[X].id(), graph[V].id());
       update_desc.setDepState(num_gen, var_dep);
       graph[V].updateDesc(update_desc);
@@ -272,8 +303,9 @@ template class SBDependencies<ModelMatrixGenerator<EquationTable, Equation, MATR
                               MATRIX::EQMatrixConfig>;
 template class SBDependencies<ModelMatrixGenerator<EventTable, Event, MATRIX::EVMatrixConfig>, ModelMatrixDef, MATRIX::EVMatrixConfig>;
 
-template class SBDependencies<Deps::MergeGraphGenerator, SB::Deps::Graph, IR::EquationTable>;
+template class SBDependencies<Deps::MergeGraphGenerator<Deps::EQSelector>, SB::Deps::Graph, Deps::EQSelector>;
 
+template class SBDependencies<Deps::MergeGraphGenerator<Deps::EVSelector>, SB::Deps::Graph, Deps::EVSelector>;
 
 }  // namespace Deps
 }  // namespace MicroModelica

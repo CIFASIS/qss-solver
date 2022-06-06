@@ -74,8 +74,9 @@ typedef SBDependencies<IR::ModelMatrixGenerator<IR::EventTable, IR::Event, IR::M
                        IR::MATRIX::EVMatrixConfig>
     EVModelMatrixBuilder;
 
-typedef SBDependencies<Deps::MergeGraphGenerator, SB::Deps::Graph, IR::EquationTable> MergeGraphBuilder;
+typedef SBDependencies<Deps::MergeGraphGenerator<Deps::EQSelector>, SB::Deps::Graph, Deps::EQSelector> MergeEQGraphBuilder;
 
+typedef SBDependencies<Deps::MergeGraphGenerator<Deps::EVSelector>, SB::Deps::Graph, Deps::EVSelector> MergeEVGraphBuilder;
 
 }  // namespace Deps
 }  // namespace MicroModelica
