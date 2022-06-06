@@ -82,6 +82,21 @@ void ModelMatrix<GraphBuilder, MatrixBuilder, Config, T>::setMode(MATRIX::Mode m
   _mode = mode;
 }
 
+template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T>
+ModelMatrixDef ModelMatrix<GraphBuilder, MatrixBuilder, Config, T>::def()
+{
+  return _model_matrix_def;
+}
+
+template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T>
+void ModelMatrix<GraphBuilder, MatrixBuilder, Config, T>::append(ModelMatrixDef def)
+{
+  _model_matrix_def.alloc[MATRIX::Normal].append(def.alloc[MATRIX::Normal]);
+  _model_matrix_def.init[MATRIX::Normal].append(def.init[MATRIX::Normal]);
+  _model_matrix_def.alloc[MATRIX::Transpose].append(def.alloc[MATRIX::Transpose]);
+  _model_matrix_def.init[MATRIX::Transpose].append(def.init[MATRIX::Transpose]); 
+}
+
 template class ModelMatrix<SDSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable>;
 
 template class ModelMatrix<SZSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable>;
@@ -96,12 +111,13 @@ template class ModelMatrix<Deps::LHSStGraphBuilder, Deps::EVModelMatrixBuilder, 
 
 template class ModelMatrix<Deps::RHSStGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable>;
 
-template class ModelMatrix<Deps::HDGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable>;
+template class ModelMatrix<Deps::HDGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable>;
 
-template class ModelMatrix<Deps::HZGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable>;
+template class ModelMatrix<Deps::HZGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable>;
+
+template class ModelMatrix<Deps::HZSTGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable>;
 
 template class ModelMatrix<Deps::HHGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable>;
-
 
 }  // namespace IR
 }  // namespace MicroModelica
