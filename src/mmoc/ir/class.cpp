@@ -500,7 +500,7 @@ void Model::addVariable(int id, Option<Range> range, EQUATION::Type type, unsign
   if (type == EQUATION::Type::Output) {
     eq_type = TP_OUTPUT;
   }
-  Variable var(newType_Integer(), eq_type, nullptr, nullptr, s, false);
+  Variable var(newType_Integer(), eq_type, nullptr, nullptr, s, !s.empty());
   string var_name = EquationVariable::modelVariables(id, type);
   insert(var_name, var);
   Option<Variable> variable = ModelConfig::instance().lookup(var_name);
