@@ -194,14 +194,26 @@ void MicroModelicaIR::visit(AST_Argument x)
   }
 }
 
+void MicroModelicaIR::visitForStms(AST_Statement_For for_stm)
+{
+  AST_ForIndexList fil = for_stm->forIndexList();
+  AST_ForIndexListIterator it;
+  foreach (it, fil) {
+    visit(current_element(it));
+  }
+  AST_StatementList stms = for_stm->statements();
+  AST_StatementListIterator stm_it;
+  foreach (stm_it, stms) {
+    if (current_element(stm_it)->statementType() == STFOR) {
+      visitForStms(current_element(stm_it)->getAsFor());
+    }
+  }
+}
+
 void MicroModelicaIR::visit(AST_Statement x)
 {
   if (x->statementType() == STFOR) {
-    AST_ForIndexList fil = x->getAsFor()->forIndexList();
-    AST_ForIndexListIterator it;
-    foreach (it, fil) {
-      visit(current_element(it));
-    }
+    visitForStms(x->getAsFor());
   }
   StatementArrayUse au;
   au.apply(x);

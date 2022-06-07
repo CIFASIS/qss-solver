@@ -22,7 +22,7 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <sstream>
 
-#include <deps/builders/sd_sb_graph_builder.h>
+#include <deps/builders/eq_graph_builder.h>
 #include <deps/sbg_graph/build_from_exps.h>
 #include <deps/sb_dependencies.h>
 #include <parser/parse.h>
@@ -35,7 +35,6 @@
 
 namespace MicroModelica {
 using namespace Deps;
-using namespace Deps::SBG;
 using namespace SB;
 using namespace Util;
 namespace IR {
@@ -64,40 +63,6 @@ void QSSModelDepsGenerator::addCode(DepCode dep_code, std::stringstream& code)
       code << dep_code.end[i] << endl;
     }
   }
-}
-
-Expression QSSModelDepsGenerator::getUseExp(Variable variable, DepData dep_data)
-{
-  if (variable.isScalar()) {
-    return Expression::generate(variable.name(), vector<string>());
-  }
-  Index use_idx(dep_data.var_dep.exp());
-  vector<string> vars = use_idx.variables();
-  if (dep_data.var_dep.isRecursive()) {
-    return Expression::generate(variable.name(), vars);
-  } else {
-    vector<string> exps = dep_data.var_dep.nMap().apply(vars);
-    return Expression::generate(variable.name(), exps);
-  }
-  assert(false);
-  return Expression::generate(variable.name(), vector<string>());
-}
-
-Option<Range> QSSModelDepsGenerator::getUseRange(Util::Variable variable, DepData dep_data, Equation eq)
-{
-  Expression use_exp = dep_data.var_dep.exp();
-  const bool SCALAR_EXP = dep_data.var_dep.nMap().constantExp();
-  if (dep_data.var_dep.isRecursive()) {
-    return Range(dep_data.var_dep.var());
-  }
-  if (variable.isScalar() || SCALAR_EXP) {
-    return Option<Range>();
-  }
-  if (!SCALAR_EXP) {
-    return eq.range();
-  }
-  assert(false);
-  return Option<Range>();
 }
 
 void QSSModelDepsGenerator::postProcess(SB::Deps::SetVertex vertex)
@@ -169,10 +134,8 @@ void QSSModelDepsGenerator::visitF(SB::Deps::SetVertex vertex, SB::Deps::Variabl
   Equation eq = getEquation(vertex);
   if (eq.type() == EQUATION::QSSDerivative) {
     string var_name = var_dep.var().name();
-    DepData dep_data;
-    dep_data.id = eq.id();
-    dep_data.var_dep = var_dep;
-    if (!findDep(dep_data)) {
+    DepData dep_data(eq.id(), var_dep);
+    if (!findDep(_deps, dep_data)) {
       list<DepData> deps = _deps[var_name];
       deps.push_back(dep_data);
       _deps[var_name] = deps;
@@ -181,25 +144,6 @@ void QSSModelDepsGenerator::visitF(SB::Deps::SetVertex vertex, SB::Deps::Variabl
 }
 
 void QSSModelDepsGenerator::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex) {}
-
-bool QSSModelDepsGenerator::findDep(DepData dep_data)
-{
-  string var_name = dep_data.var_dep.var().name();
-  list<DepData> deps = _deps[var_name];
-  for (DepData dep : deps) {
-    SB::Set dom = dep.var_dep.mapF().wholeDom();
-    SB::Set dep_eq_image = dep.var_dep.mapF().image(dom);
-    SB::Set new_dom = dep_data.var_dep.mapF().wholeDom();
-    SB::Set new_dep_eq_image = dep_data.var_dep.mapF().image(new_dom);
-    if ((dep.id == dep_data.id) && dep.var_dep.isRecursive() && dep_data.var_dep.isRecursive() && dep.var_dep.var().name() == var_name) {
-      return true;
-    }
-    if ((dep.id == dep_data.id) && (dep_eq_image == new_dep_eq_image) && (dep.var_dep.nMap() == dep_data.var_dep.nMap())) {
-      return true;
-    }
-  }
-  return false;
-}
 
 void QSSModelDepsGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep,
                                    int index_shift)
@@ -212,10 +156,8 @@ void QSSModelDepsGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVe
   }
   if (v_eq.type() == EQUATION::QSSDerivative) {
     string var_name = var_dep.var().name();
-    DepData dep_data;
-    dep_data.id = v_eq.id();
-    dep_data.var_dep = var_dep;
-    if (!findDep(dep_data)) {
+    DepData dep_data(v_eq.id(), var_dep);
+    if (!findDep(_deps, dep_data)) {
       list<DepData> deps = _deps[var_name];
       deps.push_back(dep_data);
       _deps[var_name] = deps;
@@ -239,14 +181,13 @@ QSSModelDepsDef QSSModelDepsGenerator::def() { return _qss_model_deps_def; }
 
 QSSModelDeps::QSSModelDeps() {}
 
-void QSSModelDeps::build()
+void QSSModelDeps::build(EquationTable eqs)
 {
   EquationTable algebraics = ModelConfig::instance().algebraics();
-  EquationTable derivatives = ModelConfig::instance().derivatives();
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   QSSModelDepsBuilder qss_model_deps;
   IndexShiftBuilder index_shifts(algebraics);
-  SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(derivatives, algebraics);
+  SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(eqs, algebraics);
   qss_model_deps.compute(SDSBGraph.build(), index_shifts.build());
   _qss_model_deps_def = qss_model_deps.def();
 }

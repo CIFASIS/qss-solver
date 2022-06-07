@@ -80,7 +80,10 @@ IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
 				$(IRDIR)/jacobian.cpp \
 				$(IRDIR)/qss_model.cpp \
 				$(IRDIR)/qss_model_deps.cpp \
-				$(IRDIR)/compute_algs.cpp
+				$(IRDIR)/compute_deps.cpp \
+				$(IRDIR)/model_matrix.cpp \
+				$(IRDIR)/model_matrix_gen.cpp \
+				$(IRDIR)/node_selector.cpp
 
 PARSERSRC = $(PARSERDIR)/mocc_parser.cpp \
 			$(PARSERDIR)/mocc_scanner.cpp \
@@ -132,10 +135,8 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
 			 $(VISITORDIR)/is_constant_expression.cpp \
 			 $(VISITORDIR)/pwl_map_values.cpp
 
-DEPSSRC = $(DEPSDIR)/dependency.cpp \
-		  $(DEPSDIR)/sb_dependencies.cpp \
+DEPSSRC = $(DEPSDIR)/sb_dependencies.cpp \
 		  $(DEPSDIR)/model_dependencies.cpp \
-		  $(DEPSDIR)/dependency_matrix.cpp \
 		  $(DEPSDIR)/jacobian_matrices.cpp
 
 DEPSSBGGRAPHSRC = $(DEPSSBGGRAPHDIR)/build_from_exps.cpp \
@@ -143,19 +144,10 @@ DEPSSBGGRAPHSRC = $(DEPSSBGGRAPHDIR)/build_from_exps.cpp \
 				  $(DEPSSBGGRAPHDIR)/lmap_exp.cpp \
 				  $(DEPSSBGGRAPHDIR)/printers.cpp
 
-DEPSGRAPHSRC = $(DEPSGRAPHDIR)/graph.cpp \
-			   $(DEPSGRAPHDIR)/graph_helpers.cpp \
-			   $(DEPSGRAPHDIR)/sb_graph.cpp \
-			   $(DEPSGRAPHDIR)/sb_graph_helpers.cpp	
-
-DEPSBUILDERSRC = $(DEPSBUILDERDIR)/sd_graph_builder.cpp \
-				 $(DEPSBUILDERDIR)/sd_sb_graph_builder.cpp \
-				 $(DEPSBUILDERDIR)/so_graph_builder.cpp \
-				 $(DEPSBUILDERDIR)/ds_graph_builder.cpp \
-				 $(DEPSBUILDERDIR)/dh_graph_builder.cpp \
-				 $(DEPSBUILDERDIR)/sz_graph_builder.cpp \
-				 $(DEPSBUILDERDIR)/dz_graph_builder.cpp \
-				 $(DEPSBUILDERDIR)/ea_graph_builder.cpp \
+DEPSBUILDERSRC = $(DEPSBUILDERDIR)/eq_graph_builder.cpp \
+				 $(DEPSBUILDERDIR)/ev_graph_builder.cpp \
+				 $(DEPSBUILDERDIR)/merge_graph_builder.cpp \
+				 $(DEPSBUILDERDIR)/merge_graph.cpp \
 				 $(DEPSBUILDERDIR)/index_shift_builder.cpp 
 				 
 # Objects

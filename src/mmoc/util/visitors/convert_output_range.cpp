@@ -22,6 +22,7 @@
 #include <sstream>
 
 #include "../error.h"
+#include <deps/sbg_graph/build_from_exps.h>
 #include "../model_config.h"
 #include "../util.h"
 #include "eval_init_exp.h"
@@ -72,7 +73,8 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
       ret->append(newAST_String(cr->name()), new_indexes);
       return ret;
     } else if (var->isConstant()) {
-      _intervals.push_back(Interval(var->value(), var->value()));
+      SB::Interval interval(var->value(), 1, var->value());
+      _intervals.addInter(interval);
     }
     return exp;
   }
@@ -92,12 +94,14 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
     AST_Expression_ComponentReference_Add(idx, newAST_String(it_var), newAST_ExpressionList());
     int cte = 0;
     if (count == 2) {
-      _intervals.push_back(Interval(1, range[1] - range[0]));
+      SB::Interval interval(1, 1, range[1] - range[0]);
+      _intervals.addInter(interval);
       cte = range[0] - 1;
       lhs = idx;
     } else {
       if (range[1] > 0) {
-        _intervals.push_back(Interval(1, ((range[2] - range[0]) / range[1]) + 1));
+        SB::Interval interval(1, 1, ((range[2] - range[0]) / range[1]) + 1);
+        _intervals.addInter(interval);
         cte = range[0] - range[1];
         lhs = newAST_Expression_BinOp(newAST_Expression_Integer(range[1]), idx, BINOPMULT);
       } else {
@@ -127,7 +131,8 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
 
 AST_Expression ConvertOutputRange::generateIndexVariable(int size)
 {
-  _intervals.push_back(Interval(1, size));
+  SB::Interval interval(1, 1, size);
+  _intervals.addInter(interval);     
   string it_var = Utils::instance().iteratorVar(_dim);
   AST_Expression_ComponentReference idx = newAST_Expression_ComponentReference();
   AST_Expression_ComponentReference_Add(idx, newAST_String(it_var), newAST_ExpressionList());
@@ -140,8 +145,8 @@ Option<Range> ConvertOutputRange::range()
     return Option<Range>();
   }
   bool constant = true;
-  for (Interval i : _intervals) {
-    if (i.lower() != i.upper()) {
+  for (SB::Interval i : _intervals.intervals()) {
+    if (i.lo() != i.hi()) {
       constant = false;
       break;
     }
@@ -149,7 +154,7 @@ Option<Range> ConvertOutputRange::range()
   if (constant) {
     return Option<Range>();
   }
-  _range.generate(MDI(_intervals));
+  _range.generate(buildSet(_intervals),1,vector<string>());
   return _range;
 }
 

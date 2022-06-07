@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef EVAL_INIT_EXP_H_
-#define EVAL_INIT_EXP_H_
+#pragma once
 
 #include "../ast_util.h"
 
@@ -38,5 +37,3 @@ class EvalInitExp : public AST_Expression_Fold<int> {
 
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif /* EVAL_INIT_EXP_H_ */

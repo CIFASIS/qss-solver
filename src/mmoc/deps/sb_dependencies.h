@@ -21,20 +21,22 @@
 
 #include <string>
 
+#include <ir/equation.h>
+#include <ir/event.h>
 #include <ir/jacobian.h>
+#include <ir/model_matrix_gen.h>
 #include <ir/qss_model.h>
 #include <ir/qss_model_deps.h>
 #include <util/symbol_table.h>
 #include <deps/builders/index_shift_builder.h>
+#include <deps/builders/merge_graph_builder.h>
 #include <deps/sbg_graph/deps_graph.h>
 #include <deps/jacobian_matrices.h>
 
 namespace MicroModelica {
 namespace Deps {
 
-//typedef std::list<std::pair<SBG::Deps::SetVertex, MDI>> VertexInfo;
-
-template <typename IGenerator, typename R>
+template <typename IGenerator, typename R, typename S>
 class SBDependencies {
   public:
   SBDependencies();
@@ -42,11 +44,16 @@ class SBDependencies {
 
   void compute(SB::Deps::Graph graph, SB::Deps::IndexShift index_shift);
 
+  void setup(S config);
+
+  S config();
+
   R def();
 
   protected:
   void paths(SB::Deps::Graph graph, SB::Deps::Vertex V, Util::Variable visiting_alg);
-  void recursiveDeps(SB::Deps::Graph graph, SB::PWLMap map_u, SB::Deps::Vertex V, SB::Deps::Vertex X, int num_gen, list<SB::Deps::SetEdge> rec_alg_use_maps);
+  void recursiveDeps(SB::Deps::Graph graph, SB::PWLMap map_u, SB::Deps::Vertex V, SB::Deps::Vertex X, int num_gen,
+                     list<SB::Deps::SetEdge> rec_alg_use_maps);
 
   SB::Deps::IndexShift _index_shift;
   IGenerator _gen;
@@ -56,10 +63,20 @@ class SBDependencies {
 
 // Typedef for concrete clases.
 
-typedef SBDependencies<Deps::JacMatrixGenerator, Deps::JacMatrixDef> JacobianMatrixBuilder;
-typedef SBDependencies<MicroModelica::IR::JacGenerator, MicroModelica::IR::JacDef> JacobianBuilder;
-typedef SBDependencies<MicroModelica::IR::QSSModelGenerator, MicroModelica::IR::QSSModelDef> QSSModelBuilder;
-typedef SBDependencies<MicroModelica::IR::QSSModelDepsGenerator, MicroModelica::IR::QSSModelDepsDef> QSSModelDepsBuilder;
+typedef SBDependencies<Deps::JacMatrixGenerator, Deps::JacMatrixDef, IR::EquationTable> JacobianMatrixBuilder;
+typedef SBDependencies<IR::JacGenerator, IR::JacDef, IR::EquationTable> JacobianBuilder;
+typedef SBDependencies<IR::QSSModelGenerator, IR::QSSModelDef, IR::EquationTable> QSSModelBuilder;
+typedef SBDependencies<IR::QSSModelDepsGenerator, IR::QSSModelDepsDef, IR::EquationTable> QSSModelDepsBuilder;
+typedef SBDependencies<IR::ModelMatrixGenerator<IR::EquationTable, IR::Equation, IR::MATRIX::EQMatrixConfig>, IR::ModelMatrixDef,
+                       IR::MATRIX::EQMatrixConfig>
+    EQModelMatrixBuilder;
+typedef SBDependencies<IR::ModelMatrixGenerator<IR::EventTable, IR::Event, IR::MATRIX::EVMatrixConfig>, IR::ModelMatrixDef,
+                       IR::MATRIX::EVMatrixConfig>
+    EVModelMatrixBuilder;
+
+typedef SBDependencies<Deps::MergeGraphGenerator<Deps::EQSelector>, SB::Deps::Graph, Deps::EQSelector> MergeEQGraphBuilder;
+
+typedef SBDependencies<Deps::MergeGraphGenerator<Deps::EVSelector>, SB::Deps::Graph, Deps::EVSelector> MergeEVGraphBuilder;
 
 }  // namespace Deps
 }  // namespace MicroModelica

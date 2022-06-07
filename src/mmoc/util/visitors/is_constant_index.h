@@ -17,11 +17,9 @@
 
  ******************************************************************************/
 
-#ifndef IS_CONSTANT_INDEX_H_
-#define IS_CONSTANT_INDEX_H_
+#pragma once
 
 #include "../../ast/ast_builder.h"
-#include "../../deps/graph/graph_helpers.h"
 #include "../../ir/index.h"
 #include "../ast_util.h"
 
@@ -41,4 +39,3 @@ class IsConstantIndex : public AST_Expression_Visitor<bool> {
 
 }  // namespace Util
 }  // namespace MicroModelica
-#endif /* IS_CONSTANT_INDEX_H_ */

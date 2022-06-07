@@ -19,29 +19,25 @@
 
  ******************************************************************************/
 
-#ifndef GET_INDEX_USAGE_H_
-#define GET_INDEX_USAGE_H_
+#pragma once
 
-#include "../../deps/graph/graph_helpers.h"
 #include "../../ir/index.h"
 #include "../ast_util.h"
 
 namespace MicroModelica {
 namespace Util {
 
-class GetIndexUsage : public AST_Expression_Visitor<Deps::Usage> {
+class GetIndexUsage : public AST_Expression_Visitor<IR::Usage> {
   public:
   GetIndexUsage();
   ~GetIndexUsage() = default;
 
   private:
-  Deps::Usage foldTraverseElement(AST_Expression exp);
-  Deps::Usage foldTraverseElementUMinus(AST_Expression exp);
-  Deps::Usage foldTraverseElement(Deps::Usage l, Deps::Usage r, BinOpType bot);
+  IR::Usage foldTraverseElement(AST_Expression exp);
+  IR::Usage foldTraverseElementUMinus(AST_Expression exp);
+  IR::Usage foldTraverseElement(IR::Usage l, IR::Usage r, BinOpType bot);
   bool _in_index_list;
 };
 
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif /* GET_INDEX_USAGE_H_ */

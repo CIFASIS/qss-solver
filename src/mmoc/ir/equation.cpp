@@ -153,24 +153,6 @@ void Equation::setup()
   _lhs_exp = buffer.str();
 }
 
-EquationDependencyMatrix Equation::dependencyMatrix() const
-{
-  ModelDependencies deps = ModelConfig::instance().dependencies();
-  switch (_type) {
-  case EQUATION::ClassicDerivative:
-  case EQUATION::QSSDerivative:
-  case EQUATION::Dependency:
-    return deps.DA();
-  case EQUATION::ZeroCrossing:
-    return deps.ZCA();
-  case EQUATION::Output:
-    return deps.OA();
-  default:
-    return EquationDependencyMatrix();
-  }
-  return EquationDependencyMatrix();
-}
-
 string Equation::identifier() const { return getPrinter(*this)->identifier(); }
 
 string Equation::applyId() const { return getPrinter(*this)->equationId(); }
@@ -254,35 +236,11 @@ Equation Equation::genAlgEquation(Equation der_eq, Index rhs_usage, Index lhs_us
   return a;
 }
 
-void Equation::dependencyUsage(VariableDependency var_dep, Index index)
-{
-  if (hasRange() && index.isConstant()) {
-    Expression new_usage = VariableUsage(var_dep.usage(), lhs(), var_dep.ife()).rhs();
-    applyUsage(Index(new_usage));
-  }
-}
-
 int Equation::arrayId() const { return _id - 1; }
 
 void Equation::setAlgCode(std::string alg_code) { _alg_code = alg_code; }
 
 std::string Equation::algCode() const { return _alg_code; }
-
-Equation Dependency::generate(Equation eq, Index idx, AlgebraicPath algs)
-{
-  Equation dep = eq;
-  dep.setType(EQUATION::Dependency);
-  dep.setUsage(idx);
-  if (!algs.empty()) {
-    dep.dependencyUsage(algs.back(), idx);
-  }
-  return dep;
-}
-
-list<Equation> Dependency::terms() { return list<Equation>(); }
-
-EQUATION::Type Dependency::type() const { return EQUATION::Dependency; }
-
 
 }  // namespace IR
 }  // namespace MicroModelica

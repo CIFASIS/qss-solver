@@ -22,7 +22,7 @@
 #include <string>
 #include <map>
 
-#include <ir/compute_algs.h>
+#include <ir/compute_deps.h>
 #include <ir/equation.h>
 #include <deps/sbg_graph/deps_graph.h>
 #include <util/symbol_table.h>
@@ -34,11 +34,6 @@ namespace IR {
 struct QSSModelDepsDef {
   std::string simple;
   std::string generic;
-};
-
-struct DepData {
-  int id;
-  SB::Deps::VariableDep var_dep;
 };
 
 struct DepCode {
@@ -65,17 +60,17 @@ class QSSModelDepsGenerator {
   void initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge);
   QSSModelDepsDef def();
 
+  void setup(EquationTable eqs) {};
+  EquationTable config() { return EquationTable(); }
+
   protected:
   void addCode(DepCode dep_code, std::stringstream& code);
-  bool findDep(DepData dep_data);
-  Expression getUseExp(Util::Variable variable, DepData dep_data);
-  Option<Range> getUseRange(Util::Variable variable, DepData dep_data, Equation eq);
-
+  
   QSSModelDepsDef _qss_model_deps_def;
   int _tabs;
   AlgDepsMap _der_deps;
   AlgDepsMap _alg_deps;
-  std::map<std::string, list<DepData>> _deps;
+  DepsMap _deps;
   bool _post_process_eval;
 };
 
@@ -84,7 +79,7 @@ class QSSModelDeps {
   QSSModelDeps();
   ~QSSModelDeps() = default;
 
-  void build();
+  void build(EquationTable eqs);
 
   std::string simpleDef();
 

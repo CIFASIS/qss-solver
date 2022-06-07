@@ -167,30 +167,14 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int _d1;
 	_init_x(1,0) = 0.5;
 	_init_x(2,0) = 0.5;
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->nSD[_idx_x(1,0)]++;
-	}
-	for(_d1 = 2; _d1<=2; _d1+=1) {
-		modelData->nSD[_idx_x(2,0)]++;
-	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->nSD[_idx_x(1,0)]++;
-	}
-	for(_d1 = 2; _d1<=2; _d1+=1) {
-		modelData->nSD[_idx_x(2,0)]++;
-	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->nDS[_idx_x(1,0)]++;
-	}
-	for(_d1 = 2; _d1<=2; _d1+=1) {
-		modelData->nDS[_idx_x(1,0)]++;
-	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->nDS[_idx_x(2,0)]++;
-	}
-	for(_d1 = 2; _d1<=2; _d1+=1) {
-		modelData->nDS[_idx_x(2,0)]++;
-	}
+	modelData->nSD[_idx_x(1,0)]++;
+	modelData->nSD[_idx_x(1,0)]++;
+	modelData->nSD[_idx_x(2,0)]++;
+	modelData->nSD[_idx_x(2,0)]++;
+	modelData->nDS[_idx_x(1,0)]++;
+	modelData->nDS[_idx_x(2,0)]++;
+	modelData->nDS[_idx_x(1,0)]++;
+	modelData->nDS[_idx_x(2,0)]++;
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
 			modelData->jac_matrices->df_dx[0]->size[c_row]++;
@@ -203,31 +187,15 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	}
 	QSS_allocDataMatrix(modelData);
 	cleanVector(states, 0, 2);
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->SD[_idx_x(1,0)][states[_idx_x(1,0)]++] = _idx_x(1,0);
-	}
-	for(_d1 = 2; _d1<=2; _d1+=1) {
-		modelData->SD[_idx_x(2,0)][states[_idx_x(2,0)]++] = _idx_x(1,0);
-	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->SD[_idx_x(1,0)][states[_idx_x(1,0)]++] = _idx_x(2,0);
-	}
-	for(_d1 = 2; _d1<=2; _d1+=1) {
-		modelData->SD[_idx_x(2,0)][states[_idx_x(2,0)]++] = _idx_x(2,0);
-	}
+	modelData->SD[_idx_x(1,0)][states[_idx_x(1,0)]++] = _idx_x(1,0);
+	modelData->SD[_idx_x(1,0)][states[_idx_x(1,0)]++] = _idx_x(2,0);
+	modelData->SD[_idx_x(2,0)][states[_idx_x(2,0)]++] = _idx_x(1,0);
+	modelData->SD[_idx_x(2,0)][states[_idx_x(2,0)]++] = _idx_x(2,0);
 	cleanVector(states, 0, 2);
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->DS[_idx_x(1,0)][states[_idx_x(1,0)]++] = _idx_x(1,0);
-	}
-	for(_d1 = 2; _d1<=2; _d1+=1) {
-		modelData->DS[_idx_x(1,0)][states[_idx_x(1,0)]++] = _idx_x(2,0);
-	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		modelData->DS[_idx_x(2,0)][states[_idx_x(2,0)]++] = _idx_x(1,0);
-	}
-	for(_d1 = 2; _d1<=2; _d1+=1) {
-		modelData->DS[_idx_x(2,0)][states[_idx_x(2,0)]++] = _idx_x(2,0);
-	}
+	modelData->DS[_idx_x(1,0)][states[_idx_x(1,0)]++] = _idx_x(1,0);
+	modelData->DS[_idx_x(2,0)][states[_idx_x(2,0)]++] = _idx_x(1,0);
+	modelData->DS[_idx_x(1,0)][states[_idx_x(1,0)]++] = _idx_x(2,0);
+	modelData->DS[_idx_x(2,0)][states[_idx_x(2,0)]++] = _idx_x(2,0);
 	cleanVector(states, 0, 2);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);

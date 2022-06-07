@@ -17,12 +17,10 @@
 
  ******************************************************************************/
 
-#ifndef UTIL_MODEL_CONFIG_H
-#define UTIL_MODEL_CONFIG_H
+#pragma once
 
 #include <string>
 
-#include "../deps/dependency_matrix.h"
 #include "../ir/annotation.h"
 #include "../ir/index.h"
 #include "../ir/equation.h"
@@ -78,11 +76,15 @@ class ModelConfig {
   inline void setLocalInitSymbols() { _init_symbols = true; };
   inline void unsetLocalInitSymbols() { _init_symbols = false; };
 
+  inline void setEvents(IR::EventTable events) { _events = events; }
+  inline IR::EventTable events() const { return _events; }
   private:
   ModelConfig()
       : _model_annotations(),
         _algebraics(),
         _dependencies(),
+        _derivatives(),
+        _events(),
         _initial_code(false),
         _state_nbr(0),
         _symbols(),
@@ -96,6 +98,7 @@ class ModelConfig {
   IR::EquationTable _algebraics;
   Deps::ModelDependencies _dependencies;
   IR::EquationTable _derivatives;
+  IR::EventTable _events;
   bool _initial_code;
   int _state_nbr;
   VarSymbolTable _symbols;
@@ -107,5 +110,3 @@ class ModelConfig {
 
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif  // UTIL_MODEL_CONFIG_H

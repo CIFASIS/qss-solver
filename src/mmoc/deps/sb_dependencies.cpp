@@ -39,17 +39,29 @@ using namespace Util;
 using namespace IR;
 namespace Deps {
 
-template <typename IDependencies, typename R>
-SBDependencies<IDependencies, R>::SBDependencies() : _index_shift(){};
+template <typename IDependencies, typename R, typename S>
+SBDependencies<IDependencies, R, S>::SBDependencies() : _index_shift(){};
 
-template <typename IDependencies, typename R>
-R SBDependencies<IDependencies, R>::def()
+template <typename IDependencies, typename R, typename S>
+R SBDependencies<IDependencies, R, S>::def()
 {
   return _gen.def();
 }
 
-template <typename IDependencies, typename R>
-void SBDependencies<IDependencies, R>::compute(SB::Deps::Graph graph, SB::Deps::IndexShift index_shift)
+template <typename IDependencies, typename R, typename S>
+void SBDependencies<IDependencies, R, S>::setup(S config)
+{
+  return _gen.setup(config);
+}
+
+template <typename IDependencies, typename R, typename S>
+S SBDependencies<IDependencies, R, S>::config()
+{
+  return _gen.config();
+}
+
+template <typename IDependencies, typename R, typename S>
+void SBDependencies<IDependencies, R, S>::compute(SB::Deps::Graph graph, SB::Deps::IndexShift index_shift)
 {
   _index_shift = index_shift;
   SB::Deps::EdgeIt ei_start, ei_end;
@@ -64,7 +76,7 @@ void SBDependencies<IDependencies, R>::compute(SB::Deps::Graph graph, SB::Deps::
     _map_U = _map_U.concat(u_map);
   }
 
-  for (Deps::Vertex vertex : boost::make_iterator_range(vertices(graph))) {
+  for (SB::Deps::Vertex vertex : boost::make_iterator_range(vertices(graph))) {
     SB::Deps::SetVertex vertex_info = graph[vertex];
     if (vertex_info.desc().type() == SB::Deps::VERTEX::Influencer) {
       LOG << "Compute paths for equation: " << graph[vertex].name() << endl;
@@ -79,39 +91,8 @@ void SBDependencies<IDependencies, R>::compute(SB::Deps::Graph graph, SB::Deps::
   }
 }
 
-// Temporary helper functions until we add graph helpers.
-
-VertexIt findSetVertex(SB::Deps::Graph& graph, Set matched)
-{
-  // Find the set-vertex where matched subset is included
-  VertexIt vi_start, vi_end;
-  boost::tie(vi_start, vi_end) = vertices(graph);
-
-  for (; vi_start != vi_end; ++vi_start) {
-    SetVertex v = graph[*vi_start];
-    Set vs = v.range();
-    Set inter = vs.cap(matched);
-    if (!inter.empty()) {
-      return vi_start;
-    }
-  }
-  // A given subset should be included in one of the graph vertex, this should never happen.
-  assert(false);
-  return vi_start;
-}
-
-Set wholeVertex(SB::Deps::Graph& graph, Set matched_subset)
-{
-  Set whole_vertex;
-  // Find the set-vertex where the matched subset is included
-  VertexIt matched_vertex = findSetVertex(graph, matched_subset);
-  SetVertex v = graph[*matched_vertex];
-  SB::Set r = v.range();
-  return v.range();
-}
-
-template <typename IDependencies, typename R>
-void SBDependencies<IDependencies, R>::paths(SB::Deps::Graph graph, SB::Deps::Vertex V, Variable visiting_alg)
+template <typename IDependencies, typename R, typename S>
+void SBDependencies<IDependencies, R, S>::paths(SB::Deps::Graph graph, SB::Deps::Vertex V, Variable visiting_alg)
 {
   int num_gen = 0;
   boost::graph_traits<SB::Deps::Graph>::out_edge_iterator edge, out_edge_end;
@@ -183,13 +164,44 @@ void SBDependencies<IDependencies, R>::paths(SB::Deps::Graph graph, SB::Deps::Ve
               // Get the pre-image for the F maps.
               SB::Set g_pre_image = _map_F.preImage(g_subset);
               SB::Deps::VariableDep state_dep = graph[G].desc().depState(dep);
-              SB::Set state_intersection = state_dep.mapF().wholeDom().cap(g_pre_image);
+              SB::Set state_intersection = state_dep.mapF().wholeDom().cap(g_pre_image);             
               if (!state_intersection.empty()) {
                 num_gen++;
                 SB::Set u_dom = state_intersection;
+                // Get variables from the state intersection, it's an algebraic variable.
+                if (state_dep.mapU().image(state_intersection).empty()){
+                  list<SB::PWLMap> alg_maps_u = state_dep.algLabelMapU();
+                  list<SB::PWLMap> alg_maps_f = state_dep.algLabelMapF(); 
+                  list<SB::PWLMap>::iterator alg_maps_f_it = alg_maps_f.begin(); 
+                  SB::Set vars_alg_eq_defs;
+                  for (SB::PWLMap alg_mu : alg_maps_u) {
+                    SB::Set alg_mu_dom = alg_mu.wholeDom();
+                    SB::Set alg_mu_image = alg_mu.image(alg_mu_dom);
+                    SB::Set new_alg_inter = vars_alg_eq_defs.cup(alg_mu_image); 
+                    if (!new_alg_inter.empty()) {
+                      state_intersection = alg_mu.preImage(new_alg_inter);    
+                    }
+                    SB::Set inf_vars_from_int = _map_U.image(state_intersection);
+                    SB::Set orig_inf_alg_var = alg_mu.preImage(inf_vars_from_int);
+                    SB::Set orig_inf_alg_eqs = alg_maps_f_it->image(orig_inf_alg_var);
+                    SB::Set source_alg_eq_defs = _map_F.preImage(orig_inf_alg_eqs);
+                    vars_alg_eq_defs = _map_U.image(source_alg_eq_defs);
+                    SB::Set eqs = state_dep.mapU().wholeDom();
+                    u_dom = source_alg_eq_defs.cap(eqs);
+                    alg_maps_f_it++;
+                    if (!u_dom.empty()) {
+                      break;
+                    }
+                  }
+                }
                 SB::Set f_dom = inf_eq_dom;
+                list<SB::PWLMap> new_alg_maps_u = state_dep.algLabelMapU();
+                list<SB::PWLMap> new_alg_maps_f = state_dep.algLabelMapF();
+                new_alg_maps_u.push_front(alg_label.mapU());
+                new_alg_maps_f.push_front(alg_label.mapF());
                 SB::Deps::VariableDep var_dep(state_dep.var(), map_m_f, state_dep.mapU(), alg_label.desc().exp(), false, f_dom, u_dom,
-                                              n_map, map_m, state_dep.varOffset(), graph[V].id());
+                                              n_map, map_m, state_dep.varOffset(), graph[V].id(), new_alg_maps_f,
+                                              new_alg_maps_u);
                 list<SB::Deps::VariableDep> recursive_deps = state_dep.recursiveDeps();
                 // Visit recursive deps.
                 for (SB::Deps::VariableDep var_d : recursive_deps) {
@@ -220,7 +232,7 @@ void SBDependencies<IDependencies, R>::paths(SB::Deps::Graph graph, SB::Deps::Ve
       num_gen++;
       SB::PWLMap map_u = edge_label.mapU();
       SB::Deps::VertexDesc update_desc = graph[V].desc();
-      SB::Deps::VariableDep var_dep(graph[X].desc().var(), edge_label.mapF(), edge_label.mapU(), edge_label.desc().exp(),
+      SB::Deps::VariableDep var_dep(graph[X].desc().var(), edge_label.mapF(), map_u, edge_label.desc().exp(),
                                     edge_label.desc().mapExp(), graph[X].id(), graph[V].id());
       update_desc.setDepState(num_gen, var_dep);
       graph[V].updateDesc(update_desc);
@@ -233,9 +245,9 @@ void SBDependencies<IDependencies, R>::paths(SB::Deps::Graph graph, SB::Deps::Ve
   _gen.end();
 }
 
-template <typename IDependencies, typename R>
-void SBDependencies<IDependencies, R>::recursiveDeps(SB::Deps::Graph graph, SB::PWLMap map_u, SB::Deps::Vertex V, SB::Deps::Vertex X,
-                                                     int num_gen, list<SB::Deps::SetEdge> rec_alg_use_maps)
+template <typename IDependencies, typename R, typename S>
+void SBDependencies<IDependencies, R, S>::recursiveDeps(SB::Deps::Graph graph, SB::PWLMap map_u, SB::Deps::Vertex V, SB::Deps::Vertex X,
+                                                        int num_gen, list<SB::Deps::SetEdge> rec_alg_use_maps)
 {
   for (SB::Deps::SetEdge rec_alg_use : rec_alg_use_maps) {
     // Get the whole vertex of the influenced variable.
@@ -279,13 +291,21 @@ void SBDependencies<IDependencies, R>::recursiveDeps(SB::Deps::Graph graph, SB::
   }
 }
 
-template class SBDependencies<JacMatrixGenerator, JacMatrixDef>;
+template class SBDependencies<JacMatrixGenerator, JacMatrixDef, EquationTable>;
 
-template class SBDependencies<JacGenerator, JacDef>;
+template class SBDependencies<JacGenerator, JacDef, EquationTable>;
 
-template class SBDependencies<QSSModelGenerator, QSSModelDef>;
+template class SBDependencies<QSSModelGenerator, QSSModelDef, EquationTable>;
 
-template class SBDependencies<QSSModelDepsGenerator, QSSModelDepsDef>;
+template class SBDependencies<QSSModelDepsGenerator, QSSModelDepsDef, EquationTable>;
+
+template class SBDependencies<ModelMatrixGenerator<EquationTable, Equation, MATRIX::EQMatrixConfig>, ModelMatrixDef,
+                              MATRIX::EQMatrixConfig>;
+template class SBDependencies<ModelMatrixGenerator<EventTable, Event, MATRIX::EVMatrixConfig>, ModelMatrixDef, MATRIX::EVMatrixConfig>;
+
+template class SBDependencies<Deps::MergeGraphGenerator<Deps::EQSelector>, SB::Deps::Graph, Deps::EQSelector>;
+
+template class SBDependencies<Deps::MergeGraphGenerator<Deps::EVSelector>, SB::Deps::Graph, Deps::EVSelector>;
 
 }  // namespace Deps
 }  // namespace MicroModelica

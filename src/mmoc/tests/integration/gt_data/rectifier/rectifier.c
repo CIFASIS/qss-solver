@@ -188,11 +188,11 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	_Ron = 1e-05;
 	_U = 311;
 	_w = 314.16;
-	modelData->nSD[_idx_u(0)]++;
 	modelData->nSD[_idx_iL(0)]++;
 	modelData->nSD[_idx_u(0)]++;
-	modelData->nDS[_idx_u(0)]++;
+	modelData->nSD[_idx_u(0)]++;
 	modelData->nDS[_idx_iL(0)]++;
+	modelData->nDS[_idx_u(0)]++;
 	modelData->nDS[_idx_iL(0)]++;
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
@@ -213,12 +213,12 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	modelData->event[_idx_event_2].nLHSDsc++;
 	QSS_allocDataMatrix(modelData);
 	cleanVector(states, 0, 2);
-	modelData->SD[_idx_u(0)][states[_idx_u(0)]++] = _idx_u(0);
 	modelData->SD[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_iL(0);
+	modelData->SD[_idx_u(0)][states[_idx_u(0)]++] = _idx_u(0);
 	modelData->SD[_idx_u(0)][states[_idx_u(0)]++] = _idx_iL(0);
 	cleanVector(states, 0, 2);
-	modelData->DS[_idx_u(0)][states[_idx_u(0)]++] = _idx_u(0);
 	modelData->DS[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_iL(0);
+	modelData->DS[_idx_u(0)][states[_idx_u(0)]++] = _idx_u(0);
 	modelData->DS[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_u(0);
 	cleanVector(states, 0, 2);
 	for(row = 1; row <= 1; row++) {

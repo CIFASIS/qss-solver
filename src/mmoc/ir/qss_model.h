@@ -22,8 +22,9 @@
 #include <string>
 #include <map>
 
-#include <ir/compute_algs.h>
+#include <ir/compute_deps.h>
 #include <ir/equation.h>
+#include <deps/builders/eq_graph_builder.h>
 #include <deps/sbg_graph/deps_graph.h>
 #include <util/symbol_table.h>
 #include <util/table.h>
@@ -53,20 +54,25 @@ class QSSModelGenerator {
   void initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge);
   QSSModelDef def();
 
+  void setup(EquationTable eqs);
+  EquationTable config() { return EquationTable(); }
+
   protected:
   QSSModelDef _qss_model_def;
   int _tabs;
   AlgDepsMap _der_deps;
   AlgDepsMap _alg_deps;
   bool _post_process_eval;
+  EquationTable _eqs;
 };
 
+template<typename GraphBuilder>
 class QSSModel {
   public:
   QSSModel();
   ~QSSModel() = default;
 
-  void build();
+  void build(EquationTable eqs);
 
   std::string simpleDef();
 
@@ -75,6 +81,13 @@ class QSSModel {
   protected:
   QSSModelDef _qss_model_def;
 };
+
+typedef QSSModel<Deps::SDSBGraphBuilder> QSSModelGen;
+
+typedef QSSModel<Deps::SZSBGraphBuilder> ZCModelGen;
+
+typedef QSSModel<Deps::SOSBGraphBuilder> OutputModelGen;
+
 
 }  // namespace IR
 }  // namespace MicroModelica

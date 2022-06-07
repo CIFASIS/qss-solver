@@ -187,7 +187,7 @@ int LMapExp::nonZeroSlopes() const
 
 std::vector<std::string> LMapExp::apply(std::vector<std::string> variable) const
 {
-  assert(_slopes.size() == variable.size() || nonZeroSlopes() == 0);
+  assert(_slopes.size() <= variable.size() || nonZeroSlopes() == 0);
   
   std::vector<std::string> exps;
   int size = (int)_slopes.size();
@@ -271,10 +271,10 @@ LMapExp LMapExp::applyIndexShift(Constants index_shift)
 std::string LMapExp::print() const
 {
   std::stringstream code;
-  int size = _slopes.size();
+  size_t size = _slopes.size();
   std::vector<std::string> variables;
   int dim = 1;
-  for(int i = 0; i < size; i++) {
+  for(size_t i = 0; i < size; i++) {
     std::stringstream var_name;
     var_name << "_d" << dim++;
     variables.push_back(var_name.str());

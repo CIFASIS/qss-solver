@@ -204,12 +204,12 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 
 void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, int *BDFMap, int nBDF)
 {
-	int _d1;
-	int i;
 	int idx;
 	int __bdf_it;
 	for(__bdf_it = 0; __bdf_it < nBDF; __bdf_it++) {
 	idx = BDFMap[__bdf_it];
+	int _d1;
+	int i;
 	if (_is_var_v(idx)) {
 		_get_v_idxs(idx);
 		_apply_usage_eq_1(_d1);
@@ -260,22 +260,22 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelData->nSD[_idx_u(_d1,0)]++;
 	}
 	for(_d1 = 1; _d1<=1000; _d1+=1) {
-		modelData->nSD[_idx_v(_d1,0)]++;
-	}
-	for(_d1 = 1; _d1<=1000; _d1+=1) {
 		modelData->nSD[_idx_u(_d1,0)]++;
 	}
 	for(_d1 = 1; _d1<=1000; _d1+=1) {
 		modelData->nSD[_idx_v(_d1,0)]++;
 	}
 	for(_d1 = 1; _d1<=1000; _d1+=1) {
-		modelData->nDS[_idx_v(_d1,0)]++;
+		modelData->nSD[_idx_v(_d1,0)]++;
 	}
 	for(_d1 = 1; _d1<=1000; _d1+=1) {
 		modelData->nDS[_idx_v(_d1,0)]++;
 	}
 	for(_d1 = 1; _d1<=1000; _d1+=1) {
 		modelData->nDS[_idx_u(_d1,0)]++;
+	}
+	for(_d1 = 1; _d1<=1000; _d1+=1) {
+		modelData->nDS[_idx_v(_d1,0)]++;
 	}
 	for(_d1 = 1; _d1<=1000; _d1+=1) {
 		modelData->nDS[_idx_u(_d1,0)]++;
@@ -326,10 +326,10 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelData->SD[_idx_u(_d1,0)][states[_idx_u(_d1,0)]++] = _idx_v(_d1,0);
 	}
 	for(_d1 = 1; _d1<=1000; _d1+=1) {
-		modelData->SD[_idx_v(_d1,0)][states[_idx_v(_d1,0)]++] = _idx_v(_d1,0);
+		modelData->SD[_idx_u(_d1,0)][states[_idx_u(_d1,0)]++] = _idx_u(_d1,0);
 	}
 	for(_d1 = 1; _d1<=1000; _d1+=1) {
-		modelData->SD[_idx_u(_d1,0)][states[_idx_u(_d1,0)]++] = _idx_u(_d1,0);
+		modelData->SD[_idx_v(_d1,0)][states[_idx_v(_d1,0)]++] = _idx_v(_d1,0);
 	}
 	for(_d1 = 1; _d1<=1000; _d1+=1) {
 		modelData->SD[_idx_v(_d1,0)][states[_idx_v(_d1,0)]++] = _idx_u(_d1,0);
@@ -339,10 +339,10 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelData->DS[_idx_v(_d1,0)][states[_idx_v(_d1,0)]++] = _idx_u(_d1,0);
 	}
 	for(_d1 = 1; _d1<=1000; _d1+=1) {
-		modelData->DS[_idx_v(_d1,0)][states[_idx_v(_d1,0)]++] = _idx_v(_d1,0);
+		modelData->DS[_idx_u(_d1,0)][states[_idx_u(_d1,0)]++] = _idx_u(_d1,0);
 	}
 	for(_d1 = 1; _d1<=1000; _d1+=1) {
-		modelData->DS[_idx_u(_d1,0)][states[_idx_u(_d1,0)]++] = _idx_u(_d1,0);
+		modelData->DS[_idx_v(_d1,0)][states[_idx_v(_d1,0)]++] = _idx_v(_d1,0);
 	}
 	for(_d1 = 1; _d1<=1000; _d1+=1) {
 		modelData->DS[_idx_u(_d1,0)][states[_idx_u(_d1,0)]++] = _idx_v(_d1,0);

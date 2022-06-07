@@ -92,6 +92,11 @@ class Event {
 };
 
 typedef ModelTable<int, Event> EventTable;
+
+/// Helper function to to generate a equation table for zero crossing equations.
+
+EquationTable zeroCrossingTable(EventTable events);
+
 }  // namespace IR
 }  // namespace MicroModelica
 

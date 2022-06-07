@@ -17,17 +17,61 @@
 
  ******************************************************************************/
 
-#include "compute_algs.h"
+#include "compute_deps.h"
 
 #include <ir/helpers.h>
 #include <util/model_config.h>
 
 namespace MicroModelica {
 using namespace Deps;
-using namespace Deps::SBG;
 using namespace SB;
 using namespace Util;
 namespace IR {
+
+Expression getUseExp(Variable variable, DepData dep_data)
+{
+  if (variable.isScalar()) {
+    return Expression::generate(variable.name(), vector<string>());
+  }
+  Index use_idx(dep_data.var_dep.exp());
+  vector<string> vars = use_idx.variables();
+  if (dep_data.var_dep.isRecursive()) {
+    return Expression::generate(variable.name(), vars);
+  } else {
+    vector<string> exps = dep_data.var_dep.nMap().apply(vars);
+    return Expression::generate(variable.name(), exps);
+  }
+  assert(false);
+  return Expression::generate(variable.name(), vector<string>());
+}
+
+
+bool findDep(DepsMap deps, DepData dep_data, bool multiple_nodes)
+{
+  string var_name = dep_data.var_dep.var().name();
+  list<DepData> var_deps = deps[var_name];
+  for (DepData dep : var_deps) {
+    SB::Set dom = dep.var_dep.mapF().wholeDom();
+    SB::Set dep_eq_image = dep.var_dep.mapF().image(dom);
+    SB::Set new_dom = dep_data.var_dep.mapF().wholeDom();
+    SB::Set new_dep_eq_image = dep_data.var_dep.mapF().image(new_dom);
+    if ((dep.id == dep_data.id) && dep.var_dep.isRecursive() && dep_data.var_dep.isRecursive() && dep.var_dep.var().name() == var_name) {
+      return true;
+    }
+    if ((dep.id == dep_data.id) && (dep_eq_image == new_dep_eq_image) && (dep.var_dep.nMap() == dep_data.var_dep.nMap())) {
+      return true;
+    }
+    if (multiple_nodes) {
+      SB::Set dep_var_image = dep.var_dep.mapU().image(dom);
+      SB::Set new_dep_var_image = dep_data.var_dep.mapU().image(new_dom);
+      if ((dep.id == dep_data.id) && (dep_var_image == new_dep_var_image) && (dep.var_dep.nMap() == dep_data.var_dep.nMap())) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 
 bool findAlgDep(PrintedDeps printed_deps, int id, SB::Set range, SB::Deps::LMapExp use_map, SB::Deps::LMapExp eq_use_map)
 {

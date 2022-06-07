@@ -22,7 +22,6 @@
 #include "is_constant_index.h"
 
 namespace MicroModelica {
-using namespace Deps;
 using namespace IR;
 namespace Util {
 

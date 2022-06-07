@@ -50,6 +50,10 @@ class JacMatrixGenerator {
   void initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge);
   JacMatrixDef def();
 
+  void setup(IR::EquationTable eqs) {};
+
+  IR::EquationTable config() { return IR::EquationTable(); }
+
   protected:
   void addDependency(IR::Equation v_eq, IR::Equation g_eq, SB::Deps::VariableDep var_dep, int id, std::string g_map_dom = "");
   std::string guard(SB::Set dom, int offset, SB::Deps::LMapExp map, std::string var_name);

@@ -93,12 +93,6 @@ bool Index::isConstant() const
   return constant_index.apply(_exp.expression());
 }
 
-Usage Index::usage() const
-{
-  GetIndexUsage usage;
-  return usage.apply(_exp.expression());
-}
-
 void Index::setExp(Expression exp)
 {
   _exp = exp;
@@ -133,7 +127,8 @@ Index Index::revert() const
 
 Index Index::replace(bool range_idx) const
 {
-  ReplaceIndex replace = ReplaceIndex(range(), usage(), range_idx);
+  GetIndexUsage usage;
+  ReplaceIndex replace = ReplaceIndex(range(), usage.apply(_exp.expression()), range_idx);
   return Index(Expression(replace.apply(_exp.expression())));
 }
 
@@ -221,8 +216,6 @@ Range::Range(Variable var, RANGE::Type type) : _ranges(), _index_pos(), _size(1)
 
 Range::Range(AST_Expression exp) : _ranges(), _index_pos(), _size(1), _type(RANGE::For) { generate(exp); }
 
-Range::Range(SBG::MDI mdi) : _ranges(), _index_pos(), _size(1), _type(RANGE::For) { generate(mdi); }
-
 Range::Range(SB::Set set, int offset, vector<string> vars) : _ranges(), _index_pos(), _size(1), _type(RANGE::For) { generate(set, offset, vars); }
 
 void Range::updateRangeDefinition(std::string index_def, RangeDefinition def, int pos)
@@ -233,6 +226,8 @@ void Range::updateRangeDefinition(std::string index_def, RangeDefinition def, in
   assert(range);
   _size *= range->size();
   _row_size.push_back(range->size());
+  Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
+  ModelConfig::instance().addVariable(index_def, vi);
 }
 
 void Range::setRangeDefinition(AST_ForIndexList fil)
@@ -265,8 +260,6 @@ void Range::generate(Variable var)
     int begin = 1;
     int end = var.size(i);
     updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
-    Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-    ModelConfig::instance().addVariable(index, vi);
   }
 }
 
@@ -290,7 +283,7 @@ void Range::generate(AST_Expression exp)
   }
 }
 
-void Range::generate(SBG::MDI mdi)
+/*void Range::generate(SBG::MDI mdi)
 {
   int pos = 0;
   for (auto interval : mdi.intervals()) {
@@ -301,10 +294,8 @@ void Range::generate(SBG::MDI mdi)
     }
     string index = Utils::instance().iteratorVar(pos);
     updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
-    Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-    ModelConfig::instance().addVariable(index, vi);
   }
-}
+}*/
 
 bool Range::isVariable(std::string var)
 {
@@ -335,13 +326,11 @@ void Range::generate(SB::Set set, int offset, vector<string> vars)
         index = vars[pos];
       } 
       updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
-      Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-      ModelConfig::instance().addVariable(index, vi);
     }
   }
 }
 
-void Range::generate(MDI mdi)
+/*void Range::generate(MDI mdi)
 {
   int pos = 0;
   for (auto interval : mdi.mdi()) {
@@ -352,10 +341,8 @@ void Range::generate(MDI mdi)
     }
     string index = Utils::instance().iteratorVar(pos);
     updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
-    Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
-    ModelConfig::instance().addVariable(index, vi);
   }
-}
+}*/
 
 string Range::iterator(int dim, bool range_idx)
 {
@@ -551,22 +538,12 @@ int Range::pos(string var)
   return 0;
 }
 
-MDI Range::getMDI()
-{
-  IntervalList intervals;
-  RangeDefinitionTable::iterator it;
-  for (RangeDefinition rd = _ranges.begin(it); !_ranges.end(it); rd = _ranges.next(it)) {
-    intervals.push_back(Interval(rd.begin(), rd.end(), rd.step()));
-  }
-  return MDI(intervals);
-}
-
-bool Range::intersect(Range other)
+/*bool Range::intersect(Range other)
 {
   MDI other_mdi = other.getMDI();
   Option<MDI> intersect = getMDI().Intersection(other_mdi);
   return intersect.is_initialized();
-}
+}*/
 
 void Range::applyUsage(Index usage)
 {
@@ -615,7 +592,7 @@ string Range::in(ExpressionList exps)
 
 string Range::in(vector<string> exps)
 {
-  assert(exps.size() == (size_t)_ranges.size());
+  assert(exps.size() <= (size_t)_ranges.size());
   // If empty generate a default true condition to handle scalar cases.
   if (exps.empty()) {
     return "1";
@@ -624,8 +601,10 @@ string Range::in(vector<string> exps)
   RangeDefinitionTable::iterator it;
   int i = 0;
   int size = _ranges.size();
+  int exps_size = exps.size();
   for (RangeDefinition r = _ranges.begin(it); !_ranges.end(it); r = _ranges.next(it), i++) {
-    string exp_str = exps[i];
+    string exp_str = (i < exps_size) ? exps[i] : getDimensionVar(i);     
+  
     code << "(" << r.begin() << " <= " << exp_str << " && " << exp_str << " <= " << r.end() << ")";
     code << ((i + 1 < size) ? " && " : "");
   }
@@ -645,6 +624,36 @@ map<std::string, AST_Expression> Range::initExps()
     init_exps[_ranges.key(it)] = newAST_Expression_Integer(r.begin());  
   }
   return init_exps;
+}
+
+void Range::replace(Index usage)
+{
+  vector<string> variables = usage.variables();
+  // In case of a scalar usage in N<->1 relations.
+  if (variables.empty()) {
+    variables = getIndexes();
+  }
+  set<string> added_vars;
+  vector<string> old_keys;
+  int pos = 1;
+  for (string var : variables) {
+    if (isVariable(var)) {
+      if (added_vars.find(var) == added_vars.end()) {
+        added_vars.insert(var);
+        Option<RangeDefinition> r = _ranges[var];
+        assert(r);
+        string index = getDimensionVar(pos);
+        if (index != var) {
+          old_keys.push_back(var);
+          _ranges.insert(index, r.get());
+        }
+      }
+    }
+    pos++;
+  }
+  for (string key : old_keys) {
+    _ranges.remove(key);
+  }
 }
 
 std::ostream& operator<<(std::ostream& out, const Range& r) { return out << r.print(); }

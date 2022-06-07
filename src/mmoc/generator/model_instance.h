@@ -76,7 +76,6 @@ class ModelInstance {
   std::string componentDefinition(MODEL_INSTANCE::Component c);
   void allocateOutput();
   void configOutput();
-  string algebraics(Deps::EquationDependencyMatrix eqdm, Deps::equation_id key);
   void configEvents();
   void allocateVectors() const;
   void freeVectors() const;
@@ -95,11 +94,11 @@ class ModelInstance {
     _writer->write(vdm.init(), init);
   }
   template<class Builder> 
-  void generateDef(WRITER::Section model_def, WRITER::Section simple, WRITER::Section generic) {
+  void generateDef(IR::EquationTable eqs, WRITER::Section model_def, WRITER::Section simple, WRITER::Section generic) {
     Builder model;
     Util::ModelConfig::instance().clearLocalSymbols();
     IR::FunctionPrinter printer;
-    model.build();
+    model.build(eqs);
     _writer->write(model.simpleDef(), simple);
     _writer->write(model.genericDef(), generic);
     _writer->write(Util::ModelConfig::instance().localSymbols(), model_def);

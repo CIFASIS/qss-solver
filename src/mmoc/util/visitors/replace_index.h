@@ -17,11 +17,9 @@
 
  ******************************************************************************/
 
-#ifndef REPLACE_INDEX_H_
-#define REPLACE_INDEX_H_
+#pragma once
 
 #include "../../ast/ast_builder.h"
-#include "../../deps/graph/graph_helpers.h"
 #include "../../ir/index.h"
 #include "../ast_util.h"
 
@@ -30,7 +28,7 @@ namespace Util {
 
 class ReplaceIndex : public AST_Expression_Visitor<AST_Expression> {
   public:
-  ReplaceIndex(IR::Range range, Deps::Usage usage, bool range_idxs);
+  ReplaceIndex(IR::Range range, IR::Usage usage, bool range_idxs);
   ~ReplaceIndex() = default;
 
   private:
@@ -39,7 +37,7 @@ class ReplaceIndex : public AST_Expression_Visitor<AST_Expression> {
   AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
 
   IR::Range _range;
-  Deps::Usage _usage;
+  IR::Usage _usage;
   bool _range_idxs;
 };
 
@@ -58,4 +56,3 @@ class ReplaceVar : public AST_Expression_Visitor<AST_Expression> {
 
 }  // namespace Util
 }  // namespace MicroModelica
-#endif /* REPLACE_INDEX_H_ */

@@ -197,34 +197,22 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	_dx = 1;
 	_dy = 1;
 	_init_u(1,1) = 1;
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		for(_d2 = 1; _d2<=1; _d2+=1) {
-			modelData->nSD[_idx_u(1,1)]++;
-		}
+	modelData->nSD[_idx_u(1,1)]++;
+	for(_d1 = 2; _d1<=20; _d1+=1) {
+		modelData->nSD[_idx_u(_d1,1)]++;
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
-		for(_d2 = 1; _d2<=1; _d2+=1) {
-			modelData->nSD[_idx_u(_d1-1,1)]++;
-		}
+		modelData->nSD[_idx_u(_d1-1,1)]++;
 	}
-	for(_d1 = 2; _d1<=20; _d1+=1) {
-		for(_d2 = 1; _d2<=1; _d2+=1) {
-			modelData->nSD[_idx_u(_d1,1)]++;
-		}
+	for(_d2 = 2; _d2<=20; _d2+=1) {
+		modelData->nSD[_idx_u(1,_d2)]++;
 	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		for(_d2 = 2; _d2<=20; _d2+=1) {
-			modelData->nSD[_idx_u(1,_d2-1)]++;
-		}
-	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		for(_d2 = 2; _d2<=20; _d2+=1) {
-			modelData->nSD[_idx_u(1,_d2)]++;
-		}
+	for(_d2 = 2; _d2<=20; _d2+=1) {
+		modelData->nSD[_idx_u(1,_d2-1)]++;
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
 		for(_d2 = 2; _d2<=20; _d2+=1) {
-			modelData->nSD[_idx_u(_d1-1,_d2)]++;
+			modelData->nSD[_idx_u(_d1,_d2)]++;
 		}
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
@@ -234,33 +222,21 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
 		for(_d2 = 2; _d2<=20; _d2+=1) {
-			modelData->nSD[_idx_u(_d1,_d2)]++;
+			modelData->nSD[_idx_u(_d1-1,_d2)]++;
 		}
 	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		for(_d2 = 1; _d2<=1; _d2+=1) {
-			modelData->nDS[_idx_u(1,1)]++;
-		}
+	modelData->nDS[_idx_u(1,1)]++;
+	for(_d1 = 2; _d1<=20; _d1+=1) {
+		modelData->nDS[_idx_u(_d1,1)]++;
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
-		for(_d2 = 1; _d2<=1; _d2+=1) {
-			modelData->nDS[_idx_u(_d1,1)]++;
-		}
+		modelData->nDS[_idx_u(_d1,1)]++;
 	}
-	for(_d1 = 2; _d1<=20; _d1+=1) {
-		for(_d2 = 1; _d2<=1; _d2+=1) {
-			modelData->nDS[_idx_u(_d1,1)]++;
-		}
+	for(_d2 = 2; _d2<=20; _d2+=1) {
+		modelData->nDS[_idx_u(1,_d2)]++;
 	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		for(_d2 = 2; _d2<=20; _d2+=1) {
-			modelData->nDS[_idx_u(1,_d2)]++;
-		}
-	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		for(_d2 = 2; _d2<=20; _d2+=1) {
-			modelData->nDS[_idx_u(1,_d2)]++;
-		}
+	for(_d2 = 2; _d2<=20; _d2+=1) {
+		modelData->nDS[_idx_u(1,_d2)]++;
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
 		for(_d2 = 2; _d2<=20; _d2+=1) {
@@ -319,34 +295,22 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	}
 	CLC_allocDataMatrix(modelData);
 	cleanVector(states, 0, 400);
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		for(_d2 = 1; _d2<=1; _d2+=1) {
-			modelData->SD[_idx_u(1,1)][states[_idx_u(1,1)]++] = _idx_u(1,1);
-		}
+	modelData->SD[_idx_u(1,1)][states[_idx_u(1,1)]++] = _idx_u(1,1);
+	for(_d1 = 2; _d1<=20; _d1+=1) {
+		modelData->SD[_idx_u(_d1,1)][states[_idx_u(_d1,1)]++] = _idx_u(_d1,1);
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
-		for(_d2 = 1; _d2<=1; _d2+=1) {
-			modelData->SD[_idx_u(_d1-1,1)][states[_idx_u(_d1-1,1)]++] = _idx_u(_d1,1);
-		}
+		modelData->SD[_idx_u(_d1-1,1)][states[_idx_u(_d1-1,1)]++] = _idx_u(_d1,1);
 	}
-	for(_d1 = 2; _d1<=20; _d1+=1) {
-		for(_d2 = 1; _d2<=1; _d2+=1) {
-			modelData->SD[_idx_u(_d1,1)][states[_idx_u(_d1,1)]++] = _idx_u(_d1,1);
-		}
+	for(_d2 = 2; _d2<=20; _d2+=1) {
+		modelData->SD[_idx_u(1,_d2)][states[_idx_u(1,_d2)]++] = _idx_u(1,_d2);
 	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		for(_d2 = 2; _d2<=20; _d2+=1) {
-			modelData->SD[_idx_u(1,_d2-1)][states[_idx_u(1,_d2-1)]++] = _idx_u(1,_d2);
-		}
-	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		for(_d2 = 2; _d2<=20; _d2+=1) {
-			modelData->SD[_idx_u(1,_d2)][states[_idx_u(1,_d2)]++] = _idx_u(1,_d2);
-		}
+	for(_d2 = 2; _d2<=20; _d2+=1) {
+		modelData->SD[_idx_u(1,_d2-1)][states[_idx_u(1,_d2-1)]++] = _idx_u(1,_d2);
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
 		for(_d2 = 2; _d2<=20; _d2+=1) {
-			modelData->SD[_idx_u(_d1-1,_d2)][states[_idx_u(_d1-1,_d2)]++] = _idx_u(_d1,_d2);
+			modelData->SD[_idx_u(_d1,_d2)][states[_idx_u(_d1,_d2)]++] = _idx_u(_d1,_d2);
 		}
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
@@ -356,38 +320,26 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
 		for(_d2 = 2; _d2<=20; _d2+=1) {
-			modelData->SD[_idx_u(_d1,_d2)][states[_idx_u(_d1,_d2)]++] = _idx_u(_d1,_d2);
+			modelData->SD[_idx_u(_d1-1,_d2)][states[_idx_u(_d1-1,_d2)]++] = _idx_u(_d1,_d2);
 		}
 	}
 	cleanVector(states, 0, 400);
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		for(_d2 = 1; _d2<=1; _d2+=1) {
-			modelData->DS[_idx_u(1,1)][states[_idx_u(1,1)]++] = _idx_u(1,1);
-		}
+	modelData->DS[_idx_u(1,1)][states[_idx_u(1,1)]++] = _idx_u(1,1);
+	for(_d1 = 2; _d1<=20; _d1+=1) {
+		modelData->DS[_idx_u(_d1,1)][states[_idx_u(_d1,1)]++] = _idx_u(_d1,1);
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
-		for(_d2 = 1; _d2<=1; _d2+=1) {
-			modelData->DS[_idx_u(_d1,1)][states[_idx_u(_d1,1)]++] = _idx_u(_d1-1,1);
-		}
+		modelData->DS[_idx_u(_d1,1)][states[_idx_u(_d1,1)]++] = _idx_u(_d1-1,1);
 	}
-	for(_d1 = 2; _d1<=20; _d1+=1) {
-		for(_d2 = 1; _d2<=1; _d2+=1) {
-			modelData->DS[_idx_u(_d1,1)][states[_idx_u(_d1,1)]++] = _idx_u(_d1,1);
-		}
+	for(_d2 = 2; _d2<=20; _d2+=1) {
+		modelData->DS[_idx_u(1,_d2)][states[_idx_u(1,_d2)]++] = _idx_u(1,_d2);
 	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		for(_d2 = 2; _d2<=20; _d2+=1) {
-			modelData->DS[_idx_u(1,_d2)][states[_idx_u(1,_d2)]++] = _idx_u(1,_d2-1);
-		}
-	}
-	for(_d1 = 1; _d1<=1; _d1+=1) {
-		for(_d2 = 2; _d2<=20; _d2+=1) {
-			modelData->DS[_idx_u(1,_d2)][states[_idx_u(1,_d2)]++] = _idx_u(1,_d2);
-		}
+	for(_d2 = 2; _d2<=20; _d2+=1) {
+		modelData->DS[_idx_u(1,_d2)][states[_idx_u(1,_d2)]++] = _idx_u(1,_d2-1);
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
 		for(_d2 = 2; _d2<=20; _d2+=1) {
-			modelData->DS[_idx_u(_d1,_d2)][states[_idx_u(_d1,_d2)]++] = _idx_u(_d1-1,_d2);
+			modelData->DS[_idx_u(_d1,_d2)][states[_idx_u(_d1,_d2)]++] = _idx_u(_d1,_d2);
 		}
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
@@ -397,7 +349,7 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
 		for(_d2 = 2; _d2<=20; _d2+=1) {
-			modelData->DS[_idx_u(_d1,_d2)][states[_idx_u(_d1,_d2)]++] = _idx_u(_d1,_d2);
+			modelData->DS[_idx_u(_d1,_d2)][states[_idx_u(_d1,_d2)]++] = _idx_u(_d1-1,_d2);
 		}
 	}
 	cleanVector(states, 0, 400);
@@ -488,19 +440,19 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->output = SD_Output("advection2D",2,0,400,NULL,0,0,CI_Step,SD_Memory,MOD_output);
 	SD_output modelOutput = simulator->output;
-	modelOutput->nOS[_idx_out_exp_1]++;
 	modelOutput->nOS[_idx_out_exp_2]++;
-	modelOutput->nSO[_idx_u(20,20)]++;
+	modelOutput->nOS[_idx_out_exp_1]++;
 	modelOutput->nSO[_idx_u(1,1)]++;
+	modelOutput->nSO[_idx_u(20,20)]++;
 	SD_allocOutputMatrix(modelOutput, 400, 0);
 	sprintf(modelOutput->variable[_idx_out_exp_1].name, "u[20,20]");
 	sprintf(modelOutput->variable[_idx_out_exp_2].name, "u[1,1]");
 	cleanVector(outputs, 0, 2);
-	modelOutput->OS[_idx_out_exp_1][outputs[_idx_out_exp_1]++] = _idx_u(20,20);
 	modelOutput->OS[_idx_out_exp_2][outputs[_idx_out_exp_2]++] = _idx_u(1,1);
+	modelOutput->OS[_idx_out_exp_1][outputs[_idx_out_exp_1]++] = _idx_u(20,20);
 	cleanVector(states, 0, 400);
-	modelOutput->SO[_idx_u(20,20)][states[_idx_u(20,20)]++] = _idx_out_exp_1;
 	modelOutput->SO[_idx_u(1,1)][states[_idx_u(1,1)]++] = _idx_out_exp_2;
+	modelOutput->SO[_idx_u(20,20)][states[_idx_u(20,20)]++] = _idx_out_exp_1;
 	simulator->model = CLC_Model(MOD_definition, MOD_zeroCrossing, MOD_handlerPos, MOD_handlerNeg, MOD_jacobian);
 	free(states);
 	free(outputs);

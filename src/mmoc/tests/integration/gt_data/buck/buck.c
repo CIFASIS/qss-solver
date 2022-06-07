@@ -238,12 +238,12 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	_U = 24;
 	_nextT = _T;
 	modelData->nSD[_idx_iL(0)]++;
-	modelData->nSD[_idx_uC(0)]++;
 	modelData->nSD[_idx_iL(0)]++;
 	modelData->nSD[_idx_uC(0)]++;
-	modelData->nDS[_idx_iL(0)]++;
+	modelData->nSD[_idx_uC(0)]++;
 	modelData->nDS[_idx_iL(0)]++;
 	modelData->nDS[_idx_uC(0)]++;
+	modelData->nDS[_idx_iL(0)]++;
 	modelData->nDS[_idx_uC(0)]++;
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
@@ -261,17 +261,14 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	}
 	modelData->nSZ[_idx_iL(0)]++;
 	modelData->nZS[_idx_event_3]++;
-	modelData->nHZ[_idx_event_3]++;
-	modelData->nHZ[_idx_event_3]++;
+	modelData->nHZ[_idx_event_1]++;
+	modelData->nHZ[_idx_event_1]++;
 	modelData->nHZ[_idx_event_1]++;
 	modelData->nHZ[_idx_event_2]++;
 	modelData->nHZ[_idx_event_3]++;
-	modelData->nHZ[_idx_event_1]++;
-	modelData->nHZ[_idx_event_1]++;
-	modelData->nHD[_idx_event_3]++;
-	modelData->nHD[_idx_event_3]++;
 	modelData->nHD[_idx_event_1]++;
 	modelData->nHD[_idx_event_2]++;
+	modelData->nHD[_idx_event_3]++;
 	modelData->event[_idx_event_3].nLHSDsc++;
 	modelData->event[_idx_event_1].nLHSDsc++;
 	modelData->event[_idx_event_2].nLHSDsc++;
@@ -281,13 +278,13 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	QSS_allocDataMatrix(modelData);
 	cleanVector(states, 0, 2);
 	modelData->SD[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_iL(0);
-	modelData->SD[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(0);
 	modelData->SD[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_uC(0);
+	modelData->SD[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(0);
 	modelData->SD[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_uC(0);
 	cleanVector(states, 0, 2);
 	modelData->DS[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_iL(0);
-	modelData->DS[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_uC(0);
 	modelData->DS[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(0);
+	modelData->DS[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_uC(0);
 	modelData->DS[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_uC(0);
 	cleanVector(states, 0, 2);
 	for(row = 1; row <= 1; row++) {
@@ -337,18 +334,15 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	cleanVector(events, 0, 3);
 	modelData->ZS[_idx_event_3][events[_idx_event_3]++] = _idx_iL(0);
 	cleanVector(events, 0, 3);
-	modelData->HZ[_idx_event_3][events[_idx_event_3]++] = _idx_event_3;
-	modelData->HZ[_idx_event_3][events[_idx_event_3]++] = _idx_event_3;
+	modelData->HZ[_idx_event_1][events[_idx_event_1]++] = _idx_event_1;
+	modelData->HZ[_idx_event_1][events[_idx_event_1]++] = _idx_event_2;
 	modelData->HZ[_idx_event_1][events[_idx_event_1]++] = _idx_event_3;
 	modelData->HZ[_idx_event_2][events[_idx_event_2]++] = _idx_event_3;
 	modelData->HZ[_idx_event_3][events[_idx_event_3]++] = _idx_event_3;
-	modelData->HZ[_idx_event_1][events[_idx_event_1]++] = _idx_event_2;
-	modelData->HZ[_idx_event_1][events[_idx_event_1]++] = _idx_event_1;
 	cleanVector(events, 0, 3);
-	modelData->HD[_idx_event_3][events[_idx_event_3]++] = _idx_iL(0);
-	modelData->HD[_idx_event_3][events[_idx_event_3]++] = _idx_iL(0);
 	modelData->HD[_idx_event_1][events[_idx_event_1]++] = _idx_iL(0);
 	modelData->HD[_idx_event_2][events[_idx_event_2]++] = _idx_iL(0);
+	modelData->HD[_idx_event_3][events[_idx_event_3]++] = _idx_iL(0);
 	cleanVector(events, 0, 3);
 	modelData->event[_idx_event_3].LHSDsc[events[_idx_event_3]++] = _idx_Rd;
 	modelData->event[_idx_event_1].LHSDsc[events[_idx_event_1]++] = _idx_Rs;

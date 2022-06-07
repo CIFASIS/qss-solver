@@ -49,7 +49,9 @@ class JacGenerator {
               SB::Deps::LMapExp def_map_exp, SB::Set intersection);
   void initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge);
   JacDef def();
-
+  void setup(EquationTable eqs) {};
+  EquationTable config() { return EquationTable(); }
+  
   protected:
   IR::Expression generateExp(string var_name, vector<string> indices);
   void dependencyPrologue(Equation eq, SB::Deps::VariableDep var_dep, std::string guard = "");

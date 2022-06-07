@@ -20,8 +20,8 @@
 #include "build_from_exps.h"
 
 #include <deps/sbg_graph/interval.h>
-#include <util/model_config.h>
 #include <util/logger.h>
+#include <util/model_config.h>
 #include <util/visitors/occurs.h>
 #include <util/visitors/pwl_map_values.h>
 
@@ -42,13 +42,13 @@ void addDims(size_t max_dim, size_t exp_dim, MultiInterval& intervals, int offse
   }
 }
 
-void addDims(size_t max_dim, size_t exp_dim, OrdRealCT& constants, OrdRealCT& slopes)
+void addDims(size_t max_dim, size_t exp_dim, OrdRealCT& constants, OrdRealCT& slopes, int offset)
 {
   OrdRealCT::iterator constant_it = constants.end();
   OrdRealCT::iterator slope_it = slopes.end();
   if (max_dim > exp_dim) {
     for (size_t i = exp_dim; i < max_dim; i++) {
-      constant_it = constants.insert(constant_it, 0);
+      constant_it = constants.insert(constant_it, offset);
       slope_it = slopes.insert(slope_it, 0);
     }
   }
@@ -79,42 +79,83 @@ Set buildSet(Variable variable, int offset, size_t max_dim)
   return buildSet(variable_intervals);
 }
 
-Set buildSet(Equation eq, string eq_id, int offset, size_t max_dim, EqUsage& eq_usage)
+void setupUsage(Range range, Usage& usage, DimRange& dim_range, int offset)
 {
-  Usage usage;
-  DimRange dim_range;
-  MultiInterval equation_intervals;
-  if (eq.hasRange()) {
-    RangeDefinitionTable ranges = eq.range()->definition();
+  RangeDefinitionTable ranges = range.definition();
+  for (auto range : ranges) {
+    Real lower = range.second.begin();
+    Real step = range.second.step();
+    Real upper = range.second.end();
+    Real end = offset + upper - lower;
+    Interval interval(offset, step, end);
+    LOG << "Variable: " << range.first << " Lower: " << lower << endl;
+    usage[range.first] = lower;
+    dim_range[range.first] = interval;
+  }
+}
+
+void setupIntervals(Expression exp, MultiInterval& intervals, DimRange& dim_range, int offset, size_t max_dim, Option<Range> range = Option<Range>())
+{
+  ExpressionList indexes = exp.indexes();
+  size_t index_size = indexes.size();
+  for (Expression idx : indexes) {
+    PWLMapValues pwl_map_values;
+    pwl_map_values.apply(idx.expression());
+    if (pwl_map_values.isScalar() && !range) {  // Scalar index
+      Interval interval(offset, 1, offset);
+      intervals.addInter(interval);
+    } else {
+      Interval interval = dim_range[pwl_map_values.variable()];
+      intervals.addInter(interval);
+    }
+  }
+  if (indexes.empty() && range) {
+    RangeDefinitionTable ranges = range->definition();
     for (auto range : ranges) {
       Real lower = range.second.begin();
       Real step = range.second.step();
       Real upper = range.second.end();
       Real end = offset + upper - lower;
       Interval interval(offset, step, end);
-      LOG << "Variable: " << range.first << " Lower: " << lower << endl;
-      usage[range.first] = lower;
-      dim_range[range.first] = interval;
+      intervals.addInter(interval);
     }
+    index_size = ranges.size();
+  }
+  addDims(max_dim, index_size, intervals, offset);
+}
+
+Set buildSet(Equation eq, string eq_id, int offset, size_t max_dim, EqUsage& eq_usage)
+{
+  Usage usage;
+  DimRange dim_range;
+  MultiInterval equation_intervals;
+  if (eq.hasRange()) {
+    setupUsage(eq.range().get(), usage, dim_range, offset);
     Expression lhs = eq.lhs();
-    ExpressionList indexes = lhs.indexes();
-    for (Expression idx : indexes) {
-      PWLMapValues pwl_map_values;
-      pwl_map_values.apply(idx.expression());
-      if (pwl_map_values.isScalar()) { // Scalar index
-        Interval interval(offset, 1, offset);
-        equation_intervals.addInter(interval);
-      } else {
-        Interval interval = dim_range[pwl_map_values.variable()];
-        equation_intervals.addInter(interval);
-      }
-    }
-    addDims(max_dim, indexes.size(), equation_intervals, offset);
+    setupIntervals(lhs, equation_intervals, dim_range, offset, max_dim);
     eq_usage[eq_id] = usage;
   } else {
     addDims(max_dim, 0, equation_intervals, offset);
   }
   return buildSet(equation_intervals);
+}
+
+Set buildSet(Expression exp, string stm_id, int offset, size_t max_dim, EqUsage& eq_usage, Option<Range> range, Option<Range> ev_range)
+{
+  Usage usage;
+  DimRange dim_range;
+  MultiInterval ev_intervals;
+  if (range) {
+    setupUsage(range.get(), usage, dim_range, offset);
+    if (ev_range) {
+      setupUsage(ev_range.get(), usage, dim_range, offset);  
+    }
+    setupIntervals(exp, ev_intervals, dim_range, offset, max_dim, range);
+    eq_usage[stm_id] = usage;
+  } else {
+    addDims(max_dim, 0, ev_intervals, offset);
+  }
+  return buildSet(ev_intervals);
 }
 
 /**
@@ -172,6 +213,37 @@ Deps::SetVertex createSetVertex(Equation eq, int& offset, size_t max_dim, VERTEX
   return node;
 }
 
+void addStatements(StatementTable stms, list<Deps::SetVertex>& nodes, Option<Range> ev_range, int& offset, size_t max_dim, VERTEX::Type type,
+                                    EqUsage& usage, MicroModelica::IR::STATEMENT::AssignTerm search, int id, string token)
+{
+  StatementTable::iterator stm_it;
+  int stm_count = 1;
+  for (Statement stm = stms.begin(stm_it); !stms.end(stm_it); stm = stms.next(stm_it)) {
+    int asg_nbr = 1;
+    ExpressionList assignments = stm.assignments(search);
+    for (Expression asg : assignments) {
+      std::stringstream ev_name;
+      Option<Range> stm_range = (stm.isForStatement()) ? stm.range() : ev_range;
+      Option<Range> stm_ev_range = (stm.isForStatement()) ? ev_range : Option<Range>();
+      ev_name << "EV_" << id << "_" << token << "_" << stm_count << "_" << asg_nbr++;
+      Set range = buildSet(asg, ev_name.str(), offset, max_dim, usage, stm_range, stm_ev_range);
+      Deps::SetVertex node = Deps::SetVertex(ev_name.str(), offset, range, id, Deps::VertexDesc(type));
+      offset += range.size();
+      nodes.push_back(node);
+    }
+    stm_count++;
+  }
+}
+
+list<Deps::SetVertex> createSetVertex(Event ev, int& offset, size_t max_dim, VERTEX::Type type, EqUsage& usage,
+                                      MicroModelica::IR::STATEMENT::AssignTerm search)
+{
+  list<Deps::SetVertex> nodes;
+  addStatements(ev.positiveHandler(), nodes, ev.range(), offset, max_dim, type, usage, search, ev.id(), "POS");
+  addStatements(ev.negativeHandler(), nodes, ev.range(), offset, max_dim, type, usage, search, ev.id(), "NEG");
+  return nodes;
+}
+
 void addEquation(Equation eq, string id, Set set, Deps::Graph& graph, EquationDescList& F)
 {
   F.push_back(make_pair(addVertex(id, set, graph), eq));
@@ -207,8 +279,9 @@ EdgeMaps generatePWLMaps(Expression exp, Set dom, Set unk_dom, int offset, strin
 
   ExpressionList indexes = exp.indexes();
   OrdIntegerCT init_elems = unk_dom.minElem();
-  assert(init_elems.size() == indexes.size() || indexes.size() == 0);
+  assert(init_elems.size() == indexes.size() || indexes.size() == 0 || indexes.size() < max_dim);
   OrdIntegerCT::iterator min_elem = init_elems.begin();
+  Integer unk_offset = *min_elem;
   Constants exp_constants;
   Slopes exp_slopes;
   InitValues exp_init_values;
@@ -230,7 +303,7 @@ EdgeMaps generatePWLMaps(Expression exp, Set dom, Set unk_dom, int offset, strin
     slope_pwl_map_u_it = slope_pwl_map_u.insert(slope_pwl_map_u_it, pwl_map_values.slope());
     exp_constants.insert(pwl_map_values.constant());
     exp_slopes.insert(pwl_map_values.slope());
-    if (range_init_value == 0) { // Scalar index
+    if (range_init_value == 0) {  // Scalar index
       exp_init_values.insert(pwl_map_values.constant());
     } else {
       exp_init_values.insert(range_init_value);
@@ -240,14 +313,14 @@ EdgeMaps generatePWLMaps(Expression exp, Set dom, Set unk_dom, int offset, strin
     min_elem++;
   }
   if (indexes.empty()) {  // Scalar variable.
-    Integer set_vertex_init = *min_elem - 1;
-    constant_pwl_map_u_it = constant_pwl_map_u.insert(constant_pwl_map_u_it, -map_offset + set_vertex_init);
-    slope_pwl_map_u_it = slope_pwl_map_u.insert(slope_pwl_map_u_it, 1);
+    Integer set_vertex_init = *min_elem;
+    constant_pwl_map_u_it = constant_pwl_map_u.insert(constant_pwl_map_u_it, set_vertex_init);
+    slope_pwl_map_u_it = slope_pwl_map_u.insert(slope_pwl_map_u_it, 0);
     constant_pwl_map_u_it++;
     slope_pwl_map_u_it++;
-    addDims(max_dim, 1, constant_pwl_map_u, slope_pwl_map_u);
+    addDims(max_dim, 1, constant_pwl_map_u, slope_pwl_map_u, unk_offset);
   } else {
-    addDims(max_dim, indexes.size(), constant_pwl_map_u, slope_pwl_map_u);
+    addDims(max_dim, indexes.size(), constant_pwl_map_u, slope_pwl_map_u, unk_offset);
   }
   for (Integer init : dom.minElem()) {
     Integer set_vertex_init = init - 1;
@@ -256,17 +329,16 @@ EdgeMaps generatePWLMaps(Expression exp, Set dom, Set unk_dom, int offset, strin
     constant_pwl_map_f_it++;
     slope_pwl_map_f_it++;
   }
-  addDims(max_dim, dom.minElem().size(), constant_pwl_map_f, slope_pwl_map_f);
+  addDims(max_dim, dom.minElem().size(), constant_pwl_map_f, slope_pwl_map_f, offset);
   maps.F = buildPWLMap(constant_pwl_map_f, slope_pwl_map_f, map_dom);
   maps.U = buildPWLMap(constant_pwl_map_u, slope_pwl_map_u, map_dom);
   maps.map_exp = LMapExp(exp_constants, exp_slopes, exp_init_values);
   return maps;
 }
 
-Equation getEquation(Deps::SetVertex n)
+Equation getEquation(Deps::SetVertex n, EquationTable eqs)
 {
-  EquationTable equations = ModelConfig::instance().derivatives();
-  
+  EquationTable equations = eqs;
   if (n.desc().type() == SB::Deps::VERTEX::Equation) {
     equations = ModelConfig::instance().algebraics();
   }
@@ -275,8 +347,18 @@ Equation getEquation(Deps::SetVertex n)
   return eq.get();
 }
 
+Event getEvent(Deps::SetVertex n)
+{
+  EventTable events = ModelConfig::instance().events();
+  Option<Event> ev = events[n.index()];
+  assert(ev);
+  return ev.get();
+}
+
+Equation getEquation(Deps::SetVertex n) { return getEquation(n, MicroModelica::Util::ModelConfig::instance().derivatives()); }
+
 void buildEdge(Expression builder, Deps::Vertex e, Deps::Vertex v, Deps::Graph graph, size_t max_dim, EqUsage eq_usage, int& offset,
-               SB::Deps::EDGE::Type type = SB::Deps::EDGE::Output)
+               SB::Deps::EDGE::Type type)
 {
   Deps::SetVertex e_vertex = graph[e];
   Deps::SetVertex v_vertex = graph[v];
@@ -302,39 +384,6 @@ void buildEdge(Expression builder, Deps::Vertex e, Deps::Vertex v, Deps::Graph g
   }
 }
 
-void buildOutputEdge(Deps::Vertex e, Deps::Vertex v, Deps::Graph graph, size_t max_dim, EqUsage eq_usage, int& offset)
-{
-  Expression output = getEquation(graph[e]).rhs();
-  buildEdge(output, e, v, graph, max_dim, eq_usage, offset);
-}
-
-void buildInputEdge(Deps::Vertex e, Deps::Vertex v, Deps::Graph graph, size_t max_dim, EqUsage eq_usage, int& offset)
-{
-  Expression input = getEquation(graph[e]).lhs();
-  buildEdge(input, e, v, graph, max_dim, eq_usage, offset, SB::Deps::EDGE::Input);
-}
-
-void computeOutputEdges(list<Deps::Vertex> e_nodes, list<Deps::Vertex> v_nodes, Deps::Graph graph, size_t max_dim, EqUsage eq_usage,
-                        int& offset)
-{
-  for (Vertex E : e_nodes) {
-    for (Vertex V : v_nodes) {
-      buildOutputEdge(E, V, graph, max_dim, eq_usage, offset);
-    }
-  }
-}
-
-void computeInputOutputEdges(list<Deps::Vertex> e_nodes, list<Deps::Vertex> v_nodes, Deps::Graph graph, size_t max_dim, EqUsage eq_usage,
-                             int& offset)
-{
-  for (Vertex E : e_nodes) {
-    for (Vertex V : v_nodes) {
-      buildOutputEdge(E, V, graph, max_dim, eq_usage, offset);
-      buildInputEdge(E, V, graph, max_dim, eq_usage, offset);
-    }
-  }
-}
-
 namespace Deps {
 void updateVisited(SB::Deps::Graph& graph, SB::Deps::Vertex vertex, bool visited)
 {
@@ -348,6 +397,76 @@ void updateNumDeps(SB::Deps::Graph& graph, SB::Deps::Vertex vertex, int num_deps
   SB::Deps::VertexDesc update_desc = graph[vertex].desc();
   update_desc.setNumDeps(num_deps);
   graph[vertex].updateDesc(update_desc);
+}
+
+VertexIt findSetVertex(SB::Deps::Graph& graph, Set matched)
+{
+  // Find the set-vertex where matched subset is included
+  VertexIt vi_start, vi_end;
+  boost::tie(vi_start, vi_end) = vertices(graph);
+
+  for (; vi_start != vi_end; ++vi_start) {
+    SetVertex v = graph[*vi_start];
+    Set vs = v.range();
+    Set inter = vs.cap(matched);
+    if (!inter.empty()) {
+      return vi_start;
+    }
+  }
+  // A given subset should be included in one of the graph vertex, this should never happen.
+  assert(false);
+  return vi_start;
+}
+
+VertexIt findSetVertexByName(SB::Deps::Graph& graph, string name)
+{
+  // Find the set-vertex where matched subset is included
+  VertexIt vi_start, vi_end;
+  boost::tie(vi_start, vi_end) = vertices(graph);
+
+  for (; vi_start != vi_end; ++vi_start) {
+    SetVertex v = graph[*vi_start];
+    if (v.name() == name) {
+      return vi_start;
+    }
+  }
+  // A given subset should be included in one of the graph vertex, this should never happen.
+  assert(false);
+  return vi_start;
+}
+
+std::list<Edge> inputEdges(SB::Deps::Graph& graph, string name)
+{
+  // Find the set-vertex where matched subset is included
+  VertexIt vi_start, vi_end;
+  boost::tie(vi_start, vi_end) = vertices(graph);
+  std::list<Edge> edges;
+
+  for (; vi_start != vi_end; ++vi_start) {
+    SetVertex v = graph[*vi_start];
+    boost::graph_traits<SB::Deps::Graph>::out_edge_iterator edge, out_edge_end;
+    // As a second step, look for all the input edges that arrives to the discrete variable.
+    for (boost::tie(edge, out_edge_end) = out_edges(*vi_start, graph); edge != out_edge_end; ++edge) {
+      SB::Deps::SetEdge edge_label = graph[*edge];
+      SB::Deps::Vertex target = boost::target(*edge, graph);
+      SB::Deps::SetVertex target_set_vertex = graph[target]; 
+      if (target_set_vertex.name() == name) {
+        edges.push_back(*edge);
+      }
+    }
+  }
+  return edges;
+}
+
+
+Set wholeVertex(SB::Deps::Graph& graph, Set matched_subset)
+{
+  Set whole_vertex;
+  // Find the set-vertex where the matched subset is included
+  VertexIt matched_vertex = findSetVertex(graph, matched_subset);
+  SetVertex v = graph[*matched_vertex];
+  SB::Set r = v.range();
+  return v.range();
 }
 
 }  // namespace Deps

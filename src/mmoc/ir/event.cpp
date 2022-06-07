@@ -155,5 +155,15 @@ string Event::config() const
   return buffer.str();
 }
 
+EquationTable zeroCrossingTable(EventTable events)
+{
+  EquationTable zero_crossings;
+  EventTable::iterator ev_it;
+  for (Event ev = events.begin(ev_it); !events.end(ev_it); ev = events.next(ev_it)) {
+    zero_crossings.insert(ev.id(), ev.zeroCrossing());
+  }
+  return zero_crossings;
+}
+
 }  // namespace IR
 }  // namespace MicroModelica

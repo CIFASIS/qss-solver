@@ -21,7 +21,6 @@
 #define EQUATION_PRINTER_H_
 
 #include "../ast/ast_types.h"
-#include "../deps/dependency_matrix.h"
 #include "../util/table.h"
 #include "index.h"
 
@@ -78,7 +77,6 @@ class DerivativePrinter : public EquationPrinter {
   Option<Range> _range;
   Expression _lhs;
   Expression _rhs;
-  Deps::EquationDependencyMatrix _eq_dep_matrix;
 };
 
 class ClassicPrinter : public DerivativePrinter {
@@ -104,7 +102,6 @@ class OutputPrinter : public DerivativePrinter {
   int _id;
   Option<Range> _range;
   Expression _rhs;
-  Deps::EquationDependencyMatrix _eq_dep_matrix;
 };
 
 class AlgebraicPrinter : public DerivativePrinter {
