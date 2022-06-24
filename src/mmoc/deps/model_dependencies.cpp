@@ -153,41 +153,40 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, Equati
                                    vector<string>{"", ""}, EQSelector(zeroCrossingTable(events)));
   _SZ.build(SZCfg);
 
-  const bool USER_DEF_MATRICES = ModelConfig::instance().generateUserDefEventMatrices();
-
   IR::MATRIX::EVMatrixConfig LHSSTCfg(INT_CONTAINER, vector<string>{"event", "event", "event", "event"}, vector<string>{EVENTS, EVENTS},
-                                      vector<string>{"nLHSSt", "LHSSt"}, STATEMENT::LHS, annotations.LHSSTMatrix(), USER_DEF_MATRICES,
+                                      vector<string>{"nLHSSt", "LHSSt"}, STATEMENT::LHS, annotations.LHSSTMatrix(),
                                       EVSelector(events));
 
   _LHSSt.build(LHSSTCfg);
 
   IR::MATRIX::EVMatrixConfig RHSSTCfg(INT_CONTAINER, vector<string>{"event", "event", "event", "event"}, vector<string>{EVENTS, EVENTS},
-                                      vector<string>{"nRHSSt", "RHSSt"}, STATEMENT::RHS, annotations.RHSSTMatrix(), USER_DEF_MATRICES,
+                                      vector<string>{"nRHSSt", "RHSSt"}, STATEMENT::RHS, annotations.RHSSTMatrix(),
                                       EVSelector(events));
 
   _RHSSt.build(RHSSTCfg);
 
   IR::MATRIX::EVMatrixConfig LHSDSCCfg(INT_CONTAINER, vector<string>{"event", "event", "event", "event"}, vector<string>{EVENTS, EVENTS},
-                                       vector<string>{"nLHSDsc", "LHSDsc"}, STATEMENT::LHS, annotations.LHSDSCMatrix(), USER_DEF_MATRICES,
+                                       vector<string>{"nLHSDsc", "LHSDsc"}, STATEMENT::LHS, annotations.LHSDSCMatrix(),
                                        EVSelector(events));
   _LHSDsc.build(LHSDSCCfg);
 
   IR::MATRIX::EVMatrixConfig HDCfg(INT_CONTAINER, vector<string>{"nDH", "nHD", "DH", "HD"}, vector<string>{STATES, EVENTS},
-                                   vector<string>{"", ""}, STATEMENT::LHS, annotations.HDMatrix(), USER_DEF_MATRICES, EVSelector(events));
+                                   vector<string>{"", ""}, STATEMENT::LHS, annotations.HDMatrix(), EVSelector(events));
   _HD.build(HDCfg);
 
   IR::MATRIX::EVMatrixConfig HZCfg(INT_CONTAINER, vector<string>{"nZH", "nHZ", "ZH", "HZ"}, vector<string>{EVENTS, EVENTS},
-                                   vector<string>{"", ""}, STATEMENT::LHS, annotations.HZMatrix(), USER_DEF_MATRICES, EVSelector(events));
+                                   vector<string>{"", ""}, STATEMENT::LHS, annotations.HZMatrix(), EVSelector(events));
   _HZ.build(HZCfg);
 
-  if (!USER_DEF_MATRICES) {
-    IR::HZSTMatrix HZST;
-    HZST.build(HZCfg);
-    _HZ.append(HZST.def());
-  }
+  IR::MATRIX::EVMatrixConfig HZSTCfg(INT_CONTAINER, vector<string>{"nZH", "nHZ", "ZH", "HZ"}, vector<string>{EVENTS, EVENTS},
+                                   vector<string>{"", ""}, STATEMENT::LHS, IR::MATRIX::UserDefMatrixExps(), EVSelector(events));
+
+  IR::HZSTMatrix HZST;
+  HZST.build(HZCfg);
+  _HZ.append(HZST.def());
 
   IR::MATRIX::EVMatrixConfig HHCfg(INT_CONTAINER, vector<string>{"nHH", "nHH", "HH", "HH"}, vector<string>{EVENTS, EVENTS},
-                                   vector<string>{"", ""}, STATEMENT::LHS, annotations.HHMatrix(), USER_DEF_MATRICES, EVSelector(events));
+                                   vector<string>{"", ""}, STATEMENT::LHS, annotations.HHMatrix(), EVSelector(events));
   _HH.build(HHCfg);
 
   ModelConfig::instance().unsetLocalInitSymbols();
