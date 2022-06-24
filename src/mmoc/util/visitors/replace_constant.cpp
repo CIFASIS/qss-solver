@@ -37,7 +37,7 @@ AST_Expression ReplaceConstant::foldTraverseElement(AST_Expression exp)
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
     Option<Variable> var = ModelConfig::instance().lookup(cr->name());
     if (!var) {
-      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "partial_eval_exp.cpp:43 %s", cr->name().c_str());
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "replace_constant.cpp:40 %s", cr->name().c_str());
       break;
     }
     if (var->isConstant()) {

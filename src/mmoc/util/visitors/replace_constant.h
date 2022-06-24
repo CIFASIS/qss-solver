@@ -17,11 +17,10 @@
 
  ******************************************************************************/
 
-#ifndef REPLACE_CONSTANT_H_
-#define REPLACE_CONSTANT_H_
+#pragma once
 
-#include "../../ast/ast_builder.h"
-#include "../ast_util.h"
+#include <ast/ast_builder.h>
+#include <util/ast_util.h>
 
 namespace MicroModelica {
 namespace Util {
@@ -39,5 +38,3 @@ class ReplaceConstant : public AST_Expression_Visitor<AST_Expression> {
 
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif /* REPLACE_CONSTANT_H_ */
