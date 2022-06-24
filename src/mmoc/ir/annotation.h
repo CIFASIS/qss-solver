@@ -17,17 +17,17 @@
 
  ******************************************************************************/
 
-#ifndef MMO_ANNOTATION_H_
-#define MMO_ANNOTATION_H_
+#pragma once
 
 #include <list>
 #include <map>
 #include <string>
 #include <boost/variant/variant_fwd.hpp>
 
-#include "../ast/ast_types.h"
-#include "../util/ast_util.h"
-#include "../util/util_types.h"
+#include <ast/ast_types.h>
+#include <ir/model_matrix_gen.h>
+#include <util/ast_util.h>
+#include <util/util_types.h>
 
 namespace MicroModelica {
 namespace IR {
@@ -74,7 +74,7 @@ class ModelAnnotation {
   public:
   ModelAnnotation();
   ~ModelAnnotation() = default;
-  void eventComment(AST_Comment x);
+  void expComment(AST_Comment x, int id);
   bool insert(AST_Argument_Modification x);
   void setDesc(string desc);
   string desc();
@@ -136,8 +136,17 @@ class ModelAnnotation {
   list<AST_Expression> BDFPartition();
   int BDFPartitionDepth();
   double BDFMaxStep();
+  string EventId();
+  IR::MATRIX::UserDefMatrixExps HDMatrix();
+  IR::MATRIX::UserDefMatrixExps HZMatrix();
+  IR::MATRIX::UserDefMatrixExps HHMatrix();
+  IR::MATRIX::UserDefMatrixExps LHSSTMatrix();
+  IR::MATRIX::UserDefMatrixExps LHSDSCMatrix();
+  IR::MATRIX::UserDefMatrixExps RHSSTMatrix();
+  IR::MATRIX::UserDefMatrixExps SDMatrix();
+  IR::MATRIX::UserDefMatrixExps SZMatrix();
 
-  private:
+  protected:
   typedef enum {
     EXPERIMENT,
     DESC,
@@ -168,8 +177,18 @@ class ModelAnnotation {
     JACOBIAN,
     BDF_PARTITION,
     BDF_PARTITION_DEPTH,
-    BDF_MAX_STEP
+    BDF_MAX_STEP,
+    EVENT_ID,
+    HD_MATRIX,
+    HZ_MATRIX,
+    HH_MATRIX,
+    LHS_ST_MATRIX,
+    RHS_ST_MATRIX,
+    LHS_DSC_MATRIX,
+    SD_MATRIX,
+    SZ_MATRIX
   } type;
+
   void processAnnotation(string annot, AST_Modification_Equal x);
   void processArgument(AST_Argument_Modification arg);
   void processList(AST_Expression x, list<double> *l);
@@ -178,6 +197,7 @@ class ModelAnnotation {
   Solver getSolver(string s);
   PartitionMethod getPartitionMethod(string s);
   DT_Synch getDtSynch(string s);
+  void parseMatrix(AST_Expression exp, IR::MATRIX::UserDefMatrixExps& matrix);
 
   Solver _solver;
   string _solverString;
@@ -214,6 +234,16 @@ class ModelAnnotation {
   list<AST_Expression> _BDFPartition;
   int _BDFPartitionDepth;
   double _BDFMaxStep;
+  IR::MATRIX::UserDefMatrixExps _hd_matrix;
+  IR::MATRIX::UserDefMatrixExps _hz_matrix;
+  IR::MATRIX::UserDefMatrixExps _hh_matrix;
+  IR::MATRIX::UserDefMatrixExps _lhs_st_matrix;
+  IR::MATRIX::UserDefMatrixExps _rhs_st_matrix;
+  IR::MATRIX::UserDefMatrixExps _lhs_dsc_matrix;
+  IR::MATRIX::UserDefMatrixExps _sd_matrix;
+  IR::MATRIX::UserDefMatrixExps _sz_matrix;
+  string _event_ids;
+  int _current_exp_id;
 };
 
 typedef boost::variant<ModelAnnotation, FunctionAnnotation> AnnotationType;
@@ -228,11 +258,14 @@ class AnnotationValue {
   void setReal(double d);
   string str();
   void setStr(string s);
+  string plainStr();
+  void setPlainStr(string plain_str);
 
   private:
   int _integer;
   double _real;
   string _str;
+  string _plain_str;
 };
 
 class EvalAnnotation : public AST_Expression_Fold<AnnotationValue> {
@@ -249,4 +282,3 @@ class EvalAnnotation : public AST_Expression_Fold<AnnotationValue> {
 };
 }  // namespace IR
 }  // namespace MicroModelica
-#endif /* MMO_ANNOTATION_H_ */

@@ -152,7 +152,14 @@ ModelAnnotation::ModelAnnotation()
       _jacobian(0),
       _BDFPartition(),
       _BDFPartitionDepth(),
-      _BDFMaxStep(0)
+      _BDFMaxStep(0),
+      _hd_matrix(),
+      _hz_matrix(),
+      _hh_matrix(),
+      _sd_matrix(),
+      _sz_matrix(),
+      _event_ids(),
+      _current_exp_id(-1)
 {
   _annotations.insert(pair<string, ModelAnnotation::type>("experiment", EXPERIMENT));
   _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Description", DESC));
@@ -184,16 +191,26 @@ ModelAnnotation::ModelAnnotation()
   _annotations.insert(pair<string, ModelAnnotation::type>("MMO_BDF_Part", BDF_PARTITION));
   _annotations.insert(pair<string, ModelAnnotation::type>("MMO_BDF_PDepth", BDF_PARTITION_DEPTH));
   _annotations.insert(pair<string, ModelAnnotation::type>("MMO_BDF_Max_Step", BDF_MAX_STEP));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Event_Id", EVENT_ID));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_HD", HD_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_HZ", HZ_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_HH", HH_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_LHS_ST", LHS_ST_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_LHS_DSC", LHS_DSC_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_RHS_ST", RHS_ST_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_SD", SD_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_SZ", SZ_MATRIX));
   _sample.push_back(1e-2);
   _DQMin.push_back(1e-3);
   _DQRel.push_back(1e-3);
 }
 
-void ModelAnnotation::eventComment(AST_Comment x)
+void ModelAnnotation::expComment(AST_Comment x, int id)
 {
   if (x == nullptr) {
     return;
   }
+  _current_exp_id = id;
   _weight = -1;
   AST_ArgumentList al = x->arguments();
   AST_ArgumentListIterator it;
@@ -249,6 +266,15 @@ bool ModelAnnotation::insert(AST_Argument_Modification x)
     }
   } break;
   case WEIGHT:
+  case EVENT_ID:
+  case HD_MATRIX:
+  case HZ_MATRIX:
+  case HH_MATRIX:
+  case LHS_ST_MATRIX:
+  case LHS_DSC_MATRIX:
+  case RHS_ST_MATRIX:
+  case SD_MATRIX:
+  case SZ_MATRIX:
     processArgument(x);
     break;
   default:
@@ -401,6 +427,13 @@ Solver ModelAnnotation::getSolver(string s)
   return QSS;
 }
 
+void ModelAnnotation::parseMatrix(AST_Expression exp, IR::MATRIX::UserDefMatrixExps& matrix)
+{
+  AST_ExpressionList matrix_exps = newAST_ExpressionList();
+  processExpressionList(exp, matrix_exps);
+  matrix[_current_exp_id] = matrix_exps;
+}
+
 void ModelAnnotation::processAnnotation(string annot, AST_Modification_Equal x)
 {
   map<string, ModelAnnotation::type>::const_iterator itf = _annotations.find(annot);
@@ -507,6 +540,33 @@ void ModelAnnotation::processAnnotation(string annot, AST_Modification_Equal x)
     break;
   case BDF_MAX_STEP:
     _BDFMaxStep = av.real();
+    break;
+  case EVENT_ID:
+    _event_ids = av.plainStr();
+    break;
+  case HD_MATRIX:
+    parseMatrix(x->exp(), _hd_matrix);
+    break;
+  case HZ_MATRIX:
+    parseMatrix(x->exp(), _hz_matrix);
+    break;
+  case HH_MATRIX:
+    parseMatrix(x->exp(), _hh_matrix);
+    break;
+  case LHS_ST_MATRIX:
+    parseMatrix(x->exp(), _lhs_st_matrix);
+    break;
+  case RHS_ST_MATRIX:
+    parseMatrix(x->exp(), _rhs_st_matrix);
+    break;
+  case LHS_DSC_MATRIX:
+    parseMatrix(x->exp(), _lhs_dsc_matrix);
+    break;
+  case SD_MATRIX:
+    parseMatrix(x->exp(), _sd_matrix);
+    break;
+  case SZ_MATRIX:
+    parseMatrix(x->exp(), _sz_matrix);
     break;
   default:
     break;
@@ -628,9 +688,33 @@ int ModelAnnotation::BDFPartitionDepth() { return _BDFPartitionDepth; }
 
 double ModelAnnotation::BDFMaxStep() { return _BDFMaxStep; }
 
+void ModelAnnotation::setParallel(bool p) { _parallel = p; }
+
+bool ModelAnnotation::parallel() { return _parallel; }
+
+int ModelAnnotation::polyCoeffs() { return _polyCoeffs; }
+
+string ModelAnnotation::EventId() { return _event_ids; }
+
+IR::MATRIX::UserDefMatrixExps ModelAnnotation::HDMatrix() { return _hd_matrix; }
+
+IR::MATRIX::UserDefMatrixExps ModelAnnotation::HZMatrix() { return _hz_matrix; }
+
+IR::MATRIX::UserDefMatrixExps ModelAnnotation::HHMatrix() { return _hh_matrix; }
+
+IR::MATRIX::UserDefMatrixExps ModelAnnotation::LHSSTMatrix() { return _lhs_st_matrix; }
+
+IR::MATRIX::UserDefMatrixExps ModelAnnotation::LHSDSCMatrix() { return _lhs_dsc_matrix; }
+
+IR::MATRIX::UserDefMatrixExps ModelAnnotation::RHSSTMatrix() { return _rhs_st_matrix; }
+
+IR::MATRIX::UserDefMatrixExps ModelAnnotation::SDMatrix() { return _sd_matrix; }
+
+IR::MATRIX::UserDefMatrixExps ModelAnnotation::SZMatrix() { return _sz_matrix; }
+
 /* AnnotationValue class */
 
-AnnotationValue::AnnotationValue() : _integer(0), _real(0), _str("") {}
+AnnotationValue::AnnotationValue() : _integer(0), _real(0), _str(), _plain_str() {}
 
 AnnotationValue::~AnnotationValue() {}
 
@@ -645,6 +729,10 @@ void AnnotationValue::setReal(double d) { _real = d; }
 string AnnotationValue::str() { return _str; }
 
 void AnnotationValue::setStr(string s) { _str = s; }
+
+string AnnotationValue::plainStr() { return _plain_str; }
+
+void AnnotationValue::setPlainStr(string plain_str) { _plain_str = plain_str; }
 
 /* EvalAnnotation class */
 
@@ -691,6 +779,7 @@ AnnotationValue EvalAnnotation::foldTraverseElement(AST_Expression e)
   switch (e->expressionType()) {
   case EXPSTRING:
     av.setStr(e->getAsString()->print());
+    av.setPlainStr(e->getAsString()->str());
     break;
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = e->getAsComponentReference();
@@ -807,10 +896,5 @@ AnnotationValue EvalAnnotation::foldTraverseElementUMinus(AST_Expression e)
   return av;
 }
 
-void ModelAnnotation::setParallel(bool p) { _parallel = p; }
-
-bool ModelAnnotation::parallel() { return _parallel; }
-
-int ModelAnnotation::polyCoeffs() { return _polyCoeffs; }
 }  // namespace IR
 }  // namespace MicroModelica
