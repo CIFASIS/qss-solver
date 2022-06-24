@@ -510,7 +510,22 @@ AST_Expression newAST_Expression_OutputExpressions(AST_ExpressionList exp_list) 
 
 AST_Expression newAST_Expression_Brace(AST_ExpressionList el) { return new AST_Expression_Brace_(el); }
 
-AST_Expression newAST_BracketExpList(AST_ExpressionListList) { return newAST_Expression_Null(); }
+AST_Expression newAST_BracketExpList(AST_ExpressionListList expss)
+{
+  AST_ExpressionListListIterator exps_it = expss->begin();
+  AST_ExpressionListIterator exps_range_it;
+  AST_ExpressionList l = newAST_ExpressionList();
+  foreach (exps_it, expss) {
+    if (current_element(exps_it)->size()) {
+      foreach (exps_range_it, current_element(exps_it)){
+        if (current_element(exps_range_it)->expressionType() == EXPRANGE) {
+          l = AST_ListAppend(l, current_element(exps_range_it));
+        }
+      }
+    }
+  }
+  return new AST_Expression_Bracket_(l);
+}
 
 AST_Expression newAST_Expression_ElseIf(AST_Expression c, AST_Expression t) { return new AST_Expression_If_ElseIf_(c, t); }
 
