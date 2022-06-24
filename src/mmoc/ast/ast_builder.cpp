@@ -140,7 +140,7 @@ AST_Argument AST_ArgumentSet(bool each, bool final, AST_Argument arg)
 
 AST_EquationList newAST_EquationList() { return new list<AST_Equation>(); }
 
-AST_Equation newAST_Equation_Equality(AST_Expression left, AST_Expression right) { return new AST_Equation_Equality_(left, right); }
+AST_Equation newAST_Equation_Equality(AST_Expression left, AST_Expression right, AST_Comment comment) { return new AST_Equation_Equality_(left, right, comment); }
 
 AST_Equation newAST_Equation_Connect(AST_Expression_ComponentReference cr1, AST_Expression_ComponentReference cr2)
 {

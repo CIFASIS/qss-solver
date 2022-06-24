@@ -45,13 +45,15 @@ void AST_Equation_Equality_::setLeft(AST_Expression e) { _left = e; }
 
 void AST_Equation_Equality_::setRight(AST_Expression e) { _right = e; }
 
-AST_Equation_Equality_::AST_Equation_Equality_(AST_Expression left, AST_Expression right) : _left(left), _right(right) {}
+AST_Equation_Equality_::AST_Equation_Equality_(AST_Expression left, AST_Expression right, AST_Comment comment) : _left(left), _right(right), _comment(comment) {}
 
 AST_Expression AST_Equation_Equality_::left() const { return _left; }
 
 AST_Expression AST_Equation_Equality_::right() const { return _right; }
 
 EquationType AST_Equation_Equality_::equationType() { return EQEQUALITY; }
+
+AST_Comment AST_Equation_Equality_::comment() const { return _comment; }
 
 GET_AS_IMP(Equation, Equality);
 

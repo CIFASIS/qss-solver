@@ -111,7 +111,7 @@ AST_CompositionElement newAST_CompositionElement(AST_ElementList);
 
 /* Equations */
 AST_EquationList newAST_EquationList();
-AST_Equation newAST_Equation_Equality(AST_Expression, AST_Expression);
+AST_Equation newAST_Equation_Equality(AST_Expression, AST_Expression, AST_Comment);
 AST_Equation newAST_Equation_Connect(AST_Expression_ComponentReference, AST_Expression_ComponentReference);
 AST_Equation newAST_Equation_If(AST_Expression e, AST_EquationList eql, AST_Equation_ElseList, AST_EquationList);
 AST_Equation newAST_Equation_For(AST_ForIndexList, AST_EquationList eql);
