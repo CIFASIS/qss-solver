@@ -15,11 +15,11 @@
 #define _R __PAR__R
 #define _idx_out_exp_1(d1) ((d1-1))
 #define _eval_out_exp_1(d1) ((d1-1))
-#define _is_var_out_exp_1(idx) idx >= 0 && idx < 9
+#define _is_var_out_exp_1(idx) idx >= 0 && idx < 10
 #define _get_out_exp_1_idxs(idx)\
 		_d1 = (idx)+ 1;
-#define _idx_out_exp_2 9
-#define _eval_out_exp_2 9
+#define _idx_out_exp_2 10
+#define _eval_out_exp_2 10
 #define _idx_a1(d1,coeff) ((d1-1))
 #define _state_idx_a1(d1,coeff) ((d1-1))*3 + coeff
 #define _a1(d1,coeff) a[_state_idx_a1(d1,coeff)]
