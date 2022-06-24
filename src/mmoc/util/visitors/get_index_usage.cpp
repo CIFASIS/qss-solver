@@ -19,7 +19,8 @@
 
 #include "get_index_usage.h"
 
-#include "../error.h"
+#include <util/error.h>
+#include <util/model_config.h>
 
 namespace MicroModelica {
 using namespace IR;
@@ -35,10 +36,15 @@ Usage GetIndexUsage::foldTraverseElement(AST_Expression exp)
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
+    Option<Variable> var = ModelConfig::instance().lookup(cr->name());
+    if (!var) {
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "get_index_usage.cpp:40 %s", cr->name().c_str());
+      break;
+    }
     if (_in_index_list) {
       ret.push_back(USED);
     }
-    if (cr->hasIndexes()) {
+    if (cr->hasIndexes() && !(var->isParameter() && _in_index_list)) {
       assert(!_in_index_list);
       _in_index_list = true;
       AST_ExpressionList indexes = cr->firstIndex();

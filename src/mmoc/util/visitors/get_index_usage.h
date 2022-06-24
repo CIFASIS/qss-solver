@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include "../../ir/index.h"
-#include "../ast_util.h"
+#include <ir/index.h>
+#include <util/ast_util.h>
 
 namespace MicroModelica {
 namespace Util {
