@@ -41,4 +41,4 @@ jobs:
       working-directory: ./src
       run: |
         make test
-        for i in *.failed; do cat $i; done
+        for i in mmoc/tests/integration/test_data/*.failed; do cat $i; done
