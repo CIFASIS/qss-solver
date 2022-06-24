@@ -38,7 +38,7 @@ bool ConvertOutputRange::checkExpression(AST_Expression exp)
 {
   if (exp->expressionType() == EXPCOMPREF) {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-    Option<Variable> var = ModelConfig::instance().lookup(_var);
+    Option<Variable> var = ModelConfig::instance().lookup(cr->name());
     assert(var);
     return var->isParameter();
   }
