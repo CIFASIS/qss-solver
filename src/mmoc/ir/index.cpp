@@ -225,9 +225,9 @@ string RangeDefinition::endExp(bool convert_params, bool c_index) const
   return generateExp(_end_exp, ((c_index) ? cEnd() : end()), convert_params);
 }
 
-Range::Range() : _ranges(), _index_pos(), _size(1), _type(RANGE::For) {}
+Range::Range() : _ranges(), _index_pos(), _size(1), _type(RANGE::For), _fixed(true) {}
 
-Range::Range(AST_Equation_For eqf, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type)
+Range::Range(AST_Equation_For eqf, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type), _fixed(true)
 {
   AST_ForIndexList fil = eqf->forIndexList();
   setRangeDefinition(fil);
