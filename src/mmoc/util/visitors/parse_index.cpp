@@ -41,7 +41,6 @@ AST_Expression ParseIndex::foldTraverseElement(AST_Expression exp)
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
     _variable = cr->name();
-    assert(!cr->hasIndexes());
     break;
   }
   case EXPOUTPUT: {
