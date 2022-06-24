@@ -124,12 +124,20 @@ void setupIntervals(Expression exp, MultiInterval& intervals, DimRange& dim_rang
   addDims(max_dim, index_size, intervals, offset);
 }
 
+bool checkFixedRange(Option<Range> range)
+{
+  if (range) {
+    return range->fixed();
+  }
+  return true;
+}
+
 Set buildSet(Equation eq, string eq_id, int offset, size_t max_dim, EqUsage& eq_usage)
 {
   Usage usage;
   DimRange dim_range;
   MultiInterval equation_intervals;
-  if (eq.hasRange()) {
+  if (eq.hasRange() && checkFixedRange(eq.range())) {
     setupUsage(eq.range().get(), usage, dim_range, offset);
     Expression lhs = eq.lhs();
     setupIntervals(lhs, equation_intervals, dim_range, offset, max_dim);
@@ -218,6 +226,7 @@ void addStatements(StatementTable stms, list<Deps::SetVertex>& nodes, Option<Ran
 {
   StatementTable::iterator stm_it;
   int stm_count = 1;
+  const bool FIXED_RANGE = checkFixedRange(ev_range);
   for (Statement stm = stms.begin(stm_it); !stms.end(stm_it); stm = stms.next(stm_it)) {
     int asg_nbr = 1;
     ExpressionList assignments = stm.assignments(search);
@@ -225,11 +234,14 @@ void addStatements(StatementTable stms, list<Deps::SetVertex>& nodes, Option<Ran
       std::stringstream ev_name;
       Option<Range> stm_range = (stm.isForStatement()) ? stm.range() : ev_range;
       Option<Range> stm_ev_range = (stm.isForStatement()) ? ev_range : Option<Range>();
-      ev_name << "EV_" << id << "_" << token << "_" << stm_count << "_" << asg_nbr++;
-      Set range = buildSet(asg, ev_name.str(), offset, max_dim, usage, stm_range, stm_ev_range);
-      Deps::SetVertex node = Deps::SetVertex(ev_name.str(), offset, range, id, Deps::VertexDesc(type));
-      offset += range.size();
-      nodes.push_back(node);
+      const bool STM_FIXED_RANGE = (stm.isForStatement()) ? checkFixedRange(stm.range()) : true;
+      if (FIXED_RANGE && STM_FIXED_RANGE) {
+        ev_name << "EV_" << id << "_" << token << "_" << stm_count << "_" << asg_nbr++;
+        Set range = buildSet(asg, ev_name.str(), offset, max_dim, usage, stm_range, stm_ev_range);
+        Deps::SetVertex node = Deps::SetVertex(ev_name.str(), offset, range, id, Deps::VertexDesc(type));
+        offset += range.size();
+        nodes.push_back(node);
+      }
     }
     stm_count++;
   }
