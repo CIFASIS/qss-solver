@@ -21,17 +21,21 @@
 
 #include <sstream>
 
-#include "../../ast/ast_builder.h"
-#include "../error.h"
-#include "../model_config.h"
-#include "../util.h"
+#include <util/error.h>
+#include <util/model_config.h>
+#include <util/util.h>
+#include <util/visitors/get_index_usage.h>
 
 namespace MicroModelica {
 using namespace Deps;
 using namespace IR;
 namespace Util {
 
-ReplaceIndex::ReplaceIndex(Range range, Usage usage, bool range_idxs) : _range(range), _usage(usage), _range_idxs(range_idxs) {}
+ReplaceIndex::ReplaceIndex(Range range, AST_Expression exp, bool range_idxs) : _range(range), _usage(), _range_idxs(range_idxs)
+{
+  GetIndexUsage usage;
+  _usage = usage.apply(exp);
+}
 
 AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
 {
@@ -47,12 +51,27 @@ AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
       AST_ExpressionList l = newAST_ExpressionList();
       assert(indexes->size() == (size_t)_usage.size());
       foreach (it, indexes) {
-        if (_usage[i] == USED) {
-          string var = _range.iterator(i, _range_idxs);
-          ReplaceVar rv(var);
-          l = AST_ListAppend(l, rv.apply(current_element(it)));
-        } else {
-          l = AST_ListAppend(l, current_element(it));
+        bool is_parameter = false;
+        if (current_element(it)->expressionType() == EXPCOMPREF) {
+          AST_Expression_ComponentReference index_cr = current_element(it)->getAsComponentReference();
+          Option<Variable> var = ModelConfig::instance().lookup(index_cr->name());
+          if (!var) {
+            Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "replace_index.cpp:48 %s", cr->name().c_str());
+            break;
+          }
+          is_parameter = var->isParameter();
+        }
+        if (is_parameter) {
+          ReplaceIndex replace_param = ReplaceIndex(_range, current_element(it), _range_idxs);
+          l = AST_ListAppend(l, replace_param.apply(current_element(it)));    
+        } else { 
+          if (_usage[i] == USED) {
+            string var = _range.iterator(i, _range_idxs);
+            ReplaceVar rv(var);
+            l = AST_ListAppend(l, rv.apply(current_element(it)));
+          } else {
+            l = AST_ListAppend(l, current_element(it));
+          }
         }
         i++;
       }
