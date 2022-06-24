@@ -10,6 +10,7 @@ test_results ()
     RESULT="$(diff "$GT_FILE" "$TEST_FILE")"
     if [ -n "$RESULT" ]; then
         echo "Model " $MODEL " test failed for " $TEST_FILE
+        echo $RESULT
         diff "$GT_FILE" "$TEST_FILE" > $TEST_FILE.failed
     fi     
 }
