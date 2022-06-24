@@ -359,8 +359,9 @@ void Model::addFunction(SymbolTable symbols, FunctionTable &fs)
       }
       CompiledFunction cf(s, fa.includeDirectory(), fa.libraryDirectory(), libraries);
       Utils::instance().addCompiledFunction(cf);
+      _externalFunctions = true;
     }
-  }
+  } 
 }
 
 void Model::setCalledFunctions(FunctionTable &fs)
@@ -416,6 +417,7 @@ void Model::addEquation(AST_Equation eq, Option<Range> range)
   EQUATION::Type t = (_annotations.isClassic() ? EQUATION::ClassicDerivative : EQUATION::QSSDerivative);
   if (eqe->left()->expressionType() == EXPDERIVATIVE) {
     Equation mse(eq, range, t, _derivativeId);
+    _annotations.expComment(eqe->comment(), _derivativeId);
     _derivatives.insert(_derivativeId++, mse);
   } else if (eqe->left()->expressionType() == EXPCOMPREF) {
     Equation mse(eq, range, EQUATION::Algebraic, _algebraicId);
@@ -512,9 +514,9 @@ void Model::addEvent(AST_Statement stm, Option<Range> range)
 {
   if (stm->statementType() == STWHEN) {
     AST_Statement_When sw = stm->getAsWhen();
-    _annotations.eventComment(sw->comment());
+    _annotations.expComment(sw->comment(), _eventId);
     addVariable(_eventId, range, EQUATION::Type::ZeroCrossing, _eventNbr);
-    Event event(sw->condition(), _eventId, _eventNbr, range);
+    Event event(sw->condition(), _eventId, _eventNbr, range, _annotations.EventId());
     _eventNbr += (range ? range->size() : 1);
     AST_StatementList stl = sw->statements();
     AST_StatementListIterator it;
@@ -530,7 +532,7 @@ void Model::addEvent(AST_Statement stm, Option<Range> range)
         Event else_event = event;
         if (!else_event.compare(se->condition())) {
           addVariable(_eventId + 1, range, EQUATION::Type::ZeroCrossing, _eventNbr);
-          else_event = Event(se->condition(), _eventId + 1, _eventNbr, range);
+          else_event = Event(se->condition(), _eventId + 1, _eventNbr, range, _annotations.EventId());
           _eventNbr += (range ? range->size() : 1);
           new_event = true;
         }
