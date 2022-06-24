@@ -11,7 +11,7 @@ test_results ()
     if [ -n "$RESULT" ]; then
         echo "Model " $MODEL " test failed for " $TEST_FILE
         echo $RESULT
-        echo $TEST_FILE
+        cat $TEST_FILE
         diff "$GT_FILE" "$TEST_FILE" > $TEST_FILE.failed
     fi     
 }
