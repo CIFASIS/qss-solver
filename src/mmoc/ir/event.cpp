@@ -42,11 +42,12 @@ Event::Event()
       _positive_handler_id(0),
       _negative_handler_id(0),
       _id(0),
-      _offset(0)
+      _offset(0),
+      _event_id()
 {
 }
 
-Event::Event(AST_Expression cond, int id, int offset, Option<Range> range)
+Event::Event(AST_Expression cond, int id, int offset, Option<Range> range, string event_id)
     : _zero_crossing(),
       _positive_handler(),
       _negative_handler(),
@@ -57,7 +58,8 @@ Event::Event(AST_Expression cond, int id, int offset, Option<Range> range)
       _positive_handler_id(0),
       _negative_handler_id(0),
       _id(id),
-      _offset(offset)
+      _offset(offset),
+      _event_id(event_id)
 {
   ConvertCondition cc;
   _zero_crossing = Equation(cc.apply(getExpression(cond)), range, EQUATION::ZeroCrossing, id, offset);
@@ -154,6 +156,8 @@ string Event::config() const
   }
   return buffer.str();
 }
+
+bool Event::compareEventID(std::string event_id) { cout << "EV " << _event_id << endl; return _event_id.compare(event_id) == 0; }
 
 EquationTable zeroCrossingTable(EventTable events)
 {

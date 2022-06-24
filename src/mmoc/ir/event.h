@@ -17,13 +17,12 @@
 
  ******************************************************************************/
 
-#ifndef MMO_EVENT_H_
-#define MMO_EVENT_H_
+#pragma once
 
-#include "../ast/ast_types.h"
-#include "../util/table.h"
-#include "equation.h"
-#include "statement.h"
+#include <ast/ast_types.h>
+#include <util/table.h>
+#include <ir/equation.h>
+#include <ir/statement.h>
 
 namespace MicroModelica {
 namespace IR {
@@ -51,7 +50,7 @@ typedef enum {
 class Event {
   public:
   Event();
-  Event(AST_Expression cond, int id, int offset, Option<Range> range);
+  Event(AST_Expression cond, int id, int offset, Option<Range> range, std::string event_id);
   ~Event() = default;
 
   inline Equation zeroCrossing() { return _zero_crossing; };
@@ -75,6 +74,7 @@ class Event {
   bool isValid() const { return _zero_crossing.isValid(); };
   std::string config() const;
   inline Option<Range> range() const { return _range; };
+  bool compareEventID(std::string event_id);
 
   private:
   AST_Expression getExpression(AST_Expression zc);
@@ -89,6 +89,7 @@ class Event {
   int _negative_handler_id;
   int _id;
   int _offset;
+  std::string _event_id;
 };
 
 typedef ModelTable<int, Event> EventTable;
@@ -99,5 +100,3 @@ EquationTable zeroCrossingTable(EventTable events);
 
 }  // namespace IR
 }  // namespace MicroModelica
-
-#endif /*  MMO_EVENT_H_ */
