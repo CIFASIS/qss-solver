@@ -6,6 +6,31 @@
 
 static unsigned long *marked = NULL;
 
+int
+mmo_integer(double v)
+{
+  return floor(v);
+}
+
+double
+mmo_rand_seed(double v, double seed)
+{
+  srand(seed);
+  double y;
+  y = v * rand() / RAND_MAX;
+  return y;
+}
+
+double
+mmo_rand_int(double v, double i)
+{
+  double ret = mmo_integer(mmo_rand(v));
+  while (ret == i) {
+    ret = mmo_integer(mmo_rand(v));
+  }
+  return ret;
+}
+
 double
 mmo_rand(double v)
 {
