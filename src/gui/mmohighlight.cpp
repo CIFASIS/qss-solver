@@ -102,6 +102,15 @@ MmoHighlighter::MmoHighlighter(QTextDocument *parent, h_type file) : QSyntaxHigh
                     << "\\bMMO_BDF_PDepth\\b"
                     << "\\bMMO_BDF_Max_Step\\b"
                     << "\\bMMO_StoreData\\b"
+                    << "\\bMMO_HD\\b"
+                    << "\\bMMO_HZ\\b"
+                    << "\\bMMO_HH\\b"
+                    << "\\bMMO_LHS_ST\\b"
+                    << "\\bMMO_RHS_ST\\b"
+                    << "\\bMMO_LHS_DSC\\b"
+                    << "\\bMMO_SD\\b"
+                    << "\\bMMO_SZ\\b"
+                    << "\\bMMO_Event_Id\\b"
                     << "\\bderivative\\b";
 
     foreach (const QString &pattern, keywordPatterns) {
