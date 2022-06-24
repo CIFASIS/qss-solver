@@ -83,7 +83,8 @@ IRSRC = $(IRDIR)/mmo_model_checker.cpp  \
 				$(IRDIR)/compute_deps.cpp \
 				$(IRDIR)/model_matrix.cpp \
 				$(IRDIR)/model_matrix_gen.cpp \
-				$(IRDIR)/node_selector.cpp
+				$(IRDIR)/node_selector.cpp \
+				$(IRDIR)/user_def_matrix.cpp
 
 PARSERSRC = $(PARSERDIR)/mocc_parser.cpp \
 			$(PARSERDIR)/mocc_scanner.cpp \

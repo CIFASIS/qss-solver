@@ -22,6 +22,7 @@
 #include <sstream>
 
 #include <deps/builders/eq_graph_builder.h>
+#include <ir/user_def_matrix.h>
 #include <util/model_config.h>
 
 namespace MicroModelica {
@@ -30,13 +31,13 @@ using namespace SB;
 using namespace Util;
 namespace IR {
 
-template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T>
-ModelMatrix<GraphBuilder, MatrixBuilder, Config, T>::ModelMatrix() : _mode(MATRIX::Normal), _access({"",""})
+template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T, typename N>
+ModelMatrix<GraphBuilder, MatrixBuilder, Config, T, N>::ModelMatrix() : _mode(MATRIX::Normal), _access({"",""})
 {
 }
 
-template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T>
-void ModelMatrix<GraphBuilder, MatrixBuilder, Config, T>::build(Config config)
+template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T, typename N>
+void ModelMatrix<GraphBuilder, MatrixBuilder, Config, T, N>::build(Config config)
 {
   EquationTable algebraics = ModelConfig::instance().algebraics();
   VarSymbolTable symbols = ModelConfig::instance().symbols();
@@ -49,46 +50,50 @@ void ModelMatrix<GraphBuilder, MatrixBuilder, Config, T>::build(Config config)
   _model_matrix_def = model_matrix.def();
   _access[0] = model_matrix.config().access[0];
   _access[1] = model_matrix.config().access[1];
+  // Add any user definition entry if any.
+  UserDefMatrix<Config, N> user_def(config);
+  user_def.compute();
+  append(user_def.def());
 }
 
-template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T>
-string ModelMatrix<GraphBuilder, MatrixBuilder, Config, T>::alloc()
+template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T, typename N>
+string ModelMatrix<GraphBuilder, MatrixBuilder, Config, T, N>::alloc()
 {
   return _model_matrix_def.alloc[_mode];
 }
 
-template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T>
-string ModelMatrix<GraphBuilder, MatrixBuilder, Config, T>::init()
+template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T, typename N>
+string ModelMatrix<GraphBuilder, MatrixBuilder, Config, T, N>::init()
 {
   return _model_matrix_def.init[_mode];
 }
 
-template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T>
-string ModelMatrix<GraphBuilder, MatrixBuilder, Config, T>::accessVector() const
+template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T, typename N>
+string ModelMatrix<GraphBuilder, MatrixBuilder, Config, T, N>::accessVector() const
 {
   return _access[_mode];
 }
 
-template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T>
-bool ModelMatrix<GraphBuilder, MatrixBuilder, Config, T>::empty()
+template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T, typename N>
+bool ModelMatrix<GraphBuilder, MatrixBuilder, Config, T, N>::empty()
 {
   return _model_matrix_def.alloc[MATRIX::Normal].empty();
 }
 
-template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T>
-void ModelMatrix<GraphBuilder, MatrixBuilder, Config, T>::setMode(MATRIX::Mode mode)
+template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T, typename N>
+void ModelMatrix<GraphBuilder, MatrixBuilder, Config, T, N>::setMode(MATRIX::Mode mode)
 {
   _mode = mode;
 }
 
-template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T>
-ModelMatrixDef ModelMatrix<GraphBuilder, MatrixBuilder, Config, T>::def()
+template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T, typename N>
+ModelMatrixDef ModelMatrix<GraphBuilder, MatrixBuilder, Config, T, N>::def()
 {
   return _model_matrix_def;
 }
 
-template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T>
-void ModelMatrix<GraphBuilder, MatrixBuilder, Config, T>::append(ModelMatrixDef def)
+template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T, typename N>
+void ModelMatrix<GraphBuilder, MatrixBuilder, Config, T, N>::append(ModelMatrixDef def)
 {
   _model_matrix_def.alloc[MATRIX::Normal].append(def.alloc[MATRIX::Normal]);
   _model_matrix_def.init[MATRIX::Normal].append(def.init[MATRIX::Normal]);
@@ -96,27 +101,27 @@ void ModelMatrix<GraphBuilder, MatrixBuilder, Config, T>::append(ModelMatrixDef 
   _model_matrix_def.init[MATRIX::Transpose].append(def.init[MATRIX::Transpose]); 
 }
 
-template class ModelMatrix<SDSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable>;
+template class ModelMatrix<SDSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable, IR::Equation>;
 
-template class ModelMatrix<SZSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable>;
+template class ModelMatrix<SZSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable, IR::Equation>;
 
-template class ModelMatrix<SOSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable>;
+template class ModelMatrix<SOSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable, IR::Equation>;
 
-template class ModelMatrix<DOSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable>;
+template class ModelMatrix<DOSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable, IR::Equation>;
 
-template class ModelMatrix<Deps::DSCGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable>;
+template class ModelMatrix<Deps::DSCGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable, IR::Event>;
 
-template class ModelMatrix<Deps::LHSStGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable>;
+template class ModelMatrix<Deps::LHSStGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable, IR::Event>;
 
-template class ModelMatrix<Deps::RHSStGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable>;
+template class ModelMatrix<Deps::RHSStGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable, IR::Event>;
 
-template class ModelMatrix<Deps::HDGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable>;
+template class ModelMatrix<Deps::HDGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable, IR::Event>;
 
-template class ModelMatrix<Deps::HZGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable>;
+template class ModelMatrix<Deps::HZGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable, IR::Event>;
 
-template class ModelMatrix<Deps::HZSTGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable>;
+template class ModelMatrix<Deps::HZSTGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable, IR::Event>;
 
-template class ModelMatrix<Deps::HHGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable>;
+template class ModelMatrix<Deps::HHGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable, IR::Event>;
 
 }  // namespace IR
 }  // namespace MicroModelica
