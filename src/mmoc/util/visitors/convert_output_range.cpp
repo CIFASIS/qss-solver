@@ -32,7 +32,18 @@ using namespace IR;
 using namespace Deps;
 namespace Util {
 
-ConvertOutputRange::ConvertOutputRange() : _range(), _intervals(), _dim(0), _var(){};
+ConvertOutputRange::ConvertOutputRange() : _range(), _intervals(), _dim(0), _var(), _begin_exps(), _end_exps(){};
+
+bool ConvertOutputRange::checkExpression(AST_Expression exp)
+{
+  if (exp->expressionType() == EXPCOMPREF) {
+    AST_Expression_ComponentReference cr = exp->getAsComponentReference();
+    Option<Variable> var = ModelConfig::instance().lookup(_var);
+    assert(var);
+    return var->isParameter();
+  }
+  return false;
+}
 
 AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
 {
@@ -75,6 +86,8 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
     } else if (var->isConstant()) {
       SB::Interval interval(var->value(), 1, var->value());
       _intervals.addInter(interval);
+      _begin_exps.push_back(Expression());
+      _end_exps.push_back(Expression());
     }
     return exp;
   }
@@ -84,8 +97,20 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
     int count = 0;
     int range[3];
     EvalInitExp eval_init_exp;
+    Expression begin_exp;
+    Expression end_exp;
     foreach (it, range_exps) {
-      range[count++] = eval_init_exp.apply(current_element(it));
+      if (checkExpression(current_element(it))) {
+        if (count == 0) {
+          begin_exp = Expression(current_element(it));
+          range[count++] = 1;
+        } else {
+          end_exp = Expression(current_element(it));
+          range[count++] = 100;
+        }
+      } else {
+        range[count++] = eval_init_exp.apply(current_element(it));
+      }
     }
     AST_Expression lhs = nullptr;
     AST_Expression rhs = nullptr;
@@ -94,7 +119,7 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
     AST_Expression_ComponentReference_Add(idx, newAST_String(it_var), newAST_ExpressionList());
     int cte = 0;
     if (count == 2) {
-      SB::Interval interval(1, 1, range[1] - range[0]);
+      SB::Interval interval(1, 1, range[1] - range[0] + 1);
       _intervals.addInter(interval);
       cte = range[0] - 1;
       lhs = idx;
@@ -108,6 +133,8 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
         Error::instance().add(exp->lineNum(), EM_IR | EM_FOR_DEF, ER_Fatal, "Range interval not valid");
       }
     }
+    _begin_exps.push_back(begin_exp);
+    _end_exps.push_back(end_exp);
     if (cte >= 0) {
       rhs = newAST_Expression_Integer(cte);
       return newAST_Expression_BinOp(lhs, rhs, BINOPADD);
@@ -132,7 +159,9 @@ AST_Expression ConvertOutputRange::foldTraverseElement(AST_Expression exp)
 AST_Expression ConvertOutputRange::generateIndexVariable(int size)
 {
   SB::Interval interval(1, 1, size);
-  _intervals.addInter(interval);     
+  _intervals.addInter(interval);
+  _begin_exps.push_back(Expression());
+  _end_exps.push_back(Expression());
   string it_var = Utils::instance().iteratorVar(_dim);
   AST_Expression_ComponentReference idx = newAST_Expression_ComponentReference();
   AST_Expression_ComponentReference_Add(idx, newAST_String(it_var), newAST_ExpressionList());
@@ -154,7 +183,7 @@ Option<Range> ConvertOutputRange::range()
   if (constant) {
     return Option<Range>();
   }
-  _range.generate(buildSet(_intervals),1,vector<string>());
+  _range.generate(buildSet(_intervals), 1, vector<string>(), _begin_exps, _end_exps);
   return _range;
 }
 
