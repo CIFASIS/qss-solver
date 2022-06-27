@@ -51,6 +51,7 @@ class AST_Expression_ : public AST_Node_ {
   GET_AS(Expression, String);
   GET_AS(Expression, NamedArgument);
   GET_AS(Expression, ArrayIndex);
+  GET_AS(Expression, Bracket);
   AST_Expression_If_ElseIf getAsElseIf();
 };
 
@@ -296,6 +297,17 @@ class AST_Expression_ArrayIndex_ : public AST_Expression_ {
   private:
   AST_Expression _exp;
   int _size;
+};
+
+class AST_Expression_Bracket_ : public AST_Expression_ {
+  public:
+  AST_Expression_Bracket_(AST_ExpressionList ranges);
+  ExpressionType expressionType();
+  string print() const;
+  AST_ExpressionList ranges();
+
+  private:
+  AST_ExpressionList _ranges;
 };
 
 #endif /* AST_EXPRESSION_H_ */

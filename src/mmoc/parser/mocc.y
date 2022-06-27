@@ -602,7 +602,7 @@ equation_list:
 equation: 
     connect_clause comment                        { $$ = $1; }
   | if_equation comment                           { $$ = $1; }
-  | simple_expression TOKEQUAL expression comment { $$ = newAST_Equation_Equality($1,$3); }
+  | simple_expression TOKEQUAL expression comment { $$ = newAST_Equation_Equality($1,$3,$4); }
   | primary                                       { $$ = newAST_Equation_Call($1); } /* This must be a call only!!!!*/ 
   | for_equation comment                          { $$ = $1; }
   | when_equation comment                         { $$ = $1; }

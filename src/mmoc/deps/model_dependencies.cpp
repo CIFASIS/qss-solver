@@ -19,6 +19,7 @@
 
 #include "model_dependencies.h"
 
+#include <ir/annotation.h>
 #include <util/model_config.h>
 #include <util/util.h>
 
@@ -36,10 +37,7 @@ static constexpr char *EVENTS = "events";
 static constexpr char *OUTPUTS = "outputs";
 static constexpr char *DISCRETES = "discretes";
 
-ModelDependencies::ModelDependencies()
-    : _SD(), _SO(), _DO(), _SZ(), _LHSSt(), _RHSSt(), _LHSDsc(), _HD(), _HZ(), _HH(), _JAC()
-{
-}
+ModelDependencies::ModelDependencies() : _SD(), _SO(), _DO(), _SZ(), _LHSSt(), _RHSSt(), _LHSDsc(), _HD(), _HZ(), _HH(), _JAC() {}
 
 SDMatrix ModelDependencies::SD() { return _SD; }
 
@@ -134,6 +132,8 @@ JacobianMatrix ModelDependencies::JAC() { return _JAC; }
 void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, EquationTable algs, EventTable events)
 {
   ModelConfig::instance().setLocalInitSymbols();
+  ModelAnnotation annotations = ModelConfig::instance().modelAnnotations();
+
   IR::MATRIX::EQMatrixConfig SDCfg(INT_CONTAINER, vector<string>{"nSD", "nDS", "SD", "DS"}, vector<string>{STATES, STATES},
                                    vector<string>{"", ""}, EQSelector(eqs));
 
@@ -154,33 +154,39 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, Equati
   _SZ.build(SZCfg);
 
   IR::MATRIX::EVMatrixConfig LHSSTCfg(INT_CONTAINER, vector<string>{"event", "event", "event", "event"}, vector<string>{EVENTS, EVENTS},
-                                      vector<string>{"nLHSSt", "LHSSt"}, STATEMENT::LHS, EVSelector(events));
+                                      vector<string>{"nLHSSt", "LHSSt"}, STATEMENT::LHS, annotations.LHSSTMatrix(),
+                                      EVSelector(events));
 
   _LHSSt.build(LHSSTCfg);
 
   IR::MATRIX::EVMatrixConfig RHSSTCfg(INT_CONTAINER, vector<string>{"event", "event", "event", "event"}, vector<string>{EVENTS, EVENTS},
-                                      vector<string>{"nRHSSt", "RHSSt"}, STATEMENT::RHS, EVSelector(events));
+                                      vector<string>{"nRHSSt", "RHSSt"}, STATEMENT::RHS, annotations.RHSSTMatrix(),
+                                      EVSelector(events));
 
   _RHSSt.build(RHSSTCfg);
 
   IR::MATRIX::EVMatrixConfig LHSDSCCfg(INT_CONTAINER, vector<string>{"event", "event", "event", "event"}, vector<string>{EVENTS, EVENTS},
-                                       vector<string>{"nLHSDsc", "LHSDsc"}, STATEMENT::LHS, EVSelector(events));
+                                       vector<string>{"nLHSDsc", "LHSDsc"}, STATEMENT::LHS, annotations.LHSDSCMatrix(),
+                                       EVSelector(events));
   _LHSDsc.build(LHSDSCCfg);
 
   IR::MATRIX::EVMatrixConfig HDCfg(INT_CONTAINER, vector<string>{"nDH", "nHD", "DH", "HD"}, vector<string>{STATES, EVENTS},
-                                       vector<string>{"", ""}, STATEMENT::LHS, EVSelector(events));
+                                   vector<string>{"", ""}, STATEMENT::LHS, annotations.HDMatrix(), EVSelector(events));
   _HD.build(HDCfg);
 
   IR::MATRIX::EVMatrixConfig HZCfg(INT_CONTAINER, vector<string>{"nZH", "nHZ", "ZH", "HZ"}, vector<string>{EVENTS, EVENTS},
-                                       vector<string>{"", ""}, STATEMENT::LHS, EVSelector(events));
+                                   vector<string>{"", ""}, STATEMENT::LHS, annotations.HZMatrix(), EVSelector(events));
   _HZ.build(HZCfg);
+
+  IR::MATRIX::EVMatrixConfig HZSTCfg(INT_CONTAINER, vector<string>{"nZH", "nHZ", "ZH", "HZ"}, vector<string>{EVENTS, EVENTS},
+                                   vector<string>{"", ""}, STATEMENT::LHS, IR::MATRIX::UserDefMatrixExps(), EVSelector(events));
 
   IR::HZSTMatrix HZST;
   HZST.build(HZCfg);
   _HZ.append(HZST.def());
 
   IR::MATRIX::EVMatrixConfig HHCfg(INT_CONTAINER, vector<string>{"nHH", "nHH", "HH", "HH"}, vector<string>{EVENTS, EVENTS},
-                                       vector<string>{"", ""}, STATEMENT::LHS, EVSelector(events));
+                                   vector<string>{"", ""}, STATEMENT::LHS, annotations.HHMatrix(), EVSelector(events));
   _HH.build(HHCfg);
 
   ModelConfig::instance().unsetLocalInitSymbols();

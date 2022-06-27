@@ -402,10 +402,10 @@ void ModelChecker::visit(AST_Statement x)
   StatementType st = x->statementType();
   switch (st) {
   case STWHILE:
-    Error::instance().add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "While statement.");
+    Error::instance().add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "While statement not allowed.");
     break;
   case STBREAK:
-    Error::instance().add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Break statement.");
+    Error::instance().add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Break statement not allowed.");
     break;
   case STFOR: {
     AST_Statement_For ef = x->getAsFor();
@@ -446,6 +446,9 @@ void ModelChecker::visit(AST_Statement x)
       foreach (elt, ell) {
         visit(current_element(elt));
       }
+    }
+    if (sw->hasComment()) {
+      visit(sw->comment());
     }
     break;
   }

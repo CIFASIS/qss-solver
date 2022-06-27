@@ -19,16 +19,16 @@
 
 #pragma once
 
-#include "../../ast/ast_builder.h"
-#include "../../ir/index.h"
-#include "../ast_util.h"
+#include <ast/ast_builder.h>
+#include <ir/index.h>
+#include <util/ast_util.h>
 
 namespace MicroModelica {
 namespace Util {
 
 class ReplaceIndex : public AST_Expression_Visitor<AST_Expression> {
   public:
-  ReplaceIndex(IR::Range range, IR::Usage usage, bool range_idxs);
+  ReplaceIndex(IR::Range range, AST_Expression exp, bool range_idxs);
   ~ReplaceIndex() = default;
 
   private:

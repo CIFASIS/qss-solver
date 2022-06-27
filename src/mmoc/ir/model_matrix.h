@@ -30,7 +30,7 @@
 namespace MicroModelica {
 namespace IR {
 
-template<typename GraphBuilder, typename MatrixBuilder, typename Config, typename T>
+template<typename GraphBuilder, typename MatrixBuilder, typename Config, typename T, typename N>
 class ModelMatrix {
   public:
   ModelMatrix();
@@ -52,27 +52,27 @@ class ModelMatrix {
   std::string _access[2];
 };
 
-typedef ModelMatrix<Deps::SDSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable> SDMatrix;
+typedef ModelMatrix<Deps::SDSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable, IR::Equation> SDMatrix;
 
-typedef ModelMatrix<Deps::SZSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable> SZMatrix;
+typedef ModelMatrix<Deps::SZSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable, IR::Equation> SZMatrix;
 
-typedef ModelMatrix<Deps::SOSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable> SOMatrix;
+typedef ModelMatrix<Deps::SOSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable, IR::Equation> SOMatrix;
 
-typedef ModelMatrix<Deps::DOSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable> DOMatrix;
+typedef ModelMatrix<Deps::DOSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable, IR::Equation> DOMatrix;
 
-typedef ModelMatrix<Deps::DSCGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable> LHSDSCMatrix;
+typedef ModelMatrix<Deps::DSCGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable, IR::Event> LHSDSCMatrix;
 
-typedef ModelMatrix<Deps::LHSStGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable> LHSSTMatrix;
+typedef ModelMatrix<Deps::LHSStGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable, IR::Event> LHSSTMatrix;
 
-typedef ModelMatrix<Deps::RHSStGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable> RHSSTMatrix;
+typedef ModelMatrix<Deps::RHSStGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable, IR::Event> RHSSTMatrix;
 
-typedef ModelMatrix<Deps::HDGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable> HDMatrix;
+typedef ModelMatrix<Deps::HDGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable, IR::Event> HDMatrix;
 
-typedef ModelMatrix<Deps::HZGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable> HZMatrix;
+typedef ModelMatrix<Deps::HZGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable, IR::Event> HZMatrix;
 
-typedef ModelMatrix<Deps::HZSTGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable> HZSTMatrix;
+typedef ModelMatrix<Deps::HZSTGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable, IR::Event> HZSTMatrix;
 
-typedef ModelMatrix<Deps::HHGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable> HHMatrix;
+typedef ModelMatrix<Deps::HHGraphBuilder, Deps::EVModelMatrixBuilder, MATRIX::EVMatrixConfig, IR::EventTable, IR::Event> HHMatrix;
 
 }  // namespace IR
 }  // namespace MicroModelica

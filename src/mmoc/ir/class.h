@@ -17,26 +17,24 @@
 
  ******************************************************************************/
 
-#ifndef MMO_CLASS_H_
-#define MMO_CLASS_H_
+#pragma once
 
+#include <boost/variant/variant.hpp>
+#include <string>
 #include <list>
 #include <map>
-#include <string>
 #include <vector>
-#include <boost/variant/variant.hpp>
 
-#include "../ast/ast_types.h"
-#include "../deps/model_dependencies.h"
-#include "../util/util_types.h"
-#include "../util/util.h"
-
-#include "annotation.h"
-#include "reduction_functions.h"
-#include "statement.h"
-#include "equation.h"
-#include "event.h"
-#include "helpers.h"
+#include <ast/ast_types.h>
+#include <deps/model_dependencies.h>
+#include <util/util.h>
+#include <util/util_types.h>
+#include <ir/annotation.h>
+#include <ir/equation.h>
+#include <ir/event.h>
+#include <ir/helpers.h>
+#include <ir/reduction_functions.h>
+#include <ir/statement.h>
 
 namespace MicroModelica {
 namespace IR {
@@ -226,4 +224,3 @@ typedef Class* ClassPtr;
 
 }  // namespace IR
 }  // namespace MicroModelica
-#endif /* MMO_CLASS_H_ */

@@ -216,7 +216,12 @@ ostream &operator<<(ostream &out, const Variable &v)
 string Variable::declaration(string prefix)
 {
   stringstream buffer;
-  buffer << "double " << prefix << name();
+  if (type()->print() == "Integer") {
+    buffer << "int ";  
+  } else {
+    buffer << "double ";  
+  }
+  buffer << prefix << name();
   if (isArray()) {
     buffer << "[" << size() << "]";
   }

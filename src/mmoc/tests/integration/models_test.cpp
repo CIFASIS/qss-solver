@@ -23,14 +23,10 @@
 #include <cstdlib>
 #include <fstream>
 
-/// @file advection_model_test.cpp
-///
-
 /// @addtogroup QssSolverITests
 /// @{
 
-class ITests : public testing::TestWithParam<const char*> {
-};
+class ITests : public testing::TestWithParam<const char*> {};
 
 TEST_P(ITests, GenerateCode)
 {
@@ -38,7 +34,7 @@ TEST_P(ITests, GenerateCode)
   std::cout << "Testing model: " << NAME << std::endl;
   const std::string MODEL = " ./integration/gt_data/" + NAME + "/" + NAME + ".mo";
   const std::string MMOC = "../usr/bin/mmoc";
-  const std::string ARGS = " -o ./integration/test_data/" + NAME + " -t -i ./integration/gt_data/pkgs ";
+  const std::string ARGS = " -o ./integration/test_data/" + NAME + " -t -i ../../../packages ";
   const std::string TEST_CMD = "./integration/test_results.sh " + NAME;
   const std::string RESULT_FILE = "./integration/test_data/" + NAME + ".passed";
   const std::string COMP_CMD = MMOC + ARGS + MODEL + " > ./integration/test_data/" + NAME + ".log";
@@ -50,9 +46,9 @@ TEST_P(ITests, GenerateCode)
   EXPECT_TRUE(result.good());
 }
 
-const char* models[] = {"advection", "advection2D",    "advection2D_LI", "airconds", "aircont",   "bball_downstairs", "boost",
-                        "buck",      "buckboost",      "buck_circuit",   "cuk",      "cuk2",      "interleaved",      "inverters",
-                        "lc_line",   "lotka_volterra", "rectifier",      "rltest",   "rltest_LI", "spikings"};
+const char* models[] = {"advection", "advection2D", "advection2D_LI", "airconds",  "aircont", "bball_downstairs", "boost",
+                        "buck",      "buckboost",   "buck_circuit",   "cuk",       "cuk2",    "interleaved",      "inverters",
+                        "lc_line",     "lotka_volterra", "rectifier", "rltest",  "rltest_LI",        "spikings"};
 
 INSTANTIATE_TEST_SUITE_P(Models, ITests, testing::ValuesIn(models));
 

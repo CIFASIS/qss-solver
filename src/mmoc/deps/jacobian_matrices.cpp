@@ -34,9 +34,9 @@ using namespace SB;
 using namespace Util;
 namespace Deps {
 
-JacMatrixGenerator::JacMatrixGenerator() : _matrix(), _dv_dx(), _tabs(0) { ModelConfig::instance().setLocalInitSymbols(); }
+JacMatrixGenerator::JacMatrixGenerator() : _matrix(), _dv_dx(), _tabs(0) {}
 
-JacMatrixGenerator::~JacMatrixGenerator() { ModelConfig::instance().unsetLocalInitSymbols(); }
+JacMatrixGenerator::~JacMatrixGenerator() {}
 
 void JacMatrixGenerator::postProcess(SB::Deps::SetVertex vertex) {}
 

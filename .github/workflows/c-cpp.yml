@@ -39,4 +39,5 @@ jobs:
 
     - name: Tests
       working-directory: ./src
-      run: make test
+      run: |
+        make test

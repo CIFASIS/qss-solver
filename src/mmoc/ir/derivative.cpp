@@ -55,7 +55,7 @@ AST_Equation_Equality EquationDerivator::derivate(AST_Equation_Equality eq)
   GiNaC::symbol time = to_ginac.getTime();
   GiNaC::ex der_left = left.diff(time).subs(var(GiNaC::wild(), time) == GiNaC::wild());
   GiNaC::ex der_right = right.diff(time).subs(var(GiNaC::wild(), time) == GiNaC::wild());
-  return (newAST_Equation_Equality(to_exp.convert(der_left), to_exp.convert(der_right))->getAsEquality());
+  return (newAST_Equation_Equality(to_exp.convert(der_left), to_exp.convert(der_right), eq->comment())->getAsEquality());
 }
 
 AST_Expression ExpressionDerivator::derivate(AST_Expression exp, Expression e)

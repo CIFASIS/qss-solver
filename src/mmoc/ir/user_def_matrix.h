@@ -19,22 +19,33 @@
 
 #pragma once
 
-#include <ast/ast_builder.h>
-#include <util/ast_util.h>
+#include <string>
+
+#include <ir/model_matrix_gen.h>
 
 namespace MicroModelica {
-namespace Util {
-class ReplaceConstant : public AST_Expression_Visitor<AST_Expression> {
+namespace IR {
+
+template<typename Config, typename N>
+class UserDefMatrix {
   public:
-  ReplaceConstant();
-  ~ReplaceConstant() = default;
+  UserDefMatrix(Config matrix_config);
+  ~UserDefMatrix() = default;
 
-  private:
-  AST_Expression foldTraverseElement(AST_Expression exp);
-  AST_Expression foldTraverseElementUMinus(AST_Expression exp);
-  AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+  void compute();  
 
+  ModelMatrixDef def();
+  std::vector<std::string> accessVector();
+  
+  protected:
+  string component(MATRIX::Method method) const;
+  void printMatrix(MATRIX::Method method, MATRIX::Mode mode);
+  AST_Expression transformExp(AST_Expression exp);
+
+  ModelMatrixDef _model_matrix_def;
+  std::vector<std::string> _access_vector;
+  Config _matrix_config;
 };
 
-}  // namespace Util
+}  // namespace IR
 }  // namespace MicroModelica

@@ -86,7 +86,7 @@ void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
 	if (_is_var_out_exp_1(idx)) {
 		_get_out_exp_1_idxs(idx);
 		_apply_usage_out_exp_1(_d1);
-		if ((_d1 >= 1 && _d1 <= 9)) {
+		if ((_d1 >= 1 && _d1 <= 10)) {
 			_out = _x1(_d1,0);
 		}
 		return;
@@ -366,7 +366,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	QSS_data modelData = simulator->data;
 	MODEL_DATA_ACCESS(modelData)
 	int* states = (int*) malloc(11*sizeof(int));
-	int* outputs = (int*) malloc(10*sizeof(int));
+	int* outputs = (int*) malloc(11*sizeof(int));
 	int row, eq_var, c_row;
 	int x_ind;
 	int _d1;
@@ -591,29 +591,29 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	cleanVector(states, 0, 11);
 	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->time = QSS_Time(11,0,0,0,ST_Binary, NULL);
-	simulator->output = SD_Output("rltest_LI",10,0,11,NULL,0,0,CI_Step,SD_Memory,MOD_output);
+	simulator->output = SD_Output("rltest_LI",11,0,11,NULL,0,0,CI_Step,SD_Memory,MOD_output);
 	SD_output modelOutput = simulator->output;
 	modelOutput->nOS[_idx_out_exp_2]++;
-	for(_d1 = 1; _d1<=9; _d1+=1) {
+	for(_d1 = 1; _d1<=10; _d1+=1) {
 		modelOutput->nOS[_idx_out_exp_1(_d1)]++;
 	}
 	modelOutput->nSO[_idx_x2(1,0)]++;
-	for(_d1 = 1; _d1<=9; _d1+=1) {
+	for(_d1 = 1; _d1<=10; _d1+=1) {
 		modelOutput->nSO[_idx_x1(_d1,0)]++;
 	}
 	SD_allocOutputMatrix(modelOutput, 11, 0);
-	for(_d1 = 1; _d1<=9; _d1+=1) {
+	for(_d1 = 1; _d1<=10; _d1+=1) {
 		sprintf(modelOutput->variable[_idx_out_exp_1(_d1)].name, "x1[%d]",_d1);
 	}
 	sprintf(modelOutput->variable[_idx_out_exp_2].name, "x2[1]");
-	cleanVector(outputs, 0, 10);
+	cleanVector(outputs, 0, 11);
 	modelOutput->OS[_idx_out_exp_2][outputs[_idx_out_exp_2]++] = _idx_x2(1,0);
-	for(_d1 = 1; _d1<=9; _d1+=1) {
+	for(_d1 = 1; _d1<=10; _d1+=1) {
 		modelOutput->OS[_idx_out_exp_1(_d1)][outputs[_idx_out_exp_1(_d1)]++] = _idx_x1(_d1,0);
 	}
 	cleanVector(states, 0, 11);
 	modelOutput->SO[_idx_x2(1,0)][states[_idx_x2(1,0)]++] = _idx_out_exp_2;
-	for(_d1 = 1; _d1<=9; _d1+=1) {
+	for(_d1 = 1; _d1<=10; _d1+=1) {
 		modelOutput->SO[_idx_x1(_d1,0)][states[_idx_x1(_d1,0)]++] = _idx_out_exp_1(_d1);
 	}
 	simulator->model = QSS_Model(MOD_definition, MOD_dependencies, MOD_zeroCrossing, MOD_handlerPos, MOD_handlerNeg, MOD_jacobian, MOD_BDF_definition);

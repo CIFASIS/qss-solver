@@ -140,7 +140,7 @@ AST_Argument AST_ArgumentSet(bool each, bool final, AST_Argument arg)
 
 AST_EquationList newAST_EquationList() { return new list<AST_Equation>(); }
 
-AST_Equation newAST_Equation_Equality(AST_Expression left, AST_Expression right) { return new AST_Equation_Equality_(left, right); }
+AST_Equation newAST_Equation_Equality(AST_Expression left, AST_Expression right, AST_Comment comment) { return new AST_Equation_Equality_(left, right, comment); }
 
 AST_Equation newAST_Equation_Connect(AST_Expression_ComponentReference cr1, AST_Expression_ComponentReference cr2)
 {
@@ -510,7 +510,22 @@ AST_Expression newAST_Expression_OutputExpressions(AST_ExpressionList exp_list) 
 
 AST_Expression newAST_Expression_Brace(AST_ExpressionList el) { return new AST_Expression_Brace_(el); }
 
-AST_Expression newAST_BracketExpList(AST_ExpressionListList) { return newAST_Expression_Null(); }
+AST_Expression newAST_BracketExpList(AST_ExpressionListList expss)
+{
+  AST_ExpressionListListIterator exps_it = expss->begin();
+  AST_ExpressionListIterator exps_range_it;
+  AST_ExpressionList l = newAST_ExpressionList();
+  foreach (exps_it, expss) {
+    if (current_element(exps_it)->size()) {
+      foreach (exps_range_it, current_element(exps_it)){
+        if (current_element(exps_range_it)->expressionType() == EXPRANGE) {
+          l = AST_ListAppend(l, current_element(exps_range_it));
+        }
+      }
+    }
+  }
+  return new AST_Expression_Bracket_(l);
+}
 
 AST_Expression newAST_Expression_ElseIf(AST_Expression c, AST_Expression t) { return new AST_Expression_If_ElseIf_(c, t); }
 

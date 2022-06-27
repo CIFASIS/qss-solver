@@ -41,11 +41,14 @@ class ConvertOutputRange : public AST_Expression_Visitor<AST_Expression> {
   inline AST_Expression foldTraverseElementUMinus(AST_Expression exp) { return exp; };
 
   AST_Expression generateIndexVariable(int size);
+  bool checkExpression(AST_Expression exp);
 
   IR::Range _range;
   SB::MultiInterval _intervals;
   int _dim;
   std::string _var;
+  std::vector<IR::Expression> _begin_exps;
+  std::vector<IR::Expression> _end_exps;
 };
 
 }  // namespace Util

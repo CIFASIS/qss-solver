@@ -46,21 +46,26 @@ class RangeDefinition {
   public:
   RangeDefinition(){};
   RangeDefinition(int begin, int end, int step = 1);
+  RangeDefinition(Expression begin_exp, Expression end_exp, int begin, int end, int step = 1);
   ~RangeDefinition() = default;
-  inline int begin() { return _begin; };
-  inline int cBegin() { return begin() - 1; }
-  inline int end() { return _end; };
-  inline int cEnd() { return end() - 1; };
-  inline int step() { return _step; };
+  inline int begin() const { return _begin; }
+  inline int cBegin() const { return begin() - 1; }
+  inline int end() const { return _end; };
+  inline int cEnd() const { return end() - 1; };
+  inline int step() const { return _step; };
   inline int size() const { return (_begin == _end) ? 1 : (_end - _begin + 1) / _step; };
   void setBegin(int begin);
   void setEnd(int end);
-  friend std::ostream& operator<<(std::ostream& out, const RangeDefinition& rd);
+  std::string beginExp(bool convert_params, bool c_index) const;
+  std::string endExp(bool convert_params, bool c_index) const;
 
-  private:
+  protected:
+  std::string generateExp(Expression exp, int limit, bool convert_params) const;
   int _begin;
   int _end;
   int _step;
+  Expression _begin_exp;
+  Expression _end_exp;
 };
 
 typedef ModelTable<std::string, RangeDefinition> RangeDefinitionTable;
@@ -73,12 +78,13 @@ class Range {
   Range(Util::Variable var, RANGE::Type type = RANGE::For);
   Range(AST_Expression exp);
   Range(SB::Set set, int offset, std::vector<std::string> vars = std::vector<std::string>());
+
   ~Range() = default;
 
   int size() const;
   bool isEmpty() const;
   inline RangeDefinitionTable definition() const { return _ranges; };
-  std::string print(bool range = false, bool c_index = false) const;
+  std::string print(bool range = false, bool c_index = false, bool convert_params = false) const;
   std::string end() const;
   std::string indexes() const;
   std::vector<std::string> getIndexes() const;
@@ -101,7 +107,10 @@ class Range {
   map<std::string, AST_Expression> initExps();
   void replace(Index usage);
   friend std::ostream& operator<<(std::ostream& out, const Range& r);
-  void generate(SB::Set set, int offset, std::vector<std::string> vars);
+  void generate(SB::Set set, int offset, std::vector<std::string> vars, std::vector<Expression> begin_exps = std::vector<Expression>(),
+                std::vector<Expression> end_exps = std::vector<Expression>());
+
+  bool fixed() const;
 
   protected:
   void generate(Util::Variable var);
@@ -109,6 +118,8 @@ class Range {
   void updateRangeDefinition(std::string index_def, RangeDefinition def, int pos);
   void addRangeVariables(int i, string index) const;
   bool isVariable(std::string var);
+  bool testExpression(AST_Expression exp);
+  Expression getExp(std::vector<Expression> exps, size_t pos);
 
   private:
   void setRangeDefinition(AST_ForIndexList fil);
@@ -117,6 +128,7 @@ class Range {
   int _size;
   RANGE::Type _type;
   std::vector<int> _row_size;
+  bool _fixed;
 };
 
 class IndexDefinition {

@@ -17,29 +17,19 @@
 
  ******************************************************************************/
 
-#ifndef MMO_STORED_DEFINITION_H_
-#define MMO_STORED_DEFINITION_H_
+#pragma once
 
 #include <string>
 
-#include "../ir/class.h"
+#include <ir/class.h>
 
 namespace MicroModelica {
 namespace IR {
 
-/**
- *
- */
 class StoredDefinition {
   public:
-  /**
-   *
-   */
   StoredDefinition();
-  /**
-   *
-   */
-  ~StoredDefinition(){};
+  ~StoredDefinition() = default;
   bool isModel();
   bool isPackage();
   Model& model();
@@ -56,5 +46,3 @@ class StoredDefinition {
 };
 }  // namespace IR
 }  // namespace MicroModelica
-
-#endif /* MMO_STORED_DEFINITION_H_ */

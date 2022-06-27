@@ -47,6 +47,7 @@ GET_AS_IMP(Expression, Range);
 GET_AS_IMP(Expression, Real);
 GET_AS_IMP(Expression, UMinus);
 GET_AS_IMP(Expression, String);
+GET_AS_IMP(Expression, Bracket);
 
 ExpressionType AST_Expression_::expressionType() { return EXPNONE; }
 
@@ -480,3 +481,11 @@ AST_ExpressionList AST_Expression_ComponentReference_::firstIndex()
   }
   return AST_ListFirst(_indexes);
 }
+
+AST_Expression_Bracket_::AST_Expression_Bracket_(AST_ExpressionList ranges) : _ranges(ranges) {}
+
+ExpressionType AST_Expression_Bracket_::expressionType() { return EXPBRACKET; }
+
+string AST_Expression_Bracket_::print() const { return "Not implemented"; };
+
+AST_ExpressionList AST_Expression_Bracket_::ranges() { return _ranges; }

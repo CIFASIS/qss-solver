@@ -21,21 +21,21 @@
 
 #include <sstream>
 
-#include "helpers.h"
-#include "../ast/ast_builder.h"
-#include "../ast/expression.h"
-#include "../ast/equation.h"
-#include "../ast/statement.h"
-#include "../util/error.h"
-#include "../util/model_config.h"
-#include "../util/util.h"
-#include "../util/visitors/eval_init_exp.h"
-#include "../util/visitors/get_index_usage.h"
-#include "../util/visitors/is_constant_index.h"
-#include "../util/visitors/parse_index.h"
-#include "../util/visitors/partial_eval_exp.h"
-#include "../util/visitors/replace_index.h"
-#include "../util/visitors/revert_index.h"
+#include <ir/helpers.h>
+#include <ast/ast_builder.h>
+#include <ast/expression.h>
+#include <ast/equation.h>
+#include <ast/statement.h>
+#include <util/error.h>
+#include <util/model_config.h>
+#include <util/util.h>
+#include <util/visitors/eval_init_exp.h>
+#include <util/visitors/get_index_usage.h>
+#include <util/visitors/is_constant_index.h>
+#include <util/visitors/parse_index.h>
+#include <util/visitors/partial_eval_exp.h>
+#include <util/visitors/replace_index.h>
+#include <util/visitors/revert_index.h>
 
 namespace MicroModelica {
 using namespace Deps;
@@ -127,8 +127,7 @@ Index Index::revert() const
 
 Index Index::replace(bool range_idx) const
 {
-  GetIndexUsage usage;
-  ReplaceIndex replace = ReplaceIndex(range(), usage.apply(_exp.expression()), range_idx);
+  ReplaceIndex replace = ReplaceIndex(range(), _exp.expression(), range_idx);
   return Index(Expression(replace.apply(_exp.expression())));
 }
 
@@ -190,33 +189,61 @@ std::ostream& operator<<(std::ostream& out, const Index& i)
   return out;
 }
 
-RangeDefinition::RangeDefinition(int begin, int end, int step) : _begin(begin), _end(end), _step(step) {}
+RangeDefinition::RangeDefinition(int begin, int end, int step) : _begin(begin), _end(end), _step(step), _begin_exp(), _end_exp() {}
+
+RangeDefinition::RangeDefinition(Expression begin_exp, Expression end_exp, int begin, int end, int step)
+    : _begin(begin), _end(end), _step(step), _begin_exp(begin_exp), _end_exp(end_exp)
+{
+}
 
 void RangeDefinition::setBegin(int begin) { _begin = begin; }
 
 void RangeDefinition::setEnd(int end) { _end = end; }
 
-std::ostream& operator<<(std::ostream& out, const RangeDefinition& rd) { return out; }
+string RangeDefinition::generateExp(Expression exp, int limit, bool convert_params) const
+{
+  stringstream code;
+  if (exp.isEmpty()) {
+    code << limit;
+  } else {
+    Index index(exp);
+    if (convert_params) {
+      index = index.replace();
+    }
+    code << index.expression();
+  }
+  return code.str();
+}
 
-Range::Range() : _ranges(), _index_pos(), _size(1), _type(RANGE::For) {}
+string RangeDefinition::beginExp(bool convert_params, bool c_index) const
+{
+  return generateExp(_begin_exp, ((c_index) ? cBegin() : begin()), convert_params);
+}
 
-Range::Range(AST_Equation_For eqf, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type)
+string RangeDefinition::endExp(bool convert_params, bool c_index) const
+{
+  return generateExp(_end_exp, ((c_index) ? cEnd() : end()), convert_params);
+}
+
+Range::Range() : _ranges(), _index_pos(), _size(1), _type(RANGE::For), _fixed(true) {}
+
+Range::Range(AST_Equation_For eqf, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type), _fixed(true)
 {
   AST_ForIndexList fil = eqf->forIndexList();
   setRangeDefinition(fil);
 }
 
-Range::Range(AST_Statement_For stf, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type)
+Range::Range(AST_Statement_For stf, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type), _fixed(true)
 {
   AST_ForIndexList fil = stf->forIndexList();
   setRangeDefinition(fil);
 }
 
-Range::Range(Variable var, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type) { generate(var); }
+Range::Range(Variable var, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type), _fixed(true) { generate(var); }
 
-Range::Range(AST_Expression exp) : _ranges(), _index_pos(), _size(1), _type(RANGE::For) { generate(exp); }
+Range::Range(AST_Expression exp) : _ranges(), _index_pos(), _size(1), _type(RANGE::For), _fixed(true) { generate(exp); }
 
-Range::Range(SB::Set set, int offset, vector<string> vars) : _ranges(), _index_pos(), _size(1), _type(RANGE::For) { generate(set, offset, vars); }
+Range::Range(SB::Set set, int offset, vector<string> vars) : _ranges(), _index_pos(), _size(1), _type(RANGE::For), _fixed(true) { generate(set, offset, vars); }
 
 void Range::updateRangeDefinition(std::string index_def, RangeDefinition def, int pos)
 {
@@ -230,6 +257,23 @@ void Range::updateRangeDefinition(std::string index_def, RangeDefinition def, in
   ModelConfig::instance().addVariable(index_def, vi);
 }
 
+bool Range::testExpression(AST_Expression exp)
+{
+  if (exp->expressionType() == EXPCOMPREF) {
+    AST_Expression_ComponentReference cr = exp->getAsComponentReference();
+    Option<Variable> var = ModelConfig::instance().lookup(cr->name());
+    if (!var) {
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "index.cpp:264 %s", cr->name().c_str());
+      return false;
+    }
+    if (var->isParameter()) {
+      _fixed = false;
+      return true;
+    }
+  }
+  return false;
+}
+
 void Range::setRangeDefinition(AST_ForIndexList fil)
 {
   AST_ForIndexListIterator filit;
@@ -238,16 +282,31 @@ void Range::setRangeDefinition(AST_ForIndexList fil)
     AST_ForIndex fi = current_element(filit);
     AST_Expression in = fi->in_exp();
     AST_ExpressionList el = in->getAsRange()->expressionList();
-    AST_ExpressionListIterator eli;
     EvalInitExp eval;
     int size = el->size();
-    int begin = eval.apply(AST_ListFirst(el));
-    int end = eval.apply(AST_ListAt(el, size - 1));
+    AST_Expression ast_begin_exp = AST_ListFirst(el);
+    AST_Expression ast_end_exp = AST_ListAt(el, size - 1);
+    Expression begin_exp;
+    Expression end_exp;
+    int begin = 1;
+    int end = 1;
+    if (testExpression(ast_begin_exp)) {
+      begin_exp = Expression(ast_begin_exp);
+    } else {
+      begin = eval.apply(ast_begin_exp);
+    }
+    if (testExpression(ast_end_exp)) {
+      end_exp = Expression(ast_end_exp);
+    } else {
+      end = eval.apply(ast_end_exp);
+    }
     if (end < begin) {
       Error::instance().add(AST_ListFirst(el)->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong equation range.");
     }
     string index = fi->variable()->c_str();
-    updateRangeDefinition(index, (size == 2 ? RangeDefinition(begin, end) : RangeDefinition(begin, end, eval.apply(AST_ListAt(el, 1)))),
+    updateRangeDefinition(index,
+                          (size == 2 ? RangeDefinition(begin_exp, end_exp, begin, end)
+                                     : RangeDefinition(begin_exp, end_exp, begin, end, eval.apply(AST_ListAt(el, 1)))),
                           pos++);
   }
 }
@@ -283,20 +342,6 @@ void Range::generate(AST_Expression exp)
   }
 }
 
-/*void Range::generate(SBG::MDI mdi)
-{
-  int pos = 0;
-  for (auto interval : mdi.intervals()) {
-    int begin = interval.lower();
-    int end = interval.upper();
-    if (end < begin) {
-      Error::instance().add(0, EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong range in dependency matrix.");
-    }
-    string index = Utils::instance().iteratorVar(pos);
-    updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
-  }
-}*/
-
 bool Range::isVariable(std::string var)
 {
   bool not_number = true;
@@ -309,12 +354,23 @@ bool Range::isVariable(std::string var)
   return not_number;
 }
 
-void Range::generate(SB::Set set, int offset, vector<string> vars)
+Expression Range::getExp(std::vector<Expression> exps, size_t pos)
+{
+  if (exps.empty()) {
+    return Expression();
+  }
+  assert(exps.size() > pos);
+  _fixed = false;
+  return exps[pos];
+}
+
+void Range::generate(SB::Set set, int offset, vector<string> vars, std::vector<Expression> begin_exps, std::vector<Expression> end_exps)
 {
   int pos = 0;
   SB::UnordAtomSet a_sets = set.atomicSets();
   for (SB::AtomSet a_set : a_sets) {
     SB::MultiInterval intervals =  a_set.atomicSets();
+    int exp_pos = 0;
     for(SB::Interval interval : intervals.intervals()) {
       int begin = interval.lo() - offset + 1;
       int end = begin + interval.hi() - interval.lo();
@@ -325,24 +381,11 @@ void Range::generate(SB::Set set, int offset, vector<string> vars)
       if (!vars.empty() && isVariable(vars[pos])) {
         index = vars[pos];
       } 
-      updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
+      updateRangeDefinition(index, RangeDefinition(getExp(begin_exps, exp_pos), getExp(end_exps, exp_pos), begin, end), pos++);
+      exp_pos++;
     }
   }
 }
-
-/*void Range::generate(MDI mdi)
-{
-  int pos = 0;
-  for (auto interval : mdi.mdi()) {
-    int begin = interval.lower();
-    int end = interval.upper();
-    if (end < begin) {
-      Error::instance().add(0, EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong range in dependency matrix.");
-    }
-    string index = Utils::instance().iteratorVar(pos);
-    updateRangeDefinition(index, RangeDefinition(begin, end), pos++);
-  }
-}*/
 
 string Range::iterator(int dim, bool range_idx)
 {
@@ -354,7 +397,7 @@ string Range::iterator(int dim, bool range_idx)
       return ip.first;
     }
   }
-  return "";
+  return getDimensionVar(dim + 1);
 }
 
 string Range::getPrintDimensionVarsString() const
@@ -410,7 +453,7 @@ string Range::end() const
   return buffer.str();
 }
 
-string Range::print(bool range, bool c_index) const
+string Range::print(bool range, bool c_index, bool convert_params) const
 {
   stringstream buffer;
   RangeDefinitionTable ranges = _ranges;
@@ -424,10 +467,8 @@ string Range::print(bool range, bool c_index) const
   for (RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it)) {
     if (_type == RANGE::For) {
       string idx = idxs[idx_count];
-      int begin = (c_index) ? r.cBegin() : r.begin();
-      int end = (c_index) ? r.cEnd() : r.end();
-      buffer << block << "for(" << idx << " = " << begin << "; ";
-      buffer << idx << "<=" << end << "; ";
+      buffer << block << "for(" << idx << " = " << r.beginExp(convert_params, c_index) << "; ";
+      buffer << idx << "<=" << r.endExp(convert_params, c_index) << "; ";
       buffer << idx << "+=" << r.step() << ") {" << endl;
       block += TAB;
       idx_count++;
@@ -464,7 +505,6 @@ vector<string> Range::getInitValues() const
   }
   return indexes;
 }
-
 
 vector<string> Range::getIndexes() const
 {
@@ -537,13 +577,6 @@ int Range::pos(string var)
   }
   return 0;
 }
-
-/*bool Range::intersect(Range other)
-{
-  MDI other_mdi = other.getMDI();
-  Option<MDI> intersect = getMDI().Intersection(other_mdi);
-  return intersect.is_initialized();
-}*/
 
 void Range::applyUsage(Index usage)
 {
@@ -656,6 +689,9 @@ void Range::replace(Index usage)
   }
 }
 
+bool Range::fixed() const { return _fixed; }
+
 std::ostream& operator<<(std::ostream& out, const Range& r) { return out << r.print(); }
+
 }  // namespace IR
 }  // namespace MicroModelica

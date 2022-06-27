@@ -45,7 +45,7 @@ AST_Equation ConvertEquation::convert(AST_Equation eq)
     l = convert_exp.left();
     r = convert_exp.right();
     if (transform.empty()) {
-      return newAST_Equation_Equality(l, r);
+      return newAST_Equation_Equality(l, r, eq->getAsEquality()->comment());
     }
     int rValue;
     return parseEquation(transform, &rValue);

@@ -94,6 +94,7 @@ DEFINE_TYPE(AST_Expression_Real);
 DEFINE_TYPE(AST_Expression_String);
 DEFINE_TYPE(AST_Expression_UMinus);
 DEFINE_TYPE(AST_Expression_ArrayIndex);
+DEFINE_TYPE(AST_Expression_Bracket);
 DEFINE_TYPE(AST_External_Function_Call);
 DEFINE_TYPE(AST_Element_ExtendsClause);
 DEFINE_TYPE(AST_Element_ImportClause);
@@ -181,7 +182,8 @@ enum ExpressionType {
   EXPOUTPUT,
   EXPRANGE,
   EXPNAMEDARGUMENT,
-  EXPARRAYINDEX
+  EXPARRAYINDEX,
+  EXPBRACKET
 };
 
 enum ModificationType { MODNONE, MODEQUAL, MODASSIGN, MODCLASS };
