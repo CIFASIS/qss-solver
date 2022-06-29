@@ -22,48 +22,35 @@
 
 #include "data.h"
 
-/**
- *
- */
 typedef struct SET_settings_ *SET_settings;
 
-/**
- *
- */
 struct SET_settings_ {
-  double minstep;   //!<
-  double zchyst;    //!<
-  double derdelta;  //!<
-  double it;        //!<
-  double ft;        //!<
-  double dt;        //!<
+  double minstep;
+  double zchyst;
+  double derdelta;
+  double it;
+  double ft;
+  double dt;
   double BDFMaxStep;
-  double *dqmin;     //!<
-  double *dqrel;     //!<
-  int symdiff;       //!<
-  int lps;           //!<
-  int nodesize;      //!<
-  int order;         //!<
-  SD_Solver solver;  //!<
-  int nDQMin;        //!<
-  int nDQRel;        //!<
+  double *dqmin;
+  double *dqrel;
+  int symdiff;
+  int lps;
+  int nodesize;
+  int order;
+  SD_Solver solver;
+  int nDQMin;
+  int nDQRel;
   int jacobian;
   int BDFPartitionDepth;
-  SD_PartitionMethod pm;  //!<
-  SD_DtSynch dtSynch;     //!< \f $ \delta t $ \f synchronization policy.
+  SD_PartitionMethod pm;
+  SD_DtSynch dtSynch;
   SD_partitionerOptions partitionerOptions;
   int BDFPart;
 };
-/**
- *
- * @param fname
- * @return
- */
+
 SET_settings SET_Settings(char *fname);
-/**
- *
- * @param settings
- */
+
 void freeSettings(SET_settings settings);
 
 #endif /* SETTINGS_H_ */
