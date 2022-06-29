@@ -120,8 +120,8 @@ void QSS_simulatorEnd(SIM_simulator simulate)
 
 void QSS_simulate(SIM_simulator simulate)
 {
-  Random();
   QSS_simulator simulator = (QSS_simulator)simulate->state->sim;
+  Random(simulator->settings->random_seed);
   INT_integrator integrator = INT_Integrator(simulate);
   /*#ifdef __linux__
    signal (SIGFPE, fpe_handler);

@@ -104,6 +104,7 @@ struct SD_simulationSettings_ {
   bool parallel;
   bool hybrid;
   int jacobian;
+  unsigned long random_seed;
 };
 
 SD_simulationSettings SD_SimulationSettings();
