@@ -30,6 +30,7 @@ SD_simulationSettings SD_SimulationSettings()
   p->parallel = FALSE;
   p->hybrid = FALSE;
   p->method = SD_QSS3;
+  p->random_seed = 0;
   return p;
 }
 
@@ -41,6 +42,7 @@ SD_simulationSettings SD_copySimulationSettings(SD_simulationSettings settings)
   p->hybrid = settings->hybrid;
   p->method = settings->method;
   p->jacobian = settings->jacobian;
+  p->random_seed = settings->random_seed;
   return p;
 }
 
