@@ -87,15 +87,12 @@ int Generator::generate()
     if (model.externalFunctions()) {
       string ffname = baseName + "_functions";
       generateIncludes(ffname);
-      FunctionTable ft = _model.calledFunctions();
+      FunctionTable ft = model.calledFunctions();
       FunctionTable::iterator it;
       for (IR::Function f = ft.begin(it); !ft.end(it); f = ft.next(it)) {
         Function func(f, _flags, _writer);
         func.definition();
         _fheader.push_back(func.header());
-      }
-      if (_flags.hasOutputFile()) {
-        ffname.insert(0, _flags.outputFilePath() + SLASH);
       }
       calledFunctionHeader(ffname);
       _writer->setFile(ffname + ".c");
