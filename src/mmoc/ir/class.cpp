@@ -340,10 +340,13 @@ void Model::addFunction(SymbolTable symbols, FunctionTable &fs)
 {
   SymbolTable::iterator fit;
   for (string s = symbols.begin(fit); !symbols.end(fit); s = symbols.next(fit)) {
+    cout << "busca: " << s << endl;
     Option<Function> ef = fs[s];
     if (ef) {
+      cout << "encuentra" << endl;
       SymbolTable libraries;
       _calledFunctions.insert(s, ef.get());
+      cout << "MM " << _calledFunctions.size() << endl;
       FunctionAnnotation fa = ef->annotations();
       if (fa.hasIncludeDirectory()) {
         string in = fa.includeDirectory();
@@ -366,6 +369,10 @@ void Model::addFunction(SymbolTable symbols, FunctionTable &fs)
 
 void Model::setCalledFunctions(FunctionTable &fs)
 {
+  StatementTable::iterator stm_it;
+  for (Statement stm = _initialCode.begin(stm_it); !_initialCode.end(stm_it); stm = _initialCode.next(stm_it)) {
+    addFunction(stm.calledFunctions(), fs);
+  }
   EquationTable::iterator it;
   for (Equation eq = _derivatives.begin(it); !_derivatives.end(it); eq = _derivatives.next(it)) {
     addFunction(eq.calledFunctions(), fs);
