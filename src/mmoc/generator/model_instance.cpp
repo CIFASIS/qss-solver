@@ -206,6 +206,8 @@ void ModelInstance::settings()
   _writer->print(buffer);
   buffer << "settings->method = " << _model.annotations().solver() << ";";
   _writer->print(buffer);
+  buffer << "settings->random_seed = " << _model.annotations().randomSeed() << ";";
+  _writer->print(buffer);
 }
 
 void ModelInstance::header()
