@@ -47,8 +47,8 @@ void CLC_freeSimulator(CLC_simulator simulator)
 
 void CLC_simulate(SIM_simulator simulate)
 {
-  Random();
   CLC_simulator simulator = (CLC_simulator)simulate->state->sim;
+  Random(simulator->settings->random_seed);
   CLC_initializeDataStructs(simulator);
   INT_integrator integrator = INT_Integrator(simulate);
   SD_output output = simulator->output;
