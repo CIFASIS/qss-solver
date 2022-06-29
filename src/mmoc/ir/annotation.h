@@ -145,6 +145,7 @@ class ModelAnnotation {
   IR::MATRIX::UserDefMatrixExps RHSSTMatrix();
   IR::MATRIX::UserDefMatrixExps SDMatrix();
   IR::MATRIX::UserDefMatrixExps SZMatrix();
+  unsigned long randomSeed();
 
   protected:
   typedef enum {
@@ -186,7 +187,8 @@ class ModelAnnotation {
     RHS_ST_MATRIX,
     LHS_DSC_MATRIX,
     SD_MATRIX,
-    SZ_MATRIX
+    SZ_MATRIX,
+    RANDOM_SEED
   } type;
 
   void processAnnotation(string annot, AST_Modification_Equal x);
@@ -244,6 +246,7 @@ class ModelAnnotation {
   IR::MATRIX::UserDefMatrixExps _sz_matrix;
   string _event_ids;
   int _current_exp_id;
+  unsigned long _random_seed;
 };
 
 typedef boost::variant<ModelAnnotation, FunctionAnnotation> AnnotationType;

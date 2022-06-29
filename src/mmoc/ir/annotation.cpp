@@ -159,7 +159,8 @@ ModelAnnotation::ModelAnnotation()
       _sd_matrix(),
       _sz_matrix(),
       _event_ids(),
-      _current_exp_id(-1)
+      _current_exp_id(-1),
+      _random_seed(0)
 {
   _annotations.insert(pair<string, ModelAnnotation::type>("experiment", EXPERIMENT));
   _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Description", DESC));
@@ -200,6 +201,7 @@ ModelAnnotation::ModelAnnotation()
   _annotations.insert(pair<string, ModelAnnotation::type>("MMO_RHS_ST", RHS_ST_MATRIX));
   _annotations.insert(pair<string, ModelAnnotation::type>("MMO_SD", SD_MATRIX));
   _annotations.insert(pair<string, ModelAnnotation::type>("MMO_SZ", SZ_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_RandomSeed", RANDOM_SEED));
   _sample.push_back(1e-2);
   _DQMin.push_back(1e-3);
   _DQRel.push_back(1e-3);
@@ -568,6 +570,9 @@ void ModelAnnotation::processAnnotation(string annot, AST_Modification_Equal x)
   case SZ_MATRIX:
     parseMatrix(x->exp(), _sz_matrix);
     break;
+  case RANDOM_SEED:
+    _random_seed = (unsigned long)av.integer();
+    break;
   default:
     break;
   }
@@ -711,6 +716,8 @@ IR::MATRIX::UserDefMatrixExps ModelAnnotation::RHSSTMatrix() { return _rhs_st_ma
 IR::MATRIX::UserDefMatrixExps ModelAnnotation::SDMatrix() { return _sd_matrix; }
 
 IR::MATRIX::UserDefMatrixExps ModelAnnotation::SZMatrix() { return _sz_matrix; }
+
+unsigned long ModelAnnotation::randomSeed() { return _random_seed; }
 
 /* AnnotationValue class */
 
