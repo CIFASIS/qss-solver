@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef GENERATOR_H_
-#define GENERATOR_H_
+#pragma once 
 
 #include <fstream>
 #include <iostream>
@@ -36,25 +35,10 @@
 namespace MicroModelica {
 namespace Generator {
 
-/**
- *
- */
 class Generator {
   public:
-  /**
-   *
-   * @param std
-   * @param flags
-   */
   Generator(const IR::StoredDefinition& std, Util::CompileFlags& flags);
-  /**
-   *
-   */
-  ~Generator(){};
-  /**
-   *
-   * @return
-   */
+  ~Generator() = default;
   int generate();
 
   private:
@@ -62,7 +46,6 @@ class Generator {
   void generateModel();
   void calledFunctionHeader(string fileName);
   IR::StoredDefinition _std;
-  IR::Model _model;
   IR::Function _function;
   IR::Package _package;
   Util::CompileFlags _flags;
@@ -74,4 +57,4 @@ class Generator {
 };
 }  // namespace Generator
 }  // namespace MicroModelica
-#endif /* GENERATOR_H_ */
+
