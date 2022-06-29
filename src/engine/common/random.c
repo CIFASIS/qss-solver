@@ -38,12 +38,13 @@ double normal(double sigma) { return gsl_ran_gaussian(_rseed, sigma); }
 
 double randomS(double max) { return max * gsl_rng_uniform(_rseed); }
 
-void Random()
+void Random(unsigned long seed)
 {
   gsl_rng_env_setup();
   _random_generator = gsl_rng_default;
   _rseed = gsl_rng_alloc(_random_generator);
-  gsl_rng_set(_rseed, time(NULL));
+  unsigned long random_seed = (seed == 0) ? time(NULL) : seed;
+  gsl_rng_set(_rseed, random_seed);
 }
 
 void freeRandom() { gsl_rng_free(_rseed); }

@@ -22,56 +22,25 @@
 
 #include <gsl/gsl_rng.h>
 
-/**
- *
- */
+
 const gsl_rng_type *_random_generator;
-/**
- *
- */
+
 gsl_rng *_rseed;
-/**
- *
- * @param n
- */
+
 unsigned long getRandomValue(int n);
-/**
- *
- * @param mu
- * @return
- */
+
 double exponential(double mu);
-/**
- *
- * @param a
- * @param b
- * @return
- */
+
 double uniform(double a, double b);
-/**
- *
- * @param sigma
- * @return
- */
+
 double normal(double sigma);
-/**
- *
- *  @param max
- */
+
 double randomS(double max);
-/**
- *
- * @param a
- * @param size
- */
+
 void shuffle(int *a, int size);
-/**
- *
- */
-void Random();
-/**
- *
- */
+
+void Random(unsigned long seed);
+
 void freeRandom();
 
 #endif /* RANDOM_H_ */
