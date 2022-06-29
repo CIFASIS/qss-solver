@@ -28,6 +28,9 @@ doc:
 	@mkdir -p $(DOCDIR)/html
 	doxygen QSSSolverGUI.doxyfile
 
+clean:
+	rm -rf $(USRDIR)
+
 help:
 	@echo "make MODE=<Debug|Release>"
 	@echo "Default values:"

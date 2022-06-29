@@ -28,9 +28,6 @@
 class ModelInfo;
 class MmoHighlighter;
 
-/**
- *
- */
 class ModelEditor : public QDialog, public Ui::ModelEditorForm {
   Q_OBJECT
   public:
@@ -124,6 +121,7 @@ class ModelEditor : public QDialog, public Ui::ModelEditorForm {
   inline void setBDFPartitionDepth(QString str) { _BDFPartitionDepth = str; };
   inline QString BDFMaxStep() { return getAnnotations("MMO_BDF_Max_Step"); };
   inline void setBDFMaxStep(QString str) { _BDFMaxStep = str; };
+  inline QString randomSeed() { return getAnnotations("MMO_RandomSeed"); };
 
   protected:
   void reject(){};
@@ -194,6 +192,7 @@ class ModelEditor : public QDialog, public Ui::ModelEditorForm {
   QString _BDFPart;
   QString _BDFPartitionDepth;
   QString _BDFMaxStep;
+  QString _random_seed;
   bool _semiStaticPartitioning;
   QTabWidget *_model_editor_tab;
   QList<ModelInfo> *_models;
