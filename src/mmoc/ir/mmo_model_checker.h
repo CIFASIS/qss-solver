@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef MMO_MODEL_CHECKER_H_
-#define MMO_MODEL_CHECKER_H_
+#pragma once
 
 #include <string>
 
@@ -29,140 +28,33 @@
 namespace MicroModelica {
 namespace IR {
 
-/**
- *
- */
 class ModelChecker : public AST_Visitor {
   public:
-  /**
-   *
-   * @param name
-   */
   ModelChecker(string name);
-  /**
-   *
-   */
   ~ModelChecker();
-  /**
-   *
-   * @param x
-   */
   void visit(AST_Class x);
-  /**
-   *
-   * @param x
-   */
   void leave(AST_Class x);
-  /**
-   *
-   * @param x
-   */
   void visit(AST_Composition x);
-  /**
-   *
-   * @param x
-   */
   void leave(AST_Composition x);
-  /**
-   *
-   * @param x
-   */
   void visit(AST_CompositionElement x);
-  /**
-   *
-   * @param x
-   */
   void leave(AST_CompositionElement x);
-  /**
-   *
-   * @param x
-   */
   void visit(AST_CompositionEqsAlgs x);
-  /**
-   *
-   * @param x
-   */
   void leave(AST_CompositionEqsAlgs x);
-  /**
-   *
-   * @param
-   */
   void visit(AST_External_Function_Call);
-  /**
-   *
-   * @param x
-   */
   void visit(AST_Element x);
-  /**
-   *
-   * @param x
-   */
   void visit(AST_Modification x);
-  /**
-   *
-   * @param x
-   */
   void leave(AST_Modification x);
-  /**
-   *
-   * @param x
-   */
   void visit(AST_Comment x);
-  /**
-   *
-   * @param x
-   */
   void visit(AST_Equation x);
-  /**
-   *
-   * @param x
-   */
   void visit(AST_ForIndex x);
-  /**
-   *
-   * @param x
-   */
   void visit(AST_Equation_Else x);
-  /**
-   *
-   * @param x
-   */
   void visit(AST_Expression x);
-  /**
-   *
-   * @param x
-   */
   void visit(AST_Argument x);
-  /**
-   *
-   * @param x
-   */
   void visit(AST_Statement x);
-  /**
-   *
-   * @param x
-   */
   void leave(AST_Statement x);
-  /**
-   *
-   * @param x
-   */
   void visit(AST_Statement_Else x);
-  /**
-   *
-   * @param x
-   */
   void visit(AST_StoredDefinition x);
-  /**
-   *
-   * @param x
-   */
   void leave(AST_StoredDefinition x);
-  /**
-   *
-   * @param x
-   * @return
-   */
   int apply(AST_Node x);
 
   private:
