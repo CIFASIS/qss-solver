@@ -54,10 +54,10 @@ Function::Function(string name)
       _statements(),
       _packages(),
       _arguments(),
-      _outputNbr(0),
-      _externalFunctionId(0),
-      _statementId(0),
-      _externalFunctions()
+      _output_nbr(0),
+      _external_function_id(0),
+      _statement_id(0),
+      _external_functions()
 {
 }
 
@@ -75,7 +75,7 @@ void Function::insert(string n)
 
 void Function::insert(AST_Equation eq) { return; }
 
-void Function::insert(AST_Statement stm) { _statements.insert(++_statementId, Statement(stm)); }
+void Function::insert(AST_Statement stm) { _statements.insert(++_statement_id, Statement(stm)); }
 
 void Function::insert(AST_Statement stm, bool initial) { insert(stm); }
 
@@ -101,7 +101,7 @@ void Function::insert(AST_External_Function_Call efc)
       }
     }
   }
-  _externalFunctions.insert(++_externalFunctionId, ExternalFunction(lvalue, efc->name(), efc->args()));
+  _external_functions.insert(++_external_function_id, ExternalFunction(lvalue, efc->name(), efc->args()));
 }
 
 void Function::insert(VarName n, Variable &vi, DEC_Type type)
@@ -114,7 +114,7 @@ void Function::insert(VarName n, Variable &vi, DEC_Type type)
   ModelConfig::instance().addVariable(n, vi);
   if (type == DEC_PUBLIC) {
     if (vi.isOutput()) {
-      _outputNbr++;
+      _output_nbr++;
     }
     _arguments.insert(n, vi);
   } else {
@@ -137,11 +137,11 @@ ImportTable Function::imports() const { return _imports; }
 
 StatementTable Function::statements() const { return _statements; }
 
-ExternalFunctionTable Function::externalFunctions() const { return _externalFunctions; }
+ExternalFunctionTable Function::externalFunctions() const { return _external_functions; }
 
 CompiledPackageTable Function::packages() const { return _packages; }
 
-unsigned int Function::outputNbr() const { return _outputNbr; }
+unsigned int Function::outputNbr() const { return _output_nbr; }
 
 FunctionAnnotation Function::annotations() const { return _annotations; }
 
@@ -189,30 +189,30 @@ Model::Model()
     : _name(),
       _imports(),
       _annotations(),
-      _calledFunctions(),
+      _called_functions(),
       _derivatives(),
       _algebraics(),
       _events(),
       _dependencies(),
       _packages(),
-      _initialCode(),
-      _libraryDirectories(),
-      _linkLibraries(),
-      _includeDirectories(),
+      _initial_code(),
+      _library_directories(),
+      _link_libraries(),
+      _include_directories(),
       _ast_equations(),
       _ast_statements(),
-      _stateNbr(0),
-      _discreteNbr(0),
-      _algebraicNbr(0),
-      _eventNbr(0),
-      _outputNbr(0),
-      _inputNbr(0),
-      _derivativeId(1),
-      _algebraicId(1),
-      _eventId(1),
-      _outputId(1),
-      _inputId(1),
-      _externalFunctions(false)
+      _state_nbr(0),
+      _discrete_nbr(0),
+      _algebraic_nbr(0),
+      _event_nbr(0),
+      _output_nbr(0),
+      _input_nbr(0),
+      _derivative_id(1),
+      _algebraic_id(1),
+      _event_id(1),
+      _output_id(1),
+      _input_id(1),
+      _external_functions(false)
 {
 }
 
@@ -220,30 +220,30 @@ Model::Model(string name)
     : _name(name),
       _imports(),
       _annotations(),
-      _calledFunctions(),
+      _called_functions(),
       _derivatives(),
       _algebraics(),
       _events(),
       _dependencies(),
       _packages(),
-      _initialCode(),
-      _libraryDirectories(),
-      _linkLibraries(),
-      _includeDirectories(),
+      _initial_code(),
+      _library_directories(),
+      _link_libraries(),
+      _include_directories(),
       _ast_equations(),
       _ast_statements(),
-      _stateNbr(0),
-      _discreteNbr(0),
-      _algebraicNbr(0),
-      _eventNbr(0),
-      _outputNbr(0),
-      _inputNbr(0),
-      _derivativeId(1),
-      _algebraicId(1),
-      _eventId(1),
-      _outputId(1),
-      _inputId(1),
-      _externalFunctions(false)
+      _state_nbr(0),
+      _discrete_nbr(0),
+      _algebraic_nbr(0),
+      _event_nbr(0),
+      _output_nbr(0),
+      _input_nbr(0),
+      _derivative_id(1),
+      _algebraic_id(1),
+      _event_id(1),
+      _output_id(1),
+      _input_id(1),
+      _external_functions(false)
 {
 }
 
@@ -259,8 +259,8 @@ void Model::insert(VarName n, Variable &vi)
     vi.setValue(eval.apply(vi.exp()));
   }
   if (vi.typePrefix() & TP_DISCRETE) {
-    vi.setOffset(_discreteNbr);
-    _discreteNbr += vi.size();
+    vi.setOffset(_discrete_nbr);
+    _discrete_nbr += vi.size();
   }
   ModelConfig::instance().addVariable(n, vi);
 }
@@ -283,9 +283,9 @@ void Model::setRealVariables(AST_Equation eq)
   if (eqe->left()->expressionType() == EXPDERIVATIVE) {
     AST_Expression_Derivative ed = eqe->left()->getAsDerivative();
     AST_Expression derArg = AST_ListFirst(ed->arguments());
-    setVariableOffset(Utils::instance().variable(derArg), _stateNbr, Variable::RealType::State);
+    setVariableOffset(Utils::instance().variable(derArg), _state_nbr, Variable::RealType::State);
   } else if (eqe->left()->expressionType() == EXPCOMPREF) {
-    setVariableOffset(Utils::instance().variable(eqe->left()), _algebraicNbr, Variable::RealType::Algebraic);
+    setVariableOffset(Utils::instance().variable(eqe->left()), _algebraic_nbr, Variable::RealType::Algebraic);
   } else if (eqe->left()->expressionType() == EXPOUTPUT) {
     AST_Expression_Output eout = eqe->left()->getAsOutput();
     AST_ExpressionList el = eout->expressionList();
@@ -293,7 +293,7 @@ void Model::setRealVariables(AST_Equation eq)
     list<string> lvars;
     list<Index> lidx;
     foreach (it, el) {
-      setVariableOffset(Utils::instance().variable(current_element(it)), _algebraicNbr, Variable::RealType::Algebraic);
+      setVariableOffset(Utils::instance().variable(current_element(it)), _algebraic_nbr, Variable::RealType::Algebraic);
     }
   } else {
     Error::instance().add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Insert model equation.");
@@ -330,7 +330,7 @@ void Model::insert(AST_Statement stm, bool initial)
 {
   AST_Statement st = ConvertStatement(stm).get();
   if (initial) {
-    _initialCode.insert(_statementId++, Statement(stm, initial));
+    _initial_code.insert(_statement_id++, Statement(stm, initial));
   } else {
     _ast_statements.push_back(st);
   }
@@ -340,29 +340,26 @@ void Model::addFunction(SymbolTable symbols, FunctionTable &fs)
 {
   SymbolTable::iterator fit;
   for (string s = symbols.begin(fit); !symbols.end(fit); s = symbols.next(fit)) {
-    cout << "busca: " << s << endl;
     Option<Function> ef = fs[s];
     if (ef) {
-      cout << "encuentra" << endl;
       SymbolTable libraries;
-      _calledFunctions.insert(s, ef.get());
-      cout << "MM " << _calledFunctions.size() << endl;
+      _called_functions.insert(s, ef.get());
       FunctionAnnotation fa = ef->annotations();
       if (fa.hasIncludeDirectory()) {
         string in = fa.includeDirectory();
-        _includeDirectories.insert(in, in);
+        _include_directories.insert(in, in);
       }
       if (fa.hasLibraryDirectory()) {
         string in = fa.libraryDirectory();
-        _libraryDirectories.insert(in, in);
+        _library_directories.insert(in, in);
       }
       if (fa.hasLibraries()) {
         libraries = fa.libraries();
-        _linkLibraries.merge(libraries);
+        _link_libraries.merge(libraries);
       }
       CompiledFunction cf(s, fa.includeDirectory(), fa.libraryDirectory(), libraries);
       Utils::instance().addCompiledFunction(cf);
-      _externalFunctions = true;
+      _external_functions = true;
     }
   } 
 }
@@ -370,7 +367,7 @@ void Model::addFunction(SymbolTable symbols, FunctionTable &fs)
 void Model::setCalledFunctions(FunctionTable &fs)
 {
   StatementTable::iterator stm_it;
-  for (Statement stm = _initialCode.begin(stm_it); !_initialCode.end(stm_it); stm = _initialCode.next(stm_it)) {
+  for (Statement stm = _initial_code.begin(stm_it); !_initial_code.end(stm_it); stm = _initial_code.next(stm_it)) {
     addFunction(stm.calledFunctions(), fs);
   }
   EquationTable::iterator it;
@@ -411,9 +408,9 @@ void Model::insert(string n)
   Option<CompiledPackage> cp = _packages[n];
   if (cp) {
     Utils::instance().addCompiledFunctions(cp->definitions());
-    _linkLibraries.merge(cp->linkLibraries());
-    _libraryDirectories.merge(cp->libraryDirectories());
-    _includeDirectories.merge(cp->includeDirectories());
+    _link_libraries.merge(cp->linkLibraries());
+    _library_directories.merge(cp->libraryDirectories());
+    _include_directories.merge(cp->includeDirectories());
   }
 }
 
@@ -423,12 +420,12 @@ void Model::addEquation(AST_Equation eq, Option<Range> range)
   AST_Equation_Equality eqe = eq->getAsEquality();
   EQUATION::Type t = (_annotations.isClassic() ? EQUATION::ClassicDerivative : EQUATION::QSSDerivative);
   if (eqe->left()->expressionType() == EXPDERIVATIVE) {
-    Equation mse(eq, range, t, _derivativeId);
-    _annotations.expComment(eqe->comment(), _derivativeId);
-    _derivatives.insert(_derivativeId++, mse);
+    Equation mse(eq, range, t, _derivative_id);
+    _annotations.expComment(eqe->comment(), _derivative_id);
+    _derivatives.insert(_derivative_id++, mse);
   } else if (eqe->left()->expressionType() == EXPCOMPREF) {
-    Equation mse(eq, range, EQUATION::Algebraic, _algebraicId);
-    _algebraics.insert(_algebraicId++, mse);
+    Equation mse(eq, range, EQUATION::Algebraic, _algebraic_id);
+    _algebraics.insert(_algebraic_id++, mse);
   } else if (eqe->left()->expressionType() == EXPOUTPUT) {
     if (eqe->right()->expressionType() != EXPCALL) {
       Error::instance().add(eqe->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Insert model equation.");
@@ -437,8 +434,8 @@ void Model::addEquation(AST_Equation eq, Option<Range> range)
     AST_ExpressionList el = eout->expressionList();
     AST_ExpressionListIterator it;
     foreach (it, el) {
-      Equation mse(eq, range, EQUATION::Algebraic, _algebraicId);
-      _algebraics.insert(_algebraicId++, mse);
+      Equation mse(eq, range, EQUATION::Algebraic, _algebraic_id);
+      _algebraics.insert(_algebraic_id++, mse);
     }
   } else {
     Error::instance().add(eq->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Equation type not recognized.");
@@ -455,7 +452,7 @@ void Model::reduceEquation(AST_Equation_Equality eq, list<AST_Equation> &new_eqs
   new_eqs.insert(new_eqs.end(), code.begin(), code.end());
   list<Variable> variables = reduction_functions.variables();
   for (Variable v : variables) {
-    setVariableOffset(v, _algebraicNbr, Variable::RealType::Algebraic);
+    setVariableOffset(v, _algebraic_nbr, Variable::RealType::Algebraic);
   }
 }
 
@@ -521,10 +518,10 @@ void Model::addEvent(AST_Statement stm, Option<Range> range)
 {
   if (stm->statementType() == STWHEN) {
     AST_Statement_When sw = stm->getAsWhen();
-    _annotations.expComment(sw->comment(), _eventId);
-    addVariable(_eventId, range, EQUATION::Type::ZeroCrossing, _eventNbr);
-    Event event(sw->condition(), _eventId, _eventNbr, range, _annotations.EventId());
-    _eventNbr += (range ? range->size() : 1);
+    _annotations.expComment(sw->comment(), _event_id);
+    addVariable(_event_id, range, EQUATION::Type::ZeroCrossing, _event_nbr);
+    Event event(sw->condition(), _event_id, _event_nbr, range, _annotations.EventId());
+    _event_nbr += (range ? range->size() : 1);
     AST_StatementList stl = sw->statements();
     AST_StatementListIterator it;
     foreach (it, stl) {
@@ -538,9 +535,9 @@ void Model::addEvent(AST_Statement stm, Option<Range> range)
         AST_Statement_Else se = current_element(ewit);
         Event else_event = event;
         if (!else_event.compare(se->condition())) {
-          addVariable(_eventId + 1, range, EQUATION::Type::ZeroCrossing, _eventNbr);
-          else_event = Event(se->condition(), _eventId + 1, _eventNbr, range, _annotations.EventId());
-          _eventNbr += (range ? range->size() : 1);
+          addVariable(_event_id + 1, range, EQUATION::Type::ZeroCrossing, _event_nbr);
+          else_event = Event(se->condition(), _event_id + 1, _event_nbr, range, _annotations.EventId());
+          _event_nbr += (range ? range->size() : 1);
           new_event = true;
         }
         AST_StatementList stel = se->statements();
@@ -549,13 +546,13 @@ void Model::addEvent(AST_Statement stm, Option<Range> range)
           else_event.add(current_element(steit));
         }
         if (new_event) {
-          _events.insert(_eventId++, else_event);
+          _events.insert(_event_id++, else_event);
         } else {
           event = else_event;
         }
       }
     }
-    _events.insert(_eventId++, event);
+    _events.insert(_event_id++, event);
   }
 }
 
@@ -620,19 +617,19 @@ void Model::setOutputs()
     ConvertOutputRange convert;
     AST_Expression converted = convert.apply(*it);
     Option<Range> range = convert.range();
-    addVariable(_outputId, range, EQUATION::Type::Output, _outputNbr);
-    Equation eq(converted, range, EQUATION::Output, _outputId, _outputNbr);
-    _outputNbr += (range ? range->size() : 1);
-    _outputs.insert(_outputId++, eq);
+    addVariable(_output_id, range, EQUATION::Type::Output, _output_nbr);
+    Equation eq(converted, range, EQUATION::Output, _output_id, _output_nbr);
+    _output_nbr += (range ? range->size() : 1);
+    _outputs.insert(_output_id++, eq);
   }
 }
 
 void Model::addInput(Equation eq)
 {
   if (!eq.autonomous()) {
-    _inputNbr += (eq.hasRange() ? eq.range()->size() : 1);
-    _inputs.insert(_inputId, Input(Index(eq.lhs()), eq.range(), _inputId));
-    _inputId++;
+    _input_nbr += (eq.hasRange() ? eq.range()->size() : 1);
+    _inputs.insert(_input_id, Input(Index(eq.lhs()), eq.range(), _input_id));
+    _input_id++;
   }
 }
 
@@ -658,7 +655,7 @@ void Model::setModelConfig()
   ModelConfig::instance().setAlgebraics(_algebraics);
   ModelConfig::instance().setModelAnnotations(_annotations);
   ModelConfig::instance().setDerivatives(_derivatives);
-  ModelConfig::instance().setStateNbr(_stateNbr);
+  ModelConfig::instance().setStateNbr(_state_nbr);
   ModelConfig::instance().setEvents(_events);
 }
 }  // namespace IR
