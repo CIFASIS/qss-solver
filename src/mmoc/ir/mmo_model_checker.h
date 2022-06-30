@@ -61,10 +61,10 @@ class ModelChecker : public AST_Visitor {
   bool _lValue(AST_Expression left);
   bool _whenStatement(AST_Expression cond);
   bool _has_parent;
-  std::string _className;
-  AST_ClassPrefix _classPrefix;
-  bool _classModification;
-  bool _elseWhen;
+  std::string _class_name;
+  AST_ClassPrefix _class_prefix;
+  bool _class_modification;
+  bool _else_when;
 };
 }  // namespace IR
 }  // namespace MicroModelica
