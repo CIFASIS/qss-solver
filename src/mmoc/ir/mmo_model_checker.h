@@ -21,9 +21,9 @@
 
 #include <string>
 
-#include "../ast/ast_types.h"
-#include "../util/ast_util.h"
-#include "../util/util_types.h"
+#include <ast/ast_types.h>
+#include <util/ast_util.h>
+#include <util/util_types.h>
 
 namespace MicroModelica {
 namespace IR {
@@ -60,7 +60,7 @@ class ModelChecker : public AST_Visitor {
   private:
   bool _lValue(AST_Expression left);
   bool _whenStatement(AST_Expression cond);
-  bool _isChild;
+  bool _has_parent;
   std::string _className;
   AST_ClassPrefix _classPrefix;
   bool _classModification;
@@ -68,4 +68,3 @@ class ModelChecker : public AST_Visitor {
 };
 }  // namespace IR
 }  // namespace MicroModelica
-#endif /* MMO_MODEL_CHECKER_H_ */

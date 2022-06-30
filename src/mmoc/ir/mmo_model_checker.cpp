@@ -37,7 +37,7 @@ namespace IR {
 
 /* MicroModelica model checker interface */
 
-ModelChecker::ModelChecker(string name) : _isChild(false), _className(), _classPrefix(0), _classModification(false) {}
+ModelChecker::ModelChecker(string name) : _has_parent(false), _className(), _classPrefix(0), _classModification(false) {}
 
 ModelChecker::~ModelChecker() {}
 
@@ -53,47 +53,52 @@ void ModelChecker::visit(AST_Class x)
   if (x->hasExtends()) {
     Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Extend modifier to Class definition.");
   }
-  if (_isChild) {
-    if (x->prefix() != CP_FUNCTION || x->prefix() != CP_IMPURE || x->prefix() != CP_PURE) {
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Only Function classes allowed.");
-    }
-  } else {
-    _classPrefix = x->prefix();
-    switch (_classPrefix) {
-    case CP_PARTIAL:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Partial definition.");
-      break;
-    case CP_CLASS:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Class definition.");
-      break;
-    case CP_BLOCK:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Block definition.");
-      break;
-    case CP_RECORD:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Record definition.");
-      break;
-    case CP_CONNECTOR:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Connector definition.");
-      break;
-    case CP_TYPE:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Type definition.");
-      break;
-    case CP_OPERATOR:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Operator definition.");
-      break;
-    case CP_EXPANDABLE:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Expandable definition.");
-      break;
-    default:
-      break;
-    }
-    if (x->hasElementComponentList()) {
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Class definition.");
-    }
+  if ((x->prefix() != CP_FUNCTION || x->prefix() != CP_IMPURE || x->prefix() != CP_PURE) && _has_parent) {
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Only Function classes allowed.");
+  }
+  _classPrefix = x->prefix();
+  if (_classPrefix == CP_MODEL) {
+    _has_parent = true;
+  }
+  switch (_classPrefix) {
+  case CP_PARTIAL:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Partial definition.");
+    break;
+  case CP_CLASS:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Class definition.");
+    break;
+  case CP_BLOCK:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Block definition.");
+    break;
+  case CP_RECORD:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Record definition.");
+    break;
+  case CP_CONNECTOR:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Connector definition.");
+    break;
+  case CP_TYPE:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Type definition.");
+    break;
+  case CP_OPERATOR:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Operator definition.");
+    break;
+  case CP_EXPANDABLE:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Expandable definition.");
+    break;
+  default:
+    break;
+  }
+  if (x->hasElementComponentList()) {
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Class definition.");
   }
 }
 
-void ModelChecker::leave(AST_Class x) {}
+void ModelChecker::leave(AST_Class x)
+{
+  if (x->prefix() == CP_MODEL) {
+    _has_parent = false;
+  }
+}
 
 void ModelChecker::visit(AST_Composition x)
 {
@@ -142,7 +147,7 @@ void ModelChecker::visit(AST_CompositionEqsAlgs x)
     }
   }
   if (_classPrefix == CP_FUNCTION || _classPrefix == CP_PURE || _classPrefix == CP_IMPURE) {
-    if (x->isInitial()) {
+    if (x->isInitial() && !_has_parent) {
       Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Initial section inside function definition.");
     }
   }
