@@ -41,7 +41,7 @@ using namespace Util;
 namespace Generator {
 
 Generator::Generator(const StoredDefinition& std, CompileFlags& flags)
-    : _std(std), _flags(flags), _modelInstance(nullptr), _writer(nullptr), _includes(), _fheader()
+    : _std(std), _flags(flags), _model_instance(nullptr), _writer(nullptr), _includes(), _fheader()
 {
   if (_flags.output()) {
     _writer = WriterPtr(new MemoryWriter());
@@ -54,29 +54,29 @@ int Generator::generate()
 {
   if (_std.isModel()) {
     Model model = _std.model();
-    string baseName = model.name();
+    string base_name = model.name();
     if (_flags.hasOutputFile()) {
-      baseName = _flags.outputFile();
+      base_name = _flags.outputFile();
     }
-    _writer->setFile(baseName + ".c");
+    _writer->setFile(base_name + ".c");
     switch (model.annotations().solver()) {
     case DOPRI:
     case DASSL:
     case CVODE_BDF:
     case IDA:
     case CVODE_AM:
-      _modelInstance = ModelInstancePtr(new ClassicModelInstance(model, _flags, _writer));
+      _model_instance = ModelInstancePtr(new ClassicModelInstance(model, _flags, _writer));
       break;
     default:
-      _modelInstance = ModelInstancePtr(new QSSModelInstance(model, _flags, _writer));
+      _model_instance = ModelInstancePtr(new QSSModelInstance(model, _flags, _writer));
     }
-    _modelInstance->generate();
+    _model_instance->generate();
     _writer->clearFile();
-    _writer->setFile(baseName + ".h");
-    _modelInstance->header();
+    _writer->setFile(base_name + ".h");
+    _model_instance->header();
     _writer->print(WRITER::Model_Header);
     _writer->clearFile();
-    Files files(_modelInstance, model, _flags);
+    Files files(_model_instance, model, _flags);
     files.makefile();
     files.run();
     files.plot();
@@ -85,7 +85,7 @@ int Generator::generate()
       files.graph();
     }
     if (model.externalFunctions()) {
-      string ffname = baseName + "_functions";
+      string ffname = base_name + "_functions";
       generateIncludes(ffname);
       FunctionTable ft = model.calledFunctions();
       FunctionTable::iterator it;
@@ -118,10 +118,10 @@ void Generator::generateIncludes(string name)
 
 void Generator::generateModel() {}
 
-void Generator::calledFunctionHeader(string fileName)
+void Generator::calledFunctionHeader(string file_name)
 {
   string indent = _writer->indent(1);
-  string file = fileName;
+  string file = file_name;
   file.append(".h");
   _writer->setFile(file);
   for (list<string>::iterator it = _fheader.begin(); it != _fheader.end(); it++) {

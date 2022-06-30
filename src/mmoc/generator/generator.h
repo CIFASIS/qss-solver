@@ -44,12 +44,12 @@ class Generator {
   private:
   void generateIncludes(string name);
   void generateModel();
-  void calledFunctionHeader(string fileName);
+  void calledFunctionHeader(string file_name);
   IR::StoredDefinition _std;
   IR::Function _function;
   IR::Package _package;
   Util::CompileFlags _flags;
-  ModelInstancePtr _modelInstance;
+  ModelInstancePtr _model_instance;
   WriterPtr _writer;
   ofstream _file;
   std::map<string, string> _includes;
