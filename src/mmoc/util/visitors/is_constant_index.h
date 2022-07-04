@@ -25,16 +25,21 @@
 
 namespace MicroModelica {
 namespace Util {
-class IsConstantIndex : public AST_Expression_Visitor<bool> {
+class CheckIndexExpression : public AST_Expression_Visitor<bool> {
   public:
-  IsConstantIndex();
-  ~IsConstantIndex() = default;
+  CheckIndexExpression();
+  ~CheckIndexExpression() = default;
+
+  bool isConstant() const;
+  bool hasParameters() const;
 
   private:
   bool foldTraverseElement(AST_Expression exp);
   inline bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
   inline bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; }
   bool _in_index_list;
+  bool _is_constant;
+  bool _has_parameters;
 };
 
 }  // namespace Util

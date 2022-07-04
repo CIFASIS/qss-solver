@@ -28,9 +28,9 @@ using namespace Deps;
 using namespace IR;
 namespace Util {
 
-IsConstantIndex::IsConstantIndex() : _in_index_list(false) {}
+CheckIndexExpression::CheckIndexExpression() : _in_index_list(false), _is_constant(false), _has_parameters(false) {}
 
-bool IsConstantIndex::foldTraverseElement(AST_Expression exp)
+bool CheckIndexExpression::foldTraverseElement(AST_Expression exp)
 {
   bool ret = true;
   switch (exp->expressionType()) {
@@ -40,10 +40,15 @@ bool IsConstantIndex::foldTraverseElement(AST_Expression exp)
       VarSymbolTable symbols = ModelConfig::instance().symbols();
       Option<Variable> var = symbols[cr->name()];
       if (!var) {
-        Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "partial_eval_exp.cpp:43 %s", cr->name().c_str());
+        Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "is_constant_index.cpp:43 %s", cr->name().c_str());
         break;
       }
+      if (var->isParameter()) {
+        _has_parameters = true;
+        return false;
+      }
       if (var->isConstant()) {
+        _is_constant = true;
         return true;
       }
       ret = false;
@@ -55,6 +60,7 @@ bool IsConstantIndex::foldTraverseElement(AST_Expression exp)
       AST_ExpressionListIterator it;
       foreach (it, indexes) {
         ret = ret && apply(current_element(it));
+        _is_constant = ret;
       }
       _in_index_list = false;
     }
@@ -65,6 +71,11 @@ bool IsConstantIndex::foldTraverseElement(AST_Expression exp)
   }
   return ret;
 }
+
+bool CheckIndexExpression::isConstant() const { return _is_constant; }
+
+bool CheckIndexExpression::hasParameters() const  { return _has_parameters; }
+
 
 }  // namespace Util
 }  // namespace MicroModelica
