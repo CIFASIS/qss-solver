@@ -111,8 +111,10 @@ SB::Deps::Graph EvGraphBuilder<S>::build()
   }
   EquationTable::iterator eq_it;
   for (Equation eq = _algebraics.begin(eq_it); !_algebraics.end(eq_it); eq = _algebraics.next(eq_it)) {
-    SB::Deps::SetVertex alg_node = createSetVertex(eq, edge_dom_offset, max_dims, SB::Deps::VERTEX::Equation, _usage);
-    _G_nodes.push_back(addVertex(alg_node, graph));
+    Option<SB::Deps::SetVertex> alg_node = createSetVertex(eq, edge_dom_offset, max_dims, SB::Deps::VERTEX::Equation, _usage);
+    if (alg_node) {
+      _G_nodes.push_back(addVertex(alg_node.get(), graph));
+    }
   }
 
   EvNodes nodes(_events, _search);

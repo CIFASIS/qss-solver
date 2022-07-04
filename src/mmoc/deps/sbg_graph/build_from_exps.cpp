@@ -22,6 +22,7 @@
 #include <deps/sbg_graph/interval.h>
 #include <util/logger.h>
 #include <util/model_config.h>
+#include <util/visitors/is_constant_index.h>
 #include <util/visitors/occurs.h>
 #include <util/visitors/pwl_map_values.h>
 
@@ -132,8 +133,18 @@ bool checkFixedRange(Option<Range> range)
   return true;
 }
 
+bool checkExpressionIndex(Expression exp)
+{
+  CheckIndexExpression check_parameters;
+  check_parameters.apply(exp.expression());
+  return check_parameters.hasParameters();
+}
+
 Set buildSet(Equation eq, string eq_id, int offset, size_t max_dim, EqUsage& eq_usage)
 {
+  if (checkExpressionIndex(eq.lhs())) {
+    return SB::Set();
+  }
   Usage usage;
   DimRange dim_range;
   MultiInterval equation_intervals;
@@ -150,6 +161,9 @@ Set buildSet(Equation eq, string eq_id, int offset, size_t max_dim, EqUsage& eq_
 
 Set buildSet(Expression exp, string stm_id, int offset, size_t max_dim, EqUsage& eq_usage, Option<Range> range, Option<Range> ev_range)
 {
+  if (checkExpressionIndex(exp)) {
+    return SB::Set();
+  }
   Usage usage;
   DimRange dim_range;
   MultiInterval ev_intervals;
@@ -211,11 +225,14 @@ Deps::SetVertex createSetVertex(Variable variable, int& offset, size_t max_dim, 
   return node;
 }
 
-Deps::SetVertex createSetVertex(Equation eq, int& offset, size_t max_dim, VERTEX::Type type, EqUsage& usage)
+Option<Deps::SetVertex> createSetVertex(Equation eq, int& offset, size_t max_dim, VERTEX::Type type, EqUsage& usage)
 {
   std::stringstream eq_name;
   eq_name << "EQ_" << eq.type() << "_" << eq.id();
   Set range = buildSet(eq, eq_name.str(), offset, max_dim, usage);
+  if (range.empty()) {
+    return Option<Deps::SetVertex>();
+  }
   Deps::SetVertex node = Deps::SetVertex(eq_name.str(), offset, range, eq.id(), Deps::VertexDesc(type));
   offset += range.size();
   return node;
@@ -238,9 +255,11 @@ void addStatements(StatementTable stms, list<Deps::SetVertex>& nodes, Option<Ran
       if (FIXED_RANGE && STM_FIXED_RANGE) {
         ev_name << "EV_" << id << "_" << token << "_" << stm_count << "_" << asg_nbr++;
         Set range = buildSet(asg, ev_name.str(), offset, max_dim, usage, stm_range, stm_ev_range);
-        Deps::SetVertex node = Deps::SetVertex(ev_name.str(), offset, range, id, Deps::VertexDesc(type));
-        offset += range.size();
-        nodes.push_back(node);
+        if (!range.empty()) {
+          Deps::SetVertex node = Deps::SetVertex(ev_name.str(), offset, range, id, Deps::VertexDesc(type));
+          offset += range.size();
+          nodes.push_back(node);
+        }
       }
     }
     stm_count++;

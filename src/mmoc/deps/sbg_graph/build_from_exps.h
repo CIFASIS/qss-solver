@@ -68,7 +68,7 @@ Set buildSet(MicroModelica::IR::Equation eq, string eq_id, int offset, size_t ma
 
 Deps::SetVertex createSetVertex(MicroModelica::Util::Variable variable, int& offset, size_t max_dim, SB::Deps::VERTEX::Type type);
 
-Deps::SetVertex createSetVertex(MicroModelica::IR::Equation eq, int& offset, size_t max_dim, SB::Deps::VERTEX::Type type, EqUsage& usage);
+Option<Deps::SetVertex> createSetVertex(MicroModelica::IR::Equation eq, int& offset, size_t max_dim, SB::Deps::VERTEX::Type type, EqUsage& usage);
 
 list<Deps::SetVertex> createSetVertex(MicroModelica::IR::Event ev, int& offset, size_t max_dim, SB::Deps::VERTEX::Type type, EqUsage& usage, MicroModelica::IR::STATEMENT::AssignTerm search);
 

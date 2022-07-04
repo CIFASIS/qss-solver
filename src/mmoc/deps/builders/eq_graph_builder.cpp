@@ -86,12 +86,16 @@ SB::Deps::Graph EQGraphBuilder<S, T>::build()
   }
   EquationTable::iterator eq_it;
   for (Equation eq = _equations.begin(eq_it); !_equations.end(eq_it); eq = _equations.next(eq_it)) {
-    SB::Deps::SetVertex ifr_node = createSetVertex(eq, edge_dom_offset, max_dims, SB::Deps::VERTEX::Influencer, _usage);
-    _F_nodes.push_back(addVertex(ifr_node, graph));
+    Option<SB::Deps::SetVertex> ifr_node = createSetVertex(eq, edge_dom_offset, max_dims, SB::Deps::VERTEX::Influencer, _usage);
+    if (ifr_node) {
+      _F_nodes.push_back(addVertex(ifr_node.get(), graph));
+    }
   }
   for (Equation eq = _algebraics.begin(eq_it); !_algebraics.end(eq_it); eq = _algebraics.next(eq_it)) {
-    SB::Deps::SetVertex alg_node = createSetVertex(eq, edge_dom_offset, max_dims, SB::Deps::VERTEX::Equation, _usage);
-    _G_nodes.push_back(addVertex(alg_node, graph));
+    Option<SB::Deps::SetVertex> alg_node = createSetVertex(eq, edge_dom_offset, max_dims, SB::Deps::VERTEX::Equation, _usage);
+    if (alg_node) {
+      _G_nodes.push_back(addVertex(alg_node.get(), graph));
+    }
   }
 
   EqNodes nodes(_equations);
