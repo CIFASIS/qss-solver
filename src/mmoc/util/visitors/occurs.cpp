@@ -21,6 +21,7 @@
 #include <util/error.h>
 #include <util/model_config.h>
 #include <util/symbol_table.h>
+#include <util/visitors/is_constant_index.h>
 
 namespace MicroModelica {
 using namespace IR;
@@ -33,22 +34,9 @@ bool Occurs::foldTraverseElement(AST_Expression exp)
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
     Option<Variable> var = ModelConfig::instance().lookup(cr->name());
     if (var && (var->name() == _var)) {
-      bool add_occur = true;
-      if (cr->hasIndexes()) { 
-        AST_ExpressionList indexes = cr->firstIndex();
-        AST_ExpressionListIterator it;
-        foreach (it, indexes) {
-          if (current_element(it)->expressionType() == EXPCOMPREF) {
-            AST_Expression_ComponentReference idx_cr = current_element(it)->getAsComponentReference();
-            Option<Variable> idx_var = ModelConfig::instance().lookup(idx_cr->name());
-            if (idx_var && idx_var->isParameter()) {
-              add_occur = false;
-              break;
-            }
-          }
-        }
-      }
-      if (add_occur) {
+      CheckIndexExpression check_parameters;
+      check_parameters.apply(cr);
+      if (!check_parameters.hasParameters()) {
         Expression ep(exp);
         _occs.insert(ep);
         return true;

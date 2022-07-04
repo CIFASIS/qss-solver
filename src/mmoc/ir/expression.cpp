@@ -55,7 +55,7 @@ bool Expression::isScalar() const
   if (isReference()) {
     Option<Variable> var = reference();
     if (var->isArray()) {
-      IsConstantIndex constant_index;
+      CheckIndexExpression constant_index;
       return constant_index.apply(_exp);
     }
     return true;

@@ -78,8 +78,10 @@ void MergeGraphGenerator<S>::setup(S config)
 
   EquationTable::iterator eq_it;
   for (Equation eq = algebraics.begin(eq_it); !algebraics.end(eq_it); eq = algebraics.next(eq_it)) {
-    SB::Deps::SetVertex alg_node = createSetVertex(eq, _edge_dom_offset, max_dims, SB::Deps::VERTEX::Equation, usage);
-    addVertex(alg_node, _graph);
+    Option<SB::Deps::SetVertex> alg_node = createSetVertex(eq, _edge_dom_offset, max_dims, SB::Deps::VERTEX::Equation, usage);
+    if (alg_node) {
+      addVertex(alg_node.get(), _graph);
+    }
   }
 
 }
