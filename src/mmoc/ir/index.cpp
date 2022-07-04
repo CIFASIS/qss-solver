@@ -89,7 +89,7 @@ bool Index::isConstant() const
   if (isEmpty()) {
     return false;
   }
-  IsConstantIndex constant_index;
+  CheckIndexExpression constant_index;
   return constant_index.apply(_exp.expression());
 }
 
@@ -325,7 +325,7 @@ void Range::generate(Variable var)
 void Range::generate(AST_Expression exp)
 {
   assert(exp->expressionType() == EXPCOMPREF);
-  IsConstantIndex constant_index;
+  CheckIndexExpression constant_index;
   assert(constant_index.apply(exp));
   AST_Expression_ComponentReference ref = exp->getAsComponentReference();
   assert(ref->hasIndexes());

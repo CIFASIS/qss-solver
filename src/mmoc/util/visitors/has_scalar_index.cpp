@@ -34,7 +34,7 @@ bool HasScalarIndex::foldTraverseElement(AST_Expression exp)
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
     if (cr->hasIndexes()) {
-      IsConstantIndex constant_index;
+      CheckIndexExpression constant_index;
       return constant_index.apply(cr);
     }
     break;
