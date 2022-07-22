@@ -17,30 +17,25 @@
 
  ******************************************************************************/
 
-#ifndef VARIABLE_LOOKUP_H_
-#define VARIABLE_LOOKUP_H_
+#pragma once
 
-#include "../ast_util.h"
+#include <util/ast_util.h>
 
 namespace MicroModelica {
 namespace Util {
-/**
- * @breif Helper class that looks for a variable
- *        definition in more than one symbol table.
- */
+
 class VariableLookup : public AST_Expression_Fold<bool> {
   public:
-  VariableLookup(MicroModelica::Util::VarSymbolTable st, MicroModelica::Util::VarSymbolTable lst);
+  VariableLookup(MicroModelica::Util::VarSymbolTable symbols);
   ~VariableLookup() = default;
 
   private:
-  bool foldTraverseElement(AST_Expression);
-  bool foldTraverseElement(bool, bool, BinOpType);
-  bool foldTraverseElementUMinus(AST_Expression);
+  bool foldTraverseElement(AST_Expression exp);
+  bool foldTraverseElement(bool l, bool r, BinOpType);
+  bool foldTraverseElementUMinus(AST_Expression exp);
   
-  VarSymbolTable _st;
-  VarSymbolTable _lst;
+  VarSymbolTable _symbols;
 };
+
 }  // namespace Util
 }  // namespace MicroModelica
-#endif /* VARIABLE_LOOKUP_H_ */
