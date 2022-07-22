@@ -370,6 +370,45 @@
             ]
         },
         
+        // Adr mixed mode model
+        {
+            "name": "ADR mixed mode model",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/adr ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/adr/adr.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+
+        // Buck mixed model
+        {
+            "name": "Buck mixed mode model",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/buck_term ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/buck_term/buck_term.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        
+
         // Advection 2D model
         {
             "name": "Advection 2D model",
@@ -407,6 +446,63 @@
                 }
             ]
         },
+
+        // NeuronalNetworkE
+        {
+            "name": "NeuronNetworkE model",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/NeuronNetworkE ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/NeuronNetworkE/NeuronNetworkE.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+
+        // Function Import test
+        {
+            "name": "Function Import",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/funct_test ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/func_test/func_test.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+
+        // When For test
+        {
+            "name": "When For Test",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/when_for_test ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/when_for_test/when_for_test.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },        
         
         // Cuk2
         {
