@@ -266,7 +266,7 @@ string AST_Statement_If_::print() const
 
 AST_Statement_OutputAssigment_::AST_Statement_OutputAssigment_(AST_ExpressionList out_exps, AST_Expression_ComponentReference func,
                                                                AST_ExpressionList args)
-    : _out_exps(out_exps), _func(func), _args(args)
+    : _out_exps(out_exps), _func(func), _args(args), _function_name(func->print())
 {
 }
 
@@ -303,6 +303,8 @@ AST_Expression_ComponentReference AST_Statement_OutputAssigment_::function() con
 AST_ExpressionList AST_Statement_OutputAssigment_::arguments() const { return _args; }
 
 StatementType AST_Statement_OutputAssigment_::statementType() { return STOUTASSING; }
+
+string AST_Statement_OutputAssigment_::functionName() { return _function_name; }
 
 /* Else statement Class */
 
