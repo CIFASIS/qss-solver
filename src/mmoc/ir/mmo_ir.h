@@ -59,7 +59,7 @@ class MicroModelicaIR : public AST_Visitor {
   void visit(AST_StoredDefinition x);
   void leave(AST_StoredDefinition x);
   int apply(AST_Node x);
-  inline const StoredDefinition definition() { return _std; };
+  inline StoredDefinition definition() { return _std; };
 
   protected:
   void visitForStms(AST_Statement_For for_stm);
