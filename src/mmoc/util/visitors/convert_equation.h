@@ -17,10 +17,9 @@
 
  ******************************************************************************/
 
-#ifndef CONVERT_EQUATION_H_
-#define CONVERT_EQUATION_H_
+#pragma once
 
-#include "../ast_util.h"
+#include <util/ast_util.h>
 
 namespace MicroModelica {
 namespace Util {
@@ -39,5 +38,3 @@ class ConvertEquation {
 
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif /* CONVERT_EQUATION_H_ */

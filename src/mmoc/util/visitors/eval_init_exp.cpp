@@ -19,9 +19,9 @@
 
 #include "eval_init_exp.h"
 
-#include "../error.h"
-#include "../model_config.h"
-#include "../symbol_table.h"
+#include <util/error.h>
+#include <util/model_config.h>
+#include <util/symbol_table.h>
 
 namespace MicroModelica {
 namespace Util {
