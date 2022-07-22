@@ -27,7 +27,6 @@
 
 #include <ast/ast_types.h>
 #include <deps/model_dependencies.h>
-#include <util/util.h>
 #include <util/util_types.h>
 #include <ir/annotation.h>
 #include <ir/equation.h>
@@ -59,9 +58,9 @@ class Class {
 
 class Function : public Class {
   public:
-  Function(){};
+  Function();
   Function(string name);
-  ~Function();
+  ~Function() = default;
   string name() const;
   void insert(AST_External_Function_Call efc);
   void insert(VarName n, Util::Variable& vi, DEC_Type type);
@@ -78,17 +77,16 @@ class Function : public Class {
   CompiledPackageTable packages() const;
   unsigned int outputNbr() const;
   FunctionAnnotation annotations() const;
-  Util::VarSymbolTable localSymbols() const;
-  Util::VarSymbolTable arguments() const;
+  Util::VariableList arguments() const;
 
   private:
   Util::ImportTable _imports;
   std::string _name;
-  Util::VarSymbolTable _localSymbols;
+  Util::VarSymbolTable _local_symbols;
   FunctionAnnotation _annotations;
   StatementTable _statements;
   CompiledPackageTable _packages;
-  Util::VarSymbolTable _arguments;
+  Util::VariableList _arguments;
   unsigned int _output_nbr;
   unsigned int _external_function_id;
   unsigned int _statement_id;
@@ -122,6 +120,7 @@ class Package : public Class {
   Util::ImportTable _imports;
   std::string _name;
   FunctionTable _functions;
+  CompiledPackageTable _packages;
 };
 
 class Model : public Class {

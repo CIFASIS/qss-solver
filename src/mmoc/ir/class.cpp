@@ -23,34 +23,36 @@
 #include <sstream>
 #include <utility>
 
-#include "../ast/ast_builder.h"
-#include "../ast/composition.h"
-#include "../ast/equation.h"
-#include "../ast/expression.h"
-#include "../ast/modification.h"
-#include "../ast/statement.h"
-#include "../util/error.h"
-#include "../util/model_config.h"
-#include "../util/process_statement.h"
-#include "../util/visitors/convert_condition.h"
-#include "../util/visitors/convert_cont_red.h"
-#include "../util/visitors/convert_equation.h"
-#include "../util/visitors/convert_output_range.h"
-#include "../util/visitors/convert_statement.h"
-#include "../util/visitors/eval_init_exp.h"
-#include "../util/visitors/variable_lookup.h"
-#include "helpers.h"
+#include <ast/ast_builder.h>
+#include <ast/composition.h>
+#include <ast/equation.h>
+#include <ast/expression.h>
+#include <ast/modification.h>
+#include <ast/statement.h>
+#include <ir/helpers.h>
+#include <util/error.h>
+#include <util/model_config.h>
+#include <util/process_statement.h>
+#include <util/util.h>
+#include <util/visitors/convert_condition.h>
+#include <util/visitors/convert_cont_red.h>
+#include <util/visitors/convert_equation.h>
+#include <util/visitors/convert_output_range.h>
+#include <util/visitors/convert_statement.h>
+#include <util/visitors/eval_init_exp.h>
+#include <util/visitors/variable_lookup.h>
 
 namespace MicroModelica {
 using namespace Deps;
 using namespace Util;
 namespace IR {
+
 /* Function Class Implementation*/
 
-Function::Function(string name)
+Function::Function()
     : _imports(),
-      _name(name),
-      _localSymbols(),
+      _name(),
+      _local_symbols(),
       _statements(),
       _packages(),
       _arguments(),
@@ -61,9 +63,21 @@ Function::Function(string name)
 {
 }
 
-Function::~Function() {}
+Function::Function(string name)
+    : _imports(),
+      _name(name),
+      _local_symbols(),
+      _statements(),
+      _packages(),
+      _arguments(),
+      _output_nbr(0),
+      _external_function_id(0),
+      _statement_id(0),
+      _external_functions()
+{
+}
 
-VarSymbolTable Function::symbols() const { return ModelConfig::instance().symbols(); }
+VarSymbolTable Function::symbols() const { return _local_symbols; }
 
 void Function::insert(string n)
 {
@@ -71,6 +85,11 @@ void Function::insert(string n)
   if (!Utils::instance().readPackage(n, _packages)) {
     Error::instance().add(0, EM_IR | EM_CANT_OPEN_FILE, ER_Error, "%s.moo", n.c_str());
   }
+  Option<CompiledPackage> cp = _packages[n];
+  if (cp) {
+    Utils::instance().addCompiledFunctions(cp->definitions());
+  }
+
 }
 
 void Function::insert(AST_Equation eq) { return; }
@@ -82,10 +101,10 @@ void Function::insert(AST_Statement stm, bool initial) { insert(stm); }
 void Function::insert(AST_External_Function_Call efc)
 {
   string lvalue;
-  VariableLookup vl(symbols(), localSymbols());
+  VariableLookup var_lookup(symbols());
   if (efc->hasComponentReference()) {
     AST_Expression_ComponentReference cr = efc->componentReference();
-    if (!vl.apply(cr)) {
+    if (!var_lookup.apply(cr)) {
       Error::instance().add(efc->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "Insert external function call: %s",
                             cr->name().c_str());
       return;
@@ -95,7 +114,7 @@ void Function::insert(AST_External_Function_Call efc)
   AST_ExpressionListIterator eli;
   if (efc->args() != nullptr) {
     foreach (eli, efc->args()) {
-      if (!vl.apply(current_element(eli))) {
+      if (!var_lookup.apply(current_element(eli))) {
         Error::instance().add(efc->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "External function call.");
         return;
       }
@@ -111,14 +130,12 @@ void Function::insert(VarName n, Variable &vi, DEC_Type type)
   if (vi.typePrefix() & TP_CONSTANT) {
     vi.setValue(eval.apply(vi.modification()->getAsEqual()->exp()));
   }
-  ModelConfig::instance().addVariable(n, vi);
+  _local_symbols.insert(n, vi);
   if (type == DEC_PUBLIC) {
     if (vi.isOutput()) {
       _output_nbr++;
     }
-    _arguments.insert(n, vi);
-  } else {
-    _localSymbols.insert(n, vi);
+    _arguments.push_back(vi);
   }
 }
 
@@ -145,31 +162,32 @@ unsigned int Function::outputNbr() const { return _output_nbr; }
 
 FunctionAnnotation Function::annotations() const { return _annotations; }
 
-Util::VarSymbolTable Function::localSymbols() const { return _localSymbols; }
-
-Util::VarSymbolTable Function::arguments() const { return _arguments; }
+Util::VariableList Function::arguments() const { return _arguments; }
 
 /* Package Class Implementation */
 
-Package::Package(string name) : _imports(), _name(name), _functions() {}
+Package::Package(string name) : _imports(), _name(name), _functions(), _packages() {}
 
 VarSymbolTable Package::symbols() const { return VarSymbolTable(); }
 
-void Package::insert(string n) { _imports[n] = n; }
+void Package::insert(string n)
+{
+  _imports.insert(n,n);
+}
 
-void Package::insert(AST_Equation eq) { return; }
+void Package::insert(AST_Equation eq) {}
 
-void Package::insert(AST_Statement stm) { return; }
+void Package::insert(AST_Statement stm) {}
 
-void Package::insert(AST_Statement stm, bool initial) { return; }
+void Package::insert(AST_Statement stm, bool initial) {}
 
 void Package::setFunctions(FunctionTable &fs) { _functions.merge(fs); }
 
-void Package::insert(AST_External_Function_Call efc) { return; }
+void Package::insert(AST_External_Function_Call efc) {}
 
-void Package::insert(VarName n, Variable &vi, DEC_Type type) { return; }
+void Package::insert(VarName n, Variable &vi, DEC_Type type) {}
 
-void Package::insert(VarName n, Variable &vi) { return; }
+void Package::insert(VarName n, Variable &vi) {}
 
 void Package::insert(AST_Argument_Modification x) {}
 
