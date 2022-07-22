@@ -98,7 +98,7 @@ class Variable {
   inline string name() const { return _name; };
   inline void setName(string n) { _name = n; };
   inline AST_Expression exp() { return _exp; };
-  inline bool isArray() { return _isArray; };
+  inline bool isArray() const { return _isArray; };
   inline bool isScalar() { return !isArray(); };
   friend ostream& operator<<(ostream& os, const Variable& e);
   inline unsigned int size(int dim) const { return _size[dim]; };
@@ -165,6 +165,8 @@ class VarSymbolTable : public ModelTable<VarName, Variable> {
   bool _parameters;
   unsigned int _max_dims;
 };
+
+typedef std::list<Variable> VariableList; 
 
 }  // namespace Util
 }  // namespace MicroModelica
