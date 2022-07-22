@@ -21,20 +21,18 @@
 
 #include <sstream>
 
-#include "../../ast/ast_builder.h"
-#include "../../ir/helpers.h"
-#include "../error.h"
-#include "../model_config.h"
-#include "../util.h"
+#include <ast/ast_builder.h>
+#include <ir/class.h>
+#include <ir/helpers.h>
+#include <util/error.h>
+#include <util/model_config.h>
+#include <util/util.h>
 
 namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-ExpressionPrinter::ExpressionPrinter(int order)
-    : _order(order)
-{
-}
+ExpressionPrinter::ExpressionPrinter(int order) : _order(order) {}
 
 string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
 {
@@ -54,9 +52,15 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
     CompiledFunctionTable fs = Utils::instance().compiledFunctions();
     Option<CompiledFunction> f = fs[*call->name()];
     if (!f) {
-      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "Function definition: expression_printer.cpp:56 %s",
-                            call->name()->c_str());
-      break;
+      FunctionTable package_functions = Utils::instance().packageFunctions();
+      Option<Function> pkg_f = package_functions[call->name()->c_str()];
+      if (!pkg_f) {
+        Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "Function definition: expression_printer.cpp:56 %s",
+                              call->name()->c_str());
+        break;
+      }
+      Util::SymbolTable symbols;
+      f = CompiledFunction(pkg_f->name(), "", "", symbols, Utils::instance().packagePrefix());
     }
     f->setArguments(call->arguments());
     f->setOutputArguments(call->outputArguments());
@@ -182,9 +186,36 @@ string ExpressionPrinter::foldTraverseElementUMinus(AST_Expression exp)
 }
 
 VariablePrinter::VariablePrinter(Variable var, AST_Expression_ComponentReference ref, int order)
-    : _var(var), _ref(ref), _order(order), _exp()
+    : _var(var), _ref(ref), _order(order), _exp(), _begin_delimiter("("), _end_delimiter(")"), _begin_index_access(), _end_index_access()
 {
+  config();
   generate();
+}
+
+void VariablePrinter::config()
+{
+  if (ModelConfig::instance().functionCode()) {
+    _begin_delimiter = "[";
+    _end_delimiter = "]";
+    _begin_index_access = "(";
+    _end_index_access = "-1)";
+  }
+}
+
+string VariablePrinter::access(bool array_access) const
+{
+  if (ModelConfig::instance().functionCode()) {
+    if (_var.isOutput() && !ModelConfig::instance().functionOutputs() && ModelConfig::instance().compiledFunctionVar()) {
+      return "&";
+    }
+    if (_var.isOutput() && ModelConfig::instance().functionOutputs() && !ModelConfig::instance().compiledFunctionVar() && !_var.isArray()) {
+      return "*";
+    }
+  }
+  if (array_access) {
+    return "&";
+  }
+  return "";
 }
 
 void VariablePrinter::generate()
@@ -194,28 +225,36 @@ void VariablePrinter::generate()
     _exp = _var.name();
     return;
   }
+  const bool PRINT_COEFF = ModelConfig::instance().isQss() && (_var.isState() || _var.isAlgebraic());
+  const bool HAS_INDEXES = _ref->hasIndexes();
+  const bool ARRAY_ACCESS = ModelConfig::instance().compiledFunctionVar() && !HAS_INDEXES && _var.isArray(); 
+  buffer << access(ARRAY_ACCESS);
   if (ModelConfig::instance().initialCode() && _var.isState()) {
     buffer << "_init";
   }
   buffer << _var;
-  const bool PRINT_COEFF = ModelConfig::instance().isQss() && (_var.isState() || _var.isAlgebraic());
-  const bool HAS_INDEXES = _ref->hasIndexes();
   if (HAS_INDEXES) {
     ExpressionPrinter printer(_order);
     AST_ExpressionList indexes = _ref->firstIndex();
     AST_ExpressionListIterator it;
     int size = indexes->size(), i = 0;
-    buffer << "(";
+    buffer << _begin_delimiter;
     foreach (it, indexes) {
-      buffer << printer.apply(current_element(it)) << (++i < size ? "," : "");
+      buffer << _begin_index_access << printer.apply(current_element(it)) << _end_index_access << (++i < size ? "," : "");
     }
   }
-  if (PRINT_COEFF && HAS_INDEXES) {
-    buffer << "," << _order << ")";
+  if (ARRAY_ACCESS) {
+    buffer << _begin_delimiter << "0";
+    if (PRINT_COEFF) {
+      buffer << "," << _order;
+    }
+    buffer << _end_delimiter;
+  } else if (PRINT_COEFF && HAS_INDEXES) {
+    buffer << "," << _order << _end_delimiter;
   } else if (PRINT_COEFF) {
-    buffer << "(" << _order << ")";
+    buffer << _begin_delimiter << _order << _end_delimiter;
   } else if (HAS_INDEXES) {
-    buffer << ")";
+    buffer << _end_delimiter;
   }
   _exp = buffer.str();
 }

@@ -17,12 +17,11 @@
 
  ******************************************************************************/
 
-#ifndef EXPRESSION_PRINTER_H_
-#define EXPRESSION_PRINTER_H_
+#pragma once
 
 #include <string>
 
-#include "../ast_util.h"
+#include <util/ast_util.h>
 
 namespace MicroModelica {
 namespace Util {
@@ -48,15 +47,19 @@ class VariablePrinter {
 
   protected:
   void generate();
+  void config();
+  std::string access(bool arrray_access) const;
 
   private:
   Variable _var;
   AST_Expression_ComponentReference _ref;
   int _order;
   std::string _exp;
+  std::string _begin_delimiter;
+  std::string _end_delimiter;
+  std::string _begin_index_access;
+  std::string _end_index_access;
 };
 
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif /* EXPRESSION_PRINTER_H_ */
