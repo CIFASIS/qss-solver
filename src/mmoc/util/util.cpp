@@ -41,11 +41,7 @@ using namespace IR;
 namespace Util {
 
 Utils::Utils()
-    : _language_especification("C"),
-      _flags(),
-      _compiled_functions(),
-      _file_name(),
-      _ids(0)
+    : _language_especification("C"), _flags(), _compiled_functions(), _file_name(), _ids(0), _package_functions(), _package_prefix()
 {
   _annotations.insert(pair<string, int>("StartTime", 0));
   _annotations.insert(pair<string, int>("StopTime", 1));
@@ -142,18 +138,26 @@ SymbolTable Utils::getValue(fstream *package, string token)
   return ret;
 }
 
-Option<CompiledPackage> Utils::readPackage(string fileName)
+Option<CompiledPackage> Utils::readPackage(string file_name, bool full_path, string package_name)
 {
   fstream package;
-  string pname = packageName(fileName);
-  string name = packagePath(pname + ".c");
-  name.append(pname).append(".moo");
+  string name;
+  string compiled_package_name = file_name; 
+  if (full_path) {
+    name = file_name;
+    assert(!compiled_package_name.empty());
+    compiled_package_name = package_name;
+  } else {
+    string pname = packageName(file_name);
+    name = packagePath(pname + ".c");
+    name.append(pname).append(".moo");
+  }
   package.open(name.c_str());
   if (package.good()) {
     string line;
     CompiledFunctionTable cft;
     ImportTable objects;
-    CompiledPackage cp(fileName);
+    CompiledPackage cp(compiled_package_name);
     string fname;
     string prefix = cp.prefix();
     string derivative;
@@ -231,6 +235,14 @@ string Utils::packagePath(string name)
   return "";
 }
 
+string Utils::generatePath(std::string path, string file_name)
+{
+  if (path.back() == '/') {
+    return path + file_name;
+  }
+  return path + SLASH + file_name;
+}
+
 string Utils::packagePath(string pname, CompileFlags flags, string ext)
 {
   string fname = flags.path();
@@ -243,7 +255,7 @@ string Utils::packagePath(string pname, CompileFlags flags, string ext)
     f.close();
     if (flags.hasOutputFile()) {
       fname = flags.outputFilePath();
-      fname.append(SLASH + pname + ext);
+      fname.append(pname + ext);
       f.open(fname.c_str());
       if (f.good() && checkCodeFiles(flags.outputFilePath() + SLASH + pname, ext)) {
         f.close();
@@ -378,11 +390,15 @@ string Utils::tabs(int t)
   return tab;
 }
 
-CompileFlags Utils::compileFlags()
-{
-  return _flags;
-}
+CompileFlags Utils::compileFlags() { return _flags; }
 
+IR::FunctionTable Utils::packageFunctions() { return _package_functions; }
+
+void Utils::setPackageFunctions(IR::FunctionTable package_functions) { _package_functions = package_functions; }
+
+string Utils::packagePrefix() { return _package_prefix; }
+
+void Utils::setPackagePrefix(string package_prefix) { _package_prefix = package_prefix; }
 
 }  // namespace Util
 }  // namespace MicroModelica
