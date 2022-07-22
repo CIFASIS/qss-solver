@@ -84,6 +84,7 @@ std::ostream& operator<<(std::ostream& out, const CompiledFunction& cf)
 
 string CompiledFunction::print() const
 {
+  ModelConfig::instance().setCompiledFunctionVar(true);
   stringstream buffer;
   buffer << _name << "(";
   AST_ExpressionListIterator it;
@@ -92,17 +93,32 @@ string CompiledFunction::print() const
     i++;
     Expression ex(current_element(it));
     buffer << ex;
-    buffer << (i < size ? "," : "");
+    buffer << (i < size ? ", " : "");
+  }
+  if (size > 0 && _output_arguments->size()) {
+    buffer << ", ";
   }
   size = _output_arguments->size();
   i = 0;
   foreach (it, _output_arguments) {
     i++;
     Expression ex(current_element(it));
-    buffer << "&" << ex;
-    buffer << (i < size ? "," : "");
+    if (ex.isReference()) {
+      Option<Variable> var = ex.reference();
+      assert(var);
+      if (ModelConfig::instance().functionCode()) {
+        if (var->isArray()) {
+          buffer << "&";
+        }
+      } else {
+        buffer << "&";
+      }
+    }
+    buffer << ex;
+    buffer << (i < size ? ", " : "");
   }
   buffer << ")";
+  ModelConfig::instance().setCompiledFunctionVar(false);
   return buffer.str();
 }
 
@@ -391,7 +407,7 @@ string FunctionPrinter::equationVariableMacros(Option<Range> range, Expression l
     RangeDefinitionTable range_def = range->definition();
     buffer << "#define _get" << id << "_var_idxs";
     buffer << "(row, var)\\" << endl; 
-    map<string, int> usage = index_usage.apply(lhs.expression());
+    multimap<string, int> usage = index_usage.apply(lhs.expression());
     map<string, string> parse_row = parseIndexes("row", range, 1);
     map<int, string> ctes = parseConstants(lhs);
     int i = 1, size = usage.size();
@@ -426,6 +442,7 @@ string FunctionPrinter::jacMacrosAccess(Equation eq, string index, string tab) c
     code << tab << "_get" << eq.applyId() << "_var_idxs(" << index << ", eq_var);" << endl;
     code << tab << "_get" << var.get() << "_idxs(eq_var);" << endl;
     eq.range()->addRangeLocalVariables();
+    eq.range()->addLocalVariables();
   }
   return code.str();
 }
