@@ -109,8 +109,12 @@ void insertAlg(AlgDepsMap& map, int id, DefAlgDepsUse new_dep);
 
 Expression getUseExp(Util::Variable variable, DepData dep_data);
 
+bool checkEventRange(Index index, Range range);
+
+std::vector<std::string> getVariables(Index index, Range range);
+
 template<typename N>
-Option<Range> getUseRange(Util::Variable variable, DepData dep_data, N node)
+Option<Range> getUseRange(Util::Variable variable, DepData dep_data, N node, bool event = false)
 {
   Expression use_exp = dep_data.var_dep.exp();
   const bool SCALAR_EXP = dep_data.var_dep.nMap().constantExp();
@@ -130,6 +134,10 @@ Option<Range> getUseRange(Util::Variable variable, DepData dep_data, N node)
   if (!SCALAR_EXP) {
     if (dep_data.from_alg) {
       return Range(dep_data.var_dep.equations(),dep_data.var_dep.eqOffset(), use_idx.variables());
+    }
+    if (event && !checkEventRange(use_idx, node.range().get())) {
+      var_names = getVariables(use_idx, node.range().get());
+      return Range(dep_data.var_dep.equations(),dep_data.var_dep.eqOffset(), var_names);
     }
     return node.range();
   }

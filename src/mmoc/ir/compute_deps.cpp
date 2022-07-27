@@ -157,5 +157,36 @@ void insertAlg(AlgDepsMap& map, int id, DefAlgDepsUse new_dep)
   map[id] = algs;
 }
 
+bool checkEventRange(Index index, Range range)
+{
+  vector<string> idx_vars = index.variables();
+  vector<string> range_vars = range.getIndexes();
+  for (string idx_var : idx_vars) {
+    bool found = false;
+    for (string range_var : range_vars) {
+      if (idx_var == range_var) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      return false;
+    }
+  }
+  return true;
+}
+
+vector<string> getVariables(Index index, Range range)
+{
+  vector<string> index_vars = index.variables();
+  vector<string> ret_vars = range.getIndexes();
+  for (string idx_var : index_vars) {
+    ret_vars.push_back(idx_var);
+  }
+  sort(ret_vars.begin(), ret_vars.end() );
+  ret_vars.erase(unique(ret_vars.begin(), ret_vars.end() ), ret_vars.end() );
+  return ret_vars;
+}
+
 }  // namespace IR
 }  // namespace MicroModelica
