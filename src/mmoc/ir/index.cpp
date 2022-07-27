@@ -400,6 +400,24 @@ string Range::iterator(int dim, bool range_idx)
   return getDimensionVar(dim + 1);
 }
 
+string Range::iterator(string var, int dim, bool range_idx)
+{
+  if (isDimensionVar(var)) {
+    iterator(dim, range_idx);
+  }
+  for (auto ip : _index_pos) {
+    if (ip.first == var) {
+      return getDimensionVar(ip.second + 1);
+    }
+  }
+  return iterator(dim, range_idx);
+}
+
+bool Range::isDimensionVar(string var)
+{
+  return  (var.rfind("_d", 0) == 0);
+}
+
 string Range::getPrintDimensionVarsString() const
 {
   stringstream buffer;

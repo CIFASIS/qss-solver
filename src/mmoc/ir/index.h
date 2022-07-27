@@ -96,6 +96,7 @@ class Range {
   std::string block(int dim = -1) const;
   int pos(std::string var);
   std::string iterator(int dim, bool range_idx = false);
+  std::string iterator(std::string var, int dim, bool range_idx = false);
   std::string getPrintDimensionVarsString() const;
   std::string getDimensionVarsString(bool range = false) const;
   std::vector<std::string> getDimensionVars(bool range = false) const;
@@ -121,6 +122,7 @@ class Range {
   bool isVariable(std::string var);
   bool testExpression(AST_Expression exp);
   Expression getExp(std::vector<Expression> exps, size_t pos);
+  bool isDimensionVar(std::string var);
 
   private:
   void setRangeDefinition(AST_ForIndexList fil);
