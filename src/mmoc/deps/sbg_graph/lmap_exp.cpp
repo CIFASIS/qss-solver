@@ -25,22 +25,51 @@
 #include <list>
 #include <sstream>
 
-namespace SB{
+namespace SB {
 namespace Deps {
 
-CoeffContainer::CoeffContainer(std::vector<int> coeffs) : _coeffs(coeffs){};
+CoeffContainer::CoeffContainer(std::vector<int> coeffs) : _coeffs(coeffs), _valid_dims()
+{
+  for(size_t i = 0; i < _coeffs.size(); i++) {
+    _valid_dims.push_back(true);
+  }
+}
 
-CoeffContainer::CoeffContainer() : _coeffs(){};
+CoeffContainer::CoeffContainer(std::vector<int> coeffs, std::vector<bool> valid_dims) : _coeffs(coeffs), _valid_dims(valid_dims) {}
 
-bool CoeffContainer::operator<(const CoeffContainer& other) const { return this->_coeffs < other._coeffs; };
+CoeffContainer::CoeffContainer() : _coeffs(), _valid_dims() {}
 
-bool CoeffContainer::operator==(const CoeffContainer& other) const { return this->_coeffs == other._coeffs; };
+CoeffContainer& CoeffContainer::operator=(const CoeffContainer&  other)
+{
+  _coeffs = other._coeffs;
+  _valid_dims = other._valid_dims;
+  return *this;
+}
 
-bool CoeffContainer::operator!=(const CoeffContainer& other) const { return this->_coeffs != other._coeffs; };
+bool CoeffContainer::operator<(const CoeffContainer& other) const { return this->_coeffs < other._coeffs; }
 
-int CoeffContainer::operator[](const int& index) const { return _coeffs[index]; };
+bool CoeffContainer::operator==(const CoeffContainer& other) const { return this->_coeffs == other._coeffs; }
 
-void CoeffContainer::insert(int value) { return _coeffs.push_back(value); };
+bool CoeffContainer::operator!=(const CoeffContainer& other) const { return this->_coeffs != other._coeffs; }
+
+int CoeffContainer::operator[](const int& index) const { return _coeffs[index]; }
+
+void CoeffContainer::insert(int value)
+{
+  _valid_dims.push_back(true);
+  _coeffs.push_back(value);
+}
+
+void CoeffContainer::addDim()
+{
+  _valid_dims.push_back(false);
+  _coeffs.push_back(0);
+}
+
+bool CoeffContainer::isValid(int i) const
+{
+  return _valid_dims[i];
+}
 
 bool CoeffContainer::isZeros()
 {
@@ -56,61 +85,71 @@ CoeffContainer CoeffContainer::operator-() const
   for (int i = 0; i < (int)_coeffs.size(); i++) {
     ret[i] = -_coeffs[i];
   }
-  return ret;
-};
+  return CoeffContainer(ret, _valid_dims);
+}
 
 CoeffContainer CoeffContainer::id(int size)
 {
   std::vector<int> ret(size);
+  std::vector<bool> valid(size);
   for (int i = 0; i < size; i++) {
     ret[i] = 1;
+    valid[i] = true;
   }
-  return ret;
-};
+  return CoeffContainer(ret, valid);
+}
 
 CoeffContainer CoeffContainer::operator-(const CoeffContainer& other) const
 {
   assert(size() == other.size());
   std::vector<int> ret(_coeffs.size());
+  std::vector<bool> valid(_coeffs.size());
   for (int i = 0; i < (int)_coeffs.size(); i++) {
     ret[i] = _coeffs[i] - other._coeffs[i];
+    valid[i] = _valid_dims[i] && other._valid_dims[i];
   }
-  return ret;
-};
+  return CoeffContainer(ret, valid);
+}
 
 CoeffContainer CoeffContainer::operator+(const CoeffContainer& other) const
 {
   assert(size() == other.size());
   std::vector<int> ret(_coeffs.size());
+  std::vector<bool> valid(_coeffs.size());
   for (int i = 0; i < (int)_coeffs.size(); i++) {
     ret[i] = _coeffs[i] + other._coeffs[i];
+    valid[i] = _valid_dims[i] && other._valid_dims[i];
   }
-  return ret;
-};
+  return CoeffContainer(ret, valid);
+}
 
 CoeffContainer CoeffContainer::operator*(const CoeffContainer& other) const
 {
   assert(size() == other.size());
   std::vector<int> ret(_coeffs.size());
+  std::vector<bool> valid(_coeffs.size());
   for (int i = 0; i < (int)_coeffs.size(); i++) {
     ret[i] = _coeffs[i] * other._coeffs[i];
+    valid[i] = _valid_dims[i] && other._valid_dims[i];
   }
-  return ret;
-};
+  return CoeffContainer(ret, valid);
+}
 
 CoeffContainer CoeffContainer::operator/(const CoeffContainer& other) const
 {
   assert(size() == other.size());
   std::vector<int> ret(_coeffs.size());
+  std::vector<bool> valid(_coeffs.size());
   for (int i = 0; i < (int)_coeffs.size(); i++) {
     if (other._coeffs[i] == 0) {
       ret[i] = 0;
     } else {
       ret[i] = _coeffs[i] / other._coeffs[i];
     }
+    valid[i] = _valid_dims[i] && other._valid_dims[i];
   }
-  return ret;
-};
+  return CoeffContainer(ret, valid);
+}
 
 CoeffContainer::const_iterator CoeffContainer::begin() const { return _coeffs.begin(); }
 
@@ -128,7 +167,7 @@ std::ostream& operator<<(std::ostream& os, const CoeffContainer& coeffs)
   int size = coeffs.size();
   for (int i = 0; i < size; i++) {
     std::stringstream buffer;
-    buffer << coeffs[i];
+    buffer << coeffs[i] << " " << coeffs.isValid(i);
     coeffs_str.push_back(buffer.str());
   }
   os << boost::algorithm::join(coeffs_str, ",");
@@ -137,7 +176,8 @@ std::ostream& operator<<(std::ostream& os, const CoeffContainer& coeffs)
 
 LMapExp::LMapExp() : _constants(), _slopes(), _init_values() {}
 
-LMapExp::LMapExp(Constants constants, Slopes slopes, InitValues init_values) : _constants(constants), _slopes(slopes), _init_values(init_values)
+LMapExp::LMapExp(Constants constants, Slopes slopes, InitValues init_values)
+    : _constants(constants), _slopes(slopes), _init_values(init_values)
 {
   assert(_constants.size() == _slopes.size());
 }
@@ -158,10 +198,7 @@ bool LMapExp::operator==(const LMapExp& other) const
   return (_constants == other._constants) && (_slopes == other._slopes) && (_init_values == other._init_values);
 }
 
-bool LMapExp::operator<(const LMapExp& other) const
-{
-  return print() < other.print();
-}
+bool LMapExp::operator<(const LMapExp& other) const { return print() < other.print(); }
 
 bool LMapExp::constantExp() const
 {
@@ -174,7 +211,7 @@ bool LMapExp::constantExp() const
   return true;
 }
 
-int LMapExp::nonZeroSlopes() const
+size_t LMapExp::nonZeroSlopes() const
 {
   int nzl = 0;
   for (int i : _slopes) {
@@ -187,14 +224,17 @@ int LMapExp::nonZeroSlopes() const
 
 std::vector<std::string> LMapExp::apply(std::vector<std::string> variable) const
 {
-  assert(_slopes.size() <= variable.size() || nonZeroSlopes() == 0);
-  
+  assert(_slopes.size() <= variable.size() || nonZeroSlopes() == 0 || nonZeroSlopes() == variable.size());
+
   std::vector<std::string> exps;
   int size = (int)_slopes.size();
   if (size == 0) {
     return exps;
   }
   for (int i = 0; i < size; i++) {
+    if (!_slopes.isValid(i)) {
+      continue;
+    }
     std::stringstream code;
     if (_slopes[i] != 0) {
       if (_slopes[i] != 1) {
@@ -206,7 +246,7 @@ std::vector<std::string> LMapExp::apply(std::vector<std::string> variable) const
       }
       if (_constants[i]) {
         code << _constants[i];
-     }
+      }
     } else {
       code << _constants[i];
     }
@@ -236,7 +276,7 @@ InitValues LMapExp::initValues() const { return _init_values; }
 
 LMapExp LMapExp::compose(const LMapExp& other)
 {
-  if (other.isEmpty()) {
+  if (other.isEmpty() || isEmpty()) {
     return *this;
   }
   Slopes new_slopes = other.slopes() * slopes();
@@ -274,15 +314,15 @@ std::string LMapExp::print() const
   size_t size = _slopes.size();
   std::vector<std::string> variables;
   int dim = 1;
-  for(size_t i = 0; i < size; i++) {
+  for (size_t i = 0; i < size; i++) {
     std::stringstream var_name;
     var_name << "_d" << dim++;
     variables.push_back(var_name.str());
   }
   std::vector<std::string> exps = apply(variables);
   size = 0;
-  for(std::string exp : exps) {
-    code << exp << ((size++ == exps.size())? "" : " , ");
+  for (std::string exp : exps) {
+    code << exp << ((size++ == exps.size()) ? "" : " , ");
   }
   return code.str();
 }
@@ -293,5 +333,5 @@ std::ostream& operator<<(std::ostream& os, const LMapExp& function)
   return os;
 }
 
-} // Namespace Deps
-} // Namespace SB
+}  // Namespace Deps
+}  // Namespace SB
