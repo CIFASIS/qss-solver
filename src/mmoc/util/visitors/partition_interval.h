@@ -19,39 +19,21 @@
 
 #pragma once
 
-#include <fstream>
-#include <string>
-#include <list>
-
-#include <generator/model_instance.h>
-#include <ir/annotation.h>
-#include <ir/class.h>
-#include <util/compile_flags.h>
+#include <util/ast_util.h>
 
 namespace MicroModelica {
-namespace Generator {
+namespace Util {
 
-class Files {
+class PartitionInterval : public AST_Expression_Visitor<list<int>> {
   public:
-  Files(ModelInstancePtr modelInstance, IR::Model& model, Util::CompileFlags& flags);
-  Files(string name, Util::CompileFlags& flags);
-  ~Files();
-  void makefile();
-  void run();
-  void plot();
-  void settings(IR::ModelAnnotation annotation);
-  void graph();
-  void bdfPartition();
+  PartitionInterval();
+  ~PartitionInterval() = default;
 
-  private:
-  std::string variablePlotSettings();
-  void printList(list<string> ann, string tag);
-  string _fname;
-  IR::Model _model;
-  ModelInstancePtr _modelInstance;
-  WriterPtr _writer;
-  Util::CompileFlags& _flags;
-  ofstream _file;
+  protected:
+  list<int> foldTraverseElement(AST_Expression exp);
+  list<int> foldTraverseElement(list<int> l, list<int> r, BinOpType bot);
+  list<int> foldTraverseElementUMinus(AST_Expression exp);
 };
-}  // namespace Generator
+
+}  // namespace Util
 }  // namespace MicroModelica

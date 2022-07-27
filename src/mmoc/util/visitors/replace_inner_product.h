@@ -17,10 +17,9 @@
 
  ******************************************************************************/
 
-#ifndef REPLACE_INNER_PRODUCT_H_
-#define REPLACE_INNER_PRODUCT_H_
+#pragma once
 
-#include "../ast_util.h"
+#include <util/ast_util.h>
 
 namespace MicroModelica {
 namespace Util {
@@ -38,4 +37,3 @@ class ReplaceInnerProduct : public AST_Expression_Visitor<AST_Expression> {
 };
 }  // namespace Util
 }  // namespace MicroModelica
-#endif /* REPLACE_INNER_PRODUCT_H_ */

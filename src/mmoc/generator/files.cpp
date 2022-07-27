@@ -29,15 +29,15 @@
 #include <sstream>
 #include <utility>
 
-#include "../ir/annotation.h"
-#include "../ir/class.h"
-#include "../ir/equation.h"
-#include "../ir/expression.h"
-#include "../util/compile_flags.h"
-#include "../util/symbol_table.h"
-#include "../util/util.h"
-#include "writer.h"
-#include "model_instance.h"
+#include <generator/writer.h>
+#include <ir/annotation.h>
+#include <ir/class.h>
+#include <ir/equation.h>
+#include <ir/expression.h>
+#include <util/compile_flags.h>
+#include <util/symbol_table.h>
+#include <util/util.h>
+#include <util/visitors/partition_interval.h>
 
 #ifdef __linux__
 #include <sys/stat.h>
@@ -86,7 +86,7 @@ void Files::makefile()
   SymbolTable tmp = _model.libraryDirectories();
   SymbolTable::iterator it;
   for (string l = tmp.begin(it); !tmp.end(it); l = tmp.next(it)) {
-    includes << " -L" << l;
+    includes << " -L " << l;
   }
   includes << " -L " << Utils::instance().environmentVariable("MMOC_PATH") << "/usr/lib";
   _writer->print(includes);
@@ -330,7 +330,7 @@ void Files::settings(ModelAnnotation annotation)
   printList(annotation.scotchSettings(), "scotchOptions");
   printList(annotation.metisSettings(), "metisOptions");
   buffer << "bdf=";
-  if (annotation.BDFPartition().empty()) {
+  if (annotation.BDFPartition()->empty()) {
     buffer << "0;";
   } else {
     buffer << "1;";
@@ -359,6 +359,28 @@ void Files::printList(list<string> ann, string tag)
   }
   buffer << ");";
   _writer->print(buffer);
+}
+
+void Files::bdfPartition()
+{
+  AST_ExpressionList BDF_exps = _model.annotations().BDFPartition();
+  AST_ExpressionListIterator bdf_exp_it;
+  list<int> variables;
+  list<int>::iterator var_it;
+  foreach (bdf_exp_it, BDF_exps) {
+    PartitionInterval partition_interval;
+    list<int> ret = partition_interval.apply(current_element(bdf_exp_it));
+    variables.splice(variables.end(), ret);
+  }
+  string file_name = _fname + "_BDF.part";
+  ofstream partition(file_name.c_str(), ios::out);
+  int partition_size = variables.size();
+  partition << partition_size << endl;
+  for (var_it = variables.begin(); var_it != variables.end(); var_it++) {
+    int val = *var_it;    
+    partition << val <<  endl;
+  }
+  partition.close();
 }
 
 void Files::graph()

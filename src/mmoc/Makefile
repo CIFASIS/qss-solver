@@ -134,7 +134,8 @@ VISITORSRC = $(VISITORDIR)/array_use.cpp \
 			 $(VISITORDIR)/parse_index.cpp \
 			 $(VISITORDIR)/apply_var_usage.cpp\
 			 $(VISITORDIR)/is_constant_expression.cpp \
-			 $(VISITORDIR)/pwl_map_values.cpp
+			 $(VISITORDIR)/pwl_map_values.cpp \
+			 $(VISITORDIR)/partition_interval.cpp
 
 DEPSSRC = $(DEPSDIR)/sb_dependencies.cpp \
 		  $(DEPSDIR)/model_dependencies.cpp \
@@ -270,7 +271,7 @@ doc:
 .PHONY: clean
 
 clean:
-	$(RMS) $(DEPS) $(TARGET) $(ASTOBJ) $(GENERATOROBJ) $(IROBJ) $(PARSEROBJ) $(UTILOBJ) $(DEPSOBJ) $(VISITOROBJ) $(DEPSGRAPHOBJ) $(DEPSBUILDEROBJ) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h 
+	$(RMS) $(BUILDDIR) ./mmocc parser/mocc_parser.cpp parser/mocc_scanner.cpp parser/mocc_parser.h 
 
 help:
 	@echo "make MODE=<Debug|Release>"

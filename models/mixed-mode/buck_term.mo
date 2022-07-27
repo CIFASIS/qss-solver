@@ -56,10 +56,10 @@ algorithm
     diodeon:=0;
   end when;
 	annotation(
+
 	experiment(
 		MMO_Description="Buck converter.",
-
-		MMO_Solver=LIQSS2,
+		MMO_Solver=LIQSS_BDF,
 		MMO_Period={100/5000},
 		MMO_PartitionMethod=Metis,
 		MMO_Output={u[N/2]},

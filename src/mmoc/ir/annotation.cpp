@@ -150,7 +150,7 @@ ModelAnnotation::ModelAnnotation()
       _scotchSettings(),
       _metisSettings(),
       _jacobian(0),
-      _BDFPartition(),
+      _BDFPartition(newAST_ExpressionList()),
       _BDFPartitionDepth(),
       _BDFMaxStep(0),
       _hd_matrix(),
@@ -323,14 +323,14 @@ void ModelAnnotation::processList(AST_Expression x, list<string> *l)
   }
 }
 
-void ModelAnnotation::processExpressionList(AST_Expression x, list<AST_Expression> *l)
+void ModelAnnotation::processExpressionList(AST_Expression x, AST_ExpressionList exps)
 {
   if (x->expressionType() == EXPBRACE) {
     AST_Expression_Brace b = x->getAsBrace();
     AST_ExpressionList el = b->arguments();
     AST_ExpressionListIterator it;
     foreach (it, el) {
-      l->push_back(current_element(it));
+      exps->push_back(current_element(it));
     }
   }
 }
@@ -535,7 +535,7 @@ void ModelAnnotation::processAnnotation(string annot, AST_Modification_Equal x)
     processList(x->exp(), &_metisSettings);
     break;
   case BDF_PARTITION:
-    processExpressionList(x->exp(), &_BDFPartition);
+    processExpressionList(x->exp(), _BDFPartition);
     break;
   case BDF_PARTITION_DEPTH:
     _BDFPartitionDepth = av.integer();
@@ -687,7 +687,7 @@ void ModelAnnotation::setScotchSettings(string l) { _scotchSettings.push_back(l)
 
 void ModelAnnotation::setMetisSettings(string l) { _metisSettings.push_back(l); }
 
-list<AST_Expression> ModelAnnotation::BDFPartition() { return _BDFPartition; }
+AST_ExpressionList ModelAnnotation::BDFPartition() { return _BDFPartition; }
 
 int ModelAnnotation::BDFPartitionDepth() { return _BDFPartitionDepth; }
 

@@ -18,6 +18,7 @@
  ******************************************************************************/
 
 #include "occurs.h"
+
 #include <util/error.h>
 #include <util/model_config.h>
 #include <util/symbol_table.h>
