@@ -221,48 +221,62 @@ void ModelInstance::header()
   VarSymbolTable symbols = _model.symbols();
   VarSymbolTable::iterator it;
   stringstream buffer;
-  _writer->write("// Model data access macro.\n", WRITER::Model_Header);
+  _writer->write("// Model data access macro.\n\n", WRITER::Model_Header);
   Macros access_macro;
   buffer << access_macro.modelAccess(_model.discreteNbr(), _model.algebraicNbr());
   _writer->write(buffer, WRITER::Model_Header);
   if (ModelConfig::instance().isQss()) {
-    _writer->write("// Coeff multipliers definition.\n", WRITER::Model_Header);
+    _writer->write("// Coeff multipliers definition.\n\n", WRITER::Model_Header);
     buffer << access_macro.coeffMultipliers(_model.annotations().order());
     _writer->write(buffer, WRITER::Model_Header);
   }
-  _writer->write("// Model Variables and Parameters Macros\n", WRITER::Model_Header);
+  _writer->write("// Model Variables Macros\n\n", WRITER::Model_Header);
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     if (var.isModelVar()) {
       Macros macros(_model, var);
-      buffer << macros;
+      buffer << "// Macros definition for variable: " << var.name() << endl;
+      buffer << macros << endl;;
     }
   }
   _writer->write(buffer, WRITER::Model_Header);
   if (symbols.parameters()) {
-    _writer->write("\n// Model Parameters Declaration\n", WRITER::Model_Header);
+    _writer->write("\n// Model Parameters Declaration\n\n", WRITER::Model_Header);
   }
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     if (var.isParameter()) {
-      buffer << var.declaration("__PAR__");
+      buffer << "// Macro for parameter: " << var.name() << endl;
+      buffer << var.declaration("__PAR__") << endl;
     }
     _writer->write(buffer, WRITER::Model_Header);
   }
   EquationTable derivatives = _model.derivatives();
   EquationTable::iterator eqit;
-  _writer->write("\n// Derivative Equations Macros\n", WRITER::Model_Header);
+  if (derivatives.size()) {
+    _writer->write("\n// Derivative Equations Macros\n\n", WRITER::Model_Header);
+  }
   for (Equation e = derivatives.begin(eqit); !derivatives.end(eqit); e = derivatives.next(eqit)) {
-    _writer->write(e.macro(), WRITER::Model_Header);
+    buffer << "// Macros for equation: " << e.id() << endl;
+    buffer << e.macro() << endl;
+    _writer->write(buffer, WRITER::Model_Header);
   }
   EquationTable algebraics = _model.algebraics();
-  _writer->write("\n// Algebraic Equations Macros\n", WRITER::Model_Header);
-  for (Equation e = algebraics.begin(eqit); !algebraics.end(eqit); e = algebraics.next(eqit)) {
-    _writer->write(e.macro(), WRITER::Model_Header);
+  if(algebraics.size()) {
+    _writer->write("\n// Algebraic Equations Macros\n\n", WRITER::Model_Header);
   }
-  _writer->write("\n// Event Macros\n", WRITER::Model_Header);
+  for (Equation e = algebraics.begin(eqit); !algebraics.end(eqit); e = algebraics.next(eqit)) {
+    buffer << "// Macros for algebraic equation: " << e.id() << endl;
+    buffer << e.macro() << endl;
+    _writer->write(buffer, WRITER::Model_Header);
+  }
   EventTable events = _model.events();
+  if (events.size()) {
+    _writer->write("\n// Event Macros\n\n", WRITER::Model_Header);
+  }
   EventTable::iterator eit;
   for (Event e = events.begin(eit); !events.end(eit); e = events.next(eit)) {
-    _writer->write(e.macro(), WRITER::Model_Header);
+    buffer << "// Macros for event: " << e.id() << endl;
+    buffer << e.macro() << endl;
+    _writer->write(buffer, WRITER::Model_Header);
   }
   if (events.size()) {
     if (ModelConfig::instance().isQss()) {
@@ -271,21 +285,27 @@ void ModelInstance::header()
       _writer->write("#define _zc zc[0]", WRITER::Model_Header);
     }
   }
-  _writer->write("\n// Output Equations Macros\n", WRITER::Model_Header);
   EquationTable outputs = _model.outputs();
+  if (outputs.size()) {
+    _writer->write("\n// Output Equations Macros\n\n", WRITER::Model_Header);
+  }
   for (Equation e = outputs.begin(eqit); !outputs.end(eqit); e = outputs.next(eqit)) {
-    _writer->write(e.macro(), WRITER::Model_Header);
+    buffer << "// Macros for output equation: " << e.id() << endl;
+    buffer << e.macro() << endl;
+    _writer->write(buffer, WRITER::Model_Header);
   }
   if (outputs.size()) {
     _writer->write("#define _out out[0]", WRITER::Model_Header);
   }
-  _writer->write("\n// Input Matrix Macros\n", WRITER::Model_Header);
   InputTable inputs = _model.inputs();
+  if (inputs.size()) {
+    _writer->write("\n// Input Matrix Macros\n\n", WRITER::Model_Header);
+  }
   InputTable::iterator iit;
   for (Input i = inputs.begin(iit); !inputs.end(iit); i = inputs.next(iit)) {
     _writer->write(i.macro(), WRITER::Model_Header);
   }
-  buffer << endl << "// Jacobian Macros definition. ";
+  buffer << endl << "// Jacobian Macros definition. " << endl;
   _writer->write(buffer, WRITER::Model_Header);
   buffer << "#define _assign_jac(r, val) \\" << endl;
   buffer << "    col_t = dvdx->df_dx_t->size[r] + dvdx->df_dx_t->index[r][0]; \\" << endl;
@@ -637,12 +657,13 @@ void QSSModelInstance::header()
   VarSymbolTable::iterator it;
   stringstream buffer;
   buffer << endl;
-  buffer << "// Derivative Macros definition. ";
+  buffer << "// Derivative Macros definition. " << endl;
   _writer->write(buffer, WRITER::Model_Header);
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     if (var.isState()) {
       stringstream buffer;
       Macros macros(_model, var);
+      buffer << "// Derivative definition for variable: " << var.name() << endl;
       buffer << "#define _der" << var << macros.parameters() << " dx[coeff+1]";
       _writer->write(buffer, WRITER::Model_Header);
     }
@@ -758,13 +779,14 @@ void ClassicModelInstance::header()
   VarSymbolTable::iterator it;
   stringstream buffer;
   buffer << endl;
-  buffer << "// Derivative Macros definition. ";
+  buffer << "// Derivative Macros definition. " << endl;
   _writer->write(buffer, WRITER::Model_Header);
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     if (var.isState()) {
       stringstream buffer, arguments;
       Macros macros(_model, var);
       arguments << macros.engineIndexArguments();
+      buffer << "// Derivative definition for variable: " << var.name() << endl;
       buffer << "#define _der" << var << macros.parameters() << " dx[" << arguments.str() << "]";
       _writer->write(buffer, WRITER::Model_Header);
     }
