@@ -439,7 +439,7 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, i
     p->event = NULL;
   }
   p->params = SD_Parameters(settings->derdelta, settings->zchyst, settings->minstep, settings->symdiff, settings->lps, settings->nodesize,
-                            settings->pm, settings->dt, settings->dtSynch, settings->partitionerOptions, 0);
+                            settings->pm, settings->dt, settings->dtSynch, settings->partitionerOptions, settings->jacobian);
   p->lp = NULL;
   if (settings->lps > 0) {
     QSS_setReinitBuffer(TRUE);

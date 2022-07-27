@@ -127,7 +127,6 @@ void HYB_assignJacStruct(SlsMat JacMat)
           if (BDF[col_t] != NOT_ASSIGNED) {
             col_t = col_ptrs[bdf_row] + jac_t->index[row_t][0];
             row_vals[col_t] = clcData->SD[row_t][jac_t->index[row_t][0]];
-            printf("%d, %d -> %d\n", row_t, col_t, row_vals[col_t]);
           }
           jac_t->index[row_t][0]++;
         }
