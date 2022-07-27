@@ -19,21 +19,17 @@
 
 #include <sstream>
 
-#include "generator.h"
-
-#include "../ir/annotation.h"
-#include "../ir/class.h"
-#include "../ir/statement.h"
-#include "../ir/stored_definition.h"
-#include "../util/error.h"
-#include "../util/symbol_table.h"
-#include "../util/type.h"
-#include "../util/util.h"
-#include "function.h"
-#include "package.h"
-#include "model_instance.h"
-#include "files.h"
-#include "writer.h"
+#include <ir/annotation.h>
+#include <ir/class.h>
+#include <ir/statement.h>
+#include <ir/stored_definition.h>
+#include <util/error.h>
+#include <util/symbol_table.h>
+#include <util/type.h>
+#include <util/util.h>
+#include <generator/function.h>
+#include <generator/generator.h>
+#include <generator/package.h>
 
 namespace MicroModelica {
 using namespace IR;
@@ -81,6 +77,9 @@ int Generator::generate()
     files.run();
     files.plot();
     files.settings(model.annotations());
+    if (model.annotations().solver() == LIQSS_BDF && !model.annotations().BDFPartition()->empty()) {
+      files.bdfPartition();
+    }
     if (_flags.graph()) {
       files.graph();
     }

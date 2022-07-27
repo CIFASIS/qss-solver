@@ -25,12 +25,12 @@
 #include <map>
 #include <string>
 
-#include "../util/compile_flags.h"
-#include "../ir/stored_definition.h"
-#include "../ir/class.h"
-#include "model_instance.h"
-#include "files.h"
-#include "writer.h"
+#include <util/compile_flags.h>
+#include <ir/stored_definition.h>
+#include <ir/class.h>
+#include <generator/model_instance.h>
+#include <generator/files.h>
+#include <generator/writer.h>
 
 namespace MicroModelica {
 namespace Generator {
