@@ -157,7 +157,7 @@ string Event::config() const
   return buffer.str();
 }
 
-bool Event::compareEventID(std::string event_id) { cout << "EV " << _event_id << endl; return _event_id.compare(event_id) == 0; }
+bool Event::compareEventID(std::string event_id) { return _event_id.compare(event_id) == 0; }
 
 EquationTable zeroCrossingTable(EventTable events)
 {
