@@ -17,16 +17,15 @@
 
  ******************************************************************************/
 
-#ifndef MMO_MACROS_H_
-#define MMO_MACROS_H_
+#pragma once
 
 #include <fstream>
 #include <string>
 #include <list>
 
-#include "../util/symbol_table.h"
-#include "../ir/class.h"
-#include "../ir/index.h"
+#include <ir/class.h>
+#include <ir/index.h>
+#include <util/symbol_table.h>
 
 namespace MicroModelica {
 namespace Generator {
@@ -35,15 +34,12 @@ namespace MACROS {
 typedef enum { Modelica, Engine } Offset;
 }
 
-/**
- *
- */
 class Macros {
   public:
   Macros(IR::Model& model, Util::Variable& variable);
   Macros() : _model(), _variable(){};
   ~Macros() = default;
-  std::string print() const { return _macros.str(); };
+  std::string print() const;
   std::string parameters(MACROS::Offset offset = MACROS::Modelica) const;
   std::string engineIndex() const;
   std::string engineIndexArguments() const;
@@ -65,5 +61,3 @@ class Macros {
 };
 }  // namespace Generator
 }  // namespace MicroModelica
-
-#endif /* MMO_MACROS_H_ */

@@ -19,9 +19,9 @@
 
 #include "macros.h"
 
-#include "../ir/helpers.h"
-
 #include <sstream>
+
+#include <ir/helpers.h>
 
 using namespace std;
 
@@ -279,6 +279,9 @@ string Macros::coeffMultipliers(int order)
   return buffer.str();
 }
 
+std::string Macros::print() const { return _macros.str(); };
+
 std::ostream& operator<<(std::ostream& out, const Macros& m) { return out << m.print(); }
+
 }  // namespace Generator
 }  // namespace MicroModelica
