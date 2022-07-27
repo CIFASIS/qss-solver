@@ -36,6 +36,7 @@
 #include "../ir/statement.h"
 #include "../util/error.h"
 #include "../util/util.h"
+#include <util/visitors/partial_eval_exp.h>
 #include "macros.h"
 
 namespace MicroModelica {
@@ -136,7 +137,9 @@ void ModelInstance::configOutput()
       buffer << range.get();
       tabs = range->block();
     }
-    buffer << tabs << "sprintf(modelOutput->variable[" << Index(out.lhs()) << "].name, " << fp.outputVariableName(var, range) << ");";
+    PartialEvalExp partial_eval;
+    Expression out_index_exp = partial_eval.apply(out.lhs().expression());
+    buffer << tabs << "sprintf(modelOutput->variable[" << Index(out_index_exp) << "].name, " << fp.outputVariableName(var, range) << ");";
     if (range) {
       buffer << endl << range->end();
     }
