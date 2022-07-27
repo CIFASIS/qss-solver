@@ -238,6 +238,54 @@ Option<Deps::SetVertex> createSetVertex(Equation eq, int& offset, size_t max_dim
   return node;
 }
 
+int handlerDim(StatementTable stms)
+{
+  StatementTable::iterator stm_it;
+  int stm_dims = 0;
+  for (Statement stm = stms.begin(stm_it); !stms.end(stm_it); stm = stms.next(stm_it)) {
+    ExpressionList assignments = stm.assignments(STATEMENT::AssignTerm::LHS);
+    for (Expression asg : assignments) {
+      if (stm.isForStatement()) {
+        int for_dims = stm.range()->dim();
+        if (stm_dims < for_dims) {
+          stm_dims = for_dims;
+        }
+      }
+    }
+  }
+  return stm_dims;
+}
+
+int eventDim()
+{
+  int max_event_dim = 0;
+  EventTable::iterator ev_it;
+  EventTable events = ModelConfig::instance().events();
+  for (Event ev = events.begin(ev_it); !events.end(ev_it); ev = events.next(ev_it)) {
+    if (ev.hasRange()) {
+      int handler_dim = ev.range()->dim() + handlerDim(ev.positiveHandler());
+      if (max_event_dim < handler_dim) {
+        max_event_dim = handler_dim;
+      }
+      handler_dim = ev.range()->dim() + handlerDim(ev.negativeHandler());
+      if (max_event_dim < handler_dim) {
+        max_event_dim = handler_dim;
+      }
+    }
+  }
+  return max_event_dim;
+}
+
+int maxDim()
+{
+  int max_dims = ModelConfig::instance().symbols().maxDim();
+  int event_dims = eventDim();
+  if (max_dims < event_dims) {
+    max_dims = event_dims;
+  }
+  return max_dims;
+}
+
 void addStatements(StatementTable stms, list<Deps::SetVertex>& nodes, Option<Range> ev_range, int& offset, size_t max_dim, VERTEX::Type type,
                                     EqUsage& usage, MicroModelica::IR::STATEMENT::AssignTerm search, int id, string token)
 {
