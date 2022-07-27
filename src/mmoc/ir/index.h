@@ -38,7 +38,63 @@ namespace INDEX {
 typedef enum { Iterator, Dimension } Type;
 }
 
-class Index;
+class Range;
+
+class IndexDefinition {
+  public:
+  IndexDefinition();
+  IndexDefinition(std::string variable, int constant, int factor);
+  ~IndexDefinition() = default;
+  int constant();
+  int factor();
+  std::string variable();
+
+  private:
+  string _variable;
+  int _constant;
+  int _factor;
+};
+
+class Index {
+  public:
+  Index() : _indexes(), _exp(){};
+  Index(Expression exp);
+  ~Index() = default;
+  void setMap(IR::Expression exp);
+  bool hasMap() const;
+  bool operator==(const Index& other) const;
+  bool isConstant() const;
+  int dimension();
+  void setExp(Expression exp);
+  std::string print() const;
+  std::string identifier() const;
+  Range range() const;
+  Index revert() const;
+  Index replace(bool range_idx = false) const;
+  Index replace(Option<Range> range, bool range_idx = false) const;
+  std::string usageExp() const;
+  std::string modelicaExp() const;
+  friend std::ostream& operator<<(std::ostream& out, const Index& i);
+  Util::Variable variable() const;
+  bool hasVariable(int dim);
+  std::string variable(int dim);
+  bool hasFactor(int dim);
+  int factor(int dim);
+  bool hasConstant(int dim);
+  int constant(int dim);
+  Expression expression() const;
+  bool isEmpty() const;
+  std::vector<std::string> variables();
+
+  protected:
+  void parseIndexes();
+
+  private:
+  map<int, IndexDefinition> _indexes;
+  Expression _exp;
+};
+
+typedef ModelTable<std::string, Index> IndexTable;
 
 typedef vector<int> Usage;
 
@@ -114,6 +170,10 @@ class Range {
 
   bool fixed() const;
 
+  void merge(Range other);
+
+  bool hasMergedDims() const;
+
   protected:
   void generate(Util::Variable var);
   void generate(AST_Expression exp);
@@ -132,59 +192,7 @@ class Range {
   RANGE::Type _type;
   std::vector<int> _row_size;
   bool _fixed;
-};
-
-class IndexDefinition {
-  public:
-  IndexDefinition();
-  IndexDefinition(std::string variable, int constant, int factor);
-  ~IndexDefinition() = default;
-  int constant();
-  int factor();
-  std::string variable();
-
-  private:
-  string _variable;
-  int _constant;
-  int _factor;
-};
-
-class Index {
-  public:
-  Index() : _indexes(), _exp(){};
-  Index(Expression exp);
-  ~Index() = default;
-  void setMap(IR::Expression exp);
-  bool hasMap() const;
-  bool operator==(const Index& other) const;
-  bool isConstant() const;
-  int dimension();
-  void setExp(Expression exp);
-  std::string print() const;
-  std::string identifier() const;
-  Range range() const;
-  Index revert() const;
-  Index replace(bool range_idx = false) const;
-  std::string usageExp() const;
-  std::string modelicaExp() const;
-  friend std::ostream& operator<<(std::ostream& out, const Index& i);
-  Util::Variable variable() const;
-  bool hasVariable(int dim);
-  std::string variable(int dim);
-  bool hasFactor(int dim);
-  int factor(int dim);
-  bool hasConstant(int dim);
-  int constant(int dim);
-  Expression expression() const;
-  bool isEmpty() const;
-  std::vector<std::string> variables();
-
-  protected:
-  void parseIndexes();
-
-  private:
-  map<int, IndexDefinition> _indexes;
-  Expression _exp;
+  bool _merged_dims;
 };
 
 typedef ModelTable<std::string, Index> IndexTable;
