@@ -31,6 +31,9 @@ class ReplaceIndex : public AST_Expression_Visitor<AST_Expression> {
   ReplaceIndex(IR::Range range, AST_Expression exp, bool range_idxs);
   ~ReplaceIndex() = default;
 
+  protected:
+  map<int, std::string> getUsedVariables(AST_Expression exp);
+
   private:
   AST_Expression foldTraverseElement(AST_Expression exp);
   AST_Expression foldTraverseElementUMinus(AST_Expression exp);

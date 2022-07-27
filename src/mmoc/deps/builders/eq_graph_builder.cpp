@@ -71,7 +71,7 @@ SB::Deps::Graph EQGraphBuilder<S, T>::build()
   LOG << endl << "Building " << S::name() << endl;
   SB::Deps::Graph graph;
   int edge_dom_offset = 1;
-  int max_dims = ModelConfig::instance().symbols().maxDim();
+  int max_dims = maxDim();
   // First, add the symbols as vertex.
   VarSymbolTable::iterator it;
   VarSymbolTable symbols = ModelConfig::instance().symbols();

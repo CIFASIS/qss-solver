@@ -127,7 +127,17 @@ Index Index::revert() const
 
 Index Index::replace(bool range_idx) const
 {
-  ReplaceIndex replace = ReplaceIndex(range(), _exp.expression(), range_idx);
+  return replace(range(), range_idx);
+}
+
+Index Index::replace(Option<Range> for_range, bool range_idx) const
+{
+  Range var_range = range();
+  if (for_range) {
+    ReplaceIndex replace = ReplaceIndex(for_range.get(), _exp.expression(), range_idx);
+    return Index(Expression(replace.apply(_exp.expression())));
+  }
+  ReplaceIndex replace = ReplaceIndex(var_range, _exp.expression(), range_idx);
   return Index(Expression(replace.apply(_exp.expression())));
 }
 
@@ -225,25 +235,25 @@ string RangeDefinition::endExp(bool convert_params, bool c_index) const
   return generateExp(_end_exp, ((c_index) ? cEnd() : end()), convert_params);
 }
 
-Range::Range() : _ranges(), _index_pos(), _size(1), _type(RANGE::For), _fixed(true) {}
+Range::Range() : _ranges(), _index_pos(), _size(1), _type(RANGE::For), _fixed(true), _merged_dims(false) {}
 
-Range::Range(AST_Equation_For eqf, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type), _fixed(true)
+Range::Range(AST_Equation_For eqf, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type), _fixed(true), _merged_dims(false)
 {
   AST_ForIndexList fil = eqf->forIndexList();
   setRangeDefinition(fil);
 }
 
-Range::Range(AST_Statement_For stf, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type), _fixed(true)
+Range::Range(AST_Statement_For stf, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type), _fixed(true), _merged_dims(false)
 {
   AST_ForIndexList fil = stf->forIndexList();
   setRangeDefinition(fil);
 }
 
-Range::Range(Variable var, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type), _fixed(true) { generate(var); }
+Range::Range(Variable var, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type), _fixed(true), _merged_dims(false) { generate(var); }
 
-Range::Range(AST_Expression exp) : _ranges(), _index_pos(), _size(1), _type(RANGE::For), _fixed(true) { generate(exp); }
+Range::Range(AST_Expression exp) : _ranges(), _index_pos(), _size(1), _type(RANGE::For), _fixed(true), _merged_dims(false) { generate(exp); }
 
-Range::Range(SB::Set set, int offset, vector<string> vars) : _ranges(), _index_pos(), _size(1), _type(RANGE::For), _fixed(true) { generate(set, offset, vars); }
+Range::Range(SB::Set set, int offset, vector<string> vars) : _ranges(), _index_pos(), _size(1), _type(RANGE::For), _fixed(true), _merged_dims(false) { generate(set, offset, vars); }
 
 void Range::updateRangeDefinition(std::string index_def, RangeDefinition def, int pos)
 {
@@ -398,6 +408,24 @@ string Range::iterator(int dim, bool range_idx)
     }
   }
   return getDimensionVar(dim + 1);
+}
+
+string Range::iterator(string var, int dim, bool range_idx)
+{
+  if (isDimensionVar(var)) {
+    iterator(dim, range_idx);
+  }
+  for (auto ip : _index_pos) {
+    if (ip.first == var) {
+      return getDimensionVar(ip.second + 1);
+    }
+  }
+  return iterator(dim, range_idx);
+}
+
+bool Range::isDimensionVar(string var)
+{
+  return  (var.rfind("_d", 0) == 0);
 }
 
 string Range::getPrintDimensionVarsString() const
@@ -659,9 +687,16 @@ map<std::string, AST_Expression> Range::initExps()
   return init_exps;
 }
 
-void Range::replace(Index usage)
+void Range::replace(Index ife_usage, Index ifr_usage)
 {
-  vector<string> variables = usage.variables();
+  vector<string> variables = ife_usage.variables();
+  if (!ifr_usage.isEmpty()) {
+    for (string ifr_var : ifr_usage.variables()) {
+      variables.push_back(ifr_var);
+    }
+    sort(variables.begin(), variables.end() );
+    variables.erase(unique(variables.begin(), variables.end() ), variables.end() );
+  }
   // In case of a scalar usage in N<->1 relations.
   if (variables.empty()) {
     variables = getIndexes();
@@ -681,8 +716,8 @@ void Range::replace(Index usage)
           _ranges.insert(index, r.get());
         }
       }
+      pos++;
     }
-    pos++;
   }
   for (string key : old_keys) {
     _ranges.remove(key);
@@ -690,6 +725,20 @@ void Range::replace(Index usage)
 }
 
 bool Range::fixed() const { return _fixed; }
+
+void Range::merge(Range other)
+{
+  RangeDefinitionTable::iterator it;
+  int pos = _ranges.size();
+  for (RangeDefinition r = other._ranges.begin(it); !other._ranges.end(it); r = other._ranges.next(it)) {
+    updateRangeDefinition(other._ranges.key(it), RangeDefinition(r.begin(), r.end(), r.step()), pos++);
+  }
+  _merged_dims = true;
+}
+
+int Range::dim() const { return _ranges.size(); }
+
+bool Range::hasMergedDims() const { return _merged_dims; }
 
 std::ostream& operator<<(std::ostream& out, const Range& r) { return out << r.print(); }
 

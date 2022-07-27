@@ -29,6 +29,8 @@ class CoeffContainer {
   public:
   CoeffContainer();
   CoeffContainer(std::vector<int> CoeffContainer);
+  CoeffContainer(std::vector<int> coeffs, std::vector<bool> valid_dims);
+  CoeffContainer& operator=(const CoeffContainer&  other);
   bool operator<(const CoeffContainer& other) const;
   bool operator==(const CoeffContainer& other) const;
   bool operator!=(const CoeffContainer& other) const;
@@ -48,10 +50,13 @@ class CoeffContainer {
   iterator end();
   const_iterator end() const;
   unsigned int size() const;
+  void addDim();
+  bool isValid(int i) const;  
   friend std::ostream& operator<<(std::ostream& os, const CoeffContainer& CoeffContainer);
 
   protected:
   std::vector<int> _coeffs;
+  std::vector<bool> _valid_dims;
 };
 
 typedef CoeffContainer Constants;
@@ -82,7 +87,7 @@ class LMapExp {
 
   protected:
   int apply(int value, int dim) const;
-  int nonZeroSlopes() const;
+  size_t nonZeroSlopes() const;
 
   Constants _constants;
   Slopes _slopes;
