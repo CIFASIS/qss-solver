@@ -192,7 +192,7 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 		_pmax = _pmax+_POT(i);
 	}
 	for(i = 1; i<=200; i+=1) {
-		if(_th(i)-_tref-0.5>0) {
+		if(_init_th(i)-_tref-0.5>0) {
 			_on(i) = 1;
 			_ptotal = _ptotal+_POT(i);
 		}

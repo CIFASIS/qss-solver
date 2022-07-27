@@ -258,6 +258,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int x_ind;
 	int _d1;
 	int _rg_d1;
+	int i;
 	_d = 1;
 	modelData->nSD[_idx_x(199,0)]++;
 	modelData->nSD[_idx_x(2,0)]++;

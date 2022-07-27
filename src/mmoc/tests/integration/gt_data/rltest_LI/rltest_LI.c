@@ -371,6 +371,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int x_ind;
 	int _d1;
 	int _rg_d1;
+	int i;
 	_C = 1;
 	_L = 1;
 	_R = 1;

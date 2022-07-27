@@ -274,12 +274,12 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		_init_x(2*i+1,0) = 0.006247;
 	}
 	for(i = 1; i<=501; i+=1) {
-		if(_x(i,0)>_UTH) {
+		if(_init_x(i,0)>_UTH) {
 			_satx(i) = 1;
 		}	else {
 			_satx(i) = 0;
 		}
-		if(_x(i,0)-_x(i+1,0)>_UTH) {
+		if(_init_x(i,0)-_init_x(i+1,0)>_UTH) {
 			_satdx(i) = 1;
 		}	else {
 			_satdx(i) = 0;
