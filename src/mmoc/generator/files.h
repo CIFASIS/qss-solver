@@ -17,28 +17,22 @@
 
  ******************************************************************************/
 
-#ifndef MMO_FILES_H_
-#define MMO_FILES_H_
+#pragma once
 
 #include <fstream>
 #include <string>
 #include <list>
 
-#include "model_instance.h"
-#include "writer.h"
-#include "../ir/annotation.h"
-#include "../ir/class.h"
-#include "../util/compile_flags.h"
+#include <generator/model_instance.h>
+#include <ir/annotation.h>
+#include <ir/class.h>
+#include <util/compile_flags.h>
 
 namespace MicroModelica {
 namespace Generator {
 
-/**
- *
- */
 class Files {
   public:
-  // Files();
   Files(ModelInstancePtr modelInstance, IR::Model& model, Util::CompileFlags& flags);
   Files(string name, Util::CompileFlags& flags);
   ~Files();
@@ -47,6 +41,7 @@ class Files {
   void plot();
   void settings(IR::ModelAnnotation annotation);
   void graph();
+  void bdfPartition();
 
   private:
   std::string variablePlotSettings();
@@ -60,5 +55,3 @@ class Files {
 };
 }  // namespace Generator
 }  // namespace MicroModelica
-
-#endif /* MMO_FILES_H_ */
