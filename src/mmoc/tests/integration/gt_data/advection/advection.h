@@ -1,18 +1,28 @@
 // Model data access macro.
+
 #define MODEL_DATA_ACCESS(m) \
   double* x = m->x; 
 
 // Coeff multipliers definition.
+
 #define COEFF_MULTIPLIER(c) COEFF_MULTIPLIER_##c
 #define COEFF_MULTIPLIER_0 1
 #define COEFF_MULTIPLIER_1 1
 #define COEFF_MULTIPLIER_2 2
 
-// Model Variables and Parameters Macros
+// Model Variables Macros
+
+// Macros definition for variable: _out_exp_1
 #define _idx_out_exp_1 0
 #define _eval_out_exp_1 0
+
+// Macros definition for variable: alpha
 #define _alpha __PAR__alpha
+
+// Macros definition for variable: mu
 #define _mu __PAR__mu
+
+// Macros definition for variable: u
 #define _idx_u(d1,coeff) ((d1-1))
 #define _state_idx_u(d1,coeff) ((d1-1))*3 + coeff
 #define _u(d1,coeff) x[_state_idx_u(d1,coeff)] * COEFF_MULTIPLIER(coeff)
@@ -23,25 +33,30 @@
 		_d1 = (idx)+ 1;
 #define _eval_dep_u(d1,coeff) dx[_state_idx_u(d1,coeff)]
 
+
 // Model Parameters Declaration
+
+// Macro for parameter: alpha
 double __PAR__alpha;
+// Macro for parameter: mu
 double __PAR__mu;
 
 // Derivative Equations Macros
+
+// Macros for equation: 1
+
+// Macros for equation: 2
 #define _apply_usage_eq_2(_d1) \
 	j = _d1;
 #define _get_eq_2_var_idxs(row, var)\
 	_rg_d1 = 1 + (row-1)+ 1;\
 	var = _idx_u(_rg_d1,0);
 
-// Algebraic Equations Macros
-
-// Event Macros
-
 // Output Equations Macros
-#define _out out[0]
 
-// Input Matrix Macros
+// Macros for output equation: 1
+
+#define _out out[0]
 
 // Jacobian Macros definition. 
 #define _assign_jac(r, val) \
@@ -53,4 +68,5 @@ double __PAR__mu;
 #define _time t
 
 // Derivative Macros definition. 
+// Derivative definition for variable: u
 #define _der_u(d1,coeff) dx[coeff+1]
