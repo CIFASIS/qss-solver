@@ -17,12 +17,11 @@
 
  ******************************************************************************/
 
-#ifndef EQUATION_PRINTER_H_
-#define EQUATION_PRINTER_H_
+#pragma once
 
-#include "../ast/ast_types.h"
-#include "../util/table.h"
-#include "index.h"
+#include <ast/ast_types.h>
+#include <ir/index.h>
+#include <util/table.h>
 
 namespace MicroModelica {
 namespace Util {
@@ -142,5 +141,3 @@ class ZeroCrossingPrinter : public DerivativePrinter {
 
 }  // namespace IR
 }  // namespace MicroModelica
-
-#endif /* EQUATION_PRINTER_H_ */
