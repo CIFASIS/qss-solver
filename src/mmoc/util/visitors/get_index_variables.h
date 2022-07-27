@@ -19,24 +19,25 @@
 
 #pragma once
 
-#include "../../ir/index.h"
-#include "../ast_util.h"
+#include <ir/index.h>
+#include <util/ast_util.h>
 
 namespace MicroModelica {
 namespace Util {
-class GetIndexVariables : public AST_Expression_Visitor<map<std::string, int>> {
+class GetIndexVariables : public AST_Expression_Visitor<multimap<std::string, int>> {
   public:
   GetIndexVariables();
   ~GetIndexVariables() = default;
 
   private:
-  map<std::string, int> foldTraverseElement(AST_Expression exp);
-  inline map<std::string, int> foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
-  inline map<std::string, int> foldTraverseElement(map<std::string, int> l, map<std::string, int> r, BinOpType bot)
+  multimap<std::string, int> foldTraverseElement(AST_Expression exp);
+  inline multimap<std::string, int> foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
+  inline multimap<std::string, int> foldTraverseElement(multimap<std::string, int> l, multimap<std::string, int> r, BinOpType bot)
   {
     l.insert(r.begin(), r.end());
     return l;
   }
+
   /// Note that these markers only work for arrays with scalar index expressions.
   bool _in_index_list;
   int _pos;

@@ -138,11 +138,13 @@ class AST_Statement_OutputAssigment_ : public AST_Statement_ {
   AST_Expression_ComponentReference function() const;
   AST_ExpressionList arguments() const;
   virtual StatementType statementType();
+  std::string functionName();
 
   private:
   AST_ExpressionList _out_exps;
   AST_Expression_ComponentReference _func;
   AST_ExpressionList _args;
+  std::string _function_name;
 };
 
 class AST_Statement_Else_ : public AST_Node_ {

@@ -17,12 +17,11 @@
 
  ******************************************************************************/
 
-#ifndef TABLE_H_
-#define TABLE_H_
+#pragma once
 
 #include <map>
 
-#include "util_types.h"
+#include  <util/util_types.h>
 
 template <typename Key, typename Value>
 class ModelTable {
@@ -82,11 +81,18 @@ class ModelTable {
   bool empty() { return _map.empty(); };
   const int size() const { return _map.size(); };
 
+  std::list<Key> keys() {
+    std::list<Key> ret;
+    ModelTable<Key, Value>::iterator it;
+    for (Value v = begin(it); !end(it); v = next(it)) {
+      ret.push_back(key(it));
+    } 
+    return ret;
+  }
+
   protected:
   std::map<Key, Value> map() const { return _map; };
 
   private:
   std::map<Key, Value> _map;
 };
-
-#endif /* TABLE_H */

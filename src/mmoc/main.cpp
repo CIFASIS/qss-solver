@@ -28,6 +28,7 @@
 #include "ast/stored_definition.h"
 #include "generator/files.h"
 #include "generator/generator.h"
+#include <ir/class.h>
 #include "ir/mmo_ir.h"
 #include "ir/mmo_model_checker.h"
 #include "ir/mmo_settings.h"
@@ -101,12 +102,13 @@ int parsePackages(AST_StringList imports, CompileFlags& flags, bool recompile)
   int r = 0;
   CompileFlags flg;
   AST_StringListIterator it;
+  Utils& utils = Utils::instance();
   foreach (it, imports) {
     string i = *current_element(it);
-    string p = Utils::instance().packagePath(i, flags);
-    flags.addObject(p + SLASH + Utils::instance().packageName(i) + ".c");
-    if (!Utils::instance().searchCompiledPackage(i, flags) || recompile) {
-      string file_name = p + SLASH + i + ".mo";
+    string p = utils.packagePath(i, flags);
+    flags.addObject(utils.generatePath(p, utils.packageName(i) + ".c"));
+    if (!utils.searchCompiledPackage(i, flags) || recompile) {
+      string file_name = utils.generatePath(p, i + ".mo");
       AST_StoredDefinition sd = nullptr;
       sd = parseFile(file_name, &r);
       Error::instance().setFile(file_name);
@@ -114,7 +116,7 @@ int parsePackages(AST_StringList imports, CompileFlags& flags, bool recompile)
         ModelChecker mmo(file_name);
         r = mmo.apply(sd);
         if (r == 0) {
-          flg.setOutputFile(p + SLASH + i);
+          flg.setOutputFile(utils.generatePath(p, i));
           flg.setPath(p);
           parsePackages(sd->imports(), flg, recompile);
           list<string> objects = flg.objects();
@@ -122,12 +124,24 @@ int parsePackages(AST_StringList imports, CompileFlags& flags, bool recompile)
             flags.addObject(*it);
           }
           Error::instance().setFile(file_name);
-          Utils::instance().setCompileFlags(flg);
+          utils.setCompileFlags(flg);
           MicroModelicaIR ir(file_name);
           r = ir.apply(sd);
           if (r == 0) {
+            Package package = ir.definition().package(); 
+            utils.setPackageFunctions(package.definitions());
+            utils.setPackagePrefix(package.prefix());
             Generator gen(ir.definition(), flg);
             r = gen.generate();
+            utils.setPackageFunctions(FunctionTable());
+            utils.setPackagePrefix("");
+            if (r == 0) {
+              string compiled_file_name = utils.generatePath(p, "pkg_" + i + ".moo");
+              const bool FULL_PATH = true;
+              Option<CompiledPackage> cp = utils.readPackage(compiled_file_name, FULL_PATH, i);
+              assert(cp);
+              utils.addCompiledFunctions(cp->definitions());
+            }
           }
         }
       } else {
@@ -135,13 +149,14 @@ int parsePackages(AST_StringList imports, CompileFlags& flags, bool recompile)
       }
       delete sd;
     } else {
-      Utils::instance().setCompileFlags(flags);
-      Option<CompiledPackage> pd = Utils::instance().readPackage(i);
+      utils.setCompileFlags(flags);
+      Option<CompiledPackage> pd = utils.readPackage(i);
       if (!pd) {
         Error::instance().add(0, EM_CANT_OPEN_FILE, ER_Error, "%s.moo", i.c_str());
         return -1;
       }
       ImportTable objects = pd->objects();
+      
       ImportTable::iterator it;
       for (string import = objects.begin(it); !objects.end(it); import = objects.next(it)) {
         flags.addObject(import);

@@ -68,6 +68,10 @@
         "future": "cpp",
         "mutex": "cpp",
         "variant": "cpp",
-        "boost.h": "c"
+        "boost.h": "c",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "ranges": "cpp",
+        "stop_token": "cpp"
     }
 }

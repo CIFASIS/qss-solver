@@ -132,7 +132,7 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
         asgs.push_back(Expression(current_element(exp_it)));
       }
     } else {
-      AST_Expression call_exp = newAST_Expression_Call(newAST_String(out_stm->function()->cname()), nullptr, out_stm->arguments());
+      AST_Expression call_exp = newAST_Expression_Call(newAST_String(out_stm->functionName()), nullptr, out_stm->arguments());
       asgs.push_back(Expression(call_exp));
     }
     break;
@@ -164,12 +164,13 @@ string Statement::printAssignment(AST_Statement_Assign asg) const
     Expression lhs(asg->lhs());
     Expression rhs(asg->exp());
     bool state_assignment = checkStateAssignment(lhs);
+    bool initial_code = ModelConfig::instance().initialCode(); 
     if (state_assignment) {
       ModelConfig::instance().setInitialCode(true);
     }
     code << lhs << " = " << rhs << ";";
     if (state_assignment) {
-      ModelConfig::instance().setInitialCode(false);
+      ModelConfig::instance().setInitialCode(initial_code);
     }
     break;
   }
@@ -235,7 +236,7 @@ string Statement::print() const
   case STOUTASSING: {
     AST_Statement_OutputAssigment out_stm = _stm->getAsOutputAssigment();
     AST_Expression call_exp =
-        newAST_Expression_Call(newAST_String(out_stm->function()->cname()), nullptr, out_stm->arguments(), out_stm->out_expressions());
+        newAST_Expression_Call(newAST_String(out_stm->functionName()), nullptr, out_stm->arguments(), out_stm->out_expressions());
     Expression call(call_exp);
     buffer << call << ";";
     break;

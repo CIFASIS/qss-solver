@@ -17,20 +17,19 @@
 
  ******************************************************************************/
 
-#ifndef UTIL_H_
-#define UTIL_H_
+#pragma once
 
 #include <fstream>
 #include <list>
 #include <map>
 #include <string>
 
-#include "../ast/ast_types.h"
-#include "../deps/model_dependencies.h"
-#include "compile_flags.h"
-#include "util_types.h"
-#include "symbol_table.h"
-#include "table.h"
+#include <ast/ast_types.h>
+#include <deps/model_dependencies.h>
+#include <util/compile_flags.h>
+#include <util/util_types.h>
+#include <util/symbol_table.h>
+#include <util/table.h>
 
 namespace MicroModelica {
 
@@ -38,9 +37,11 @@ namespace IR {
 class Equation;
 class CompiledPackage;
 class CompiledFunction;
+class Function;
 typedef ModelTable<std::string, CompiledPackage> CompiledPackageTable;
 typedef ModelTable<std::string, CompiledFunction> CompiledFunctionTable;
 typedef ModelTable<int, Equation> EquationTable;
+typedef ModelTable<std::string, Function> FunctionTable;
 }  // namespace IR
 
 namespace Util {
@@ -77,7 +78,7 @@ class Utils {
   std::string iteratorVar(int dim);
   std::string getVarName(std::string name);
   bool readPackage(std::string fileName, IR::CompiledPackageTable& pt);
-  Option<IR::CompiledPackage> readPackage(std::string file_name);
+  Option<IR::CompiledPackage> readPackage(std::string file_name, bool full_path = false, std::string package_name = "");
   bool searchCompiledPackage(std::string pname, CompileFlags flags);
   std::string packagePath(std::string pname, CompileFlags flags, std::string ext = ".mo");
   void setCompileFlags(CompileFlags flags);
@@ -98,6 +99,11 @@ class Utils {
   IR::Expression variableExpression(string name, Option<IR::Range> range);
   std::string tabs(int t);
   CompileFlags compileFlags();
+  void setPackageFunctions(IR::FunctionTable package_functions);
+  IR::FunctionTable packageFunctions();
+  void setPackagePrefix(std::string package_prefix);
+  std::string packagePrefix();
+  std::string generatePath(std::string path, std::string file_name);
   
   protected:
   Utils();
@@ -112,9 +118,9 @@ class Utils {
   IR::CompiledFunctionTable _compiled_functions;
   std::string _file_name;
   int _ids;
+  IR::FunctionTable _package_functions;
+  std::string _package_prefix;
 };
 
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif /* UTIL_H_ */

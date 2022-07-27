@@ -21,12 +21,12 @@
 
 #include <string>
 
-#include "../ir/annotation.h"
-#include "../ir/index.h"
-#include "../ir/equation.h"
-#include "../ir/expression.h"
-#include "symbol_table.h"
-#include "util.h"
+#include <ir/annotation.h>
+#include <ir/index.h>
+#include <ir/equation.h>
+#include <ir/expression.h>
+#include <util/symbol_table.h>
+#include <util/util.h>
 
 namespace MicroModelica {
 namespace Util {
@@ -75,9 +75,15 @@ class ModelConfig {
   inline void clearLocalSymbols() { _local_symbols.clear(); };
   inline void setLocalInitSymbols() { _init_symbols = true; };
   inline void unsetLocalInitSymbols() { _init_symbols = false; };
-
   inline void setEvents(IR::EventTable events) { _events = events; }
   inline IR::EventTable events() const { return _events; }
+  inline bool functionOutputs() const { return _function_outputs; }
+  inline void setFunctionOutputs(bool function_outputs) { _function_outputs = function_outputs; }
+  inline bool functionCode() const { return _function_code; }
+  inline void setFunctionCode(bool function_code) { _function_code = function_code; }
+  inline bool compiledFunctionVar() const { return _compiled_function_var; }
+  inline void setCompiledFunctionVar(bool compiled_function_var) { _compiled_function_var = compiled_function_var; }
+  
   private:
   ModelConfig()
       : _model_annotations(),
@@ -91,7 +97,10 @@ class ModelConfig {
         _local_symbols(),
         _local_init_symbols(),
         _init_symbols(false),
-        _types()
+        _types(),
+        _function_outputs(false),
+        _function_code(false),
+        _compiled_function_var(false)
         { _symbols.initialize(_types); };
 
   IR::ModelAnnotation _model_annotations;
@@ -106,6 +115,9 @@ class ModelConfig {
   SymbolTable _local_init_symbols;
   bool _init_symbols;
   TypeSymbolTable _types;
+  bool _function_outputs;
+  bool _function_code;
+  bool _compiled_function_var;
 };
 
 }  // namespace Util

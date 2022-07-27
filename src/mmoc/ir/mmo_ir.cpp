@@ -207,6 +207,15 @@ void MicroModelicaIR::visitForStms(AST_Statement_For for_stm)
     if (current_element(stm_it)->statementType() == STFOR) {
       visitForStms(current_element(stm_it)->getAsFor());
     }
+    if (current_element(stm_it)->statementType() == STWHEN) {
+      AST_StatementList when_stms = current_element(stm_it)->getAsWhen()->statements();
+      AST_StatementListIterator when_stm_it;
+      foreach (when_stm_it, when_stms) {
+        if (current_element(when_stm_it)->statementType() == STFOR) {
+          visitForStms(current_element(when_stm_it)->getAsFor());
+        }
+      }
+    }
   }
 }
 

@@ -19,8 +19,8 @@
 
 #include <sstream>
 
-#include "function.h"
-#include "../util/model_config.h"
+#include <generator/function.h>
+#include <util/model_config.h>
 
 namespace MicroModelica {
 using namespace IR;
@@ -28,13 +28,24 @@ using namespace Util;
 namespace Generator {
   
 Function::Function(IR::Function& function, CompileFlags& flags, WriterPtr writer)
-    : _function(function), _flags(flags), _writer(writer), _prefix(), _include()
+    : _function(function), _flags(flags), _writer(writer), _prefix(), _include(), _return_variable(), _symbols(), _void_function(false)
 {
+  _symbols = ModelConfig::instance().symbols(); 
+  ModelConfig::instance().setSymbols(_function.symbols());
+  ModelConfig::instance().setFunctionOutputs(_function.outputNbr() > 1);
+  ModelConfig::instance().setFunctionCode(true);
+}
+
+Function::~Function()
+{
+  ModelConfig::instance().setSymbols(_symbols);
+  ModelConfig::instance().setFunctionOutputs(false);
+  ModelConfig::instance().setFunctionCode(false);
+
 }
 
 void Function::definition()
 {
-  macros();
   includes();
   body();
 }
@@ -65,11 +76,11 @@ string Function::prototype()
   stringstream input;
   stringstream output;
   stringstream func;
-  VarSymbolTable::iterator it;
-  VarSymbolTable vst = _function.arguments();
+  VariableList arguments = _function.arguments();
   int outputs = _function.outputNbr();
   string name = _function.name();
-  for (Variable var = vst.begin(it); !vst.end(it); var = vst.next(it)) {
+  bool array_single_output = false;
+  for (Variable var : arguments) {
     if (var.isInput()) {
       if (var.isString()) {
         input << "const char *" << var.name() << ",";
@@ -78,16 +89,20 @@ string Function::prototype()
       }
     } else if (var.isOutput()) {
       output << "double *" << var.name() << ",";
-      _returnVariable = var.name();
+      _return_variable = var.name();
+      array_single_output = var.isArray();
     }
   }
   string in = input.str();
   if (outputs <= 1 && !in.empty()) {
     in.erase(in.end() - 1, in.end());
   }
+  if (outputs == 0 || (outputs == 1 && array_single_output) || outputs > 1) {
+    _void_function = true;
+  }
   if (outputs == 0) {
     func << "void " << _prefix << name << "(" << in << ")";
-  } else if (outputs == 1) {
+  } else if (outputs == 1 && !array_single_output) {
     func << "double " << _prefix << name << "(" << in << ")";
   } else {
     string out = output.str();
@@ -108,7 +123,7 @@ void Function::body()
   StatementTable stms = _function.statements();
   StatementTable::iterator it;
   for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
-    buffer << stm;
+    buffer << stm << endl;
   }
   _writer->write(buffer, WRITER::Function_Code);
   ExternalFunctionTable eft = _function.externalFunctions();
@@ -117,36 +132,36 @@ void Function::body()
     buffer << ef;
   }
   _writer->write(buffer.str(), WRITER::Function_Code);
-  if (_function.outputNbr() == 1) {
-    _writer->write("return " + _returnVariable + ";", WRITER::Function_Code);
+  if (!_void_function) {
+    _writer->write("return " + _return_variable + ";", WRITER::Function_Code);
   }
   _writer->endBlock(WRITER::Function_Code);
+  _writer->write("\n", WRITER::Function_Code);
 }
 
 void Function::localSymbols()
 {
   list<string> ret;
   stringstream buffer;
-  VarSymbolTable localSymbols = _function.localSymbols();
   VarSymbolTable symbols = _function.symbols();
-  ModelConfig::instance().setSymbols(localSymbols);
   VarSymbolTable::iterator it;
-  for (Variable var = localSymbols.begin(it); !localSymbols.end(it); var = localSymbols.next(it)) {
+  bool local_symbols = false;
+  for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     if (var.isConstant()) {
       continue;
     }
-    _writer->write(var.declaration(), WRITER::Function_Code);
-    _writer->write(var.initialization(), WRITER::Function_Code);
-  }
-  if (_function.outputNbr() == 1) {
-    for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
-      if (var.isOutput()) {
-        _writer->write(var.declaration(), WRITER::Function_Code);
-        _writer->write(var.initialization(), WRITER::Function_Code);
-      }
+    if (var.isOutput() && _void_function) {
+      continue;
+    }
+    if (!var.isInput()) {
+      local_symbols = true;
+      _writer->write(var.declaration(), WRITER::Function_Code);
+      _writer->write(var.initialization(), WRITER::Function_Code);
     }
   }
-  ModelConfig::instance().setSymbols(symbols);
+  if (local_symbols) {
+    _writer->write("\n", WRITER::Function_Code);
+  }
 }
 
 void Function::setPrefix(string prefix) { _prefix = prefix; }
@@ -155,18 +170,5 @@ void Function::addInclude(string include) { _include[include] = include; }
 
 void Function::addInclude(SymbolTable includes) { _include.merge(includes); }
 
-void Function::macros()
-{
-  stringstream buffer;
-  VarSymbolTable localSymbols = _function.localSymbols();
-  VarSymbolTable::iterator it;
-  for (Variable var = localSymbols.begin(it); !localSymbols.end(it); var = localSymbols.next(it)) {
-    if (var.isConstant()) {
-      continue;
-    }
-    buffer << "#define " << var << " " << var.name();
-    _writer->write(buffer.str(), WRITER::Function_Code);
-  }
-}
 }  // namespace Generator
 }  // namespace MicroModelica

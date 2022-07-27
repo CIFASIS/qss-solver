@@ -17,35 +17,30 @@
 
  ******************************************************************************/
 
-#include "variable_lookup.h"
-
-#include "../error.h"
-#include "../symbol_table.h"
+#include <util/error.h>
+#include <util/symbol_table.h>
+#include <util/visitors/variable_lookup.h>
 
 namespace MicroModelica {
 namespace Util {
 
-/* VariableLookup class */
+VariableLookup::VariableLookup(VarSymbolTable symbols) : _symbols(symbols) {}
 
-VariableLookup::VariableLookup(VarSymbolTable st, VarSymbolTable lst) : _st(st), _lst(lst) {}
-
-bool VariableLookup::foldTraverseElement(AST_Expression e)
+bool VariableLookup::foldTraverseElement(AST_Expression exp)
 {
-  if (e->expressionType() == EXPCOMPREF) {
-    AST_Expression_ComponentReference cr = e->getAsComponentReference();
-    Option<Variable> vi = _st[cr->name()];
-    if (!vi) {
-      vi = _lst[cr->name()];
-      if (!vi) {
-        return false;
-      }
+  if (exp->expressionType() == EXPCOMPREF) {
+    AST_Expression_ComponentReference cr = exp->getAsComponentReference();
+    Option<Variable> var = _symbols[cr->name()];
+    if (!var) {
+      return false;
     }
   }
   return true;
 }
 
-bool VariableLookup::foldTraverseElement(bool e1, bool e2, BinOpType bot) { return e1 && e2; }
+bool VariableLookup::foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; }
 
-bool VariableLookup::foldTraverseElementUMinus(AST_Expression e) { return foldTraverseElement(e); }
+bool VariableLookup::foldTraverseElementUMinus(AST_Expression exp) { return foldTraverseElement(exp); }
+
 }  // namespace Util
 }  // namespace MicroModelica

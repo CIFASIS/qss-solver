@@ -248,10 +248,10 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		_tref(i) = 20;
 	}
 	for(i = 1; i<=20000; i+=1) {
-		if(_th(i,0)-_tref(i)-0.5>0) {
+		if(_init_th(i,0)-_tref(i)-0.5>0) {
 			_on(i) = 1;
 			_ptotal = _ptotal+_POT(i);
-		}	else if(_th(i,0)-_tref(i)<0) {
+		}	else if(_init_th(i,0)-_tref(i)<0) {
 			_on(i) = 0;
 		}
 	}

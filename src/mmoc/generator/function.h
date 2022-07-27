@@ -17,22 +17,21 @@
 
  ******************************************************************************/
 
-#ifndef MMO_GEN_FUNCTION_H_
-#define MMO_GEN_FUNCTION_H_
+#pragma once
 
 #include <boost/variant/variant.hpp>
 
-#include "../ir/class.h"
-#include "../util/compile_flags.h"
-#include "../util/util.h"
-#include "writer.h"
+#include <ir/class.h>
+#include <generator/writer.h>
+#include <util/compile_flags.h>
+#include <util/util.h>
 
 namespace MicroModelica {
 namespace Generator {
 class Function {
   public:
   Function(IR::Function& function, Util::CompileFlags& flags, WriterPtr writer);
-  ~Function(){};
+  ~Function();
   void definition();
   std::string header();
   void setPrefix(std::string prefix);
@@ -40,7 +39,6 @@ class Function {
   void addInclude(Util::SymbolTable includes);
 
   private:
-  void macros();
   void includes();
   void body();
   void localSymbols();
@@ -50,8 +48,9 @@ class Function {
   WriterPtr _writer;
   std::string _prefix;
   Util::SymbolTable _include;
-  std::string _returnVariable;
+  std::string _return_variable;
+  Util::VarSymbolTable _symbols;
+  bool _void_function;
 };
 }  // namespace Generator
 }  // namespace MicroModelica
-#endif /* MMO_GEN_FUNCTION_H */

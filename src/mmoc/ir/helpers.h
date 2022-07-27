@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef MMO_HELPERS_H
-#define MMO_HELPERS_H
+#pragma once 
 
 #include <string>
 
@@ -159,32 +158,5 @@ class Input {
 
 typedef ModelTable<int, Input> InputTable;
 
-class DepInfo {
-  public:
-  DepInfo() : _index(), _deps(), _eq(){};
-  DepInfo(Index index) : _index(index), _deps(){};
-  ~DepInfo() = default;
-  inline bool isScalar() const { return _index.isConstant(); };
-  inline void addDependency(string dep, bool back = true)
-  {
-    if (back) {
-      _deps.push_back(dep);
-    } else {
-      _deps.push_front(dep);
-    }
-  };
-  inline list<std::string> deps() { return _deps; };
-  inline Index index() { return _index; };
-  inline void addEquation(Equation eq) { _eq = eq; };
-  inline Equation equation() const { return _eq; };
-
-  private:
-  Index _index;
-  list<std::string> _deps;
-  Equation _eq;
-};
-
 }  // namespace IR
 }  // namespace MicroModelica
-
-#endif /* MMO_HELPERS_H */

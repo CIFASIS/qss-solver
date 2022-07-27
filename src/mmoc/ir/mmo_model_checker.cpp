@@ -37,7 +37,7 @@ namespace IR {
 
 /* MicroModelica model checker interface */
 
-ModelChecker::ModelChecker(string name) : _isChild(false), _className(), _classPrefix(0), _classModification(false) {}
+ModelChecker::ModelChecker(string name) : _has_parent(false), _class_name(), _class_prefix(0), _class_modification(false), _else_when(false) {}
 
 ModelChecker::~ModelChecker() {}
 
@@ -53,51 +53,56 @@ void ModelChecker::visit(AST_Class x)
   if (x->hasExtends()) {
     Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Extend modifier to Class definition.");
   }
-  if (_isChild) {
-    if (x->prefix() != CP_FUNCTION || x->prefix() != CP_IMPURE || x->prefix() != CP_PURE) {
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Only Function classes allowed.");
-    }
-  } else {
-    _classPrefix = x->prefix();
-    switch (_classPrefix) {
-    case CP_PARTIAL:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Partial definition.");
-      break;
-    case CP_CLASS:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Class definition.");
-      break;
-    case CP_BLOCK:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Block definition.");
-      break;
-    case CP_RECORD:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Record definition.");
-      break;
-    case CP_CONNECTOR:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Connector definition.");
-      break;
-    case CP_TYPE:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Type definition.");
-      break;
-    case CP_OPERATOR:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Operator definition.");
-      break;
-    case CP_EXPANDABLE:
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Expandable definition.");
-      break;
-    default:
-      break;
-    }
-    if (x->hasElementComponentList()) {
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Class definition.");
-    }
+  if ((x->prefix() != CP_FUNCTION || x->prefix() != CP_IMPURE || x->prefix() != CP_PURE) && _has_parent) {
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Only Function classes allowed.");
+  }
+  _class_prefix = x->prefix();
+  if (_class_prefix == CP_MODEL) {
+    _has_parent = true;
+  }
+  switch (_class_prefix) {
+  case CP_PARTIAL:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Partial definition.");
+    break;
+  case CP_CLASS:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Class definition.");
+    break;
+  case CP_BLOCK:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Block definition.");
+    break;
+  case CP_RECORD:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Record definition.");
+    break;
+  case CP_CONNECTOR:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Connector definition.");
+    break;
+  case CP_TYPE:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Type definition.");
+    break;
+  case CP_OPERATOR:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Operator definition.");
+    break;
+  case CP_EXPANDABLE:
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Expandable definition.");
+    break;
+  default:
+    break;
+  }
+  if (x->hasElementComponentList()) {
+    Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Class definition.");
   }
 }
 
-void ModelChecker::leave(AST_Class x) {}
+void ModelChecker::leave(AST_Class x)
+{
+  if (x->prefix() == CP_MODEL) {
+    _has_parent = false;
+  }
+}
 
 void ModelChecker::visit(AST_Composition x)
 {
-  if (_classPrefix == CP_FUNCTION || _classPrefix == CP_PURE || _classPrefix == CP_IMPURE) {
+  if (_class_prefix == CP_FUNCTION || _class_prefix == CP_PURE || _class_prefix == CP_IMPURE) {
     if (x->hasCompositionList()) {
       AST_CompositionElementListIterator it;
       AST_CompositionElementList cl = x->compositionList();
@@ -107,11 +112,11 @@ void ModelChecker::visit(AST_Composition x)
         }
       }
     }
-  } else if (_classPrefix == CP_MODEL) {
+  } else if (_class_prefix == CP_MODEL) {
     if (x->hasExternalFunctionCall()) {
       Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "External function call inside Model class.");
     }
-  } else if (_classPrefix == CP_PACKAGE) {
+  } else if (_class_prefix == CP_PACKAGE) {
     if (x->hasCompositionList()) {
       Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Composition elements inside Package class.");
     }
@@ -125,7 +130,7 @@ void ModelChecker::leave(AST_Composition x) {}
 
 void ModelChecker::visit(AST_CompositionElement x)
 {
-  if (_classPrefix == CP_MODEL) {
+  if (_class_prefix == CP_MODEL) {
     if (x->hasElements()) {
       Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Protected element definition inside Model Class.");
     }
@@ -136,13 +141,13 @@ void ModelChecker::leave(AST_CompositionElement x) {}
 
 void ModelChecker::visit(AST_CompositionEqsAlgs x)
 {
-  if (_classPrefix == CP_MODEL) {
+  if (_class_prefix == CP_MODEL) {
     if (x->hasEquations() && x->isInitial()) {
       Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Initial Equation section inside Model Class.");
     }
   }
-  if (_classPrefix == CP_FUNCTION || _classPrefix == CP_PURE || _classPrefix == CP_IMPURE) {
-    if (x->isInitial()) {
+  if (_class_prefix == CP_FUNCTION || _class_prefix == CP_PURE || _class_prefix == CP_IMPURE) {
+    if (x->isInitial() && !_has_parent) {
       Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Initial section inside function definition.");
     }
   }
@@ -215,7 +220,7 @@ void ModelChecker::visit(AST_Element x)
       Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Predefined type not recognized.");
     }
   }
-  if (_classPrefix == CP_PACKAGE) {
+  if (_class_prefix == CP_PACKAGE) {
     if (e == ELCLASS) {
       AST_ClassPrefix c = x->getAsClassWrapper()->getClass()->prefix();
       if (!(c & CP_FUNCTION) && !(c & CP_PURE) && !(c & CP_IMPURE)) {
@@ -236,14 +241,14 @@ void ModelChecker::visit(AST_Modification x)
     Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Assign modifier.");
   }
   if (x->modificationType() == MODCLASS) {
-    _classModification = true;
+    _class_modification = true;
   }
 }
 
 void ModelChecker::leave(AST_Modification x)
 {
   if (x->modificationType() == MODCLASS) {
-    _classModification = false;
+    _class_modification = false;
   }
 }
 
@@ -373,7 +378,7 @@ void ModelChecker::visit(AST_Argument x)
   }
   if (x->argumentType() == AR_MODIFICATION) {
     AST_Argument_Modification am = x->getAsModification();
-    if (am->hasModification() && _classModification == false) {
+    if (am->hasModification() && _class_modification == false) {
       if (Utils::instance().checkExperimentAnnotations(am->name())) {
         Error::instance().add(x->lineNum(), EM_AST | EM_DEFINITION_NOT_ALLOWED, ER_Error, "Annotation not recognized.");
       }
@@ -425,7 +430,7 @@ void ModelChecker::visit(AST_Statement x)
     break;
   }
   case STRETURN:
-    if (_classPrefix != CP_PURE && _classPrefix != CP_IMPURE && _classPrefix != CP_FUNCTION) {
+    if (_class_prefix != CP_PURE && _class_prefix != CP_IMPURE && _class_prefix != CP_FUNCTION) {
       Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "return statement outside function class.");
     }
     break;
@@ -440,7 +445,7 @@ void ModelChecker::visit(AST_Statement x)
       visit(current_element(st));
     }
     if (sw->hasElsewhen()) {
-      _elseWhen = true;
+      _else_when = true;
       AST_Statement_ElseList ell = sw->else_when();
       AST_Statement_ElseListIterator elt;
       foreach (elt, ell) {
@@ -461,14 +466,14 @@ void ModelChecker::leave(AST_Statement x)
 {
   if (x->statementType() == STWHEN) {
     if (x->getAsWhen()->hasElsewhen()) {
-      _elseWhen = false;
+      _else_when = false;
     }
   }
 }
 
 void ModelChecker::visit(AST_Statement_Else x)
 {
-  if (_elseWhen == true) {
+  if (_else_when == true) {
     _whenStatement(x->condition());
   }
   AST_StatementList stl = x->statements();

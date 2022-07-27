@@ -153,7 +153,7 @@ string DerivativePrinter::macro() const
     RangeDefinitionTable range_def = _range->definition();
     apply_buffer << "#define _apply_usage" << equationId();
     apply_buffer << "(" << _lhs.dimVariables() << ") \\" << endl;
-    map<string, int> usage = index_usage.apply(_lhs.expression());
+    multimap<string, int> usage = index_usage.apply(_lhs.expression());
     int i = 1, size = usage.size();
     for (auto index : usage) {
       apply_buffer << TAB << index.first << " = " << _range->getDimensionVar(index.second) << ";";

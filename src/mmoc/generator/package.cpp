@@ -19,9 +19,9 @@
 
 #include <sstream>
 
-#include "package.h"
-#include "function.h"
-#include "../util/util.h"
+#include <generator/function.h>
+#include <generator/package.h>
+#include <util/util.h>
 
 namespace MicroModelica {
 using namespace IR;
@@ -95,10 +95,12 @@ void Package::generate()
   fileName = name;
   fileName.append(".h");
   _writer->setFile(fileName);
+  _writer->print("#pragma once\n");
   for (IR::Function f = ft.begin(it); !ft.end(it); f = ft.next(it)) {
     Function func(f, _flags, _writer);
     func.setPrefix(_package.prefix());
     _writer->print(func.header());
+    _writer->print("\n");
   }
   _writer->clearFile();
   fileName = name;
@@ -111,12 +113,16 @@ void Package::generate()
   for (string i = includes.begin(incIt); !includes.end(incIt); i = includes.next(incIt)) {
     buffer << i;
   }
+  buffer << endl;
   ImportTable imports = _package.imports();
   ImportTable::iterator impIt;
   for (string i = imports.begin(impIt); !imports.end(impIt); i = imports.next(impIt)) {
-    string addInclude = Utils::instance().packageName(i);
+    string addInclude = Utils::instance().packagePath(i, _flags) + Utils::instance().packageName(i);
     buffer << "#include \"" << addInclude << ".h\"" << endl;
     includes.insert(addInclude, addInclude);
+  }
+  if (!imports.empty()) {
+    buffer << endl;
   }
   _writer->write(buffer, WRITER::Function_Header);
   for (IR::Function f = ft.begin(it); !ft.end(it); f = ft.next(it)) {

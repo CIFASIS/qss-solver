@@ -27,7 +27,6 @@
 
 #include <ast/ast_types.h>
 #include <deps/model_dependencies.h>
-#include <util/util.h>
 #include <util/util_types.h>
 #include <ir/annotation.h>
 #include <ir/equation.h>
@@ -59,9 +58,9 @@ class Class {
 
 class Function : public Class {
   public:
-  Function(){};
+  Function();
   Function(string name);
-  ~Function();
+  ~Function() = default;
   string name() const;
   void insert(AST_External_Function_Call efc);
   void insert(VarName n, Util::Variable& vi, DEC_Type type);
@@ -78,21 +77,20 @@ class Function : public Class {
   CompiledPackageTable packages() const;
   unsigned int outputNbr() const;
   FunctionAnnotation annotations() const;
-  Util::VarSymbolTable localSymbols() const;
-  Util::VarSymbolTable arguments() const;
+  Util::VariableList arguments() const;
 
   private:
   Util::ImportTable _imports;
   std::string _name;
-  Util::VarSymbolTable _localSymbols;
+  Util::VarSymbolTable _local_symbols;
   FunctionAnnotation _annotations;
   StatementTable _statements;
   CompiledPackageTable _packages;
-  Util::VarSymbolTable _arguments;
-  unsigned int _outputNbr;
-  unsigned int _externalFunctionId;
-  unsigned int _statementId;
-  ExternalFunctionTable _externalFunctions;
+  Util::VariableList _arguments;
+  unsigned int _output_nbr;
+  unsigned int _external_function_id;
+  unsigned int _statement_id;
+  ExternalFunctionTable _external_functions;
 };
 
 typedef ModelTable<std::string, Function> FunctionTable;
@@ -122,6 +120,7 @@ class Package : public Class {
   Util::ImportTable _imports;
   std::string _name;
   FunctionTable _functions;
+  CompiledPackageTable _packages;
 };
 
 class Model : public Class {
@@ -142,28 +141,28 @@ class Model : public Class {
   Util::VarSymbolTable symbols() const;
   inline Util::ImportTable imports() const { return _imports; };
   inline ModelAnnotation annotations() const { return _annotations; };
-  inline FunctionTable calledFunctions() const { return _calledFunctions; };
-  inline int algebraicNbr() { return _algebraicNbr; };
-  inline int stateNbr() const { return _stateNbr; };
-  inline int discreteNbr() const { return _discreteNbr; };
-  inline int inputNbr() const { return _inputNbr; };
-  inline int outputNbr() const { return _outputNbr; };
-  inline int eventNbr() const { return _eventNbr; };
-  inline Util::SymbolTable linkLibraries() const { return _linkLibraries; };
-  inline Util::SymbolTable includeDirectories() const { return _includeDirectories; };
-  inline Util::SymbolTable libraryDirectories() const { return _libraryDirectories; };
+  inline FunctionTable calledFunctions() const { return _called_functions; };
+  inline int algebraicNbr() { return _algebraic_nbr; };
+  inline int stateNbr() const { return _state_nbr; };
+  inline int discreteNbr() const { return _discrete_nbr; };
+  inline int inputNbr() const { return _input_nbr; };
+  inline int outputNbr() const { return _output_nbr; };
+  inline int eventNbr() const { return _event_nbr; };
+  inline Util::SymbolTable linkLibraries() const { return _link_libraries; };
+  inline Util::SymbolTable includeDirectories() const { return _include_directories; };
+  inline Util::SymbolTable libraryDirectories() const { return _library_directories; };
   inline EquationTable derivatives() { return _derivatives; };
   inline EquationTable algebraics() { return _algebraics; };
   inline Deps::ModelDependencies dependencies() { return _dependencies; };
   inline EquationTable outputs() { return _outputs; };
   inline EventTable events() { return _events; };
-  inline bool externalFunctions() { return _externalFunctions; };
+  inline bool externalFunctions() { return _external_functions; };
   inline InputTable inputs() { return _inputs; };
   void setEquations();
   void setEvents();
   void setOutputs();
   void setInputs();
-  inline StatementTable initialCode() { return _initialCode; };
+  inline StatementTable initialCode() { return _initial_code; };
   void computeDependencies();
   void setModelConfig();
 
@@ -175,7 +174,7 @@ class Model : public Class {
    * @param[in]  id    The identifier
    * @param[in]  size  The size
    * @param[in]  type  The type
-   */
+   */    
   void addVariable(int id, Option<Range> range, EQUATION::Type type, unsigned int& offset);
   void setVariableOffset(Util::Variable var, unsigned int& offset, Util::Variable::RealType type, bool set_variable_count = true);
   void setRealVariables(AST_Equation eq);
@@ -189,7 +188,7 @@ class Model : public Class {
   std::string _name;
   Util::ImportTable _imports;
   ModelAnnotation _annotations;
-  FunctionTable _calledFunctions;
+  FunctionTable _called_functions;
   EquationTable _derivatives;
   EquationTable _algebraics;
   EquationTable _outputs;
@@ -197,25 +196,25 @@ class Model : public Class {
   InputTable _inputs;
   Deps::ModelDependencies _dependencies;
   CompiledPackageTable _packages;
-  StatementTable _initialCode;
-  Util::SymbolTable _libraryDirectories;
-  Util::SymbolTable _linkLibraries;
-  Util::SymbolTable _includeDirectories;
+  StatementTable _initial_code;
+  Util::SymbolTable _library_directories;
+  Util::SymbolTable _link_libraries;
+  Util::SymbolTable _include_directories;
   std::list<AST_Equation> _ast_equations;
   std::list<AST_Statement> _ast_statements;
-  unsigned int _stateNbr;
-  unsigned int _discreteNbr;
-  unsigned int _algebraicNbr;
-  unsigned int _eventNbr;
-  unsigned int _outputNbr;
-  unsigned int _inputNbr;
-  int _derivativeId;
-  int _algebraicId;
-  int _statementId;
-  int _eventId;
-  int _outputId;
-  int _inputId;
-  bool _externalFunctions;
+  unsigned int _state_nbr;
+  unsigned int _discrete_nbr;
+  unsigned int _algebraic_nbr;
+  unsigned int _event_nbr;
+  unsigned int _output_nbr;
+  unsigned int _input_nbr;
+  int _derivative_id;
+  int _algebraic_id;
+  int _statement_id;
+  int _event_id;
+  int _output_id;
+  int _input_id;
+  bool _external_functions;
 };
 
 typedef boost::variant<Function, Package, Model> ClassType;

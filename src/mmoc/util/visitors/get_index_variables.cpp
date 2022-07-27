@@ -21,8 +21,8 @@
 
 #include <sstream>
 
-#include "../../ast/ast_builder.h"
-#include "../error.h"
+#include <ast/ast_builder.h>
+#include <util/error.h>
 
 namespace MicroModelica {
 using namespace IR;
@@ -30,9 +30,9 @@ namespace Util {
 
 GetIndexVariables::GetIndexVariables() : _in_index_list(false), _pos(0) {}
 
-map<std::string, int> GetIndexVariables::foldTraverseElement(AST_Expression exp)
+multimap<std::string, int> GetIndexVariables::foldTraverseElement(AST_Expression exp)
 {
-  map<std::string, int> ret;
+  multimap<std::string, int> ret;
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
@@ -46,7 +46,7 @@ map<std::string, int> GetIndexVariables::foldTraverseElement(AST_Expression exp)
       AST_ExpressionListIterator it;
       _pos = 1;
       foreach (it, indexes) {
-        map<std::string, int> args = apply(current_element(it));
+        multimap<std::string, int> args = apply(current_element(it));
         ret.insert(args.begin(), args.end());
         _pos++;
       }
@@ -58,7 +58,7 @@ map<std::string, int> GetIndexVariables::foldTraverseElement(AST_Expression exp)
     AST_Expression_Output out = exp->getAsOutput();
     AST_ExpressionListIterator it;
     foreach (it, out->expressionList()) {
-      map<std::string, int> args = apply(current_element(it));
+      multimap<std::string, int> args = apply(current_element(it));
       ret.insert(args.begin(), args.end());
     }
     break;
