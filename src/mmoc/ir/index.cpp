@@ -691,6 +691,7 @@ void Range::replace(Index usage)
 
 bool Range::fixed() const { return _fixed; }
 
+int Range::dim() const { return _ranges.size(); }
 std::ostream& operator<<(std::ostream& out, const Range& r) { return out << r.print(); }
 
 }  // namespace IR

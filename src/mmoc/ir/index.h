@@ -84,6 +84,7 @@ class Range {
   int size() const;
   bool isEmpty() const;
   inline RangeDefinitionTable definition() const { return _ranges; };
+  int dim() const;
   std::string print(bool range = false, bool c_index = false, bool convert_params = false) const;
   std::string end() const;
   std::string indexes() const;
