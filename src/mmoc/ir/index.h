@@ -163,7 +163,7 @@ class Range {
   std::string in(ExpressionList exps);
   std::string in(std::vector<std::string> exps);
   map<std::string, AST_Expression> initExps();
-  void replace(Index usage);
+  void replace(Index ife_usage, Index ifr_usage = Index());
   friend std::ostream& operator<<(std::ostream& out, const Range& r);
   void generate(SB::Set set, int offset, std::vector<std::string> vars, std::vector<Expression> begin_exps = std::vector<Expression>(),
                 std::vector<Expression> end_exps = std::vector<Expression>());
@@ -194,8 +194,6 @@ class Range {
   bool _fixed;
   bool _merged_dims;
 };
-
-typedef ModelTable<std::string, Index> IndexTable;
 
 }  // namespace IR
 }  // namespace MicroModelica

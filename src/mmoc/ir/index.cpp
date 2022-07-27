@@ -127,7 +127,17 @@ Index Index::revert() const
 
 Index Index::replace(bool range_idx) const
 {
-  ReplaceIndex replace = ReplaceIndex(range(), _exp.expression(), range_idx);
+  return replace(range(), range_idx);
+}
+
+Index Index::replace(Option<Range> for_range, bool range_idx) const
+{
+  Range var_range = range();
+  if (for_range) {
+    ReplaceIndex replace = ReplaceIndex(for_range.get(), _exp.expression(), range_idx);
+    return Index(Expression(replace.apply(_exp.expression())));
+  }
+  ReplaceIndex replace = ReplaceIndex(var_range, _exp.expression(), range_idx);
   return Index(Expression(replace.apply(_exp.expression())));
 }
 
@@ -677,9 +687,16 @@ map<std::string, AST_Expression> Range::initExps()
   return init_exps;
 }
 
-void Range::replace(Index usage)
+void Range::replace(Index ife_usage, Index ifr_usage)
 {
-  vector<string> variables = usage.variables();
+  vector<string> variables = ife_usage.variables();
+  if (!ifr_usage.isEmpty()) {
+    for (string ifr_var : ifr_usage.variables()) {
+      variables.push_back(ifr_var);
+    }
+    sort(variables.begin(), variables.end() );
+    variables.erase(unique(variables.begin(), variables.end() ), variables.end() );
+  }
   // In case of a scalar usage in N<->1 relations.
   if (variables.empty()) {
     variables = getIndexes();
@@ -699,8 +716,8 @@ void Range::replace(Index usage)
           _ranges.insert(index, r.get());
         }
       }
+      pos++;
     }
-    pos++;
   }
   for (string key : old_keys) {
     _ranges.remove(key);
