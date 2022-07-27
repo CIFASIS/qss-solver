@@ -99,6 +99,21 @@ void setupIntervals(Expression exp, MultiInterval& intervals, DimRange& dim_rang
 {
   ExpressionList indexes = exp.indexes();
   size_t index_size = indexes.size();
+  if (range && range->hasMergedDims() && !indexes.empty()) {
+    vector<string> used_vars = Index(exp).variables();
+    RangeDefinitionTable::iterator it;
+    RangeDefinitionTable ranges = range->definition();
+    for (RangeDefinition r = ranges.begin(it); !ranges.end(it); r = ranges.next(it)) {
+      string key = ranges.key(it);
+      std::vector<string>::iterator find_var = std::find(used_vars.begin(), used_vars.end(), key);
+      if (find_var == used_vars.end()) {
+        Interval interval = dim_range[key];
+        intervals.addInter(interval);
+        index_size++;
+      }
+    }
+  }
+  vector<string> used_vars;
   for (Expression idx : indexes) {
     PWLMapValues pwl_map_values;
     pwl_map_values.apply(idx.expression());
@@ -106,8 +121,12 @@ void setupIntervals(Expression exp, MultiInterval& intervals, DimRange& dim_rang
       Interval interval(offset, 1, offset);
       intervals.addInter(interval);
     } else {
-      Interval interval = dim_range[pwl_map_values.variable()];
-      intervals.addInter(interval);
+      std::vector<string>::iterator find_var = std::find(used_vars.begin(), used_vars.end(), pwl_map_values.variable());
+      if (find_var == used_vars.end()) {
+        Interval interval = dim_range[pwl_map_values.variable()];
+        intervals.addInter(interval);
+        used_vars.push_back(pwl_map_values.variable());
+      }
     }
   }
   if (indexes.empty() && range) {
@@ -159,7 +178,7 @@ Set buildSet(Equation eq, string eq_id, int offset, size_t max_dim, EqUsage& eq_
   return buildSet(equation_intervals);
 }
 
-Set buildSet(Expression exp, string stm_id, int offset, size_t max_dim, EqUsage& eq_usage, Option<Range> range, Option<Range> ev_range)
+Set buildSet(Expression exp, string stm_id, int offset, size_t max_dim, EqUsage& eq_usage, Option<Range> range)
 {
   if (checkExpressionIndex(exp)) {
     return SB::Set();
@@ -169,9 +188,6 @@ Set buildSet(Expression exp, string stm_id, int offset, size_t max_dim, EqUsage&
   MultiInterval ev_intervals;
   if (range) {
     setupUsage(range.get(), usage, dim_range, offset);
-    if (ev_range) {
-      setupUsage(ev_range.get(), usage, dim_range, offset);  
-    }
     setupIntervals(exp, ev_intervals, dim_range, offset, max_dim, range);
     eq_usage[stm_id] = usage;
   } else {
@@ -238,6 +254,54 @@ Option<Deps::SetVertex> createSetVertex(Equation eq, int& offset, size_t max_dim
   return node;
 }
 
+int handlerDim(StatementTable stms)
+{
+  StatementTable::iterator stm_it;
+  int stm_dims = 0;
+  for (Statement stm = stms.begin(stm_it); !stms.end(stm_it); stm = stms.next(stm_it)) {
+    ExpressionList assignments = stm.assignments(STATEMENT::AssignTerm::LHS);
+    for (Expression asg : assignments) {
+      if (stm.isForStatement()) {
+        int for_dims = stm.range()->dim();
+        if (stm_dims < for_dims) {
+          stm_dims = for_dims;
+        }
+      }
+    }
+  }
+  return stm_dims;
+}
+
+int eventDim()
+{
+  int max_event_dim = 0;
+  EventTable::iterator ev_it;
+  EventTable events = ModelConfig::instance().events();
+  for (Event ev = events.begin(ev_it); !events.end(ev_it); ev = events.next(ev_it)) {
+    if (ev.hasRange()) {
+      int handler_dim = ev.range()->dim() + handlerDim(ev.positiveHandler());
+      if (max_event_dim < handler_dim) {
+        max_event_dim = handler_dim;
+      }
+      handler_dim = ev.range()->dim() + handlerDim(ev.negativeHandler());
+      if (max_event_dim < handler_dim) {
+        max_event_dim = handler_dim;
+      }
+    }
+  }
+  return max_event_dim;
+}
+
+int maxDim()
+{
+  int max_dims = ModelConfig::instance().symbols().maxDim();
+  int event_dims = eventDim();
+  if (max_dims < event_dims) {
+    max_dims = event_dims;
+  }
+  return max_dims;
+}
+
 void addStatements(StatementTable stms, list<Deps::SetVertex>& nodes, Option<Range> ev_range, int& offset, size_t max_dim, VERTEX::Type type,
                                     EqUsage& usage, MicroModelica::IR::STATEMENT::AssignTerm search, int id, string token)
 {
@@ -249,17 +313,17 @@ void addStatements(StatementTable stms, list<Deps::SetVertex>& nodes, Option<Ran
     ExpressionList assignments = stm.assignments(search);
     for (Expression asg : assignments) {
       std::stringstream ev_name;
-      Option<Range> stm_range = (stm.isForStatement()) ? stm.range() : ev_range;
-      Option<Range> stm_ev_range = (stm.isForStatement()) ? ev_range : Option<Range>();
+      Option<Range> stm_range = ev_range;
+      if (stm.isForStatement()) {
+        stm_range->merge(stm.range().get());
+      }
       const bool STM_FIXED_RANGE = (stm.isForStatement()) ? checkFixedRange(stm.range()) : true;
       if (FIXED_RANGE && STM_FIXED_RANGE) {
         ev_name << "EV_" << id << "_" << token << "_" << stm_count << "_" << asg_nbr++;
-        Set range = buildSet(asg, ev_name.str(), offset, max_dim, usage, stm_range, stm_ev_range);
-        if (!range.empty()) {
-          Deps::SetVertex node = Deps::SetVertex(ev_name.str(), offset, range, id, Deps::VertexDesc(type));
-          offset += range.size();
-          nodes.push_back(node);
-        }
+        Set range = buildSet(asg, ev_name.str(), offset, max_dim, usage, stm_range);
+        Deps::SetVertex node = Deps::SetVertex(ev_name.str(), offset, range, id, Deps::VertexDesc(type));
+        offset += range.size();
+        nodes.push_back(node);
       }
     }
     stm_count++;

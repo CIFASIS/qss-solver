@@ -21,11 +21,11 @@
 
 #include <math.h>
 
-#include "../../ast/ast_builder.h"
-#include "../debug.h"
-#include "../error.h"
-#include "../model_config.h"
-#include "../symbol_table.h"
+#include <ast/ast_builder.h>
+#include <util/debug.h>
+#include <util/error.h>
+#include <util/model_config.h>
+#include <util/symbol_table.h>
 
 namespace MicroModelica {
 namespace Util {

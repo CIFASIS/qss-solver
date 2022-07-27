@@ -99,6 +99,8 @@ PWLMap buildPWLMap(OrdRealCT constants, OrdRealCT slopes, Set dom);
 EdgeMaps generatePWLMaps(MicroModelica::IR::Expression exp, Set dom, Set unk_dom, int offset, string eq_id, size_t max_dim,
                          EqUsage eq_usage);
 
+int maxDim();
+
 void buildEdge(MicroModelica::IR::Expression builder, Deps::Vertex e, Deps::Vertex v, Deps::Graph graph, size_t max_dim, EqUsage eq_usage, int& offset,
                SB::Deps::EDGE::Type type);
 

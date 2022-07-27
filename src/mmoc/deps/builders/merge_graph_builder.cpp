@@ -173,6 +173,16 @@ SB::Deps::LMapExp MergeGraphGenerator<S>::buildLMapExp(Expression exp, SB::Deps:
     exp_slopes.insert(pwl_map_values.slope());
     exp_init_values.insert(pwl_map_values.constant());
   }
+  // We are dealing with expressions of different dimension, it could happen in merges.
+  if(use_map.slopes().size() > exp_slopes.size()){
+    int end = use_map.slopes().size();
+    int init = exp_slopes.size();
+    for (int add = init; add < end; add++){
+      exp_constants.addDim();  
+      exp_slopes.addDim();
+      exp_init_values.addDim();
+    }
+  }
   SB::Deps::LMapExp exp_map = SB::Deps::LMapExp(exp_constants, exp_slopes, exp_init_values);
   if (!exp_map.isEmpty() && !use_map.isEmpty()) {
     exp_map = exp_map.compose(use_map.revert());

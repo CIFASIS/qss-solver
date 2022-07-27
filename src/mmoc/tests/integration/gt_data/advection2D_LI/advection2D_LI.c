@@ -354,11 +354,11 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(_d1 = 2; _d1<=20; _d1+=1) {
 		modelData->nSD[_idx_u(_d1-1,1,0)]++;
 	}
-	for(_d2 = 2; _d2<=20; _d2+=1) {
-		modelData->nSD[_idx_u(1,_d2,0)]++;
+	for(_d1 = 2; _d1<=20; _d1+=1) {
+		modelData->nSD[_idx_u(1,_d1,0)]++;
 	}
-	for(_d2 = 2; _d2<=20; _d2+=1) {
-		modelData->nSD[_idx_u(1,_d2-1,0)]++;
+	for(_d1 = 2; _d1<=20; _d1+=1) {
+		modelData->nSD[_idx_u(1,_d1-1,0)]++;
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
 		for(_d2 = 2; _d2<=20; _d2+=1) {
@@ -382,11 +382,11 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(_d1 = 2; _d1<=20; _d1+=1) {
 		modelData->nDS[_idx_u(_d1,1,0)]++;
 	}
-	for(_d2 = 2; _d2<=20; _d2+=1) {
-		modelData->nDS[_idx_u(1,_d2,0)]++;
+	for(_d1 = 2; _d1<=20; _d1+=1) {
+		modelData->nDS[_idx_u(1,_d1,0)]++;
 	}
-	for(_d2 = 2; _d2<=20; _d2+=1) {
-		modelData->nDS[_idx_u(1,_d2,0)]++;
+	for(_d1 = 2; _d1<=20; _d1+=1) {
+		modelData->nDS[_idx_u(1,_d1,0)]++;
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
 		for(_d2 = 2; _d2<=20; _d2+=1) {
@@ -452,11 +452,11 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(_d1 = 2; _d1<=20; _d1+=1) {
 		modelData->SD[_idx_u(_d1-1,1,0)][states[_idx_u(_d1-1,1,0)]++] = _idx_u(_d1,1,0);
 	}
-	for(_d2 = 2; _d2<=20; _d2+=1) {
-		modelData->SD[_idx_u(1,_d2,0)][states[_idx_u(1,_d2,0)]++] = _idx_u(1,_d2,0);
+	for(_d1 = 2; _d1<=20; _d1+=1) {
+		modelData->SD[_idx_u(1,_d1,0)][states[_idx_u(1,_d1,0)]++] = _idx_u(1,_d1,0);
 	}
-	for(_d2 = 2; _d2<=20; _d2+=1) {
-		modelData->SD[_idx_u(1,_d2-1,0)][states[_idx_u(1,_d2-1,0)]++] = _idx_u(1,_d2,0);
+	for(_d1 = 2; _d1<=20; _d1+=1) {
+		modelData->SD[_idx_u(1,_d1-1,0)][states[_idx_u(1,_d1-1,0)]++] = _idx_u(1,_d1,0);
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
 		for(_d2 = 2; _d2<=20; _d2+=1) {
@@ -481,11 +481,11 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(_d1 = 2; _d1<=20; _d1+=1) {
 		modelData->DS[_idx_u(_d1,1,0)][states[_idx_u(_d1,1,0)]++] = _idx_u(_d1-1,1,0);
 	}
-	for(_d2 = 2; _d2<=20; _d2+=1) {
-		modelData->DS[_idx_u(1,_d2,0)][states[_idx_u(1,_d2,0)]++] = _idx_u(1,_d2,0);
+	for(_d1 = 2; _d1<=20; _d1+=1) {
+		modelData->DS[_idx_u(1,_d1,0)][states[_idx_u(1,_d1,0)]++] = _idx_u(1,_d1,0);
 	}
-	for(_d2 = 2; _d2<=20; _d2+=1) {
-		modelData->DS[_idx_u(1,_d2,0)][states[_idx_u(1,_d2,0)]++] = _idx_u(1,_d2-1,0);
+	for(_d1 = 2; _d1<=20; _d1+=1) {
+		modelData->DS[_idx_u(1,_d1,0)][states[_idx_u(1,_d1,0)]++] = _idx_u(1,_d1-1,0);
 	}
 	for(_d1 = 2; _d1<=20; _d1+=1) {
 		for(_d2 = 2; _d2<=20; _d2+=1) {

@@ -94,7 +94,7 @@ void ModelMatrixGenerator<NT, N, Config>::printMatrix(MATRIX::Method method, MAT
       std::stringstream buffer;
       N node = _config.selector.getNode(var_dep.id);
       Expression use_exp = getUseExp(ifr.get(), var_dep);
-      Option<Range> range = getUseRange<N>(ifr.get(), var_dep, node);
+      Option<Range> range = getUseRange<N>(ifr.get(), var_dep, node, _config.selector.multipleNodes());
       Index ifr_idx(use_exp);
       string ifr_id = ifr_idx.identifier();
       N ifr_node = _config.selector.setUsage(ifr_idx, node, range);
@@ -107,9 +107,10 @@ void ModelMatrixGenerator<NT, N, Config>::printMatrix(MATRIX::Method method, MAT
         ifr_idx = ife_idx;
         ife_idx = swap;
       }
-      Index range_idx = ifr_idx;
-      ifr_idx = ifr_idx.replace();
-      ife_idx = ife_idx.replace();
+      Index ifr_range_idx = ifr_idx;
+      Index ife_range_idx = ife_idx;
+      ifr_idx = ifr_idx.replace(range);
+      ife_idx = ife_idx.replace(range);
       if (deps_code.find(ifr_id) == deps_code.end()) {
         MatrixCode dep_code;
         deps_code[ifr_id] = dep_code;
@@ -117,7 +118,7 @@ void ModelMatrixGenerator<NT, N, Config>::printMatrix(MATRIX::Method method, MAT
       MatrixCode dep_code = deps_code[ifr_id];
       if (range) {
         if (!var_dep.var_dep.isRecursive()) {
-          range->replace(range_idx);
+          range->replace(ife_range_idx, ifr_range_idx);
         }
         dep_code.begin.push_back(range->print());
         dep_code.end.push_back(range->end());
