@@ -25,6 +25,7 @@
 #include <util/model_config.h>
 #include <util/util.h>
 #include <util/visitors/get_index_usage.h>
+#include <util/visitors/get_index_variables.h>
 
 namespace MicroModelica {
 using namespace Deps;
@@ -44,6 +45,7 @@ AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
     if (cr->hasIndexes()) {
+      map<int, string> used_variables = getUsedVariables(exp);
       AST_Expression_ComponentReference ret = newAST_Expression_ComponentReference();
       AST_ExpressionList indexes = cr->firstIndex();
       AST_ExpressionListIterator it;
@@ -53,11 +55,11 @@ AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
       foreach (it, indexes) {
         bool is_parameter = false;
         if (current_element(it)->expressionType() == EXPCOMPREF) {
-          AST_Expression_ComponentReference index_cr = current_element(it)->getAsComponentReference();
-          Option<Variable> var = ModelConfig::instance().lookup(index_cr->name());
+          AST_Expression_ComponentReference comp_ref = current_element(it)->getAsComponentReference(); 
+          Option<Variable> var = ModelConfig::instance().lookup(comp_ref->name());
           if (!var) {
-            Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "replace_index.cpp:48 %s", cr->name().c_str());
-            break;
+              Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "replace_index.cpp:63 %s", comp_ref->name().c_str());
+              break;
           }
           is_parameter = var->isParameter();
         }
@@ -66,7 +68,12 @@ AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
           l = AST_ListAppend(l, replace_param.apply(current_element(it)));    
         } else { 
           if (_usage[i] == USED) {
-            string var = _range.iterator(i, _range_idxs);
+            Option<Variable> used_var = ModelConfig::instance().lookup(used_variables[i+1]);
+            string used_var_name = "";
+            if (used_var) {
+              used_var_name = used_var->name();
+            }
+            string var = _range.iterator(used_var_name, i, _range_idxs);
             ReplaceVar rv(var);
             l = AST_ListAppend(l, rv.apply(current_element(it)));
           } else {
@@ -96,6 +103,17 @@ AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression l, AST_Expressio
   return newAST_Expression_BinOp(l, r, bot);
 }
 
+map<int, std::string> ReplaceIndex::getUsedVariables(AST_Expression exp)
+{
+  GetIndexVariables index_usage;
+  multimap<string, int> used_variables = index_usage.apply(exp);
+  map<int, string> d;
+  for(auto used : used_variables) {
+    d[used.second] = used.first;
+  }
+  return d;
+}
+
 ReplaceVar::ReplaceVar(string var) : _var(var) {}
 
 AST_Expression ReplaceVar::foldTraverseElement(AST_Expression exp)
@@ -106,6 +124,8 @@ AST_Expression ReplaceVar::foldTraverseElement(AST_Expression exp)
     Option<Variable> var = symbols[exp->getAsComponentReference()->name()];
     assert(var);
     if (!var->isConstant()) {
+      Variable vi(newType_Integer(), TP_FOR, nullptr, nullptr, vector<int>(1, 1), false);
+      ModelConfig::instance().addVariable(_var, vi);
       return newAST_Expression_ComponentReferenceExp(newAST_String(_var));
     }
     return exp;
