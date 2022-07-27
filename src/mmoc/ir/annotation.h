@@ -133,7 +133,7 @@ class ModelAnnotation {
   void setJacobian(int l);
   int jacobian();
   bool isClassic();
-  list<AST_Expression> BDFPartition();
+  AST_ExpressionList BDFPartition();
   int BDFPartitionDepth();
   double BDFMaxStep();
   string EventId();
@@ -195,7 +195,7 @@ class ModelAnnotation {
   void processArgument(AST_Argument_Modification arg);
   void processList(AST_Expression x, list<double> *l);
   void processList(AST_Expression x, list<string> *l);
-  void processExpressionList(AST_Expression x, list<AST_Expression> *l);
+  void processExpressionList(AST_Expression x, AST_ExpressionList exps);
   Solver getSolver(string s);
   PartitionMethod getPartitionMethod(string s);
   DT_Synch getDtSynch(string s);
@@ -233,7 +233,7 @@ class ModelAnnotation {
   list<string> _scotchSettings;
   list<string> _metisSettings;
   int _jacobian;
-  list<AST_Expression> _BDFPartition;
+  AST_ExpressionList _BDFPartition;
   int _BDFPartitionDepth;
   double _BDFMaxStep;
   IR::MATRIX::UserDefMatrixExps _hd_matrix;
