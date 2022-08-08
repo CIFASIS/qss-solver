@@ -194,7 +194,7 @@ struct QSS_data_ {
   int *nHD;
   int *nHZ;
   int *nSH;
-  int *nDD;
+  int *nHH;
   int *nDH;
   int *TD;
   int *BDF;
@@ -215,7 +215,7 @@ struct QSS_data_ {
   int **HD;
   int **HZ;
   int **SH;
-  int **DD;
+  int **HH;
   int **DH;
   int states;
   int discretes;

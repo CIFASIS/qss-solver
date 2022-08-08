@@ -63,10 +63,10 @@ int GRP_createGraph(QSS_data data, grp_t **xadj, grp_t **adjncy, int rwgt, FILE 
         int k = data->HD[i][j];
         insert(hMatrix[states + i], k);
       }
-      int nDD = data->nDD[i];
+      int nHH = data->nHH[i];
       bool inf = FALSE;
-      for (j = 0; j < nDD; j++) {
-        int k = data->DD[i][j];
+      for (j = 0; j < nHH; j++) {
+        int k = data->HH[i][j];
         if (k != i) {
           insert(hMatrix[states + i], states + k);
         }
@@ -92,7 +92,7 @@ int GRP_createGraph(QSS_data data, grp_t **xadj, grp_t **adjncy, int rwgt, FILE 
         int k = data->event[i].LHSSt[j];
         insert(hMatrix[states + i], k);
       }
-      if (nHD > 0 || nHZ > 0 || nLHSSt > 0 || nDD > 0) {
+      if (nHD > 0 || nHZ > 0 || nLHSSt > 0 || nHH > 0) {
         insert(hMatrix[states + i], states + i);
         edges++;
       }
@@ -200,6 +200,7 @@ int GRP_createGraph(QSS_data data, grp_t **xadj, grp_t **adjncy, int rwgt, FILE 
     freeVMatrix(hMatrix, nvtxs);
   } else {
     vMatrix adjMatrix = VMatrix(nvtxs, 32);
+    printf("nvtxs %d\n", nvtxs );
     for (i = 0; i < states; i++) {
       int nSD = data->nSD[i];
       bool inf = FALSE;
@@ -214,7 +215,7 @@ int GRP_createGraph(QSS_data data, grp_t **xadj, grp_t **adjncy, int rwgt, FILE 
           inf = TRUE;
         }
       }
-      if (!inf) {
+      if (!inf && i < nvtxs - 1) {
         insert(adjMatrix[i], i + 1);
         insert(adjMatrix[i + 1], i);
         edges += 2;
@@ -237,10 +238,10 @@ int GRP_createGraph(QSS_data data, grp_t **xadj, grp_t **adjncy, int rwgt, FILE 
         insert(adjMatrix[k], states + i);
         edges += 2;
       }
-      int nDD = data->nDD[i];
+      int nHH = data->nHH[i];
       bool inf = FALSE;
-      for (j = 0; j < nDD; j++) {
-        int k = data->DD[i][j];
+      for (j = 0; j < nHH; j++) {
+        int k = data->HH[i][j];
         insert(adjMatrix[states + i], states + k);
         insert(adjMatrix[states + k], states + i);
         edges += 2;
@@ -341,14 +342,19 @@ int GRP_readGraph(char *name, QSS_data data, grp_t **xadj, grp_t **adjncy, grp_t
   if (rwgt) {
     sprintf(fileName, "%s.vweights", name);
     file = fopen(fileName, "rb");
+    *vwgt = (grp_t *)checkedMalloc(nvtxs * sizeof(grp_t));
     if (file) {
-      *vwgt = (grp_t *)checkedMalloc(nvtxs * sizeof(grp_t));
       if (fread(vwgt[0], sizeof(grp_t), nvtxs, file) != nvtxs) {
         fclose(file);
         return GRP_ReadError;
       }
       fclose(file);
       file = NULL;
+    } else {
+      int i;
+      for (i = 0; i < nvtxs; i++) {
+        vwgt[0][i] = 1;
+      }
     }
   }
   if (pm == SD_Scotch || pm == SD_Metis) {
