@@ -538,12 +538,7 @@ bool MmomeGui::compile(bool dbg)
     set += "-s ";
   }
   if (!flags.isEmpty()) {
-    if (Editor::instance()->isParallel() && !flags.contains("-p")) {
-      set += "-p ";
-    }
     set += flags + " ";
-  } else if (Editor::instance()->isParallel()) {
-    set += "-p ";
   }
   if (dbg) {
     flags = _utils->appFlag(FLG_DEBUG);
