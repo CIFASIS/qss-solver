@@ -25,6 +25,7 @@
 #include <ast/ast_builder.h>
 #include <ast/equation.h>
 #include <ast/expression.h>
+#include <ir/annotation.h>
 #include <ir/alg_usage.h>
 #include <ir/derivative.h>
 #include <ir/equation.h>
@@ -319,7 +320,33 @@ string AlgebraicPrinter::equationId() const
 }
 
 DependencyPrinter::DependencyPrinter(Equation eq)
-    : DerivativePrinter(eq), _usage(eq.usage()), _range(eq.range()), _rhs(eq.rhs()) {};
+    : DerivativePrinter(eq),
+      _usage(eq.usage()),
+      _range(eq.range()),
+      _rhs(eq.rhs()),
+      _var_idx(Index(eq.lhs())),
+      _parallel(ModelConfig::instance().modelAnnotations().parallel()){};
+
+string DependencyPrinter::beginParallelMap(string& tabs) const
+{
+  if (_parallel) {
+    stringstream buffer;
+    buffer << tabs << "if (map[" << _var_idx << "] > NOT_ASSIGNED) {" << endl;
+    tabs += TAB;
+    return buffer.str();
+  }
+  return "";
+}
+
+string DependencyPrinter::endParallelMap() const
+{
+  if (_parallel) {
+    stringstream buffer;
+    buffer << TAB << TAB << "}" << endl;
+    return buffer.str();
+  }
+  return "";
+}
 
 string DependencyPrinter::print() const
 {
@@ -343,8 +370,10 @@ string DependencyPrinter::print() const
   }
   tabs += TAB;
   buffer << printer.beginDimGuards(equationId(), arguments, _range);
+  buffer << beginParallelMap(tabs);
   buffer << tabs << prefix() << lhs(FIRST_ORDER) << " = " << _rhs << ";" << endl;
   buffer << generateDerivatives(tabs, SECOND_ORDER) << endl;
+  buffer << endParallelMap();
   buffer << TAB << printer.endDimGuards(_range);
   if (PRINT_EQ_RANGE) {
     buffer << _range.get().end();
