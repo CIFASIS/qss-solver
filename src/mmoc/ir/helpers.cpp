@@ -72,7 +72,7 @@ std::ostream& operator<<(std::ostream& out, const ExternalFunction& e)
 CompiledFunction::CompiledFunction() : _name(), _prototype(), _includeDirectory(), _libraryDirectory(), _libraries() {}
 
 CompiledFunction::CompiledFunction(string name, string includeDir, string libraryDir, SymbolTable& libraries, string prefix)
-    : _name(prefix + name), _prototype(), _includeDirectory(includeDir), _libraryDirectory(libraryDir), _libraries(libraries)
+    : _name(name), _prefix(prefix), _prototype(), _includeDirectory(includeDir), _libraryDirectory(libraryDir), _libraries(libraries)
 {
 }
 
@@ -86,7 +86,7 @@ string CompiledFunction::print() const
 {
   ModelConfig::instance().setCompiledFunctionVar(true);
   stringstream buffer;
-  buffer << _name << "(";
+  buffer << _prefix + _name << "(";
   AST_ExpressionListIterator it;
   int size = _arguments->size(), i = 0;
   foreach (it, _arguments) {

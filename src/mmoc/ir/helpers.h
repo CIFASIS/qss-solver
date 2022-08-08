@@ -53,26 +53,27 @@ typedef ModelTable<int, ExternalFunction> ExternalFunctionTable;
 class CompiledFunction {
   public:
   CompiledFunction();
-  CompiledFunction(std::string name, std::string includeDir, std::string libraryDir, Util::SymbolTable& libraries, std::string prefix = "");
+  CompiledFunction(std::string name, std::string includeDir, std::string libraryDir, Util::SymbolTable& libraries, std::string prefix = "__");
   ~CompiledFunction() = default;
   inline bool hasIncludeDirectory() const { return !_includeDirectory.empty(); };
   inline bool hasLibraryDirectory() const { return !_libraryDirectory.empty(); };
   inline bool hasLibraries() const { return _libraries.size() > 0; };
-  inline string includeDirectory() const { return _includeDirectory; };
-  inline string libraryDirectory() const { return _libraryDirectory; };
+  inline std::string includeDirectory() const { return _includeDirectory; };
+  inline std::string libraryDirectory() const { return _libraryDirectory; };
   inline Util::SymbolTable libraries() { return _libraries; };
-  inline string name() const { return _name; };
-  inline string prototype() const { return _prototype; };
+  inline std::string name() const { return _name; };
+  inline std::string prototype() const { return _prototype; };
   friend std::ostream& operator<<(std::ostream& out, const CompiledFunction& cf);
   std::string print() const;
   void setArguments(AST_ExpressionList arguments) { _arguments = arguments; };
   void setOutputArguments(AST_ExpressionList output_arguments) { _output_arguments = output_arguments; };
 
   private:
-  string _name;
-  string _prototype;
-  string _includeDirectory;
-  string _libraryDirectory;
+  std::string _name;
+  std::string _prefix;
+  std::string _prototype;
+  std::string _includeDirectory;
+  std::string _libraryDirectory;
   Util::SymbolTable _libraries;
   AST_ExpressionList _arguments;
   AST_ExpressionList _output_arguments;
