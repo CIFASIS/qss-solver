@@ -32,7 +32,7 @@ namespace MicroModelica {
 namespace IR {
 
 namespace MATRIX {
-typedef enum { Normal, Transpose } Mode;
+typedef enum { Normal = 0, Transpose = 1 } Mode;
 
 typedef enum { Alloc = 0, Init = 2 } Method;
 
@@ -42,13 +42,16 @@ template <typename S>
 class MatrixConfig {
   public:
   MatrixConfig<S>(std::string cont, std::vector<std::string> n, std::vector<std::string> ac, std::vector<std::string> comp, S sel)
-      : container(cont), names(n), access(ac), component(comp), search(IR::STATEMENT::LHS), selector(sel), user_def() {};
+      : container(cont), names(n), access(ac), component(comp), search(IR::STATEMENT::LHS), selector(sel), user_def(), use_component({true,true}) {};
   MatrixConfig<S>(std::string cont, std::vector<std::string> n, std::vector<std::string> ac, std::vector<std::string> comp,
                   IR::STATEMENT::AssignTerm s, UserDefMatrixExps ud, S sel)
-      : container(cont), names(n), access(ac), component(comp), search(s), selector(sel), user_def(ud) {};
+      : container(cont), names(n), access(ac), component(comp), search(s), selector(sel), user_def(ud), use_component({true, true}){};
+  MatrixConfig<S>(std::string cont, std::vector<std::string> n, std::vector<std::string> ac, std::vector<std::string> comp,
+                  std::vector<bool> use_comp, IR::STATEMENT::AssignTerm s, UserDefMatrixExps ud, S sel)
+      : container(cont), names(n), access(ac), component(comp), search(s), selector(sel), user_def(ud), use_component(use_comp){};
   MatrixConfig<S>(std::string cont, std::vector<std::string> n, std::vector<std::string> ac, std::vector<std::string> comp,
                   IR::STATEMENT::AssignTerm s, S sel)
-      : container(cont), names(n), access(ac), component(comp), search(s), selector(sel), user_def(){};
+      : container(cont), names(n), access(ac), component(comp), search(s), selector(sel), user_def(), use_component({true,true}) {};
   MatrixConfig<S>(){};
   std::string container;
   std::vector<std::string> names;
@@ -57,6 +60,7 @@ class MatrixConfig {
   IR::STATEMENT::AssignTerm search;
   S selector;
   UserDefMatrixExps user_def; 
+  std::vector<bool> use_component;
 };
 
 typedef MatrixConfig<Deps::EQSelector> EQMatrixConfig;
@@ -98,7 +102,7 @@ class ModelMatrixGenerator {
 
   protected:
   void addCode(MatrixCode dep_code, std::stringstream& code);
-  std::string component(MATRIX::Method method) const;
+  std::string component(MATRIX::Method method, MATRIX::Mode mode) const;
   void printMatrix(MATRIX::Method method, MATRIX::Mode mode);
 
   ModelMatrixDef _model_matrix_def;

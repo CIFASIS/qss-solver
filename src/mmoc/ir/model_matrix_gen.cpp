@@ -61,14 +61,15 @@ void ModelMatrixGenerator<NT, N, Config>::addCode(MatrixCode dep_code, std::stri
 }
 
 template <typename NT, typename N, typename Config>
-string ModelMatrixGenerator<NT, N, Config>::component(MATRIX::Method method) const
+string ModelMatrixGenerator<NT, N, Config>::component(MATRIX::Method method, MATRIX::Mode mode) const
 {
   stringstream buffer;
   string component = _config.component[0];
+  bool use_component = _config.use_component[mode];
   if (method == MATRIX::Init) {
     component = _config.component[1];
   }
-  if (!component.empty()) {
+  if (!component.empty() && use_component) {
     buffer << "." << component;
   }
   return buffer.str();
@@ -135,9 +136,9 @@ void ModelMatrixGenerator<NT, N, Config>::printMatrix(MATRIX::Method method, MAT
         }
       }
       if (method == MATRIX::Alloc) {
-        buffer << _config.container << matrix << "[" << ifr_idx << "]" << component(MATRIX::Alloc) << "++;" << endl;
+        buffer << _config.container << matrix << "[" << ifr_idx << "]" << component(MATRIX::Alloc, mode) << "++;" << endl;
       } else {
-        buffer << _config.container << matrix << "[" << ifr_idx << "]" << component(MATRIX::Init) << "[" << access << "[" << ifr_idx
+        buffer << _config.container << matrix << "[" << ifr_idx << "]" << component(MATRIX::Init, mode) << "[" << access << "[" << ifr_idx
                << "]++] = " << ife_idx << ";" << endl;
       }
       dep_code.code.push_back(buffer.str());
