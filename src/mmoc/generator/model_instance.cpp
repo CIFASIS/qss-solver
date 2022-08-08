@@ -202,7 +202,7 @@ void ModelInstance::settings()
   buffer << "settings->debug = " << _flags.debug() << ";";
   _writer->print(buffer);
   buffer << "settings->parallel = ";
-  buffer << (_flags.parallel() ? "TRUE" : "FALSE") << ";";
+  buffer << (_model.annotations().parallel() ? "TRUE" : "FALSE") << ";";
   _writer->print(buffer);
   buffer << "settings->hybrid = ";
   buffer << (_model.eventNbr() ? "TRUE" : "FALSE") << ";";
@@ -525,16 +525,14 @@ void QSSModelInstance::dependencies()
 
 void QSSModelInstance::bdfDefinition()
 {
-  ModelAnnotation annot = _model.annotations();
-  annot.setSymDiff(false);
-  ModelConfig::instance().setModelAnnotations(annot);
+  bool sym_diff = ModelConfig::instance().symDiff();
   _writer->write("int idx;", WRITER::Model_Bdf);
   _writer->write("int __bdf_it;", WRITER::Model_Bdf);
   _writer->write("for(__bdf_it = 0; __bdf_it < nBDF; __bdf_it++) {", WRITER::Model_Bdf);
   _writer->write("idx = BDFMap[__bdf_it];", WRITER::Model_Bdf);
   generateDef<QSSModelGen>(_model.derivatives(), WRITER::Model_Bdf, WRITER::Model_Bdf_Simple, WRITER::Model_Bdf_Generic);
   _writer->write("}", WRITER::Model_Bdf_Generic);
-  ModelConfig::instance().setModelAnnotations(_model.annotations());
+  ModelConfig::instance().setSymDiff(sym_diff);
 }
 
 void QSSModelInstance::allocateSolver()
@@ -576,6 +574,7 @@ void QSSModelInstance::initializeDataStructures()
 {
   stringstream buffer;
   ModelConfig::instance().setLocalInitSymbols();
+  const bool PARALLEL = _model.annotations().parallel();
   allocateSolver();
   allocateVectors();
   freeVectors();
@@ -597,6 +596,11 @@ void QSSModelInstance::initializeDataStructures()
   initializeMatrix(deps.LHSDsc(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
   initializeMatrix(deps.LHSSt(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
   initializeMatrix(deps.RHSSt(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
+  if (PARALLEL) {
+    initializeMatrix(deps.DH(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
+    initializeMatrix(deps.SH(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
+    initializeMatrix(deps.HH(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
+  }
   configEvents();
   _writer->write("QSS_allocDataMatrix(modelData);", WRITER::Alloc_Data);
   _writer->write("SD_setupJacMatrices(modelData->jac_matrices);", WRITER::Init_Data);
