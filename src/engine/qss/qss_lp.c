@@ -151,9 +151,9 @@ LP_partitionInfo *LP_processPartition(QSS_simulator simulator, PRT_partition par
         partition->outputs[i][partition->nOutputs[i]++] = derPartitionNumber;
       }
     }
-    int nDD = simulatorData->nDD[handlerNumber];
-    for (j = 0; j < nDD; j++) {
-      int k = simulatorData->DD[handlerNumber][j];
+    int nHH = simulatorData->nHH[handlerNumber];
+    for (j = 0; j < nHH; j++) {
+      int k = simulatorData->HH[handlerNumber][j];
       int hndPartitionNumber = partition->values[beginHandlers + k];
       LP_partitionInfo hndPartition = pi[hndPartitionNumber];
       if (hndPartitionNumber != partitionNumber && hndPartition->handlerInput[hndPartition->lastHandler] != handlerNumber) {

@@ -78,11 +78,13 @@ void CLC_initialize(SIM_simulator simulate)
 void CLC_write_output(SD_output simOutput, double **solution, double *solution_time, int totalOutputSteps)
 {
   int i, j;
-  char name[128];
+  char name[512];
   for (i = 0; i < simOutput->outputs; i++) {
     sprintf(name, "%s.dat", simOutput->variable[i].name);
     FILE *out = fopen(name, "w");
-    for (j = 0; j < totalOutputSteps; j++) fprintf(out, "%13.13g\t\t%13.13g\n", solution_time[j], solution[i][j]);
+    for (j = 0; j < totalOutputSteps; j++) {
+      fprintf(out, "%13.13g\t\t%13.13g\n", solution_time[j], solution[i][j]);
+    }
     fclose(out);
   }
 }

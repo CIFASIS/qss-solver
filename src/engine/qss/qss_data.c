@@ -368,15 +368,15 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, i
     if (settings->lps > 0) {
       p->nSH = (int *)malloc(states * sizeof(int));
       p->SH = (int **)malloc(states * sizeof(int *));
-      p->nDD = (int *)malloc(events * sizeof(int));
-      p->DD = (int **)malloc(events * sizeof(int *));
+      p->nHH = (int *)malloc(events * sizeof(int));
+      p->HH = (int **)malloc(events * sizeof(int *));
       p->nDH = (int *)malloc(discretes * sizeof(int));
       p->DH = (int **)malloc(discretes * sizeof(int *));
     } else {
       p->nSH = NULL;
       p->SH = NULL;
-      p->nDD = NULL;
-      p->DD = NULL;
+      p->nHH = NULL;
+      p->HH = NULL;
       p->nDH = NULL;
       p->DH = NULL;
     }
@@ -391,8 +391,8 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, i
     p->HZ = NULL;
     p->nSH = NULL;
     p->SH = NULL;
-    p->nDD = NULL;
-    p->DD = NULL;
+    p->nHH = NULL;
+    p->HH = NULL;
     p->nDH = NULL;
     p->DH = NULL;
   }
@@ -431,7 +431,7 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, i
     cleanVector(p->nHD, 0, events);
     cleanVector(p->nHZ, 0, events);
     if (settings->lps > 0) {
-      cleanVector(p->nDD, 0, events);
+      cleanVector(p->nHH, 0, events);
       cleanVector(p->nDH, 0, discretes);
     }
     p->event = SD_EventData(events);
@@ -665,8 +665,8 @@ QSS_data QSS_copyData(QSS_data data)
   p->lp = NULL;
   p->nSH = NULL;
   p->SH = NULL;
-  p->nDD = NULL;
-  p->DD = NULL;
+  p->nHH = NULL;
+  p->HH = NULL;
   p->nDH = NULL;
   p->DH = NULL;
   QSS_dataCopyStructure(data, p);
@@ -706,8 +706,8 @@ void QSS_allocDataMatrix(QSS_data data)
     if (data->event[i].nRHSSt + data->event[i].nLHSSt > mRHS) {
       mRHS = data->event[i].nRHSSt + data->event[i].nLHSSt;
     }
-    if (data->nDD != NULL) {
-      data->DD[i] = (data->nDD[i] > 0) ? (int *)malloc(data->nDD[i] * sizeof(int)) : NULL;
+    if (data->nHH != NULL) {
+      data->HH[i] = (data->nHH[i] > 0) ? (int *)malloc(data->nHH[i] * sizeof(int)) : NULL;
     }
   }
   if (data->nDH != NULL) {
@@ -835,16 +835,16 @@ void QSS_freeData(QSS_data data)
     if (data->nSH != NULL) {
       free(data->nSH);
     }
-    if (data->DD != NULL) {
+    if (data->HH != NULL) {
       for (i = 0; i < events; i++) {
-        if (data->DD[i] != NULL) {
-          free(data->DD[i]);
+        if (data->HH[i] != NULL) {
+          free(data->HH[i]);
         }
       }
-      free(data->DD);
+      free(data->HH);
     }
-    if (data->nDD != NULL) {
-      free(data->nDD);
+    if (data->nHH != NULL) {
+      free(data->nHH);
     }
     if (data->DH != NULL) {
       int discretes = data->discretes;
