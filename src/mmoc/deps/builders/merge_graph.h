@@ -74,7 +74,7 @@ typedef MergeGraph<Deps::DZSBGraphBuilder, MergeHZSelector, Deps::EQSelector, De
 
 typedef MergeGraph<Deps::SZSBGraphBuilder, MergeHZSTSelector, Deps::EQSelector, Deps::MergeEQGraphBuilder> HZSTGraphBuilder;
 
-typedef MergeGraph<Deps::DSCGraphBuilder, MergeHHSelector, Deps::EVSelector, Deps::MergeEVGraphBuilder> HHGraphBuilder;
+typedef MergeGraph<Deps::DSCRHSGraphBuilder, MergeHHSelector, Deps::EVSelector, Deps::MergeEVGraphBuilder> HHGraphBuilder;
 
 }  // namespace Deps
 }  // namespace MicroModelica

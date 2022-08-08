@@ -103,7 +103,7 @@ template class MergeGraph<Deps::DZSBGraphBuilder, MergeHZSelector, Deps::EQSelec
 
 template class MergeGraph<Deps::SZSBGraphBuilder, MergeHZSTSelector, Deps::EQSelector, Deps::MergeEQGraphBuilder>;
 
-template class MergeGraph<Deps::DSCGraphBuilder, MergeHHSelector, Deps::EVSelector, Deps::MergeEVGraphBuilder>;
+template class MergeGraph<Deps::DSCRHSGraphBuilder, MergeHHSelector, Deps::EVSelector, Deps::MergeEVGraphBuilder>;
 
 }  // namespace Deps
 }  // namespace MicroModelica
