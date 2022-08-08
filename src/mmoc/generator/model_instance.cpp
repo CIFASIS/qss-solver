@@ -526,6 +526,7 @@ void QSSModelInstance::dependencies()
 void QSSModelInstance::bdfDefinition()
 {
   bool sym_diff = ModelConfig::instance().symDiff();
+  ModelConfig::instance().setSymDiff(false);
   _writer->write("int idx;", WRITER::Model_Bdf);
   _writer->write("int __bdf_it;", WRITER::Model_Bdf);
   _writer->write("for(__bdf_it = 0; __bdf_it < nBDF; __bdf_it++) {", WRITER::Model_Bdf);
