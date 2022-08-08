@@ -166,7 +166,7 @@ void Files::makefile()
             "-lf77blas -lklu";
 #endif
   buffer << " -lgslcblas" << includes.str();
-  if (_flags.parallel()) {
+  if (_model.annotations().parallel()) {
     buffer << " -DQSS_PARALLEL";
   }
   _writer->print(buffer);
@@ -383,90 +383,5 @@ void Files::bdfPartition()
   partition.close();
 }
 
-void Files::graph()
-{
-  /*  Graph g = _modelInstance->graph();
-    if(g.empty())
-    {
-      return;
-    }
-    string fileName = _fname + ".graph";
-    string hFileName = _fname + ".hgraph";
-    string tmp1FileName = _fname + ".tmp1";
-    string tmp2FileName = _fname + ".tmp2";
-    string tmp3FileName = _fname + ".tmp3";
-    string wFileName = _fname + ".eweights";
-    string hwFileName = _fname + ".heweights";
-    string nwFileName = _fname + ".vweights";
-    ofstream matrix(fileName.c_str(), ios::out | ios::binary);
-    matrix.seekp(0);
-    ofstream wMatrix(wFileName.c_str(), ios::out | ios::binary);
-    wMatrix.seekp(0);
-    ofstream hwMatrix(hwFileName.c_str(), ios::out | ios::binary);
-    hwMatrix.seekp(0);
-    ofstream nwMatrix(nwFileName.c_str(), ios::out | ios::binary);
-    nwMatrix.seekp(0);
-    ofstream tmp1(tmp1FileName.c_str(), ios::out | ios::binary);
-    tmp1.seekp(0);
-    ofstream tmp2(tmp2FileName.c_str(), ios::out | ios::binary);
-    tmp2.seekp(0);
-    ofstream tmp3(tmp3FileName.c_str(), ios::out | ios::binary);
-    tmp3.seekp(0);
-    grp_t nvtxs = _model->evs() + _model->states();
-    grp_t w, size = 0;
-    g.connectGraphs();
-    grp_t i;
-    for(i = 0; i < nvtxs; i++)
-    {
-      size += g.graphNodeEdges(i);
-      matrix.write((char*) &size, sizeof(grp_t));
-    }
-    grp_t hedges = g.hyperGraphEdges();
-    map<int, set<int> > graph = g.graph();
-    map<int, set<int> > hGraph = g.hyperGraph();
-    for(i = 0; i < nvtxs; i++)
-    {
-      set<int>::iterator it;
-      for(it = graph[i].begin(); it != graph[i].end(); it++)
-      {
-        grp_t inf = *it;
-        matrix.write((char*) &inf, sizeof(grp_t));
-        w = g.graphEdgeWeight(i, *it);
-        wMatrix.write((char*) &w, sizeof(grp_t));
-      }
-      w = g.nodeWeight(i);
-      nwMatrix.write((char*) &w, sizeof(grp_t));
-    }
-    size = 0;
-    tmp1.write((char*) &hedges, sizeof(grp_t));
-    for(i = 0; i < nvtxs; i++)
-    {
-      set<int>::iterator it;
-      for(it = hGraph[i].begin(); it != hGraph[i].end(); ++it)
-      {
-        grp_t inf = *it;
-        tmp2.write((char*) &inf, sizeof(grp_t));
-      }
-      if(!hGraph[i].empty())
-      {
-        w = g.hyperGraphEdgeWeight(i);
-        hwMatrix.write((char*) &w, sizeof(grp_t));
-        size += hGraph[i].size();
-        tmp1.write((char*) &size, sizeof(grp_t));
-        tmp3.write((char*) &i, sizeof(grp_t));
-      }
-    }
-    matrix.close();
-    wMatrix.close();
-    hwMatrix.close();
-    tmp1.close();
-    tmp2.close();
-    tmp3.close();
-    string command = "cat " + tmp1FileName + " " + tmp2FileName + " " + tmp3FileName + " > " + hFileName;
-    system(command.c_str());
-    remove(tmp1FileName.c_str());
-    remove(tmp2FileName.c_str());
-    remove(tmp3FileName.c_str());*/
-}
 }  // namespace Generator
 }  // namespace MicroModelica
