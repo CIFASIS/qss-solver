@@ -53,7 +53,7 @@ void ModelChecker::visit(AST_Class x)
   if (x->hasExtends()) {
     Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Extend modifier to Class definition.");
   }
-  if ((x->prefix() != CP_FUNCTION || x->prefix() != CP_IMPURE || x->prefix() != CP_PURE) && _has_parent) {
+  if ((x->prefix() != CP_FUNCTION && x->prefix() != CP_IMPURE && x->prefix() != CP_PURE) && _has_parent) {
     Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Only Function classes allowed.");
   }
   _class_prefix = x->prefix();
