@@ -22,13 +22,14 @@
 #include <sstream>
 
 #include <ast/expression.h>
+#include <ir/helpers.h>
 #include <parser/parse.h>
-#include <util/visitors/expression_printer.h>
-#include <util/visitors/is_constant_index.h>
 #include <util/error.h>
 #include <util/model_config.h>
 #include <util/util.h>
-#include <ir/helpers.h>
+#include <util/visitors/expression_printer.h>
+#include <util/visitors/is_constant_index.h>
+#include <util/visitors/partial_eval_exp.h>
 
 namespace MicroModelica {
 using namespace Util;
@@ -84,7 +85,9 @@ string Expression::usage() const
   vector<Expression> exps = usageExps();
   int size = exps.size(), i = 0;
   for (Expression exp : exps) {
-    buffer << exp << (++i < size ? "," : "");
+    PartialEvalExp partial_eval;
+    Expression usage_exp = partial_eval.apply(exp.expression());
+    buffer << usage_exp << (++i < size ? "," : "");
   }
   return buffer.str();
 }

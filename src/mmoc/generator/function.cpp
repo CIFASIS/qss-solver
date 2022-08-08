@@ -28,7 +28,7 @@ using namespace Util;
 namespace Generator {
   
 Function::Function(IR::Function& function, CompileFlags& flags, WriterPtr writer)
-    : _function(function), _flags(flags), _writer(writer), _prefix(), _include(), _return_variable(), _symbols(), _void_function(false)
+    : _function(function), _flags(flags), _writer(writer), _prefix("__"), _include(), _return_variable(), _symbols(), _void_function(false)
 {
   _symbols = ModelConfig::instance().symbols(); 
   ModelConfig::instance().setSymbols(_function.symbols());

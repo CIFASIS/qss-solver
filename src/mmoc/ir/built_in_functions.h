@@ -17,11 +17,10 @@
 
  ******************************************************************************/
 
-#ifndef MMO_BUILT_IN_FUNCTIONS_H
-#define MMO_BUILT_IN_FUNCTIONS_H
+#pragma once
 
-#include "helpers.h"
-#include "../util/table.h"
+#include <ir/helpers.h>
+#include <util/table.h>
 
 namespace MicroModelica {
 namespace IR {
@@ -44,5 +43,3 @@ class BuiltInFunction {
 };
 }  // namespace IR
 }  // namespace MicroModelica
-
-#endif /* MMO_BUILT_IN_FUNCTIONS_H */
