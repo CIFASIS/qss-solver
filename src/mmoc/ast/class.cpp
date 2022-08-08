@@ -125,11 +125,11 @@ bool AST_Class_::hasExtends() { return !_extends_list->empty(); }
 
 void AST_Class_::accept(AST_Visitor *visitor)
 {
-  visitor->visit(this);
   AST_ClassListIterator class_it;
   foreach (class_it, _sub_classes) {
     current_element(class_it)->accept(visitor);
   }
+  visitor->visit(this);
   AST_Element_ComponentListIterator component_it;
   foreach (component_it, _components) {
     current_element(component_it)->accept(visitor);
