@@ -123,10 +123,16 @@ class DependencyPrinter : public DerivativePrinter {
   ~DependencyPrinter() = default;
   std::string print() const override;
 
+  protected:
+  std::string beginParallelMap(std::string &tabs) const;
+  std::string endParallelMap() const;
+
   private:
   Index _usage;
   Option<Range> _range;
   Expression _rhs;
+  Index _var_idx;
+  bool _parallel;
 };
 
 class ZeroCrossingPrinter : public DerivativePrinter {

@@ -85,12 +85,6 @@ HDMatrix ModelDependencies::HD()
   return _HD;
 }
 
-HDMatrix ModelDependencies::DH()
-{
-  _HD.setMode(IR::MATRIX::Normal);
-  return _HD;
-}
-
 HZMatrix ModelDependencies::HZ()
 {
   _HZ.setMode(IR::MATRIX::Transpose);
@@ -105,7 +99,7 @@ HZMatrix ModelDependencies::ZH()
 
 IR::HHMatrix ModelDependencies::HH()
 {
-  _HH.setMode(IR::MATRIX::Normal);
+  _HH.setMode(IR::MATRIX::Transpose);
   return _HH;
 }
 
@@ -115,9 +109,21 @@ LHSDSCMatrix ModelDependencies::LHSDsc()
   return _LHSDsc;
 }
 
+LHSDSCMatrix ModelDependencies::DH()
+{
+  _LHSDsc.setMode(IR::MATRIX::Normal);
+  return _LHSDsc;
+}
+
 LHSSTMatrix ModelDependencies::LHSSt()
 {
   _LHSSt.setMode(IR::MATRIX::Transpose);
+  return _LHSSt;
+}
+
+LHSSTMatrix ModelDependencies::SH()
+{
+  _LHSSt.setMode(IR::MATRIX::Normal);
   return _LHSSt;
 }
 
@@ -153,24 +159,23 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, Equati
                                    vector<string>{"", ""}, EQSelector(zeroCrossingTable(events)));
   _SZ.build(SZCfg);
 
-  IR::MATRIX::EVMatrixConfig LHSSTCfg(INT_CONTAINER, vector<string>{"event", "event", "event", "event"}, vector<string>{EVENTS, EVENTS},
-                                      vector<string>{"nLHSSt", "LHSSt"}, STATEMENT::LHS, annotations.LHSSTMatrix(),
-                                      EVSelector(events));
+  IR::MATRIX::EVMatrixConfig LHSSTCfg(INT_CONTAINER, vector<string>{"nSH", "event", "SH", "event"}, vector<string>{STATES, EVENTS},
+                                      vector<string>{"nLHSSt", "LHSSt"}, vector<bool>{false, true}, STATEMENT::LHS,
+                                      annotations.LHSSTMatrix(), EVSelector(events));
 
   _LHSSt.build(LHSSTCfg);
 
   IR::MATRIX::EVMatrixConfig RHSSTCfg(INT_CONTAINER, vector<string>{"event", "event", "event", "event"}, vector<string>{EVENTS, EVENTS},
-                                      vector<string>{"nRHSSt", "RHSSt"}, STATEMENT::RHS, annotations.RHSSTMatrix(),
-                                      EVSelector(events));
+                                      vector<string>{"nRHSSt", "RHSSt"}, STATEMENT::RHS, annotations.RHSSTMatrix(), EVSelector(events));
 
   _RHSSt.build(RHSSTCfg);
 
-  IR::MATRIX::EVMatrixConfig LHSDSCCfg(INT_CONTAINER, vector<string>{"event", "event", "event", "event"}, vector<string>{EVENTS, EVENTS},
-                                       vector<string>{"nLHSDsc", "LHSDsc"}, STATEMENT::LHS, annotations.LHSDSCMatrix(),
-                                       EVSelector(events));
+  IR::MATRIX::EVMatrixConfig LHSDSCCfg(INT_CONTAINER, vector<string>{"nDH", "event", "DH", "event"}, vector<string>{DISCRETES, EVENTS},
+                                       vector<string>{"nLHSDsc", "LHSDsc"}, vector<bool>{false, true}, STATEMENT::LHS,
+                                       annotations.LHSDSCMatrix(), EVSelector(events));
   _LHSDsc.build(LHSDSCCfg);
 
-  IR::MATRIX::EVMatrixConfig HDCfg(INT_CONTAINER, vector<string>{"nDH", "nHD", "DH", "HD"}, vector<string>{STATES, EVENTS},
+  IR::MATRIX::EVMatrixConfig HDCfg(INT_CONTAINER, vector<string>{"", "nHD", "", "HD"}, vector<string>{STATES, EVENTS},
                                    vector<string>{"", ""}, STATEMENT::LHS, annotations.HDMatrix(), EVSelector(events));
   _HD.build(HDCfg);
 
@@ -179,14 +184,14 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, Equati
   _HZ.build(HZCfg);
 
   IR::MATRIX::EVMatrixConfig HZSTCfg(INT_CONTAINER, vector<string>{"nZH", "nHZ", "ZH", "HZ"}, vector<string>{EVENTS, EVENTS},
-                                   vector<string>{"", ""}, STATEMENT::LHS, IR::MATRIX::UserDefMatrixExps(), EVSelector(events));
+                                     vector<string>{"", ""}, STATEMENT::LHS, IR::MATRIX::UserDefMatrixExps(), EVSelector(events));
 
   IR::HZSTMatrix HZST;
   HZST.build(HZCfg);
   _HZ.append(HZST.def());
 
   IR::MATRIX::EVMatrixConfig HHCfg(INT_CONTAINER, vector<string>{"nHH", "nHH", "HH", "HH"}, vector<string>{EVENTS, EVENTS},
-                                   vector<string>{"", ""}, STATEMENT::LHS, annotations.HHMatrix(), EVSelector(events));
+                                   vector<string>{"", ""}, STATEMENT::RHS, annotations.HHMatrix(), EVSelector(events));
   _HH.build(HHCfg);
 
   ModelConfig::instance().unsetLocalInitSymbols();

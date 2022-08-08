@@ -46,8 +46,12 @@ class ModelConfig {
   inline Deps::ModelDependencies dependencies() { return _dependencies; };
   inline void setDependencies(Deps::ModelDependencies dependencies) { _dependencies = dependencies; };
   inline IR::ModelAnnotation modelAnnotations() { return _model_annotations; };
-  inline void setModelAnnotations(IR::ModelAnnotation model_annotations) { _model_annotations = model_annotations; };
-  bool generateDerivatives() { return _model_annotations.symDiff() && isQss(); };
+  inline void setModelAnnotations(IR::ModelAnnotation model_annotations)
+  {
+    _model_annotations = model_annotations;
+    _sym_diff = model_annotations.symDiff();
+  };
+  bool generateDerivatives() { return _sym_diff && isQss(); };
   inline int order() { return _model_annotations.order(); };
   inline bool isQss() { return !_model_annotations.isClassic(); };
   inline void setDerivatives(IR::EquationTable derivatives) { _derivatives = derivatives; };
@@ -56,6 +60,8 @@ class ModelConfig {
   inline bool initialCode() { return _initial_code; };
   inline void setStateNbr(int state_nbr) { _state_nbr = state_nbr; }
   inline int stateNbr() const { return _state_nbr; }
+  inline void setSymDiff(bool sym_diff) { _sym_diff = sym_diff; }
+  inline bool symDiff() const { return _sym_diff; }
 
   // Symbol table access.
   inline VarSymbolTable& symbols() { return _symbols; };
@@ -83,7 +89,7 @@ class ModelConfig {
   inline void setFunctionCode(bool function_code) { _function_code = function_code; }
   inline bool compiledFunctionVar() const { return _compiled_function_var; }
   inline void setCompiledFunctionVar(bool compiled_function_var) { _compiled_function_var = compiled_function_var; }
-  
+
   private:
   ModelConfig()
       : _model_annotations(),
@@ -100,8 +106,11 @@ class ModelConfig {
         _types(),
         _function_outputs(false),
         _function_code(false),
-        _compiled_function_var(false)
-        { _symbols.initialize(_types); };
+        _compiled_function_var(false),
+        _sym_diff(false)
+  {
+    _symbols.initialize(_types);
+  };
 
   IR::ModelAnnotation _model_annotations;
   IR::EquationTable _algebraics;
@@ -118,6 +127,7 @@ class ModelConfig {
   bool _function_outputs;
   bool _function_code;
   bool _compiled_function_var;
+  bool _sym_diff;
 };
 
 }  // namespace Util

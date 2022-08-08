@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef MMO_COMPILE_FLAGS_H_
-#define MMO_COMPILE_FLAGS_H_
+#pragma once
 
 #include <list>
 #include <map>
@@ -44,13 +43,11 @@ class CompileFlags {
   bool incidenceMatrices();
   list<string> libraryPaths();
   list<string> objects();
-  bool optimizeQSS();
   bool externalStructureFile();
   bool output();
   string outputFile();
   string outputFileName();
   string outputFilePath();
-  bool parallel();
   string path();
   bool store();
   void setDebug(int s);
@@ -60,24 +57,19 @@ class CompileFlags {
   void setExternalFunctions(bool s);
   void setExternalLibs(string p);
   void setIncidenceMatrices(bool im);
-  void setOptimizeQSS(bool s);
   void setOutput(bool s);
   void setOutputFile(string outputFile);
-  void setParallel(bool s);
   void setExternalStructureFile(bool s);
   void setPath(string p);
   void setStore(bool s);
   string externalLibs();
   int lps() const { return _lps; }
   void setLps(int lps) { _lps = lps; }
-  void setGraph(bool g);
-  bool graph();
   void setTesting(bool testing);
   bool testing();
   
   private:
   bool _store;
-  bool _parallel;
   bool _externalStructureFiles;
   bool _output;
   int _debug;
@@ -85,15 +77,11 @@ class CompileFlags {
   string _path;
   list<string> _libraryPaths;
   map<string, string> _objects;
-  bool _optimizeQSS;
   bool _incidenceMatrices;
   bool _externalFunctions;
   int _lps;
   map<string, int> _debugOptions;
-  bool _graph;
   bool _testing;
 };
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif /* MMO_COMPILE_FLAGS_H_ */

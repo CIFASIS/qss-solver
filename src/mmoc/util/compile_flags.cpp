@@ -28,7 +28,6 @@ namespace Util {
 
 CompileFlags::CompileFlags()
     : _store(true),
-      _parallel(false),
       _externalStructureFiles(false),
       _output(true),
       _debug(0),
@@ -36,12 +35,10 @@ CompileFlags::CompileFlags()
       _path(),
       _libraryPaths(),
       _objects(),
-      _optimizeQSS(false),
       _incidenceMatrices(false),
       _externalFunctions(false),
       _lps(0),
-      _debugOptions(),
-      _graph(false)
+      _debugOptions()
 {
   _debugOptions["SD_DBG_VarChanges"] = 1 << 0;
   _debugOptions["SD_DBG_InitValues"] = 1 << 1;
@@ -60,17 +57,7 @@ void CompileFlags::setStore(bool s) { _store = s; }
 
 void CompileFlags::setIncidenceMatrices(bool im) { _incidenceMatrices = im; }
 
-void CompileFlags::setOptimizeQSS(bool s) { _optimizeQSS = s; }
-
 bool CompileFlags::incidenceMatrices() { return _incidenceMatrices; }
-
-bool CompileFlags::parallel() { return _parallel; }
-
-void CompileFlags::setParallel(bool s)
-{
-  _parallel = s;
-  setGraph(true);
-}
 
 bool CompileFlags::output() { return _output; }
 
@@ -113,8 +100,6 @@ list<string> CompileFlags::objects()
   return ret;
 }
 
-bool CompileFlags::optimizeQSS() { return _optimizeQSS; }
-
 bool CompileFlags::hasObjects() { return !_objects.empty(); }
 
 bool CompileFlags::externalStructureFile() { return _externalStructureFiles; }
@@ -126,15 +111,10 @@ void CompileFlags::setDebug(string s)
   if (_debugOptions.find(s) != _debugOptions.end()) {
     _debug |= _debugOptions[s];
     if (!s.compare("SD_DBG_Weights")) {
-      setGraph(true);
       _debug |= _debugOptions["SD_DBG_VarChanges"];
     }
   }
 }
-
-void CompileFlags::setGraph(bool g) { _graph = g; }
-
-bool CompileFlags::graph() { return _graph; }
 
 void CompileFlags::setTesting(bool testing) { _testing = testing; }
 

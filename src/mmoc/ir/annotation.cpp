@@ -578,33 +578,19 @@ void ModelAnnotation::processAnnotation(string annot, AST_Modification_Equal x)
   }
 }
 
-void ModelAnnotation::setDesc(string desc) { _desc = desc; }
-
 string ModelAnnotation::desc() { return _desc; }
 
-void ModelAnnotation::setDQMin(double dqmin) { _DQMin.push_back(dqmin); }
-
 list<double> ModelAnnotation::dqmin() { return _DQMin; }
-
-void ModelAnnotation::setDT(double dt) { _dt = dt; }
 
 double ModelAnnotation::DT() { return _dt; }
 
 list<double> ModelAnnotation::dqrel() { return _DQRel; }
 
-void ModelAnnotation::setDQRel(double dqrel) { _DQRel.push_back(dqrel); }
-
-void ModelAnnotation::setWeight(double weight) { _weight = weight; }
-
 double ModelAnnotation::weight() { return _weight; }
-
-void ModelAnnotation::setSolver(Solver solver) { _solver = solver; }
 
 string ModelAnnotation::solverString() { return _solverString; }
 
 Solver ModelAnnotation::solver() { return _solver; }
-
-void ModelAnnotation::setPartitionMethod(PartitionMethod pm) { _partitionMethod = pm; }
 
 string ModelAnnotation::partitionMethodString() { return _partitionMethodString; }
 
@@ -612,35 +598,17 @@ DT_Synch ModelAnnotation::dtSynch() { return _dtSynch; }
 
 string ModelAnnotation::dtSynchString() { return _dtSynchString; }
 
-void ModelAnnotation::setDtSynch(DT_Synch synch) { _dtSynch = synch; }
-
-void ModelAnnotation::setInitialTime(double it) { _initialTime = it; }
-
 double ModelAnnotation::initialTime() { return _initialTime; }
-
-void ModelAnnotation::setFinalTime(double ft) { _finalTime = ft; }
 
 double ModelAnnotation::finalTime() { return _finalTime; }
 
-void ModelAnnotation::setMinStep(double ms) { _minStep = ms; }
-
 double ModelAnnotation::minStep() { return _minStep; }
-
-void ModelAnnotation::setZCHyst(double zch) { _ZCHyst = zch; }
 
 double ModelAnnotation::ZCHyst() { return _ZCHyst; }
 
-void ModelAnnotation::setDerDelta(double dd) { _derDelta = dd; }
-
 double ModelAnnotation::derDelta() { return _derDelta; }
 
-void ModelAnnotation::setStoreData(string store) { _storeData = store; }
-
 string ModelAnnotation::storeData() { return _storeData; }
-
-void ModelAnnotation::setLps(int lps) { _lps = lps; }
-
-void ModelAnnotation::setJacobian(int jacobian) { _jacobian = jacobian; }
 
 int ModelAnnotation::jacobian() { return _jacobian; }
 
@@ -651,23 +619,13 @@ bool ModelAnnotation::isClassic()
 
 int ModelAnnotation::lps() { return _lps; }
 
-void ModelAnnotation::setNodeSize(int ns) { _nodeSize = ns; }
-
 int ModelAnnotation::nodeSize() { return _nodeSize; }
-
-void ModelAnnotation::setCommInterval(string ci) { _commInterval = ci; }
 
 string ModelAnnotation::commInterval() { return _commInterval; }
 
-void ModelAnnotation::setSample(double s) { _sample.push_back(s); }
-
 list<double> ModelAnnotation::sample() { return _sample; }
 
-void ModelAnnotation::setScheduler(string sched) { _scheduler = sched; }
-
 string ModelAnnotation::scheduler() { return _scheduler; }
-
-void ModelAnnotation::setSymDiff(bool sd) { _symDiff = sd; }
 
 bool ModelAnnotation::symDiff() { return _symDiff; }
 
@@ -681,19 +639,11 @@ list<string> ModelAnnotation::scotchSettings() { return _scotchSettings; }
 
 list<string> ModelAnnotation::metisSettings() { return _metisSettings; }
 
-void ModelAnnotation::setPatohSettings(string l) { _patohSettings.push_back(l); }
-
-void ModelAnnotation::setScotchSettings(string l) { _scotchSettings.push_back(l); }
-
-void ModelAnnotation::setMetisSettings(string l) { _metisSettings.push_back(l); }
-
 AST_ExpressionList ModelAnnotation::BDFPartition() { return _BDFPartition; }
 
 int ModelAnnotation::BDFPartitionDepth() { return _BDFPartitionDepth; }
 
 double ModelAnnotation::BDFMaxStep() { return _BDFMaxStep; }
-
-void ModelAnnotation::setParallel(bool p) { _parallel = p; }
 
 bool ModelAnnotation::parallel() { return _parallel; }
 
