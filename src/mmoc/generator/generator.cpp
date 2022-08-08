@@ -80,9 +80,6 @@ int Generator::generate()
     if (model.annotations().solver() == LIQSS_BDF && !model.annotations().BDFPartition()->empty()) {
       files.bdfPartition();
     }
-    if (_flags.graph()) {
-      files.graph();
-    }
     if (model.externalFunctions()) {
       string ffname = base_name + "_functions";
       generateIncludes(ffname);
