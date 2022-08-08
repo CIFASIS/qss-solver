@@ -55,14 +55,14 @@ void AST_StoredDefinition_::accept(AST_Visitor *visitor)
   foreach (it, _model_list) {
     AST_Class x = current_element(it);
     AST_TypePrefix p = x->prefix();
-    if ((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE)) {
+    if ((p == CP_FUNCTION) || (p == CP_IMPURE) || (p == CP_PURE)) {
       x->accept(visitor);
     }
   }
   foreach (it, _model_list) {
     AST_Class x = current_element(it);
     AST_TypePrefix p = x->prefix();
-    if (!(p & CP_FUNCTION) && !(p & CP_IMPURE) && !(p & CP_PURE)) {
+    if (p == CP_MODEL) {
       x->accept(visitor);
     }
   }
