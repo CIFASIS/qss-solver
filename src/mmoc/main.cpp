@@ -77,8 +77,6 @@ void usage()
   cout << "                Include <path> in the library path search.          " << endl;
   cout << "-o <file>, --output <file>" << endl;
   cout << "                Sets the output to <file>" << endl;
-  cout << "-p, --parallel" << endl;
-  cout << "                Generate code for parallel simulation." << endl;
   cout << "-s, --settings-only" << endl;
   cout << "                Generate only the settings (.ini) file." << endl;
   cout << "-t, --test" << endl;
@@ -182,13 +180,12 @@ int main(int argc, char** argv)
                                            {"external-structure-file", required_argument, 0, 'e'},
                                            {"force", no_argument, 0, 'f'},
                                            {"settings-only", no_argument, 0, 's'},
-                                           {"parallel", no_argument, 0, 'p'},
                                            {"test", no_argument, 0, 't'},
                                            {"debug", required_argument, 0, 'd'},
                                            {"output", required_argument, 0, 'o'},
                                            {0, 0, 0, 0}};
     int option_index = 0;
-    opt = getopt_long(argc, argv, "vhmfspti:e:d:o:", long_options, &option_index);
+    opt = getopt_long(argc, argv, "vhmfsti:e:d:o:", long_options, &option_index);
     if (opt == EOF) break;
     switch (opt) {
     case 'v':
@@ -209,9 +206,6 @@ int main(int argc, char** argv)
       break;
     case 'i':
       flags.addLibraryPath(optarg);
-      break;
-    case 'p':
-      flags.setParallel(true);
       break;
     case 'e':
       flags.setExternalStructureFile(true);
