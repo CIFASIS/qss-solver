@@ -41,12 +41,13 @@ class ModelDependencies {
   IR::DOMatrix DO();
   IR::DOMatrix OD();
   IR::HDMatrix HD();
-  IR::HDMatrix DH();
   IR::HZMatrix HZ();
   IR::HZMatrix ZH();
   IR::HHMatrix HH();
   IR::LHSDSCMatrix LHSDsc();
+  IR::LHSDSCMatrix DH();
   IR::LHSSTMatrix LHSSt();
+  IR::LHSSTMatrix SH();
   IR::RHSSTMatrix RHSSt();
   JacobianMatrix JAC();
 
