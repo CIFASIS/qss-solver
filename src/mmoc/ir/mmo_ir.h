@@ -67,6 +67,7 @@ class MicroModelicaIR : public AST_Visitor {
   private:
   StoredDefinition _std;
   ClassPtr _class;
+  ClassPtr _father_class;
   bool _initialCode;
   bool _classModification;
   bool _compositionElement;

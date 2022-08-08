@@ -46,7 +46,7 @@ namespace IR {
 /* MicroModelica Intermediate Representation */
 
 MicroModelicaIR::MicroModelicaIR(string name)
-    : _std(), _class(nullptr), _initialCode(false), _classModification(false), _compositionElement(false)
+    : _std(), _class(nullptr), _father_class(nullptr), _initialCode(false), _classModification(false), _compositionElement(false)
 {
 }
 
@@ -65,14 +65,21 @@ void MicroModelicaIR::visit(AST_Class x)
   } else {
     _std.setModel(*x->name());
     _class = &(_std.model());
+    _father_class = _class;
   }
 }
 
 void MicroModelicaIR::leave(AST_Class x)
 {
+  _class = nullptr;
   AST_TypePrefix p = x->prefix();
   if ((p & CP_FUNCTION) || (p & CP_IMPURE) || (p & CP_PURE)) {
     _std.addFunction(_function);
+    if (_father_class) {
+      _class = _father_class;
+    }
+  } else if (p & CP_MODEL) {
+    _father_class = nullptr;
   }
 }
 
