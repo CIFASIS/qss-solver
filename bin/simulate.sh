@@ -103,11 +103,5 @@ if [ "$PARALLEL" == "true" ]; then
   fi
 fi
 
-rm -rf hkmetis
-rm -rf *.part
-rm -rf *.vweights	
-rm -rf *.eweights	
-rm -rf *.heweights	
-rm -rf *.graph	
-rm -rf *.hgraph	
+rm -rf khmetis
 rm -rf $FILE.ini  
