@@ -435,7 +435,7 @@ void PRT_createPartitions(PRT_partition partition, QSS_data data, char *name)
   grp_t *xadj = NULL, *adjncy = NULL, *vwgt = NULL, *ewgt = NULL;
   grp_t i, edges;
   SD_PartitionMethod pm = data->params->pm;
-  if (GRP_readGraph(name, data, &xadj, &adjncy, &edges, 1, &vwgt, &ewgt, 0, NULL) == GRP_ReadError) {
+  if (GRP_createGraph(name, data, &xadj, &adjncy, &edges, &vwgt, &ewgt, 0, NULL) == GRP_ReadError) {
     fprintf(stderr, "Could not read generated graph files.");
     abort();
   }
