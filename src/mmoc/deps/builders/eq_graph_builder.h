@@ -32,6 +32,7 @@ class EQGraphBuilder : public S {
   EQGraphBuilder(T equations, IR::EquationTable algebraics, IR::STATEMENT::AssignTerm search);
   EQGraphBuilder(T equations, IR::EquationTable algebraics);
   ~EQGraphBuilder() = default;
+  void setOrigEquations(T orig_equations);
   SB::Deps::Graph build();
 
   private:
@@ -40,6 +41,7 @@ class EQGraphBuilder : public S {
   list<SB::Deps::Vertex> _g_nodes;
   list<SB::Deps::Vertex> _u_nodes;
   T _equations;
+  T _orig_equations;
   IR::EquationTable _algebraics;
   std::map<std::string, int> _node_names;
   SB::EqUsage _usage;
