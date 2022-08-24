@@ -20,6 +20,7 @@
 #pragma once
 
 #include <ast/ast_types.h>
+#include <ir/helpers.h>
 #include <ir/index.h>
 #include <util/table.h>
 
@@ -43,6 +44,7 @@ class EquationPrinter {
   std::string prefix() const;
   std::string lhs(int order = 0) const;
   virtual std::string equationId() const;
+  FUNCTION_PRINTER::ReturnStatementType returnStm() const;
 
   protected:
   void setup(Equation eq);
@@ -53,6 +55,7 @@ class EquationPrinter {
   int _type;
   Expression _lhs;
   std::string _alg_code;
+  FUNCTION_PRINTER::ReturnStatementType _return_stm;
 };
 
 EquationPrinter* getPrinter(Equation eq);
