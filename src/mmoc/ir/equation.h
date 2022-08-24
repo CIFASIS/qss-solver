@@ -30,7 +30,7 @@ typedef ModelTable<std::string, std::string> SymbolTable;
 
 namespace IR {
 namespace EQUATION {
-typedef enum { ClassicDerivative, QSSDerivative, Algebraic, Dependency, Output, ZeroCrossing, _Function_handler } Type;
+typedef enum { ClassicDerivative, QSSDerivative, Algebraic, Dependency, Output, ZeroCrossing, QSSBDFDerivative } Type;
 }
 class EquationVariable {
   public:
@@ -70,7 +70,7 @@ class Equation {
   inline void setRange(Option<Range> range) { _range = range; };
   inline int id() const { return _id; };
   inline EQUATION::Type type() const { return _type; }
-  inline bool isDerivative() const { return _type == EQUATION::QSSDerivative || _type == EQUATION::ClassicDerivative; }
+  inline bool isDerivative() const { return _type == EQUATION::QSSDerivative || _type == EQUATION::ClassicDerivative || _type == EQUATION::QSSBDFDerivative; }
   inline bool isZeroCrossing() const { return _type == EQUATION::ZeroCrossing; }
   inline bool isOutput() const { return _type == EQUATION::Output; }
   inline bool isAlgebraic() const { return _type == EQUATION::Algebraic; }
@@ -112,6 +112,38 @@ class Equation {
   Index _usage;
   std::string _alg_code;
 };
+
+class EquationDefOrder {
+  public:
+  EquationDefOrder() : _var_name(), _var_init() {};
+  EquationDefOrder(std::string var_name, std::vector<int> var_init) : _var_name(var_name), _var_init(var_init) {};
+
+  bool operator<(const EquationDefOrder& other) const
+  {
+    int var_compare = _var_name.compare(other._var_name); 
+    if (var_compare == 0) {
+      assert(_var_init.size() == other._var_init.size());
+      size_t size = _var_init.size();
+      for (size_t i = 0; i < size; i++) {
+        if (_var_init[i] < other._var_init[i]) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return var_compare < 0;
+  }
+
+  std::string variable() const { return _var_name; }
+  
+  protected:
+  std::string _var_name;
+  std::vector<int> _var_init;
+};
+
+typedef std::map<int, std::list<Equation>> OrderedEquations; 
+
+typedef std::map<EquationDefOrder, Equation> EquationOrderMap; 
 
 typedef ModelTable<int, Equation> EquationTable;
 
