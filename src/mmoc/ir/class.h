@@ -152,6 +152,7 @@ class Model : public Class {
   inline Util::SymbolTable includeDirectories() const { return _include_directories; };
   inline Util::SymbolTable libraryDirectories() const { return _library_directories; };
   inline EquationTable derivatives() { return _derivatives; };
+  EquationTable BDFDerivatives();
   inline EquationTable algebraics() { return _algebraics; };
   inline Deps::ModelDependencies dependencies() { return _dependencies; };
   inline EquationTable outputs() { return _outputs; };
@@ -166,7 +167,7 @@ class Model : public Class {
   void computeDependencies();
   void setModelConfig();
 
-  private:
+  protected:
   /**
    * @brief      Adds a new variable for events and output equations that
    *             doesn't have associated variables in the model.
@@ -184,12 +185,15 @@ class Model : public Class {
   void reduceEvent(AST_Statement_When ev);
   void addFunction(Util::SymbolTable symbols, FunctionTable& fs);
   void addInput(Equation eq);
+  void orderEquations();
+  EquationDefOrder getEquationDefOrder(Equation eq); 
 
   std::string _name;
   Util::ImportTable _imports;
   ModelAnnotation _annotations;
   FunctionTable _called_functions;
   EquationTable _derivatives;
+  EquationTable _ordered_derivatives;
   EquationTable _algebraics;
   EquationTable _outputs;
   EventTable _events;
