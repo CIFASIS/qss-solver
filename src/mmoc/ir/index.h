@@ -85,6 +85,7 @@ class Index {
   Expression expression() const;
   bool isEmpty() const;
   std::vector<std::string> variables();
+  std::vector<int> initValues(Option<Range> range);
 
   protected:
   void parseIndexes();

@@ -74,6 +74,36 @@ void Index::parseIndexes()
   }
 }
 
+vector<int> Index::initValues(Option<Range> range)
+{
+  assert(!isEmpty());
+  vector<int> init_values;
+  size_t size = _indexes.size();
+  if (_exp.reference()->isScalar()) {
+    init_values.push_back(0);
+  } else if (isConstant()) {
+    assert(_indexes.size());
+    for (size_t i = 0; i < size; i++) {
+      IndexDefinition idx_def = _indexes[i];
+      init_values.push_back(idx_def.constant());
+    }
+  } else {
+    assert(range);
+    for (size_t i = 0; i < size; i++) {
+      IndexDefinition idx_def = _indexes[i];
+      if (idx_def.variable().empty()) {
+        init_values.push_back(idx_def.constant());
+      } else {
+        RangeDefinitionTable ranges = range->definition();
+        Option<RangeDefinition> dim_range = ranges[idx_def.variable()];
+        assert(dim_range);
+        init_values.push_back(idx_def.constant() + idx_def.factor() * dim_range->begin());
+      }
+    }
+  }
+  return init_values;
+}
+
 int Index::dimension() { return _indexes.size(); }
 
 Expression Index::expression() const { return _exp; }
