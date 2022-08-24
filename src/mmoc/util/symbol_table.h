@@ -166,7 +166,7 @@ class VarSymbolTable : public ModelTable<VarName, Variable> {
   unsigned int _max_dims;
 };
 
-typedef std::list<Variable> VariableList; 
+typedef std::list<Variable> VariableList;
 
 }  // namespace Util
 }  // namespace MicroModelica
