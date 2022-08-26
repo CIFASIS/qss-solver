@@ -17,44 +17,26 @@
 
  ******************************************************************************/
 
-#ifndef QSS_PARTITION_H_
-#define QSS_PARTITION_H_
+#pragma once
 
-#include "qss_data.h"
+#include <qss/qss_data.h>
 
-/**
- *
- */
 typedef struct PRT_partition_ *PRT_partition;
 
-/**
- *
- */
 struct PRT_partition_ {
-  long int *values;  //!<
-  int *nOutputs;     //!<
+  long int *values;
+  int *nOutputs;
   int *nDsc;
   int **dscInf;
   int **asgDscInf;
-  int **outputs;      //!<
-  int beginStates;    //!<
-  int endStates;      //!<
-  int beginHandlers;  //!<
-  int endHandlers;    //!<
+  int **outputs;
+  int beginStates;
+  int endStates;
+  int beginHandlers;
+  int endHandlers;
   int lps;
 };
 
-/**
- *
- * @param data
- * @return
- */
 PRT_partition PRT_Partition(QSS_data data, char *name);
 
-/**
- *
- * @param partition
- */
 void PRT_freePartition(PRT_partition partition);
-
-#endif /* QSS_PARTITION_H_ */

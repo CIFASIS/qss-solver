@@ -20,11 +20,6 @@
 #include "qss_partition.h"
 
 #include <stddef.h>
-
-#include "../common/data.h"
-
-#ifdef __linux__
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,11 +27,12 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#include "../common/scotch.h"
-#include "../common/metis.h"
-#include "../common/patoh.h"
-#include "../common/utils.h"
-#include "qss_graph.h"
+#include <common/data.h>
+#include <common/metis.h>
+#include <common/patoh.h>
+#include <common/scotch.h>
+#include <common/utils.h>
+#include <qss/qss_graph.h>
 
 int PRT_getInt(char opt[128])
 {
@@ -638,11 +634,3 @@ void PRT_freePartition(PRT_partition partition)
   free(partition->values);
   free(partition);
 }
-
-#else
-
-PRT_partition PRT_Partition(QSS_data data, char *name) { return NULL; }
-
-void PRT_freePartition(PRT_partition partition) { return; }
-
-#endif
