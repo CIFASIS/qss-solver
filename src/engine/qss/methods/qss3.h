@@ -20,8 +20,8 @@
 #ifndef QSS3_H_
 #define QSS3_H_
 
-#include "qss_data.h"
-#include "qss_quantizer.h"
+#include <qss/qss_data.h>
+#include <qss/qss_quantizer.h>
 
 /**
  *

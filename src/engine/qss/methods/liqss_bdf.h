@@ -20,8 +20,8 @@
 #ifndef LIQSS_BDF_H_
 #define LIQSS_BDF_H_
 
-#include "qss_data.h"
-#include "qss_quantizer.h"
+#include <qss/qss_data.h>
+#include <qss/qss_quantizer.h>
 
 /**
  *

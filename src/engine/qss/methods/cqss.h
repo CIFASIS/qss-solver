@@ -20,8 +20,8 @@
 #ifndef CQSS_H_
 #define CQSS_H_
 
-#include "qss_data.h"
-#include "qss_quantizer.h"
+#include <qss/qss_data.h>
+#include <qss/qss_quantizer.h>
 
 /**
  * @brief Recomputes the next time of all the influenced variables of...

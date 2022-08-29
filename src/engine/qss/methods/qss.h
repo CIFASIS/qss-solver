@@ -17,122 +17,31 @@
 
  ******************************************************************************/
 
-#ifndef QSS_H_
-#define QSS_H_
+#pragma once
 
-#include "qss_data.h"
-#include "qss_quantizer.h"
+#include <qss/qss_data.h>
+#include <qss/qss_quantizer.h>
 
-/**
- *
- * @param quantizer
- * @param vars
- * @param inf
- * @param t
- * @param nTime
- * @param x
- * @param lqu
- * @param q
- */
 void QSS_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
     __attribute__((hot));
 
-/**
- *
- * @param quantizer
- * @param var
- * @param t
- * @param nTime
- * @param x
- * @param lqu
- * @param q
- */
 void QSS_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
     __attribute__((hot));
 
-/**
- *
- * @param quantizer
- * @param var
- * @param t
- * @param nTime
- * @param x
- * @param lqu
- */
 void QSS_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu) __attribute__((hot));
 
-/**
- *
- * @param quantizer
- * @param i
- * @param q
- * @param x
- * @param lqu
- */
 void QSS_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu) __attribute__((hot));
 
-/**
- *
- * @param quantizer
- * @param simData
- * @param simTime
- */
 void QSS_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime);
 
-/**
- *
- * @param quantizer
- * @param vars
- * @param inf
- * @param t
- * @param nTime
- * @param x
- * @param lqu
- * @param q
- */
 void QSS_PAR_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
     __attribute__((hot));
 
-/**
- *
- * @param quantizer
- * @param var
- * @param t
- * @param nTime
- * @param x
- * @param lqu
- * @param q
- */
 void QSS_PAR_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
     __attribute__((hot));
 
-/**
- *
- * @param quantizer
- * @param var
- * @param t
- * @param nTime
- * @param x
- * @param lqu
- */
 void QSS_PAR_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu) __attribute__((hot));
 
-/**
- *
- * @param quantizer
- * @param i
- * @param q
- * @param x
- * @param lqu
- */
 void QSS_PAR_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu) __attribute__((hot));
 
-/**
- *
- * @param quantizer
- * @param simData
- * @param simTime
- */
 void QSS_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime);
-
-#endif /* QSS_H_ */

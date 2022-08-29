@@ -20,8 +20,8 @@
 #ifndef QSS4_H_
 #define QSS4_H_
 
-#include "qss_data.h"
-#include "qss_quantizer.h"
+#include <qss/qss_data.h>
+#include <qss/qss_quantizer.h>
 
 /**
  *

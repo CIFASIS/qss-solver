@@ -17,13 +17,13 @@
 
  ******************************************************************************/
 
-#include <qss/qss.h>
+#include <qss/methods/qss.h>
 
 #include <math.h>
 
-#include "../common/utils.h"
-#include "qss_data.h"
-#include "qss_quantizer.h"
+#include <common/utils.h>
+#include <qss/qss_data.h>
+#include <qss/qss_quantizer.h>
 
 #ifdef QSS_PARALLEL
 void QSS_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)

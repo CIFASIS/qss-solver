@@ -19,7 +19,7 @@
 
 #include <common/utils.h>
 #include <math.h>
-#include <qss/liqss_bdf.h>
+#include <qss/methods/liqss_bdf.h>
 #include <stdio.h>
 #include <stdlib.h>
 

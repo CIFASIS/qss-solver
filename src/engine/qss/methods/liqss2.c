@@ -16,14 +16,14 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
  ******************************************************************************/
-#include <qss/liqss2.h>
+#include <qss/methods/liqss2.h>
 #include <math.h>
 #include <stdlib.h>
 
-#include "../common/data.h"
-#include "../common/utils.h"
-#include "qss_data.h"
-#include "qss_quantizer.h"
+#include <common/data.h>
+#include <common/utils.h>
+#include <qss/qss_data.h>
+#include <qss/qss_quantizer.h>
 
 #ifdef QSS_PARALLEL
 void LIQSS2_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
