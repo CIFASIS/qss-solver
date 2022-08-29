@@ -83,7 +83,7 @@ install:
 	@echo "Installing solver GUI."
 	@install $(ROOT)/src/gui/usr/bin/qss-solver $(ROOT)/bin/
 	@echo "Installing user libraries."
-		ln -s $(ROOT)/src/usr/lib/* $(ROOT)/lib/
+	ln -s $(ROOT)/src/usr/lib/* $(ROOT)/lib/
 	@install $(ROOT)/deploy/linux/scripts/* $(ROOT)/bin/
 	@install $(ROOT)/deploy/linux/qss-solver.ini.in $(ROOT)/bin/qss-solver.ini
 	@install $(ROOT)/src/engine/3rd-party/partitioners/hmetis/khmetis $(ROOT)/bin/
