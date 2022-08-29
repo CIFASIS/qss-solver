@@ -20,8 +20,8 @@
 #ifndef QSS_BDF_H_
 #define QSS_BDF_H_
 
-#include "../common/data.h"
-#include "qss_data.h"
+#include <common/data.h>
+#include <qss/qss_data.h>
 
 /**
  * @brief      { function_description }

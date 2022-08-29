@@ -22,12 +22,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../common/data.h"
+#include <common/data.h>
 #include "../common/random.h"
 #include "../common/tree.h"
-#include "../common/utils.h"
-#include "qss_data.h"
-#include "qss_scheduler.h"
+#include <common/utils.h>
+#include <qss/qss_data.h>
+#include <qss/qss_scheduler.h>
 
 void BTR_initTree(SC_scheduler scheduler, BTR_tree tree)
 {

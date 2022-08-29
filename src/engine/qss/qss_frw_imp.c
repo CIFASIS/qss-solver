@@ -22,10 +22,10 @@
 #include <math.h>
 #include <stdio.h>
 
-#include "../common/data.h"
-#include "../common/utils.h"
-#include "qss_data.h"
-#include "qss_frw.h"
+#include <common/data.h>
+#include <common/utils.h>
+#include <qss/qss_data.h>
+#include <qss/qss_frw.h>
 
 /* First order */
 

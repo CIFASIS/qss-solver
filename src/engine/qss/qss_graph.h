@@ -17,18 +17,13 @@
 
  ******************************************************************************/
 
-#ifndef QSS_GRAPH_H_
-#define QSS_GRAPH_H_
+#pragma once
 
 #include <stdio.h>
 
-#include "qss_data.h"
+#include <qss/qss_data.h>
 
-#if __x86_64__
 typedef long int grp_t;
-#else
-typedef int grp_t;
-#endif
 
 typedef enum { GRP_ReadError, GRP_Success } GRP_Status;
 
@@ -36,5 +31,3 @@ int GRP_readGraph(char *name, QSS_data data, grp_t **xadj, grp_t **adjncy, grp_t
                   grp_t **hevars);
 
 int GRP_createGraph(QSS_data data, grp_t **xadj, grp_t **adjncy, int rwgt, FILE *wFile, grp_t **ewgt, int rhe, grp_t **hevars);
-
-#endif /* QSS_GRAPH_H_ */

@@ -20,8 +20,8 @@
 #ifndef QSS_LINEAR_H_
 #define QSS_LINEAR_H_
 
-#include "qss_data.h"
-#include "qss_scheduler.h"
+#include <qss/qss_data.h>
+#include <qss/qss_scheduler.h>
 
 /**
  *

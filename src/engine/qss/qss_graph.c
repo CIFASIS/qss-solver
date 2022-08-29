@@ -21,8 +21,8 @@
 
 #include <stdlib.h>
 
-#include "../common/data.h"
-#include "../common/utils.h"
+#include <common/data.h>
+#include <common/utils.h>
 
 int GRP_createGraph(QSS_data data, grp_t **xadj, grp_t **adjncy, int rwgt, FILE *wFile, grp_t **ewgt, int rhe, grp_t **hevars)
 {

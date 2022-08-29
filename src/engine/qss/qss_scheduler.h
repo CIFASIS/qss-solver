@@ -21,7 +21,7 @@
 #define QSS_SCHEDULER_H_
 
 #include "../common/tree.h"
-#include "qss_data.h"
+#include <qss/qss_data.h>
 
 /**
  *

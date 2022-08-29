@@ -20,8 +20,8 @@
 #ifndef QSS_FRW_IMP_H_
 #define QSS_FRW_IMP_H_
 
-#include "qss_data.h"
-#include "qss_frw.h"
+#include <qss/qss_data.h>
+#include <qss/qss_frw.h>
 
 /**
  *

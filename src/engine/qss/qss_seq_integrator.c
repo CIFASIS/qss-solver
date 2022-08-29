@@ -21,15 +21,15 @@
 
 #include <math.h>
 
-#include "../common/data.h"
+#include <common/data.h>
 #include "../common/simulator.h"
-#include "../common/utils.h"
-#include "qss_data.h"
-#include "qss_frw.h"
-#include "qss_integrator.h"
-#include "qss_output.h"
-#include "qss_quantizer.h"
-#include "qss_scheduler.h"
+#include <common/utils.h>
+#include <qss/qss_data.h>
+#include <qss/qss_frw.h>
+#include <qss/qss_integrator.h>
+#include <qss/qss_output.h>
+#include <qss/qss_quantizer.h>
+#include <qss/qss_scheduler.h>
 #include "qss_simulator.h"
 
 void QSS_SEQ_integrate(SIM_simulator simulate)
