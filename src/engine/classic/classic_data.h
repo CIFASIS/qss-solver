@@ -20,8 +20,8 @@
 #ifndef CLASSIC_DATA_H_
 #define CLASSIC_DATA_H_
 
-#include "../common/data.h"
-#include "../common/utils.h"
+#include <common/data.h>
+#include <common/utils.h>
 
 typedef void (*CLC_fp)(void);
 
