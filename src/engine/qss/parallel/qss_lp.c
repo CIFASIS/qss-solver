@@ -21,9 +21,9 @@
 
 #include <stdlib.h>
 
-#include "../common/data.h"
-#include "../common/utils.h"
-#include "qss_data.h"
+#include <common/data.h>
+#include <common/utils.h>
+#include <qss/qss_data.h>
 
 LP_partitionInfo LP_PartitionInfo(int states, int handlers, int out)
 {

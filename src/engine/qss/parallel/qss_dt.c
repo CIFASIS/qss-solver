@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include <qss/qss_dt.h>
+#include <qss/parallel/qss_dt.h>
 #include <common/utils.h>
 
 #define DT_LOWER_BOUND 0.5

@@ -17,52 +17,18 @@
 
  ******************************************************************************/
 
-#ifndef QSS_PARALLEL_H_
-#define QSS_PARALLEL_H_
+#pragma once
 
-#include "qss_data.h"
-#include "qss_simulator.h"
+#include <qss/qss_data.h>
+#include <qss/qss_simulator.h>
 
-/**
- *
- */
 #define PAR_NO_ERROR 0
-
-/**
- *
- */
 #define PAR_ERR_CREATE_THREAD -1
-
-/**
- *
- */
 #define PAR_ERR_SET_AFFINITY_MASK -2
-
-/**
- *
- */
 #define PAR_ERR_GET_AFFINITY_MASK -3
 
-/**
- *
- * @param simulate
- * @param simulator
- * @return
- */
 int PAR_createLPTasks(QSS_sim simulate, QSS_simulator simulator);
 
-/**
- *
- * @param lp
- * @return
- */
 int PAR_cleanLPTask(int lp);
 
-/**
- *
- * @param lp
- * @return
- */
 int PAR_initLPTasks(int lp);
-
-#endif /* QSS_PARALLEL_H_ */

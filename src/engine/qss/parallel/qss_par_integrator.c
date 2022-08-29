@@ -20,12 +20,12 @@
 #include "qss_par_integrator.h"
 
 #include "../common/simulator.h"
-#include "../common/utils.h"
-#include "qss_dt.h"
-#include "qss_frw.h"
-#include "qss_output.h"
-#include "qss_quantizer.h"
-#include "qss_scheduler.h"
+#include <common/utils.h>
+#include <qss/parallel/qss_dt.h>
+#include <qss/qss_frw.h>
+#include <qss/qss_output.h>
+#include <qss/qss_quantizer.h>
+#include <qss/qss_scheduler.h>
 
 #ifdef __linux__
 #include <stdio.h>
@@ -35,15 +35,15 @@
 #include <time.h>
 #include <stdint.h>
 
-#include "../common/data.h"
-#include "qss_data.h"
-#include "qss_integrator.h"
-#include "qss_simulator.h"
-#include "qss_model.h"
-#include "qss_partition.h"
-#include "qss_parallel.h"
-#include "qss_lp.h"
-#include "qss_sim_steps.h"
+#include <common/data.h>
+#include <qss/qss_data.h>
+#include <qss/qss_integrator.h>
+#include <qss/qss_simulator.h>
+#include <qss/qss_model.h>
+#include <qss/parallel/qss_partition.h>
+#include <qss/parallel/qss_parallel.h>
+#include <qss/parallel/qss_lp.h>
+#include <qss/parallel/qss_sim_steps.h>
 
 void QSS_PAR_externalEvent(QSS_simulator simulator, IBX_message message)
 {

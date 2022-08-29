@@ -29,8 +29,8 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#include "../common/data.h"
-#include <qss/qss_parallel.h>
+#include <common/data.h>
+#include <qss/parallel/qss_parallel.h>
 #include <common/utils.h>
 
 static pthread_t *tasks;

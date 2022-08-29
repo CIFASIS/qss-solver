@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#include "qss_sim_steps.h"
+#include <qss/parallel/qss_sim_steps.h>
 
 #include <stdlib.h>
 

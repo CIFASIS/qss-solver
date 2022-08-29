@@ -17,20 +17,13 @@
 
  ******************************************************************************/
 
-#ifndef QSS_LP_H_
-#define QSS_LP_H_
+#pragma once
 
-#include "qss_partition.h"
-#include "qss_simulator.h"
+#include <qss/parallel/qss_partition.h>
+#include <qss/qss_simulator.h>
 
-/**
- *
- */
 typedef struct LP_partitionInfo_ *LP_partitionInfo;
 
-/**
- *
- */
 struct LP_partitionInfo_ {
   int *stateInput;    //!<
   int *handlerInput;  //!<
@@ -47,20 +40,6 @@ struct LP_partitionInfo_ {
   int lastState;      //!<
 };
 
-/**
- *
- * @param states
- * @param events
- * @param out
- * @return
- */
 LP_partitionInfo LP_PartitionInfo(int states, int events, int out);
 
-/**
- *
- * @param simulator
- * @param partitions
- */
 void LP_initializeDataStructs(QSS_simulator simulator, PRT_partition partitions);
-
-#endif /* QSS_LP_H_ */

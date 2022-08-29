@@ -20,7 +20,7 @@
 #ifndef QSS_SIM_STEPS_H_
 #define QSS_SIM_STEPS_H_
 
-#include "../common/utils.h"
+#include <common/utils.h>
 
 #define SIM_STEPS_BUFFER 2000
 

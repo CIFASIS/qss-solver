@@ -21,7 +21,7 @@
 
 #include <stddef.h>
 
-#include "../common/data.h"
+#include <common/data.h>
 
 #ifdef __linux__
 
@@ -35,8 +35,8 @@
 #include "../common/scotch.h"
 #include "../common/metis.h"
 #include "../common/patoh.h"
-#include "../common/utils.h"
-#include "qss_graph.h"
+#include <common/utils.h>
+#include <qss/qss_graph.h>
 
 int PRT_getInt(char opt[128])
 {

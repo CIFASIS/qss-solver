@@ -20,7 +20,7 @@
 #ifndef QSS_PARTITION_H_
 #define QSS_PARTITION_H_
 
-#include "qss_data.h"
+#include <qss/qss_data.h>
 
 /**
  *
