@@ -1,0 +1,34 @@
+# The Directories, Source, Includes, Objects, Binary
+QSS_PAR_METHODS_DIR	:= $(QSS_PAR_DIR)/methods
+
+# Source files.
+
+PAR_METHODS_SRC = $(QSS_PAR_METHODS_DIR)/qss.c \
+		  		  $(QSS_PAR_METHODS_DIR)/cqss.c \
+		  		  $(QSS_PAR_METHODS_DIR)/qss2.c \
+		  		  $(QSS_PAR_METHODS_DIR)/qss3.c \
+		  		  $(QSS_PAR_METHODS_DIR)/qss4.c \
+		  		  $(QSS_PAR_METHODS_DIR)/liqss.c \
+		  		  $(QSS_PAR_METHODS_DIR)/liqss2.c \
+		  		  $(QSS_PAR_METHODS_DIR)/liqss_bdf.c \
+		  		  $(QSS_PAR_METHODS_DIR)/liqss3.c
+
+# Objects
+
+PAR_METHODS_OBJ=$(addprefix $(BUILD_DIR)/, $(PAR_METHODS_SRC:.c=.o))
+
+$(PAR_METHODS_OBJ): | create-folders create-methods-symlinks
+
+create-methods-symlinks:
+	(cd $(QSS_PAR_DIR)/methods; ln -s -f ../../methods/qss.c ./qss.c)
+	(cd $(QSS_PAR_DIR)/methods; ln -s -f ../../methods/cqss.c ./cqss.c)
+	(cd $(QSS_PAR_DIR)/methods; ln -s -f ../../methods/qss2.c ./qss2.c)
+	(cd $(QSS_PAR_DIR)/methods; ln -s -f ../../methods/qss3.c ./qss3.c)
+	(cd $(QSS_PAR_DIR)/methods; ln -s -f ../../methods/qss4.c ./qss4.c)
+	(cd $(QSS_PAR_DIR)/methods; ln -s -f ../../methods/liqss.c ./liqss.c)
+	(cd $(QSS_PAR_DIR)/methods; ln -s -f ../../methods/liqss2.c ./liqss2.c)
+	(cd $(QSS_PAR_DIR)/methods; ln -s -f ../../methods/liqss_bdf.c ./liqss_bdf.c)
+	(cd $(QSS_PAR_DIR)/methods; ln -s -f ../../methods/liqss3.c ./liqss3.c)
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)/qss/parallel/methods
