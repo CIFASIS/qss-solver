@@ -1,0 +1,29 @@
+# The Directories, Source, Includes, Objects, Binary 
+UTIL_DIR 	   := $(SRC_DIR)/util
+
+include util/visitors/Makefile.include
+
+# Source files.
+
+UTIL_SRC =\
+	$(UTIL_DIR)/util.cpp \
+	$(UTIL_DIR)/ast_util.cpp \
+	$(UTIL_DIR)/type.cpp \
+	$(UTIL_DIR)/symbol_table.cpp \
+	$(UTIL_DIR)/error.cpp \
+	$(UTIL_DIR)/debug.cpp \
+	$(UTIL_DIR)/compile_flags.cpp \
+	$(UTIL_DIR)/ginac_interface.cpp \
+	$(UTIL_DIR)/graph.cpp \
+	$(UTIL_DIR)/graph_profile.cpp \
+	$(UTIL_DIR)/logger.cpp \
+	$(UTIL_DIR)/process_statement.cpp
+				 
+# Objects
+
+UTIL_OBJ=$(addprefix $(BUILD_DIR)/, $(UTIL_SRC:.cpp=.o))
+
+$(UTIL_OBJ): $(VISITOR_OBJ) | create-folders
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)/util
