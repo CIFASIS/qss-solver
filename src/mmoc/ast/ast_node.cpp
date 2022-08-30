@@ -22,8 +22,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "../parser/mocc_parser.h"
-
+#include <ast/parser/mocc_parser.h>
 using namespace std;
 
 AST_Node_::AST_Node_() { _linenum = MCC_Parser::lineno(); }
