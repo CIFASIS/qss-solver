@@ -24,7 +24,7 @@
 #include "util/visitors/algebraics.h"
 #include "util/util.h"
 #include "util/symbol_table.h"
-#include "parser/parse.h"
+#include <ast/parser/parse.h>
 
 /// @addtogroup QSSSolverUTests
 /// @{
