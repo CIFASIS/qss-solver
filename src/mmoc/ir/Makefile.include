@@ -1,0 +1,39 @@
+# The Directories, Source, Includes, Objects, Binary 
+IR_DIR	:= $(SRC_DIR)/ir
+
+# Source files.
+
+IR_SRC =\
+	$(IR_DIR)/mmo_model_checker.cpp \
+	$(IR_DIR)/expression.cpp \
+	$(IR_DIR)/equation.cpp \
+	$(IR_DIR)/statement.cpp \
+	$(IR_DIR)/helpers.cpp \
+	$(IR_DIR)/built_in_functions.cpp \
+	$(IR_DIR)/class.cpp \
+	$(IR_DIR)/index.cpp \
+	$(IR_DIR)/annotation.cpp \
+	$(IR_DIR)/event.cpp \
+	$(IR_DIR)/stored_definition.cpp \
+	$(IR_DIR)/mmo_ir.cpp \
+	$(IR_DIR)/mmo_settings.cpp \
+	$(IR_DIR)/derivative.cpp \
+	$(IR_DIR)/equation_printer.cpp \
+	$(IR_DIR)/alg_usage.cpp \
+	$(IR_DIR)/jacobian.cpp \
+	$(IR_DIR)/qss_model.cpp \
+	$(IR_DIR)/qss_model_deps.cpp \
+	$(IR_DIR)/compute_deps.cpp \
+	$(IR_DIR)/model_matrix.cpp \
+	$(IR_DIR)/model_matrix_gen.cpp \
+	$(IR_DIR)/node_selector.cpp \
+	$(IR_DIR)/user_def_matrix.cpp
+		 
+# Objects
+
+IR_OBJ:=$(addprefix $(BUILD_DIR)/, $(IR_SRC:.cpp=.o))
+
+$(IR_OBJ): | create-folders
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)/ir
