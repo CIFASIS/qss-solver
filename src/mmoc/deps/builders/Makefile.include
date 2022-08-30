@@ -1,0 +1,20 @@
+# The Directories, Source, Includes, Objects, Binary 
+DEPS_BUILDER_DIR := $(DEPS_DIR)/builders
+
+# Source files.
+
+DEPS_BUILDER_SRC =\
+	$(DEPS_BUILDER_DIR)/eq_graph_builder.cpp \
+	$(DEPS_BUILDER_DIR)/ev_graph_builder.cpp \
+	$(DEPS_BUILDER_DIR)/merge_graph_builder.cpp \
+	$(DEPS_BUILDER_DIR)/merge_graph.cpp \
+	$(DEPS_BUILDER_DIR)/index_shift_builder.cpp 
+				 
+# Objects
+
+DEPS_BUILDER_OBJ=$(addprefix $(BUILD_DIR)/, $(DEPS_BUILDER_SRC:.cpp=.o))
+
+$(DEPS_BUILDER_OBJ): | create-folders
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)/deps/builders

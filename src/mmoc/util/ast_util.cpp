@@ -29,7 +29,7 @@
 #include "../ast/modification.h"
 #include "../ast/equation.h"
 #include "../ast/statement.h"
-#include "../parser/parse.h"
+#include <ast/parser/parse.h>
 #include "../ir/annotation.h"
 #include "../ir/class.h"
 #include "../ir/equation.h"

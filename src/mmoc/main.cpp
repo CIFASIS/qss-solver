@@ -32,7 +32,7 @@
 #include "ir/mmo_ir.h"
 #include "ir/mmo_model_checker.h"
 #include "ir/mmo_settings.h"
-#include "parser/parse.h"
+#include <ast/parser/parse.h>
 #include "util/compile_flags.h"
 #include "util/error.h"
 #include "util/logger.h"

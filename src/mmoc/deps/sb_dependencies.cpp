@@ -27,7 +27,7 @@
 #include <deps/sbg_graph/build_from_exps.h>
 #include <ir/helpers.h>
 #include <ir/index.h>
-#include <parser/parse.h>
+#include <ast/parser/parse.h>
 #include <util/logger.h>
 #include <util/util.h>
 

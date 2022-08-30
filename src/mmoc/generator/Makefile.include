@@ -1,0 +1,21 @@
+# The Directories, Source, Includes, Objects, Binary 
+GENERATOR_DIR  := $(SRC_DIR)/generator
+
+# Source files.
+GENERATOR_SRC=\
+	$(GENERATOR_DIR)/files.cpp \
+	$(GENERATOR_DIR)/model_instance.cpp\
+	$(GENERATOR_DIR)/writer.cpp\
+	$(GENERATOR_DIR)/function.cpp\
+	$(GENERATOR_DIR)/package.cpp\
+	$(GENERATOR_DIR)/macros.cpp\
+	$(GENERATOR_DIR)/generator.cpp 
+				 
+# Objects
+
+GENERATOR_OBJ=$(addprefix $(BUILD_DIR)/, $(GENERATOR_SRC:.cpp=.o))
+
+$(GENERATOR_OBJ): | create-folders
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)/generator

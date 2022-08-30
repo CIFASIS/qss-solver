@@ -19,10 +19,10 @@
 
 #include "test_utils.h"
 
-#include "ast/element.h"
-#include "ast/ast_builder.h"
-#include "parser/parse.h"
-#include "util/visitors/eval_init_exp.h"
+#include <ast/element.h>
+#include <ast/ast_builder.h>
+#include <ast/parser/parse.h>
+#include <util/visitors/eval_init_exp.h>
 
 using namespace MicroModelica::Util;
 

@@ -28,7 +28,7 @@
 #include "../ast/ast_builder.h"
 #include "../ast/equation.h"
 #include "../ir/expression.h"
-#include "../parser/parse.h"
+#include <ast/parser/parse.h>
 #include "../util/error.h"
 #include "../util/model_config.h"
 #include "../util/ginac_interface.h"

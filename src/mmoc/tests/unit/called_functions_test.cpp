@@ -21,6 +21,7 @@
 #include <gmock/gmock.h>
 #include <iostream>
 
+#include <ast/parser/parse.h>
 #include "util/visitors/called_functions.h"
 #include "util/util.h"
 #include "tests/test_utils.h"

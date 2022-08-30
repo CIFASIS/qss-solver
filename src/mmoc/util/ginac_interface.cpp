@@ -38,7 +38,7 @@
 #include "../ast/ast_builder.h"
 #include "../ast/expression.h"
 #include "../ir/expression.h"
-#include "../parser/parse.h"
+#include <ast/parser/parse.h>
 #include "model_config.h"
 #include "symbol_table.h"
 #include "util.h"

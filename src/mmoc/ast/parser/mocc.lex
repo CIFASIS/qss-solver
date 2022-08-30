@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #include "config.h"
-#include <parser/mocc_parser.h>
+#include <ast/parser/mocc_parser.h>
 
 #ifdef MCC_Lexer_DEBUG
 #define TOK(X) printf("TOK%s ",#X);return MCC_Parser::TOK##X;
