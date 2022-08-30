@@ -24,7 +24,7 @@
 #include <deps/builders/eq_graph_builder.h>
 #include <deps/sbg_graph/build_from_exps.h>
 #include <deps/sb_dependencies.h>
-#include <parser/parse.h>
+#include <ast/parser/parse.h>
 #include <util/model_config.h>
 #include <util/util.h>
 #include <util/symbol_table.h>

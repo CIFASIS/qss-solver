@@ -21,7 +21,7 @@
 
 #include <sstream>
 
-#include "../../parser/parse.h"
+#include <ast/parser/parse.h>
 #include "../../ast/ast_types.h"
 #include "../../ast/ast_builder.h"
 #include "../visitors/replace_constant.h"

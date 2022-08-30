@@ -24,7 +24,7 @@
 #include "convert_expression.h"
 #include "replace_inner_product.h"
 #include "../util.h"
-#include "../../parser/parse.h"
+#include <ast/parser/parse.h>
 #include "../../ast/ast_types.h"
 #include "../../ast/ast_builder.h"
 

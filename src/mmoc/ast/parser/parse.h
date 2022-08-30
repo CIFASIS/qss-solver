@@ -17,9 +17,11 @@
 
  ******************************************************************************/
 
+#pragma once
+
 #include <string>
 
-#include "../ast/ast_types.h"
+#include <ast/ast_types.h>
 
 AST_StoredDefinition parseFile(string, int *);
 
