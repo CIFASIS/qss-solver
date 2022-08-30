@@ -1,0 +1,28 @@
+# The Directories, Source, Includes, Objects, Binary 
+AST_DIR	:= $(SRC_DIR)/ast
+
+include ast/parser/Makefile.include
+
+# Source files.
+ 
+AST_SRC =\
+	$(AST_DIR)/ast_builder.cpp \
+	$(AST_DIR)/ast_node.cpp \
+	$(AST_DIR)/class.cpp \
+	$(AST_DIR)/composition.cpp \
+	$(AST_DIR)/element.cpp \
+	$(AST_DIR)/imports.cpp \
+	$(AST_DIR)/equation.cpp \
+	$(AST_DIR)/expression.cpp \
+	$(AST_DIR)/modification.cpp \
+	$(AST_DIR)/statement.cpp \
+	$(AST_DIR)/stored_definition.cpp
+
+# Objects
+
+AST_OBJ=$(addprefix $(BUILD_DIR)/, $(AST_SRC:.cpp=.o))
+
+$(AST_OBJ): | create-folders $(PARSER_OBJ)
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)/ast
