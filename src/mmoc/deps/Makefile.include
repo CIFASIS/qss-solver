@@ -1,0 +1,21 @@
+# The Directories, Source, Includes, Objects, Binary 
+DEPS_DIR       := $(SRC_DIR)/deps
+
+include deps/builders/Makefile.include
+include deps/sbg_graph/Makefile.include
+
+# Source files.
+
+DEPS_SRC =\
+	$(DEPS_DIR)/sb_dependencies.cpp \
+	$(DEPS_DIR)/model_dependencies.cpp \
+	$(DEPS_DIR)/jacobian_matrices.cpp
+		 
+# Objects
+
+DEPS_OBJ=$(addprefix $(BUILD_DIR)/, $(DEPS_SRC:.cpp=.o))
+
+$(DEPS_OBJ): $(DEPS_GRAPH_OBJ) $(DEPS_BUILDER_OBJ) | create-folders
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)/deps
