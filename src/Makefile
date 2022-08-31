@@ -22,10 +22,10 @@ qss-engine: create-folders
 	@cd engine && $(MAKE) ida
 	@cd engine && $(MAKE) gsl
 	@echo BUILDING QSS LIBRARY
-	@cd engine && $(MAKE) MODE=Release -j $(CORES)
+	@cd engine && $(MAKE) MODE=Release
 	@echo Done
 	@echo BUILDING QSS DEBUG LIBRARY
-	@cd engine && $(MAKE) MODE=Debug -j $(CORES)
+	@cd engine && $(MAKE) MODE=Debug
 	@echo Done
 
 qss-user-libs: create-folders qss-engine
