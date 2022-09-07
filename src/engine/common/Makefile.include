@@ -17,5 +17,7 @@ COMMON_OBJ=$(addprefix $(BUILD_DIR)/, $(COMMON_SRC:.c=.o))
 
 $(COMMON_OBJ): | create-folders
 
+QSS_OBJS += $(COMMON_OBJ)
+
 create-folders::
 	@mkdir -p $(BUILD_DIR)/common

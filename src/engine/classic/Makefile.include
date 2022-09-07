@@ -32,6 +32,8 @@ $(DASSL_OBJ): | create-folders
 
 $(DOPRI_OBJ): | create-folders
 
+QSS_OBJS += $(CLASSIC_OBJ)
+
 # Create compile folders.
 
 create-folders::

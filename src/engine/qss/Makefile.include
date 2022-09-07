@@ -34,5 +34,7 @@ SEQ_OBJ=$(addprefix $(BUILD_DIR)/, $(SEQ_SRC:.c=.o))
 
 $(SEQ_OBJ): $(SEQ_METHODS_OBJ) | create-folders 
 
+QSS_OBJS += $(SEQ_OBJ)
+
 create-folders::
 	@mkdir -p $(BUILD_DIR)/qss
