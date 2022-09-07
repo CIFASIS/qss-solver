@@ -5,9 +5,6 @@ MODE ?= Debug
 CC := gcc
 FC := gfortran
 
-# Build arq.
-ARCH 		:= $(shell uname -m)
-
 # The Directories, Source, Includes, Objects, Binary
 SRC_DIR 		:= .
 USR_DIR 		:= $(SRC_DIR)/usr
@@ -51,11 +48,11 @@ DEPS = $(COMMON_OBJ:.o=.d) $(SEQ_OBJ:.o=.d) $(PAR_OBJ:.o=.d) $(CLASSIC_OBJ:.o=.d
 
 # Build Objects.
 
-$(BUILD_DIR)/$(QSS_PAR_DIR)/%.o : $(QSS_PAR_DIR)/%.c
+$(BUILD_DIR)/$(QSS_PAR_DIR)/%.o: $(QSS_DIR)/%.c
 	$(CC) $(INCLUDE) $(CFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	$(CC) $(INCLUDE) $(CFLAGS) -DQSS_PARALLEL -c $< -o $@ 
 
-$(BUILD_DIR)/%.o : %.c
+$(BUILD_DIR)/%.o: %.c
 	$(CC) $(INCLUDE) $(CFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 	$(CC) $(INCLUDE) $(CFLAGS) -c $< -o $@ 
 
@@ -65,9 +62,8 @@ $(BUILD_DIR)/%.o : %.f
 $(LIB_TIME_STEP): $(DASSL_OBJ) $(DOPRI_OBJ)
 	@ar rvs $(@) $(DASSL_OBJ) $(DOPRI_OBJ)
 
-$(LIB_QSS): $(COMMON_OBJ) $(SEQ_OBJ) $(PAR_OBJ) $(CLASSIC_OBJ)
-	@echo $ARCH
-	@ar rsc $@ $(COMMON_OBJ) $(SEQ_OBJ) $(PAR_OBJ) $(CLASSIC_OBJ)
+$(LIB_QSS): $(QSS_OBJS)
+	@ar rsc $@ $(QSS_OBJS)
 	$(RM) $(LIB_DIR)/*.so*
 
 create-folders::
