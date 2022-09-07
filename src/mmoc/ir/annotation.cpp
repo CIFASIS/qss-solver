@@ -295,12 +295,35 @@ void ModelAnnotation::processList(AST_Expression x, list<double> *l)
     AST_ExpressionList el = b->arguments();
     AST_ExpressionListIterator it;
     foreach (it, el) {
-      av = ea.apply(current_element(it));
-      l->push_back(av.real());
+      if (current_element(it)->expressionType() == EXPOUTPUT) {
+        // If we have a pair, select the first element as the 
+        // value and the second as the size.
+        // This is used for DQMin and DQRel for arrays.
+        AST_Expression_Output out = current_element(it)->getAsOutput();
+        AST_ExpressionList pair_exp = out->expressionList();
+        if (pair_exp->size() != 2) {
+          Error::instance().add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Warning, "Tolerances expression must be a pair.");
+          return;
+        }
+        AST_ExpressionListIterator pair_exp_it;
+        bool first = true;
+        AnnotationValue size;
+        foreach (pair_exp_it, pair_exp) {         
+          if (first) {
+            av = ea.apply(current_element(pair_exp_it));
+            first = false;
+          } else {
+            size = ea.apply(current_element(pair_exp_it));
+          }
+        }
+        for (int i = 0; i < size.integer(); i++) {
+          l->push_back(av.real());
+        }
+      } else {
+        av = ea.apply(current_element(it));
+        l->push_back(av.real());
+      }
     }
-  } else {
-    av = ea.apply(x);
-    l->push_back(av.real());
   }
 }
 
