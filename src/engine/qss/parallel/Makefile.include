@@ -5,41 +5,30 @@ include qss/parallel/methods/Makefile.include
 
 # Source files.
 
-PAR_SRC = $(QSS_PAR_DIR)/qss_file.c \
-		  $(QSS_PAR_DIR)/qss_memory.c \
-		  $(QSS_PAR_DIR)/qss_sampled.c \
-		  $(QSS_PAR_DIR)/qss_step.c \
-		  $(QSS_PAR_DIR)/qss_binary.c \
-		  $(QSS_PAR_DIR)/qss_linear.c \
-		  $(QSS_PAR_DIR)/qss_frw_imp.c \
-		  $(QSS_PAR_DIR)/qss_dt.c \
+PAR_SRC = $(QSS_PAR_DIR)/qss_dt.c \
 		  $(QSS_PAR_DIR)/qss_lp.c \
 		  $(QSS_PAR_DIR)/qss_partition.c  \
 		  $(QSS_PAR_DIR)/qss_parallel.c \
 		  $(QSS_PAR_DIR)/qss_sim_steps.c \
 		  $(QSS_PAR_DIR)/qss_par_integrator.c
 
+PAR_RELOC_SRC = $(QSS_DIR)/qss_file.c \
+		  		$(QSS_DIR)/qss_memory.c \
+		  		$(QSS_DIR)/qss_sampled.c \
+		  		$(QSS_DIR)/qss_step.c \
+		  		$(QSS_DIR)/qss_binary.c \
+		  		$(QSS_DIR)/qss_linear.c \
+		  		$(QSS_DIR)/qss_frw_imp.c 
+
 # Objects
 
 PAR_OBJ=$(addprefix $(BUILD_DIR)/, $(PAR_SRC:.c=.o))
 
-$(PAR_OBJ): $(PAR_METHODS_OBJ) | create-folders create-symlinks 
+PAR_RELOC_OBJ=$(addprefix $(BUILD_DIR)/$(QSS_PAR_DIR)/, $(notdir $(PAR_RELOC_SRC:.c=.o)))
 
-create-symlinks:
-	(cd $(QSS_PAR_DIR); ln -s -f ../qss_file.c ./qss_file.c)
-	(cd $(QSS_PAR_DIR); ln -s -f ../qss_memory.c ./qss_memory.c)
-	(cd $(QSS_PAR_DIR); ln -s -f ../qss_sampled.c ./qss_sampled.c)
-	(cd $(QSS_PAR_DIR); ln -s -f ../qss_step.c ./qss_step.c)
-	(cd $(QSS_PAR_DIR); ln -s -f ../qss_binary.c ./qss_binary.c)
-	(cd $(QSS_PAR_DIR); ln -s -f ../qss_linear.c ./qss_linear.c)
-	(cd $(QSS_PAR_DIR); ln -s -f ../qss_frw_imp.c ./qss_frw_imp.c)
-	(cd $(QSS_PAR_DIR); ln -s -f ../qss_file.h ./qss_file.h)
-	(cd $(QSS_PAR_DIR); ln -s -f ../qss_memory.h ./qss_memory.h)
-	(cd $(QSS_PAR_DIR); ln -s -f ../qss_sampled.h ./qss_sampled.h)
-	(cd $(QSS_PAR_DIR); ln -s -f ../qss_step.h ./qss_step.h)
-	(cd $(QSS_PAR_DIR); ln -s -f ../qss_binary.h ./qss_binary.h)
-	(cd $(QSS_PAR_DIR); ln -s -f ../qss_linear.h ./qss_linear.h)
-	(cd $(QSS_PAR_DIR); ln -s -f ../qss_frw_imp.h ./qss_frw_imp.h)
+$(PAR_OBJ): $(PAR_METHODS_OBJ) $(PAR_RELOC_OBJ) | create-folders 
+
+QSS_OBJS += $(PAR_OBJ) $(PAR_RELOC_OBJ)
 
 create-folders::
 	@mkdir -p $(BUILD_DIR)/qss/parallel
