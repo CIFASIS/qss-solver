@@ -79,8 +79,8 @@ void EquationPrinter::setup(Equation eq)
     buffer << "_eval" << eq.lhs();
     _identifier = buffer.str();
   }
-  _return_stm = (eq.type() == EQUATION::QSSDerivative) ? FUNCTION_PRINTER::ReturnStatementType::Return
-                                                       : FUNCTION_PRINTER::ReturnStatementType::Continue;
+  const bool QSS_EQS = eq.type() == EQUATION::QSSDerivative || eq.type() == EQUATION::ZeroCrossing;
+  _return_stm = (QSS_EQS) ? FUNCTION_PRINTER::ReturnStatementType::Return : FUNCTION_PRINTER::ReturnStatementType::Continue;
 }
 
 FUNCTION_PRINTER::ReturnStatementType EquationPrinter::returnStm() const { return _return_stm; }
