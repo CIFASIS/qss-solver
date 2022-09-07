@@ -1,6 +1,9 @@
 # Target variables
 MODE ?= Debug
 
+# Build arch.
+ARCH = $(shell uname -m)
+
 # Compiler and Linker
 CC := gcc
 FC := gfortran
