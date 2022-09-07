@@ -1,6 +1,7 @@
 # The Directories, Source, Includes, Objects, Binary
 QSS_DIR 		:= $(SRC_DIR)/qss
 
+include qss/parallel/Makefile.include
 include qss/methods/Makefile.include
 
 # Source files.
@@ -35,5 +36,3 @@ $(SEQ_OBJ): $(SEQ_METHODS_OBJ) | create-folders
 
 create-folders::
 	@mkdir -p $(BUILD_DIR)/qss
-
-include qss/parallel/Makefile.include
