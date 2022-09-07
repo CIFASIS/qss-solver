@@ -155,16 +155,16 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 	idx = BDFMap[__bdf_it];
 	switch(idx) {
 		case _eval_u(0): {
-			_der_u(0) = 1000*(_U*sin(_w*_time)-_u(0));
+			_eval_dep_u(1) = 1000*(_U*sin(_w*_time)-_u(0));
 	
 	
-			return;
+			continue;
 		}
 		case _eval_iL(0): {
-			_der_iL(0) = (_u(0)-_iL(0)*(_R+_Rd))/_L;
+			_eval_dep_iL(1) = (_u(0)-_iL(0)*(_R+_Rd))/_L;
 	
 	
-			return;
+			continue;
 		}
 	}
 	}

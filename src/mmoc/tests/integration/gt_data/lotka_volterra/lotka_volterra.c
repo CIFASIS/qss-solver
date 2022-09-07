@@ -140,16 +140,16 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 	idx = BDFMap[__bdf_it];
 	switch(idx) {
 		case _eval_x(1,0): {
-			_der_x(1,0) = 0.1*_x(1,0)-0.1*_x(1,0)*_x(2,0);
+			_eval_dep_x(1,1) = 0.1*_x(1,0)-0.1*_x(1,0)*_x(2,0);
 	
 	
-			return;
+			continue;
 		}
 		case _eval_x(2,0): {
-			_der_x(2,0) = 0.1*_x(1,0)*_x(2,0)-0.1*_x(2,0);
+			_eval_dep_x(2,1) = 0.1*_x(1,0)*_x(2,0)-0.1*_x(2,0);
 	
 	
-			return;
+			continue;
 		}
 	}
 	}

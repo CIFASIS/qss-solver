@@ -232,21 +232,21 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 	int i;
 	switch(idx) {
 		case _eval_x(1,0): {
-			_der_x(1,0) = _uslope;
+			_eval_dep_x(1,1) = _uslope;
 	
 	
-			return;
+			continue;
 		}
 	}
 	if (_is_var_x(idx)) {
 		_get_x_idxs(idx);
 		_apply_usage_eq_2(_d1);
 		if ((i >= 2 && i <= 502)) {
-			_der_x(i,0) = _UOP-_x(i,0)-_G*(_satx(i-1)*pow((_x(i-1,0)-_UTH),2)-_satdx(i-1)*pow((_x(i-1,0)-_x(i,0)-_UTH),2));
+			_eval_dep_x(i,1) = _UOP-_x(i,0)-_G*(_satx(i-1)*pow((_x(i-1,0)-_UTH),2)-_satdx(i-1)*pow((_x(i-1,0)-_x(i,0)-_UTH),2));
 	
 	
 		}
-		return;
+		continue;
 	}
 	}
 }

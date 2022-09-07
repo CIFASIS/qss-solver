@@ -323,16 +323,16 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		case _eval_x1(10,0): {
 			_a1(10,0) = (pow((_x1(9,0)-_x1(10,0)),3))/_R;
 	
-			_der_x1(10,0) = (_a1(10,0)-_x2(1,0))/_C;
+			_eval_dep_x1(10,1) = (_a1(10,0)-_x2(1,0))/_C;
 	
 	
-			return;
+			continue;
 		}
 		case _eval_x2(1,0): {
-			_der_x2(1,0) = _x1(10,0)/_L;
+			_eval_dep_x2(1,1) = _x1(10,0)/_L;
 	
 	
-			return;
+			continue;
 		}
 	}
 	if (_is_var_x1(idx)) {
@@ -351,11 +351,11 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 	}
 		_apply_usage_eq_1(_d1);
 		if ((i >= 1 && i <= 9)) {
-			_der_x1(i,0) = (pow((_a1(i,0)-_a1(i+1,0)),3))/_C;
+			_eval_dep_x1(i,1) = (pow((_a1(i,0)-_a1(i+1,0)),3))/_C;
 	
 	
 		}
-		return;
+		continue;
 	}
 	}
 }
