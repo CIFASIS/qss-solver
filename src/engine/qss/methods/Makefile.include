@@ -1,0 +1,25 @@
+# The Directories, Source, Includes, Objects, Binary
+QSS_METHODS_DIR	:= $(QSS_DIR)/methods
+
+# Source files.
+SEQ_METHODS_SRC = $(QSS_METHODS_DIR)/qss.c \
+		  $(QSS_METHODS_DIR)/qss2.c \
+		  $(QSS_METHODS_DIR)/qss3.c \
+		  $(QSS_METHODS_DIR)/qss4.c \
+		  $(QSS_METHODS_DIR)/liqss.c \
+		  $(QSS_METHODS_DIR)/liqss2.c \
+		  $(QSS_METHODS_DIR)/liqss_bdf.c \
+		  $(QSS_METHODS_DIR)/liqss3.c \
+		  $(QSS_METHODS_DIR)/cqss.c
+
+# Objects
+
+SEQ_METHODS_OBJ=$(addprefix $(BUILD_DIR)/, $(SEQ_METHODS_SRC:.c=.o))
+
+$(SEQ_METHODS_OBJ): | create-folders
+
+QSS_OBJS += $(SEQ_METHODS_OBJ)
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)/qss/methods
+	

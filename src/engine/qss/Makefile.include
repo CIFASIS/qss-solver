@@ -1,0 +1,40 @@
+# The Directories, Source, Includes, Objects, Binary
+QSS_DIR 		:= $(SRC_DIR)/qss
+
+include qss/parallel/Makefile.include
+include qss/methods/Makefile.include
+
+# Source files.
+SEQ_SRC = $(QSS_DIR)/qss_graph.c \
+		  $(QSS_DIR)/qss_biorica.c \
+		  $(QSS_DIR)/qss_data.c \
+		  $(QSS_DIR)/qss_file.c \
+		  $(QSS_DIR)/qss_memory.c \
+		  $(QSS_DIR)/qss_log.c \
+		  $(QSS_DIR)/qss_sampled.c \
+		  $(QSS_DIR)/qss_step.c \
+		  $(QSS_DIR)/qss_binary_random.c \
+		  $(QSS_DIR)/qss_binary.c \
+		  $(QSS_DIR)/qss_linear.c \
+		  $(QSS_DIR)/qss_frw.c  \
+		  $(QSS_DIR)/qss_frw_imp.c \
+		  $(QSS_DIR)/qss_bdf.c \
+		  $(QSS_DIR)/qss_output.c \
+		  $(QSS_DIR)/qss_scheduler.c \
+		  $(QSS_DIR)/qss_quantizer.c \
+		  $(QSS_DIR)/qss_integrator.c \
+		  $(QSS_DIR)/qss_seq_integrator.c  \
+		  $(QSS_DIR)/qss_hyb_integrator.c  \
+		  $(QSS_DIR)/qss_simulator.c \
+		  $(QSS_DIR)/qss_commands.c
+
+# Objects
+
+SEQ_OBJ=$(addprefix $(BUILD_DIR)/, $(SEQ_SRC:.c=.o))
+
+$(SEQ_OBJ): $(SEQ_METHODS_OBJ) | create-folders 
+
+QSS_OBJS += $(SEQ_OBJ)
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)/qss

@@ -20,9 +20,9 @@
 #ifndef QSS_STEP_H_
 #define QSS_STEP_H_
 
-#include "../common/data.h"
-#include "qss_data.h"
-#include "qss_output.h"
+#include <common/data.h>
+#include <qss/qss_data.h>
+#include <qss/qss_output.h>
 
 /**
  *

@@ -22,11 +22,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../common/data.h"
+#include <common/data.h>
 #include "../common/tree.h"
-#include "../common/utils.h"
-#include "qss_data.h"
-#include "qss_scheduler.h"
+#include <common/utils.h>
+#include <qss/qss_data.h>
+#include <qss/qss_scheduler.h>
 
 #ifdef QSS_PARALLEL
 #define BT_UPDATE_FN BT_PAR_update

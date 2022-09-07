@@ -21,9 +21,9 @@
 
 #include <stdio.h>
 
-#include "../common/utils.h"
-#include "qss_data.h"
-#include "qss_scheduler.h"
+#include <common/utils.h>
+#include <qss/qss_data.h>
+#include <qss/qss_scheduler.h>
 
 #ifdef QSS_PARALLEL
 void LN_PAR_init(SC_scheduler scheduler, QSS_data simData, QSS_time simTime)

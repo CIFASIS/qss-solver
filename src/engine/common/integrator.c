@@ -21,17 +21,17 @@
 
 #include <stdlib.h>
 
-#include "../classic/classic_dassl_integrator.h"
-#include "../classic/classic_dopri_integrator.h"
-#include "../classic/classic_cvode_integrator.h"
-#include "../classic/classic_ida_integrator.h"
-#include "../classic/classic_integrator.h"
-#include "../qss/qss_integrator.h"
-#include "../qss/qss_par_integrator.h"
-#include "../qss/qss_seq_integrator.h"
-#include "../qss/qss_hyb_integrator.h"
-#include "data.h"
-#include "utils.h"
+#include <classic/classic_dassl_integrator.h>
+#include <classic/classic_dopri_integrator.h>
+#include <classic/classic_cvode_integrator.h>
+#include <classic/classic_ida_integrator.h>
+#include <classic/classic_integrator.h>
+#include <common/data.h>
+#include <common/utils.h>
+#include <qss/qss_integrator.h>
+#include <qss/parallel/qss_par_integrator.h>
+#include <qss/qss_seq_integrator.h>
+#include <qss/qss_hyb_integrator.h>
 
 INT_integrator INT_Integrator(SIM_simulator simulator)
 {

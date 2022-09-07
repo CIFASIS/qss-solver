@@ -20,9 +20,9 @@
 #ifndef QSS_OUTPUT_H_
 #define QSS_OUTPUT_H_
 
-#include "../common/data.h"
-#include "qss_data.h"
-#include "qss_log.h"
+#include <common/data.h>
+#include <qss/qss_data.h>
+#include <qss/qss_log.h>
 
 /**
  *

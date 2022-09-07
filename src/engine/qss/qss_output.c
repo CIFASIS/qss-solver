@@ -17,11 +17,11 @@
 
  ******************************************************************************/
 
-#include "qss_output.h"
+#include <qss/qss_output.h>
 
 #include <stdlib.h>
 
-#include "../common/utils.h"
+#include <common/utils.h>
 #include "qss_sampled.h"
 #include "qss_step.h"
 

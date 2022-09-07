@@ -1,0 +1,23 @@
+# The Directories, Source, Includes, Objects, Binary
+COMMON_DIR 		:= $(SRC_DIR)/common
+
+# Source files.
+COMMON_SRC =	$(COMMON_DIR)/data.c \
+				$(COMMON_DIR)/utils.c \
+				$(COMMON_DIR)/tree.c \
+				$(COMMON_DIR)/settings.c \
+				$(COMMON_DIR)/random.c \
+				$(COMMON_DIR)/simulator.c \
+				$(COMMON_DIR)/integrator.c \
+				$(COMMON_DIR)/engine.c \
+				$(COMMON_DIR)/commands.c
+
+# Objects
+COMMON_OBJ=$(addprefix $(BUILD_DIR)/, $(COMMON_SRC:.c=.o))
+
+$(COMMON_OBJ): | create-folders
+
+QSS_OBJS += $(COMMON_OBJ)
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)/common

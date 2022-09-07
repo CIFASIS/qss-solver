@@ -21,10 +21,10 @@
 
 #include <stdlib.h>
 
-#include "../common/data.h"
-#include "qss_data.h"
-#include "qss_log.h"
-#include "qss_output.h"
+#include <common/data.h>
+#include <qss/qss_data.h>
+#include <qss/qss_log.h>
+#include <qss/qss_output.h>
 
 #ifdef QSS_PARALLEL
 void SAM_PAR_writeOutvar(OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput, int index, int variable)

@@ -17,81 +17,54 @@
 
  ******************************************************************************/
 
-#ifndef QSS_SIMULATOR_H_
-#define QSS_SIMULATOR_H_
+#pragma once
 
-#include "../common/data.h"
+#include <common/data.h>
 #include "../common/simulator.h"
-#include "../common/utils.h"
-#include "qss_data.h"
-#include "qss_dt.h"
-#include "qss_frw.h"
-#include "qss_output.h"
-#include "qss_quantizer.h"
-#include "qss_scheduler.h"
-#include "qss_sim_steps.h"
+#include <common/utils.h>
+#include <qss/qss_data.h>
+#include <qss/parallel/qss_dt.h>
+#include <qss/qss_frw.h>
+#include <qss/qss_output.h>
+#include <qss/qss_quantizer.h>
+#include <qss/qss_scheduler.h>
+#include <qss/parallel/qss_sim_steps.h>
 
-/**
- *
- */
 typedef struct QSS_simulator_ *QSS_simulator;
 
-/**
- *
- */
 struct QSS_simulator_ {
-  QA_quantizer quantizer;          //!<
-  OUT_output log;                  //!<
-  SC_scheduler scheduler;          //!<
-  FRW_framework frw;               //!<
-  QSS_data data;                   //!<
-  QSS_time time;                   //!<
-  QSS_model model;                 //!<
-  SD_output output;                //!<
-  SD_simulationSettings settings;  //!<
-  SD_simulationLog simulationLog;  //!<
-  QSS_dt dt;                       //!<
+  QA_quantizer quantizer;
+  OUT_output log;
+  SC_scheduler scheduler;
+  FRW_framework frw;
+  QSS_data data;
+  QSS_time time;
+  QSS_model model;
+  SD_output output;
+  SD_simulationSettings settings;
+  SD_simulationLog simulationLog;
+  QSS_dt dt;
   QSS_dtSynch dtSynch;
   int id;                 //!< ID of the simulator.
   double *lpTime;         //!< Array that contains the time of the last step taken in the LP or \f $ \inf $ $ \f otherwise.
   double *lpDtMin;        //!< Array that contains the minimum step time for each LP defined in the simulation.
-  MLB_mailbox mailbox;    //!<
-  IBX_inbox inbox;        //!<
-  IBX_inbox ack;          //!<
-  QSS_LP_dataArray lps;   //!<
-  SD_statistics stats;    //!<
-  QSS_simSteps simSteps;  //!<
+  MLB_mailbox mailbox;
+  IBX_inbox inbox;
+  IBX_inbox ack;
+  QSS_LP_dataArray lps;
+  SD_statistics stats;
+  QSS_simSteps simSteps;
 };
 
-/**
- *
- */
 typedef struct QSS_simulatorInstance_ QSS_simulatorInstance;
 
-/**
- *
- */
 struct QSS_simulatorInstance_ {
-  QSS_simulator root;  //!<
-  int id;              //!<
+  QSS_simulator root;
+  int id;
 };
 
-/**
- *
- * @return
- */
 QSS_simulator QSS_Simulator();
 
-/**
- *
- * @param simulator
- */
 void QSS_initSimulator(SIM_simulator simulator);
 
-/**
- *
- * @param simulator
- */
 void QSS_freeSimulator(QSS_simulator simulator);
-
-#endif /* QSS_SIMULATOR_H_ */
