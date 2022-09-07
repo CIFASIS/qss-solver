@@ -1,6 +1,7 @@
 # Target variables
 MODE ?= Debug
-ARCH = $(shell uname -m)
+
+# Build cores.
 CORES = $(shell nproc)
 
 # The Directories, Source, Includes, Objects, Binary 
