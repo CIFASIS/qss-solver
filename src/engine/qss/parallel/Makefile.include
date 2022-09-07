@@ -33,6 +33,13 @@ create-symlinks:
 	(cd $(QSS_PAR_DIR); ln -s -f ../qss_binary.c ./qss_binary.c)
 	(cd $(QSS_PAR_DIR); ln -s -f ../qss_linear.c ./qss_linear.c)
 	(cd $(QSS_PAR_DIR); ln -s -f ../qss_frw_imp.c ./qss_frw_imp.c)
+	(cd $(QSS_PAR_DIR); ln -s -f ../qss_file.h ./qss_file.h)
+	(cd $(QSS_PAR_DIR); ln -s -f ../qss_memory.h ./qss_memory.h)
+	(cd $(QSS_PAR_DIR); ln -s -f ../qss_sampled.h ./qss_sampled.h)
+	(cd $(QSS_PAR_DIR); ln -s -f ../qss_step.h ./qss_step.h)
+	(cd $(QSS_PAR_DIR); ln -s -f ../qss_binary.h ./qss_binary.h)
+	(cd $(QSS_PAR_DIR); ln -s -f ../qss_linear.h ./qss_linear.h)
+	(cd $(QSS_PAR_DIR); ln -s -f ../qss_frw_imp.h ./qss_frw_imp.h)
 
 create-folders::
 	@mkdir -p $(BUILD_DIR)/qss/parallel
