@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#include "qss_data.h"
+#include <qss/qss_data.h>
 
 #include <stdio.h>
 #include <stdlib.h>

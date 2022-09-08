@@ -1,0 +1,28 @@
+# The Directories, Source, Includes, Objects, Binary 
+
+PARSER_DIR := $(AST_DIR)/parser
+
+# Source files.
+
+PARSER_SRC=\
+	$(PARSER_DIR)/mocc_scanner.cpp \
+	$(PARSER_DIR)/mocc_parser.cpp \
+	$(PARSER_DIR)/parse.cpp 
+		 
+# Objects
+
+PARSER_OBJ=$(addprefix $(BUILD_DIR)/, $(PARSER_SRC:.cpp=.o))
+
+# Build cpp files.
+
+$(PARSER_DIR)/mocc_parser.cpp: $(PARSER_DIR)/mocc.y
+	$(BISON) -t -d -v -h$(PARSER_DIR)/mocc_parser.h -o$(PARSER_DIR)/mocc_parser.cpp $(PARSER_DIR)/mocc.y
+
+$(PARSER_DIR)/mocc_scanner.cpp: $(PARSER_DIR)/mocc.lex $(PARSER_DIR)/mocc_parser.cpp
+	$(FLEX) -d -o$(PARSER_DIR)/mocc_scanner.cpp $(PARSER_DIR)/mocc.lex
+
+$(PARSER_OBJ): | create-folders
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)/ast
+	@mkdir -p $(BUILD_DIR)/ast/parser

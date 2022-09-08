@@ -54,6 +54,7 @@ list<int> PartitionInterval::foldTraverseElement(AST_Expression exp)
         foreach (it, range_exps) {
           range[count++] = eval_init_exp.apply(current_element(it));
         }
+        range[0]--;
         if (count == 2) {
           range[2] = range[1];
           range[1] = 1;
@@ -63,13 +64,13 @@ list<int> PartitionInterval::foldTraverseElement(AST_Expression exp)
         }
         return part;
       } else if (index_type == EXPCOLON) {
-        for (int p = 0; p < var->size(); p++) {
+        for (unsigned long p = 0; p < var->size(); p++) {
           part.push_back(var->offset() + p);
         }
         return part;
       }
     } else if (var->isArray()) {
-      for (int p = 0; p < var->size(); p++) {
+      for (unsigned long p = 0; p < var->size(); p++) {
         part.push_back(var->offset() + p);
       }
       return part;

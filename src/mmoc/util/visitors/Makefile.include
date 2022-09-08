@@ -1,0 +1,48 @@
+# The Directories, Source, Includes, Objects, Binary 
+VISITOR_DIR := $(UTIL_DIR)/visitors
+
+# Source files.
+
+VISITOR_SRC =\
+	$(VISITOR_DIR)/array_use.cpp \
+	$(VISITOR_DIR)/autonomous.cpp \
+	$(VISITOR_DIR)/called_functions.cpp \
+	$(VISITOR_DIR)/convert_condition.cpp \
+	$(VISITOR_DIR)/convert_expression.cpp \
+	$(VISITOR_DIR)/convert_equation.cpp \
+	$(VISITOR_DIR)/convert_statement.cpp \
+	$(VISITOR_DIR)/discrete_assignment.cpp \
+	$(VISITOR_DIR)/eval_init_exp.cpp \
+	$(VISITOR_DIR)/expression_printer.cpp \
+	$(VISITOR_DIR)/occurs.cpp \
+	$(VISITOR_DIR)/partial_eval_exp.cpp \
+	$(VISITOR_DIR)/replace_der.cpp \
+	$(VISITOR_DIR)/replace_index.cpp \
+	$(VISITOR_DIR)/replace_inner_product.cpp \
+	$(VISITOR_DIR)/variable_lookup.cpp \
+	$(VISITOR_DIR)/algebraics.cpp \
+	$(VISITOR_DIR)/get_index_usage.cpp \
+	$(VISITOR_DIR)/revert_index.cpp \
+	$(VISITOR_DIR)/is_constant_index.cpp \
+	$(VISITOR_DIR)/get_index_variables.cpp \
+	$(VISITOR_DIR)/convert_output_range.cpp \
+	$(VISITOR_DIR)/convert_cont_red.cpp \
+	$(VISITOR_DIR)/convert_disc_red.cpp \
+	$(VISITOR_DIR)/is_recursive_def.cpp \
+	$(VISITOR_DIR)/jac_alg_exps.cpp \
+	$(VISITOR_DIR)/has_scalar_index.cpp \
+	$(VISITOR_DIR)/replace_constant.cpp \
+	$(VISITOR_DIR)/parse_index.cpp \
+	$(VISITOR_DIR)/apply_var_usage.cpp\
+	$(VISITOR_DIR)/is_constant_expression.cpp \
+	$(VISITOR_DIR)/pwl_map_values.cpp \
+	$(VISITOR_DIR)/partition_interval.cpp
+				 
+# Objects
+
+VISITOR_OBJ=$(addprefix $(BUILD_DIR)/, $(VISITOR_SRC:.cpp=.o))
+
+$(VISITOR_OBJ): | create-folders
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)/util/visitors

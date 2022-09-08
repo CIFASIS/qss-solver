@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-/*! \file qss_integrator.h
+/*! \file classic_integrator.h
  **	\brief This interface defines the Integrator used by the QSS Solver.
  **
  **	Given the state polynomials, the integrator uses structural information
@@ -35,62 +35,21 @@
  **
  **/
 
-#ifndef CLASSIC_INTEGRATOR_H_
-#define CLASSIC_INTEGRATOR_H_
+#pragma once
 
-#include "../common/data.h"
-#include "../common/simulator.h"
+#include <common/data.h>
+#include <common/simulator.h>
 #include "classic_data.h"
 
-/**
- *
- */
 #define MAX_OUTPUT_POINTS 1 << 20
-
 #define HIST 1e-12
 
-/**
- *
- * @param simOutput
- * @param solution
- * @param solution_time
- * @param totalOutputSteps
- */
 void CLC_write_output(SD_output simOutput, double **solution, double *solution_time, int totalOutputSteps);
-/**
- *
- * @param clcData
- * @param simOutput
- * @param solution
- * @param num_steps
- * @param outvar
- * @param x
- */
+
 void CLC_compute_outputs(SD_output simOutput, double **solution, int num_steps);
 
-/**
- *
- * @param simOutput
- * @param solution
- * @param solution_time
- * @param t
- * @param totalOutputSteps
- * @param x
- * @param outvar
- */
 void CLC_save_step(SD_output simOutput, double **solution, double *solution_time, const double t, const int totalOutputSteps, double *x,
                    double *d, double *a);
-/**
- *
- * @param clcData
- * @param clcModel
- * @param x
- * @param root_output
- * @param t
- * @param iwork
- */
 void CLC_handle_event(CLC_data clcData, CLC_model clcModel, double *x, int *root_output, double t, int *iwork);
 
 void CLC_initialize(SIM_simulator simulate);
-
-#endif /* CLASSIC_INTEGRATOR_H_ */

@@ -25,12 +25,13 @@
 #include <ast/ast_builder.h>
 #include <ast/equation.h>
 #include <ast/expression.h>
+#include <ast/parser/parse.h>
 #include <ir/annotation.h>
 #include <ir/alg_usage.h>
 #include <ir/derivative.h>
 #include <ir/equation.h>
 #include <ir/helpers.h>
-#include <parser/parse.h>
+
 #include <util/error.h>
 #include <util/model_config.h>
 #include <util/util.h>
@@ -62,8 +63,7 @@ EquationPrinter* getPrinter(Equation eq)
   }
 }
 
-EquationPrinter::EquationPrinter(Equation eq)
-    : _identifier(), _id(eq.id()), _type(eq.type()), _lhs(eq.lhs()), _alg_code(eq.algCode())
+EquationPrinter::EquationPrinter(Equation eq) : _identifier(), _id(eq.id()), _type(eq.type()), _lhs(eq.lhs()), _alg_code(eq.algCode())
 {
   setup(eq);
 }
@@ -81,7 +81,11 @@ void EquationPrinter::setup(Equation eq)
     buffer << "_eval" << eq.lhs();
     _identifier = buffer.str();
   }
+  const bool QSS_EQS = eq.type() == EQUATION::QSSDerivative || eq.type() == EQUATION::ZeroCrossing;
+  _return_stm = (QSS_EQS) ? FUNCTION_PRINTER::ReturnStatementType::Return : FUNCTION_PRINTER::ReturnStatementType::Continue;
 }
+
+FUNCTION_PRINTER::ReturnStatementType EquationPrinter::returnStm() const { return _return_stm; }
 
 string EquationPrinter::equationId() const
 {
@@ -102,6 +106,11 @@ string EquationPrinter::lhs(int order) const
     buffer << exp;
     break;
   }
+  case EQUATION::QSSBDFDerivative: {
+    Expression exp = Expression(_lhs.expression(), 1);
+    buffer << exp;
+    break;
+  }
   case EQUATION::ZeroCrossing: {
     if (ModelConfig::instance().isQss()) {
       buffer << "(" << order << ")";
@@ -118,7 +127,6 @@ string EquationPrinter::prefix() const
 {
   switch (_type) {
   case EQUATION::ClassicDerivative:
-    return "_der";
   case EQUATION::QSSDerivative:
     return "_der";
   case EQUATION::ZeroCrossing:
@@ -126,6 +134,7 @@ string EquationPrinter::prefix() const
   case EQUATION::Output:
     return "_out";
   case EQUATION::Dependency:
+  case EQUATION::QSSBDFDerivative:
     return "_eval_dep";
   default:
     return "";
@@ -134,12 +143,7 @@ string EquationPrinter::prefix() const
 }
 
 DerivativePrinter::DerivativePrinter(Equation eq)
-    : EquationPrinter(eq),
-      _fact_init(2),
-      _id(eq.id()),
-      _range(eq.range()),
-      _lhs(eq.lhs()),
-      _rhs(eq.rhs())
+    : EquationPrinter(eq), _fact_init(2), _id(eq.id()), _range(eq.range()), _lhs(eq.lhs()), _rhs(eq.rhs())
 {
   initializeDerivatives();
 }
@@ -228,14 +232,11 @@ string DerivativePrinter::print() const
   buffer << tabs << prefix() << lhs() << " = " << _rhs << ";" << endl;
   buffer << generateDerivatives(tabs) << endl;
   buffer << endl << TAB << printer.endDimGuards(_range);
-  buffer << TAB << printer.endExpression(_range);
+  buffer << TAB << printer.endExpression(_range, returnStm());
   return buffer.str();
 }
 
-ClassicPrinter::ClassicPrinter(Equation eq)
-    : DerivativePrinter(eq), _range(eq.range()), _rhs(eq.rhs())
-{
-}
+ClassicPrinter::ClassicPrinter(Equation eq) : DerivativePrinter(eq), _range(eq.range()), _rhs(eq.rhs()) {}
 
 string ClassicPrinter::print() const
 {
@@ -252,8 +253,7 @@ string ClassicPrinter::print() const
   return buffer.str();
 }
 
-OutputPrinter::OutputPrinter(Equation eq)
-    : DerivativePrinter(eq), _id(eq.id()), _range(eq.range()), _rhs(eq.rhs()) {};
+OutputPrinter::OutputPrinter(Equation eq) : DerivativePrinter(eq), _id(eq.id()), _range(eq.range()), _rhs(eq.rhs()){};
 
 string OutputPrinter::equationId() const
 {
@@ -283,8 +283,7 @@ string OutputPrinter::print() const
   return buffer.str();
 }
 
-AlgebraicPrinter::AlgebraicPrinter(Equation eq)
-    : DerivativePrinter(eq), _range(eq.range()), _rhs(eq.rhs()), _lhs(eq.lhs()), _id(eq.id())
+AlgebraicPrinter::AlgebraicPrinter(Equation eq) : DerivativePrinter(eq), _range(eq.range()), _rhs(eq.rhs()), _lhs(eq.lhs()), _id(eq.id())
 {
   factorialInit(0);
 };
@@ -381,10 +380,7 @@ string DependencyPrinter::print() const
   return buffer.str();
 }
 
-ZeroCrossingPrinter::ZeroCrossingPrinter(Equation eq) : DerivativePrinter(eq), _id(eq.id())
-{
-  factorialInit(1);
-};
+ZeroCrossingPrinter::ZeroCrossingPrinter(Equation eq) : DerivativePrinter(eq), _id(eq.id()) { factorialInit(1); };
 
 string ZeroCrossingPrinter::equationId() const
 {

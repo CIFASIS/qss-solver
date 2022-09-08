@@ -33,9 +33,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../common/data.h"
+#include <common/data.h>
 #include "../common/simulator.h"
-#include "../common/utils.h"
+#include <common/utils.h>
 #include "classic_data.h"
 #include "classic_integrator.h"
 #include "classic_simulator.h"

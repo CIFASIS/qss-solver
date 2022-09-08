@@ -23,10 +23,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../common/data.h"
-#include "../common/utils.h"
-#include "qss_data.h"
-#include "qss_log.h"
+#include <common/data.h>
+#include <common/utils.h>
+#include <qss/qss_data.h>
+#include <qss/qss_log.h>
 
 #ifdef QSS_PARALLEL
 void F_PAR_init(LG_log log, QSS_data sim_data, SD_output sim_output)

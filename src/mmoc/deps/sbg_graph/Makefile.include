@@ -1,0 +1,18 @@
+# The Directories, Source, Includes, Objects, Binary 
+DEPS_GRAPH_DIR   := $(DEPS_DIR)/sbg_graph
+
+# Source files.
+DEPS_GRAPH_SRC =\
+	$(DEPS_GRAPH_DIR)/build_from_exps.cpp \
+	$(DEPS_GRAPH_DIR)/map_operations.cpp \
+	$(DEPS_GRAPH_DIR)/lmap_exp.cpp \
+	$(DEPS_GRAPH_DIR)/printers.cpp
+		 
+# Objects
+
+DEPS_GRAPH_OBJ=$(addprefix $(BUILD_DIR)/, $(DEPS_GRAPH_SRC:.cpp=.o))
+
+$(DEPS_GRAPH_OBJ): | create-folders
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)/deps/sbg_graph

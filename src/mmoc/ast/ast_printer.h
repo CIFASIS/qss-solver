@@ -17,65 +17,23 @@
 
  ******************************************************************************/
 
-#ifndef AST_PRINTER_H_
-#define AST_PRINTER_H_
+#pragme once
 
-#include "../util/macros.h"
-#include "ast_types.h"
+#include <ast/ast_types.h>
+#include <util/macros.h>
 
 using namespace std;
 
-/**
- *
- */
 DEFINE_PRINTER(AST_Argument);
-/**
- *
- */
 DEFINE_PRINTER(AST_Comment);
-/**
- *
- */
 DEFINE_PRINTER(AST_CompositionElement);
-/**
- *
- */
 DEFINE_PRINTER(AST_Composition);
-/**
- *
- */
 DEFINE_PRINTER(AST_Class);
-/**
- *
- */
 DEFINE_PRINTER(AST_Element);
-/**
- *
- */
 DEFINE_PRINTER(AST_Expression);
-/**
- *
- */
 DEFINE_PRINTER(AST_Expression_ComponentReference);
-/**
- *
- */
 DEFINE_PRINTER(AST_Equation);
-/**
- *
- */
 DEFINE_PRINTER(AST_Modification);
-/**
- *
- */
 DEFINE_PRINTER(AST_Statement);
-/**
- *
- */
 DEFINE_PRINTER(AST_StoredDefinition);
-/**
- *
- */
 DEFINE_PRINTER(AST_String);
-
-#endif /* AST_PRINTER_H_ */

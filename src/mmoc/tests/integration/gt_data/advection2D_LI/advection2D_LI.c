@@ -112,25 +112,6 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 	}
 	for(row = 1; row <= 19; row++) {
 		c_row = _c_index(row);
-		_get_eq_2_var_idxs(row, eq_var);
-		_get_u_idxs(eq_var);
-		if((2 <= _d1 && _d1 <= 20) && (1 <= 1 && 1 <= 1)) {
-			x_ind = _idx_u(_d1,1,0);
-			col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
-			_apply_usage_eq_2(_d1,1);
-			aux = 0;
-			dvdx->df_dx[1]->value[c_row][col] +=  aux;
-		}
-		if((1 <= _d1-1 && _d1-1 <= 19) && (1 <= 1 && 1 <= 1)) {
-			x_ind = _idx_u(_d1-1,1,0);
-			col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
-			_apply_usage_eq_2(_d1,1);
-			aux = 0;
-			dvdx->df_dx[1]->value[c_row][col] +=  aux;
-		}
-	}
-	for(row = 1; row <= 19; row++) {
-		c_row = _c_index(row);
 		_get_eq_3_var_idxs(row, eq_var);
 		_get_u_idxs(eq_var);
 		if((1 <= 1 && 1 <= 1) && (2 <= _d2 && _d2 <= 20)) {
@@ -146,6 +127,25 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 			_apply_usage_eq_3(1,_d2);
 			aux = 0;
 			dvdx->df_dx[2]->value[c_row][col] +=  aux;
+		}
+	}
+	for(row = 1; row <= 19; row++) {
+		c_row = _c_index(row);
+		_get_eq_2_var_idxs(row, eq_var);
+		_get_u_idxs(eq_var);
+		if((2 <= _d1 && _d1 <= 20) && (1 <= 1 && 1 <= 1)) {
+			x_ind = _idx_u(_d1,1,0);
+			col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
+			_apply_usage_eq_2(_d1,1);
+			aux = 0;
+			dvdx->df_dx[1]->value[c_row][col] +=  aux;
+		}
+		if((1 <= _d1-1 && _d1-1 <= 19) && (1 <= 1 && 1 <= 1)) {
+			x_ind = _idx_u(_d1-1,1,0);
+			col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
+			_apply_usage_eq_2(_d1,1);
+			aux = 0;
+			dvdx->df_dx[1]->value[c_row][col] +=  aux;
 		}
 	}
 	for(row = 1; row <= 361; row++) {
@@ -181,18 +181,18 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 	    _assign_jac(row_t, dvdx->df_dx[0]->value[row][col]);
 	  }
 	}
-	// Assign Jacobian Matrix values for equation: 1
-	for (row = 0; row < 19; row++) {
-	  for (col = 0; col < dvdx->df_dx[1]->size[row]; col++) {
-	    row_t = dvdx->df_dx[1]->index[row][col];
-	    _assign_jac(row_t, dvdx->df_dx[1]->value[row][col]);
-	  }
-	}
 	// Assign Jacobian Matrix values for equation: 2
 	for (row = 0; row < 19; row++) {
 	  for (col = 0; col < dvdx->df_dx[2]->size[row]; col++) {
 	    row_t = dvdx->df_dx[2]->index[row][col];
 	    _assign_jac(row_t, dvdx->df_dx[2]->value[row][col]);
+	  }
+	}
+	// Assign Jacobian Matrix values for equation: 1
+	for (row = 0; row < 19; row++) {
+	  for (col = 0; col < dvdx->df_dx[1]->size[row]; col++) {
+	    row_t = dvdx->df_dx[1]->index[row][col];
+	    _assign_jac(row_t, dvdx->df_dx[1]->value[row][col]);
 	  }
 	}
 	// Assign Jacobian Matrix values for equation: 3
@@ -287,41 +287,41 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 	int j;
 	switch(idx) {
 		case _eval_u(1,1,0): {
-			_der_u(1,1,0) = -_ax*_u(1,1,0)/_dx-_ay*_u(1,1,0)/_dy+_r*(pow(_u(1,1,0),2)-pow(_u(1,1,0),3));
+			_eval_dep_u(1,1,1) = -_ax*_u(1,1,0)/_dx-_ay*_u(1,1,0)/_dy+_r*(pow(_u(1,1,0),2)-pow(_u(1,1,0),3));
 	
 	
-			return;
+			continue;
 		}
 	}
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_2(_d1,_d2);
 		if ((i >= 2 && i <= 20)) {
-			_der_u(i,1,0) = -_ax*_u(i,1,0)/_dx-_ay*(_u(i,1,0)-_u(i-1,1,0))/_dy+_r*(pow(_u(i,1,0),2)-pow(_u(i,1,0),3));
+			_eval_dep_u(i,1,1) = -_ax*_u(i,1,0)/_dx-_ay*(_u(i,1,0)-_u(i-1,1,0))/_dy+_r*(pow(_u(i,1,0),2)-pow(_u(i,1,0),3));
 	
 	
 		}
-		return;
+		continue;
 	}
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_3(_d1,_d2);
 		if ((j >= 2 && j <= 20)) {
-			_der_u(1,j,0) = -_ax*(_u(1,j,0)-_u(1,j-1,0))/_dx-_ay*_u(1,j,0)/_dy+_r*(pow(_u(1,j,0),2)-pow(_u(1,j,0),3));
+			_eval_dep_u(1,j,1) = -_ax*(_u(1,j,0)-_u(1,j-1,0))/_dx-_ay*_u(1,j,0)/_dy+_r*(pow(_u(1,j,0),2)-pow(_u(1,j,0),3));
 	
 	
 		}
-		return;
+		continue;
 	}
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_4(_d1,_d2);
 		if ((i >= 2 && i <= 20) && (j >= 2 && j <= 20)) {
-				_der_u(i,j,0) = -_ax*(_u(i,j,0)-_u(i,j-1,0))/_dx-_ay*(_u(i,j,0)-_u(i-1,j,0))/_dy+_r*(pow(_u(i,j,0),2)-pow(_u(i,j,0),3));
+				_eval_dep_u(i,j,1) = -_ax*(_u(i,j,0)-_u(i,j-1,0))/_dx-_ay*(_u(i,j,0)-_u(i-1,j,0))/_dy+_r*(pow(_u(i,j,0),2)-pow(_u(i,j,0),3));
 	
 	
 		}
-		return;
+		continue;
 	}
 	}
 }
@@ -409,17 +409,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	}
 	for(row = 1; row <= 19; row++) {
 		c_row = _c_index(row);
-		_get_eq_2_var_idxs(row, eq_var);
-		_get_u_idxs(eq_var);
-		if((2 <= _d1 && _d1 <= 20) && (1 <= 1 && 1 <= 1)) {
-			modelData->jac_matrices->df_dx[1]->size[c_row]++;
-		}
-		if((1 <= _d1-1 && _d1-1 <= 19) && (1 <= 1 && 1 <= 1)) {
-			modelData->jac_matrices->df_dx[1]->size[c_row]++;
-		}
-	}
-	for(row = 1; row <= 19; row++) {
-		c_row = _c_index(row);
 		_get_eq_3_var_idxs(row, eq_var);
 		_get_u_idxs(eq_var);
 		if((1 <= 1 && 1 <= 1) && (2 <= _d2 && _d2 <= 20)) {
@@ -427,6 +416,17 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		}
 		if((1 <= 1 && 1 <= 1) && (1 <= _d2-1 && _d2-1 <= 19)) {
 			modelData->jac_matrices->df_dx[2]->size[c_row]++;
+		}
+	}
+	for(row = 1; row <= 19; row++) {
+		c_row = _c_index(row);
+		_get_eq_2_var_idxs(row, eq_var);
+		_get_u_idxs(eq_var);
+		if((2 <= _d1 && _d1 <= 20) && (1 <= 1 && 1 <= 1)) {
+			modelData->jac_matrices->df_dx[1]->size[c_row]++;
+		}
+		if((1 <= _d1-1 && _d1-1 <= 19) && (1 <= 1 && 1 <= 1)) {
+			modelData->jac_matrices->df_dx[1]->size[c_row]++;
 		}
 	}
 	for(row = 1; row <= 361; row++) {
@@ -515,28 +515,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	cleanVector(states, 0, 400);
 	for(row = 1; row <= 19; row++) {
 		c_row = _c_index(row);
-		_get_eq_2_var_idxs(row, eq_var);
-		_get_u_idxs(eq_var);
-		if((2 <= _d1 && _d1 <= 20) && (1 <= 1 && 1 <= 1)) {
-			x_ind = _idx_u(_d1,1,0);
-			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
-				modelData->jac_matrices->df_dx[1]->size[c_row]--;
-			} else {
-				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
-			}
-		}
-		if((1 <= _d1-1 && _d1-1 <= 19) && (1 <= 1 && 1 <= 1)) {
-			x_ind = _idx_u(_d1-1,1,0);
-			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
-				modelData->jac_matrices->df_dx[1]->size[c_row]--;
-			} else {
-				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
-			}
-		}
-	}
-	cleanVector(states, 0, 400);
-	for(row = 1; row <= 19; row++) {
-		c_row = _c_index(row);
 		_get_eq_3_var_idxs(row, eq_var);
 		_get_u_idxs(eq_var);
 		if((1 <= 1 && 1 <= 1) && (2 <= _d2 && _d2 <= 20)) {
@@ -553,6 +531,28 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 				modelData->jac_matrices->df_dx[2]->size[c_row]--;
 			} else {
 				modelData->jac_matrices->df_dx[2]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+	}
+	cleanVector(states, 0, 400);
+	for(row = 1; row <= 19; row++) {
+		c_row = _c_index(row);
+		_get_eq_2_var_idxs(row, eq_var);
+		_get_u_idxs(eq_var);
+		if((2 <= _d1 && _d1 <= 20) && (1 <= 1 && 1 <= 1)) {
+			x_ind = _idx_u(_d1,1,0);
+			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[1]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
+			}
+		}
+		if((1 <= _d1-1 && _d1-1 <= 19) && (1 <= 1 && 1 <= 1)) {
+			x_ind = _idx_u(_d1-1,1,0);
+			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
+				modelData->jac_matrices->df_dx[1]->size[c_row]--;
+			} else {
+				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
 			}
 		}
 	}

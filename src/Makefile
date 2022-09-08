@@ -1,40 +1,45 @@
 # Target variables
-CORES ?= $(shell nproc)
 MODE ?= Debug
-ARCH = $(shell uname -m)
+
+# Build cores.
+CORES = $(shell nproc)
 
 # The Directories, Source, Includes, Objects, Binary 
 ROOT   	        := ..
 3RD_PARTY_DIR   := ./3rd-party
-GTEST_DIR      := googletest-release-1.10.0
+GTEST_DIR       := googletest-release-1.10.0
 GTEST_CODE      := $(GTEST_DIR).tar.gz
 
 all: mmo-compiler mmo-interfaces qss-engine qss-solver-gui qss-user-libs
 
-mmo-interfaces: create-dirs 
+mmo-interfaces: create-folders
 	@echo BUILDING MMO-SBML INTERFACE
 	@cd interfaces/sbml &&  $(MAKE) MODE=$(MODE) -j $(CORES)
 	@echo Done
 
-qss-engine: create-dirs  
+qss-engine: create-folders
+	@echo BUILDING QSS LIBRARIES DEPS
+	@cd engine && $(MAKE) cvode
+	@cd engine && $(MAKE) ida
+	@cd engine && $(MAKE) gsl
 	@echo BUILDING QSS LIBRARY
-	@cd engine && $(MAKE) MODE=Release -j $(CORES)
+	@cd engine && $(MAKE) MODE=Release
 	@echo Done
 	@echo BUILDING QSS DEBUG LIBRARY
-	@cd engine && $(MAKE) MODE=Debug -j $(CORES)
+	@cd engine && $(MAKE) MODE=Debug
 	@echo Done
 
-qss-user-libs: create-dirs qss-engine
+qss-user-libs: create-folders qss-engine
 	@echo BUILDING USER LIBS
 	@cd usr && $(MAKE) MODE=$(MODE) -j $(CORES) ENGINE=../engine     
 	@echo Done
 
-mmo-compiler: create-dirs lib-gtest  
+mmo-compiler: create-folders lib-gtest  
 	@echo BUILDING MICROMODELICA C COMPILER
 	@cd mmoc && $(MAKE) MODE=$(MODE) -j $(CORES) 
 	@echo Done
 
-qss-solver-gui: create-dirs 
+qss-solver-gui: create-folders 
 	@echo BUILDING MMO EDITOR
 	@cd gui && $(MAKE) -f gui.makefile MODE=$(MODE) -j $(CORES)     
 	@echo Done
@@ -46,7 +51,7 @@ qss-solver-doc: qss-engine mmo-compiler qss-solver-gui mmo-interfaces
 	@cd gui && $(MAKE) -f gui.makefile doc 
 	@cd interfaces/sbml && $(MAKE) doc 
 
-lib-gtest: | create-dirs 
+lib-gtest: | create-folders 
 ifeq ("$(wildcard $(3RD_PARTY_DIR)/gtest/usr/lib)","")
 	cd $(3RD_PARTY_DIR)/gtest; tar xvzf $(GTEST_CODE)
 	mkdir -p $(3RD_PARTY_DIR)/gtest/build
@@ -63,7 +68,7 @@ test:
 	@cd gui && $(MAKE) -f gui.makefile test
 	@echo Done
 
-create-dirs:
+create-folders:
 	@mkdir -p $(ROOT)/bin
 	@mkdir -p $(ROOT)/build
 	@mkdir -p $(ROOT)/output
@@ -93,7 +98,6 @@ install:
 clean: 
 	@cd mmoc && $(MAKE) clean 
 	@cd engine && $(MAKE) clean 
-	@cd engine && $(MAKE) MODE=Release clean 
 	@cd usr && $(MAKE) clean
 	@cd gui && $(MAKE) clean    
 	@cd interfaces/sbml && $(MAKE) clean     

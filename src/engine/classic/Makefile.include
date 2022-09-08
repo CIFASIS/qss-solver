@@ -1,0 +1,42 @@
+# The Directories, Source, Includes, Objects, Binary
+CLASSIC_DIR 	:= $(SRC_DIR)/classic
+DASSL_DIR   	:= $(SRC_DIR)/classic/dassl
+DOPRI_DIR   	:= $(SRC_DIR)/classic/dopri5
+
+CLASSIC_SRC =	$(CLASSIC_DIR)/classic_data.c \
+				$(CLASSIC_DIR)/classic_integrator.c \
+				$(CLASSIC_DIR)/classic_cvode_integrator.c \
+				$(CLASSIC_DIR)/classic_ida_integrator.c \
+				$(CLASSIC_DIR)/classic_dopri_integrator.c \
+				$(CLASSIC_DIR)/classic_dassl_integrator.c \
+				$(CLASSIC_DIR)/classic_simulator.c \
+				$(CLASSIC_DIR)/classic_commands.c
+
+DASSL_SRC = $(DASSL_DIR)/daux.f \
+			$(DASSL_DIR)/ddaskr.f \
+			$(DASSL_DIR)/dlinpk.f
+
+DOPRI_SRC = $(DOPRI_DIR)/dopri5.c
+
+# Objects
+
+CLASSIC_OBJ=$(addprefix $(BUILD_DIR)/, $(CLASSIC_SRC:.c=.o))
+
+DASSL_OBJ=$(addprefix $(BUILD_DIR)/, $(DASSL_SRC:.f=.o))
+
+DOPRI_OBJ=$(addprefix $(BUILD_DIR)/, $(DOPRI_SRC:.c=.o))
+
+$(CLASSIC_OBJ): | create-folders
+
+$(DASSL_OBJ): | create-folders
+
+$(DOPRI_OBJ): | create-folders
+
+QSS_OBJS += $(CLASSIC_OBJ)
+
+# Create compile folders.
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)/$(CLASSIC_DIR)
+	@mkdir -p $(BUILD_DIR)/$(DASSL_DIR)
+	@mkdir -p $(BUILD_DIR)/$(DOPRI_DIR)

@@ -40,6 +40,7 @@
 #include <util/visitors/convert_output_range.h>
 #include <util/visitors/convert_statement.h>
 #include <util/visitors/eval_init_exp.h>
+#include <util/visitors/partial_eval_exp.h>
 #include <util/visitors/variable_lookup.h>
 
 namespace MicroModelica {
@@ -89,7 +90,6 @@ void Function::insert(string n)
   if (cp) {
     Utils::instance().addCompiledFunctions(cp->definitions());
   }
-
 }
 
 void Function::insert(AST_Equation eq) { return; }
@@ -170,10 +170,7 @@ Package::Package(string name) : _imports(), _name(name), _functions(), _packages
 
 VarSymbolTable Package::symbols() const { return VarSymbolTable(); }
 
-void Package::insert(string n)
-{
-  _imports.insert(n,n);
-}
+void Package::insert(string n) { _imports.insert(n, n); }
 
 void Package::insert(AST_Equation eq) {}
 
@@ -209,6 +206,7 @@ Model::Model()
       _annotations(),
       _called_functions(),
       _derivatives(),
+      _ordered_derivatives(),
       _algebraics(),
       _events(),
       _dependencies(),
@@ -240,6 +238,7 @@ Model::Model(string name)
       _annotations(),
       _called_functions(),
       _derivatives(),
+      _ordered_derivatives(),
       _algebraics(),
       _events(),
       _dependencies(),
@@ -379,7 +378,7 @@ void Model::addFunction(SymbolTable symbols, FunctionTable &fs)
       Utils::instance().addCompiledFunction(cf);
       _external_functions = true;
     }
-  } 
+  }
 }
 
 void Model::setCalledFunctions(FunctionTable &fs)
@@ -462,8 +461,7 @@ void Model::addEquation(AST_Equation eq, Option<Range> range)
 
 void Model::reduceEquation(AST_Equation_Equality eq, list<AST_Equation> &new_eqs)
 {
-  ReductionFunctions<AST_Equation, ConvertContRed> reduction_functions(eq->right(), 
-                                                                       Utils::instance().variable(eq->left()));
+  ReductionFunctions<AST_Equation, ConvertContRed> reduction_functions(eq->right(), Utils::instance().variable(eq->left()));
   AST_Expression new_exp = reduction_functions.apply();
   eq->setRight(new_exp);
   list<AST_Equation> code = reduction_functions.code();
@@ -471,6 +469,56 @@ void Model::reduceEquation(AST_Equation_Equality eq, list<AST_Equation> &new_eqs
   list<Variable> variables = reduction_functions.variables();
   for (Variable v : variables) {
     setVariableOffset(v, _algebraic_nbr, Variable::RealType::Algebraic);
+  }
+}
+
+EquationTable Model::BDFDerivatives()
+{
+  EquationTable bdf_equations;
+  EquationTable::iterator it;
+  for (Equation der = _derivatives.begin(it); !_derivatives.end(it); der = _derivatives.next(it)) {
+    Equation bdf_der = der;
+    bdf_der.setType(EQUATION::QSSBDFDerivative);
+    bdf_equations.insert(bdf_der.id(), bdf_der);
+  }  
+  return bdf_equations;
+}
+
+EquationDefOrder Model::getEquationDefOrder(Equation eq)
+{
+  Option<Variable> eq_var = eq.LHSVariable();
+  assert(eq_var);
+  string var_name = eq_var->name();
+  Index var_index(eq.lhs());
+  return EquationDefOrder(var_name, var_index.initValues(eq.range()));
+}
+
+void Model::orderEquations()
+{
+  EquationOrderMap equation_map;
+  OrderedEquations orderded_derivatives;
+  EquationTable::iterator eq_it;
+  for (Equation eq = _derivatives.begin(eq_it); !_derivatives.end(eq_it); eq = _derivatives.next(eq_it)) {
+    equation_map.insert(make_pair(getEquationDefOrder(eq), eq));
+  }
+
+  EquationOrderMap::iterator map_it;
+  for (map_it = equation_map.begin(); map_it != equation_map.end(); map_it++)
+  {
+    Option<Variable> var = ModelConfig::instance().lookup(map_it->first.variable());   
+    assert(var);
+    list<Equation> current_eqs = orderded_derivatives[var->offset()];
+    current_eqs.push_back(map_it->second);
+    orderded_derivatives[var->offset()] = current_eqs;
+  }
+  OrderedEquations::iterator ord_eq_it;
+  int total_ord = 1;
+  for (ord_eq_it = orderded_derivatives.begin(); ord_eq_it != orderded_derivatives.end(); ord_eq_it++)
+  {
+    list<Equation> ordered_eqs = ord_eq_it->second;
+    for (Equation ord_eq : ordered_eqs) {
+      _ordered_derivatives.insert(total_ord++, ord_eq);
+    }
   }
 }
 
@@ -485,10 +533,10 @@ void Model::setEquations()
     } else if (eq->equationType() == EQFOR) {
       AST_Equation_For eqf = eq->getAsFor();
       AST_EquationList eqs = eqf->equationList();
-      AST_EquationListIterator it;
-      foreach (it, eqs) {
-        assert(current_element(it)->equationType() == EQEQUALITY);
-        reduceEquation(current_element(it)->getAsEquality(), new_eqs);
+      AST_EquationListIterator for_eq_it;
+      foreach (for_eq_it, eqs) {
+        assert(current_element(for_eq_it)->equationType() == EQEQUALITY);
+        reduceEquation(current_element(for_eq_it)->getAsEquality(), new_eqs);
       }
     }
   }
@@ -502,12 +550,13 @@ void Model::setEquations()
       AST_Equation_For eqf = eq->getAsFor();
       Range range(eqf);
       AST_EquationList eqs = eqf->equationList();
-      AST_EquationListIterator it;
-      foreach (it, eqs) {
-        addEquation(current_element(it), range);
+      AST_EquationListIterator for_eq_it;
+      foreach (for_eq_it, eqs) {
+        addEquation(current_element(for_eq_it), range);
       }
     }
   }
+  orderEquations();
 }
 
 void Model::addVariable(int id, Option<Range> range, EQUATION::Type type, unsigned int &offset)
@@ -632,8 +681,10 @@ void Model::setOutputs()
   list<AST_Expression> ast_outputs = _annotations.output();
   list<AST_Expression>::iterator it;
   for (it = ast_outputs.begin(); it != ast_outputs.end(); it++) {
+    PartialEvalExp partial_eval;
+    AST_Expression reduced_out_exp = partial_eval.apply(*it);
     ConvertOutputRange convert;
-    AST_Expression converted = convert.apply(*it);
+    AST_Expression converted = convert.apply(reduced_out_exp);
     Option<Range> range = convert.range();
     addVariable(_output_id, range, EQUATION::Type::Output, _output_nbr);
     Equation eq(converted, range, EQUATION::Output, _output_id, _output_nbr);
@@ -673,6 +724,7 @@ void Model::setModelConfig()
   ModelConfig::instance().setAlgebraics(_algebraics);
   ModelConfig::instance().setModelAnnotations(_annotations);
   ModelConfig::instance().setDerivatives(_derivatives);
+  ModelConfig::instance().setOrderedDerivatives(_ordered_derivatives);
   ModelConfig::instance().setStateNbr(_state_nbr);
   ModelConfig::instance().setEvents(_events);
 }

@@ -44,7 +44,7 @@ INT_SRC = $(INT_DIR)/models_test.cpp
 # Objects
 UNIT_OBJ=$(addprefix $(BUILD_DIR)/unit_, $(notdir $(UNIT_SRC:.cpp=.o)))
 INT_OBJ=$(addprefix $(BUILD_DIR)/int_, $(notdir $(INT_SRC:.cpp=.o)))
-MMOC_OBJ=$(wildcard $(MMOC_OBJ_DIR)/*.o)
+MMOC_OBJ=$(wildcard $(MMOC_OBJ_DIR)/*/*.o $(MMOC_OBJ_DIR)/*/*/*.o)
 
 MAIN_OBJ=$(addprefix $(BUILD_DIR)/, $(notdir $(MAIN_SRC:.cpp=.o)))
 

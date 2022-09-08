@@ -1,0 +1,38 @@
+# The Directories, Source, Includes, Objects, Binary
+3RD_PARTY_DIR	:= $(SRC_DIR)/3rd-party
+KLU_LIB_DIR 	:= /usr/lib/$(ARCH)-linux-gnu/
+KLU_INCLUDE_DIR := /usr/include/suitesparse/
+
+# Libraries
+LIB_CVODE     := $(LIB_DIR)/libsundials_cvode.a
+LIB_IDA       := $(LIB_DIR)/libsundials_ida.a
+LIB_GSL       := $(LIB_DIR)/libgsl.a
+
+$(LIB_CVODE): | create-folders
+	tar xvzf $(3RD_PARTY_DIR)/cvode/cvode-2.9.0.tar.gz
+	mkdir -p ./cvode-2.9.0/build
+	cd ./cvode-2.9.0/build; cmake .. -DLAPACK_ENABLE=ON -DCMAKE_BUILD_TYPE=Release  -DKLU_ENABLE=ON -DKLU_INCLUDE_DIR=$(KLU_INCLUDE_DIR) -DKLU_LIBRARY_DIR=$(KLU_LIB_DIR)  -DCMAKE_INSTALL_PREFIX=/usr
+	make -C ./cvode-2.9.0/build install DESTDIR=`pwd`
+	rm -rf ./cvode-2.9.0
+	rm -rf ./examples
+
+$(LIB_GSL): | create-folders
+	tar xvzf $(3RD_PARTY_DIR)/gsl/gsl-2.5.tar.gz
+	cd ./gsl-2.5/; ./configure --prefix=$(PWD)/usr; make; make install 
+	rm -rf ./gsl-2.5
+
+$(LIB_IDA): | create-folders
+	tar xvzf $(3RD_PARTY_DIR)/ida/ida-2.9.0.tar.gz
+	mkdir -p ./ida-2.9.0/build
+	cd ./ida-2.9.0/build; cmake .. -DLAPACK_ENABLE=ON -DCMAKE_BUILD_TYPE=Release  -DKLU_ENABLE=ON -DKLU_INCLUDE_DIR=$(KLU_INCLUDE_DIR) -DKLU_LIBRARY_DIR=$(KLU_LIB_DIR) -DCMAKE_INSTALL_PREFIX=/usr
+	make -C ./ida-2.9.0/build install DESTDIR=`pwd`
+	rm -rf ./ida-2.9.0
+	rm -rf ./examples
+
+# Rules
+	
+cvode: $(LIB_CVODE)
+
+ida: $(LIB_IDA)
+
+gsl: $(LIB_GSL)

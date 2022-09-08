@@ -35,8 +35,8 @@
 #ifndef QSS_DATA_H_
 #define QSS_DATA_H_
 
-#include "../common/data.h"
-#include "../common/utils.h"
+#include <common/data.h>
+#include <common/utils.h>
 
 #define QSS_REINIT_BUFFER 10000
 

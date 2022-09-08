@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../common/utils.h"
+#include <common/utils.h>
 #include "classic_simulator.h"
 
 void CLC_initialize(SIM_simulator simulate)

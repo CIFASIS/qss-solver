@@ -56,6 +56,8 @@ class ModelConfig {
   inline bool isQss() { return !_model_annotations.isClassic(); };
   inline void setDerivatives(IR::EquationTable derivatives) { _derivatives = derivatives; };
   inline IR::EquationTable derivatives() { return _derivatives; };
+  inline void setOrderedDerivatives(IR::EquationTable ordered_derivatives) { _ordered_derivatives = ordered_derivatives; };
+  inline IR::EquationTable orderedDerivatives() { return _ordered_derivatives; };
   inline void setInitialCode(bool initial_code) { _initial_code = initial_code; };
   inline bool initialCode() { return _initial_code; };
   inline void setStateNbr(int state_nbr) { _state_nbr = state_nbr; }
@@ -96,6 +98,7 @@ class ModelConfig {
         _algebraics(),
         _dependencies(),
         _derivatives(),
+        _ordered_derivatives(),
         _events(),
         _initial_code(false),
         _state_nbr(0),
@@ -116,6 +119,7 @@ class ModelConfig {
   IR::EquationTable _algebraics;
   Deps::ModelDependencies _dependencies;
   IR::EquationTable _derivatives;
+  IR::EquationTable _ordered_derivatives;
   IR::EventTable _events;
   bool _initial_code;
   int _state_nbr;

@@ -22,9 +22,9 @@
 
 #include <stdio.h>
 
-#include "../common/data.h"
-#include "../common/utils.h"
-#include "qss_data.h"
+#include <common/data.h>
+#include <common/utils.h>
+#include <qss/qss_data.h>
 
 #define NAME_SIZE 128
 

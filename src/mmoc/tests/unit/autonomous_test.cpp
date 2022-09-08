@@ -21,6 +21,7 @@
 #include <gmock/gmock.h>
 #include <iostream>
 
+#include <ast/parser/parse.h>
 #include "util/model_config.h"
 #include "util/visitors/autonomous.h"
 #include "util/symbol_table.h"

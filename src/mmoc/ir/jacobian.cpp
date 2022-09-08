@@ -24,7 +24,7 @@
 #include <deps/builders/eq_graph_builder.h>
 #include <deps/sbg_graph/build_from_exps.h>
 #include <deps/sb_dependencies.h>
-#include <parser/parse.h>
+#include <ast/parser/parse.h>
 #include <util/model_config.h>
 #include <util/util.h>
 #include <util/symbol_table.h>
@@ -275,11 +275,12 @@ Jacobian::Jacobian() {}
 void Jacobian::build()
 {
   EquationTable algebraics = ModelConfig::instance().algebraics();
-  EquationTable derivatives = ModelConfig::instance().derivatives();
+  EquationTable derivatives = ModelConfig::instance().orderedDerivatives();
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   JacobianBuilder jac;
   IndexShiftBuilder index_shifts(algebraics);
   SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(derivatives, algebraics);
+  SDSBGraph.setOrigEquations(ModelConfig::instance().derivatives());
   jac.compute(SDSBGraph.build(), index_shifts.build());
   _jac_def = jac.def();
 }

@@ -21,7 +21,7 @@
 
 #include <stdlib.h>
 
-#include "../common/utils.h"
+#include <common/utils.h>
 
 /**
  * @brief      Initialize Jacobian vector used by CV_ODE

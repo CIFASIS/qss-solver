@@ -17,11 +17,10 @@
 
  ******************************************************************************/
 
-#ifndef CLASSIC_SIMULATOR_H_
-#define CLASSIC_SIMULATOR_H_
+#pragma once
 
-#include "../common/data.h"
-#include "../common/simulator.h"
+#include <common/data.h>
+#include <common/simulator.h>
 #include "classic_data.h"
 
 typedef struct CLC_simulator_ *CLC_simulator;
@@ -40,5 +39,3 @@ CLC_simulator CLC_Simulator();
 void CLC_freeSimulator(CLC_simulator simulator);
 
 void CLC_initSimulator(SIM_simulator simulator);
-
-#endif /* CLASSIC_SIMULATOR_H_ */
