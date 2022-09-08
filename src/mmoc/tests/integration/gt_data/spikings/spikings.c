@@ -214,21 +214,21 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		_get_v_idxs(idx);
 		_apply_usage_eq_1(_d1);
 		if ((i >= 1 && i <= 1000)) {
-			_der_v(i,0) = 0.04*_v(i,0)*_v(i,0)+5*_v(i,0)+140-_u(i,0)+_I(i);
+			_eval_dep_v(i,1) = 0.04*_v(i,0)*_v(i,0)+5*_v(i,0)+140-_u(i,0)+_I(i);
 	
 	
 		}
-		return;
+		continue;
 	}
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_2(_d1);
 		if ((i >= 1 && i <= 1000)) {
-			_der_u(i,0) = _a*(_b*_v(i,0)-_u(i,0));
+			_eval_dep_u(i,1) = _a*(_b*_v(i,0)-_u(i,0));
 	
 	
 		}
-		return;
+		continue;
 	}
 	}
 }

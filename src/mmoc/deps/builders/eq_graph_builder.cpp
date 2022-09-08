@@ -39,33 +39,40 @@ struct EqNodes {
     list<Expression> exps;
     Equation eq = getEquation(n, _equations);
     exps.push_back((type == SB::Deps::EDGE::Output) ? eq.rhs() : eq.lhs());
-    return exps;    
+    return exps;
   }
 
   protected:
   IR::EquationTable _equations;
 };
 
-template<typename S, typename T>
-EQGraphBuilder<S, T>::EQGraphBuilder(T equations, EquationTable algebraics, IR::STATEMENT::AssignTerm search) 
+template <typename S, typename T>
+EQGraphBuilder<S, T>::EQGraphBuilder(T equations, EquationTable algebraics, IR::STATEMENT::AssignTerm search)
     : EQGraphBuilder(equations, algebraics)
 {
 }
 
-template<typename S, typename T>
-EQGraphBuilder<S, T>::EQGraphBuilder(T equations, EquationTable algebraics) 
+template <typename S, typename T>
+EQGraphBuilder<S, T>::EQGraphBuilder(T equations, EquationTable algebraics)
     : _F_nodes(),
       _G_nodes(),
       _g_nodes(),
       _u_nodes(),
       _equations(equations),
+      _orig_equations(),
       _algebraics(algebraics),
       _node_names(),
       _usage()
 {
 }
 
-template<typename S, typename T>
+template <typename S, typename T>
+void EQGraphBuilder<S, T>::setOrigEquations(T orig_equations)
+{
+  _orig_equations = orig_equations;
+}
+
+template <typename S, typename T>
 SB::Deps::Graph EQGraphBuilder<S, T>::build()
 {
   LOG << endl << "Building " << S::name() << endl;
@@ -77,10 +84,10 @@ SB::Deps::Graph EQGraphBuilder<S, T>::build()
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     if (S::selectVariable(var)) {
-      SB::Deps::SetVertex state_node = createSetVertex(var, edge_dom_offset, max_dims, SB::Deps::VERTEX::Influencee);      
+      SB::Deps::SetVertex state_node = createSetVertex(var, edge_dom_offset, max_dims, SB::Deps::VERTEX::Influencee);
       _u_nodes.push_back(addVertex(state_node, graph));
     } else if (var.isAlgebraic()) {
-      SB::Deps::SetVertex alg_node = createSetVertex(var, edge_dom_offset, max_dims, SB::Deps::VERTEX::Algebraic);      
+      SB::Deps::SetVertex alg_node = createSetVertex(var, edge_dom_offset, max_dims, SB::Deps::VERTEX::Algebraic);
       _g_nodes.push_back(addVertex(alg_node, graph));
     }
   }
@@ -98,7 +105,8 @@ SB::Deps::Graph EQGraphBuilder<S, T>::build()
     }
   }
 
-  EqNodes nodes(_equations);
+
+  EqNodes nodes = (_orig_equations.empty()) ? EqNodes(_equations) : EqNodes(_orig_equations);
 
   computeOutputEdges<EqNodes>(_F_nodes, _u_nodes, graph, max_dims, _usage, edge_dom_offset, nodes);
 
@@ -110,7 +118,7 @@ SB::Deps::Graph EQGraphBuilder<S, T>::build()
 
   SB::Deps::GraphPrinter printer(graph);
 
-  printer.printGraph(Logger::instance().getLogsPath()+ S::name() + ".dot");
+  printer.printGraph(Logger::instance().getLogsPath() + S::name() + ".dot");
 
   return graph;
 }

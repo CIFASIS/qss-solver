@@ -79,7 +79,7 @@ void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SB::Deps::V
 {
   stringstream code;
   SB::Deps::LMapExp map = var_dep.nMap();  
-  Range range(var_dep.variables(), var_dep.varOffset());  
+  Range range(var_dep.variables(), var_dep.varOffset());
   vector<string> exps = map.apply(range.getDimensionVars());
   Expression i_exp = Expression::generate(var_dep.var().name(), exps);
   Index x_ind(i_exp);
@@ -192,11 +192,12 @@ bool JacobianMatrix::empty() { return _jac_matrix_def.alloc.empty(); }
 void JacobianMatrix::build()
 {
   EquationTable algebraics = ModelConfig::instance().algebraics();
-  EquationTable derivatives = ModelConfig::instance().derivatives();
+  EquationTable derivatives = ModelConfig::instance().orderedDerivatives();
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   JacobianMatrixBuilder jac_matrix;
   IndexShiftBuilder index_shifts(algebraics);
   SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(derivatives, algebraics);
+  SDSBGraph.setOrigEquations(ModelConfig::instance().derivatives());
   jac_matrix.compute(SDSBGraph.build(), index_shifts.build());
   _jac_matrix_def = jac_matrix.def();
 }

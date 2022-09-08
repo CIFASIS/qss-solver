@@ -531,7 +531,7 @@ void QSSModelInstance::bdfDefinition()
   _writer->write("int __bdf_it;", WRITER::Model_Bdf);
   _writer->write("for(__bdf_it = 0; __bdf_it < nBDF; __bdf_it++) {", WRITER::Model_Bdf);
   _writer->write("idx = BDFMap[__bdf_it];", WRITER::Model_Bdf);
-  generateDef<QSSModelGen>(_model.derivatives(), WRITER::Model_Bdf, WRITER::Model_Bdf_Simple, WRITER::Model_Bdf_Generic);
+  generateDef<QSSModelGen>(_model.BDFDerivatives(), WRITER::Model_Bdf, WRITER::Model_Bdf_Simple, WRITER::Model_Bdf_Generic);
   _writer->write("}", WRITER::Model_Bdf_Generic);
   ModelConfig::instance().setSymDiff(sym_diff);
 }

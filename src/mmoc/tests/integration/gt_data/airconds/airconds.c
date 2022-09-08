@@ -212,11 +212,11 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		_get_th_idxs(idx);
 		_apply_usage_eq_1(_d1);
 		if ((i >= 1 && i <= 20000)) {
-			_der_th(i,0) = (_THA/_RES(i)-_POT(i)*_on(i)-_th(i,0)/_RES(i)+_noise(i)/_RES(i))/_CAP(i);
+			_eval_dep_th(i,1) = (_THA/_RES(i)-_POT(i)*_on(i)-_th(i,0)/_RES(i)+_noise(i)/_RES(i))/_CAP(i);
 	
 	
 		}
-		return;
+		continue;
 	}
 	}
 }

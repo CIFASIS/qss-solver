@@ -275,11 +275,12 @@ Jacobian::Jacobian() {}
 void Jacobian::build()
 {
   EquationTable algebraics = ModelConfig::instance().algebraics();
-  EquationTable derivatives = ModelConfig::instance().derivatives();
+  EquationTable derivatives = ModelConfig::instance().orderedDerivatives();
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   JacobianBuilder jac;
   IndexShiftBuilder index_shifts(algebraics);
   SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(derivatives, algebraics);
+  SDSBGraph.setOrigEquations(ModelConfig::instance().derivatives());
   jac.compute(SDSBGraph.build(), index_shifts.build());
   _jac_def = jac.def();
 }

@@ -328,32 +328,32 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		case _eval_uC1(0): {
 			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
 	
-			_der_uC1(0) = (_iD(0)-_iL(0))/_C1;
+			_eval_dep_uC1(1) = (_iD(0)-_iL(0))/_C1;
 	
 	
-			return;
+			continue;
 		}
 		case _eval_iL1(0): {
 			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
 	
-			_der_iL1(0) = (_U-_uC1(0)-_iD(0)*_Rd)/_L1;
+			_eval_dep_iL1(1) = (_U-_uC1(0)-_iD(0)*_Rd)/_L1;
 	
 	
-			return;
+			continue;
 		}
 		case _eval_uC(0): {
-			_der_uC(0) = (_iL(0)-_uC(0)/_R)/_C;
+			_eval_dep_uC(1) = (_iL(0)-_uC(0)/_R)/_C;
 	
 	
-			return;
+			continue;
 		}
 		case _eval_iL(0): {
 			_iD(0) = (_Rs*(_iL(0)+_iL1(0))-_uC1(0))/(_Rd+_Rs);
 	
-			_der_iL(0) = (-_uC(0)-_iD(0)*_Rd)/_L;
+			_eval_dep_iL(1) = (-_uC(0)-_iD(0)*_Rd)/_L;
 	
 	
-			return;
+			continue;
 		}
 	}
 	}

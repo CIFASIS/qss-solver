@@ -229,6 +229,9 @@ string FunctionPrinter::endExpression(Option<Range> range, FUNCTION_PRINTER::Ret
     }
     break;
   }
+  case FUNCTION_PRINTER::Continue: 
+    buffer << "continue;" << endl;
+    break;
   }
   if (!range) {
     buffer << TAB;

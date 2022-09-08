@@ -213,28 +213,28 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 	idx = BDFMap[__bdf_it];
 	switch(idx) {
 		case _eval_y(0): {
-			_der_y(0) = _vy(0);
+			_eval_dep_y(1) = _vy(0);
 	
 	
-			return;
+			continue;
 		}
 		case _eval_vy(0): {
-			_der_vy(0) = -9.8-0.1*_vy(0)-_contact*((_y(0)-_stair)*1e+06+_vy(0)*30);
+			_eval_dep_vy(1) = -9.8-0.1*_vy(0)-_contact*((_y(0)-_stair)*1e+06+_vy(0)*30);
 	
 	
-			return;
+			continue;
 		}
 		case _eval_x(0): {
-			_der_x(0) = _vx(0);
+			_eval_dep_x(1) = _vx(0);
 	
 	
-			return;
+			continue;
 		}
 		case _eval_vx(0): {
-			_der_vx(0) = -0.1*_vx(0);
+			_eval_dep_vx(1) = -0.1*_vx(0);
 	
 	
-			return;
+			continue;
 		}
 	}
 	}

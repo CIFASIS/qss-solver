@@ -106,7 +106,7 @@ class CompiledPackage {
 typedef ModelTable<std::string, CompiledPackage> CompiledPackageTable;
 
 namespace FUNCTION_PRINTER {
-typedef enum { Return, Break } ReturnStatementType;
+typedef enum { Return, Break, Continue } ReturnStatementType;
 }
 
 class FunctionPrinter {
