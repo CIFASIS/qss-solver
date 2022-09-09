@@ -25,14 +25,8 @@ ModelInfo::ModelInfo(QString fullname)
 {
   setFullname(fullname);
   _dirty = false;
-  if (name().endsWith(".log")) {
-    _init = false;
-  } else {
-    _init = true;
-  }
+  _init = true;
 }
-
-ModelInfo::~ModelInfo() { return; }
 
 QString ModelInfo::baseName()
 {
@@ -40,7 +34,7 @@ QString ModelInfo::baseName()
   return fi.baseName();
 }
 
-QString ModelInfo::name()
+QString ModelInfo::name() const
 {
   QFileInfo fi(_fullname);
   return fi.fileName();
@@ -51,3 +45,6 @@ QString ModelInfo::path()
   QFileInfo fi(_fullname);
   return fi.absolutePath();
 }
+
+bool  ModelInfo::isLogFile() const { return name().endsWith(".log"); } 
+

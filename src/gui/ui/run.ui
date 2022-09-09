@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>660</width>
-    <height>606</height>
+    <height>723</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -390,13 +390,6 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="3">
-       <widget class="QLineEdit" name="_lps">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
       <item row="6" column="3">
        <widget class="QComboBox" name="_partitionMethod">
         <property name="enabled">
@@ -653,6 +646,16 @@
       <item row="13" column="1">
        <widget class="QLineEdit" name="_BDFMaxStep"/>
       </item>
+      <item row="5" column="3">
+       <widget class="QSpinBox" name="_lps">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>1024</number>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -689,7 +692,19 @@
   <tabstop>_scheduler</tabstop>
   <tabstop>_partitionMethod</tabstop>
   <tabstop>_dtSynch</tabstop>
-  <tabstop>_runButtons</tabstop>
+  <tabstop>_dt</tabstop>
+  <tabstop>_scotchSettings</tabstop>
+  <tabstop>_metisSettings</tabstop>
+  <tabstop>_patohSettings</tabstop>
+  <tabstop>_semiStaticChk</tabstop>
+  <tabstop>_jacobian</tabstop>
+  <tabstop>_imbalance</tabstop>
+  <tabstop>_reorderPartitionCbx</tabstop>
+  <tabstop>_generateArchCbx</tabstop>
+  <tabstop>_debugGraphCbx</tabstop>
+  <tabstop>_BDFPart</tabstop>
+  <tabstop>_BDFMaxStep</tabstop>
+  <tabstop>_BDFPartitionDepth</tabstop>
  </tabstops>
  <resources/>
  <connections>
