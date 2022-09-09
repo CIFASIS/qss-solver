@@ -73,7 +73,10 @@ AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
             if (used_var) {
               used_var_name = used_var->name();
             }
-            string var = _range.iterator(used_var_name, i, _range_idxs);
+            string var = used_var_name;
+            if (!_range.isDimensionVar(used_var_name)) {
+              var = _range.iterator(used_var_name, i, _range_idxs);
+            } 
             ReplaceVar rv(var);
             l = AST_ListAppend(l, rv.apply(current_element(it)));
           } else {
