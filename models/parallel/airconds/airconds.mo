@@ -1,6 +1,6 @@
 model airconds
   import math;
-  constant Integer N = 64000;
+  constant Integer N = 4000;
   parameter Real CAP[N], RES[N], POT[N], THA = 32,pmax=0;
   Real th[N];
   discrete Real on[N];
@@ -63,11 +63,12 @@ model airconds
 		MMO_Solver=QSS2,
 		MMO_Period={3000/5000},
 		MMO_Parallel=true,
-		MMO_PartitionMethod=Manual,
-		MMO_LPS=62,
+		MMO_PartitionMethod=Metis,
+		MMO_LPS=4,
 		MMO_DT_Synch=SD_DT_Fixed,
 		MMO_DT_Min=3000,
 		MMO_Output={th[1]},
+		MMO_OutputType=CI_Sampled,
 		Jacobian=Dense,
 		MMO_BDF_PDepth=1,
 		MMO_BDF_Max_Step=0,
