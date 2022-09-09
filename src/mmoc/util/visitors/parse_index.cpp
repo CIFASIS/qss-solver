@@ -19,6 +19,7 @@
 
 #include "parse_index.h"
 
+#include <util/model_config.h>
 #include "../error.h"
 #include "../util.h"
 #include "partial_eval_exp.h"
@@ -40,7 +41,23 @@ AST_Expression ParseIndex::foldTraverseElement(AST_Expression exp)
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
-    _variable = cr->name();
+    Option<Variable> var = ModelConfig::instance().lookup(cr->name());
+    if (!var) {
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "parse_index.cpp:45 %s", cr->name().c_str());
+      break;
+    }
+    if (var->isParameter() && cr->hasIndexes()) {
+      AST_ExpressionList idxs = cr->firstIndex();
+      AST_ExpressionListIterator it;
+      foreach (it, idxs) {
+        apply(current_element(it));
+        if (!_variable.empty()) {
+          break;
+        }
+      }
+    } else {
+      _variable = cr->name();
+    }
     break;
   }
   case EXPOUTPUT: {
