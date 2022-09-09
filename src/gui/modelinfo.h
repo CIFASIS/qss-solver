@@ -17,75 +17,27 @@
 
  ******************************************************************************/
 
-#ifndef MODELINFO_H_
-#define MODELINFO_H_
+#pragma once
 
 #include <QtGui>
 
-/**
- *
- */
 class ModelInfo {
   public:
-  /**
-   *
-   * @param fullname
-   */
   ModelInfo(QString fullname = QString());
-  /**
-   *
-   */
-  ~ModelInfo();
-  /**
-   *
-   * @return
-   */
+  ~ModelInfo() = default;
   QString baseName();
-  /**
-   *
-   * @return
-   */
   bool dirty() { return _dirty; };
-  /**
-   *
-   * @return
-   */
   QString fullname() { return _fullname; };
-  /**
-   *
-   * @return
-   */
   bool init() { return _init; };
-  /**
-   *
-   * @return
-   */
-  QString name();
-  /**
-   *
-   * @return
-   */
+  QString name() const;
   QString path();
-  /**
-   *
-   * @param d
-   */
   void setDirty(bool d) { _dirty = d; };
-  /**
-   *
-   * @param fn
-   */
   void setFullname(QString fn) { _fullname = fn; };
-  /**
-   *
-   * @param d
-   */
   void setInit(bool d) { _init = d; };
+  bool isLogFile() const;
 
   private:
   bool _dirty;
   QString _fullname;
   bool _init;
 };
-
-#endif /* MODELINFO_H_ */
