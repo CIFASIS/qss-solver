@@ -7,16 +7,19 @@ model airconds_cont
   end getSection;
 
   import math;
-  constant Integer N = 248000;
-  constant Integer SECTIONS = 248;
+  constant Integer N = 4000;
+  constant Integer SECTIONS = 4;
   parameter Real CAP[N], RES[N], POT[N], THA = 32,pmax=0,Kp=1,Ki=1,tref=20;
   parameter Integer sections[N];
+  parameter Integer sections_init[SECTIONS];
+  parameter Integer sections_end[SECTIONS];
   Real th[N];
   Real ierr;
   discrete Real ptotals;
   discrete Real partTotal[SECTIONS];
   discrete Real sendPartTotal[SECTIONS];
   Real ptotal;
+    
   discrete Real on[N];
   discrete Real dtref,pref(start=0.5);
   discrete Real nextSample(start=1);
@@ -28,15 +31,21 @@ model airconds_cont
 
   initial algorithm
     for i in 1:N loop
-      th[i] := rand(4)+ 18;
-      CAP[i] := rand(100)+ 550;
-      RES[i] := rand(0.4)+ 1.8;
-      POT[i] := rand(0.2)+ 13;
+      th[i] := random(4)+ 18;
+      CAP[i] := random(100)+ 550;
+      RES[i] := random(0.4)+ 1.8;
+      POT[i] := random(0.2)+ 13;
       pmax:=pmax+POT[i];
       noise[i] := 2*sin(i)^2;
-      sampleNoise[i] := rand(2);
+      sampleNoise[i] := random(2);
       sections[i] := getSection(i);
     end for;
+
+		   for i in 1:SECTIONS loop
+												sections_init[i] := (i-1)*N/SECTIONS;
+       sections_end[i] := i*N/SECTIONS;
+    end for;
+
 
     for i in 1:N loop
       if th[i] - tref   - 0.5> 0 then
@@ -50,7 +59,7 @@ model airconds_cont
       der(th[i]) = (THA/RES[i]-POT[i]*on[i]-th[i]/RES[i]+noise[i]/RES[i])/CAP[i];
     end for;
     der(ierr) = pref-ptotals/pmax;
-    der(ptotal) = 0;
+   der(ptotal) = 0;
 
   algorithm
     for i in 1:SECTIONS loop
@@ -58,8 +67,10 @@ model airconds_cont
         partSample[i] := partSample[i]+1;
         update[i] := 1;
         sendPartTotal[i] := partTotal[i];
+														reinit(ptotal, ptotal + sendPartTotal[i]);        
         partTotal[i] := 0;
-      end when;
+      end when  annotation(MMO_Event_Id="Ev_1",
+																																																			  																																MMO_HH={(Ev_6[_d2],[1:SECTIONS, sections_init[i]:sections_end[i]])});
     end for;
 
     for i in 1:SECTIONS loop
@@ -80,7 +91,7 @@ model airconds_cont
       nextSample := nextSample+1;
       ptotals := ptotal;
       dtref := Kp*(ptotals/pmax-pref)-Ki*ierr;
-    end when;
+	end when;
 
     for i in 1:N loop
       when th[i] - tref -dtref + on[i] - 0.5 > 0 then
@@ -89,7 +100,10 @@ model airconds_cont
       elsewhen th[i] - tref -dtref + on[i] - 0.5 < 0 then
         on[i] := 0;
         partTotal[sections[i]]:= partTotal[sections[i]] - POT[i];
-       end when;
+       end when annotation(MMO_Event_Id="Ev_6",
+                                                  MMO_LHS_DSC={partTotal[sections[i]]},
+																																																																																						MMO_HH={Ev_1[sections[i]]}	);
+		
     end for;
 
     for i in 1:N loop
@@ -106,12 +120,11 @@ model airconds_cont
 		MMO_Solver=QSS3,
 		MMO_Period={3000/5000},
 		MMO_Parallel=true,
-		MMO_PartitionMethod=Manual,
+		MMO_PartitionMethod=Scotch,
 		MMO_LPS=4,
 		MMO_DT_Synch=SD_DT_Fixed,
-		MMO_DT_Min=1,
-		MMO_Output={ptotal},
-		MMO_OutputType=CI_Sampled,
+		MMO_DT_Min=10,
+		MMO_Output={ptotals},
 		Jacobian=Dense,
 		MMO_BDF_PDepth=1,
 		MMO_BDF_Max_Step=0,

@@ -20,11 +20,6 @@
 #include "qss_partition.h"
 
 #include <stddef.h>
-
-#include <common/data.h>
-
-#ifdef __linux__
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,9 +27,10 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#include "../common/scotch.h"
-#include "../common/metis.h"
-#include "../common/patoh.h"
+#include <common/data.h>
+#include <common/metis.h>
+#include <common/patoh.h>
+#include <common/scotch.h>
 #include <common/utils.h>
 #include <qss/qss_graph.h>
 
@@ -435,7 +431,7 @@ void PRT_createPartitions(PRT_partition partition, QSS_data data, char *name)
   grp_t *xadj = NULL, *adjncy = NULL, *vwgt = NULL, *ewgt = NULL;
   grp_t i, edges;
   SD_PartitionMethod pm = data->params->pm;
-  if (GRP_readGraph(name, data, &xadj, &adjncy, &edges, 1, &vwgt, &ewgt, 0, NULL) == GRP_ReadError) {
+  if (GRP_createGraph(name, data, &xadj, &adjncy, &edges, &vwgt, &ewgt, 0, NULL) == GRP_ReadError) {
     fprintf(stderr, "Could not read generated graph files.");
     abort();
   }
@@ -638,11 +634,3 @@ void PRT_freePartition(PRT_partition partition)
   free(partition->values);
   free(partition);
 }
-
-#else
-
-PRT_partition PRT_Partition(QSS_data data, char *name) { return NULL; }
-
-void PRT_freePartition(PRT_partition partition) { return; }
-
-#endif

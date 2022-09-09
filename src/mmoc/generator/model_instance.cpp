@@ -599,7 +599,7 @@ void QSSModelInstance::initializeDataStructures()
   initializeMatrix(deps.RHSSt(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
   if (PARALLEL) {
     initializeMatrix(deps.DH(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
-    initializeMatrix(deps.SH(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
+    initializeMatrix(deps.SH(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
     initializeMatrix(deps.HH(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
   }
   configEvents();

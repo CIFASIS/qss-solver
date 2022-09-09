@@ -25,9 +25,10 @@
 
 typedef long int grp_t;
 
-typedef enum { GRP_ReadError, GRP_Success } GRP_Status;
+typedef enum { GRP_Success = 0x00, GRP_ReadError = 0x01, GRP_WrongFile = 0x02, GRP_WriteError = 0x03 } GRP_Status;
 
-int GRP_readGraph(char *name, QSS_data data, grp_t **xadj, grp_t **adjncy, grp_t *edges, int rwgt, grp_t **vwgt, grp_t **ewgt, int rhe,
-                  grp_t **hevars);
+GRP_Status GRP_readGraph(char *name, QSS_data data, grp_t **xadj, grp_t **adjncy, grp_t *edges, grp_t **vwgt, grp_t **ewgt, int rhe,
+                         grp_t **hevars);
 
-int GRP_createGraph(QSS_data data, grp_t **xadj, grp_t **adjncy, int rwgt, FILE *wFile, grp_t **ewgt, int rhe, grp_t **hevars);
+GRP_Status GRP_createGraph(char *name, QSS_data data, grp_t **xadj, grp_t **adjncy, grp_t *edges, grp_t **vwgt, grp_t **ewgt, int rhe,
+                           grp_t **hevars);
