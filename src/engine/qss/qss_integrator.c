@@ -83,7 +83,7 @@ void QSS_generateWeights(QSS_simulator simulator)
       grp_t maxVSteps = 0;
       grp_t maxESteps = 0;
       simulator->data->params->pm = SD_Metis;
-      if (GRP_readGraph(simulator->output->name, simulator->data, &xadj, &adjncy, &edges, 1, &vwgt, &ewgt, 0, NULL) == GRP_ReadError) {
+      if (GRP_readGraph(simulator->output->name, simulator->data, &xadj, &adjncy, &edges, &vwgt, &ewgt, 0, NULL) == GRP_ReadError) {
         fprintf(stderr, "Could not read generated graph files.\n");
         abort();
       }
@@ -133,7 +133,7 @@ void QSS_generateWeights(QSS_simulator simulator)
       vwgt = NULL;
       ewgt = NULL;
       simulator->data->params->pm = SD_Patoh;
-      if (GRP_readGraph(simulator->output->name, simulator->data, &xadj, &adjncy, &edges, 1, &vwgt, &ewgt, 1, &hevars) == GRP_ReadError) {
+      if (GRP_readGraph(simulator->output->name, simulator->data, &xadj, &adjncy, &edges, &vwgt, &ewgt, 1, &hevars) == GRP_ReadError) {
         fprintf(stderr, "Could not read generated graph files.\n");
         abort();
       }

@@ -41,6 +41,8 @@ SD_Solver _getSolver(const char *sol)
   } else if (!strcmp(sol, "LIQSS_BDF")) {
     return SD_LIQSS_BDF;
   } else if (!strcmp(sol, "QSS3")) {
+    return SD_QSS3;
+  } else if (!strcmp(sol, "LIQSS3")) {
     return SD_LIQSS3;
   } else if (!strcmp(sol, "QSS4")) {
     return SD_QSS4;
