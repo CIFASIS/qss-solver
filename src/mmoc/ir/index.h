@@ -175,6 +175,8 @@ class Range {
 
   bool hasMergedDims() const;
 
+  bool isDimensionVar(std::string var);
+
   protected:
   void generate(Util::Variable var);
   void generate(AST_Expression exp);
@@ -183,7 +185,6 @@ class Range {
   bool isVariable(std::string var);
   bool testExpression(AST_Expression exp);
   Expression getExp(std::vector<Expression> exps, size_t pos);
-  bool isDimensionVar(std::string var);
 
   private:
   void setRangeDefinition(AST_ForIndexList fil);
