@@ -123,18 +123,18 @@ class ModelEditor : public QDialog, public Ui::ModelEditorForm {
   inline void setBDFMaxStep(QString str) { _BDFMaxStep = str; };
   inline QString randomSeed() { return getAnnotations("MMO_RandomSeed"); };
 
-  protected:
-  void reject(){};
-  public slots:
   void keyReleaseEvent(QKeyEvent *event);
   void save(void);
   void saveAll(void);
   void saveAs(QString name = QString());
 
-  private slots:
-  void on__model_editor_tab_currentChanged(int index);
-  void on__model_editor_tab_tabCloseRequested(int index);
-  void on__textEditor_textChanged(bool changed);
+
+  protected:
+  void reject(){};
+
+  void currentChanged(int index);
+  void tabCloseRequested(int index);
+  void textChanged();
 
   signals:
   void clean(int);

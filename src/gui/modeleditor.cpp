@@ -98,8 +98,8 @@ ModelEditor::ModelEditor(QWidget *parent, QString name)
   _model_editor_tab->setTabsClosable(true);
   _models = new QList<ModelInfo>();
   _utils = new Utils();
-  connect(_model_editor_tab, SIGNAL(tabCloseRequested(int)), this, SLOT(on__model_editor_tab_tabCloseRequested(int)));
-  connect(_model_editor_tab, SIGNAL(currentChanged(int)), this, SLOT(on__model_editor_tab_currentChanged(int)));
+  connect(_model_editor_tab, &QTabWidget::tabCloseRequested, this, &ModelEditor::tabCloseRequested);
+  connect(_model_editor_tab, &QTabWidget::currentChanged, this, &ModelEditor::currentChanged);
   _model_editor_hl->addWidget(_model_editor_tab);
   editModel(name);
 }
@@ -121,7 +121,8 @@ void ModelEditor::editModel(QString name)
   QFile file(name);
   QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini", QSettings::IniFormat);
   int _tab = settings.value("Editor/tab", "Value not found in file qss-solver.ini").toInt();
-  _textEditor->setTabStopWidth(_tab);
+  int font_width = QFontMetrics(_textEditor->currentCharFormat().font()).averageCharWidth();
+  _textEditor->setTabStopDistance(_tab);
   if (!file.fileName().isEmpty()) {
     QFileInfo fi(name);
     _mname = fi.fileName();
@@ -134,13 +135,16 @@ void ModelEditor::editModel(QString name)
     }
   }
   QTextDocument *td = new QTextDocument(_textEditor->toPlainText(), this);
+  
+  QPlainTextDocumentLayout *layout = new QPlainTextDocumentLayout(td);
+  td->setDocumentLayout(layout);
   _textEditor->setDocument(td);
   if (name.endsWith(QString(".log"))) {
     _hl = new MmoHighlighter(_textEditor->document(), MmoHighlighter::MMO_LOG);
   } else {
     _hl = new MmoHighlighter(_textEditor->document(), MmoHighlighter::MMO_MODEL);
   }
-  connect(_textEditor, SIGNAL(modificationChanged(bool)), this, SLOT(on__textEditor_textChanged(bool)));
+  connect(_textEditor, &CodeEditor::textChanged, this, &ModelEditor::textChanged);
   setWindowTitle(_mname);
   _models->append(ModelInfo(name));
   _model_editor_tab->setCurrentIndex(_model_editor_tab->addTab(_textEditor, _mname));
@@ -207,15 +211,18 @@ QString ModelEditor::fullFileName(int idx)
   return _models->value(idx).fullname();
 }
 
-void ModelEditor::on__textEditor_textChanged(bool changed)
+void ModelEditor::textChanged()
 {
-  if (changed == false) {
+
+  int idx = _model_editor_tab->currentIndex();
+  ModelInfo mi = _models->value(idx);
+  if (mi.init()) {
+    mi.setInit(false);
+    _models->replace(idx, mi);
     return;
   }
-  int idx = _model_editor_tab->currentIndex();
   if (!_models->value(idx).name().endsWith(".log")) {
     if (!_models->value(idx).dirty()) {
-      ModelInfo mi = _models->value(idx);
       mi.setDirty(true);
       _models->replace(idx, mi);
       _model_editor_tab->setTabText(idx, _model_editor_tab->tabText(idx) + QString("*"));
@@ -223,7 +230,7 @@ void ModelEditor::on__textEditor_textChanged(bool changed)
   }
 }
 
-void ModelEditor::on__model_editor_tab_currentChanged(int index)
+void ModelEditor::currentChanged(int index)
 {
   if (index < 0) {
     return;
@@ -231,13 +238,13 @@ void ModelEditor::on__model_editor_tab_currentChanged(int index)
   setWindowTitle(_model_editor_tab->tabText(index));
 }
 
-void ModelEditor::on__model_editor_tab_tabCloseRequested(int index)
+void ModelEditor::tabCloseRequested(int index)
 {
   if (index < 0) {
     return;
   }
   ModelInfo mi = _models->value(index);
-  if (!mi.init()) {
+  if (!mi.isLogFile()) {
     if (mi.dirty()) {
       QMessageBox::StandardButton res = QMessageBox::question(this, "Save", QString("Save changes to file ") + mi.name() + QString("?"),
                                                               QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
@@ -248,7 +255,6 @@ void ModelEditor::on__model_editor_tab_tabCloseRequested(int index)
       }
     }
   } else {
-    mi.setInit(false);
     _models->replace(index, mi);
   }
   remove(index);
@@ -257,7 +263,7 @@ void ModelEditor::on__model_editor_tab_tabCloseRequested(int index)
 void ModelEditor::closeFiles()
 {
   foreach (ModelInfo mi, *_models) {
-    on__model_editor_tab_tabCloseRequested(0);
+    tabCloseRequested(0);
   }
 }
 
