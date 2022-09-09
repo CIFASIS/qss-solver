@@ -521,7 +521,26 @@
                     "ignoreFailures": true
                 }
             ]
-        }                   
+        },                   
+
+        // Airconds Cont
+        {
+            "name": "Airconds Cont model",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/airconds_cont ", "/home/joaquin/work/qss-solver/models/parallel/airconds_cont/airconds_cont.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
 
     ]
 }
