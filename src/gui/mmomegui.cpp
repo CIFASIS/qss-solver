@@ -189,8 +189,8 @@ void MmomeGui::editModel(QString name)
     mdiArea->addSubWindow(sw);
     connect(Editor::instance(), SIGNAL(done(QString, QString)), this, SLOT(done(QString, QString)));
     connect(Editor::instance(), SIGNAL(clean(int)), this, SLOT(cleanBuildDir(int)));
-    connect(action_Save, SIGNAL(triggered(void)), Editor::instance(), SLOT(save(void)));
-    connect(actionSa_ve_All, SIGNAL(triggered(void)), Editor::instance(), SLOT(saveAll(void)));
+    connect(action_Save, &QAction::triggered, this, []() { Editor::instance()->save(); });
+    connect(actionSa_ve_All, &QAction::triggered, Editor::instance(), &ModelEditor::saveAll);
     Editor::instance()->setWindowState(Qt::WindowMaximized);
     Editor::instance()->show();
   }
