@@ -261,7 +261,6 @@ GRP_Status GRP_createGraph(char *name, QSS_data data, grp_t **xadj, grp_t **adjn
         pins_size++;
       }
     }
-    printf("PRE %d\n", edges_count);
     *xadj = (grp_t *)checkedMalloc((edges_count + 1) * sizeof(grp_t));
     *adjncy = (grp_t *)checkedMalloc(pins_size * sizeof(grp_t));
     if (rhe) {
@@ -305,7 +304,6 @@ GRP_Status GRP_createGraph(char *name, QSS_data data, grp_t **xadj, grp_t **adjn
       }
       vwgt[0][i] = GRP_nodeWeight(i, data, node_inputs);
     }
-    printf("POS %d\n", edges_count);
     edges[0] = edges_count;
     freeVMatrix(hMatrix, nvtxs);
     GRP_Status saved_files = GRP_generateHGraphFile(name, xadj, adjncy, edges_count, pins_size, rhe, hevars);
