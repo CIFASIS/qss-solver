@@ -514,7 +514,6 @@ void TO_recomputeDerivatives(FRW_framework f, QSS_model simModel, QSS_data simDa
         x[cf0 + 2] = (tmp4[k] - tmp2[k]) / (f->state->delta * 4);
         x[cf0 + 3] = (tmp4[k] - 2 * x[cf0 + 1] + tmp2[k]) / (f->state->delta * f->state->delta * 6);
       }
-      //     printf("Variable %d influeciada %d %g %g %g\n",index,j,x[j*4+1],x[j*4+2],x[j*4+3]);
 #ifdef QSS_PARALLEL
     }
 #endif
