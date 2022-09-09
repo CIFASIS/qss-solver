@@ -38,7 +38,7 @@ class UserDefMatrix {
   std::vector<std::string> accessVector();
   
   protected:
-  string component(MATRIX::Method method) const;
+  string component(MATRIX::Method method, MATRIX::Mode mode) const;
   void printMatrix(MATRIX::Method method, MATRIX::Mode mode);
   AST_Expression transformExp(AST_Expression exp);
 

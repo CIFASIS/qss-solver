@@ -43,14 +43,15 @@ void UserDefMatrix<Config, N>::compute()
 }  
 
 template <typename Config, typename N>
-string UserDefMatrix<Config, N>::component(MATRIX::Method method) const
+string UserDefMatrix<Config, N>::component(MATRIX::Method method, MATRIX::Mode mode) const
 {
   stringstream buffer;
   string component = _matrix_config.component[0];
+  bool use_component = _matrix_config.use_component[mode];
   if (method == MATRIX::Init) {
     component = _matrix_config.component[1];
   }
-  if (!component.empty()) {
+  if (!component.empty() && use_component) {
     buffer << "." << component;
   }
   return buffer.str();
@@ -77,7 +78,7 @@ AST_Expression UserDefMatrix<Config, N>::transformExp(AST_Expression exp)
     }
   }
   if (event_var_name.empty()) {
-    Error::instance().add(exp->lineNum(), EM_IR | EM_WRONG_EXP, ER_Fatal, "Wrong Event ID.");
+    Error::instance().add(exp->lineNum(), EM_IR | EM_WRONG_EXP, ER_Fatal, "Wrong Event ID %s.", comp_ref_name);
   }
   if (comp_ref->hasIndexes()) {
     AST_ExpressionList indexes = comp_ref->firstIndex();
@@ -118,9 +119,10 @@ void UserDefMatrix<Config, N>::printMatrix(MATRIX::Method method, MATRIX::Mode m
         }
         bool first_exp = true;
         ConvertOutputRange convert;
+        AST_Expression matrix_exp = nullptr;
         foreach (matrix_entry_it, matrix_entry) {
           if (first_exp) {
-            ife_idx = Index(Expression(transformExp(current_element(matrix_entry_it))));
+            matrix_exp = current_element(matrix_entry_it);
             first_exp = false;
           } else {
             assert(current_element(matrix_entry_it)->expressionType() == EXPBRACKET);
@@ -133,6 +135,8 @@ void UserDefMatrix<Config, N>::printMatrix(MATRIX::Method method, MATRIX::Mode m
             range = convert.range();
           }
         }
+        ife_idx = Index(Expression(transformExp(matrix_exp)));
+        ife_idx = ife_idx.replace(range);
       } else if(exp->expressionType() == EXPCOMPREF) {
         AST_Expression_ComponentReference comp_ref = exp->getAsComponentReference();
         ife_idx = Index(Expression(transformExp(comp_ref)));
@@ -146,6 +150,7 @@ void UserDefMatrix<Config, N>::printMatrix(MATRIX::Method method, MATRIX::Mode m
       ifr_idx = Index(_matrix_config.selector.exp(node));
       ifr_idx = ifr_idx.replace();
       ife_idx = ife_idx.replace();
+
       if (range) {
         const bool GENERATE_RANGE_INDEX = false;
         const bool C_INDEX = false;
@@ -154,9 +159,9 @@ void UserDefMatrix<Config, N>::printMatrix(MATRIX::Method method, MATRIX::Mode m
         code << range->block();
       }
       if (method == MATRIX::Alloc) {
-        code << _matrix_config.container << matrix << "[" << ifr_idx << "]" << component(MATRIX::Alloc) << "++;" << endl;
+        code << _matrix_config.container << matrix << "[" << ifr_idx << "]" << component(MATRIX::Alloc, mode) << "++;" << endl;
       } else {
-        code << _matrix_config.container << matrix << "[" << ifr_idx << "]" << component(MATRIX::Init) << "[" << access << "[" << ifr_idx
+        code << _matrix_config.container << matrix << "[" << ifr_idx << "]" << component(MATRIX::Init, mode) << "[" << access << "[" << ifr_idx
                 << "]++] = " << ife_idx << ";" << endl;
       }
       if (range) {
