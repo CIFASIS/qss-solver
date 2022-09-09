@@ -28,7 +28,6 @@ RunDlg::RunDlg(QWidget *parent) : QDialog(parent)
   setupUi(this);
   _utils = new Utils();
   _validate = new QDoubleValidator();
-  _validateInt = new QIntValidator();
   _startTime->setValidator(_validate);
   _stopTime->setValidator(_validate);
   _tolerance->setValidator(_validate);
@@ -37,16 +36,9 @@ RunDlg::RunDlg(QWidget *parent) : QDialog(parent)
   _minStep->setValidator(_validate);
   _derDelta->setValidator(_validate);
   _zcHyst->setValidator(_validate);
-  _lps->setValidator(_validateInt);
   _extendedFrame->setVisible(false);
   _debugChk->setCheckState(Qt::Unchecked);
-#if defined(_WIN32) || defined(__MACH__)
-  _parallel->setEnabled(false);
-  _lps->setEnabled(false);
-  _partitionMethod->setEnabled(false);
-  _dt->setEnabled(false);
-  _dtSynch->setEnabled(false);
-#endif
+  on__parallel_currentIndexChanged(_parallel->currentIndex());
 }
 
 void RunDlg::on__showAll_stateChanged(int state)

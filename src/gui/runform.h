@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef RUNFORM_H_
-#define RUNFORM_H_
+#pragma once
 
 #include <QtGui>
 #include "./ui/ui_run.h"
@@ -27,8 +26,8 @@
 class RunDlg : public QDialog, public Ui::RunForm {
   Q_OBJECT
   public:
-  RunDlg(QWidget* parent = NULL);
-  ~RunDlg(){};
+  RunDlg(QWidget* parent = nullptr);
+  ~RunDlg() = default;
   inline QString absTolerance() { return _absTolerance->text(); };
   inline QString derDelta() { return _derDelta->text(); };
   inline QString DT() { return _dt->text(); };
@@ -45,7 +44,6 @@ class RunDlg : public QDialog, public Ui::RunForm {
   inline QString jacobian() { return getJacobianString(_jacobian->currentIndex()); };
   inline QString tolerance() { return _tolerance->text(); };
   inline QString zcHyst() { return _zcHyst->text(); };
-  inline QString LPS() { return _lps->text(); };
   inline void setAbsTolerance(QString str) { _absTolerance->setText(str.remove("{").remove("}")); };
   inline void setDerDelta(QString str) { _derDelta->setText(str); };
   inline void setDescription(QString str) { _description->setText(str); };
@@ -61,7 +59,8 @@ class RunDlg : public QDialog, public Ui::RunForm {
   inline void setSymDiff(QString str) { _symDiff->setCurrentIndex(getComboBoolIdx(str)); };
   inline void setTolerance(QString str) { _tolerance->setText(str.remove("{").remove("}")); };
   inline void setZcHyst(QString str) { _zcHyst->setText(str); };
-  inline void setLPS(QString str) { _lps->setText(str); };
+  inline QString LPS() { return QString::number(_lps->value()); };
+  inline void setLPS(QString lps) { _lps->setValue(lps.toInt()); };
   inline void setJacobian(QString str) { _jacobian->setCurrentIndex(str == "Sparse" ? 0 : 1); };
   inline QString parallel() { return getComboBoolString(_parallel->currentIndex()); };
   inline QString partitionMethod() { return getPartitionMethodString(_partitionMethod->currentIndex()); };
@@ -116,7 +115,5 @@ class RunDlg : public QDialog, public Ui::RunForm {
   QString getDtSynchString(int idx);
   Utils* _utils;
   QDoubleValidator* _validate;
-  QIntValidator* _validateInt;
 };
 
-#endif /* RUNFORM_H_ */
