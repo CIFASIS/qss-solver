@@ -243,9 +243,7 @@ int RunDlg::getPartitionMethodIdx(QString str)
   if (str.trimmed() == "HMetis") return 1;
   if (str.trimmed() == "Scotch") return 2;
   if (str.trimmed() == "Patoh") return 3;
-  if (str.trimmed() == "MTPL") return 4;
-  if (str.trimmed() == "MTPL_IT") return 5;
-  if (str.trimmed() == "Manual") return 6;
+  if (str.trimmed() == "Manual") return 4;
   return 0;
 }
 
@@ -261,10 +259,6 @@ QString RunDlg::getPartitionMethodString(int idx)
   case 3:
     return "Patoh";
   case 4:
-    return "MTPL";
-  case 5:
-    return "MTPL_IT";
-  case 6:
     return "Manual";
   }
   return "Metis";

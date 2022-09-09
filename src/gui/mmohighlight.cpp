@@ -102,6 +102,7 @@ MmoHighlighter::MmoHighlighter(QTextDocument *parent, h_type file) : QSyntaxHigh
                     << "\\bMMO_BDF_PDepth\\b"
                     << "\\bMMO_BDF_Max_Step\\b"
                     << "\\bMMO_StoreData\\b"
+                    << "\\bMMO_SH\\b"
                     << "\\bMMO_HD\\b"
                     << "\\bMMO_HZ\\b"
                     << "\\bMMO_HH\\b"
