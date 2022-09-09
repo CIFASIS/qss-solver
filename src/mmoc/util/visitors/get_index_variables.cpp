@@ -23,6 +23,7 @@
 
 #include <ast/ast_builder.h>
 #include <util/error.h>
+#include <util/model_config.h>
 
 namespace MicroModelica {
 using namespace IR;
@@ -36,21 +37,33 @@ multimap<std::string, int> GetIndexVariables::foldTraverseElement(AST_Expression
   switch (exp->expressionType()) {
   case EXPCOMPREF: {
     AST_Expression_ComponentReference cr = exp->getAsComponentReference();
+    Option<Variable> var = ModelConfig::instance().lookup(cr->name());
+    if (!var) {
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "get_index_variables.cpp:41 %s", cr->name().c_str());
+      break;
+    }
     if (_in_index_list) {
       ret.insert(std::make_pair(cr->name(), _pos));
     }
+    bool parsing_parameter = _in_index_list && var->isParameter();
     if (cr->hasIndexes()) {
-      assert(!_in_index_list);
-      _in_index_list = true;
+      assert(!_in_index_list || parsing_parameter);
+      if (!parsing_parameter) {
+        _in_index_list = true;
+        _pos = 1;
+      }
       AST_ExpressionList indexes = cr->firstIndex();
       AST_ExpressionListIterator it;
-      _pos = 1;
       foreach (it, indexes) {
         multimap<std::string, int> args = apply(current_element(it));
         ret.insert(args.begin(), args.end());
-        _pos++;
+        if (!parsing_parameter) {
+          _pos++;
+        }
       }
-      _in_index_list = false;
+      if (!parsing_parameter) {
+        _in_index_list = false;
+      }
     }
     break;
   }
