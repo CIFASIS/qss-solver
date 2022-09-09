@@ -9,7 +9,8 @@
 # 							 and runs the MicroModelica compiler 
 #
 #    PARAMETERS: <FILE> MicroModelica file to be compiled.
-#       OPTIONS: [FOLDER] path where the MicroModelica file is located. 
+#       OPTIONS: [FOLDER] path where the MicroModelica file is located.
+#				 [FLAGS] flags passed to the compiler. 
 #  REQUIREMENTS: $MMOC_BUILD must point to the default build directory 
 # 							 used by the QSS Solver GUI.
 #								 $MMOC_BIN must point to the default bin directory 
@@ -17,23 +18,16 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 3.2
+#       VERSION: 4.0.0
 #===================================================================================
-
 
 FILE=$1
 
 FOLDER=$2
 
-PARALLEL=$3
+FLAGS=$3
 
 mkdir -p $MMOC_BUILD/$FILE
-
-if [ "$PARALLEL" == "true" ]; then
-FLAGS="-p"
-else
-FLAGS=""
-fi
 
 if [ -z $FOLDER ]; then
 	$MMOC_BIN/mmoc $FLAGS -o $MMOC_BUILD/$FILE/$FILE $FILE.mo
