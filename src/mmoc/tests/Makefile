@@ -8,6 +8,8 @@ SRC_DIR        := .
 UNIT_DIR	   := $(SRC_DIR)/unit
 INT_DIR   	   := $(SRC_DIR)/integration
 DATA_DIR   	   := $(INT_DIR)/test_data
+PKG_DATA_DIR   := $(DATA_DIR)/packages
+PKG_GT_DATA_DIR:= $(INT_DIR)/gt_data/packages
 MOCK_DIR 	   := $(SRC_DIR)/mock
 USR_DIR        := $(SRC_DIR)/usr
 BUILD_DIR  	   := $(USR_DIR)/obj
@@ -25,8 +27,10 @@ LD_FLAGS = -L $(GOOGLE_TEST_INSTALL)/usr/lib -l $(GOOGLE_TEST_LIB) -l $(GOOGLE_M
 RM = rm -rf
 
 # The Target Binary Program
-TARGET      := $(BIN_DIR)/test-mmoc
-RUN_TESTS   := test-mmoc
+UNIT_TEST   	:= $(BIN_DIR)/unit-test-mmoc
+MODEL_INT_TEST	:= $(BIN_DIR)/model-int-test-mmoc
+PACKAGE_INT_TEST:= $(BIN_DIR)/package-int-test-mmoc
+RUN_TESTS   := unit-test-mmoc model-int-test-mmoc package-int-test-mmoc
 
 # Source files.
 MAIN_SRC = $(SRC_DIR)/main.cpp \
@@ -38,14 +42,15 @@ UNIT_SRC = $(UNIT_DIR)/algebraics_test.cpp \
 		   $(UNIT_DIR)/called_functions_test.cpp \
 		   $(UNIT_DIR)/convert_cont_red_test.cpp	
 
-INT_SRC = $(INT_DIR)/models_test.cpp
-#MOCK_SRC = $(MOCK_DIR)/dummy.cpp
+MODEL_INT_SRC = $(INT_DIR)/models_test.cpp
+
+PACKAGE_INT_SRC = $(INT_DIR)/packages_test.cpp
 
 # Objects
 UNIT_OBJ=$(addprefix $(BUILD_DIR)/unit_, $(notdir $(UNIT_SRC:.cpp=.o)))
-INT_OBJ=$(addprefix $(BUILD_DIR)/int_, $(notdir $(INT_SRC:.cpp=.o)))
+MODEL_INT_OBJ=$(addprefix $(BUILD_DIR)/int_, $(notdir $(MODEL_INT_SRC:.cpp=.o)))
+PACKAGE_INT_OBJ=$(addprefix $(BUILD_DIR)/int_, $(notdir $(PACKAGE_INT_SRC:.cpp=.o)))
 MMOC_OBJ=$(wildcard $(MMOC_OBJ_DIR)/*/*.o $(MMOC_OBJ_DIR)/*/*/*.o)
-
 MAIN_OBJ=$(addprefix $(BUILD_DIR)/, $(notdir $(MAIN_SRC:.cpp=.o)))
 
 $(BUILD_DIR)/unit_%.o : $(UNIT_DIR)/%.cpp
@@ -57,22 +62,39 @@ $(BUILD_DIR)/int_%.o : $(INT_DIR)/%.cpp
 $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
 	$(G++) $(G++_FLAGS) $< -o $@ 
 
-all: $(TARGET) $(RUN_TESTS)
+all: $(UNIT_TEST) $(MODEL_INT_TEST) $(PACKAGE_INT_TEST) $(RUN_TESTS)
 
-$(TARGET): $(MAIN_OBJ) $(UNIT_OBJ) $(INT_OBJ) $(MMOC_OBJ) $(BUILD_DIR)
-		g++ -o $(TARGET) $(MAIN_OBJ) $(UNIT_OBJ) $(INT_OBJ) $(MMOC_OBJ) $(LD_FLAGS) $(LIB)
+$(UNIT_TEST): $(MAIN_OBJ) $(UNIT_OBJ) $(MMOC_OBJ) $(BUILD_DIR)
+		g++ -o $(UNIT_TEST) $(MAIN_OBJ) $(UNIT_OBJ) $(MMOC_OBJ) $(LD_FLAGS) $(LIB)
 
-$(RUN_TESTS): $(TARGET) $(BUILD_DIR)
-		@echo Clean up test data dir.
+$(MODEL_INT_TEST): $(MAIN_OBJ) $(MODEL_INT_OBJ) $(MMOC_OBJ) $(BUILD_DIR)
+		g++ -o $(MODEL_INT_TEST) $(MAIN_OBJ) $(MODEL_INT_OBJ) $(MMOC_OBJ) $(LD_FLAGS) $(LIB)
+
+$(PACKAGE_INT_TEST): $(MAIN_OBJ) $(PACKAGE_INT_OBJ) $(MMOC_OBJ) $(BUILD_DIR)
+		g++ -o $(PACKAGE_INT_TEST) $(MAIN_OBJ) $(PACKAGE_INT_OBJ) $(MMOC_OBJ) $(LD_FLAGS) $(LIB)
+
+$(RUN_TESTS): $(UNIT_TEST) $(MODEL_INT_TEST) $(PACKAGE_INT_TEST) $(BUILD_DIR)
+		@echo Setup test data dir.
 		@rm -rf $(DATA_DIR)/*
+		@mkdir -p $(PKG_DATA_DIR)
+		@cp $(PKG_GT_DATA_DIR)/*.mo $(PKG_DATA_DIR)
 		@echo Done
-		@echo Running tests.
-		$(TARGET)
+		@echo Running unit tests.
+		$(UNIT_TEST)
 		@echo Done.
+		@echo Running model integration tests.
+		$(MODEL_INT_TEST)
+		@echo Done.
+		@echo Running package integration tests.
+		$(PACKAGE_INT_TEST)
+		@echo Done.
+
 
 $(UNIT_OBJ): | $(BUILD_DIR)
 
-$(INT_OBJ): | $(BUILD_DIR)
+$(MODEL_INT_OBJ): | $(BUILD_DIR)
+
+$(PACKAGE_INT_OBJ): | $(BUILD_DIR)
 
 $(MAIN_OBJ): | $(BUILD_DIR)
 
