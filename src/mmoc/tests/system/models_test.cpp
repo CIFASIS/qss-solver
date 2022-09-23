@@ -41,13 +41,13 @@ TEST_P(IModelTests, GenerateCode)
 {
   const std::string NAME = GetParam();
   std::cout << "Testing model: " << NAME << std::endl;
-  const std::string MODEL = " ./integration/gt_data/" + NAME + "/" + NAME + ".mo";
+  const std::string MODEL = " ./system/gt_data/" + NAME + "/" + NAME + ".mo";
   const std::string MMOC = "../usr/bin/mmoc";
-  const std::string ARGS = " -o ./integration/test_data/" + NAME + " -t -i ./integration/test_data/packages ";
+  const std::string ARGS = " -o ./system/test_data/" + NAME + " -t -i ./system/test_data/packages ";
   const std::string TEST_FUNCTIONS = (checkGeneratedFunctions(NAME)) ? "TEST_FUNCTIONS" : "";
-  const std::string TEST_CMD = "./integration/test_results.sh " + NAME + " " + TEST_FUNCTIONS;
-  const std::string RESULT_FILE = "./integration/test_data/" + NAME + ".passed";
-  const std::string COMP_CMD = MMOC + ARGS + MODEL + " > ./integration/test_data/" + NAME + ".log";
+  const std::string TEST_CMD = "./system/test_results.sh " + NAME + " " + TEST_FUNCTIONS;
+  const std::string RESULT_FILE = "./system/test_data/" + NAME + ".passed";
+  const std::string COMP_CMD = MMOC + ARGS + MODEL + " > ./system/test_data/" + NAME + ".log";
 
   std::system(COMP_CMD.c_str());
   std::system(TEST_CMD.c_str());

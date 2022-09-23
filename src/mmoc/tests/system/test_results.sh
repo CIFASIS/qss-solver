@@ -2,8 +2,8 @@
 
 MODEL=$1
 MODEL_FUNCTIONS=$2
-GT_MODEL="./integration/gt_data/"${MODEL}/${MODEL}
-TEST_MODEL="./integration/test_data/"${MODEL}
+GT_MODEL="./system/gt_data/"${MODEL}/${MODEL}
+TEST_MODEL="./system/test_data/"${MODEL}
 TEST_FILES=".c .h .ini"
 if [[ ${MODEL_FUNCTIONS} ]]
 then
@@ -44,4 +44,4 @@ for i in $TEST_FILES; do
     [ -f "$TEST_MODEL.failed" ] && exit
 done
 
-echo "Test passed" >> ./integration/test_data/$MODEL.passed
+echo "Test passed" >> ./system/test_data/$MODEL.passed

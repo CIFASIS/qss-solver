@@ -33,9 +33,9 @@ TEST_P(IPackageTests, GenerateCode)
 {
   const std::string NAME = GetParam();
   std::cout << "Testing package: " << NAME << std::endl;
-  const std::string MODEL = " ./integration/gt_data/packages/" + NAME + ".mo";
-  const std::string TEST_CMD = "./integration/test_package_results.sh " + NAME;
-  const std::string RESULT_FILE = "./integration/test_data/packages/" + NAME + ".passed";
+  const std::string MODEL = " ./system/gt_data/packages/" + NAME + ".mo";
+  const std::string TEST_CMD = "./system/test_package_results.sh " + NAME;
+  const std::string RESULT_FILE = "./system/test_data/packages/" + NAME + ".passed";
 
   std::system(TEST_CMD.c_str());
 

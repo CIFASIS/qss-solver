@@ -4,8 +4,8 @@
 
 PACKAGE=$1
 PKG_PREFIX="pkg_"
-GT_PACKAGE="./integration/gt_data/packages/"${PKG_PREFIX}${PACKAGE}
-TEST_PACKAGE="./integration/test_data/packages/"${PKG_PREFIX}${PACKAGE}
+GT_PACKAGE="./system/gt_data/packages/"${PKG_PREFIX}${PACKAGE}
+TEST_PACKAGE="./system/test_data/packages/"${PKG_PREFIX}${PACKAGE}
 TEST_FILES=".c .h"
 
 test_results () 
@@ -36,4 +36,4 @@ for i in $TEST_FILES; do
     [ -f "$TEST_PACKAGE.failed" ] && exit
 done
 
-echo "Test passed" >> ./integration/test_data/packages/$PACKAGE.passed
+echo "Test passed" >> ./system/test_data/packages/$PACKAGE.passed
