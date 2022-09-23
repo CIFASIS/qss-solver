@@ -1,8 +1,7 @@
 Package: qss-solver	
-Version: 4.0.0
+Version:
 Architecture: amd64
 Maintainer: Joaquin Fernandez <fernandez@cifasis-conicet.gov.ar>
-Installed-Size: 15599
 Depends: gnuplot-x11, build-essential (>= 11.4), qt5-default, zenity, gfortran (>=4.6.3), libconfig-dev, libblas-dev, libgsl0-dev, libsuitesparse-dev, libcln6, libatlas-base-dev
 Section: science
 Priority: extra
