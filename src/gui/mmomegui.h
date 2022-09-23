@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef MMOMEGUI_H_
-#define MMOMEGUI_H_
+#pragma once
 
 #include <QWidget>
 #include <QProcess>
@@ -30,19 +29,10 @@ class SettingsDlg;
 class TreeModel;
 class Utils;
 
-/**
- *
- */
 class MmomeGui : public QMainWindow, public Ui::MmomeGuiForm {
   Q_OBJECT
   public:
-  /**
-   *
-   */
   MmomeGui();
-  /**
-   *
-   */
   ~MmomeGui();
   private slots:
   void cleanBuildDir(int);
@@ -116,5 +106,3 @@ class MmomeGui : public QMainWindow, public Ui::MmomeGuiForm {
   QAction *separatorAct;
   QAction *exitAct;
 };
-
-#endif /* MMOMEGUI_H_ */
