@@ -6,7 +6,7 @@ PACKAGE=$1
 PKG_PREFIX="pkg_"
 GT_PACKAGE="./integration/gt_data/packages/"${PKG_PREFIX}${PACKAGE}
 TEST_PACKAGE="./integration/test_data/packages/"${PKG_PREFIX}${PACKAGE}
-TEST_FILES=".c .h .moo"
+TEST_FILES=".c .h"
 
 test_results () 
 {
