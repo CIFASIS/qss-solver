@@ -25,9 +25,9 @@
 
 #include <common/data.h>
 #include <common/utils.h>
-#include "classic_data.h"
-#include "classic_integrator.h"
-#include "classic_simulator.h"
+#include <classic/classic_data.h>
+#include <classic/classic_integrator.h>
+#include <classic/classic_simulator.h>
 
 static CLC_data clcData = NULL;
 
@@ -40,14 +40,8 @@ void DASSL_update_x(const double *x)
   abort();
   int i;
   for (i = 0; i < clcData->states; i++) {
-#ifdef DEBUG
-    // printf("x[%d]=%g ",i,x[i]);
-#endif
     clcData->x[i] = x[i];
   }
-#ifdef DEBUG
-  // printf("\n");
-#endif
 }
 
 void DASSL_reset_x(double *x)
@@ -60,20 +54,18 @@ void DASSL_reset_x(double *x)
 }
 
 #define HIST 1e-12
+
 void DASSL_events(const int *n, const double *t, const double *x, const double *dx, const int *nrt, double *res, const double *rPar,
                   const int *iPar)
 {
   int i;
   double out;
-  // DASSL_update_x(x);
   for (i = 0; i < clcData->events; i++) {
     clcModel->events->zeroCrossing(i, x, clcData->d, clcData->alg, t[0], &out);
     res[i] = out + clcData->event[i].zcSign * HIST;
-#ifdef DEBUG
-    // printf("Evaluating zc %d at %g res=%g. Sign = %d\n",i,t[0],res[i],clcData->events[i].zc_sign);
-#endif
   }
 }
+
 void DASSL_model(const double *t, const double *x, const double *dx, const double *CJ, double *res, int *iRes, const double *rPar,
                  const int *iPar)
 {
@@ -117,7 +109,7 @@ void DASSL_integrate(SIM_simulator simulate)
   x = checkedMalloc(sizeof(double) * clcData->states);
   dx = checkedMalloc(sizeof(double) * clcData->states);
   root_output = checkedMalloc(sizeof(int) * clcData->events);
-  lrw = 5000 + 15000 * clcData->states + /*clcData->states * clcData->states +*/ 8 * clcData->events;
+  lrw = 5000 + 15000 * clcData->states + 8 * clcData->events;
   rwork = checkedMalloc(sizeof(double) * lrw);
   CLC_compute_outputs(simOutput, solution, num_steps);
   for (i = 0; i < clcData->states; i++) x[i] = _x[i];
@@ -144,7 +136,7 @@ void DASSL_integrate(SIM_simulator simulate)
       if (!event_detected) {
         tout = t + step_size;
       } else {
-        if (fabs(tout - t) < 1e-12) {
+        if (fabs(tout - t) < HIST) {
           CLC_save_step(simOutput, solution, solution_time, tout, clcData->totalOutputSteps, x, clcData->d, clcData->alg);
           clcData->totalOutputSteps++;
           tout = t + step_size;
@@ -178,7 +170,6 @@ void DASSL_integrate(SIM_simulator simulate)
           CLC_save_step(simOutput, solution, solution_time, tout, clcData->totalOutputSteps, x, clcData->d, clcData->alg);
           clcData->totalOutputSteps++;
         }
-      } else {
       }
     }
 
@@ -188,14 +179,6 @@ void DASSL_integrate(SIM_simulator simulate)
       fflush(stderr);
     }
   }
-  /*
-   if (!event_detected && is_sampled) {
-   if (solution_time[totalOutputSteps]<t) {
-   CLC_save_step(simOutput,solution,solution_time,t,totalOutputSteps,x, clcData->d);
-   totalOutputSteps++;
-   }
-   }
-   */
   clcData->totalSteps += iwork[10];
   clcData->totalStepsDASSL += iwork[11];
   clcData->totalJacobians += iwork[12];
@@ -207,8 +190,6 @@ void DASSL_integrate(SIM_simulator simulate)
     SD_print(simulator->simulationLog, "----------------");
     SD_print(simulator->simulationLog, "Miliseconds: %g", getTimeValue(simulator->stats->sTime));
     SD_print(simulator->simulationLog, "Function evaluations: %llu", clcData->funEvaluations);
-    // SD_print (simulator->simulationLog, "Scalar function evaluations: %d", clcData->scalarEvaluations);
-    // SD_print (simulator->simulationLog, "Zero Crossings : %d", clcData->zeroCrossings);
     SD_print(simulator->simulationLog, "Function evaluations (reported by DASSL): %d", clcData->totalStepsDASSL);
     SD_print(simulator->simulationLog, "Jacobian evaluations : %d", clcData->totalJacobians);
     SD_print(simulator->simulationLog, "Zero crossing evaluations : %d", clcData->totalCrossingEvaluations);
