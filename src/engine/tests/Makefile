@@ -1,5 +1,6 @@
 # The Directories, Source, Includes, Objects, Binary 
 ROOT_DIR       := ../..
+SCRIPT_DIR	   := ../../../bin/
 SRC_DIR        := .
 SYSTEM_DIR     := $(SRC_DIR)/system
 DATA_DIR   	   := $(SYSTEM_DIR)/test_data
@@ -45,6 +46,7 @@ $(TARGET): $(MAIN_OBJ) $(SYSTEM_OBJ)
 $(RUN_TESTS): $(TARGET)
 		@echo Setup test data dir.
 		@rm -rf $(DATA_DIR)/*
+		@cd $(SCRIPT_DIR) && ./exportvars.sh
 		@echo Running tests.
 		$(TARGET)
 		@echo Done.
