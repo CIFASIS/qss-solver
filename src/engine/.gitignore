@@ -29,3 +29,6 @@ tags
 
 # Generated test files.
 tests/usr/
+
+# Ignore tests results.
+tests/system/test_data/*
