@@ -1,4 +1,4 @@
-model airconds
+model par_airconds
   import math;
   constant Integer N = 4000;
   parameter Real CAP[N], RES[N], POT[N], THA = 32,pmax=0;
@@ -77,4 +77,4 @@ model airconds
 		Tolerance={1e-3},
 		AbsTolerance={1e-3}
 	));
-end airconds;
+end par_airconds;

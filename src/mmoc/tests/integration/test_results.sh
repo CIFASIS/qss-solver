@@ -1,9 +1,14 @@
 #!/bin/bash
 
 MODEL=$1
+MODEL_FUNCTIONS=$2
 GT_MODEL="./integration/gt_data/"${MODEL}/${MODEL}
 TEST_MODEL="./integration/test_data/"${MODEL}
 TEST_FILES=".c .h .ini"
+if [[ ${MODEL_FUNCTIONS} ]]
+then
+    TEST_FILES=$TEST_FILES" _functions.c"
+fi
 
 test_results () 
 {

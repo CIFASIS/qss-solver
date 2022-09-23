@@ -26,16 +26,26 @@
 /// @addtogroup QssSolverITests
 /// @{
 
-class ITests : public testing::TestWithParam<const char*> {};
+class IModelTests : public testing::TestWithParam<const char*> {
+  public:
+  bool checkGeneratedFunctions(const std::string model)
+  {
+    if (model == "par_airconds_cont") {
+      return true;
+    }
+    return false;
+  }
+};
 
-TEST_P(ITests, GenerateCode)
+TEST_P(IModelTests, GenerateCode)
 {
   const std::string NAME = GetParam();
   std::cout << "Testing model: " << NAME << std::endl;
   const std::string MODEL = " ./integration/gt_data/" + NAME + "/" + NAME + ".mo";
   const std::string MMOC = "../usr/bin/mmoc";
-  const std::string ARGS = " -o ./integration/test_data/" + NAME + " -t -i ../../../packages ";
-  const std::string TEST_CMD = "./integration/test_results.sh " + NAME;
+  const std::string ARGS = " -o ./integration/test_data/" + NAME + " -t -i ./integration/test_data/packages ";
+  const std::string TEST_FUNCTIONS = (checkGeneratedFunctions(NAME)) ? "TEST_FUNCTIONS" : "";
+  const std::string TEST_CMD = "./integration/test_results.sh " + NAME + " " + TEST_FUNCTIONS;
   const std::string RESULT_FILE = "./integration/test_data/" + NAME + ".passed";
   const std::string COMP_CMD = MMOC + ARGS + MODEL + " > ./integration/test_data/" + NAME + ".log";
 
@@ -46,11 +56,11 @@ TEST_P(ITests, GenerateCode)
   EXPECT_TRUE(result.good());
 }
 
-const char* models[] = {"adr",         "advection", "advection2D", "advection2D_LI", "airconds",  "aircont", "bball_downstairs",
-                        "boost",       "buck",      "buckboost",   "buck_circuit",   "buck_term", "cuk",     "cuk2",
-                        "interleaved", "inverters", "lc_line",     "lotka_volterra", "rectifier", "rltest",  "rltest_LI",
-                        "spikings"};
+const char* models[] = {
+    "adr",     "advection",      "advection2D",  "advection2D_LI",    "airconds",  "aircont", "bball_downstairs", "boost",
+    "buck",    "buckboost",      "buck_circuit", "buck_term",         "cuk",       "cuk2",    "interleaved",      "inverters",
+    "lc_line", "lotka_volterra", "par_airconds", "par_airconds_cont", "rectifier", "rltest",  "rltest_LI",        "spikings"};
 
-INSTANTIATE_TEST_SUITE_P(Models, ITests, testing::ValuesIn(models));
+INSTANTIATE_TEST_SUITE_P(Models, IModelTests, testing::ValuesIn(models));
 
 /// @}

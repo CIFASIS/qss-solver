@@ -55,25 +55,29 @@ AST_Expression ReplaceIndex::foldTraverseElement(AST_Expression exp)
       foreach (it, indexes) {
         bool is_parameter = false;
         if (current_element(it)->expressionType() == EXPCOMPREF) {
-          AST_Expression_ComponentReference comp_ref = current_element(it)->getAsComponentReference(); 
+          AST_Expression_ComponentReference comp_ref = current_element(it)->getAsComponentReference();
           Option<Variable> var = ModelConfig::instance().lookup(comp_ref->name());
           if (!var) {
-              Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "replace_index.cpp:63 %s", comp_ref->name().c_str());
-              break;
+            Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "replace_index.cpp:63 %s",
+                                  comp_ref->name().c_str());
+            break;
           }
           is_parameter = var->isParameter();
         }
         if (is_parameter) {
           ReplaceIndex replace_param = ReplaceIndex(_range, current_element(it), _range_idxs);
-          l = AST_ListAppend(l, replace_param.apply(current_element(it)));    
-        } else { 
+          l = AST_ListAppend(l, replace_param.apply(current_element(it)));
+        } else {
           if (_usage[i] == USED) {
-            Option<Variable> used_var = ModelConfig::instance().lookup(used_variables[i+1]);
+            Option<Variable> used_var = ModelConfig::instance().lookup(used_variables[i + 1]);
             string used_var_name = "";
             if (used_var) {
               used_var_name = used_var->name();
             }
-            string var = _range.iterator(used_var_name, i, _range_idxs);
+            string var = used_var_name;
+            if (!_range.isDimensionVar(used_var_name)) {
+              var = _range.iterator(used_var_name, i, _range_idxs);
+            }
             ReplaceVar rv(var);
             l = AST_ListAppend(l, rv.apply(current_element(it)));
           } else {
@@ -108,7 +112,7 @@ map<int, std::string> ReplaceIndex::getUsedVariables(AST_Expression exp)
   GetIndexVariables index_usage;
   multimap<string, int> used_variables = index_usage.apply(exp);
   map<int, string> d;
-  for(auto used : used_variables) {
+  for (auto used : used_variables) {
     d[used.second] = used.first;
   }
   return d;

@@ -62,7 +62,7 @@ void AST_StoredDefinition_::accept(AST_Visitor *visitor)
   foreach (it, _model_list) {
     AST_Class x = current_element(it);
     AST_TypePrefix p = x->prefix();
-    if (p == CP_MODEL) {
+    if (p == CP_MODEL || p == CP_PACKAGE) {
       x->accept(visitor);
     }
   }
