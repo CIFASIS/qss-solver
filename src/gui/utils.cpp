@@ -185,8 +185,8 @@ QString Utils::appFlag(AppFlags f)
   case FLG_VERSION:
     _val = settings.value("Flags/version", "Value not found in file qss-solver.ini").toString();
     break;
-  case FLG_REVISION:
-    _val = settings.value("Flags/revision", "Value not found in file qss-solver.ini").toString();
+  case FLG_BRANCH:
+    _val = settings.value("Flags/branch", "Value not found in file qss-solver.ini").toString();
     break;
   default:
     break;

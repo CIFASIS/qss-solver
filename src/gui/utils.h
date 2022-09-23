@@ -17,134 +17,60 @@
 
  ******************************************************************************/
 
-#ifndef UTILS_H_
-#define UTILS_H_
+#pragma once
 
 #include <QString>
 #include <QSettings>
 #include <QDir>
 #include <QCoreApplication>
 
-/**
- *
- */
 typedef enum {
-  MMOC_MODELS,     //!< MMOC_MODELS
-  MMOC_OUTPUT,     //!< MMOC_OUTPUT
-  MMOC_BUILD,      //!< MMOC_BUILD
-  MMOC_ENGINE,     //!< MMOC_ENGINE
-  MMOC_LIBS,       //!< MMOC_LIBS
-  MMOC_BIN,        //!< MMOC_BIN
-  MMOC_SOURCE,     //!< MMOC_SOURCE
-  MMOC_PACKAGES,   //!< MMOC_PACKAGES
-  MMOC_LIBRARIES,  //!< MMOC_LIBRARIES
-  MMOC_INCLUDE     //!< MMOC_INCLUDE
+  MMOC_MODELS,
+  MMOC_OUTPUT,
+  MMOC_BUILD,
+  MMOC_ENGINE,
+  MMOC_LIBS,
+  MMOC_BIN,
+  MMOC_SOURCE,
+  MMOC_PACKAGES,
+  MMOC_LIBRARIES,
+  MMOC_INCLUDE
 } AppDirs;
 
-/**
- *
- */
 typedef enum {
-  FLG_DEBUG,               //!< FLG_DEBUG
-  FLG_DBG_ALL,             //!< FLG_DEBUG_ALL
-  FLG_DBG_INIT_VALUES,     //!< FLG_DBG_INIT_VALUES
-  FLG_DBG_EXTERNAL_EVENT,  //!< FLG_DBG_EXTERNAL_EVENT
-  FLG_DBG_MEMORY,          //!< FLG_DBG_MEMORY
-  FLG_DBG_SYNCHRONIZE,     //!< FLG_DEBUG_SYNCHRONIZE
-  FLG_DBG_STEP_INFO,       //!< FLG_DBG_STEP_INFO
-  FLG_DBG_VAR_CHANGES,     //!< FLG_DEBUG_VAR_CHANGES
-  FLG_DBG_WAIT_FOR,        //!< FLG_DBG_WAIT_FOR
-  FLG_DBG_WEIGHTS,         //!< FLG_DBG_WEIGHTS
-  FLG_DBG_DT,              //!< FLG_DBG_DT
-  FLG_FLAGS,               //!< FLG_FLAGS
-  FLG_PLOT,                //!< FLG_PLOT
-  FLG_VERSION,             //!< FLG_VERSION
-  FLG_REVISION             //!< FLG_REVISION
+  FLG_DEBUG,
+  FLG_DBG_ALL,
+  FLG_DBG_INIT_VALUES,
+  FLG_DBG_EXTERNAL_EVENT,
+  FLG_DBG_MEMORY,
+  FLG_DBG_SYNCHRONIZE,
+  FLG_DBG_STEP_INFO,
+  FLG_DBG_VAR_CHANGES,
+  FLG_DBG_WAIT_FOR,
+  FLG_DBG_WEIGHTS,
+  FLG_DBG_DT,
+  FLG_FLAGS,
+  FLG_PLOT,
+  FLG_VERSION,
+  FLG_BRANCH
 } AppFlags;
 
-/**
- *
- */
-typedef enum {
-  CMD_COMPILE,   //!< CMD_COMPILE
-  CMD_BUILD,     //!< CMD_BUILD
-  CMD_SIMULATE,  //!< CMD_SIMULATE
-  CMD_PLOT,      //!< CMD_PLOT
-  CMD_SBML,      //!< CMD_SBML
-  CMD_LOG        //!< CMD_LOG
-} AppCmds;
+typedef enum { CMD_COMPILE, CMD_BUILD, CMD_SIMULATE, CMD_PLOT, CMD_SBML, CMD_LOG } AppCmds;
 
-/**
- *
- */
 class Utils {
   public:
-  /**
-   *
-   */
-  Utils(){};
-  /**
-   *
-   */
-  ~Utils(){};
-  /**
-   *
-   * @param c
-   * @return
-   */
+  ~Utils() = default;
   QString appCommand(AppCmds c);
-  /**
-   *
-   * @param d
-   * @return
-   */
   QString appDir(AppDirs d);
-  /**
-   *
-   * @param f
-   * @return
-   */
   QString appFlag(AppFlags f);
-  /**
-   *
-   * @param tok
-   * @return
-   */
   QString defaultValue(QString tok);
-  /**
-   *
-   * @param f
-   * @return
-   */
   bool isSet(AppFlags f);
-  /**
-   *
-   * @param d
-   * @return
-   */
   QString relativePath(AppDirs d);
-  /**
-   *
-   * @param c
-   * @param value
-   */
   void setCommand(AppCmds c, QString value);
-  /**
-   *
-   * @param d
-   * @param value
-   */
   void setDir(AppDirs d, QString value);
-  /**
-   *
-   * @param f
-   * @param value
-   */
   void setFlag(AppFlags f, QString value);
 
   private:
   QString _getDir(AppDirs d);
   QString _getDebugValue();
 };
-
-#endif /* UTILS_H_ */

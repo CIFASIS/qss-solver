@@ -937,16 +937,20 @@ void MmomeGui::on_actionAbout_triggered()
 {
   QString sh;
   sh.append("Modeling and simulation environment for continuous and hybrid systems.\n");
+  sh.append("Version: ");
+  sh.append(_utils->appFlag(FLG_VERSION));
+  sh.append("\n");
+  sh.append("Branch: ");
+  sh.append(_utils->appFlag(FLG_BRANCH));
+  sh.append("\n");
+  sh.append("HomePage: ");
+  sh.append("https://github.com/CIFASIS/qss-solver\n");
   sh.append("Developed by:\n");
   sh.append("Joaquin Fernandez (fernandez@cifasis-conicet.gov.ar)\n");
-  sh.append("Federico Bergero (bergero@cifasis-conicet.gov.ar)\n");
   sh.append("\n");
   sh.append("Directed by:\n");
   sh.append("Ernesto Kofman (kofman@cifasis-conicet.gov.ar)\n");
-  QString title("QSS Solver Version ");
-  title.append(_utils->appFlag(FLG_VERSION));
-  title.append(" Revision ");
-  title.append(_utils->appFlag(FLG_REVISION));
+  QString title("QSS Solver");
   QMessageBox::about(this, title, sh);
 }
 

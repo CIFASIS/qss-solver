@@ -104,6 +104,7 @@ MmoHighlighter::MmoHighlighter(QTextDocument *parent, h_type file) : QSyntaxHigh
                     << "\\bMMO_StoreData\\b"
                     << "\\bMMO_SH\\b"
                     << "\\bMMO_HD\\b"
+                    << "\\bMMO_DH\\b"
                     << "\\bMMO_HZ\\b"
                     << "\\bMMO_HH\\b"
                     << "\\bMMO_LHS_ST\\b"
