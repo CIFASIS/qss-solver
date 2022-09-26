@@ -6,19 +6,18 @@ on:
     branches: [ qss-solver-dev ]
 
 env:
-  MMOC_PATH: ${{env.GITHUB_WORKSPACE}}
-  MMOC_SRC: $MMOC_PATH/src
-  MMOC_DOC: $MMOC_PATH/doc
-  MMOC_LIBS: $MMOC_PATH/lib
-  MMOC_BUILD: $MMOC_PATH/build
-  MMOC_MODELS: $MMOC_PATH/models
-  MMOC_OUTPUT: $MMOC_PATH/output
-  MMOC_BIN: $MMOC_PATH/bin
-  MMOC_PACKAGES: $MMOC_PATH/packages
-  MMOC_LIBRARIES: $MMOC_PATH/lib
-  MMOC_TESTS: $MMOC_SRC/test-suite
-  MMOC_ENGINE: $MMOC_SRC/engine/
-  MMOC_INCLUDE: $MMOC_SRC/usr/include
+  MMOC_PATH: ../../../
+  MMOC_SRC: ../../../src
+  MMOC_DOC: ../../../doc
+  MMOC_LIBS: ../../../lib
+  MMOC_BUILD: ../../../build
+  MMOC_MODELS: ../../../models
+  MMOC_OUTPUT: ../../../output
+  MMOC_BIN: ../../../bin
+  MMOC_PACKAGES: ../../../packages
+  MMOC_LIBRARIES: ../../../lib
+  MMOC_ENGINE: ../../../src/engine/
+  MMOC_INCLUDE: ../../../src/usr/include
 
 jobs:
   build:
