@@ -35,7 +35,7 @@ TEST_P(SModelTests, SimulateModel)
   std::cout << "Testing model: " << NAME << std::endl;
   const std::string MODEL = " ./system/gt_data/" + NAME + "/" + NAME + ".mo";
   const std::string FOLDER_CMD = "mkdir ./system/test_data/" + NAME;
-  const std::string MMOC = "../../../bin/exportvars.sh; ../../mmoc/usr/bin/mmoc";
+  const std::string MMOC = "../../mmoc/usr/bin/mmoc";
   const std::string ARGS = " -o ./system/test_data/" + NAME + "/" + NAME + " -i ./system/test_data/packages ";
   const std::string TEST_CMD = "./system/test_results.sh " + NAME;
   const std::string SIM_CMD = "cd ./system/test_data/" + NAME + "; ./" + NAME;
