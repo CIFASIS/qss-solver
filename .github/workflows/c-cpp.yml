@@ -53,5 +53,7 @@ jobs:
 
     - name: Tests
       working-directory: ./src
+      env: ./lib
+      LD_LIBRARY_PATH: 
       run: |
         make test
