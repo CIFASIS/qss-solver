@@ -4,8 +4,9 @@
 #include "sections.c"
 double __getSection(double x)
 {
-  double y;
+double y;
 
-  y = getSection(x);
-  return y;
+y = getSection(x);
+return y;
 }
+
