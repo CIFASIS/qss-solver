@@ -6,7 +6,7 @@ on:
     branches: [ qss-solver-dev ]
 
 env:
-  MMOC_PATH: $GITHUB_WORKSPACE
+  MMOC_PATH: ${{env.GITHUB_WORKSPACE}}
   MMOC_SRC: $MMOC_PATH/src
   MMOC_DOC: $MMOC_PATH/doc
   MMOC_LIBS: $MMOC_PATH/lib
