@@ -51,11 +51,9 @@ jobs:
       working-directory: ./src
       run: make
 
-    - name: Set Env
-      run: echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../../../lib" >> $GITHUB_ENV
-    
-    - name: Test
-      run: echo $LD_LIBRARY_PATH
+    - name: Install
+      working-directory: ./src
+      run: make
     
     - name: Tests
       working-directory: ./src
