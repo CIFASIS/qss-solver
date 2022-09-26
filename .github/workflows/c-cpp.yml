@@ -6,7 +6,7 @@ on:
     branches: [ qss-solver-dev ]
 
 env:
-  MMOC_PATH: ../../../
+  MMOC_PATH: ../../..
   MMOC_SRC: ../../../src
   MMOC_DOC: ../../../doc
   MMOC_LIBS: ../../../lib
@@ -16,7 +16,7 @@ env:
   MMOC_BIN: ../../../bin
   MMOC_PACKAGES: ../../../packages
   MMOC_LIBRARIES: ../../../lib
-  MMOC_ENGINE: ../../../src/engine/
+  MMOC_ENGINE: ../../../src/engine
   MMOC_INCLUDE: ../../../src/usr/include
 
 jobs:
