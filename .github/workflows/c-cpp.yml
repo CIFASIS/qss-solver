@@ -53,7 +53,7 @@ jobs:
 
     - name: Install
       working-directory: ./src
-      run: make
+      run: make install
     
     - name: Tests
       working-directory: ./src
