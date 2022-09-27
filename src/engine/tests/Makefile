@@ -1,9 +1,8 @@
 # The Directories, Source, Includes, Objects, Binary 
 ROOT_DIR       := ../..
 SRC_DIR        := .
-UNIT_DIR	   := $(SRC_DIR)/unit
-INT_DIR   	   := $(SRC_DIR)/integration
-MOCK_DIR 	   := $(SRC_DIR)/mock
+SYSTEM_DIR     := $(SRC_DIR)/system
+DATA_DIR   	   := $(SYSTEM_DIR)/test_data
 USR_DIR        := $(SRC_DIR)/usr
 BUILD_DIR  	   := $(USR_DIR)/obj
 BIN_DIR        := $(USR_DIR)/bin
@@ -25,16 +24,14 @@ RUN_TESTS   := test-engine
 
 # Source files.
 MAIN_SRC = $(SRC_DIR)/main.cpp
-UNIT_SRC = $(UNIT_DIR)/dummy.cpp
-#INT_SRC = $(INT_DIR)/dummy.cpp
-#MOCK_SRC = $(MOCK_DIR)/dummy.cpp
+SYSTEM_SRC = $(SYSTEM_DIR)/models_test.cpp
 
 # Objects
-UNIT_OBJ=$(addprefix $(BUILD_DIR)/unit_, $(notdir $(UNIT_SRC:.cpp=.o)))
+SYSTEM_OBJ=$(addprefix $(BUILD_DIR)/sys_, $(notdir $(SYSTEM_SRC:.cpp=.o)))
 
 MAIN_OBJ=$(addprefix $(BUILD_DIR)/, $(notdir $(MAIN_SRC:.cpp=.o)))
 
-$(BUILD_DIR)/unit_%.o : $(UNIT_DIR)/%.cpp
+$(BUILD_DIR)/sys_%.o : $(SYSTEM_DIR)/%.cpp
 	$(G++) $(G++_FLAGS) $< -o $@
 
 $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
@@ -42,21 +39,24 @@ $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
 
 all: $(TARGET) $(RUN_TESTS)
 
-$(TARGET): $(MAIN_OBJ) $(UNIT_OBJ)
-		g++ -o $(TARGET) $(MAIN_OBJ) $(UNIT_OBJ) $(LD_FLAGS)
+$(TARGET): $(MAIN_OBJ) $(SYSTEM_OBJ)
+		g++ -o $(TARGET) $(MAIN_OBJ) $(SYSTEM_OBJ) $(LD_FLAGS)
 
 $(RUN_TESTS): $(TARGET)
+		@echo Setup test data dir.
+		@rm -rf $(DATA_DIR)/*
 		@echo Running tests.
 		$(TARGET)
 		@echo Done.
 
-$(UNIT_OBJ): | $(BUILD_DIR)
+$(SYSTEM_OBJ): | $(BUILD_DIR)
 
 $(MAIN_OBJ): | $(BUILD_DIR)
 
 $(BUILD_DIR):
 	@mkdir -p $(BIN_DIR)
 	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(DATA_DIR)
 
 clean:
 	$(RM) $(USR_DIR) 

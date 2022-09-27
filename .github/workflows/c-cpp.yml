@@ -5,6 +5,20 @@ on:
   pull_request:
     branches: [ qss-solver-dev ]
 
+env:
+  MMOC_PATH: ../../..
+  MMOC_SRC: ../../../src
+  MMOC_DOC: ../../../doc
+  MMOC_LIBS: ../../../lib
+  MMOC_BUILD: ../../../build
+  MMOC_MODELS: ../../../models
+  MMOC_OUTPUT: ../../../output
+  MMOC_BIN: ../../../bin
+  MMOC_PACKAGES: ../../../packages
+  MMOC_LIBRARIES: ../../../lib
+  MMOC_ENGINE: ../../../src/engine
+  MMOC_INCLUDE: ../../../src/usr/include
+
 jobs:
   build:
 
@@ -37,6 +51,10 @@ jobs:
       working-directory: ./src
       run: make
 
+    - name: Install
+      working-directory: ./src
+      run: make install
+    
     - name: Tests
       working-directory: ./src
       run: |
