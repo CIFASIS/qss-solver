@@ -29,7 +29,7 @@ RM = rm -rf
 INT_TEST     	:= $(BIN_DIR)/int-test-mmoc
 MODEL_SYS_TEST	:= $(BIN_DIR)/model-sys-test-mmoc
 PACKAGE_SYS_TEST:= $(BIN_DIR)/package-sys-test-mmoc
-RUN_TESTS   := int-test-mmoc model-sys-test-mmoc package-sys-test-mmoc
+RUN_TESTS   := int-test-mmoc
 
 # Source files.
 MAIN_SRC = $(SRC_DIR)/main.cpp \
@@ -61,7 +61,7 @@ $(BUILD_DIR)/sys_%.o : $(SYS_DIR)/%.cpp
 $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
 	$(G++) $(G++_FLAGS) $< -o $@ 
 
-all: $(INT_TEST) $(MODEL_SYS_TEST) $(PACKAGE_SYS_TEST) $(RUN_TESTS)
+all: $(RUN_TESTS)
 
 $(INT_TEST): $(MAIN_OBJ) $(INT_OBJ) $(MMOC_OBJ) $(BUILD_DIR)
 		g++ -o $(INT_TEST) $(MAIN_OBJ) $(INT_OBJ) $(MMOC_OBJ) $(LD_FLAGS) $(LIB)
@@ -87,7 +87,6 @@ $(RUN_TESTS): $(INT_TEST) $(MODEL_SYS_TEST) $(PACKAGE_SYS_TEST) $(BUILD_DIR)
 		@echo Running package system tests.
 		$(PACKAGE_SYS_TEST)
 		@echo Done.
-
 
 $(INT_OBJ): | $(BUILD_DIR)
 
