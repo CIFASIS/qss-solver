@@ -126,7 +126,7 @@ int parsePackages(AST_StringList imports, CompileFlags& flags, bool recompile)
           MicroModelicaIR ir(file_name);
           r = ir.apply(sd);
           if (r == 0) {
-            Package package = ir.definition().package(); 
+            Package package = ir.definition().package();
             utils.setPackageFunctions(package.definitions());
             utils.setPackagePrefix(package.prefix());
             Generator gen(ir.definition(), flg);
@@ -154,7 +154,7 @@ int parsePackages(AST_StringList imports, CompileFlags& flags, bool recompile)
         return -1;
       }
       ImportTable objects = pd->objects();
-      
+
       ImportTable::iterator it;
       for (string import = objects.begin(it); !objects.end(it); import = objects.next(it)) {
         flags.addObject(import);
@@ -174,16 +174,11 @@ int main(int argc, char** argv)
   bool settings = false;
   CompileFlags flags;
   while (true) {
-    static struct option long_options[] = {{"version", no_argument, 0, 'v'},
-                                           {"help", no_argument, 0, 'h'},
-                                           {"include", required_argument, 0, 'i'},
-                                           {"external-structure-file", required_argument, 0, 'e'},
-                                           {"force", no_argument, 0, 'f'},
-                                           {"settings-only", no_argument, 0, 's'},
-                                           {"test", no_argument, 0, 't'},
-                                           {"debug", required_argument, 0, 'd'},
-                                           {"output", required_argument, 0, 'o'},
-                                           {0, 0, 0, 0}};
+    static struct option long_options[] = {{"version", no_argument, 0, 'v'},       {"help", no_argument, 0, 'h'},
+                                           {"include", required_argument, 0, 'i'}, {"external-structure-file", required_argument, 0, 'e'},
+                                           {"force", no_argument, 0, 'f'},         {"settings-only", no_argument, 0, 's'},
+                                           {"test", no_argument, 0, 't'},          {"debug", required_argument, 0, 'd'},
+                                           {"output", required_argument, 0, 'o'},  {0, 0, 0, 0}};
     int option_index = 0;
     opt = getopt_long(argc, argv, "vhmfsti:e:d:o:", long_options, &option_index);
     if (opt == EOF) break;
@@ -228,7 +223,7 @@ int main(int argc, char** argv)
     }
   }
   string pkg = Utils::instance().environmentVariable("MMOC_PACKAGES");
-  if (!pkg.empty()) {
+  if (!pkg.empty() && !flags.testing()) {
     flags.addLibraryPath(pkg);
   }
   AST_StoredDefinition sd;
