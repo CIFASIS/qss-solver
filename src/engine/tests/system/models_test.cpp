@@ -58,7 +58,32 @@ TEST_P(SModelTests, SimulateModel)
   EXPECT_TRUE(result.good());
 }
 
-const char* models[] = {"advection"};
+const char* models[] = {"acousticsBase",
+                        "acousticsRiemann",
+                        "acousticsRiemDes",
+                        "adr",
+                        "advection",
+                        "advection2D",
+                        "airconds",
+                        "aircont",
+                        "bball_downstairs",
+                        "boost",
+                        "buck",
+                        "buckboost",
+                        "buck_circuit",
+                        "buck_term",
+                        "cuk",
+                        "cuk2",
+                        "GOLDBETER",
+                        "interleaved",
+                        "inverters",
+                        "lc_line",
+                        "lotka_volterra",
+                        "par_air_conds",
+                        "rectifier",
+                        "rltest",
+                        "spikings",
+                        "TYSON"};
 
 INSTANTIATE_TEST_SUITE_P(Models, SModelTests, testing::ValuesIn(models));
 
