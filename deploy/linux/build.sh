@@ -60,7 +60,7 @@ mkdir ./tmp_deb/opt/qss-solver/build
 mkdir ./tmp_deb/opt/qss-solver/output
 mkdir ./tmp_deb/opt/qss-solver/lib/
 
-cat ./tmp_deb/DEBIAN/control.amd64 | awk -v VERSION="$VER" '{ if(index($0,"Version: ")>=1) print "Version: " VERSION ; else print $0;}' >  ./tmp_deb/DEBIAN/control
+cat ./tmp_deb/DEBIAN/control.amd64 | awk -v VERSION="$VER" '{ if(index($0,"Version:")>=1) print "Version: " VERSION ; else print $0;}' >  ./tmp_deb/DEBIAN/control
 rm ./tmp_deb/DEBIAN/control.amd64; 
 
 cp deploy/linux/version ./tmp_deb/opt/qss-solver/
