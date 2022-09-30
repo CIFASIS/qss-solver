@@ -1,21 +1,21 @@
 /*****************************************************************************
 
-    This file is part of Modelica C Compiler.
+ This file is part of QSS Solver.
 
-    Modelica C Compiler is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ QSS Solver is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    Modelica C Compiler is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ QSS Solver is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Modelica C Compiler.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
-******************************************************************************/
+ ******************************************************************************/
 
 #include <boost/algorithm/string.hpp>
 #include <string>
@@ -39,7 +39,6 @@ struct EvNodes {
   EvNodes(EventTable evs, IR::STATEMENT::AssignTerm search) : _events(evs), _search(search) {}
   list<Expression> getExpressions(SB::Deps::SetVertex n, SB::Deps::EDGE::Type type)
   {
-
     ExpressionList exps;
     if (n.desc().type() == SB::Deps::VERTEX::Equation) {
       Equation eq = getEquation(n);
@@ -47,7 +46,7 @@ struct EvNodes {
     } else {
       Event ev = getEvent(n);
       vector<string> tokens;
-      boost::split(tokens,n.name(),boost::is_any_of("_"));
+      boost::split(tokens, n.name(), boost::is_any_of("_"));
       StatementTable stms = (tokens[2] == "POS") ? ev.positiveHandler() : ev.negativeHandler();
       int stm_nbr = stoi(tokens[3]) - 1;
       int asg_nbr = stoi(tokens[4]) - 1;
@@ -62,7 +61,7 @@ struct EvNodes {
         asg_count++;
       }
     }
-    return exps;    
+    return exps;
   }
 
   protected:
@@ -70,20 +69,12 @@ struct EvNodes {
   IR::STATEMENT::AssignTerm _search;
 };
 
-template<typename S>
-EvGraphBuilder<S>::EvGraphBuilder(EventTable events, EquationTable algebraics, IR::STATEMENT::AssignTerm search) 
-    : _F_nodes(),
-      _G_nodes(),
-      _g_nodes(),
-      _u_nodes(),
-      _events(events),
-      _algebraics(algebraics),
-      _node_names(),
-      _usage(),
-      _search(search)
+template <typename S>
+EvGraphBuilder<S>::EvGraphBuilder(EventTable events, EquationTable algebraics, IR::STATEMENT::AssignTerm search)
+    : _F_nodes(), _G_nodes(), _g_nodes(), _u_nodes(), _events(events), _algebraics(algebraics), _node_names(), _usage(), _search(search)
 {
 }
-template<typename S>
+template <typename S>
 SB::Deps::Graph EvGraphBuilder<S>::build()
 {
   LOG << endl << "Building " << S::name() << endl;
@@ -95,10 +86,10 @@ SB::Deps::Graph EvGraphBuilder<S>::build()
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     if (S::selectVariable(var)) {
-      SB::Deps::SetVertex ife_node = createSetVertex(var, edge_dom_offset, max_dims, SB::Deps::VERTEX::Influencee);      
+      SB::Deps::SetVertex ife_node = createSetVertex(var, edge_dom_offset, max_dims, SB::Deps::VERTEX::Influencee);
       _u_nodes.push_back(addVertex(ife_node, graph));
     } else if (var.isAlgebraic()) {
-      SB::Deps::SetVertex alg_node = createSetVertex(var, edge_dom_offset, max_dims, SB::Deps::VERTEX::Algebraic);      
+      SB::Deps::SetVertex alg_node = createSetVertex(var, edge_dom_offset, max_dims, SB::Deps::VERTEX::Algebraic);
       _g_nodes.push_back(addVertex(alg_node, graph));
     }
   }
@@ -129,7 +120,7 @@ SB::Deps::Graph EvGraphBuilder<S>::build()
 
   SB::Deps::GraphPrinter printer(graph);
 
-  printer.printGraph(Logger::instance().getLogsPath()+ S::name() + ".dot");
+  printer.printGraph(Logger::instance().getLogsPath() + S::name() + ".dot");
 
   return graph;
 }
