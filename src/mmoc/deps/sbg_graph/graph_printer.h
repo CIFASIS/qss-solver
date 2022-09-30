@@ -1,22 +1,23 @@
 /*****************************************************************************
 
-    This file is part of Modelica C Compiler.
+ This file is part of QSS Solver.
 
-    Modelica C Compiler is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ QSS Solver is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    Modelica C Compiler is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ QSS Solver is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Modelica C Compiler.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
-******************************************************************************/
-#pragma once 
+ ******************************************************************************/
+
+#pragma once
 
 using namespace std;
 
@@ -26,13 +27,12 @@ using namespace std;
 #define SB_INSERT_TAB _depth += SB_TAB_SPACE;
 #define SB_DELETE_TAB _depth -= SB_TAB_SPACE;
 
-
 namespace SB {
 
-template<typename G, typename V, typename E, typename S, typename VIT, typename EIT>
-class GraphPrinter{
+template <typename G, typename V, typename E, typename S, typename VIT, typename EIT>
+class GraphPrinter {
   public:
-  GraphPrinter(const G &g) : _graph(g), _depth(0) {};
+  GraphPrinter(const G &g) : _graph(g), _depth(0){};
 
   void printGraph(std::string name)
   {
@@ -78,7 +78,6 @@ class GraphPrinter{
   };
 
   protected:
-
   void printVertices(stringstream &stri)
   {
     VIT vi, vi_end;
@@ -102,11 +101,12 @@ class GraphPrinter{
     }
   };
 
-  std::string vPrinter(SetVertex<V> v) 
-  { 
+  std::string vPrinter(SetVertex<V> v)
+  {
     std::stringstream label;
     label << v.name() << " " << v.id() << " " << v.index();
-    return label.str(); };
+    return label.str();
+  };
   std::string vLabelPrinter(SetVertex<V> v)
   {
     std::stringstream label;
@@ -125,9 +125,8 @@ class GraphPrinter{
   };
 
   private:
-  const G& _graph; 
+  const G &_graph;
   int _depth;
-
 };
 
-} // namespace SB
+}  // namespace SB

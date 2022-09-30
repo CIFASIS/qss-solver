@@ -65,11 +65,9 @@
  *
  * The makefile script accepts the following options:
  *
- *   - DEBUG = <True|False>  If True, adds the compiler's debug flags. 
- *             Default value False.
+ *   - MODE = <Debug|Release>  If set to Debug, adds the compiler's debug flags. 
+ *             Default value Debug.
  *   
- *   - CORES= <n> In a multicore machine, select the number of cores used 
- *            to compile the solver. Default value 1.
  *
  * @subsection mktgs Makefile targets
  *

@@ -83,13 +83,13 @@ void usage()
   cout << "                Don't generate GiNaC expressions for testing code structure." << endl;
   cout << "-v, --version   Display version information and exit" << endl;
   cout << endl;
-  cout << "Report bugs to: joaquin.f.fernandez@gmail.com" << endl;
-  cout << "MicroModelica C Compiler home page: https://github.com/CIFASIS/qss-solver-mmoc " << endl;
+  cout << "Report bugs to: fernandez@cifasis-conicet.gov.ar" << endl;
+  cout << "MMOC Compiler home page: https://github.com/CIFASIS/qss-solver/tree/qss-solver-dev/src/mmoc " << endl;
 }
 
 void version()
 {
-  cout << "MicroModelica C Compiler 3.3.0" << endl;
+  cout << "MicroModelica C Compiler 4.0.0" << endl;
   cout << "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>" << endl;
   cout << "This is free software: you are free to change and redistribute it." << endl;
   cout << "There is NO WARRANTY, to the extent permitted by law." << endl;

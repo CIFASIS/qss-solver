@@ -74,7 +74,7 @@ clean:
 	$(RMS) $(OBJ) $(TARGET) usr
 
 help:
-	@echo "make MODE=<MODE|Release> "
+	@echo "make MODE=<Debug|Release> "
 	@echo "Default values:"
 	@echo ""
 	@echo "MODE=Debug"

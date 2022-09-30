@@ -7,7 +7,7 @@ Dependences
 ===========
 
 In order to be able to install and compile the QSS Solver, 
-the following  dependencies must be installed: 
+the following dependencies must be installed (Ubuntu 20.04): 
 
     * bison++
     * boost1.71
@@ -27,7 +27,6 @@ the following  dependencies must be installed:
     * python
     * qt5-default
      
-
 Basic Installation
 ==================
 
@@ -65,5 +64,5 @@ The makefile script accepts the following targets:
 
 	* mmo-interfaces:	Builds the SBML-MicroModelica translator. 
 
-  * qss-solver-doc: Builds the documentation for the QSS solver libraries,
-                    the MicroModelica compiler and the QSS solver GUI.
+	* qss-solver-doc: Builds the documentation for the QSS solver libraries,
+							the MicroModelica compiler and the QSS solver GUI.

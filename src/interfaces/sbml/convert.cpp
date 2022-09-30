@@ -52,13 +52,13 @@ void usage()
   cout << "                    br: Generate BioRica file                " << endl;
   cout << "-v, --version   Display version information and exit" << endl;
   cout << endl;
-  cout << "Report bugs to: joaquin.f.fernandez@gmail.com" << endl;
-  cout << "SBML Translator home page: https://sourceforge.net/p/qssengine/" << endl;
+  cout << "Report bugs to: fernandez@cifasis-conicet.gov.ar" << endl;
+  cout << "SBML Translator home page: https://github.com/CIFASIS/qss-solver" << endl;
 }
 
 void version()
 {
-  cout << "SBML Translator 1.0" << endl;
+  cout << "SBML Translator 1.0.0" << endl;
   cout << "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>" << endl;
   cout << "This is free software: you are free to change and redistribute it." << endl;
   cout << "There is NO WARRANTY, to the extent permitted by law." << endl;
