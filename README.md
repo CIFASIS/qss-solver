@@ -5,11 +5,11 @@ continuous and hybrid systems and it's optimized for large scale model simulatio
 The solver is implemented as a set of modules coded in plain C language, 
 simulations can be performed using one of the following integration methods:
 
-  * QSS methods (the entire family is supported)
-  * DASSL
-  * DOPRI
-  * CVODE
-  * IDA
+	* QSS methods (the entire family is supported)
+	* DASSL
+	* DOPRI
+	* CVODE
+	* IDA
 
 Models are described using a subset of the standard Modelica language called μ–Modelica 
 (the language specification can be found [here](http://www.cifasis-conicet.gov.ar/jfernandez/micromodelica/micromodelicaspec.pdf)), 
@@ -23,11 +23,11 @@ to access all the developed tools in a unified way.
 
 The GUI has the following features:
 
-  * It has a text editor, where models in μ-Modelica can be defined.
-  * It invokes the corresponding tools to compile and run simulations.
-  * It provides debug information in case of errors during the model generation.
-  * It invokes GnuPlot to plot the simulation output trajectories.
-  * It shows statistics about simulations (number of steps, simulation time,
+	* It has a text editor, where models in μ-Modelica can be defined.
+	* It invokes the corresponding tools to compile and run simulations.
+	* It provides debug information in case of errors during the model generation.
+	* It invokes GnuPlot to plot the simulation output trajectories.
+	* It shows statistics about simulations (number of steps, simulation time,
 etc.).
 
 ## Related Publications
@@ -87,22 +87,22 @@ The solver is implemented as a set of modules coded in plain C language, where
 the simulated models can contain time and state discontinuities.
 Simulations can be performed using one of the following integration methods:
 
-  * QSS methods (the entire family is supported)
-  * DASSL
-  * DOPRI
-  * CVODE
-  * IDA
+	* QSS methods (the entire family is supported)
+	* DASSL
+	* DOPRI
+	* CVODE
+	* IDA
 
 In order to obtain an executable model, a plain C file that contains the 
 following functions must be provided:
 
-  * Model definition.
-  * Model settings.
-  * Model dependencies (for QSS methods).
-  * Model Jacobian.
-  * Model zero-crossing function.
-  * Model event handlers.
-  * A function in charge of the simulator data structure initialization.
+	* Model definition.
+	* Model settings.
+	* Model dependencies (for QSS methods).
+	* Model Jacobian.
+	* Model zero-crossing function.
+	* Model event handlers.
+	* A function in charge of the simulator data structure initialization.
  
 The signature of these functions and the data structures that are used depends 
 on the integration method used and they can ve viewed [here](http://www.cifasis-conicet.gov.ar/jfernandez/engine/)
@@ -118,11 +118,11 @@ unified way.
 
 The GUI has the following features:
 
-  * It has a text editor, where models in μ-Modelica can be defined.
-  * It invokes the corresponding tools to compile and run simulations.
-  * It provides debug information in case of errors during the model generation.
-  * It invokes GnuPlot to plot the simulation output trajectories.
-  * It shows statistics about simulations (number of steps, simulation time,
+	* It has a text editor, where models in μ-Modelica can be defined.
+	* It invokes the corresponding tools to compile and run simulations.
+	* It provides debug information in case of errors during the model generation.
+	* It invokes GnuPlot to plot the simulation output trajectories.
+	* It shows statistics about simulations (number of steps, simulation time,
 etc.).
 
 The GUI documentation can be found [here](http://www.cifasis-conicet.gov.ar/jfernandez/gui/)
@@ -168,38 +168,38 @@ These are generic installation instructions.
 In order to be able to install and compile the QSS Solver, 
 the following  dependencies must be installed (**Ubuntu 20.04**): 
 
-    * bison++
-    * boost1.71
-    * cmake 
-    * g++
-    * gfortran 
-    * gnuplot
-    * libatlas-base-dev
-    * libcln-dev
-    * libconfig-dev
-    * libginac-dev
-    * libgsl-dev
-    * libsbml5-dev
-    * libscotch-dev
-    * libsuitesparse-dev
-    * pkgconf
-    * python
-    * qt5-default
-     
+		* bison++
+		* boost1.71
+		* cmake 
+		* g++
+		* gfortran 
+		* gnuplot
+		* libatlas-base-dev
+		* libcln-dev
+		* libconfig-dev
+		* libginac-dev
+		* libgsl-dev
+		* libsbml5-dev
+		* libscotch-dev
+		* libsuitesparse-dev
+		* pkgconf
+		* python
+		* qt5-default
+		 
 
 ## Basic Installation
 
 The simplest way to compile this package is:
 
-  1. `cd` to the directory containing the package's source code (**src**) and type
-     `make` to compile the binaries and libraries.
-  
-  2. Type `make install` to install all the binary files and the libraries.
-     The binaries are located in the bin folder and the libraries are located
-     in the lib folder. 
-  
-  3. You can remove the program binaries and object files from the
-     source code directory by typing `make clean`.  
+	1. `cd` to the directory containing the package's source code (**src**) and type
+		 `make` to compile the binaries and libraries.
+	
+	2. Type `make install` to install all the binary files and the libraries.
+		 The binaries are located in the bin folder and the libraries are located
+		 in the lib folder. 
+	
+	3. You can remove the program binaries and object files from the
+		 source code directory by typing `make clean`.  
 
 ## Makefile options
 
@@ -221,9 +221,8 @@ The makefile script accepts the following targets:
 
 	* mmo-interfaces:	Builds the SBML-MicroModelica translator.
 	
-	* qss-solver-doc: Builds the documentation for the QSS solver libraries,
-  									the MicroModelica compiler and the QSS solver GUI.
-			   
+	* qss-solver-doc:	Builds the documentation for the QSS solver libraries, the MicroModelica compiler and the QSS solver GUI.
+				 
 
 ## Changelog
 
