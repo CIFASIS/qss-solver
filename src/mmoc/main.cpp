@@ -84,7 +84,7 @@ void usage()
   cout << "-v, --version   Display version information and exit" << endl;
   cout << endl;
   cout << "Report bugs to: fernandez@cifasis-conicet.gov.ar" << endl;
-  cout << "MicroModelica C Compiler home page: https://github.com/CIFASIS/qss-solver " << endl;
+  cout << "MMOC Compiler home page: https://github.com/CIFASIS/qss-solver/tree/qss-solver-dev/src/mmoc " << endl;
 }
 
 void version()
