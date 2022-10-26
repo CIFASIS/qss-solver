@@ -17,23 +17,13 @@
 
  ******************************************************************************/
 
-#ifndef EDITOR_H_
-#define EDITOR_H_
+#pragma once
 
 #include <QtGui>
 #include <modeleditor.h>
 
-/**
- *
- */
 class Editor {
   public:
-  /**
-   *
-   * @param parent
-   * @param name
-   * @return
-   */
   static ModelEditor* instance(QWidget* parent = NULL, QString name = QString())
   {
     if (!_instance) {
@@ -41,9 +31,6 @@ class Editor {
     }
     return _instance;
   }
-  /**
-   *
-   */
   static void drop()
   {
     if (!_instance) delete _instance;
@@ -56,4 +43,3 @@ class Editor {
   Editor& operator=(const Editor&);  // hide assign op
   static ModelEditor* _instance;
 };
-#endif /* EDITOR_H_ */
