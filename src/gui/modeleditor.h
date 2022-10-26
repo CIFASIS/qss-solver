@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef MODELEDITOR_H_
-#define MODELEDITOR_H_
+#pragma once
 
 #include <QTabWidget>
 #include <QTextCursor>
@@ -128,7 +127,6 @@ class ModelEditor : public QDialog, public Ui::ModelEditorForm {
   void saveAll(void);
   void saveAs(QString name = QString());
 
-
   protected:
   void reject(){};
 
@@ -199,5 +197,3 @@ class ModelEditor : public QDialog, public Ui::ModelEditorForm {
   Utils *_utils;
   MmoHighlighter *_hl;
 };
-
-#endif /* MODELEDITOR_H_ */
