@@ -54,7 +54,7 @@ SettingsDlg::SettingsDlg(QWidget *parent) : QDialog(parent)
   _setCheckBoxValue(_waitForCbx, _utils->appFlag(FLG_DBG_WAIT_FOR));
   _setCheckBoxValue(_weightsCbx, _utils->appFlag(FLG_DBG_WEIGHTS));
   _setCheckBoxValue(_dtCbx, _utils->appFlag(FLG_DBG_DT));
-  connect(this, SIGNAL(accepted()), this, SLOT(_save()));
+  connect(this, &SettingsDlg::accepted, this, &SettingsDlg::_save);
 }
 
 SettingsDlg::~SettingsDlg() { delete _utils; }
