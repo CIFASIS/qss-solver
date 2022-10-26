@@ -776,7 +776,7 @@ void MmomeGui::createActions()
   exitAct = new QAction(tr("E&xit"), this);
   exitAct->setShortcuts(QKeySequence::Quit);
   exitAct->setStatusTip(tr("Exit the application"));
-  connect(exitAct, &QAction::triggered, qApp, &QApplication::closeAllWindows);
+  connect(exitAct, &QAction::triggered, qApp, &QApplication::quit);
   separatorAct = menu_File->addSeparator();
   for (int i = 0; i < MaxRecentFiles; ++i) menu_File->addAction(recentFileActs[i]);
   separatorAct->setVisible(false);
