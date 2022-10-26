@@ -1,5 +1,6 @@
 # Target variables
 MODE ?= Debug
+DISTRO := $(shell lsb_release -r 2>/dev/null | grep Release | awk '{ print $$2 }')
 
 # Build cores.
 CORES = $(shell nproc)
@@ -53,12 +54,8 @@ qss-solver-doc: qss-engine mmo-compiler qss-solver-gui mmo-interfaces
 
 lib-gtest: | create-folders 
 ifeq ("$(wildcard $(3RD_PARTY_DIR)/gtest/usr/lib)","")
-	cd $(3RD_PARTY_DIR)/gtest; tar xvzf $(GTEST_CODE)
-	mkdir -p $(3RD_PARTY_DIR)/gtest/build
-	cd $(3RD_PARTY_DIR)/gtest/build; cmake ../$(GTEST_DIR) -DCMAKE_INSTALL_PREFIX=$(ROOT)/usr  
-	cd $(3RD_PARTY_DIR)/gtest/build; make install 
-	rm -rf $(3RD_PARTY_DIR)/gtest/$(GTEST_DIR)
-	rm -rf $(3RD_PARTY_DIR)/gtest/build
+	mkdir -p $(3RD_PARTY_DIR)/gtest/usr
+	cp -r $(3RD_PARTY_DIR)/gtest/ubuntu-$(DISTRO)/* $(3RD_PARTY_DIR)/gtest/usr/
 endif
 
 test:
