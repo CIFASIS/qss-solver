@@ -254,7 +254,7 @@ void MmomeGui::run_finished(int exitCode, QProcess::ExitStatus exitStatus)
     _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\n") + _proc->readAllStandardError());
     QByteArray logs = _proc->readAllStandardOutput();
     _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\n") + logs);
-    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + "Simulation failed. Exit code: " + QString("%1").arg(exitCode));
+    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + "Simulation failed. Exit code: " + QString::number(exitCode));
   }
   delete _proc;
   _proc = NULL;
@@ -580,7 +580,7 @@ void MmomeGui::importFinished(int exitCode, QProcess::ExitStatus exitStatus)
     editModel(_sbmlFile);
     addVariables();
   } else {
-    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nCan not import SBML file.") + QString(exitCode));
+    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nCan not import SBML file.") + QString::number(exitCode));
   }
   _sbmlFile.clear();
   delete _proc;
@@ -598,7 +598,7 @@ void MmomeGui::make_finished(int exitCode, QProcess::ExitStatus exitStatus)
     QFileInfo exefi(execName);
     if (!exefi.exists()) {
       _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\n") + _proc->readAllStandardError());
-      _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nCan't generate binary file.") + QString(exitCode));
+      _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nCan't generate binary file.") + QString::number(exitCode));
       enableActions(true);
       _settings_only = false;
       return;
@@ -606,7 +606,7 @@ void MmomeGui::make_finished(int exitCode, QProcess::ExitStatus exitStatus)
       _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nBinary file generated, ready to start simulation."));
     }
   } else {
-    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nError generating binary file.).") + QString(exitCode));
+    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nError generating binary file.).") + QString::number(exitCode));
     enableActions(true);
     _settings_only = false;
     return;
@@ -675,7 +675,7 @@ void MmomeGui::comp_finished(int exitCode, QProcess::ExitStatus exitStatus)
   } else {
     delete _proc;
     _proc = NULL;
-    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nError during compilation.") + QString(exitCode));
+    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nError during compilation.") + QString::number(exitCode));
     enableActions(true);
     _settings_only = false;
   }
@@ -925,7 +925,7 @@ void MmomeGui::plot_finished(int exitCode, QProcess::ExitStatus exitStatus)
 {
   QString msgs = _plot->readAllStandardError();
   if (exitStatus == QProcess::NormalExit && !msgs.isEmpty()) {
-    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + "\nPlot script error: " + QString(exitCode) + "\n" + msgs);
+    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + "\nPlot script error: " + QString::number(exitCode) + "\n" + msgs);
   }
   delete _plot;
   _plot = NULL;
@@ -965,7 +965,7 @@ void MmomeGui::log_finished(int exitCode, QProcess::ExitStatus exitStatus)
     editModel(logfi.absoluteFilePath());
   } else if (exitStatus == QProcess::NormalExit) {
     QString msgs = _log->readAllStandardError();
-    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + "\nLog file error: " + QString(exitCode) + "\n" + msgs);
+    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + "\nLog file error: " + QString::number(exitCode) + "\n" + msgs);
   }
   delete _log;
   _log = NULL;
