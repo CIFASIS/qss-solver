@@ -60,6 +60,9 @@ MmomeGui::MmomeGui() : QMainWindow(), _sbmlFile()
   addMenuBarItems();
   enableActions(true);
   _settings_only = false;
+  _runDlg = new RunDlg(this);
+  connect(_runDlg, SIGNAL(accepted()), this, SLOT(runDlgClose()));
+  connect(_runDlg, SIGNAL(rejected()), this, SLOT(runDlgRejected()));
 }
 
 MmomeGui::~MmomeGui() { Editor::drop(); }
@@ -376,7 +379,6 @@ void MmomeGui::runDlgClose()
     }
     compile(debugFlag);
   }
-  delete _runDlg;
 }
 
 void MmomeGui::on_actionRun_2_triggered()
@@ -395,9 +397,6 @@ void MmomeGui::on_actionRun_triggered()
     return;
   }
   _compiler_msg->clear();
-  _runDlg = new RunDlg(this);
-  connect(_runDlg, SIGNAL(accepted()), this, SLOT(runDlgClose()));
-  connect(_runDlg, SIGNAL(rejected()), this, SLOT(runDlgRejected()));
   _runDlg->setStartTime(Editor::instance()->startTime());
   _runDlg->setStopTime(Editor::instance()->stopTime());
   _runDlg->setTolerance(Editor::instance()->tolerance());
