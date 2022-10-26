@@ -52,8 +52,6 @@ static CLC_model clcModel = NULL;
 
 static SD_output simOutput = NULL;
 
-int is_sampled;
-
 //#ifdef USE_JACOBIAN
 /* Test jacobian */
 static int IDA_Jac(realtype t, realtype cj, N_Vector y, N_Vector fy, N_Vector resvec, SlsMat JacMat, void *user_data, N_Vector tmp1,
@@ -157,7 +155,7 @@ void IDA_integrate(SIM_simulator simulate)
   double *_x = clcData->x;
   double step_size = 1;
   int size = clcData->states;
-  is_sampled = simOutput->commInterval != CI_Step;
+  int is_sampled = simOutput->commInterval != CI_Step;
   if (is_sampled) {
     temp_y = N_VNew_Serial(size);
     step_size = simOutput->sampled->period[0];
