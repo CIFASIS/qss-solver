@@ -3,6 +3,7 @@ MODE ?= Debug
 
 # Build arch.
 ARCH = $(shell uname -m)
+DISTRO := $(shell lsb_release -r 2>/dev/null | grep Release | awk '{ print $$2 }')
 
 # Compiler and Linker
 CC := gcc
@@ -42,6 +43,11 @@ CFLAGS 		:= -Wall -msse2 -mfpmath=sse -O2
 ifeq ($(MODE),Debug)
 CFLAGS 		:= -Wall -msse2 -mfpmath=sse -g -DDEBUG
 endif
+ifeq ($(DISTRO),20.04)
+FFLAGS 		:= -Wall -O2
+else
+FFLAGS 		:= -Wall -fallow-argument-mismatch -O2
+endif
 LIB         := -lm
 INCLUDE     := -I$(COMMON_DIR) -I$(SRC_DIR) -I$(INCLUDE_DIR)
 RM  		:= rm -rf
@@ -60,7 +66,7 @@ $(BUILD_DIR)/%.o: %.c
 	$(CC) $(INCLUDE) $(CFLAGS) -c $< -o $@ 
 
 $(BUILD_DIR)/%.o : %.f
-	$(FC) $(INC) -c $< -o $@ $(CFLAGS)
+	$(FC) $(INC) -c $< -o $@ $(FFLAGS)
 
 $(LIB_TIME_STEP): $(DASSL_OBJ) $(DOPRI_OBJ)
 	@ar rvs $(@) $(DASSL_OBJ) $(DOPRI_OBJ)
