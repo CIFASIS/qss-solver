@@ -106,9 +106,6 @@ ModelEditor::ModelEditor(QWidget *parent, QString name)
 
 ModelEditor::~ModelEditor()
 {
-  if (_hl != NULL) {
-    delete _hl;
-  }
   delete _model_editor_tab;
   delete _models;
   delete _utils;
@@ -121,7 +118,6 @@ void ModelEditor::editModel(QString name)
   QFile file(name);
   QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini", QSettings::IniFormat);
   int _tab = settings.value("Editor/tab", "Value not found in file qss-solver.ini").toInt();
-  int font_width = QFontMetrics(_textEditor->currentCharFormat().font()).averageCharWidth();
   _textEditor->setTabStopDistance(_tab);
   if (!file.fileName().isEmpty()) {
     QFileInfo fi(name);
@@ -135,7 +131,7 @@ void ModelEditor::editModel(QString name)
     }
   }
   QTextDocument *td = new QTextDocument(_textEditor->toPlainText(), this);
-  
+
   QPlainTextDocumentLayout *layout = new QPlainTextDocumentLayout(td);
   td->setDocumentLayout(layout);
   _textEditor->setDocument(td);
@@ -213,7 +209,6 @@ QString ModelEditor::fullFileName(int idx)
 
 void ModelEditor::textChanged()
 {
-
   int idx = _model_editor_tab->currentIndex();
   ModelInfo mi = _models->value(idx);
   if (mi.init()) {
