@@ -242,7 +242,6 @@ void QSS_PAR_internalEvent(QSS_simulator simulator)
   int nSZ, nLHSSt, nRHSSt, nHD, nHZ;
   SD_eventData event = qssData->event;
   double *d = qssData->d;
-  double tmp1[qssData->maxRHS];
   int **SZ = qssData->SZ;
   int **ZS = qssData->ZS;
   int **HD = qssData->HD;
@@ -338,22 +337,12 @@ void QSS_PAR_internalEvent(QSS_simulator simulator)
         nRHSSt = event[index].nRHSSt;
         for (i = 0; i < nRHSSt; i++) {
           j = event[index].RHSSt[i];
-          elapsed = t - tq[j];
+          elapsed = t - tx[j];
           infCf0 = j * coeffs;
           if (elapsed > 0) {
-            integrateState(infCf0, elapsed, q, qOrder);
+            integrateState(infCf0, elapsed, x, xOrder);
           }
-          tq[j] = t;
-        }
-        nLHSSt = event[index].nLHSSt;
-        for (i = 0; i < nLHSSt; i++) {
-          j = event[index].LHSSt[i];
-          infCf0 = j * coeffs;
-          elapsed = t - tq[j];
-          tmp1[i] = q[infCf0];
-          if (elapsed > 0) {
-            q[infCf0] = evaluatePoly(infCf0, elapsed, q, qOrder);
-          }
+          tx[j] = t;
         }
         if (s >= 0) {
           qssModel->events->handlerPos(index, q, d, a, t);
@@ -367,12 +356,11 @@ void QSS_PAR_internalEvent(QSS_simulator simulator)
             msg.value[i] = d[j];
           }
         }
+        nLHSSt = event[index].nLHSSt;
         for (i = 0; i < nLHSSt; i++) {
           j = event[index].LHSSt[i];
           infCf0 = j * coeffs;
           if (qMap[j] > NOT_ASSIGNED) {
-            x[infCf0] = q[infCf0];
-            q[infCf0] = tmp1[i];
             tx[j] = t;
             lqu[j] = dQRel[j] * fabs(x[infCf0]);
             if (lqu[j] < dQMin[j]) {
@@ -389,8 +377,7 @@ void QSS_PAR_internalEvent(QSS_simulator simulator)
             }
             reinits++;
           } else {
-            msg.value[nLHSDsc + i * coeffs] = q[infCf0];
-            q[infCf0] = tmp1[i];
+            msg.value[nLHSDsc + i * coeffs] = x[infCf0];
             int updIdx;
             for (updIdx = 1; updIdx <= xOrder; updIdx++) {
               msg.value[nLHSDsc + updIdx + i * coeffs] = NOT_ASSIGNED;
