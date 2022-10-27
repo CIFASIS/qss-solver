@@ -147,7 +147,7 @@ void IDA_integrate(SIM_simulator simulate)
 
   N_Vector y, yp, abstol, temp_y = NULL;
   void *mem;
-  int i, j, nnz;
+  int i, nnz;
   unsigned long totalOutputSteps = 0;
   const double _ft = clcData->ft;
   double dQRel = clcData->dQRel[0];
@@ -165,7 +165,6 @@ void IDA_integrate(SIM_simulator simulate)
   double *solution_time = malloc(sizeof(double) * (num_steps + 1));
   double **outvar = malloc(sizeof(double) * simOutput->outputs);
   int *jroot = malloc(sizeof(int) * clcData->events), flag;
-  int event_detected = 0;
   double rel_tol = dQRel, abs_tol = dQMin;
   realtype reltol = rel_tol, t = clcData->it, tout;
   y = abstol = NULL;
