@@ -13,7 +13,7 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 4.0.0
+#       VERSION: 4.0.1
 #===================================================================================
 
 cd $MMOC_SRC/engine/usr/doc/html
