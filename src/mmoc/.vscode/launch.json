@@ -540,7 +540,27 @@
                     "ignoreFailures": true
                 }
             ]
+        }, 
+        
+        // NeuralNetwork1
+        {
+            "name": "NeuralNetwork1",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/NeuralNetwork1 ", "/home/joaquin/work/qss-solver/src/mmoc/tests/system/gt_data/NeuralNetwork1/NeuralNetwork1.mo"],
+            "cwd": "${workspaceFolder}/usr/bin/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
         }
+]        
 
     ]
 }
