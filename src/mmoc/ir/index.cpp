@@ -412,7 +412,7 @@ Expression Range::getExp(std::vector<Expression> exps, size_t pos)
 
 void Range::generate(SB::Set set, int offset, vector<string> vars, std::vector<Expression> begin_exps, std::vector<Expression> end_exps)
 {
-  int pos = 0;
+  unsigned int pos = 0;
   SB::UnordAtomSet a_sets = set.atomicSets();
   for (SB::AtomSet a_set : a_sets) {
     SB::MultiInterval intervals = a_set.atomicSets();
