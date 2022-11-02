@@ -24,20 +24,20 @@
 #include <utility>
 
 #include <deps/builders/eq_graph_builder.h>
-#include "../ast/expression.h"
-#include "../ir/annotation.h"
-#include "../ir/class.h"
-#include "../ir/equation.h"
-#include "../ir/event.h"
-#include "../ir/expression.h"
-#include "../ir/jacobian.h"
-#include "../ir/qss_model.h"
-#include "../ir/qss_model_deps.h"
-#include "../ir/statement.h"
-#include "../util/error.h"
-#include "../util/util.h"
+#include <ast/expression.h>
+#include <generator/macros.h>
+#include <ir/annotation.h>
+#include <ir/class.h>
+#include <ir/equation.h>
+#include <ir/event.h>
+#include <ir/expression.h>
+#include <ir/jacobian.h>
+#include <ir/qss_model.h>
+#include <ir/qss_model_deps.h>
+#include <ir/statement.h>
+#include <util/error.h>
+#include <util/util.h>
 #include <util/visitors/partial_eval_exp.h>
-#include "macros.h"
 
 namespace MicroModelica {
 
@@ -149,14 +149,12 @@ void ModelInstance::configOutput()
 
 void ModelInstance::output()
 {
-  generateDef<OutputModelGen>(_model.outputs(), WRITER::Output, WRITER::Output_Simple,
-                                                WRITER::Output_Generic);
+  generateDef<OutputModelGen>(_model.outputs(), WRITER::Output, WRITER::Output_Simple, WRITER::Output_Generic);
 }
 
 void ModelInstance::zeroCrossing()
 {
-  generateDef<ZCModelGen>(zeroCrossingTable(_model.events()), WRITER::Zero_Crossing, WRITER::ZC_Simple,
-                                                WRITER::ZC_Generic);
+  generateDef<ZCModelGen>(zeroCrossingTable(_model.events()), WRITER::Zero_Crossing, WRITER::ZC_Simple, WRITER::ZC_Generic);
 }
 
 void ModelInstance::handler()
@@ -235,7 +233,8 @@ void ModelInstance::header()
     if (var.isModelVar()) {
       Macros macros(_model, var);
       buffer << "// Macros definition for variable: " << var.name() << endl;
-      buffer << macros << endl;;
+      buffer << macros << endl;
+      ;
     }
   }
   _writer->write(buffer, WRITER::Model_Header);
@@ -260,7 +259,7 @@ void ModelInstance::header()
     _writer->write(buffer, WRITER::Model_Header);
   }
   EquationTable algebraics = _model.algebraics();
-  if(algebraics.size()) {
+  if (algebraics.size()) {
     _writer->write("\n// Algebraic Equations Macros\n\n", WRITER::Model_Header);
   }
   for (Equation e = algebraics.begin(eqit); !algebraics.end(eqit); e = algebraics.next(eqit)) {
@@ -321,6 +320,7 @@ void ModelInstance::header()
 
 string ModelInstance::componentDefinition(MODEL_INSTANCE::Component c)
 {
+  string handler_q_param = (ModelConfig::instance().isQss()) ? ", double* q" : "";
   switch (c) {
   case MODEL_INSTANCE::Model_Settings:
     return "void MOD_settings(SD_simulationSettings settings)";
@@ -340,10 +340,12 @@ string ModelInstance::componentDefinition(MODEL_INSTANCE::Component c)
     return "void MOD_zeroCrossing(int idx, double *x, double *d, double *a, "
            "double t, double *zc)";
   case MODEL_INSTANCE::Handler_Pos:
-    return "void MOD_handlerPos(int idx, double *x, double *d, double *a, "
+    return "void MOD_handlerPos(int idx, double *x" + handler_q_param +
+           ", double *d, double *a, "
            "double t)";
   case MODEL_INSTANCE::Handler_Neg:
-    return "void MOD_handlerNeg(int idx, double *x, double *d, double *a, "
+    return "void MOD_handlerNeg(int idx, double *x" + handler_q_param +
+           ", double *d, double *a, "
            "double t)";
   case MODEL_INSTANCE::Output:
     return "void MOD_output(int idx, double *x, double *d, double *a, double "
