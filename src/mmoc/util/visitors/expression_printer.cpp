@@ -225,12 +225,15 @@ void VariablePrinter::generate()
     _exp = _var.name();
     return;
   }
-  const bool PRINT_COEFF = ModelConfig::instance().isQss() && (_var.isState() || _var.isAlgebraic());
+  ModelConfig& config = ModelConfig::instance();
+  const bool PRINT_COEFF = config.isQss() && (_var.isState() || _var.isAlgebraic());
   const bool HAS_INDEXES = _ref->hasIndexes();
-  const bool ARRAY_ACCESS = ModelConfig::instance().compiledFunctionVar() && !HAS_INDEXES && _var.isArray(); 
+  const bool ARRAY_ACCESS = config.compiledFunctionVar() && !HAS_INDEXES && _var.isArray();
   buffer << access(ARRAY_ACCESS);
-  if (ModelConfig::instance().initialCode() && _var.isState()) {
+  if ((config.initialCode() || (config.algorithm() && config.reinit())) && _var.isState()) {
     buffer << "_init";
+  } else if (config.isQss() && config.algorithm() && !config.reinit() && _var.isState()) {
+    buffer << "_q";
   }
   buffer << _var;
   if (HAS_INDEXES) {
