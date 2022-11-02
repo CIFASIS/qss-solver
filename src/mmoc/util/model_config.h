@@ -58,8 +58,8 @@ class ModelConfig {
   inline IR::EquationTable derivatives() { return _derivatives; };
   inline void setOrderedDerivatives(IR::EquationTable ordered_derivatives) { _ordered_derivatives = ordered_derivatives; };
   inline IR::EquationTable orderedDerivatives() { return _ordered_derivatives; };
-  inline void setInitialCode(bool initial_code) { _initial_code = initial_code; };
-  inline bool initialCode() { return _initial_code; };
+  inline void setAlgorithm(bool algorithm) { _algorithm = algorithm; };
+  inline bool algorithm() { return _algorithm; };
   inline void setStateNbr(int state_nbr) { _state_nbr = state_nbr; }
   inline int stateNbr() const { return _state_nbr; }
   inline void setSymDiff(bool sym_diff) { _sym_diff = sym_diff; }
@@ -91,6 +91,10 @@ class ModelConfig {
   inline void setFunctionCode(bool function_code) { _function_code = function_code; }
   inline bool compiledFunctionVar() const { return _compiled_function_var; }
   inline void setCompiledFunctionVar(bool compiled_function_var) { _compiled_function_var = compiled_function_var; }
+  inline void setReinit(bool reinit) { _reinit = reinit; }
+  inline bool reinit() { return _reinit; }
+  inline void setInitialCode(bool initial_code) { _initial_code = initial_code; }
+  inline bool initialCode() { return _initial_code; }
 
   private:
   ModelConfig()
@@ -100,7 +104,7 @@ class ModelConfig {
         _derivatives(),
         _ordered_derivatives(),
         _events(),
-        _initial_code(false),
+        _algorithm(false),
         _state_nbr(0),
         _symbols(),
         _local_symbols(),
@@ -110,7 +114,9 @@ class ModelConfig {
         _function_outputs(false),
         _function_code(false),
         _compiled_function_var(false),
-        _sym_diff(false)
+        _sym_diff(false),
+        _reinit(false),
+        _initial_code(false)
   {
     _symbols.initialize(_types);
   };
@@ -121,7 +127,7 @@ class ModelConfig {
   IR::EquationTable _derivatives;
   IR::EquationTable _ordered_derivatives;
   IR::EventTable _events;
-  bool _initial_code;
+  bool _algorithm;
   int _state_nbr;
   VarSymbolTable _symbols;
   SymbolTable _local_symbols;
@@ -132,6 +138,8 @@ class ModelConfig {
   bool _function_code;
   bool _compiled_function_var;
   bool _sym_diff;
+  bool _reinit;
+  bool _initial_code;
 };
 
 }  // namespace Util
