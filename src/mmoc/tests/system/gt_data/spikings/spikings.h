@@ -55,6 +55,7 @@
 #define _state_idx_u(d1,coeff) (1000+(d1-1))*4 + coeff
 #define _u(d1,coeff) x[_state_idx_u(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_u(d1,coeff) x[_state_idx_u(d1,coeff)]
+#define _q_u(d1,coeff) q[_state_idx_u(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_u(d1,coeff) (1000+(d1-1))
 #define _is_var_u(idx) idx >= 1000 && idx < 2000
 #define _get_u_idxs(idx)\
@@ -66,6 +67,7 @@
 #define _state_idx_v(d1,coeff) ((d1-1))*4 + coeff
 #define _v(d1,coeff) x[_state_idx_v(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_v(d1,coeff) x[_state_idx_v(d1,coeff)]
+#define _q_v(d1,coeff) q[_state_idx_v(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_v(d1,coeff) ((d1-1))
 #define _is_var_v(idx) idx >= 0 && idx < 1000
 #define _get_v_idxs(idx)\

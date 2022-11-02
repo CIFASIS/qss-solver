@@ -43,6 +43,7 @@
 #define _state_idx_x(d1,coeff) ((d1-1))*4 + coeff
 #define _x(d1,coeff) x[_state_idx_x(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_x(d1,coeff) x[_state_idx_x(d1,coeff)]
+#define _q_x(d1,coeff) q[_state_idx_x(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_x(d1,coeff) ((d1-1))
 #define _is_var_x(idx) idx >= 0 && idx < 200
 #define _get_x_idxs(idx)\

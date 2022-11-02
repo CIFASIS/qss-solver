@@ -88,6 +88,7 @@
 #define _state_idx_ierr(coeff) 4000*4 + coeff
 #define _ierr(coeff) x[_state_idx_ierr(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_ierr(coeff) x[_state_idx_ierr(coeff)]
+#define _q_ierr(coeff) q[_state_idx_ierr(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_ierr(coeff) 4000
 #define _eval_dep_ierr(coeff) dx[_state_idx_ierr(coeff)]
 
@@ -127,6 +128,7 @@
 #define _state_idx_ptotal(coeff) 4001*4 + coeff
 #define _ptotal(coeff) x[_state_idx_ptotal(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_ptotal(coeff) x[_state_idx_ptotal(coeff)]
+#define _q_ptotal(coeff) q[_state_idx_ptotal(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_ptotal(coeff) 4001
 #define _eval_dep_ptotal(coeff) dx[_state_idx_ptotal(coeff)]
 
@@ -159,6 +161,7 @@
 #define _state_idx_th(d1,coeff) ((d1-1))*4 + coeff
 #define _th(d1,coeff) x[_state_idx_th(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_th(d1,coeff) x[_state_idx_th(d1,coeff)]
+#define _q_th(d1,coeff) q[_state_idx_th(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_th(d1,coeff) ((d1-1))
 #define _is_var_th(idx) idx >= 0 && idx < 4000
 #define _get_th_idxs(idx)\
