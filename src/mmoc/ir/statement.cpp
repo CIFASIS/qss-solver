@@ -164,13 +164,12 @@ string Statement::printAssignment(AST_Statement_Assign asg) const
     Expression lhs(asg->lhs());
     Expression rhs(asg->exp());
     bool state_assignment = checkStateAssignment(lhs);
-    bool initial_code = ModelConfig::instance().initialCode(); 
     if (state_assignment) {
-      ModelConfig::instance().setInitialCode(true);
+      ModelConfig::instance().setReinit(true);
     }
     code << lhs << " = " << rhs << ";";
     if (state_assignment) {
-      ModelConfig::instance().setInitialCode(initial_code);
+      ModelConfig::instance().setReinit(false);
     }
     break;
   }
