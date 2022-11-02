@@ -242,6 +242,7 @@ void QSS_PAR_internalEvent(QSS_simulator simulator)
   int nSZ, nLHSSt, nRHSSt, nHD, nHZ;
   SD_eventData event = qssData->event;
   double *d = qssData->d;
+  double reinit_assign[qssData->maxRHS];
   int **SZ = qssData->SZ;
   int **ZS = qssData->ZS;
   int **HD = qssData->HD;
@@ -335,19 +336,31 @@ void QSS_PAR_internalEvent(QSS_simulator simulator)
     if (event[index].zcSign != s || xOrder == 1 || et == t) {
       if (event[index].direction == 0 || event[index].direction == s) {
         nRHSSt = event[index].nRHSSt;
+        int restore_index = 0;
         for (i = 0; i < nRHSSt; i++) {
           j = event[index].RHSSt[i];
-          elapsed = t - tx[j];
+          elapsed = t - tq[j];
           infCf0 = j * coeffs;
           if (elapsed > 0) {
-            integrateState(infCf0, elapsed, x, xOrder);
+            integrateState(infCf0, elapsed, q, qOrder);
           }
-          tx[j] = t;
+          tq[j] = t;
+          elapsed = t - tx[j];
+          reinit_assign[restore_index++] = x[infCf0];
+          if (elapsed > 0) {
+            x[infCf0] = evaluatePoly(infCf0, elapsed, x, xOrder);
+          }
         }
         if (s >= 0) {
-          qssModel->events->handlerPos(index, q, d, a, t);
+          qssModel->events->handlerPos(index, x, q, d, a, t);
         } else {
-          qssModel->events->handlerNeg(index, q, d, a, t);
+          qssModel->events->handlerNeg(index, x, q, d, a, t);
+        }
+        int nReinitAssign = event[index].nReinitAsg;
+        for (i = 0; i < nReinitAssign; i++) {
+          j = event[index].ReinitAsg[i];
+          infCf0 = j * coeffs;
+          x[infCf0] = reinit_assign[i];
         }
         int nLHSDsc = event[index].nLHSDsc;
         if (synchronize >= 0) {
@@ -524,7 +537,7 @@ void QSS_PAR_integrator(QSS_simulator simulator)
   int nSZ, nLHSSt, nRHSSt, nHD, nHZ, nLHSDsc;
   SD_eventData event = qssData->event;
   double *d = qssData->d;
-  double tmp1[qssData->maxRHS];
+  double reinit_assign[qssData->maxRHS];
   int **SZ = qssData->SZ;
   int **ZS = qssData->ZS;
   int **HD = qssData->HD;
@@ -699,6 +712,7 @@ void QSS_PAR_integrator(QSS_simulator simulator)
             }
 #endif
             nRHSSt = event[index].nRHSSt;
+            int restore_index = 0;
             for (i = 0; i < nRHSSt; i++) {
               j = event[index].RHSSt[i];
               elapsed = t - tq[j];
@@ -707,21 +721,22 @@ void QSS_PAR_integrator(QSS_simulator simulator)
                 integrateState(infCf0, elapsed, q, qOrder);
               }
               tq[j] = t;
-            }
-            nLHSSt = event[index].nLHSSt;
-            for (i = 0; i < nLHSSt; i++) {
-              j = event[index].LHSSt[i];
-              infCf0 = j * coeffs;
-              elapsed = t - tq[j];
-              tmp1[i] = q[infCf0];
+              elapsed = t - tx[j];
+              reinit_assign[restore_index++] = x[infCf0];
               if (elapsed > 0) {
-                q[infCf0] = evaluatePoly(infCf0, elapsed, q, qOrder);
+                x[infCf0] = evaluatePoly(infCf0, elapsed, x, xOrder);
               }
             }
             if (s >= 0) {
-              qssModel->events->handlerPos(index, q, d, a, t);
+              qssModel->events->handlerPos(index, x, q, d, a, t);
             } else {
-              qssModel->events->handlerNeg(index, q, d, a, t);
+              qssModel->events->handlerNeg(index, x, q, d, a, t);
+            }
+            int nReinitAssign = event[index].nReinitAsg;
+            for (i = 0; i < nReinitAssign; i++) {
+              j = event[index].ReinitAsg[i];
+              infCf0 = j * coeffs;
+              x[infCf0] = reinit_assign[i];
             }
             nLHSDsc = event[index].nLHSDsc;
             if (synchronize >= 0) {
@@ -730,12 +745,11 @@ void QSS_PAR_integrator(QSS_simulator simulator)
                 msg.value[i] = d[j];
               }
             }
+            nLHSSt = event[index].nLHSSt;
             for (i = 0; i < nLHSSt; i++) {
               j = event[index].LHSSt[i];
               infCf0 = j * coeffs;
               if (qMap[j] > NOT_ASSIGNED) {
-                x[infCf0] = q[infCf0];
-                q[infCf0] = tmp1[i];
                 tx[j] = t;
                 lqu[j] = dQRel[j] * fabs(x[infCf0]);
                 if (lqu[j] < dQMin[j]) {
@@ -752,8 +766,7 @@ void QSS_PAR_integrator(QSS_simulator simulator)
                 }
                 reinits++;
               } else {
-                msg.value[nLHSDsc + i * coeffs] = q[infCf0];
-                q[infCf0] = tmp1[i];
+                msg.value[nLHSDsc + i * coeffs] = x[infCf0];
                 int updIdx;
                 for (updIdx = 1; updIdx <= xOrder; updIdx++) {
                   msg.value[nLHSDsc + updIdx + i * coeffs] = NOT_ASSIGNED;
