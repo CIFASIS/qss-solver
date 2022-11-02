@@ -123,7 +123,7 @@ string Macros::engineIndex() const
 
 void Macros::initialize()
 {
-  stringstream index, def, state_index, state_def, init_code;
+  stringstream index, def, state_index, state_def, init_code, quantized_def;
   int dim = _variable.dimensions();
   bool idx = !_variable.isParameter() || dim;
   const bool IS_STATE = _variable.isState();
@@ -139,8 +139,9 @@ void Macros::initialize()
   }
   if (!_variable.isEqType() && !_variable.isOutput()) {
     _macros << "#define " << _variable << params << " ";
-    if (_variable.isState()) {
+    if (IS_STATE) {
       _macros << "x";
+      quantized_def << "#define _q" << _variable << params << " q";
       init_code << "#define _init" << _variable << params << " x";
     }
     if (_variable.isAlgebraic()) {
@@ -168,9 +169,13 @@ void Macros::initialize()
       state_def << " * COEFF_MULTIPLIER(coeff)";
     }
     _macros << state_def.str() << endl;
-    if (_variable.isState()) {
+    if (IS_STATE) {
       init_code << def.str() << endl;
       _macros << init_code.str();
+      quantized_def << state_def.str() << endl;
+      if (_is_qss) {
+        _macros << quantized_def.str();
+      }
     }
   }
 
