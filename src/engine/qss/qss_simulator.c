@@ -123,12 +123,9 @@ void QSS_simulate(SIM_simulator simulate)
   QSS_simulator simulator = (QSS_simulator)simulate->state->sim;
   Random(simulator->settings->random_seed);
   INT_integrator integrator = INT_Integrator(simulate);
-  /*#ifdef __linux__
-   signal (SIGFPE, fpe_handler);
-   feenableexcept (FE_DIVBYZERO);
-   #endif*/
   getTime(simulator->stats->iTime);
   QSS_initializeDataStructs(simulator);
+  QSS_computeReinitAssign(simulator->data);
   // QSS_orderDataMatrix(simulator->data);
   getTime(simulator->stats->sdTime);
   subTime(simulator->stats->sdTime, simulator->stats->iTime);
