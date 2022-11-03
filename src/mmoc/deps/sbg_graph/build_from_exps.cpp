@@ -95,7 +95,8 @@ void setupUsage(Range range, Usage& usage, DimRange& dim_range, int offset)
   }
 }
 
-void setupIntervals(Expression exp, MultiInterval& intervals, DimRange& dim_range, int offset, size_t max_dim, Option<Range> range = Option<Range>())
+void setupIntervals(Expression exp, MultiInterval& intervals, DimRange& dim_range, int offset, size_t max_dim,
+                    Option<Range> range = Option<Range>())
 {
   ExpressionList indexes = exp.indexes();
   size_t index_size = indexes.size();
@@ -302,8 +303,8 @@ int maxDim()
   return max_dims;
 }
 
-void addStatements(StatementTable stms, list<Deps::SetVertex>& nodes, Option<Range> ev_range, int& offset, size_t max_dim, VERTEX::Type type,
-                                    EqUsage& usage, MicroModelica::IR::STATEMENT::AssignTerm search, int id, string token)
+void addStatements(StatementTable stms, list<Deps::SetVertex>& nodes, Option<Range> ev_range, int& offset, size_t max_dim,
+                   VERTEX::Type type, EqUsage& usage, MicroModelica::IR::STATEMENT::AssignTerm search, int id, string token)
 {
   StatementTable::iterator stm_it;
   int stm_count = 1;
@@ -315,6 +316,9 @@ void addStatements(StatementTable stms, list<Deps::SetVertex>& nodes, Option<Ran
       std::stringstream ev_name;
       Option<Range> stm_range = ev_range;
       if (stm.isForStatement()) {
+        if (!stm_range) {
+          stm_range = Range();
+        }
         stm_range->merge(stm.range().get());
       }
       const bool STM_FIXED_RANGE = (stm.isForStatement()) ? checkFixedRange(stm.range()) : true;
@@ -544,7 +548,7 @@ std::list<Edge> inputEdges(SB::Deps::Graph& graph, string name)
     for (boost::tie(edge, out_edge_end) = out_edges(*vi_start, graph); edge != out_edge_end; ++edge) {
       SB::Deps::SetEdge edge_label = graph[*edge];
       SB::Deps::Vertex target = boost::target(*edge, graph);
-      SB::Deps::SetVertex target_set_vertex = graph[target]; 
+      SB::Deps::SetVertex target_set_vertex = graph[target];
       if (target_set_vertex.name() == name) {
         edges.push_back(*edge);
       }
@@ -552,7 +556,6 @@ std::list<Edge> inputEdges(SB::Deps::Graph& graph, string name)
   }
   return edges;
 }
-
 
 Set wholeVertex(SB::Deps::Graph& graph, Set matched_subset)
 {

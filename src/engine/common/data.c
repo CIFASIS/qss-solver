@@ -110,11 +110,13 @@ SD_eventData SD_EventData(int size)
     p[i].nLHSSt = 0;
     p[i].nLHSDsc = 0;
     p[i].nRHSSt = 0;
+    p[i].nReinitAsg = 0;
     p[i].zcSign = 0;
     p[i].direction = 0;
     p[i].LHSSt = NULL;
     p[i].LHSDsc = NULL;
     p[i].RHSSt = NULL;
+    p[i].ReinitAsg = NULL;
     p[i].zcHyst = 0;
   }
   return p;
@@ -128,11 +130,13 @@ SD_eventData SD_copyEventData(int size, SD_eventData events)
     p[i].nLHSSt = events[i].nLHSSt;
     p[i].nLHSDsc = events[i].nLHSDsc;
     p[i].nRHSSt = events[i].nRHSSt;
+    p[i].nReinitAsg = events[i].nReinitAsg;
     p[i].zcSign = events[i].zcSign;
     p[i].direction = events[i].direction;
     p[i].LHSSt = NULL;
     p[i].LHSDsc = NULL;
     p[i].RHSSt = NULL;
+    p[i].ReinitAsg = NULL;
     p[i].zcHyst = events[i].zcHyst;
   }
   return p;

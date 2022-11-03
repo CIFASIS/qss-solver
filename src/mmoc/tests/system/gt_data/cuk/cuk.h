@@ -94,6 +94,7 @@
 #define _state_idx_iL(coeff) 3*3 + coeff
 #define _iL(coeff) x[_state_idx_iL(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_iL(coeff) x[_state_idx_iL(coeff)]
+#define _q_iL(coeff) q[_state_idx_iL(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_iL(coeff) 3
 #define _eval_dep_iL(coeff) dx[_state_idx_iL(coeff)]
 
@@ -102,6 +103,7 @@
 #define _state_idx_iL1(coeff) 1*3 + coeff
 #define _iL1(coeff) x[_state_idx_iL1(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_iL1(coeff) x[_state_idx_iL1(coeff)]
+#define _q_iL1(coeff) q[_state_idx_iL1(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_iL1(coeff) 1
 #define _eval_dep_iL1(coeff) dx[_state_idx_iL1(coeff)]
 
@@ -123,6 +125,7 @@
 #define _state_idx_uC(coeff) 2*3 + coeff
 #define _uC(coeff) x[_state_idx_uC(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_uC(coeff) x[_state_idx_uC(coeff)]
+#define _q_uC(coeff) q[_state_idx_uC(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_uC(coeff) 2
 #define _eval_dep_uC(coeff) dx[_state_idx_uC(coeff)]
 
@@ -131,6 +134,7 @@
 #define _state_idx_uC1(coeff) 0*3 + coeff
 #define _uC1(coeff) x[_state_idx_uC1(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_uC1(coeff) x[_state_idx_uC1(coeff)]
+#define _q_uC1(coeff) q[_state_idx_uC1(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_uC1(coeff) 0
 #define _eval_dep_uC1(coeff) dx[_state_idx_uC1(coeff)]
 

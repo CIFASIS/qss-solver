@@ -49,8 +49,6 @@ static CLC_model clcModel = NULL;
 
 static SD_output simOutput = NULL;
 
-int is_sampled;
-
 int jac_struct_initialized = FALSE;
 
 SlsMat init_jac_matrix = NULL;
@@ -180,7 +178,7 @@ void CVODE_integrate(SIM_simulator simulate)
   double dQMin = clcData->dQMin[0];
   double *_x = clcData->x;
   double step_size = 1;
-  is_sampled = simOutput->commInterval != CI_Step;
+  int is_sampled = simOutput->commInterval != CI_Step;
   int size = clcData->states, nnz;
   if (is_sampled) {
     step_size = simOutput->sampled->period[0];

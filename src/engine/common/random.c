@@ -22,6 +22,10 @@
 #include <gsl/gsl_randist.h>
 #include <time.h>
 
+const gsl_rng_type *_random_generator;
+
+gsl_rng *_rseed;
+
 void shuffle(int *a, int size) { gsl_ran_shuffle(_rseed, a, size, sizeof(int)); }
 
 unsigned long getRandomValue(int n)

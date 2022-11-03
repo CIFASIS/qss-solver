@@ -56,10 +56,10 @@ TEST_P(IModelTests, GenerateCode)
   EXPECT_TRUE(result.good());
 }
 
-const char* models[] = {
-    "adr",     "advection",      "advection2D",  "advection2D_LI",    "airconds",  "aircont", "bball_downstairs", "boost",
-    "buck",    "buckboost",      "buck_circuit", "buck_term",         "cuk",       "cuk2",    "interleaved",      "inverters",
-    "lc_line", "lotka_volterra", "par_airconds", "par_airconds_cont", "rectifier", "rltest",  "rltest_LI",        "spikings"};
+const char* models[] = {"adr",         "advection", "advection2D", "advection2D_LI", "airconds",       "aircont",      "bball_downstairs",
+                        "boost",       "buck",      "buckboost",   "buck_circuit",   "buck_term",      "cuk",          "cuk2",
+                        "interleaved", "inverters", "lc_line",     "lotka_volterra", "NeuralNetwork1", "par_airconds", "par_airconds_cont",
+                        "rectifier",   "rltest",    "rltest_LI",   "spikings"};
 
 INSTANTIATE_TEST_SUITE_P(Models, IModelTests, testing::ValuesIn(models));
 

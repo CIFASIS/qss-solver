@@ -83,9 +83,12 @@ void EquationPrinter::setup(Equation eq)
   }
   const bool QSS_EQS = eq.type() == EQUATION::QSSDerivative || eq.type() == EQUATION::ZeroCrossing;
   _return_stm = (QSS_EQS) ? FUNCTION_PRINTER::ReturnStatementType::Return : FUNCTION_PRINTER::ReturnStatementType::Continue;
+  _used_variables = eq.usedVariables();
 }
 
 FUNCTION_PRINTER::ReturnStatementType EquationPrinter::returnStm() const { return _return_stm; }
+
+std::multimap<std::string, int> EquationPrinter::usedVariables() const { return _used_variables; }
 
 string EquationPrinter::equationId() const
 {
@@ -228,7 +231,7 @@ string DerivativePrinter::print() const
   tabs += TAB;
   buffer << printer.beginExpression(identifier(), _range);
   buffer << algCode();
-  buffer << printer.beginDimGuards(equationId(), arguments, _range);
+  buffer << printer.beginDimGuards(equationId(), arguments, _range, usedVariables());
   buffer << tabs << prefix() << lhs() << " = " << _rhs << ";" << endl;
   buffer << generateDerivatives(tabs) << endl;
   buffer << endl << TAB << printer.endDimGuards(_range);
@@ -275,7 +278,7 @@ string OutputPrinter::print() const
   }
   block += TAB;
   buffer << fp.beginExpression(identifier(), _range);
-  buffer << fp.beginDimGuards(equationId(), arguments, _range);
+  buffer << fp.beginDimGuards(equationId(), arguments, _range, usedVariables());
   buffer << algCode();
   buffer << block << prefix() << lhs() << " = " << _rhs << ";";
   buffer << endl << TAB << fp.endDimGuards(_range);
@@ -368,7 +371,7 @@ string DependencyPrinter::print() const
     }
   }
   tabs += TAB;
-  buffer << printer.beginDimGuards(equationId(), arguments, _range);
+  buffer << printer.beginDimGuards(equationId(), arguments, _range, usedVariables());
   buffer << beginParallelMap(tabs);
   buffer << tabs << prefix() << lhs(FIRST_ORDER) << " = " << _rhs << ";" << endl;
   buffer << generateDerivatives(tabs, SECOND_ORDER) << endl;

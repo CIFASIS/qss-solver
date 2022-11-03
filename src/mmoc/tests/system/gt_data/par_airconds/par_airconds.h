@@ -77,6 +77,7 @@
 #define _state_idx_th(d1,coeff) ((d1-1))*3 + coeff
 #define _th(d1,coeff) x[_state_idx_th(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_th(d1,coeff) x[_state_idx_th(d1,coeff)]
+#define _q_th(d1,coeff) q[_state_idx_th(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_th(d1,coeff) ((d1-1))
 #define _is_var_th(idx) idx >= 0 && idx < 4000
 #define _get_th_idxs(idx)\

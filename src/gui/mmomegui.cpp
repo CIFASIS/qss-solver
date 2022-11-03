@@ -60,6 +60,9 @@ MmomeGui::MmomeGui() : QMainWindow(), _sbmlFile()
   addMenuBarItems();
   enableActions(true);
   _settings_only = false;
+  _runDlg = new RunDlg(this);
+  connect(_runDlg, &RunDlg::accepted, this, &MmomeGui::runDlgClose);
+  connect(_runDlg, &RunDlg::rejected, this, &MmomeGui::runDlgRejected);
 }
 
 MmomeGui::~MmomeGui() { Editor::drop(); }
@@ -145,7 +148,7 @@ void MmomeGui::on_action_Save_As_triggered()
 void MmomeGui::on_actionSettings_triggered()
 {
   _settingsDlg = new SettingsDlg(this);
-  connect(_settingsDlg, SIGNAL(finished(int)), this, SLOT(settingsDlgClosed()));
+  connect(_settingsDlg, &SettingsDlg::finished, this, &MmomeGui::settingsDlgClosed);
   enableActions(false);
   _settingsDlg->show();
 }
@@ -162,7 +165,7 @@ void MmomeGui::on_actionImport_triggered()
   modelsDir.cd(sbmlfi.baseName());
   _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nImport SBML model: ") + fileName);
   _proc = new QProcess(this);
-  connect(_proc, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(importFinished(int, QProcess::ExitStatus)));
+  connect(_proc, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &MmomeGui::importFinished);
   _sbmlFile = modelsDir.absolutePath() + SLASH + sbmlfi.baseName() + ".mo";
   QStringList args;
   args << "-o " + _sbmlFile;
@@ -187,8 +190,8 @@ void MmomeGui::editModel(QString name)
     QMdiSubWindow *sw = new QMdiSubWindow(this, Qt::CustomizeWindowHint);
     sw->setWidget(Editor::instance(this, name));
     mdiArea->addSubWindow(sw);
-    connect(Editor::instance(), SIGNAL(done(QString, QString)), this, SLOT(done(QString, QString)));
-    connect(Editor::instance(), SIGNAL(clean(int)), this, SLOT(cleanBuildDir(int)));
+    connect(Editor::instance(), &ModelEditor::done, this, &MmomeGui::done);
+    connect(Editor::instance(), &ModelEditor::clean, this, &MmomeGui::cleanBuildDir);
     connect(action_Save, &QAction::triggered, this, []() { Editor::instance()->save(); });
     connect(actionSa_ve_All, &QAction::triggered, Editor::instance(), &ModelEditor::saveAll);
     Editor::instance()->setWindowState(Qt::WindowMaximized);
@@ -254,7 +257,7 @@ void MmomeGui::run_finished(int exitCode, QProcess::ExitStatus exitStatus)
     _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\n") + _proc->readAllStandardError());
     QByteArray logs = _proc->readAllStandardOutput();
     _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\n") + logs);
-    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + "Simulation failed. Exit code: " + QString("%1").arg(exitCode));
+    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + "Simulation failed. Exit code: " + QString::number(exitCode));
   }
   delete _proc;
   _proc = NULL;
@@ -275,7 +278,7 @@ void MmomeGui::run(QString name)
   _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nCreating/cleaning directory: ") + outputDir.absolutePath());
   on_actionClear_Log_triggered();
   _proc = new QProcess(this);
-  connect(_proc, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(run_finished(int, QProcess::ExitStatus)));
+  connect(_proc, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &MmomeGui::run_finished);
   QStringList args;
   args << name;
   if (Editor::instance()->isParallel()) {
@@ -290,7 +293,7 @@ void MmomeGui::run(QString name)
   } else {
     args << QString("false");
   }
-  connect(_proc, SIGNAL(readyReadStandardError()), this, SLOT(simulation_message()));
+  connect(_proc, &QProcess::readyReadStandardError, this, &MmomeGui::simulation_message);
   _timeInterval = Editor::instance()->stopTime().toDouble() - Editor::instance()->startTime().toDouble();
   _sim_progress->setMaximum(100);
   _sim_progress->reset();
@@ -376,7 +379,6 @@ void MmomeGui::runDlgClose()
     }
     compile(debugFlag);
   }
-  delete _runDlg;
 }
 
 void MmomeGui::on_actionRun_2_triggered()
@@ -395,9 +397,6 @@ void MmomeGui::on_actionRun_triggered()
     return;
   }
   _compiler_msg->clear();
-  _runDlg = new RunDlg(this);
-  connect(_runDlg, SIGNAL(accepted()), this, SLOT(runDlgClose()));
-  connect(_runDlg, SIGNAL(rejected()), this, SLOT(runDlgRejected()));
   _runDlg->setStartTime(Editor::instance()->startTime());
   _runDlg->setStopTime(Editor::instance()->stopTime());
   _runDlg->setTolerance(Editor::instance()->tolerance());
@@ -531,7 +530,7 @@ bool MmomeGui::compile(bool dbg)
   }
   QString flags = _utils->appFlag(FLG_FLAGS);
   _proc = new QProcess(this);
-  connect(_proc, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(comp_finished(int, QProcess::ExitStatus)));
+  connect(_proc, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &MmomeGui::comp_finished);
   QStringList args;
   QString set;
   if (_settings_only) {
@@ -580,7 +579,7 @@ void MmomeGui::importFinished(int exitCode, QProcess::ExitStatus exitStatus)
     editModel(_sbmlFile);
     addVariables();
   } else {
-    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nCan not import SBML file.") + QString(exitCode));
+    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nCan not import SBML file.") + QString::number(exitCode));
   }
   _sbmlFile.clear();
   delete _proc;
@@ -598,7 +597,7 @@ void MmomeGui::make_finished(int exitCode, QProcess::ExitStatus exitStatus)
     QFileInfo exefi(execName);
     if (!exefi.exists()) {
       _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\n") + _proc->readAllStandardError());
-      _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nCan't generate binary file.") + QString(exitCode));
+      _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nCan't generate binary file.") + QString::number(exitCode));
       enableActions(true);
       _settings_only = false;
       return;
@@ -606,7 +605,7 @@ void MmomeGui::make_finished(int exitCode, QProcess::ExitStatus exitStatus)
       _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nBinary file generated, ready to start simulation."));
     }
   } else {
-    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nError generating binary file.).") + QString(exitCode));
+    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nError generating binary file.).") + QString::number(exitCode));
     enableActions(true);
     _settings_only = false;
     return;
@@ -666,7 +665,7 @@ void MmomeGui::comp_finished(int exitCode, QProcess::ExitStatus exitStatus)
     QString build = _utils->appCommand(CMD_BUILD);
     delete _proc;
     _proc = new QProcess(this);
-    connect(_proc, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(make_finished(int, QProcess::ExitStatus)));
+    connect(_proc, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &MmomeGui::make_finished);
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     env.insert("MMOC_BUILD", QDir(_utils->appDir(MMOC_BUILD)).absolutePath());
     env.insert("MMOC_BIN", QDir(_utils->appDir(MMOC_BIN)).absolutePath());
@@ -675,7 +674,7 @@ void MmomeGui::comp_finished(int exitCode, QProcess::ExitStatus exitStatus)
   } else {
     delete _proc;
     _proc = NULL;
-    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nError during compilation.") + QString(exitCode));
+    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nError during compilation.") + QString::number(exitCode));
     enableActions(true);
     _settings_only = false;
   }
@@ -723,7 +722,7 @@ void MmomeGui::on_actionLog_triggered()
   }
   QString logCmd = _utils->appCommand(CMD_LOG);
   _log = new QProcess(this);
-  connect(_log, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(log_finished(int, QProcess::ExitStatus)));
+  connect(_log, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &MmomeGui::log_finished);
   QStringList args;
   args << name;
   QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
@@ -772,12 +771,12 @@ void MmomeGui::createActions()
   for (int i = 0; i < MaxRecentFiles; ++i) {
     recentFileActs[i] = new QAction(this);
     recentFileActs[i]->setVisible(false);
-    connect(recentFileActs[i], SIGNAL(triggered()), this, SLOT(openRecentFiles()));
+    connect(recentFileActs[i], &QAction::triggered, this, &MmomeGui::openRecentFiles);
   }
   exitAct = new QAction(tr("E&xit"), this);
   exitAct->setShortcuts(QKeySequence::Quit);
   exitAct->setStatusTip(tr("Exit the application"));
-  connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
+  connect(exitAct, &QAction::triggered, qApp, &QApplication::quit);
   separatorAct = menu_File->addSeparator();
   for (int i = 0; i < MaxRecentFiles; ++i) menu_File->addAction(recentFileActs[i]);
   separatorAct->setVisible(false);
@@ -911,7 +910,7 @@ void MmomeGui::on_actionGraphics_triggered()
     return;
   }
   _plot = new QProcess(this);
-  connect(_plot, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(plot_finished(int, QProcess::ExitStatus)));
+  connect(_plot, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &MmomeGui::plot_finished);
   QStringList args;
   if (plotOptions.isEmpty()) {
     plotOptions = "-persist";
@@ -925,7 +924,7 @@ void MmomeGui::plot_finished(int exitCode, QProcess::ExitStatus exitStatus)
 {
   QString msgs = _plot->readAllStandardError();
   if (exitStatus == QProcess::NormalExit && !msgs.isEmpty()) {
-    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + "\nPlot script error: " + QString(exitCode) + "\n" + msgs);
+    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + "\nPlot script error: " + QString::number(exitCode) + "\n" + msgs);
   }
   delete _plot;
   _plot = NULL;
@@ -965,7 +964,7 @@ void MmomeGui::log_finished(int exitCode, QProcess::ExitStatus exitStatus)
     editModel(logfi.absoluteFilePath());
   } else if (exitStatus == QProcess::NormalExit) {
     QString msgs = _log->readAllStandardError();
-    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + "\nLog file error: " + QString(exitCode) + "\n" + msgs);
+    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + "\nLog file error: " + QString::number(exitCode) + "\n" + msgs);
   }
   delete _log;
   _log = NULL;

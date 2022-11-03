@@ -17,15 +17,9 @@
 
  ******************************************************************************/
 
-#ifndef RANDOM_H_
-#define RANDOM_H_
+#pragma once
 
 #include <gsl/gsl_rng.h>
-
-
-const gsl_rng_type *_random_generator;
-
-gsl_rng *_rseed;
 
 unsigned long getRandomValue(int n);
 
@@ -42,5 +36,3 @@ void shuffle(int *a, int size);
 void Random(unsigned long seed);
 
 void freeRandom();
-
-#endif /* RANDOM_H_ */

@@ -22,10 +22,11 @@
 #include <assert.h>
 #include <sstream>
 
-#include "../ast/expression.h"
-#include "../util/util.h"
-#include "../util/visitors/convert_condition.h"
-#include "helpers.h"
+#include <ast/expression.h>
+#include <ir/helpers.h>
+#include <util/model_config.h>
+#include <util/util.h>
+#include <util/visitors/convert_condition.h>
 
 namespace MicroModelica {
 using namespace Util;
@@ -110,6 +111,7 @@ string Event::handler(EVENT::Type type) const
   if (stms.empty()) {
     return "";
   };
+  ModelConfig::instance().setAlgorithm(true);
   stringstream buffer;
   string block = "";
   FunctionPrinter fp;
@@ -121,13 +123,14 @@ string Event::handler(EVENT::Type type) const
   }
   block += TAB;
   buffer << fp.beginExpression(_zero_crossing.identifier(), _range);
-  buffer << fp.beginDimGuards(_zero_crossing.identifier(), arguments, _range);
+  buffer << fp.beginDimGuards(_zero_crossing.identifier(), arguments, _range, _zero_crossing.usedVariables());
   StatementTable::iterator it;
   for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
     buffer << block << stm << endl;
   }
   buffer << block << fp.endDimGuards(_range);
   buffer << block << fp.endExpression(_range);
+  ModelConfig::instance().setAlgorithm(false);
   return buffer.str();
 }
 

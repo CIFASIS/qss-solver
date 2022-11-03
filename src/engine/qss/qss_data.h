@@ -24,16 +24,9 @@
  * All the structures defined here, all visible from all the layers in the
  * system architecture.
  *
- * @file qss_data.h
- * @author Joaquin Fernandez
- * @version 3.1
- * @date 2010-2015
- * @copyright  GNU General Public License
- *
  */
 
-#ifndef QSS_DATA_H_
-#define QSS_DATA_H_
+#pragma once
 
 #include <common/data.h>
 #include <common/utils.h>
@@ -68,7 +61,7 @@ typedef void (*QSS_dep)(int, double *, double *, double *, double, double *, int
 
 typedef void (*QSS_zc)(int, double *, double *, double *, double, double *);
 
-typedef void (*QSS_hnd)(int, double *, double *, double *, double);
+typedef void (*QSS_hnd)(int, double *, double *, double *, double *, double);
 
 typedef void (*QSS_input)(double, double *);
 
@@ -242,6 +235,8 @@ QSS_data QSS_copyData(QSS_data data);
 
 void QSS_orderDataMatrix(QSS_data data);
 
+void QSS_computeReinitAssign(QSS_data data);
+
 void QSS_freeData(QSS_data data);
 
 void QSS_cleanData(QSS_data data);
@@ -348,5 +343,3 @@ void QSS_freeModel(QSS_model model);
 typedef void (*QSS_setData)(QSS_data, QSS_time, SD_output, QSS_model, SD_simulationSettings);
 
 bool QSS_influenced(QSS_data data, int variable, int inf, QSS_StepType type);
-
-#endif /* QSS_DATA_H_ */

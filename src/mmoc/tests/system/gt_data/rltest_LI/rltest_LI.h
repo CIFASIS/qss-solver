@@ -46,6 +46,7 @@
 #define _state_idx_x1(d1,coeff) ((d1-1))*3 + coeff
 #define _x1(d1,coeff) x[_state_idx_x1(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_x1(d1,coeff) x[_state_idx_x1(d1,coeff)]
+#define _q_x1(d1,coeff) q[_state_idx_x1(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_x1(d1,coeff) ((d1-1))
 #define _is_var_x1(idx) idx >= 0 && idx < 10
 #define _get_x1_idxs(idx)\
@@ -57,6 +58,7 @@
 #define _state_idx_x2(d1,coeff) (10+0)*3 + coeff
 #define _x2(d1,coeff) x[_state_idx_x2(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_x2(d1,coeff) x[_state_idx_x2(d1,coeff)]
+#define _q_x2(d1,coeff) q[_state_idx_x2(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_x2(d1,coeff) (10+(d1-1))
 #define _is_var_x2(idx) idx >= 10 && idx < 11
 #define _get_x2_idxs(idx)\

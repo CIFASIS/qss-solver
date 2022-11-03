@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef DATA_H_
-#define DATA_H_
+#pragma once
 
 #include <stdio.h>
 
@@ -138,12 +137,14 @@ struct SD_eventData_ {
   int nLHSSt;
   int nLHSDsc;
   int nRHSSt;
+  int nReinitAsg;
   int zcSign;
   int direction;
   int relation;
   int *LHSSt;
   int *LHSDsc;
   int *RHSSt;
+  int *ReinitAsg;
   double zcHyst;
 };
 
@@ -302,5 +303,3 @@ void SD_cleanJacMatrices(SD_jacMatrices jac_matrices);
 void SD_setupJacMatrices(SD_jacMatrices jac_matrices);
 
 void SD_cleanTransJacMatrices(SD_jacMatrices jac_matrices);
-
-#endif /* DATA_H_ */

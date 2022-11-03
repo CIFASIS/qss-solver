@@ -39,6 +39,7 @@
 #define _state_idx_vx(coeff) 3*4 + coeff
 #define _vx(coeff) x[_state_idx_vx(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_vx(coeff) x[_state_idx_vx(coeff)]
+#define _q_vx(coeff) q[_state_idx_vx(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_vx(coeff) 3
 #define _eval_dep_vx(coeff) dx[_state_idx_vx(coeff)]
 
@@ -47,6 +48,7 @@
 #define _state_idx_vy(coeff) 1*4 + coeff
 #define _vy(coeff) x[_state_idx_vy(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_vy(coeff) x[_state_idx_vy(coeff)]
+#define _q_vy(coeff) q[_state_idx_vy(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_vy(coeff) 1
 #define _eval_dep_vy(coeff) dx[_state_idx_vy(coeff)]
 
@@ -55,6 +57,7 @@
 #define _state_idx_x(coeff) 2*4 + coeff
 #define _x(coeff) x[_state_idx_x(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_x(coeff) x[_state_idx_x(coeff)]
+#define _q_x(coeff) q[_state_idx_x(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_x(coeff) 2
 #define _eval_dep_x(coeff) dx[_state_idx_x(coeff)]
 
@@ -63,6 +66,7 @@
 #define _state_idx_y(coeff) 0*4 + coeff
 #define _y(coeff) x[_state_idx_y(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_y(coeff) x[_state_idx_y(coeff)]
+#define _q_y(coeff) q[_state_idx_y(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_y(coeff) 0
 #define _eval_dep_y(coeff) dx[_state_idx_y(coeff)]
 

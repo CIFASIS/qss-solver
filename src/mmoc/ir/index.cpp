@@ -155,10 +155,7 @@ Index Index::revert() const
   return Index(Expression(revert.apply(_exp.expression())));
 }
 
-Index Index::replace(bool range_idx) const
-{
-  return replace(range(), range_idx);
-}
+Index Index::replace(bool range_idx) const { return replace(range(), range_idx); }
 
 Index Index::replace(Option<Range> for_range, bool range_idx) const
 {
@@ -197,7 +194,7 @@ string Index::print() const
 vector<string> Index::variables()
 {
   vector<string> vars;
-  for(unsigned int i = 0; i < _indexes.size(); i++){
+  for (unsigned int i = 0; i < _indexes.size(); i++) {
     if (_indexes[i].variable().empty()) {
       stringstream constant;
       constant << _indexes[i].constant();
@@ -279,11 +276,21 @@ Range::Range(AST_Statement_For stf, RANGE::Type type) : _ranges(), _index_pos(),
   setRangeDefinition(fil);
 }
 
-Range::Range(Variable var, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type), _fixed(true), _merged_dims(false) { generate(var); }
+Range::Range(Variable var, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type), _fixed(true), _merged_dims(false)
+{
+  generate(var);
+}
 
-Range::Range(AST_Expression exp) : _ranges(), _index_pos(), _size(1), _type(RANGE::For), _fixed(true), _merged_dims(false) { generate(exp); }
+Range::Range(AST_Expression exp) : _ranges(), _index_pos(), _size(1), _type(RANGE::For), _fixed(true), _merged_dims(false)
+{
+  generate(exp);
+}
 
-Range::Range(SB::Set set, int offset, vector<string> vars) : _ranges(), _index_pos(), _size(1), _type(RANGE::For), _fixed(true), _merged_dims(false) { generate(set, offset, vars); }
+Range::Range(SB::Set set, int offset, vector<string> vars)
+    : _ranges(), _index_pos(), _size(1), _type(RANGE::For), _fixed(true), _merged_dims(false)
+{
+  generate(set, offset, vars);
+}
 
 void Range::updateRangeDefinition(std::string index_def, RangeDefinition def, int pos)
 {
@@ -385,12 +392,11 @@ void Range::generate(AST_Expression exp)
 bool Range::isVariable(std::string var)
 {
   bool not_number = true;
-  try
-  {
-      std::stoi(var);
-      not_number = false;
+  try {
+    std::stoi(var);
+    not_number = false;
+  } catch (const std::exception&) {
   }
-  catch(const std::exception &) {}
   return not_number;
 }
 
@@ -406,21 +412,21 @@ Expression Range::getExp(std::vector<Expression> exps, size_t pos)
 
 void Range::generate(SB::Set set, int offset, vector<string> vars, std::vector<Expression> begin_exps, std::vector<Expression> end_exps)
 {
-  int pos = 0;
+  unsigned int pos = 0;
   SB::UnordAtomSet a_sets = set.atomicSets();
   for (SB::AtomSet a_set : a_sets) {
-    SB::MultiInterval intervals =  a_set.atomicSets();
+    SB::MultiInterval intervals = a_set.atomicSets();
     int exp_pos = 0;
-    for(SB::Interval interval : intervals.intervals()) {
+    for (SB::Interval interval : intervals.intervals()) {
       int begin = interval.lo() - offset + 1;
       int end = begin + interval.hi() - interval.lo();
       if (end < begin) {
         Error::instance().add(0, EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong range in dependency matrix.");
       }
       string index = Utils::instance().iteratorVar(pos);
-      if (!vars.empty() && isVariable(vars[pos])) {
+      if (!vars.empty() && pos < vars.size() && isVariable(vars[pos])) {
         index = vars[pos];
-      } 
+      }
       updateRangeDefinition(index, RangeDefinition(getExp(begin_exps, exp_pos), getExp(end_exps, exp_pos), begin, end), pos++);
       exp_pos++;
     }
@@ -453,10 +459,7 @@ string Range::iterator(string var, int dim, bool range_idx)
   return iterator(dim, range_idx);
 }
 
-bool Range::isDimensionVar(string var)
-{
-  return  (var.rfind("_d", 0) == 0);
-}
+bool Range::isDimensionVar(string var) { return (var.rfind("_d", 0) == 0); }
 
 string Range::getPrintDimensionVarsString() const
 {
@@ -694,8 +697,8 @@ string Range::in(vector<string> exps)
   int size = _ranges.size();
   int exps_size = exps.size();
   for (RangeDefinition r = _ranges.begin(it); !_ranges.end(it); r = _ranges.next(it), i++) {
-    string exp_str = (i < exps_size) ? exps[i] : getDimensionVar(i);     
-  
+    string exp_str = (i < exps_size) ? exps[i] : getDimensionVar(i);
+
     code << "(" << r.begin() << " <= " << exp_str << " && " << exp_str << " <= " << r.end() << ")";
     code << ((i + 1 < size) ? " && " : "");
   }
@@ -712,7 +715,7 @@ map<std::string, AST_Expression> Range::initExps()
   RangeDefinitionTable::iterator it;
   int i = 0;
   for (RangeDefinition r = _ranges.begin(it); !_ranges.end(it); r = _ranges.next(it), i++) {
-    init_exps[_ranges.key(it)] = newAST_Expression_Integer(r.begin());  
+    init_exps[_ranges.key(it)] = newAST_Expression_Integer(r.begin());
   }
   return init_exps;
 }
@@ -724,8 +727,8 @@ void Range::replace(Index ife_usage, Index ifr_usage)
     for (string ifr_var : ifr_usage.variables()) {
       variables.push_back(ifr_var);
     }
-    sort(variables.begin(), variables.end() );
-    variables.erase(unique(variables.begin(), variables.end() ), variables.end() );
+    sort(variables.begin(), variables.end());
+    variables.erase(unique(variables.begin(), variables.end()), variables.end());
   }
   // In case of a scalar usage in N<->1 relations.
   if (variables.empty()) {

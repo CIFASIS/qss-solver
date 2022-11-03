@@ -384,7 +384,7 @@ void QSS_HYB_integrate(SIM_simulator simulate)
   int nSZ, nLHSSt, nRHSSt, nHD, nHZ;
   SD_eventData event = qssData->event;
   double *d = qssData->d;
-  double tmp1[qssData->maxRHS];
+  double reinit_assign[qssData->maxRHS];
   int **SZ = qssData->SZ;
   int **ZS = qssData->ZS;
   int **HD = qssData->HD;
@@ -709,6 +709,7 @@ void QSS_HYB_integrate(SIM_simulator simulate)
           }
 #endif
           nRHSSt = event[index].nRHSSt;
+          int restore_index = 0;
           for (i = 0; i < nRHSSt; i++) {
             j = event[index].RHSSt[i];
             infCf0 = j * coeffs;
@@ -716,29 +717,28 @@ void QSS_HYB_integrate(SIM_simulator simulate)
             if (elapsed > 0) {
               integrateState(infCf0, elapsed, q, qOrder);
             }
+            tq[j] = t;
+            elapsed = t - tx[j];
+            reinit_assign[restore_index++] = x[infCf0];
+            if (elapsed > 0) {
+              x[infCf0] = evaluatePoly(infCf0, elapsed, x, xOrder);
+            }
+          }
+          if (s >= 0) {
+            qssModel->events->handlerPos(index, x, q, d, a, t);
+          } else {
+            qssModel->events->handlerNeg(index, x, q, d, a, t);
+          }
+          int nReinitAssign = event[index].nReinitAsg;
+          for (i = 0; i < nReinitAssign; i++) {
+            j = event[index].ReinitAsg[i];
+            infCf0 = j * coeffs;
+            x[infCf0] = reinit_assign[i];
           }
           nLHSSt = event[index].nLHSSt;
           for (i = 0; i < nLHSSt; i++) {
             j = event[index].LHSSt[i];
             infCf0 = j * coeffs;
-            elapsed = t - tq[j];
-            if (elapsed > 0) {
-              tmp1[i] = q[infCf0];
-              q[infCf0] = evaluatePoly(infCf0, elapsed, q, qOrder);
-            } else {
-              tmp1[i] = q[infCf0];
-            }
-          }
-          if (s >= 0) {
-            qssModel->events->handlerPos(index, q, d, a, t);
-          } else {
-            qssModel->events->handlerNeg(index, q, d, a, t);
-          }
-          for (i = 0; i < nLHSSt; i++) {
-            j = event[index].LHSSt[i];
-            infCf0 = j * coeffs;
-            x[infCf0] = q[infCf0];
-            q[infCf0] = tmp1[i];
             tx[j] = t;
             lqu[j] = dQRel[j] * fabs(x[infCf0]);
             if (lqu[j] < dQMin[j]) {

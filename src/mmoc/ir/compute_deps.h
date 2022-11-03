@@ -26,7 +26,8 @@ namespace MicroModelica {
 namespace IR {
 
 struct DefAlgDepsUse {
-  DefAlgDepsUse(Equation e, SB::Deps::VariableDep var_dep) {
+  DefAlgDepsUse(Equation e, SB::Deps::VariableDep var_dep)
+  {
     eq = e;
     use = var_dep.mapF();
     range = var_dep.mapF().wholeDom();
@@ -36,7 +37,9 @@ struct DefAlgDepsUse {
     use_map = var_dep.nMap();
     def_map = SB::Deps::LMapExp();
   }
-  DefAlgDepsUse(Equation e, SB::PWLMap pwl_def_map, Expression use_exp, SB::Deps::LMapExp use_map_exp, SB::Deps::LMapExp def_map_exp, int off) {
+  DefAlgDepsUse(Equation e, SB::PWLMap pwl_def_map, Expression use_exp, SB::Deps::LMapExp use_map_exp, SB::Deps::LMapExp def_map_exp,
+                int off)
+  {
     eq = e;
     use = pwl_def_map;
     range = pwl_def_map.wholeDom();
@@ -68,17 +71,17 @@ struct DefAlgDepsUse {
 };
 
 struct CompDef {
-  bool operator() (const DefAlgDepsUse& lhs, const DefAlgDepsUse& rhs) const
-  { 
+  bool operator()(const DefAlgDepsUse& lhs, const DefAlgDepsUse& rhs) const
+  {
     if (lhs.eq.id() != rhs.eq.id()) {
       return lhs.eq.id() < rhs.eq.id();
     } else {
-      return lhs.use_map < rhs.use_map; 
+      return lhs.use_map < rhs.use_map;
     }
   }
 };
 
-typedef set<DefAlgDepsUse,CompDef> AlgDeps;
+typedef set<DefAlgDepsUse, CompDef> AlgDeps;
 
 typedef std::map<int, AlgDeps> AlgDepsMap;
 
@@ -103,7 +106,8 @@ typedef list<DepData> DepsData;
 
 typedef std::map<std::string, DepsData> DepsMap;
 
-string addAlgDeps(Equation eq, SB::Deps::LMapExp eq_use, std::map<int, AlgDeps> der_deps, std::map<int, AlgDeps> alg_deps, PrintedDeps& printed_deps);
+string addAlgDeps(Equation eq, SB::Deps::LMapExp eq_use, std::map<int, AlgDeps> der_deps, std::map<int, AlgDeps> alg_deps,
+                  PrintedDeps& printed_deps);
 
 void insertAlg(AlgDepsMap& map, int id, DefAlgDepsUse new_dep);
 
@@ -113,7 +117,7 @@ bool checkEventRange(Index index, Range range);
 
 std::vector<std::string> getVariables(Index index, Range range);
 
-template<typename N>
+template <typename N>
 Option<Range> getUseRange(Util::Variable variable, DepData dep_data, N node, bool event = false)
 {
   Expression use_exp = dep_data.var_dep.exp();
@@ -124,20 +128,24 @@ Option<Range> getUseRange(Util::Variable variable, DepData dep_data, N node, boo
   Index use_idx(use_exp);
   std::vector<std::string> var_names = (use_idx.isConstant() && node.range()) ? node.range()->getIndexes() : use_idx.variables();
   if (dep_data.var_dep.equations().size() == 1 && dep_data.var_dep.variables().size() > 1) {
-      return Range(dep_data.var_dep.variables(),dep_data.var_dep.varOffset(), var_names);
+    return Range(dep_data.var_dep.variables(), dep_data.var_dep.varOffset(), var_names);
   } else if (dep_data.var_dep.equations().size() > 1 && dep_data.var_dep.variables().size() == 1) {
-      return Range(dep_data.var_dep.equations(),dep_data.var_dep.eqOffset(), var_names);
+    return Range(dep_data.var_dep.equations(), dep_data.var_dep.eqOffset(), var_names);
   }
   if (variable.isScalar() || SCALAR_EXP) {
-    return Option<Range>(); 
+    return Option<Range>();
   }
   if (!SCALAR_EXP) {
     if (dep_data.from_alg) {
-      return Range(dep_data.var_dep.equations(),dep_data.var_dep.eqOffset(), use_idx.variables());
+      return Range(dep_data.var_dep.equations(), dep_data.var_dep.eqOffset(), use_idx.variables());
     }
-    if (event && !checkEventRange(use_idx, node.range().get())) {
-      var_names = getVariables(use_idx, node.range().get());
-      return Range(dep_data.var_dep.equations(),dep_data.var_dep.eqOffset(), var_names);
+    if (event) {
+      if (!node.range()) {
+        return Range(dep_data.var_dep.variables(), dep_data.var_dep.varOffset(), var_names);
+      } else if (!checkEventRange(use_idx, node.range().get())) {
+        var_names = getVariables(use_idx, node.range().get());
+        return Range(dep_data.var_dep.equations(), dep_data.var_dep.eqOffset(), var_names);
+      }
     }
     return node.range();
   }

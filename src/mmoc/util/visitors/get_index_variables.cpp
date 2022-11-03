@@ -76,6 +76,23 @@ multimap<std::string, int> GetIndexVariables::foldTraverseElement(AST_Expression
     }
     break;
   }
+  case EXPCALL: {
+    AST_Expression_Call call = exp->getAsCall();
+    AST_ExpressionListIterator it;
+    foreach (it, call->arguments()) {
+      multimap<std::string, int> args = apply(current_element(it));
+      ret.insert(args.begin(), args.end());
+    }
+    break;
+  }
+  case EXPCALLARG: {
+    AST_Expression_CallArgs call = exp->getAsCallArgs();
+    AST_ExpressionListIterator it;
+    foreach (it, call->arguments()) {
+      multimap<std::string, int> args = apply(current_element(it));
+      ret.insert(args.begin(), args.end());
+    }
+  }
   default:
     break;
   }
