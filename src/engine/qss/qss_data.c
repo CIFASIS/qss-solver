@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../common/settings.h"
+#include <common/settings.h>
 
 static bool QSS_allocBuffer = FALSE;
 static bool QSS_hardCopyStruct = FALSE;
@@ -550,6 +550,13 @@ void QSS_dataCopyStructure(QSS_data data, QSS_data p)
             p->event[i].RHSSt[j] = data->event[i].RHSSt[j];
           }
         }
+        p->event[i].ReinitAsg = (p->event[i].nReinitAsg > 0) ? (int *)malloc(p->event[i].nReinitAsg * sizeof(int)) : NULL;
+        if (p->event[i].ReinitAsg != NULL) {
+          iter = p->event[i].nReinitAsg;
+          for (j = 0; j < iter; j++) {
+            p->event[i].ReinitAsg[j] = data->event[i].ReinitAsg[j];
+          }
+        }
       }
     } else {
       p->nSZ = NULL;
@@ -590,6 +597,7 @@ void QSS_dataCopyStructure(QSS_data data, QSS_data p)
         p->event[i].LHSSt = data->event[i].LHSSt;
         p->event[i].LHSDsc = data->event[i].LHSDsc;
         p->event[i].RHSSt = data->event[i].RHSSt;
+        p->event[i].ReinitAsg = data->event[i].ReinitAsg;
       }
     } else {
       p->nSZ = NULL;
@@ -762,6 +770,32 @@ void QSS_orderDataMatrix(QSS_data data)
     }
     if (data->event[i].RHSSt != NULL) {
       qsort(data->event[i].RHSSt, data->event[i].nRHSSt, sizeof(int), QSS_intCmp);
+    }
+  }
+}
+
+void QSS_computeReinitAssign(QSS_data data)
+{
+  int i, j, k, events = data->events;
+  for (i = 0; i < events; i++) {
+    if (data->event[i].nRHSSt > 0) {
+      int nRHSSt = data->event[i].nRHSSt;
+      int nLHSSt = data->event[i].nLHSSt;
+      for (j = 0; j < nRHSSt; j++) {
+        bool found = FALSE;
+        for (k = 0; k < nLHSSt; k++) {
+          if (data->event[i].RHSSt[j] == data->event[i].LHSSt[k]) {
+            found = TRUE;
+            break;
+          }
+        }
+        if (!found) {
+          if (data->event[i].ReinitAsg == NULL) {
+            data->event[i].ReinitAsg = (int *)malloc(data->event[i].nRHSSt * sizeof(int));
+          }
+          data->event[i].ReinitAsg[data->event[i].nReinitAsg++] = data->event[i].RHSSt[j];
+        }
+      }
     }
   }
 }

@@ -126,7 +126,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 	}
 }
 
-void MOD_handlerPos(int idx, double *x, double *d, double *a, double t)
+void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double t)
 {
 	int _d1;
 	int i;
@@ -141,8 +141,8 @@ void MOD_handlerPos(int idx, double *x, double *d, double *a, double t)
 		}
 		case _eval_event_5: {
 			_nextSample = _nextSample+1;
-			_ptotals = _ptotal(0);
-			_dtref = _Kp*(_ptotals/_pmax-_pref)-_Ki*_ierr(0);
+			_ptotals = _q_ptotal(0);
+			_dtref = _Kp*(_ptotals/_pmax-_pref)-_Ki*_q_ierr(0);
 					return;
 		}
 	}
@@ -188,7 +188,7 @@ void MOD_handlerPos(int idx, double *x, double *d, double *a, double t)
 	}
 }
 
-void MOD_handlerNeg(int idx, double *x, double *d, double *a, double t)
+void MOD_handlerNeg(int idx, double *x, double* q, double *d, double *a, double t)
 {
 	int _d1;
 	int i;

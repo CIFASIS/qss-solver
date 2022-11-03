@@ -95,6 +95,7 @@
 #define _state_idx_iL(d1,coeff) (1+(d1-1))*3 + coeff
 #define _iL(d1,coeff) x[_state_idx_iL(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_iL(d1,coeff) x[_state_idx_iL(d1,coeff)]
+#define _q_iL(d1,coeff) q[_state_idx_iL(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_iL(d1,coeff) (1+(d1-1))
 #define _is_var_iL(idx) idx >= 1 && idx < 5
 #define _get_iL_idxs(idx)\
@@ -114,6 +115,7 @@
 #define _state_idx_uC(coeff) 0*3 + coeff
 #define _uC(coeff) x[_state_idx_uC(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_uC(coeff) x[_state_idx_uC(coeff)]
+#define _q_uC(coeff) q[_state_idx_uC(coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_uC(coeff) 0
 #define _eval_dep_uC(coeff) dx[_state_idx_uC(coeff)]
 

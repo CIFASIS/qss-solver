@@ -40,6 +40,7 @@
 #define _state_idx_u(d1,d2,coeff) ((d1-1)*20+(d2-1))*3 + coeff
 #define _u(d1,d2,coeff) x[_state_idx_u(d1,d2,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_u(d1,d2,coeff) x[_state_idx_u(d1,d2,coeff)]
+#define _q_u(d1,d2,coeff) q[_state_idx_u(d1,d2,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_u(d1,d2,coeff) ((d1-1)*20+(d2-1))
 #define _is_var_u(idx) idx >= 0 && idx < 400
 #define _get_u_idxs(idx)\
