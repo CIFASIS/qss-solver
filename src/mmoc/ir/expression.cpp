@@ -28,6 +28,7 @@
 #include <util/model_config.h>
 #include <util/util.h>
 #include <util/visitors/expression_printer.h>
+#include <util/visitors/get_index_variables.h>
 #include <util/visitors/is_constant_index.h>
 #include <util/visitors/partial_eval_exp.h>
 
@@ -161,13 +162,19 @@ std::ostream& operator<<(std::ostream& out, const Expression& s)
   out << s.print();
   return out;
 }
-bool Expression::operator<(const Expression &other) const
-{                                          
+bool Expression::operator<(const Expression& other) const
+{
   std::stringstream cmp_this;
   std::stringstream cmp_other;
   cmp_this << *this;
   cmp_other << other;
   return cmp_this.str() < cmp_other.str();
+}
+
+std::multimap<std::string, int> Expression::usedVariables() const
+{
+  GetIndexVariables used_variables;
+  return used_variables.apply(_exp);
 }
 
 }  // namespace IR
