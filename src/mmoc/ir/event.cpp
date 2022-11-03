@@ -123,7 +123,7 @@ string Event::handler(EVENT::Type type) const
   }
   block += TAB;
   buffer << fp.beginExpression(_zero_crossing.identifier(), _range);
-  buffer << fp.beginDimGuards(_zero_crossing.identifier(), arguments, _range);
+  buffer << fp.beginDimGuards(_zero_crossing.identifier(), arguments, _range, _zero_crossing.usedVariables());
   StatementTable::iterator it;
   for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
     buffer << block << stm << endl;

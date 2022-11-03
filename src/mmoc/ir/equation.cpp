@@ -68,17 +68,7 @@ Equation::Equation(AST_Expression lhs, AST_Expression rhs, Option<Range> range, 
 }
 
 Equation::Equation(AST_Expression eq, Option<Range> range, EQUATION::Type type, int id, int offset)
-    : _eq(),
-      _lhs(),
-      _rhs(),
-      _range(range),
-      _autonomous(true),
-      _type(type),
-      _id(id),
-      _offset(offset),
-      _lhs_exp(),
-      _usage(),
-      _alg_code()
+    : _eq(), _lhs(), _rhs(), _range(range), _autonomous(true), _type(type), _id(id), _offset(offset), _lhs_exp(), _usage(), _alg_code()
 {
   initialize(eq);
 }
@@ -241,6 +231,14 @@ int Equation::arrayId() const { return _id - 1; }
 void Equation::setAlgCode(std::string alg_code) { _alg_code = alg_code; }
 
 std::string Equation::algCode() const { return _alg_code; }
+
+std::multimap<std::string, int> Equation::usedVariables() const
+{
+  std::multimap<std::string, int> ret = _lhs.usedVariables();
+  std::multimap<std::string, int> ret_rhs = _rhs.usedVariables();
+  ret.insert(ret_rhs.begin(), ret_rhs.end());
+  return ret;
+}
 
 }  // namespace IR
 }  // namespace MicroModelica

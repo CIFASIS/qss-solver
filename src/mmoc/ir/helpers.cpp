@@ -19,16 +19,16 @@
 
 #include <sstream>
 
+#include <generator/macros.h>
 #include "helpers.h"
-#include "built_in_functions.h"
-#include "expression.h"
-#include "equation.h"
-#include "../generator/macros.h"
-#include "../util/error.h"
-#include "../util/model_config.h"
-#include "../util/util.h"
-#include "../util/visitors/get_index_variables.h"
-#include "../util/visitors/is_constant_expression.h"
+#include <ir/built_in_functions.h>
+#include <ir/equation.h>
+#include <ir/expression.h>
+#include <util/error.h>
+#include <util/model_config.h>
+#include <util/util.h>
+#include <util/visitors/get_index_variables.h>
+#include <util/visitors/is_constant_expression.h>
 
 namespace MicroModelica {
 using namespace Deps;
@@ -38,10 +38,7 @@ namespace IR {
 
 /* ExternalFunction Class Implementation */
 
-ExternalFunction::ExternalFunction(string lvalue, string name, AST_ExpressionList args)
-    : _lvalue(lvalue), _name(name), _args(args)
-{
-}
+ExternalFunction::ExternalFunction(string lvalue, string name, AST_ExpressionList args) : _lvalue(lvalue), _name(name), _args(args) {}
 
 std::ostream& operator<<(std::ostream& out, const ExternalFunction& e)
 {
@@ -229,7 +226,7 @@ string FunctionPrinter::endExpression(Option<Range> range, FUNCTION_PRINTER::Ret
     }
     break;
   }
-  case FUNCTION_PRINTER::Continue: 
+  case FUNCTION_PRINTER::Continue:
     buffer << "continue;" << endl;
     break;
   }
@@ -250,18 +247,21 @@ string FunctionPrinter::endDimGuards(Option<Range> range) const
   return "";
 }
 
-string FunctionPrinter::beginDimGuards(string token, string args, Option<Range> range) const
+string FunctionPrinter::beginDimGuards(string token, string args, Option<Range> range, std::multimap<std::string, int> used_variables) const
 {
   stringstream buffer;
   if (range) {
     buffer << TAB << "_apply_usage" << token << "(" << args << ");" << endl;
-    RangeDefinitionTable rdt = range->definition();
+    RangeDefinitionTable ranges = range->definition();
     RangeDefinitionTable::iterator it;
-    int size = rdt.size(), i = 0, idx = 0;
+    int size = ranges.size(), idx = 1;
     buffer << TAB << "if (";
-    for (RangeDefinition rd = rdt.begin(it); !rdt.end(it); rd = rdt.next(it), idx++) {
-      buffer << "(" << rdt.key(it) << " >= " << rd.begin() << " && " << rdt.key(it) << " <= " << rd.end() << ")";
-      buffer << (++i < size ? " && " : "");
+    for (RangeDefinition rd = ranges.begin(it); !ranges.end(it); rd = ranges.next(it), idx++) {
+      string variable = ranges.key(it);
+      if (used_variables.find(variable) != used_variables.end()) {
+        buffer << "(" << ranges.key(it) << " >= " << rd.begin() << " && " << ranges.key(it) << " <= " << rd.end() << ")";
+        buffer << (idx < size ? " && " : "");
+      }
     }
     buffer << ") {" << endl;
     range->addLocalVariables();
@@ -348,7 +348,7 @@ string FunctionPrinter::printAlgebraicGuards(Equation alg, Index usage)
     Index revert = usage.replace();
     arguments = revert.usageExp();
   }
-  buffer << printer.beginDimGuards(alg.applyId(), arguments, range);
+  buffer << printer.beginDimGuards(alg.applyId(), arguments, range, alg.usedVariables());
   return buffer.str();
 }
 
@@ -409,7 +409,7 @@ string FunctionPrinter::equationVariableMacros(Option<Range> range, Expression l
     GetIndexVariables index_usage;
     RangeDefinitionTable range_def = range->definition();
     buffer << "#define _get" << id << "_var_idxs";
-    buffer << "(row, var)\\" << endl; 
+    buffer << "(row, var)\\" << endl;
     multimap<string, int> usage = index_usage.apply(lhs.expression());
     map<string, string> parse_row = parseIndexes("row", range, 1);
     map<int, string> ctes = parseConstants(lhs);
@@ -426,7 +426,7 @@ string FunctionPrinter::equationVariableMacros(Option<Range> range, Expression l
     for (auto index : ctes) {
       string local_range_var = range->getDimensionVar(index.first, USE_RANGE_DIM_VARS);
       buffer << TAB << local_range_var << " = " << index.second << ";\\\n";
-    } 
+    }
     vector<string> exps;
     exps.push_back(lhs.dimVariables(USE_RANGE_DIM_VARS));
     Expression a_exp = Expression::generate(lhs.reference()->name(), exps);

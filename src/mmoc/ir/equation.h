@@ -70,7 +70,10 @@ class Equation {
   inline void setRange(Option<Range> range) { _range = range; };
   inline int id() const { return _id; };
   inline EQUATION::Type type() const { return _type; }
-  inline bool isDerivative() const { return _type == EQUATION::QSSDerivative || _type == EQUATION::ClassicDerivative || _type == EQUATION::QSSBDFDerivative; }
+  inline bool isDerivative() const
+  {
+    return _type == EQUATION::QSSDerivative || _type == EQUATION::ClassicDerivative || _type == EQUATION::QSSBDFDerivative;
+  }
   inline bool isZeroCrossing() const { return _type == EQUATION::ZeroCrossing; }
   inline bool isOutput() const { return _type == EQUATION::Output; }
   inline bool isAlgebraic() const { return _type == EQUATION::Algebraic; }
@@ -91,6 +94,7 @@ class Equation {
   int arrayId() const;
   void setAlgCode(std::string alg_code);
   std::string algCode() const;
+  std::multimap<std::string, int> usedVariables() const;
 
   protected:
   void initialize(AST_Equation eq);
@@ -115,12 +119,12 @@ class Equation {
 
 class EquationDefOrder {
   public:
-  EquationDefOrder() : _var_name(), _var_init() {};
-  EquationDefOrder(std::string var_name, std::vector<int> var_init) : _var_name(var_name), _var_init(var_init) {};
+  EquationDefOrder() : _var_name(), _var_init(){};
+  EquationDefOrder(std::string var_name, std::vector<int> var_init) : _var_name(var_name), _var_init(var_init){};
 
-  bool operator<(const EquationDefOrder& other) const
+  bool operator<(const EquationDefOrder &other) const
   {
-    int var_compare = _var_name.compare(other._var_name); 
+    int var_compare = _var_name.compare(other._var_name);
     if (var_compare == 0) {
       assert(_var_init.size() == other._var_init.size());
       size_t size = _var_init.size();
@@ -135,15 +139,15 @@ class EquationDefOrder {
   }
 
   std::string variable() const { return _var_name; }
-  
+
   protected:
   std::string _var_name;
   std::vector<int> _var_init;
 };
 
-typedef std::map<int, std::list<Equation>> OrderedEquations; 
+typedef std::map<int, std::list<Equation>> OrderedEquations;
 
-typedef std::map<EquationDefOrder, Equation> EquationOrderMap; 
+typedef std::map<EquationDefOrder, Equation> EquationOrderMap;
 
 typedef ModelTable<int, Equation> EquationTable;
 

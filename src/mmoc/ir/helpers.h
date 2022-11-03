@@ -17,16 +17,16 @@
 
  ******************************************************************************/
 
-#pragma once 
+#pragma once
 
 #include <string>
 
-#include "annotation.h"
-#include "index.h"
-#include "equation.h"
-#include "expression.h"
-#include "../util/symbol_table.h"
-#include "../util/util.h"
+#include <ir/annotation.h>
+#include <ir/index.h>
+#include <ir/equation.h>
+#include <ir/expression.h>
+#include <util/symbol_table.h>
+#include <util/util.h>
 
 namespace MicroModelica {
 namespace IR {
@@ -37,7 +37,7 @@ namespace IR {
  */
 class ExternalFunction {
   public:
-  ExternalFunction() {};
+  ExternalFunction(){};
   ExternalFunction(std::string lvalue, std::string name, AST_ExpressionList args);
   ~ExternalFunction() = default;
   friend std::ostream& operator<<(std::ostream& out, const ExternalFunction& e);
@@ -53,7 +53,8 @@ typedef ModelTable<int, ExternalFunction> ExternalFunctionTable;
 class CompiledFunction {
   public:
   CompiledFunction();
-  CompiledFunction(std::string name, std::string includeDir, std::string libraryDir, Util::SymbolTable& libraries, std::string prefix = "__");
+  CompiledFunction(std::string name, std::string includeDir, std::string libraryDir, Util::SymbolTable& libraries,
+                   std::string prefix = "__");
   ~CompiledFunction() = default;
   inline bool hasIncludeDirectory() const { return !_includeDirectory.empty(); };
   inline bool hasLibraryDirectory() const { return !_libraryDirectory.empty(); };
@@ -123,7 +124,7 @@ class FunctionPrinter {
   std::string getIndexes(string var, Option<Range> range, int offset, bool modelica_index) const;
   std::map<std::string, std::string> parseIndexes(string var, Option<Range> range, int offset, bool modelica_index = true) const;
   std::map<int, std::string> parseConstants(Expression ref) const;
-  std::string beginDimGuards(std::string token, string args, Option<Range> range) const;
+  std::string beginDimGuards(std::string token, string args, Option<Range> range, std::multimap<std::string, int> used_variables) const;
   std::string endDimGuards(Option<Range> range) const;
   std::string printAlgebraicGuards(Equation alg, Index usage);
   /// TODO: Review modelica_index parameter usage.
