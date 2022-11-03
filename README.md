@@ -1,4 +1,4 @@
-## QSS Solver 4.0.0
+## QSS Solver 4.0.1
 
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
@@ -166,10 +166,10 @@ These are generic installation instructions.
 ## Dependences
 
 In order to be able to install and compile the QSS Solver, 
-the following  dependencies must be installed (**Ubuntu 20.04**): 
+the following dependencies must be installed (**Ubuntu 22.04**): 
 
 * bison++
-* boost1.71
+* libboost-dev (boost1.71 in **Ubuntu 20.04**)
 * cmake 
 * g++
 * gfortran 
@@ -183,8 +183,7 @@ the following  dependencies must be installed (**Ubuntu 20.04**):
 * libscotch-dev
 * libsuitesparse-dev
 * pkgconf
-* python
-* qt5-default
+* qtbase5-dev qt5-qmake (qt5-default in **Ubuntu 20.04**)
 
 ## Basic Installation
 
@@ -210,15 +209,27 @@ The makefile script accepts the following options:
 
 The makefile script accepts the following targets:
 
-* qss-engine: 		Builds the QSS solver libraries.
-* mmo-compiler: 	Builds the MicroModelica compiler. 	
-* qss-solver-gui:	Builds the graphic interface.
-* qss-user-libs:	Builds the user packages included in this distribution.
-* mmo-interfaces:	Builds the SBML-MicroModelica translator.
-* qss-solver-doc:	Builds the documentation for the QSS solver libraries, the MicroModelica compiler and the QSS solver GUI.
+* **qss-engine**: 		Builds the QSS solver libraries.
+* **mmo-compiler**: 	Builds the MicroModelica compiler. 	
+* **qss-solver-gui**:	Builds the graphic interface.
+* **qss-user-libs**:	Builds the user packages included in this distribution.
+* **mmo-interfaces**:	Builds the SBML-MicroModelica translator.
+* **qss-solver-doc**:	Builds the documentation for the QSS solver libraries, the MicroModelica compiler and the QSS solver GUI.
 				 
 
 ## Changelog
+
+## [4.0.1] - 03-11-2022
+
+### Added
+- Compilation **Ubuntu 22.04** is now supported.
+- Use State variables values instead of quantized approximation in handler reinit statements for QSS methods.
+
+### Changed
+- The QSS methods event structure **SD_EventData** now contains a new matrix that defines the RHS state variables not used in LHS state assignments. 
+
+### Removed
+- Gtest lib compilation, the compiled libraries are distributed now.
 
 ## [4.0.0] - 30-09-2022
 
@@ -237,11 +248,6 @@ The makefile script accepts the following targets:
 - Support for Mac and Windows.
 - Support for rpm packages.
 - 3rd party Scotch and Ginac libraries, system installed libraries are used now.
-
-## [3.2] 
-### Added
-- Implemented Discrete Event parallel simulation algorithm.
-- Implemented new mixed mode QSS-BDF algorithm.
 
 ## Licensing
 

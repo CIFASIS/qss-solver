@@ -1,5 +1,17 @@
 ## Changelog
 
+## [4.0.1] - 03-11-2022
+
+### Added
+- Compilation **Ubuntu 22.04** is now supported.
+- Use State variables values instead of quantized approximation in handler reinit statements for QSS methods.
+
+### Changed
+- The QSS methods event structure **SD_EventData** now contains a new matrix that defines the RHS state variables not used in LHS state assignments. 
+
+### Removed
+- Gtest lib compilation, the compiled libraries are distributed now.
+
 ## [4.0.0] - 30-09-2022
 
 ### Added
