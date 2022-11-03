@@ -45,6 +45,7 @@ class EquationPrinter {
   std::string lhs(int order = 0) const;
   virtual std::string equationId() const;
   FUNCTION_PRINTER::ReturnStatementType returnStm() const;
+  std::multimap<std::string, int> usedVariables() const;
 
   protected:
   void setup(Equation eq);
@@ -56,6 +57,7 @@ class EquationPrinter {
   Expression _lhs;
   std::string _alg_code;
   FUNCTION_PRINTER::ReturnStatementType _return_stm;
+  std::multimap<std::string, int> _used_variables;
 };
 
 EquationPrinter* getPrinter(Equation eq);
@@ -127,7 +129,7 @@ class DependencyPrinter : public DerivativePrinter {
   std::string print() const override;
 
   protected:
-  std::string beginParallelMap(std::string &tabs) const;
+  std::string beginParallelMap(std::string& tabs) const;
   std::string endParallelMap() const;
 
   private:

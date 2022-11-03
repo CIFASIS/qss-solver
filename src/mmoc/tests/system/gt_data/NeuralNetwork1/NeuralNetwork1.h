@@ -58,6 +58,7 @@
 #define _state_idx_V(d1,coeff) ((d1-1))*3 + coeff
 #define _V(d1,coeff) x[_state_idx_V(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_V(d1,coeff) x[_state_idx_V(d1,coeff)]
+#define _q_V(d1,coeff) q[_state_idx_V(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_V(d1,coeff) ((d1-1))
 #define _is_var_V(idx) idx >= 0 && idx < 100
 #define _get_V_idxs(idx)\

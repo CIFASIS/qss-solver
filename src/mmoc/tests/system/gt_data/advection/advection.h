@@ -27,6 +27,7 @@
 #define _state_idx_u(d1,coeff) ((d1-1))*3 + coeff
 #define _u(d1,coeff) x[_state_idx_u(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _init_u(d1,coeff) x[_state_idx_u(d1,coeff)]
+#define _q_u(d1,coeff) q[_state_idx_u(d1,coeff)] * COEFF_MULTIPLIER(coeff)
 #define _eval_u(d1,coeff) ((d1-1))
 #define _is_var_u(idx) idx >= 0 && idx < 20000
 #define _get_u_idxs(idx)\

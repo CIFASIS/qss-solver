@@ -63,7 +63,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 	}
 }
 
-void MOD_handlerPos(int idx, double *x, double *d, double *a, double t)
+void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double t)
 {
 	int _d1;
 	int i;
@@ -78,7 +78,7 @@ void MOD_handlerPos(int idx, double *x, double *d, double *a, double t)
 	}
 }
 
-void MOD_handlerNeg(int idx, double *x, double *d, double *a, double t)
+void MOD_handlerNeg(int idx, double *x, double* q, double *d, double *a, double t)
 {
 }
 

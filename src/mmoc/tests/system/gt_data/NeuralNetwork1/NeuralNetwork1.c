@@ -28,7 +28,7 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 	if (_is_var_V(idx)) {
 		_get_V_idxs(idx);
 		_apply_usage_alg_eq_1(_d1);
-		if ((_d2 >= 1 && _d2 <= 1) && (i >= 1 && i <= 100)) {
+		if ((i >= 1 && i <= 100)) {
 				_Is(i,0) = _Islast(i)*exp(-(_time-_tlast(i))/_taus);
 			_Is(i,1) = 0;
 	}
@@ -78,7 +78,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 	}
 }
 
-void MOD_handlerPos(int idx, double *x, double *d, double *a, double t)
+void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double t)
 {
 	int _d1;
 	int i;
@@ -117,7 +117,7 @@ void MOD_handlerPos(int idx, double *x, double *d, double *a, double t)
 	}
 }
 
-void MOD_handlerNeg(int idx, double *x, double *d, double *a, double t)
+void MOD_handlerNeg(int idx, double *x, double* q, double *d, double *a, double t)
 {
 }
 
@@ -180,7 +180,7 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 	if (_is_var_V(idx)) {
 		_get_V_idxs(idx);
 		_apply_usage_alg_eq_1(_d1);
-		if ((_d2 >= 1 && _d2 <= 1) && (i >= 1 && i <= 100)) {
+		if ((i >= 1 && i <= 100)) {
 				_Is(i,0) = _Islast(i)*exp(-(_time-_tlast(i))/_taus);
 			_Is(i,1) = 0;
 	}
@@ -204,7 +204,7 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 	if (_is_var_V(idx)) {
 		_get_V_idxs(idx);
 		_apply_usage_alg_eq_1(_d1);
-		if ((_d2 >= 1 && _d2 <= 1) && (i >= 1 && i <= 100)) {
+		if ((i >= 1 && i <= 100)) {
 				_Is(i,0) = _Islast(i)*exp(-(_time-_tlast(i))/_taus);
 	
 	}

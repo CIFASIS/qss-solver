@@ -43,9 +43,11 @@ class Expression {
   bool isScalar() const;
   list<Expression> indexes() const;
   static Expression generate(std::string var_name, std::vector<std::string> indices);
-  bool operator<(const Expression &other) const;
+  bool operator<(const Expression& other) const;
 
   friend std::ostream& operator<<(std::ostream& out, const Expression& s);
+
+  std::multimap<std::string, int> usedVariables() const;
 
   protected:
   std::vector<Expression> usageExps() const;
