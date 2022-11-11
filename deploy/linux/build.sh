@@ -99,7 +99,7 @@ rm -rf ./tmp_deb/opt/qss-solver/src/usr/lib
 rm -rf ./tmp_deb/opt/qss-solver/src/interfaces/sbml/usr
 rm -rf ./tmp_deb/opt/qss-solver/src/gui/usr
 
-cp /usr/lib/x86_64-linux-gnu/libsbml.so.5.18.0 ./tmp_deb/opt/qss-solver/lib/libsbml.so.5
+cp /usr/lib/x86_64-linux-gnu/libsbml.so.5.19.0 ./tmp_deb/opt/qss-solver/lib/libsbml.so.5
 cp src/engine/3rd-party/partitioners/patoh/Linux-x86_64/libpatoh.a ./tmp_deb/opt/qss-solver/lib/libpatoh.a
 cp src/engine/3rd-party/partitioners/metis/Linux-x86_64/libmetis.a ./tmp_deb/opt/qss-solver/lib/libmetis.a
 

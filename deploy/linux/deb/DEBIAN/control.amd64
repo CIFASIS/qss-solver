@@ -2,7 +2,7 @@ Package: qss-solver
 Version:
 Architecture: amd64
 Maintainer: Joaquin Fernandez <fernandez@cifasis-conicet.gov.ar>
-Depends: gnuplot-x11, build-essential (>= 11.4), qt5-default, zenity, gfortran (>=4.6.3), libconfig-dev, libblas-dev, libgsl0-dev, libsuitesparse-dev, libcln6, libatlas-base-dev
+Depends: gnuplot-x11, build-essential (>= 11.4), qtbase5-dev, qt5-qmake, zenity, gfortran (>=4.6.3), libconfig-dev, libblas-dev, libgsl0-dev, libsuitesparse-dev, libcln6, libatlas-base-dev
 Section: science
 Priority: extra
 Homepage: https://github.com/CIFASIS/qss-solver
