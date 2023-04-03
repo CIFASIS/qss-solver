@@ -97,4 +97,10 @@ function root
     external "C" c = pow(a,1/b);
 end root;
 
+function fabs
+    input Real a;
+    output Real c;
+    external "C" c = fabs(a);
+end root;
+
 end math;
