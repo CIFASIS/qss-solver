@@ -25,6 +25,11 @@
 namespace MicroModelica {
 namespace IR {
 
+struct QSSModelConfig {
+  EquationTable eqs;
+  SB::Deps::Graph graph;
+};
+
 struct DefAlgDepsUse {
   DefAlgDepsUse(Equation e, SB::Deps::VariableDep var_dep)
   {
@@ -38,13 +43,13 @@ struct DefAlgDepsUse {
     def_map = SB::Deps::LMapExp();
   }
   DefAlgDepsUse(Equation e, SB::PWLMap pwl_def_map, Expression use_exp, SB::Deps::LMapExp use_map_exp, SB::Deps::LMapExp def_map_exp,
-                int off)
+                int off, bool rec = false)
   {
     eq = e;
     use = pwl_def_map;
     range = pwl_def_map.wholeDom();
     exp = use_exp;
-    recursive = false;
+    recursive = rec;
     use_map = use_map_exp;
     def_map = def_map_exp;
     offset = off;
@@ -73,11 +78,24 @@ struct DefAlgDepsUse {
 struct CompDef {
   bool operator()(const DefAlgDepsUse& lhs, const DefAlgDepsUse& rhs) const
   {
-    if (lhs.eq.id() != rhs.eq.id()) {
+    // if (lhs.eq.id() != rhs.eq.id()) {
+    if (lhs.use_map.constantExp() && rhs.use_map.constantExp()) {
       return lhs.eq.id() < rhs.eq.id();
-    } else {
-      return lhs.use_map < rhs.use_map;
     }
+    if (lhs.use_map.constantExp() && !rhs.use_map.constantExp()) {
+      return lhs.use_map.constants() < rhs.use_map.initValues();
+    }
+    if (!lhs.use_map.constantExp() && rhs.use_map.constantExp()) {
+      return lhs.use_map.initValues() < rhs.use_map.constants();
+    }
+    if (!lhs.use_map.constantExp() && !rhs.use_map.constantExp()) {
+      return lhs.use_map.initValues() < rhs.use_map.initValues();
+    }
+    assert(false);
+    return false;
+    //} else {
+    //  return lhs.use_map < rhs.use_map;
+    //}
   }
 };
 
@@ -107,7 +125,7 @@ typedef list<DepData> DepsData;
 typedef std::map<std::string, DepsData> DepsMap;
 
 string addAlgDeps(Equation eq, SB::Deps::LMapExp eq_use, std::map<int, AlgDeps> der_deps, std::map<int, AlgDeps> alg_deps,
-                  PrintedDeps& printed_deps);
+                  PrintedDeps& printed_deps, bool comes_from_rec = false);
 
 void insertAlg(AlgDepsMap& map, int id, DefAlgDepsUse new_dep);
 
@@ -118,26 +136,35 @@ bool checkEventRange(Index index, Range range);
 std::vector<std::string> getVariables(Index index, Range range);
 
 template <typename N>
-Option<Range> getUseRange(Util::Variable variable, DepData dep_data, N node, bool event = false)
+Option<Range> getUseRange(Util::Variable variable, DepData dep_data, N node, bool event = false, bool path_recursive_deps = false)
 {
   Expression use_exp = dep_data.var_dep.exp();
   const bool SCALAR_EXP = dep_data.var_dep.nMap().constantExp();
+  if (variable.isScalar()) {
+    return Option<Range>();
+  }
+  /// If the variable is recursive, return the entire variable range.
+  if (variable.isArray() && path_recursive_deps) {
+    return Range(variable);
+  }
   if (dep_data.var_dep.isRecursive()) {
     return Range(dep_data.var_dep.var());
   }
+  if (SCALAR_EXP) {
+    return Option<Range>();
+  }
   Index use_idx(use_exp);
   std::vector<std::string> var_names = (use_idx.isConstant() && node.range()) ? node.range()->getIndexes() : use_idx.variables();
+  /// If a range of variables affects one equation, generate a range with variable size and offsets,
+  /// the same is done if the opposite condition is met, return the range of the equations.
   if (dep_data.var_dep.equations().size() == 1 && dep_data.var_dep.variables().size() > 1) {
     return Range(dep_data.var_dep.variables(), dep_data.var_dep.varOffset(), var_names);
   } else if (dep_data.var_dep.equations().size() > 1 && dep_data.var_dep.variables().size() == 1) {
     return Range(dep_data.var_dep.equations(), dep_data.var_dep.eqOffset(), var_names);
   }
-  if (variable.isScalar() || SCALAR_EXP) {
-    return Option<Range>();
-  }
   if (!SCALAR_EXP) {
     if (dep_data.from_alg) {
-      return Range(dep_data.var_dep.equations(), dep_data.var_dep.eqOffset(), use_idx.variables());
+      return Range(dep_data.var_dep.equations(), dep_data.var_dep.eqOffset(), use_idx.variables(), node.range());
     }
     if (event) {
       if (!node.range()) {
@@ -156,6 +183,8 @@ Option<Range> getUseRange(Util::Variable variable, DepData dep_data, N node, boo
 Option<Range> getUseRange(Util::Variable variable, DepData dep_data);
 
 bool findDep(DepsMap deps, DepData dep_data, bool multiple_nodes = false);
+
+bool checkAlgRecursiveDeps(Equation eq, AlgDepsMap alg_deps, AlgDepsMap deps);
 
 }  // namespace IR
 }  // namespace MicroModelica

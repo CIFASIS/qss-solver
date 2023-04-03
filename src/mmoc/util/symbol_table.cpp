@@ -19,15 +19,15 @@
 
 #include "symbol_table.h"
 
-#include <sstream>
 #include <math.h>
+#include <sstream>
 
-#include "../ast/ast_builder.h"
-#include "../ast/expression.h"
-#include "../ir/equation.h"
-#include "../ir/expression.h"
-#include "../ir/helpers.h"
-#include "util.h"
+#include <ast/ast_builder.h>
+#include <ast/expression.h>
+#include <ir/equation.h>
+#include <ir/expression.h>
+#include <ir/helpers.h>
+#include <util/util.h>
 
 namespace MicroModelica {
 using namespace IR;
@@ -122,7 +122,6 @@ Variable &Variable::operator=(const Variable &other)
   _hasOffset = other._hasOffset;
   _offset = other._offset;
   _realType = other._realType;
-
   return *this;
 }
 
@@ -175,6 +174,8 @@ void Variable::processModification()
   }
 }
 
+void Variable::setName(string name) { _name = name; }
+
 unsigned int Variable::size()
 {
   vector<int>::const_iterator it;
@@ -217,9 +218,9 @@ string Variable::declaration(string prefix)
 {
   stringstream buffer;
   if (type()->print() == "Integer") {
-    buffer << "int ";  
+    buffer << "int ";
   } else {
-    buffer << "double ";  
+    buffer << "double ";
   }
   buffer << prefix << name();
   if (isArray()) {
@@ -271,6 +272,10 @@ void VarSymbolTable::initialize(TypeSymbolTable ty)
   reinit.setBuiltIn();
   reinit.setName("reinit");
   insert("reinit", reinit);
+  Variable terminate(ty["Real"].get(), 0, nullptr, nullptr, vector<int>(1, 0), false);
+  terminate.setBuiltIn();
+  terminate.setName("terminate");
+  insert("terminate", terminate);
   Variable chain_rule(ty["Real"].get(), TP_LOCAL, nullptr, nullptr, vector<int>(1, 0), false);
   chain_rule.setBuiltIn();
   chain_rule.setName("aux");

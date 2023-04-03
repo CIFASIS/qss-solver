@@ -96,7 +96,7 @@ class Variable {
   inline bool hasEachModifier() { return _hasEach; };
   inline void setEachModifier(bool each) { _hasEach = each; };
   inline string name() const { return _name; };
-  inline void setName(string n) { _name = n; };
+  void setName(string name);
   inline AST_Expression exp() { return _exp; };
   inline bool isArray() const { return _isArray; };
   inline bool isScalar() { return !isArray(); };

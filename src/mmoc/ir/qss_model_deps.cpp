@@ -41,6 +41,10 @@ namespace IR {
 
 QSSModelDepsGenerator::QSSModelDepsGenerator() : _qss_model_deps_def(), _tabs(0), _deps(), _post_process_eval(false) {}
 
+void QSSModelDepsGenerator::setup(QSSModelConfig config) { _config = config; }
+
+QSSModelConfig QSSModelDepsGenerator::config() { return _config; }
+
 void QSSModelDepsGenerator::addCode(DepCode dep_code, std::stringstream& code)
 {
   if (dep_code.scalar) {
@@ -89,23 +93,24 @@ void QSSModelDepsGenerator::postProcess(SB::Deps::SetVertex vertex)
       assert(eq);
       vector<string> exps;
       Expression use_exp = getUseExp(ifr.get(), var_dep);
-      Option<Range> range = getUseRange(ifr.get(), var_dep, eq.get());
+      bool alg_recursive_use = checkAlgRecursiveDeps(eq.get(), _der_deps, _alg_deps);
+      Option<Range> range = getUseRange(ifr.get(), var_dep, eq.get(), false, alg_recursive_use);
       Index use_idx(use_exp);
-      string use_id = use_idx.identifier();
+      string use_id = use_idx.identifier(alg_recursive_use && !ifr.get().isScalar());
       Equation der = eq.get();
       der.setType(IR::EQUATION::Dependency);
       der.setUsage(use_idx);
       if (range && der.hasRange()) {
         der.setRange(range);
       }
-      if ((var_dep.var_dep.equations().size() == 1) && use_exp.isScalar() && der.hasRange()) {
+      if ((var_dep.var_dep.equations().size() == 1) && use_exp.isScalar() && der.hasRange() && !alg_recursive_use) {
         Equation use_eq = der;
         use_eq.applyUsage(use_idx);
         der = use_eq;
       }
       if (deps_code.find(use_id) == deps_code.end()) {
         DepCode dep_code;
-        dep_code.scalar = use_exp.isScalar();
+        dep_code.scalar = (use_exp.isScalar() && !alg_recursive_use) || ifr.get().isScalar();
         deps_code[use_id] = dep_code;
       }
       DepCode dep_code = deps_code[use_id];
@@ -152,9 +157,9 @@ void QSSModelDepsGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVe
   Equation g_eq = getEquation(g_vertex);
   if (var_dep.isRecursive()) {
     DefAlgDepsUse new_dep(g_eq, var_dep);
-    insertAlg(_der_deps, v_eq.id(), new_dep);
+    insertAlg(((v_eq.type() == IR::EQUATION::Algebraic) ? _alg_deps : _der_deps), v_eq.id(), new_dep);
   }
-  if (v_eq.type() == EQUATION::QSSDerivative) {
+  if (v_eq.type() == EQUATION::QSSDerivative && var_dep.var().isState()) {
     string var_name = var_dep.var().name();
     DepData dep_data(v_eq.id(), var_dep);
     if (!findDep(_deps, dep_data)) {
@@ -171,7 +176,7 @@ void QSSModelDepsGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVe
 {
   Equation v_eq = getEquation(v_vertex);
   Equation g_eq = getEquation(g_vertex);
-  DefAlgDepsUse new_dep(g_eq, def_map, use_exp, use_map_exp, def_map_exp,  g_vertex.id());
+  DefAlgDepsUse new_dep(g_eq, def_map, use_exp, use_map_exp, def_map_exp, g_vertex.id());
   insertAlg(((v_eq.type() == IR::EQUATION::Algebraic) ? _alg_deps : _der_deps), v_eq.id(), new_dep);
 }
 
@@ -188,7 +193,12 @@ void QSSModelDeps::build(EquationTable eqs)
   QSSModelDepsBuilder qss_model_deps;
   IndexShiftBuilder index_shifts(algebraics);
   SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(eqs, algebraics);
-  qss_model_deps.compute(SDSBGraph.build(), index_shifts.build());
+  SB::Deps::Graph graph = SDSBGraph.build();
+  QSSModelConfig config;
+  config.eqs = eqs;
+  config.graph = graph;
+  qss_model_deps.setup(config);
+  qss_model_deps.compute(graph, index_shifts.build());
   _qss_model_deps_def = qss_model_deps.def();
 }
 

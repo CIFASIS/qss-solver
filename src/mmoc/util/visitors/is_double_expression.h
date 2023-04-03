@@ -24,19 +24,17 @@
 
 namespace MicroModelica {
 namespace Util {
-class IsConstantExpression : public AST_Expression_Visitor<bool> {
+class IsDoubleExpression : public AST_Expression_Visitor<bool> {
   public:
-  IsConstantExpression();
-  IsConstantExpression(bool eval_int, bool integer_valued = false);
-  ~IsConstantExpression() = default;
+  IsDoubleExpression();
+  IsDoubleExpression();
+  ~IsDoubleExpression() = default;
 
   private:
   bool foldTraverseElement(AST_Expression exp);
   inline bool foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
   inline bool foldTraverseElement(bool l, bool r, BinOpType bot) { return l && r; }
   bool _in_index_list;
-  bool _eval_int;
-  bool _integer_valued;
 };
 
 }  // namespace Util

@@ -91,7 +91,7 @@ void JacGenerator::dependencyPrologue(Equation eq, SB::Deps::VariableDep var_dep
 {
   stringstream code;
   string tabs = Utils::instance().tabs(_tabs);
-  SB::Deps::LMapExp map = var_dep.nMap(); 
+  SB::Deps::LMapExp map = var_dep.nMap();
   Range range(var_dep.variables(), var_dep.varOffset());
   if (var_dep.isRecursive() && eq.hasRange()) {
     FunctionPrinter printer;
@@ -105,7 +105,7 @@ void JacGenerator::dependencyPrologue(Equation eq, SB::Deps::VariableDep var_dep
   }
   vector<string> exps = map.apply(range.getDimensionVars());
   if (!map.constantExp()) {
-    code << tabs << "if(" << range.in(exps); 
+    code << tabs << "if(" << range.in(exps);
     if (!guard.empty()) {
       code << " && " << guard;
     }
@@ -211,13 +211,15 @@ void JacGenerator::Fvisitor(SB::Deps::SetVertex vertex, SB::Deps::VariableDep va
 void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift)
 {
   stringstream code;
+  const bool REC_DEPS = var_dep.isRecursive();
+  SB::Deps::VariableDep dep = var_dep;
   Equation v_eq = getEquation(v_vertex);
   Equation g_eq = getEquation(g_vertex);
   // Generate composed expression for guards
-  SB::Deps::LMapExp map_m = var_dep.mMap();
-  SB::Deps::LMapExp n_map = var_dep.nMap();
-  string dom_guard = guard(var_dep.equations(), var_dep.eqOffset(), var_dep.var().name(), map_m);
-  dependencyPrologue(g_eq, var_dep, dom_guard);
+  SB::Deps::LMapExp map_m = dep.mMap();
+  SB::Deps::LMapExp n_map = dep.nMap();
+  string dom_guard = guard(dep.equations(), dep.eqOffset(), dep.var().name(), map_m);
+  dependencyPrologue(g_eq, dep, dom_guard);
   generatePos(v_eq.arrayId(), v_eq.type());
   vector<string> variables;
   string tab = Utils::instance().tabs(_tabs);
@@ -228,34 +230,41 @@ void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_ve
   } else {
     Option<Variable> v_lhs = v_eq.LHSVariable();
     Option<Variable> g_lhs = g_eq.LHSVariable();
-    if (var_dep.isRecursive()) {
-      Range range(var_dep.variables(), var_dep.varOffset());
+    if (REC_DEPS) {
+      Range range(dep.variables(), dep.varOffset());
+      // code << "REDEP";
       exps = n_map.apply(range.getDimensionVars(USE_RANGE_IDXS));
-    } else if (g_lhs->isArray()) { 
-      Range range(var_dep.variables(), var_dep.varOffset());
+    } else if (g_lhs->isArray()) {
+      Range range(dep.variables(), dep.varOffset());
+      SB::Set dep_r = dep.variables();
+      // cout << dep_r << endl;
+      // code << "GARRAY";
+
       exps = range.getInitValues();
     } else if (v_lhs->isArray()) {
       for (Expression exp : v_eq.lhs().indexes()) {
         exps.push_back(exp.print());
       }
-    } 
+    }
   }
   Expression a_exp = Expression::generate(g_eq.LHSVariable()->name(), exps);
   Index a_ind(a_exp);
-  code << tab << "c_row_g = ";
-  code << a_ind << " - " << index_shift;
-  code << ";" << endl;
+  code << tab << "c_row_g = " << a_ind << " - ";
+  int eq_shift = g_eq.LHSVariable()->offset();
+  if (v_eq.hasRange()) {
+    eq_shift += index_shift;
+  }
+  code << eq_shift << ";" << endl;  //<< " " << v_eq.type() << " " << v_eq.print() << ";" << endl;
   _jac_def.code.append(code.str());
   int g_eq_id = g_eq.arrayId();
   generatePos(g_eq_id, g_eq.type(), "c_row_g", "col_g");
   generateEquation(v_eq.arrayId(), g_eq_id, v_eq.type());
-  dependencyEpilogue(g_eq, var_dep);
+  dependencyEpilogue(g_eq, dep);
 }
 
-void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp, Expression use_exp, SB::PWLMap def_map,
-              SB::Deps::LMapExp def_map_exp, SB::Set intersection)
+void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp,
+                          Expression use_exp, SB::PWLMap def_map, SB::Deps::LMapExp def_map_exp, SB::Set intersection)
 {
-
 }
 
 void JacGenerator::initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge)

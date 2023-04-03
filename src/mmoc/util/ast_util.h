@@ -82,14 +82,21 @@ class AST_Expression_Traverse {
 template <class R>
 class AST_Expression_Visitor {
   public:
+  AST_Expression_Visitor() : _left(nullptr), _right(nullptr), _in_bin_op(false){};
   virtual ~AST_Expression_Visitor() = default;
   R apply(AST_Expression e)
   {
     switch (e->expressionType()) {
     case EXPBINOP: {
       AST_Expression_BinOp b = e->getAsBinOp();
-      AST_Expression left = b->left(), right = b->right();
-      return (foldTraverseElement(apply(left), apply(right), b->binopType()));
+      if (!_in_bin_op) {
+        _in_bin_op = true;
+        _left = b->left();
+        _right = b->right();
+      }
+      R ret = foldTraverseElement(apply(b->left()), apply(b->right()), b->binopType());
+      _in_bin_op = false;
+      return ret;
     }
     case EXPUMINUS:
       return foldTraverseElementUMinus(e);
@@ -97,6 +104,11 @@ class AST_Expression_Visitor {
       return foldTraverseElement(e);
     }
   };
+
+  protected:
+  AST_Expression _left;
+  AST_Expression _right;
+  bool _in_bin_op;
 
   private:
   virtual R foldTraverseElement(AST_Expression) = 0;
