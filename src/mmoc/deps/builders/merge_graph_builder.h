@@ -41,7 +41,6 @@ struct IntersectInfo {
 
 typedef list<IntersectInfo> Intersections;
 
-
 template <typename S>
 class MergeGraphGenerator {
   public:
@@ -65,7 +64,8 @@ class MergeGraphGenerator {
   protected:
   Intersections computeIntersections(SB::Set variables);
   SB::PWLMap buildMap(SB::Set dom, int convert_offset, SB::Set dom_map, int graph_offset);
-  SB::Deps::LMapExp buildLMapExp(IR::Expression dom, SB::Deps::LMapExp use_map);
+  SB::Deps::LMapExp buildLMapExp(IR::Expression dom, IR::Expression use_exp);
+  SB::Deps::LMapExp buildLMapFromExp(IR::Expression exp);
   SB::EdgeMaps generatePWLMaps(IntersectInfo inter_info, SB::Deps::SetVertex orig_ife_vertex, SB::Deps::SetVertex ife_vertex,
                                SB::Deps::VariableDep var_dep);
   void addEdges(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep);

@@ -27,9 +27,12 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-IsConstantExpression::IsConstantExpression() : _in_index_list(false), _eval_int(false) {}
+IsConstantExpression::IsConstantExpression() : _in_index_list(false), _eval_int(false), _integer_valued(false) {}
 
-IsConstantExpression::IsConstantExpression(bool eval_int) : _in_index_list(false), _eval_int(eval_int) {}
+IsConstantExpression::IsConstantExpression(bool eval_int, bool integer_valued)
+    : _in_index_list(false), _eval_int(eval_int), _integer_valued(integer_valued)
+{
+}
 
 bool IsConstantExpression::foldTraverseElement(AST_Expression exp)
 {
@@ -44,7 +47,9 @@ bool IsConstantExpression::foldTraverseElement(AST_Expression exp)
                             cr->name().c_str());
       break;
     }
-    if (!var->isConstant() && !var->isParameter() && (var->name() != "_chain_rule")) {
+    if (_integer_valued) {
+      ret = var->isConstant();
+    } else if (!var->isConstant() && !var->isParameter() && (var->name() != "_chain_rule")) {
       ret = false;
     }
     break;
@@ -52,6 +57,12 @@ bool IsConstantExpression::foldTraverseElement(AST_Expression exp)
   case EXPINTEGER: {
     if (_eval_int) {
       ret = true;
+    }
+    break;
+  }
+  case EXPREAL: {
+    if (_integer_valued) {
+      ret = false;
     }
     break;
   }

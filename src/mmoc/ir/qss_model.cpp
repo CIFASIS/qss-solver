@@ -40,14 +40,14 @@ namespace IR {
 
 QSSModelGenerator::QSSModelGenerator() : _qss_model_def(), _tabs(0), _post_process_eval(false) {}
 
-void QSSModelGenerator::setup(EquationTable eqs) { _eqs = eqs; }
+void QSSModelGenerator::setup(QSSModelConfig config) { _config = config; }
 
 void QSSModelGenerator::postProcess(SB::Deps::SetVertex vertex)
 {
   if (_post_process_eval) {
     return;
   }
-  EquationTable equations = _eqs;
+  EquationTable equations = _config.eqs;
   EquationTable::iterator it;
   std::stringstream simple;
   std::stringstream generic;
@@ -77,10 +77,10 @@ void QSSModelGenerator::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep
 void QSSModelGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift)
 {
   if (var_dep.isRecursive()) {
-    Equation v_eq = getEquation(v_vertex, _eqs);
-    Equation g_eq = getEquation(g_vertex, _eqs);
+    Equation v_eq = getEquation(v_vertex, _config.eqs);
+    Equation g_eq = getEquation(g_vertex, _config.eqs);
     DefAlgDepsUse new_dep(g_eq, var_dep);
-    insertAlg(_der_deps, v_eq.id(), new_dep);
+    insertAlg(((v_eq.type() == IR::EQUATION::Algebraic) ? _alg_deps : _der_deps), v_eq.id(), new_dep);
   }
 }
 
@@ -88,8 +88,8 @@ void QSSModelGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex
                                SB::Deps::LMapExp use_map_exp, Expression use_exp, SB::PWLMap def_map, SB::Deps::LMapExp def_map_exp,
                                SB::Set intersection)
 {
-  Equation v_eq = getEquation(v_vertex, _eqs);
-  Equation g_eq = getEquation(g_vertex, _eqs);
+  Equation v_eq = getEquation(v_vertex, _config.eqs);
+  Equation g_eq = getEquation(g_vertex, _config.eqs);
   DefAlgDepsUse new_dep(g_eq, def_map, use_exp, use_map_exp, def_map_exp, g_vertex.id());
   insertAlg(((v_eq.type() == IR::EQUATION::Algebraic) ? _alg_deps : _der_deps), v_eq.id(), new_dep);
 }
@@ -98,10 +98,12 @@ void QSSModelGenerator::initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge
 
 QSSModelDef QSSModelGenerator::def() { return _qss_model_def; }
 
-template<typename GraphBuilder>
-QSSModel<GraphBuilder>::QSSModel() {}
+template <typename GraphBuilder>
+QSSModel<GraphBuilder>::QSSModel()
+{
+}
 
-template<typename GraphBuilder>
+template <typename GraphBuilder>
 void QSSModel<GraphBuilder>::build(EquationTable eqs)
 {
   EquationTable algebraics = ModelConfig::instance().algebraics();
@@ -109,16 +111,26 @@ void QSSModel<GraphBuilder>::build(EquationTable eqs)
   QSSModelBuilder qss_model;
   IndexShiftBuilder index_shifts(algebraics);
   GraphBuilder EQSBGraph(eqs, algebraics);
-  qss_model.setup(eqs);
-  qss_model.compute(EQSBGraph.build(), index_shifts.build());
+  SB::Deps::Graph graph = EQSBGraph.build();
+  QSSModelConfig config;
+  config.eqs = eqs;
+  config.graph = graph;
+  qss_model.setup(config);
+  qss_model.compute(graph, index_shifts.build());
   _qss_model_def = qss_model.def();
 }
 
-template<typename GraphBuilder>
-string QSSModel<GraphBuilder>::simpleDef() { return _qss_model_def.simple; }
+template <typename GraphBuilder>
+string QSSModel<GraphBuilder>::simpleDef()
+{
+  return _qss_model_def.simple;
+}
 
-template<typename GraphBuilder>
-string QSSModel<GraphBuilder>::genericDef() { return _qss_model_def.generic; }
+template <typename GraphBuilder>
+string QSSModel<GraphBuilder>::genericDef()
+{
+  return _qss_model_def.generic;
+}
 
 template class QSSModel<SDSBGraphBuilder>;
 

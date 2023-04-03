@@ -129,10 +129,10 @@ void Index::setExp(Expression exp)
   parseIndexes();
 }
 
-string Index::identifier() const
+string Index::identifier(bool recursive_use) const
 {
   stringstream buffer;
-  if (isConstant()) {
+  if (isConstant() && !recursive_use) {
     buffer << "_eval" << _exp;
   } else {
     buffer << variable();
@@ -270,10 +270,11 @@ Range::Range(AST_Equation_For eqf, RANGE::Type type) : _ranges(), _index_pos(), 
   setRangeDefinition(fil);
 }
 
-Range::Range(AST_Statement_For stf, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type), _fixed(true), _merged_dims(false)
+Range::Range(AST_Statement_For stf, RANGE::Type type, bool from_event)
+    : _ranges(), _index_pos(), _size(1), _type(type), _fixed(true), _merged_dims(false)
 {
   AST_ForIndexList fil = stf->forIndexList();
-  setRangeDefinition(fil);
+  setRangeDefinition(fil, from_event);
 }
 
 Range::Range(Variable var, RANGE::Type type) : _ranges(), _index_pos(), _size(1), _type(type), _fixed(true), _merged_dims(false)
@@ -286,10 +287,10 @@ Range::Range(AST_Expression exp) : _ranges(), _index_pos(), _size(1), _type(RANG
   generate(exp);
 }
 
-Range::Range(SB::Set set, int offset, vector<string> vars)
+Range::Range(SB::Set set, int offset, vector<string> vars, Option<Range> orig_range)
     : _ranges(), _index_pos(), _size(1), _type(RANGE::For), _fixed(true), _merged_dims(false)
 {
-  generate(set, offset, vars);
+  generate(set, offset, vars, orig_range);
 }
 
 void Range::updateRangeDefinition(std::string index_def, RangeDefinition def, int pos)
@@ -321,7 +322,7 @@ bool Range::testExpression(AST_Expression exp)
   return false;
 }
 
-void Range::setRangeDefinition(AST_ForIndexList fil)
+void Range::setRangeDefinition(AST_ForIndexList fil, bool from_event)
 {
   AST_ForIndexListIterator filit;
   int pos = 0;
@@ -347,8 +348,12 @@ void Range::setRangeDefinition(AST_ForIndexList fil)
     } else {
       end = eval.apply(ast_end_exp);
     }
+    if (from_event) {
+      end = eval.apply(ast_end_exp) - begin + 1;
+      begin = 1;
+    }
     if (end < begin) {
-      Error::instance().add(AST_ListFirst(el)->lineNum(), EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong equation range.");
+      Error::instance().add(AST_ListFirst(el)->lineNum(), EM_IR | EM_WRONG_EXP, ER_Fatal, "Wrong equation range.");
     }
     string index = fi->variable()->c_str();
     updateRangeDefinition(index,
@@ -408,6 +413,36 @@ Expression Range::getExp(std::vector<Expression> exps, size_t pos)
   assert(exps.size() > pos);
   _fixed = false;
   return exps[pos];
+}
+
+void Range::generate(SB::Set set, int offset, vector<string> vars, Option<Range> orig_range)
+{
+  unsigned int pos = 0;
+  const bool MAP_RANGE = orig_range.has_value();
+  SB::UnordAtomSet a_sets = set.atomicSets();
+  for (SB::AtomSet a_set : a_sets) {
+    SB::MultiInterval intervals = a_set.atomicSets();
+    int exp_pos = 0;
+    for (SB::Interval interval : intervals.intervals()) {
+      int begin = interval.lo() - offset + 1;
+      int end = begin + interval.hi() - interval.lo();
+      int step = interval.step();
+      if (MAP_RANGE) {
+        RangeDefinition orig_def = orig_range->definition().value(exp_pos);
+        begin = orig_def.begin() + (begin - 1) * orig_def.step();
+        end = orig_def.begin() + (end - 1) * orig_def.step();
+      }
+      if (end < begin) {
+        Error::instance().add(0, EM_IR | EM_UNKNOWN_ODE, ER_Error, "Wrong range in dependency matrix.");
+      }
+      string index = Utils::instance().iteratorVar(pos);
+      if (!vars.empty() && pos < vars.size() && isVariable(vars[pos])) {
+        index = vars[pos];
+      }
+      updateRangeDefinition(index, RangeDefinition(begin, end, step), pos++);
+      exp_pos++;
+    }
+  }
 }
 
 void Range::generate(SB::Set set, int offset, vector<string> vars, std::vector<Expression> begin_exps, std::vector<Expression> end_exps)
@@ -655,6 +690,22 @@ void Range::applyUsage(Index usage)
   }
 }
 
+void Range::update(int offset)
+{
+  RangeDefinitionTable::iterator it;
+  int i = 0;
+  map<string, RangeDefinition> updated_ranges;
+  for (RangeDefinition r = _ranges.begin(it); !_ranges.end(it); r = _ranges.next(it), i++) {
+    int new_begin = r.begin() + offset;
+    int new_end = r.end() + offset;
+    RangeDefinition new_range(new_begin, new_end, r.step());
+    updated_ranges[_ranges.key(it)] = new_range;
+  }
+  for (auto update_range : updated_ranges) {
+    _ranges.insert(update_range.first, update_range.second);
+  }
+}
+
 bool Range::checkUsage(Index usage, Index def)
 {
   int dimension = def.dimension();
@@ -720,37 +771,84 @@ map<std::string, AST_Expression> Range::initExps()
   return init_exps;
 }
 
+bool Range::checkRangeVariable(string var, set<string>& added_vars, vector<string>& old_keys, int& pos)
+{
+  if (added_vars.find(var) == added_vars.end()) {
+    Option<RangeDefinition> r = _ranges[var];
+    if (r.has_value()) {
+      added_vars.insert(var);
+      string index = getDimensionVar(pos);
+      if (index != var) {
+        old_keys.push_back(var);
+        _ranges.insert(index, r.get());
+      }
+      pos++;
+      return true;
+    }
+  }
+  return false;
+}
+
+bool Range::checkRangeVariables(string ife_idx, string ifr_idx, set<string>& added_vars, vector<string>& old_keys, int& pos)
+{
+  if ((!isVariable(ife_idx) || ife_idx.empty()) && (!isVariable(ifr_idx) || ifr_idx.empty())) {
+    return true;
+  }
+  bool found = false;
+  if (isVariable(ife_idx)) {
+    found = checkRangeVariable(ife_idx, added_vars, old_keys, pos);
+  }
+  if (!found && isVariable(ifr_idx)) {
+    found = checkRangeVariable(ifr_idx, added_vars, old_keys, pos);
+  }
+  return found;
+}
+
 void Range::replace(Index ife_usage, Index ifr_usage)
 {
-  vector<string> variables = ife_usage.variables();
+  const bool SELECT_IFE_USAGE = ife_usage.variables().size() > ifr_usage.variables().size();
+  vector<string> max_usage = (SELECT_IFE_USAGE) ? ife_usage.variables() : ifr_usage.variables();
+  vector<string> min_usage = (!SELECT_IFE_USAGE) ? ife_usage.variables() : ifr_usage.variables();
+  vector<pair<string, string>> used_variables;
+
+  int min_usage_idx = 0;
+  int min_usage_size = min_usage.size();
+  for (string max_usage_str : max_usage) {
+    string min_usage_str = "";
+    if (min_usage_idx < min_usage_size) {
+      min_usage_str = min_usage[min_usage_idx];
+    }
+    used_variables.push_back(make_pair(max_usage_str, min_usage_str));
+    min_usage_idx++;
+  }
+
+  // Add only variables from the ifr index that are higher than the ife usage
+  // the rest should be replaced by variables in the original range.
+  /*int variables_size = variables.size();
+  int ifr_vars = 1;
   if (!ifr_usage.isEmpty()) {
     for (string ifr_var : ifr_usage.variables()) {
-      variables.push_back(ifr_var);
+      if (ifr_vars > variables_size) {
+        variables.push_back(ifr_var);
+      }
+      ifr_vars++;
     }
     sort(variables.begin(), variables.end());
     variables.erase(unique(variables.begin(), variables.end()), variables.end());
-  }
+  }*/
   // In case of a scalar usage in N<->1 relations.
-  if (variables.empty()) {
-    variables = getIndexes();
+  if (used_variables.empty()) {
+    max_usage = getIndexes();
+    for (string max_usage_str : max_usage) {
+      string min_usage_str = "";
+      used_variables.push_back(make_pair(max_usage_str, min_usage_str));
+    }
   }
   set<string> added_vars;
   vector<string> old_keys;
   int pos = 1;
-  for (string var : variables) {
-    if (isVariable(var)) {
-      if (added_vars.find(var) == added_vars.end()) {
-        added_vars.insert(var);
-        Option<RangeDefinition> r = _ranges[var];
-        assert(r);
-        string index = getDimensionVar(pos);
-        if (index != var) {
-          old_keys.push_back(var);
-          _ranges.insert(index, r.get());
-        }
-      }
-      pos++;
-    }
+  for (pair<string, string> vars : used_variables) {
+    assert(checkRangeVariables(vars.first, vars.second, added_vars, old_keys, pos));
   }
   for (string key : old_keys) {
     _ranges.remove(key);

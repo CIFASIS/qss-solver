@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include <algorithm>
+#include <iterator>
 #include <boost/graph/adjacency_list.hpp>
 
 #include <deps/sbg_graph/graph.h>
@@ -54,8 +56,8 @@ struct VariableDep {
         _eq_offset(0),
         _recursive_deps(),
         _alg_label_map_u(),
-        _alg_label_map_f() {};
-        
+        _alg_label_map_f(){};
+
   VariableDep(MicroModelica::Util::Variable var, SB::PWLMap map_f, SB::PWLMap map_u, MicroModelica::IR::Expression exp, LMapExp n_map,
               int var_offset, int eq_offset)
       : _var(var),
@@ -92,10 +94,10 @@ struct VariableDep {
         _eq_offset(eq_offset),
         _recursive_deps(),
         _alg_label_map_u(),
-        _alg_label_map_f() {};
+        _alg_label_map_f(){};
 
   VariableDep(MicroModelica::Util::Variable var, SB::PWLMap map_f, SB::PWLMap map_u, MicroModelica::IR::Expression exp, bool recursive,
-              SB::Set f_dom, SB::Set u_dom, LMapExp n_map, LMapExp m_map, int var_offset, int eq_offset, list<SB::PWLMap> alg_label_map_f, 
+              SB::Set f_dom, SB::Set u_dom, LMapExp n_map, LMapExp m_map, int var_offset, int eq_offset, list<SB::PWLMap> alg_label_map_f,
               list<SB::PWLMap> alg_label_map_u)
       : _var(var),
         _map_f(map_f),
@@ -110,7 +112,7 @@ struct VariableDep {
         _eq_offset(eq_offset),
         _recursive_deps(),
         _alg_label_map_u(alg_label_map_u),
-        _alg_label_map_f(alg_label_map_f) {};
+        _alg_label_map_f(alg_label_map_f){};
 
   PWLMap mapF() const { return _map_f; };
   PWLMap mapU() const { return _map_u; };
@@ -136,14 +138,12 @@ struct VariableDep {
   int varOffset() const { return _var_offset; }
   int eqOffset() const { return _eq_offset; }
   list<VariableDep> recursiveDeps() const
-  { 
+  {
     list<VariableDep> ret;
-    for (const auto &item : _recursive_deps)
-    {
-      ret.push_back(item.second);
-    } 
-    return ret; 
+    std::transform(_recursive_deps.begin(), _recursive_deps.end(), std::back_inserter(ret), [](auto& map_val) { return map_val.second; });
+    return ret;
   };
+
   void addRecursiveDep(VariableDep rec_dep)
   {
     SB::Set dom = rec_dep.uDom();
@@ -152,13 +152,15 @@ struct VariableDep {
     OrdIntegerCT::iterator min_elem = init_elems.begin();
     _recursive_deps[*min_elem] = rec_dep;
   };
-  
+
   void setRecursiveDeps(list<VariableDep> recursive_deps)
   {
     for (VariableDep var_dep : recursive_deps) {
       addRecursiveDep(var_dep);
-    } 
+    }
   }
+
+  void setRecursive(bool recursive) { _recursive = recursive; }
 
   list<PWLMap> algLabelMapU() { return _alg_label_map_u; }
 
@@ -182,9 +184,12 @@ struct VariableDep {
 };
 
 struct VertexDesc {
-  VertexDesc() : _type(VERTEX::Influencer), _visited(false), _var(), _deps(), _num_deps(0) {}
-  VertexDesc(VERTEX::Type type) : _type(type), _visited(false), _var(), _deps(), _num_deps(0) {}
-  VertexDesc(VERTEX::Type type, MicroModelica::Util::Variable var) : _type(type), _visited(false), _var(var), _deps(), _num_deps(0) {}
+  VertexDesc() : _type(VERTEX::Influencer), _visited(false), _var(), _deps(), _num_deps(0), _pure_recursive_deps() {}
+  VertexDesc(VERTEX::Type type) : _type(type), _visited(false), _var(), _deps(), _num_deps(0), _pure_recursive_deps() {}
+  VertexDesc(VERTEX::Type type, MicroModelica::Util::Variable var)
+      : _type(type), _visited(false), _var(var), _deps(), _num_deps(0), _pure_recursive_deps()
+  {
+  }
   VertexDesc(const VertexDesc& other)
   {
     _type = other._type;
@@ -192,6 +197,7 @@ struct VertexDesc {
     _var = other._var;
     _deps = other._deps;
     _num_deps = other._num_deps;
+    _pure_recursive_deps = other._pure_recursive_deps;
   }
   VERTEX::Type type() { return _type; };
   bool visited() const { return _visited; }
@@ -202,13 +208,17 @@ struct VertexDesc {
   void setNumDeps(int num_deps) { _num_deps = num_deps; };
   int numDeps() const { return _num_deps; };
   VariableDep depState(int id) { return _deps[id]; }
+  void addPureRecursiveDep(VariableDep dep) { _pure_recursive_deps.push_back(dep); }
+  list<VariableDep> pureRecursiveDeps() { return _pure_recursive_deps; }
 
   protected:
   VERTEX::Type _type;
   bool _visited;
   MicroModelica::Util::Variable _var;
   std::map<int, VariableDep> _deps;
+  std::map<int, VariableDep> _pure_alg_deps;
   int _num_deps;
+  list<VariableDep> _pure_recursive_deps;
 };
 
 struct EdgeDesc {
