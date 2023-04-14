@@ -187,7 +187,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int _rg_d1;
 	int i;
 	int j;
-	_alpha = 5.000000e-01;
+	_alpha = 0.5;
 	_mu = 1000;
 	for(i = 1; i<=6666; i+=1) {
 		_init_u_a(i,0) = 1;
@@ -270,6 +270,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 			}
 		}
 	}
+	cleanVector(states, 0, 20000);
 	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->time = QSS_Time(20000,0,0,0,ST_Binary, NULL);
 	simulator->output = SD_Output("advection_quoted",1,0,20000,NULL,0,0,CI_Step,SD_Memory,MOD_output);
