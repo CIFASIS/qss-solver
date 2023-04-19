@@ -22,7 +22,7 @@
 #include <math.h>
 
 #include <common/data.h>
-#include "../common/simulator.h"
+#include <common/simulator.h>
 #include <common/utils.h>
 #include <qss/qss_data.h>
 #include <qss/qss_frw.h>
@@ -196,6 +196,12 @@ void QSS_SEQ_integrate(SIM_simulator simulate)
 #endif
           nRHSSt = event[index].nRHSSt;
           int restore_index = 0;
+          int nReinitAssign = event[index].nReinitAsg;
+          for (i = 0; i < nReinitAssign; i++) {
+            j = event[index].ReinitAsg[i];
+            infCf0 = j * coeffs;
+            reinit_assign[restore_index++] = x[infCf0];
+          }
           for (i = 0; i < nRHSSt; i++) {
             j = event[index].RHSSt[i];
             infCf0 = j * coeffs;
@@ -205,7 +211,6 @@ void QSS_SEQ_integrate(SIM_simulator simulate)
             }
             tq[j] = t;
             elapsed = t - tx[j];
-            reinit_assign[restore_index++] = x[infCf0];
             if (elapsed > 0) {
               x[infCf0] = evaluatePoly(infCf0, elapsed, x, xOrder);
             }
@@ -215,7 +220,6 @@ void QSS_SEQ_integrate(SIM_simulator simulate)
           } else {
             qssModel->events->handlerNeg(index, x, q, d, a, t);
           }
-          int nReinitAssign = event[index].nReinitAsg;
           for (i = 0; i < nReinitAssign; i++) {
             j = event[index].ReinitAsg[i];
             infCf0 = j * coeffs;
