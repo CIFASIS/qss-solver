@@ -243,6 +243,7 @@ void QSS_PAR_internalEvent(QSS_simulator simulator)
   SD_eventData event = qssData->event;
   double *d = qssData->d;
   double reinit_assign[qssData->maxRHS];
+  double computed_lhs[qssData->maxRHS];
   int **SZ = qssData->SZ;
   int **ZS = qssData->ZS;
   int **HD = qssData->HD;
@@ -336,6 +337,11 @@ void QSS_PAR_internalEvent(QSS_simulator simulator)
     if (event[index].zcSign != s || xOrder == 1 || et == t) {
       if (event[index].direction == 0 || event[index].direction == s) {
         nRHSSt = event[index].nRHSSt;
+        nLHSSt = event[index].nLHSSt;
+        for (i = 0; i < nLHSSt; i++) {
+          infCf0 = event[index].LHSSt[i] * coeffs;
+          computed_lhs[i] = x[infCf0];
+        }
         int restore_index = 0;
         int nReinitAssign = event[index].nReinitAsg;
         for (i = 0; i < nReinitAssign; i++) {
@@ -373,31 +379,32 @@ void QSS_PAR_internalEvent(QSS_simulator simulator)
             msg.value[i] = d[j];
           }
         }
-        nLHSSt = event[index].nLHSSt;
         for (i = 0; i < nLHSSt; i++) {
           j = event[index].LHSSt[i];
           infCf0 = j * coeffs;
-          if (qMap[j] > NOT_ASSIGNED) {
-            tx[j] = t;
-            lqu[j] = dQRel[j] * fabs(x[infCf0]);
-            if (lqu[j] < dQMin[j]) {
-              lqu[j] = dQMin[j];
-            }
-            QA_updateQuantizedState(quantizer, j, q, x, lqu);
-            tq[j] = t;
-            if (synchronize >= 0) {
-              int updIdx;
-              for (updIdx = 0; updIdx <= qOrder; updIdx++) {
-                msg.value[nLHSDsc + updIdx + i * coeffs] = q[infCf0 + updIdx];
+          if (x[infCf0] != computed_lhs[i]) {
+            if (qMap[j] > NOT_ASSIGNED) {
+              tx[j] = t;
+              lqu[j] = dQRel[j] * fabs(x[infCf0]);
+              if (lqu[j] < dQMin[j]) {
+                lqu[j] = dQMin[j];
               }
-              msg.value[nLHSDsc + xOrder + i * coeffs] = simulator->id;
-            }
-            reinits++;
-          } else {
-            msg.value[nLHSDsc + i * coeffs] = x[infCf0];
-            int updIdx;
-            for (updIdx = 1; updIdx <= xOrder; updIdx++) {
-              msg.value[nLHSDsc + updIdx + i * coeffs] = NOT_ASSIGNED;
+              QA_updateQuantizedState(quantizer, j, q, x, lqu);
+              tq[j] = t;
+              if (synchronize >= 0) {
+                int updIdx;
+                for (updIdx = 0; updIdx <= qOrder; updIdx++) {
+                  msg.value[nLHSDsc + updIdx + i * coeffs] = q[infCf0 + updIdx];
+                }
+                msg.value[nLHSDsc + xOrder + i * coeffs] = simulator->id;
+              }
+              reinits++;
+            } else {
+              msg.value[nLHSDsc + i * coeffs] = x[infCf0];
+              int updIdx;
+              for (updIdx = 1; updIdx <= xOrder; updIdx++) {
+                msg.value[nLHSDsc + updIdx + i * coeffs] = NOT_ASSIGNED;
+              }
             }
           }
         }
@@ -542,6 +549,7 @@ void QSS_PAR_integrator(QSS_simulator simulator)
   SD_eventData event = qssData->event;
   double *d = qssData->d;
   double reinit_assign[qssData->maxRHS];
+  double computed_lhs[qssData->maxRHS];
   int **SZ = qssData->SZ;
   int **ZS = qssData->ZS;
   int **HD = qssData->HD;
@@ -716,6 +724,11 @@ void QSS_PAR_integrator(QSS_simulator simulator)
             }
 #endif
             nRHSSt = event[index].nRHSSt;
+            nLHSSt = event[index].nLHSSt;
+            for (i = 0; i < nLHSSt; i++) {
+              infCf0 = event[index].LHSSt[i] * coeffs;
+              computed_lhs[i] = x[infCf0];
+            }
             int restore_index = 0;
             int nReinitAssign = event[index].nReinitAsg;
             for (i = 0; i < nReinitAssign; i++) {
@@ -753,31 +766,32 @@ void QSS_PAR_integrator(QSS_simulator simulator)
                 msg.value[i] = d[j];
               }
             }
-            nLHSSt = event[index].nLHSSt;
             for (i = 0; i < nLHSSt; i++) {
               j = event[index].LHSSt[i];
               infCf0 = j * coeffs;
-              if (qMap[j] > NOT_ASSIGNED) {
-                tx[j] = t;
-                lqu[j] = dQRel[j] * fabs(x[infCf0]);
-                if (lqu[j] < dQMin[j]) {
-                  lqu[j] = dQMin[j];
-                }
-                QA_updateQuantizedState(quantizer, j, q, x, lqu);
-                tq[j] = t;
-                if (synchronize >= 0) {
-                  int updIdx;
-                  for (updIdx = 0; updIdx <= qOrder; updIdx++) {
-                    msg.value[nLHSDsc + updIdx + i * coeffs] = q[infCf0 + updIdx];
+              if (x[infCf0] != computed_lhs[i]) {
+                if (qMap[j] > NOT_ASSIGNED) {
+                  tx[j] = t;
+                  lqu[j] = dQRel[j] * fabs(x[infCf0]);
+                  if (lqu[j] < dQMin[j]) {
+                    lqu[j] = dQMin[j];
                   }
-                  msg.value[nLHSDsc + xOrder + i * coeffs] = id;
-                }
-                reinits++;
-              } else {
-                msg.value[nLHSDsc + i * coeffs] = x[infCf0];
-                int updIdx;
-                for (updIdx = 1; updIdx <= xOrder; updIdx++) {
-                  msg.value[nLHSDsc + updIdx + i * coeffs] = NOT_ASSIGNED;
+                  QA_updateQuantizedState(quantizer, j, q, x, lqu);
+                  tq[j] = t;
+                  if (synchronize >= 0) {
+                    int updIdx;
+                    for (updIdx = 0; updIdx <= qOrder; updIdx++) {
+                      msg.value[nLHSDsc + updIdx + i * coeffs] = q[infCf0 + updIdx];
+                    }
+                    msg.value[nLHSDsc + xOrder + i * coeffs] = id;
+                  }
+                  reinits++;
+                } else {
+                  msg.value[nLHSDsc + i * coeffs] = x[infCf0];
+                  int updIdx;
+                  for (updIdx = 1; updIdx <= xOrder; updIdx++) {
+                    msg.value[nLHSDsc + updIdx + i * coeffs] = NOT_ASSIGNED;
+                  }
                 }
               }
             }
