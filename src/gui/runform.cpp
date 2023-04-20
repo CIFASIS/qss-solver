@@ -120,6 +120,7 @@ int RunDlg::getSolverIdx(QString str)
   if (str.trimmed() == "CVODE_BDF") return 11;
   if (str.trimmed() == "CVODE_AM") return 12;
   if (str.trimmed() == "IDA") return 13;
+  if (str.trimmed() == "QSS_TEST") return 14;
   return -1;
 }
 
@@ -154,6 +155,8 @@ QString RunDlg::getSolverString(int idx)
     return "CVODE_AM";
   case 13:
     return "IDA";
+  case 14:
+    return "QSS_TEST";
   }
   return QString();
 }
