@@ -605,7 +605,7 @@ equation:
   | simple_expression TOKEQUAL expression comment { $$ = newAST_Equation_Equality($1,$3,$4); }
   | primary                                       { $$ = newAST_Equation_Call($1); } /* This must be a call only!!!!*/ 
   | for_equation comment                          { $$ = $1; }
-  | when_equation comment                         { $$ = $1; }
+  | when_equation                                 { $$ = $1; }
 ;
 
 for_indices: 
@@ -631,7 +631,7 @@ for_equation:
 ;
   
 when_equation:
-  TOKWHEN expression TOKTHEN equation_list opt_else_when TOKEND TOKWHEN { $$ = newAST_Equation_When($2,$4,$5); }
+  TOKWHEN expression TOKTHEN equation_list opt_else_when TOKEND TOKWHEN comment { $$ = newAST_Equation_When($2,$4,$5,$8); }
 
 ;
 
