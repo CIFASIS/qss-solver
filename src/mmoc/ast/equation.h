@@ -140,16 +140,19 @@ class AST_Equation_Else_ : public AST_Node_ {
 
 class AST_Equation_When_ : public AST_Equation_ {
   public:
-  AST_Equation_When_(AST_Expression cond, AST_EquationList eql, AST_Equation_ElseList elsewhen);
+  AST_Equation_When_(AST_Expression cond, AST_EquationList eql, AST_Equation_ElseList elsewhen, AST_Comment c);
   string print() const;
   AST_Expression condition() const;
   AST_EquationList equationList() const;
   EquationType equationType();
   AST_Equation_ElseList equationElseWhen() const;
   void setCondition(AST_Expression e);
+  AST_Comment comment() const;
+  bool hasComment();
 
   private:
   AST_Expression _cond;
   AST_EquationList _eql;
   AST_Equation_ElseList _else_when;
+  AST_Comment _comment;
 };
