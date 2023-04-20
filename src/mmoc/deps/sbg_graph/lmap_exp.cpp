@@ -30,7 +30,7 @@ namespace Deps {
 
 CoeffContainer::CoeffContainer(std::vector<int> coeffs) : _coeffs(coeffs), _valid_dims()
 {
-  for(size_t i = 0; i < _coeffs.size(); i++) {
+  for (size_t i = 0; i < _coeffs.size(); i++) {
     _valid_dims.push_back(true);
   }
 }
@@ -39,7 +39,7 @@ CoeffContainer::CoeffContainer(std::vector<int> coeffs, std::vector<bool> valid_
 
 CoeffContainer::CoeffContainer() : _coeffs(), _valid_dims() {}
 
-CoeffContainer& CoeffContainer::operator=(const CoeffContainer&  other)
+CoeffContainer& CoeffContainer::operator=(const CoeffContainer& other)
 {
   _coeffs = other._coeffs;
   _valid_dims = other._valid_dims;
@@ -66,10 +66,7 @@ void CoeffContainer::addDim()
   _coeffs.push_back(0);
 }
 
-bool CoeffContainer::isValid(int i) const
-{
-  return _valid_dims[i];
-}
+bool CoeffContainer::isValid(int i) const { return _valid_dims[i]; }
 
 bool CoeffContainer::isZeros()
 {
@@ -282,6 +279,16 @@ LMapExp LMapExp::compose(const LMapExp& other)
   Slopes new_slopes = other.slopes() * slopes();
   Constants new_constants = slopes() * other.constants() + constants();
   return LMapExp(new_constants, new_slopes, initValues());
+}
+
+void LMapExp::padDims(int max)
+{
+  int init = _slopes.size();
+  for (int add = init; add < max; add++) {
+    _constants.addDim();
+    _slopes.addDim();
+    _init_values.addDim();
+  }
 }
 
 LMapExp LMapExp::solve(const LMapExp& other)
