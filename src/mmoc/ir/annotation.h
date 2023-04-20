@@ -32,7 +32,7 @@
 namespace MicroModelica {
 namespace IR {
 
-typedef enum { QSS, CQSS, LIQSS, QSS2, LIQSS2, LIQSS_BDF, QSS3, LIQSS3, QSS4, DASSL, DOPRI, CVODE_BDF, CVODE_AM, IDA } Solver;
+typedef enum { QSS, CQSS, LIQSS, QSS2, LIQSS2, LIQSS_BDF, QSS3, LIQSS3, QSS4, QSS_TEST, DASSL, DOPRI, CVODE_BDF, CVODE_AM, IDA } Solver;
 
 typedef enum { Metis, HMetis, Scotch, Patoh, MTPL, MTPL_IT, Manual } PartitionMethod;
 
@@ -175,7 +175,7 @@ class ModelAnnotation {
   Solver getSolver(string s);
   PartitionMethod getPartitionMethod(string s);
   DT_Synch getDtSynch(string s);
-  void parseMatrix(AST_Expression exp, IR::MATRIX::UserDefMatrixExps& matrix);
+  void parseMatrix(AST_Expression exp, IR::MATRIX::UserDefMatrixExps &matrix);
 
   Solver _solver;
   string _solverString;
