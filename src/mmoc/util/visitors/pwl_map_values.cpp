@@ -47,8 +47,10 @@ AST_Expression PWLMapValues::foldTraverseElement(AST_Expression exp)
     break;
   }
   case EXPINTEGER:
-    _constant = exp->getAsInteger()->val();
-    _slope = 0;
+    if (!_in_bin_op) {
+      _constant = exp->getAsInteger()->val();
+      _slope = 0;
+    }
     break;
   default:
     return exp;
@@ -57,7 +59,7 @@ AST_Expression PWLMapValues::foldTraverseElement(AST_Expression exp)
 }
 
 AST_Expression PWLMapValues::foldTraverseElement(AST_Expression left, AST_Expression right, BinOpType type)
-{ 
+{
   EvalInitExp eval_exp;
   static const bool EVAL_INT = true;
   IsConstantExpression constant_exp(EVAL_INT);
@@ -101,7 +103,7 @@ void PWLMapValues::assign(AST_Expression left, AST_Expression right, bool cte_le
 {
   EvalInitExp eval_exp;
   if (cte_left && cte_right) {
-    _constant = sign * (eval_exp.apply(left) +  eval_exp.apply(right));
+    _constant = eval_exp.apply(left) + sign * eval_exp.apply(right);
   } else if (cte_right) {
     _constant = sign * eval_exp.apply(right);
   } else {
@@ -109,13 +111,13 @@ void PWLMapValues::assign(AST_Expression left, AST_Expression right, bool cte_le
   }
 }
 
-int PWLMapValues::constant() const  { return _constant; }
+int PWLMapValues::constant() const { return _constant; }
 
-int PWLMapValues::slope() const  { return _slope; }
+int PWLMapValues::slope() const { return _slope; }
 
-std::string PWLMapValues::variable() const  { return _variable; }
+std::string PWLMapValues::variable() const { return _variable; }
 
-bool PWLMapValues::isScalar() const { return _slope == 0;}
+bool PWLMapValues::isScalar() const { return _slope == 0; }
 
 }  // namespace Util
 }  // namespace MicroModelica
