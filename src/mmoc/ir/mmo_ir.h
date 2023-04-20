@@ -22,9 +22,9 @@
 #include <list>
 #include <string>
 
-#include "../ast/ast_types.h"
-#include "../util/ast_util.h"
-#include "../ir/stored_definition.h"
+#include <ast/ast_types.h>
+#include <util/ast_util.h>
+#include <ir/stored_definition.h>
 
 namespace MicroModelica {
 namespace IR {
@@ -63,6 +63,11 @@ class MicroModelicaIR : public AST_Visitor {
 
   protected:
   void visitForStms(AST_Statement_For for_stm);
+  AST_Statement transformEquation(AST_Equation eq);
+  AST_StatementList getStatementList(AST_EquationList eqs);
+  bool checkForEquation(AST_Equation_For for_eq);
+  bool checkWhenEquation(AST_Equation eq);
+  AST_Statement transformWhenEquation(AST_Equation_When when_eq);
 
   private:
   StoredDefinition _std;
