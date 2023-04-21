@@ -39,13 +39,21 @@ using namespace Util;
 namespace IR {
 
 template <typename NT, typename N, typename Config>
-ModelMatrixGenerator<NT, N, Config>::ModelMatrixGenerator() : _model_matrix_def(), _tabs(0), _deps(), _post_process_eval(false), _config() {}
+ModelMatrixGenerator<NT, N, Config>::ModelMatrixGenerator() : _model_matrix_def(), _tabs(0), _deps(), _post_process_eval(false), _config()
+{
+}
 
 template <typename NT, typename N, typename Config>
-void ModelMatrixGenerator<NT, N, Config>::setup(Config config) { _config = config; }
+void ModelMatrixGenerator<NT, N, Config>::setup(Config config)
+{
+  _config = config;
+}
 
 template <typename NT, typename N, typename Config>
-Config ModelMatrixGenerator<NT, N, Config>::config() { return _config; }
+Config ModelMatrixGenerator<NT, N, Config>::config()
+{
+  return _config;
+}
 
 template <typename NT, typename N, typename Config>
 void ModelMatrixGenerator<NT, N, Config>::addCode(MatrixCode dep_code, std::stringstream& code)
@@ -102,7 +110,7 @@ void ModelMatrixGenerator<NT, N, Config>::printMatrix(MATRIX::Method method, MAT
       ifr_node = _config.selector.getScalarUsage(var_dep.var_dep.equations(), use_exp, ifr_node, ifr_idx);
       Index ife_idx(_config.selector.exp(ifr_node));
       Index ife_orig_idx = ife_idx;
-      Index ifr_orig_idx = ifr_idx; 
+      Index ifr_orig_idx = ifr_idx;
       if (mode == MATRIX::Transpose) {
         Index swap = ifr_idx;
         ifr_idx = ife_idx;
@@ -117,7 +125,7 @@ void ModelMatrixGenerator<NT, N, Config>::printMatrix(MATRIX::Method method, MAT
         deps_code[ifr_id] = dep_code;
       }
       MatrixCode dep_code = deps_code[ifr_id];
-      if (range) {
+      if (range.is_initialized()) {
         if (!var_dep.var_dep.isRecursive()) {
           range->replace(ife_range_idx, ifr_range_idx);
         }
@@ -129,7 +137,7 @@ void ModelMatrixGenerator<NT, N, Config>::printMatrix(MATRIX::Method method, MAT
           Range der_range = ifr_node.range().get();
           der_range.replace(ife_orig_idx);
           dep_code.begin.push_back(der_range.print());
-          dep_code.end.push_back(der_range.end()); 
+          dep_code.end.push_back(der_range.end());
         } else {
           dep_code.begin.push_back("");
           dep_code.end.push_back("");
@@ -170,10 +178,14 @@ void ModelMatrixGenerator<NT, N, Config>::postProcess(SB::Deps::SetVertex vertex
 }
 
 template <typename NT, typename N, typename Config>
-void ModelMatrixGenerator<NT, N, Config>::init(SB::Deps::SetVertex vertex) {}
+void ModelMatrixGenerator<NT, N, Config>::init(SB::Deps::SetVertex vertex)
+{
+}
 
 template <typename NT, typename N, typename Config>
-void ModelMatrixGenerator<NT, N, Config>::end() {}
+void ModelMatrixGenerator<NT, N, Config>::end()
+{
+}
 
 template <typename NT, typename N, typename Config>
 void ModelMatrixGenerator<NT, N, Config>::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep)
@@ -190,16 +202,22 @@ void ModelMatrixGenerator<NT, N, Config>::visitF(SB::Deps::SetVertex vertex, SB:
 }
 
 template <typename NT, typename N, typename Config>
-void ModelMatrixGenerator<NT, N, Config>::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex) {}
+void ModelMatrixGenerator<NT, N, Config>::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex)
+{
+}
 
 template <typename NT, typename N, typename Config>
 void ModelMatrixGenerator<NT, N, Config>::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep,
-                                  int index_shift)
+                                                 int index_shift)
 {
-  if (!_config.selector.isAlgebraic(v_vertex)) {
+  list<SB::Deps::VariableDep> pure_recursive_deps = g_vertex.desc().pureRecursiveDeps();
+  if (!_config.selector.isAlgebraic(v_vertex) && !var_dep.var().isAlgebraic()) {
     string var_name = var_dep.var().name();
     const bool FROM_ALG = true;
-    DepData dep_data(_config.selector.id(v_vertex), var_dep, FROM_ALG);
+    const bool REC_DEPS = pure_recursive_deps.size() > 0 || var_dep.isRecursive();
+    SB::Deps::VariableDep dep = var_dep;
+    dep.setRecursive(REC_DEPS);
+    DepData dep_data(_config.selector.id(v_vertex), dep, FROM_ALG);
     if (!findDep(_deps, dep_data, _config.selector.multipleNodes())) {
       list<DepData> deps = _deps[var_name];
       deps.push_back(dep_data);
@@ -210,24 +228,29 @@ void ModelMatrixGenerator<NT, N, Config>::visitG(SB::Deps::SetVertex v_vertex, S
 
 template <typename NT, typename N, typename Config>
 void ModelMatrixGenerator<NT, N, Config>::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map,
-                                  SB::Deps::LMapExp use_map_exp, Expression use_exp, SB::PWLMap def_map, SB::Deps::LMapExp def_map_exp,
-                                  SB::Set intersection)
+                                                 SB::Deps::LMapExp use_map_exp, Expression use_exp, SB::PWLMap def_map,
+                                                 SB::Deps::LMapExp def_map_exp, SB::Set intersection)
 {
 }
 
 template <typename NT, typename N, typename Config>
-void ModelMatrixGenerator<NT, N, Config>::initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge) {}
+void ModelMatrixGenerator<NT, N, Config>::initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge)
+{
+}
 
 template <typename NT, typename N, typename Config>
-ModelMatrixDef ModelMatrixGenerator<NT, N, Config>::def() { return _model_matrix_def; }
+ModelMatrixDef ModelMatrixGenerator<NT, N, Config>::def()
+{
+  return _model_matrix_def;
+}
 
 namespace MATRIX {
 
-template class  MatrixConfig<Deps::EQSelector>;
+template class MatrixConfig<Deps::EQSelector>;
 
-template class  MatrixConfig<Deps::EVSelector>;
+template class MatrixConfig<Deps::EVSelector>;
 
-} // namespace MATRIX
+}  // namespace MATRIX
 
 template class ModelMatrixGenerator<EquationTable, Equation, MATRIX::EQMatrixConfig>;
 
