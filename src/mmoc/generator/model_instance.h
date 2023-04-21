@@ -17,19 +17,18 @@
 
  ******************************************************************************/
 
-#ifndef MMO_MODEL_INSTANCE_H_
-#define MMO_MODEL_INSTANCE_H_
+#pragma once
 
 #include <boost/variant/variant.hpp>
 #include <sstream>
 
-#include "../ir/class.h"
-#include "../util/compile_flags.h"
-#include "../util/graph.h"
+#include <generator/writer.h>
+#include <ir/class.h>
+#include <util/compile_flags.h>
+#include <util/graph.h>
 #include <util/model_config.h>
-#include "../util/symbol_table.h"
-#include "../util/util_types.h"
-#include "writer.h"
+#include <util/symbol_table.h>
+#include <util/util_types.h>
 
 namespace MicroModelica {
 namespace Generator {
@@ -86,15 +85,16 @@ class ModelInstance {
   void initializeMatrix(DM vdm, WRITER::Section alloc, WRITER::Section init, int size)
   {
     _writer->write(vdm.alloc(), alloc);
-    if (!vdm.empty()) {
+    if (!vdm.empty() && size > 0) {
       std::stringstream buffer;
       buffer << "cleanVector(" << vdm.accessVector() << ", 0, " << size << ");";
       _writer->write(buffer.str(), init);
     }
     _writer->write(vdm.init(), init);
   }
-  template<class Builder> 
-  void generateDef(IR::EquationTable eqs, WRITER::Section model_def, WRITER::Section simple, WRITER::Section generic) {
+  template <class Builder>
+  void generateDef(IR::EquationTable eqs, WRITER::Section model_def, WRITER::Section simple, WRITER::Section generic)
+  {
     Builder model;
     Util::ModelConfig::instance().clearLocalSymbols();
     IR::FunctionPrinter printer;
@@ -107,7 +107,6 @@ class ModelInstance {
       _writer->write(printer.endSwitch(), simple);
     }
   }
-
 
   private:
   IR::Model _model;
@@ -163,4 +162,3 @@ class ClassicModelInstance : public ModelInstance {
 typedef std::shared_ptr<ModelInstance> ModelInstancePtr;
 }  // namespace Generator
 }  // namespace MicroModelica
-#endif /* MMO_MODEL_INSTANCE_H */

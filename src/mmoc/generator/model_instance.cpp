@@ -424,6 +424,7 @@ void ModelInstance::freeVector(string name, int size) const
 
 void ModelInstance::allocateVectors() const
 {
+  allocateVector("algebraics", _model.algebraicNbr());
   allocateVector("states", _model.stateNbr());
   allocateVector("discretes", _model.discreteNbr());
   allocateVector("events", _model.eventNbr());
@@ -432,6 +433,7 @@ void ModelInstance::allocateVectors() const
 
 void ModelInstance::freeVectors() const
 {
+  freeVector("algebraics", _model.algebraicNbr());
   freeVector("states", _model.stateNbr());
   freeVector("discretes", _model.discreteNbr());
   freeVector("events", _model.eventNbr());
@@ -588,7 +590,7 @@ void QSSModelInstance::initializeDataStructures()
   inputs();
 
   // Initialize Jacobian matrices.
-  initializeMatrix(deps.JAC(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+  initializeMatrix(deps.JAC(), WRITER::Alloc_Data, WRITER::Init_Data, 0);
 
   // Initialize Event Data Structures.
   initializeMatrix(deps.SZ(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
@@ -600,7 +602,7 @@ void QSSModelInstance::initializeDataStructures()
   initializeMatrix(deps.LHSSt(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
   initializeMatrix(deps.RHSSt(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
   if (PARALLEL) {
-    initializeMatrix(deps.DH(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
+    initializeMatrix(deps.DH(), WRITER::Alloc_Data, WRITER::Init_Data, _model.discreteNbr());
     initializeMatrix(deps.SH(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
     initializeMatrix(deps.HH(), WRITER::Alloc_Data, WRITER::Init_Data, _model.eventNbr());
   }
