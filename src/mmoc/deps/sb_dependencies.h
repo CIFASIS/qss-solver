@@ -51,8 +51,8 @@ class SBDependencies {
   R def();
 
   protected:
-  void paths(SB::Deps::Graph graph, SB::Deps::Vertex V, Util::Variable visiting_alg);
-  void recursiveDeps(SB::Deps::Graph graph, SB::PWLMap map_u, SB::Deps::Vertex V, SB::Deps::Vertex X, int num_gen,
+  void paths(SB::Deps::Graph& graph, SB::Deps::Vertex V, Util::Variable visiting_alg);
+  void recursiveDeps(SB::Deps::Graph& graph, SB::PWLMap map_u, SB::Deps::Vertex V, SB::Deps::Vertex X, int num_gen,
                      list<SB::Deps::SetEdge> rec_alg_use_maps);
 
   SB::Deps::IndexShift _index_shift;
@@ -65,8 +65,8 @@ class SBDependencies {
 
 typedef SBDependencies<Deps::JacMatrixGenerator, Deps::JacMatrixDef, IR::EquationTable> JacobianMatrixBuilder;
 typedef SBDependencies<IR::JacGenerator, IR::JacDef, IR::EquationTable> JacobianBuilder;
-typedef SBDependencies<IR::QSSModelGenerator, IR::QSSModelDef, IR::EquationTable> QSSModelBuilder;
-typedef SBDependencies<IR::QSSModelDepsGenerator, IR::QSSModelDepsDef, IR::EquationTable> QSSModelDepsBuilder;
+typedef SBDependencies<IR::QSSModelGenerator, IR::QSSModelDef, IR::QSSModelConfig> QSSModelBuilder;
+typedef SBDependencies<IR::QSSModelDepsGenerator, IR::QSSModelDepsDef, IR::QSSModelConfig> QSSModelDepsBuilder;
 typedef SBDependencies<IR::ModelMatrixGenerator<IR::EquationTable, IR::Equation, IR::MATRIX::EQMatrixConfig>, IR::ModelMatrixDef,
                        IR::MATRIX::EQMatrixConfig>
     EQModelMatrixBuilder;
