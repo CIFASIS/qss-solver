@@ -60,7 +60,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 			_iD(1) = 0;
 			_s(0) = _diodeon*_iD(0)+(1-_diodeon)*_iD(0)*_Rd;
 			_s(1) = 0;
-			_zc(0) = _s(0)-(0.6);
+			_zc(0) = _s(0)-(6.000000e-01);
 			_zc(1) = (0)/1;
 	
 			return;
@@ -256,15 +256,15 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int* outputs = (int*) malloc(2*sizeof(int));
 	int row, eq_var, c_row;
 	int x_ind;
-	_C = 0.0001;
-	_DC = 0.5;
-	_L = 0.0001;
+	_C = 1.000000e-04;
+	_DC = 5.000000e-01;
+	_L = 1.000000e-04;
 	_R = 10;
-	_ROff = 100000;
-	_ROn = 1e-05;
-	_Rd = 100000;
-	_Rs = 1e-05;
-	_T = 0.0001;
+	_ROff = 1.000000e+05;
+	_ROn = 1.000000e-05;
+	_Rd = 1.000000e+05;
+	_Rs = 1.000000e-05;
+	_T = 1.000000e-04;
 	_U = 24;
 	_nextT = _T;
 	modelData->nSD[_idx_iL(0)]++;

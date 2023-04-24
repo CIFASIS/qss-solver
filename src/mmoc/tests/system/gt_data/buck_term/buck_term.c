@@ -40,7 +40,7 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 		case _eval_u(1,0): {
 			_pS(0) = (_on+_off);
 			_pS(1) = 0;
-			_der_u(1,0) = _sigma*(_pS(0)*_c+298-2*_u(1,0)+_u(2,0))/(_l*_l/100/100);
+			_der_u(1,0) = _sigma*(_pS(0)*_c+298-2*_u(1,0)+_u(2,0))/(double)(_l*_l/100/100);
 			_der_u(1,1) = (0)/2;
 	
 			return;
@@ -74,7 +74,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 			return;
 		}
 		case _eval_event_2: {
-			_zc(0) = _time-_lastT-0.013*_Ts-(0);
+			_zc(0) = _time-_lastT-1.300000e-02*_Ts-(0);
 			_zc(1) = (0)/1;
 	
 			return;
@@ -86,7 +86,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 			return;
 		}
 		case _eval_event_4: {
-			_zc(0) = _time-_lastT-_DC*_Ts-0.055*_Ts-(0);
+			_zc(0) = _time-_lastT-_DC*_Ts-5.500000e-02*_Ts-(0);
 			_zc(1) = (0)/1;
 	
 			return;
@@ -111,7 +111,7 @@ void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double 
 			_lastT = _nextT;
 			_nextT = _nextT+_Ts;
 			_Rs = _ROn;
-			_on = 100;
+			_on = 1.000000e+02;
 					return;
 		}
 		case _eval_event_2: {
@@ -120,7 +120,7 @@ void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double 
 		}
 		case _eval_event_3: {
 			_Rs = _ROff;
-			_off = 100;
+			_off = 1.000000e+02;
 					return;
 		}
 		case _eval_event_4: {
@@ -303,7 +303,7 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 		case _eval_u(1,0): {
 			_pS(0) = (_on+_off);
 			_pS(1) = 0;
-			_eval_dep_u(1,1) = _sigma*(_pS(0)*_c+298-2*_u(1,0)+_u(2,0))/(_l*_l/100/100);
+			_eval_dep_u(1,1) = _sigma*(_pS(0)*_c+298-2*_u(1,0)+_u(2,0))/(double)(_l*_l/100/100);
 			_eval_dep_u(1,2) = (0)/2;
 			break;
 		}
@@ -315,7 +315,7 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 		case _eval_u(2,0): {
 			_pS(0) = (_on+_off);
 			_pS(1) = 0;
-			_eval_dep_u(1,1) = _sigma*(_pS(0)*_c+298-2*_u(1,0)+_u(2,0))/(_l*_l/100/100);
+			_eval_dep_u(1,1) = _sigma*(_pS(0)*_c+298-2*_u(1,0)+_u(2,0))/(double)(_l*_l/100/100);
 			_eval_dep_u(1,2) = (0)/2;
 			break;
 		}
@@ -386,7 +386,7 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		case _eval_u(1,0): {
 			_pS(0) = (_on+_off);
 	
-			_eval_dep_u(1,1) = _sigma*(_pS(0)*_c+298-2*_u(1,0)+_u(2,0))/(_l*_l/100/100);
+			_eval_dep_u(1,1) = _sigma*(_pS(0)*_c+298-2*_u(1,0)+_u(2,0))/(double)(_l*_l/100/100);
 	
 	
 			continue;
@@ -425,28 +425,28 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int _d1;
 	int _rg_d1;
 	int i;
-	_C = 0.0001;
-	_DC = 0.5;
-	_L = 0.0001;
+	_C = 1.000000e-04;
+	_DC = 5.000000e-01;
+	_L = 1.000000e-04;
 	_R0 = 10;
-	_ROff = 10000;
-	_ROn = 0.0001;
-	_Rd = 100000;
-	_Rs = 1e-05;
-	_Ts = 0.0001;
+	_ROff = 1.000000e+04;
+	_ROn = 1.000000e-04;
+	_Rd = 1.000000e+05;
+	_Rs = 1.000000e-05;
+	_Ts = 1.000000e-04;
 	_U = 24;
-	_c = 7.5;
-	_l = 0.025;
+	_c = 7.500000e+00;
+	_l = 2.500000e-02;
 	_nextT = _Ts;
 	_off = 0;
 	_on = 1;
-	_sigma = 8.61e-06;
-	_toff = 5.5e-06;
-	_ton = 1.3e-06;
+	_sigma = 8.610000e-06;
+	_toff = 5.500000e-06;
+	_ton = 1.300000e-06;
 	for(_d1 = 1; _d1<=100; _d1+=1) {
 			_init_u(_d1,0) = 298;
 	}
-	_vc0 = 0.2;
+	_vc0 = 2.000000e-01;
 	modelData->nSD[_idx_iL(0)]++;
 	modelData->nSD[_idx_iL(0)]++;
 	modelData->nSD[_idx_u(1,0)]++;

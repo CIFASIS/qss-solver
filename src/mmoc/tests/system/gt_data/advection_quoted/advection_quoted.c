@@ -187,7 +187,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int _rg_d1;
 	int i;
 	int j;
-	_alpha = 0.5;
+	_alpha = 5.000000e-01;
 	_mu = 1000;
 	for(i = 1; i<=6666; i+=1) {
 		_init_u_a(i,0) = 1;

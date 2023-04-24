@@ -95,7 +95,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		_get_event_2_idxs(idx);
 		_apply_usage_event_2(_d1);
 		if ((i >= 1 && i <= 4)) {
-			_zc(0) = _update(i)-(0.5);
+			_zc(0) = _update(i)-(5.000000e-01);
 			_zc(1) = (0)/1;
 			_zc(2) = (0)/2;
 	
@@ -106,7 +106,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		_get_event_6_idxs(idx);
 		_apply_usage_event_6(_d1);
 		if ((i >= 1 && i <= 4000)) {
-			_zc(0) = _th(i,0)-_tref-_dtref+_on(i)-0.5-(0);
+			_zc(0) = _th(i,0)-_tref-_dtref+_on(i)-5.000000e-01-(0);
 			_zc(1) = (0)/1;
 			_zc(2) = (0)/2;
 	
@@ -132,11 +132,11 @@ void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double 
 	int i;
 	switch(idx) {
 		case _eval_event_3: {
-			_pref = 0.4;
+			_pref = 4.000000e-01;
 					return;
 		}
 		case _eval_event_4: {
-			_pref = 0.5;
+			_pref = 5.000000e-01;
 					return;
 		}
 		case _eval_event_5: {
@@ -339,24 +339,24 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 			_partSample(_d1) = 1;
 	}
 	_pmax = 0;
-	_pref = 0.5;
+	_pref = 5.000000e-01;
 	_tref = 20;
 	for(i = 1; i<=4000; i+=1) {
 		_init_th(i,0) = __math__random(4)+18;
 		_CAP(i) = __math__random(100)+550;
-		_RES(i) = __math__random(0.4)+1.8;
-		_POT(i) = __math__random(0.2)+13;
+		_RES(i) = __math__random(4.000000e-01)+1.800000e+00;
+		_POT(i) = __math__random(2.000000e-01)+13;
 		_pmax = _pmax+_POT(i);
 		_noise(i) = 2*pow(sin(i),2);
 		_sampleNoise(i) = __math__random(2);
 		_sections(i) = __getSection(i);
 	}
 	for(i = 1; i<=4; i+=1) {
-		_sections_init(i) = (i-1)*4000/4;
-		_sections_end(i) = i*4000/4;
+		_sections_init(i) = (i-1)*4000/(double)4;
+		_sections_end(i) = i*4000/(double)4;
 	}
 	for(i = 1; i<=4000; i+=1) {
-		if(_init_th(i,0)-_tref-0.5>0) {
+		if(_init_th(i,0)-_tref-5.000000e-01>0) {
 			_on(i) = 1;
 			_init_ptotal(0) = _init_ptotal(0)+_POT(i);
 		}
