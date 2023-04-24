@@ -224,6 +224,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	simulator->data = QSS_Data(100,500,300,0,100,1,1,"NeuralNetwork1");
 	QSS_data modelData = simulator->data;
 	MODEL_DATA_ACCESS(modelData)
+	int* algebraics = (int*) malloc(100*sizeof(int));
 	int* states = (int*) malloc(100*sizeof(int));
 	int* discretes = (int*) malloc(500*sizeof(int));
 	int* events = (int*) malloc(300*sizeof(int));
@@ -383,7 +384,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(_d1 = 1; _d1<=100; _d1+=1) {
 		modelData->DS[_idx_V(_d1,0)][states[_idx_V(_d1,0)]++] = _idx_V(_d1,0);
 	}
-	cleanVector(states, 0, 100);
+	cleanVector(algebraics, 0, 100);
 	for(row = 1; row <= 100; row++) {
 		c_row = _c_index(row);
 		_get_alg_eq_1_var_idxs(row, eq_var);
@@ -403,7 +404,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 			}
 		}
 	}
-	cleanVector(states, 0, 100);
 	cleanVector(states, 0, 100);
 	for(_d1 = 1; _d1<=100; _d1+=1) {
 		modelData->SZ[_idx_V(_d1,0)][states[_idx_V(_d1,0)]++] = _idx_event_1(_d1);
@@ -495,6 +495,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelOutput->SO[_idx_V(10*_d1-9,0)][states[_idx_V(10*_d1-9,0)]++] = _idx_out_exp_1(_d1);
 	}
 	simulator->model = QSS_Model(MOD_definition, MOD_dependencies, MOD_zeroCrossing, MOD_handlerPos, MOD_handlerNeg, MOD_jacobian, MOD_BDF_definition);
+	free(algebraics);
 	free(states);
 	free(discretes);
 	free(events);

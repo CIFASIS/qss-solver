@@ -291,7 +291,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 			}
 	}
 	cleanVector(states, 0, 2);
-	cleanVector(states, 0, 2);
 	modelData->SZ[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_event_3;
 	cleanVector(events, 0, 3);
 	modelData->ZS[_idx_event_3][events[_idx_event_3]++] = _idx_iL(0);

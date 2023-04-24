@@ -586,7 +586,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 			}
 		}
 	}
-	cleanVector(states, 0, 400);
 	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->time = QSS_Time(400,0,0,0,ST_Binary, NULL);
 	simulator->output = SD_Output("advection2D_LI",2,0,400,NULL,0,0,CI_Step,SD_Memory,MOD_output);
