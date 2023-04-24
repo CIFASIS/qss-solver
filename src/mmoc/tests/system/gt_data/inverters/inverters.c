@@ -89,11 +89,11 @@ void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double 
 		_uslope = 0;
 		_nextchange = 15;
 	}else if(_nextchange==15) {
-		_uslope = -2.5;
+		_uslope = -2.500000e+00;
 		_nextchange = 17;
 	}else {
 		_uslope = 0;
-		_nextchange = 1e+10;
+		_nextchange = 1.000000e+10;
 	}
 					return;
 		}
@@ -271,7 +271,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	_nextchange = 5;
 	for(i = 1; i<=250; i+=1) {
 		_init_x(2*i,0) = 5;
-		_init_x(2*i+1,0) = 0.006247;
+		_init_x(2*i+1,0) = 6.247000e-03;
 	}
 	for(i = 1; i<=501; i+=1) {
 		if(_init_x(i,0)>_UTH) {

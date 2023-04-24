@@ -29,7 +29,7 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 			return;
 		}
 		case _eval_vy(0): {
-			_der_vy(0) = -9.8-0.1*_vy(0)-_contact*((_y(0)-_stair)*1e+06+_vy(0)*30);
+			_der_vy(0) = -9.800000e+00-1.000000e-01*_vy(0)-_contact*((_y(0)-_stair)*1.000000e+06+_vy(0)*30);
 			_der_vy(1) = (0)/2;
 			_der_vy(2) = (0)/6;
 	
@@ -43,7 +43,7 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 			return;
 		}
 		case _eval_vx(0): {
-			_der_vx(0) = -0.1*_vx(0);
+			_der_vx(0) = -1.000000e-01*_vx(0);
 			_der_vx(1) = (0)/2;
 			_der_vx(2) = (0)/6;
 	
@@ -182,7 +182,7 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 			_eval_dep_x(1) = _vx(0);
 			_eval_dep_x(2) = (0)/2;
 			_eval_dep_x(3) = (0)/6;
-			_eval_dep_vx(1) = -0.1*_vx(0);
+			_eval_dep_vx(1) = -1.000000e-01*_vx(0);
 			_eval_dep_vx(2) = (0)/2;
 			_eval_dep_vx(3) = (0)/6;
 			break;
@@ -191,13 +191,13 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 			_eval_dep_y(1) = _vy(0);
 			_eval_dep_y(2) = (0)/2;
 			_eval_dep_y(3) = (0)/6;
-			_eval_dep_vy(1) = -9.8-0.1*_vy(0)-_contact*((_y(0)-_stair)*1e+06+_vy(0)*30);
+			_eval_dep_vy(1) = -9.800000e+00-1.000000e-01*_vy(0)-_contact*((_y(0)-_stair)*1.000000e+06+_vy(0)*30);
 			_eval_dep_vy(2) = (0)/2;
 			_eval_dep_vy(3) = (0)/6;
 			break;
 		}
 		case _eval_y(0): {
-			_eval_dep_vy(1) = -9.8-0.1*_vy(0)-_contact*((_y(0)-_stair)*1e+06+_vy(0)*30);
+			_eval_dep_vy(1) = -9.800000e+00-1.000000e-01*_vy(0)-_contact*((_y(0)-_stair)*1.000000e+06+_vy(0)*30);
 			_eval_dep_vy(2) = (0)/2;
 			_eval_dep_vy(3) = (0)/6;
 			break;
@@ -219,7 +219,7 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 			continue;
 		}
 		case _eval_vy(0): {
-			_eval_dep_vy(1) = -9.8-0.1*_vy(0)-_contact*((_y(0)-_stair)*1e+06+_vy(0)*30);
+			_eval_dep_vy(1) = -9.800000e+00-1.000000e-01*_vy(0)-_contact*((_y(0)-_stair)*1.000000e+06+_vy(0)*30);
 	
 	
 			continue;
@@ -231,7 +231,7 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 			continue;
 		}
 		case _eval_vx(0): {
-			_eval_dep_vx(1) = -0.1*_vx(0);
+			_eval_dep_vx(1) = -1.000000e-01*_vx(0);
 	
 	
 			continue;
@@ -252,9 +252,9 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int row, eq_var, c_row;
 	int x_ind;
 	_stair = 10;
-	_init_vx(0) = 0.5;
-	_init_x(0) = 0.575;
-	_init_y(0) = 10.5;
+	_init_vx(0) = 5.000000e-01;
+	_init_x(0) = 5.750000e-01;
+	_init_y(0) = 1.050000e+01;
 	modelData->nSD[_idx_vx(0)]++;
 	modelData->nSD[_idx_vx(0)]++;
 	modelData->nSD[_idx_vy(0)]++;

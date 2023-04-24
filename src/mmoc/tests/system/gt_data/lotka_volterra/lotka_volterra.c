@@ -22,14 +22,14 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 {
 	switch(idx) {
 		case _eval_x(1,0): {
-			_der_x(1,0) = 0.1*_x(1,0)-0.1*_x(1,0)*_x(2,0);
+			_der_x(1,0) = 1.000000e-01*_x(1,0)-1.000000e-01*_x(1,0)*_x(2,0);
 			_der_x(1,1) = (0)/2;
 			_der_x(1,2) = (0)/6;
 	
 			return;
 		}
 		case _eval_x(2,0): {
-			_der_x(2,0) = 0.1*_x(1,0)*_x(2,0)-0.1*_x(2,0);
+			_der_x(2,0) = 1.000000e-01*_x(1,0)*_x(2,0)-1.000000e-01*_x(2,0);
 			_der_x(2,1) = (0)/2;
 			_der_x(2,2) = (0)/6;
 	
@@ -112,19 +112,19 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 {
 	switch(idx) {
 		case _eval_x(1,0): {
-			_eval_dep_x(1,1) = 0.1*_x(1,0)-0.1*_x(1,0)*_x(2,0);
+			_eval_dep_x(1,1) = 1.000000e-01*_x(1,0)-1.000000e-01*_x(1,0)*_x(2,0);
 			_eval_dep_x(1,2) = (0)/2;
 			_eval_dep_x(1,3) = (0)/6;
-			_eval_dep_x(2,1) = 0.1*_x(1,0)*_x(2,0)-0.1*_x(2,0);
+			_eval_dep_x(2,1) = 1.000000e-01*_x(1,0)*_x(2,0)-1.000000e-01*_x(2,0);
 			_eval_dep_x(2,2) = (0)/2;
 			_eval_dep_x(2,3) = (0)/6;
 			break;
 		}
 		case _eval_x(2,0): {
-			_eval_dep_x(1,1) = 0.1*_x(1,0)-0.1*_x(1,0)*_x(2,0);
+			_eval_dep_x(1,1) = 1.000000e-01*_x(1,0)-1.000000e-01*_x(1,0)*_x(2,0);
 			_eval_dep_x(1,2) = (0)/2;
 			_eval_dep_x(1,3) = (0)/6;
-			_eval_dep_x(2,1) = 0.1*_x(1,0)*_x(2,0)-0.1*_x(2,0);
+			_eval_dep_x(2,1) = 1.000000e-01*_x(1,0)*_x(2,0)-1.000000e-01*_x(2,0);
 			_eval_dep_x(2,2) = (0)/2;
 			_eval_dep_x(2,3) = (0)/6;
 			break;
@@ -140,13 +140,13 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 	idx = BDFMap[__bdf_it];
 	switch(idx) {
 		case _eval_x(1,0): {
-			_eval_dep_x(1,1) = 0.1*_x(1,0)-0.1*_x(1,0)*_x(2,0);
+			_eval_dep_x(1,1) = 1.000000e-01*_x(1,0)-1.000000e-01*_x(1,0)*_x(2,0);
 	
 	
 			continue;
 		}
 		case _eval_x(2,0): {
-			_eval_dep_x(2,1) = 0.1*_x(1,0)*_x(2,0)-0.1*_x(2,0);
+			_eval_dep_x(2,1) = 1.000000e-01*_x(1,0)*_x(2,0)-1.000000e-01*_x(2,0);
 	
 	
 			continue;
@@ -165,8 +165,8 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int row, eq_var, c_row;
 	int x_ind;
 	int _d1;
-	_init_x(1,0) = 0.5;
-	_init_x(2,0) = 0.5;
+	_init_x(1,0) = 5.000000e-01;
+	_init_x(2,0) = 5.000000e-01;
 	modelData->nSD[_idx_x(1,0)]++;
 	modelData->nSD[_idx_x(1,0)]++;
 	modelData->nSD[_idx_x(2,0)]++;

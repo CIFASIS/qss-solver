@@ -236,38 +236,38 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int i;
 	int j;
 	int k;
-	_Cm = 2.5e-10;
-	_EL = -0.065;
-	_Jmean = (8.78e-11)/1;
-	_Ne = 0.8*100;
-	_Ni = 0.2*100;
-	_Vr = -0.065;
+	_Cm = 2.500000e-10;
+	_EL = -6.500000e-02;
+	_Jmean = (8.780000e-11)/(double)1;
+	_Ne = 8.000000e-01*100;
+	_Ni = 2.000000e-01*100;
+	_Vr = -6.500000e-02;
 	for(_d1 = 1; _d1<=100; _d1+=1) {
 			_active(_d1) = 1;
 	}
-	_cI = 1e+09;
-	_cV = 1000;
-	_ce = 10*0.8;
-	_ci = 10*0.2;
+	_cI = 1.000000e+09;
+	_cV = 1.000000e+03;
+	_ce = 10*8.000000e-01;
+	_ci = 10*2.000000e-01;
 	_g = 4;
 	_kext = 940;
-	_taum = 0.01;
-	_taur = 0.002;
-	_taus = 0.0005;
-	_theta = -0.05;
+	_taum = 1.000000e-02;
+	_taur = 2.000000e-03;
+	_taus = 5.000000e-04;
+	_theta = -5.000000e-02;
 	for(_d1 = 1; _d1<=100; _d1+=1) {
 			_tnextr(_d1) = -1;
 	}
 	_vbg = 8;
 	_vext = _vbg*_kext;
 	for(i = 1; i<=100; i+=1) {
-		_Islast(i) = __math__rand(1)*1e-10*_cI+0.4;
+		_Islast(i) = __math__rand(1)*1.000000e-10*_cI+4.000000e-01;
 		_init_V(i,0) = __math__rand(15)-65;
 		_Cn(i) = 0;
-		if(i<100*0.8) {
-			_J(i) = (_Jmean+__math__normal(_Jmean*0.1/3));
+		if(i<100*8.000000e-01) {
+			_J(i) = (_Jmean+__math__normal(_Jmean*1.000000e-01/(double)3));
 		}	else {
-			_J(i) = -(_Jmean*_g+__math__normal(_Jmean*_g*0.1/3));
+			_J(i) = -(_Jmean*_g+__math__normal(_Jmean*_g*1.000000e-01/(double)3));
 		}
 		_tnext(i) = __math__exponential(1/_vext);
 	}
