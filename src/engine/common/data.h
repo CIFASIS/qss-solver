@@ -57,12 +57,12 @@ typedef enum {
   SD_QSS3,
   SD_LIQSS3,
   SD_QSS4,
-  SD_QSS_TEST,
   SD_DASSL,
   SD_DOPRI,
   SD_CVODE_BDF,
   SD_CVODE_AM,
-  SD_IDA
+  SD_IDA,
+  SD_QSS_TEST
 } SD_Solver;
 
 typedef enum {
