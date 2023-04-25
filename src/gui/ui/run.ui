@@ -226,37 +226,6 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="3">
-       <widget class="QLineEdit" name="_period">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="11" column="2">
-       <widget class="QLabel" name="_generateArchLbl">
-        <property name="text">
-         <string>Generate Arch</string>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="3">
-       <widget class="QLineEdit" name="_imbalance">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>0.01</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QLabel" name="_derDeltaLbl">
-        <property name="text">
-         <string>Derivative Delta</string>
-        </property>
-       </widget>
-      </item>
       <item row="5" column="2">
        <widget class="QLabel" name="_lpsLbl">
         <property name="text">
@@ -264,50 +233,11 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
-       <widget class="QLineEdit" name="_zcHyst"/>
-      </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="_minStep"/>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="_symDiff">
-        <item>
-         <property name="text">
-          <string>FALSE</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>TRUE</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="6" column="2">
-       <widget class="QLabel" name="_pmLbl">
+      <item row="12" column="0">
+       <widget class="QLabel" name="_debugGraphLbl">
         <property name="text">
-         <string>Partition Method</string>
+         <string>Debug Graph</string>
         </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="_commInterval">
-        <item>
-         <property name="text">
-          <string>STEP</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>SAMPLED</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>DENSE</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item row="6" column="1">
@@ -329,29 +259,81 @@
         </item>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="_periodLbl">
-        <property name="text">
-         <string>Period</string>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="_period">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="_commIntervalLbl">
-        <property name="text">
-         <string>Output Type</string>
+      <item row="8" column="3">
+       <widget class="QLineEdit" name="_metisSettings">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="_symDiffLbl">
+      <item row="2" column="1">
+       <widget class="QComboBox" name="_symDiff">
+        <item>
+         <property name="text">
+          <string>FALSE</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>TRUE</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLabel" name="_parallelLbl">
         <property name="text">
-         <string>Symbolic Differentiation</string>
+         <string>Parallel</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
-       <widget class="QLineEdit" name="_derDelta"/>
+      <item row="12" column="1">
+       <widget class="QComboBox" name="_debugGraphCbx">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>FALSE</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>TRUE</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="_patohSettingsLbl">
+        <property name="text">
+         <string>Patoh Settings</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="1">
+       <widget class="QComboBox" name="_reorderPartitionCbx">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>FALSE</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>TRUE</string>
+         </property>
+        </item>
+       </widget>
       </item>
       <item row="3" column="3">
        <widget class="QComboBox" name="_parallel">
@@ -367,18 +349,38 @@
         </item>
        </widget>
       </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="_schedulerLbl">
+      <item row="10" column="3">
+       <widget class="QLineEdit" name="_imbalance">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
-         <string>Scheduler</string>
+         <string>0.01</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="_minStepLbl">
+      <item row="13" column="0">
+       <widget class="QLabel" name="_BDFMaxStepLbl">
         <property name="text">
-         <string>Minimum Step Size</string>
+         <string>BDF Max Step Size:</string>
         </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QComboBox" name="_dtSynch">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>ADAPTIVE</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>FIXED</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item row="5" column="0">
@@ -388,12 +390,100 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="2">
-       <widget class="QLabel" name="_parallelLbl">
+      <item row="2" column="2">
+       <widget class="QLabel" name="_derDeltaLbl">
         <property name="text">
-         <string>Parallel</string>
+         <string>Derivative Delta</string>
         </property>
        </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="_dtSynchLbl">
+        <property name="text">
+         <string>Dt Synchronization </string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="2">
+       <widget class="QLabel" name="_imbalanceLbl">
+        <property name="text">
+         <string>Imbalance</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QLabel" name="_metisSettingsLbl">
+        <property name="text">
+         <string>Metis Settings</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="2">
+       <widget class="QLabel" name="_BDFPartLbl">
+        <property name="text">
+         <string>BDF Partition</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="_symDiffLbl">
+        <property name="text">
+         <string>Symbolic Differentiation</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="_scotchSettingsLbl">
+        <property name="text">
+         <string>Scotch Settings</string>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="2">
+       <widget class="QLabel" name="_bdfPartitionDepthlbl">
+        <property name="text">
+         <string>BDF Partition Depth</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="_commIntervalLbl">
+        <property name="text">
+         <string>Output Type</string>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="1">
+       <widget class="QLineEdit" name="_BDFMaxStep"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="_commInterval">
+        <item>
+         <property name="text">
+          <string>STEP</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>SAMPLED</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>DENSE</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="9" column="2">
+       <widget class="QLabel" name="_semiStaticLbl">
+        <property name="text">
+         <string>Semi-static Partitioning</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="_minStep"/>
       </item>
       <item row="6" column="3">
        <widget class="QComboBox" name="_partitionMethod">
@@ -427,179 +517,6 @@
         </item>
        </widget>
       </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="_dtSynchLbl">
-        <property name="text">
-         <string>Dt Synchronization </string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QComboBox" name="_dtSynch">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <item>
-         <property name="text">
-          <string>ADAPTIVE</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>FIXED</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="7" column="2">
-       <widget class="QLabel" name="_dtLbl">
-        <property name="text">
-         <string>Dt tolerance</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="3">
-       <widget class="QLineEdit" name="_metisSettings">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="3">
-       <widget class="QLineEdit" name="_dt">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="2">
-       <widget class="QLabel" name="_semiStaticLbl">
-        <property name="text">
-         <string>Semi-static Partitioning</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="3">
-       <widget class="QCheckBox" name="_semiStaticChk">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="2">
-       <widget class="QLabel" name="_metisSettingsLbl">
-        <property name="text">
-         <string>Metis Settings</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="1">
-       <widget class="QLineEdit" name="_patohSettings">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="1">
-       <widget class="QLineEdit" name="_scotchSettings">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="0">
-       <widget class="QLabel" name="_scotchSettingsLbl">
-        <property name="text">
-         <string>Scotch Settings</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="_patohSettingsLbl">
-        <property name="text">
-         <string>Patoh Settings</string>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Jacobian (CVODE/IDA)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="1">
-       <widget class="QComboBox" name="_jacobian">
-        <item>
-         <property name="text">
-          <string>Sparse</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Dense</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="11" column="0">
-       <widget class="QLabel" name="_reorderPartitionLbl">
-        <property name="text">
-         <string>Reorder Partition</string>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="2">
-       <widget class="QLabel" name="_imbalanceLbl">
-        <property name="text">
-         <string>Imbalance</string>
-        </property>
-       </widget>
-      </item>
-      <item row="12" column="0">
-       <widget class="QLabel" name="_debugGraphLbl">
-        <property name="text">
-         <string>Debug Graph</string>
-        </property>
-       </widget>
-      </item>
-      <item row="11" column="1">
-       <widget class="QComboBox" name="_reorderPartitionCbx">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <item>
-         <property name="text">
-          <string>FALSE</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>TRUE</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="12" column="1">
-       <widget class="QComboBox" name="_debugGraphCbx">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <item>
-         <property name="text">
-          <string>FALSE</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>TRUE</string>
-         </property>
-        </item>
-       </widget>
-      </item>
       <item row="11" column="3">
        <widget class="QComboBox" name="_generateArchCbx">
         <property name="enabled">
@@ -617,23 +534,6 @@
         </item>
        </widget>
       </item>
-      <item row="12" column="3">
-       <widget class="QLineEdit" name="_BDFPart"/>
-      </item>
-      <item row="12" column="2">
-       <widget class="QLabel" name="_BDFPartLbl">
-        <property name="text">
-         <string>BDF Partition</string>
-        </property>
-       </widget>
-      </item>
-      <item row="13" column="2">
-       <widget class="QLabel" name="_bdfPartitionDepthlbl">
-        <property name="text">
-         <string>BDF Partition Depth</string>
-        </property>
-       </widget>
-      </item>
       <item row="13" column="3">
        <widget class="QSpinBox" name="_BDFPartitionDepth">
         <property name="minimum">
@@ -641,15 +541,29 @@
         </property>
        </widget>
       </item>
-      <item row="13" column="0">
-       <widget class="QLabel" name="_BDFMaxStepLbl">
-        <property name="text">
-         <string>BDF Max Step Size:</string>
+      <item row="8" column="1">
+       <widget class="QLineEdit" name="_scotchSettings">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="13" column="1">
-       <widget class="QLineEdit" name="_BDFMaxStep"/>
+      <item row="9" column="3">
+       <widget class="QCheckBox" name="_semiStaticChk">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <widget class="QLineEdit" name="_patohSettings">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="5" column="3">
        <widget class="QSpinBox" name="_lps">
@@ -658,6 +572,106 @@
         </property>
         <property name="maximum">
          <number>1024</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="_periodLbl">
+        <property name="text">
+         <string>Period</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="0">
+       <widget class="QLabel" name="_reorderPartitionLbl">
+        <property name="text">
+         <string>Reorder Partition</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Jacobian (CVODE/IDA)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="_minStepLbl">
+        <property name="text">
+         <string>Minimum Step Size</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="3">
+       <widget class="QLineEdit" name="_dt">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="3">
+       <widget class="QLineEdit" name="_BDFPart"/>
+      </item>
+      <item row="2" column="3">
+       <widget class="QLineEdit" name="_derDelta"/>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="_zcHyst"/>
+      </item>
+      <item row="6" column="2">
+       <widget class="QLabel" name="_pmLbl">
+        <property name="text">
+         <string>Partition Method</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1">
+       <widget class="QComboBox" name="_jacobian">
+        <item>
+         <property name="text">
+          <string>Sparse</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Dense</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="_schedulerLbl">
+        <property name="text">
+         <string>Scheduler</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="2">
+       <widget class="QLabel" name="_generateArchLbl">
+        <property name="text">
+         <string>Generate Arch</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="2">
+       <widget class="QLabel" name="_dtLbl">
+        <property name="text">
+         <string>Dt tolerance</string>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="1">
+       <widget class="QCheckBox" name="_test_methods_cbx">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="0">
+       <widget class="QLabel" name="_test_methods_lbl">
+        <property name="text">
+         <string>QSS Test Methods:</string>
         </property>
        </widget>
       </item>

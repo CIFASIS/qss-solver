@@ -97,6 +97,7 @@ class RunDlg : public QDialog, public Ui::RunForm {
   void on__parallel_currentIndexChanged(int index);
   void on__showAll_stateChanged(int state);
   void on__dtSynch_currentIndexChanged(int index);
+  void updateTestMethods(int state);
 
   private:
   int getOutputTypeIdx(QString str);
@@ -116,4 +117,3 @@ class RunDlg : public QDialog, public Ui::RunForm {
   Utils* _utils;
   QDoubleValidator* _validate;
 };
-

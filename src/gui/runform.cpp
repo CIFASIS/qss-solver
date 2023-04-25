@@ -19,6 +19,7 @@
 
 #include <Qt>
 #include <QtGui>
+#include <QListView>
 
 #include <runform.h>
 #include <utils.h>
@@ -39,6 +40,8 @@ RunDlg::RunDlg(QWidget *parent) : QDialog(parent)
   _extendedFrame->setVisible(false);
   _debugChk->setCheckState(Qt::Unchecked);
   on__parallel_currentIndexChanged(_parallel->currentIndex());
+  connect(_test_methods_cbx, &QCheckBox::stateChanged, this, &RunDlg::updateTestMethods);
+  updateTestMethods(_test_methods_cbx->checkState());
 }
 
 void RunDlg::on__showAll_stateChanged(int state)
@@ -156,6 +159,7 @@ QString RunDlg::getSolverString(int idx)
   case 13:
     return "IDA";
   case 14:
+    _test_methods_cbx->setCheckState(Qt::Checked);
     return "QSS_TEST";
   }
   return QString();
@@ -282,4 +286,14 @@ QString RunDlg::getDtSynchString(int idx)
     return "SD_DT_Asynchronous";
   }
   return "SD_DT_Asynchronous";
+}
+
+void RunDlg::updateTestMethods(int state)
+{
+  bool hide = state == Qt::Unchecked;
+  int test_solver = getSolverIdx("QSS_TEST");
+  qobject_cast<QListView *>(_solver->view())->setRowHidden(test_solver, hide);
+  if (hide) {
+    setSolver("QSS");
+  }
 }
