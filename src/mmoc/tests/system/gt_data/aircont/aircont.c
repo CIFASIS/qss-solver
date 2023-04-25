@@ -56,7 +56,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		_get_event_1_idxs(idx);
 		_apply_usage_event_1(_d1);
 		if ((i >= 1 && i <= 200)) {
-			_zc = _th(i)-_tref-_dtref+_on(i)-0.5-(0);
+			_zc = _th(i)-_tref-_dtref+_on(i)-5.000000e-01-(0);
 	
 	
 		}
@@ -70,11 +70,11 @@ void MOD_handlerPos(int idx, double *x, double *d, double *a, double t)
 	int i;
 	switch(idx) {
 		case _eval_event_2: {
-			_pref = 0.4;
+			_pref = 4.000000e-01;
 					return;
 		}
 		case _eval_event_3: {
-			_pref = 0.5;
+			_pref = 5.000000e-01;
 					return;
 		}
 		case _eval_event_4: {
@@ -182,17 +182,17 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	_nextSample = 1;
 	_noise = 2-1;
 	_pmax = 0;
-	_pref = 0.5;
+	_pref = 5.000000e-01;
 	_tref = 20;
 	for(i = 1; i<=200; i+=1) {
 		_init_th(i) = 4+18;
 		_CAP(i) = 100+550;
-		_RES(i) = 0.4+1.8;
-		_POT(i) = 0.2+13;
+		_RES(i) = 4.000000e-01+1.800000e+00;
+		_POT(i) = 2.000000e-01+13;
 		_pmax = _pmax+_POT(i);
 	}
 	for(i = 1; i<=200; i+=1) {
-		if(_init_th(i)-_tref-0.5>0) {
+		if(_init_th(i)-_tref-5.000000e-01>0) {
 			_on(i) = 1;
 			_ptotal = _ptotal+_POT(i);
 		}
@@ -234,6 +234,7 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	modelData->event[_idx_event_4].direction = 1;
 	modelData->event[_idx_event_4].relation = 2;
 	cleanVector(states, 0, 201);
+	cleanVector(states, 0, 201);
 	for(row = 1; row <= 200; row++) {
 		c_row = _c_index(row);
 		_get_eq_1_var_idxs(row, eq_var);
@@ -251,7 +252,6 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
 	}
-	cleanVector(states, 0, 201);
 	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->output = SD_Output("aircont",1,206,201,NULL,0,0,CI_Step,SD_Memory,MOD_output);
 	SD_output modelOutput = simulator->output;

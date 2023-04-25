@@ -181,13 +181,13 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int* outputs = (int*) malloc(2*sizeof(int));
 	int row, eq_var, c_row;
 	int x_ind;
-	_L = 0.001;
+	_L = 1.000000e-03;
 	_R = 10;
-	_Rd = 100000;
-	_Roff = 100000;
-	_Ron = 1e-05;
+	_Rd = 1.000000e+05;
+	_Roff = 1.000000e+05;
+	_Ron = 1.000000e-05;
 	_U = 311;
-	_w = 314.16;
+	_w = 3.141600e+02;
 	modelData->nSD[_idx_iL(0)]++;
 	modelData->nSD[_idx_u(0)]++;
 	modelData->nSD[_idx_u(0)]++;
@@ -246,7 +246,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
 			}
 	}
-	cleanVector(states, 0, 2);
 	cleanVector(states, 0, 2);
 	modelData->SZ[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_event_1;
 	modelData->SZ[_idx_u(0)][states[_idx_u(0)]++] = _idx_event_2;

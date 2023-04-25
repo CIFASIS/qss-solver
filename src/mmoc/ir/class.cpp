@@ -461,14 +461,16 @@ void Model::addEquation(AST_Equation eq, Option<Range> range)
 
 void Model::reduceEquation(AST_Equation_Equality eq, list<AST_Equation> &new_eqs)
 {
-  ReductionFunctions<AST_Equation, ConvertContRed> reduction_functions(eq->right(), Utils::instance().variable(eq->left()));
-  AST_Expression new_exp = reduction_functions.apply();
-  eq->setRight(new_exp);
-  list<AST_Equation> code = reduction_functions.code();
-  new_eqs.insert(new_eqs.end(), code.begin(), code.end());
-  list<Variable> variables = reduction_functions.variables();
-  for (Variable v : variables) {
-    setVariableOffset(v, _algebraic_nbr, Variable::RealType::Algebraic);
+  if (eq->left()->expressionType() != EXPOUTPUT) {
+    ReductionFunctions<AST_Equation, ConvertContRed> reduction_functions(eq->right(), Utils::instance().variable(eq->left()));
+    AST_Expression new_exp = reduction_functions.apply();
+    eq->setRight(new_exp);
+    list<AST_Equation> code = reduction_functions.code();
+    new_eqs.insert(new_eqs.end(), code.begin(), code.end());
+    list<Variable> variables = reduction_functions.variables();
+    for (Variable v : variables) {
+      setVariableOffset(v, _algebraic_nbr, Variable::RealType::Algebraic);
+    }
   }
 }
 
@@ -480,7 +482,7 @@ EquationTable Model::BDFDerivatives()
     Equation bdf_der = der;
     bdf_der.setType(EQUATION::QSSBDFDerivative);
     bdf_equations.insert(bdf_der.id(), bdf_der);
-  }  
+  }
   return bdf_equations;
 }
 
@@ -503,9 +505,8 @@ void Model::orderEquations()
   }
 
   EquationOrderMap::iterator map_it;
-  for (map_it = equation_map.begin(); map_it != equation_map.end(); map_it++)
-  {
-    Option<Variable> var = ModelConfig::instance().lookup(map_it->first.variable());   
+  for (map_it = equation_map.begin(); map_it != equation_map.end(); map_it++) {
+    Option<Variable> var = ModelConfig::instance().lookup(map_it->first.variable());
     assert(var);
     list<Equation> current_eqs = orderded_derivatives[var->offset()];
     current_eqs.push_back(map_it->second);
@@ -513,8 +514,7 @@ void Model::orderEquations()
   }
   OrderedEquations::iterator ord_eq_it;
   int total_ord = 1;
-  for (ord_eq_it = orderded_derivatives.begin(); ord_eq_it != orderded_derivatives.end(); ord_eq_it++)
-  {
+  for (ord_eq_it = orderded_derivatives.begin(); ord_eq_it != orderded_derivatives.end(); ord_eq_it++) {
     list<Equation> ordered_eqs = ord_eq_it->second;
     for (Equation ord_eq : ordered_eqs) {
       _ordered_derivatives.insert(total_ord++, ord_eq);
@@ -581,13 +581,29 @@ void Model::addVariable(int id, Option<Range> range, EQUATION::Type type, unsign
   setVariableOffset(variable.get(), offset, Variable::RealType::NotAssigned, DONT_INCREASE_OFFSET);
 }
 
+int Model::computeEventOffsetShift(Option<Range> range)
+{
+  int offset_shift = 0;
+  if (range) {
+    RangeDefinitionTable rdt = range->definition();
+    RangeDefinitionTable::iterator it;
+    int i = 0;
+    for (RangeDefinition rd = rdt.begin(it); !rdt.end(it); rd = rdt.next(it), i++) {
+      offset_shift += i * range->rowSize(i) + rd.cBegin();
+    }
+  }
+  return offset_shift;
+}
+
 void Model::addEvent(AST_Statement stm, Option<Range> range)
 {
   if (stm->statementType() == STWHEN) {
+    int new_event = false;
+    unsigned int event_offset = _event_nbr - computeEventOffsetShift(range);
     AST_Statement_When sw = stm->getAsWhen();
     _annotations.expComment(sw->comment(), _event_id);
-    addVariable(_event_id, range, EQUATION::Type::ZeroCrossing, _event_nbr);
-    Event event(sw->condition(), _event_id, _event_nbr, range, _annotations.EventId());
+    addVariable(_event_id, range, EQUATION::Type::ZeroCrossing, event_offset);
+    Event event(sw->condition(), _event_id, event_offset, range, _annotations.EventId());
     _event_nbr += (range ? range->size() : 1);
     AST_StatementList stl = sw->statements();
     AST_StatementListIterator it;
@@ -595,15 +611,15 @@ void Model::addEvent(AST_Statement stm, Option<Range> range)
       event.add(current_element(it));
     }
     if (sw->hasElsewhen()) {
-      int new_event = false;
       AST_Statement_ElseList ewl = sw->else_when();
       AST_Statement_ElseListIterator ewit;
       foreach (ewit, ewl) {
         AST_Statement_Else se = current_element(ewit);
         Event else_event = event;
         if (!else_event.compare(se->condition())) {
-          addVariable(_event_id + 1, range, EQUATION::Type::ZeroCrossing, _event_nbr);
-          else_event = Event(se->condition(), _event_id + 1, _event_nbr, range, _annotations.EventId());
+          event_offset = _event_nbr - computeEventOffsetShift(range);
+          addVariable(_event_id + 1, range, EQUATION::Type::ZeroCrossing, event_offset);
+          else_event = Event(se->condition(), _event_id + 1, event_offset, range, _annotations.EventId());
           _event_nbr += (range ? range->size() : 1);
           new_event = true;
         }
@@ -613,13 +629,16 @@ void Model::addEvent(AST_Statement stm, Option<Range> range)
           else_event.add(current_element(steit));
         }
         if (new_event) {
-          _events.insert(_event_id++, else_event);
+          _events.insert(_event_id + 1, else_event);
         } else {
           event = else_event;
         }
       }
     }
     _events.insert(_event_id++, event);
+    if (new_event) {
+      _event_id++;
+    }
   }
 }
 
@@ -666,7 +685,7 @@ void Model::setEvents()
       addEvent(stm, Option<Range>());
     } else if (stm->statementType() == STFOR) {
       AST_Statement_For stf = stm->getAsFor();
-      Range range(stf);
+      Range range(stf, RANGE::For);
       AST_StatementList sts = stf->statements();
       AST_StatementListIterator stit;
       foreach (stit, sts) {
@@ -726,6 +745,7 @@ void Model::setModelConfig()
   ModelConfig::instance().setDerivatives(_derivatives);
   ModelConfig::instance().setOrderedDerivatives(_ordered_derivatives);
   ModelConfig::instance().setStateNbr(_state_nbr);
+  ModelConfig::instance().setAlgebraicNbr(_algebraic_nbr);
   ModelConfig::instance().setEvents(_events);
 }
 }  // namespace IR

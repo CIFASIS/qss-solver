@@ -62,6 +62,8 @@ class ModelConfig {
   inline bool algorithm() { return _algorithm; };
   inline void setStateNbr(int state_nbr) { _state_nbr = state_nbr; }
   inline int stateNbr() const { return _state_nbr; }
+  inline void setAlgebraicNbr(int algebraic_nbr) { _algebraic_nbr = algebraic_nbr; }
+  inline int algebraicNbr() const { return _algebraic_nbr; }
   inline void setSymDiff(bool sym_diff) { _sym_diff = sym_diff; }
   inline bool symDiff() const { return _sym_diff; }
 
@@ -105,6 +107,7 @@ class ModelConfig {
         _ordered_derivatives(),
         _events(),
         _algorithm(false),
+        _algebraic_nbr(0),
         _state_nbr(0),
         _symbols(),
         _local_symbols(),
@@ -128,6 +131,7 @@ class ModelConfig {
   IR::EquationTable _ordered_derivatives;
   IR::EventTable _events;
   bool _algorithm;
+  int _algebraic_nbr;
   int _state_nbr;
   VarSymbolTable _symbols;
   SymbolTable _local_symbols;

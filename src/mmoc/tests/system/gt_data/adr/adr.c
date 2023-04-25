@@ -252,14 +252,14 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int i;
 	_L = 10;
 	_a = 1;
-	_dx = _L/1000;
+	_dx = _L/(double)1000;
 	_dx2 = pow(_dx,2);
 	_r = 1000;
 	for(i = 500; i<=1000; i+=1) {
-		_d(i) = 10;
+		_d(i) = 1.000000e+01;
 	}
 	for(i = 1; i<=499; i+=1) {
-		_d(i) = 1e-06;
+		_d(i) = 1.000000e-06;
 	}
 	modelData->nSD[_idx_u(1,0)]++;
 	modelData->nSD[_idx_u(1000,0)]++;
@@ -402,7 +402,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
 			}
 	}
-	cleanVector(states, 0, 1000);
 	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->time = QSS_Time(1000,0,0,0,ST_Binary, NULL);
 		double period[1];
