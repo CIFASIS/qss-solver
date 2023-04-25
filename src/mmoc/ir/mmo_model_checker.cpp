@@ -19,16 +19,16 @@
 
 #include "mmo_model_checker.h"
 
-#include "../ast/class.h"
-#include "../ast/composition.h"
-#include "../ast/element.h"
-#include "../ast/equation.h"
-#include "../ast/expression.h"
-#include "../ast/modification.h"
-#include "../ast/statement.h"
-#include "../ast/stored_definition.h"
-#include "../util/error.h"
-#include "../util/util.h"
+#include <ast/class.h>
+#include <ast/composition.h>
+#include <ast/element.h>
+#include <ast/equation.h>
+#include <ast/expression.h>
+#include <ast/modification.h>
+#include <ast/statement.h>
+#include <ast/stored_definition.h>
+#include <util/error.h>
+#include <util/util.h>
 
 using namespace MicroModelica::Util;
 
@@ -37,7 +37,9 @@ namespace IR {
 
 /* MicroModelica model checker interface */
 
-ModelChecker::ModelChecker(string name) : _has_parent(false), _class_name(), _class_prefix(0), _class_modification(false), _else_when(false) {}
+ModelChecker::ModelChecker(string name) : _has_parent(false), _class_name(), _class_prefix(0), _class_modification(false), _else_when(false)
+{
+}
 
 ModelChecker::~ModelChecker() {}
 
@@ -141,11 +143,6 @@ void ModelChecker::leave(AST_CompositionElement x) {}
 
 void ModelChecker::visit(AST_CompositionEqsAlgs x)
 {
-  if (_class_prefix == CP_MODEL) {
-    if (x->hasEquations() && x->isInitial()) {
-      Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Initial Equation section inside Model Class.");
-    }
-  }
   if (_class_prefix == CP_FUNCTION || _class_prefix == CP_PURE || _class_prefix == CP_IMPURE) {
     if (x->isInitial() && !_has_parent) {
       Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Initial section inside function definition.");
@@ -300,7 +297,7 @@ bool ModelChecker::_lValue(AST_Expression left)
 void ModelChecker::visit(AST_Equation x)
 {
   EquationType e = x->equationType();
-  if (e == EQCALL || e == EQCONNECT || e == EQWHEN || e == EQIF) {
+  if (e == EQCALL || e == EQCONNECT || e == EQIF) {
     Error::instance().add(x->lineNum(), EM_AST | EM_CLASS_DEFINITION, ER_Error, "Equation type not allowed %d.", e);
   }
   if (e == EQEQUALITY) {
