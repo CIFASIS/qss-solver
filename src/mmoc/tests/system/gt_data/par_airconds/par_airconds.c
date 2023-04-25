@@ -329,7 +329,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		}
 	}
 	cleanVector(states, 0, 4000);
-	cleanVector(states, 0, 4000);
 	for(_d1 = 1; _d1<=4000; _d1+=1) {
 		modelData->SZ[_idx_th(_d1,0)][states[_idx_th(_d1,0)]++] = _idx_event_1(_d1);
 	}
@@ -373,7 +372,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(_d1 = 1; _d1<=4000; _d1+=1) {
 		modelData->event[_idx_event_2(_d1)].LHSDsc[events[_idx_event_2(_d1)]++] = _idx_tref(_d1);
 	}
-	cleanVector(discretes, 0, 12000);
+	cleanVector(discretes, 0, 20000);
 	for(_d1 = 1; _d1<=4000; _d1+=1) {
 		modelData->DH[_idx_nextSample(_d1)][discretes[_idx_nextSample(_d1)]++] = _idx_event_3(_d1);
 	}

@@ -402,7 +402,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
 			}
 	}
-	cleanVector(states, 0, 1000);
 	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->time = QSS_Time(1000,0,0,0,ST_Binary, NULL);
 		double period[1];

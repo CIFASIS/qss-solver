@@ -228,7 +228,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
 			}
 	}
-	cleanVector(states, 0, 2);
 	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->time = QSS_Time(2,0,0,0,ST_Binary, NULL);
 	simulator->output = SD_Output("lotka_volterra",2,0,2,NULL,0,0,CI_Step,SD_Memory,MOD_output);

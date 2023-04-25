@@ -234,6 +234,7 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	modelData->event[_idx_event_4].direction = 1;
 	modelData->event[_idx_event_4].relation = 2;
 	cleanVector(states, 0, 201);
+	cleanVector(states, 0, 201);
 	for(row = 1; row <= 200; row++) {
 		c_row = _c_index(row);
 		_get_eq_1_var_idxs(row, eq_var);
@@ -251,7 +252,6 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
 	}
-	cleanVector(states, 0, 201);
 	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->output = SD_Output("aircont",1,206,201,NULL,0,0,CI_Step,SD_Memory,MOD_output);
 	SD_output modelOutput = simulator->output;

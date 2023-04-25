@@ -379,6 +379,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	simulator->data = QSS_Data(5,10,13,0,4,2,2,"interleaved");
 	QSS_data modelData = simulator->data;
 	MODEL_DATA_ACCESS(modelData)
+	int* algebraics = (int*) malloc(4*sizeof(int));
 	int* states = (int*) malloc(5*sizeof(int));
 	int* discretes = (int*) malloc(10*sizeof(int));
 	int* events = (int*) malloc(13*sizeof(int));
@@ -529,17 +530,17 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->DS[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_iL(_d1,0);
 	}
-	cleanVector(states, 0, 5);
+	cleanVector(algebraics, 0, 4);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
 			x_ind = _idx_iL(1,0);
 			if(in(modelData->jac_matrices->dg_dx[0]->index[c_row],modelData->jac_matrices->dg_dx[0]->size[c_row], x_ind)){
 				modelData->jac_matrices->dg_dx[0]->size[c_row]--;
 			} else {
-				modelData->jac_matrices->dg_dx[0]->index[c_row][states[c_row]++] = x_ind;
+				modelData->jac_matrices->dg_dx[0]->index[c_row][algebraics[c_row]++] = x_ind;
 			}
 	}
-	cleanVector(states, 0, 5);
+	cleanVector(algebraics, 0, 4);
 	for(row = 1; row <= 3; row++) {
 		c_row = _c_index(row);
 		_get_alg_eq_2_var_idxs(row, eq_var);
@@ -549,7 +550,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 			if(in(modelData->jac_matrices->dg_dx[1]->index[c_row],modelData->jac_matrices->dg_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->dg_dx[1]->size[c_row]--;
 			} else {
-				modelData->jac_matrices->dg_dx[1]->index[c_row][states[c_row]++] = x_ind;
+				modelData->jac_matrices->dg_dx[1]->index[c_row][algebraics[c_row]++] = x_ind;
 			}
 		}
 		for(i = 2; i<=4; i+=1) {
@@ -560,14 +561,14 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 			if(in(modelData->jac_matrices->dg_dx[1]->index[c_row],modelData->jac_matrices->dg_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->dg_dx[1]->size[c_row]--;
 			} else {
-				modelData->jac_matrices->dg_dx[1]->index[c_row][states[c_row]++] = x_ind;
+				modelData->jac_matrices->dg_dx[1]->index[c_row][algebraics[c_row]++] = x_ind;
 			}
 			}
 	}		x_ind = _idx_iL(1,0);
 			if(in(modelData->jac_matrices->dg_dx[1]->index[c_row],modelData->jac_matrices->dg_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->dg_dx[1]->size[c_row]--;
 			} else {
-				modelData->jac_matrices->dg_dx[1]->index[c_row][states[c_row]++] = x_ind;
+				modelData->jac_matrices->dg_dx[1]->index[c_row][algebraics[c_row]++] = x_ind;
 			}
 	}
 	cleanVector(states, 0, 5);
@@ -623,7 +624,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
 			}
 	}
-	cleanVector(states, 0, 5);
 	cleanVector(states, 0, 5);
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->SZ[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_event_4(_d1);
@@ -710,6 +710,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelOutput->SO[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_out_exp_2(_d1);
 	}
 	simulator->model = QSS_Model(MOD_definition, MOD_dependencies, MOD_zeroCrossing, MOD_handlerPos, MOD_handlerNeg, MOD_jacobian, MOD_BDF_definition);
+	free(algebraics);
 	free(states);
 	free(discretes);
 	free(events);

@@ -557,7 +557,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		c_row = _c_index(row);
 	}
 	cleanVector(states, 0, 4002);
-	cleanVector(states, 0, 4002);
 	for(_d1 = 1; _d1<=4000; _d1+=1) {
 		modelData->SZ[_idx_th(_d1,0)][states[_idx_th(_d1,0)]++] = _idx_event_6(_d1);
 	}
@@ -647,7 +646,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelData->event[_idx_event_2(_d1)].RHSSt[events[_idx_event_2(_d1)]++] = _idx_ptotal(0);
 	}
 	modelData->event[_idx_event_5].RHSSt[events[_idx_event_5]++] = _idx_ptotal(0);
-	cleanVector(discretes, 0, 8011);
+	cleanVector(discretes, 0, 16020);
 	modelData->DH[_idx_dtref][discretes[_idx_dtref]++] = _idx_event_5;
 	modelData->DH[_idx_nextSample][discretes[_idx_nextSample]++] = _idx_event_5;
 	modelData->DH[_idx_pref][discretes[_idx_pref]++] = _idx_event_3;

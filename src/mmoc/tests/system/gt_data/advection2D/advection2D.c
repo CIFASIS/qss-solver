@@ -355,6 +355,7 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 		}
 	}
 	cleanVector(states, 0, 400);
+	cleanVector(states, 0, 400);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
 			x_ind = _idx_u(1,1);
@@ -438,7 +439,6 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 			}
 		}
 	}
-	cleanVector(states, 0, 400);
 	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->output = SD_Output("advection2D",2,0,400,NULL,0,0,CI_Step,SD_Memory,MOD_output);
 	SD_output modelOutput = simulator->output;
