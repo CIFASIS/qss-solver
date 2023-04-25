@@ -569,9 +569,9 @@ AST_Statement newAST_Statement_Assign(AST_Expression_ComponentReference cr, AST_
   return new AST_Statement_Assign_(cr, exp);
 }
 
-AST_Equation newAST_Equation_When(AST_Expression cond, AST_EquationList eqs, AST_Equation_ElseList else_list)
+AST_Equation newAST_Equation_When(AST_Expression cond, AST_EquationList eqs, AST_Equation_ElseList else_list, AST_Comment comment)
 {
-  return new AST_Equation_When_(cond, eqs, else_list);
+  return new AST_Equation_When_(cond, eqs, else_list, comment);
 }
 
 AST_CompositionEqsAlgs newAST_CompositionInitialEquations(AST_EquationList eqlist) { return new AST_CompositionEqsAlgs_(eqlist, true); }
