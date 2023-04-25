@@ -15,7 +15,7 @@ void MOD_settings(SD_simulationSettings settings)
 	settings->debug = 0;
 	settings->parallel = FALSE;
 	settings->hybrid = FALSE;
-	settings->method = 12;
+	settings->method = 11;
 }
 
 void MOD_definition(double *x, double *d, double *a, double t, double *dx)
