@@ -46,6 +46,8 @@ SD_Solver _getSolver(const char *sol)
     return SD_LIQSS3;
   } else if (!strcmp(sol, "QSS4")) {
     return SD_QSS4;
+  } else if (!strcmp(sol, "QSS_TEST")) {
+    return SD_QSS_TEST;
   } else if (!strcmp(sol, "DASSL")) {
     return SD_DASSL;
   } else if (!strcmp(sol, "DOPRI")) {
