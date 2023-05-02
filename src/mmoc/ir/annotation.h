@@ -32,7 +32,25 @@
 namespace MicroModelica {
 namespace IR {
 
-typedef enum { QSS, CQSS, LIQSS, QSS2, LIQSS2, LIQSS_BDF, QSS3, LIQSS3, QSS4, DASSL, DOPRI, CVODE_BDF, CVODE_AM, IDA, QSS_TEST } Solver;
+typedef enum {
+  QSS,
+  CQSS,
+  LIQSS,
+  QSS2,
+  LIQSS2,
+  LIQSS_BDF,
+  QSS3,
+  LIQSS3,
+  QSS4,
+  DASSL,
+  DOPRI,
+  CVODE_BDF,
+  CVODE_AM,
+  IDA,
+  mLIQSS,
+  mLIQSS2,
+  mLIQSS3
+} Solver;
 
 typedef enum { Metis, HMetis, Scotch, Patoh, MTPL, MTPL_IT, Manual } PartitionMethod;
 
