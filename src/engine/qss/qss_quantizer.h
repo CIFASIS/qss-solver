@@ -59,16 +59,14 @@ struct QA_quantizerState_ {
   QSS_time lSimTime;
   QSS_idxMap qMap;
 
-  // QSS TEST method added state.
+  // Added state for mLIQSS methods.
+  int sts;
+  int infs;
   int *nSD;
   int **SD;
+  int **S;
   bool *change;
-  double *next;
-  double *nTime;
-  double **A;
-  double **U0;
-  double **U1;
-  double *cont;
+  double *qj;
 };
 
 struct QA_quantizerOps_ {
