@@ -26,7 +26,7 @@
 #include <common/utils.h>
 #include <qss/qss_data.h>
 
-#define NAME_SIZE 128
+#define NAME_SIZE 256
 
 #define MAX_OPEN_FILES 1000
 
