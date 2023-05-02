@@ -32,6 +32,7 @@
 #include <qss/methods/qss2.h>
 #include <qss/methods/qss3.h>
 #include <qss/methods/qss4.h>
+#include <qss/methods/qss_test.h>
 
 QA_quantizerOps QA_QuantizerOps()
 {
@@ -72,6 +73,16 @@ QA_quantizerState QA_QuantizerState()
   p->finTime = 0;
   p->lSimTime = NULL;
   p->qMap = NULL;
+  p->nSD = NULL;
+  p->SD = NULL;
+  p->change = NULL;
+  p->next = NULL;
+  p->nTime = NULL;
+  p->A = NULL;
+  p->U0 = NULL;
+  p->U1 = NULL;
+  p->cont = NULL;
+
   return p;
 }
 
@@ -142,6 +153,13 @@ QA_quantizer QA_Quantizer(QSS_data simData, QSS_time simTime)
       QSS4_PAR_init(p, simData, simTime);
     } else {
       QSS4_init(p, simData, simTime);
+    }
+    break;
+  case SD_QSS_TEST:
+    if (simData->params->lps > 0) {
+      QSS_TEST_PAR_init(p, simData, simTime);
+    } else {
+      QSS_TEST_init(p, simData, simTime);
     }
     break;
   default:

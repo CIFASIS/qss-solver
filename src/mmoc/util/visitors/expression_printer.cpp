@@ -19,6 +19,7 @@
 
 #include "expression_printer.h"
 
+#include <iomanip>
 #include <sstream>
 
 #include <ast/ast_builder.h>
@@ -27,6 +28,7 @@
 #include <util/error.h>
 #include <util/model_config.h>
 #include <util/util.h>
+#include <util/visitors/is_constant_expression.h>
 
 namespace MicroModelica {
 using namespace IR;
@@ -118,7 +120,7 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
     break;
   }
   case EXPREAL:
-    buffer << exp->getAsReal()->val();
+    buffer << std::scientific << exp->getAsReal()->val();
     break;
   case EXPSTRING:
     buffer << exp->getAsString()->str();
@@ -163,9 +165,10 @@ string ExpressionPrinter::foldTraverseElement(string l, string r, BinOpType bot)
   case BINOPSUB:
     buffer << l << "-" << r;
     break;
-  case BINOPDIV:
-    buffer << l << "/" << r;
-    break;
+  case BINOPDIV: {
+    IsConstantExpression constant_exp(true, true);
+    buffer << l << "/" << ((constant_exp.apply(_right)) ? "(double)" : "") << r;
+  } break;
   case BINOPMULT:
     buffer << l << "*" << r;
     break;

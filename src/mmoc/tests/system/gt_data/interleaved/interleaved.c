@@ -69,7 +69,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		_get_event_2_idxs(idx);
 		_apply_usage_event_2(_d1);
 		if ((i >= 1 && i <= 4)) {
-			_zc(0) = _time-_lastT-_T*(i-1)/4-0.01*_T-(0);
+			_zc(0) = _time-_lastT-_T*(i-1)/4-1.000000e-02*_T-(0);
 			_zc(1) = (0)/1;
 	
 		}
@@ -79,7 +79,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		_get_event_3_idxs(idx);
 		_apply_usage_event_3(_d1);
 		if ((i >= 1 && i <= 4)) {
-			_zc(0) = _time-_lastT-_T*(i-1)/4-_DC*_T/4-0.01*_T-(0);
+			_zc(0) = _time-_lastT-_T*(i-1)/4-_DC*_T/4-1.000000e-02*_T-(0);
 			_zc(1) = (0)/1;
 	
 		}
@@ -379,6 +379,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	simulator->data = QSS_Data(5,10,13,0,4,2,2,"interleaved");
 	QSS_data modelData = simulator->data;
 	MODEL_DATA_ACCESS(modelData)
+	int* algebraics = (int*) malloc(4*sizeof(int));
 	int* states = (int*) malloc(5*sizeof(int));
 	int* discretes = (int*) malloc(10*sizeof(int));
 	int* events = (int*) malloc(13*sizeof(int));
@@ -388,21 +389,21 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int _d1;
 	int _rg_d1;
 	int i;
-	_C = 0.0001;
-	_DC = 0.5;
-	_L = 0.0001;
+	_C = 1.000000e-04;
+	_DC = 5.000000e-01;
+	_L = 1.000000e-04;
 	_R = 10;
-	_ROff = 100000;
-	_ROn = 1e-05;
+	_ROff = 1.000000e+05;
+	_ROn = 1.000000e-05;
 	for(_d1 = 1; _d1<=4; _d1+=1) {
-			_Rd(_d1) = 100000;
+			_Rd(_d1) = 1.000000e+05;
 	}
 	for(_d1 = 1; _d1<=4; _d1+=1) {
-			_Rs(_d1) = 100000;
+			_Rs(_d1) = 1.000000e+05;
 	}
-	_T = 0.0001;
+	_T = 1.000000e-04;
 	_U = 24;
-	_nextT = 1e-08;
+	_nextT = 1.000000e-08;
 	modelData->nSD[_idx_iL(4,0)]++;
 	modelData->nSD[_idx_uC(0)]++;
 	for(_d1 = 1; _d1<=4; _d1+=1) {
@@ -529,17 +530,17 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->DS[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_iL(_d1,0);
 	}
-	cleanVector(states, 0, 5);
+	cleanVector(algebraics, 0, 4);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
 			x_ind = _idx_iL(1,0);
 			if(in(modelData->jac_matrices->dg_dx[0]->index[c_row],modelData->jac_matrices->dg_dx[0]->size[c_row], x_ind)){
 				modelData->jac_matrices->dg_dx[0]->size[c_row]--;
 			} else {
-				modelData->jac_matrices->dg_dx[0]->index[c_row][states[c_row]++] = x_ind;
+				modelData->jac_matrices->dg_dx[0]->index[c_row][algebraics[c_row]++] = x_ind;
 			}
 	}
-	cleanVector(states, 0, 5);
+	cleanVector(algebraics, 0, 4);
 	for(row = 1; row <= 3; row++) {
 		c_row = _c_index(row);
 		_get_alg_eq_2_var_idxs(row, eq_var);
@@ -549,7 +550,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 			if(in(modelData->jac_matrices->dg_dx[1]->index[c_row],modelData->jac_matrices->dg_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->dg_dx[1]->size[c_row]--;
 			} else {
-				modelData->jac_matrices->dg_dx[1]->index[c_row][states[c_row]++] = x_ind;
+				modelData->jac_matrices->dg_dx[1]->index[c_row][algebraics[c_row]++] = x_ind;
 			}
 		}
 		for(i = 2; i<=4; i+=1) {
@@ -560,14 +561,14 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 			if(in(modelData->jac_matrices->dg_dx[1]->index[c_row],modelData->jac_matrices->dg_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->dg_dx[1]->size[c_row]--;
 			} else {
-				modelData->jac_matrices->dg_dx[1]->index[c_row][states[c_row]++] = x_ind;
+				modelData->jac_matrices->dg_dx[1]->index[c_row][algebraics[c_row]++] = x_ind;
 			}
 			}
 	}		x_ind = _idx_iL(1,0);
 			if(in(modelData->jac_matrices->dg_dx[1]->index[c_row],modelData->jac_matrices->dg_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->dg_dx[1]->size[c_row]--;
 			} else {
-				modelData->jac_matrices->dg_dx[1]->index[c_row][states[c_row]++] = x_ind;
+				modelData->jac_matrices->dg_dx[1]->index[c_row][algebraics[c_row]++] = x_ind;
 			}
 	}
 	cleanVector(states, 0, 5);
@@ -623,7 +624,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
 			}
 	}
-	cleanVector(states, 0, 5);
 	cleanVector(states, 0, 5);
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->SZ[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_event_4(_d1);
@@ -710,6 +710,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelOutput->SO[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_out_exp_2(_d1);
 	}
 	simulator->model = QSS_Model(MOD_definition, MOD_dependencies, MOD_zeroCrossing, MOD_handlerPos, MOD_handlerNeg, MOD_jacobian, MOD_BDF_definition);
+	free(algebraics);
 	free(states);
 	free(discretes);
 	free(events);

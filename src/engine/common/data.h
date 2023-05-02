@@ -61,7 +61,8 @@ typedef enum {
   SD_DOPRI,
   SD_CVODE_BDF,
   SD_CVODE_AM,
-  SD_IDA
+  SD_IDA,
+  SD_QSS_TEST
 } SD_Solver;
 
 typedef enum {

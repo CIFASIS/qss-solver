@@ -358,7 +358,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 				modelData->jac_matrices->df_dx[2]->index[c_row][states[c_row]++] = x_ind;
 			}
 	}
-	cleanVector(states, 0, 200);
 	cleanVector(events, 0, 1);
 	modelData->HD[_idx_event_1][events[_idx_event_1]++] = _idx_x(1,0);
 	cleanVector(events, 0, 1);

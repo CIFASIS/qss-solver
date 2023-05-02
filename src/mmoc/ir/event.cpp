@@ -63,7 +63,7 @@ Event::Event(AST_Expression cond, int id, int offset, Option<Range> range, strin
       _event_id(event_id)
 {
   ConvertCondition cc;
-  _zero_crossing = Equation(cc.apply(getExpression(cond)), range, EQUATION::ZeroCrossing, id, offset);
+  _zero_crossing = Equation(cc.apply(getExpression(cond)), range, EQUATION::ZeroCrossing, id, _offset);
   _type = cc.zeroCrossing();
   _current = _type;
   _zc_relation = cc.zeroCrossingRelation();

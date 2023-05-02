@@ -43,7 +43,7 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		_get_event_1_idxs(idx);
 		_apply_usage_event_1(_d1);
 		if ((i >= 1 && i <= 4000)) {
-			_zc(0) = _th(i,0)-_tref(i)+_on(i)-0.5-(0);
+			_zc(0) = _th(i,0)-_tref(i)+_on(i)-5.000000e-01-(0);
 			_zc(1) = (0)/1;
 	
 		}
@@ -88,7 +88,7 @@ void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double 
 		_apply_usage_event_2(_d1);
 		if ((i >= 1 && i <= 4000)) {
 			if((_nextTref(i)==1000)) {
-		_tref(i) = 20.5;
+		_tref(i) = 2.050000e+01;
 	}else {
 		_tref(i) = 20;
 	}
@@ -218,7 +218,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(i = 1; i<=4000; i+=1) {
 		_init_th(i,0) = __math__rand(4)+18;
 		_CAP(i) = __math__rand(100)+550;
-		_RES(i) = __math__rand(0.4)+1.8;
+		_RES(i) = __math__rand(4.000000e-01)+1.800000e+00;
 		_POT(i) = __math__rand(2)+13;
 		_pmax = _pmax+_POT(i);
 		_nextSample(i) = 1;
@@ -227,7 +227,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		_nextTref(i) = 1000;
 	}
 	for(i = 1; i<=4000; i+=1) {
-		if(_init_th(i,0)-_tref(i)-0.5>0) {
+		if(_init_th(i,0)-_tref(i)-5.000000e-01>0) {
 			_on(i) = 1;
 		}
 	}
@@ -329,7 +329,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		}
 	}
 	cleanVector(states, 0, 4000);
-	cleanVector(states, 0, 4000);
 	for(_d1 = 1; _d1<=4000; _d1+=1) {
 		modelData->SZ[_idx_th(_d1,0)][states[_idx_th(_d1,0)]++] = _idx_event_1(_d1);
 	}
@@ -373,7 +372,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(_d1 = 1; _d1<=4000; _d1+=1) {
 		modelData->event[_idx_event_2(_d1)].LHSDsc[events[_idx_event_2(_d1)]++] = _idx_tref(_d1);
 	}
-	cleanVector(discretes, 0, 12000);
+	cleanVector(discretes, 0, 20000);
 	for(_d1 = 1; _d1<=4000; _d1+=1) {
 		modelData->DH[_idx_nextSample(_d1)][discretes[_idx_nextSample(_d1)]++] = _idx_event_3(_d1);
 	}

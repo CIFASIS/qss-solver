@@ -35,7 +35,7 @@ equation
 		MMO_PartitionMethod=Metis,
 		MMO_Output={u[750]},
 		MMO_OutputType=CI_Sampled,
-		Jacobian=Dense,
+		Jacobian=Sparse,
 		MMO_BDF_Part={u[N/2:N]},
 		MMO_BDF_PDepth=1,
 		MMO_BDF_Max_Step=0,
