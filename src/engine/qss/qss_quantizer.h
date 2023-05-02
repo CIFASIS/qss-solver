@@ -66,6 +66,8 @@ struct QA_quantizerState_ {
   int **SD;
   int **S;
   bool *change;
+  double **A;
+  double **U0;
   double *qj;
 };
 

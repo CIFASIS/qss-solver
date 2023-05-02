@@ -76,13 +76,15 @@ QA_quantizerState QA_QuantizerState()
   p->lSimTime = NULL;
   p->qMap = NULL;
   // Added state for mLIQSS methods.
+  p->infs = 0;
+  p->sts = 0;
   p->nSD = NULL;
   p->SD = NULL;
   p->change = NULL;
-  p->qj = NULL;
   p->S = NULL;
-  p->infs = 0;
-  p->sts = 0;
+  p->A = NULL;
+  p->U0 = NULL;
+  p->qj = NULL;
   return p;
 }
 
@@ -237,6 +239,24 @@ void QA_freeQuantizerState(QA_quantizerState state)
       }
     }
     free(state->S);
+  }
+  if (state->A != NULL) {
+    int states = state->sts;
+    for (int i = 0; i < states; i++) {
+      if (state->A[i] != NULL) {
+        free(state->A[i]);
+      }
+    }
+    free(state->A);
+  }
+  if (state->U0 != NULL) {
+    int states = state->sts;
+    for (int i = 0; i < states; i++) {
+      if (state->U0[i] != NULL) {
+        free(state->U0[i]);
+      }
+    }
+    free(state->U0);
   }
   if (state->change != NULL) {
     free(state->change);
