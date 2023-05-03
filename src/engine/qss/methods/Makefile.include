@@ -10,7 +10,10 @@ SEQ_METHODS_SRC = $(QSS_METHODS_DIR)/qss.c \
 		  $(QSS_METHODS_DIR)/liqss2.c \
 		  $(QSS_METHODS_DIR)/liqss_bdf.c \
 		  $(QSS_METHODS_DIR)/liqss3.c \
-		  $(QSS_METHODS_DIR)/cqss.c
+		  $(QSS_METHODS_DIR)/cqss.c \
+		  $(QSS_METHODS_DIR)/mliqss.c \
+		  $(QSS_METHODS_DIR)/mliqss2.c \
+		  $(QSS_METHODS_DIR)/mliqss3.c
 
 # Objects
 

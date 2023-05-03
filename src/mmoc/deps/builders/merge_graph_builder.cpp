@@ -188,7 +188,7 @@ SB::Deps::LMapExp MergeGraphGenerator<S>::buildLMapFromExp(IR::Expression exp)
 }
 
 template <typename S>
-SB::Deps::LMapExp MergeGraphGenerator<S>::buildLMapExp(Expression exp, IR::Expression use_exp)
+SB::Deps::LMapExp MergeGraphGenerator<S>::buildLMapExp(Expression exp, IR::Expression use_exp, SB::Deps::LMapExp use_map)
 {
   SB::Deps::LMapExp use_exp_map = buildLMapFromExp(use_exp);
   SB::Deps::LMapExp exp_map = buildLMapFromExp(exp);
@@ -198,7 +198,11 @@ SB::Deps::LMapExp MergeGraphGenerator<S>::buildLMapExp(Expression exp, IR::Expre
     exp_map.padDims(use_exp_map.slopes().size());
   }
   if (!exp_map.isEmpty() && !use_exp_map.isEmpty()) {
-    exp_map = exp_map.compose(use_exp_map);
+    SB::Deps::LMapExp apply_map = use_exp_map;
+    if (!use_map.isEmpty()) {
+      apply_map = use_map.compose(use_exp_map);
+    }
+    exp_map = exp_map.compose(apply_map.revert());
   }
   return exp_map;
 }
@@ -259,7 +263,7 @@ SB::EdgeMaps MergeGraphGenerator<S>::generatePWLMaps(IntersectInfo inter_info, S
   maps.F = buildMap(ifr_nodes, _graph[*inter_info.node].id() - inter_info.orig_node.id(), dom_nodes, _graph[*inter_info.node].id());
   maps.U = buildMap(ife_nodes, ife_vertex.id() - orig_ife_vertex.id(), dom_nodes, ife_vertex.id());
   Expression node = _config.exp(_config.getNode(orig_ife_vertex.index()));
-  maps.map_exp = buildLMapExp(node, inter_info.edge.desc().exp());
+  maps.map_exp = buildLMapExp(node, inter_info.edge.desc().exp(), var_dep.nMap());
   _edge_dom_offset += dom_nodes.size();
   return maps;
 }

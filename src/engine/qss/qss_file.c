@@ -45,7 +45,7 @@ void F_init(LG_log log, QSS_data sim_data, SD_output sim_output)
 #endif
   int init = log->state->batch_init;
   int end = log->state->batch_end;
-  int total_outputs = log->state->output->outputs; 
+  int total_outputs = log->state->output->outputs;
   size = end - init;
   if (size > 0) {
     log->state->files = (FILE **)malloc(size * sizeof(FILE *));
@@ -54,7 +54,7 @@ void F_init(LG_log log, QSS_data sim_data, SD_output sim_output)
     }
     j = 0;
     for (i = init; i < total_outputs; i++) {
-      char ext[128] = "";
+      char ext[256] = "";
 #ifdef QSS_PARALLEL
       if (lp->oMap[i] > NOT_ASSIGNED) {
         if (sim_output->nOD[i] != 0) {
@@ -71,8 +71,8 @@ void F_init(LG_log log, QSS_data sim_data, SD_output sim_output)
       }
 #endif
       if (j >= size) {
-          break;
-      } 
+        break;
+      }
     }
 #ifdef QSS_PARALLEL
     log->ops->write = F_PAR_write;

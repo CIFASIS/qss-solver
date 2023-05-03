@@ -296,7 +296,7 @@ void ModelAnnotation::processList(AST_Expression x, list<double> *l)
     AST_ExpressionListIterator it;
     foreach (it, el) {
       if (current_element(it)->expressionType() == EXPOUTPUT) {
-        // If we have a pair, select the first element as the 
+        // If we have a pair, select the first element as the
         // value and the second as the size.
         // This is used for DQMin and DQRel for arrays.
         AST_Expression_Output out = current_element(it)->getAsOutput();
@@ -308,7 +308,7 @@ void ModelAnnotation::processList(AST_Expression x, list<double> *l)
         AST_ExpressionListIterator pair_exp_it;
         bool first = true;
         AnnotationValue size;
-        foreach (pair_exp_it, pair_exp) {         
+        foreach (pair_exp_it, pair_exp) {
           if (first) {
             av = ea.apply(current_element(pair_exp_it));
             first = false;
@@ -448,11 +448,23 @@ Solver ModelAnnotation::getSolver(string s)
     _order = 4;
     _polyCoeffs = 5;
     return QSS4;
+  } else if (!s.compare("mLIQSS")) {
+    _order = 1;
+    _polyCoeffs = 2;
+    return mLIQSS;
+  } else if (!s.compare("mLIQSS2")) {
+    _order = 2;
+    _polyCoeffs = 3;
+    return mLIQSS2;
+  } else if (!s.compare("mLIQSS3")) {
+    _order = 3;
+    _polyCoeffs = 4;
+    return mLIQSS3;
   }
   return QSS;
 }
 
-void ModelAnnotation::parseMatrix(AST_Expression exp, IR::MATRIX::UserDefMatrixExps& matrix)
+void ModelAnnotation::parseMatrix(AST_Expression exp, IR::MATRIX::UserDefMatrixExps &matrix)
 {
   AST_ExpressionList matrix_exps = newAST_ExpressionList();
   processExpressionList(exp, matrix_exps);
@@ -727,6 +739,9 @@ EvalAnnotation::EvalAnnotation() : _tokens()
   _tokens.insert(pair<string, string>("LIQSS_BDF", "LIQSS_BDF"));
   _tokens.insert(pair<string, string>("LIQSS3", "LIQSS3"));
   _tokens.insert(pair<string, string>("QSS4", "QSS4"));
+  _tokens.insert(pair<string, string>("mLIQSS", "mLIQSS"));
+  _tokens.insert(pair<string, string>("mLIQSS2", "mLIQSS2"));
+  _tokens.insert(pair<string, string>("mLIQSS3", "mLIQSS3"));
   _tokens.insert(pair<string, string>("DASSL", "DASSL"));
   _tokens.insert(pair<string, string>("DOPRI", "DOPRI"));
   _tokens.insert(pair<string, string>("CVODE_AM", "CVODE_AM"));

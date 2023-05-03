@@ -46,6 +46,12 @@ SD_Solver _getSolver(const char *sol)
     return SD_LIQSS3;
   } else if (!strcmp(sol, "QSS4")) {
     return SD_QSS4;
+  } else if (!strcmp(sol, "mLIQSS")) {
+    return SD_mLIQSS;
+  } else if (!strcmp(sol, "mLIQSS2")) {
+    return SD_mLIQSS2;
+  } else if (!strcmp(sol, "mLIQSS3")) {
+    return SD_mLIQSS3;
   } else if (!strcmp(sol, "DASSL")) {
     return SD_DASSL;
   } else if (!strcmp(sol, "DOPRI")) {
@@ -92,6 +98,7 @@ int _getOrder(SD_Solver sol)
   case SD_QSS:
   case SD_CQSS:
   case SD_LIQSS:
+  case SD_mLIQSS:
   case SD_DASSL:
   case SD_DOPRI:
   case SD_CVODE_BDF:
@@ -100,10 +107,12 @@ int _getOrder(SD_Solver sol)
     return 1;
   case SD_QSS2:
   case SD_LIQSS2:
+  case SD_mLIQSS2:
   case SD_LIQSS_BDF:
     return 2;
   case SD_QSS3:
   case SD_LIQSS3:
+  case SD_mLIQSS3:
     return 3;
   case SD_QSS4:
     return 4;

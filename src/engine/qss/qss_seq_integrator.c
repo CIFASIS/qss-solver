@@ -22,7 +22,7 @@
 #include <math.h>
 
 #include <common/data.h>
-#include "../common/simulator.h"
+#include <common/simulator.h>
 #include <common/utils.h>
 #include <qss/qss_data.h>
 #include <qss/qss_frw.h>
