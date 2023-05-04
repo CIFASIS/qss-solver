@@ -81,10 +81,13 @@ QA_quantizerState QA_QuantizerState()
   p->nSD = NULL;
   p->SD = NULL;
   p->change = NULL;
+  p->cont = 0;
   p->S = NULL;
   p->A = NULL;
   p->U0 = NULL;
+  p->U1 = NULL;
   p->qj = NULL;
+  p->next = NULL;
   return p;
 }
 
@@ -257,6 +260,18 @@ void QA_freeQuantizerState(QA_quantizerState state)
       }
     }
     free(state->U0);
+  }
+  if (state->U1 != NULL) {
+    int states = state->sts;
+    for (int i = 0; i < states; i++) {
+      if (state->U1[i] != NULL) {
+        free(state->U1[i]);
+      }
+    }
+    free(state->U1);
+  }
+  if (state->next != NULL) {
+    free(state->next);
   }
   if (state->change != NULL) {
     free(state->change);

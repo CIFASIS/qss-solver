@@ -62,13 +62,16 @@ struct QA_quantizerState_ {
   // Added state for mLIQSS methods.
   int sts;
   int infs;
+  int cont;
   int *nSD;
   int **SD;
   int **S;
   bool *change;
   double **A;
   double **U0;
+  double **U1;
   double *qj;
+  double *next;
 };
 
 struct QA_quantizerOps_ {
