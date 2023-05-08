@@ -246,7 +246,7 @@ void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_ve
   Index a_ind(a_exp);
   code << tab << "c_row_g = " << a_ind << " - ";
   int eq_shift = g_eq.LHSVariable()->offset();
-  if (v_eq.hasRange()) {
+  if (g_eq.hasRange()) {
     eq_shift += index_shift;
   }
   code << eq_shift << ";" << endl;
