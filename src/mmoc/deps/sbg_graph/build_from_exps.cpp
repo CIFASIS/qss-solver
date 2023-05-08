@@ -211,7 +211,7 @@ Set generateMapDom(Set dom, Set unk_dom, int offset, size_t max_dim)
   for (AtomSet atom_set : atom_sets) {
     MultiInterval dom_intervals = atom_set.atomicSets();
     for (Interval inter : dom_intervals.intervals()) {
-      Real end = inter.size() + offset - 1;
+      Integer end = inter.size() + offset - 1;
       edge_set_intervals.addInter(Interval(offset, inter.step(), end));
     }
     addDims(max_dim, dom_intervals.intervals().size(), edge_set_intervals, offset);
@@ -467,9 +467,10 @@ void buildEdge(Expression builder, Deps::Vertex e, Deps::Vertex v, Deps::Graph g
   matching_exps.apply(builder.expression());
   set<Expression> matched_exps = matching_exps.occurrences();
   LOG << "Matched exps for: " << v_vertex.name() << " in " << builder << " of " << e_vertex.name() << endl;
-  LOG << "Equation dom: " << e_dom << endl;
   for (Expression exp : matched_exps) {
     LOG << "Expression: " << exp << endl;
+    LOG << "Equation dom: " << e_dom << endl;
+    LOG << "Variable dom: " << v_dom << endl;
     EdgeMaps maps = generatePWLMaps(exp, e_dom, v_dom, offset, e_vertex.name(), max_dim, eq_usage);
     offset += e_dom.size();
     string edge_name = "E_" + to_string(1);
