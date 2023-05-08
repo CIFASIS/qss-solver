@@ -83,13 +83,13 @@ struct CompDef {
         return lhs.eq.id() < rhs.eq.id();
       }
       if (lhs.use_map.constantExp() && !rhs.use_map.constantExp()) {
-        return lhs.use_map.constants() < rhs.use_map.initValues();
+        return lhs.use_map.constants() < rhs.use_map.appliedInitValues();
       }
       if (!lhs.use_map.constantExp() && rhs.use_map.constantExp()) {
-        return lhs.use_map.initValues() < rhs.use_map.constants();
+        return lhs.use_map.appliedInitValues() < rhs.use_map.constants();
       }
       if (!lhs.use_map.constantExp() && !rhs.use_map.constantExp()) {
-        return lhs.use_map.initValues() < rhs.use_map.initValues();
+        return lhs.use_map.appliedInitValues() < rhs.use_map.appliedInitValues();
       }
       assert(false);
       return false;
