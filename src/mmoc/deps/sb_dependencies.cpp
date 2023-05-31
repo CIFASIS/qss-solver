@@ -151,6 +151,15 @@ void SBDependencies<IDependencies, R, S>::paths(SB::Deps::Graph& graph, SB::Deps
           SB::Deps::LMapExp G_map = alg_label.desc().mapExp();
           SB::Set alg_visited_dom;
           if (!d_intersect.empty()) {
+            list<SB::Deps::VariableDep> pure_recursive_deps = graph[G].desc().pureRecursiveDeps();
+            // Visit pure recursive deps.
+            for (SB::Deps::VariableDep var_d : pure_recursive_deps) {
+              SB::Set rec_dom = var_d.fDom();
+              alg_visited_dom = alg_visited_dom.cup(rec_dom);
+              SB::Set rec_matched_eq = var_d.mapF().image(rec_dom);
+              VertexIt G_vertex_it = findSetVertex(graph, rec_matched_eq);
+              _gen.visitG(graph[V], graph[*G_vertex_it], var_d, _index_shift[graph[*G_vertex_it].index()]);
+            }
             int dep, deps = graph[G].desc().numDeps();
             for (dep = 1; dep <= deps; dep++) {
               // Get the map exp for the intersection
@@ -216,21 +225,12 @@ void SBDependencies<IDependencies, R, S>::paths(SB::Deps::Graph& graph, SB::Deps
                 SB::Deps::VertexDesc update_desc = graph[V].desc();
                 update_desc.setDepState(num_gen, var_dep);
                 graph[V].updateDesc(update_desc);
-                if (recursive_deps.empty()) {
+                if (recursive_deps.empty() && !d_intersect.subset(alg_visited_dom)) {
                   SB::Set var_dom = var_dep.fDom();
                   alg_visited_dom = alg_visited_dom.cup(var_dom);
                   _gen.visitG(graph[V], graph[G], var_dep, _index_shift[graph[G].index()]);
                 }
               }
-            }
-            list<SB::Deps::VariableDep> pure_recursive_deps = graph[G].desc().pureRecursiveDeps();
-            // Visit pure recursive deps.
-            for (SB::Deps::VariableDep var_d : pure_recursive_deps) {
-              SB::Set rec_dom = var_d.fDom();
-              alg_visited_dom = alg_visited_dom.cup(rec_dom);
-              SB::Set rec_matched_eq = var_d.mapF().image(rec_dom);
-              VertexIt G_vertex_it = findSetVertex(graph, rec_matched_eq);
-              _gen.visitG(graph[V], graph[*G_vertex_it], var_d, _index_shift[graph[*G_vertex_it].index()]);
             }
             if (!d_intersect.subset(alg_visited_dom)) {
               _gen.visitG(graph[V], graph[G], map_m_f, map_m, edge_label.desc().exp(), alg_label.mapF(), G_map, d_intersect);
@@ -316,16 +316,25 @@ void SBDependencies<IDependencies, R, S>::recursiveDeps(SB::Deps::Graph& graph, 
             SB::Deps::Vertex G = boost::target(*alg_def_edge, graph);
             if (graph[G].desc().type() == SB::Deps::VERTEX::Equation) {
               SB::Deps::SetEdge alg_label = graph[*alg_edge];
-              int dep, deps = graph[G].desc().numDeps();
-              for (dep = 1; dep <= deps; dep++) {
-                SB::Deps::VariableDep v = graph[G].desc().depState(dep);
-                SB::Deps::VariableDep rec_var_dep(v.var(), rec_edge_label.mapF(), rec_edge_label.mapU(), rec_alg_use.desc().exp(),
-                                                  RECURSIVE, rec_label_dom, rec_label_dom, rec_edge_label.desc().mapExp(),
-                                                  graph[*A_vertex_it].id(), graph[*F_vertex_it].id());
-                SB::Deps::VertexDesc update_desc = graph[V].desc();
-                update_desc.addPureRecursiveDep(rec_var_dep);
-                graph[V].updateDesc(update_desc);
-                pure_alg_deps = false;
+              SB::Deps::SetEdge alg_def_label = graph[*alg_def_edge];
+              SB::Set arriving_affected_alg = alg_label.mapU().wholeDom();
+              SB::Set arriving_affected_alg_img = alg_label.mapU().image(arriving_affected_alg);
+              SB::Set output_alg_def = alg_def_label.mapU().wholeDom();
+              SB::Set output_alg_def_img = alg_def_label.mapU().image(output_alg_def);
+              SB::Set alg_def_intersection = output_alg_def_img.cap(arriving_affected_alg_img);
+              if (!alg_def_intersection.empty()) {
+                int dep, deps = graph[G].desc().numDeps();
+                for (dep = 1; dep <= deps; dep++) {
+                  SB::Set alg_rec_dom = alg_def_label.mapU().preImage(alg_def_intersection);
+                  SB::Deps::VariableDep v = graph[G].desc().depState(dep);
+                  SB::Deps::VariableDep rec_var_dep(v.var(), rec_edge_label.mapF(), rec_edge_label.mapU(), rec_alg_use.desc().exp(),
+                                                    RECURSIVE, rec_label_dom, rec_label_dom, rec_edge_label.desc().mapExp(),
+                                                    graph[*A_vertex_it].id(), graph[*F_vertex_it].id());
+                  SB::Deps::VertexDesc update_desc = graph[V].desc();
+                  update_desc.addPureRecursiveDep(rec_var_dep);
+                  graph[V].updateDesc(update_desc);
+                  pure_alg_deps = false;
+                }
               }
             }
           }
