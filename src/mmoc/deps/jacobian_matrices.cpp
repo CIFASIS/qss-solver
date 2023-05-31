@@ -146,7 +146,7 @@ void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SB::Deps::V
   _matrix.init.append(code.str());
 }
 
-std::string JacMatrixGenerator::guard(SB::Set dom, int offset, SB::Deps::LMapExp map, std::string var_name)
+std::string JacMatrixGenerator::guard(SB::Set dom, int offset, SB::Deps::LMapExp map, std::string var_name, Equation v_eq)
 {
   if (map.constantExp()) {
     return "";
@@ -155,6 +155,9 @@ std::string JacMatrixGenerator::guard(SB::Set dom, int offset, SB::Deps::LMapExp
   vector<string> exps = map.apply(range.getDimensionVars());
   Expression map_exp = Expression::generate(var_name, exps);
   range.applyUsage(Index(map_exp));
+  if (v_eq.hasRange()) {
+    range.update(v_eq.range().get());
+  }
   return range.in(exps);
 }
 
@@ -175,7 +178,8 @@ void JacMatrixGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVerte
 {
   Equation v_eq = getEquation(v_vertex);
   Equation g_eq = getEquation(g_vertex);
-  addDependency(v_eq, g_eq, var_dep, v_eq.arrayId(), guard(var_dep.equations(), var_dep.eqOffset(), var_dep.mMap(), var_dep.var().name()));
+  addDependency(v_eq, g_eq, var_dep, v_eq.arrayId(),
+                guard(var_dep.equations(), var_dep.eqOffset(), var_dep.mMap(), var_dep.var().name(), v_eq));
 }
 
 void JacMatrixGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map,
