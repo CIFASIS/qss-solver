@@ -192,7 +192,7 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 		for(i = 2; i<=4; i+=1) {
 			_get_alg_eq_2_var_idxs(_idx_sum_0(i,0), eq_var);
 		_get_sum_0_idxs(eq_var);
-			if((2 <= _d1 && _d1 <= 3)) {
+			if((2 <= _d1 && _d1 <= 4)) {
 				x_ind = _idx_iL(_d1,0);
 				col = pos(dvdx->dg_dx[1]->index[c_row], dvdx->dg_dx[1]->size[c_row], x_ind);
 				_apply_usage_alg_eq_2(_d1);
@@ -215,19 +215,14 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 			for(i = 2; i<=4; i+=1) {
 			_get_alg_eq_2_var_idxs(_idx_sum_0(i,0), eq_var);
 		_get_sum_0_idxs(eq_var);
-				if((2 <= _d1 && _d1 <= 3)) {
+				if((2 <= _d1 && _d1 <= 4)) {
 					x_ind = _idx_iL(_d1,0);
 					col = pos(dvdx->df_dx[0]->index[c_row], dvdx->df_dx[0]->size[c_row], x_ind);
 					c_row_g = _idx_sum_0(_rg_d1,0) - 1;
 					col_g = pos(dvdx->dg_dx[1]->index[c_row_g], dvdx->dg_dx[1]->size[c_row_g], x_ind);
 					dvdx->df_dx[0]->value[c_row][col] += aux * dvdx->dg_dx[1]->value[c_row_g][col_g];
 				}
-	}			x_ind = _idx_iL(4,0);
-				col = pos(dvdx->df_dx[0]->index[c_row], dvdx->df_dx[0]->size[c_row], x_ind);
-				c_row_g = _idx_sum_0(4,0) - 1;
-				col_g = pos(dvdx->dg_dx[1]->index[c_row_g], dvdx->dg_dx[1]->size[c_row_g], x_ind);
-				dvdx->df_dx[0]->value[c_row][col] += aux * dvdx->dg_dx[1]->value[c_row_g][col_g];
-				x_ind = _idx_uC(0);
+	}			x_ind = _idx_uC(0);
 				col = pos(dvdx->df_dx[0]->index[c_row], dvdx->df_dx[0]->size[c_row], x_ind);
 				aux = 0;
 				dvdx->df_dx[0]->value[c_row][col] +=  aux;
@@ -271,21 +266,6 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 	int _rg_d1;
 	int i;
 	switch(idx) {
-		case _eval_iL(4,0): {
-			_sum_0(1,0) = _iL(1,0);
-			_sum_0(1,1) = 0;
-	for(_rg_d1 = 1; _rg_d1<=3; _rg_d1+=1) {
-	_get_sum_0_idxs(_rg_d1);
-		_apply_usage_alg_eq_2(_d1);
-		if ((i >= 2 && i <= 4)) {
-			_sum_0(i,0) = _sum_0(i-1,0)+_iL(i,0);
-		_sum_0(i,1) = 0;
-	}
-		}
-			_eval_dep_uC(1) = (_sum_0(4,0)-_uC(0)/_R)/_C;
-			_eval_dep_uC(2) = (0)/2;
-			break;
-		}
 		case _eval_uC(0): {
 			_sum_0(1,0) = _iL(1,0);
 			_sum_0(1,1) = 0;
@@ -404,7 +384,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	_T = 1.000000e-04;
 	_U = 24;
 	_nextT = 1.000000e-08;
-	modelData->nSD[_idx_iL(4,0)]++;
 	modelData->nSD[_idx_uC(0)]++;
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->nSD[_idx_uC(0)]++;
@@ -415,7 +394,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->nSD[_idx_iL(_d1,0)]++;
 	}
-	modelData->nDS[_idx_uC(0)]++;
 	modelData->nDS[_idx_uC(0)]++;
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->nDS[_idx_iL(_d1,0)]++;
@@ -440,7 +418,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		for(i = 2; i<=4; i+=1) {
 			_get_alg_eq_2_var_idxs(_idx_sum_0(i,0), eq_var);
 		_get_sum_0_idxs(eq_var);
-			if((2 <= _d1 && _d1 <= 3)) {
+			if((2 <= _d1 && _d1 <= 4)) {
 			modelData->jac_matrices->dg_dx[1]->size[c_row]++;
 			}
 	}		modelData->jac_matrices->dg_dx[1]->size[c_row]++;
@@ -451,11 +429,10 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		for(i = 2; i<=4; i+=1) {
 			_get_alg_eq_2_var_idxs(_idx_sum_0(i,0), eq_var);
 		_get_sum_0_idxs(eq_var);
-			if((2 <= _d1 && _d1 <= 3)) {
+			if((2 <= _d1 && _d1 <= 4)) {
 			modelData->jac_matrices->df_dx[0]->size[c_row]++;
 			}
 	}		modelData->jac_matrices->df_dx[0]->size[c_row]++;
-			modelData->jac_matrices->df_dx[0]->size[c_row]++;
 	}
 	for(row = 1; row <= 4; row++) {
 		c_row = _c_index(row);
@@ -507,7 +484,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	modelData->event[_idx_event_1].nLHSDsc++;
 	QSS_allocDataMatrix(modelData);
 	cleanVector(states, 0, 5);
-	modelData->SD[_idx_iL(4,0)][states[_idx_iL(4,0)]++] = _idx_uC(0);
 	modelData->SD[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_uC(0);
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->SD[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(_d1,0);
@@ -519,7 +495,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelData->SD[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_iL(_d1,0);
 	}
 	cleanVector(states, 0, 5);
-	modelData->DS[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_iL(4,0);
 	modelData->DS[_idx_uC(0)][states[_idx_uC(0)]++] = _idx_uC(0);
 	for(_d1 = 1; _d1<=4; _d1+=1) {
 		modelData->DS[_idx_iL(_d1,0)][states[_idx_iL(_d1,0)]++] = _idx_uC(0);
@@ -556,7 +531,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		for(i = 2; i<=4; i+=1) {
 			_get_alg_eq_2_var_idxs(_idx_sum_0(i,0), eq_var);
 		_get_sum_0_idxs(eq_var);
-			if((2 <= _d1 && _d1 <= 3)) {
+			if((2 <= _d1 && _d1 <= 4)) {
 			x_ind = _idx_iL(_d1,0);
 			if(in(modelData->jac_matrices->dg_dx[1]->index[c_row],modelData->jac_matrices->dg_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->dg_dx[1]->size[c_row]--;
@@ -583,7 +558,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		for(i = 2; i<=4; i+=1) {
 			_get_alg_eq_2_var_idxs(_idx_sum_0(i,0), eq_var);
 		_get_sum_0_idxs(eq_var);
-			if((2 <= _d1 && _d1 <= 3)) {
+			if((2 <= _d1 && _d1 <= 4)) {
 			x_ind = _idx_iL(_d1,0);
 			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[0]->size[c_row]--;
@@ -591,13 +566,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 				modelData->jac_matrices->df_dx[0]->index[c_row][states[c_row]++] = x_ind;
 			}
 			}
-	}		x_ind = _idx_iL(4,0);
-			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
-				modelData->jac_matrices->df_dx[0]->size[c_row]--;
-			} else {
-				modelData->jac_matrices->df_dx[0]->index[c_row][states[c_row]++] = x_ind;
-			}
-			x_ind = _idx_uC(0);
+	}		x_ind = _idx_uC(0);
 			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
 				modelData->jac_matrices->df_dx[0]->size[c_row]--;
 			} else {
