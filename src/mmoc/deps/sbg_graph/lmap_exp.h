@@ -53,6 +53,7 @@ class CoeffContainer {
   void addDim();
   bool isValid(int i) const;
   friend std::ostream& operator<<(std::ostream& os, const CoeffContainer& CoeffContainer);
+  std::vector<int> coeffs() const;
 
   protected:
   std::vector<int> _coeffs;
@@ -76,6 +77,7 @@ class LMapExp {
   Slopes slopes() const;
   Constants constants() const;
   InitValues initValues() const;
+  InitValues appliedInitValues() const;
   LMapExp compose(const LMapExp& other);
   LMapExp solve(const LMapExp& other);
   LMapExp revert();

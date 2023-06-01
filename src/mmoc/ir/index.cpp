@@ -706,6 +706,25 @@ void Range::update(int offset)
   }
 }
 
+void Range::update(Range other)
+{
+  RangeDefinitionTable::iterator it;
+  RangeDefinitionTable::iterator other_it;
+  RangeDefinitionTable other_ranges = other.definition();
+  assert(other_ranges.size() == _ranges.size());
+  map<string, RangeDefinition> updated_ranges;
+  RangeDefinition other_def = other_ranges.begin(other_it);
+  for (RangeDefinition r = _ranges.begin(it); !_ranges.end(it); r = _ranges.next(it), other_def = other_ranges.next(other_it)) {
+    int new_begin = r.begin() + other_def.begin() - 1;
+    int new_end = r.end() + other_def.begin() - 1;
+    RangeDefinition new_range(new_begin, new_end, r.step());
+    updated_ranges[_ranges.key(it)] = new_range;
+  }
+  for (auto update_range : updated_ranges) {
+    _ranges.insert(update_range.first, update_range.second);
+  }
+}
+
 bool Range::checkUsage(Index usage, Index def)
 {
   int dimension = def.dimension();

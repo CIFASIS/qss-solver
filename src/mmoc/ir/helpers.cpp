@@ -203,12 +203,10 @@ string FunctionPrinter::beginExpression(string token, Option<Range> range) const
   stringstream buffer;
   if (range) {
     buffer << "if (_is_var" << token << "(idx)) {" << endl;
-  } else {
-    buffer << TAB << "case " << token << ": {" << endl;
-  }
-  if (range) {
     buffer << TAB << "_get" << token << "_idxs(idx);" << endl;
     range->addLocalVariables();
+  } else {
+    buffer << TAB << "case " << token << ": {" << endl;
   }
   return buffer.str();
 }

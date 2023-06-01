@@ -177,6 +177,7 @@ class Range {
 
   bool isDimensionVar(std::string var);
   void update(int offset);
+  void update(Range other);
 
   protected:
   void generate(Util::Variable var);

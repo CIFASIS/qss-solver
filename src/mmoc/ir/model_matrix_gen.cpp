@@ -138,6 +138,7 @@ void ModelMatrixGenerator<NT, N, Config>::printMatrix(MATRIX::Method method, MAT
           der_range.replace(ife_orig_idx);
           dep_code.begin.push_back(der_range.print());
           dep_code.end.push_back(der_range.end());
+          buffer << der_range.block();
         } else {
           dep_code.begin.push_back("");
           dep_code.end.push_back("");

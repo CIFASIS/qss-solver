@@ -158,6 +158,8 @@ CoeffContainer::const_iterator CoeffContainer::end() const { return _coeffs.end(
 
 unsigned int CoeffContainer::size() const { return _coeffs.size(); }
 
+std::vector<int> CoeffContainer::coeffs() const { return _coeffs; }
+
 std::ostream& operator<<(std::ostream& os, const CoeffContainer& coeffs)
 {
   std::list<std::string> coeffs_str;
@@ -195,7 +197,13 @@ bool LMapExp::operator==(const LMapExp& other) const
   return (_constants == other._constants) && (_slopes == other._slopes) && (_init_values == other._init_values);
 }
 
-bool LMapExp::operator<(const LMapExp& other) const { return print() < other.print(); }
+bool LMapExp::operator<(const LMapExp& other) const
+{
+  if (print() != other.print()) {
+    return print() < other.print();
+  }
+  return appliedInitValues() < other.appliedInitValues();
+}
 
 bool LMapExp::constantExp() const
 {
@@ -270,6 +278,8 @@ Slopes LMapExp::slopes() const { return _slopes; }
 Constants LMapExp::constants() const { return _constants; }
 
 InitValues LMapExp::initValues() const { return _init_values; }
+
+InitValues LMapExp::appliedInitValues() const { return InitValues(apply(_init_values.coeffs())); }
 
 LMapExp LMapExp::compose(const LMapExp& other)
 {

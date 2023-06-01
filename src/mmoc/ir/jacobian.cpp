@@ -74,7 +74,7 @@ void JacGenerator::end()
   _tabs--;
 }
 
-std::string JacGenerator::guard(SB::Set dom, int offset, std::string var_name, SB::Deps::LMapExp map)
+std::string JacGenerator::guard(SB::Set dom, int offset, std::string var_name, SB::Deps::LMapExp map, Equation v_eq)
 {
   if (map.constantExp()) {
     return "";
@@ -84,6 +84,9 @@ std::string JacGenerator::guard(SB::Set dom, int offset, std::string var_name, S
   vector<string> exps = map.apply(range.getDimensionVars());
   Expression map_exp = Expression::generate(var_name, exps);
   range.applyUsage(Index(map_exp));
+  if (v_eq.hasRange()) {
+    range.update(v_eq.range().get());
+  }
   return range.in(exps);
 }
 
@@ -212,14 +215,13 @@ void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_ve
 {
   stringstream code;
   const bool REC_DEPS = var_dep.isRecursive();
-  SB::Deps::VariableDep dep = var_dep;
   Equation v_eq = getEquation(v_vertex);
   Equation g_eq = getEquation(g_vertex);
   // Generate composed expression for guards
-  SB::Deps::LMapExp map_m = dep.mMap();
-  SB::Deps::LMapExp n_map = dep.nMap();
-  string dom_guard = guard(dep.equations(), dep.eqOffset(), dep.var().name(), map_m);
-  dependencyPrologue(g_eq, dep, dom_guard);
+  SB::Deps::LMapExp map_m = var_dep.mMap();
+  SB::Deps::LMapExp n_map = var_dep.nMap();
+  string dom_guard = guard(var_dep.equations(), var_dep.eqOffset(), var_dep.var().name(), map_m, v_eq);
+  dependencyPrologue(g_eq, var_dep, dom_guard);
   generatePos(v_eq.arrayId(), v_eq.type());
   vector<string> variables;
   string tab = Utils::instance().tabs(_tabs);
@@ -230,18 +232,11 @@ void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_ve
   } else {
     Option<Variable> v_lhs = v_eq.LHSVariable();
     Option<Variable> g_lhs = g_eq.LHSVariable();
-    if (REC_DEPS) {
-      Range range(dep.variables(), dep.varOffset());
-      // code << "REDEP";
+    if (REC_DEPS || g_lhs->isArray()) {
+      Range range(var_dep.variables(), var_dep.varOffset());
       exps = n_map.apply(range.getDimensionVars(USE_RANGE_IDXS));
-    } else if (g_lhs->isArray()) {
-      Range range(dep.variables(), dep.varOffset());
-      SB::Set dep_r = dep.variables();
-      // cout << dep_r << endl;
-      // code << "GARRAY";
-
-      exps = range.getInitValues();
     } else if (v_lhs->isArray()) {
+      // Is this condition possible?
       for (Expression exp : v_eq.lhs().indexes()) {
         exps.push_back(exp.print());
       }
@@ -251,10 +246,10 @@ void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_ve
   Index a_ind(a_exp);
   code << tab << "c_row_g = " << a_ind << " - ";
   int eq_shift = g_eq.LHSVariable()->offset();
-  if (v_eq.hasRange()) {
+  if (g_eq.hasRange()) {
     eq_shift += index_shift;
   }
-  code << eq_shift << ";" << endl;  //<< " " << v_eq.type() << " " << v_eq.print() << ";" << endl;
+  code << eq_shift << ";" << endl;
   _jac_def.code.append(code.str());
   int g_eq_id = g_eq.arrayId();
   generatePos(g_eq_id, g_eq.type(), "c_row_g", "col_g");
@@ -288,6 +283,7 @@ void Jacobian::build()
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   JacobianBuilder jac;
   IndexShiftBuilder index_shifts(algebraics);
+  jac.setup(algebraics);
   SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(derivatives, algebraics);
   SDSBGraph.setOrigEquations(ModelConfig::instance().derivatives());
   jac.compute(SDSBGraph.build(), index_shifts.build());
