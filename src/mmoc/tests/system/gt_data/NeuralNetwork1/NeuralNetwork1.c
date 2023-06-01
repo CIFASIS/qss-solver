@@ -23,14 +23,13 @@ void MOD_settings(SD_simulationSettings settings)
 void MOD_definition(int idx, double *x, double *d, double *a, double t, double *dx)
 {
 	int _d1;
-	int _d2;
 	int i;
 	if (_is_var_V(idx)) {
 		_get_V_idxs(idx);
 		_apply_usage_alg_eq_1(_d1);
 		if ((i >= 1 && i <= 100)) {
-				_Is(i,0) = _Islast(i)*exp(-(_time-_tlast(i))/_taus);
-			_Is(i,1) = 0;
+			_Is(i,0) = _Islast(i)*exp(-(_time-_tlast(i))/_taus);
+		_Is(i,1) = 0;
 	}
 		_apply_usage_eq_1(_d1);
 		if ((i >= 1 && i <= 100)) {
@@ -175,14 +174,13 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double *dx, int *map)
 {
 	int _d1;
-	int _d2;
 	int i;
 	if (_is_var_V(idx)) {
 		_get_V_idxs(idx);
 		_apply_usage_alg_eq_1(_d1);
 		if ((i >= 1 && i <= 100)) {
-				_Is(i,0) = _Islast(i)*exp(-(_time-_tlast(i))/_taus);
-			_Is(i,1) = 0;
+			_Is(i,0) = _Islast(i)*exp(-(_time-_tlast(i))/_taus);
+		_Is(i,1) = 0;
 	}
 		_apply_usage_eq_1(_d1);
 		if ((i >= 1 && i <= 100)) {
@@ -199,13 +197,12 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 	for(__bdf_it = 0; __bdf_it < nBDF; __bdf_it++) {
 	idx = BDFMap[__bdf_it];
 	int _d1;
-	int _d2;
 	int i;
 	if (_is_var_V(idx)) {
 		_get_V_idxs(idx);
 		_apply_usage_alg_eq_1(_d1);
 		if ((i >= 1 && i <= 100)) {
-				_Is(i,0) = _Islast(i)*exp(-(_time-_tlast(i))/_taus);
+			_Is(i,0) = _Islast(i)*exp(-(_time-_tlast(i))/_taus);
 	
 	}
 		_apply_usage_eq_1(_d1);

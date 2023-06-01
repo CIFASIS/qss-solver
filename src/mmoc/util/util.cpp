@@ -359,7 +359,7 @@ Variable Utils::variable(AST_Expression exp)
   }
   Option<Variable> var = ModelConfig::instance().lookup(var_name);
   if (!var) {
-    Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Fatal, "utils.cpp:342 %s", var_name.c_str());
+    Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "utils.cpp:362 %s", var_name.c_str());
   }
   return var.get();
 }

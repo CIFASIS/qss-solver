@@ -211,7 +211,7 @@ int PartialEvalExp::getValue(AST_Expression exp)
     AST_Expression_ComponentReference ref = exp->getAsComponentReference();
     Option<Variable> var = ModelConfig::instance().lookup(ref->name());
     if (!var) {
-      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "partial_eval_exp.cpp:148 %s", ref->name().c_str());
+      Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "partial_eval_exp.cpp:214 %s", ref->name().c_str());
       return 0;
     }
     assert(var->isConstant());

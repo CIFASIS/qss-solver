@@ -44,19 +44,19 @@ class JacMatrixGenerator {
   void visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep);
   void visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex);
   void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift);
-  void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp, IR::Expression use_exp, SB::PWLMap def_map,
-              SB::Deps::LMapExp def_map_exp, SB::Set intersection);
+  void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp,
+              IR::Expression use_exp, SB::PWLMap def_map, SB::Deps::LMapExp def_map_exp, SB::Set intersection);
 
   void initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge);
   JacMatrixDef def();
 
-  void setup(IR::EquationTable eqs) {};
+  void setup(IR::EquationTable eqs){};
 
   IR::EquationTable config() { return IR::EquationTable(); }
 
   protected:
   void addDependency(IR::Equation v_eq, IR::Equation g_eq, SB::Deps::VariableDep var_dep, int id, std::string g_map_dom = "");
-  std::string guard(SB::Set dom, int offset, SB::Deps::LMapExp map, std::string var_name);
+  std::string guard(SB::Set dom, int offset, SB::Deps::LMapExp map, std::string var_name, IR::Equation v_eq);
   std::string guard(std::string exp, std::string id);
 
   JacMatrixDef _matrix;

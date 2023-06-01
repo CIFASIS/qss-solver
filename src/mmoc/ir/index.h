@@ -67,7 +67,7 @@ class Index {
   int dimension();
   void setExp(Expression exp);
   std::string print() const;
-  std::string identifier() const;
+  std::string identifier(bool recursive_use = false) const;
   Range range() const;
   Index revert() const;
   Index replace(bool range_idx = false) const;
@@ -131,10 +131,10 @@ class Range {
   public:
   Range();
   Range(AST_Equation_For eqf, RANGE::Type type = RANGE::For);
-  Range(AST_Statement_For stf, RANGE::Type type = RANGE::For);
+  Range(AST_Statement_For stf, RANGE::Type type = RANGE::For, bool from_event = false);
   Range(Util::Variable var, RANGE::Type type = RANGE::For);
   Range(AST_Expression exp);
-  Range(SB::Set set, int offset, std::vector<std::string> vars = std::vector<std::string>());
+  Range(SB::Set set, int offset, std::vector<std::string> vars = std::vector<std::string>(), Option<Range> orig_range = Option<Range>());
 
   ~Range() = default;
 
@@ -176,18 +176,23 @@ class Range {
   bool hasMergedDims() const;
 
   bool isDimensionVar(std::string var);
+  void update(int offset);
+  void update(Range other);
 
   protected:
   void generate(Util::Variable var);
   void generate(AST_Expression exp);
+  void generate(SB::Set set, int offset, std::vector<std::string> vars, Option<Range> orig_range);
   void updateRangeDefinition(std::string index_def, RangeDefinition def, int pos);
   void addRangeVariables(int i, string index) const;
   bool isVariable(std::string var);
   bool testExpression(AST_Expression exp);
   Expression getExp(std::vector<Expression> exps, size_t pos);
+  bool checkRangeVariable(string var, set<string>& added_vars, vector<string>& old_keys, int& pos);
+  bool checkRangeVariables(string ife_idx, string ifr_idx, set<string>& added_vars, vector<string>& old_keys, int& pos);
 
   private:
-  void setRangeDefinition(AST_ForIndexList fil);
+  void setRangeDefinition(AST_ForIndexList fil, bool from_event = false);
   RangeDefinitionTable _ranges;
   ModelTable<std::string, int> _index_pos;
   int _size;

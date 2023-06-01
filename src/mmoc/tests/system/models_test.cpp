@@ -81,7 +81,8 @@ const char* models[] = {"adr",
                         "rectifier",
                         "rltest",
                         "rltest_LI",
-                        "spikings"};
+                        "spikings",
+                        "VIRplanoS"};
 
 INSTANTIATE_TEST_SUITE_P(Models, IModelTests, testing::ValuesIn(models));
 
