@@ -199,6 +199,7 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 	simulator->data = CLC_Data(11,0,0,0,10,3,2,"rltest");
 	CLC_data modelData = simulator->data;
 	MODEL_DATA_ACCESS(modelData)
+	int* algebraics = (int*) malloc(10*sizeof(int));
 	int* states = (int*) malloc(11*sizeof(int));
 	int* outputs = (int*) malloc(11*sizeof(int));
 	int row, eq_var, c_row;
@@ -314,16 +315,17 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 		modelData->DS[_idx_x1(_d1)][states[_idx_x1(_d1)]++] = _idx_x1(_d1+1);
 	}
 	cleanVector(states, 0, 11);
+	cleanVector(algebraics, 0, 10);
 	for(row = 1; row <= 1; row++) {
 		c_row = _c_index(row);
 			x_ind = _idx_x1(1);
 			if(in(modelData->jac_matrices->dg_dx[0]->index[c_row],modelData->jac_matrices->dg_dx[0]->size[c_row], x_ind)){
 				modelData->jac_matrices->dg_dx[0]->size[c_row]--;
 			} else {
-				modelData->jac_matrices->dg_dx[0]->index[c_row][states[c_row]++] = x_ind;
+				modelData->jac_matrices->dg_dx[0]->index[c_row][algebraics[c_row]++] = x_ind;
 			}
 	}
-	cleanVector(states, 0, 11);
+	cleanVector(algebraics, 0, 10);
 	for(row = 1; row <= 9; row++) {
 		c_row = _c_index(row);
 		_get_alg_eq_2_var_idxs(row, eq_var);
@@ -333,7 +335,7 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 			if(in(modelData->jac_matrices->dg_dx[1]->index[c_row],modelData->jac_matrices->dg_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->dg_dx[1]->size[c_row]--;
 			} else {
-				modelData->jac_matrices->dg_dx[1]->index[c_row][states[c_row]++] = x_ind;
+				modelData->jac_matrices->dg_dx[1]->index[c_row][algebraics[c_row]++] = x_ind;
 			}
 		}
 		if((2 <= _d1 + 1 && _d1 + 1 <= 10)) {
@@ -341,7 +343,7 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 			if(in(modelData->jac_matrices->dg_dx[1]->index[c_row],modelData->jac_matrices->dg_dx[1]->size[c_row], x_ind)){
 				modelData->jac_matrices->dg_dx[1]->size[c_row]--;
 			} else {
-				modelData->jac_matrices->dg_dx[1]->index[c_row][states[c_row]++] = x_ind;
+				modelData->jac_matrices->dg_dx[1]->index[c_row][algebraics[c_row]++] = x_ind;
 			}
 		}
 	}
@@ -423,7 +425,6 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 				modelData->jac_matrices->df_dx[2]->index[c_row][states[c_row]++] = x_ind;
 			}
 	}
-	cleanVector(states, 0, 11);
 	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->output = SD_Output("rltest",11,0,11,NULL,0,0,CI_Step,SD_Memory,MOD_output);
 	SD_output modelOutput = simulator->output;
@@ -451,6 +452,7 @@ void CLC_initializeDataStructs(CLC_simulator simulator)
 		modelOutput->SO[_idx_x1(_d1)][states[_idx_x1(_d1)]++] = _idx_out_exp_1(_d1);
 	}
 	simulator->model = CLC_Model(MOD_definition, MOD_zeroCrossing, MOD_handlerPos, MOD_handlerNeg, MOD_jacobian);
+	free(algebraics);
 	free(states);
 	free(outputs);
 }

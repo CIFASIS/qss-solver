@@ -45,7 +45,6 @@ Expression getUseExp(Variable variable, DepData dep_data)
   return Expression::generate(variable.name(), vector<string>());
 }
 
-
 bool findDep(DepsMap deps, DepData dep_data, bool multiple_nodes)
 {
   string var_name = dep_data.var_dep.var().name();
@@ -72,7 +71,6 @@ bool findDep(DepsMap deps, DepData dep_data, bool multiple_nodes)
   return false;
 }
 
-
 bool findAlgDep(PrintedDeps printed_deps, int id, SB::Set range, SB::Deps::LMapExp use_map, SB::Deps::LMapExp eq_use_map)
 {
   for (PrintedDep dep : printed_deps) {
@@ -87,22 +85,42 @@ bool findAlgDep(PrintedDeps printed_deps, int id, SB::Set range, SB::Deps::LMapE
   return false;
 }
 
-string addAlgDeps(Equation eq, SB::Deps::LMapExp eq_use, AlgDepsMap alg_deps, AlgDepsMap deps, PrintedDeps& printed_deps)
+bool checkAlgRecursiveDeps(Equation eq, AlgDepsMap alg_deps, AlgDepsMap deps)
+{
+  AlgDeps algs = alg_deps[eq.id()];
+  bool recursive_deps = false;
+  for (DefAlgDepsUse alg : algs) {
+    recursive_deps = recursive_deps || checkAlgRecursiveDeps(alg.eq, deps, deps);
+    if (recursive_deps) {
+      return recursive_deps;
+    }
+  }
+  for (DefAlgDepsUse alg : algs) {
+    recursive_deps = recursive_deps || alg.recursive;
+    if (recursive_deps) {
+      return recursive_deps;
+    }
+  }
+  return recursive_deps;
+}
+string addAlgDeps(Equation eq, SB::Deps::LMapExp eq_use, AlgDepsMap alg_deps, AlgDepsMap deps, PrintedDeps& printed_deps,
+                  bool comes_from_rec)
 {
   AlgDeps algs = alg_deps[eq.id()];
   stringstream code;
   for (DefAlgDepsUse alg : algs) {
-    code << addAlgDeps(alg.eq, alg.use_map, deps, deps, printed_deps);
+    code << addAlgDeps(alg.eq, alg.use_map, deps, deps, printed_deps, alg.recursive);
   }
   for (DefAlgDepsUse alg : algs) {
+    bool RECURSIVE = alg.recursive || comes_from_rec;
     Index use(alg.exp);
     vector<string> vars = use.variables();
     SB::Set var_range = alg.use.image(alg.range);
     Range range(var_range, alg.offset, vars);
     EquationTable equations = ModelConfig::instance().algebraics();
-    Option<Equation> eq = equations[alg.eq.id()];
-    assert(eq);
-    Equation gen_eq = eq.get();
+    Option<Equation> alg_eq = equations[alg.eq.id()];
+    assert(alg_eq);
+    Equation gen_eq = alg_eq.get();
     SB::Deps::LMapExp eq_use_exp = eq_use;
     if (!eq_use.constantExp()) {
       eq_use_exp = eq_use.revert();
@@ -123,13 +141,12 @@ string addAlgDeps(Equation eq, SB::Deps::LMapExp eq_use, AlgDepsMap alg_deps, Al
     printed_deps.push_back(printed_dep);
     Expression use_exp = Expression::generate(alg.exp.reference().get().name(), exps);
     Index use_idx = Index(use_exp);
-    if (gen_eq.hasRange() && alg.recursive) {
-      code << gen_eq.range()->print(true, true);
+    if (gen_eq.hasRange() && RECURSIVE) {
+      Range range = gen_eq.range().get();
+      range.update(gen_eq.LHSVariable()->offset());
+      code << range.print(true, true);
       code << "_get" << gen_eq.LHSVariable().get() << "_idxs(" << range.getDimensionVarsString(true) << ");" << endl;
       use_idx = Index(gen_eq.lhs());
-    }
-    if (eq->hasRange() && !alg.recursive) {
-      gen_eq.setRange(range);
     }
     FunctionPrinter printer;
     if (use_idx.isConstant() && gen_eq.hasRange()) {
@@ -143,7 +160,7 @@ string addAlgDeps(Equation eq, SB::Deps::LMapExp eq_use, AlgDepsMap alg_deps, Al
     code << printer.printAlgebraicGuards(gen_eq, use_idx);
     code << TAB << gen_eq;
     code << printer.endDimGuards(gen_eq.range());
-    if (gen_eq.hasRange() && alg.recursive) {
+    if (gen_eq.hasRange() && RECURSIVE) {
       code << TAB << gen_eq.range()->end() << endl;
     }
   }
@@ -183,8 +200,8 @@ vector<string> getVariables(Index index, Range range)
   for (string idx_var : index_vars) {
     ret_vars.push_back(idx_var);
   }
-  sort(ret_vars.begin(), ret_vars.end() );
-  ret_vars.erase(unique(ret_vars.begin(), ret_vars.end() ), ret_vars.end() );
+  sort(ret_vars.begin(), ret_vars.end());
+  ret_vars.erase(unique(ret_vars.begin(), ret_vars.end()), ret_vars.end());
   return ret_vars;
 }
 

@@ -42,13 +42,19 @@ void JacMatrixGenerator::postProcess(SB::Deps::SetVertex vertex) {}
 
 void JacMatrixGenerator::init(SB::Deps::SetVertex vertex)
 {
-  stringstream code;
+  stringstream code, clean_vectors;
   FunctionPrinter function_printer;
   Equation eq = getEquation(vertex);
+  if (eq.isAlgebraic()) {
+    clean_vectors << "cleanVector(algebraics, 0, " << ModelConfig::instance().algebraicNbr() << ");" << endl;
+  } else {
+    clean_vectors << "cleanVector(states, 0, " << ModelConfig::instance().stateNbr() << ");" << endl;
+  }
   code << "for(row = 1; row <= " << vertex.range().size() << "; row++) {" << endl;
   code << TAB << "c_row = _c_index(row);" << endl;
   code << function_printer.jacMacrosAccess(eq);
   _matrix.alloc.append(code.str());
+  _matrix.init.append(clean_vectors.str());
   _matrix.init.append(code.str());
   _tabs++;
 }
@@ -59,7 +65,6 @@ void JacMatrixGenerator::end()
   _tabs--;
   _matrix.alloc.append("}\n");
   _matrix.init.append("}\n");
-  code << "cleanVector(states, 0, " << ModelConfig::instance().stateNbr() << ");" << endl;
   _matrix.init.append(code.str());
 }
 
@@ -78,7 +83,7 @@ string JacMatrixGenerator::guard(string exp, string id)
 void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SB::Deps::VariableDep var_dep, int id, string g_map_dom)
 {
   stringstream code;
-  SB::Deps::LMapExp map = var_dep.nMap();  
+  SB::Deps::LMapExp map = var_dep.nMap();
   Range range(var_dep.variables(), var_dep.varOffset());
   vector<string> exps = map.apply(range.getDimensionVars());
   Expression i_exp = Expression::generate(var_dep.var().name(), exps);
@@ -87,21 +92,24 @@ void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SB::Deps::V
   string tabs = Utils::instance().tabs(_tabs);
   string inner_tabs = tabs + TAB;
   stringstream matrix_eq_id;
+  string matrix_access_vector;
   if (v_eq.type() == EQUATION::Algebraic) {
     matrix_eq_id << "dg_dx";
+    matrix_access_vector = "algebraics";
   } else {
     matrix_eq_id << "df_dx";
+    matrix_access_vector = "states";
   }
   matrix_eq_id << "[" << id << "]";
   string eq_id = matrix_eq_id.str();
   if (var_dep.isRecursive() && g_eq.hasRange()) {
-      code << tabs << g_eq.range().get();
-      tabs = Utils::instance().tabs(_tabs+1);
-      vector<string> exps = g_eq.range()->getIndexes();
-      FunctionPrinter printer;
-      Expression a_exp = Expression::generate(g_eq.LHSVariable()->name(), exps);
-      Index a_ind(a_exp);
-      code << TAB << printer.jacMacrosAccess(g_eq, a_ind.print());
+    code << tabs << g_eq.range().get();
+    tabs = Utils::instance().tabs(_tabs + 1);
+    vector<string> exps = g_eq.range()->getIndexes();
+    FunctionPrinter printer;
+    Expression a_exp = Expression::generate(g_eq.LHSVariable()->name(), exps);
+    Index a_ind(a_exp);
+    code << TAB << printer.jacMacrosAccess(g_eq, a_ind.print());
   }
   if (!map.constantExp()) {
     code << tabs << "if(" << range.in(exps);
@@ -123,7 +131,8 @@ void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SB::Deps::V
   code << include_guard;
   code << TAB << inner_tabs << "modelData->jac_matrices->" << eq_id << "->size[c_row]--;" << endl;
   code << inner_tabs << "} else {" << endl;
-  code << TAB << inner_tabs << "modelData->jac_matrices->" << eq_id << "->index[c_row][states[c_row]++] = x_ind;" << endl;
+  code << TAB << inner_tabs << "modelData->jac_matrices->" << eq_id << "->index[c_row][" << matrix_access_vector << "[c_row]++] = x_ind;"
+       << endl;
   code << inner_tabs << "}" << endl;
   _matrix.init.append(code.str());
   code.str("");
@@ -137,7 +146,7 @@ void JacMatrixGenerator::addDependency(Equation v_eq, Equation g_eq, SB::Deps::V
   _matrix.init.append(code.str());
 }
 
-std::string JacMatrixGenerator::guard(SB::Set dom, int offset, SB::Deps::LMapExp map, std::string var_name)
+std::string JacMatrixGenerator::guard(SB::Set dom, int offset, SB::Deps::LMapExp map, std::string var_name, Equation v_eq)
 {
   if (map.constantExp()) {
     return "";
@@ -146,33 +155,37 @@ std::string JacMatrixGenerator::guard(SB::Set dom, int offset, SB::Deps::LMapExp
   vector<string> exps = map.apply(range.getDimensionVars());
   Expression map_exp = Expression::generate(var_name, exps);
   range.applyUsage(Index(map_exp));
+  if (v_eq.hasRange()) {
+    range.update(v_eq.range().get());
+  }
   return range.in(exps);
 }
 
 void JacMatrixGenerator::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep)
-{ 
+{
   Equation eq = getEquation(vertex);
-  addDependency(eq, eq,var_dep, eq.arrayId());
+  addDependency(eq, eq, var_dep, eq.arrayId());
 }
 
 void JacMatrixGenerator::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex)
-{ 
+{
   Equation eq = getEquation(vertex);
-  Equation gen_eq = getEquation(gen_vertex); 
-  addDependency(eq, eq,var_dep, gen_eq.arrayId());
+  Equation gen_eq = getEquation(gen_vertex);
+  addDependency(eq, eq, var_dep, gen_eq.arrayId());
 }
 
 void JacMatrixGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift)
 {
   Equation v_eq = getEquation(v_vertex);
   Equation g_eq = getEquation(g_vertex);
-  addDependency(v_eq, g_eq, var_dep, v_eq.arrayId(), guard(var_dep.equations(), var_dep.eqOffset(), var_dep.mMap(), var_dep.var().name()));
+  addDependency(v_eq, g_eq, var_dep, v_eq.arrayId(),
+                guard(var_dep.equations(), var_dep.eqOffset(), var_dep.mMap(), var_dep.var().name(), v_eq));
 }
 
-void JacMatrixGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp, Expression use_exp, SB::PWLMap def_map,
-              SB::Deps::LMapExp def_map_exp, SB::Set intersection)
+void JacMatrixGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map,
+                                SB::Deps::LMapExp use_map_exp, Expression use_exp, SB::PWLMap def_map, SB::Deps::LMapExp def_map_exp,
+                                SB::Set intersection)
 {
-
 }
 
 void JacMatrixGenerator::initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge) {}

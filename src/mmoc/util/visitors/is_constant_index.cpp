@@ -19,9 +19,9 @@
 
 #include "is_constant_index.h"
 
-#include "../error.h"
-#include "../model_config.h"
-#include "../util.h"
+#include <util/error.h>
+#include <util/model_config.h>
+#include <util/util.h>
 
 namespace MicroModelica {
 using namespace Deps;
@@ -74,8 +74,7 @@ bool CheckIndexExpression::foldTraverseElement(AST_Expression exp)
 
 bool CheckIndexExpression::isConstant() const { return _is_constant; }
 
-bool CheckIndexExpression::hasParameters() const  { return _has_parameters; }
-
+bool CheckIndexExpression::hasParameters() const { return _has_parameters; }
 
 }  // namespace Util
 }  // namespace MicroModelica

@@ -17,6 +17,7 @@
 
  ******************************************************************************/
 
+#include <algorithm>
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
@@ -44,28 +45,37 @@ MCC_Lexer *MCC_Parser::lexer = nullptr;
 
 AST_StoredDefinition newAST_StoredDefinition(AST_ClassList cl, AST_String within) { return new AST_StoredDefinition_(cl, within); }
 
-AST_String newAST_String(string s) { return new string(s); }
+AST_String AST_SanitizeString(std::string new_string)
+{
+  if (new_string.find("'") != std::string::npos) {
+    new_string.erase(std::remove(new_string.begin(), new_string.end(), '\''), new_string.end());
+    std::replace(new_string.begin(), new_string.end(), '.', '_');
+  }
+  return new string(new_string);
+}
 
-AST_String newAST_String(char *s) { return new string(s); }
+AST_String newAST_String(string s) { return AST_SanitizeString(string(s)); }
 
-AST_String newAST_String(const char *s) { return new string(s); }
+AST_String newAST_String(char *s) { return AST_SanitizeString(string(s)); }
+
+AST_String newAST_String(const char *s) { return AST_SanitizeString(string(s)); }
 
 AST_String newAST_String(AST_String s)
 {
-  AST_String ret = new string(*s);
+  AST_String ret = AST_SanitizeString(string(*s));
   delete s;
   return ret;
 }
 
 AST_String copyAST_String(AST_String s)
 {
-  AST_String ret = new string(*s);
+  AST_String ret = AST_SanitizeString(string(*s));
   return ret;
 }
 
 AST_String newAST_DotString(AST_String s)
 {
-  AST_String ret = new string(*s);
+  AST_String ret = AST_SanitizeString(string(*s));
   ret->insert(0, ".");
   delete s;
   return ret;
@@ -78,7 +88,7 @@ AST_String AST_StringDotAppend(AST_String ret, AST_String a)
   }
   if (a != nullptr) {
     ret->append(".");
-    ret->append(*a);
+    ret->append(*AST_SanitizeString(string(*a)));
     delete a;
   }
   return ret;
@@ -140,7 +150,10 @@ AST_Argument AST_ArgumentSet(bool each, bool final, AST_Argument arg)
 
 AST_EquationList newAST_EquationList() { return new list<AST_Equation>(); }
 
-AST_Equation newAST_Equation_Equality(AST_Expression left, AST_Expression right, AST_Comment comment) { return new AST_Equation_Equality_(left, right, comment); }
+AST_Equation newAST_Equation_Equality(AST_Expression left, AST_Expression right, AST_Comment comment)
+{
+  return new AST_Equation_Equality_(left, right, comment);
+}
 
 AST_Equation newAST_Equation_Connect(AST_Expression_ComponentReference cr1, AST_Expression_ComponentReference cr2)
 {
@@ -151,7 +164,7 @@ AST_Expression newAST_Expression_Real(AST_Real r) { return new AST_Expression_Re
 
 AST_Expression newAST_Expression_String(AST_String s)
 {
-  AST_Expression_String ret = new AST_Expression_String_(*s);
+  AST_Expression_String ret = new AST_Expression_String_(*AST_SanitizeString(*s));
   delete s;
   return ret;
 }
@@ -173,7 +186,7 @@ AST_Element_Component newAST_Element_Component(AST_DeclarationList cl, AST_Strin
 
 AST_Declaration newAST_Declaration(AST_String s, AST_ExpressionList indexes, AST_Modification m)
 {
-  AST_Declaration ret = new AST_Declaration_(*s, indexes, m);
+  AST_Declaration ret = new AST_Declaration_(*AST_SanitizeString(*s), indexes, m);
   delete s;
   return ret;
 }
@@ -185,7 +198,7 @@ AST_CompositionElement newAST_CompositionElement(AST_ElementList el) { return ne
 AST_Expression newAST_Expression_ComponentReferenceExp(AST_String s)
 {
   AST_Expression_ComponentReference e = newAST_Expression_ComponentReference();
-  e->append(s, newAST_ExpressionList());
+  e->append(AST_SanitizeString(*s), newAST_ExpressionList());
   return e;
 }
 
@@ -223,7 +236,7 @@ AST_Expression_ComponentReference AST_Expression_ComponentReference_AddDot(AST_E
 AST_Expression_ComponentReference AST_Expression_ComponentReference_Add(AST_Expression_ComponentReference cr, AST_String s,
                                                                         AST_ExpressionList subs)
 {
-  cr->append(s, subs);
+  cr->append(AST_SanitizeString(*s), subs);
   return cr;
 }
 
@@ -517,7 +530,7 @@ AST_Expression newAST_BracketExpList(AST_ExpressionListList expss)
   AST_ExpressionList l = newAST_ExpressionList();
   foreach (exps_it, expss) {
     if (current_element(exps_it)->size()) {
-      foreach (exps_range_it, current_element(exps_it)){
+      foreach (exps_range_it, current_element(exps_it)) {
         if (current_element(exps_range_it)->expressionType() == EXPRANGE) {
           l = AST_ListAppend(l, current_element(exps_range_it));
         }
@@ -556,9 +569,9 @@ AST_Statement newAST_Statement_Assign(AST_Expression_ComponentReference cr, AST_
   return new AST_Statement_Assign_(cr, exp);
 }
 
-AST_Equation newAST_Equation_When(AST_Expression cond, AST_EquationList eqs, AST_Equation_ElseList else_list)
+AST_Equation newAST_Equation_When(AST_Expression cond, AST_EquationList eqs, AST_Equation_ElseList else_list, AST_Comment comment)
 {
-  return new AST_Equation_When_(cond, eqs, else_list);
+  return new AST_Equation_When_(cond, eqs, else_list, comment);
 }
 
 AST_CompositionEqsAlgs newAST_CompositionInitialEquations(AST_EquationList eqlist) { return new AST_CompositionEqsAlgs_(eqlist, true); }

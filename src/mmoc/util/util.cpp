@@ -142,7 +142,7 @@ Option<CompiledPackage> Utils::readPackage(string file_name, bool full_path, str
 {
   fstream package;
   string name;
-  string compiled_package_name = file_name; 
+  string compiled_package_name = file_name;
   if (full_path) {
     name = file_name;
     assert(!compiled_package_name.empty());
@@ -359,7 +359,7 @@ Variable Utils::variable(AST_Expression exp)
   }
   Option<Variable> var = ModelConfig::instance().lookup(var_name);
   if (!var) {
-    Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "utils.cpp:342 %s", var_name.c_str());
+    Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "utils.cpp:362 %s", var_name.c_str());
   }
   return var.get();
 }

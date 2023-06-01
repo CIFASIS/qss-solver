@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#pragma once 
+#pragma once
 
 #include <string>
 
@@ -115,7 +115,7 @@ AST_Equation newAST_Equation_Equality(AST_Expression, AST_Expression, AST_Commen
 AST_Equation newAST_Equation_Connect(AST_Expression_ComponentReference, AST_Expression_ComponentReference);
 AST_Equation newAST_Equation_If(AST_Expression e, AST_EquationList eql, AST_Equation_ElseList, AST_EquationList);
 AST_Equation newAST_Equation_For(AST_ForIndexList, AST_EquationList eql);
-AST_Equation newAST_Equation_When(AST_Expression, AST_EquationList, AST_Equation_ElseList);
+AST_Equation newAST_Equation_When(AST_Expression, AST_EquationList, AST_Equation_ElseList, AST_Comment);
 AST_Equation newAST_Equation_Call(AST_Expression);
 AST_ForIndex newAST_ForIndex(AST_String, AST_Expression);
 AST_ForIndexList newAST_ForIndexList();

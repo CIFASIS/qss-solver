@@ -30,7 +30,7 @@ namespace Deps {
 
 CoeffContainer::CoeffContainer(std::vector<int> coeffs) : _coeffs(coeffs), _valid_dims()
 {
-  for(size_t i = 0; i < _coeffs.size(); i++) {
+  for (size_t i = 0; i < _coeffs.size(); i++) {
     _valid_dims.push_back(true);
   }
 }
@@ -39,7 +39,7 @@ CoeffContainer::CoeffContainer(std::vector<int> coeffs, std::vector<bool> valid_
 
 CoeffContainer::CoeffContainer() : _coeffs(), _valid_dims() {}
 
-CoeffContainer& CoeffContainer::operator=(const CoeffContainer&  other)
+CoeffContainer& CoeffContainer::operator=(const CoeffContainer& other)
 {
   _coeffs = other._coeffs;
   _valid_dims = other._valid_dims;
@@ -66,10 +66,7 @@ void CoeffContainer::addDim()
   _coeffs.push_back(0);
 }
 
-bool CoeffContainer::isValid(int i) const
-{
-  return _valid_dims[i];
-}
+bool CoeffContainer::isValid(int i) const { return _valid_dims[i]; }
 
 bool CoeffContainer::isZeros()
 {
@@ -161,6 +158,8 @@ CoeffContainer::const_iterator CoeffContainer::end() const { return _coeffs.end(
 
 unsigned int CoeffContainer::size() const { return _coeffs.size(); }
 
+std::vector<int> CoeffContainer::coeffs() const { return _coeffs; }
+
 std::ostream& operator<<(std::ostream& os, const CoeffContainer& coeffs)
 {
   std::list<std::string> coeffs_str;
@@ -198,7 +197,13 @@ bool LMapExp::operator==(const LMapExp& other) const
   return (_constants == other._constants) && (_slopes == other._slopes) && (_init_values == other._init_values);
 }
 
-bool LMapExp::operator<(const LMapExp& other) const { return print() < other.print(); }
+bool LMapExp::operator<(const LMapExp& other) const
+{
+  if (print() != other.print()) {
+    return print() < other.print();
+  }
+  return appliedInitValues() < other.appliedInitValues();
+}
 
 bool LMapExp::constantExp() const
 {
@@ -274,6 +279,8 @@ Constants LMapExp::constants() const { return _constants; }
 
 InitValues LMapExp::initValues() const { return _init_values; }
 
+InitValues LMapExp::appliedInitValues() const { return InitValues(apply(_init_values.coeffs())); }
+
 LMapExp LMapExp::compose(const LMapExp& other)
 {
   if (other.isEmpty() || isEmpty()) {
@@ -282,6 +289,16 @@ LMapExp LMapExp::compose(const LMapExp& other)
   Slopes new_slopes = other.slopes() * slopes();
   Constants new_constants = slopes() * other.constants() + constants();
   return LMapExp(new_constants, new_slopes, initValues());
+}
+
+void LMapExp::padDims(int max)
+{
+  int init = _slopes.size();
+  for (int add = init; add < max; add++) {
+    _constants.addDim();
+    _slopes.addDim();
+    _init_values.addDim();
+  }
 }
 
 LMapExp LMapExp::solve(const LMapExp& other)

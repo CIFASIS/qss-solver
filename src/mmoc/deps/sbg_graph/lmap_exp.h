@@ -30,7 +30,7 @@ class CoeffContainer {
   CoeffContainer();
   CoeffContainer(std::vector<int> CoeffContainer);
   CoeffContainer(std::vector<int> coeffs, std::vector<bool> valid_dims);
-  CoeffContainer& operator=(const CoeffContainer&  other);
+  CoeffContainer& operator=(const CoeffContainer& other);
   bool operator<(const CoeffContainer& other) const;
   bool operator==(const CoeffContainer& other) const;
   bool operator!=(const CoeffContainer& other) const;
@@ -51,8 +51,9 @@ class CoeffContainer {
   const_iterator end() const;
   unsigned int size() const;
   void addDim();
-  bool isValid(int i) const;  
+  bool isValid(int i) const;
   friend std::ostream& operator<<(std::ostream& os, const CoeffContainer& CoeffContainer);
+  std::vector<int> coeffs() const;
 
   protected:
   std::vector<int> _coeffs;
@@ -76,10 +77,12 @@ class LMapExp {
   Slopes slopes() const;
   Constants constants() const;
   InitValues initValues() const;
+  InitValues appliedInitValues() const;
   LMapExp compose(const LMapExp& other);
   LMapExp solve(const LMapExp& other);
   LMapExp revert();
   LMapExp applyIndexShift(CoeffContainer index_shift);
+  void padDims(int max);
   bool constantExp() const;
   bool isEmpty() const;
   std::string print() const;
@@ -94,5 +97,5 @@ class LMapExp {
   InitValues _init_values;
 };
 
-} // Namspace Deps
-} // Namespace SB
+}  // namespace Deps
+}  // Namespace SB

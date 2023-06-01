@@ -45,13 +45,13 @@ class JacGenerator {
   void visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep);
   void visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex);
   void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift);
-  void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp, Expression use_exp, SB::PWLMap def_map,
-              SB::Deps::LMapExp def_map_exp, SB::Set intersection);
+  void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp,
+              Expression use_exp, SB::PWLMap def_map, SB::Deps::LMapExp def_map_exp, SB::Set intersection);
   void initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge);
   JacDef def();
-  void setup(EquationTable eqs) {};
-  EquationTable config() { return EquationTable(); }
-  
+  void setup(EquationTable algebraics) { _algebraics = algebraics; };
+  EquationTable config() { return _algebraics; }
+
   protected:
   IR::Expression generateExp(string var_name, vector<string> indices);
   void dependencyPrologue(Equation eq, SB::Deps::VariableDep var_dep, std::string guard = "");
@@ -61,10 +61,11 @@ class JacGenerator {
   void generateEquation(int id, EQUATION::Type type);
   void generateEquation(int v_id, int g_id, EQUATION::Type type);
   std::string getVariableIndexes(Equation eq);
-  std::string guard(SB::Set dom, int offset, std::string var_name, SB::Deps::LMapExp map);
+  std::string guard(SB::Set dom, int offset, std::string var_name, SB::Deps::LMapExp map, Equation v_eq);
   void Fvisitor(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, int eq_id);
   JacDef _jac_def;
   int _tabs;
+  EquationTable _algebraics;
 };
 
 class Jacobian {
