@@ -745,6 +745,13 @@ void QSS_HYB_integrate(SIM_simulator simulate)
             infCf0 = j * coeffs;
             x[infCf0] = reinit_assign[i];
           }
+          nReinitAssign = event[index].nReinitAsg;
+          for (i = 0; i < nReinitAssign; i++) {
+            j = event[index].ReinitAsg[i];
+            infCf0 = j * coeffs;
+            x[infCf0] = reinit_assign[i];
+          }
+          nLHSSt = event[index].nLHSSt;
           for (i = 0; i < nLHSSt; i++) {
             j = event[index].LHSSt[i];
             infCf0 = j * coeffs;

@@ -379,6 +379,7 @@ void QSS_PAR_internalEvent(QSS_simulator simulator)
             msg.value[i] = d[j];
           }
         }
+        nLHSSt = event[index].nLHSSt;
         for (i = 0; i < nLHSSt; i++) {
           j = event[index].LHSSt[i];
           infCf0 = j * coeffs;
@@ -766,6 +767,7 @@ void QSS_PAR_integrator(QSS_simulator simulator)
                 msg.value[i] = d[j];
               }
             }
+            nLHSSt = event[index].nLHSSt;
             for (i = 0; i < nLHSSt; i++) {
               j = event[index].LHSSt[i];
               infCf0 = j * coeffs;
