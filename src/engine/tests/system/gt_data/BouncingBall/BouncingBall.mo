@@ -54,11 +54,14 @@ algorithm
 
 	experiment(
 		MMO_Description="",
-		MMO_Solver=QSS3,
+		MMO_Solver=LIQSS3,
+		MMO_SymDiff=false,
 		MMO_PartitionMethod=Metis,
 		MMO_Output={ball1_y},
 		MMO_OutputType=CI_Sampled,
 		Jacobian=Dense,
+		MMO_BDF_PDepth=1,
+		MMO_BDF_Max_Step=0,
 		StartTime=0.0,
 		StopTime=10,
 		Tolerance={1e-3},
