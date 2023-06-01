@@ -154,7 +154,17 @@
         </item>
         <item>
          <property name="text">
-          <string>QSS_TEST</string>
+          <string>mLIQSS</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>mLIQSS2</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>mLIQSS3</string>
          </property>
         </item>
        </widget>

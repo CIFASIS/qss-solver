@@ -32,7 +32,9 @@
 #include <qss/methods/qss2.h>
 #include <qss/methods/qss3.h>
 #include <qss/methods/qss4.h>
-#include <qss/methods/qss_test.h>
+#include <qss/methods/mliqss.h>
+#include <qss/methods/mliqss2.h>
+#include <qss/methods/mliqss3.h>
 
 QA_quantizerOps QA_QuantizerOps()
 {
@@ -73,16 +75,19 @@ QA_quantizerState QA_QuantizerState()
   p->finTime = 0;
   p->lSimTime = NULL;
   p->qMap = NULL;
+  // Added state for mLIQSS methods.
+  p->infs = 0;
+  p->sts = 0;
   p->nSD = NULL;
   p->SD = NULL;
   p->change = NULL;
-  p->next = NULL;
-  p->nTime = NULL;
+  p->cont = 0;
+  p->S = NULL;
   p->A = NULL;
   p->U0 = NULL;
   p->U1 = NULL;
-  p->cont = NULL;
-
+  p->qj = NULL;
+  p->next = NULL;
   return p;
 }
 
@@ -155,11 +160,25 @@ QA_quantizer QA_Quantizer(QSS_data simData, QSS_time simTime)
       QSS4_init(p, simData, simTime);
     }
     break;
-  case SD_QSS_TEST:
+  case SD_mLIQSS:
     if (simData->params->lps > 0) {
-      QSS_TEST_PAR_init(p, simData, simTime);
+      mLIQSS_PAR_init(p, simData, simTime);
     } else {
-      QSS_TEST_init(p, simData, simTime);
+      mLIQSS_init(p, simData, simTime);
+    }
+    break;
+  case SD_mLIQSS2:
+    if (simData->params->lps > 0) {
+      mLIQSS2_PAR_init(p, simData, simTime);
+    } else {
+      mLIQSS2_init(p, simData, simTime);
+    }
+    break;
+  case SD_mLIQSS3:
+    if (simData->params->lps > 0) {
+      mLIQSS3_PAR_init(p, simData, simTime);
+    } else {
+      mLIQSS3_init(p, simData, simTime);
     }
     break;
   default:
@@ -214,6 +233,51 @@ void QA_freeQuantizerState(QA_quantizerState state)
   }
   if (state->flag4 != NULL) {
     free(state->flag4);
+  }
+  if (state->S != NULL) {
+    int states = state->sts;
+    for (int i = 0; i < states; i++) {
+      if (state->S[i] != NULL) {
+        free(state->S[i]);
+      }
+    }
+    free(state->S);
+  }
+  if (state->A != NULL) {
+    int states = state->sts;
+    for (int i = 0; i < states; i++) {
+      if (state->A[i] != NULL) {
+        free(state->A[i]);
+      }
+    }
+    free(state->A);
+  }
+  if (state->U0 != NULL) {
+    int states = state->sts;
+    for (int i = 0; i < states; i++) {
+      if (state->U0[i] != NULL) {
+        free(state->U0[i]);
+      }
+    }
+    free(state->U0);
+  }
+  if (state->U1 != NULL) {
+    int states = state->sts;
+    for (int i = 0; i < states; i++) {
+      if (state->U1[i] != NULL) {
+        free(state->U1[i]);
+      }
+    }
+    free(state->U1);
+  }
+  if (state->next != NULL) {
+    free(state->next);
+  }
+  if (state->change != NULL) {
+    free(state->change);
+  }
+  if (state->qj != NULL) {
+    free(state->qj);
   }
   free(state);
 }
