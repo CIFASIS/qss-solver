@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [ 
+
+        // Generic per model configurations.
+        
+        // Mixed mode buckt_term model
+        {
+            "name": "Buck Falla.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/joaquin/work/qss-solver/build/buck_falla/buck_falla",
+            "cwd": "/home/joaquin/work/qss-solver/build/buck_falla/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}

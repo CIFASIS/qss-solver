@@ -26,7 +26,7 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 		_get_v_idxs(idx);
 		_apply_usage_eq_1(_d1);
 		if ((i >= 1 && i <= 1000)) {
-			_der_v(i,0) = 0.04*_v(i,0)*_v(i,0)+5*_v(i,0)+140-_u(i,0)+_I(i);
+			_der_v(i,0) = 4.000000e-02*_v(i,0)*_v(i,0)+5*_v(i,0)+140-_u(i,0)+_I(i);
 			_der_v(i,1) = (0)/2;
 			_der_v(i,2) = (0)/6;
 	
@@ -168,7 +168,7 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 		_get_u_idxs(idx);
 		_apply_usage_eq_1(_d1);
 		if ((i >= 1 && i <= 1000)) {
-			_eval_dep_v(i,1) = 0.04*_v(i,0)*_v(i,0)+5*_v(i,0)+140-_u(i,0)+_I(i);
+			_eval_dep_v(i,1) = 4.000000e-02*_v(i,0)*_v(i,0)+5*_v(i,0)+140-_u(i,0)+_I(i);
 			_eval_dep_v(i,2) = (0)/2;
 			_eval_dep_v(i,3) = (0)/6;
 		}
@@ -186,7 +186,7 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 		_get_v_idxs(idx);
 		_apply_usage_eq_1(_d1);
 		if ((i >= 1 && i <= 1000)) {
-			_eval_dep_v(i,1) = 0.04*_v(i,0)*_v(i,0)+5*_v(i,0)+140-_u(i,0)+_I(i);
+			_eval_dep_v(i,1) = 4.000000e-02*_v(i,0)*_v(i,0)+5*_v(i,0)+140-_u(i,0)+_I(i);
 			_eval_dep_v(i,2) = (0)/2;
 			_eval_dep_v(i,3) = (0)/6;
 		}
@@ -214,7 +214,7 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		_get_v_idxs(idx);
 		_apply_usage_eq_1(_d1);
 		if ((i >= 1 && i <= 1000)) {
-			_eval_dep_v(i,1) = 0.04*_v(i,0)*_v(i,0)+5*_v(i,0)+140-_u(i,0)+_I(i);
+			_eval_dep_v(i,1) = 4.000000e-02*_v(i,0)*_v(i,0)+5*_v(i,0)+140-_u(i,0)+_I(i);
 	
 	
 		}
@@ -246,8 +246,8 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int _d1;
 	int _rg_d1;
 	int i;
-	_a = 0.02;
-	_b = 0.2;
+	_a = 2.000000e-02;
+	_b = 2.000000e-01;
 	for(i = 1; i<=1000; i+=1) {
 		_init_v(i,0) = -60;
 		_init_u(i,0) = 0;
@@ -391,7 +391,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 			}
 		}
 	}
-	cleanVector(states, 0, 2000);
 	cleanVector(states, 0, 2000);
 	for(_d1 = 1; _d1<=1000; _d1+=1) {
 		modelData->SZ[_idx_v(_d1,0)][states[_idx_v(_d1,0)]++] = _idx_event_1(_d1);

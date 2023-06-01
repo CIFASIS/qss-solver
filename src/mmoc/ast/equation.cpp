@@ -45,7 +45,10 @@ void AST_Equation_Equality_::setLeft(AST_Expression e) { _left = e; }
 
 void AST_Equation_Equality_::setRight(AST_Expression e) { _right = e; }
 
-AST_Equation_Equality_::AST_Equation_Equality_(AST_Expression left, AST_Expression right, AST_Comment comment) : _left(left), _right(right), _comment(comment) {}
+AST_Equation_Equality_::AST_Equation_Equality_(AST_Expression left, AST_Expression right, AST_Comment comment)
+    : _left(left), _right(right), _comment(comment)
+{
+}
 
 AST_Expression AST_Equation_Equality_::left() const { return _left; }
 
@@ -205,8 +208,8 @@ void AST_ForIndex_::accept(AST_Visitor *visitor)
 
 /* When Equation Class */
 
-AST_Equation_When_::AST_Equation_When_(AST_Expression cond, AST_EquationList eql, AST_Equation_ElseList elsewhen)
-    : _cond(cond), _eql(eql), _else_when(elsewhen)
+AST_Equation_When_::AST_Equation_When_(AST_Expression cond, AST_EquationList eql, AST_Equation_ElseList elsewhen, AST_Comment c)
+    : _cond(cond), _eql(eql), _else_when(elsewhen), _comment(c)
 {
 }
 
@@ -219,6 +222,10 @@ EquationType AST_Equation_When_::equationType() { return EQWHEN; }
 AST_Equation_ElseList AST_Equation_When_::equationElseWhen() const { return _else_when; }
 
 void AST_Equation_When_::setCondition(AST_Expression e) { _cond = e; }
+
+AST_Comment AST_Equation_When_::comment() const { return _comment; }
+
+bool AST_Equation_When_::hasComment() { return _comment != nullptr; }
 
 string AST_Equation_When_::print() const
 {

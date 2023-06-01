@@ -142,7 +142,7 @@ class Model : public Class {
   inline Util::ImportTable imports() const { return _imports; };
   inline ModelAnnotation annotations() const { return _annotations; };
   inline FunctionTable calledFunctions() const { return _called_functions; };
-  inline int algebraicNbr() { return _algebraic_nbr; };
+  inline int algebraicNbr() const { return _algebraic_nbr; };
   inline int stateNbr() const { return _state_nbr; };
   inline int discreteNbr() const { return _discrete_nbr; };
   inline int inputNbr() const { return _input_nbr; };
@@ -175,7 +175,7 @@ class Model : public Class {
    * @param[in]  id    The identifier
    * @param[in]  size  The size
    * @param[in]  type  The type
-   */    
+   */
   void addVariable(int id, Option<Range> range, EQUATION::Type type, unsigned int& offset);
   void setVariableOffset(Util::Variable var, unsigned int& offset, Util::Variable::RealType type, bool set_variable_count = true);
   void setRealVariables(AST_Equation eq);
@@ -186,7 +186,8 @@ class Model : public Class {
   void addFunction(Util::SymbolTable symbols, FunctionTable& fs);
   void addInput(Equation eq);
   void orderEquations();
-  EquationDefOrder getEquationDefOrder(Equation eq); 
+  EquationDefOrder getEquationDefOrder(Equation eq);
+  int computeEventOffsetShift(Option<Range> range);
 
   std::string _name;
   Util::ImportTable _imports;

@@ -18,7 +18,7 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 4.0.1
+#       VERSION: 4.2.0
 #===================================================================================
 
 FILE=$1

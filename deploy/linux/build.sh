@@ -15,7 +15,7 @@
 #         NOTES: --- 
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 4.0.1
+#       VERSION: 4.2.0
 #===================================================================================
 
 rm -rf qss-solver-*.deb
@@ -26,10 +26,22 @@ echo "Retrieving latest from Git";
 git pull
 
 cat ./deploy/linux/qss-solver.ini.in > ./deploy/linux/qss-solver.ini
+
 # Set solver version
 VER=`cat ./deploy/linux/version`
 INI_VER="version="$VER
 echo $INI_VER >> ./deploy/linux/qss-solver.ini
+
+# Set OS config files.
+CONTROL_FILE="control.amd64"
+SBML_LIB="libsbml.so.5.18.0"
+PACKAGE_NAME=qss-solver-$VER.deb
+SYSTEM_VERSION=`lsb_release -d`
+if [[ "$SYSTEM_VERSION" == *"22.04"* ]]; then
+  CONTROL_FILE="control.amd64.u22"
+  SBML_LIB="libsbml.so.5.19.0"
+  PACKAGE_NAME=qss-solver-$VER-u22.deb
+fi
 
 # Set solver branch
 BRANCH=`git rev-parse --abbrev-ref HEAD`
@@ -60,8 +72,8 @@ mkdir ./tmp_deb/opt/qss-solver/build
 mkdir ./tmp_deb/opt/qss-solver/output
 mkdir ./tmp_deb/opt/qss-solver/lib/
 
-cat ./tmp_deb/DEBIAN/control.amd64 | awk -v VERSION="$VER" '{ if(index($0,"Version:")>=1) print "Version: " VERSION ; else print $0;}' >  ./tmp_deb/DEBIAN/control
-rm ./tmp_deb/DEBIAN/control.amd64; 
+cat ./tmp_deb/DEBIAN/$CONTROL_FILE | awk -v VERSION="$VER" '{ if(index($0,"Version:")>=1) print "Version: " VERSION ; else print $0;}' >  ./tmp_deb/DEBIAN/control
+rm ./tmp_deb/DEBIAN/$CONTROL_FILE 
 
 cp deploy/linux/version ./tmp_deb/opt/qss-solver/
 cp src/mmoc/usr/bin/mmoc  ./tmp_deb/opt/qss-solver/bin/ 
@@ -99,7 +111,7 @@ rm -rf ./tmp_deb/opt/qss-solver/src/usr/lib
 rm -rf ./tmp_deb/opt/qss-solver/src/interfaces/sbml/usr
 rm -rf ./tmp_deb/opt/qss-solver/src/gui/usr
 
-cp /usr/lib/x86_64-linux-gnu/libsbml.so.5.18.0 ./tmp_deb/opt/qss-solver/lib/libsbml.so.5
+cp /usr/lib/x86_64-linux-gnu/$SBML_LIB ./tmp_deb/opt/qss-solver/lib/libsbml.so.5
 cp src/engine/3rd-party/partitioners/patoh/Linux-x86_64/libpatoh.a ./tmp_deb/opt/qss-solver/lib/libpatoh.a
 cp src/engine/3rd-party/partitioners/metis/Linux-x86_64/libmetis.a ./tmp_deb/opt/qss-solver/lib/libmetis.a
 
@@ -115,7 +127,7 @@ chmod 0644 `find tmp_deb/opt/qss-solver/packages/ -type f`
 chmod 0644 `find tmp_deb/opt/qss-solver/src/usr/ -type f`
 chmod 0755 `find tmp_deb/ -type d`
 fakeroot dpkg -b tmp_deb qss-solver.deb
-mv qss-solver.deb ./deploy/linux/qss-solver-$VER.deb
+mv qss-solver.deb ./deploy/linux/$PACKAGE_NAME
 rm -rf tmp_deb
 rm -rf tmp
 cd deploy/linux

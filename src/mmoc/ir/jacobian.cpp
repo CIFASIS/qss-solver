@@ -74,7 +74,7 @@ void JacGenerator::end()
   _tabs--;
 }
 
-std::string JacGenerator::guard(SB::Set dom, int offset, std::string var_name, SB::Deps::LMapExp map)
+std::string JacGenerator::guard(SB::Set dom, int offset, std::string var_name, SB::Deps::LMapExp map, Equation v_eq)
 {
   if (map.constantExp()) {
     return "";
@@ -84,6 +84,9 @@ std::string JacGenerator::guard(SB::Set dom, int offset, std::string var_name, S
   vector<string> exps = map.apply(range.getDimensionVars());
   Expression map_exp = Expression::generate(var_name, exps);
   range.applyUsage(Index(map_exp));
+  if (v_eq.hasRange()) {
+    range.update(v_eq.range().get());
+  }
   return range.in(exps);
 }
 
@@ -91,7 +94,7 @@ void JacGenerator::dependencyPrologue(Equation eq, SB::Deps::VariableDep var_dep
 {
   stringstream code;
   string tabs = Utils::instance().tabs(_tabs);
-  SB::Deps::LMapExp map = var_dep.nMap(); 
+  SB::Deps::LMapExp map = var_dep.nMap();
   Range range(var_dep.variables(), var_dep.varOffset());
   if (var_dep.isRecursive() && eq.hasRange()) {
     FunctionPrinter printer;
@@ -105,7 +108,7 @@ void JacGenerator::dependencyPrologue(Equation eq, SB::Deps::VariableDep var_dep
   }
   vector<string> exps = map.apply(range.getDimensionVars());
   if (!map.constantExp()) {
-    code << tabs << "if(" << range.in(exps); 
+    code << tabs << "if(" << range.in(exps);
     if (!guard.empty()) {
       code << " && " << guard;
     }
@@ -211,12 +214,13 @@ void JacGenerator::Fvisitor(SB::Deps::SetVertex vertex, SB::Deps::VariableDep va
 void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift)
 {
   stringstream code;
+  const bool REC_DEPS = var_dep.isRecursive();
   Equation v_eq = getEquation(v_vertex);
   Equation g_eq = getEquation(g_vertex);
   // Generate composed expression for guards
   SB::Deps::LMapExp map_m = var_dep.mMap();
   SB::Deps::LMapExp n_map = var_dep.nMap();
-  string dom_guard = guard(var_dep.equations(), var_dep.eqOffset(), var_dep.var().name(), map_m);
+  string dom_guard = guard(var_dep.equations(), var_dep.eqOffset(), var_dep.var().name(), map_m, v_eq);
   dependencyPrologue(g_eq, var_dep, dom_guard);
   generatePos(v_eq.arrayId(), v_eq.type());
   vector<string> variables;
@@ -228,23 +232,24 @@ void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_ve
   } else {
     Option<Variable> v_lhs = v_eq.LHSVariable();
     Option<Variable> g_lhs = g_eq.LHSVariable();
-    if (var_dep.isRecursive()) {
+    if (REC_DEPS || g_lhs->isArray()) {
       Range range(var_dep.variables(), var_dep.varOffset());
       exps = n_map.apply(range.getDimensionVars(USE_RANGE_IDXS));
-    } else if (g_lhs->isArray()) { 
-      Range range(var_dep.variables(), var_dep.varOffset());
-      exps = range.getInitValues();
     } else if (v_lhs->isArray()) {
+      // Is this condition possible?
       for (Expression exp : v_eq.lhs().indexes()) {
         exps.push_back(exp.print());
       }
-    } 
+    }
   }
   Expression a_exp = Expression::generate(g_eq.LHSVariable()->name(), exps);
   Index a_ind(a_exp);
-  code << tab << "c_row_g = ";
-  code << a_ind << " - " << index_shift;
-  code << ";" << endl;
+  code << tab << "c_row_g = " << a_ind << " - ";
+  int eq_shift = g_eq.LHSVariable()->offset();
+  if (g_eq.hasRange()) {
+    eq_shift += index_shift;
+  }
+  code << eq_shift << ";" << endl;
   _jac_def.code.append(code.str());
   int g_eq_id = g_eq.arrayId();
   generatePos(g_eq_id, g_eq.type(), "c_row_g", "col_g");
@@ -252,10 +257,9 @@ void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_ve
   dependencyEpilogue(g_eq, var_dep);
 }
 
-void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp, Expression use_exp, SB::PWLMap def_map,
-              SB::Deps::LMapExp def_map_exp, SB::Set intersection)
+void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp,
+                          Expression use_exp, SB::PWLMap def_map, SB::Deps::LMapExp def_map_exp, SB::Set intersection)
 {
-
 }
 
 void JacGenerator::initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge)
@@ -279,6 +283,7 @@ void Jacobian::build()
   VarSymbolTable symbols = ModelConfig::instance().symbols();
   JacobianBuilder jac;
   IndexShiftBuilder index_shifts(algebraics);
+  jac.setup(algebraics);
   SDSBGraphBuilder SDSBGraph = SDSBGraphBuilder(derivatives, algebraics);
   SDSBGraph.setOrigEquations(ModelConfig::instance().derivatives());
   jac.compute(SDSBGraph.build(), index_shifts.build());

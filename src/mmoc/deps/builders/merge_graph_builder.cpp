@@ -43,7 +43,9 @@ MergeGraphGenerator<S>::MergeGraphGenerator()
 }
 
 template <typename S>
-MergeGraphGenerator<S>::~MergeGraphGenerator() {}
+MergeGraphGenerator<S>::~MergeGraphGenerator()
+{
+}
 
 template <typename S>
 void MergeGraphGenerator<S>::setup(S config)
@@ -70,7 +72,8 @@ void MergeGraphGenerator<S>::setup(S config)
 
   EventTable::iterator ev_it;
   for (Event ev = events.begin(ev_it); !events.end(ev_it); ev = events.next(ev_it)) {
-    list<SB::Deps::SetVertex> ifr_nodes = createSetVertex(ev, _edge_dom_offset, max_dims, SB::Deps::VERTEX::Influencer, usage, STATEMENT::LHS);
+    list<SB::Deps::SetVertex> ifr_nodes =
+        createSetVertex(ev, _edge_dom_offset, max_dims, SB::Deps::VERTEX::Influencer, usage, STATEMENT::LHS);
     for (SB::Deps::SetVertex ifr_node : ifr_nodes) {
       addVertex(ifr_node, _graph);
     }
@@ -83,31 +86,33 @@ void MergeGraphGenerator<S>::setup(S config)
       addVertex(alg_node.get(), _graph);
     }
   }
-
 }
 
 template <typename S>
-S MergeGraphGenerator<S>::config() { return _config; }
+S MergeGraphGenerator<S>::config()
+{
+  return _config;
+}
 
 template <typename S>
 Intersections MergeGraphGenerator<S>::computeIntersections(SB::Set variables)
 {
   Intersections inters;
-  // This implementation relies on the fact that both discrete variables vertices 
+  // This implementation relies on the fact that both discrete variables vertices
   // are added in the same order, so the domain in both cases should match.
   VertexIt dsc_vertex_it = SB::Deps::findSetVertex(_lhs_dsc_graph, variables);
   SB::Deps::SetVertex dsc_vertex = _lhs_dsc_graph[*dsc_vertex_it];
   SB::Set intersection = dsc_vertex.range().cap(variables);
-  list<SB::Deps::Edge> edges  = SB::Deps::inputEdges(_lhs_dsc_graph, dsc_vertex.name());
+  list<SB::Deps::Edge> edges = SB::Deps::inputEdges(_lhs_dsc_graph, dsc_vertex.name());
 
   // As a second step, look for all the input edges that arrives to the discrete variable.
   for (SB::Deps::Edge edge : edges) {
     SB::Deps::SetEdge edge_label = _lhs_dsc_graph[edge];
     SB::Deps::Vertex E = boost::source(edge, _lhs_dsc_graph);
-    SB::Deps::SetVertex EV = _lhs_dsc_graph[E]; 
+    SB::Deps::SetVertex EV = _lhs_dsc_graph[E];
     if (EV.desc().type() == SB::Deps::VERTEX::Influencer) {
       SB::Set whole_dom = edge_label.mapU().wholeDom();
-      SB::Set input_edge_image = edge_label.mapU().image(whole_dom); 
+      SB::Set input_edge_image = edge_label.mapU().image(whole_dom);
       SB::Set used_dscs = intersection.cap(input_edge_image);
       if (!used_dscs.empty()) {
         IntersectInfo inter_info;
@@ -120,16 +125,23 @@ Intersections MergeGraphGenerator<S>::computeIntersections(SB::Set variables)
     }
   }
   return inters;
-} 
+}
 
 template <typename S>
-void MergeGraphGenerator<S>::init(SB::Deps::SetVertex vertex) { _nodes.push_back(vertex); }
+void MergeGraphGenerator<S>::init(SB::Deps::SetVertex vertex)
+{
+  _nodes.push_back(vertex);
+}
 
 template <typename S>
-void MergeGraphGenerator<S>::end() {}
+void MergeGraphGenerator<S>::end()
+{
+}
 
 template <typename S>
-void MergeGraphGenerator<S>::postProcess(SB::Deps::SetVertex vertex) {}
+void MergeGraphGenerator<S>::postProcess(SB::Deps::SetVertex vertex)
+{
+}
 
 template <typename S>
 SB::PWLMap MergeGraphGenerator<S>::buildMap(SB::Set dom, int convert_offset, SB::Set dom_map, int graph_offset)
@@ -158,9 +170,8 @@ SB::PWLMap MergeGraphGenerator<S>::buildMap(SB::Set dom, int convert_offset, SB:
   addDims(max_dims, edge_dom.minElem().size(), constant_pwl_map, slope_pwl_map, 1);
   return buildPWLMap(constant_pwl_map, slope_pwl_map, edge_dom);
 }
-
 template <typename S>
-SB::Deps::LMapExp MergeGraphGenerator<S>::buildLMapExp(Expression exp, SB::Deps::LMapExp use_map)
+SB::Deps::LMapExp MergeGraphGenerator<S>::buildLMapFromExp(IR::Expression exp)
 {
   SB::Deps::Constants exp_constants;
   SB::Deps::Slopes exp_slopes;
@@ -169,23 +180,29 @@ SB::Deps::LMapExp MergeGraphGenerator<S>::buildLMapExp(Expression exp, SB::Deps:
   for (Expression idx : indexes) {
     PWLMapValues pwl_map_values;
     pwl_map_values.apply(idx.expression());
-    exp_constants.insert(pwl_map_values.constant());  
+    exp_constants.insert(pwl_map_values.constant());
     exp_slopes.insert(pwl_map_values.slope());
     exp_init_values.insert(pwl_map_values.constant());
   }
+  return SB::Deps::LMapExp(exp_constants, exp_slopes, exp_init_values);
+}
+
+template <typename S>
+SB::Deps::LMapExp MergeGraphGenerator<S>::buildLMapExp(Expression exp, IR::Expression use_exp, SB::Deps::LMapExp use_map)
+{
+  SB::Deps::LMapExp use_exp_map = buildLMapFromExp(use_exp);
+  SB::Deps::LMapExp exp_map = buildLMapFromExp(exp);
+
   // We are dealing with expressions of different dimension, it could happen in merges.
-  if(use_map.slopes().size() > exp_slopes.size()){
-    int end = use_map.slopes().size();
-    int init = exp_slopes.size();
-    for (int add = init; add < end; add++){
-      exp_constants.addDim();  
-      exp_slopes.addDim();
-      exp_init_values.addDim();
-    }
+  if (use_exp_map.slopes().size() > exp_map.slopes().size()) {
+    exp_map.padDims(use_exp_map.slopes().size());
   }
-  SB::Deps::LMapExp exp_map = SB::Deps::LMapExp(exp_constants, exp_slopes, exp_init_values);
-  if (!exp_map.isEmpty() && !use_map.isEmpty()) {
-    exp_map = exp_map.compose(use_map.revert());
+  if (!exp_map.isEmpty() && !use_exp_map.isEmpty()) {
+    SB::Deps::LMapExp apply_map = use_exp_map;
+    if (!use_map.isEmpty()) {
+      apply_map = use_map.compose(use_exp_map);
+    }
+    exp_map = exp_map.compose(apply_map.revert());
   }
   return exp_map;
 }
@@ -206,7 +223,7 @@ SB::Deps::SetVertex MergeGraphGenerator<S>::findAlgVertex(SB::Set variables)
 
 template <typename S>
 SB::EdgeMaps MergeGraphGenerator<S>::generatePWLMaps(IntersectInfo inter_info, SB::Deps::SetVertex orig_ife_vertex,
-                                                  SB::Deps::SetVertex ife_vertex, SB::Deps::VariableDep var_dep)
+                                                     SB::Deps::SetVertex ife_vertex, SB::Deps::VariableDep var_dep)
 {
   SB::Set edge_dom = inter_info.edge.mapU().preImage(inter_info.intersection);
   SB::Set ifr_nodes = inter_info.edge.mapF().image(edge_dom);
@@ -242,7 +259,7 @@ SB::EdgeMaps MergeGraphGenerator<S>::generatePWLMaps(IntersectInfo inter_info, S
   maps.F = buildMap(ifr_nodes, _graph[*inter_info.node].id() - inter_info.orig_node.id(), dom_nodes, _graph[*inter_info.node].id());
   maps.U = buildMap(ife_nodes, ife_vertex.id() - orig_ife_vertex.id(), dom_nodes, ife_vertex.id());
   Expression node = _config.exp(_config.getNode(orig_ife_vertex.index()));
-  maps.map_exp = buildLMapExp(node, var_dep.nMap());
+  maps.map_exp = buildLMapExp(node, inter_info.edge.desc().exp(), var_dep.nMap());
   _edge_dom_offset += dom_nodes.size();
   return maps;
 }
@@ -255,7 +272,7 @@ void MergeGraphGenerator<S>::addEdges(SB::Deps::SetVertex vertex, SB::Deps::Vari
     VertexIt ife_vertex_it = SB::Deps::findSetVertexByName(_graph, _config.nodeName(vertex.index()));
     SB::Deps::SetVertex ife_vertex = _graph[*ife_vertex_it];
 
-    for(IntersectInfo inter_info : inters) {
+    for (IntersectInfo inter_info : inters) {
       EdgeMaps maps = generatePWLMaps(inter_info, vertex, ife_vertex, var_dep);
       string edge_name = "E_" + to_string(_edge_dom_offset);
       LOG << "MapF: " << maps.F << endl;
@@ -281,10 +298,13 @@ void MergeGraphGenerator<S>::visitF(SB::Deps::SetVertex vertex, SB::Deps::Variab
 }
 
 template <typename S>
-void MergeGraphGenerator<S>::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex) {}
+void MergeGraphGenerator<S>::visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex)
+{
+}
 
 template <typename S>
-void MergeGraphGenerator<S>::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift)
+void MergeGraphGenerator<S>::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep,
+                                    int index_shift)
 {
   if (v_vertex.desc().type() != SB::Deps::VERTEX::Equation) {
     addEdges(v_vertex, var_dep);
@@ -293,8 +313,8 @@ void MergeGraphGenerator<S>::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetV
 
 template <typename S>
 void MergeGraphGenerator<S>::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map,
-                                 SB::Deps::LMapExp use_map_exp, IR::Expression use_exp, SB::PWLMap def_map, SB::Deps::LMapExp def_map_exp,
-                                 SB::Set intersection)
+                                    SB::Deps::LMapExp use_map_exp, IR::Expression use_exp, SB::PWLMap def_map,
+                                    SB::Deps::LMapExp def_map_exp, SB::Set intersection)
 {
 }
 
@@ -304,7 +324,10 @@ void MergeGraphGenerator<S>::initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge
 }
 
 template <typename S>
-SB::Deps::Graph MergeGraphGenerator<S>::def() { return _graph; }
+SB::Deps::Graph MergeGraphGenerator<S>::def()
+{
+  return _graph;
+}
 
 template class MergeGraphGenerator<Deps::EQSelector>;
 

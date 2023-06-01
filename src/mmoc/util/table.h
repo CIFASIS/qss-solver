@@ -21,7 +21,7 @@
 
 #include <map>
 
-#include  <util/util_types.h>
+#include <util/util_types.h>
 
 template <typename Key, typename Value>
 class ModelTable {
@@ -64,6 +64,16 @@ class ModelTable {
     return (end(it) ? Value() : value(it));
   }
   inline Value value(iterator& it) { return it->second; }
+  Value value(int pos)
+  {
+    iterator it = _map.begin();
+    int current_pos = 0;
+    while (current_pos < pos && it != _map.end()) {
+      it++;
+      current_pos++;
+    }
+    return (end(it) ? Value() : value(it));
+  }
   inline Key key(iterator& it) { return it->first; };
   void merge(ModelTable<Key, Value> other)
   {
@@ -81,12 +91,13 @@ class ModelTable {
   bool empty() { return _map.empty(); };
   const int size() const { return _map.size(); };
 
-  std::list<Key> keys() {
+  std::list<Key> keys()
+  {
     std::list<Key> ret;
     ModelTable<Key, Value>::iterator it;
     for (Value v = begin(it); !end(it); v = next(it)) {
       ret.push_back(key(it));
-    } 
+    }
     return ret;
   }
 

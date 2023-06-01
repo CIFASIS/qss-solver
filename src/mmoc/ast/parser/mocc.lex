@@ -26,7 +26,7 @@ DIGIT    [0-9]
 NUM	 {DIGIT}*
 ID       [_a-zA-Z][_a-zA-Z0-9]*
 IDNUM      [_a-zA-Z0-9][_a-zA-Z0-9]*
-QUOTED [0-9a-zA-Z\-_#]* 
+QUOTED [0-9a-zA-Z\-_#.!$%&()\*+,/:;<>=?@\[\]^{}|~]* 
 
 %x str
 %x line_comment 

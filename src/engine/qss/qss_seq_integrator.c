@@ -22,7 +22,7 @@
 #include <math.h>
 
 #include <common/data.h>
-#include "../common/simulator.h"
+#include <common/simulator.h>
 #include <common/utils.h>
 #include <qss/qss_data.h>
 #include <qss/qss_frw.h>
@@ -76,6 +76,7 @@ void QSS_SEQ_integrate(SIM_simulator simulate)
   SD_eventData event = qssData->event;
   double *d = qssData->d;
   double reinit_assign[qssData->maxRHS];
+  double computed_lhs[qssData->maxRHS];
   int **SZ = qssData->SZ;
   int **ZS = qssData->ZS;
   int **HD = qssData->HD;
@@ -195,7 +196,18 @@ void QSS_SEQ_integrate(SIM_simulator simulate)
           }
 #endif
           nRHSSt = event[index].nRHSSt;
+          nLHSSt = event[index].nLHSSt;
+          for (i = 0; i < nLHSSt; i++) {
+            infCf0 = event[index].LHSSt[i] * coeffs;
+            computed_lhs[i] = x[infCf0];
+          }
           int restore_index = 0;
+          int nReinitAssign = event[index].nReinitAsg;
+          for (i = 0; i < nReinitAssign; i++) {
+            j = event[index].ReinitAsg[i];
+            infCf0 = j * coeffs;
+            reinit_assign[restore_index++] = x[infCf0];
+          }
           for (i = 0; i < nRHSSt; i++) {
             j = event[index].RHSSt[i];
             infCf0 = j * coeffs;
@@ -205,7 +217,6 @@ void QSS_SEQ_integrate(SIM_simulator simulate)
             }
             tq[j] = t;
             elapsed = t - tx[j];
-            reinit_assign[restore_index++] = x[infCf0];
             if (elapsed > 0) {
               x[infCf0] = evaluatePoly(infCf0, elapsed, x, xOrder);
             }
@@ -215,7 +226,12 @@ void QSS_SEQ_integrate(SIM_simulator simulate)
           } else {
             qssModel->events->handlerNeg(index, x, q, d, a, t);
           }
-          int nReinitAssign = event[index].nReinitAsg;
+          for (i = 0; i < nReinitAssign; i++) {
+            j = event[index].ReinitAsg[i];
+            infCf0 = j * coeffs;
+            x[infCf0] = reinit_assign[i];
+          }
+          nReinitAssign = event[index].nReinitAsg;
           for (i = 0; i < nReinitAssign; i++) {
             j = event[index].ReinitAsg[i];
             infCf0 = j * coeffs;
@@ -225,18 +241,20 @@ void QSS_SEQ_integrate(SIM_simulator simulate)
           for (i = 0; i < nLHSSt; i++) {
             j = event[index].LHSSt[i];
             infCf0 = j * coeffs;
-            tx[j] = t;
-            lqu[j] = dQRel[j] * fabs(x[infCf0]);
-            if (lqu[j] < dQMin[j]) {
-              lqu[j] = dQMin[j];
-            }
-            QA_updateQuantizedState(quantizer, j, q, x, lqu);
-            tq[j] = t;
+            if (x[infCf0] != computed_lhs[i]) {
+              tx[j] = t;
+              lqu[j] = dQRel[j] * fabs(x[infCf0]);
+              if (lqu[j] < dQMin[j]) {
+                lqu[j] = dQMin[j];
+              }
+              QA_updateQuantizedState(quantizer, j, q, x, lqu);
+              tq[j] = t;
 #ifdef DEBUG
-            if (settings->debug & SD_DBG_VarChanges) {
-              simulationLog->states[j]++;
-            }
+              if (settings->debug & SD_DBG_VarChanges) {
+                simulationLog->states[j]++;
+              }
 #endif
+            }
           }
           qssModel->events->zeroCrossing(index, q, d, a, t, zc);
           event[index].zcSign = sign(zc[0]);

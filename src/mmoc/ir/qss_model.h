@@ -37,7 +37,6 @@ struct QSSModelDef {
   std::string generic;
 };
 
-
 class QSSModelGenerator {
   public:
   QSSModelGenerator();
@@ -48,14 +47,14 @@ class QSSModelGenerator {
   void postProcess(SB::Deps::SetVertex vertex);
   void visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep);
   void visitF(SB::Deps::SetVertex vertex, SB::Deps::VariableDep var_dep, SB::Deps::SetVertex gen_vertex);
-  void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift);
-  void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp, Expression use_exp, SB::PWLMap def_map,
-              SB::Deps::LMapExp def_map_exp, SB::Set intersection);
+  void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::Deps::VariableDep var_dep, int index_shift = 0);
+  void visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp,
+              Expression use_exp, SB::PWLMap def_map, SB::Deps::LMapExp def_map_exp, SB::Set intersection);
   void initG(SB::Deps::SetVertex vertex, SB::Deps::SetEdge edge);
   QSSModelDef def();
 
-  void setup(EquationTable eqs);
-  EquationTable config() { return EquationTable(); }
+  void setup(QSSModelConfig config);
+  QSSModelConfig config() { return _config; }
 
   protected:
   QSSModelDef _qss_model_def;
@@ -63,10 +62,10 @@ class QSSModelGenerator {
   AlgDepsMap _der_deps;
   AlgDepsMap _alg_deps;
   bool _post_process_eval;
-  EquationTable _eqs;
+  QSSModelConfig _config;
 };
 
-template<typename GraphBuilder>
+template <typename GraphBuilder>
 class QSSModel {
   public:
   QSSModel();
@@ -87,7 +86,6 @@ typedef QSSModel<Deps::SDSBGraphBuilder> QSSModelGen;
 typedef QSSModel<Deps::SZSBGraphBuilder> ZCModelGen;
 
 typedef QSSModel<Deps::SOSBGraphBuilder> OutputModelGen;
-
 
 }  // namespace IR
 }  // namespace MicroModelica

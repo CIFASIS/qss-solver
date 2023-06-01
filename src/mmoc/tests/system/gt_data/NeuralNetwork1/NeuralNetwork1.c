@@ -23,14 +23,13 @@ void MOD_settings(SD_simulationSettings settings)
 void MOD_definition(int idx, double *x, double *d, double *a, double t, double *dx)
 {
 	int _d1;
-	int _d2;
 	int i;
 	if (_is_var_V(idx)) {
 		_get_V_idxs(idx);
 		_apply_usage_alg_eq_1(_d1);
 		if ((i >= 1 && i <= 100)) {
-				_Is(i,0) = _Islast(i)*exp(-(_time-_tlast(i))/_taus);
-			_Is(i,1) = 0;
+			_Is(i,0) = _Islast(i)*exp(-(_time-_tlast(i))/_taus);
+		_Is(i,1) = 0;
 	}
 		_apply_usage_eq_1(_d1);
 		if ((i >= 1 && i <= 100)) {
@@ -175,14 +174,13 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double *dx, int *map)
 {
 	int _d1;
-	int _d2;
 	int i;
 	if (_is_var_V(idx)) {
 		_get_V_idxs(idx);
 		_apply_usage_alg_eq_1(_d1);
 		if ((i >= 1 && i <= 100)) {
-				_Is(i,0) = _Islast(i)*exp(-(_time-_tlast(i))/_taus);
-			_Is(i,1) = 0;
+			_Is(i,0) = _Islast(i)*exp(-(_time-_tlast(i))/_taus);
+		_Is(i,1) = 0;
 	}
 		_apply_usage_eq_1(_d1);
 		if ((i >= 1 && i <= 100)) {
@@ -199,13 +197,12 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 	for(__bdf_it = 0; __bdf_it < nBDF; __bdf_it++) {
 	idx = BDFMap[__bdf_it];
 	int _d1;
-	int _d2;
 	int i;
 	if (_is_var_V(idx)) {
 		_get_V_idxs(idx);
 		_apply_usage_alg_eq_1(_d1);
 		if ((i >= 1 && i <= 100)) {
-				_Is(i,0) = _Islast(i)*exp(-(_time-_tlast(i))/_taus);
+			_Is(i,0) = _Islast(i)*exp(-(_time-_tlast(i))/_taus);
 	
 	}
 		_apply_usage_eq_1(_d1);
@@ -224,6 +221,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	simulator->data = QSS_Data(100,500,300,0,100,1,1,"NeuralNetwork1");
 	QSS_data modelData = simulator->data;
 	MODEL_DATA_ACCESS(modelData)
+	int* algebraics = (int*) malloc(100*sizeof(int));
 	int* states = (int*) malloc(100*sizeof(int));
 	int* discretes = (int*) malloc(500*sizeof(int));
 	int* events = (int*) malloc(300*sizeof(int));
@@ -236,38 +234,38 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int i;
 	int j;
 	int k;
-	_Cm = 2.5e-10;
-	_EL = -0.065;
-	_Jmean = (8.78e-11)/1;
-	_Ne = 0.8*100;
-	_Ni = 0.2*100;
-	_Vr = -0.065;
+	_Cm = 2.500000e-10;
+	_EL = -6.500000e-02;
+	_Jmean = (8.780000e-11)/(double)1;
+	_Ne = 8.000000e-01*100;
+	_Ni = 2.000000e-01*100;
+	_Vr = -6.500000e-02;
 	for(_d1 = 1; _d1<=100; _d1+=1) {
 			_active(_d1) = 1;
 	}
-	_cI = 1e+09;
-	_cV = 1000;
-	_ce = 10*0.8;
-	_ci = 10*0.2;
+	_cI = 1.000000e+09;
+	_cV = 1.000000e+03;
+	_ce = 10*8.000000e-01;
+	_ci = 10*2.000000e-01;
 	_g = 4;
 	_kext = 940;
-	_taum = 0.01;
-	_taur = 0.002;
-	_taus = 0.0005;
-	_theta = -0.05;
+	_taum = 1.000000e-02;
+	_taur = 2.000000e-03;
+	_taus = 5.000000e-04;
+	_theta = -5.000000e-02;
 	for(_d1 = 1; _d1<=100; _d1+=1) {
 			_tnextr(_d1) = -1;
 	}
 	_vbg = 8;
 	_vext = _vbg*_kext;
 	for(i = 1; i<=100; i+=1) {
-		_Islast(i) = __math__rand(1)*1e-10*_cI+0.4;
+		_Islast(i) = __math__rand(1)*1.000000e-10*_cI+4.000000e-01;
 		_init_V(i,0) = __math__rand(15)-65;
 		_Cn(i) = 0;
-		if(i<100*0.8) {
-			_J(i) = (_Jmean+__math__normal(_Jmean*0.1/3));
+		if(i<100*8.000000e-01) {
+			_J(i) = (_Jmean+__math__normal(_Jmean*1.000000e-01/(double)3));
 		}	else {
-			_J(i) = -(_Jmean*_g+__math__normal(_Jmean*_g*0.1/3));
+			_J(i) = -(_Jmean*_g+__math__normal(_Jmean*_g*1.000000e-01/(double)3));
 		}
 		_tnext(i) = __math__exponential(1/_vext);
 	}
@@ -383,7 +381,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	for(_d1 = 1; _d1<=100; _d1+=1) {
 		modelData->DS[_idx_V(_d1,0)][states[_idx_V(_d1,0)]++] = _idx_V(_d1,0);
 	}
-	cleanVector(states, 0, 100);
+	cleanVector(algebraics, 0, 100);
 	for(row = 1; row <= 100; row++) {
 		c_row = _c_index(row);
 		_get_alg_eq_1_var_idxs(row, eq_var);
@@ -403,7 +401,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 			}
 		}
 	}
-	cleanVector(states, 0, 100);
 	cleanVector(states, 0, 100);
 	for(_d1 = 1; _d1<=100; _d1+=1) {
 		modelData->SZ[_idx_V(_d1,0)][states[_idx_V(_d1,0)]++] = _idx_event_1(_d1);
@@ -495,6 +492,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 		modelOutput->SO[_idx_V(10*_d1-9,0)][states[_idx_V(10*_d1-9,0)]++] = _idx_out_exp_1(_d1);
 	}
 	simulator->model = QSS_Model(MOD_definition, MOD_dependencies, MOD_zeroCrossing, MOD_handlerPos, MOD_handlerNeg, MOD_jacobian, MOD_BDF_definition);
+	free(algebraics);
 	free(states);
 	free(discretes);
 	free(events);
