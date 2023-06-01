@@ -21,15 +21,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <qss/methods/qss_test.h>
+#include <qss/methods/mliqss2.h>
 #include <common/utils.h>
 
-#define TOL 2
-
 #ifdef QSS_PARALLEL
-void QSS_TEST_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
+void mLIQSS2_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 #else
-void QSS_TEST_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
+void mLIQSS2_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 #endif
 {
   int states = simData->states;
@@ -48,9 +46,6 @@ void QSS_TEST_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
   quantizer->state->change = (bool *)malloc(states * sizeof(bool));
   quantizer->state->next = (double *)malloc(3 * states * sizeof(double));
   quantizer->state->tx = (double *)malloc(states * sizeof(double));
-
-  quantizer->state->cont = (double *)malloc(10 * sizeof(double));
-  for (i = 0; i < 10; i++) quantizer->state->cont[i] = 0;
 
   quantizer->state->finTime = simData->ft;
   for (i = 0; i < states; i++) {
@@ -74,21 +69,26 @@ void QSS_TEST_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
   }
 #ifdef QSS_PARALLEL
   quantizer->state->qMap = simData->lp->qMap;
+  quantizer->ops->recomputeNextTimes = mLIQSS2_PAR_recomputeNextTimes;
+  quantizer->ops->recomputeNextTime = mLIQSS2_PAR_recomputeNextTime;
+  quantizer->ops->nextTime = mLIQSS2_PAR_nextTime;
+  quantizer->ops->updateQuantizedState = mLIQSS2_PAR_updateQuantizedState;
+#else
+  quantizer->ops->recomputeNextTimes = mLIQSS2_recomputeNextTimes;
+  quantizer->ops->recomputeNextTime = mLIQSS2_recomputeNextTime;
+  quantizer->ops->nextTime = mLIQSS2_nextTime;
+  quantizer->ops->updateQuantizedState = mLIQSS2_updateQuantizedState;
 #endif
   quantizer->state->minStep = simData->params->minStep;
   quantizer->state->lSimTime = simTime;
   quantizer->state->nSD = simData->nSD;
   quantizer->state->SD = simData->SD;
-  quantizer->ops->recomputeNextTimes = QSS_TEST_recomputeNextTimes;
-  quantizer->ops->recomputeNextTime = QSS_TEST_recomputeNextTime;
-  quantizer->ops->nextTime = QSS_TEST_nextTime;
-  quantizer->ops->updateQuantizedState = QSS_TEST_updateQuantizedState;
 }
 
 #ifdef QSS_PARALLEL
-void QSS_TEST_PAR_recomputeNextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu, double *q)
+void mLIQSS2_PAR_recomputeNextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu, double *q)
 #else
-void QSS_TEST_recomputeNextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu, double *q)
+void mLIQSS2_recomputeNextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu, double *q)
 #endif
 {
   int i0 = i * 3, i1 = i0 + 1, i2 = i1 + 1;
@@ -100,7 +100,6 @@ void QSS_TEST_recomputeNextTime(QA_quantizer quantizer, int i, double t, double 
   bool *change = quantizer->state->change;
   bool self = quantizer->state->lSimTime->minIndex == i && quantizer->state->lSimTime->type == ST_State;
   double *tx = quantizer->state->tx;
-  // double *c = quantizer->state->cont;
 
   if (t > 0) {
     diffQ = q[3 * stind] - quantizer->state->qAux[stind];
@@ -146,9 +145,9 @@ void QSS_TEST_recomputeNextTime(QA_quantizer quantizer, int i, double t, double 
 }
 
 #ifdef QSS_PARALLEL
-void QSS_TEST_PAR_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
+void mLIQSS2_PAR_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
 #else
-void QSS_TEST_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
+void mLIQSS2_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
 #endif
 {
   int i;
@@ -159,7 +158,7 @@ void QSS_TEST_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, dou
 #ifdef QSS_PARALLEL
     if (map[inf[i]] != NOT_ASSIGNED) {
 #endif
-      QSS_TEST_recomputeNextTime(quantizer, inf[i], t, nTime, x, lqu, q);
+      mLIQSS2_recomputeNextTime(quantizer, inf[i], t, nTime, x, lqu, q);
 #ifdef QSS_PARALLEL
     }
 #endif
@@ -167,9 +166,9 @@ void QSS_TEST_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, dou
 }
 
 #ifdef QSS_PARALLEL
-void QSS_TEST_PAR_nextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu)
+void mLIQSS2_PAR_nextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu)
 #else
-void QSS_TEST_nextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu)
+void mLIQSS2_nextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu)
 #endif
 {
   int i2 = i * 3 + 2;
@@ -180,9 +179,9 @@ void QSS_TEST_nextTime(QA_quantizer quantizer, int i, double t, double *nTime, d
 }
 
 #ifdef QSS_PARALLEL
-void QSS_TEST_PAR_solve_single(QA_quantizer quantizer, int i, double *x, double *q, double *lqu, double *h2)
+void mLIQSS2_PAR_solve_single(QA_quantizer quantizer, int i, double *x, double *q, double *lqu, double *h2)
 #else
-void QSS_TEST_solve_single(QA_quantizer quantizer, int i, double *x, double *q, double *lqu, double *h2)
+void mLIQSS2_solve_single(QA_quantizer quantizer, int i, double *x, double *q, double *lqu, double *h2)
 #endif
 {
   int i0 = i * 3, i1 = i0 + 1, i2 = i1 + 1;
@@ -231,9 +230,9 @@ void QSS_TEST_solve_single(QA_quantizer quantizer, int i, double *x, double *q, 
 }
 
 #ifdef QSS_PARALLEL
-void QSS_TEST_PAR_AxB(double A[2][2], double B[2][2], double AB[2][2])
+void mLIQSS2_PAR_AxB(double A[2][2], double B[2][2], double AB[2][2])
 #else
-void QSS_TEST_AxB(double A[2][2], double B[2][2], double AB[2][2])
+void mLIQSS2_AxB(double A[2][2], double B[2][2], double AB[2][2])
 #endif
 {
   AB[0][0] = A[0][0] * B[0][0] + A[0][1] * B[1][0];
@@ -243,9 +242,9 @@ void QSS_TEST_AxB(double A[2][2], double B[2][2], double AB[2][2])
 }
 
 #ifdef QSS_PARALLEL
-void QSS_TEST_PAR_invA(double A[2][2], double invA[2][2])
+void mLIQSS2_PAR_invA(double A[2][2], double invA[2][2])
 #else
-void QSS_TEST_invA(double A[2][2], double invA[2][2])
+void mLIQSS2_invA(double A[2][2], double invA[2][2])
 #endif
 {
   double detA = A[0][0] * A[1][1] - A[0][1] * A[1][0];
@@ -257,9 +256,9 @@ void QSS_TEST_invA(double A[2][2], double invA[2][2])
 }
 
 #ifdef QSS_PARALLEL
-void QSS_TEST_PAR_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *next, int i, int j, double h, double xj0)
+void mLIQSS2_PAR_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *next, int i, int j, double h, double xj0)
 #else
-void QSS_TEST_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *next, int i, int j, double h, double xj0)
+void mLIQSS2_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *next, int i, int j, double h, double xj0)
 #endif
 {
   int i0 = 3 * i, i1 = i0 + 1;
@@ -270,10 +269,10 @@ void QSS_TEST_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *
   double Ad[2][2] = {{1 - h * A[i][i], -h * A[i][j]}, {-h * A[j][i], 1 - h * A[j][j]}};
   double An[2][2] = {{A[i][i], A[i][j]}, {A[j][i], A[j][j]}};
   double B[2][2], BA[2][2], AB[2][2], ABA[2][2], invC[2][2];
-  QSS_TEST_invA(Ad, B);
-  QSS_TEST_AxB(B, An, BA);
-  QSS_TEST_AxB(An, B, AB);
-  QSS_TEST_AxB(An, BA, ABA);
+  mLIQSS2_invA(Ad, B);
+  mLIQSS2_AxB(B, An, BA);
+  mLIQSS2_AxB(An, B, AB);
+  mLIQSS2_AxB(An, BA, ABA);
   // C = I + h(BA - A - h/2*ABA)
   double C[2][2] = {{1 + h * (BA[0][0] - A[i][i] - h / 2 * ABA[0][0]), h * (BA[0][1] - A[i][j] - h / 2 * ABA[0][1])},
                     {h * (BA[1][0] - A[j][i] - h / 2 * ABA[1][0]), 1 + h * (BA[1][1] - A[j][j] - h / 2 * ABA[1][1])}};
@@ -285,7 +284,7 @@ void QSS_TEST_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *
                     {h / 2 * AB[1][0] - B[1][0], 1 / 2 * (h * AB[1][1] + 1) - B[1][1]}};
   double Du0[2] = {D[0][0] * U0[i][j] + D[0][1] * U0[j][i], D[1][0] * U0[i][j] + D[1][1] * U0[j][i]};
   double Eu1[2] = {E[0][0] * U1[i][j] + E[0][1] * U1[j][i], E[1][0] * U1[i][j] + E[1][1] * U1[j][i]};
-  QSS_TEST_invA(C, invC);
+  mLIQSS2_invA(C, invC);
   q[i0] = invC[0][0] * (x[i0] + h * Du0[0] + h * h * Eu1[0]) + invC[0][1] * (xj0 + h * Du0[1] + h * h * Eu1[1]);
   next[j0] = invC[1][0] * (x[i0] + h * Du0[0] + h * h * Eu1[0]) + invC[1][1] * (xj0 + h * Du0[1] + h * h * Eu1[1]);
   q[i1] = B[0][0] * (A[i][i] * q[i0] + A[i][j] * next[j0] + U0[i][j] + h * U1[i][j]) +
@@ -295,9 +294,9 @@ void QSS_TEST_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *
 }
 
 #ifdef QSS_PARALLEL
-void QSS_TEST_PAR_old_dx(QA_quantizer quantizer, int i, double t, int nSD, double *x, double *tx)
+void mLIQSS2_PAR_old_dx(QA_quantizer quantizer, int i, double t, int nSD, double *x, double *tx)
 #else
-void QSS_TEST_old_dx(QA_quantizer quantizer, int i, double t, int nSD, double *x, double *tx)
+void mLIQSS2_old_dx(QA_quantizer quantizer, int i, double t, int nSD, double *x, double *tx)
 #endif
 {
   int m, j, j0, j1, j2;
@@ -308,15 +307,14 @@ void QSS_TEST_old_dx(QA_quantizer quantizer, int i, double t, int nSD, double *x
       j1 = j0 + 1;
       j2 = j1 + 1;
       quantizer->state->oldDx[j] = x[j1] + (t - tx[j]) * x[j2] * 2;
-      // tx[j] = t;
     }
   }
 }
 
 #ifdef QSS_PARALLEL
-int QSS_TEST_PAR_find_max_inf(QA_quantizer quantizer, double *q, double *x, int i, double qi1_old)
+int mLIQSS2_PAR_find_max_inf(QA_quantizer quantizer, double *q, double *x, int i, double qi1_old)
 #else
-int QSS_TEST_find_max_inf(QA_quantizer quantizer, double *q, double *x, int i, double qi1_old)
+int mLIQSS2_find_max_inf(QA_quantizer quantizer, double *q, double *x, int i, double qi1_old)
 #endif
 {
   double t = quantizer->state->lSimTime->time;
@@ -326,7 +324,7 @@ int QSS_TEST_find_max_inf(QA_quantizer quantizer, double *q, double *x, int i, d
   double *tx = quantizer->state->tx;
   int nSD = quantizer->state->nSD[i];
   int m, j, i1 = 3 * i + 1, j1, j2, jmax = -1;
-  double elapsed, ddxj, max = 0;
+  double elapsed, u0, u1, ddxj, max = 0;
 
   if (t > 0) {
     for (m = 0; m < nSD; m++) {
@@ -335,8 +333,8 @@ int QSS_TEST_find_max_inf(QA_quantizer quantizer, double *q, double *x, int i, d
       j2 = j1 + 1;
       if (j != i && A[i][j] * A[j][i] != 0) {
         elapsed = t - tx[j];
-        // u0 = U0[j][j] + elapsed * U1[j][j];
-        // u1 = U1[j][j] - A[j][i] * qi1_old;
+        u0 = U0[j][j] + elapsed * U1[j][j];
+        u1 = U1[j][j] - A[j][i] * qi1_old;
         ddxj = A[j][i] * q[i1] + A[j][j] * q[j1] + U1[j][i];
         if (fabs(2 * x[j2] - ddxj) > fabs(2 * x[j2] + ddxj) / 10) {
           if (fabs(2 * x[j2] - ddxj) / (fabs(2 * x[j2] + ddxj)) > max) {
@@ -351,9 +349,9 @@ int QSS_TEST_find_max_inf(QA_quantizer quantizer, double *q, double *x, int i, d
 }
 
 #ifdef QSS_PARALLEL
-void QSS_TEST_PAR_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu)
+void mLIQSS2_PAR_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu)
 #else
-void QSS_TEST_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu)
+void mLIQSS2_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu)
 #endif
 {
   int i0 = i * 3, i1 = i0 + 1, i2 = i1 + 1;
@@ -367,7 +365,7 @@ void QSS_TEST_updateQuantizedState(QA_quantizer quantizer, int i, double *q, dou
   int nSD = quantizer->state->nSD[i];
   double elapsed;
 
-  double *c = quantizer->state->cont;
+  double c = quantizer->state->cont;
   double h;
 
   elapsed = t - quantizer->state->lSimTime->tq[i];
@@ -387,11 +385,11 @@ void QSS_TEST_updateQuantizedState(QA_quantizer quantizer, int i, double *q, dou
 
     qiold[0] = q[i0];
     qiold[1] = q[i1];
-    QSS_TEST_solve_single(quantizer, i, x, q, lqu, &h);
+    mLIQSS2_solve_single(quantizer, i, x, q, lqu, &h);
 #ifdef QSS_PARALLEL
-    j = QSS_TEST_PAR_find_max_inf(quantizer, q, x, i, qiold[1]);
+    j = mLIQSS2_PAR_find_max_inf(quantizer, q, x, i, qiold[1]);
 #else
-    j = QSS_TEST_find_max_inf(quantizer, q, x, i, qiold[1]);
+    j = mLIQSS2_find_max_inf(quantizer, q, x, i, qiold[1]);
 #endif
     if (t > 0 && j != -1) {
       j0 = j * 3;
@@ -405,7 +403,7 @@ void QSS_TEST_updateQuantizedState(QA_quantizer quantizer, int i, double *q, dou
         U0[j][j] = U0[j][j] + elapsed * U1[j][j];
         U1[j][i] = U1[j][j] - A[j][i] * qiold[1];
         ddxj = A[j][i] * q[i1] + A[j][j] * q[j1] + U1[j][i];
-        if (fabs(2 * x[j2] - ddxj) > fabs(2 * x[j2] + ddxj) / 2 || c[0] == j) {
+        if (fabs(2 * x[j2] - ddxj) > fabs(2 * x[j2] + ddxj) / 2 || c == j) {
           double xj0 = x[j0] + (t - tx[j]) * x[j1] + (t - tx[j]) * (t - tx[j]) * x[j2];
           qi_proy = quantizer->state->qAux[i];
           qjold[0] = q[j0];
@@ -435,7 +433,7 @@ void QSS_TEST_updateQuantizedState(QA_quantizer quantizer, int i, double *q, dou
             next[j1] = 1e20;
 
             h = (quantizer->state->finTime - t) * 1;
-            QSS_TEST_solver2x2_h(quantizer, x, q, next, i, j, h, xj0);
+            mLIQSS2_solver2x2_h(quantizer, x, q, next, i, j, h, xj0);
             if (fabs(q[i0] - x[i0]) < 2 * lqu[i] && fabs(next[j0] - xj0) < 2 * lqu[j])
               change[j] = TRUE;
             else {
@@ -444,7 +442,7 @@ void QSS_TEST_updateQuantizedState(QA_quantizer quantizer, int i, double *q, dou
               else
                 h = h / sqrt(2 * fabs(next[j0] - xj0) / lqu[j]);
               h /= 2;
-              QSS_TEST_solver2x2_h(quantizer, x, q, next, i, j, h, xj0);
+              mLIQSS2_solver2x2_h(quantizer, x, q, next, i, j, h, xj0);
               if (fabs(q[i0] - x[i0]) < 2 * lqu[i] && fabs(next[j0] - xj0) < 2 * lqu[j])
                 change[j] = TRUE;
               else {
@@ -458,12 +456,12 @@ void QSS_TEST_updateQuantizedState(QA_quantizer quantizer, int i, double *q, dou
                 else if (ddxj != 0)
                   h = sqrt(2 * fabs(lqu[j] / ddxj));
                 h /= 2;
-                QSS_TEST_solver2x2_h(quantizer, x, q, next, i, j, h, xj0);
+                mLIQSS2_solver2x2_h(quantizer, x, q, next, i, j, h, xj0);
                 if (fabs(q[i0] - x[i0]) < 2 * lqu[i] && fabs(next[j0] - xj0) < 2 * lqu[j])
                   change[j] = TRUE;
                 else {
                   h /= 10;
-                  QSS_TEST_solver2x2_h(quantizer, x, q, next, i, j, h, xj0);
+                  mLIQSS2_solver2x2_h(quantizer, x, q, next, i, j, h, xj0);
                   if (fabs(q[i0] - x[i0]) < 2 * lqu[i] && fabs(next[j0] - xj0) < 2 * lqu[j])
                     change[j] = TRUE;
                   else {
@@ -482,6 +480,6 @@ void QSS_TEST_updateQuantizedState(QA_quantizer quantizer, int i, double *q, dou
       }
     }
   }
-  QSS_TEST_old_dx(quantizer, i, t, nSD, x, tx);
-  c[0] = i;
+  mLIQSS2_old_dx(quantizer, i, t, nSD, x, tx);
+  quantizer->state->cont = i;
 }
