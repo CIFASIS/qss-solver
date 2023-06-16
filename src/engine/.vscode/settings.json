@@ -1,5 +1,6 @@
 {
     "files.associations": {
         "random": "cpp"
-    }
+    },
+    "C_Cpp.dimInactiveRegions": true
 }
