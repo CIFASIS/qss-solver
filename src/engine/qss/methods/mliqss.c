@@ -26,11 +26,7 @@
 
 #define TOL 2
 
-#ifdef QSS_PARALLEL
-void mLIQSS_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
-#else
-void mLIQSS_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
-#endif
+void QSS_FUNC_DECL(mLIQSS, init)(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 {
   int i, j;
   int states = simData->states;
@@ -73,162 +69,108 @@ void mLIQSS_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
   quantizer->state->nSD = simData->nSD;
   quantizer->state->SD = simData->SD;
   quantizer->state->minStep = simData->params->minStep;
-#ifdef QSS_PARALLEL
-  quantizer->state->qMap = simData->lp->qMap;
-  quantizer->ops->recomputeNextTimes = mLIQSS_PAR_recomputeNextTimes;
-  quantizer->ops->recomputeNextTime = mLIQSS_PAR_recomputeNextTime;
-  quantizer->ops->nextTime = mLIQSS_PAR_nextTime;
-  quantizer->ops->updateQuantizedState = mLIQSS_PAR_updateQuantizedState;
-#else
-  quantizer->ops->recomputeNextTimes = mLIQSS_recomputeNextTimes;
-  quantizer->ops->recomputeNextTime = mLIQSS_recomputeNextTime;
-  quantizer->ops->nextTime = mLIQSS_nextTime;
-  quantizer->ops->updateQuantizedState = mLIQSS_updateQuantizedState;
-#endif
+  QSS_ASSIGN_QUANTIZER_OPS(mLIQSS)
 }
 
-#ifdef QSS_PARALLEL
-void mLIQSS_PAR_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
-#else
-void mLIQSS_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
-#endif
+void QSS_FUNC_DECL(mLIQSS, recomputeNextTimes)(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu,
+                                               double *q)
 {
   int i;
-#ifdef QSS_PARALLEL
-  int *map = quantizer->state->qMap;
-#endif
+  QSS_PARALLEL_EXP(int *map = quantizer->state->qMap;)
   for (i = 0; i < vars; i++) {
-#ifdef QSS_PARALLEL
-    if (map[inf[i]] != NOT_ASSIGNED) {
-#endif
-      mLIQSS_recomputeNextTime(quantizer, inf[i], t, nTime, x, lqu, q);
-#ifdef QSS_PARALLEL
-    }
-#endif
+    QSS_PARALLEL_EXP(if (map[inf[i]] != NOT_ASSIGNED) {)
+      QSS_FUNC_INVK(mLIQSS, recomputeNextTime)(quantizer, inf[i], t, nTime, x, lqu, q);
+    QSS_PARALLEL_EXP(
+    })
   }
 }
 
-#ifdef QSS_PARALLEL
-void mLIQSS_PAR_recomputeNextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu, double *q)
-#else
-void mLIQSS_recomputeNextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu, double *q)
-#endif
+void QSS_FUNC_DECL(mLIQSS, recomputeNextTime)(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu, double *q)
 {
   int i0 = i * 2, i1 = i0 + 1;
   double **A = quantizer->state->A;
   double **U = quantizer->state->U0;
-  int stind = quantizer->state->lSimTime->minIndex;
-  double diffQ;
+  int ifr_state = quantizer->state->lSimTime->minIndex;
+  bool state_step = quantizer->state->lSimTime->type == ST_State;
+  double diff_Q;
   bool *change = quantizer->state->change;
 
-  if (t > 0) {
-    diffQ = q[2 * stind] - quantizer->state->qAux[stind];
-    if (diffQ)
-      A[i][stind] = (x[i1] - quantizer->state->oldDx[i]) / diffQ;
-    else
-      A[i][stind] = 0;
+  if (t > 0 && state_step) {
+    diff_Q = q[2 * ifr_state] - quantizer->state->qAux[ifr_state];
+    if (diff_Q) {
+      A[i][ifr_state] = (x[i1] - quantizer->state->oldDx[i]) / diff_Q;
+    } else {
+      A[i][ifr_state] = 0;
+    }
     U[i][i] = x[i1] - q[i0] * A[i][i];
-  } else
+  } else {
     U[i][i] = x[i1];
+  }
 
-  if (change[i] == TRUE)
+  if (change[i] == TRUE) {
     nTime[i] = t;
-  else {
+  } else {
     double dt1 = 0;
     if (x[i1] != 0) {
       dt1 = (q[i0] - x[i0]) / x[i1];
-      if (dt1 > 0)
+      if (dt1 > 0) {
         nTime[i] = t + dt1;
-      else {
-        if (x[i1] > 0)
+      } else {
+        if (x[i1] > 0) {
           nTime[i] = t + (q[i0] + 2 * lqu[i] - x[i0]) / x[i1];
-        else
+        } else {
           nTime[i] = t + (q[i0] - 2 * lqu[i] - x[i0]) / x[i1];
+        }
       }
-    } else
+    } else {
       nTime[i] = INF;
-    if (fabs(q[i0] - x[i0]) > 2 * lqu[i]) nTime[i] = t + quantizer->state->finTime * quantizer->state->minStep;
+    }
+    if (fabs(q[i0] - x[i0]) > 2 * lqu[i]) {
+      nTime[i] = t + quantizer->state->finTime * quantizer->state->minStep;
+    }
   }
 }
 
-#ifdef QSS_PARALLEL
-void mLIQSS_PAR_nextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu)
-#else
-void mLIQSS_nextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu)
-#endif
+void QSS_FUNC_DECL(mLIQSS, nextTime)(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu)
 {
   int i1 = i * 2 + 1;
-  if (x[i1] == 0)
+  if (x[i1] == 0) {
     nTime[i] = INF;
-  else
+  } else {
     nTime[i] = t + fabs(lqu[i] / x[i1]);
+  }
 }
 
-#ifdef QSS_PARALLEL
-double mLIQSS_PAR_solver2x2(QA_quantizer quantizer, double *x, double *q, int i, int j, double *h)
-#else
-double mLIQSS_solver2x2(QA_quantizer quantizer, double *x, double *q, int i, int j, double *h)
-#endif
-{
-  double qBE;
-  double **A = quantizer->state->A;
-  double **U = quantizer->state->U0;
-  int i0 = 2 * i;
-  int j0 = 2 * j;
-  double K1, K2, K3, coef[3];
-
-  K1 = A[j][i] * q[i0] + U[j][i];
-  K2 = A[i][i] * q[i0] + U[i][j];
-  K3 = x[i0] - q[i0];
-  coef[2] = -A[i][j] * K1 - A[j][j] * K2;
-  coef[1] = -A[j][j] * K3 + A[i][j] * x[j0] + K2;
-  coef[0] = K3;
-  *h = minPosRoot(coef, 3);
-  qBE = (x[j0] + *h * K1) / (1 - *h * A[j][j]);
-  return qBE;
-}
-
-#ifdef QSS_PARALLEL
-void mLIQSS_PAR_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *qj, int i, int j, double h, double xj0)
-#else
-void mLIQSS_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *qj, int i, int j, double h, double xj0)
-#endif
+void QSS_FUNC_DECL(mLIQSS, solver2x2_h)(QA_quantizer quantizer, double *x, double *q, double *qj, int i, int j, double h, double xj0)
 {
   double **A = quantizer->state->A;
   double **U = quantizer->state->U0;
   int i0 = 2 * i;
   int j0 = 2 * j;
   double Ad[2][2] = {{1 - h * A[i][i], -h * A[i][j]}, {-h * A[j][i], 1 - h * A[j][j]}};
-  double detAd = Ad[0][0] * Ad[1][1] - Ad[0][1] * Ad[1][0];
-  if (detAd == 0) detAd = 1e-10;
-  double invAd[2][2] = {{Ad[1][1] / detAd, -Ad[0][1] / detAd}, {-Ad[1][0] / detAd, Ad[0][0] / detAd}};
+  double det_Ad = Ad[0][0] * Ad[1][1] - Ad[0][1] * Ad[1][0];
+  if (det_Ad == 0) {
+    det_Ad = 1e-10;
+  }
+  double invAd[2][2] = {{Ad[1][1] / det_Ad, -Ad[0][1] / det_Ad}, {-Ad[1][0] / det_Ad, Ad[0][0] / det_Ad}};
   q[i0] = invAd[0][0] * (x[i0] + h * U[i][j]) + invAd[0][1] * (xj0 + h * U[j][i]);
   qj[j0] = invAd[1][0] * (x[i0] + h * U[i][j]) + invAd[1][1] * (xj0 + h * U[j][i]);
 }
 
-#ifdef QSS_PARALLEL
-void mLIQSS_PAR_old_dx(QA_quantizer quantizer, int i, double t, int nSD, double *x, double *tx)
-#else
-void mLIQSS_old_dx(QA_quantizer quantizer, int i, double t, int nSD, double *x, double *tx)
-#endif
+void QSS_FUNC_DECL(mLIQSS, old_dx)(QA_quantizer quantizer, int i, double t, int nSD, double *x, double *tx)
 {
-  int m, j, j0, j1;
+  int inf_var, j, j1;
   if (t > 0) {
-    for (m = 0; m < nSD; m++) {
-      j = quantizer->state->SD[i][m];
-      j0 = j * 2;
-      j1 = j0 + 1;
+    for (inf_var = 0; inf_var < nSD; inf_var++) {
+      j = quantizer->state->SD[i][inf_var];
+      j1 = j * 2 + 1;
       quantizer->state->oldDx[j] = x[j1];
       tx[j] = t;
     }
   }
 }
 
-#ifdef QSS_PARALLEL
-void mLIQSS_PAR_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu)
-#else
-void mLIQSS_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu)
-#endif
+void QSS_FUNC_DECL(mLIQSS, updateQuantizedState)(QA_quantizer quantizer, int i, double *q, double *x, double *lqu)
 {
   bool *change = quantizer->state->change;
   double *qj = quantizer->state->qj;
@@ -236,76 +178,80 @@ void mLIQSS_updateQuantizedState(QA_quantizer quantizer, int i, double *q, doubl
   double **U = quantizer->state->U0;
   double **A = quantizer->state->A;
   double *tx = quantizer->state->tx;
+  double *q_prev = quantizer->state->qAux;
+  double *dx_prev = quantizer->state->oldDx;
   int i0 = i * 2, i1 = i0 + 1;
-  int m;
+  int inf_var;
+  // Number of influenced state derivatives for x[i]
   int nSD = quantizer->state->nSD[i];
   double dx;
   double *dq = quantizer->state->dq;
-  double h = 1e30;
+  // Set h_max as INF.
+  double h = INF;
 
-  quantizer->state->qAux[i] = q[i0];
-  quantizer->state->oldDx[i] = x[i1];
+  // Store old state and quetized variables.
+  q_prev[i] = q[i0];
+  dx_prev[i] = x[i1];
   tx[i] = t;
   if (change[i] == TRUE) {
     q[i0] = qj[i0];
     change[i] = FALSE;
   } else {
-    double qiold = q[i0];
-
+    double qi_prev = q[i0];
     // LIQSS1
     q[i0] = x[i0];
-    if (x[i1] > 0) {
-      dx = U[i][i] + (q[i0] + lqu[i]) * A[i][i];
-      if (dx > 0)
-        dq[i] = lqu[i];
-      else
-        dq[i] = -U[i][i] / A[i][i] - q[i0];
+    // Compute the future value of dx and check for sign changes.
+    int der_sign = sign(x[i1]);
+    dx = (q[i0] + der_sign * lqu[i]) * A[i][i] + U[i][i];
+    if (der_sign * dx > 0) {
+      dq[i] = der_sign * lqu[i];
     } else {
-      dx = U[i][i] + (q[i0] - lqu[i]) * A[i][i];
-      if (dx < 0)
-        dq[i] = -lqu[i];
-      else
-        dq[i] = -U[i][i] / A[i][i] - q[i0];
+      dq[i] = -U[i][i] / A[i][i] - q[i0];
     }
-    if (dq[i] > 2 * lqu[i]) dq[i] = 2 * lqu[i];
-    if (dq[i] < -2 * lqu[i]) dq[i] = -2 * lqu[i];
+    if (dq[i] > 2 * der_sign * lqu[i]) {
+      dq[i] = 2 * der_sign * lqu[i];
+    }
     q[i0] += dq[i];
 
+    // mLIQSS control algorithm
     if (t > 0) {
-      for (m = 0; m < nSD; m++) {
-        int j = quantizer->state->SD[i][m];
-        int j0 = j * 2;
-        int j1 = j0 + 1;
+      // For every state derivative influenced by x[i]
+      for (inf_var = 0; inf_var < nSD; inf_var++) {
+        int j = quantizer->state->SD[i][inf_var];
+        int j0 = j * 2, j1 = j0 + 1;
         if (j != i && A[i][j] * A[j][i] != 0) {
-          U[j][i] = U[j][j] - A[j][i] * quantizer->state->qAux[i];
+          U[j][i] = U[j][j] - A[j][i] * q_prev[i];
           double dxj = A[j][i] * q[i0] + A[j][j] * q[j0] + U[j][i];
-          // if (x[j1]*dxj<=0 || fabs(x[j1]*dxj)<1e-30)
           if (fabs(x[j1] - dxj) > fabs(x[j1] + dxj) / 2) {
-            double xj0 = x[j0] + (t - tx[j]) * x[j1];
-            double qjold = q[j0];  // guardado qj
+            double elapsed = t - tx[j];
+            double xj0 = x[j0] + elapsed * x[j1];
+            double qj_prev = q[j0];
             U[i][j] = U[i][i] - A[i][j] * q[j0];
-            if (dxj > 0)
+            if (dxj > 0) {
               q[j0] = xj0 + 2 * lqu[j];
-            else
+            } else {
               q[j0] = xj0 - 2 * lqu[j];
+            }
             double dxi = A[i][i] * q[i0] + A[i][j] * q[j0] + U[i][j];
             if (x[i1] * dxi > 0 && fabs(x[i1] * dxi) > 1e-30) {
-              if (dxj > 0)
+              if (dxj > 0) {
                 q[j0] = xj0 - 2 * lqu[j];
-              else
+              } else {
                 q[j0] = xj0 + 2 * lqu[j];
+              }
               dxi = A[i][i] * q[i0] + A[i][j] * q[j0] + U[i][j];
             }
-            q[j0] = qjold;
+            q[j0] = qj_prev;
             double a1 = A[i][i] * A[j][j];
             double a2 = A[i][j] * A[j][i];
             bool dA = FALSE;
             double tol = 1e-1;
-            if (a2 != 0 && a1 / a2 < 1 + tol && a1 / a2 > 1 - tol) dA = TRUE;
-            // if (x[i1]*dxi<=0 || fabs(x[i1]*dxi)<1e-30 || dA)
+            if (a2 != 0 && a1 / a2 < 1 + tol && a1 / a2 > 1 - tol) {
+              dA = TRUE;
+            }
             if (fabs(x[i1] - dxi) > fabs(x[i1] + dxi) / 2 || dA) {
-              qiold = q[i0];
-              qjold = q[j0];
+              qi_prev = q[i0];
+              qj_prev = q[j0];
               qj[j0] = 1e20;
               if (!dA) {
                 if (fabs(A[j][j]) > 1e-30) {
@@ -313,48 +259,47 @@ void mLIQSS_updateQuantizedState(QA_quantizer quantizer, int i, double *q, doubl
                   qj[j0] = (-A[j][i] * q[i0] - U[j][i]) / A[j][j];
                   if (fabs(q[i0] - x[i0]) < TOL * lqu[i] && fabs(qj[j0] - xj0) < TOL * lqu[j]) {
                     change[j] = TRUE;
-                    m = nSD;
                     break;
                   } else {
-                    q[i0] = qiold;
-                    q[j0] = qjold;
+                    q[i0] = qi_prev;
+                    q[j0] = qj_prev;
                     qj[j0] = 1e20;
                   }
                 }
               }
               h = (quantizer->state->finTime - t);
-              mLIQSS_PAR_solver2x2_h(quantizer, x, q, qj, i, j, h, xj0);
+              QSS_FUNC_INVK(mLIQSS, solver2x2_h)(quantizer, x, q, qj, i, j, h, xj0);
               if (fabs(q[i0] - x[i0]) < TOL * lqu[i] && fabs(qj[j0] - xj0) < TOL * lqu[j]) {
                 change[j] = TRUE;
-                m = nSD;
                 break;
               } else {
-                if (fabs(q[i0] - x[i0]) / lqu[i] > fabs(qj[j0] - xj0) / lqu[j])
+                if (fabs(q[i0] - x[i0]) / lqu[i] > fabs(qj[j0] - xj0) / lqu[j]) {
                   h = h / (fabs(q[i0] - x[i0]) / lqu[i]) * 0.9;
-                else
+                } else {
                   h = h / (fabs(qj[j0] - xj0) / lqu[j]) * 0.9;
+                }
                 if (fabs(q[i0] - x[i0]) < TOL * lqu[i] && fabs(qj[j0] - xj0) < TOL * lqu[j]) {
                   change[j] = TRUE;
-                  m = nSD;
                   break;
                 } else {
                   if (x[i1] != 0 && x[j1] != 0) {
-                    if (fabs(TOL * lqu[i] / x[i1]) < fabs(TOL * lqu[j] / x[j1]))
+                    if (fabs(TOL * lqu[i] / x[i1]) < fabs(TOL * lqu[j] / x[j1])) {
                       h = fabs(TOL * lqu[i] / x[i1]);
-                    else
+                    } else {
                       h = fabs(TOL * lqu[j] / x[j1]);
-                  } else if (x[i1] != 0)
+                    }
+                  } else if (x[i1] != 0) {
                     h = fabs(TOL * lqu[i] / x[i1]);
-                  else if (x[j1] != 0)
+                  } else if (x[j1] != 0) {
                     h = fabs(TOL * lqu[j] / x[j1]);
-                  mLIQSS_PAR_solver2x2_h(quantizer, x, q, qj, i, j, h, xj0);
+                  }
+                  QSS_FUNC_INVK(mLIQSS, solver2x2_h)(quantizer, x, q, qj, i, j, h, xj0);
                   if (fabs(q[i0] - x[i0]) < TOL * lqu[i] && fabs(qj[j0] - xj0) < TOL * lqu[j]) {
                     change[j] = TRUE;
-                    m = nSD;
                     break;
                   } else {
-                    q[i0] = qiold;
-                    q[j0] = qjold;
+                    q[i0] = qi_prev;
+                    q[j0] = qj_prev;
                     qj[j0] = 1e20;
                   }
                 }
@@ -365,5 +310,5 @@ void mLIQSS_updateQuantizedState(QA_quantizer quantizer, int i, double *q, doubl
       }
     }
   }
-  mLIQSS_old_dx(quantizer, i, t, nSD, x, tx);
+  QSS_FUNC_INVK(mLIQSS, old_dx)(quantizer, i, t, nSD, x, tx);
 }
