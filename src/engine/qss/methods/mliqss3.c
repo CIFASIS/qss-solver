@@ -29,11 +29,7 @@
 
 #define EPS 1e-40
 
-#ifdef QSS_PARALLEL
-void mLIQSS3_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
-#else
-void mLIQSS3_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
-#endif
+void QSS_FUNC_DECL(mLIQSS3, init)(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 {
   int i, j;
   int states = simData->states;
@@ -91,46 +87,23 @@ void mLIQSS3_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
   quantizer->state->lSimTime = simTime;
   quantizer->state->nSZ = simData->nSZ;
   quantizer->state->SZ = simData->SZ;
-#ifdef QSS_PARALLEL
-  quantizer->state->qMap = simData->lp->qMap;
-  quantizer->ops->recomputeNextTimes = mLIQSS3_PAR_recomputeNextTimes;
-  quantizer->ops->recomputeNextTime = mLIQSS3_PAR_recomputeNextTime;
-  quantizer->ops->nextTime = mLIQSS3_PAR_nextTime;
-  quantizer->ops->updateQuantizedState = mLIQSS3_PAR_updateQuantizedState;
-#else
-  quantizer->ops->recomputeNextTimes = mLIQSS3_recomputeNextTimes;
-  quantizer->ops->recomputeNextTime = mLIQSS3_recomputeNextTime;
-  quantizer->ops->nextTime = mLIQSS3_nextTime;
-  quantizer->ops->updateQuantizedState = mLIQSS3_updateQuantizedState;
-#endif
+  QSS_ASSIGN_QUANTIZER_OPS(mLIQSS3)
 }
 
-#ifdef QSS_PARALLEL
-void mLIQSS3_PAR_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
-#else
-void mLIQSS3_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
-#endif
+void QSS_FUNC_DECL(mLIQSS3, recomputeNextTimes)(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu,
+                                                double *q)
 {
   int i;
-#ifdef QSS_PARALLEL
-  int *map = quantizer->state->qMap;
-#endif
+  QSS_PARALLEL_EXP(int *map = quantizer->state->qMap;)
   for (i = 0; i < vars; i++) {
-#ifdef QSS_PARALLEL
-    if (map[inf[i]] > NOT_ASSIGNED) {
-#endif
-      mLIQSS3_recomputeNextTime(quantizer, inf[i], t, nTime, x, lqu, q);
-#ifdef QSS_PARALLEL
-    }
-#endif
+    QSS_PARALLEL_EXP(if (map[inf[i]] > NOT_ASSIGNED) {)
+      QSS_FUNC_INVK(mLIQSS3, recomputeNextTime)(quantizer, inf[i], t, nTime, x, lqu, q);
+    QSS_PARALLEL_EXP(
+    })
   }
 }
 
-#ifdef QSS_PARALLEL
-void mLIQSS3_PAR_recomputeNextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu, double *q)
-#else
-void mLIQSS3_recomputeNextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu, double *q)
-#endif
+void QSS_FUNC_DECL(mLIQSS3, recomputeNextTime)(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu, double *q)
 {
   int i0 = i * 4, i1 = i0 + 1, i2 = i1 + 1, i3 = i2 + 1, k;
   int *flag2 = quantizer->state->flag2;
@@ -204,11 +177,7 @@ void mLIQSS3_recomputeNextTime(QA_quantizer quantizer, int i, double t, double *
   }
 }
 
-#ifdef QSS_PARALLEL
-void mLIQSS3_PAR_nextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu)
-#else
-void mLIQSS3_nextTime(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu)
-#endif
+void QSS_FUNC_DECL(mLIQSS3, nextTime)(QA_quantizer quantizer, int i, double t, double *nTime, double *x, double *lqu)
 {
   int i3 = i * 4 + 3;
   if (x[i3])
@@ -217,11 +186,7 @@ void mLIQSS3_nextTime(QA_quantizer quantizer, int i, double t, double *nTime, do
     nTime[i] = INF;
 }
 
-#ifdef QSS_PARALLEL
-void mLIQSS3_PAR_AxB(double A[2][2], double B[2][2], double AB[2][2])
-#else
-void mLIQSS3_AxB(double A[2][2], double B[2][2], double AB[2][2])
-#endif
+void QSS_FUNC_DECL(mLIQSS3, AxB)(double A[2][2], double B[2][2], double AB[2][2])
 {
   AB[0][0] = A[0][0] * B[0][0] + A[0][1] * B[1][0];
   AB[0][1] = A[0][0] * B[0][1] + A[0][1] * B[1][1];
@@ -229,11 +194,7 @@ void mLIQSS3_AxB(double A[2][2], double B[2][2], double AB[2][2])
   AB[1][1] = A[1][0] * B[0][1] + A[1][1] * B[1][1];
 }
 
-#ifdef QSS_PARALLEL
-void mLIQSS3_PAR_invA(double A[2][2], double invA[2][2])
-#else
-void mLIQSS3_invA(double A[2][2], double invA[2][2])
-#endif
+void QSS_FUNC_DECL(mLIQSS3, invA)(double A[2][2], double invA[2][2])
 {
   double detA = A[0][0] * A[1][1] - A[0][1] * A[1][0];
   if (detA == 0) detA = 1e-10;
@@ -243,11 +204,8 @@ void mLIQSS3_invA(double A[2][2], double invA[2][2])
   invA[1][1] = A[0][0] / detA;
 }
 
-#ifdef QSS_PARALLEL
-void mLIQSS3_PAR_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *qj, int i, int j, double h, double xj0, double *lqu)
-#else
-void mLIQSS3_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *qj, int i, int j, double h, double xj0, double *lqu)
-#endif
+void QSS_FUNC_DECL(mLIQSS3, solver2x2_h)(QA_quantizer quantizer, double *x, double *q, double *qj, int i, int j, double h, double xj0,
+                                         double *lqu)
 {
   int i0 = 4 * i, i1 = i0 + 1, i2 = i1 + 1;
   int j0 = 4 * j, j1 = j0 + 1, j2 = j1 + 1;
@@ -267,11 +225,11 @@ void mLIQSS3_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *q
   double c[2] = {U1[0] + h * U2[0], U1[1] + h * U2[1]};
   double D[2][2];
   // D = inv(B)
-  mLIQSS3_invA(B, D);
+  QSS_FUNC_INVK(mLIQSS3, invA)(B, D);
   double AD[2][2], DA[2][2], ADA[2][2];
-  mLIQSS3_AxB(A, D, AD);
-  mLIQSS3_AxB(D, A, DA);
-  mLIQSS3_AxB(A, DA, ADA);
+  QSS_FUNC_INVK(mLIQSS3, AxB)(A, D, AD);
+  QSS_FUNC_INVK(mLIQSS3, AxB)(D, A, DA);
+  QSS_FUNC_INVK(mLIQSS3, AxB)(A, DA, ADA);
   // E = I + h*(DA-A) - h²/2*ADA
   double E[2][2] = {{1 + h * (DA[0][0] - A[0][0]) - h * h / 2 * ADA[0][0], h * (DA[0][1] - A[0][1]) - h * h / 2 * ADA[0][1]},
                     {h * (DA[1][0] - A[1][0]) - h * h / 2 * ADA[1][0], 1 + h * (DA[1][1] - A[1][1]) - h * h / 2 * ADA[1][1]}};
@@ -280,15 +238,15 @@ void mLIQSS3_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *q
                  U0[1] + h * (U1[1] - D[1][0] * c[0] - D[1][1] * c[1]) + h * h / 2 * (AD[1][0] * c[0] + AD[1][1] * c[1] + U2[1])};
   double G[2][2];
   // G = inv(E)
-  mLIQSS3_invA(E, G);
+  QSS_FUNC_INVK(mLIQSS3, invA)(E, G);
   double GA[2][2], AGA[2][2], DAGA[2][2], ADAGA[2][2], AG[2][2], DAG[2][2], ADAG[2][2];
-  mLIQSS3_AxB(G, A, GA);
-  mLIQSS3_AxB(A, GA, AGA);
-  mLIQSS3_AxB(D, AGA, DAGA);
-  mLIQSS3_AxB(A, DAGA, ADAGA);
-  mLIQSS3_AxB(A, G, AG);
-  mLIQSS3_AxB(D, AG, DAG);
-  mLIQSS3_AxB(A, DAG, ADAG);
+  QSS_FUNC_INVK(mLIQSS3, AxB)(G, A, GA);
+  QSS_FUNC_INVK(mLIQSS3, AxB)(A, GA, AGA);
+  QSS_FUNC_INVK(mLIQSS3, AxB)(D, AGA, DAGA);
+  QSS_FUNC_INVK(mLIQSS3, AxB)(A, DAGA, ADAGA);
+  QSS_FUNC_INVK(mLIQSS3, AxB)(A, G, AG);
+  QSS_FUNC_INVK(mLIQSS3, AxB)(D, AG, DAG);
+  QSS_FUNC_INVK(mLIQSS3, AxB)(A, DAG, ADAG);
   // J = I + h*(GA-A) + h²/2*(DAGA-AGA) - h³/6*ADAGA
   double J[2][2] = {{1 + h * (GA[0][0] - A[0][0]) + h * h / 2 * (DAGA[0][0] - AGA[0][0]) - h * h * h / 6 * ADAGA[0][0],
                      h * (GA[0][1] - A[0][1]) + h * h / 2 * (DAGA[0][1] - AGA[0][1]) - h * h * h / 6 * ADAGA[0][1]},
@@ -303,7 +261,7 @@ void mLIQSS3_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *q
                      h * h * h / 6 * (ADAG[1][0] * f[0] + ADAG[1][1] * f[1] + AD[1][0] * c[0] + AD[1][1] * c[1] + U2[1])};
   double M[2][2];
   // M = inv(J)
-  mLIQSS3_invA(J, M);
+  QSS_FUNC_INVK(mLIQSS3, invA)(J, M);
   q[i0] = M[0][0] * (x[i0] + k[0]) + M[0][1] * (xj0 + k[1]);
   qj[j0] = M[1][0] * (x[i0] + k[0]) + M[1][1] * (xj0 + k[1]);
   q[i1] = G[0][0] * (A[0][0] * q[i0] + A[0][1] * qj[j0] + f[0]) + G[0][1] * (A[1][0] * q[i0] + A[1][1] * qj[j0] + f[1]);
@@ -312,11 +270,7 @@ void mLIQSS3_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *q
   qj[j2] = (D[1][0] * (A[0][0] * q[i1] + A[0][1] * qj[j1] + c[0]) + D[1][1] * (A[1][0] * q[i1] + A[1][1] * qj[j1] + c[1])) / 2;
 }
 
-#ifdef QSS_PARALLEL
-void mLIQSS3_PAR_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu)
-#else
-void mLIQSS3_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu)
-#endif
+void QSS_FUNC_DECL(mLIQSS3, updateQuantizedState)(QA_quantizer quantizer, int i, double *q, double *x, double *lqu)
 {
   int i0 = i * 4, i1 = i0 + 1, i2 = i1 + 1, i3 = i2 + 1;
   int m, j, j0, j1, j2, j3;
@@ -478,7 +432,7 @@ void mLIQSS3_updateQuantizedState(QA_quantizer quantizer, int i, double *q, doub
         if (fabs(6 * x[i3] - dddxi) > fabs(6 * x[i3] + dddxi) / 3 || fabs(2 * x[i2] - ddxi) > fabs(2 * x[i2] + ddxi) / 2 ||
             fabs(x[i1] - dxi) > fabs(x[i1] + dxi) / 2 || dA) {
           h = (quantizer->state->finTime - t) * 100;
-          mLIQSS3_solver2x2_h(quantizer, x, q, qj, i, j, h, xj0, lqu);
+          QSS_FUNC_INVK(mLIQSS3, solver2x2_h)(quantizer, x, q, qj, i, j, h, xj0, lqu);
           if (fabs(q[i0] - x[i0]) > 2 * lqu[i] || fabs(qj[j0] - xj0) > 2 * lqu[j]) {
             int K = 12;
             if (dddxi != 0 && dddxj != 0) {
@@ -490,22 +444,13 @@ void mLIQSS3_updateQuantizedState(QA_quantizer quantizer, int i, double *q, doub
               h = pow(K * fabs(lqu[i] / dddxi), 1.0 / 3);
             else if (dddxj != 0)
               h = pow(K * fabs(lqu[j] / dddxj), 1.0 / 3);
-            // h /= 3;
-            mLIQSS3_solver2x2_h(quantizer, x, q, qj, i, j, h, xj0, lqu);
-            // if (fabs(q[i0]-x[i0]) > 1.28*lqu[i] || fabs(qj[j0]-xj0) > 1.28*lqu[j])
+            QSS_FUNC_INVK(mLIQSS3, solver2x2_h)(quantizer, x, q, qj, i, j, h, xj0, lqu);
 
             int it = 0;
             while ((fabs(q[i0] - x[i0]) > 1.98 * lqu[i] || fabs(qj[j0] - xj0) > 1.98 * lqu[j]) && it < 3) {
               it++;
-              /*
-              if(lqu[i]/fabs(q[i0] - x[i0] + EPS) < lqu[j]/fabs(qj[j0] - xj0 + EPS))
-                  h = h*pow(lqu[i]/fabs(q[i0] - x[i0] + EPS),1/3.);
-              else
-                  h = h*pow(lqu[j]/fabs(qj[j0] - xj0 + EPS),1/3.);
-                  mLIQSS3_solver2x2_h(quantizer, x, q, qj, i, j, h, xj0, lqu);
-              */
               h *= 0.1;
-              mLIQSS3_solver2x2_h(quantizer, x, q, qj, i, j, h, xj0, lqu);
+              QSS_FUNC_INVK(mLIQSS3, solver2x2_h)(quantizer, x, q, qj, i, j, h, xj0, lqu);
             }
             if (it != 3)
               change[j] = TRUE;
@@ -513,18 +458,7 @@ void mLIQSS3_updateQuantizedState(QA_quantizer quantizer, int i, double *q, doub
               q[i0] = qsingle[0];
               q[i1] = qsingle[1];
               q[i2] = qsingle[2];
-              // printf(".");
             }
-
-            /*
-            if (fabs(q[i0]-x[i0]) > 0.98*lqu[i] || fabs(qj[j0]-xj0) > 0.98*lqu[j])
-            {
-                q[i0] = qsingle[0];
-                q[i1] = qsingle[1];
-                q[i2] = qsingle[2];
-            }
-            else change[j] = TRUE;
-            */
           } else
             change[j] = TRUE;
         }
