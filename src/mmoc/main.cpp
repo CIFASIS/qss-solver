@@ -89,7 +89,7 @@ void usage()
 
 void version()
 {
-  cout << "MicroModelica C Compiler 4.2.0" << endl;
+  cout << "MicroModelica C Compiler 4.2.1" << endl;
   cout << "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>" << endl;
   cout << "This is free software: you are free to change and redistribute it." << endl;
   cout << "There is NO WARRANTY, to the extent permitted by law." << endl;
