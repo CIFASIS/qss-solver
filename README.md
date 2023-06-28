@@ -1,4 +1,4 @@
-## QSS Solver 4.2.0
+## QSS Solver 4.2.1
 
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
@@ -219,6 +219,14 @@ The makefile script accepts the following targets:
 
 ## Changelog
 
+## [4.2.1] - 28-06-2023
+
+### Added
+- Added mLIQSS article models to distribution.
+
+### Changed
+- Fix mLIQSS recompute next time to only update the Jacobian approximation when the influencer is a state variable.
+
 ## [4.2.0] - 01-06-2023
 
 ### Added
@@ -230,18 +238,6 @@ The makefile script accepts the following targets:
 
 ### Changed
 - Fix terminate command code generation.
-
-## [4.0.1] - 03-11-2022
-
-### Added
-- Compilation **Ubuntu 22.04** is now supported.
-- Use State variables values instead of quantized approximation in handler reinit statements for QSS methods.
-
-### Changed
-- The QSS methods event structure **SD_EventData** now contains a new matrix that defines the RHS state variables not used in LHS state assignments. 
-
-### Removed
-- Gtest lib compilation, the compiled libraries are distributed now.
 
 ## Licensing
 
