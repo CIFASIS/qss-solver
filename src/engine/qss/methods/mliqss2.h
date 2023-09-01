@@ -29,9 +29,8 @@ QSS_INT_FUNC_DECL(void, mLIQSS2, AxB, double A[2][2], double B[2][2], double AB[
 
 QSS_INT_FUNC_DECL(void, mLIQSS2, invA, double A[2][2], double invA[2][2]);
 
-QSS_INT_FUNC_DECL(void, mLIQSS2, solver2x2_h, QA_quantizer quantizer, double *x, double *q, double *next, int i, int j, double h,
-                  double xj0);
+QSS_INT_FUNC_DECL(void, mLIQSS2, BEStep, QA_quantizer quantizer, double *x, double *q, double *next, int i, int j, double h, double xj0);
 
-QSS_INT_FUNC_DECL(void, mLIQSS2, old_dx, QA_quantizer quantizer, int i, double t, int nSD, double *x, double *tx);
+QSS_INT_FUNC_DECL(void, mLIQSS2, dxPrev, QA_quantizer quantizer, int i, double t, int nSD, double *x, double *tx);
 
-QSS_INT_FUNC_DECL(void, mLIQSS2, solve_single, QA_quantizer quantizer, int i, double *x, double *q, double *lqu, double *h2);
+QSS_INT_FUNC_DECL(void, mLIQSS2, BEStepSingle, QA_quantizer quantizer, int i, double *x, double *q, double *lqu, double *h2);
