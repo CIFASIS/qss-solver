@@ -73,5 +73,10 @@
         "concepts": "cpp",
         "ranges": "cpp",
         "stop_token": "cpp"
-    }
+    },
+    "docwriter.style": "Doxygen",
+    "docwriter.progress.trackFunctions": true,
+    "docwriter.progress.trackMethods": false,
+    "docwriter.progress.trackClasses": false,
+    "docwriter.progress.trackTypes": false
 }
