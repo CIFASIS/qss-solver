@@ -35,7 +35,6 @@ void LIQSS_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 {
   int i;
   int states = simData->states;
-  quantizer->state->dq = (double *)malloc(states * sizeof(double));
   quantizer->state->oldDx = (double *)malloc(states * sizeof(double));
   quantizer->state->qAux = (double *)malloc(states * sizeof(double));
   quantizer->state->a = (double *)malloc(states * sizeof(double));
@@ -48,7 +47,6 @@ void LIQSS_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
     quantizer->state->oldDx[i] = 0;
     quantizer->state->a[i] = 0;
     quantizer->state->u0[i] = 0;
-    quantizer->state->dq[i] = 0;
     quantizer->state->lt[i] = simData->it;
   }
   quantizer->state->simTime = &simTime->time;
@@ -150,7 +148,7 @@ void LIQSS_updateQuantizedState(QA_quantizer quantizer, int var, double *q, doub
   double dx;
   double *u = quantizer->state->u0;
   double *a = quantizer->state->a;
-  double *dq = quantizer->state->dq;
+  double dq;
   quantizer->state->qAux[var] = q[cf0];
   quantizer->state->oldDx[var] = x[cf1];
   quantizer->state->lt[var] = *(quantizer->state->simTime);
@@ -158,19 +156,19 @@ void LIQSS_updateQuantizedState(QA_quantizer quantizer, int var, double *q, doub
   if (x[cf1] > 0) {
     dx = u[var] + (q[cf0] + lqu[var]) * a[var];
     if (dx >= 0) {
-      dq[var] = lqu[var];
+      dq = lqu[var];
     } else if (dx < 0) {
-      dq[var] = -u[var] / a[var] - q[cf0];
+      dq = -u[var] / a[var] - q[cf0];
     }
   } else {
     dx = u[var] + (q[cf0] - lqu[var]) * a[var];
     if (dx <= 0) {
-      dq[var] = -lqu[var];
+      dq = -lqu[var];
     } else if (dx > 0) {
-      dq[var] = -u[var] / a[var] - q[cf0];
+      dq = -u[var] / a[var] - q[cf0];
     }
   }
-  if (dq[var] > 2 * lqu[var]) dq[var] = 2 * lqu[var];
-  if (dq[var] < -2 * lqu[var]) dq[var] = -2 * lqu[var];
-  q[cf0] += dq[var];
+  if (dq > 2 * lqu[var]) dq = 2 * lqu[var];
+  if (dq < -2 * lqu[var]) dq = -2 * lqu[var];
+  q[cf0] += dq;
 }
