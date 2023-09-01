@@ -254,7 +254,7 @@ void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_ve
   int g_eq_id = g_eq.arrayId();
   generatePos(g_eq_id, g_eq.type(), "c_row_g", "col_g");
   generateEquation(v_eq.arrayId(), g_eq_id, v_eq.type());
-  dependencyEpilogue(g_eq, dep);
+  dependencyEpilogue(g_eq, var_dep);
 }
 
 void JacGenerator::visitG(SB::Deps::SetVertex v_vertex, SB::Deps::SetVertex g_vertex, SB::PWLMap use_map, SB::Deps::LMapExp use_map_exp,
