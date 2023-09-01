@@ -38,7 +38,7 @@ void QSS_FUNC_DECL(mLIQSS3, init)(QA_quantizer quantizer, QSS_data simData, QSS_
   quantizer->state->qAux = (double *)malloc(states * sizeof(double));
   quantizer->state->flag2 = (int *)malloc(states * sizeof(int));
   quantizer->state->tx = (double *)malloc(states * sizeof(double));
-  quantizer->state->change = (bool *)malloc(states * sizeof(bool));
+  quantizer->state->sim_step = (bool *)malloc(states * sizeof(bool));
   quantizer->state->qj = (double *)malloc(4 * states * sizeof(double));
   quantizer->state->nSD = simData->nSD;
   quantizer->state->SD = simData->SD;
@@ -68,7 +68,7 @@ void QSS_FUNC_DECL(mLIQSS3, init)(QA_quantizer quantizer, QSS_data simData, QSS_
     quantizer->state->oldDx[i] = 0;
     quantizer->state->tx[i] = 0;
     quantizer->state->flag2[i] = 0;
-    quantizer->state->change[i] = FALSE;
+    quantizer->state->sim_step[i] = FALSE;
     quantizer->state->qj[cf0] = 0;
     quantizer->state->qj[cf0 + 1] = 0;
     quantizer->state->qj[cf0 + 2] = 0;
@@ -110,7 +110,7 @@ void QSS_FUNC_DECL(mLIQSS3, recomputeNextTime)(QA_quantizer quantizer, int i, do
   int stind = quantizer->state->lSimTime->minIndex;
   int **S = quantizer->state->S;
   bool self = quantizer->state->lSimTime->minIndex == i && quantizer->state->lSimTime->type == ST_State;
-  bool *change = quantizer->state->change;
+  bool *sim_step = quantizer->state->sim_step;
   double coeff[4], diffQ, timeaux;
   double *tx = quantizer->state->tx;
   double *a = quantizer->state->a;
@@ -133,7 +133,7 @@ void QSS_FUNC_DECL(mLIQSS3, recomputeNextTime)(QA_quantizer quantizer, int i, do
   // store last x update
   tx[i] = t;
 
-  if (change[i] == TRUE)
+  if (sim_step[i] == TRUE)
     nTime[i] = t;
   else {
     coeff[1] = q[i1] - x[i1];
@@ -276,7 +276,7 @@ void QSS_FUNC_DECL(mLIQSS3, updateQuantizedState)(QA_quantizer quantizer, int i,
   int m, j, j0, j1, j2, j3;
   int nSD = quantizer->state->nSD[i];
   int **S = quantizer->state->S;
-  bool *change = quantizer->state->change;
+  bool *sim_step = quantizer->state->sim_step;
   double elapsed, oldq1, h = 0;
   double t = quantizer->state->lSimTime->time;
   double *qj = quantizer->state->qj;
@@ -295,11 +295,11 @@ void QSS_FUNC_DECL(mLIQSS3, updateQuantizedState)(QA_quantizer quantizer, int i,
   u1[S[i][i]] = u1[S[i][i]] + 2 * elapsed * u2[S[i][i]];
   tu[i] = t;
 
-  if (change[i] == TRUE) {  // second variable update
+  if (sim_step[i] == TRUE) {  // second variable update
     q[i0] = qj[i0];
     q[i1] = qj[i1];
     q[i2] = qj[i2];
-    change[i] = FALSE;
+    sim_step[i] = FALSE;
   } else {  // normal update
     double dddx = x[i3] * 6;
     int *flag2 = quantizer->state->flag2;
@@ -453,14 +453,14 @@ void QSS_FUNC_DECL(mLIQSS3, updateQuantizedState)(QA_quantizer quantizer, int i,
               QSS_FUNC_INVK(mLIQSS3, solver2x2_h)(quantizer, x, q, qj, i, j, h, xj0, lqu);
             }
             if (it != 3)
-              change[j] = TRUE;
+              sim_step[j] = TRUE;
             else {
               q[i0] = qsingle[0];
               q[i1] = qsingle[1];
               q[i2] = qsingle[2];
             }
           } else
-            change[j] = TRUE;
+            sim_step[j] = TRUE;
         }
       }
     }
