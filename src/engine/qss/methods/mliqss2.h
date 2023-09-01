@@ -17,60 +17,21 @@
 
  ******************************************************************************/
 
-#ifndef mLIQSS2_H_
-#define mLIQSS2_H_
+#pragma once
 
+#include <common/macros.h>
 #include <qss/qss_data.h>
 #include <qss/qss_quantizer.h>
 
-extern void mLIQSS2_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu,
-                                       double *q) __attribute__((hot));
+QSS_DECLARE_QUANTIZER_INTERFACE(mLIQSS2)
 
-extern void mLIQSS2_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
-    __attribute__((hot));
+QSS_INT_FUNC_DECL(void, mLIQSS2, AxB, double A[2][2], double B[2][2], double AB[2][2]);
 
-extern void mLIQSS2_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu) __attribute__((hot));
+QSS_INT_FUNC_DECL(void, mLIQSS2, invA, double A[2][2], double invA[2][2]);
 
-extern void mLIQSS2_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu) __attribute__((hot));
+QSS_INT_FUNC_DECL(void, mLIQSS2, solver2x2_h, QA_quantizer quantizer, double *x, double *q, double *next, int i, int j, double h,
+                  double xj0);
 
-extern void mLIQSS2_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime);
+QSS_INT_FUNC_DECL(void, mLIQSS2, old_dx, QA_quantizer quantizer, int i, double t, int nSD, double *x, double *tx);
 
-extern void mLIQSS2_PAR_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu,
-                                           double *q) __attribute__((hot));
-
-extern void mLIQSS2_PAR_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
-    __attribute__((hot));
-
-extern void mLIQSS2_PAR_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu) __attribute__((hot));
-
-double qsolver_liqss2(QA_quantizer quantizer, double *x, double *u, double A, double dQ, double *q);
-
-void solve_2x2(QA_quantizer quantizer, int i, int j, double xi0, double xj0, double qi0, double *qj, double *h);
-
-void old_dx(QA_quantizer quantizer, int i, double t, int nSD, double *x, double *tx);
-
-extern void mLIQSS2_PAR_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu) __attribute__((hot));
-
-extern void mLIQSS2_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime);
-
-extern void mLIQSS2_PAR_AxB(double A[2][2], double B[2][2], double AB[2][2]);
-
-extern void mLIQSS2_AxB(double A[2][2], double B[2][2], double AB[2][2]);
-
-extern void mLIQSS2_PAR_invA(double A[2][2], double invA[2][2]);
-
-extern void mLIQSS2_invA(double A[2][2], double invA[2][2]);
-
-extern void mLIQSS2_PAR_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *next, int i, int j, double h, double xj0);
-
-extern void mLIQSS2_solver2x2_h(QA_quantizer quantizer, double *x, double *q, double *next, int i, int j, double h, double xj0);
-
-extern void mLIQSS2_PAR_old_dx(QA_quantizer quantizer, int i, double t, int nSD, double *x, double *tx);
-
-extern void mLIQSS2_old_dx(QA_quantizer quantizer, int i, double t, int nSD, double *x, double *tx);
-
-extern void mLIQSS2_PAR_solve_single(QA_quantizer quantizer, int i, double *x, double *q, double *lqu, double *h2);
-
-extern void mLIQSS2_solve_single(QA_quantizer quantizer, int i, double *x, double *q, double *lqu, double *h2);
-
-#endif /* mLIQSS2_H_ */
+QSS_INT_FUNC_DECL(void, mLIQSS2, solve_single, QA_quantizer quantizer, int i, double *x, double *q, double *lqu, double *h2);
