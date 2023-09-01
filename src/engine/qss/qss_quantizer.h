@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef QSS_QUANTIZER_H_
-#define QSS_QUANTIZER_H_
+#pragma once
 
 #include <qss/qss_data.h>
 #include <qss/qss_bdf.h>
@@ -62,16 +61,14 @@ struct QA_quantizerState_ {
   // Added state for mLIQSS methods.
   int sts;
   int infs;
-  int cont;
   int *nSD;
   int **SD;
   int **S;
-  bool *change;
+  bool *sim_step;
   double **A;
   double **U0;
   double **U1;
   double *qj;
-  double *next;
 };
 
 struct QA_quantizerOps_ {
@@ -105,5 +102,3 @@ void QA_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTi
 void QA_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu);
 
 void QA_updateQuantizedState(QA_quantizer quantizer, int var, double *q, double *x, double *lqu);
-
-#endif /* QSS_QUANTIZER_H_ */
