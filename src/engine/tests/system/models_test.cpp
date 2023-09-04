@@ -96,6 +96,7 @@ const char* models[] = {"acousticsBase",
                         "rltest",
                         "spikings",
                         "testFor",
+                        "test_input",
                         "TYSON",
                         "VIRplanoS"};
 
