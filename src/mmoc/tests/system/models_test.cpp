@@ -86,6 +86,7 @@ const char* models[] = {"adr",
                         "rltest_LI",
                         "spikings",
                         "testFor",
+                        "test_input",
                         "TYSON",
                         "VIRplanoS"};
 

@@ -443,7 +443,7 @@ void BTR_updateI(SC_scheduler scheduler, QSS_data simData, QSS_time simTime)
       w = ST_Input;
     }
   } else if (simTime->type == ST_Input) {
-    BTR_updateTree(scheduler, scheduler->state->BTR_states, NULL, 0, simData->TD[simTime->minIndex], simTime->nextStateTime);
+    BTR_updateTree(scheduler, scheduler->state->BTR_states, NULL, 0, simData->IT[simTime->minIndex], simTime->nextStateTime);
     minIdx = scheduler->state->BTR_states->nodes[scheduler->state->BTR_states->height][0].value;
     minVal = simTime->nextStateTime[minIdx];
     BTR_updateTree(scheduler, scheduler->state->BTR_inputs, NULL, 0, simTime->minIndex, simTime->nextInputTime);
@@ -507,7 +507,7 @@ void BTR_updateHI(SC_scheduler scheduler, QSS_data simData, QSS_time simTime)
       w = ST_Input;
     }
   } else if (simTime->type == ST_Input) {
-    BTR_updateTree(scheduler, scheduler->state->BTR_states, NULL, 0, simData->TD[simTime->minIndex], simTime->nextStateTime);
+    BTR_updateTree(scheduler, scheduler->state->BTR_states, NULL, 0, simData->IT[simTime->minIndex], simTime->nextStateTime);
     minIdx = scheduler->state->BTR_states->nodes[scheduler->state->BTR_states->height][0].value;
     minVal = simTime->nextStateTime[minIdx];
     BTR_updateTree(scheduler, scheduler->state->BTR_inputs, NULL, 0, simTime->minIndex, simTime->nextInputTime);
