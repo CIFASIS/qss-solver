@@ -484,7 +484,7 @@ void BT_updateI(SC_scheduler scheduler, QSS_data simData, QSS_time simTime)
 #ifdef QSS_PARALLEL
     scheduler->state->stepType = ST_State;
 #endif
-    BT_UPDATE_TREE(scheduler, states, NULL, 0, simData->TD[simTime->minIndex]);
+    BT_UPDATE_TREE(scheduler, states, NULL, 0, simData->IT[simTime->minIndex]);
     minIdx = states->nodes[states->height][0].value;
     minVal = simTime->nextStateTime[minIdx];
     BT_UPDATE_TREE(scheduler, inputs, NULL, 0, simTime->minIndex);
@@ -599,7 +599,7 @@ void BT_updateHI(SC_scheduler scheduler, QSS_data simData, QSS_time simTime)
 #ifdef QSS_PARALLEL
     scheduler->state->stepType = ST_State;
 #endif
-    BT_UPDATE_TREE(scheduler, states, NULL, 0, simData->TD[simTime->minIndex]);
+    BT_UPDATE_TREE(scheduler, states, NULL, 0, simData->IT[simTime->minIndex]);
     minIdx = states->nodes[states->height][0].value;
     minVal = simTime->nextStateTime[minIdx];
     BT_UPDATE_TREE(scheduler, inputs, NULL, 0, simTime->minIndex);

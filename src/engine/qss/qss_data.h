@@ -189,7 +189,7 @@ struct QSS_data_ {
   int *nSH;
   int *nHH;
   int *nDH;
-  int *TD;
+  int *IT;
   int *BDF;
   int *BDFMap;
   int *BDFOutputs;

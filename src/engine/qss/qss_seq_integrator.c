@@ -69,7 +69,7 @@ void QSS_SEQ_integrate(SIM_simulator simulate)
   double *q = qssData->q;
   double *a = qssData->alg;
   int **SD = qssData->SD;
-  int *TD = qssData->TD;
+  int *TD = qssData->IT;
   int cf0, infCf0;
   const int qOrder = xOrder - 1;
   int nSZ, nLHSSt, nRHSSt, nHD, nHZ;

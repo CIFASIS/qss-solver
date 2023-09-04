@@ -370,7 +370,7 @@ void QSS_HYB_integrate(SIM_simulator simulate)
   double *q = qssData->q;
   double *a = qssData->alg;
   int **SD = qssData->SD;
-  int *TD = qssData->TD;
+  int *TD = qssData->IT;
   int *BDF = qssData->BDF;
   int *BDFMap = qssData->BDFMap;
   int nBDF = qssData->nBDF;
