@@ -390,10 +390,11 @@ void QSS_FUNC_DECL(mLIQSS2, updateQuantizedState)(QA_quantizer quantizer, int i,
     q[i1] = qj[i1];
     sim_step[i] = FALSE;
   } else if (flag2[i] >= 1) {
-    if (q[i1] > 0)
+    if (q[i1] > 0) {
       q[i0] = qi_proy[i] + lqu[i] / 100;
-    else
+    } else {
       q[i0] = qi_proy[i] - lqu[i] / 100;
+    }
     q[i1] = 0;
   } else {
     int j, j0, j1, j2;
