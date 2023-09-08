@@ -109,10 +109,6 @@ void QSS_FUNC_DECL(mLIQSS2, recomputeNextTime)(QA_quantizer quantizer, int i, do
       A[i][ifr_state] = 0;
     }
   }
-  /*if (quantizer->state->lSimTime->type == ST_Event) {
-    quantizer->state->oldDx[i] = x[i1];
-    A[i][i] = 0;
-  }*/
   U0[i][i] = x[i1] - q[i0] * A[i][i];
   U1[i][i] = 2 * x[i2] - q[i1] * A[i][i];
   if (sim_step[i] == TRUE) {

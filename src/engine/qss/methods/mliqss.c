@@ -95,19 +95,6 @@ void QSS_FUNC_DECL(mLIQSS, recomputeNextTime)(QA_quantizer quantizer, int i, dou
   bool *sim_step = quantizer->state->sim_step;
   int *flag2 = quantizer->state->flag2;
 
-  /*if (flag2[var] != 1) {
-    if ((quantizer->state->lSimTime->type == ST_Event) && (a[var] < 0) &&
-        (quantizer->state->nSZ[var] > 0)) {  // we check if var is involved in the zero crossing function that produced the current event
-      int i;
-      for (i = 0; i < quantizer->state->nSZ[var]; i++) {
-        if (quantizer->state->SZ[var][i] == quantizer->state->lSimTime->minIndex) {
-          nTime[var] = t;
-          flag2[var] = 1;  // it does, so we restart the quantized state q[var]
-        }
-      }
-    }
-  }*/
-
   if (t > 0 && state_step) {
     diff_Q = q[2 * ifr_state] - quantizer->state->qAux[ifr_state];
     if (diff_Q) {
