@@ -23,11 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef QSS_PARALLEL
-void LIQSS_BDF_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
-#else
-void LIQSS_BDF_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
-#endif
+void QSS_FUNC_DECL(LIQSS_BDF, init)(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 {
   int i;
   int states = simData->states;
@@ -54,18 +50,7 @@ void LIQSS_BDF_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
     quantizer->state->u1[i] = 0;
   }
   quantizer->state->BDF = simData->BDF;
-#ifdef QSS_PARALLEL
-  quantizer->state->qMap = simData->lp->qMap;
-  quantizer->ops->recomputeNextTimes = LIQSS_BDF_PAR_recomputeNextTimes;
-  quantizer->ops->recomputeNextTime = LIQSS_BDF_PAR_recomputeNextTime;
-  quantizer->ops->nextTime = LIQSS_BDF_PAR_nextTime;
-  quantizer->ops->updateQuantizedState = LIQSS_BDF_PAR_updateQuantizedState;
-#else
-  quantizer->ops->recomputeNextTimes = LIQSS_BDF_recomputeNextTimes;
-  quantizer->ops->recomputeNextTime = LIQSS_BDF_recomputeNextTime;
-  quantizer->ops->nextTime = LIQSS_BDF_nextTime;
-  quantizer->ops->updateQuantizedState = LIQSS_BDF_updateQuantizedState;
-#endif
+  QSS_ASSIGN_QUANTIZER_OPS(LIQSS_BDF)
   quantizer->state->finTime = simData->ft;
   quantizer->state->minStep = simData->params->minStep;
   quantizer->state->lSimTime = simTime;
@@ -73,11 +58,8 @@ void LIQSS_BDF_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
   quantizer->state->SZ = simData->SZ;
 }
 
-#ifdef QSS_PARALLEL
-void LIQSS_BDF_PAR_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
-#else
-void LIQSS_BDF_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
-#endif
+void QSS_FUNC_DECL(LIQSS_BDF, recomputeNextTime)(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu,
+                                                 double *q)
 {
   int *BDF = quantizer->state->BDF;
   if (BDF[var] == NOT_ASSIGNED) {
@@ -153,33 +135,20 @@ void LIQSS_BDF_recomputeNextTime(QA_quantizer quantizer, int var, double t, doub
   }
 }
 
-#ifdef QSS_PARALLEL
-void LIQSS_BDF_PAR_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu,
-                                      double *q)
-#else
-void LIQSS_BDF_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
-#endif
+void QSS_FUNC_DECL(LIQSS_BDF, recomputeNextTimes)(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x,
+                                                  double *lqu, double *q)
 {
   int i;
-#ifdef QSS_PARALLEL
-  int *map = quantizer->state->qMap;
-#endif
+  QSS_PARALLEL_EXP(int *map = quantizer->state->qMap;)
   for (i = 0; i < vars; i++) {
-#ifdef QSS_PARALLEL
-    if (map[inf[i]] != NOT_ASSIGNED) {
-#endif
-      LIQSS_BDF_recomputeNextTime(quantizer, inf[i], t, nTime, x, lqu, q);
-#ifdef QSS_PARALLEL
-    }
-#endif
+    QSS_PARALLEL_EXP(if (map[inf[i]] != NOT_ASSIGNED) {)
+      QSS_FUNC_INVK(LIQSS_BDF, recomputeNextTime)(quantizer, inf[i], t, nTime, x, lqu, q);
+    QSS_PARALLEL_EXP(
+    })
   }
 }
 
-#ifdef QSS_PARALLEL
-void LIQSS_BDF_PAR_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)
-#else
-void LIQSS_BDF_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)
-#endif
+void QSS_FUNC_DECL(LIQSS_BDF, nextTime)(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)
 {
   int *BDF = quantizer->state->BDF;
   if (BDF[var] == NOT_ASSIGNED) {
@@ -192,11 +161,7 @@ void LIQSS_BDF_nextTime(QA_quantizer quantizer, int var, double t, double *nTime
   }
 }
 
-#ifdef QSS_PARALLEL
-void LIQSS_BDF_PAR_updateQuantizedState(QA_quantizer quantizer, int var, double *q, double *x, double *lqu)
-#else
-void LIQSS_BDF_updateQuantizedState(QA_quantizer quantizer, int var, double *q, double *x, double *lqu)
-#endif
+void QSS_FUNC_DECL(LIQSS_BDF, updateQuantizedState)(QA_quantizer quantizer, int var, double *q, double *x, double *lqu)
 {
   double t = quantizer->state->lSimTime->time;
   double *a = quantizer->state->a;
