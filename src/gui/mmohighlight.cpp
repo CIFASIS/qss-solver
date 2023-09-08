@@ -180,7 +180,6 @@ MmoHighlighter::MmoHighlighter(QTextDocument *parent, h_type file) : QSyntaxHigh
                     << "\\bQSS4\\b"
                     << "\\bmLIQSS\\b"
                     << "\\bmLIQSS2\\b"
-                    << "\\bmLIQSS3\\b"
                     << "\\bCVODE_AM\\b"
                     << "\\bCVODE_BDF\\b"
                     << "\\bIDA\\b"
