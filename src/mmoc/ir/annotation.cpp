@@ -456,10 +456,6 @@ Solver ModelAnnotation::getSolver(string s)
     _order = 2;
     _polyCoeffs = 3;
     return mLIQSS2;
-  } else if (!s.compare("mLIQSS3")) {
-    _order = 3;
-    _polyCoeffs = 4;
-    return mLIQSS3;
   }
   return QSS;
 }
@@ -741,7 +737,6 @@ EvalAnnotation::EvalAnnotation() : _tokens()
   _tokens.insert(pair<string, string>("QSS4", "QSS4"));
   _tokens.insert(pair<string, string>("mLIQSS", "mLIQSS"));
   _tokens.insert(pair<string, string>("mLIQSS2", "mLIQSS2"));
-  _tokens.insert(pair<string, string>("mLIQSS3", "mLIQSS3"));
   _tokens.insert(pair<string, string>("DASSL", "DASSL"));
   _tokens.insert(pair<string, string>("DOPRI", "DOPRI"));
   _tokens.insert(pair<string, string>("CVODE_AM", "CVODE_AM"));

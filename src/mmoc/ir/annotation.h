@@ -48,8 +48,7 @@ typedef enum {
   CVODE_AM,
   IDA,
   mLIQSS,
-  mLIQSS2,
-  mLIQSS3
+  mLIQSS2
 } Solver;
 
 typedef enum { Metis, HMetis, Scotch, Patoh, MTPL, MTPL_IT, Manual } PartitionMethod;
