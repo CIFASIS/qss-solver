@@ -27,11 +27,7 @@
 #include <qss/qss_data.h>
 #include <qss/qss_quantizer.h>
 
-#ifdef QSS_PARALLEL
-void LIQSS3_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
-#else
-void LIQSS3_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
-#endif
+void QSS_FUNC_DECL(LIQSS3, init)(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 {
   int states = simData->states;
   int i;
@@ -72,25 +68,10 @@ void LIQSS3_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
   }
   quantizer->state->minStep = simData->params->minStep;
   quantizer->state->lSimTime = simTime;
-#ifdef QSS_PARALLEL
-  quantizer->state->qMap = simData->lp->qMap;
-  quantizer->ops->recomputeNextTimes = LIQSS3_PAR_recomputeNextTimes;
-  quantizer->ops->recomputeNextTime = LIQSS3_PAR_recomputeNextTime;
-  quantizer->ops->nextTime = LIQSS3_PAR_nextTime;
-  quantizer->ops->updateQuantizedState = LIQSS3_PAR_updateQuantizedState;
-#else
-  quantizer->ops->recomputeNextTimes = LIQSS3_recomputeNextTimes;
-  quantizer->ops->recomputeNextTime = LIQSS3_recomputeNextTime;
-  quantizer->ops->nextTime = LIQSS3_nextTime;
-  quantizer->ops->updateQuantizedState = LIQSS3_updateQuantizedState;
-#endif
+  QSS_ASSIGN_QUANTIZER_OPS(LIQSS3)
 }
 
-#ifdef QSS_PARALLEL
-void LIQSS3_PAR_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
-#else
-void LIQSS3_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
-#endif
+void QSS_FUNC_DECL(LIQSS3, recomputeNextTime)(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
 {
   int cf0 = var * 4, cf1 = cf0 + 1, cf2 = cf1 + 1, cf3 = cf2 + 1;
   double *u0 = quantizer->state->u0;
@@ -157,24 +138,16 @@ void LIQSS3_recomputeNextTime(QA_quantizer quantizer, int var, double t, double 
   }
 }
 
-#ifdef QSS_PARALLEL
-void LIQSS3_PAR_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
-#else
-void LIQSS3_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
-#endif
+void QSS_FUNC_DECL(LIQSS3, recomputeNextTimes)(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu,
+                                               double *q)
 {
   int i;
-#ifdef QSS_PARALLEL
-  int *map = quantizer->state->qMap;
-#endif
+  QSS_PARALLEL_EXP(int *map = quantizer->state->qMap;)
   for (i = 0; i < vars; i++) {
-#ifdef QSS_PARALLEL
-    if (map[inf[i]] > NOT_ASSIGNED) {
-#endif
-      LIQSS3_recomputeNextTime(quantizer, inf[i], t, nTime, x, lqu, q);
-#ifdef QSS_PARALLEL
-    }
-#endif
+    QSS_PARALLEL_EXP(if (map[inf[i]] != NOT_ASSIGNED) {)
+      QSS_FUNC_INVK(LIQSS3, recomputeNextTime)(quantizer, inf[i], t, nTime, x, lqu, q);
+    QSS_PARALLEL_EXP(
+    })
   }
 }
 
@@ -192,11 +165,7 @@ void LIQSS3_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, d
   }
 }
 
-#ifdef QSS_PARALLEL
-void LIQSS3_PAR_updateQuantizedState(QA_quantizer quantizer, int var, double *q, double *x, double *lqu)
-#else
-void LIQSS3_updateQuantizedState(QA_quantizer quantizer, int var, double *q, double *x, double *lqu)
-#endif
+void QSS_FUNC_DECL(LIQSS3, updateQuantizedState)(QA_quantizer quantizer, int var, double *q, double *x, double *lqu)
 {
   int cf0 = var * 4, cf1 = cf0 + 1, cf2 = cf1 + 1, cf3 = cf2 + 1;
   double dx, elapsed;

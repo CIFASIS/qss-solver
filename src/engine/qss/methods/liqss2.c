@@ -25,11 +25,7 @@
 #include <qss/qss_data.h>
 #include <qss/qss_quantizer.h>
 
-#ifdef QSS_PARALLEL
-void LIQSS2_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
-#else
-void LIQSS2_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
-#endif
+void QSS_FUNC_DECL(LIQSS2, init)(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 {
   int states = simData->states;
   int i;
@@ -55,29 +51,14 @@ void LIQSS2_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
     quantizer->state->u1[i] = 0;
     quantizer->state->flag2[i] = 0;
   }
-#ifdef QSS_PARALLEL
-  quantizer->state->qMap = simData->lp->qMap;
-  quantizer->ops->recomputeNextTimes = LIQSS2_PAR_recomputeNextTimes;
-  quantizer->ops->recomputeNextTime = LIQSS2_PAR_recomputeNextTime;
-  quantizer->ops->nextTime = LIQSS2_PAR_nextTime;
-  quantizer->ops->updateQuantizedState = LIQSS2_PAR_updateQuantizedState;
-#else
-  quantizer->ops->recomputeNextTimes = LIQSS2_recomputeNextTimes;
-  quantizer->ops->recomputeNextTime = LIQSS2_recomputeNextTime;
-  quantizer->ops->nextTime = LIQSS2_nextTime;
-  quantizer->ops->updateQuantizedState = LIQSS2_updateQuantizedState;
-#endif
+  QSS_ASSIGN_QUANTIZER_OPS(LIQSS2)
   quantizer->state->minStep = simData->params->minStep;
   quantizer->state->lSimTime = simTime;
   quantizer->state->nSZ = simData->nSZ;
   quantizer->state->SZ = simData->SZ;
 }
 
-#ifdef QSS_PARALLEL
-void LIQSS2_PAR_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
-#else
-void LIQSS2_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
-#endif
+void QSS_FUNC_DECL(LIQSS2, recomputeNextTime)(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
 {
   int cf0 = var * 3, cf1 = cf0 + 1, cf2 = cf1 + 1;
   double *a = quantizer->state->a;
@@ -141,8 +122,6 @@ void LIQSS2_recomputeNextTime(QA_quantizer quantizer, int var, double t, double 
       if (fabs(err1) > 3 * fabs(lqu[var])) nTime[var] = t + quantizer->state->finTime * quantizer->state->minStep;
     }
   } else {
-    // if (fabs(aold-a[var])>fabs(a[var])/2) nTime[var] = t + quantizer->state->finTime * quantizer->state->minStep*rand()/RAND_MAX;;
-    //      nTime[var] = t + quantizer->state->finTime * quantizer->state->minStep*0;
     if (self) {
       flag2[var] = 2;
       nTime[var] = t;
@@ -150,32 +129,20 @@ void LIQSS2_recomputeNextTime(QA_quantizer quantizer, int var, double t, double 
   }
 }
 
-#ifdef QSS_PARALLEL
-void LIQSS2_PAR_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
-#else
-void LIQSS2_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
-#endif
+void QSS_FUNC_DECL(LIQSS2, recomputeNextTimes)(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu,
+                                               double *q)
 {
   int i;
-#ifdef QSS_PARALLEL
-  int *map = quantizer->state->qMap;
-#endif
+  QSS_PARALLEL_EXP(int *map = quantizer->state->qMap;)
   for (i = 0; i < vars; i++) {
-#ifdef QSS_PARALLEL
-    if (map[inf[i]] != NOT_ASSIGNED) {
-#endif
-      LIQSS2_recomputeNextTime(quantizer, inf[i], t, nTime, x, lqu, q);
-#ifdef QSS_PARALLEL
-    }
-#endif
+    QSS_PARALLEL_EXP(if (map[inf[i]] != NOT_ASSIGNED) {)
+      QSS_FUNC_INVK(LIQSS2, recomputeNextTime)(quantizer, inf[i], t, nTime, x, lqu, q);
+    QSS_PARALLEL_EXP(
+    })
   }
 }
 
-#ifdef QSS_PARALLEL
-void LIQSS2_PAR_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)
-#else
-void LIQSS2_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)
-#endif
+void QSS_FUNC_DECL(LIQSS2, nextTime)(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)
 {
   int cf2 = var * 3 + 2;
   if (x[cf2] == 0)
@@ -184,11 +151,7 @@ void LIQSS2_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, d
     nTime[var] = t + sqrt(fabs(lqu[var] / x[cf2]));
 }
 
-#ifdef QSS_PARALLEL
-void LIQSS2_PAR_updateQuantizedState(QA_quantizer quantizer, int var, double *q, double *x, double *lqu)
-#else
-void LIQSS2_updateQuantizedState(QA_quantizer quantizer, int var, double *q, double *x, double *lqu)
-#endif
+void QSS_FUNC_DECL(LIQSS2, updateQuantizedState)(QA_quantizer quantizer, int var, double *q, double *x, double *lqu)
 {
   double t = quantizer->state->lSimTime->time;
   double *a = quantizer->state->a;
