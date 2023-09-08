@@ -41,7 +41,10 @@ RunDlg::RunDlg(QWidget *parent) : QDialog(parent)
   _debugChk->setCheckState(Qt::Unchecked);
   on__parallel_currentIndexChanged(_parallel->currentIndex());
   connect(_test_methods_cbx, &QCheckBox::stateChanged, this, &RunDlg::updateTestMethods);
-  updateTestMethods(_test_methods_cbx->checkState());
+  // Not needed for the moment, if adding test methods we should enable it.
+  // updateTestMethods(_test_methods_cbx->checkState());
+  _test_methods_cbx->setVisible(false);
+  _test_methods_lbl->setVisible(false);
 }
 
 void RunDlg::on__showAll_stateChanged(int state)
@@ -295,9 +298,9 @@ QString RunDlg::getDtSynchString(int idx)
 void RunDlg::updateTestMethods(int state)
 {
   bool hide = state == Qt::Unchecked;
-  QListView *solver_list = qobject_cast<QListView *>(_solver->view());
-  solver_list->setRowHidden(getSolverIdx("mLIQSS"), hide);
-  solver_list->setRowHidden(getSolverIdx("mLIQSS2"), hide);
+  // To hide a test method use:
+  // QListView *solver_list = qobject_cast<QListView *>(_solver->view());
+  // solver_list->setRowHidden(getSolverIdx("my_test_method"), hide);
   if (hide) {
     setSolver("QSS");
   }
