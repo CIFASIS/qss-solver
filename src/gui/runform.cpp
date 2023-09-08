@@ -125,7 +125,6 @@ int RunDlg::getSolverIdx(QString str)
   if (str.trimmed() == "IDA") return 13;
   if (str.trimmed() == "mLIQSS") return 14;
   if (str.trimmed() == "mLIQSS2") return 15;
-  if (str.trimmed() == "mLIQSS3") return 16;
   return -1;
 }
 
@@ -166,9 +165,6 @@ QString RunDlg::getSolverString(int idx)
   case 15:
     _test_methods_cbx->setCheckState(Qt::Checked);
     return "mLIQSS2";
-  case 16:
-    _test_methods_cbx->setCheckState(Qt::Checked);
-    return "mLIQSS3";
   }
   return QString();
 }
@@ -302,7 +298,6 @@ void RunDlg::updateTestMethods(int state)
   QListView *solver_list = qobject_cast<QListView *>(_solver->view());
   solver_list->setRowHidden(getSolverIdx("mLIQSS"), hide);
   solver_list->setRowHidden(getSolverIdx("mLIQSS2"), hide);
-  solver_list->setRowHidden(getSolverIdx("mLIQSS3"), hide);
   if (hide) {
     setSolver("QSS");
   }
