@@ -171,13 +171,6 @@ QA_quantizer QA_Quantizer(QSS_data simData, QSS_time simTime)
       mLIQSS2_init(p, simData, simTime);
     }
     break;
-  case SD_mLIQSS3:
-    if (simData->params->lps > 0) {
-      mLIQSS3_PAR_init(p, simData, simTime);
-    } else {
-      mLIQSS3_init(p, simData, simTime);
-    }
-    break;
   default:
     return NULL;
   }
