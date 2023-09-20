@@ -3,6 +3,9 @@
 double __math__exponential(double x);
 
 
+double __math__fabs(double x);
+
+
 double __math__getRandomMarkedValue(double x);
 
 
