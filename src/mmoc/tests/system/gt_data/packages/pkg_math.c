@@ -1,6 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
-#include "/home/joaquin/work/qss-solver/packages/pkg_math.h"
+#include "./system/test_data/packages/pkg_math.h"
 #include <mmo_math.h>
 double __math__exponential(double x)
 {
