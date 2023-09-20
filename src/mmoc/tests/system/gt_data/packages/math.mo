@@ -1,5 +1,11 @@
 package math
 
+function fabs
+    input Real x;
+    output Real y;
+    external "C" y = fabs(x);
+  end fabs;
+
 function random
     input Real x;
     output Real y;

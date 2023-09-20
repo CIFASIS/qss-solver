@@ -1,12 +1,20 @@
 #include <math.h>
 #include <stdlib.h>
-#include "./system/test_data/packages/pkg_math.h"
+#include "/home/joaquin/work/qss-solver/packages/pkg_math.h"
 #include <mmo_math.h>
 double __math__exponential(double x)
 {
 double y;
 
 y = mmo_exponential(x);
+return y;
+}
+
+double __math__fabs(double x)
+{
+double y;
+
+y = fabs(x);
 return y;
 }
 
