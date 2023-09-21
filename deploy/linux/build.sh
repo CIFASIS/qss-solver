@@ -15,7 +15,7 @@
 #         NOTES: --- 
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 4.2.1
+#       VERSION: 4.3.0
 #===================================================================================
 
 rm -rf qss-solver-*.deb
