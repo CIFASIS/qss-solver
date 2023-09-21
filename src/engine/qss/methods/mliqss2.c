@@ -395,79 +395,82 @@ void QSS_FUNC_DECL(mLIQSS2, updateQuantizedState)(QA_quantizer quantizer, int i,
   } else {
     int j, j0, j1, j2;
     QSS_FUNC_INVK(mLIQSS2, BEStepSingle)(quantizer, i, x, q, lqu, &h);
-    j = QSS_FUNC_INVK(mLIQSS2, findMaxInf)(quantizer, q, x, i);
-    if (j != -1) {
-      double qj_proy[2], dx_i, ddx_i, qi_prev[2], qj_prev[2];
-      j0 = j * 3;
-      j1 = j0 + 1;
-      j2 = j1 + 1;
+    bool state_step = quantizer->state->lSimTime->type == ST_State;
+    if (state_step) {
+      j = QSS_FUNC_INVK(mLIQSS2, findMaxInf)(quantizer, q, x, i);
+      if (j != -1) {
+        double qj_proy[2], dx_i, ddx_i, qi_prev[2], qj_prev[2];
+        j0 = j * 3;
+        j1 = j0 + 1;
+        j2 = j1 + 1;
 
-      double ddx_j = A[j][i] * q[i1] + A[j][j] * q[j1] + U1[j][i];
-      elapsed = t - tx[j];
-      double x_j0 = x[j0] + elapsed * x[j1] + elapsed * elapsed * x[j2];
-      qj_proy[0] = x_j0 - sign(ddx_j) * 2 * lqu[j];
-      qj_proy[1] = (A[j][i] * (q[i0] + h * q[i1]) + A[j][j] * q[j0] + U0[j][i] + h * U1[j][i]) / (1 - h * A[j][j]);
+        double ddx_j = A[j][i] * q[i1] + A[j][j] * q[j1] + U1[j][i];
+        elapsed = t - tx[j];
+        double x_j0 = x[j0] + elapsed * x[j1] + elapsed * elapsed * x[j2];
+        qj_proy[0] = x_j0 - sign(ddx_j) * 2 * lqu[j];
+        qj_proy[1] = (A[j][i] * (q[i0] + h * q[i1]) + A[j][j] * q[j0] + U0[j][i] + h * U1[j][i]) / (1 - h * A[j][j]);
 
-      elapsed = t - tq[j];
-      double qj_prev_proy = q[j0] + elapsed * q[j1];
-      U0[i][j] = U0[i][i] - A[i][j] * qj_prev_proy;
-      dx_i = A[i][i] * q[i0] + A[i][j] * qj_proy[0] + U0[i][j];
-      U1[i][j] = U1[i][i] - A[i][j] * q[j1];
-      ddx_i = A[i][i] * q[i1] + A[i][j] * qj_proy[1] + U1[i][j];
-      double dx_i_change = fabs(x[i1] - dx_i);
-      double dx_i_mean = fabs(x[i1] + dx_i) / 2;
-      double ddx_i_change = fabs(2 * x[i2] - ddx_i);
-      double ddx_i_mean = fabs(2 * x[i2] + ddx_i) / 2;
-      if ((dx_i_change > dx_i_mean) || (ddx_i_change > ddx_i_mean)) {
-        qi_prev[0] = q[i0];
-        qi_prev[1] = q[i1];
-        qj_prev[0] = q[j0];
-        qj_prev[1] = q[j1];
-        qj[j0] = INF;
-        qj[j1] = INF;
-        h = quantizer->state->finTime - t;
-        QSS_FUNC_INVK(mLIQSS2, BEStep)(quantizer, x, q, qj, i, j, h, x_j0);
-        if (fabs(q[i0] - x[i0]) < 3 * lqu[i] && fabs(qj[j0] - x_j0) < 3 * lqu[j]) {
-          sim_step[j] = TRUE;
-        } else {
-          if (fabs(q[i0] - x[i0]) / lqu[i] > fabs(qj[j0] - x_j0) / lqu[j]) {
-            h = h / sqrt(2 * fabs(q[i0] - x[i0]) / lqu[i]);
-          } else {
-            h = h / sqrt(2 * fabs(qj[j0] - x_j0) / lqu[j]);
-          }
-          h /= 2;
+        elapsed = t - tq[j];
+        double qj_prev_proy = q[j0] + elapsed * q[j1];
+        U0[i][j] = U0[i][i] - A[i][j] * qj_prev_proy;
+        dx_i = A[i][i] * q[i0] + A[i][j] * qj_proy[0] + U0[i][j];
+        U1[i][j] = U1[i][i] - A[i][j] * q[j1];
+        ddx_i = A[i][i] * q[i1] + A[i][j] * qj_proy[1] + U1[i][j];
+        double dx_i_change = fabs(x[i1] - dx_i);
+        double dx_i_mean = fabs(x[i1] + dx_i) / 2;
+        double ddx_i_change = fabs(2 * x[i2] - ddx_i);
+        double ddx_i_mean = fabs(2 * x[i2] + ddx_i) / 2;
+        if ((dx_i_change > dx_i_mean) || (ddx_i_change > ddx_i_mean)) {
+          qi_prev[0] = q[i0];
+          qi_prev[1] = q[i1];
+          qj_prev[0] = q[j0];
+          qj_prev[1] = q[j1];
+          qj[j0] = INF;
+          qj[j1] = INF;
+          h = quantizer->state->finTime - t;
           QSS_FUNC_INVK(mLIQSS2, BEStep)(quantizer, x, q, qj, i, j, h, x_j0);
           if (fabs(q[i0] - x[i0]) < 3 * lqu[i] && fabs(qj[j0] - x_j0) < 3 * lqu[j]) {
             sim_step[j] = TRUE;
           } else {
-            if (ddx_i != 0 && ddx_j != 0) {
-              if (fabs(lqu[i] / ddx_i) < fabs(lqu[j] / ddx_j)) {
-                h = sqrt(2 * fabs(lqu[i] / ddx_i));
-              } else {
-                h = sqrt(2 * fabs(lqu[j] / ddx_j));
-              }
-            } else if (ddx_i != 0) {
-              h = sqrt(2 * fabs(lqu[i] / ddx_i));
-            } else if (ddx_j != 0) {
-              h = sqrt(2 * fabs(lqu[j] / ddx_j));
+            if (fabs(q[i0] - x[i0]) / lqu[i] > fabs(qj[j0] - x_j0) / lqu[j]) {
+              h = h / sqrt(2 * fabs(q[i0] - x[i0]) / lqu[i]);
+            } else {
+              h = h / sqrt(2 * fabs(qj[j0] - x_j0) / lqu[j]);
             }
             h /= 2;
             QSS_FUNC_INVK(mLIQSS2, BEStep)(quantizer, x, q, qj, i, j, h, x_j0);
             if (fabs(q[i0] - x[i0]) < 3 * lqu[i] && fabs(qj[j0] - x_j0) < 3 * lqu[j]) {
               sim_step[j] = TRUE;
-
             } else {
-              h /= 10.0;
+              if (ddx_i != 0 && ddx_j != 0) {
+                if (fabs(lqu[i] / ddx_i) < fabs(lqu[j] / ddx_j)) {
+                  h = sqrt(2 * fabs(lqu[i] / ddx_i));
+                } else {
+                  h = sqrt(2 * fabs(lqu[j] / ddx_j));
+                }
+              } else if (ddx_i != 0) {
+                h = sqrt(2 * fabs(lqu[i] / ddx_i));
+              } else if (ddx_j != 0) {
+                h = sqrt(2 * fabs(lqu[j] / ddx_j));
+              }
+              h /= 2;
               QSS_FUNC_INVK(mLIQSS2, BEStep)(quantizer, x, q, qj, i, j, h, x_j0);
               if (fabs(q[i0] - x[i0]) < 3 * lqu[i] && fabs(qj[j0] - x_j0) < 3 * lqu[j]) {
                 sim_step[j] = TRUE;
+
               } else {
-                q[i0] = qi_prev[0];
-                q[i1] = qi_prev[1];
-                q[j0] = qj_prev[0];
-                q[j1] = qj_prev[1];
-                qj[j0] = INF;
-                qj[j1] = INF;
+                h /= 10.0;
+                QSS_FUNC_INVK(mLIQSS2, BEStep)(quantizer, x, q, qj, i, j, h, x_j0);
+                if (fabs(q[i0] - x[i0]) < 3 * lqu[i] && fabs(qj[j0] - x_j0) < 3 * lqu[j]) {
+                  sim_step[j] = TRUE;
+                } else {
+                  q[i0] = qi_prev[0];
+                  q[i1] = qi_prev[1];
+                  q[j0] = qj_prev[0];
+                  q[j1] = qj_prev[1];
+                  qj[j0] = INF;
+                  qj[j1] = INF;
+                }
               }
             }
           }
