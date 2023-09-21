@@ -1,5 +1,16 @@
 ## Changelog
 
+## [4.3.0] - 21-09-2022
+
+### Added
+- **mLIQSS and mLIQSS2** methods are now supported.
+
+### Changed
+- Fixed input events code generation for non-autonomous equations. 
+
+### Removed
+- **mLIQSS3** is deprecated.
+
 ## [4.2.1] - 28-06-2023
 
 ### Added

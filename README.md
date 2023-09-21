@@ -1,4 +1,4 @@
-## QSS Solver 4.2.1
+## QSS Solver 4.3.0
 
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
@@ -219,6 +219,17 @@ The makefile script accepts the following targets:
 
 ## Changelog
 
+## [4.3.0] - 21-09-2022
+
+### Added
+- **mLIQSS and mLIQSS2** methods are now supported.
+
+### Changed
+- Fixed input events code generation for non-autonomous equations. 
+
+### Removed
+- **mLIQSS3** is deprecated.
+
 ## [4.2.1] - 28-06-2023
 
 ### Added
@@ -226,18 +237,6 @@ The makefile script accepts the following targets:
 
 ### Changed
 - Fix mLIQSS recompute next time to only update the Jacobian approximation when the influencer is a state variable.
-
-## [4.2.0] - 01-06-2023
-
-### Added
-- Allow quoted Q-IDENT variable definition in MicroModelica.
-- Adapt reinit statements and for definition in algorithm sections to new Modelica specification.
-- Added code generation for pure algebraic recursive dependencies.
-- Added mLIQSS methods as experimental, they can be anebled from extended settings on the GUI.
-- Reinit state assignments are now computed using the current state value instead of the quantized value.
-
-### Changed
-- Fix terminate command code generation.
 
 ## Licensing
 
