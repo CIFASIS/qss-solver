@@ -41,7 +41,10 @@ RunDlg::RunDlg(QWidget *parent) : QDialog(parent)
   _debugChk->setCheckState(Qt::Unchecked);
   on__parallel_currentIndexChanged(_parallel->currentIndex());
   connect(_test_methods_cbx, &QCheckBox::stateChanged, this, &RunDlg::updateTestMethods);
-  updateTestMethods(_test_methods_cbx->checkState());
+  // Not needed for the moment, if adding test methods we should enable it.
+  // updateTestMethods(_test_methods_cbx->checkState());
+  _test_methods_cbx->setVisible(false);
+  _test_methods_lbl->setVisible(false);
 }
 
 void RunDlg::on__showAll_stateChanged(int state)
@@ -125,7 +128,6 @@ int RunDlg::getSolverIdx(QString str)
   if (str.trimmed() == "IDA") return 13;
   if (str.trimmed() == "mLIQSS") return 14;
   if (str.trimmed() == "mLIQSS2") return 15;
-  if (str.trimmed() == "mLIQSS3") return 16;
   return -1;
 }
 
@@ -166,9 +168,6 @@ QString RunDlg::getSolverString(int idx)
   case 15:
     _test_methods_cbx->setCheckState(Qt::Checked);
     return "mLIQSS2";
-  case 16:
-    _test_methods_cbx->setCheckState(Qt::Checked);
-    return "mLIQSS3";
   }
   return QString();
 }
@@ -299,10 +298,9 @@ QString RunDlg::getDtSynchString(int idx)
 void RunDlg::updateTestMethods(int state)
 {
   bool hide = state == Qt::Unchecked;
-  QListView *solver_list = qobject_cast<QListView *>(_solver->view());
-  solver_list->setRowHidden(getSolverIdx("mLIQSS"), hide);
-  solver_list->setRowHidden(getSolverIdx("mLIQSS2"), hide);
-  solver_list->setRowHidden(getSolverIdx("mLIQSS3"), hide);
+  // To hide a test method use:
+  // QListView *solver_list = qobject_cast<QListView *>(_solver->view());
+  // solver_list->setRowHidden(getSolverIdx("my_test_method"), hide);
   if (hide) {
     setSolver("QSS");
   }

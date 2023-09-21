@@ -162,11 +162,6 @@
           <string>mLIQSS2</string>
          </property>
         </item>
-        <item>
-         <property name="text">
-          <string>mLIQSS3</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item row="1" column="2">

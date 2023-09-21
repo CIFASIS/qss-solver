@@ -69,7 +69,7 @@ void QSS_SEQ_integrate(SIM_simulator simulate)
   double *q = qssData->q;
   double *a = qssData->alg;
   int **SD = qssData->SD;
-  int *TD = qssData->TD;
+  int *TD = qssData->IT;
   int cf0, infCf0;
   const int qOrder = xOrder - 1;
   int nSZ, nLHSSt, nRHSSt, nHD, nHZ;
@@ -113,12 +113,12 @@ void QSS_SEQ_integrate(SIM_simulator simulate)
       cf0 = index * coeffs;
       elapsed = t - tx[index];
       integrateState(cf0, elapsed, x, xOrder);
-      tx[index] = t;
       lqu[index] = dQRel[index] * fabs(x[cf0]);
       if (lqu[index] < dQMin[index]) {
         lqu[index] = dQMin[index];
       }
       QA_updateQuantizedState(quantizer, index, q, x, lqu);
+      tx[index] = t;
       tq[index] = t;
       QA_nextTime(quantizer, index, t, nextStateTime, x, lqu);
       nSD = qssData->nSD[index];

@@ -534,7 +534,7 @@ void QSS_PAR_integrator(QSS_simulator simulator)
   double *x = qssData->x;
   double *q = qssData->q;
   int **SD = qssData->SD;
-  int *TD = qssData->TD;
+  int *TD = qssData->IT;
   const QSS_idxMap qMap = lp->qMap;
   int id = simulator->id;
   IBX_inbox inbox = simulator->inbox;

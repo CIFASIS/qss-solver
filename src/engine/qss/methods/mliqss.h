@@ -25,6 +25,6 @@
 
 QSS_DECLARE_QUANTIZER_INTERFACE(mLIQSS)
 
-QSS_INT_FUNC_DECL(void, mLIQSS, solver2x2_h, QA_quantizer quantizer, double *x, double *q, double *next, int i, int j, double h, double xj0)
+QSS_INT_FUNC_DECL(void, mLIQSS, BEStep, QA_quantizer quantizer, double *x, double *q, double *next, int i, int j, double h, double xj0)
 
-QSS_INT_FUNC_DECL(void, mLIQSS, old_dx, QA_quantizer quantizer, int i, double t, int nSD, double *x, double *tx)
+QSS_INT_FUNC_DECL(void, mLIQSS, prevDx, QA_quantizer quantizer, int i, double t, int nSD, double *x, double *tx)

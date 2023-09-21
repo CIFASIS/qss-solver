@@ -397,9 +397,9 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, i
     p->DH = NULL;
   }
   if (inputs) {
-    p->TD = (int *)malloc(inputs * sizeof(int));
+    p->IT = (int *)malloc(inputs * sizeof(int));
   } else {
-    p->TD = NULL;
+    p->IT = NULL;
   }
   if (discretes) {
     cleanDoubleVector(p->d, 0, discretes);
@@ -569,12 +569,12 @@ void QSS_dataCopyStructure(QSS_data data, QSS_data p)
       p->HZ = NULL;
     }
     if (inputs) {
-      p->TD = (int *)malloc(inputs * sizeof(int));
+      p->IT = (int *)malloc(inputs * sizeof(int));
       for (i = 0; i < inputs; i++) {
-        p->TD[i] = data->TD[i];
+        p->IT[i] = data->IT[i];
       }
     } else {
-      p->TD = NULL;
+      p->IT = NULL;
     }
     p->params = SD_copyParameters(data->params);
   } else {
@@ -610,9 +610,9 @@ void QSS_dataCopyStructure(QSS_data data, QSS_data p)
       p->HZ = NULL;
     }
     if (inputs) {
-      p->TD = data->TD;
+      p->IT = data->IT;
     } else {
-      p->TD = NULL;
+      p->IT = NULL;
     }
     p->params = data->params;
   }
@@ -823,7 +823,7 @@ void QSS_freeData(QSS_data data)
     free(data->nHZ);
   }
   if (data->inputs) {
-    free(data->TD);
+    free(data->IT);
   }
   for (i = 0; i < states; i++) {
     if (data->SD[i] != NULL) {

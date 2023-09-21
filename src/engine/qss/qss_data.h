@@ -71,6 +71,7 @@ typedef void (*QSS_fmodel)(double *, double *, double *, double, double *, int *
 
 /**
  * @enum QSS_SchedulerType
+ *
  * @brief QSS simulator scheduler type definition.
  *
  * @var QSS_SchedulerType::ST_Linear
@@ -87,6 +88,7 @@ typedef enum { ST_Linear, ST_Binary, ST_Random } QSS_SchedulerType;
 
 /**
  * @enum QSS_StepType
+ *
  * @brief QSS simulation step type definition.
  *
  * @var QSS_StepType::ST_State
@@ -189,7 +191,7 @@ struct QSS_data_ {
   int *nSH;
   int *nHH;
   int *nDH;
-  int *TD;
+  int *IT;
   int *BDF;
   int *BDFMap;
   int *BDFOutputs;

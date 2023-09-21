@@ -19,29 +19,8 @@
 
 #pragma once
 
+#include <common/macros.h>
 #include <qss/qss_data.h>
 #include <qss/qss_quantizer.h>
 
-void QSS_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
-    __attribute__((hot));
-
-void QSS_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
-    __attribute__((hot));
-
-void QSS_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu) __attribute__((hot));
-
-void QSS_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu) __attribute__((hot));
-
-void QSS_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime);
-
-void QSS_PAR_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu, double *q)
-    __attribute__((hot));
-
-void QSS_PAR_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)
-    __attribute__((hot));
-
-void QSS_PAR_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu) __attribute__((hot));
-
-void QSS_PAR_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu) __attribute__((hot));
-
-void QSS_PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime);
+QSS_DECLARE_QUANTIZER_INTERFACE(QSS)

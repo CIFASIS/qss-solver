@@ -57,7 +57,6 @@ QA_quantizerState QA_QuantizerState()
   p->flag4 = NULL;
   p->BDF = NULL;
   p->SZ = NULL;
-  p->dq = NULL;
   p->a = NULL;
   p->oldDx = NULL;
   p->qAux = NULL;
@@ -80,14 +79,12 @@ QA_quantizerState QA_QuantizerState()
   p->sts = 0;
   p->nSD = NULL;
   p->SD = NULL;
-  p->change = NULL;
-  p->cont = 0;
+  p->sim_step = NULL;
   p->S = NULL;
   p->A = NULL;
   p->U0 = NULL;
   p->U1 = NULL;
   p->qj = NULL;
-  p->next = NULL;
   return p;
 }
 
@@ -174,13 +171,6 @@ QA_quantizer QA_Quantizer(QSS_data simData, QSS_time simTime)
       mLIQSS2_init(p, simData, simTime);
     }
     break;
-  case SD_mLIQSS3:
-    if (simData->params->lps > 0) {
-      mLIQSS3_PAR_init(p, simData, simTime);
-    } else {
-      mLIQSS3_init(p, simData, simTime);
-    }
-    break;
   default:
     return NULL;
   }
@@ -189,9 +179,6 @@ QA_quantizer QA_Quantizer(QSS_data simData, QSS_time simTime)
 
 void QA_freeQuantizerState(QA_quantizerState state)
 {
-  if (state->dq != NULL) {
-    free(state->dq);
-  }
   if (state->a != NULL) {
     free(state->a);
   }
@@ -270,11 +257,8 @@ void QA_freeQuantizerState(QA_quantizerState state)
     }
     free(state->U1);
   }
-  if (state->next != NULL) {
-    free(state->next);
-  }
-  if (state->change != NULL) {
-    free(state->change);
+  if (state->sim_step != NULL) {
+    free(state->sim_step);
   }
   if (state->qj != NULL) {
     free(state->qj);

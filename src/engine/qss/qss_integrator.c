@@ -379,7 +379,7 @@ void QSS_SEQ_initialize(SIM_simulator simulate)
 #endif
   forUL = qssData->inputs;
   for (i = 0; i < forUL; i++) {
-    j = qssData->TD[i];
+    j = qssData->IT[i];
     FRW_nextInputTime(frw, qssModel, qssData, qssTime, 0, j, i);
   }
 #ifdef DEBUG
@@ -750,7 +750,7 @@ void QSS_PAR_initializeSimulation(QSS_simulator simulator)
 #endif
   forUL = qssData->inputs;
   for (i = 0; i < forUL; i++) {
-    j = qssData->TD[i];
+    j = qssData->IT[i];
     if (lp->qMap[j] > NOT_ASSIGNED) {
       FRW_nextInputTime(frw, qssModel, qssData, qssTime, 0, j, i);
     }

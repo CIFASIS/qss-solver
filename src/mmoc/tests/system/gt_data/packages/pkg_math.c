@@ -10,6 +10,14 @@ y = mmo_exponential(x);
 return y;
 }
 
+double __math__fabs(double x)
+{
+double y;
+
+y = fabs(x);
+return y;
+}
+
 double __math__getRandomMarkedValue(double x)
 {
 double y;
