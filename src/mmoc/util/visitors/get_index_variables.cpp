@@ -42,7 +42,7 @@ multimap<std::string, int> GetIndexVariables::foldTraverseElement(AST_Expression
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "get_index_variables.cpp:41 %s", cr->name().c_str());
       break;
     }
-    if (_in_index_list) {
+    if (_in_index_list && !var->isConstant()) {
       ret.insert(std::make_pair(cr->name(), _pos));
     }
     bool parsing_parameter = _in_index_list && var->isParameter();
