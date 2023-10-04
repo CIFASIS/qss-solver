@@ -28,6 +28,7 @@ RM	 := rm -rf
 
 default: mmoc 
 
+include 3rd-party/Makefile.include
 include ast/Makefile.include
 include deps/Makefile.include
 include generator/Makefile.include
@@ -52,7 +53,7 @@ DEPS	=\
 	$(DEPS_GRAPH_OBJ:.o=.d)\
 	$(DEPS_BUILDER_OBJ:.o=.d)
 
-mmoc: | $(AST_OBJ) $(UTIL_OBJ) $(DEPS_OBJ) $(IR_OBJ) $(GENERATOR_OBJ) 
+mmoc: lib_sbg | $(AST_OBJ) $(UTIL_OBJ) $(DEPS_OBJ) $(IR_OBJ) $(GENERATOR_OBJ) 
 	$(CXX) $(INCLUDE) $(CXXFLAGS) main.cpp -o $(TARGET) $(AST_OBJ) $(PARSER_OBJ) $(GENERATOR_OBJ) $(IR_OBJ) $(UTIL_OBJ) $(VISITOR_OBJ) $(DEPS_OBJ) $(DEPS_GRAPH_OBJ) $(DEPS_BUILDER_OBJ) $(LIB) 
 
 test: 
@@ -79,7 +80,10 @@ clean:
 	$(RM) $(USR_DIR)
 
 help:
-	@echo "make MODE=<Debug|Release>"
+	@echo "make MODE=<Debug|Release> sbg_branch=<BRANCH_NAME> build_sbg=<True|False> repo_checkout=<ssh|https>"
 	@echo "Default values:"
 	@echo ""
 	@echo "MODE=Debug"
+	@echo "sbg_branch=sb-graph-dev"
+	@echo "build_sbg=True"
+	@echo "repo_checkout=ssh"
