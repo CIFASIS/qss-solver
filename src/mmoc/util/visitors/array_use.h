@@ -36,7 +36,7 @@ class ArrayUse : public AST_Expression_Visitor<bool> {
 
 class StatementArrayUse : public AST_Statement_Visitor<bool, bool, ArrayUse> {
   public:
-  StatementArrayUse() : AST_Statement_Visitor(ArrayUse()){};
+  StatementArrayUse() : AST_Statement_Visitor(ArrayUse(), false){};
   ~StatementArrayUse() = default;
 
   private:
