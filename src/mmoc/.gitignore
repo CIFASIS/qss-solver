@@ -22,3 +22,9 @@ tags
 
 # Local ChangeLog.
 ChangeLog
+
+# 3rd-party lib files.
+3rd-party/boost/include/
+3rd-party/boost/lib/
+3rd-party/sbg/sb-graph-dev/
+3rd-party/sbg/*.tar.gz

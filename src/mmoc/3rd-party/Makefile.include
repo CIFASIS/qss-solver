@@ -1,0 +1,36 @@
+# Target variables
+sbg_branch ?= sb-graph-dev
+build_sbg ?= True
+repo_checkout ?= ssh
+
+# The Directories, Source, Includes, Objects, Binary
+3RD_PARTY_DIR	:= $(SRC_DIR)/3rd-party
+SBG_LIB_PATH    := $(3RD_PARTY_DIR)/sbg
+SBG_DEV         := sb-graph-dev
+SBG_LIB         := $(SBG_DEV).tar.gz
+BOOST_LIB_PATH  := $(3RD_PARTY_DIR)/boost
+BOOST_LIB       := boost-1.81.0.tar.xz
+INCLUDE  += -I$(SBG_LIB_PATH)/$(SBG_DEV)/usr/include -I$(BOOST_LIB_PATH)/include 
+LIB      += -L$(SBG_LIB_PATH)/$(SBG_DEV)/usr/lib -lsbgraph
+
+# Rules
+lib_sbg: lib-boost | create-folders 
+ifeq ("$(wildcard $(SBG_LIB_PATH)/$(SBG_DEV))","")
+	make update_sbg
+endif
+ifeq ($(build_sbg), True)
+	cd $(SBG_LIB_PATH)/$(SBG_DEV); autoconf
+	cd $(SBG_LIB_PATH)/$(SBG_DEV); ./configure
+	cd $(SBG_LIB_PATH)/$(SBG_DEV); make boost_libdir=../../boost
+	cd $(SBG_LIB_PATH)/$(SBG_DEV); mkdir -p usr
+	cd $(SBG_LIB_PATH)/$(SBG_DEV); make install prefix=./usr
+endif
+
+lib-boost:
+ifeq ("$(wildcard $(BOOST_LIB_PATH)/include)","")
+	cd $(BOOST_LIB_PATH); tar -xvf $(BOOST_LIB)
+endif
+
+update_sbg:
+	cd $(SBG_LIB_PATH); ./update.py --branch_name $(sbg_branch) --repo_checkout $(repo_checkout)
+	cd $(SBG_LIB_PATH); tar -zxvf $(SBG_LIB)

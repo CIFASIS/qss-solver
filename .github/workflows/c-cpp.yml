@@ -49,7 +49,7 @@ jobs:
           
     - name: Build
       working-directory: ./src
-      run: make
+      run: make repo_checkout=https
 
     - name: Install
       working-directory: ./src
