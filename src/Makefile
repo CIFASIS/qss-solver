@@ -18,7 +18,7 @@ mmo-interfaces: create-folders
 	@cd interfaces/sbml &&  $(MAKE) MODE=$(MODE) -j $(CORES)
 	@echo Done
 
-qss-engine: create-folders
+qss-engine: create-folders  lib-gtest
 	@echo BUILDING QSS LIBRARIES DEPS
 	@cd engine && $(MAKE) cvode
 	@cd engine && $(MAKE) ida
@@ -36,11 +36,14 @@ qss-user-libs: create-folders qss-engine
 	@echo Done
 
 mmo-compiler: create-folders lib-gtest  
+	@echo BUILDING MICROMODELICA C COMPILER DEPS
+	@cd mmoc && $(MAKE) MODE=$(MODE) lib_sbg 
+	@echo Done
 	@echo BUILDING MICROMODELICA C COMPILER
 	@cd mmoc && $(MAKE) MODE=$(MODE) -j $(CORES) 
 	@echo Done
 
-qss-solver-gui: create-folders 
+qss-solver-gui: create-folders lib-gtest
 	@echo BUILDING MMO EDITOR
 	@cd gui && $(MAKE) -f gui.makefile MODE=$(MODE) -j $(CORES)     
 	@echo Done
