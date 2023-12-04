@@ -82,15 +82,17 @@ void Files::makefile()
   _writer->print("TARGET    := " + _fname);
   _writer->print("");
   _writer->print("#Flags, Libraries and Includes");
-  includes << "LDFLAGS    :=-L " << Utils::instance().environmentVariable("MMOC_LIBS");
+  includes << "LDFLAGS    := -rdynamic -L " << Utils::instance().environmentVariable("MMOC_LIBS");
+  includes << " -Wl,-rpath=" << Utils::instance().environmentVariable("MMOC_LIBS");
   SymbolTable tmp = _model.libraryDirectories();
   SymbolTable::iterator it;
   for (string l = tmp.begin(it); !tmp.end(it); l = tmp.next(it)) {
     includes << " -L " << l;
+    includes << " -Wl,-rpath=" << l;
   }
   includes << " -L " << Utils::instance().environmentVariable("MMOC_PATH") << "/usr/lib";
   _writer->print(includes);
-  buffer << "LIBS   :=" << (_flags.debug() ? " -lqssd -ltimestepd" : " -lqss -ltimestep");
+  buffer << "LIBS   :=" << (_flags.debug() ? " -lqssd -ltimestepd -lretqssd" : " -lqss -ltimestep -lretqss");
   _writer->print(buffer);
   buffer << "INC    := -I" + Utils::instance().environmentVariable("MMOC_ENGINE");
   tmp = _model.includeDirectories();
@@ -161,10 +163,8 @@ void Files::makefile()
     buffer << " $(OBJ)";
   }
   buffer << " $(TARGET_SRC) $(CFLAGS) -o $@ -lm -lgsl -lconfig -lgfortran";
-#ifdef __linux__
   buffer << " -lpthread -lmetis -lscotch -lscotcherr -lpatoh -lrt -lsundials_cvode -lsundials_ida -lsundials_nvecserial -llapack -latlas "
-            "-lf77blas -lklu";
-#endif
+            "-lf77blas -lklu -lCGAL -ldl";
   buffer << " -lgslcblas" << includes.str();
   if (_model.annotations().parallel()) {
     buffer << " -DQSS_PARALLEL";
@@ -377,8 +377,8 @@ void Files::bdfPartition()
   int partition_size = variables.size();
   partition << partition_size << endl;
   for (var_it = variables.begin(); var_it != variables.end(); var_it++) {
-    int val = *var_it;    
-    partition << val <<  endl;
+    int val = *var_it;
+    partition << val << endl;
   }
   partition.close();
 }
