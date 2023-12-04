@@ -27,8 +27,6 @@
 #include <qss/qss_scheduler.h>
 #include "qss_simulator.h"
 
-static QSS_simulator *_simulator = NULL;
-
 void QSS_terminate(SC_scheduler scheduler, QSS_data simData, QSS_time simTime)
 {
   simData->ft = simTime->time;

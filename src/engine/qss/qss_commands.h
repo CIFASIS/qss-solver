@@ -17,27 +17,16 @@
 
  ******************************************************************************/
 
-#ifndef QSS_COMMANDS_H_
-#define QSS_COMMANDS_H_
+#pragma once
 
 #include "qss_simulator.h"
 
-/**
- *
- */
+static QSS_simulator *_simulator = NULL;
+
 void QSS_CMD_terminate();
 
-/**
- *
- * @param simulator
- */
 void QSS_CMD_init(QSS_simulator simulator);
 
 void QSS_CMD_free();
 
-/**
- *
- */
 void QSS_CMD_alloc(QSS_simulator simulator);
-
-#endif /* QSS_COMMANDS_H_ */
