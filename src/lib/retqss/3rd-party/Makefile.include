@@ -1,0 +1,12 @@
+# Libraries
+LIB_CGAL       := $(LIB_DIR)/libcgal.a
+
+$(LIB_CGAL): | create-folders
+	rm -rf $(USR_DIR)/lib/libCGAL*
+	cp -va $(3RD_PARTY_DIR)/cgal/lib/libCGAL* $(USR_DIR)/lib/
+	mkdir -p $(USR_DIR)/include
+	cp -va  $(3RD_PARTY_DIR)/cgal/include/ $(USR_DIR)/ 
+
+# Rules
+	
+cgal: $(LIB_CGAL)
