@@ -95,6 +95,7 @@ void Files::makefile()
   buffer << "LIBS   :=" << (_flags.debug() ? " -lqssd -ltimestepd -lretqssd" : " -lqss -ltimestep -lretqss");
   _writer->print(buffer);
   buffer << "INC    := -I" + Utils::instance().environmentVariable("MMOC_ENGINE");
+  buffer << " -I" + Utils::instance().environmentVariable("MMOC_SRC") << "/lib/retqss";
   tmp = _model.includeDirectories();
   for (string i = tmp.begin(it); !tmp.end(it); i = tmp.next(it)) {
     include.insert(i, i);
