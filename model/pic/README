@@ -1,0 +1,6 @@
+Linea para compilar modelos PIC
+  * Usando el modelo pic_system.mo como ejemplo
+  * Parado en el directorio build, y
+  * Teniendo en cuenta que probablemente haya que ejecutarlo multiples veces hasta que mmoc no termine con segfault
+
+../model/scripts/run.py pic_system all-debug && ../model/pic/scripts/cleanup.py pic_system/pic_system.c 160 && cd pic_system && make -f pic_system.makefile
