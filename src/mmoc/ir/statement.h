@@ -38,13 +38,13 @@ typedef enum { LHS, RHS, LHS_DISCRETES, LHS_STATES } AssignTerm;
 class Statement {
   public:
   Statement(AST_Statement stm, bool initial = false, const std::string& block = "");
-  Statement(AST_Statement stm, Option<Range> range, bool initial = false,
-            const std::string& block = "");
+  Statement(AST_Statement stm, Option<Range> range, bool initial = false, const std::string& block = "");
   Statement() : _stm(nullptr), _range(), _block(), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states(){};
   ~Statement() = default;
 
   inline bool hasRange() { return _range.is_initialized(); };
   inline Util::SymbolTable calledFunctions() { return _calledFunctions; };
+  inline bool autonomous() { return _autonomous; };
   friend std::ostream& operator<<(std::ostream& out, const Statement& s);
   string print() const;
   /**
@@ -67,6 +67,7 @@ class Statement {
   bool checkStateAssignment(Expression exp) const;
   std::string printAssignment(AST_Statement_Assign asg) const;
   void setRange();
+  void autonomousExps(ExpressionList exps);
 
   private:
   AST_Statement _stm;
@@ -77,6 +78,7 @@ class Statement {
   ExpressionList _rhs_assignments;
   ExpressionList _lhs_discretes;
   ExpressionList _lhs_states;
+  bool _autonomous;
 };
 
 typedef ModelTable<int, Statement> StatementTable;
