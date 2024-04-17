@@ -3,8 +3,8 @@
 import subprocess
 
 def get_files():
-    return subprocess.check_output(['git', 'diff-index','--cached',
-                                    '--name-only', 'HEAD']).split()
+    return [i.decode("utf-8") for i in subprocess.check_output(['git', 'diff-index','--cached',
+                                    '--name-only', 'HEAD']).split()]
 
 def apply_code_style():
     files = filter(lambda x: x.find('tests/system/gt_data') == -1, get_files())
