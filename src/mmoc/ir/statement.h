@@ -45,6 +45,7 @@ class Statement {
 
   inline bool hasRange() { return _range.is_initialized(); };
   inline Util::SymbolTable calledFunctions() { return _calledFunctions; };
+  inline bool autonomous() { return _autonomous; };
   friend std::ostream& operator<<(std::ostream& out, const Statement& s);
   string print() const;
   /**
@@ -67,6 +68,7 @@ class Statement {
   bool checkStateAssignment(Expression exp) const;
   std::string printAssignment(AST_Statement_Assign asg) const;
   void setRange();
+  void autonomousExps(ExpressionList exps);
 
   private:
   AST_Statement _stm;
@@ -77,6 +79,7 @@ class Statement {
   ExpressionList _rhs_assignments;
   ExpressionList _lhs_discretes;
   ExpressionList _lhs_states;
+  bool _autonomous;
 };
 
 typedef ModelTable<int, Statement> StatementTable;

@@ -198,7 +198,7 @@ unsigned int Variable::rowSize(unsigned int dim) const
 string Variable::print() const
 {
   stringstream buffer;
-  if (isForType() || isInput() || isOutput() || isEqType() || isLocal()) {
+  if (isForType() || isInput() || isOutput() || isEqType()) {
     buffer << _name;
   } else if (isConstant()) {
     buffer << _value;

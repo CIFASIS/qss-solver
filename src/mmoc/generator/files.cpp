@@ -165,7 +165,7 @@ void Files::makefile()
   }
   buffer << " $(TARGET_SRC) $(CFLAGS) -o $@ -lm -lgsl -lconfig -lgfortran";
   buffer << " -lpthread -lmetis -lscotch -lscotcherr -lpatoh -lrt -lsundials_cvode -lsundials_ida -lsundials_nvecserial -llapack -latlas "
-            "-lf77blas -lklu -lCGAL -ldl";
+            "-lf77blas -lklu -lCGAL -ldl -lstdc++";
   buffer << " -lgslcblas" << includes.str();
   if (_model.annotations().parallel()) {
     buffer << " -DQSS_PARALLEL";

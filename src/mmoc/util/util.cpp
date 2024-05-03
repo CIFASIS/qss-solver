@@ -163,6 +163,7 @@ Option<CompiledPackage> Utils::readPackage(string file_name, bool full_path, str
     string derivative;
     string includeDir;
     string libraryDir;
+    vector<int> array_inputs;
     SymbolTable libraries;
     while (getline(package, line)) {
       if (!line.compare("DEPENDENCES")) {
@@ -177,9 +178,12 @@ Option<CompiledPackage> Utils::readPackage(string file_name, bool full_path, str
         libraryDir = getValue(&package, "ENDLIBRARYDIRECTORY").first();
       } else if (!line.compare("LIBRARIES")) {
         libraries = getValue(&package, "ENDLIBRARIES");
+      } else if (!line.compare("ARRAYINPUT")) {
+        array_inputs.push_back(std::stoi(getValue(&package, "ENDARRAYINPUT").value(0)));
       } else if (!line.compare("ENDDEFINITION")) {
-        CompiledFunction fi(fname, includeDir, libraryDir, libraries, prefix);
+        CompiledFunction fi(fname, includeDir, libraryDir, libraries, array_inputs, prefix);
         cft.insert(fname, fi);
+        array_inputs.clear();
       }
     }
     package.close();

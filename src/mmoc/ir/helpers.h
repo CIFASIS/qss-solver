@@ -54,7 +54,7 @@ class CompiledFunction {
   public:
   CompiledFunction();
   CompiledFunction(std::string name, std::string includeDir, std::string libraryDir, Util::SymbolTable& libraries,
-                   std::string prefix = "__");
+                   std::vector<int> array_inputs = std::vector<int>(), std::string prefix = "__");
   ~CompiledFunction() = default;
   inline bool hasIncludeDirectory() const { return !_includeDirectory.empty(); };
   inline bool hasLibraryDirectory() const { return !_libraryDirectory.empty(); };
@@ -69,6 +69,9 @@ class CompiledFunction {
   void setArguments(AST_ExpressionList arguments) { _arguments = arguments; };
   void setOutputArguments(AST_ExpressionList output_arguments) { _output_arguments = output_arguments; };
 
+  protected:
+  vector<bool> setArrayInputs() const;
+
   private:
   std::string _name;
   std::string _prefix;
@@ -78,6 +81,7 @@ class CompiledFunction {
   Util::SymbolTable _libraries;
   AST_ExpressionList _arguments;
   AST_ExpressionList _output_arguments;
+  std::vector<int> _array_inputs;
 };
 
 typedef ModelTable<std::string, CompiledFunction> CompiledFunctionTable;

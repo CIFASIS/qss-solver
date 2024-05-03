@@ -44,6 +44,7 @@ std::ostream& operator<<(std::ostream& out, const ExternalFunction& e)
 {
   list<string> ret;
   stringstream buffer;
+  ModelConfig::instance().setExternalFunctionVar(true);
   if (!e._lvalue.empty()) {
     buffer << e._lvalue << " = ";
   }
@@ -61,15 +62,16 @@ std::ostream& operator<<(std::ostream& out, const ExternalFunction& e)
   }
   buffer << ");";
   out << buffer.str();
+  ModelConfig::instance().setExternalFunctionVar(false);
   return out;
 }
 
 /* CompiledFunction Class Implementation */
 
-CompiledFunction::CompiledFunction() : _name(), _prototype(), _includeDirectory(), _libraryDirectory(), _libraries() {}
+CompiledFunction::CompiledFunction() : _name(), _prototype(), _includeDirectory(), _libraryDirectory(), _libraries(), _array_inputs() {}
 
-CompiledFunction::CompiledFunction(string name, string includeDir, string libraryDir, SymbolTable& libraries, string prefix)
-    : _name(name), _prefix(prefix), _prototype(), _includeDirectory(includeDir), _libraryDirectory(libraryDir), _libraries(libraries)
+CompiledFunction::CompiledFunction(string name, string includeDir, string libraryDir, SymbolTable& libraries, vector<int> array_inputs, string prefix)
+    : _name(name), _prefix(prefix), _prototype(), _includeDirectory(includeDir), _libraryDirectory(libraryDir), _libraries(libraries), _array_inputs(array_inputs)
 {
 }
 
@@ -79,17 +81,28 @@ std::ostream& operator<<(std::ostream& out, const CompiledFunction& cf)
   return out;
 }
 
+vector<bool> CompiledFunction::setArrayInputs() const
+{
+  vector<bool> access(_arguments->size(), false);
+  for(auto a : _array_inputs) {
+    access[a] = true;
+  }
+  return access;
+}
+
 string CompiledFunction::print() const
 {
-  ModelConfig::instance().setCompiledFunctionVar(true);
+  ModelConfig::instance().setExternalFunctionVar(true);
   stringstream buffer;
   buffer << _prefix + _name << "(";
   AST_ExpressionListIterator it;
   int size = _arguments->size(), i = 0;
-  foreach (it, _arguments) {
+  vector<bool> array_access = setArrayInputs();
+  foreach (it, _arguments) {    
+    string access = array_access[i] ? "&" : "";
     i++;
     Expression ex(current_element(it));
-    buffer << ex;
+    buffer << access << ex;
     buffer << (i < size ? ", " : "");
   }
   if (size > 0 && _output_arguments->size()) {
@@ -103,11 +116,14 @@ string CompiledFunction::print() const
     if (ex.isReference()) {
       Option<Variable> var = ex.reference();
       assert(var);
+      const bool ARRAY_ACCESS = ex.indexes().empty() && var->isArray();
       if (ModelConfig::instance().functionCode()) {
-        if (var->isArray()) {
+        if (var->isArray() || var->isLocal()) {
           buffer << "&";
         }
-      } else {
+      } else if (!ARRAY_ACCESS) {
+        /// In case of entire array access, the expression printer will take care of it,
+        /// given that we also need to add the proper order and initial access.
         buffer << "&";
       }
     }
@@ -115,7 +131,7 @@ string CompiledFunction::print() const
     buffer << (i < size ? ", " : "");
   }
   buffer << ")";
-  ModelConfig::instance().setCompiledFunctionVar(false);
+  ModelConfig::instance().setExternalFunctionVar(false);
   return buffer.str();
 }
 

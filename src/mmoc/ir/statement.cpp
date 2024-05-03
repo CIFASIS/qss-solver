@@ -18,21 +18,22 @@
  ******************************************************************************/
 #include <sstream>
 
-#include "../ast/ast_builder.h"
-#include "../ast/statement.h"
-#include "../util/model_config.h"
-#include "../util/util.h"
-#include "../util/process_statement.h"
-#include "../util/visitors/called_functions.h"
-#include "helpers.h"
+#include <ast/ast_builder.h>
+#include <ast/statement.h>
+#include <ir/helpers.h>
 #include "statement.h"
+#include <util/model_config.h>
+#include <util/util.h>
+#include <util/process_statement.h>
+#include <util/visitors/autonomous.h>
+#include <util/visitors/called_functions.h>
 
 namespace MicroModelica {
 using namespace Util;
 namespace IR {
 
 Statement::Statement(AST_Statement stm, Option<Range> range, bool initial, const string& block)
-    : _stm(stm), _range(range), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states()
+    : _stm(stm), _range(range), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states(), _autonomous(true)
 {
   initialize();
 }
@@ -52,6 +53,15 @@ void Statement::initialize()
   _rhs_assignments = generateExps(STATEMENT::RHS);
   _lhs_discretes = generateExps(STATEMENT::LHS_DISCRETES);
   _lhs_states = generateExps(STATEMENT::LHS_STATES);
+  autonomousExps(_rhs_assignments);
+}
+
+void Statement::autonomousExps(ExpressionList exps)
+{
+  for(Expression exp : exps) {
+    Autonomous autonomous;
+    _autonomous = _autonomous && autonomous.apply(exp.expression());
+  }
 }
 
 void Statement::setRange()

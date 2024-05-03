@@ -41,7 +41,6 @@ Function::~Function()
   ModelConfig::instance().setSymbols(_symbols);
   ModelConfig::instance().setFunctionOutputs(false);
   ModelConfig::instance().setFunctionCode(false);
-
 }
 
 void Function::definition()
@@ -153,9 +152,10 @@ void Function::localSymbols()
     if (var.isOutput() && _void_function) {
       continue;
     }
+    string prefix = (var.isOutput() ? "" : "_");
     if (!var.isInput()) {
       local_symbols = true;
-      _writer->write(var.declaration(), WRITER::Function_Code);
+      _writer->write(var.declaration(prefix), WRITER::Function_Code);
       _writer->write(var.initialization(), WRITER::Function_Code);
     }
   }

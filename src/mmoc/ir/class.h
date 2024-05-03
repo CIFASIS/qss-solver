@@ -78,6 +78,7 @@ class Function : public Class {
   unsigned int outputNbr() const;
   FunctionAnnotation annotations() const;
   Util::VariableList arguments() const;
+  std::vector<int> arrayInputs() const;
 
   private:
   Util::ImportTable _imports;

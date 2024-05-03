@@ -164,6 +164,19 @@ FunctionAnnotation Function::annotations() const { return _annotations; }
 
 Util::VariableList Function::arguments() const { return _arguments; }
 
+vector<int> Function::arrayInputs() const
+{
+  vector<int> array_inputs;
+  int i = 0;
+  for (Variable var : _arguments) {
+    if (var.isInput() && var.isArray()) {
+      array_inputs.push_back(i);
+    }
+    i++;
+  }  
+  return array_inputs;
+}
+
 /* Package Class Implementation */
 
 Package::Package(string name) : _imports(), _name(name), _functions(), _packages() {}

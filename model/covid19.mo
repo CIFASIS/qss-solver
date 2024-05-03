@@ -191,7 +191,7 @@ initial algorithm
     _ := debug(INFO(), time, "Starting initial algorithm", _, _, _, _);
 
 	// sets the random seed from the config file
-	_ := random_reseed(RANDOM_SEED);
+	_ := 0;//random_reseed(RANDOM_SEED);
 
 	// sets several contagion and tracing constans from the config file
 	_ := setContagionConstants(SUSCEPTIBLE(), UNKNOWN(), PRE_SYMPTOMATIC(), PRESYMPTOMATIC_CONTAGION_PROB, SYMPTOMATIC(),
@@ -203,7 +203,7 @@ initial algorithm
     _ := debug(INFO(), time, "Grid setup. Divisions = %d", GRID_DIVISIONS, _, _, _);
 
 	// setup the grid in RETQSS as a simple grid using the constants from config file
-    _ := geometry_gridSetUp(GRID_DIVISIONS, GRID_DIVISIONS, 1, CELL_EDGE_LENGTH);
+    _ := 0; //geometry_gridSetUp(GRID_DIVISIONS, GRID_DIVISIONS, 1, CELL_EDGE_LENGTH);
 
 	// setup the initial volumes properties considering the scenario set in the config file: homogenous or school
     for i in 1:VOLUMES_COUNT loop
@@ -254,7 +254,7 @@ initial algorithm
 
 	// setup the particles in RETQSS
     _ := debug(INFO(), time, "Particles setup. N = %d", N,_,_,_);
-	_ := setUpParticles(N, CELL_EDGE_LENGTH, GRID_DIVISIONS, x);
+	_ := setUpParticles(N, CELL_EDGE_LENGTH, GRID_DIVISIONS, x[1]);
 
 	// setup the particles initial state
     infectedCount := 0;
@@ -346,7 +346,7 @@ algorithm
 
 		//EVENT: particle enters a volume (it may bounce or triggers disease/tracing logics implemented in the library) 
 		when time > particle_nextCrossingTime(i,x[i],y[i],z[i],vx[i],vy[i],vz[i]) then
-			(expositionTime, normalX, normalY) := onNextCross(time, i, CLOSE_CONTACT_PROB);
+			(expositionTime[i], normalX, normalY) := onNextCross(time, i, CLOSE_CONTACT_PROB);
 			if normalX <> 0.0 or normalY <> 0.0 then
 				ux := vx[i];
 				uy := vy[i];
@@ -369,7 +369,7 @@ algorithm
 		
 		//EVENT: particle symptoms start (it may trigger the particle stop moving if the isolation starts)
 		when time > symptomsStartTime[i] then
-			(infectionFinishTime[i], testResultTime[i], level1ContactTime) := onSymptomsStart(time, i,
+			(infectionFinishTime[i], testResultTime[i], level1ContactTime[i]) := onSymptomsStart(time, i,
 				SYMPTOMATIC_DETECTION_PROB, L1_SYNTOMATIC_DETECTION_PROB, L2_SYNTOMATIC_DETECTION_PROB,
 				TEST_DELAY_TIME_MIN, TEST_DELAY_TIME_MAX);
 			if not shouldMove(i) then
@@ -409,7 +409,7 @@ algorithm
 
 		//EVENT: particle was contacted as a level 1 case. The particle is stopped as it will be isolated.
 		when time > level1ContactTime[i] then
-			(isolationFinishTime[i], level2ContactTime) := onLevel1Contact(time, i, L1_ISOLATION_TIME);
+			(isolationFinishTime[i], level2ContactTime[i]) := onLevel1Contact(time, i, L1_ISOLATION_TIME);
      		reinit(vx[i], 0.);
 			reinit(vy[i], 0.);
 	    	_ := particle_relocate(i, x[i], y[i], z[i], vx[i], vy[i], vz[i]);
@@ -448,7 +448,7 @@ algorithm
 			_ := volume_setProperty(i, "newVolumeEmissionRate", 0);
 		end for;
 		for i in 1:N loop
-			if onBreathe(time, i, volumeConcentration) then
+			if onBreathe(time, i, volumeConcentration[1]) then
 				expositionTime[i] := time + EPS;
 			end if;
 		end for;
@@ -568,7 +568,7 @@ algorithm
 
 	//EVENT: Next CSV output time: prints a new csv line and computes the next output time incrementing the variable
 	when time > nextOutputTick then
-		_ := outputCSV(time, N, x, y, VOLUMES_COUNT, volumeConcentration, recoveredCount, infectionsCount);
+		_ := outputCSV(time, N, x[1], y[1], VOLUMES_COUNT, volumeConcentration[1], recoveredCount, infectionsCount);
 		nextOutputTick := time + OUTPUT_UPDATE_DT;
 		if recoveredCount == infectedCount and terminateTime == 0 then
 			terminateTime := time + nextOutputTick;
@@ -586,19 +586,19 @@ algorithm
         nextProgressTick := time + PROGRESS_UPDATE_DT;
 	end when;
 	
+	annotation(
 
-annotation(
 	experiment(
 		MMO_Description="Indirect infection of particles interacting through volumes.",
 		MMO_Solver=QSS2,
 		MMO_SymDiff=false,
 		MMO_PartitionMethod=Metis,
-		MMO_Scheduler=ST_Binary,
 		Jacobian=Dense,
+		MMO_BDF_PDepth=1,
+		MMO_BDF_Max_Step=0,
 		StartTime=0.0,
 		StopTime=1000.0,
 		Tolerance={1e-5},
 		AbsTolerance={1e-8}
 	));
-
 end covid19;

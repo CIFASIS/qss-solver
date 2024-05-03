@@ -1,4 +1,5 @@
 model advection
+  import retQSS;
   parameter Real alpha=0.5,mu=1000;
   constant Integer N = 20000;
   Real u[N];

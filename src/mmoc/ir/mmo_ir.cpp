@@ -121,6 +121,9 @@ void MicroModelicaIR::visit(AST_Element x)
         }
       }
       DEC_Type t = (_compositionElement ? DEC_LOCAL : DEC_PUBLIC);
+      if (t == DEC_LOCAL) {
+        tp |= TP_LOCAL;
+      }
       if (tp & TP_CONSTANT) {
         Variable vi(newType_Integer(), tp, current_element(it)->modification(), nullptr, size, array);
         _class->insert(current_element(it)->name(), vi, t);

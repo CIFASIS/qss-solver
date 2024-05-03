@@ -89,6 +89,13 @@ void Package::generate()
       }
       _writer->print("ENDLIBRARIES");
     }
+    for(int array_input : f.arrayInputs()) {
+      stringstream input;
+      input << array_input;
+      _writer->print("ARRAYINPUT");
+      _writer->print(input.str());
+      _writer->print("ENDARRAYINPUT");
+    }
     _writer->print("ENDDEFINITION");
   }
   _writer->clearFile();

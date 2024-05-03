@@ -93,6 +93,8 @@ class ModelConfig {
   inline void setFunctionCode(bool function_code) { _function_code = function_code; }
   inline bool compiledFunctionVar() const { return _compiled_function_var; }
   inline void setCompiledFunctionVar(bool compiled_function_var) { _compiled_function_var = compiled_function_var; }
+  inline bool externalFunctionVar() const { return _external_function_var; }
+  inline void setExternalFunctionVar(bool external_function_var) { _external_function_var = external_function_var; }
   inline void setReinit(bool reinit) { _reinit = reinit; }
   inline bool reinit() { return _reinit; }
   inline void setInitialCode(bool initial_code) { _initial_code = initial_code; }
@@ -119,7 +121,8 @@ class ModelConfig {
         _compiled_function_var(false),
         _sym_diff(false),
         _reinit(false),
-        _initial_code(false)
+        _initial_code(false),
+        _external_function_var(false)
   {
     _symbols.initialize(_types);
   };
@@ -144,6 +147,7 @@ class ModelConfig {
   bool _sym_diff;
   bool _reinit;
   bool _initial_code;
+  bool _external_function_var;
 };
 
 }  // namespace Util

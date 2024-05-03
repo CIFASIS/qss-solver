@@ -372,6 +372,7 @@ void ModelInstance::initialCode()
   ModelConfig::instance().setInitialCode(true);
   VarSymbolTable symbols = _model.symbols();
   VarSymbolTable::iterator var_it;
+  bool add_local_time_var = false;
   for (Variable var = symbols.begin(var_it); !symbols.end(var_it); var = symbols.next(var_it)) {
     if (var.isConstant()) {
       continue;
@@ -380,6 +381,10 @@ void ModelInstance::initialCode()
   }
   for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
     _writer->write(stm, WRITER::Init_Code);
+    add_local_time_var = add_local_time_var || !stm.autonomous();
+  }
+  if (add_local_time_var) {
+    ModelConfig::instance().addLocalSymbol("double t;");
   }
   ModelConfig::instance().setInitialCode(false);
   ModelConfig::instance().unsetLocalInitSymbols();

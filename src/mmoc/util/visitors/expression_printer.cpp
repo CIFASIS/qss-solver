@@ -62,7 +62,7 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
         break;
       }
       Util::SymbolTable symbols;
-      f = CompiledFunction(pkg_f->name(), "", "", symbols, Utils::instance().packagePrefix());
+      f = CompiledFunction(pkg_f->name(), "", "", symbols, vector<int>(), Utils::instance().packagePrefix());
     }
     f->setArguments(call->arguments());
     f->setOutputArguments(call->outputArguments());
@@ -123,7 +123,7 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
     buffer << std::scientific << exp->getAsReal()->val();
     break;
   case EXPSTRING:
-    buffer << exp->getAsString()->str();
+    buffer << "\"" << exp->getAsString()->str() << "\"";
     break;
   default:
     return "";
@@ -136,41 +136,41 @@ string ExpressionPrinter::foldTraverseElement(string l, string r, BinOpType bot)
   stringstream buffer;
   switch (bot) {
   case BINOPOR:
-    buffer << l << "||" << r;
+    buffer << l << " || " << r;
     break;
   case BINOPAND:
-    buffer << l << "&&" << r;
+    buffer << l << " && " << r;
     break;
   case BINOPLOWER:
-    buffer << l << "<" << r;
+    buffer << l << " < " << r;
     break;
   case BINOPLOWEREQ:
-    buffer << l << "<=" << r;
+    buffer << l << " <= " << r;
     break;
   case BINOPGREATER:
-    buffer << l << ">" << r;
+    buffer << l << " > " << r;
     break;
   case BINOPGREATEREQ:
-    buffer << l << ">=" << r;
+    buffer << l << " >= " << r;
     break;
   case BINOPCOMPNE:
-    buffer << l << "!=" << r;
+    buffer << l << " != " << r;
     break;
   case BINOPCOMPEQ:
-    buffer << l << "==" << r;
+    buffer << l << " == " << r;
     break;
   case BINOPADD:
-    buffer << l << "+" << r;
+    buffer << l << " + " << r;
     break;
   case BINOPSUB:
-    buffer << l << "-" << r;
+    buffer << l << " - " << r;
     break;
   case BINOPDIV: {
     IsConstantExpression constant_exp(true, true);
-    buffer << l << "/" << ((constant_exp.apply(_right)) ? "(double)" : "") << r;
+    buffer << l << " / " << ((constant_exp.apply(_right)) ? "(double)" : "") << r;
   } break;
   case BINOPMULT:
-    buffer << l << "*" << r;
+    buffer << l << " * " << r;
     break;
   case BINOPEXP:
     buffer << "pow(" << l << "," << r << ")";
@@ -193,7 +193,7 @@ VariablePrinter::VariablePrinter(Variable var, AST_Expression_ComponentReference
 {
   config();
   generate();
-}
+}   
 
 void VariablePrinter::config()
 {
@@ -208,12 +208,13 @@ void VariablePrinter::config()
 string VariablePrinter::access(bool array_access) const
 {
   if (ModelConfig::instance().functionCode()) {
-    if (_var.isOutput() && !ModelConfig::instance().functionOutputs() && ModelConfig::instance().compiledFunctionVar()) {
+    /*if ((_var.isOutput() && !ModelConfig::instance().functionOutputs() && ModelConfig::instance().compiledFunctionVar())
+        || (_var.isLocal() && ModelConfig::instance().externalFunctionVar())) {
       return "&";
-    }
-    if (_var.isOutput() && ModelConfig::instance().functionOutputs() && !ModelConfig::instance().compiledFunctionVar() && !_var.isArray()) {
+    }*/
+    if (_var.isOutput() && ModelConfig::instance().functionOutputs() && !ModelConfig::instance().externalFunctionVar() && !_var.isArray()) {
       return "*";
-    }
+    } 
   }
   if (array_access) {
     return "&";
@@ -224,16 +225,13 @@ string VariablePrinter::access(bool array_access) const
 void VariablePrinter::generate()
 {
   stringstream buffer;
-  if (_var.isLocal()) {
-    _exp = _var.name();
-    return;
-  }
   ModelConfig& config = ModelConfig::instance();
   const bool PRINT_COEFF = config.isQss() && (_var.isState() || _var.isAlgebraic());
   const bool HAS_INDEXES = _ref->hasIndexes();
-  const bool ARRAY_ACCESS = config.compiledFunctionVar() && !HAS_INDEXES && _var.isArray();
+
+  const bool ARRAY_ACCESS = config.externalFunctionVar() && !HAS_INDEXES && _var.isArray();
   buffer << access(ARRAY_ACCESS);
-  if ((config.initialCode() || (config.algorithm() && config.reinit())) && _var.isState()) {
+  if ((config.initialCode() || (config.algorithm() && (config.reinit() || config.externalFunctionVar()))) && _var.isState()) {
     buffer << "_init";
   } else if (config.isQss() && config.algorithm() && !config.reinit() && _var.isState()) {
     buffer << "_q";

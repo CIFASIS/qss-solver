@@ -124,7 +124,8 @@ class AST_Statement_Visitor {
   F apply(AST_Statement stm)
   {
     F c = _c_init;
-    switch (stm->statementType()) {
+    _stm_type = stm->statementType(); 
+    switch (_stm_type) {
     case STWHEN: {
       c = foldTraverse(_visitor.apply(stm->getAsWhen()->condition()));
       AST_StatementListIterator it;
@@ -182,6 +183,9 @@ class AST_Statement_Visitor {
     }
     return c;
   };
+
+  protected:
+  StatementType _stm_type;
 
   private:
   V _visitor;

@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include "retqss_pic.h"
+#include <retqss_pic.h>
 
 #include <retqss_model_api.h>
 #include <retqss_types.hh>
@@ -8,6 +8,103 @@
 
 extern "C"
 {
+
+int PIC_solvePotential(
+		int ny,
+		double q_eps,
+		double n0,
+		double phi0,
+		double Te)
+{
+	int n_cells = retQSS_geometry_countVolumes(), n_neighbors;
+	double phi_i, rho_i;
+	double dx2 = retQSS_volume_capacity(1), Ex, Ey;
+	double dx = sqrt(dx2);
+	int status = 0;
+
+	LA_Matrix A(n_cells, n_cells);
+	LA_Vector b0(n_cells), b(n_cells), x(n_cells);
+
+	for(VolumeID i = 1; i <= n_cells; i++)
+	{
+		A(i-1, i-1) = 1;
+		rho_i = phi_i = 0.;
+		n_neighbors = retQSS_volumeNeighborhood_countVolumes(i);
+
+		if(n_neighbors == 5)
+		{
+			phi_i = retQSS_volume_getProperty(i, "phi");
+			rho_i = retQSS_volume_getProperty(i, "rho");
+
+			A(i-1, i-1)    = -4/dx2;
+			A(i-1, i)      = 1/dx2;
+			A(i-1, i-2)    = 1/dx2;
+			A(i-1, i-1+ny) = 1/dx2;
+			A(i-1, i-1-ny) = 1/dx2;
+		}
+
+		b0[i-1] = rho_i + 1e4;
+		x[i-1]  = phi_i;
+	}
+
+	for(int k = 0; k < 3001; k++)
+	{
+		for(VolumeID i = 0; i < n_cells; i++)
+		{
+			b[i] = 0;
+			n_neighbors = retQSS_volumeNeighborhood_countVolumes(i+1);
+			if(n_neighbors == 5)
+				b[i] = -q_eps * (b0[i] - n0*exp((x[i]-phi0)/Te));
+		}
+
+		for(int i = 0; i < n_cells; i++)
+		{
+			double s1 = 0, s2 = 0;
+
+			for(int j = 0; j < i; j++)
+				s1 += A(i,j) * x[j];
+			for(int j = i+1; j < n_cells; j++)
+				s2 += A(i,j) * x[j];
+
+			x[i] = (b[i] - s1 - s2) / A(i,i);
+		}
+
+		if(k % 10 == 0)
+		{
+			double norm = 0;
+			LA_Vector n = b - A*x;
+
+			for(int j = 0; j < n.dimension(); j++)
+				norm += n[j]*n[j];
+
+			if(sqrt(norm) < 0.1)
+			{
+				for(VolumeID i = 0; i < x.dimension(); i++)
+				{
+					retQSS_volume_setProperty(i+1, "phi", x[i]);
+
+					Ex = Ey = 0;
+					n_neighbors = retQSS_volumeNeighborhood_countVolumes(i+1);
+
+					if(n_neighbors == 5)
+					{
+						Ex = (x[i-ny] - x[i+ny])/(2*dx);
+						Ey = (x[i-1] - x[i+1])/(2*dx);
+					}
+
+					retQSS_volume_setProperty(i+1, "Ex", Ex);
+					retQSS_volume_setProperty(i+1, "Ey", Ey);
+				}
+
+				status = 1;
+
+				break;
+			}
+		}
+	}
+
+	return status;
+}
 
 int PIC_solvePotentialInNodes(
 		int ny,
