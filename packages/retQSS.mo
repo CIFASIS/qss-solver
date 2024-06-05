@@ -9,6 +9,16 @@ package retQSS
         Include="#include \<retqss_model_api.h\>");
   end geometry_setUp;
 
+  function geometry_gridSetUp
+    input Integer xCount;
+    input Integer yCount;
+    input Integer zCount;
+    input Real cellEdgeLength;
+    output Real status;
+    external "C" status=retQSS_geometry_gridSetUp(xCount, yCount, zCount, cellEdgeLength) annotation(
+        Include="#include \<retqss_model_api.h\>");
+  end geometry_gridSetUp;
+
   function particle_setUp
     input Integer n_particles;
     input String model_name;
@@ -877,11 +887,34 @@ package retQSS
 
   // Misc. functionality
 
+  function random_reseed
+    input Integer seed;
+    output Boolean val;
+    external "C" val=retQSS_random_reseed(seed) annotation(
+        Include="#include \<retqss_model_api.h\>");
+  end random_reseed;
+
   function random
     input Real from;
     input Real to;
     output Real val;
     external "C" val=retQSS_random(from, to) annotation(
+        Include="#include \<retqss_model_api.h\>");
+  end random;
+
+  function random_lognormal
+    input Real m;
+    input Real s;
+    output Real val;
+    external "C" val=retQSS_random_lognormal(m, s) annotation(
+        Include="#include \<retqss_model_api.h\>");
+  end random;
+
+  function random_normal
+    input Real m;
+    input Real s;
+    output Real val;
+    external "C" val=retQSS_random_normal(m, s) annotation(
         Include="#include \<retqss_model_api.h\>");
   end random;
 
