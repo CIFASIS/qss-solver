@@ -363,7 +363,7 @@ public:
 		return this->num_volumes() - 1;
 	}
 
-	inline int num_volumes() const
+	inline unsigned int num_volumes() const
 	{
 		return this->volume_map.size();
 	}

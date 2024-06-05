@@ -153,9 +153,24 @@ inline bool numbers_are_equal(const double &x, const double &y)
 }
 
 /**
+ * \brief Change random seed
+ */
+bool random_reseed(int seed);
+
+/**
  * \brief Return random double in the range \f$[\textrm{from}, \textrm{to}]\f$
  */
 double random_double(double from, double to);
+
+/**
+ * \brief Return random double in lognormal distribution \f$[\textrm{m}, \textrm{s}]\f$
+ */
+double random_lognormal(double m, double s);
+
+/**
+ * \brief Return random double in normal distribution \f$[\textrm{m}, \textrm{s}]\f$
+ */
+double random_normal(double m, double s);
 
 /**
  * \brief Return random integer in the range \f$[\textrm{from}, \textrm{to}]\f$

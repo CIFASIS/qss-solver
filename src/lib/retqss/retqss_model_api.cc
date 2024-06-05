@@ -159,6 +159,14 @@ Bool retQSS_geometry_setUp(const char *geom_filename)
 	return retQSS_execute(func, geom_filename);
 }
 
+Bool retQSS_geometry_gridSetUp(int xCount, int yCount, int zCount, double cellEdgeLength)
+{
+
+	std::function<bool(int,int,int,double)> func = RETQSS_BIND_4(geometry_grid_set_up);
+
+	return retQSS_execute(func, xCount, yCount, zCount, cellEdgeLength);
+}
+
 Bool retQSS_particle_setUp(
 		int n_particles,
 		const char *model_name)
@@ -1257,9 +1265,24 @@ void retQSS_randomVectorWithNorm(
  * Miscellaneous queries
  */
 
+Bool retQSS_random_reseed(int seed)
+{
+	return retQSS::random_reseed(seed);
+}
+
 double retQSS_random(double from, double to)
 {
 	return retQSS::random_double(from, to);
+}
+
+double retQSS_random_lognormal(double m, double s)
+{
+	return retQSS::random_lognormal(m, s);
+}
+
+double retQSS_random_normal(double m, double s)
+{
+	return retQSS::random_normal(m, s);
 }
 
 int retQSS_modulus(int a, int b)

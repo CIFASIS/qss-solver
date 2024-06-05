@@ -3,8 +3,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
 #include <random>
 #include <regex>
+#include <map>
 #include <dlfcn.h>
 
 #include "retqss_particle_tracker.hh"
@@ -76,11 +78,11 @@ retQSS::Interface::get_initial_conditions(
 	{
 		auto pos = this->particle_current_position(p);
 		auto vel = this->particle_current_velocity(p);
-
-		ic_array->push_back({
-			pos.x(), pos.y(), pos.z(),
-			vel.x(), vel.y(), vel.z()
-		});
+		retQSS::InitialCondition ic;
+		ic.x = pos.x(); ic.y = pos.y(); ic.z = pos.z();
+		ic.vx = vel.x(); ic.vy = vel.y(); ic.vz = vel.z();
+		ic.volumeID = 0;
+		ic_array->push_back(ic);
 	}
 
 	return ic_array;
@@ -99,6 +101,70 @@ bool retQSS::Interface::geometry_set_up(const char *geom_filename)
 
 	this->geometry_created = true;
 
+	return this->geometry_created;
+}
+
+int geometry_grid_point_id(int x, int y, int z, int yCount, int zCount){
+	return z + (zCount+1) * (y + (yCount+1) * x);
+}
+
+bool retQSS::Interface::geometry_grid_set_up(int xCount, int yCount, int zCount, double cellEdgeLength)
+{
+	auto geometry = this->_geometry;
+	std::map<int, std::map<int, std::map<int, retQSS::PolyhedralVolume*>>> volumes;
+    for (int x = 0; x < xCount; x++) {
+      volumes.erase(x-2);
+      for (int y = 0; y < yCount; y++) {
+        for (int z = 0; z < zCount; z++) {
+			std::stringstream name;
+			name << "Voxel";
+			retQSS::Polyhedron *poly = new retQSS::Polyhedron();
+			for (int dz = 0; dz <= 1; dz++) {
+				for (int dy = 0; dy <= 1; dy++) {
+					for (int dx = 0; dx <= 1; dx++) {
+						double px = x+dx, py = y+dy, pz = z+dz;
+						poly->add_vertex(Point_3(px*cellEdgeLength, py*cellEdgeLength, pz*cellEdgeLength));
+						name << "-" << geometry_grid_point_id(x+dx, y+dy, z+dz, yCount, zCount);
+					}
+				}
+			}
+			auto z0 = poly->add_face(VertexIndex(0),VertexIndex(1),VertexIndex(3),VertexIndex(2));
+			auto x1 = poly->add_face(VertexIndex(5),VertexIndex(7),VertexIndex(3),VertexIndex(1));
+			auto z1 = poly->add_face(VertexIndex(6),VertexIndex(7),VertexIndex(5),VertexIndex(4));
+			auto x0 = poly->add_face(VertexIndex(4),VertexIndex(0),VertexIndex(2),VertexIndex(6));
+			auto y1 = poly->add_face(VertexIndex(7),VertexIndex(6),VertexIndex(2),VertexIndex(3));
+			auto y0 = poly->add_face(VertexIndex(1),VertexIndex(0),VertexIndex(4),VertexIndex(5));
+			auto vol = geometry->add_volume(poly, name.str());
+			volumes[x][y][z] = vol;
+			if (z == 0) {
+				geometry->add_boundary_face(vol->get_face(z0));
+			} else {
+				vol->check_neighbor(volumes[x][y][z-1]);
+			}
+			if (z==zCount-1) {
+				geometry->add_boundary_face(vol->get_face(z1));
+			}
+			if (y==0) {
+				geometry->add_boundary_face(vol->get_face(y0));
+			} else {
+				vol->check_neighbor(volumes[x][y-1][z]);
+			}
+			if (y==yCount-1) {
+				geometry->add_boundary_face(vol->get_face(y1));
+			}
+			if (x==0) {
+				geometry->add_boundary_face(vol->get_face(x0));
+			} else {
+				vol->check_neighbor(volumes[x-1][y][z]);
+			}
+			if (x==xCount-1) {
+				geometry->add_boundary_face(vol->get_face(x1));
+			}
+        }
+      }
+    }
+	geometry->close();
+	this->geometry_created = true;
 	return this->geometry_created;
 }
 
@@ -134,8 +200,8 @@ bool retQSS::Interface::particle_set_up(
 		throw retQSS::Exception("Invalid number of particles");
 
 	this->create_particle_dependent_objects(n_particles);
-
 	retQSS::InitialConditionArray *ic_array;
+
 	std::string filename(ic_filename);
 
 	if(filename.empty())
@@ -144,8 +210,8 @@ bool retQSS::Interface::particle_set_up(
 		ic_array = retQSS::read_initial_conditions(filename, n_particles);
 
 	tracker()->create_particles(*ic_array, model_name);
-	delete ic_array;
 
+	delete ic_array;
 	this->particles_created = true;
 
 	return this->particles_created;

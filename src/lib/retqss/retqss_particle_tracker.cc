@@ -127,7 +127,9 @@ void retQSS::ParticleTracker::create_particles(
 		auto velocity = particle->initial_velocity();
 		this->sim_interface->set_velocity(p, velocity);
 
-		auto volume = this->geometry->locate(position, velocity);
+		auto volume = (initial_conditions[i].volumeID > 0)
+		    ? this->geometry->get_volume(initial_conditions[i].volumeID)
+		    : this->geometry->locate(position, velocity);
 		this->relocate(p, volume);
 	}
 

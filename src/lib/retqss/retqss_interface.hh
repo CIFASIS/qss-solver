@@ -112,6 +112,12 @@ public:
 	~Interface();
 
 	bool geometry_set_up(const char*);
+	/**
+         * \brief Sets up the geomtry as a 3D grid with a given cell length
+         *
+         * \sa retQSS_geometry_gridSetUp
+         */
+	bool geometry_grid_set_up(int,int,int,double);
 	bool particle_set_up(int,const char*,const char*);
 	bool full_setup(int,const char*,const char*,const char*);
 	void abort();

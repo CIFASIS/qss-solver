@@ -61,14 +61,12 @@ void retQSS::OpenVolume::add_vertex(retQSS::Vertex *vertex)
 		throw retQSS::Exception(
 				"Attempting to add new vertex into a closed open volume.");
 
-	if(std::find(
-		this->vertices_added.begin(),
-		this->vertices_added.end(),
-		vertex) == this->vertices_added.end())
+	if(this->vertices_added.find(vertex) == this->vertices_added.end())
 	{
 		retQSS::Volume::_vertices.push_back(vertex);
 		this->vertices_added.insert(vertex);
 	}
+
 }
 
 void retQSS::OpenVolume::close()

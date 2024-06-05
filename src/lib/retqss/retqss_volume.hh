@@ -34,6 +34,7 @@ class Geometry;
 class GeometryParser;
 class OFFParser;
 class VTKParser;
+class Interface;
 
 /**
  * \brief Representation of geometrical 3D volumes
@@ -66,6 +67,7 @@ class Volume : public retQSS::Object
 	friend class retQSS::GeometryParser;
 	friend class retQSS::OFFParser;
 	friend class retQSS::VTKParser;
+	friend class retQSS::Interface;
 
 protected:
 	retQSS::VertexArray _vertices; //!< Vertices

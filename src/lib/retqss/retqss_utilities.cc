@@ -15,7 +15,6 @@ retQSS::InitialConditionArray *retQSS::read_initial_conditions(
 		int n_particles)
 {
 	auto ic_array = new retQSS::InitialConditionArray;
-	double x, y, z, vx, vy, vz;
 
 	std::ifstream file(filename);
 	if(!file.good())
@@ -23,8 +22,11 @@ retQSS::InitialConditionArray *retQSS::read_initial_conditions(
 
 	for(int i = 0; i < n_particles; i++)
 	{
-		if(file >> x >> y >> z >> vx >> vy >> vz)
-			ic_array->push_back({x,y,z,vx,vy,vz});
+		retQSS::InitialCondition ic;
+		if(file >> ic.x >> ic.y >> ic.z >> ic.vx >> ic.vy >> ic.vz >> ic.volumeID)
+		{
+			ic_array->push_back(ic);
+		}
 		else
 		{
 			delete ic_array;
@@ -172,18 +174,34 @@ double retQSS::angle_between(const Vector_3 &u, const Vector_3 &v)
 	return std::atan2(s, c);
 }
 
+std::mt19937 __retqss_random_generator(0);
+
+bool retQSS::random_reseed(int seed)
+{
+	__retqss_random_generator = std::mt19937(seed);
+	return true;
+}
+
 double retQSS::random_double(double from, double to)
 {
-	std::random_device rd;
-	std::mt19937 gen(rd());
 	std::uniform_real_distribution<double> dist(from, to);
-	return dist(gen);
+	return dist(__retqss_random_generator);
+}
+
+double retQSS::random_lognormal(double m, double s)
+{
+	std::lognormal_distribution<double> dist(m, s);
+	return dist(__retqss_random_generator);
+}
+
+double retQSS::random_normal(double m, double s)
+{
+	std::normal_distribution<double> dist(m, s);
+	return dist(__retqss_random_generator);
 }
 
 int retQSS::random_int(int from, int to)
 {
-	std::random_device rd;
-	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int>dist(from, to);
-	return dist(gen);
+	return dist(__retqss_random_generator);
 }

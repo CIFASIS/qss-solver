@@ -58,6 +58,19 @@ extern "C"
 Bool retQSS_geometry_setUp(const char *geom_filename);
 
 /**
+ * \brief Initialize geometry as a grid.
+ *
+ * This function initializes the retQSS geometry as even-divided grid with cube cells.
+ *
+ * \param xCount number of cells in the x axis
+ * \param yCount number of cells in the y axis
+ * \param zCount number of cells in the z axis
+ * \param cellEdgeLength side of the x/y/z cell edge
+ * \return Boolean status indicating success.
+ */
+Bool retQSS_geometry_gridSetUp(int xCount, int yCount, int zCount, double cellEdgeLength);
+
+/**
  * \brief Initialize particles.
  *
  * This function creates and initializes \f$\NPart\f$ particle objects
@@ -1485,7 +1498,10 @@ PropertyValue retQSS_volumeNeighborhood_setProperty(
  * @{
  */
 
+Bool retQSS_random_reseed(int);
 double retQSS_random(double, double);
+double retQSS_random_lognormal(double, double);
+double retQSS_random_normal(double, double);
 int retQSS_modulus(int, int);
 int retQSS_div(int, int);
 double retQSS_max(double, double);

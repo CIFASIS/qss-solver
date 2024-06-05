@@ -108,6 +108,7 @@ struct InitialCondition
 {
 	double x, y, z;
 	double vx, vy, vz;
+	VolumeID volumeID = 0;
 };
 
 /**

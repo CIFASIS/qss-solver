@@ -88,7 +88,6 @@ retQSS::Vertex *retQSS::Geometry::add_vertex(const Point_3 &point)
 	return vertex;
 }
 
-
 void retQSS::Geometry::add_boundary_face(retQSS::PolyhedronFace *face)
 {
 	if(this->closed)
