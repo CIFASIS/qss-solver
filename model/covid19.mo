@@ -191,7 +191,7 @@ initial algorithm
     _ := debug(INFO(), time, "Starting initial algorithm", _, _, _, _);
 
 	// sets the random seed from the config file
-	_ := 0;//random_reseed(RANDOM_SEED);
+	_ := random_reseed(RANDOM_SEED);
 
 	// sets several contagion and tracing constans from the config file
 	_ := setContagionConstants(SUSCEPTIBLE(), UNKNOWN(), PRE_SYMPTOMATIC(), PRESYMPTOMATIC_CONTAGION_PROB, SYMPTOMATIC(),
@@ -203,7 +203,7 @@ initial algorithm
     _ := debug(INFO(), time, "Grid setup. Divisions = %d", GRID_DIVISIONS, _, _, _);
 
 	// setup the grid in RETQSS as a simple grid using the constants from config file
-    _ := 0; //geometry_gridSetUp(GRID_DIVISIONS, GRID_DIVISIONS, 1, CELL_EDGE_LENGTH);
+    _ := geometry_gridSetUp(GRID_DIVISIONS, GRID_DIVISIONS, 1, CELL_EDGE_LENGTH);
 
 	// setup the initial volumes properties considering the scenario set in the config file: homogenous or school
     for i in 1:VOLUMES_COUNT loop
