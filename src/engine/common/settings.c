@@ -119,9 +119,13 @@ int _getOrder(SD_Solver sol)
 
 SET_settings SET_Settings(char *fname)
 {
-  config_t cfg, *cf;
+  config_t cfg;
+  config_t *cf;
   const config_setting_t *lists;
-  int count, n, ires, option;
+  int count;
+  int n;
+  int ires;
+  int option;
   double dres;
   const char *sol;
   const char *bdf;
@@ -153,6 +157,7 @@ SET_settings SET_Settings(char *fname)
   p->dtSynch = SD_DT_Adaptive;
   p->BDFPart = 0;
   p->BDFPartitionDepth = 1;
+  p->CVODE_max_order = 0;
   p->BDFMaxStep = 0;
   if (config_lookup_float(cf, "minstep", &dres)) {
     if (dres == 0) {
@@ -200,6 +205,9 @@ SET_settings SET_Settings(char *fname)
   }
   if (config_lookup_int(cf, "jacobian", &ires)) {
     p->jacobian = ires;
+  }
+  if (config_lookup_int(cf, "CVODEMaxOrder", &ires)) {
+    p->CVODE_max_order = ires;
   }
   if (config_lookup_int(cf, "nodesize", &ires)) {
     if (ires == 0) {

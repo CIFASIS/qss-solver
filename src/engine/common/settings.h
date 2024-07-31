@@ -43,6 +43,7 @@ struct SET_settings_ {
   int nDQRel;
   int jacobian;
   int BDFPartitionDepth;
+  int CVODE_max_order;
   SD_PartitionMethod pm;
   SD_DtSynch dtSynch;
   SD_partitionerOptions partitionerOptions;
