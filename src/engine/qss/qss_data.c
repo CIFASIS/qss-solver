@@ -308,7 +308,7 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, i
     exit(-1);
   }
   QSS_data p = checkedMalloc(sizeof(*p));
-  int i, order = settings->order;
+  int order = settings->order;
   int xOrder = order + 1;
   p->states = states;
   p->discretes = discretes;
@@ -421,7 +421,7 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, i
     }
   }
 
-  for (i = 0; i < states; i++) {
+  for (int i = 0; i < states; i++) {
     p->dQMin[i] = (same_DQMin) ? settings->dqmin[0] : settings->dqmin[i];
     p->dQRel[i] = (same_DQRel) ? settings->dqrel[0] : settings->dqrel[i];
   }
@@ -439,7 +439,8 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, i
     p->event = NULL;
   }
   p->params = SD_Parameters(settings->derdelta, settings->zchyst, settings->minstep, settings->symdiff, settings->lps, settings->nodesize,
-                            settings->pm, settings->dt, settings->dtSynch, settings->partitionerOptions, settings->jacobian);
+                            settings->pm, settings->dt, settings->dtSynch, settings->partitionerOptions, settings->jacobian,
+                            settings->CVODE_max_order);
   p->lp = NULL;
   if (settings->lps > 0) {
     QSS_setReinitBuffer(TRUE);
