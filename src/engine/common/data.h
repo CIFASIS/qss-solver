@@ -169,13 +169,14 @@ struct SD_parameters_ {
   int lps;       //!< Number of LPs defined for parallel simulations.
   int nodeSize;  //!< Node size used in the memory list for output simulation values.
   int jacobian;
+  int CVODE_max_order;
   SD_PartitionMethod pm;  //!< Partition method used to obtain a model partition for parallel simulations.
   SD_DtSynch dtSynch;     //!< \f $ \delta t $ \f synchronization policy.
   SD_partitionerOptions partitionerOptions;
 };
 
 SD_parameters SD_Parameters(double derDelta, double zcHyst, double minStep, int symDiff, int lps, int nodeSize, SD_PartitionMethod pm,
-                            double dt, SD_DtSynch synch, SD_partitionerOptions partitionerOptions, int jacobian);
+                            double dt, SD_DtSynch synch, SD_partitionerOptions partitionerOptions, int jacobian, int CVODE_max_order);
 
 SD_parameters SD_copyParameters(SD_parameters parameters);
 

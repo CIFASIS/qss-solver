@@ -171,7 +171,7 @@ void SD_cleanEventData(SD_eventData events, int size)
 }
 
 SD_parameters SD_Parameters(double derDelta, double zcHyst, double minStep, int symDiff, int lps, int nodeSize, SD_PartitionMethod pm,
-                            double dt, SD_DtSynch synch, SD_partitionerOptions partitionerOptions, int jacobian)
+                            double dt, SD_DtSynch synch, SD_partitionerOptions partitionerOptions, int jacobian, int CVODE_max_order)
 {
   SD_parameters p = checkedMalloc(sizeof(*p));
   p->derDelta = derDelta;
@@ -185,6 +185,7 @@ SD_parameters SD_Parameters(double derDelta, double zcHyst, double minStep, int 
   p->dtSynch = synch;
   p->partitionerOptions = partitionerOptions;
   p->jacobian = jacobian;
+  p->CVODE_max_order = CVODE_max_order;
   return p;
 }
 
