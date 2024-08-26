@@ -19,20 +19,27 @@
 
 #pragma once
 
+#define QSS_MODULE_INIT(module, args...) \
+  if (sim_data->params->lps > 0) {       \
+    module##_PAR_init(args);             \
+  } else {                               \
+    module##_init(args);                 \
+  }
+
+#define TYPE_DEF(type)          \
+  typedef struct type##_ *type; \
+  typedef const struct type##_ *const_##type;
+
 #ifdef QSS_PARALLEL
 
 #define QSS_FUNC_DECL(module, name) module##_##PAR_##name
 
 #define QSS_FUNC_INVK(module, name) module##_##PAR_##name
 
-#define QSS_ASSIGN_QUANTIZER_OPS(module)                                  \
-  quantizer->state->qMap = simData->lp->qMap;                             \
-  quantizer->ops->recomputeNextTimes = module##_##PAR_recomputeNextTimes; \
-  quantizer->ops->recomputeNextTime = module##_##PAR_recomputeNextTime;   \
-  quantizer->ops->nextTime = module##_##PAR_nextTime;                     \
-  quantizer->ops->updateQuantizedState = module##_##PAR_updateQuantizedState;
-
 #define QSS_PARALLEL_EXP(exp) exp
+
+#define QSS_PARALLEL_IF(map) if (map > NOT_ASSIGNED) {
+#define QSS_PARALLEL_IF_END }
 
 #else
 
@@ -42,30 +49,11 @@
 
 #define QSS_PARALLEL_EXP(exp)
 
-#define QSS_ASSIGN_QUANTIZER_OPS(module)                              \
-  quantizer->ops->recomputeNextTimes = module##_##recomputeNextTimes; \
-  quantizer->ops->recomputeNextTime = module##_##recomputeNextTime;   \
-  quantizer->ops->nextTime = module##_##nextTime;                     \
-  quantizer->ops->updateQuantizedState = module##_##updateQuantizedState;
+#define QSS_PARALLEL_IF(map)
+
+#define QSS_PARALLEL_IF_END
 
 #endif
-
-#define QSS_DECLARE_QUANTIZER_INTERFACE(module)                                                                                           \
-  extern void module##_##init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime);                                                \
-  extern void module##_##recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu,  \
-                                            double *q) __attribute__((hot));                                                              \
-  extern void module##_##recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)   \
-      __attribute__((hot));                                                                                                               \
-  extern void module##_##nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu) __attribute__((hot)); \
-  extern void module##_##updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu) __attribute__((hot));     \
-  extern void module##_##PAR_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime);                                            \
-  extern void module##_##PAR_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x,           \
-                                                double *lqu, double *q) __attribute__((hot));                                             \
-  extern void module##_##PAR_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu,          \
-                                               double *q) __attribute__((hot));                                                           \
-  extern void module##_##PAR_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu)                   \
-      __attribute__((hot));                                                                                                               \
-  extern void module##_##PAR_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu) __attribute__((hot));
 
 #define QSS_INT_FUNC_DECL(ret_type, module, name, args...) \
   extern ret_type module##_##name(args);                   \
