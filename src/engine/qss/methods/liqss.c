@@ -110,10 +110,10 @@ void QSS_FUNC_DECL(LIQSS, nextTime)(QA_quantizer quantizer, int var, double t, d
 void QSS_FUNC_DECL(LIQSS, updateQuantizedState)(QA_quantizer quantizer, int var, double *q, double *x, double *lqu)
 {
   int cf0 = var * 2, cf1 = cf0 + 1;
-  double dx;
+  double dx = 0;
   double *u = quantizer->state->u0;
   double *a = quantizer->state->a;
-  double dq;
+  double dq = 0;
   quantizer->state->qAux[var] = q[cf0];
   quantizer->state->oldDx[var] = x[cf1];
   quantizer->state->lt[var] = *(quantizer->state->simTime);
