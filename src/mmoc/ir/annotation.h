@@ -32,7 +32,7 @@
 namespace MicroModelica {
 namespace IR {
 
-typedef enum {
+enum class Solver {
   QSS,
   CQSS,
   LIQSS,
@@ -49,11 +49,11 @@ typedef enum {
   IDA,
   mLIQSS,
   mLIQSS2
-} Solver;
+};
 
-typedef enum { Metis, HMetis, Scotch, Patoh, MTPL, MTPL_IT, Manual } PartitionMethod;
+enum class PartitionMethod { Metis, HMetis, Scotch, Patoh, MTPL, MTPL_IT, Manual };
 
-typedef enum { DT_Fixed, DT_Asynchronous } DT_Synch;
+enum class DT_Synch { DT_Fixed, DT_Asynchronous };
 
 class FunctionAnnotation {
   public:
@@ -71,14 +71,11 @@ class FunctionAnnotation {
   Util::SymbolTable libraries() const;
   string libraryDirectory();
 
-  private:
-  typedef enum {
-    INCLUDE,            //!< INCLUDE
-    INCLUDE_DIRECTORY,  //!< INCLUDE_DIRECTORY
-    LIBRARY,            //!< LIBRARY
-    LIBRARY_DIRECTORY,  //!< LIBRARY_DIRECTORY
-    DERIVATIVE          //!< DERIVATIVE
-  } type;
+  protected:
+  enum class type { INCLUDE, INCLUDE_DIRECTORY, LIBRARY, LIBRARY_DIRECTORY, DERIVATIVE };
+
+  void initialize();
+
   map<std::string, FunctionAnnotation::type> _annotations;
   std::string _derivative;
   std::string _include;
@@ -86,6 +83,8 @@ class FunctionAnnotation {
   Util::SymbolTable _libraries;
   std::string _libraryDirectory;
 };
+
+enum class IntegerAnnotations { RandomSeed, CVODEMaxOrder, XOutput };
 
 class ModelAnnotation {
   public:
@@ -138,10 +137,11 @@ class ModelAnnotation {
   IR::MATRIX::UserDefMatrixExps RHSSTMatrix();
   IR::MATRIX::UserDefMatrixExps SDMatrix();
   IR::MATRIX::UserDefMatrixExps SZMatrix();
-  unsigned long randomSeed();
+  int getAnnotation(IntegerAnnotations annot) const;
+  bool hasAnnotation(IntegerAnnotations annot) const;
 
   protected:
-  typedef enum {
+  enum class type {
     EXPERIMENT,
     DESC,
     DQMIN,
@@ -181,9 +181,14 @@ class ModelAnnotation {
     LHS_DSC_MATRIX,
     SD_MATRIX,
     SZ_MATRIX,
-    RANDOM_SEED
-  } type;
+    RANDOM_SEED,
+    CV_ODE_MAX_ORDER,
+    X_OUTPUT
+  };
 
+  using IntAnnotValMap = std::map<IntegerAnnotations, int>;
+
+  void initialize();
   void processAnnotation(string annot, AST_Modification_Equal x);
   void processArgument(AST_Argument_Modification arg);
   void processList(AST_Expression x, list<double> *l);
@@ -240,14 +245,17 @@ class ModelAnnotation {
   string _event_ids;
   int _current_exp_id;
   unsigned long _random_seed;
+  bool _x_output;
+  map<string, IntegerAnnotations> _integer_annotations_map;
+  IntAnnotValMap _integer_annotations_val;
 };
 
-typedef boost::variant<ModelAnnotation, FunctionAnnotation> AnnotationType;
+using AnnotationType = boost::variant<ModelAnnotation, FunctionAnnotation>;
 
 class AnnotationValue {
   public:
   AnnotationValue();
-  ~AnnotationValue();
+  ~AnnotationValue() = default;
   int integer();
   void setInteger(int i);
   double real();
@@ -257,7 +265,7 @@ class AnnotationValue {
   string plainStr();
   void setPlainStr(string plain_str);
 
-  private:
+  protected:
   int _integer;
   double _real;
   string _str;
@@ -267,14 +275,14 @@ class AnnotationValue {
 class EvalAnnotation : public AST_Expression_Fold<AnnotationValue> {
   public:
   EvalAnnotation();
-  ~EvalAnnotation() = default;
+  ~EvalAnnotation() override = default;
 
   private:
   void setBoolean(bool condition, AnnotationValue *e);
-  AnnotationValue foldTraverseElement(AST_Expression);
-  AnnotationValue foldTraverseElement(AnnotationValue, AnnotationValue, BinOpType);
-  AnnotationValue foldTraverseElementUMinus(AST_Expression);
-  map<string, string> _tokens;
+  AnnotationValue foldTraverseElement(AST_Expression) override;
+  AnnotationValue foldTraverseElement(AnnotationValue, AnnotationValue, BinOpType) override;
+  AnnotationValue foldTraverseElementUMinus(AST_Expression) override;
+  std::vector<string> _tokens;
 };
 }  // namespace IR
 }  // namespace MicroModelica
