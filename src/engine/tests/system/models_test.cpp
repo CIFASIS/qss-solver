@@ -103,7 +103,8 @@ const char* models[] = {"acousticsBase",
                         "testFor",
                         "test_input",
                         "TYSON",
-                        "VIRplanoS"};
+                        "VIRplanoS",
+                        "virus_replication"};
 
 INSTANTIATE_TEST_SUITE_P(Models, SModelTests, testing::ValuesIn(models));
 

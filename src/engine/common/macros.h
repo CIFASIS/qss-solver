@@ -30,6 +30,11 @@
   typedef struct type##_ *type; \
   typedef const struct type##_ *const_##type;
 
+/// Define a minimum approximation of DQ used in QSS methods when
+/// recomputing state variables next times, to avoid numerical
+/// errors. @see https://github.com/CIFASIS/qss-solver/issues/258
+#define DQ_APPROX 0.999999999
+
 #ifdef QSS_PARALLEL
 
 #define QSS_FUNC_DECL(module, name) module##_##PAR_##name

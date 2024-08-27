@@ -56,7 +56,7 @@ void QSS_FUNC_DECL(QSS3, recomputeNextTime)(QA_quantizer quantizer, int var, dou
 {
   int cf0 = var * 4, cf1 = cf0 + 1, cf2 = cf1 + 1, cf3 = cf2 + 1;
   double coeff[4];
-  if (fabs(q[cf0] - x[cf0]) >= lqu[var] * 0.999999999) {
+  if (fabs(q[cf0] - x[cf0]) >= lqu[var] * DQ_APPROX) {
     nTime[var] = t;
   } else {
     coeff[0] = q[cf0] + lqu[var] - x[cf0];
