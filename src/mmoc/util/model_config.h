@@ -85,6 +85,7 @@ class ModelConfig {
   inline void clearLocalSymbols() { _local_symbols.clear(); };
   inline void setLocalInitSymbols() { _init_symbols = true; };
   inline void unsetLocalInitSymbols() { _init_symbols = false; };
+
   inline void setEvents(IR::EventTable events) { _events = events; }
   inline IR::EventTable events() const { return _events; }
   inline bool functionOutputs() const { return _function_outputs; }
