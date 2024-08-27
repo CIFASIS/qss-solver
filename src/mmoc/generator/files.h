@@ -35,7 +35,7 @@ class Files {
   public:
   Files(ModelInstancePtr modelInstance, IR::Model& model, Util::CompileFlags& flags);
   Files(string name, Util::CompileFlags& flags);
-  ~Files();
+  ~Files() = default;
   void makefile();
   void run();
   void plot();
@@ -43,9 +43,11 @@ class Files {
   void graph();
   void bdfPartition();
 
-  private:
+  protected:
   std::string variablePlotSettings();
-  void printList(list<string> ann, string tag);
+  void printList(const list<string>& ann, const string& tag) const;
+  void addAnnotation(const IR::ModelAnnotation& annotation, const string& mmo_name, IR::IntegerAnnotations name);
+
   string _fname;
   IR::Model _model;
   ModelInstancePtr _modelInstance;
