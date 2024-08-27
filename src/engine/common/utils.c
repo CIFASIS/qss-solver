@@ -30,6 +30,13 @@
 
 #include <common/utils.h>
 
+void checkedFree(void *ptr)
+{
+  if (ptr != NULL) {
+    free(ptr);
+  }
+}
+
 void *checkedMalloc(unsigned long long len)
 {
   void *p = malloc(len);
@@ -158,7 +165,7 @@ double minPosRoot(double *coeff, int order)
       mpr = INF;
     } else {
       mpr = -coeff[0] / coeff[1];
-    };
+    }
     if (mpr < 0) {
       mpr = INF;
     }
@@ -169,7 +176,7 @@ double minPosRoot(double *coeff, int order)
         mpr = INF;
       } else {
         mpr = -coeff[0] / coeff[1];
-      };
+      }
       if (mpr < 0) {
         mpr = INF;
       }
@@ -187,13 +194,13 @@ double minPosRoot(double *coeff, int order)
           mpr = r1;
         } else {
           mpr = INF;
-        };
+        }
         r1 = (-coeff[1] - sd) / 2 / coeff[2];
         if ((r1 > 0) && (r1 < mpr)) {
           mpr = r1;
         }
-      };
-    };
+      }
+    }
     break;
   case 3:
     if ((coeff[3] == 0) || (1000 * fabs(coeff[3]) < fabs(coeff[2]))) {
@@ -234,7 +241,14 @@ double minPosRoot(double *coeff, int order)
         }
       } else {
         // three real roots
-        double rho, th, rho13, costh3, sinth3, spt, smti32, r1;
+        double rho;
+        double th;
+        double rho13;
+        double costh3;
+        double sinth3;
+        double spt;
+        double smti32;
+        double r1;
         rho = sqrt(-q * q * q);
         th = acos(r / rho);
         rho13 = pow(rho, 1.0 / 3);
