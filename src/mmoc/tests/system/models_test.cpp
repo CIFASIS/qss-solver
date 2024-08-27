@@ -57,13 +57,12 @@ TEST_P(IModelTests, GenerateCode)
 }
 
 const char* models[] = {"adr",           "adr2D",       "advection",        "advection2D",      "advection2D_LI", "advection_quoted",
-                        "advectionFlux", "airconds",    "aircont",          "bball_downstairs", "boost",          "BouncingBall",
+                        "advectionFlux", "airconds",    "aircont",          "allow_discrete_integer", "bball_downstairs", "boost", "BouncingBall",
                         "buck",          "buckboost",   "buck_circuit",     "buck_term",        "burgers",        "cuk",
                         "cuk2",          "interleaved", "inverters",        "lc_line",          "lotka_volterra", "mliqss_adr",
                         "mliqss_buck",   "mliqss_test", "mliqss_TYSON",     "NeuralNetwork1",   "par_airconds",   "par_airconds_cont",
                         "rectifier",     "rltest",      "rltest_LI",        "spikings",         "testFor",        "test_input",
                         "TYSON",         "VIRplanoS",   "virus_replication"};
-
 INSTANTIATE_TEST_SUITE_P(Models, IModelTests, testing::ValuesIn(models));
 
 /// @}
