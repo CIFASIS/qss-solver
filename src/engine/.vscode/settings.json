@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "random": "cpp"
+        "random": "cpp",
+        "qss_bdf.h": "c"
     },
     "C_Cpp.dimInactiveRegions": true
 }

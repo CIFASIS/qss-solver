@@ -70,7 +70,10 @@ class Utils {
   void setDir(AppDirs d, QString value);
   void setFlag(AppFlags f, QString value);
 
-  private:
-  QString _getDir(AppDirs d);
-  QString _getDebugValue();
+  protected:
+  QString getDir(AppDirs dir);
+  QString getDebugValue();
+  QString appFlagName(AppFlags flag);
+  QString appDirsName(AppDirs dir);
+  QString appCommandsName(AppCmds cmd);
 };

@@ -22,6 +22,33 @@
 #include <qss/qss_data.h>
 #include <qss/qss_bdf.h>
 
+#define QSS_DEFINE_QUANTIZER_OPS(module)                            \
+  quantizer->ops->recomputeNextTimes = module##_recomputeNextTimes; \
+  quantizer->ops->recomputeNextTime = module##_recomputeNextTime;   \
+  quantizer->ops->nextTime = module##_nextTime;                     \
+  quantizer->ops->updateQuantizedState = module##_updateQuantizedState;
+
+#ifdef QSS_PARALLEL
+#define QSS_ASSIGN_QUANTIZER_OPS(module)      \
+  quantizer->state->qMap = simData->lp->qMap; \
+  QSS_DEFINE_QUANTIZER_OPS(module##_PAR)
+#else
+#define QSS_ASSIGN_QUANTIZER_OPS(module) QSS_DEFINE_QUANTIZER_OPS(module)
+#endif
+
+#define QSS_DEFINE_QUANTIZER_INTERFACE(module)                                                                                          \
+  extern void module##_init(QA_quantizer quantizer, QSS_data simData, QSS_time simTime);                                                \
+  extern void module##_recomputeNextTimes(QA_quantizer quantizer, int vars, int *inf, double t, double *nTime, double *x, double *lqu,  \
+                                          double *q) __attribute__((hot));                                                              \
+  extern void module##_recomputeNextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu, double *q)   \
+      __attribute__((hot));                                                                                                             \
+  extern void module##_nextTime(QA_quantizer quantizer, int var, double t, double *nTime, double *x, double *lqu) __attribute__((hot)); \
+  extern void module##_updateQuantizedState(QA_quantizer quantizer, int i, double *q, double *x, double *lqu) __attribute__((hot));
+
+#define QSS_DECLARE_QUANTIZER_INTERFACE(module) \
+  QSS_DEFINE_QUANTIZER_INTERFACE(module)        \
+  QSS_DEFINE_QUANTIZER_INTERFACE(module##_PAR)
+
 typedef struct QA_quantizerOps_ *QA_quantizerOps;
 typedef struct QA_quantizerState_ *QA_quantizerState;
 typedef struct QA_quantizer_ *QA_quantizer;

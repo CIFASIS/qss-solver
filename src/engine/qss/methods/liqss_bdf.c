@@ -17,11 +17,14 @@
 
  ******************************************************************************/
 
-#include <common/utils.h>
-#include <math.h>
 #include <qss/methods/liqss_bdf.h>
+
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <common/macros.h>
+#include <common/utils.h>
 
 void QSS_FUNC_DECL(LIQSS_BDF, init)(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 {

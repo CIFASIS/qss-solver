@@ -21,9 +21,8 @@
 
 #include <math.h>
 
+#include <common/macros.h>
 #include <common/utils.h>
-#include <qss/qss_data.h>
-#include <qss/qss_quantizer.h>
 
 void QSS_FUNC_DECL(QSS, init)(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 {
@@ -40,13 +39,17 @@ void QSS_FUNC_DECL(QSS, recomputeNextTime)(QA_quantizer quantizer, int var, doub
 {
   int cf0 = var * 2, cf1 = cf0 + 1;
   double coeff[2];
-  coeff[0] = q[cf0] - x[cf0] - lqu[var];
-  coeff[1] = -x[cf1];
-  nTime[var] = t + minPosRoot(coeff, 1);
-  coeff[0] = q[cf0] - x[cf0] + lqu[var];
-  double timeaux = t + minPosRoot(coeff, 1);
-  if (timeaux < nTime[var]) {
-    nTime[var] = timeaux;
+  if (fabs(q[cf0] - x[cf0]) >= lqu[var] * DQ_APPROX) {
+    nTime[var] = t;
+  } else {
+    coeff[0] = q[cf0] - x[cf0] - lqu[var];
+    coeff[1] = -x[cf1];
+    nTime[var] = t + minPosRoot(coeff, 1);
+    coeff[0] = q[cf0] - x[cf0] + lqu[var];
+    double timeaux = t + minPosRoot(coeff, 1);
+    if (timeaux < nTime[var]) {
+      nTime[var] = timeaux;
+    }
   }
 }
 
