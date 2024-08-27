@@ -114,6 +114,8 @@ MmoHighlighter::MmoHighlighter(QTextDocument *parent, h_type file) : QSyntaxHigh
                     << "\\bMMO_SZ\\b"
                     << "\\bMMO_Event_Id\\b"
                     << "\\bMMO_RandomSeed\\b"
+                    << "\\bMMO_XOutput\\b"
+                    << "\\bMMO_CVODEMaxOrder\\b"
                     << "\\bderivative\\b";
 
     foreach (const QString &pattern, keywordPatterns) {
