@@ -244,8 +244,6 @@ class ModelAnnotation {
   IR::MATRIX::UserDefMatrixExps _sz_matrix;
   string _event_ids;
   int _current_exp_id;
-  unsigned long _random_seed;
-  bool _x_output;
   map<string, IntegerAnnotations> _integer_annotations_map;
   IntAnnotValMap _integer_annotations_val;
 };

@@ -159,8 +159,7 @@ ModelAnnotation::ModelAnnotation()
       _sd_matrix(),
       _sz_matrix(),
       _event_ids(),
-      _current_exp_id(-1),
-      _random_seed(0)
+      _current_exp_id(-1)
 {
   initialize();
 }
