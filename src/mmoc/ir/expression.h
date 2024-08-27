@@ -48,6 +48,7 @@ class Expression {
   friend std::ostream& operator<<(std::ostream& out, const Expression& s);
 
   std::multimap<std::string, int> usedVariables() const;
+  bool autonomous() const;
 
   protected:
   std::vector<Expression> usageExps() const;

@@ -27,6 +27,7 @@
 #include <util/error.h>
 #include <util/model_config.h>
 #include <util/util.h>
+#include <util/visitors/autonomous.h>
 #include <util/visitors/expression_printer.h>
 #include <util/visitors/get_index_variables.h>
 #include <util/visitors/is_constant_index.h>
@@ -175,6 +176,12 @@ std::multimap<std::string, int> Expression::usedVariables() const
 {
   GetIndexVariables used_variables;
   return used_variables.apply(_exp);
+}
+
+bool Expression::autonomous() const
+{
+  Autonomous autonomous;
+  return autonomous.apply(expression());
 }
 
 }  // namespace IR
