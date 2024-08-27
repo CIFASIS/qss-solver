@@ -61,7 +61,6 @@ ModelEditor::ModelEditor(QWidget *parent, QString name)
       _BDFPart(),
       _BDFPartitionDepth(),
       _BDFMaxStep(),
-      _random_seed(),
       _semiStaticPartitioning(false),
       _hl(NULL)
 {
@@ -729,10 +728,29 @@ QString ModelEditor::modelName()
   return "";
 }
 
+void ModelEditor::searchFixedAnnot(QStringList annotations)
+{
+  for (const auto &annotation : annotations) {
+    QString annot_value = getAnnotations(annotation);
+    if (!annot_value.isEmpty()) {
+      _fixed_annotations.insert(annotation, annot_value);
+    }
+  }
+}
+
+void ModelEditor::addFixedAnnot()
+{
+  for (auto it = _fixed_annotations.begin(); it != _fixed_annotations.end(); ++it) {
+    setAnnotations(it.key(), it.value(), true);
+  }
+}
+
 void ModelEditor::writeAnnotations()
 {
   QString mName = modelName();
-  _random_seed = randomSeed();
+  // Search and store fixed user annotations to write them back later.
+  searchFixedAnnot({"MMO_RandomSeed", "MMO_XOutput", "MMO_CVODEMaxOrder"});
+
   deleteAnnotations();
   int tab = _model_editor_tab->currentIndex();
   CodeEditor *_textEditor = qobject_cast<CodeEditor *>(_model_editor_tab->widget(tab));
@@ -768,7 +786,7 @@ void ModelEditor::writeAnnotations()
   if (!_BDFPart.isEmpty()) setAnnotations("MMO_BDF_Part", _BDFPart, true);
   if (!_BDFPartitionDepth.isEmpty()) setAnnotations("MMO_BDF_PDepth", _BDFPartitionDepth, true);
   if (!_BDFMaxStep.isEmpty()) setAnnotations("MMO_BDF_Max_Step", _BDFMaxStep, true);
-  if (!_random_seed.isEmpty()) setAnnotations("MMO_RandomSeed", _random_seed, true);
+  addFixedAnnot();
   setAnnotations("StartTime", _startTime, true);
   setAnnotations("StopTime", _stopTime, true);
   setAnnotations("Tolerance", _tolerance, true);
@@ -827,4 +845,5 @@ void ModelEditor::writeAnnotations()
     }
   }
   _annotations.clear();
+  _fixed_annotations.clear();
 }

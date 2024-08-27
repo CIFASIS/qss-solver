@@ -120,7 +120,6 @@ class ModelEditor : public QDialog, public Ui::ModelEditorForm {
   inline void setBDFPartitionDepth(QString str) { _BDFPartitionDepth = str; };
   inline QString BDFMaxStep() { return getAnnotations("MMO_BDF_Max_Step"); };
   inline void setBDFMaxStep(QString str) { _BDFMaxStep = str; };
-  inline QString randomSeed() { return getAnnotations("MMO_RandomSeed"); };
 
   void keyReleaseEvent(QKeyEvent *event);
   void save(void);
@@ -156,6 +155,11 @@ class ModelEditor : public QDialog, public Ui::ModelEditorForm {
   void setAnnotations(QString str, QString value, bool separator);
   void save(int tab);
   int tokenPosition(QString token);
+  /// Add any annotation that's not required in the run form here.
+  /// They will be added to the to the generated annotations without any modifications.
+  void searchFixedAnnot(QStringList annotations);
+  void addFixedAnnot();
+
   QStringList _annotations;
   QMap<QString, QString> _defaultValues;
   QString _startTime;
@@ -190,8 +194,8 @@ class ModelEditor : public QDialog, public Ui::ModelEditorForm {
   QString _BDFPart;
   QString _BDFPartitionDepth;
   QString _BDFMaxStep;
-  QString _random_seed;
   bool _semiStaticPartitioning;
+  QMap<QString, QString> _fixed_annotations;
   QTabWidget *_model_editor_tab;
   QList<ModelInfo> *_models;
   Utils *_utils;
