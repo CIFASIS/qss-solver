@@ -29,7 +29,9 @@
   quantizer->ops->updateQuantizedState = module##_updateQuantizedState;
 
 #ifdef QSS_PARALLEL
-#define QSS_ASSIGN_QUANTIZER_OPS(module) QSS_DEFINE_QUANTIZER_OPS(module##_PAR)
+#define QSS_ASSIGN_QUANTIZER_OPS(module)      \
+  quantizer->state->qMap = simData->lp->qMap; \
+  QSS_DEFINE_QUANTIZER_OPS(module##_PAR)
 #else
 #define QSS_ASSIGN_QUANTIZER_OPS(module) QSS_DEFINE_QUANTIZER_OPS(module)
 #endif
