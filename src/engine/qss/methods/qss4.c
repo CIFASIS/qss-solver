@@ -21,9 +21,8 @@
 
 #include <math.h>
 
+#include <common/macros.h>
 #include <common/utils.h>
-#include <qss/qss_data.h>
-#include <qss/qss_quantizer.h>
 
 void QSS_FUNC_DECL(QSS4, init)(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
 {

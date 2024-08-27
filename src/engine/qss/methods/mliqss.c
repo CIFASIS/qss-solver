@@ -17,12 +17,15 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
 ******************************************************************************/
+
+#include <qss/methods/mliqss.h>
+
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <common/macros.h>
 #include <common/utils.h>
-#include <qss/methods/mliqss.h>
 
 #define TOL 2
 

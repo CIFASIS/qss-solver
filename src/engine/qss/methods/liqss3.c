@@ -23,6 +23,7 @@
 #include <stdlib.h>
 
 #include <common/data.h>
+#include <common/macros.h>
 #include <common/utils.h>
 #include <qss/qss_data.h>
 #include <qss/qss_quantizer.h>
