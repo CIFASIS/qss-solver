@@ -17,12 +17,15 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
 ******************************************************************************/
+
+#include <qss/methods/mliqss.h>
+
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <common/macros.h>
 #include <common/utils.h>
-#include <qss/methods/mliqss.h>
 
 #define TOL 2
 
@@ -93,7 +96,6 @@ void QSS_FUNC_DECL(mLIQSS, recomputeNextTime)(QA_quantizer quantizer, int i, dou
   bool state_step = quantizer->state->lSimTime->type == ST_State;
   double diff_Q;
   bool *sim_step = quantizer->state->sim_step;
-  int *flag2 = quantizer->state->flag2;
 
   if (t > 0 && state_step) {
     diff_Q = q[2 * ifr_state] - quantizer->state->qAux[ifr_state];

@@ -128,7 +128,6 @@ SET_settings SET_Settings(char *fname)
   int option;
   double dres;
   const char *sol;
-  const char *bdf;
   cf = &cfg;
   config_init(cf);
   if (!config_read_file(cf, fname)) {
@@ -223,10 +222,8 @@ SET_settings SET_Settings(char *fname)
   if (config_lookup_int(cf, "bdf", &ires)) {
     p->BDFPart = ires;
   }
-  if (config_lookup_int(cf, "BDFPartitionDepth", &ires)) {
-    if (ires > 0) {
-      p->BDFPartitionDepth = ires;
-    }
+  if (config_lookup_int(cf, "BDFPartitionDepth", &ires) && ires > 0) {
+    p->BDFPartitionDepth = ires;
   }
   if (config_lookup_float(cf, "BDFMaxStep", &dres)) {
     p->BDFMaxStep = dres;
