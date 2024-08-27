@@ -35,7 +35,7 @@ namespace Generator {
 
 namespace MODEL_INSTANCE {
 
-typedef enum {
+enum class Component {
   Model_Settings,
   Model,
   Deps,
@@ -47,9 +47,10 @@ typedef enum {
   BdfModel,
   CLC_Init,
   QSS_Init
-} Component;
+};
 
-typedef enum { SD, SZ, HD, HZ, DD } NodeType;
+enum class NodeType { SD, SZ, HD, HZ, DD };
+
 }  // namespace MODEL_INSTANCE
 
 class ModelInstance {
@@ -118,14 +119,14 @@ class QSSModelInstance : public ModelInstance {
   public:
   QSSModelInstance();
   QSSModelInstance(IR::Model &model, Util::CompileFlags &flags, WriterPtr writer);
-  ~QSSModelInstance() = default;
-  void initializeDataStructures();
-  Graph computationalGraph();
-  void generate();
-  void header();
+  ~QSSModelInstance() override = default;
+  void initializeDataStructures() override;
+  Graph computationalGraph() override;
+  void generate() override;
+  void header() override;
 
   protected:
-  void definition();
+  void definition() override;
   void dependencies();
   void bdfDefinition();
 
@@ -142,13 +143,13 @@ class QSSModelInstance : public ModelInstance {
 class ClassicModelInstance : public ModelInstance {
   public:
   ClassicModelInstance(IR::Model &model, Util::CompileFlags &flags, WriterPtr writer);
-  ~ClassicModelInstance() = default;
-  void initializeDataStructures();
-  void generate();
-  void header();
+  ~ClassicModelInstance() override = default;
+  void initializeDataStructures() override;
+  void generate() override;
+  void header() override;
 
   protected:
-  void definition();
+  void definition() override;
 
   private:
   void allocateSolver();
@@ -159,6 +160,7 @@ class ClassicModelInstance : public ModelInstance {
   WriterPtr _writer;
 };
 
-typedef std::shared_ptr<ModelInstance> ModelInstancePtr;
+using ModelInstancePtr = std::shared_ptr<ModelInstance>;
+
 }  // namespace Generator
 }  // namespace MicroModelica
