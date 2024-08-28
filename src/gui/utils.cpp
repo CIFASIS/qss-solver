@@ -36,7 +36,7 @@ bool Utils::isSet(AppFlags flag)
 {
   QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini", QSettings::IniFormat);
   QString val = settings.value(appFlagName(flag), "Value not found in file qss-solver.ini").toString();
-  return val.isEmpty();
+  return val == "true";
 }
 
 QString Utils::getDebugValue()
