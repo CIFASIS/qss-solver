@@ -51,21 +51,19 @@ using namespace Util;
 namespace Generator {
 
 Files::Files(ModelInstancePtr modelInstance, Model& model, CompileFlags& flags)
-    : _fname(model.name()), _model(model), _modelInstance(modelInstance), _writer(new FileWriter()), _flags(flags)
+    : _fname(model.name()), _model(model), _modelInstance(modelInstance), _writer(std::make_shared<FileWriter>()), _flags(flags)
 {
   if (_flags.hasOutputFile()) {
     _fname = _flags.outputFile();
   }
 }
 
-Files::Files(string name, CompileFlags& flags) : _fname(name), _model(), _writer(new FileWriter()), _flags(flags)
+Files::Files(string name, CompileFlags& flags) : _fname(name), _model(), _writer(std::make_shared<FileWriter>()), _flags(flags)
 {
   if (_flags.hasOutputFile()) {
     _fname = _flags.outputFile();
   }
 }
-
-Files::~Files() {}
 
 void Files::makefile()
 {
@@ -99,11 +97,10 @@ void Files::makefile()
   }
   if (_flags.hasObjects()) {
     list<string> objects = _flags.objects();
-    for (list<string>::iterator it = objects.begin(); it != objects.end(); it++) {
-      string inc = *it;
-      unsigned int f = inc.rfind("/");
-      inc.erase(inc.begin() + f, inc.end());
-      include.insert(inc, inc);
+    for (auto obj : objects) {
+      unsigned long f = obj.rfind("/");
+      obj.erase(obj.begin() + f, obj.end());
+      include.insert(obj, obj);
     }
   }
   string pinclude = Utils::instance().environmentVariable("MMOC_INCLUDE");
@@ -136,8 +133,8 @@ void Files::makefile()
   if (_flags.hasObjects()) {
     buffer << "SRC    := ";
     list<string> objects = _flags.objects();
-    for (list<string>::iterator it = objects.begin(); it != objects.end(); it++) {
-      buffer << *it << " ";
+    for (const auto& obj : objects) {
+      buffer << obj << " ";
     }
     _writer->print(buffer);
   }
@@ -305,9 +302,10 @@ void Files::settings(ModelAnnotation annotation)
   _writer->print("sol=\"" + annotation.solverString() + "\";");
   list<double> dq = annotation.dqmin();
   buffer << "dqmin=(";
-  int count = 0, size = dq.size();
-  for (list<double>::iterator it = dq.begin(); it != dq.end(); it++) {
-    buffer << *it;
+  unsigned long count = 0;
+  unsigned long size = dq.size();
+  for (const auto& it : dq) {
+    buffer << it;
     if (++count < size) {
       buffer << ",";
     }
@@ -318,8 +316,8 @@ void Files::settings(ModelAnnotation annotation)
   buffer << "dqrel=(";
   count = 0;
   size = dq.size();
-  for (list<double>::iterator it = dq.begin(); it != dq.end(); it++) {
-    buffer << *it;
+  for (const auto& it : dq) {
+    buffer << it;
     if (++count < size) {
       buffer << ",";
     }
@@ -340,19 +338,31 @@ void Files::settings(ModelAnnotation annotation)
   _writer->print(buffer);
   buffer << "BDFMaxStep=" << annotation.BDFMaxStep() << ";";
   _writer->print(buffer);
+  addAnnotation(annotation, "CVODEMaxOrder", IntegerAnnotations::CVODEMaxOrder);
+  addAnnotation(annotation, "XOutput", IntegerAnnotations::XOutput);
   _writer->clearFile();
 }
 
-void Files::printList(list<string> ann, string tag)
+void Files::addAnnotation(const IR::ModelAnnotation& annotation, const string& mmo_name, IntegerAnnotations name)
+{
+  if (annotation.hasAnnotation(name)) {
+    stringstream buffer;
+    buffer << mmo_name << "=" << annotation.getAnnotation(name) << ";";
+    _writer->print(buffer);
+  }
+}
+
+void Files::printList(const list<string>& ann, const string& tag) const
 {
   stringstream buffer;
   if (ann.empty()) {
     return;
   }
   buffer << tag << "=(";
-  int count = 0, size = ann.size();
-  for (list<string>::iterator it = ann.begin(); it != ann.end(); it++) {
-    buffer << *it;
+  unsigned long count = 0;
+  unsigned long size = ann.size();
+  for (const auto& it : ann) {
+    buffer << it;
     if (++count < size) {
       buffer << ",";
     }
@@ -366,7 +376,6 @@ void Files::bdfPartition()
   AST_ExpressionList BDF_exps = _model.annotations().BDFPartition();
   AST_ExpressionListIterator bdf_exp_it;
   list<int> variables;
-  list<int>::iterator var_it;
   foreach (bdf_exp_it, BDF_exps) {
     PartitionInterval partition_interval;
     list<int> ret = partition_interval.apply(current_element(bdf_exp_it));
@@ -374,11 +383,10 @@ void Files::bdfPartition()
   }
   string file_name = _fname + "_BDF.part";
   ofstream partition(file_name.c_str(), ios::out);
-  int partition_size = variables.size();
+  unsigned long partition_size = variables.size();
   partition << partition_size << endl;
-  for (var_it = variables.begin(); var_it != variables.end(); var_it++) {
-    int val = *var_it;    
-    partition << val <<  endl;
+  for (const auto& var_it : variables) {
+    partition << var_it << endl;
   }
   partition.close();
 }

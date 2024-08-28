@@ -1,7 +1,20 @@
 {
     "files.associations": {
         "random": "cpp",
-        "qss_bdf.h": "c"
+        "qss_bdf.h": "c",
+        "array": "c",
+        "compare": "c",
+        "functional": "c",
+        "istream": "c",
+        "ostream": "c",
+        "ranges": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "typeindex": "c",
+        "typeinfo": "c",
+        "qss_data.h": "c"
     },
-    "C_Cpp.dimInactiveRegions": true
+    "C_Cpp.dimInactiveRegions": true,
+    "sonarlint.pathToCompileCommands": "${workspaceFolder}/compile_commands.json"
 }

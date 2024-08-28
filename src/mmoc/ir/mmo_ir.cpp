@@ -125,16 +125,17 @@ void MicroModelicaIR::visit(AST_Element x)
         Variable vi(newType_Integer(), tp, current_element(it)->modification(), nullptr, size, array);
         _class->insert(current_element(it)->name(), vi, t);
       } else {
+        Variable new_var;
         if ((tp & TP_PARAMETER) && c->isInteger()) {
-          Variable vi(newType_Integer(), tp, current_element(it)->modification(), nullptr, size, array);
-          _class->insert(current_element(it)->name(), vi, t);
+          new_var = Variable(newType_Integer(), tp, current_element(it)->modification(), nullptr, size, array);
         } else if (c->isString()) {
-          Variable vi(newType_String(), tp, current_element(it)->modification(), nullptr, size, array);
-          _class->insert(current_element(it)->name(), vi, t);
+          new_var = Variable(newType_String(), tp, current_element(it)->modification(), nullptr, size, array);
+        } else if ((tp & TP_DISCRETE) && c->isInteger()) {
+          new_var = Variable(newType_Integer(), tp, current_element(it)->modification(), nullptr, size, array);
         } else {
-          Variable vi(newType_Real(), tp, current_element(it)->modification(), nullptr, size, array);
-          _class->insert(current_element(it)->name(), vi, t);
+          new_var = Variable(newType_Real(), tp, current_element(it)->modification(), nullptr, size, array);
         }
+        _class->insert(current_element(it)->name(), new_var, t);
       }
     }
   } else if (e == ELCLASS) {

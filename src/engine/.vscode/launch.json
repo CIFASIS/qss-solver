@@ -23,6 +23,25 @@
                     "ignoreFailures": true
                 }
             ]
+        },
+
+        // Advection model
+        {
+            "name": "Advection.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/joaquin/work/qss-solver/build/advection/advection",
+            "cwd": "/home/joaquin/work/qss-solver/build/advection/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
         }
+        
     ]
 }

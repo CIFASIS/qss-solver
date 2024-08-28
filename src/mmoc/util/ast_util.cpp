@@ -130,7 +130,7 @@ bool EqualExp::equalTraverseElement(AST_Expression a, AST_Expression b)
   case EXPCOMPREF: {
     AST_Expression_ComponentReference compRefA = a->getAsComponentReference();
     Option<Variable> varInfoA = ModelConfig::instance().lookup(CREF_NAME(compRefA));
-    if (varInfoA && varInfoA->type()->getType() == TYARRAY) {
+    if (varInfoA && varInfoA->type()->getType() == SymbolType::TYARRAY) {
       return compareArrays(compRefA, b->getAsComponentReference());
     } else {
       return CREF_NAME(a).compare(CREF_NAME(b)) == 0;
