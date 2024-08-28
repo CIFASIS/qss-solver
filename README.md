@@ -1,4 +1,4 @@
-## QSS Solver 4.3.0
+## QSS Solver 4.4.0
 
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
@@ -219,6 +219,17 @@ The makefile script accepts the following targets:
 
 ## Changelog
 
+## [4.4.0] - 28-08-2024
+
+### Added
+- **Allow discrete Integer** definitions to be able to use them as array indexes.
+- **New MMO_CVODEMaxOder annotation** to select the max order used in `CVODE` solver.
+- **New MMO_XOutput annotation** that allows selecting state variable output (exerimental).
+
+### Changed
+- Use time variable in initial code.
+- Fixed QSS first order method recompute next time.
+
 ## [4.3.0] - 21-09-2022
 
 ### Added
@@ -229,14 +240,6 @@ The makefile script accepts the following targets:
 
 ### Removed
 - **mLIQSS3** is deprecated.
-
-## [4.2.1] - 28-06-2023
-
-### Added
-- Added mLIQSS article models to distribution.
-
-### Changed
-- Fix mLIQSS recompute next time to only update the Jacobian approximation when the influencer is a state variable.
 
 ## Licensing
 

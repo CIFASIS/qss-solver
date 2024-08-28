@@ -17,12 +17,10 @@
 
  ******************************************************************************/
 
-#ifndef MMOHIGHLIGHTER_H_
-#define MMOHIGHLIGHTER_H_
-
-#include <QSyntaxHighlighter>
+#pragma once
 
 #include <QHash>
+#include <QSyntaxHighlighter>
 #include <QTextCharFormat>
 
 class MmoHighlighter : public QSyntaxHighlighter {
@@ -50,5 +48,3 @@ class MmoHighlighter : public QSyntaxHighlighter {
   QTextCharFormat multiLineCommentFormat;
   QTextCharFormat quotationFormat;
 };
-
-#endif /* MMOHIGHLIGHTER_H_ */

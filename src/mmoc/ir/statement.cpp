@@ -18,14 +18,14 @@
  ******************************************************************************/
 #include <sstream>
 
-#include "../ast/ast_builder.h"
-#include "../ast/statement.h"
-#include "../util/model_config.h"
-#include "../util/util.h"
-#include "../util/process_statement.h"
-#include "../util/visitors/called_functions.h"
-#include "helpers.h"
-#include "statement.h"
+#include <ast/ast_builder.h>
+#include <ast/statement.h>
+#include <ir/helpers.h>
+#include <ir/statement.h>
+#include <util/model_config.h>
+#include <util/util.h>
+#include <util/process_statement.h>
+#include <util/visitors/called_functions.h>
 
 namespace MicroModelica {
 using namespace Util;
@@ -266,6 +266,15 @@ ExpressionList Statement::assignments(STATEMENT::AssignTerm asg) const
     return ExpressionList();
   }
   return ExpressionList();
+}
+
+bool Statement::autonomous() const
+{
+  bool autonomous = true;
+  for (const auto& exp : _rhs_assignments) {
+    autonomous = autonomous && exp.autonomous();
+  }
+  return autonomous;
 }
 
 std::ostream& operator<<(std::ostream& out, const Statement& s) { return out << s.print(); }

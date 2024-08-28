@@ -1,0 +1,8 @@
+{
+    "sonarlint.pathToCompileCommands": "${workspaceFolder}/src/engine/compile_commands.json",
+    "files.associations": {
+        "patoh.h": "c",
+        "scotch.h": "c",
+        "utils.h": "c"
+    }
+}

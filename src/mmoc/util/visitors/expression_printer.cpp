@@ -34,7 +34,7 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-ExpressionPrinter::ExpressionPrinter(int order) : _order(order) {}
+ExpressionPrinter::ExpressionPrinter(int order, bool array_index) : _order(order), _array_index(array_index) {}
 
 string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
 {
@@ -50,7 +50,7 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
   case EXPBRACE:
     break;
   case EXPCALL: {
-    AST_Expression_Call call = exp->getAsCall();
+    const AST_Expression_Call call = exp->getAsCall();
     CompiledFunctionTable fs = Utils::instance().compiledFunctions();
     Option<CompiledFunction> f = fs[*call->name()];
     if (!f) {
@@ -87,7 +87,7 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
       Error::instance().add(exp->lineNum(), EM_IR | EM_VARIABLE_NOT_FOUND, ER_Error, "expression_printer.cpp:80 %s", ref->name().c_str());
       break;
     }
-    VariablePrinter var_printer(var.get(), ref, _order);
+    VariablePrinter var_printer(var.get(), ref, _order, _array_index);
     buffer << var_printer;
     break;
   }
@@ -110,7 +110,8 @@ string ExpressionPrinter::foldTraverseElement(AST_Expression exp)
   case EXPOUTPUT: {
     AST_Expression_Output out = exp->getAsOutput();
     AST_ExpressionListIterator it;
-    int size = out->expressionList()->size(), i = 0;
+    unsigned long size = out->expressionList()->size();
+    unsigned long i = 0;
     buffer << "(";
     foreach (it, out->expressionList()) {
       buffer << apply(current_element(it));
@@ -188,20 +189,31 @@ string ExpressionPrinter::foldTraverseElementUMinus(AST_Expression exp)
   return buffer.str();
 }
 
-VariablePrinter::VariablePrinter(Variable var, AST_Expression_ComponentReference ref, int order)
-    : _var(var), _ref(ref), _order(order), _exp(), _begin_delimiter("("), _end_delimiter(")"), _begin_index_access(), _end_index_access()
+VariablePrinter::VariablePrinter(const Variable& var, AST_Expression_ComponentReference ref, int order, bool array_index)
+    : _var(var),
+      _ref(ref),
+      _order(order),
+      _exp(),
+      _begin_delimiter("("),
+      _end_delimiter(")"),
+      _begin_index_access(),
+      _end_index_access(),
+      _cast()
 {
-  config();
+  config(array_index);
   generate();
 }
 
-void VariablePrinter::config()
+void VariablePrinter::config(bool array_index)
 {
   if (ModelConfig::instance().functionCode()) {
     _begin_delimiter = "[";
     _end_delimiter = "]";
     _begin_index_access = "(";
     _end_index_access = "-1)";
+  }
+  if (array_index) {
+    _cast = _var.castOperator();
   }
 }
 
@@ -238,12 +250,14 @@ void VariablePrinter::generate()
   } else if (config.isQss() && config.algorithm() && !config.reinit() && _var.isState()) {
     buffer << "_q";
   }
-  buffer << _var;
+  buffer << _cast << _var;
   if (HAS_INDEXES) {
-    ExpressionPrinter printer(_order);
+    const bool ARRAY_INDEX = true;
+    ExpressionPrinter printer(_order, ARRAY_INDEX);
     AST_ExpressionList indexes = _ref->firstIndex();
     AST_ExpressionListIterator it;
-    int size = indexes->size(), i = 0;
+    unsigned long size = indexes->size();
+    unsigned long i = 0;
     buffer << _begin_delimiter;
     foreach (it, indexes) {
       buffer << _begin_index_access << printer.apply(current_element(it)) << _end_index_access << (++i < size ? "," : "");

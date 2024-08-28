@@ -1,6 +1,9 @@
 # Target variables
 MODE ?= Debug
 DISTRO := $(shell lsb_release -r 2>/dev/null | grep Release | awk '{ print $$2 }')
+sbg_branch ?= sb-graph-dev
+build_sbg ?= True
+repo_checkout ?= ssh
 
 # Build cores.
 CORES = $(shell nproc)
@@ -18,7 +21,7 @@ mmo-interfaces: create-folders
 	@cd interfaces/sbml &&  $(MAKE) MODE=$(MODE) -j $(CORES)
 	@echo Done
 
-qss-engine: create-folders
+qss-engine: create-folders  lib-gtest
 	@echo BUILDING QSS LIBRARIES DEPS
 	@cd engine && $(MAKE) cvode
 	@cd engine && $(MAKE) ida
@@ -36,11 +39,14 @@ qss-user-libs: create-folders qss-engine
 	@echo Done
 
 mmo-compiler: create-folders lib-gtest  
+	@echo BUILDING MICROMODELICA C COMPILER DEPS
+	@cd mmoc && $(MAKE) MODE=$(MODE) lib_sbg sbg_branch=$(sbg_branch) build_sbg=$(build_sbg) repo_checkout=$(repo_checkout)
+	@echo Done
 	@echo BUILDING MICROMODELICA C COMPILER
 	@cd mmoc && $(MAKE) MODE=$(MODE) -j $(CORES) 
 	@echo Done
 
-qss-solver-gui: create-folders 
+qss-solver-gui: create-folders lib-gtest
 	@echo BUILDING MMO EDITOR
 	@cd gui && $(MAKE) -f gui.makefile MODE=$(MODE) -j $(CORES)     
 	@echo Done
@@ -99,7 +105,10 @@ clean:
 	@cd interfaces/sbml && $(MAKE) clean     
 
 help:
-	@echo "make MODE=<Debug|Release> "
+	@echo "make MODE=<Debug|Release> sbg_branch=<BRANCH_NAME> build_sbg=<True|False> repo_checkout=<ssh|https>"
 	@echo "Default values:"
 	@echo ""
 	@echo "MODE=Debug"
+	@echo "sbg_branch=sb-graph-dev"
+	@echo "build_sbg=True"
+	@echo "repo_checkout=ssh"

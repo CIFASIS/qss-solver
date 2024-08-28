@@ -17,12 +17,11 @@
 
  ******************************************************************************/
 
-#ifndef MMO_STATEMENT_H_
-#define MMO_STATEMENT_H_
+#pragma once
 
-#include "../ast/ast_types.h"
-#include "../util/table.h"
-#include "index.h"
+#include <ast/ast_types.h>
+#include <ir/index.h>
+#include <util/table.h>
 
 namespace MicroModelica {
 
@@ -38,8 +37,7 @@ typedef enum { LHS, RHS, LHS_DISCRETES, LHS_STATES } AssignTerm;
 class Statement {
   public:
   Statement(AST_Statement stm, bool initial = false, const std::string& block = "");
-  Statement(AST_Statement stm, Option<Range> range, bool initial = false,
-            const std::string& block = "");
+  Statement(AST_Statement stm, Option<Range> range, bool initial = false, const std::string& block = "");
   Statement() : _stm(nullptr), _range(), _block(), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states(){};
   ~Statement() = default;
 
@@ -59,6 +57,7 @@ class Statement {
   bool isAssignment() const;
   bool isForStatement() const;
   inline Option<Range> range() { return _range; };
+  bool autonomous() const;
 
   protected:
   void initialize();
@@ -82,5 +81,3 @@ class Statement {
 typedef ModelTable<int, Statement> StatementTable;
 }  // namespace IR
 }  // namespace MicroModelica
-
-#endif /* MMO_STATEMENT_H_ */

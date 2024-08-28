@@ -42,7 +42,7 @@ typedef enum { DEC_PUBLIC, DEC_LOCAL } DEC_Type;
 
 class Class {
   public:
-  ~Class() = default;
+  virtual ~Class() = default;
   virtual string name() const = 0;
   virtual void insert(string n) = 0;
   virtual void insert(AST_Equation eq) = 0;
@@ -60,7 +60,7 @@ class Function : public Class {
   public:
   Function();
   Function(string name);
-  ~Function() = default;
+  virtual ~Function() = default;
   string name() const;
   void insert(AST_External_Function_Call efc);
   void insert(VarName n, Util::Variable& vi, DEC_Type type);
@@ -99,7 +99,7 @@ class Package : public Class {
   public:
   Package(){};
   Package(string name);
-  ~Package() = default;
+  virtual ~Package() = default;
   Util::VarSymbolTable symbols() const;
   string name() const;
   void insert(string n);
@@ -127,7 +127,7 @@ class Model : public Class {
   public:
   Model();
   Model(string name);
-  ~Model() = default;
+  virtual ~Model() = default;
   inline string name() const { return _name; };
   void insert(string n);
   void insert(VarName n, Util::Variable& vi, DEC_Type type);

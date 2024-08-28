@@ -17,31 +17,34 @@
 
  ******************************************************************************/
 
-#include "annotation.h"
-
+#include <algorithm>
 #include <utility>
 
-#include "../ast/element.h"
-#include "../ast/expression.h"
-#include "../ast/modification.h"
-#include "../util/error.h"
-#include "../util/model_config.h"
-#include "../util/symbol_table.h"
-#include "../util/util.h"
+#include "annotation.h"
+#include <ast/element.h>
+#include <ast/expression.h>
+#include <ast/modification.h>
+#include "annotation.h"
+#include <util/error.h>
+#include <util/model_config.h>
+#include <util/symbol_table.h>
+#include <util/util.h>
 
 namespace MicroModelica {
 using namespace Util;
 namespace IR {
 
-FunctionAnnotation::FunctionAnnotation() : _annotations(), _derivative(), _include()
+FunctionAnnotation::FunctionAnnotation() : _annotations(), _derivative(), _include() { initialize(); }
+
+void FunctionAnnotation::initialize()
 {
   _libraryDirectory = Utils::instance().environmentVariable("MMOC_LIBRARIES");
   _includeDirectory = Utils::instance().environmentVariable("MMOC_INCLUDE");
-  _annotations.insert(pair<string, FunctionAnnotation::type>("derivative", DERIVATIVE));
-  _annotations.insert(pair<string, FunctionAnnotation::type>("Include", INCLUDE));
-  _annotations.insert(pair<string, FunctionAnnotation::type>("IncludeDirectory", INCLUDE_DIRECTORY));
-  _annotations.insert(pair<string, FunctionAnnotation::type>("Library", LIBRARY));
-  _annotations.insert(pair<string, FunctionAnnotation::type>("LibraryDirectory", LIBRARY_DIRECTORY));
+  _annotations.insert(pair<string, FunctionAnnotation::type>("derivative", type::DERIVATIVE));
+  _annotations.insert(pair<string, FunctionAnnotation::type>("Include", type::INCLUDE));
+  _annotations.insert(pair<string, FunctionAnnotation::type>("IncludeDirectory", type::INCLUDE_DIRECTORY));
+  _annotations.insert(pair<string, FunctionAnnotation::type>("Library", type::LIBRARY));
+  _annotations.insert(pair<string, FunctionAnnotation::type>("LibraryDirectory", type::LIBRARY_DIRECTORY));
 }
 
 bool FunctionAnnotation::hasDerivative() { return !_derivative.empty(); }
@@ -61,48 +64,45 @@ bool FunctionAnnotation::insert(AST_Argument_Modification x)
   if (itf == _annotations.end()) {
     return false;
   }
-  AST_Expression mod = nullptr;
-  if (x->hasModification()) {
-    if (x->modification()->modificationType() == MODEQUAL) {
-      mod = x->modification()->getAsEqual()->exp();
-    }
-  }
-  switch (itf->second) {
-  case INCLUDE:
-    if (mod->expressionType() == EXPSTRING) {
-      _include = mod->getAsString()->str();
-    }
-    break;
-  case INCLUDE_DIRECTORY:
-    if (mod->expressionType() == EXPSTRING) {
-      _includeDirectory = mod->getAsString()->str();
-    }
-    break;
-  case LIBRARY:
-    if (mod->expressionType() == EXPSTRING) {
-      string l = mod->getAsString()->str();
-      _libraries.insert(l, l);
-    } else if (mod->expressionType() == EXPBRACE) {
-      AST_ExpressionList el = mod->getAsBrace()->arguments();
-      AST_ExpressionListIterator eli;
-      foreach (eli, el) {
-        string l = current_element(eli)->getAsString()->str();
-        _libraries.insert(l, l);
+  if (x->hasModification() && (x->modification()->modificationType() == MODEQUAL)) {
+    AST_Expression mod = x->modification()->getAsEqual()->exp();
+    switch (itf->second) {
+    case type::INCLUDE:
+      if (mod->expressionType() == EXPSTRING) {
+        _include = mod->getAsString()->str();
       }
+      break;
+    case type::INCLUDE_DIRECTORY:
+      if (mod->expressionType() == EXPSTRING) {
+        _includeDirectory = mod->getAsString()->str();
+      }
+      break;
+    case type::LIBRARY:
+      if (mod->expressionType() == EXPSTRING) {
+        string l = mod->getAsString()->str();
+        _libraries.insert(l, l);
+      } else if (mod->expressionType() == EXPBRACE) {
+        AST_ExpressionList el = mod->getAsBrace()->arguments();
+        AST_ExpressionListIterator eli;
+        foreach (eli, el) {
+          string l = current_element(eli)->getAsString()->str();
+          _libraries.insert(l, l);
+        }
+      }
+      break;
+    case type::LIBRARY_DIRECTORY:
+      if (mod->expressionType() == EXPSTRING) {
+        _libraryDirectory = mod->getAsString()->str();
+      }
+      break;
+    case type::DERIVATIVE:
+      if (mod->expressionType() == EXPSTRING) {
+        _derivative = mod->getAsString()->str();
+      }
+      break;
+    default:
+      break;
     }
-    break;
-  case LIBRARY_DIRECTORY:
-    if (mod->expressionType() == EXPSTRING) {
-      _libraryDirectory = mod->getAsString()->str();
-    }
-    break;
-  case DERIVATIVE:
-    if (mod->expressionType() == EXPSTRING) {
-      _derivative = mod->getAsString()->str();
-    }
-    break;
-  default:
-    break;
   }
   return true;
 }
@@ -118,7 +118,7 @@ SymbolTable FunctionAnnotation::libraries() const { return _libraries; }
 string FunctionAnnotation::libraryDirectory() { return _libraryDirectory; }
 
 ModelAnnotation::ModelAnnotation()
-    : _solver(LIQSS2),
+    : _solver(Solver::LIQSS2),
       _solverString("LIQSS2"),
       _commInterval("CI_Step"),
       _symDiff(true),
@@ -138,12 +138,12 @@ ModelAnnotation::ModelAnnotation()
       _output(),
       _initialTime(0),
       _finalTime(0),
-      _partitionMethod(Metis),
-      _partitionMethodString("Metis"),
+      _partitionMethod(PartitionMethod::Scotch),
+      _partitionMethodString("Scotch"),
       _parallel(false),
       _dt(0),
       _polyCoeffs(1),
-      _dtSynch(DT_Fixed),
+      _dtSynch(DT_Synch::DT_Fixed),
       _dtSynchString("SD_DT_Asynchronous"),
       _desc(),
       _patohSettings(),
@@ -159,49 +159,58 @@ ModelAnnotation::ModelAnnotation()
       _sd_matrix(),
       _sz_matrix(),
       _event_ids(),
-      _current_exp_id(-1),
-      _random_seed(0)
+      _current_exp_id(-1)
 {
-  _annotations.insert(pair<string, ModelAnnotation::type>("experiment", EXPERIMENT));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Description", DESC));
-  _annotations.insert(pair<string, ModelAnnotation::type>("Tolerance", DQREL));
-  _annotations.insert(pair<string, ModelAnnotation::type>("AbsTolerance", DQMIN));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Weight", WEIGHT));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Solver", SOLVER));
-  _annotations.insert(pair<string, ModelAnnotation::type>("StartTime", INITIAL_TIME));
-  _annotations.insert(pair<string, ModelAnnotation::type>("StopTime", FINAL_TIME));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_MinStep", MIN_STEP));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_ZCHyst", ZCHYST));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_DerDelta", DER_DELTA));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_LPS", LPS));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_NodeSize", NODE_SIZE));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_OutputType", COMM_INTERVAL));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Period", STEP_SIZE));
-  _annotations.insert(pair<string, ModelAnnotation::type>("Jacobian", JACOBIAN));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_SymDiff", SYM_DIFF));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Scheduler", SCHEDULER));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Output", OUTPUT));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_StoreData", STORE_DATA));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_PartitionMethod", PARTITION_METHOD));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Parallel", PARALLEL));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_DT_Min", DELTAT));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_DT_Synch", DELTAT_SYNCH));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_PatohSettings", PATOH_SETTINGS));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_MetisSettings", METIS_SETTINGS));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_ScotchSettings", SCOTCH_SETTINGS));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_BDF_Part", BDF_PARTITION));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_BDF_PDepth", BDF_PARTITION_DEPTH));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_BDF_Max_Step", BDF_MAX_STEP));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Event_Id", EVENT_ID));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_HD", HD_MATRIX));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_HZ", HZ_MATRIX));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_HH", HH_MATRIX));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_LHS_ST", LHS_ST_MATRIX));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_LHS_DSC", LHS_DSC_MATRIX));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_RHS_ST", RHS_ST_MATRIX));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_SD", SD_MATRIX));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_SZ", SZ_MATRIX));
-  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_RandomSeed", RANDOM_SEED));
+  initialize();
+}
+
+void ModelAnnotation::initialize()
+{
+  _annotations.insert(pair<string, ModelAnnotation::type>("experiment", type::EXPERIMENT));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Description", type::DESC));
+  _annotations.insert(pair<string, ModelAnnotation::type>("Tolerance", type::DQREL));
+  _annotations.insert(pair<string, ModelAnnotation::type>("AbsTolerance", type::DQMIN));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Weight", type::WEIGHT));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Solver", type::SOLVER));
+  _annotations.insert(pair<string, ModelAnnotation::type>("StartTime", type::INITIAL_TIME));
+  _annotations.insert(pair<string, ModelAnnotation::type>("StopTime", type::FINAL_TIME));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_MinStep", type::MIN_STEP));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_ZCHyst", type::ZCHYST));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_DerDelta", type::DER_DELTA));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_LPS", type::LPS));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_NodeSize", type::NODE_SIZE));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_OutputType", type::COMM_INTERVAL));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Period", type::STEP_SIZE));
+  _annotations.insert(pair<string, ModelAnnotation::type>("Jacobian", type::JACOBIAN));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_SymDiff", type::SYM_DIFF));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Scheduler", type::SCHEDULER));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Output", type::OUTPUT));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_StoreData", type::STORE_DATA));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_PartitionMethod", type::PARTITION_METHOD));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Parallel", type::PARALLEL));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_DT_Min", type::DELTAT));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_DT_Synch", type::DELTAT_SYNCH));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_PatohSettings", type::PATOH_SETTINGS));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_MetisSettings", type::METIS_SETTINGS));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_ScotchSettings", type::SCOTCH_SETTINGS));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_BDF_Part", type::BDF_PARTITION));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_BDF_PDepth", type::BDF_PARTITION_DEPTH));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_BDF_Max_Step", type::BDF_MAX_STEP));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_Event_Id", type::EVENT_ID));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_HD", type::HD_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_HZ", type::HZ_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_HH", type::HH_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_LHS_ST", type::LHS_ST_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_LHS_DSC", type::LHS_DSC_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_RHS_ST", type::RHS_ST_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_SD", type::SD_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_SZ", type::SZ_MATRIX));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_RandomSeed", type::RANDOM_SEED));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_CVODEMaxOrder", type::CV_ODE_MAX_ORDER));
+  _annotations.insert(pair<string, ModelAnnotation::type>("MMO_XOutput", type::X_OUTPUT));
+  _integer_annotations_map.insert(pair<string, IntegerAnnotations>("MMO_RandomSeed", IntegerAnnotations::RandomSeed));
+  _integer_annotations_map.insert(pair<string, IntegerAnnotations>("MMO_CVODEMaxOrder", IntegerAnnotations::CVODEMaxOrder));
+  _integer_annotations_map.insert(pair<string, IntegerAnnotations>("MMO_XOutput", IntegerAnnotations::XOutput));
   _sample.push_back(1e-2);
   _DQMin.push_back(1e-3);
   _DQRel.push_back(1e-3);
@@ -246,7 +255,7 @@ bool ModelAnnotation::insert(AST_Argument_Modification x)
     return false;
   }
   switch (itf->second) {
-  case EXPERIMENT: {
+  case type::EXPERIMENT: {
     if (x->hasModification()) {
       AST_Modification mod = x->modification();
       if (mod->modificationType() == MODCLASS) {
@@ -267,16 +276,16 @@ bool ModelAnnotation::insert(AST_Argument_Modification x)
       Error::instance().add(x->lineNum(), EM_IR | EM_ANNOTATION_NOT_FOUND, ER_Warning, "%s", x->name()->c_str());
     }
   } break;
-  case WEIGHT:
-  case EVENT_ID:
-  case HD_MATRIX:
-  case HZ_MATRIX:
-  case HH_MATRIX:
-  case LHS_ST_MATRIX:
-  case LHS_DSC_MATRIX:
-  case RHS_ST_MATRIX:
-  case SD_MATRIX:
-  case SZ_MATRIX:
+  case type::WEIGHT:
+  case type::EVENT_ID:
+  case type::HD_MATRIX:
+  case type::HZ_MATRIX:
+  case type::HH_MATRIX:
+  case type::LHS_ST_MATRIX:
+  case type::LHS_DSC_MATRIX:
+  case type::RHS_ST_MATRIX:
+  case type::SD_MATRIX:
+  case type::SZ_MATRIX:
     processArgument(x);
     break;
   default:
@@ -363,31 +372,31 @@ PartitionMethod ModelAnnotation::partitionMethod() { return _partitionMethod; }
 DT_Synch ModelAnnotation::getDtSynch(string s)
 {
   if (!s.compare("SD_DT_Fixed")) {
-    return DT_Fixed;
+    return DT_Synch::DT_Fixed;
   } else if (!s.compare("SD_DT_Asynchronous")) {
-    return DT_Asynchronous;
+    return DT_Synch::DT_Asynchronous;
   }
-  return DT_Fixed;
+  return DT_Synch::DT_Fixed;
 }
 
 PartitionMethod ModelAnnotation::getPartitionMethod(string s)
 {
   if (!s.compare("Metis")) {
-    return Metis;
+    return PartitionMethod::Metis;
   } else if (!s.compare("HMetis")) {
-    return HMetis;
+    return PartitionMethod::HMetis;
   } else if (!s.compare("Scotch")) {
-    return Scotch;
+    return PartitionMethod::Scotch;
   } else if (!s.compare("Patoh")) {
-    return Patoh;
+    return PartitionMethod::Patoh;
   } else if (!s.compare("MTPL")) {
-    return MTPL;
+    return PartitionMethod::MTPL;
   } else if (!s.compare("MTPL_IT")) {
-    return MTPL_IT;
+    return PartitionMethod::MTPL_IT;
   } else if (!s.compare("Manual")) {
-    return Manual;
+    return PartitionMethod::Manual;
   }
-  return Metis;
+  return PartitionMethod::Scotch;
 }
 
 Solver ModelAnnotation::getSolver(string s)
@@ -395,69 +404,69 @@ Solver ModelAnnotation::getSolver(string s)
   if (!s.compare("QSS")) {
     _order = 1;
     _polyCoeffs = 2;
-    return QSS;
+    return Solver::QSS;
   } else if (!s.compare("CQSS")) {
     _order = 1;
     _polyCoeffs = 2;
-    return CQSS;
+    return Solver::CQSS;
   } else if (!s.compare("LIQSS")) {
     _order = 1;
     _polyCoeffs = 2;
-    return LIQSS;
+    return Solver::LIQSS;
   } else if (!s.compare("QSS2")) {
     _order = 2;
     _polyCoeffs = 3;
-    return QSS2;
+    return Solver::QSS2;
   } else if (!s.compare("LIQSS2")) {
     _order = 2;
     _polyCoeffs = 3;
-    return LIQSS2;
+    return Solver::LIQSS2;
   } else if (!s.compare("LIQSS_BDF")) {
     _order = 2;
     _polyCoeffs = 3;
-    return LIQSS_BDF;
+    return Solver::LIQSS_BDF;
   } else if (!s.compare("QSS3")) {
     _order = 3;
     _polyCoeffs = 4;
-    return QSS3;
+    return Solver::QSS3;
   } else if (!s.compare("LIQSS3")) {
     _order = 3;
     _polyCoeffs = 4;
-    return LIQSS3;
+    return Solver::LIQSS3;
   } else if (!s.compare("DASSL")) {
     _order = 1;
     _polyCoeffs = 1;
-    return DASSL;
+    return Solver::DASSL;
   } else if (!s.compare("DOPRI")) {
     _order = 1;
     _polyCoeffs = 1;
-    return DOPRI;
+    return Solver::DOPRI;
   } else if (!s.compare("CVODE_BDF")) {
     _order = 1;
     _polyCoeffs = 1;
-    return CVODE_BDF;
+    return Solver::CVODE_BDF;
   } else if (!s.compare("IDA")) {
     _order = 1;
     _polyCoeffs = 1;
-    return IDA;
+    return Solver::IDA;
   } else if (!s.compare("CVODE_AM")) {
     _order = 1;
     _polyCoeffs = 1;
-    return CVODE_AM;
+    return Solver::CVODE_AM;
   } else if (!s.compare("QSS4")) {
     _order = 4;
     _polyCoeffs = 5;
-    return QSS4;
+    return Solver::QSS4;
   } else if (!s.compare("mLIQSS")) {
     _order = 1;
     _polyCoeffs = 2;
-    return mLIQSS;
+    return Solver::mLIQSS;
   } else if (!s.compare("mLIQSS2")) {
     _order = 2;
     _polyCoeffs = 3;
-    return mLIQSS2;
+    return Solver::mLIQSS2;
   }
-  return QSS;
+  return Solver::QSS;
 }
 
 void ModelAnnotation::parseMatrix(AST_Expression exp, IR::MATRIX::UserDefMatrixExps &matrix)
@@ -475,138 +484,156 @@ void ModelAnnotation::processAnnotation(string annot, AST_Modification_Equal x)
   }
   EvalAnnotation ea;
   AnnotationValue av;
-  if (itf->second != DQMIN && itf->second != DQREL && itf->second != STEP_SIZE) {
+  if (itf->second != type::DQMIN && itf->second != type::DQREL && itf->second != type::STEP_SIZE) {
     av = ea.apply(x->exp());
   }
   switch (itf->second) {
-  case DESC:
+  case type::DESC:
     _desc = av.str();
     break;
-  case DQMIN:
+  case type::DQMIN:
     processList(x->exp(), &_DQMin);
     break;
-  case DQREL:
+  case type::DQREL:
     processList(x->exp(), &_DQRel);
     break;
-  case WEIGHT:
+  case type::WEIGHT:
     _weight = av.real();
     break;
-  case SOLVER:
+  case type::SOLVER:
     _solver = getSolver(av.str());
     _solverString = av.str();
     break;
-  case INITIAL_TIME:
+  case type::INITIAL_TIME:
     _initialTime = av.real();
     break;
-  case FINAL_TIME:
+  case type::FINAL_TIME:
     _finalTime = av.real();
     break;
-  case MIN_STEP:
+  case type::MIN_STEP:
     _minStep = av.real();
     break;
-  case ZCHYST:
+  case type::ZCHYST:
     _ZCHyst = av.real();
     break;
-  case DER_DELTA:
+  case type::DER_DELTA:
     _derDelta = av.real();
     break;
-  case LPS:
+  case type::LPS:
     _lps = av.integer();
     break;
-  case NODE_SIZE:
+  case type::NODE_SIZE:
     _nodeSize = av.integer();
     break;
-  case COMM_INTERVAL:
+  case type::COMM_INTERVAL:
     _commInterval = av.str();
     break;
-  case STEP_SIZE:
+  case type::STEP_SIZE:
     processList(x->exp(), &_sample);
     break;
-  case SCHEDULER:
+  case type::SCHEDULER:
     _scheduler = av.str();
     break;
-  case JACOBIAN:
+  case type::JACOBIAN:
     _jacobian = ("Sparse" == av.str() ? 0 : 1);
     break;
-  case SYM_DIFF:
+  case type::SYM_DIFF:
     _symDiff = true;
     if (av.integer() == 0) {
       _symDiff = false;
     }
     break;
-  case OUTPUT:
+  case type::OUTPUT:
     processExpressionList(x->exp(), &_output);
     break;
-  case PARTITION_METHOD:
+  case type::PARTITION_METHOD:
     _partitionMethod = getPartitionMethod(av.str());
     _partitionMethodString = av.str();
     break;
-  case DELTAT_SYNCH:
+  case type::DELTAT_SYNCH:
     _dtSynch = getDtSynch(av.str());
     _dtSynchString = av.str();
     break;
-  case PARALLEL:
+  case type::PARALLEL:
     _parallel = true;
     if (av.integer() == 0) {
       _parallel = false;
     }
     break;
-  case DELTAT:
+  case type::DELTAT:
     _dt = av.real();
     break;
-  case STORE_DATA:
+  case type::STORE_DATA:
     break;
-  case PATOH_SETTINGS:
+  case type::PATOH_SETTINGS:
     processList(x->exp(), &_patohSettings);
     break;
-  case SCOTCH_SETTINGS:
+  case type::SCOTCH_SETTINGS:
     processList(x->exp(), &_scotchSettings);
     break;
-  case METIS_SETTINGS:
+  case type::METIS_SETTINGS:
     processList(x->exp(), &_metisSettings);
     break;
-  case BDF_PARTITION:
+  case type::BDF_PARTITION:
     processExpressionList(x->exp(), _BDFPartition);
     break;
-  case BDF_PARTITION_DEPTH:
+  case type::BDF_PARTITION_DEPTH:
     _BDFPartitionDepth = av.integer();
     break;
-  case BDF_MAX_STEP:
+  case type::BDF_MAX_STEP:
     _BDFMaxStep = av.real();
     break;
-  case EVENT_ID:
+  case type::EVENT_ID:
     _event_ids = av.plainStr();
     break;
-  case HD_MATRIX:
+  case type::HD_MATRIX:
     parseMatrix(x->exp(), _hd_matrix);
     break;
-  case HZ_MATRIX:
+  case type::HZ_MATRIX:
     parseMatrix(x->exp(), _hz_matrix);
     break;
-  case HH_MATRIX:
+  case type::HH_MATRIX:
     parseMatrix(x->exp(), _hh_matrix);
     break;
-  case LHS_ST_MATRIX:
+  case type::LHS_ST_MATRIX:
     parseMatrix(x->exp(), _lhs_st_matrix);
     break;
-  case RHS_ST_MATRIX:
+  case type::RHS_ST_MATRIX:
     parseMatrix(x->exp(), _rhs_st_matrix);
     break;
-  case LHS_DSC_MATRIX:
+  case type::LHS_DSC_MATRIX:
     parseMatrix(x->exp(), _lhs_dsc_matrix);
     break;
-  case SD_MATRIX:
+  case type::SD_MATRIX:
     parseMatrix(x->exp(), _sd_matrix);
     break;
-  case SZ_MATRIX:
+  case type::SZ_MATRIX:
     parseMatrix(x->exp(), _sz_matrix);
     break;
-  case RANDOM_SEED:
-    _random_seed = (unsigned long)av.integer();
+  case type::RANDOM_SEED:
+  case type::CV_ODE_MAX_ORDER:
+  case type::X_OUTPUT: {
+    IntegerAnnotations int_annot = _integer_annotations_map[itf->first];
+    _integer_annotations_val.insert(pair<IntegerAnnotations, int>(int_annot, av.integer()));
     break;
+  }
   default:
     break;
   }
+}
+
+/// @todo Fix annotations structure, see https://github.com/CIFASIS/qss-solver/issues/261
+int ModelAnnotation::getAnnotation(IntegerAnnotations annot) const
+{
+  if (hasAnnotation(annot)) {
+    return _integer_annotations_val.at(annot);
+  }
+  return 0;
+}
+
+bool ModelAnnotation::hasAnnotation(IntegerAnnotations annot) const
+{
+  return _integer_annotations_val.find(annot) != _integer_annotations_val.end();
 }
 
 string ModelAnnotation::desc() { return _desc; }
@@ -645,7 +672,8 @@ int ModelAnnotation::jacobian() { return _jacobian; }
 
 bool ModelAnnotation::isClassic()
 {
-  return _solver == DASSL || _solver == DOPRI || _solver == CVODE_BDF || _solver == IDA || _solver == CVODE_AM;
+  return _solver == Solver::DASSL || _solver == Solver::DOPRI || _solver == Solver::CVODE_BDF || _solver == Solver::IDA ||
+         _solver == Solver::CVODE_AM;
 }
 
 int ModelAnnotation::lps() { return _lps; }
@@ -698,13 +726,9 @@ IR::MATRIX::UserDefMatrixExps ModelAnnotation::SDMatrix() { return _sd_matrix; }
 
 IR::MATRIX::UserDefMatrixExps ModelAnnotation::SZMatrix() { return _sz_matrix; }
 
-unsigned long ModelAnnotation::randomSeed() { return _random_seed; }
-
 /* AnnotationValue class */
 
 AnnotationValue::AnnotationValue() : _integer(0), _real(0), _str(), _plain_str() {}
-
-AnnotationValue::~AnnotationValue() {}
 
 int AnnotationValue::integer() { return _integer; }
 
@@ -726,46 +750,46 @@ void AnnotationValue::setPlainStr(string plain_str) { _plain_str = plain_str; }
 
 EvalAnnotation::EvalAnnotation() : _tokens()
 {
-  _tokens.insert(pair<string, string>("QSS", "QSS"));
-  _tokens.insert(pair<string, string>("CQSS", "CQSS"));
-  _tokens.insert(pair<string, string>("QSS2", "QSS2"));
-  _tokens.insert(pair<string, string>("QSS3", "QSS3"));
-  _tokens.insert(pair<string, string>("LIQSS", "LIQSS"));
-  _tokens.insert(pair<string, string>("LIQSS2", "LIQSS2"));
-  _tokens.insert(pair<string, string>("LIQSS_BDF", "LIQSS_BDF"));
-  _tokens.insert(pair<string, string>("LIQSS3", "LIQSS3"));
-  _tokens.insert(pair<string, string>("QSS4", "QSS4"));
-  _tokens.insert(pair<string, string>("mLIQSS", "mLIQSS"));
-  _tokens.insert(pair<string, string>("mLIQSS2", "mLIQSS2"));
-  _tokens.insert(pair<string, string>("DASSL", "DASSL"));
-  _tokens.insert(pair<string, string>("DOPRI", "DOPRI"));
-  _tokens.insert(pair<string, string>("CVODE_AM", "CVODE_AM"));
-  _tokens.insert(pair<string, string>("IDA", "IDA"));
-  _tokens.insert(pair<string, string>("CVODE_BDF", "CVODE_BDF"));
-  _tokens.insert(pair<string, string>("ST_Linear", "ST_Linear"));
-  _tokens.insert(pair<string, string>("ST_Binary", "ST_Binary"));
-  _tokens.insert(pair<string, string>("ST_Random", "ST_Random"));
-  _tokens.insert(pair<string, string>("CI_Step", "CI_Step"));
-  _tokens.insert(pair<string, string>("CI_Dense", "CI_Dense"));
-  _tokens.insert(pair<string, string>("CI_Sampled", "CI_Sampled"));
-  _tokens.insert(pair<string, string>("SD_File", "SD_File"));
-  _tokens.insert(pair<string, string>("SD_Memory", "SD_Memory"));
-  _tokens.insert(pair<string, string>("Metis", "Metis"));
-  _tokens.insert(pair<string, string>("HMetis", "HMetis"));
-  _tokens.insert(pair<string, string>("Scotch", "Scotch"));
-  _tokens.insert(pair<string, string>("Patoh", "Patoh"));
-  _tokens.insert(pair<string, string>("MTPL", "MTPL"));
-  _tokens.insert(pair<string, string>("MTPL_IT", "MTPL_IT"));
-  _tokens.insert(pair<string, string>("Manual", "Manual"));
-  _tokens.insert(pair<string, string>("SD_DT_Fixed", "SD_DT_Fixed"));
-  _tokens.insert(pair<string, string>("Sparse", "Sparse"));
-  _tokens.insert(pair<string, string>("Dense", "Dense"));
-  _tokens.insert(pair<string, string>("SD_DT_Asynchronous", "SD_DT_Asynchronous"));
+  _tokens.emplace_back("QSS");
+  _tokens.emplace_back("CQSS");
+  _tokens.emplace_back("QSS2");
+  _tokens.emplace_back("QSS3");
+  _tokens.emplace_back("LIQSS");
+  _tokens.emplace_back("LIQSS2");
+  _tokens.emplace_back("LIQSS_BDF");
+  _tokens.emplace_back("LIQSS3");
+  _tokens.emplace_back("QSS4");
+  _tokens.emplace_back("mLIQSS");
+  _tokens.emplace_back("mLIQSS2");
+  _tokens.emplace_back("DASSL");
+  _tokens.emplace_back("DOPRI");
+  _tokens.emplace_back("CVODE_AM");
+  _tokens.emplace_back("IDA");
+  _tokens.emplace_back("CVODE_BDF");
+  _tokens.emplace_back("ST_Linear");
+  _tokens.emplace_back("ST_Binary");
+  _tokens.emplace_back("ST_Random");
+  _tokens.emplace_back("CI_Step");
+  _tokens.emplace_back("CI_Dense");
+  _tokens.emplace_back("CI_Sampled");
+  _tokens.emplace_back("SD_File");
+  _tokens.emplace_back("SD_Memory");
+  _tokens.emplace_back("Metis");
+  _tokens.emplace_back("HMetis");
+  _tokens.emplace_back("Scotch");
+  _tokens.emplace_back("Patoh");
+  _tokens.emplace_back("MTPL");
+  _tokens.emplace_back("MTPL_IT");
+  _tokens.emplace_back("Manual");
+  _tokens.emplace_back("SD_DT_Fixed");
+  _tokens.emplace_back("Sparse");
+  _tokens.emplace_back("Dense");
+  _tokens.emplace_back("SD_DT_Asynchronous");
 }
 
 AnnotationValue EvalAnnotation::foldTraverseElement(AST_Expression e)
 {
-  AnnotationValue av = AnnotationValue();
+  auto av = AnnotationValue();
   switch (e->expressionType()) {
   case EXPSTRING:
     av.setStr(e->getAsString()->print());
@@ -780,7 +804,7 @@ AnnotationValue EvalAnnotation::foldTraverseElement(AST_Expression e)
         av.setInteger(vi->value());
       }
     } else {
-      if (_tokens.find(name) != _tokens.end()) {
+      if (std::find(_tokens.begin(), _tokens.end(), name) != _tokens.end()) {
         av.setStr(name);
       }
     }
@@ -791,7 +815,7 @@ AnnotationValue EvalAnnotation::foldTraverseElement(AST_Expression e)
     break;
   case EXPREAL:
     av.setReal(e->getAsReal()->val());
-    av.setInteger(e->getAsReal()->val());
+    av.setInteger(static_cast<int>(e->getAsReal()->val()));
     break;
   case EXPBOOLEAN:
     if (e->getAsBoolean()->value()) {
@@ -826,7 +850,7 @@ void EvalAnnotation::setBoolean(bool condition, AnnotationValue *e)
 
 AnnotationValue EvalAnnotation::foldTraverseElement(AnnotationValue e1, AnnotationValue e2, BinOpType bot)
 {
-  AnnotationValue av = AnnotationValue();
+  auto av = AnnotationValue();
   switch (bot) {
   case BINOPOR:
     setBoolean(e1.integer() || e2.integer(), &av);

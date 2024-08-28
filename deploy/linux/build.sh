@@ -15,7 +15,7 @@
 #         NOTES: --- 
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 4.3.0
+#       VERSION: 4.4.0
 #===================================================================================
 
 rm -rf qss-solver-*.deb
@@ -35,16 +35,24 @@ echo $INI_VER >> ./deploy/linux/qss-solver.ini
 # Set OS config files.
 CONTROL_FILE="control.amd64"
 SBML_LIB="libsbml.so.5.18.0"
-PACKAGE_NAME=qss-solver-$VER.deb
+PACKAGE_NAME=qss-solver-$VER
 SYSTEM_VERSION=`lsb_release -d`
 if [[ "$SYSTEM_VERSION" == *"22.04"* ]]; then
   CONTROL_FILE="control.amd64.u22"
   SBML_LIB="libsbml.so.5.19.0"
-  PACKAGE_NAME=qss-solver-$VER-u22.deb
+  PACKAGE_NAME=$PACKAGE_NAME-u22
 fi
 
 # Set solver branch
 BRANCH=`git rev-parse --abbrev-ref HEAD`
+
+# If build from development branch, update package name to unstable.
+if [ "$BRANCH" == "qss-solver-dev" ]; then
+  PACKAGE_NAME=$PACKAGE_NAME-unstable
+fi
+
+PACKAGE_NAME=$PACKAGE_NAME.deb
+
 BRANCH="branch="$BRANCH 
 echo $BRANCH >> ./deploy/linux/qss-solver.ini
 

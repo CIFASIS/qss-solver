@@ -57,6 +57,7 @@ TEST_P(IModelTests, GenerateCode)
 }
 
 const char* models[] = {"adr",
+                        "adr2D",
                         "advection",
                         "advection2D",
                         "advection2D_LI",
@@ -64,6 +65,7 @@ const char* models[] = {"adr",
                         "advectionFlux",
                         "airconds",
                         "aircont",
+                        "allow_discrete_integer",
                         "bball_downstairs",
                         "boost",
                         "BouncingBall",
@@ -74,6 +76,7 @@ const char* models[] = {"adr",
                         "burgers",
                         "cuk",
                         "cuk2",
+                        "init_code_time",
                         "interleaved",
                         "inverters",
                         "lc_line",
@@ -92,8 +95,8 @@ const char* models[] = {"adr",
                         "testFor",
                         "test_input",
                         "TYSON",
-                        "VIRplanoS"};
-
+                        "VIRplanoS",
+                        "virus_replication"};
 INSTANTIATE_TEST_SUITE_P(Models, IModelTests, testing::ValuesIn(models));
 
 /// @}

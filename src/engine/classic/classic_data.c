@@ -42,7 +42,6 @@ CLC_data CLC_Data(int states, int discretes, int events, int inputs, int algebra
   strcat(fileName, ".ini");
   SET_settings settings = SET_Settings(fileName);
   CLC_data p = checkedMalloc(sizeof(*p));
-  int i;
   p->states = states;
   p->discretes = discretes;
   p->events = events;
@@ -78,14 +77,15 @@ CLC_data CLC_Data(int states, int discretes, int events, int inputs, int algebra
   cleanVector(p->nDS, 0, states);
   double sameDQMin = (settings->nDQMin == 1) ? settings->dqmin[0] : 0;
   double sameDQRel = (settings->nDQRel == 1) ? settings->dqrel[0] : 0;
-  for (i = 0; i < states; i++) {
+  for (int i = 0; i < states; i++) {
     p->nSD[i] = 0;
     p->dQMin[i] = (sameDQMin > 0) ? sameDQMin : settings->dqmin[i];
     p->dQRel[i] = (sameDQRel > 0) ? sameDQRel : settings->dqrel[i];
   }
   p->event = SD_EventData(events);
   p->params = SD_Parameters(settings->derdelta, settings->zchyst, settings->minstep, settings->symdiff, settings->lps, settings->nodesize,
-                            settings->pm, settings->dt, settings->dtSynch, settings->partitionerOptions, settings->jacobian);
+                            settings->pm, settings->dt, settings->dtSynch, settings->partitionerOptions, settings->jacobian,
+                            settings->CVODE_max_order, settings->x_output);
   p->scalarEvaluations = 0;
   p->zeroCrossings = 0;
   p->funEvaluations = 0;

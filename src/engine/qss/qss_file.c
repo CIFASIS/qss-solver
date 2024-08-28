@@ -37,6 +37,10 @@ void F_init(LG_log log, QSS_data sim_data, SD_output sim_output)
   int i, j, size;
   log->state->data = sim_data;
   log->state->output = sim_output;
+  int output_coeffs = sim_data->order;
+  if (sim_data->params->x_output == 1) {
+    output_coeffs++;
+  }
 #ifdef QSS_PARALLEL
   QSS_LP_data lp = sim_data->lp;
   log->state->size = lp->outputs;
@@ -64,7 +68,7 @@ void F_init(LG_log log, QSS_data sim_data, SD_output sim_output)
         sprintf(log->state->fileName, "%s%s.dat", sim_output->variable[i].name, ext);
         log->state->files[j] = fopen(log->state->fileName, "w+");
         if (sim_output->commInterval == CI_Dense || sim_output->commInterval == CI_Sampled) {
-          log->state->values[j] = sim_output->nOS[i] * sim_data->order + sim_output->nOD[i];
+          log->state->values[j] = sim_output->nOS[i] * output_coeffs + sim_output->nOD[i];
         }
         j++;
 #ifdef QSS_PARALLEL

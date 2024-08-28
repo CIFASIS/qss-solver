@@ -27,27 +27,28 @@ namespace MicroModelica {
 namespace Util {
 class ExpressionPrinter : public AST_Expression_Visitor<std::string> {
   public:
-  ExpressionPrinter(int order);
-  ~ExpressionPrinter() = default;
+  explicit ExpressionPrinter(int order, bool array_index = false);
+  ~ExpressionPrinter() override = default;
 
   private:
-  std::string foldTraverseElement(AST_Expression exp);
-  std::string foldTraverseElement(std::string l, std::string r, BinOpType bot);
-  std::string foldTraverseElementUMinus(AST_Expression exp);
+  std::string foldTraverseElement(AST_Expression exp) override;
+  std::string foldTraverseElement(std::string l, std::string r, BinOpType bot) override;
+  std::string foldTraverseElementUMinus(AST_Expression exp) override;
 
   IR::Expression _exp;
   int _order;
+  bool _array_index;
 };
 
 class VariablePrinter {
   public:
-  VariablePrinter(Variable var, AST_Expression_ComponentReference ref, int order);
+  VariablePrinter(const Variable &var, AST_Expression_ComponentReference ref, int order, bool array_index = false);
   ~VariablePrinter() = default;
   friend std::ostream &operator<<(std::ostream &out, const VariablePrinter &var);
 
   protected:
   void generate();
-  void config();
+  void config(bool array_index);
   std::string access(bool arrray_access) const;
 
   private:
@@ -59,6 +60,7 @@ class VariablePrinter {
   std::string _end_delimiter;
   std::string _begin_index_access;
   std::string _end_index_access;
+  std::string _cast;
 };
 
 }  // namespace Util

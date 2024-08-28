@@ -17,8 +17,7 @@
 
  ******************************************************************************/
 
-#ifndef UTILS_H_
-#define UTILS_H_
+#pragma once
 
 #ifdef _WIN32
 #include <sys/time.h>
@@ -66,6 +65,8 @@
 typedef char bool;
 
 typedef char *string;
+
+void checkedFree(void *ptr);
 
 void *checkedMalloc(unsigned long long len);
 
@@ -413,5 +414,3 @@ void waitUntil(double until);
 void setInitRealTime();
 
 #endif
-
-#endif /* UTILS_H_ */

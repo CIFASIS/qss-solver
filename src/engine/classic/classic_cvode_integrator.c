@@ -233,6 +233,13 @@ void CVODE_integrate(SIM_simulator simulate)
     if (check_flag(&flag, "CVDense", 1, simulator)) return;
   }
 
+  if (simulator->data->params->CVODE_max_order != 0) {
+    flag = CVodeSetMaxOrd(cvode_mem, simulator->data->params->CVODE_max_order);
+    if (check_flag(&flag, "CVodeSetMaxOrd", 1, simulator)) {
+      return;
+    }
+  }
+
   getTime(simulator->stats->sTime);
   if (is_sampled) {
     CLC_save_step(simOutput, solution, solution_time, t, totalOutputSteps, NV_DATA_S(y), clcData->d, clcData->alg);

@@ -37,7 +37,6 @@ namespace Util {
 
 Variable::Variable()
     : _unknown(false),
-      _discrete(false),
       _t(nullptr),
       _tp(TP_CONSTANT),
       _m(nullptr),
@@ -59,7 +58,6 @@ Variable::Variable()
 
 Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c)
     : _unknown(false),
-      _discrete(false),
       _t(t),
       _tp(tp),
       _m(m),
@@ -80,9 +78,8 @@ Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c)
   processModification();
 }
 
-Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array)
+Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, const vector<int> &s, bool array)
     : _unknown(false),
-      _discrete(false),
       _t(t),
       _tp(tp),
       _m(m),
@@ -105,7 +102,6 @@ Variable::Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c,
 
 Variable &Variable::operator=(const Variable &other)
 {
-  _discrete = other._discrete;
   _t = other._t;
   _tp = other._tp;
   _m = other._m;
@@ -178,9 +174,8 @@ void Variable::setName(string name) { _name = name; }
 
 unsigned int Variable::size()
 {
-  vector<int>::const_iterator it;
   unsigned int total = 1;
-  for (it = _size.begin(); it != _size.end(); it++) {
+  for (vector<int>::const_iterator it = _size.begin(); it != _size.end(); it++) {
     total *= *it;
   }
   return total;
@@ -206,6 +201,17 @@ string Variable::print() const
     buffer << "_" << _name;
   }
   return buffer.str();
+}
+
+bool Variable::isDiscreteInteger() const { return (_t->getType() == SymbolType::TYINTEGER) && isDiscrete(); }
+
+std::string Variable::castOperator() const
+{
+  string cast_operator;
+  if (isDiscreteInteger()) {
+    cast_operator = "(int)";
+  }
+  return cast_operator;
 }
 
 ostream &operator<<(ostream &out, const Variable &v)
@@ -234,7 +240,7 @@ string Variable::initialization()
 {
   stringstream buffer;
   if (hasAssignment() || hasStartModifier() || hasEachModifier()) {
-    Range range = Range(*this);
+    auto range = Range(*this);
     Expression ex(exp());
     Expression var = Utils::instance().variableExpression(name(), range);
     if (hasEachModifier()) {
@@ -299,7 +305,7 @@ void VarSymbolTable::insert(VarName name, Variable variable)
   }
 }
 
-Option<Variable> VarSymbolTable::lookup(string name)
+Option<Variable> VarSymbolTable::lookup(const string &name) const
 {
   std::map<string, Variable> table = map();
   Option<Variable> var = table[name];
@@ -309,7 +315,7 @@ Option<Variable> VarSymbolTable::lookup(string name)
   return Option<Variable>();
 }
 
-unsigned int VarSymbolTable::maxDim() const { return _max_dims; }
+unsigned long VarSymbolTable::maxDim() const { return _max_dims; }
 
 }  // namespace Util
 }  // namespace MicroModelica

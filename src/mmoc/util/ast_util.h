@@ -17,18 +17,17 @@
 
  ******************************************************************************/
 
-#ifndef AST_UTIL_H_
-#define AST_UTIL_H_
+#pragma once
 
 #include <string>
 
-#include "../ast/ast_types.h"
-#include "../ast/ast_builder.h"
-#include "../ast/expression.h"
-#include "../ast/statement.h"
-#include "../ast/equation.h"
-#include "../ir/index.h"
-#include "../ir/event.h"
+#include <ast/ast_types.h>
+#include <ast/ast_builder.h>
+#include <ast/expression.h>
+#include <ast/statement.h>
+#include <ast/equation.h>
+#include <ir/index.h>
+#include <ir/event.h>
 #include "util_types.h"
 
 #define IS_CREF(X) ((X)->expressionType() == EXPCOMPREF)
@@ -119,12 +118,12 @@ class AST_Expression_Visitor {
 template <class F, class R, class V>
 class AST_Statement_Visitor {
   public:
-  AST_Statement_Visitor(V v, bool lhs = true) : _visitor(v), _lhs(lhs){};
+  AST_Statement_Visitor(V v, F c_init, bool lhs = true) : _visitor(v), _lhs(lhs), _c_init(c_init){};
   virtual ~AST_Statement_Visitor() = default;
 
   F apply(AST_Statement stm)
   {
-    F c;
+    F c = _c_init;
     switch (stm->statementType()) {
     case STWHEN: {
       c = foldTraverse(_visitor.apply(stm->getAsWhen()->condition()));
@@ -187,6 +186,7 @@ class AST_Statement_Visitor {
   private:
   V _visitor;
   bool _lhs;
+  F _c_init;
   virtual F foldTraverse(R) = 0;
   virtual F foldTraverse(F, F) = 0;
 };
@@ -337,5 +337,3 @@ class ReplaceReference : public AST_Expression_Fold<AST_Expression> {
   AST_Expression foldTraverseElement(AST_Expression, AST_Expression, BinOpType);
   AST_Expression foldTraverseElementUMinus(AST_Expression);
 };
-
-#endif /* AST_UTIL_H_ */
