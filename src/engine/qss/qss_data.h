@@ -29,6 +29,7 @@
 #pragma once
 
 #include <common/data.h>
+#include <common/macros.h>
 #include <common/utils.h>
 
 #define QSS_REINIT_BUFFER 10000
@@ -168,7 +169,7 @@ QSS_event SD_Event(QSS_zc zeroCrossing, QSS_hnd handlerPos, QSS_hnd handlerNeg);
 
 void QSS_freeEvent(QSS_event events);
 
-typedef struct QSS_data_ *QSS_data;
+TYPE_DEF(QSS_data)
 
 struct QSS_data_ {
   double *dQMin;
@@ -245,7 +246,7 @@ void QSS_cleanData(QSS_data data);
 
 void QSS_allocDataMatrix(QSS_data data);
 
-typedef struct QSS_time_ *QSS_time;
+TYPE_DEF(QSS_time)
 
 /**
  * @struct QSS_time_

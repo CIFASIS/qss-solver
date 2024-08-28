@@ -171,7 +171,8 @@ void SD_cleanEventData(SD_eventData events, int size)
 }
 
 SD_parameters SD_Parameters(double derDelta, double zcHyst, double minStep, int symDiff, int lps, int nodeSize, SD_PartitionMethod pm,
-                            double dt, SD_DtSynch synch, SD_partitionerOptions partitionerOptions, int jacobian, int CVODE_max_order)
+                            double dt, SD_DtSynch synch, SD_partitionerOptions partitionerOptions, int jacobian, int CVODE_max_order,
+                            int x_output)
 {
   SD_parameters p = checkedMalloc(sizeof(*p));
   p->derDelta = derDelta;
@@ -186,10 +187,11 @@ SD_parameters SD_Parameters(double derDelta, double zcHyst, double minStep, int 
   p->partitionerOptions = partitionerOptions;
   p->jacobian = jacobian;
   p->CVODE_max_order = CVODE_max_order;
+  p->x_output = x_output;
   return p;
 }
 
-SD_parameters SD_copyParameters(SD_parameters parameters)
+SD_parameters SD_copyParameters(const_SD_parameters parameters)
 {
   SD_parameters p = checkedMalloc(sizeof(*p));
   p->derDelta = parameters->derDelta;
@@ -200,6 +202,7 @@ SD_parameters SD_copyParameters(SD_parameters parameters)
   p->nodeSize = parameters->nodeSize;
   p->pm = parameters->pm;
   p->dt = parameters->dt;
+  p->x_output = parameters->x_output;
   return p;
 }
 
@@ -437,8 +440,8 @@ SD_jacMatrix SD_JacMatrix(int variables)
 
 void SD_allocJacMatrix(SD_jacMatrix jac_matrix)
 {
-  int i, variables = jac_matrix->variables;
-  for (i = 0; i < variables; i++) {
+  int variables = jac_matrix->variables;
+  for (int i = 0; i < variables; i++) {
     int size = jac_matrix->size[i];
     if (size > 0) {
       jac_matrix->index[i] = (int *)malloc(size * sizeof(int));
@@ -453,8 +456,8 @@ void SD_allocJacMatrix(SD_jacMatrix jac_matrix)
 
 void SD_cleanJacMatrix(SD_jacMatrix jac_matrix)
 {
-  int i, variables = jac_matrix->variables;
-  for (i = 0; i < variables; i++) {
+  int variables = jac_matrix->variables;
+  for (int i = 0; i < variables; i++) {
     if (jac_matrix->size[i] > 0) {
       cleanDoubleVector(jac_matrix->value[i], 0, jac_matrix->size[i]);
     }
@@ -463,13 +466,13 @@ void SD_cleanJacMatrix(SD_jacMatrix jac_matrix)
 
 void SD_freeJacMatrix(SD_jacMatrix jac_matrix)
 {
-  int i, variables = jac_matrix->variables;
+  int variables = jac_matrix->variables;
   free(jac_matrix->size);
-  for (i = 0; i < variables; i++) {
+  for (int i = 0; i < variables; i++) {
     free(jac_matrix->index[i]);
   }
   free(jac_matrix->index);
-  for (i = 0; i < variables; i++) {
+  for (int i = 0; i < variables; i++) {
     free(jac_matrix->value[i]);
   }
   free(jac_matrix->value);

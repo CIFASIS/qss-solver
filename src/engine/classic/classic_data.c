@@ -85,7 +85,7 @@ CLC_data CLC_Data(int states, int discretes, int events, int inputs, int algebra
   p->event = SD_EventData(events);
   p->params = SD_Parameters(settings->derdelta, settings->zchyst, settings->minstep, settings->symdiff, settings->lps, settings->nodesize,
                             settings->pm, settings->dt, settings->dtSynch, settings->partitionerOptions, settings->jacobian,
-                            settings->CVODE_max_order);
+                            settings->CVODE_max_order, settings->x_output);
   p->scalarEvaluations = 0;
   p->zeroCrossings = 0;
   p->funEvaluations = 0;

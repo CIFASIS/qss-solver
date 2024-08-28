@@ -17,12 +17,11 @@
 
  ******************************************************************************/
 
-#include <qss/qss_log.h>
-
 #include <stdlib.h>
 
 #include "qss_file.h"
 #include "qss_memory.h"
+#include <qss/qss_log.h>
 
 LG_logState LG_LogState()
 {
@@ -59,18 +58,10 @@ LG_log LG_Log(QSS_data sim_data, SD_output sim_output)
   s->ops = LG_LogOps();
   switch (sim_output->store) {
   case SD_Memory:
-    if (sim_data->params->lps > 0) {
-      M_PAR_init(s, sim_data, sim_output);
-    } else {
-      M_init(s, sim_data, sim_output);
-    }
+    QSS_MODULE_INIT(M, s, sim_data, sim_output)
     break;
   case SD_File:
-    if (sim_data->params->lps > 0) {
-      F_PAR_init(s, sim_data, sim_output);
-    } else {
-      F_init(s, sim_data, sim_output);
-    }
+    QSS_MODULE_INIT(F, s, sim_data, sim_output)
     break;
   }
   return s;
@@ -87,18 +78,10 @@ LG_log LG_copy(LG_log log, SD_StoreData store_data)
   s->state->batch_end = log->state->batch_end;
   switch (store_data) {
   case SD_Memory:
-    if (sim_data->params->lps > 0) {
-      M_PAR_init(s, sim_data, sim_output);
-    } else {
-      M_init(s, sim_data, sim_output);
-    }
+    QSS_MODULE_INIT(M, s, sim_data, sim_output)
     break;
   case SD_File:
-    if (sim_data->params->lps > 0) {
-      F_PAR_init(s, sim_data, sim_output);
-    } else {
-      F_init(s, sim_data, sim_output);
-    }
+    QSS_MODULE_INIT(F, s, sim_data, sim_output)
     break;
   }
   return s;

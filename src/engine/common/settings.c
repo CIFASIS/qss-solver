@@ -158,6 +158,7 @@ SET_settings SET_Settings(char *fname)
   p->BDFPartitionDepth = 1;
   p->CVODE_max_order = 0;
   p->BDFMaxStep = 0;
+  p->x_output = 0;
   if (config_lookup_float(cf, "minstep", &dres)) {
     if (dres == 0) {
       p->minstep = MIN_STEP;
@@ -277,6 +278,9 @@ SET_settings SET_Settings(char *fname)
       sprintf(p->partitionerOptions.metis[option].value, "%s", config_setting_get_string_elem(lists, n + 1));
     }
     p->partitionerOptions.nMetis = option;
+  }
+  if (config_lookup_int(cf, "XOutput", &ires)) {
+    p->x_output = ires;
   }
   config_destroy(cf);
   return p;

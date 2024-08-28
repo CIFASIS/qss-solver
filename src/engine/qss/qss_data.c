@@ -37,8 +37,7 @@ QSS_reinit QSS_Reinit()
     return NULL;
   }
   QSS_reinit p = checkedMalloc(sizeof(*p));
-  int i;
-  for (i = 0; i < QSS_REINIT_BUFFER; i++) {
+  for (int i = 0; i < QSS_REINIT_BUFFER; i++) {
     p->variable[i] = NOT_ASSIGNED;
   }
   p->time = INF;
@@ -230,8 +229,8 @@ QSS_LP_dataArray QSS_LP_DataArray(int size)
 void QSS_LP_freeDataArray(QSS_LP_dataArray array)
 {
   if (!QSS_hardCopyStruct) {
-    int i, size = array->size;
-    for (i = 0; i < size; i++) {
+    int size = array->size;
+    for (int i = 0; i < size; i++) {
       if (array->lp[i] != NULL) {
         QSS_LP_freeData(array->lp[i]);
       }
@@ -253,36 +252,16 @@ void QSS_LP_freeData(QSS_LP_data data)
   if (data == NULL) {
     return;
   }
-  if (data->nLPS != NULL) {
-    free(data->nLPS);
-  }
-  if (data->lps != NULL) {
-    free(data->lps);
-  }
-  if (data->qOutMap != NULL) {
-    free(data->qOutMap);
-  }
-  if (data->eOutMap != NULL) {
-    free(data->eOutMap);
-  }
-  if (data->qMap != NULL) {
-    free(data->qMap);
-  }
-  if (data->qInMap != NULL) {
-    free(data->qInMap);
-  }
-  if (data->eMap != NULL) {
-    free(data->eMap);
-  }
-  if (data->eInMap != NULL) {
-    free(data->eInMap);
-  }
-  if (data->iMap != NULL) {
-    free(data->iMap);
-  }
-  if (data->dscMap != NULL) {
-    free(data->dscMap);
-  }
+  checkedFree(data->nLPS);
+  checkedFree(data->lps);
+  checkedFree(data->qOutMap);
+  checkedFree(data->eOutMap);
+  checkedFree(data->qMap);
+  checkedFree(data->qInMap);
+  checkedFree(data->eMap);
+  checkedFree(data->eInMap);
+  checkedFree(data->iMap);
+  checkedFree(data->dscMap);
   free(data);
 }
 
@@ -440,7 +419,7 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, i
   }
   p->params = SD_Parameters(settings->derdelta, settings->zchyst, settings->minstep, settings->symdiff, settings->lps, settings->nodesize,
                             settings->pm, settings->dt, settings->dtSynch, settings->partitionerOptions, settings->jacobian,
-                            settings->CVODE_max_order);
+                            settings->CVODE_max_order, settings->x_output);
   p->lp = NULL;
   if (settings->lps > 0) {
     QSS_setReinitBuffer(TRUE);

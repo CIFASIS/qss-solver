@@ -17,134 +17,77 @@
 
  ******************************************************************************/
 
-#ifndef QSS_OUTPUT_H_
-#define QSS_OUTPUT_H_
+#pragma once
 
 #include <common/data.h>
+#include <common/macros.h>
 #include <qss/qss_data.h>
 #include <qss/qss_log.h>
 
-/**
- *
- */
-typedef struct OUT_outputState_ *OUT_outputState;
+#define QSS_DEFINE_OPUTPUT_OPS(module)       \
+  output->ops->write = module##_write;       \
+  output->ops->getSteps = module##_getSteps; \
+  output->ops->save = module##_save;
 
-/**
- *
- */
-typedef struct OUT_outputOps_ *OUT_outputOps;
+#ifdef QSS_PARALLEL
+#define QSS_ASSIGN_OUTPUT_OPS(module) QSS_DEFINE_OPUTPUT_OPS(module##_PAR)
+#else
+#define QSS_ASSIGN_OUTPUT_OPS(module) QSS_DEFINE_OPUTPUT_OPS(module)
+#endif
 
-/**
- *
- */
-typedef struct OUT_output_ *OUT_output;
+#define QSS_DEFINE_OUTPUT_INTERFACE(module)                                                                             \
+  void module##_write(OUT_output output, const_QSS_data sim_data, const_QSS_time sim_time, const_SD_output sim_output); \
+  int module##_getSteps(const_OUT_output output, int var);                                                              \
+  void module##_save(OUT_output output);                                                                                \
+  void module##_init(OUT_output output, const_QSS_data sim_data, const_QSS_time sim_time, const_SD_output sim_output);
 
-/**
- *
- * @param QSS_data
- * @param QSS_time
- * @param SD_output
- */
-typedef void (*OUT_writeFn)(OUT_output, QSS_data, QSS_time, SD_output);
+#define QSS_DECLARE_OUTPUT_INTERFACE(module) \
+  QSS_DEFINE_OUTPUT_INTERFACE(module)        \
+  QSS_DEFINE_OUTPUT_INTERFACE(module##_PAR)
 
-/**
- *
- * @param
- * @return
- */
-typedef int (*OUT_getStepsFn)(OUT_output, int);
+TYPE_DEF(OUT_outputOps)
+TYPE_DEF(OUT_outputState)
+TYPE_DEF(OUT_output)
 
-/**
- *
- */
+typedef void (*OUT_writeFn)(OUT_output, const_QSS_data, const_QSS_time, const_SD_output);
+
+typedef int (*OUT_getStepsFn)(const_OUT_output, int);
+
 typedef void (*OUT_saveFn)(OUT_output);
 
-/**
- *
- */
 struct OUT_outputState_ {
-  LG_log log;      //!<
-  int *steps;      //!<
-  double *values;  //!<
+  LG_log log;
+  int *steps;
+  double *values;
+  double *output_var;
+  int order;
 };
 
-/**
- *
- */
 struct OUT_outputOps_ {
-  OUT_writeFn write;        //!<
-  OUT_getStepsFn getSteps;  //!<
-  OUT_saveFn save;          //!<
+  OUT_writeFn write;
+  OUT_getStepsFn getSteps;
+  OUT_saveFn save;
 };
 
-/**
- *
- */
 struct OUT_output_ {
-  OUT_outputState state;  //!<
-  OUT_outputOps ops;      //!<
+  OUT_outputState state;
+  OUT_outputOps ops;
 };
 
-/**
- *
- * @param simData
- * @param simTime
- * @param simOutput
- * @return
- */
-OUT_output OUT_Output(QSS_data simData, QSS_time simTime, SD_output simOutput);
+OUT_output OUT_Output(QSS_data sim_data, QSS_time sim_time, SD_output sim_output);
 
-/**
- *
- * @return
- */
 OUT_outputState OUT_OutputState();
 
-/**
- *
- * @return
- */
 OUT_outputOps OUT_OutputOps();
 
-/**
- *
- * @param o
- */
 void OUT_freeOutput(OUT_output o);
 
-/**
- *
- * @param o
- */
 void OUT_freeOutputState(OUT_outputState o);
 
-/**
- *
- * @param o
- */
 void OUT_freeOutputOps(OUT_outputOps o);
 
-/**
- *
- * @param output
- * @param simData
- * @param simTime
- * @param simOutput
- */
-void OUT_write(OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
+void OUT_write(OUT_output output, QSS_data sim_data, QSS_time sim_time, SD_output sim_output);
 
-/**
- *
- * @param
- * @param var
- * @return
- */
-int OUT_getSteps(OUT_output output, int var);
+int OUT_getSteps(const_OUT_output output, int var);
 
-/**
- *
- * @param output
- */
 void OUT_save(OUT_output output);
-
-#endif /* QSS_OUTPUT_H_ */
