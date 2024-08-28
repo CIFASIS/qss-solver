@@ -17,6 +17,7 @@ model advection_x
 	experiment(
 		MMO_Description="Advection",
 		MMO_Solver=LIQSS2,
+		MMO_SymDiff=false,
 		MMO_PartitionMethod=Scotch,
 		MMO_LPS=2,
 		MMO_DT_Min=2,
