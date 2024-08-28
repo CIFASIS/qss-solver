@@ -34,7 +34,6 @@
 #include <util/model_config.h>
 #include <util/util.h>
 #include <util/visitors/algebraics.h>
-#include <util/visitors/autonomous.h>
 #include <util/visitors/called_functions.h>
 #include <util/visitors/get_index_variables.h>
 #include <util/visitors/is_recursive_def.h>
@@ -131,8 +130,7 @@ void Equation::initialize(AST_Equation eq)
 void Equation::setup()
 {
   stringstream buffer;
-  Autonomous autonomous;
-  _autonomous = autonomous.apply(_rhs.expression());
+  _autonomous = _rhs.autonomous();
   CalledFunctions cf;
   _calledFunctions = cf.apply(_rhs.expression());
   if (_range) {

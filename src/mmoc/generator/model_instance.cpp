@@ -367,7 +367,7 @@ void ModelInstance::initialCode()
 {
   StatementTable stms = _model.initialCode();
   StatementTable::iterator it;
-  stringstream buffer;
+  bool autonomous = true;
   ModelConfig::instance().setLocalInitSymbols();
   ModelConfig::instance().setInitialCode(true);
   VarSymbolTable symbols = _model.symbols();
@@ -380,6 +380,12 @@ void ModelInstance::initialCode()
   }
   for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
     _writer->write(stm, WRITER::Init_Code);
+    autonomous = autonomous && stm.autonomous();
+  }
+  if (!autonomous) {
+    stringstream initial_time;
+    initial_time << "int t = " << _model.annotations().initialTime() << ";";
+    ModelConfig::instance().addLocalSymbol(initial_time.str());
   }
   ModelConfig::instance().setInitialCode(false);
   ModelConfig::instance().unsetLocalInitSymbols();
@@ -670,7 +676,6 @@ void QSSModelInstance::header()
   _writer->write(buffer, WRITER::Model_Header);
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     if (var.isState()) {
-      stringstream buffer;
       Macros macros(_model, var);
       buffer << "// Derivative definition for variable: " << var.name() << endl;
       buffer << "#define _der" << var << macros.parameters() << " dx[coeff+1]";
@@ -792,7 +797,8 @@ void ClassicModelInstance::header()
   _writer->write(buffer, WRITER::Model_Header);
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     if (var.isState()) {
-      stringstream buffer, arguments;
+      stringstream buffer;
+      stringstream arguments;
       Macros macros(_model, var);
       arguments << macros.engineIndexArguments();
       buffer << "// Derivative definition for variable: " << var.name() << endl;
