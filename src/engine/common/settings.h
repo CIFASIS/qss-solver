@@ -16,13 +16,12 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
  ******************************************************************************/
+#pragma once
 
-#ifndef SETTINGS_H_
-#define SETTINGS_H_
-
+#include <common/macros.h>
 #include "data.h"
 
-typedef struct SET_settings_ *SET_settings;
+TYPE_DEF(SET_settings)
 
 struct SET_settings_ {
   double minstep;
@@ -43,14 +42,14 @@ struct SET_settings_ {
   int nDQRel;
   int jacobian;
   int BDFPartitionDepth;
+  int CVODE_max_order;
   SD_PartitionMethod pm;
   SD_DtSynch dtSynch;
   SD_partitionerOptions partitionerOptions;
   int BDFPart;
+  int x_output;
 };
 
 SET_settings SET_Settings(char *fname);
 
 void freeSettings(SET_settings settings);
-
-#endif /* SETTINGS_H_ */

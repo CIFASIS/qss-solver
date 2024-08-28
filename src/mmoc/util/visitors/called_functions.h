@@ -17,12 +17,11 @@
 
  ******************************************************************************/
 
-#ifndef CALLED_FUNCTIONS_H_
-#define CALLED_FUNCTIONS_H_
+#pragma once
 
 #include <string>
 
-#include "../ast_util.h"
+#include <util/ast_util.h>
 
 namespace MicroModelica {
 namespace Util {
@@ -40,7 +39,7 @@ class CalledFunctions : public AST_Expression_Visitor<SymbolTable> {
 
 class StatementCalledFunctions : public AST_Statement_Visitor<SymbolTable, SymbolTable, CalledFunctions> {
   public:
-  StatementCalledFunctions() : AST_Statement_Visitor(CalledFunctions()){};
+  StatementCalledFunctions() : AST_Statement_Visitor(CalledFunctions(), SymbolTable()){};
   ~StatementCalledFunctions() = default;
 
   private:
@@ -50,5 +49,3 @@ class StatementCalledFunctions : public AST_Statement_Visitor<SymbolTable, Symbo
 
 }  // namespace Util
 }  // namespace MicroModelica
-
-#endif /* CALLED_FUNCTIONS_H_ */

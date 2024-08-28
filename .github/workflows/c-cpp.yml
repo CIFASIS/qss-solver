@@ -46,10 +46,11 @@ jobs:
         sudo apt-get install pkgconf
         sudo apt-get install python
         sudo apt-get install qt5-default
+        sudo apt-get install rapidjson-dev
           
     - name: Build
       working-directory: ./src
-      run: make
+      run: make repo_checkout=https
 
     - name: Install
       working-directory: ./src

@@ -21,7 +21,7 @@
 
 #include "type.h"
 
-#include "../ast/ast_builder.h"
+#include <ast/ast_builder.h>
 
 ostream &operator<<(ostream &os, const Type_ &e)
 {
@@ -35,10 +35,6 @@ ostream &operator<<(ostream &os, const Type &e)
   return os;
 }
 
-Type_Real_::Type_Real_() {}
-
-Type_Real_::~Type_Real_() {}
-
 string Type_Real_::print() const
 {
   stringstream ret(stringstream::out);
@@ -49,10 +45,6 @@ string Type_Real_::print() const
 Type_Real newType_Real() { return new Type_Real_(); }
 
 void deleteType_Real(Type_Real m) { delete m; }
-
-Type_Integer_::Type_Integer_() {}
-
-Type_Integer_::~Type_Integer_() {}
 
 string Type_Integer_::print() const
 {
@@ -72,8 +64,6 @@ string Type_Boolean_::print() const
   return ret.str();
 }
 
-Type_String_::~Type_String_() {}
-
 string Type_String_::print() const
 {
   stringstream ret(stringstream::out);
@@ -91,7 +81,7 @@ string Type_Array_::print() const
   AST_ExpressionList exls = newAST_ExpressionList();
   Type tt = _t;
   AST_ListPrepend(exls, _dim);
-  while (tt->getType() == TYARRAY) {
+  while (tt->getType() == SymbolType::TYARRAY) {
     AST_ListPrepend(exls, tt->getAsArray()->dimension());
     tt = tt->getAsArray()->arrayOf();
   }
@@ -107,8 +97,6 @@ string Type_Array_::print() const
 
 Type_Array_::Type_Array_(Type t, AST_Expression dim) : _t(t), _dim(dim){};
 
-Type_Array_::~Type_Array_() {}
-
 Type Type_Array_::arrayOf() { return _t; }
 
 Type_Array Type_::getAsArray() { return dynamic_cast<Type_Array_ *>(this); }
@@ -121,9 +109,9 @@ int operator==(Type_ &e1, Type_ &e2)
 {
   if (e1.getType() == e2.getType()) {
     switch (e1.getType()) {
-    case TYARRAY:
+    case SymbolType::TYARRAY:
       return *(e1.getAsArray()->arrayOf()) == e2.getAsArray()->arrayOf();
-    case TYTUPLA: {
+    case SymbolType::TYTUPLA: {
       Type_Tupla t1 = e1.getAsTupla(), t2 = e2.getAsTupla();
       if (t2->tupla()->size() != t1->tupla()->size()) return 0;
       TypeListIterator it1 = t1->tupla()->begin(), it2 = t1->tupla()->begin();
@@ -133,8 +121,7 @@ int operator==(Type_ &e1, Type_ &e2)
       }
       return 1;
     }
-    case TYFUNCTION:  // No es necesario!!
-    {
+    case SymbolType::TYFUNCTION: {
       Type_Function f1 = e1.getAsFunction(), f2 = e2.getAsFunction();
       return *(f1->output()) == f2->output();
     }
@@ -153,13 +140,12 @@ int operator!=(Type_ &e1, Type e2) { return !(e1 == *e2); }
 
 Type_Tupla_::Type_Tupla_(TypeList tyl) : _tyl(tyl){};
 
-Type_Tupla_::~Type_Tupla_() {}
-
 string Type_Tupla_::print() const
 {
   stringstream ret(stringstream::out);
   TypeListIterator tyit;
-  int i = 0, s = _tyl->size();
+  unsigned long i = 0;
+  unsigned long s = _tyl->size();
   ret << "< ";
   foreach (tyit, _tyl) {
     i++;
@@ -172,13 +158,12 @@ string Type_Tupla_::print() const
 
 Type_Function_::Type_Function_(Type o, TypeList i) : _input(i), _output(o){};
 
-Type_Function_::~Type_Function_() {}
-
 string Type_Function_::print() const
 {
   stringstream ret(stringstream::out);
   TypeListIterator tyit;
-  int i = 0, s = _input->size();
+  unsigned long i = 0;
+  unsigned long s = _input->size();
 
   ret << _output << "  function ";
 

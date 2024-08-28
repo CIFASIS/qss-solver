@@ -62,10 +62,12 @@ const char* models[] = {"acousticsBase",
                         "acousticsRiemann",
                         "acousticsRiemDes",
                         "adr",
+                        "adr2D",
                         "advection",
                         "advection2D",
                         "advectionFlux",
                         "advectionUpwind",
+                        "advection_x",
                         "airconds",
                         "aircondsDOPRI",
                         "aircont",
@@ -102,7 +104,8 @@ const char* models[] = {"acousticsBase",
                         "testFor",
                         "test_input",
                         "TYSON",
-                        "VIRplanoS"};
+                        "VIRplanoS",
+                        "virus_replication"};
 
 INSTANTIATE_TEST_SUITE_P(Models, SModelTests, testing::ValuesIn(models));
 

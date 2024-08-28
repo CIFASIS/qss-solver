@@ -16,68 +16,10 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
  ******************************************************************************/
-
-#ifndef QSS_STEP_H_
-#define QSS_STEP_H_
+#pragma once
 
 #include <common/data.h>
 #include <qss/qss_data.h>
 #include <qss/qss_output.h>
 
-/**
- *
- * @param QSS_data
- * @param QSS_time
- * @param SD_output
- */
-void ST_write(OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
-
-/**
- *
- * @param
- * @return
- */
-int ST_getSteps(OUT_output output, int var);
-
-/**
- *
- */
-void ST_save(OUT_output output);
-
-/**
- *
- * @param simData
- * @param simTime
- * @param simOutput
- */
-void ST_init(OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
-
-/**
- *
- * @param QSS_data
- * @param QSS_time
- * @param SD_output
- */
-void ST_PAR_write(OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
-
-/**
- *
- * @param
- * @return
- */
-int ST_PAR_getSteps(OUT_output output, int var);
-
-/**
- *
- */
-void ST_PAR_save(OUT_output output);
-
-/**
- *
- * @param simData
- * @param simTime
- * @param simOutput
- */
-void ST_PAR_init(OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput);
-
-#endif /* QSS_STEP_H_ */
+QSS_DECLARE_OUTPUT_INTERFACE(ST)

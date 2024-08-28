@@ -36,13 +36,13 @@ using namespace IR;
 using namespace Util;
 namespace Generator {
 
-Generator::Generator(const StoredDefinition& std, CompileFlags& flags)
+Generator::Generator(const StoredDefinition& std, const CompileFlags& flags)
     : _std(std), _flags(flags), _model_instance(nullptr), _writer(nullptr), _includes(), _fheader()
 {
   if (_flags.output()) {
-    _writer = WriterPtr(new MemoryWriter());
+    _writer = WriterPtr(std::make_shared<MemoryWriter>());
   } else {
-    _writer = WriterPtr(new FileWriter());
+    _writer = WriterPtr(std::make_shared<FileWriter>());
   }
 }
 
@@ -56,15 +56,15 @@ int Generator::generate()
     }
     _writer->setFile(base_name + ".c");
     switch (model.annotations().solver()) {
-    case DOPRI:
-    case DASSL:
-    case CVODE_BDF:
-    case IDA:
-    case CVODE_AM:
-      _model_instance = ModelInstancePtr(new ClassicModelInstance(model, _flags, _writer));
+    case Solver::DOPRI:
+    case Solver::DASSL:
+    case Solver::CVODE_BDF:
+    case Solver::IDA:
+    case Solver::CVODE_AM:
+      _model_instance = ModelInstancePtr(std::make_shared<ClassicModelInstance>(model, _flags, _writer));
       break;
     default:
-      _model_instance = ModelInstancePtr(new QSSModelInstance(model, _flags, _writer));
+      _model_instance = ModelInstancePtr(std::make_shared<QSSModelInstance>(model, _flags, _writer));
     }
     _model_instance->generate();
     _writer->clearFile();
@@ -77,7 +77,7 @@ int Generator::generate()
     files.run();
     files.plot();
     files.settings(model.annotations());
-    if (model.annotations().solver() == LIQSS_BDF && !model.annotations().BDFPartition()->empty()) {
+    if (model.annotations().solver() == Solver::LIQSS_BDF && !model.annotations().BDFPartition()->empty()) {
       files.bdfPartition();
     }
     if (model.externalFunctions()) {
@@ -103,7 +103,7 @@ int Generator::generate()
   return Error::instance().errors();
 }
 
-void Generator::generateIncludes(string name)
+void Generator::generateIncludes(const string& name)
 {
   stringstream buffer;
   buffer << "#include <math.h>" << endl;
@@ -112,15 +112,13 @@ void Generator::generateIncludes(string name)
   _writer->write(buffer, WRITER::Function_Header);
 }
 
-void Generator::generateModel() {}
-
-void Generator::calledFunctionHeader(string file_name)
+void Generator::calledFunctionHeader(const string& file_name)
 {
   string indent = _writer->indent(1);
   string file = file_name;
   file.append(".h");
   _writer->setFile(file);
-  for (list<string>::iterator it = _fheader.begin(); it != _fheader.end(); it++) {
+  for (auto it = _fheader.begin(); it != _fheader.end(); it++) {
     _writer->print(*it);
   }
   _writer->clearFile();

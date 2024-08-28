@@ -205,11 +205,11 @@ void ModelInstance::settings()
   buffer << "settings->hybrid = ";
   buffer << (_model.eventNbr() ? "TRUE" : "FALSE") << ";";
   _writer->print(buffer);
-  buffer << "settings->method = " << _model.annotations().solver() << ";";
+  buffer << "settings->method = " << static_cast<int>(_model.annotations().solver()) << ";";
   _writer->print(buffer);
-  unsigned long random_seed = _model.annotations().randomSeed();
+  int random_seed = _model.annotations().getAnnotation(IntegerAnnotations::RandomSeed);
   if (random_seed) {
-    buffer << "settings->random_seed = " << _model.annotations().randomSeed() << ";";
+    buffer << "settings->random_seed = " << random_seed << ";";
     _writer->print(buffer);
   }
 }
@@ -322,9 +322,9 @@ string ModelInstance::componentDefinition(MODEL_INSTANCE::Component c)
 {
   string handler_q_param = (ModelConfig::instance().isQss()) ? ", double* q" : "";
   switch (c) {
-  case MODEL_INSTANCE::Model_Settings:
+  case MODEL_INSTANCE::Component::Model_Settings:
     return "void MOD_settings(SD_simulationSettings settings)";
-  case MODEL_INSTANCE::Model: {
+  case MODEL_INSTANCE::Component::Model: {
     stringstream buffer;
     buffer << "void MOD_definition(";
     if (ModelConfig::instance().isQss()) {
@@ -333,31 +333,31 @@ string ModelInstance::componentDefinition(MODEL_INSTANCE::Component c)
     buffer << "double *x, double *d, double *a, double t, double *dx)";
     return buffer.str();
   }
-  case MODEL_INSTANCE::Deps:
+  case MODEL_INSTANCE::Component::Deps:
     return "void MOD_dependencies(int idx, double *x, double *d, double *a, "
            "double t, double *dx, int *map)";
-  case MODEL_INSTANCE::Zero_Crossing:
+  case MODEL_INSTANCE::Component::Zero_Crossing:
     return "void MOD_zeroCrossing(int idx, double *x, double *d, double *a, "
            "double t, double *zc)";
-  case MODEL_INSTANCE::Handler_Pos:
+  case MODEL_INSTANCE::Component::Handler_Pos:
     return "void MOD_handlerPos(int idx, double *x" + handler_q_param +
            ", double *d, double *a, "
            "double t)";
-  case MODEL_INSTANCE::Handler_Neg:
+  case MODEL_INSTANCE::Component::Handler_Neg:
     return "void MOD_handlerNeg(int idx, double *x" + handler_q_param +
            ", double *d, double *a, "
            "double t)";
-  case MODEL_INSTANCE::Output:
+  case MODEL_INSTANCE::Component::Output:
     return "void MOD_output(int idx, double *x, double *d, double *a, double "
            "t, double *out)";
-  case MODEL_INSTANCE::Jacobian:
+  case MODEL_INSTANCE::Component::Jacobian:
     return "void MOD_jacobian(double *x, double *d, double *a, double t, "
            "SD_jacMatrices dvdx, double *jac)";
-  case MODEL_INSTANCE::BdfModel:
+  case MODEL_INSTANCE::Component::BdfModel:
     return "void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, int *BDFMap, int nBDF)";
-  case MODEL_INSTANCE::CLC_Init:
+  case MODEL_INSTANCE::Component::CLC_Init:
     return "void CLC_initializeDataStructs(CLC_simulator simulator)";
-  case MODEL_INSTANCE::QSS_Init:
+  case MODEL_INSTANCE::Component::QSS_Init:
     return "void QSS_initializeDataStructs(QSS_simulator simulator)";
   }
   return "";
@@ -367,7 +367,7 @@ void ModelInstance::initialCode()
 {
   StatementTable stms = _model.initialCode();
   StatementTable::iterator it;
-  stringstream buffer;
+  bool autonomous = true;
   ModelConfig::instance().setLocalInitSymbols();
   ModelConfig::instance().setInitialCode(true);
   VarSymbolTable symbols = _model.symbols();
@@ -380,6 +380,12 @@ void ModelInstance::initialCode()
   }
   for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
     _writer->write(stm, WRITER::Init_Code);
+    autonomous = autonomous && stm.autonomous();
+  }
+  if (!autonomous) {
+    stringstream initial_time;
+    initial_time << "int t = " << _model.annotations().initialTime() << ";";
+    ModelConfig::instance().addLocalSymbol(initial_time.str());
   }
   ModelConfig::instance().setInitialCode(false);
   ModelConfig::instance().unsetLocalInitSymbols();
@@ -467,41 +473,41 @@ void ModelInstance::generate()
   jacobian();
   // Print generated Model Instance.
   _writer->print(WRITER::Include);
-  _writer->print(componentDefinition(MODEL_INSTANCE::Model_Settings));
+  _writer->print(componentDefinition(MODEL_INSTANCE::Component::Model_Settings));
   _writer->beginBlock();
   settings();
   _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::Model));
+  _writer->print(componentDefinition(MODEL_INSTANCE::Component::Model));
   _writer->beginBlock();
   _writer->print(WRITER::Model);
   _writer->print(WRITER::Model_Simple);
   _writer->print(WRITER::Model_Generic);
   _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::Zero_Crossing));
+  _writer->print(componentDefinition(MODEL_INSTANCE::Component::Zero_Crossing));
   _writer->beginBlock();
   _writer->print(WRITER::Zero_Crossing);
   _writer->print(WRITER::ZC_Simple);
   _writer->print(WRITER::ZC_Generic);
   _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::Handler_Pos));
+  _writer->print(componentDefinition(MODEL_INSTANCE::Component::Handler_Pos));
   _writer->beginBlock();
   _writer->print(WRITER::Handler_Pos);
   _writer->print(WRITER::Handler_Pos_Simple);
   _writer->print(WRITER::Handler_Pos_Generic);
   _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::Handler_Neg));
+  _writer->print(componentDefinition(MODEL_INSTANCE::Component::Handler_Neg));
   _writer->beginBlock();
   _writer->print(WRITER::Handler_Neg);
   _writer->print(WRITER::Handler_Neg_Simple);
   _writer->print(WRITER::Handler_Neg_Generic);
   _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::Output));
+  _writer->print(componentDefinition(MODEL_INSTANCE::Component::Output));
   _writer->beginBlock();
   _writer->print(WRITER::Output);
   _writer->print(WRITER::Output_Simple);
   _writer->print(WRITER::Output_Generic);
   _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::Jacobian));
+  _writer->print(componentDefinition(MODEL_INSTANCE::Component::Jacobian));
   _writer->beginBlock();
   _writer->print(WRITER::Jacobian);
   _writer->endBlock();
@@ -630,19 +636,19 @@ void QSSModelInstance::generate()
   bdfDefinition();
   initializeDataStructures();
   ModelInstance::generate();
-  _writer->print(componentDefinition(MODEL_INSTANCE::Deps));
+  _writer->print(componentDefinition(MODEL_INSTANCE::Component::Deps));
   _writer->beginBlock();
   _writer->print(WRITER::Model_Deps);
   _writer->print(WRITER::Model_Deps_Simple);
   _writer->print(WRITER::Model_Deps_Generic);
   _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::BdfModel));
+  _writer->print(componentDefinition(MODEL_INSTANCE::Component::BdfModel));
   _writer->beginBlock();
   _writer->print(WRITER::Model_Bdf);
   _writer->print(WRITER::Model_Bdf_Simple);
   _writer->print(WRITER::Model_Bdf_Generic);
   _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::QSS_Init));
+  _writer->print(componentDefinition(MODEL_INSTANCE::Component::QSS_Init));
   _writer->beginBlock();
   _writer->print(WRITER::Prologue);
   _writer->print(WRITER::Init_Code);
@@ -654,7 +660,7 @@ void QSSModelInstance::generate()
   _writer->print(allocateModel());
   _writer->print(WRITER::Epilogue);
   _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::CLC_Init));
+  _writer->print(componentDefinition(MODEL_INSTANCE::Component::CLC_Init));
   _writer->beginBlock();
   _writer->endBlock();
 }
@@ -670,7 +676,6 @@ void QSSModelInstance::header()
   _writer->write(buffer, WRITER::Model_Header);
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     if (var.isState()) {
-      stringstream buffer;
       Macros macros(_model, var);
       buffer << "// Derivative definition for variable: " << var.name() << endl;
       buffer << "#define _der" << var << macros.parameters() << " dx[coeff+1]";
@@ -764,7 +769,7 @@ void ClassicModelInstance::generate()
   definition();
   initializeDataStructures();
   ModelInstance::generate();
-  _writer->print(componentDefinition(MODEL_INSTANCE::CLC_Init));
+  _writer->print(componentDefinition(MODEL_INSTANCE::Component::CLC_Init));
   _writer->beginBlock();
   _writer->print(WRITER::Prologue);
   _writer->print(WRITER::Init_Code);
@@ -776,7 +781,7 @@ void ClassicModelInstance::generate()
   _writer->print(allocateModel());
   _writer->print(WRITER::Epilogue);
   _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::QSS_Init));
+  _writer->print(componentDefinition(MODEL_INSTANCE::Component::QSS_Init));
   _writer->beginBlock();
   _writer->endBlock();
 }
@@ -792,7 +797,8 @@ void ClassicModelInstance::header()
   _writer->write(buffer, WRITER::Model_Header);
   for (Variable var = symbols.begin(it); !symbols.end(it); var = symbols.next(it)) {
     if (var.isState()) {
-      stringstream buffer, arguments;
+      stringstream buffer;
+      stringstream arguments;
       Macros macros(_model, var);
       arguments << macros.engineIndexArguments();
       buffer << "// Derivative definition for variable: " << var.name() << endl;

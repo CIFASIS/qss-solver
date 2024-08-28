@@ -19,7 +19,6 @@
 
 #pragma once
 
-#include <common/macros.h>
 #include <qss/qss_data.h>
 #include <qss/qss_quantizer.h>
 

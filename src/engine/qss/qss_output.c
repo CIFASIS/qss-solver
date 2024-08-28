@@ -17,11 +17,11 @@
 
  ******************************************************************************/
 
-#include <qss/qss_output.h>
-
 #include <stdlib.h>
 
+#include <common/macros.h>
 #include <common/utils.h>
+#include <qss/qss_output.h>
 #include "qss_sampled.h"
 #include "qss_step.h"
 
@@ -31,6 +31,8 @@ OUT_outputState OUT_OutputState()
   p->log = NULL;
   p->steps = NULL;
   p->values = NULL;
+  p->output_var = NULL;
+  p->order = 0;
   return p;
 }
 
@@ -43,26 +45,18 @@ OUT_outputOps OUT_OutputOps()
   return p;
 }
 
-OUT_output OUT_Output(QSS_data simData, QSS_time simTime, SD_output simOutput)
+OUT_output OUT_Output(QSS_data sim_data, QSS_time sim_time, SD_output sim_output)
 {
   OUT_output p = checkedMalloc(sizeof(*p));
   p->state = OUT_OutputState();
   p->ops = OUT_OutputOps();
-  switch (simOutput->commInterval) {
+  switch (sim_output->commInterval) {
   case CI_Step:
-    if (simData->params->lps > 0) {
-      ST_PAR_init(p, simData, simTime, simOutput);
-    } else {
-      ST_init(p, simData, simTime, simOutput);
-    }
+    QSS_MODULE_INIT(ST, p, sim_data, sim_time, sim_output)
     break;
   case CI_Dense:
   case CI_Sampled:
-    if (simData->params->lps > 0) {
-      SAM_PAR_init(p, simData, simTime, simOutput);
-    } else {
-      SAM_init(p, simData, simTime, simOutput);
-    }
+    QSS_MODULE_INIT(SAM, p, sim_data, sim_time, sim_output)
     break;
   default:
     return NULL;
@@ -93,11 +87,11 @@ void OUT_freeOutput(OUT_output o)
   }
 }
 
-void OUT_write(OUT_output output, QSS_data simData, QSS_time simTime, SD_output simOutput)
+void OUT_write(OUT_output output, QSS_data sim_data, QSS_time sim_time, SD_output sim_output)
 {
-  output->ops->write(output, simData, simTime, simOutput);
+  output->ops->write(output, sim_data, sim_time, sim_output);
 }
 
-int OUT_getSteps(OUT_output output, int var) { return output->ops->getSteps(output, var); }
+int OUT_getSteps(const_OUT_output output, int var) { return output->ops->getSteps(output, var); }
 
 void OUT_save(OUT_output output) { output->ops->save(output); }

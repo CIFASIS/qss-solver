@@ -42,7 +42,7 @@ class Variable {
   public:
   Variable();
   Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c);
-  Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, vector<int> s, bool array);
+  Variable(Type t, AST_TypePrefix tp, AST_Modification m, AST_Comment c, const vector<int>& s, bool array);
   Variable& operator=(const Variable& other);
   bool operator==(const Variable& other);
   bool operator!=(const Variable& other);
@@ -50,7 +50,7 @@ class Variable {
   typedef enum { State, Algebraic, NotAssigned } RealType;
 
   inline void setRealType(RealType type) { _realType = type; };
-  inline AST_TypePrefix typePrefix() { return _tp; };
+  inline AST_TypePrefix typePrefix() const { return _tp; };
   inline AST_Comment comment() { return _comm; };
   inline void setComment(AST_Comment c) { _comm = c; };
   inline AST_Modification modification() { return _m; };
@@ -67,13 +67,8 @@ class Variable {
     unsetStartEach();
   };
   inline bool isParameter() const { return _tp & TP_PARAMETER; };
-  inline bool isDiscrete() const { return (_tp & TP_DISCRETE) || _discrete; };
+  inline bool isDiscrete() const { return (_tp & TP_DISCRETE); };
   inline bool builtIn() const { return _builtin; };
-  inline void setDiscrete()
-  {
-    _discrete = true;
-    unsetAssignment();
-  };
   inline void setBuiltIn() { _builtin = true; };
   inline bool isConstant() const { return _tp & TP_CONSTANT; };
   inline bool isInput() const { return _tp & TP_INPUT; };
@@ -82,31 +77,31 @@ class Variable {
   inline bool isEqType() const { return _tp & TP_EQ; };
   inline bool isLocal() const { return _tp & TP_LOCAL; };
   inline bool isState() const { return _realType == State; };
-  inline bool isString() const { return _t->getType() == TYSTRING; };
+  inline bool isString() const { return _t->getType() == SymbolType::TYSTRING; };
   inline void setState() { unsetAssignment(); };
-  inline bool isUnknown() { return _unknown; };
+  inline bool isUnknown() const { return _unknown; };
   inline void setUnknown() { _unknown = true; };
-  inline bool isTime() { return _name.compare("time") == 0; };
+  inline bool isTime() const { return _name.compare("time") == 0; };
   inline bool isAlgebraic() const { return _realType == Algebraic; };
   inline void setValue(int val) { _value = val; };
-  inline int value() { return _value; };
+  inline int value() const { return _value; };
   unsigned int size();
-  inline bool hasAssignment() { return _hasAssigment; };
-  inline bool hasStartModifier() { return _hasStart; };
-  inline bool hasEachModifier() { return _hasEach; };
+  inline bool hasAssignment() const { return _hasAssigment; };
+  inline bool hasStartModifier() const { return _hasStart; };
+  inline bool hasEachModifier() const { return _hasEach; };
   inline void setEachModifier(bool each) { _hasEach = each; };
   inline string name() const { return _name; };
   void setName(string name);
   inline AST_Expression exp() { return _exp; };
   inline bool isArray() const { return _isArray; };
-  inline bool isScalar() { return !isArray(); };
+  inline bool isScalar() const { return !isArray(); };
   friend ostream& operator<<(ostream& os, const Variable& e);
   inline unsigned int size(int dim) const { return _size[dim]; };
   unsigned int rowSize(unsigned int dim) const;
-  inline unsigned int dimensions() const { return _size.size(); };
+  inline unsigned long dimensions() const { return _size.size(); };
   std::string declaration(std::string prefix = "");
   std::string initialization();
-  inline bool hasOffset() { return _hasOffset; };
+  inline bool hasOffset() const { return _hasOffset; };
   inline void setOffset(int offset)
   {
     _offset = offset;
@@ -115,9 +110,10 @@ class Variable {
   inline int offset() const { return _offset; };
   inline bool isModelVar() const { return isState() || isDiscrete() || isAlgebraic() || isParameter() || isEqType() || isOutput(); };
   std::string print() const;
+  std::string castOperator() const;
   friend std::ostream& operator<<(std::ostream& out, const Variable& v);
 
-  private:
+  protected:
   void processModification();
   void unsetAssignment() { _hasAssigment = false; };
   inline void unsetStartEach()
@@ -125,9 +121,9 @@ class Variable {
     _hasEach = false;
     _hasStart = false;
   };
+  bool isDiscreteInteger() const;
 
   bool _unknown;
-  bool _discrete;
   Type _t;
   AST_TypePrefix _tp;
   AST_Modification _m;
@@ -157,16 +153,16 @@ class VarSymbolTable : public ModelTable<VarName, Variable> {
   ~VarSymbolTable() = default;
   void initialize(TypeSymbolTable tst);
   void insert(VarName name, Variable variable);
-  inline bool parameters() { return _parameters; };
-  Option<Variable> lookup(std::string name);
-  unsigned int maxDim() const;
+  inline bool parameters() const { return _parameters; };
+  Option<Variable> lookup(const std::string& name) const;
+  unsigned long maxDim() const;
 
   private:
   bool _parameters;
-  unsigned int _max_dims;
+  unsigned long _max_dims;
 };
 
-typedef std::list<Variable> VariableList;
+using VariableList = std::list<Variable>;
 
 }  // namespace Util
 }  // namespace MicroModelica

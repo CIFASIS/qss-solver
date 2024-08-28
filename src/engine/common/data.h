@@ -21,6 +21,7 @@
 
 #include <stdio.h>
 
+#include <common/macros.h>
 #include "utils.h"
 
 typedef void (*SD_eq)(int, double *, double *, double *, double, double *);
@@ -158,7 +159,7 @@ void SD_freeEventData(SD_eventData events, int size);
 
 void SD_cleanEventData(SD_eventData events, int size);
 
-typedef struct SD_parameters_ *SD_parameters;
+TYPE_DEF(SD_parameters)
 
 struct SD_parameters_ {
   double derDelta;
@@ -169,15 +170,18 @@ struct SD_parameters_ {
   int lps;       //!< Number of LPs defined for parallel simulations.
   int nodeSize;  //!< Node size used in the memory list for output simulation values.
   int jacobian;
+  int CVODE_max_order;
   SD_PartitionMethod pm;  //!< Partition method used to obtain a model partition for parallel simulations.
   SD_DtSynch dtSynch;     //!< \f $ \delta t $ \f synchronization policy.
   SD_partitionerOptions partitionerOptions;
+  int x_output;
 };
 
 SD_parameters SD_Parameters(double derDelta, double zcHyst, double minStep, int symDiff, int lps, int nodeSize, SD_PartitionMethod pm,
-                            double dt, SD_DtSynch synch, SD_partitionerOptions partitionerOptions, int jacobian);
+                            double dt, SD_DtSynch synch, SD_partitionerOptions partitionerOptions, int jacobian, int CVODE_max_order,
+                            int x_output);
 
-SD_parameters SD_copyParameters(SD_parameters parameters);
+SD_parameters SD_copyParameters(const_SD_parameters parameters);
 
 void SD_freeParameters(SD_parameters params);
 
@@ -204,7 +208,7 @@ SD_outputVariable SD_OutputVariable(int outputs);
 
 void SD_freeOutputVariable(SD_outputVariable variable);
 
-typedef struct SD_output_ *SD_output;
+TYPE_DEF(SD_output)
 
 struct SD_output_ {
   char *name;

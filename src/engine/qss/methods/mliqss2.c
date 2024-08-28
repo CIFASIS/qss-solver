@@ -17,11 +17,13 @@
 
 ******************************************************************************/
 
+#include <qss/methods/mliqss2.h>
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <qss/methods/mliqss2.h>
+#include <common/macros.h>
 #include <common/utils.h>
 
 void QSS_FUNC_DECL(mLIQSS2, init)(QA_quantizer quantizer, QSS_data simData, QSS_time simTime)
