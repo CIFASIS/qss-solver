@@ -249,7 +249,8 @@ int RunDlg::getPartitionMethodIdx(QString str)
   if (str.trimmed() == "HMetis") return 1;
   if (str.trimmed() == "Scotch") return 2;
   if (str.trimmed() == "Patoh") return 3;
-  if (str.trimmed() == "Manual") return 4;
+  if (str.trimmed() == "KaHIP") return 4;
+  if (str.trimmed() == "Manual") return 5;
   return 0;
 }
 
@@ -265,9 +266,11 @@ QString RunDlg::getPartitionMethodString(int idx)
   case 3:
     return "Patoh";
   case 4:
+    return "KaHIP";
+  case 5:
     return "Manual";
   }
-  return "Metis";
+  return "Scotch";
 }
 
 int RunDlg::getJacobianIdx(QString str)

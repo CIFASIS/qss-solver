@@ -196,6 +196,7 @@ MmoHighlighter::MmoHighlighter(QTextDocument *parent, h_type file) : QSyntaxHigh
                     << "\\bSparse\\b"
                     << "\\bScotch\\b"
                     << "\\bPatoh\\b"
+                    << "\\bKaHIP\\b"
                     << "\\bManual\\b"
                     << "\\bMTPL\\b"
                     << "\\bMTPL_IT\\b"
