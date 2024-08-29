@@ -17,6 +17,7 @@ BUILD_DIR    	:= $(USR_DIR)/obj/release
 ifeq ($(MODE),Debug)
 BUILD_DIR    	:= $(USR_DIR)/obj/debug
 endif
+BIN_DIR   		:= $(USR_DIR)/bin
 LIB_DIR   		:= $(USR_DIR)/lib
 INCLUDE_DIR 	:= $(USR_DIR)/include
 
@@ -31,7 +32,7 @@ endif
 vpath %.c $(SRC_DIR)
 .SUFFIXES: .c
 
-all: cvode ida gsl qss time-step
+all: kahip cvode ida gsl qss time-step
 
 include 3rd-party/Makefile.include
 include common/Makefile.include
@@ -77,6 +78,7 @@ $(LIB_QSS): $(QSS_OBJS)
 
 create-folders::
 	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BIN_DIR)
 	@mkdir -p $(LIB_DIR)
 
 # Rules

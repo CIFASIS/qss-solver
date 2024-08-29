@@ -7,6 +7,7 @@ KLU_INCLUDE_DIR := /usr/include/suitesparse/
 LIB_CVODE     := $(LIB_DIR)/libsundials_cvode.a
 LIB_IDA       := $(LIB_DIR)/libsundials_ida.a
 LIB_GSL       := $(LIB_DIR)/libgsl.a
+LIB_KAHIP     := $(LIB_DIR)/KaHIP/libkahip.so
 
 $(LIB_CVODE): | create-folders
 	tar xvzf $(3RD_PARTY_DIR)/cvode/cvode-2.9.0.tar.gz
@@ -29,10 +30,19 @@ $(LIB_IDA): | create-folders
 	rm -rf ./ida-2.9.0
 	rm -rf ./examples
 
+$(LIB_KAHIP): | create-folders
+	tar xvzf $(3RD_PARTY_DIR)/partitioners/KaHIP/KaHIP-3.16.tar.gz
+	cd ./KaHIP-3.16; ./compile_withcmake.sh
+	mkdir -p $(BIN_DIR)/KaHIP/ 
+	mkdir -p $(LIB_DIR)/KaHIP/ 
+	mv ./KaHIP-3.16/deploy/*.a $(LIB_DIR)/KaHIP/ 
+	mv ./KaHIP-3.16/deploy/*.so $(LIB_DIR)/KaHIP/ 
+	mv ./KaHIP-3.16/deploy/parallel $(LIB_DIR)/KaHIP/ 
+	mv ./KaHIP-3.16/deploy/* $(BIN_DIR)/KaHIP/ 
+	rm -rf ./KaHIP-3.16 
+
 # Rules
-	
 cvode: $(LIB_CVODE)
-
 ida: $(LIB_IDA)
-
 gsl: $(LIB_GSL)
+kahip: $(LIB_KAHIP)
