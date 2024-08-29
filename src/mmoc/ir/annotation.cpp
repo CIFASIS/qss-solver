@@ -138,8 +138,7 @@ ModelAnnotation::ModelAnnotation()
       _output(),
       _initialTime(0),
       _finalTime(0),
-      _partitionMethod(PartitionMethod::Scotch),
-      _partitionMethodString("Scotch"),
+      _partition_method_string("Scotch"),
       _parallel(false),
       _dt(0),
       _polyCoeffs(1),
@@ -367,8 +366,6 @@ void ModelAnnotation::processExpressionList(AST_Expression x, AST_ExpressionList
   }
 }
 
-PartitionMethod ModelAnnotation::partitionMethod() { return _partitionMethod; }
-
 DT_Synch ModelAnnotation::getDtSynch(string s)
 {
   if (!s.compare("SD_DT_Fixed")) {
@@ -377,26 +374,6 @@ DT_Synch ModelAnnotation::getDtSynch(string s)
     return DT_Synch::DT_Asynchronous;
   }
   return DT_Synch::DT_Fixed;
-}
-
-PartitionMethod ModelAnnotation::getPartitionMethod(string s)
-{
-  if (!s.compare("Metis")) {
-    return PartitionMethod::Metis;
-  } else if (!s.compare("HMetis")) {
-    return PartitionMethod::HMetis;
-  } else if (!s.compare("Scotch")) {
-    return PartitionMethod::Scotch;
-  } else if (!s.compare("Patoh")) {
-    return PartitionMethod::Patoh;
-  } else if (!s.compare("MTPL")) {
-    return PartitionMethod::MTPL;
-  } else if (!s.compare("MTPL_IT")) {
-    return PartitionMethod::MTPL_IT;
-  } else if (!s.compare("Manual")) {
-    return PartitionMethod::Manual;
-  }
-  return PartitionMethod::Scotch;
 }
 
 Solver ModelAnnotation::getSolver(string s)
@@ -547,8 +524,7 @@ void ModelAnnotation::processAnnotation(string annot, AST_Modification_Equal x)
     processExpressionList(x->exp(), &_output);
     break;
   case type::PARTITION_METHOD:
-    _partitionMethod = getPartitionMethod(av.str());
-    _partitionMethodString = av.str();
+    _partition_method_string = av.str();
     break;
   case type::DELTAT_SYNCH:
     _dtSynch = getDtSynch(av.str());
@@ -650,7 +626,7 @@ string ModelAnnotation::solverString() { return _solverString; }
 
 Solver ModelAnnotation::solver() { return _solver; }
 
-string ModelAnnotation::partitionMethodString() { return _partitionMethodString; }
+string ModelAnnotation::partitionMethodString() { return _partition_method_string; }
 
 DT_Synch ModelAnnotation::dtSynch() { return _dtSynch; }
 
@@ -778,8 +754,7 @@ EvalAnnotation::EvalAnnotation() : _tokens()
   _tokens.emplace_back("HMetis");
   _tokens.emplace_back("Scotch");
   _tokens.emplace_back("Patoh");
-  _tokens.emplace_back("MTPL");
-  _tokens.emplace_back("MTPL_IT");
+  _tokens.emplace_back("KaHIP");
   _tokens.emplace_back("Manual");
   _tokens.emplace_back("SD_DT_Fixed");
   _tokens.emplace_back("Sparse");
