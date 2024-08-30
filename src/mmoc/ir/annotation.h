@@ -51,8 +51,6 @@ enum class Solver {
   mLIQSS2
 };
 
-enum class PartitionMethod { Metis, HMetis, Scotch, Patoh, MTPL, MTPL_IT, Manual };
-
 enum class DT_Synch { DT_Fixed, DT_Asynchronous };
 
 class FunctionAnnotation {
@@ -115,7 +113,6 @@ class ModelAnnotation {
   list<AST_Expression> output();
   string storeData();
   string partitionMethodString();
-  PartitionMethod partitionMethod();
   bool parallel();
   int polyCoeffs();
   string dtSynchString();
@@ -195,7 +192,6 @@ class ModelAnnotation {
   void processList(AST_Expression x, list<string> *l);
   void processExpressionList(AST_Expression x, AST_ExpressionList exps);
   Solver getSolver(string s);
-  PartitionMethod getPartitionMethod(string s);
   DT_Synch getDtSynch(string s);
   void parseMatrix(AST_Expression exp, IR::MATRIX::UserDefMatrixExps &matrix);
 
@@ -219,8 +215,7 @@ class ModelAnnotation {
   list<AST_Expression> _output;
   double _initialTime;
   double _finalTime;
-  PartitionMethod _partitionMethod;
-  string _partitionMethodString;
+  string _partition_method_string;
   bool _parallel;
   double _dt;
   int _polyCoeffs;
