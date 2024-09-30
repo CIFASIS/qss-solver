@@ -22,22 +22,13 @@
 
 #include <QtGui>
 #include "./ui/ui_settings.h"
-#include "utils.h"
 
-/**
- *
- */
+#include "utils.hpp"
+
 class SettingsDlg : public QDialog, public Ui::Settings {
   Q_OBJECT
   public:
-  /**
-   *
-   * @param parent
-   */
   SettingsDlg(QWidget *parent = NULL);
-  /**
-   *
-   */
   ~SettingsDlg();
   private slots:
   void _save();

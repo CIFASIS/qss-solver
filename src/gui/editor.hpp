@@ -20,7 +20,8 @@
 #pragma once
 
 #include <QtGui>
-#include <modeleditor.h>
+
+#include <modeleditor.hpp>
 
 class Editor {
   public:

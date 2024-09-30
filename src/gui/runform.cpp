@@ -21,8 +21,8 @@
 #include <QtGui>
 #include <QListView>
 
-#include <runform.h>
-#include <utils.h>
+#include <runform.hpp>
+#include <utils.hpp>
 
 RunDlg::RunDlg(QWidget *parent) : QDialog(parent)
 {

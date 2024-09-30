@@ -22,7 +22,8 @@
 #include <QTabWidget>
 #include <QTextCursor>
 #include <ui/ui_modeleditor.h>
-#include <utils.h>
+
+#include <utils.hpp>
 
 class ModelInfo;
 class MmoHighlighter;

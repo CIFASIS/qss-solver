@@ -17,23 +17,21 @@
 
  ******************************************************************************/
 
+#include <sys/types.h>
+#include <signal.h>
+
 #include <QMdiSubWindow>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <Qt>
 
-#include <mmomegui.h>
-#include <editor.h>
-#include <treemodel.h>
-#include <utils.h>
-#include <comboboxdelegate.h>
-#include <runform.h>
-#include <settings.h>
-
-#ifdef Q_OS_LINUX
-#include <sys/types.h>
-#include <signal.h>
-#endif
+#include <mmomegui.hpp>
+#include <editor.hpp>
+#include <treemodel.hpp>
+#include <utils.hpp>
+#include <comboboxdelegate.hpp>
+#include <runform.hpp>
+#include <settings.hpp>
 
 #define SLASH '/'
 

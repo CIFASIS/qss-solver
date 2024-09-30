@@ -21,7 +21,8 @@
 
 #include <QtGui>
 #include "./ui/ui_run.h"
-#include "utils.h"
+
+#include "utils.hpp"
 
 class RunDlg : public QDialog, public Ui::RunForm {
   Q_OBJECT
