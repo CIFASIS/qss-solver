@@ -17,16 +17,16 @@
 
  ******************************************************************************/
 
-#include "../ast/ast_builder.h"
-#include "../ir/helpers.h"
-#include "../ir/reduction_functions.h"
-#include "error.h"
-#include "model_config.h"
-#include "util.h"
-#include "symbol_table.h"
-#include "./visitors/convert_disc_red.h"
+#include <ast/ast_builder.hpp>
+#include <ir/helpers.hpp>
+#include "../ir/reduction_functions.hpp"
+#include "error.hpp"
+#include "model_config.hpp"
+#include "util.hpp"
+#include "symbol_table.hpp"
+#include "./visitors/convert_disc_red.hpp"
 
-#include "process_statement.h"
+#include "process_statement.hpp"
 
 namespace MicroModelica {
 using namespace IR;
@@ -129,8 +129,7 @@ void processStatement(AST_Statement stm)
 void applyReduction(AST_Statement_Assign asg, AST_StatementList stms, AST_StatementListIterator stm_it)
 {
   VarSymbolTable symbols = ModelConfig::instance().symbols();
-  ReductionFunctions<AST_Statement, ConvertDiscRed> reduction_functions(asg->exp(),
-                                                                        Utils::instance().variable(asg->lhs()));
+  ReductionFunctions<AST_Statement, ConvertDiscRed> reduction_functions(asg->exp(), Utils::instance().variable(asg->lhs()));
   AST_Expression new_exp = reduction_functions.apply();
   if (reduction_functions.hasReductionFunctions()) {
     asg->setExp(new_exp);

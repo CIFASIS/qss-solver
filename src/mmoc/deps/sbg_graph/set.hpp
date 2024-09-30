@@ -19,8 +19,8 @@
 
 #pragma once
 
-#include <deps/sbg_graph/atomic_set.h>
-#include <deps/sbg_graph/container_def.h>
+#include <deps/sbg_graph/atomic_set.hpp>
+#include <deps/sbg_graph/container_def.hpp>
 
 namespace SB {
 

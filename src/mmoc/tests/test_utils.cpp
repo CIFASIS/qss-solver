@@ -17,12 +17,12 @@
 
  ******************************************************************************/
 
-#include "test_utils.h"
+#include "test_utils.hpp"
 
-#include <ast/element.h>
-#include <ast/ast_builder.h>
-#include <ast/parser/parse.h>
-#include <util/visitors/eval_init_exp.h>
+#include <ast/element.hpp>
+#include <ast/ast_builder.hpp>
+#include <ast/parser/parse.hpp>
+#include <util/visitors/eval_init_exp.hpp>
 
 using namespace MicroModelica::Util;
 

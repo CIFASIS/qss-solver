@@ -24,7 +24,7 @@
 #include <boost/optional.hpp>
 #include <boost/foreach.hpp>
 
-#include "macros.h"
+#include "macros.hpp"
 
 #define foreach_ BOOST_FOREACH
 

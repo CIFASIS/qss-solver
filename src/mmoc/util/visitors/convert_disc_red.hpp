@@ -20,7 +20,7 @@
 #ifndef CONVERT_DISC_RED_H_
 #define CONVERT_DISC_RED_H_
 
-#include "../ast_util.h"
+#include "../ast_util.hpp"
 
 namespace MicroModelica {
 namespace Util {

@@ -19,8 +19,8 @@
 
 #pragma once 
 
-#include "../util/macros.h"
-#include "../util/util_types.h"
+#include "../util/macros.hpp"
+#include "../util/util_types.hpp"
 
 class AST_Visitor;
 

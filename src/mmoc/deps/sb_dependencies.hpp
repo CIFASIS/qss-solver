@@ -21,17 +21,17 @@
 
 #include <string>
 
-#include <ir/equation.h>
-#include <ir/event.h>
-#include <ir/jacobian.h>
-#include <ir/model_matrix_gen.h>
-#include <ir/qss_model.h>
-#include <ir/qss_model_deps.h>
-#include <util/symbol_table.h>
-#include <deps/builders/index_shift_builder.h>
-#include <deps/builders/merge_graph_builder.h>
-#include <deps/sbg_graph/deps_graph.h>
-#include <deps/jacobian_matrices.h>
+#include <ir/equation.hpp>
+#include <ir/event.hpp>
+#include <ir/jacobian.hpp>
+#include <ir/model_matrix_gen.hpp>
+#include <ir/qss_model.hpp>
+#include <ir/qss_model_deps.hpp>
+#include <util/symbol_table.hpp>
+#include <deps/builders/index_shift_builder.hpp>
+#include <deps/builders/merge_graph_builder.hpp>
+#include <deps/sbg_graph/deps_graph.hpp>
+#include <deps/jacobian_matrices.hpp>
 
 namespace MicroModelica {
 namespace Deps {

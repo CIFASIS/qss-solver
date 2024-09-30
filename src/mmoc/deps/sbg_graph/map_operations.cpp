@@ -17,15 +17,18 @@
 
  ******************************************************************************/
 
-#include <deps/sbg_graph/container_def.h>
-#include <deps/sbg_graph/graph.h>
-#include <deps/sbg_graph/interval.h>
-#include <deps/sbg_graph/map_operations.h>
+#include <deps/sbg_graph/container_def.hpp>
+#include <deps/sbg_graph/graph.hpp>
+#include <deps/sbg_graph/interval.hpp>
+#include <deps/sbg_graph/map_operations.hpp>
 
 namespace SB {
 
 template <typename T>
-size_t hash_value(SetVertex<T> v) { return v.hash(); }
+size_t hash_value(SetVertex<T> v)
+{
+  return v.hash();
+}
 
 // This operations are implemented here to simplificate the implementation.
 
@@ -64,7 +67,7 @@ PWLMap minAtomPW(AtomSet &dom, LMap &lm1, LMap &lm2)
 
           domRes.insert(domRes.begin(), sAux);
           lmRes.insert(lmRes.begin(), lmAux);
-        } else if (xinter >= (*itints).hi()) { // Intersection after domain
+        } else if (xinter >= (*itints).hi()) {  // Intersection after domain
           if (*itg2 > g1i) lmAux = lm2;
 
           Set sAux;
@@ -72,7 +75,7 @@ PWLMap minAtomPW(AtomSet &dom, LMap &lm1, LMap &lm2)
 
           domRes.insert(domRes.begin(), sAux);
           lmRes.insert(lmRes.begin(), lmAux);
-        } else { // Intersection in domain
+        } else {  // Intersection in domain
           Interval i1((*itints).lo(), (*itints).step(), floor(xinter));
           Interval i2(i1.hi() + i1.step(), (*itints).step(), (*itints).hi());
 
@@ -704,7 +707,7 @@ PWLMap minAdjMap(PWLMap pw2, PWLMap pw1)
   return res;
 }
 
-template<typename E>
+template <typename E>
 SetEdge<E> restrictEdge(SetEdge<E> e, Set dom)
 {
   PWLMap es1 = e.mapF();
@@ -717,4 +720,4 @@ SetEdge<E> restrictEdge(SetEdge<E> e, Set dom)
   return res;
 }
 
-} // namespace SB
+}  // namespace SB

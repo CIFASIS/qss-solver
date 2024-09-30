@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <util/ast_util.h>
+#include <util/ast_util.hpp>
 
 namespace MicroModelica {
 namespace Util {

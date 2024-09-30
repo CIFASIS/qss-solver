@@ -23,12 +23,12 @@
 #include <iterator>
 #include <boost/graph/adjacency_list.hpp>
 
-#include <deps/sbg_graph/graph.h>
-#include <deps/sbg_graph/graph_printer.h>
-#include <deps/sbg_graph/lmap_exp.h>
-#include <deps/sbg_graph/pw_lmap.h>
-#include <ir/expression.h>
-#include <util/symbol_table.h>
+#include <deps/sbg_graph/graph.hpp>
+#include <deps/sbg_graph/graph_printer.hpp>
+#include <deps/sbg_graph/lmap_exp.hpp>
+#include <deps/sbg_graph/pw_lmap.hpp>
+#include <ir/expression.hpp>
+#include <util/symbol_table.hpp>
 
 namespace SB {
 namespace Deps {

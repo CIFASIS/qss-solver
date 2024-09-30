@@ -23,8 +23,8 @@
 #include <map>
 #include <math.h>
 
-#include <deps/sbg_graph/container_def.h>
-#include <util/logger.h>
+#include <deps/sbg_graph/container_def.hpp>
+#include <util/logger.hpp>
 
 namespace SB {
 

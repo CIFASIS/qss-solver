@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include "../../ir/equation.h"
-#include "../../util/symbol_table.h"
-#include <deps/sbg_graph/deps_graph.h>
+#include "../../ir/equation.hpp"
+#include "../../util/symbol_table.hpp"
+#include <deps/sbg_graph/deps_graph.hpp>
 
 namespace MicroModelica {
 namespace Deps {

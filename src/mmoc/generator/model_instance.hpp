@@ -22,13 +22,13 @@
 #include <boost/variant/variant.hpp>
 #include <sstream>
 
-#include <generator/writer.h>
-#include <ir/class.h>
-#include <util/compile_flags.h>
-#include <util/graph.h>
-#include <util/model_config.h>
-#include <util/symbol_table.h>
-#include <util/util_types.h>
+#include <generator/writer.hpp>
+#include <ir/class.hpp>
+#include <util/compile_flags.hpp>
+#include <util/graph.hpp>
+#include <util/model_config.hpp>
+#include <util/symbol_table.hpp>
+#include <util/util_types.hpp>
 
 namespace MicroModelica {
 namespace Generator {

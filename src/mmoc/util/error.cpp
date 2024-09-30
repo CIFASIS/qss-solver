@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#include "error.h"
+#include "error.hpp"
 
 #include <stdarg.h>
 #include <iostream>

@@ -20,8 +20,8 @@
 #ifndef PROCESS_STATEMENT_H_
 #define PROCESS_STATEMENT_H_
 
-#include "../ast/ast_types.h"
-#include "../ast/statement.h"
+#include <ast/ast_types.hpp>
+#include <ast/statement.hpp>
 
 namespace MicroModelica {
 namespace Util {

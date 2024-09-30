@@ -17,12 +17,12 @@
 
  ******************************************************************************/
 
-#include "index_shift_builder.h"
+#include "index_shift_builder.hpp"
 
-#include <deps/sbg_graph/graph.h>
-#include <util/util_types.h>
-#include <util/visitors/apply_var_usage.h>
-#include <util/visitors/eval_init_exp.h>
+#include <deps/sbg_graph/graph.hpp>
+#include <util/util_types.hpp>
+#include <util/visitors/apply_var_usage.hpp>
+#include <util/visitors/eval_init_exp.hpp>
 
 using namespace SB;
 

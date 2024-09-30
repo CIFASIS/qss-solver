@@ -21,12 +21,12 @@
 
 #include <map>
 
-#include "../ast/ast_types.h"
-#include "../util/util_types.h"
-#include "../util/visitors/jac_alg_exps.h"
-#include "index.h"
-#include "equation.h"
-#include "expression.h"
+#include <ast/ast_types.hpp>
+#include "../util/util_types.hpp"
+#include "../util/visitors/jac_alg_exps.hpp"
+#include "index.hpp"
+#include "equation.hpp"
+#include "expression.hpp"
 
 namespace MicroModelica {
 namespace IR {

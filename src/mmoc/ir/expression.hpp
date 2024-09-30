@@ -21,8 +21,8 @@
 
 #include <string>
 
-#include <ast/ast_types.h>
-#include <util/symbol_table.h>
+#include <ast/ast_types.hpp>
+#include <util/symbol_table.hpp>
 
 namespace MicroModelica {
 namespace IR {

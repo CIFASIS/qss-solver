@@ -17,14 +17,14 @@
 
  ******************************************************************************/
 
-#include "statement.h"
+#include "statement.hpp"
 
 #include <list>
 #include <sstream>
 
-#include "../util/ast_util.h"
-#include "element.h"
-#include "expression.h"
+#include "../util/ast_util.hpp"
+#include "element.hpp"
+#include "expression.hpp"
 
 /* Statement Class */
 

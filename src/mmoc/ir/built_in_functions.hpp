@@ -19,8 +19,8 @@
 
 #pragma once
 
-#include <ir/helpers.h>
-#include <util/table.h>
+#include <ir/helpers.hpp>
+#include <util/table.hpp>
 
 namespace MicroModelica {
 namespace IR {

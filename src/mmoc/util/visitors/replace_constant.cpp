@@ -17,12 +17,12 @@
 
  ******************************************************************************/
 
-#include "replace_constant.h"
+#include "replace_constant.hpp"
 
-#include "../error.h"
-#include "../model_config.h"
-#include "../util.h"
-#include "partial_eval_exp.h"
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
+#include "partial_eval_exp.hpp"
 
 namespace MicroModelica {
 using namespace IR;

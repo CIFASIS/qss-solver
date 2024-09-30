@@ -19,10 +19,10 @@
 
 #pragma once 
 
-#include <util/macros.h>
-#include <util/util_types.h>
-#include <ast/ast_node.h>
-#include <ast/ast_types.h>
+#include <util/macros.hpp>
+#include <util/util_types.hpp>
+#include <ast/ast_node.hpp>
+#include <ast/ast_types.hpp>
 
 class AST_Imports;
 

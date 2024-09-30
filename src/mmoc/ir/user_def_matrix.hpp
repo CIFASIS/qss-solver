@@ -21,7 +21,7 @@
 
 #include <string>
 
-#include <ir/model_matrix_gen.h>
+#include <ir/model_matrix_gen.hpp>
 
 namespace MicroModelica {
 namespace IR {

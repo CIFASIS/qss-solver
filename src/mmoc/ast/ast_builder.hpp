@@ -21,7 +21,7 @@
 
 #include <string>
 
-#include "ast_types.h"
+#include "ast_types.hpp"
 
 /* Constructors */
 AST_ArgumentList newAST_ArgumentList();

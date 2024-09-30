@@ -21,11 +21,11 @@
 
 #include <string>
 
-#include <ast/ast_node.h>
-#include <ast/ast_types.h>
-#include <ast/element.h>
-#include <util/macros.h>
-#include <util/util_types.h>
+#include <ast/ast_node.hpp>
+#include <ast/ast_types.hpp>
+#include <ast/element.hpp>
+#include <util/macros.hpp>
+#include <util/util_types.hpp>
 
 class AST_Equation_ : public AST_Node_ {
   public:

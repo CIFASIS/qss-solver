@@ -19,9 +19,9 @@
 
 #include <sstream>
 
-#include "type.h"
+#include "type.hpp"
 
-#include <ast/ast_builder.h>
+#include <ast/ast_builder.hpp>
 
 ostream &operator<<(ostream &os, const Type_ &e)
 {

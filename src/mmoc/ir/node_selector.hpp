@@ -19,12 +19,12 @@
 
 #pragma once
 
-#include <ir/index.h>
-#include <ir/equation.h>
-#include <ir/expression.h>
-#include <ir/event.h>
-#include <deps/sbg_graph/deps_graph.h>
-#include <util/symbol_table.h>
+#include <ir/index.hpp>
+#include <ir/equation.hpp>
+#include <ir/expression.hpp>
+#include <ir/event.hpp>
+#include <deps/sbg_graph/deps_graph.hpp>
+#include <util/symbol_table.hpp>
 
 namespace MicroModelica {
 namespace Deps {

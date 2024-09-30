@@ -17,12 +17,12 @@
 
  ******************************************************************************/
 
-#include "revert_index.h"
+#include "revert_index.hpp"
 
 #include <sstream>
 
-#include "../../ast/ast_builder.h"
-#include "../error.h"
+#include "../../ast/ast_builder.hpp"
+#include <util/error.hpp>
 
 namespace MicroModelica {
 using namespace IR;

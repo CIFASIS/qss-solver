@@ -21,11 +21,11 @@
 #include <gmock/gmock.h>
 #include <iostream>
 
-#include <ast/parser/parse.h>
-#include "util/model_config.h"
-#include "util/visitors/array_use.h"
-#include "util/symbol_table.h"
-#include "tests/test_utils.h"
+#include <ast/parser/parse.hpp>
+#include <tests/test_utils.hpp>
+#include <util/model_config.hpp>
+#include <util/visitors/array_use.hpp>
+#include <util/symbol_table.hpp>
 
 /// @addtogroup QSSSolverUTests
 /// @{

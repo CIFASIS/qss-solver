@@ -21,13 +21,13 @@
 
 #include <map>
 
-#include <deps/builders/eq_graph_builder.h>
-#include <deps/builders/ev_graph_builder.h>
-#include <deps/sbg_graph/deps_graph.h>
-#include <ir/equation.h>
-#include <ir/event.h>
-#include <ir/node_selector.h>
-#include <ir/statement.h>
+#include <deps/builders/eq_graph_builder.hpp>
+#include <deps/builders/ev_graph_builder.hpp>
+#include <deps/sbg_graph/deps_graph.hpp>
+#include <ir/equation.hpp>
+#include <ir/event.hpp>
+#include <ir/node_selector.hpp>
+#include <ir/statement.hpp>
 
 namespace MicroModelica {
 namespace Deps {

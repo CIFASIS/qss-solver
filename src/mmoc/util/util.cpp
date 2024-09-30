@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#include "util.h"
+#include "util.hpp"
 
 #include <stddef.h>
 #include <cstdlib>
@@ -25,16 +25,16 @@
 #include <sstream>
 #include <utility>
 
-#include "../ir/built_in_functions.h"
-#include "../ir/class.h"
-#include "../ir/expression.h"
-#include "../ir/equation.h"
-#include "../ir/helpers.h"
-#include "../ir/index.h"
-#include "compile_flags.h"
-#include "error.h"
-#include "model_config.h"
-#include "symbol_table.h"
+#include "compile_flags.hpp"
+#include "error.hpp"
+#include <ir/built_in_functions.hpp>
+#include <ir/class.hpp>
+#include <ir/expression.hpp>
+#include <ir/equation.hpp>
+#include <ir/helpers.hpp>
+#include <ir/index.hpp>
+#include "model_config.hpp"
+#include "symbol_table.hpp"
 
 namespace MicroModelica {
 using namespace IR;

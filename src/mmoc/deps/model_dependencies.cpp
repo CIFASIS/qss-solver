@@ -17,13 +17,12 @@
 
  ******************************************************************************/
 
-#include "model_dependencies.h"
+#include "model_dependencies.hpp"
 
-#include <ir/annotation.h>
-#include <util/model_config.h>
-#include <util/util.h>
-
-#include <deps/builders/index_shift_builder.h>
+#include <deps/builders/index_shift_builder.hpp>
+#include <ir/annotation.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
 
 namespace MicroModelica {
 using namespace IR;

@@ -17,15 +17,15 @@
 
  ******************************************************************************/
 
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <gtest/gtest.h>
 #include <iostream>
 
-#include <ast/parser/parse.h>
-#include "util/model_config.h"
-#include "util/visitors/autonomous.h"
-#include "util/symbol_table.h"
-#include "tests/test_utils.h"
+#include <ast/parser/parse.hpp>
+#include <tests/test_utils.hpp>
+#include <util/model_config.hpp>
+#include <util/visitors/autonomous.hpp>
+#include <util/symbol_table.hpp>
 
 /// @addtogroup QSSSolverUTests
 /// @{

@@ -25,15 +25,15 @@
 #include <map>
 #include <vector>
 
-#include <ast/ast_types.h>
-#include <deps/model_dependencies.h>
-#include <util/util_types.h>
-#include <ir/annotation.h>
-#include <ir/equation.h>
-#include <ir/event.h>
-#include <ir/helpers.h>
-#include <ir/reduction_functions.h>
-#include <ir/statement.h>
+#include <ast/ast_types.hpp>
+#include <deps/model_dependencies.hpp>
+#include <util/util_types.hpp>
+#include <ir/annotation.hpp>
+#include <ir/equation.hpp>
+#include <ir/event.hpp>
+#include <ir/helpers.hpp>
+#include <ir/reduction_functions.hpp>
+#include <ir/statement.hpp>
 
 namespace MicroModelica {
 namespace IR {

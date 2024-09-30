@@ -22,11 +22,11 @@
 
 #include <string>
 
-#include "../util/symbol_table.h"
-#include "../util/util.h"
-#include "../util/visitors/convert_cont_red.h"
-#include "../util/visitors/convert_disc_red.h"
-#include "helpers.h"
+#include <util/symbol_table.hpp>
+#include <util/util.hpp>
+#include <util/visitors/convert_cont_red.hpp>
+#include <util/visitors/convert_disc_red.hpp>
+#include "helpers.hpp"
 
 namespace MicroModelica {
 namespace IR {

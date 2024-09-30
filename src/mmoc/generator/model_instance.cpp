@@ -18,26 +18,26 @@
 
  ******************************************************************************/
 
-#include "model_instance.h"
-
 #include <boost/optional/optional_io.hpp>
 #include <utility>
 
-#include <deps/builders/eq_graph_builder.h>
-#include <ast/expression.h>
-#include <generator/macros.h>
-#include <ir/annotation.h>
-#include <ir/class.h>
-#include <ir/equation.h>
-#include <ir/event.h>
-#include <ir/expression.h>
-#include <ir/jacobian.h>
-#include <ir/qss_model.h>
-#include <ir/qss_model_deps.h>
-#include <ir/statement.h>
-#include <util/error.h>
-#include <util/util.h>
-#include <util/visitors/partial_eval_exp.h>
+#include "model_instance.hpp"
+
+#include <ast/expression.hpp>
+#include <deps/builders/eq_graph_builder.hpp>
+#include <generator/macros.hpp>
+#include <ir/annotation.hpp>
+#include <ir/class.hpp>
+#include <ir/equation.hpp>
+#include <ir/event.hpp>
+#include <ir/expression.hpp>
+#include <ir/jacobian.hpp>
+#include <ir/qss_model.hpp>
+#include <ir/qss_model_deps.hpp>
+#include <ir/statement.hpp>
+#include <util/error.hpp>
+#include <util/util.hpp>
+#include <util/visitors/partial_eval_exp.hpp>
 
 namespace MicroModelica {
 

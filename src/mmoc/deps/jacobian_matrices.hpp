@@ -21,9 +21,9 @@
 
 #include <map>
 
-#include <deps/sbg_graph/deps_graph.h>
-#include <ir/equation.h>
-#include <ir/equation.h>
+#include <deps/sbg_graph/deps_graph.hpp>
+#include <ir/equation.hpp>
+#include <ir/equation.hpp>
 
 namespace MicroModelica {
 namespace Deps {

@@ -17,14 +17,14 @@
 
  ******************************************************************************/
 
-#include "element.h"
+#include "element.hpp"
 
 #include <list>
 #include <sstream>
 
-#include "class.h"
-#include "modification.h"
-#include "../util/ast_util.h"
+#include "class.hpp"
+#include "modification.hpp"
+#include "../util/ast_util.hpp"
 
 using namespace std;
 

@@ -24,12 +24,12 @@
 #include <map>
 #include <string>
 
-#include <ast/ast_types.h>
-#include <deps/model_dependencies.h>
-#include <util/compile_flags.h>
-#include <util/util_types.h>
-#include <util/symbol_table.h>
-#include <util/table.h>
+#include <ast/ast_types.hpp>
+#include <deps/model_dependencies.hpp>
+#include <util/compile_flags.hpp>
+#include <util/util_types.hpp>
+#include <util/symbol_table.hpp>
+#include <util/table.hpp>
 
 namespace MicroModelica {
 

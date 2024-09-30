@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#include "ast_node.h"
+#include "ast_node.hpp"
 
 #include <iostream>
 #include <sstream>

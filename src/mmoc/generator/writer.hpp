@@ -25,7 +25,7 @@
 #include <list>
 #include <string>
 
-#include "../util/util.h"
+#include "../util/util.hpp"
 
 namespace MicroModelica {
 namespace Generator {

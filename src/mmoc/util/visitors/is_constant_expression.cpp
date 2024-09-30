@@ -17,11 +17,11 @@
 
  ******************************************************************************/
 
-#include "is_constant_expression.h"
+#include "is_constant_expression.hpp"
 
-#include <util/error.h>
-#include <util/model_config.h>
-#include <util/util.h>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
 
 namespace MicroModelica {
 using namespace IR;

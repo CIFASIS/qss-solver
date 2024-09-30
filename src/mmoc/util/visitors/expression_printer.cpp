@@ -17,18 +17,18 @@
 
  ******************************************************************************/
 
-#include "expression_printer.h"
+#include "expression_printer.hpp"
 
 #include <iomanip>
 #include <sstream>
 
-#include <ast/ast_builder.h>
-#include <ir/class.h>
-#include <ir/helpers.h>
-#include <util/error.h>
-#include <util/model_config.h>
-#include <util/util.h>
-#include <util/visitors/is_constant_expression.h>
+#include <ast/ast_builder.hpp>
+#include <ir/class.hpp>
+#include <ir/helpers.hpp>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
+#include <util/visitors/is_constant_expression.hpp>
 
 namespace MicroModelica {
 using namespace IR;

@@ -26,11 +26,11 @@
 #include <string>
 #include <vector>
 
-#include <ast/ast_types.h>
-#include <ast/element.h>
-#include <ast/modification.h>
-#include <util/type.h>
-#include <util/table.h>
+#include <ast/ast_types.hpp>
+#include <ast/element.hpp>
+#include <ast/modification.hpp>
+#include <util/type.hpp>
+#include <util/table.hpp>
 
 namespace MicroModelica {
 

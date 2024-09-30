@@ -19,10 +19,10 @@
 
 #pragma once
 
-#include <ast/ast_builder.h>
-#include <deps/sbg_graph/multi_interval.h>
-#include <ir/index.h>
-#include <util/ast_util.h>
+#include <ast/ast_builder.hpp>
+#include <deps/sbg_graph/multi_interval.hpp>
+#include <ir/index.hpp>
+#include <util/ast_util.hpp>
 
 namespace MicroModelica {
 namespace Util {

@@ -21,12 +21,12 @@
 
 #include <string>
 
-#include <ir/annotation.h>
-#include <ir/index.h>
-#include <ir/equation.h>
-#include <ir/expression.h>
-#include <util/symbol_table.h>
-#include <util/util.h>
+#include <ir/annotation.hpp>
+#include <ir/index.hpp>
+#include <ir/equation.hpp>
+#include <ir/expression.hpp>
+#include <util/symbol_table.hpp>
+#include <util/util.hpp>
 
 namespace MicroModelica {
 namespace Util {

@@ -20,13 +20,13 @@
 #pragma once
 
 #include <fstream>
-#include <string>
 #include <list>
+#include <string>
 
-#include <generator/model_instance.h>
-#include <ir/annotation.h>
-#include <ir/class.h>
-#include <util/compile_flags.h>
+#include <generator/model_instance.hpp>
+#include <ir/annotation.hpp>
+#include <ir/class.hpp>
+#include <util/compile_flags.hpp>
 
 namespace MicroModelica {
 namespace Generator {

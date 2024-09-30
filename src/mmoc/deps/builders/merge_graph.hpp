@@ -20,13 +20,13 @@
 #pragma once
 
 
-#include <deps/builders/eq_graph_builder.h>
-#include <deps/builders/ev_graph_builder.h>
-#include <deps/sb_dependencies.h>
-#include <deps/sbg_graph/deps_graph.h>
-#include <ir/equation.h>
-#include <ir/event.h>
-#include <ir/node_selector.h>
+#include <deps/builders/eq_graph_builder.hpp>
+#include <deps/builders/ev_graph_builder.hpp>
+#include <deps/sb_dependencies.hpp>
+#include <deps/sbg_graph/deps_graph.hpp>
+#include <ir/equation.hpp>
+#include <ir/event.hpp>
+#include <ir/node_selector.hpp>
 
 namespace MicroModelica {
 namespace Deps {

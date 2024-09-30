@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include <util/symbol_table.h>
-#include <deps/sbg_graph/build_from_exps.h>
-#include <deps/sbg_graph/deps_graph.h>
+#include <util/symbol_table.hpp>
+#include <deps/sbg_graph/build_from_exps.hpp>
+#include <deps/sbg_graph/deps_graph.hpp>
 
 namespace MicroModelica {
 namespace Deps {

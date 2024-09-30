@@ -21,10 +21,10 @@
 #include <gmock/gmock.h>
 #include <iostream>
 
-#include <ast/parser/parse.h>
-#include "util/visitors/called_functions.h"
-#include "util/util.h"
-#include "tests/test_utils.h"
+#include <ast/parser/parse.hpp>
+#include <tests/test_utils.hpp>
+#include <util/util.hpp>
+#include <util/visitors/called_functions.hpp>
 
 /// @addtogroup QSSSolverUTests
 /// @{

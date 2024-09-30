@@ -20,8 +20,8 @@
 #ifndef PARSE_INDEX_H_
 #define PARSE_INDEX_H_
 
-#include "../../ast/ast_builder.h"
-#include "../ast_util.h"
+#include "../../ast/ast_builder.hpp"
+#include "../ast_util.hpp"
 
 namespace MicroModelica {
 namespace Util {

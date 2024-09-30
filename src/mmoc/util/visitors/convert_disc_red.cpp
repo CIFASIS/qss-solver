@@ -17,16 +17,16 @@
 
  ******************************************************************************/
 
-#include "convert_disc_red.h"
+#include "convert_disc_red.hpp"
 
 #include <sstream>
 
-#include "../error.h"
-#include "../model_config.h"
-#include "../util.h"
-#include <ast/parser/parse.h>
-#include "../../ast/ast_types.h"
-#include "../../ast/ast_builder.h"
+#include <ast/ast_builder.hpp>
+#include <ast/ast_types.hpp>
+#include <ast/parser/parse.hpp>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
 
 namespace MicroModelica {
 using namespace IR;

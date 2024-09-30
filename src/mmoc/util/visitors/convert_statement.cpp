@@ -17,25 +17,22 @@
 
  ******************************************************************************/
 
-#include "convert_statement.h"
+#include "convert_statement.hpp"
 
 #include <sstream>
 
-#include <ast/parser/parse.h>
-#include "../../ast/ast_types.h"
-#include "../../ast/ast_builder.h"
-#include "../visitors/replace_constant.h"
-#include "convert_expression.h"
-#include "replace_inner_product.h"
+#include <ast/parser/parse.hpp>
+#include "../../ast/ast_types.hpp"
+#include "../../ast/ast_builder.hpp"
+#include "../visitors/replace_constant.hpp"
+#include "convert_expression.hpp"
+#include "replace_inner_product.hpp"
 
 namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-ConvertStatement::ConvertStatement(AST_Statement statement)
-{
-  _statement = convert(statement);
-}
+ConvertStatement::ConvertStatement(AST_Statement statement) { _statement = convert(statement); }
 
 AST_Statement ConvertStatement::get() { return _statement; }
 

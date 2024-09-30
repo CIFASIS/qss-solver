@@ -22,8 +22,8 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <variant>
 
-#include <deps/sbg_graph/set.h>
-#include <deps/sbg_graph/pw_lmap.h>
+#include <deps/sbg_graph/set.hpp>
+#include <deps/sbg_graph/pw_lmap.hpp>
 
 namespace SB {
 

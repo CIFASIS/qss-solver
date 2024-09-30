@@ -20,8 +20,8 @@
 #ifndef IMPORTS_H_
 #define IMPORTS_H_
 
-#include "../util/ast_util.h"
-#include "ast_types.h"
+#include "../util/ast_util.hpp"
+#include "ast_types.hpp"
 
 /**
  *

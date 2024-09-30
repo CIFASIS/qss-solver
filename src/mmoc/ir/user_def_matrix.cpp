@@ -20,10 +20,10 @@
 #include <assert.h>
 #include <string>
 
-#include <util/model_config.h>
-#include <ir/user_def_matrix.h>
-#include <util/error.h>
-#include <util/visitors/convert_output_range.h>
+#include <util/model_config.hpp>
+#include <ir/user_def_matrix.hpp>
+#include <util/error.hpp>
+#include <util/visitors/convert_output_range.hpp>
 
 namespace MicroModelica {
 using namespace Util;

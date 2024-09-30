@@ -22,9 +22,9 @@
 
 #include <string>
 
-#include "../ast/ast_types.h"
-#include "../util/ast_util.h"
-#include "class.h"
+#include <ast/ast_types.hpp>
+#include "../util/ast_util.hpp"
+#include "class.hpp"
 
 namespace MicroModelica {
 namespace IR {

@@ -20,7 +20,7 @@
 #ifndef JAC_ALG_EXPS_H_
 #define JAC_ALG_EXPS_H_
 
-#include "../ast_util.h"
+#include "../ast_util.hpp"
 
 namespace MicroModelica {
 namespace Util {

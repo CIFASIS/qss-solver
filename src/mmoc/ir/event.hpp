@@ -19,10 +19,10 @@
 
 #pragma once
 
-#include <ast/ast_types.h>
-#include <util/table.h>
-#include <ir/equation.h>
-#include <ir/statement.h>
+#include <ast/ast_types.hpp>
+#include <util/table.hpp>
+#include <ir/equation.hpp>
+#include <ir/statement.hpp>
 
 namespace MicroModelica {
 namespace IR {

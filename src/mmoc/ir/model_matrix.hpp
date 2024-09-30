@@ -21,11 +21,11 @@
 
 #include <string>
 
-#include <deps/builders/eq_graph_builder.h>
-#include <deps/builders/ev_graph_builder.h>
-#include <deps/builders/merge_graph.h>
-#include <deps/sb_dependencies.h>
-#include <ir/model_matrix_gen.h>
+#include <deps/builders/eq_graph_builder.hpp>
+#include <deps/builders/ev_graph_builder.hpp>
+#include <deps/builders/merge_graph.hpp>
+#include <deps/sb_dependencies.hpp>
+#include <ir/model_matrix_gen.hpp>
 
 namespace MicroModelica {
 namespace IR {

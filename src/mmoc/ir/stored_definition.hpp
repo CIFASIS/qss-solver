@@ -21,7 +21,7 @@
 
 #include <string>
 
-#include <ir/class.h>
+#include <ir/class.hpp>
 
 namespace MicroModelica {
 namespace IR {

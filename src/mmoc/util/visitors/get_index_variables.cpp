@@ -17,13 +17,13 @@
 
  ******************************************************************************/
 
-#include "get_index_variables.h"
+#include "get_index_variables.hpp"
 
 #include <sstream>
 
-#include <ast/ast_builder.h>
-#include <util/error.h>
-#include <util/model_config.h>
+#include <ast/ast_builder.hpp>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
 
 namespace MicroModelica {
 using namespace IR;

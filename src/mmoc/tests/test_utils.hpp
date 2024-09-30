@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <util/util.h>
-#include <util/symbol_table.h>
+#include <util/util.hpp>
+#include <util/symbol_table.hpp>
 
 MicroModelica::Util::VarSymbolTable getSymbols(string variable_definition);

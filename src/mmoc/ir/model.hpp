@@ -25,9 +25,9 @@
 #include <string>
 #include <vector>
 
-#include "class.h"
+#include "class.hpp"
 
-#include "../util/util_types.h"
+#include "../util/util_types.hpp"
 
 /**
  *

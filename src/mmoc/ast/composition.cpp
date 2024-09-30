@@ -17,18 +17,18 @@
 
  ******************************************************************************/
 
-#include "composition.h"
+#include "composition.hpp"
 
 #include <iostream>
 #include <list>
 
-#include "../util/ast_util.h"
-#include "ast_builder.h"
-#include "element.h"
-#include "equation.h"
-#include "expression.h"
-#include "modification.h"
-#include "statement.h"
+#include "../util/ast_util.hpp"
+#include "ast_builder.hpp"
+#include "element.hpp"
+#include "equation.hpp"
+#include "expression.hpp"
+#include "modification.hpp"
+#include "statement.hpp"
 
 /* Composition Class */
 

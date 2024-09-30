@@ -22,10 +22,10 @@
 
 #include <string>
 
-#include "../util/macros.h"
-#include "../util/util_types.h"
-#include "ast_node.h"
-#include "ast_types.h"
+#include "../util/macros.hpp"
+#include "../util/util_types.hpp"
+#include "ast_node.hpp"
+#include "ast_types.hpp"
 
 class AST_Element_ : public AST_Node_ {
   public:

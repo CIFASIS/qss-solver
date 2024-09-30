@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include "../../ast/ast_builder.h"
-#include "../../ir/index.h"
-#include "../ast_util.h"
+#include "../../ast/ast_builder.hpp"
+#include "../../ir/index.hpp"
+#include "../ast_util.hpp"
 
 namespace MicroModelica {
 namespace Util {

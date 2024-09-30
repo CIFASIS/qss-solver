@@ -23,9 +23,9 @@
 #include <list>
 #include <string>
 
-#include <ast/ast_types.h>
-#include <ast/expression.h>
-#include <util/macros.h>
+#include <ast/ast_types.hpp>
+#include <ast/expression.hpp>
+#include <util/macros.hpp>
 
 enum class SymbolType { TYREAL, TYINTEGER, TYBOOLEAN, TYSTRING, TYARRAY, TYTUPLA, TYFUNCTION };
 

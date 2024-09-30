@@ -22,10 +22,10 @@
 #include <string>
 #include <map>
 
-#include <ir/expression.h>
-#include <deps/sbg_graph/deps_graph.h>
-#include <util/symbol_table.h>
-#include <util/table.h>
+#include <ir/expression.hpp>
+#include <deps/sbg_graph/deps_graph.hpp>
+#include <util/symbol_table.hpp>
+#include <util/table.hpp>
 
 namespace MicroModelica {
 namespace IR {

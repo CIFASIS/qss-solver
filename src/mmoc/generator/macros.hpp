@@ -23,9 +23,9 @@
 #include <string>
 #include <list>
 
-#include <ir/class.h>
-#include <ir/index.h>
-#include <util/symbol_table.h>
+#include <ir/class.hpp>
+#include <ir/index.hpp>
+#include <util/symbol_table.hpp>
 
 namespace MicroModelica {
 namespace Generator {

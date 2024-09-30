@@ -20,8 +20,8 @@
 #ifndef ALG_USAGE_H
 #define ALG_USAGE_H
 
-#include "index.h"
-#include "expression.h"
+#include "index.hpp"
+#include "expression.hpp"
 
 namespace MicroModelica {
 namespace IR {

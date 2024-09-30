@@ -19,8 +19,8 @@
 
 #pragma once
 
-#include <ir/equation.h>
-#include <deps/sbg_graph/deps_graph.h>
+#include <ir/equation.hpp>
+#include <deps/sbg_graph/deps_graph.hpp>
 
 namespace MicroModelica {
 namespace IR {

@@ -19,8 +19,8 @@
 
 #pragme once
 
-#include <ast/ast_types.h>
-#include <util/macros.h>
+#include <ast/ast_types.hpp>
+#include <util/macros.hpp>
 
 using namespace std;
 

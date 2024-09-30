@@ -17,12 +17,12 @@
 
  ******************************************************************************/
 
-#include <deps/builders/index_shift_builder.h>
-#include <deps/builders/merge_graph_builder.h>
-#include <deps/sbg_graph/build_from_exps.h>
-#include <deps/sbg_graph/graph.h>
-#include <util/model_config.h>
-#include <util/visitors/pwl_map_values.h>
+#include <deps/builders/index_shift_builder.hpp>
+#include <deps/builders/merge_graph_builder.hpp>
+#include <deps/sbg_graph/build_from_exps.hpp>
+#include <deps/sbg_graph/graph.hpp>
+#include <util/model_config.hpp>
+#include <util/visitors/pwl_map_values.hpp>
 
 namespace MicroModelica {
 using namespace IR;

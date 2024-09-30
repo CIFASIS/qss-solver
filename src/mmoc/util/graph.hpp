@@ -23,7 +23,7 @@
 #include <map>
 #include <set>
 
-#include "graph_profile.h"
+#include "graph_profile.hpp"
 
 using namespace std;
 

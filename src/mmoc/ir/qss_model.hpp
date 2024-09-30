@@ -22,12 +22,12 @@
 #include <string>
 #include <map>
 
-#include <ir/compute_deps.h>
-#include <ir/equation.h>
-#include <deps/builders/eq_graph_builder.h>
-#include <deps/sbg_graph/deps_graph.h>
-#include <util/symbol_table.h>
-#include <util/table.h>
+#include <ir/compute_deps.hpp>
+#include <ir/equation.hpp>
+#include <deps/builders/eq_graph_builder.hpp>
+#include <deps/sbg_graph/deps_graph.hpp>
+#include <util/symbol_table.hpp>
+#include <util/table.hpp>
 
 namespace MicroModelica {
 namespace IR {

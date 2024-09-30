@@ -17,9 +17,9 @@
 
  ******************************************************************************/
 
-#include "../ast/ast_types.h"
-#include "type.h"
-#include "util_types.h"
+#include <ast/ast_types.hpp>
+#include "type.hpp"
+#include "util_types.hpp"
 
 #ifndef TYPECHECK_H_
 #define TYPECHECK_H_

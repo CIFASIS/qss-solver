@@ -26,10 +26,10 @@
 #include <map>
 #include <string>
 
-#include "../ast/ast_types.h"
-#include "../ir/built_in_functions.h"
-#include "ast_util.h"
-#include "util_types.h"
+#include "ast_util.hpp"
+#include <ast/ast_types.hpp>
+#include <ir/built_in_functions.hpp>
+#include "util_types.hpp"
 
 namespace MicroModelica {
 namespace Util {

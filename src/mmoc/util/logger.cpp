@@ -17,9 +17,9 @@
 
  ******************************************************************************/
 
-#include "logger.h"
+#include "logger.hpp"
 
-#include <util/util.h>
+#include <util/util.hpp>
 
 using namespace std;
 
@@ -29,18 +29,18 @@ Logger::Logger() : _log_file(), _logs_path() {}
 
 Logger::~Logger() { log.close(); }
 
-void Logger::setFile(string file_name) 
+void Logger::setFile(string file_name)
 {
-    string build_path = Utils::instance().environmentVariable("MMOC_BUILD");
-    string base_name = Utils::instance().baseFileName(file_name);
-    _logs_path = build_path + SLASH + base_name + SLASH; 
-    _log_file = _logs_path + base_name + ".log";
-    log.open(_log_file, std::ofstream::out);
+  string build_path = Utils::instance().environmentVariable("MMOC_BUILD");
+  string base_name = Utils::instance().baseFileName(file_name);
+  _logs_path = build_path + SLASH + base_name + SLASH;
+  _log_file = _logs_path + base_name + ".log";
+  log.open(_log_file, std::ofstream::out);
 }
 
-std::string Logger::getLoggerFile() const  { return _log_file; }
+std::string Logger::getLoggerFile() const { return _log_file; }
 
-std::string Logger::getLogsPath() const  { return _logs_path; }
+std::string Logger::getLogsPath() const { return _logs_path; }
 
 }  // namespace Util
 }  // namespace MicroModelica

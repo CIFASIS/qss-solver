@@ -1,8 +1,8 @@
 #pragma once
 
-#include <deps/sbg_graph/container_def.h>
-#include <deps/sbg_graph/interval.h>
-#include <deps/sbg_graph/multi_interval.h>
+#include <deps/sbg_graph/container_def.hpp>
+#include <deps/sbg_graph/interval.hpp>
+#include <deps/sbg_graph/multi_interval.hpp>
 
 namespace SB {
 

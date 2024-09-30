@@ -21,14 +21,14 @@
 
 #include <string>
 
-#include <ast/ast_types.h>
-#include <ast/ast_builder.h>
-#include <ast/expression.h>
-#include <ast/statement.h>
-#include <ast/equation.h>
-#include <ir/index.h>
-#include <ir/event.h>
-#include "util_types.h"
+#include <ast/ast_types.hpp>
+#include <ast/ast_builder.hpp>
+#include <ast/expression.hpp>
+#include <ast/statement.hpp>
+#include <ast/equation.hpp>
+#include <ir/index.hpp>
+#include <ir/event.hpp>
+#include "util_types.hpp"
 
 #define IS_CREF(X) ((X)->expressionType() == EXPCOMPREF)
 #define IS_UMINUS(X) ((X)->expressionType() == EXPUMINUS)

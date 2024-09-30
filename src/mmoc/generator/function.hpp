@@ -21,10 +21,10 @@
 
 #include <boost/variant/variant.hpp>
 
-#include <ir/class.h>
-#include <generator/writer.h>
-#include <util/compile_flags.h>
-#include <util/util.h>
+#include <generator/writer.hpp>
+#include <ir/class.hpp>
+#include <util/compile_flags.hpp>
+#include <util/util.hpp>
 
 namespace MicroModelica {
 namespace Generator {

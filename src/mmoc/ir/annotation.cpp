@@ -20,15 +20,15 @@
 #include <algorithm>
 #include <utility>
 
-#include "annotation.h"
-#include <ast/element.h>
-#include <ast/expression.h>
-#include <ast/modification.h>
-#include "annotation.h"
-#include <util/error.h>
-#include <util/model_config.h>
-#include <util/symbol_table.h>
-#include <util/util.h>
+#include "annotation.hpp"
+
+#include <ast/element.hpp>
+#include <ast/expression.hpp>
+#include <ast/modification.hpp>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/symbol_table.hpp>
+#include <util/util.hpp>
 
 namespace MicroModelica {
 using namespace Util;

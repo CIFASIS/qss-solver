@@ -17,14 +17,14 @@
 
  ******************************************************************************/
 
-#include "stored_definition.h"
+#include "stored_definition.hpp"
 
 #include <stddef.h>
 #include <iostream>
 #include <list>
 
-#include "class.h"
-#include "imports.h"
+#include "class.hpp"
+#include "imports.hpp"
 
 AST_StoredDefinition_::AST_StoredDefinition_(AST_ClassList ml, AST_String within) : _model_list(ml), _within(within)
 {

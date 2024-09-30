@@ -21,7 +21,7 @@
 
 #include <map>
 
-#include <util/util_types.h>
+#include <util/util_types.hpp>
 
 template <typename Key, typename Value>
 class ModelTable {

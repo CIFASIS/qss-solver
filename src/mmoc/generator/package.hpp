@@ -17,14 +17,13 @@
 
  ******************************************************************************/
 
-#ifndef MMO_GEN_PACKAGE_H_
-#define MMO_GEN_PACKAGE_H_
+#pragma once
 
 #include <boost/variant/variant.hpp>
 
-#include "../ir/class.h"
-#include "../util/compile_flags.h"
-#include "writer.h"
+#include <ir/class.hpp>
+#include <util/compile_flags.hpp>
+#include "writer.hpp"
 
 namespace MicroModelica {
 namespace Generator {
@@ -41,4 +40,3 @@ class Package {
 };
 }  // namespace Generator
 }  // namespace MicroModelica
-#endif /* MMO_GEN_PACKAGE_H */

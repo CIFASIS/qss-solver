@@ -24,14 +24,14 @@
 #include <sstream>
 #include <utility>
 
-#include "../ast/ast_builder.h"
-#include "../ast/composition.h"
-#include "../ast/equation.h"
-#include "../ast/expression.h"
-#include "../ast/modification.h"
-#include "../ast/statement.h"
-#include "../util/ast_util.h"
-#include "../util/symbol_table.h"
+#include <ast/ast_builder.hpp>
+#include "../ast/composition.hpp"
+#include <ast/equation.hpp>
+#include "../ast/expression.hpp"
+#include <ast/modification.hpp>
+#include <ast/statement.hpp>
+#include "../util/ast_util.hpp"
+#include "../util/symbol_table.hpppp"
 
 MMO_Model::MMO_Model(string name) {}
 

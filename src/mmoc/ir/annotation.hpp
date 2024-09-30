@@ -24,10 +24,10 @@
 #include <string>
 #include <boost/variant/variant_fwd.hpp>
 
-#include <ast/ast_types.h>
-#include <ir/model_matrix_gen.h>
-#include <util/ast_util.h>
-#include <util/util_types.h>
+#include <ast/ast_types.hpp>
+#include <ir/model_matrix_gen.hpp>
+#include <util/ast_util.hpp>
+#include <util/util_types.hpp>
 
 namespace MicroModelica {
 namespace IR {

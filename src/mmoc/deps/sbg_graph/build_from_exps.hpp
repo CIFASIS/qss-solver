@@ -19,14 +19,14 @@
 
 #pragma once
 
-#include <deps/sbg_graph/deps_graph.h>
-#include <deps/sbg_graph/lmap_exp.h>
-#include <deps/sbg_graph/pw_lmap.h>
-#include <deps/sbg_graph/set.h>
-#include <ir/equation.h>
-#include <ir/expression.h>
-#include <ir/event.h>
-#include <util/symbol_table.h>
+#include <deps/sbg_graph/deps_graph.hpp>
+#include <deps/sbg_graph/lmap_exp.hpp>
+#include <deps/sbg_graph/pw_lmap.hpp>
+#include <deps/sbg_graph/set.hpp>
+#include <ir/equation.hpp>
+#include <ir/expression.hpp>
+#include <ir/event.hpp>
+#include <util/symbol_table.hpp>
 
 namespace SB {
 

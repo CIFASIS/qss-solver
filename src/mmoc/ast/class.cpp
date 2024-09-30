@@ -17,16 +17,16 @@
 
  ******************************************************************************/
 
-#include "class.h"
+#include "class.hpp"
 
 #include <stddef.h>
 #include <iostream>
 #include <list>
 
-#include "../util/ast_util.h"
-#include "ast_builder.h"
-#include "composition.h"
-#include "element.h"
+#include "../util/ast_util.hpp"
+#include "ast_builder.hpp"
+#include "composition.hpp"
+#include "element.hpp"
 
 AST_Class_::AST_Class_(AST_String n, AST_Composition comp)
     : _name(n), _composition(comp), _father(nullptr), _basic(false), _encapsulated(false), _final(false), _prefix()

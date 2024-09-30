@@ -17,13 +17,13 @@
 
  ******************************************************************************/
 
-#include "replace_der.h"
+#include "replace_der.hpp"
 
 #include <sstream>
 
-#include "../../ast/ast_builder.h"
-#include "../error.h"
-#include "../symbol_table.h"
+#include "../../ast/ast_builder.hpp"
+#include <util/error.hpp>
+#include "../symbol_table.hpp"
 
 namespace MicroModelica {
 namespace Util {

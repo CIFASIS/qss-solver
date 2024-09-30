@@ -23,7 +23,7 @@
 #include <map>
 #include <string>
 
-#include "util_types.h"
+#include "util_types.hpp"
 
 namespace MicroModelica {
 namespace Util {

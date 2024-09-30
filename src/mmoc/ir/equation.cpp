@@ -17,28 +17,28 @@
 
  ******************************************************************************/
 
-#include "equation.h"
+#include "equation.hpp"
 
 #include <boost/optional/optional_io.hpp>
 #include <sstream>
 
-#include <ast/ast_builder.h>
-#include <ast/equation.h>
-#include <ast/expression.h>
-#include <ast/parser/parse.h>
-#include <ir/alg_usage.h>
-#include <ir/derivative.h>
-#include <ir/equation_printer.h>
-#include <ir/helpers.h>
-#include <util/error.h>
-#include <util/model_config.h>
-#include <util/util.h>
-#include <util/visitors/algebraics.h>
-#include <util/visitors/called_functions.h>
-#include <util/visitors/get_index_variables.h>
-#include <util/visitors/is_recursive_def.h>
-#include <util/visitors/replace_der.h>
-#include <util/visitors/revert_index.h>
+#include <ast/ast_builder.hpp>
+#include <ast/equation.hpp>
+#include <ast/expression.hpp>
+#include <ast/parser/parse.hpp>
+#include <ir/alg_usage.hpp>
+#include <ir/derivative.hpp>
+#include <ir/equation_printer.hpp>
+#include <ir/helpers.hpp>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
+#include <util/visitors/algebraics.hpp>
+#include <util/visitors/called_functions.hpp>
+#include <util/visitors/get_index_variables.hpp>
+#include <util/visitors/is_recursive_def.hpp>
+#include <util/visitors/replace_der.hpp>
+#include <util/visitors/revert_index.hpp>
 
 namespace MicroModelica {
 using namespace Util;

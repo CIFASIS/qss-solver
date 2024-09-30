@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include <ast/ast_types.h>
-#include <util/table.h>
-#include <ir/index.h>
+#include <ast/ast_types.hpp>
+#include <util/table.hpp>
+#include <ir/index.hpp>
 
 namespace MicroModelica {
 namespace Util {

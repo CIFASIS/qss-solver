@@ -17,28 +17,27 @@
 
  ******************************************************************************/
 
-#include "equation_printer.h"
+#include "equation_printer.hpp"
 
 #include <boost/optional/optional_io.hpp>
 #include <sstream>
 
-#include <ast/ast_builder.h>
-#include <ast/equation.h>
-#include <ast/expression.h>
-#include <ast/parser/parse.h>
-#include <ir/annotation.h>
-#include <ir/alg_usage.h>
-#include <ir/derivative.h>
-#include <ir/equation.h>
-#include <ir/helpers.h>
-
-#include <util/error.h>
-#include <util/model_config.h>
-#include <util/util.h>
-#include <util/visitors/get_index_variables.h>
-#include <util/visitors/is_recursive_def.h>
-#include <util/visitors/replace_der.h>
-#include <util/visitors/revert_index.h>
+#include <ast/ast_builder.hpp>
+#include <ast/equation.hpp>
+#include <ast/expression.hpp>
+#include <ast/parser/parse.hpp>
+#include <ir/annotation.hpp>
+#include <ir/alg_usage.hpp>
+#include <ir/derivative.hpp>
+#include <ir/equation.hpp>
+#include <ir/helpers.hpp>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
+#include <util/visitors/get_index_variables.hpp>
+#include <util/visitors/is_recursive_def.hpp>
+#include <util/visitors/replace_der.hpp>
+#include <util/visitors/revert_index.hpp>
 
 namespace MicroModelica {
 using namespace Util;

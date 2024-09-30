@@ -20,8 +20,8 @@
 #ifndef APPLY_VAR_USAGE_H_
 #define APPLY_VAR_USAGE_H_
 
-#include "../../ast/ast_builder.h"
-#include "../ast_util.h"
+#include "../../ast/ast_builder.hpp"
+#include "../ast_util.hpp"
 
 namespace MicroModelica {
 namespace Util {

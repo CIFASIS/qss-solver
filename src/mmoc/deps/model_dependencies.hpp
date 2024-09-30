@@ -19,11 +19,11 @@
 
 #pragma once
 
-#include <ir/equation.h>
-#include <ir/event.h>
-#include <ir/model_matrix.h>
-#include <util/symbol_table.h>
-#include <deps/sb_dependencies.h>
+#include <ir/equation.hpp>
+#include <ir/event.hpp>
+#include <ir/model_matrix.hpp>
+#include <util/symbol_table.hpp>
+#include <deps/sb_dependencies.hpp>
 
 namespace MicroModelica {
 namespace Deps {

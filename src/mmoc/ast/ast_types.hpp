@@ -25,7 +25,7 @@
 #include <set>
 #include <string>
 
-#include "../util/macros.h"
+#include "../util/macros.hpp"
 
 #define MAKE_SPACE \
   for (int __i = 0; __i < block; __i++) ret << " ";
