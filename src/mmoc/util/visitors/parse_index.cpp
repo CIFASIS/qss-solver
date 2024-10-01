@@ -17,12 +17,12 @@
 
  ******************************************************************************/
 
-#include "parse_index.h"
+#include "parse_index.hpp"
 
-#include <util/model_config.h>
-#include "../error.h"
-#include "../util.h"
-#include "partial_eval_exp.h"
+#include <util/model_config.hpp>
+#include <util/error.hpp>
+#include <util/util.hpp>
+#include "partial_eval_exp.hpp"
 
 namespace MicroModelica {
 using namespace IR;

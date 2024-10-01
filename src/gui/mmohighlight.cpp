@@ -19,7 +19,7 @@
 
 #include <QtGui>
 
-#include "mmohighlight.h"
+#include "mmohighlight.hpp"
 
 MmoHighlighter::MmoHighlighter(QTextDocument *parent, h_type file) : QSyntaxHighlighter(parent)
 {

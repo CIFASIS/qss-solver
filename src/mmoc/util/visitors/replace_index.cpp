@@ -17,15 +17,15 @@
 
  ******************************************************************************/
 
-#include "replace_index.h"
+#include "replace_index.hpp"
 
 #include <sstream>
 
-#include <util/error.h>
-#include <util/model_config.h>
-#include <util/util.h>
-#include <util/visitors/get_index_usage.h>
-#include <util/visitors/get_index_variables.h>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
+#include <util/visitors/get_index_usage.hpp>
+#include <util/visitors/get_index_variables.hpp>
 
 namespace MicroModelica {
 using namespace Deps;

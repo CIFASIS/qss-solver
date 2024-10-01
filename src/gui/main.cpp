@@ -20,7 +20,7 @@
 #include <QApplication>
 #include <QDir>
 
-#include <mmomegui.h>
+#include <mmomegui.hpp>
 
 int main(int argc, char *argv[])
 {

@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#include "debug.h"
+#include "debug.hpp"
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -24,18 +24,18 @@
 #include <list>
 #include <string>
 
-#include "ast_builder.h"
+#include "ast_builder.hpp"
 #include <ast/parser/mocc_parser.h>
-#include "ast_types.h"
-#include "../util/ast_util.h"
-#include "class.h"
-#include "composition.h"
-#include "element.h"
-#include "equation.h"
-#include "expression.h"
-#include "modification.h"
-#include "statement.h"
-#include "stored_definition.h"
+#include "ast_types.hpp"
+#include "../util/ast_util.hpp"
+#include "class.hpp"
+#include "composition.hpp"
+#include "element.hpp"
+#include "equation.hpp"
+#include "expression.hpp"
+#include "modification.hpp"
+#include "statement.hpp"
+#include "stored_definition.hpp"
 
 class MCC_Parser;
 class MCC_Lexer;

@@ -17,18 +17,18 @@
 
  ******************************************************************************/
 
-#include "mmo_model_checker.h"
+#include "mmo_model_checker.hpp"
 
-#include <ast/class.h>
-#include <ast/composition.h>
-#include <ast/element.h>
-#include <ast/equation.h>
-#include <ast/expression.h>
-#include <ast/modification.h>
-#include <ast/statement.h>
-#include <ast/stored_definition.h>
-#include <util/error.h>
-#include <util/util.h>
+#include <ast/class.hpp>
+#include <ast/composition.hpp>
+#include <ast/element.hpp>
+#include <ast/equation.hpp>
+#include <ast/expression.hpp>
+#include <ast/modification.hpp>
+#include <ast/statement.hpp>
+#include <ast/stored_definition.hpp>
+#include <util/error.hpp>
+#include <util/util.hpp>
 
 using namespace MicroModelica::Util;
 

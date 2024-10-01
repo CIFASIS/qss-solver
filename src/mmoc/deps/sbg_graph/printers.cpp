@@ -17,13 +17,13 @@
 
  ******************************************************************************/
 
-#include <deps/sbg_graph/atomic_set.h>
-#include <deps/sbg_graph/interval.h>
-#include <deps/sbg_graph/multi_interval.h>
-#include <deps/sbg_graph/linear_map.h>
-#include <deps/sbg_graph/pw_atom_map.h>
-#include <deps/sbg_graph/pw_lmap.h>
-#include <deps/sbg_graph/set.h>
+#include <deps/sbg_graph/atomic_set.hpp>
+#include <deps/sbg_graph/interval.hpp>
+#include <deps/sbg_graph/multi_interval.hpp>
+#include <deps/sbg_graph/linear_map.hpp>
+#include <deps/sbg_graph/pw_atom_map.hpp>
+#include <deps/sbg_graph/pw_lmap.hpp>
+#include <deps/sbg_graph/set.hpp>
 
 namespace SB {
 
@@ -167,4 +167,4 @@ ostream &operator<<(ostream &out, PWLMap &pw)
 
   return out;
 }
-} // namespace SB
+}  // namespace SB

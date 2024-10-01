@@ -17,10 +17,10 @@
 
  ******************************************************************************/
 
-#include "compute_deps.h"
+#include "compute_deps.hpp"
 
-#include <ir/helpers.h>
-#include <util/model_config.h>
+#include <ir/helpers.hpp>
+#include <util/model_config.hpp>
 
 namespace MicroModelica {
 using namespace Deps;

@@ -17,11 +17,11 @@
 
  ******************************************************************************/
 
-#include "eval_init_exp.h"
+#include "eval_init_exp.hpp"
 
-#include <util/error.h>
-#include <util/model_config.h>
-#include <util/symbol_table.h>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/symbol_table.hpp>
 
 namespace MicroModelica {
 namespace Util {

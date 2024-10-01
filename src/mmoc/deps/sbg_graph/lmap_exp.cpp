@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#include "lmap_exp.h"
+#include "lmap_exp.hpp"
 
 #include <assert.h>
 #include <boost/algorithm/string/join.hpp>

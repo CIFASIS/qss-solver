@@ -20,11 +20,11 @@
 #include <boost/algorithm/string.hpp>
 #include <string>
 
-#include "ev_graph_builder.h"
+#include "ev_graph_builder.hpp"
 
-#include <util/model_config.h>
-#include <util/logger.h>
-#include <util/util_types.h>
+#include <util/model_config.hpp>
+#include <util/logger.hpp>
+#include <util/util_types.hpp>
 
 using namespace SB;
 

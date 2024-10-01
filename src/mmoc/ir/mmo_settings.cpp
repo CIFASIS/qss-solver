@@ -17,12 +17,12 @@
 
  ******************************************************************************/
 
-#include "mmo_settings.h"
+#include "mmo_settings.hpp"
 
-#include "../ast/class.h"
-#include "../ast/modification.h"
-#include "../util/error.h"
-#include "class.h"
+#include <ast/class.hpp>
+#include <ast/modification.hpp>
+#include "class.hpp"
+#include <util/error.hpp>
 
 namespace MicroModelica {
 using namespace Util;

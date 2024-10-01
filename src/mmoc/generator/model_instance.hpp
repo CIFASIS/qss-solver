@@ -1,0 +1,166 @@
+/*****************************************************************************
+
+ This file is part of QSS Solver.
+
+ QSS Solver is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ QSS Solver is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
+
+ ******************************************************************************/
+
+#pragma once
+
+#include <boost/variant/variant.hpp>
+#include <sstream>
+
+#include <generator/writer.hpp>
+#include <ir/class.hpp>
+#include <util/compile_flags.hpp>
+#include <util/graph.hpp>
+#include <util/model_config.hpp>
+#include <util/symbol_table.hpp>
+#include <util/util_types.hpp>
+
+namespace MicroModelica {
+namespace Generator {
+
+namespace MODEL_INSTANCE {
+
+enum class Component {
+  Model_Settings,
+  Model,
+  Deps,
+  Zero_Crossing,
+  Handler_Pos,
+  Handler_Neg,
+  Output,
+  Jacobian,
+  BdfModel,
+  CLC_Init,
+  QSS_Init
+};
+
+enum class NodeType { SD, SZ, HD, HZ, DD };
+
+}  // namespace MODEL_INSTANCE
+
+class ModelInstance {
+  public:
+  ModelInstance();
+  ModelInstance(IR::Model &model, Util::CompileFlags &flags, WriterPtr writer);
+  virtual ~ModelInstance() = default;
+  void include();
+  virtual void initializeDataStructures() = 0;
+  void zeroCrossing();
+  void handler();
+  void settings();
+  void inputs();
+  void output();
+  virtual Graph computationalGraph() { return Graph(0, 0); };
+  void initialCode();
+  virtual void header();
+  virtual void generate();
+  void jacobian();
+
+  protected:
+  virtual void definition() = 0;
+  std::string componentDefinition(MODEL_INSTANCE::Component c);
+  void allocateOutput();
+  void configOutput();
+  void configEvents();
+  void allocateVectors() const;
+  void freeVectors() const;
+  std::string allocateModel();
+  void allocateVector(std::string name, int size) const;
+  void freeVector(std::string name, int size) const;
+  template <class DM>
+  void initializeMatrix(DM vdm, WRITER::Section alloc, WRITER::Section init, int size)
+  {
+    _writer->write(vdm.alloc(), alloc);
+    if (!vdm.empty() && size > 0) {
+      std::stringstream buffer;
+      buffer << "cleanVector(" << vdm.accessVector() << ", 0, " << size << ");";
+      _writer->write(buffer.str(), init);
+    }
+    _writer->write(vdm.init(), init);
+  }
+  template <class Builder>
+  void generateDef(IR::EquationTable eqs, WRITER::Section model_def, WRITER::Section simple, WRITER::Section generic)
+  {
+    Builder model;
+    Util::ModelConfig::instance().clearLocalSymbols();
+    IR::FunctionPrinter printer;
+    model.build(eqs);
+    _writer->write(model.simpleDef(), simple);
+    _writer->write(model.genericDef(), generic);
+    _writer->write(Util::ModelConfig::instance().localSymbols(), model_def);
+    if (!_writer->isEmpty(simple)) {
+      _writer->write(printer.beginSwitch(), model_def);
+      _writer->write(printer.endSwitch(), simple);
+    }
+  }
+
+  private:
+  IR::Model _model;
+  Util::CompileFlags _flags;
+  WriterPtr _writer;
+};
+
+class QSSModelInstance : public ModelInstance {
+  public:
+  QSSModelInstance();
+  QSSModelInstance(IR::Model &model, Util::CompileFlags &flags, WriterPtr writer);
+  ~QSSModelInstance() override = default;
+  void initializeDataStructures() override;
+  Graph computationalGraph() override;
+  void generate() override;
+  void header() override;
+
+  protected:
+  void definition() override;
+  void dependencies();
+  void bdfDefinition();
+
+  private:
+  void initTime();
+  void allocateSolver();
+  std::string allocateModel();
+
+  IR::Model _model;
+  Util::CompileFlags _flags;
+  WriterPtr _writer;
+};
+
+class ClassicModelInstance : public ModelInstance {
+  public:
+  ClassicModelInstance(IR::Model &model, Util::CompileFlags &flags, WriterPtr writer);
+  ~ClassicModelInstance() override = default;
+  void initializeDataStructures() override;
+  void generate() override;
+  void header() override;
+
+  protected:
+  void definition() override;
+
+  private:
+  void allocateSolver();
+  std::string allocateModel();
+
+  IR::Model _model;
+  Util::CompileFlags _flags;
+  WriterPtr _writer;
+};
+
+using ModelInstancePtr = std::shared_ptr<ModelInstance>;
+
+}  // namespace Generator
+}  // namespace MicroModelica

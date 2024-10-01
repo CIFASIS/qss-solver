@@ -17,9 +17,9 @@
 
  ******************************************************************************/
 
-#include <util/error.h>
-#include <util/symbol_table.h>
-#include <util/visitors/variable_lookup.h>
+#include <util/error.hpp>
+#include <util/symbol_table.hpp>
+#include <util/visitors/variable_lookup.hpp>
 
 namespace MicroModelica {
 namespace Util {

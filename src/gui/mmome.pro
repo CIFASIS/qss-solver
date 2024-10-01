@@ -25,17 +25,17 @@ SOURCES += 	main.cpp  \
 			comboboxdelegate.cpp 
 
 # Headers.
-HEADERS += 	mmomegui.h \
-			modeleditor.h \
-			mmohighlight.h \
-			treemodel.h \
-			editor.h \
-			codeeditor.h \
-			modelinfo.h \
-			runform.h \
-			utils.h \
-			settings.h \
-			comboboxdelegate.h 
+HEADERS += 	mmomegui.hpp \
+			modeleditor.hpp \
+			mmohighlight.hpp \
+			treemodel.hpp \
+			editor.hpp \
+			codeeditor.hpp \
+			modelinfo.hpp \
+			runform.hpp \
+			utils.hpp \
+			settings.hpp \
+			comboboxdelegate.hpp 
 			
 # Forms.
 FORMS +=	$$UI_DIR/mmomegui.ui \

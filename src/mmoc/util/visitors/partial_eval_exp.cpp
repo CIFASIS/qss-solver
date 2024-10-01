@@ -17,15 +17,15 @@
 
  ******************************************************************************/
 
-#include "partial_eval_exp.h"
+#include "partial_eval_exp.hpp"
 
 #include <math.h>
 
-#include <ast/ast_builder.h>
-#include <util/debug.h>
-#include <util/error.h>
-#include <util/model_config.h>
-#include <util/symbol_table.h>
+#include <ast/ast_builder.hpp>
+#include <util/debug.hpp>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/symbol_table.hpp>
 
 namespace MicroModelica {
 namespace Util {

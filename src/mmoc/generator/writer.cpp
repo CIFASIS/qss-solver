@@ -17,11 +17,12 @@
 
  ******************************************************************************/
 
-#include <sstream>
 #include <iostream>
+#include <sstream>
 
-#include "writer.h"
-#include "../util/util.h"
+#include "writer.hpp"
+
+#include <util/util.hpp>
 
 namespace MicroModelica {
 using namespace Util;

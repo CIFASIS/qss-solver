@@ -17,25 +17,22 @@
 
  ******************************************************************************/
 
-#include "convert_cont_red.h"
+#include "convert_cont_red.hpp"
 
 #include <sstream>
 
-#include "../error.h"
-#include "../model_config.h"
-#include "../util.h"
-#include <ast/parser/parse.h>
-#include "../../ast/ast_types.h"
-#include "../../ast/ast_builder.h"
+#include <ast/ast_builder.hpp>
+#include <ast/ast_types.hpp>
+#include <ast/parser/parse.hpp>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
 
 namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-ConvertContRed::ConvertContRed() : _has_reduction(false), _code(), _oper_names(), _oper()
-{
-  setOpers();
-}
+ConvertContRed::ConvertContRed() : _has_reduction(false), _code(), _oper_names(), _oper() { setOpers(); }
 
 void ConvertContRed::setOpers()
 {

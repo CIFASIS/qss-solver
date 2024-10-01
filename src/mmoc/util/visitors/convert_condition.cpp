@@ -17,18 +17,18 @@
 
  ******************************************************************************/
 
-#include "convert_condition.h"
+#include "convert_condition.hpp"
 
 #include <sstream>
 
-#include "convert_expression.h"
-#include "replace_inner_product.h"
-#include "../error.h"
-#include "../util.h"
-#include <ast/parser/parse.h>
-#include "../../ast/ast_types.h"
-#include "../../ast/ast_builder.h"
-#include "../../ir/event.h"
+#include <ast/ast_builder.hpp>
+#include <ast/ast_types.hpp>
+#include <ast/parser/parse.hpp>
+#include "convert_expression.hpp"
+#include <ir/event.hpp>
+#include <util/error.hpp>
+#include <util/util.hpp>
+#include "replace_inner_product.hpp"
 
 namespace MicroModelica {
 using namespace IR;

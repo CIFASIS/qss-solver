@@ -17,9 +17,9 @@
 
  ******************************************************************************/
 
-#include "has_scalar_index.h"
+#include "has_scalar_index.hpp"
 
-#include "is_constant_index.h"
+#include "is_constant_index.hpp"
 
 namespace MicroModelica {
 using namespace IR;

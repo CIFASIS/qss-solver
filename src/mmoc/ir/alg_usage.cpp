@@ -17,13 +17,13 @@
 
  ******************************************************************************/
 
-#include "alg_usage.h"
+#include "alg_usage.hpp"
 
-#include "../util/visitors/apply_var_usage.h"
-#include "../util/visitors/partial_eval_exp.h"
-#include "../util/model_config.h"
-#include "../util/util.h"
-#include "expression.h"
+#include "expression.hpp"
+#include <util/model_config.hpp>
+#include <util/util.hpp>
+#include <util/visitors/apply_var_usage.hpp>
+#include <util/visitors/partial_eval_exp.hpp>
 
 namespace MicroModelica {
 using namespace Util;

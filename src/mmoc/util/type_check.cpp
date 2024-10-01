@@ -23,9 +23,9 @@
 #include <list>
 #include <string>
 
-#include "../ast/ast_builder.h"
-#include "../ast/expression.h"
-#include "symbol_table.h"
+#include <ast/ast_builder.hpp>
+#include "../ast/expression.hpp"
+#include "symbol_table.hpp"
 
 #define T(s) tyEnv->lookup(s)
 

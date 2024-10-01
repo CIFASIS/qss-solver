@@ -24,21 +24,21 @@
 #include <list>
 #include <string>
 
-#include "ast/ast_types.h"
-#include "ast/stored_definition.h"
-#include "generator/files.h"
-#include "generator/generator.h"
-#include <ir/class.h>
-#include "ir/mmo_ir.h"
-#include "ir/mmo_model_checker.h"
-#include "ir/mmo_settings.h"
-#include <ast/parser/parse.h>
-#include "util/compile_flags.h"
-#include "util/error.h"
-#include "util/logger.h"
-#include "util/symbol_table.h"
-#include "util/util.h"
-#include "util/util_types.h"
+#include <ast/ast_types.hpp>
+#include <ast/parser/parse.hpp>
+#include <ast/stored_definition.hpp>
+#include <generator/files.hpp>
+#include <generator/generator.hpp>
+#include <ir/class.hpp>
+#include <ir/mmo_ir.hpp>
+#include <ir/mmo_model_checker.hpp>
+#include <ir/mmo_settings.hpp>
+#include <util/compile_flags.hpp>
+#include <util/error.hpp>
+#include <util/logger.hpp>
+#include <util/symbol_table.hpp>
+#include <util/util.hpp>
+#include <util/util_types.hpp>
 
 using namespace std;
 using namespace MicroModelica::Generator;

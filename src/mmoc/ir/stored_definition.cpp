@@ -19,7 +19,7 @@
 
 #include <boost/variant/variant.hpp>
 #include <boost/variant/get.hpp>
-#include "stored_definition.h"
+#include "stored_definition.hpp"
 
 namespace MicroModelica {
 namespace IR {

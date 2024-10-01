@@ -17,8 +17,8 @@
 
  ******************************************************************************/
 
-#include <deps/sbg_graph/graph_printer.h>
-#include <deps/sbg_graph/deps_graph.h>
+#include <deps/sbg_graph/graph_printer.hpp>
+#include <deps/sbg_graph/deps_graph.hpp>
 
 #include <list>
 #include <iostream>

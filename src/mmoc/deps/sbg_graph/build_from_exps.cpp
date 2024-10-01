@@ -17,14 +17,14 @@
 
  ******************************************************************************/
 
-#include "build_from_exps.h"
+#include "build_from_exps.hpp"
 
-#include <deps/sbg_graph/interval.h>
-#include <util/logger.h>
-#include <util/model_config.h>
-#include <util/visitors/is_constant_index.h>
-#include <util/visitors/occurs.h>
-#include <util/visitors/pwl_map_values.h>
+#include <deps/sbg_graph/interval.hpp>
+#include <util/logger.hpp>
+#include <util/model_config.hpp>
+#include <util/visitors/is_constant_index.hpp>
+#include <util/visitors/occurs.hpp>
+#include <util/visitors/pwl_map_values.hpp>
 
 namespace SB {
 

@@ -20,12 +20,12 @@
 #include <gtest/gtest.h>
 #include <iostream>
 
-#include <ast/parser/parse.h>
-#include "util/visitors/convert_cont_red.h"
-#include "util/model_config.h"
-#include "util/util.h"
-#include "util/symbol_table.h"
-#include "tests/test_utils.h"
+#include <ast/parser/parse.hpp>
+#include <tests/test_utils.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
+#include <util/symbol_table.hpp>
+#include <util/visitors/convert_cont_red.hpp>
 
 /// @addtogroup QSSSolverUTests
 /// @{

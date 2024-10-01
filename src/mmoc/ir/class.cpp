@@ -17,31 +17,31 @@
 
  ******************************************************************************/
 
-#include "class.h"
+#include "class.hpp"
 
 #include <iterator>
 #include <sstream>
 #include <utility>
 
-#include <ast/ast_builder.h>
-#include <ast/composition.h>
-#include <ast/equation.h>
-#include <ast/expression.h>
-#include <ast/modification.h>
-#include <ast/statement.h>
-#include <ir/helpers.h>
-#include <util/error.h>
-#include <util/model_config.h>
-#include <util/process_statement.h>
-#include <util/util.h>
-#include <util/visitors/convert_condition.h>
-#include <util/visitors/convert_cont_red.h>
-#include <util/visitors/convert_equation.h>
-#include <util/visitors/convert_output_range.h>
-#include <util/visitors/convert_statement.h>
-#include <util/visitors/eval_init_exp.h>
-#include <util/visitors/partial_eval_exp.h>
-#include <util/visitors/variable_lookup.h>
+#include <ast/ast_builder.hpp>
+#include <ast/composition.hpp>
+#include <ast/equation.hpp>
+#include <ast/expression.hpp>
+#include <ast/modification.hpp>
+#include <ast/statement.hpp>
+#include <ir/helpers.hpp>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/process_statement.hpp>
+#include <util/util.hpp>
+#include <util/visitors/convert_condition.hpp>
+#include <util/visitors/convert_cont_red.hpp>
+#include <util/visitors/convert_equation.hpp>
+#include <util/visitors/convert_output_range.hpp>
+#include <util/visitors/convert_statement.hpp>
+#include <util/visitors/eval_init_exp.hpp>
+#include <util/visitors/partial_eval_exp.hpp>
+#include <util/visitors/variable_lookup.hpp>
 
 namespace MicroModelica {
 using namespace Deps;

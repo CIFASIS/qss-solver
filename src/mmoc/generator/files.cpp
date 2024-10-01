@@ -17,8 +17,6 @@
 
  ******************************************************************************/
 
-#include "files.h"
-
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
@@ -27,21 +25,20 @@
 #include <map>
 #include <set>
 #include <sstream>
+#include <sys/stat.h>
 #include <utility>
 
-#include <generator/writer.h>
-#include <ir/annotation.h>
-#include <ir/class.h>
-#include <ir/equation.h>
-#include <ir/expression.h>
-#include <util/compile_flags.h>
-#include <util/symbol_table.h>
-#include <util/util.h>
-#include <util/visitors/partition_interval.h>
+#include "files.hpp"
 
-#ifdef __linux__
-#include <sys/stat.h>
-#endif
+#include <generator/writer.hpp>
+#include <ir/annotation.hpp>
+#include <ir/class.hpp>
+#include <ir/equation.hpp>
+#include <ir/expression.hpp>
+#include <util/compile_flags.hpp>
+#include <util/symbol_table.hpp>
+#include <util/util.hpp>
+#include <util/visitors/partition_interval.hpp>
 
 using namespace std;
 

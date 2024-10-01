@@ -17,7 +17,7 @@
 %header{
 #include <FlexLexer.h>
 #include <string.h>
-#include <ast/ast_builder.h>
+#include <ast/ast_builder.hpp>
 
 class MCC_Lexer: public yyFlexLexer {
 public:
