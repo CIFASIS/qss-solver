@@ -33,37 +33,87 @@
 #include <runform.hpp>
 #include <settings.hpp>
 
+#include <qtermwidget5/qtermwidget.h>
+
 #define SLASH '/'
 
 MmomeGui *mainWindow;
 
+static const QString INIT_PYTHON =
+    "python3\n"
+    "import os\n"
+    "import sys\n"
+    "MMOC_SRC = os.environ['MMOC_SRC']\n"
+    "sys.path.append(MMOC_SRC+'/python')\n"
+    "sys.path.append(MMOC_SRC+'/python/qss_solver')\n"
+    "import qss_solver\n"
+    "import qss_solver.results as solver_results\n"
+    "import qss_solver.model as solver_model\n"
+    "import qss_solver.simulate as solver_sim\n"
+    "c = os.system(\'clear\')\n";
+
 MmomeGui::MmomeGui() : QMainWindow(), _sbmlFile()
 {
   setupUi(this);
+  initialize();
+}
+
+MmomeGui::~MmomeGui()
+{
+  QByteArray new_geometry = saveGeometry();
+  QByteArray new_state = saveState(0);
+  QSettings settings;
+  settings.setValue("main_window_geometry", new_geometry);
+  settings.setValue("main_window_state", new_state);
+  Editor::drop();
+}
+
+void MmomeGui::initialize()
+{
   _iniFile = "/qss-solver.ini";
-  _proc = NULL;
-  _plot = NULL;
-  _log = NULL;
+  _proc = nullptr;
+  _plot = nullptr;
+  _log = nullptr;
   _sim_progress->setVisible(false);
   QStringList headers;
   headers << tr("File") << tr("Variable") << tr("Settings");
+
   _cboxd = new ComboBoxDelegate(_model_variables);
   _model = new TreeModel(headers, this);
   _utils = new Utils();
   _compiler_msg->setTextColor(Qt::black);
   _compiler_msg->setReadOnly(true);
   setWindowState(Qt::WindowMaximized);
+
   createActions();
   addToolBarItems();
   addMenuBarItems();
   enableActions(true);
+
   _settings_only = false;
   _runDlg = new RunDlg(this);
   connect(_runDlg, &RunDlg::accepted, this, &MmomeGui::runDlgClose);
   connect(_runDlg, &RunDlg::rejected, this, &MmomeGui::runDlgRejected);
-}
 
-MmomeGui::~MmomeGui() { Editor::drop(); }
+  _python_console = new QTermWidget();
+  _python_console->setScrollBarPosition(QTermWidget::ScrollBarRight);
+  _python_console->setColorScheme("Linux");
+  _python_console->sendText(INIT_PYTHON);
+  _py_console_widget->setWidget(_python_console);
+
+  _console = new QTermWidget();
+  _console->setScrollBarPosition(QTermWidget::ScrollBarRight);
+  _console->setColorScheme("Linux");
+  _console_widget->setWidget(_console);
+
+  QSettings settings;
+  const auto geometry = settings.value("main_window_geometry").toByteArray();
+  const auto state = settings.value("main_window_state").toByteArray();
+
+  restoreGeometry(geometry);
+  restoreState(state);
+  updateGeometry();
+}
 
 void MmomeGui::enableActions(bool f)
 {
@@ -137,7 +187,7 @@ void MmomeGui::closeEvent(QCloseEvent *event)
 
 void MmomeGui::on_action_Save_As_triggered()
 {
-  QMdiSubWindow *sw = mdiArea->currentSubWindow();
+  QMdiSubWindow const *sw = mdiArea->currentSubWindow();
   if (sw) {
     Editor::instance()->saveAs(Editor::instance()->newFileName());
   }
@@ -609,7 +659,7 @@ void MmomeGui::make_finished(int exitCode, QProcess::ExitStatus exitStatus)
     return;
   }
   delete _proc;
-  _proc = NULL;
+  _proc = nullptr;
   _compiler_msg->moveCursor(QTextCursor::End);
   _compiler_msg->ensureCursorVisible();
   run(Editor::instance()->activeBaseFileName());
@@ -671,7 +721,7 @@ void MmomeGui::comp_finished(int exitCode, QProcess::ExitStatus exitStatus)
     _proc->start(_utils->appDir(MMOC_BIN) + SLASH + build, args);
   } else {
     delete _proc;
-    _proc = NULL;
+    _proc = nullptr;
     _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nError during compilation.") + QString::number(exitCode));
     enableActions(true);
     _settings_only = false;
