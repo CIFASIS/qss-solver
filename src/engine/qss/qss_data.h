@@ -30,6 +30,7 @@
 
 #include <common/data.h>
 #include <common/macros.h>
+#include <common/settings.h>
 #include <common/utils.h>
 
 #define QSS_REINIT_BUFFER 10000
@@ -230,6 +231,7 @@ struct QSS_data_ {
   SD_parameters params;
   QSS_LP_data lp;
   SD_jacMatrices jac_matrices;
+  SET_settings settings;
 };
 
 QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, int state_eqs, int alg_eqs, string name);
