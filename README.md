@@ -1,4 +1,4 @@
-## QSS Solver 4.4.0
+## QSS Solver 4.5.0
 
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
