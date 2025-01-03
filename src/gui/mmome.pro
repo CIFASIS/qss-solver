@@ -45,6 +45,9 @@ FORMS +=	$$UI_DIR/mmomegui.ui \
 
 RESOURCES += mmome.qrc
 
+INCLUDEPATH += $$PWD/3rd-party/qtermwidget-1-0.14.1/usr/include
+LIBS += -L $$PWD/3rd-party/qtermwidget-1-0.14.1/usr/lib -lqtermwidget5
+
 OBJECTS_DIR = usr/obj
 MOC_DIR = usr/moc
 Release:DESTDIR = usr
