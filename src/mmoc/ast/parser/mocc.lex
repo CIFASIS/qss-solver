@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdlib.h>
 
-#include "config.h"
+#include <ast/parser/config.h>
 #include <ast/parser/mocc_parser.h>
 
 #ifdef MCC_Lexer_DEBUG

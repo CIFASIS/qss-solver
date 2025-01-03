@@ -17,21 +17,21 @@
 
  ******************************************************************************/
 
-#include "expression.h"
+#include "expression.hpp"
 
 #include <sstream>
 
-#include <ast/expression.h>
-#include <ir/helpers.h>
-#include <ast/parser/parse.h>
-#include <util/error.h>
-#include <util/model_config.h>
-#include <util/util.h>
-#include <util/visitors/autonomous.h>
-#include <util/visitors/expression_printer.h>
-#include <util/visitors/get_index_variables.h>
-#include <util/visitors/is_constant_index.h>
-#include <util/visitors/partial_eval_exp.h>
+#include <ast/expression.hpp>
+#include <ir/helpers.hpp>
+#include <ast/parser/parse.hpp>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
+#include <util/visitors/autonomous.hpp>
+#include <util/visitors/expression_printer.hpp>
+#include <util/visitors/get_index_variables.hpp>
+#include <util/visitors/is_constant_index.hpp>
+#include <util/visitors/partial_eval_exp.hpp>
 
 namespace MicroModelica {
 using namespace Util;

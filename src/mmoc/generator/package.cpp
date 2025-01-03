@@ -19,9 +19,9 @@
 
 #include <sstream>
 
-#include <generator/function.h>
-#include <generator/package.h>
-#include <util/util.h>
+#include <generator/function.hpp>
+#include <generator/package.hpp>
+#include <util/util.hpp>
 
 namespace MicroModelica {
 using namespace IR;

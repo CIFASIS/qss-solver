@@ -17,11 +17,11 @@
 
  ******************************************************************************/
 
-#include "algebraics.h"
+#include "algebraics.hpp"
 
-#include "../../ast/ast_builder.h"
-#include "../model_config.h"
-#include "../util.h"
+#include <ast/ast_builder.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
 
 namespace MicroModelica {
 namespace Util {
@@ -38,7 +38,7 @@ bool Algebraics::foldTraverseElement(AST_Expression e)
     AST_Expression_ComponentReference cr = e->getAsComponentReference();
     Option<Variable> var = ModelConfig::instance().lookup(cr->name());
     if (var) {
-      bool search_var = (_state) ? var->isState() : var->isAlgebraic(); 
+      bool search_var = (_state) ? var->isState() : var->isAlgebraic();
       if (search_var && (var->name() != _var.name())) {
         has_algebraics = true;
         AST_ListAppend(_exps, e);

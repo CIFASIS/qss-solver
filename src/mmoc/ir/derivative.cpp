@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#include "derivative.h"
+#include "derivative.hpp"
 
 #include <ginac/function.h>
 #include <ginac/operators.h>
@@ -25,18 +25,18 @@
 #include <ginac/symbol.h>
 #include <ginac/wildcard.h>
 
-#include "../ast/ast_builder.h"
-#include "../ast/equation.h"
-#include "../ir/expression.h"
-#include <ast/parser/parse.h>
-#include "../util/error.h"
-#include "../util/model_config.h"
-#include "../util/ginac_interface.h"
-#include "../util/util.h"
-#include "../util/symbol_table.h"
-#include "../util/visitors/is_constant_expression.h"
-#include "../util/visitors/replace_der.h"
-#include "helpers.h"
+#include <ast/ast_builder.hpp>
+#include <ast/equation.hpp>
+#include <ast/parser/parse.hpp>
+#include "helpers.hpp"
+#include <ir/expression.hpp>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/ginac_interface.hpp>
+#include <util/util.hpp>
+#include <util/symbol_table.hpp>
+#include <util/visitors/is_constant_expression.hpp>
+#include <util/visitors/replace_der.hpp>
 
 namespace MicroModelica {
 using namespace Util;
@@ -48,7 +48,7 @@ ExpressionDerivator::ExpressionDerivator() {}
 AST_Equation_Equality EquationDerivator::derivate(AST_Equation_Equality eq)
 {
   VarSymbolTable symbols = ModelConfig::instance().symbols();
-  ConvertToGiNaC to_ginac= ConvertToGiNaC(Option<Expression>());
+  ConvertToGiNaC to_ginac = ConvertToGiNaC(Option<Expression>());
   ConvertToExpression to_exp;
   GiNaC::ex left = to_ginac.convert(eq->left());
   GiNaC::ex right = to_ginac.convert(eq->right());
@@ -75,7 +75,7 @@ Expression ExpressionDerivator::partialDerivative(Equation eq, Index variable)
   assert(var_usage.isState() || var_usage.isAlgebraic());
   AST_Expression rhs_exp = eq.rhs().expression();
   string usage = variable.modelicaExp();
-  ConvertToGiNaC to_ginac= ConvertToGiNaC(Option<Expression>());
+  ConvertToGiNaC to_ginac = ConvertToGiNaC(Option<Expression>());
   ConvertToExpression to_exp;
   ReplaceDer replace_der;
   GiNaC::ex dexp = to_ginac.convert(rhs_exp, false, true);

@@ -15,7 +15,7 @@
 #         NOTES: --- 
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 4.4.0
+#       VERSION: 4.5.0
 #===================================================================================
 
 rm -rf qss-solver-*.deb
@@ -75,6 +75,7 @@ chmod 0755 tmp_deb/DEBIAN/post*
 mkdir ./tmp_deb/opt
 mkdir ./tmp_deb/opt/qss-solver
 mkdir ./tmp_deb/opt/qss-solver/bin
+mkdir ./tmp_deb/opt/qss-solver/bin/lib
 mkdir ./tmp_deb/opt/qss-solver/src
 mkdir ./tmp_deb/opt/qss-solver/build
 mkdir ./tmp_deb/opt/qss-solver/output
@@ -90,7 +91,10 @@ cp src/interfaces/sbml/usr/bin/translate-sbml  ./tmp_deb/opt/qss-solver/bin/
 cp src/engine/3rd-party/partitioners/hmetis/khmetis ./tmp_deb/opt/qss-solver/bin/
 cp deploy/linux/qss-solver.ini ./tmp_deb/opt/qss-solver/bin/qss-solver.ini
 cp deploy/images/integrator.svg ./tmp_deb/opt/qss-solver/bin/
+cp -r src/gui/3rd-party/qtermwidget-1-0.14.1/usr/config/* ./tmp_deb/opt/qss-solver/bin/
+cp -r src/gui/3rd-party/qtermwidget-1-0.14.1/usr/lib/* ./tmp_deb/opt/qss-solver/bin/lib/
 chmod 0755 `find tmp_deb/opt/qss-solver/bin`
+
 cp LICENSE ./tmp_deb/opt/qss-solver/
 cp INSTALL ./tmp_deb/opt/qss-solver/
 cp README.md ./tmp_deb/opt/qss-solver/

@@ -17,16 +17,16 @@
 
  ******************************************************************************/
 
-#include "node_selector.h"
+#include "node_selector.hpp"
 
-#include <deps/sbg_graph/build_from_exps.h>
+#include <deps/sbg_graph/build_from_exps.hpp>
 
 namespace MicroModelica {
 using namespace IR;
 
 namespace Deps {
 
-EQSelector::EQSelector(EquationTable eqs) : _eqs(eqs), _select_states(false), _lhs_states(false) {};
+EQSelector::EQSelector(EquationTable eqs) : _eqs(eqs), _select_states(false), _lhs_states(false){};
 
 IR::EquationTable EQSelector::getNodes() const { return _eqs; };
 
@@ -62,7 +62,7 @@ bool EQSelector::isAlgebraic(SB::Deps::SetVertex vertex)
   return eq.type() == EQUATION::Algebraic;
 }
 
-int EQSelector::id(SB::Deps::SetVertex vertex) { return getEquation(vertex, _eqs).id(); }; 
+int EQSelector::id(SB::Deps::SetVertex vertex) { return getEquation(vertex, _eqs).id(); };
 
 IR::Expression EQSelector::exp(Equation eq) { return eq.lhs(); }
 
@@ -93,7 +93,7 @@ EVSelector::EVSelector(IR::EventTable evs) : _evs(evs) {}
 IR::EventTable EVSelector::getNodes() const { return _evs; }
 
 IR::Event EVSelector::getNode(int id)
-{ 
+{
   Option<Event> ev = _evs[id];
   assert(ev);
   return ev.get();
@@ -104,18 +104,15 @@ IR::Event EVSelector::setUsage(IR::Index ifr_idx, IR::Event ev, Option<IR::Range
 IR::Event EVSelector::getScalarUsage(SB::Set range, IR::Expression exp, IR::Event ev, IR::Index ifr_idx) { return ev; }
 
 bool EVSelector::isAlgebraic(SB::Deps::SetVertex vertex)
-{ 
+{
   if (vertex.desc().type() == SB::Deps::VERTEX::Equation) {
-    Equation eq = getEquation(vertex);  
+    Equation eq = getEquation(vertex);
     return eq.type() == EQUATION::Algebraic;
   }
-  return false; 
+  return false;
 }
 
-int EVSelector::id(SB::Deps::SetVertex vertex) 
-{ 
-  return getEvent(vertex).id();
-}; 
+int EVSelector::id(SB::Deps::SetVertex vertex) { return getEvent(vertex).id(); };
 
 IR::Expression EVSelector::exp(Event ev) { return ev.zeroCrossing().index().expression(); }
 

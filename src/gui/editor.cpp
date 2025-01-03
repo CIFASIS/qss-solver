@@ -17,5 +17,6 @@
 
  ******************************************************************************/
 
-#include "editor.h"
-ModelEditor* Editor::_instance = NULL;
+#include "editor.hpp"
+
+ModelEditor* Editor::_instance = nullptr;

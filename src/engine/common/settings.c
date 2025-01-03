@@ -76,8 +76,10 @@ SD_PartitionMethod _getPartitionMethod(const char *sol)
     return SD_Patoh;
   } else if (!strcmp(sol, "Manual")) {
     return SD_Manual;
+  } else if (!strcmp(sol, "KaHIP")) {
+    return SD_KaHIP;
   }
-  return SD_Metis;
+  return SD_Scotch;
 }
 
 SD_DtSynch _getDtSynch(const char *sol)
@@ -159,6 +161,7 @@ SET_settings SET_Settings(char *fname)
   p->CVODE_max_order = 0;
   p->BDFMaxStep = 0;
   p->x_output = 0;
+  p->partition_only = 0;
   if (config_lookup_float(cf, "minstep", &dres)) {
     if (dres == 0) {
       p->minstep = MIN_STEP;
@@ -281,6 +284,9 @@ SET_settings SET_Settings(char *fname)
   }
   if (config_lookup_int(cf, "XOutput", &ires)) {
     p->x_output = ires;
+  }
+  if (config_lookup_int(cf, "partitionOnly", &ires)) {
+    p->partition_only = ires;
   }
   config_destroy(cf);
   return p;

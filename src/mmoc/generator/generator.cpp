@@ -19,17 +19,17 @@
 
 #include <sstream>
 
-#include <ir/annotation.h>
-#include <ir/class.h>
-#include <ir/statement.h>
-#include <ir/stored_definition.h>
-#include <util/error.h>
-#include <util/symbol_table.h>
-#include <util/type.h>
-#include <util/util.h>
-#include <generator/function.h>
-#include <generator/generator.h>
-#include <generator/package.h>
+#include <ir/annotation.hpp>
+#include <ir/class.hpp>
+#include <ir/statement.hpp>
+#include <ir/stored_definition.hpp>
+#include <util/error.hpp>
+#include <util/symbol_table.hpp>
+#include <util/type.hpp>
+#include <util/util.hpp>
+#include <generator/function.hpp>
+#include <generator/generator.hpp>
+#include <generator/package.hpp>
 
 namespace MicroModelica {
 using namespace IR;

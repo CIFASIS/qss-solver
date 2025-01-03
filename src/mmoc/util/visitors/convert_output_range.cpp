@@ -17,15 +17,15 @@
 
  ******************************************************************************/
 
-#include "convert_output_range.h"
+#include "convert_output_range.hpp"
 
 #include <sstream>
 
-#include "../error.h"
-#include <deps/sbg_graph/build_from_exps.h>
-#include "../model_config.h"
-#include "../util.h"
-#include "eval_init_exp.h"
+#include <deps/sbg_graph/build_from_exps.hpp>
+#include "eval_init_exp.hpp"
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
 
 namespace MicroModelica {
 using namespace IR;

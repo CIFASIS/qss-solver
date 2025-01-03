@@ -17,16 +17,16 @@
 
  ******************************************************************************/
 
-#include "jacobian_matrices.h"
+#include "jacobian_matrices.hpp"
 
-#include <deps/builders/eq_graph_builder.h>
-#include <deps/sbg_graph/build_from_exps.h>
-#include <deps/sb_dependencies.h>
-#include <ir/alg_usage.h>
-#include <ir/helpers.h>
-#include <util/model_config.h>
-#include <util/util.h>
-#include <util/visitors/replace_index.h>
+#include <deps/builders/eq_graph_builder.hpp>
+#include <deps/sbg_graph/build_from_exps.hpp>
+#include <deps/sb_dependencies.hpp>
+#include <ir/alg_usage.hpp>
+#include <ir/helpers.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
+#include <util/visitors/replace_index.hpp>
 
 namespace MicroModelica {
 using namespace IR;

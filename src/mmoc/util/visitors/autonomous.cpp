@@ -17,8 +17,8 @@
 
  ******************************************************************************/
 
-#include "autonomous.h"
-#include "../model_config.h"
+#include "autonomous.hpp"
+#include <util/model_config.hpp>
 
 namespace MicroModelica {
 namespace Util {

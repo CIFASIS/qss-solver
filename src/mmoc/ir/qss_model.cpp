@@ -17,20 +17,20 @@
 
  ******************************************************************************/
 
-#include "qss_model.h"
+#include "qss_model.hpp"
 
 #include <sstream>
 
-#include <deps/builders/eq_graph_builder.h>
-#include <deps/sbg_graph/build_from_exps.h>
-#include <deps/sb_dependencies.h>
-#include <ast/parser/parse.h>
-#include <util/model_config.h>
-#include <util/util.h>
-#include <util/symbol_table.h>
-#include <ir/derivative.h>
-#include <ir/helpers.h>
-#include <ir/index.h>
+#include <ast/parser/parse.hpp>
+#include <deps/builders/eq_graph_builder.hpp>
+#include <deps/sbg_graph/build_from_exps.hpp>
+#include <deps/sb_dependencies.hpp>
+#include <ir/derivative.hpp>
+#include <ir/helpers.hpp>
+#include <ir/index.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
+#include <util/symbol_table.hpp>
 
 namespace MicroModelica {
 using namespace Deps;

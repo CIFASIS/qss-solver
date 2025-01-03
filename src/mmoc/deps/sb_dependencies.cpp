@@ -17,19 +17,19 @@
 
  ******************************************************************************/
 
-#include "sb_dependencies.h"
+#include "sb_dependencies.hpp"
 
 #include <cassert>
 #include <cstdlib>
 #include <stdio.h>
 #include <iostream>
 
-#include <deps/sbg_graph/build_from_exps.h>
-#include <ir/helpers.h>
-#include <ir/index.h>
-#include <ast/parser/parse.h>
-#include <util/logger.h>
-#include <util/util.h>
+#include <deps/sbg_graph/build_from_exps.hpp>
+#include <ir/helpers.hpp>
+#include <ir/index.hpp>
+#include <ast/parser/parse.hpp>
+#include <util/logger.hpp>
+#include <util/util.hpp>
 
 using namespace std;
 using namespace SB;
@@ -261,7 +261,7 @@ void SBDependencies<IDependencies, R, S>::paths(SB::Deps::Graph& graph, SB::Deps
     }
   }
   SB::Deps::updateNumDeps(graph, V, num_gen);
-  // If the algebraic equation has no influencee but have recursive uses
+  // If the algebraic equation.hppas no influencee but have recursive uses
   // we should add the only algebraic uses too.
   if (no_influencee && !rec_alg_use_maps.empty()) {
     recursiveDeps(graph, SB::PWLMap(), V, V, num_gen, rec_alg_use_maps);

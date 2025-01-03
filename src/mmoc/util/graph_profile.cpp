@@ -19,7 +19,7 @@
 
 #include <stdlib.h>
 
-#include "graph_profile.h"
+#include "graph_profile.hpp"
 
 double GRP_nodeWeight(GRP_graphProfile g, GRP_EdgeType type)
 {

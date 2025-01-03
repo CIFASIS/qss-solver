@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#include "parse.h"
+#include "parse.hpp"
 
 #include <cstdlib>
 #include <fstream>
@@ -25,11 +25,10 @@
 #include <list>
 #include <string>
 
-#include <ast/ast_types.h>
-#include <ast/class.h>
-#include <ast/composition.h>
-#include <ast/equation.h>
-#include <ast/stored_definition.h>
+#include <ast/class.hpp>
+#include <ast/composition.hpp>
+#include <ast/equation.hpp>
+#include <ast/stored_definition.hpp>
 #include <ast/parser/mocc_parser.h>
 
 using namespace std;

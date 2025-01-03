@@ -1,3 +1,5 @@
 # 3rd-party libraries.
-
 /3rd-party/gtest/usr/
+
+# Python generated files.
+*.pyc

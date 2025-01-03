@@ -17,16 +17,16 @@
 
  ******************************************************************************/
 
-#include "jac_alg_exps.h"
+#include "jac_alg_exps.hpp"
 
 #include <math.h>
 
-#include "../../ast/ast_builder.h"
-#include "../debug.h"
-#include "../error.h"
-#include "../symbol_table.h"
-#include "algebraics.h"
-#include "has_scalar_index.h"
+#include "algebraics.hpp"
+#include <ast/ast_builder.hpp>
+#include "has_scalar_index.hpp"
+#include <util/debug.hpp>
+#include <util/error.hpp>
+#include <util/symbol_table.hpp>
 
 namespace MicroModelica {
 using namespace IR;

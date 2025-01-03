@@ -20,10 +20,11 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <Qt>
-#include <modeleditor.h>
-#include <mmohighlight.h>
-#include <modelinfo.h>
-#include <codeeditor.h>
+
+#include <modeleditor.hpp>
+#include <mmohighlight.hpp>
+#include <modelinfo.hpp>
+#include <codeeditor.hpp>
 
 ModelEditor::ModelEditor(QWidget *parent, QString name)
     : QDialog(parent),

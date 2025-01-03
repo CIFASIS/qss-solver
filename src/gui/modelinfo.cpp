@@ -19,7 +19,7 @@
 
 #include <QFileInfo>
 
-#include "modelinfo.h"
+#include "modelinfo.hpp"
 
 ModelInfo::ModelInfo(QString fullname)
 {

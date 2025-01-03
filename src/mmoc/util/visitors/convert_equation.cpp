@@ -17,16 +17,16 @@
 
  ******************************************************************************/
 
-#include "convert_equation.h"
+#include "convert_equation.hpp"
 
 #include <sstream>
 
-#include "convert_expression.h"
-#include "replace_inner_product.h"
-#include "../util.h"
-#include <ast/parser/parse.h>
-#include "../../ast/ast_types.h"
-#include "../../ast/ast_builder.h"
+#include <ast/ast_builder.hpp>
+#include <ast/ast_types.hpp>
+#include <ast/parser/parse.hpp>
+#include "convert_expression.hpp"
+#include "replace_inner_product.hpp"
+#include <util/util.hpp>
 
 namespace MicroModelica {
 using namespace IR;

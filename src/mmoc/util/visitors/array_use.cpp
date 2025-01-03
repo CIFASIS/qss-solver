@@ -17,10 +17,10 @@
 
  ******************************************************************************/
 
-#include "array_use.h"
-#include "../error.h"
-#include "../model_config.h"
-#include "../symbol_table.h"
+#include "array_use.hpp"
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/symbol_table.hpp>
 
 namespace MicroModelica {
 namespace Util {

@@ -17,13 +17,13 @@
 
  ******************************************************************************/
 
-#include "model_matrix.h"
+#include "model_matrix.hpp"
 
 #include <sstream>
 
-#include <deps/builders/eq_graph_builder.h>
-#include <ir/user_def_matrix.h>
-#include <util/model_config.h>
+#include <deps/builders/eq_graph_builder.hpp>
+#include <ir/user_def_matrix.hpp>
+#include <util/model_config.hpp>
 
 namespace MicroModelica {
 using namespace Deps;
@@ -32,7 +32,7 @@ using namespace Util;
 namespace IR {
 
 template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T, typename N>
-ModelMatrix<GraphBuilder, MatrixBuilder, Config, T, N>::ModelMatrix() : _mode(MATRIX::Normal), _access({"",""})
+ModelMatrix<GraphBuilder, MatrixBuilder, Config, T, N>::ModelMatrix() : _mode(MATRIX::Normal), _access({"", ""})
 {
 }
 
@@ -98,7 +98,7 @@ void ModelMatrix<GraphBuilder, MatrixBuilder, Config, T, N>::append(ModelMatrixD
   _model_matrix_def.alloc[MATRIX::Normal].append(def.alloc[MATRIX::Normal]);
   _model_matrix_def.init[MATRIX::Normal].append(def.init[MATRIX::Normal]);
   _model_matrix_def.alloc[MATRIX::Transpose].append(def.alloc[MATRIX::Transpose]);
-  _model_matrix_def.init[MATRIX::Transpose].append(def.init[MATRIX::Transpose]); 
+  _model_matrix_def.init[MATRIX::Transpose].append(def.init[MATRIX::Transpose]);
 }
 
 template class ModelMatrix<SDSBGraphBuilder, Deps::EQModelMatrixBuilder, MATRIX::EQMatrixConfig, IR::EquationTable, IR::Equation>;

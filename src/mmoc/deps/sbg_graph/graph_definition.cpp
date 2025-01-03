@@ -28,9 +28,9 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/unordered_set.hpp>
 
-#include <util/debug.h>
+#include <util/debug.hpp>
 #include <util/graph/graph_definition.h>
-#include <util/table.h>
+#include <util/table.hpp>
 
 namespace SBG {
 size_t hash_value(SetVertex v) { return v.hash(); }

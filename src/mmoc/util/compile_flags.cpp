@@ -17,11 +17,11 @@
 
  ******************************************************************************/
 
-#include "compile_flags.h"
+#include "compile_flags.hpp"
 
 #include <utility>
 
-#include "util.h"
+#include "util.hpp"
 
 namespace MicroModelica {
 namespace Util {

@@ -20,3 +20,6 @@ tags
 
 # Tests generated files.
 /tests/usr/
+
+# 3rd Party libs.
+/3rd-party/
