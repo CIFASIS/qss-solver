@@ -20,31 +20,41 @@
 #pragma once
 
 #include <QHash>
+#include <QRegularExpression>
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
 
 class MmoHighlighter : public QSyntaxHighlighter {
   Q_OBJECT
   public:
-  typedef enum { MMO_MODEL, MMO_LOG } h_type;
-  MmoHighlighter(QTextDocument *parent = 0, h_type file = MMO_MODEL);
+  using h_type = enum { MMO_MODEL, MMO_LOG };
+  MmoHighlighter(QTextDocument *parent = nullptr, h_type file = MMO_MODEL);
 
   protected:
-  void highlightBlock(const QString &text);
+  void initialize(h_type file);
+  void addHighlightingRule(const QString &pattern, const QTextCharFormat &format, bool bold = true);
+  void setupModelHighlighting();
+  void setupLogHighlighting();
+  void highlightBlock(const QString &text) override;
+  void highlightSyntax(const QString &text);
+  void highlightComments(const QString &text);
 
   private:
   struct MmoHighlightingRule {
-    QRegExp pattern;
+    QRegularExpression pattern;
     QTextCharFormat format;
   };
-  QVector<MmoHighlightingRule> highlightingRules;
-  QRegExp commentStartExpression;
-  QRegExp commentEndExpression;
-  QTextCharFormat keywordFormat;
-  QTextCharFormat functionFormat;
-  QTextCharFormat annotationFormat;
-  QTextCharFormat qssTagsFormat;
-  QTextCharFormat singleLineCommentFormat;
-  QTextCharFormat multiLineCommentFormat;
-  QTextCharFormat quotationFormat;
+
+  // Keywords
+  static const QStringList _model_keywords;
+  static const QStringList _model_functions;
+  static const QStringList _model_annotations;
+  static const QStringList _model_qss_tags;
+  static const QStringList _log_keywords;
+
+  // Member variables
+  QVector<MmoHighlightingRule> _highlighting_rules;
+  QRegularExpression _comment_start_expression;
+  QRegularExpression _comment_end_expression;
+  QTextCharFormat _single_line_comment_format;
 };
