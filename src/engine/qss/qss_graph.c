@@ -137,6 +137,16 @@ GRP_Status GRP_generateHGraphFile(char *name, grp_t **xadj, grp_t **adjncy, int 
     }
   }
   fclose(store_file);
+  sprintf(store_results, "%s.hgraph.size", name);
+  store_file = fopen(store_results, "wb");
+  if (fwrite(&edges, sizeof(int), 1, store_file) != 1) {
+    fclose(store_file);
+    return GRP_WriteError;
+  }
+  if (fwrite(&npins, sizeof(int), 1, store_file) != 1) {
+    fclose(store_file);
+    return GRP_WriteError;
+  }
   return GRP_Success;
 }
 
@@ -155,6 +165,16 @@ GRP_Status GRP_generateGraphFile(char *name, grp_t **xadj, grp_t **adjncy, int n
     return GRP_WriteError;
   }
   fclose(store_file);
+  sprintf(store_results, "%s.graph.size", name);
+  store_file = fopen(store_results, "wb");
+  if (fwrite(&nvtxs, sizeof(int), 1, store_file) != 1) {
+    fclose(store_file);
+    return GRP_WriteError;
+  }
+  if (fwrite(&edges, sizeof(int), 1, store_file) != 1) {
+    fclose(store_file);
+    return GRP_WriteError;
+  }
   return GRP_Success;
 }
 
