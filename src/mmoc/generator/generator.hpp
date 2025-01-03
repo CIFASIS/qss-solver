@@ -32,6 +32,12 @@
 #include <generator/writer.hpp>
 #include <util/compile_flags.hpp>
 
+///
+/// Generate compilation code files.
+///
+/// @ingroup Generator
+///
+
 namespace MicroModelica {
 namespace Generator {
 

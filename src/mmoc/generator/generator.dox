@@ -1,0 +1,10 @@
+///
+/// @dir Generator
+/// @brief Generator
+///
+
+///
+/// @defgroup Generator Generator
+/// 
+/// @brief Generate code from IR structured model representation.
+///
