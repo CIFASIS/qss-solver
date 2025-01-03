@@ -25,7 +25,7 @@
 
 class Editor {
   public:
-  static ModelEditor* instance(QWidget* parent = NULL, QString name = QString())
+  static ModelEditor* instance(QWidget* parent = nullptr, QString name = QString())
   {
     if (!_instance) {
       _instance = new ModelEditor(parent, name);
@@ -34,8 +34,10 @@ class Editor {
   }
   static void drop()
   {
-    if (!_instance) delete _instance;
-    _instance = NULL;
+    if (!_instance) {
+      delete _instance;
+    } 
+    _instance = nullptr;
   }
 
   private:
