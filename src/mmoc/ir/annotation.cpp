@@ -20,13 +20,15 @@
 #include <algorithm>
 #include <utility>
 
-#include "../ast/element.h"
-#include "../ast/expression.h"
-#include "../ast/modification.h"
-#include "../util/error.h"
-#include "../util/model_config.h"
-#include "../util/symbol_table.h"
-#include "../util/util.h"
+#include "annotation.hpp"
+
+#include <ast/element.hpp>
+#include <ast/expression.hpp>
+#include <ast/modification.hpp>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/symbol_table.hpp>
+#include <util/util.hpp>
 
 namespace MicroModelica {
 using namespace Util;
@@ -136,8 +138,7 @@ ModelAnnotation::ModelAnnotation()
       _output(),
       _initialTime(0),
       _finalTime(0),
-      _partitionMethod(Metis),
-      _partitionMethodString("Metis"),
+      _partition_method_string("Scotch"),
       _parallel(false),
       _dt(0),
       _polyCoeffs(1),
@@ -370,29 +371,9 @@ DT_Synch ModelAnnotation::getDtSynch(string s)
   if (!s.compare("SD_DT_Fixed")) {
     return DT_Synch::DT_Fixed;
   } else if (!s.compare("SD_DT_Asynchronous")) {
-    return DT_Asynchronous;
+    return DT_Synch::DT_Asynchronous;
   }
-  return DT_Fixed;
-}
-
-PartitionMethod ModelAnnotation::getPartitionMethod(string s)
-{
-  if (!s.compare("Metis")) {
-    return Metis;
-  } else if (!s.compare("HMetis")) {
-    return HMetis;
-  } else if (!s.compare("Scotch")) {
-    return Scotch;
-  } else if (!s.compare("Patoh")) {
-    return Patoh;
-  } else if (!s.compare("MTPL")) {
-    return MTPL;
-  } else if (!s.compare("MTPL_IT")) {
-    return MTPL_IT;
-  } else if (!s.compare("Manual")) {
-    return Manual;
-  }
-  return Metis;
+  return DT_Synch::DT_Fixed;
 }
 
 Solver ModelAnnotation::getSolver(string s)
@@ -542,9 +523,8 @@ void ModelAnnotation::processAnnotation(string annot, AST_Modification_Equal x)
   case type::OUTPUT:
     processExpressionList(x->exp(), &_output);
     break;
-  case PARTITION_METHOD:
-    _partitionMethod = getPartitionMethod(av.str());
-    _partitionMethodString = av.str();
+  case type::PARTITION_METHOD:
+    _partition_method_string = av.str();
     break;
   case type::DELTAT_SYNCH:
     _dtSynch = getDtSynch(av.str());
@@ -746,41 +726,40 @@ void AnnotationValue::setPlainStr(string plain_str) { _plain_str = plain_str; }
 
 EvalAnnotation::EvalAnnotation() : _tokens()
 {
-  _tokens.insert(pair<string, string>("QSS", "QSS"));
-  _tokens.insert(pair<string, string>("CQSS", "CQSS"));
-  _tokens.insert(pair<string, string>("QSS2", "QSS2"));
-  _tokens.insert(pair<string, string>("QSS3", "QSS3"));
-  _tokens.insert(pair<string, string>("LIQSS", "LIQSS"));
-  _tokens.insert(pair<string, string>("LIQSS2", "LIQSS2"));
-  _tokens.insert(pair<string, string>("LIQSS_BDF", "LIQSS_BDF"));
-  _tokens.insert(pair<string, string>("LIQSS3", "LIQSS3"));
-  _tokens.insert(pair<string, string>("QSS4", "QSS4"));
-  _tokens.insert(pair<string, string>("mLIQSS", "mLIQSS"));
-  _tokens.insert(pair<string, string>("mLIQSS2", "mLIQSS2"));
-  _tokens.insert(pair<string, string>("DASSL", "DASSL"));
-  _tokens.insert(pair<string, string>("DOPRI", "DOPRI"));
-  _tokens.insert(pair<string, string>("CVODE_AM", "CVODE_AM"));
-  _tokens.insert(pair<string, string>("IDA", "IDA"));
-  _tokens.insert(pair<string, string>("CVODE_BDF", "CVODE_BDF"));
-  _tokens.insert(pair<string, string>("ST_Linear", "ST_Linear"));
-  _tokens.insert(pair<string, string>("ST_Binary", "ST_Binary"));
-  _tokens.insert(pair<string, string>("ST_Random", "ST_Random"));
-  _tokens.insert(pair<string, string>("CI_Step", "CI_Step"));
-  _tokens.insert(pair<string, string>("CI_Dense", "CI_Dense"));
-  _tokens.insert(pair<string, string>("CI_Sampled", "CI_Sampled"));
-  _tokens.insert(pair<string, string>("SD_File", "SD_File"));
-  _tokens.insert(pair<string, string>("SD_Memory", "SD_Memory"));
-  _tokens.insert(pair<string, string>("Metis", "Metis"));
-  _tokens.insert(pair<string, string>("HMetis", "HMetis"));
-  _tokens.insert(pair<string, string>("Scotch", "Scotch"));
-  _tokens.insert(pair<string, string>("Patoh", "Patoh"));
-  _tokens.insert(pair<string, string>("MTPL", "MTPL"));
-  _tokens.insert(pair<string, string>("MTPL_IT", "MTPL_IT"));
-  _tokens.insert(pair<string, string>("Manual", "Manual"));
-  _tokens.insert(pair<string, string>("SD_DT_Fixed", "SD_DT_Fixed"));
-  _tokens.insert(pair<string, string>("Sparse", "Sparse"));
-  _tokens.insert(pair<string, string>("Dense", "Dense"));
-  _tokens.insert(pair<string, string>("SD_DT_Asynchronous", "SD_DT_Asynchronous"));
+  _tokens.emplace_back("QSS");
+  _tokens.emplace_back("CQSS");
+  _tokens.emplace_back("QSS2");
+  _tokens.emplace_back("QSS3");
+  _tokens.emplace_back("LIQSS");
+  _tokens.emplace_back("LIQSS2");
+  _tokens.emplace_back("LIQSS_BDF");
+  _tokens.emplace_back("LIQSS3");
+  _tokens.emplace_back("QSS4");
+  _tokens.emplace_back("mLIQSS");
+  _tokens.emplace_back("mLIQSS2");
+  _tokens.emplace_back("DASSL");
+  _tokens.emplace_back("DOPRI");
+  _tokens.emplace_back("CVODE_AM");
+  _tokens.emplace_back("IDA");
+  _tokens.emplace_back("CVODE_BDF");
+  _tokens.emplace_back("ST_Linear");
+  _tokens.emplace_back("ST_Binary");
+  _tokens.emplace_back("ST_Random");
+  _tokens.emplace_back("CI_Step");
+  _tokens.emplace_back("CI_Dense");
+  _tokens.emplace_back("CI_Sampled");
+  _tokens.emplace_back("SD_File");
+  _tokens.emplace_back("SD_Memory");
+  _tokens.emplace_back("Metis");
+  _tokens.emplace_back("HMetis");
+  _tokens.emplace_back("Scotch");
+  _tokens.emplace_back("Patoh");
+  _tokens.emplace_back("KaHIP");
+  _tokens.emplace_back("Manual");
+  _tokens.emplace_back("SD_DT_Fixed");
+  _tokens.emplace_back("Sparse");
+  _tokens.emplace_back("Dense");
+  _tokens.emplace_back("SD_DT_Asynchronous");
 }
 
 AnnotationValue EvalAnnotation::foldTraverseElement(AST_Expression e)
