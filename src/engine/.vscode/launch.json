@@ -41,7 +41,25 @@
                     "ignoreFailures": true
                 }
             ]
-        }
+        },
+
+        // Airconds Parallel model
+        {
+            "name": "Airconds Parallel model",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/joaquin/work/qss-solver/build/airconds/airconds",
+            "cwd": "/home/joaquin/work/qss-solver/build/airconds/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }        
         
     ]
 }
