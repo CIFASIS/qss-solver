@@ -142,8 +142,6 @@ int parsePackages(AST_StringList imports, CompileFlags& flags, bool recompile)
             }
           }
         }
-      } else {
-        delete sd;
       }
       delete sd;
     } else {
