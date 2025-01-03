@@ -17,12 +17,12 @@
 
  ******************************************************************************/
 
-#include "apply_var_usage.h"
+#include "apply_var_usage.hpp"
 
-#include "../../ast/ast_builder.h"
-#include "../error.h"
-#include "../util.h"
-#include "partial_eval_exp.h"
+#include "../../ast/ast_builder.hpp"
+#include <util/error.hpp>
+#include <util/util.hpp>
+#include "partial_eval_exp.hpp"
 
 namespace MicroModelica {
 using namespace IR;

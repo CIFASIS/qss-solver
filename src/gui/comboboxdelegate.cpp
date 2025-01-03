@@ -17,8 +17,9 @@
 
  ******************************************************************************/
 
-#include "comboboxdelegate.h"
 #include <QComboBox>
+
+#include "comboboxdelegate.hpp"
 
 ComboBoxDelegate::ComboBoxDelegate(QObject *parent) : QItemDelegate(parent) {}
 

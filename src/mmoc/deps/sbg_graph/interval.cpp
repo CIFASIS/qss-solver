@@ -16,7 +16,7 @@
  along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
 
  ******************************************************************************/
-#include <deps/sbg_graph/interval.h>
+#include <deps/sbg_graph/interval.hpp>
 
 std::string mapOper(Real cte) { return (cte >= 0) ? "+ " : ""; }
 
@@ -49,5 +49,3 @@ ostream &operator<<(ostream &out, LMap &lm)
 
   return out;
 }
-
-

@@ -1,0 +1,49 @@
+/*****************************************************************************
+
+ This file is part of QSS Solver.
+
+ QSS Solver is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ QSS Solver is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with QSS Solver.  If not, see <http://www.gnu.org/licenses/>.
+
+ ******************************************************************************/
+
+#pragma once
+
+#include <map>
+
+#include <ast/ast_types.hpp>
+#include "../util/util_types.hpp"
+#include "../util/visitors/jac_alg_exps.hpp"
+#include "index.hpp"
+#include "equation.hpp"
+#include "expression.hpp"
+
+namespace MicroModelica {
+namespace IR {
+
+class EquationDerivator {
+  public:
+  static AST_Equation_Equality derivate(AST_Equation_Equality eq);
+};
+
+class ExpressionDerivator {
+  public:
+  ExpressionDerivator();
+  ~ExpressionDerivator() = default;
+
+  static AST_Expression derivate(AST_Expression exp, Expression e);
+  static Expression partialDerivative(Equation eq, Index variable);
+};
+
+}  // namespace IR
+}  // namespace MicroModelica

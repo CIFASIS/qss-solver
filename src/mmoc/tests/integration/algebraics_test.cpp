@@ -20,11 +20,11 @@
 #include <gtest/gtest.h>
 #include <iostream>
 
-#include "util/model_config.h"
-#include "util/visitors/algebraics.h"
-#include "util/util.h"
-#include "util/symbol_table.h"
-#include <ast/parser/parse.h>
+#include <ast/parser/parse.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
+#include <util/symbol_table.hpp>
+#include <util/visitors/algebraics.hpp>
 
 /// @addtogroup QSSSolverUTests
 /// @{

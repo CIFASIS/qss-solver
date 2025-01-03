@@ -425,7 +425,7 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, i
     QSS_setReinitBuffer(TRUE);
   }
   p->jac_matrices = SD_JacMatrices(state_eqs, states, alg_eqs, algs);
-  freeSettings(settings);
+  p->settings = settings;
   return p;
 }
 
@@ -619,6 +619,7 @@ QSS_data QSS_copyData(QSS_data data)
   p->it = data->it;
   p->ft = data->ft;
   p->maxRHS = data->maxRHS;
+  p->settings = data->settings;
   if (discretes) {
     p->d = (double *)malloc(discretes * sizeof(double));
     for (i = 0; i < discretes; i++) {
@@ -878,6 +879,7 @@ void QSS_freeData(QSS_data data)
   }
   SD_freeEventData(data->event, data->events);
   SD_freeParameters(data->params);
+  freeSettings(data->settings);
   free(data);
 }
 

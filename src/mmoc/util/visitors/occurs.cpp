@@ -17,12 +17,12 @@
 
  ******************************************************************************/
 
-#include "occurs.h"
+#include "occurs.hpp"
 
-#include <util/error.h>
-#include <util/model_config.h>
-#include <util/symbol_table.h>
-#include <util/visitors/is_constant_index.h>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/symbol_table.hpp>
+#include <util/visitors/is_constant_index.hpp>
 
 namespace MicroModelica {
 using namespace IR;

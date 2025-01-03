@@ -17,9 +17,9 @@
 
  ******************************************************************************/
 
-#include "is_recursive_def.h"
+#include "is_recursive_def.hpp"
 
-#include "../error.h"
+#include <util/error.hpp>
 
 namespace MicroModelica {
 using namespace IR;

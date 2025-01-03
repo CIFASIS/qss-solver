@@ -20,10 +20,13 @@
 #include <QApplication>
 #include <QDir>
 
-#include <mmomegui.h>
+#include <mmomegui.hpp>
 
 int main(int argc, char *argv[])
 {
+  QCoreApplication::setOrganizationName("CIFASIS");
+  QCoreApplication::setApplicationVersion("4.4.0");
+  QCoreApplication::setApplicationName("QSS Solver");
   QApplication app(argc, argv);
   QDir d;
   d.setCurrent(QCoreApplication::applicationDirPath());

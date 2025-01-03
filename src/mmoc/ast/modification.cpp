@@ -17,13 +17,13 @@
 
  ******************************************************************************/
 
-#include "modification.h"
+#include "modification.hpp"
 
 #include <list>
 #include <sstream>
 
-#include "../util/ast_util.h"
-#include "expression.h"
+#include "../util/ast_util.hpp"
+#include "expression.hpp"
 
 /* Argument Class */
 

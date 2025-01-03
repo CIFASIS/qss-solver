@@ -17,17 +17,17 @@
 
  ******************************************************************************/
 
-#include "symbol_table.h"
+#include "symbol_table.hpp"
 
 #include <math.h>
 #include <sstream>
 
-#include <ast/ast_builder.h>
-#include <ast/expression.h>
-#include <ir/equation.h>
-#include <ir/expression.h>
-#include <ir/helpers.h>
-#include <util/util.h>
+#include <ast/ast_builder.hpp>
+#include <ast/expression.hpp>
+#include <ir/equation.hpp>
+#include <ir/expression.hpp>
+#include <ir/helpers.hpp>
+#include <util/util.hpp>
 
 namespace MicroModelica {
 using namespace IR;

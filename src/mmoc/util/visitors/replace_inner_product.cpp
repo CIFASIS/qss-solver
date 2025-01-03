@@ -17,12 +17,12 @@
 
  ******************************************************************************/
 
-#include "replace_inner_product.h"
+#include "replace_inner_product.hpp"
 
-#include "../../ast/ast_builder.h"
-#include "../error.h"
-#include "../model_config.h"
-#include "../symbol_table.h"
+#include <ast/ast_builder.hpp>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/symbol_table.hpp>
 
 namespace MicroModelica {
 namespace Util {

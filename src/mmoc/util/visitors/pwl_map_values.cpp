@@ -17,14 +17,14 @@
 
  ******************************************************************************/
 
-#include "pwl_map_values.h"
+#include "pwl_map_values.hpp"
 
-#include <util/error.h>
-#include <util/model_config.h>
-#include <util/symbol_table.h>
-#include <util/visitors/eval_init_exp.h>
-#include <util/visitors/is_constant_expression.h>
-#include <util/visitors/partial_eval_exp.h>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/symbol_table.hpp>
+#include <util/visitors/eval_init_exp.hpp>
+#include <util/visitors/is_constant_expression.hpp>
+#include <util/visitors/partial_eval_exp.hpp>
 
 namespace MicroModelica {
 namespace Util {

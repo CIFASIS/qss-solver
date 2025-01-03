@@ -424,6 +424,7 @@ void PRT_createPartitions(PRT_partition partition, QSS_data data, char *name)
     return;
   }
   char fileName[256];
+  char partition_stats_file_name[256];
   char graphType[64] = "static";
   grp_t nparts = (data->params->lps == 0 ? 64 : data->params->lps);
   grp_t nvtxs = data->states + data->events;
@@ -431,10 +432,20 @@ void PRT_createPartitions(PRT_partition partition, QSS_data data, char *name)
   grp_t *xadj = NULL, *adjncy = NULL, *vwgt = NULL, *ewgt = NULL;
   grp_t i, edges;
   SD_PartitionMethod pm = data->params->pm;
+  struct timespec *init_time = checkedMalloc(sizeof(struct timespec));
+  struct timespec *end_time = checkedMalloc(sizeof(struct timespec));
+  sprintf(partition_stats_file_name, "%s-%ld-%ld-partition-stats.log", name, nvtxs, nparts);
+  FILE *partition_time_stats = fopen(partition_stats_file_name, "w");
+  getTime(init_time);
   if (GRP_createGraph(name, data, &xadj, &adjncy, &edges, &vwgt, &ewgt, 0, NULL) == GRP_ReadError) {
     fprintf(stderr, "Could not read generated graph files.");
     abort();
   }
+  getTime(end_time);
+  subTime(end_time, init_time);
+  fprintf(partition_time_stats, "Graph generation time: %g ms\n", getTimeValue(end_time));
+
+  getTime(init_time);
   if (nvtxs > nparts) {
     switch (pm) {
     case SD_Metis: {
@@ -444,6 +455,7 @@ void PRT_createPartitions(PRT_partition partition, QSS_data data, char *name)
       options[METIS_OPTION_CONTIG] = 1;
       options[METIS_OPTION_PTYPE] = METIS_PTYPE_KWAY;
       options[METIS_OPTION_OBJTYPE] = METIS_OBJTYPE_VOL;
+      options[METIS_OPTION_RTYPE] = METIS_RTYPE_FM;
       options[METIS_OPTION_SEED] = 1;
       PRT_setMetisOptions(options, data);
       METIS_PartGraphKway(&nvtxs, &ncon, xadj, adjncy, vwgt, NULL, ewgt, &nparts, NULL, NULL, options, &edgecut, partition->values);
@@ -508,8 +520,8 @@ void PRT_createPartitions(PRT_partition partition, QSS_data data, char *name)
       SCOTCH_Graph *graph_sc = SCOTCH_graphAlloc();
       SCOTCH_Strat *strat = SCOTCH_stratAlloc();
       SCOTCH_stratInit(strat);
-      PRT_setScotchOptions(strat, data);
-      if (SCOTCH_graphBuild(graph_sc, 0, n, x, x + 1, vw, NULL, e, xa, ew) != 0) {
+      SCOTCH_stratGraphMapBuild(strat, SCOTCH_STRATDEFAULT, data->params->lps, 0.05);
+      if (SCOTCH_graphBuild(graph_sc, 0, n, x, NULL, vw, NULL, e, xa, ew) != 0) {
         printf("Error: Scotch Graph Build\n");
       }
       if (SCOTCH_graphPart(graph_sc, np, strat, val) != 0) {
@@ -540,6 +552,10 @@ void PRT_createPartitions(PRT_partition partition, QSS_data data, char *name)
       break;
     }
   }
+  getTime(end_time);
+  subTime(end_time, init_time);
+  fprintf(partition_time_stats, "Partition time: %g ms\n", getTimeValue(end_time));
+  fclose(partition_time_stats);
   switch (pm) {
   case SD_Metis:
     sprintf(fileName, "%s-Metis-%s-%ld.partition", name, graphType, nparts);
@@ -570,6 +586,9 @@ void PRT_createPartitions(PRT_partition partition, QSS_data data, char *name)
   }
   if (ewgt != NULL) {
     free(ewgt);
+  }
+  if (data->settings->partition_only > 0) {
+    abort();
   }
 }
 

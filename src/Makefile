@@ -89,9 +89,17 @@ install:
 	@echo "Installing user libraries."
 	ln -s $(ROOT)/src/usr/lib/* $(ROOT)/lib/
 	@install $(ROOT)/deploy/linux/qss-solver.ini.in $(ROOT)/bin/qss-solver.ini
+	@echo "Installing partitioners."
 	@install $(ROOT)/src/engine/3rd-party/partitioners/hmetis/khmetis $(ROOT)/bin/
 	@install $(ROOT)/src/engine/3rd-party/partitioners/patoh/Linux-x86_64/libpatoh.a $(ROOT)/lib/
 	@install $(ROOT)/src/engine/3rd-party/partitioners/metis/Linux-x86_64/libmetis.a $(ROOT)/lib/
+	@mkdir -p $(ROOT)/lib/KaHIP
+	@mkdir -p $(ROOT)/lib/KaHIP/parallel
+	@mkdir -p $(ROOT)/bin/KaHIP
+	@install $(ROOT)/src/engine/usr/lib/KaHIP/*.a $(ROOT)/lib/KaHIP/
+	@install $(ROOT)/src/engine/usr/lib/KaHIP/*.so $(ROOT)/lib/KaHIP/
+	@install $(ROOT)/src/engine/usr/lib/KaHIP/parallel/* $(ROOT)/lib/KaHIP/parallel/
+	@install $(ROOT)/src/engine/usr/bin/KaHIP/* $(ROOT)/bin/KaHIP/
 	@echo "Installing GTEST libraries."
 	ln -s $(ROOT)/src/3rd-party/gtest/usr/lib/*.a $(ROOT)/lib/
 	

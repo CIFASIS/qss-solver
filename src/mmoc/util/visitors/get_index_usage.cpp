@@ -17,10 +17,10 @@
 
  ******************************************************************************/
 
-#include "get_index_usage.h"
+#include "get_index_usage.hpp"
 
-#include <util/error.h>
-#include <util/model_config.h>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
 
 namespace MicroModelica {
 using namespace IR;

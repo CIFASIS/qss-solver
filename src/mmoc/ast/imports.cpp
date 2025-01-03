@@ -1,10 +1,10 @@
-#include "imports.h"
+#include "imports.hpp"
 
 #include <list>
 
-#include "ast_builder.h"
-#include "class.h"
-#include "element.h"
+#include "ast_builder.hpp"
+#include "class.hpp"
+#include "element.hpp"
 
 AST_Imports::AST_Imports() { _imports = newAST_StringList(); }
 

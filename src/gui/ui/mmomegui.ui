@@ -33,7 +33,7 @@
      <x>0</x>
      <y>0</y>
      <width>693</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -157,6 +157,26 @@
     </layout>
    </widget>
   </widget>
+  <widget class="QDockWidget" name="_py_console_widget">
+   <property name="windowTitle">
+    <string>Python Console</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3">
+    <layout class="QVBoxLayout" name="verticalLayout_3"/>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="_console_widget">
+   <property name="windowTitle">
+    <string>Linux Shell</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_4"/>
+  </widget>
   <action name="action_New">
    <property name="icon">
     <iconset resource="../mmome.qrc">
@@ -178,7 +198,7 @@
     <string>&amp;Load</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+L</string>
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="action_Save">

@@ -19,18 +19,18 @@
 
 #include <sstream>
 
-#include <generator/function.h>
-#include <util/model_config.h>
+#include <generator/function.hpp>
+#include <util/model_config.hpp>
 
 namespace MicroModelica {
 using namespace IR;
 using namespace Util;
 namespace Generator {
-  
+
 Function::Function(IR::Function& function, CompileFlags& flags, WriterPtr writer)
     : _function(function), _flags(flags), _writer(writer), _prefix("__"), _include(), _return_variable(), _symbols(), _void_function(false)
 {
-  _symbols = ModelConfig::instance().symbols(); 
+  _symbols = ModelConfig::instance().symbols();
   ModelConfig::instance().setSymbols(_function.symbols());
   ModelConfig::instance().setFunctionOutputs(_function.outputNbr() > 1);
   ModelConfig::instance().setFunctionCode(true);
@@ -41,7 +41,6 @@ Function::~Function()
   ModelConfig::instance().setSymbols(_symbols);
   ModelConfig::instance().setFunctionOutputs(false);
   ModelConfig::instance().setFunctionCode(false);
-
 }
 
 void Function::definition()

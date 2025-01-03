@@ -48,6 +48,7 @@ struct SET_settings_ {
   SD_partitionerOptions partitionerOptions;
   int BDFPart;
   int x_output;
+  int partition_only;
 };
 
 SET_settings SET_Settings(char *fname);

@@ -19,8 +19,9 @@
 
 #include <sstream>
 
-#include "built_in_functions.h"
-#include "../util/error.h"
+#include "built_in_functions.hpp"
+
+#include <util/error.hpp>
 
 namespace MicroModelica {
 using namespace Util;

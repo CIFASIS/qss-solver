@@ -17,25 +17,25 @@
 
  ******************************************************************************/
 
-#include "index.h"
+#include "index.hpp"
 
 #include <sstream>
 
-#include <ir/helpers.h>
-#include <ast/ast_builder.h>
-#include <ast/expression.h>
-#include <ast/equation.h>
-#include <ast/statement.h>
-#include <util/error.h>
-#include <util/model_config.h>
-#include <util/util.h>
-#include <util/visitors/eval_init_exp.h>
-#include <util/visitors/get_index_usage.h>
-#include <util/visitors/is_constant_index.h>
-#include <util/visitors/parse_index.h>
-#include <util/visitors/partial_eval_exp.h>
-#include <util/visitors/replace_index.h>
-#include <util/visitors/revert_index.h>
+#include <ir/helpers.hpp>
+#include <ast/ast_builder.hpp>
+#include <ast/expression.hpp>
+#include <ast/equation.hpp>
+#include <ast/statement.hpp>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
+#include <util/visitors/eval_init_exp.hpp>
+#include <util/visitors/get_index_usage.hpp>
+#include <util/visitors/is_constant_index.hpp>
+#include <util/visitors/parse_index.hpp>
+#include <util/visitors/partial_eval_exp.hpp>
+#include <util/visitors/replace_index.hpp>
+#include <util/visitors/revert_index.hpp>
 
 namespace MicroModelica {
 using namespace Deps;

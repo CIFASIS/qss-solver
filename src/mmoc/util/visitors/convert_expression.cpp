@@ -17,18 +17,18 @@
 
  ******************************************************************************/
 
-#include "convert_expression.h"
+#include "convert_expression.hpp"
 
 #include <sstream>
 
-#include <ast/parser/parse.h>
-#include "../../ast/ast_types.h"
-#include "../../ast/ast_builder.h"
-#include "../../ir/event.h"
-#include "../error.h"
-#include "../model_config.h"
-#include "../util.h"
-#include "../visitors/replace_constant.h"
+#include <ast/ast_builder.hpp>
+#include <ast/ast_types.hpp>
+#include <ast/parser/parse.hpp>
+#include <ir/event.hpp>
+#include "replace_constant.hpp"
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
 
 namespace MicroModelica {
 using namespace IR;
@@ -36,8 +36,7 @@ namespace Util {
 
 /* ConvertExpression Class */
 
-ConvertExpression::ConvertExpression(AST_Expression left, AST_Expression right)
-    : _left(nullptr), _right(nullptr), _convert()
+ConvertExpression::ConvertExpression(AST_Expression left, AST_Expression right) : _left(nullptr), _right(nullptr), _convert()
 {
   ReplaceConstant replace_constant;
   _left = replace_constant.apply(left);

@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#include "ginac_interface.h"
+#include "ginac_interface.hpp"
 
 #include <assert.h>
 #include <ginac/add.h>
@@ -35,13 +35,13 @@
 #include <sstream>
 #include <utility>
 
-#include "../ast/ast_builder.h"
-#include "../ast/expression.h"
-#include "../ir/expression.h"
-#include <ast/parser/parse.h>
-#include "model_config.h"
-#include "symbol_table.h"
-#include "util.h"
+#include <ast/ast_builder.hpp>
+#include "../ast/expression.hpp"
+#include <ir/expression.hpp>
+#include <ast/parser/parse.hpp>
+#include "model_config.hpp"
+#include "symbol_table.hpp"
+#include "util.hpp"
 
 using namespace GiNaC;
 using namespace MicroModelica::IR;
@@ -99,10 +99,7 @@ void my_print_add_dflt(const add& s, const print_dflt& c, unsigned level)
   if (level >= power_prec) c.s << ')';
 }
 
-ConvertToGiNaC::ConvertToGiNaC(Option<Expression> exp)
-    : _replaceDer(true), _generateIndexes(false), _exp(exp)
-{
-}
+ConvertToGiNaC::ConvertToGiNaC(Option<Expression> exp) : _replaceDer(true), _generateIndexes(false), _exp(exp) {}
 
 ex ConvertToGiNaC::convert(AST_Expression e, bool replaceDer, bool generateIndexes)
 {

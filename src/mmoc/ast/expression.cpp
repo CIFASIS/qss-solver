@@ -17,13 +17,13 @@
 
  ******************************************************************************/
 
-#include "expression.h"
+#include "expression.hpp"
 
 #include <list>
 #include <sstream>
 
-#include "../util/ast_util.h"
-#include "ast_builder.h"
+#include "../util/ast_util.hpp"
+#include "ast_builder.hpp"
 
 const char *BinOpTypeName[] = {" or ", " and ", "<", "<=", ">", ">=", "<>", "==", "+", ".+", "-", ".-", "/", "./", "*", ".*", "^", ".^"};
 

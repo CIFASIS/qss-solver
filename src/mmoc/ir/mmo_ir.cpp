@@ -17,27 +17,27 @@
 
  ******************************************************************************/
 
-#include "mmo_ir.h"
+#include "mmo_ir.hpp"
 
 #include <iterator>
 
-#include <ast/class.h>
-#include <ast/composition.h>
-#include <ast/element.h>
-#include <ast/equation.h>
-#include <ast/expression.h>
-#include <ast/modification.h>
-#include <ast/statement.h>
-#include <ir/class.h>
-#include <ir/expression.h>
-#include <ir/helpers.h>
-#include <ir/stored_definition.h>
-#include <util/visitors/eval_init_exp.h>
-#include <util/visitors/array_use.h>
-#include <util/visitors/discrete_assignment.h>
-#include <util/error.h>
-#include <util/symbol_table.h>
-#include <util/type.h>
+#include <ast/class.hpp>
+#include <ast/composition.hpp>
+#include <ast/element.hpp>
+#include <ast/equation.hpp>
+#include <ast/expression.hpp>
+#include <ast/modification.hpp>
+#include <ast/statement.hpp>
+#include <ir/class.hpp>
+#include <ir/expression.hpp>
+#include <ir/helpers.hpp>
+#include <ir/stored_definition.hpp>
+#include <util/error.hpp>
+#include <util/symbol_table.hpp>
+#include <util/type.hpp>
+#include <util/visitors/array_use.hpp>
+#include <util/visitors/eval_init_exp.hpp>
+#include <util/visitors/discrete_assignment.hpp>
 
 namespace MicroModelica {
 using namespace Util;

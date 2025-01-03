@@ -17,11 +17,11 @@
 
  ******************************************************************************/
 
-#include "macros.h"
+#include "macros.hpp"
 
 #include <sstream>
 
-#include <ir/helpers.h>
+#include <ir/helpers.hpp>
 
 using namespace std;
 

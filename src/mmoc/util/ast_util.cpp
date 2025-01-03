@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#include "ast_util.h"
+#include "ast_util.hpp"
 
 #include <math.h>
 #include <list>
@@ -25,23 +25,23 @@
 #include <set>
 #include <sstream>
 
-#include "../ast/ast_builder.h"
-#include "../ast/modification.h"
-#include "../ast/equation.h"
-#include "../ast/statement.h"
-#include <ast/parser/parse.h>
-#include "../ir/annotation.h"
-#include "../ir/class.h"
-#include "../ir/equation.h"
-#include "../ir/expression.h"
-#include "../ir/event.h"
-#include "debug.h"
-#include "error.h"
-#include "macros.h"
-#include "model_config.h"
-#include "symbol_table.h"
-#include "type.h"
-#include "util.h"
+#include <ast/ast_builder.hpp>
+#include <ast/equation.hpp>
+#include <ast/modification.hpp>
+#include <ast/parser/parse.hpp>
+#include <ast/statement.hpp>
+#include "debug.hpp"
+#include "error.hpp"
+#include <ir/annotation.hpp>
+#include <ir/class.hpp>
+#include <ir/equation.hpp>
+#include <ir/expression.hpp>
+#include <ir/event.hpp>
+#include "macros.hpp"
+#include "model_config.hpp"
+#include "symbol_table.hpp"
+#include "type.hpp"
+#include "util.hpp"
 
 using namespace MicroModelica::Util;
 using namespace MicroModelica::IR;

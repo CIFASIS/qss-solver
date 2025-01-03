@@ -32,3 +32,6 @@ sed -i "s/PROJECT_NUMBER =.*/PROJECT_NUMBER = $VER/" ../../src/mmoc/MMOCompiler.
 
 # Update mmoc version info file.
 sed -i "s/MicroModelica C Compiler.*/MicroModelica C Compiler $VER\" << endl;/" ../../src/mmoc/main.cpp
+
+# Update GUI version info file.
+sed -i "s/QCoreApplication::setApplicationVersion.*/QCoreApplication::setApplicationVersion(\"$VER\");/" ../../src/gui/main.cpp

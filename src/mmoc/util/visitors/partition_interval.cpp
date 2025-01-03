@@ -17,11 +17,11 @@
 
  ******************************************************************************/
 
-#include "partition_interval.h"
+#include "partition_interval.hpp"
 
-#include <util/error.h>
-#include <util/model_config.h>
-#include <util/visitors/eval_init_exp.h>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/visitors/eval_init_exp.hpp>
 
 namespace MicroModelica {
 using namespace Deps;

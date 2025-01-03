@@ -18,14 +18,14 @@
  ******************************************************************************/
 #include <sstream>
 
-#include <ast/ast_builder.h>
-#include <ast/statement.h>
-#include <ir/helpers.h>
-#include <ir/statement.h>
-#include <util/model_config.h>
-#include <util/util.h>
-#include <util/process_statement.h>
-#include <util/visitors/called_functions.h>
+#include <ast/ast_builder.hpp>
+#include <ast/statement.hpp>
+#include <ir/helpers.hpp>
+#include <ir/statement.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
+#include <util/process_statement.hpp>
+#include <util/visitors/called_functions.hpp>
 
 namespace MicroModelica {
 using namespace Util;

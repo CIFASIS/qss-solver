@@ -17,7 +17,7 @@
 
  ******************************************************************************/
 
-#include "utils.h"
+#include "utils.hpp"
 
 QString Utils::appCommand(AppCmds cmd)
 {

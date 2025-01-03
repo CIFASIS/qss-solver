@@ -20,8 +20,8 @@
 #include <QDir>
 #include <QFileInfo>
 
-#include "treemodel.h"
-#include "comboboxdelegate.h"
+#include "treemodel.hpp"
+#include "comboboxdelegate.hpp"
 
 TreeModel::TreeModel(const QStringList &headers, QObject *parent) : QStandardItemModel(parent) { setHorizontalHeaderLabels(headers); }
 

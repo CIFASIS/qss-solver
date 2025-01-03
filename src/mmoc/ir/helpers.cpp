@@ -19,16 +19,17 @@
 
 #include <sstream>
 
-#include <generator/macros.h>
-#include "helpers.h"
-#include <ir/built_in_functions.h>
-#include <ir/equation.h>
-#include <ir/expression.h>
-#include <util/error.h>
-#include <util/model_config.h>
-#include <util/util.h>
-#include <util/visitors/get_index_variables.h>
-#include <util/visitors/is_constant_expression.h>
+#include "helpers.hpp"
+
+#include <generator/macros.hpp>
+#include <ir/built_in_functions.hpp>
+#include <ir/equation.hpp>
+#include <ir/expression.hpp>
+#include <util/error.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
+#include <util/visitors/get_index_variables.hpp>
+#include <util/visitors/is_constant_expression.hpp>
 
 namespace MicroModelica {
 using namespace Deps;

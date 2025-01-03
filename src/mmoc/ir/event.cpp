@@ -22,11 +22,11 @@
 #include <assert.h>
 #include <sstream>
 
-#include <ast/expression.h>
-#include <ir/helpers.h>
-#include <util/model_config.h>
-#include <util/util.h>
-#include <util/visitors/convert_condition.h>
+#include <ast/expression.hpp>
+#include <ir/helpers.hpp>
+#include <util/model_config.hpp>
+#include <util/util.hpp>
+#include <util/visitors/convert_condition.hpp>
 
 namespace MicroModelica {
 using namespace Util;

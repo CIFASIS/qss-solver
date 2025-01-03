@@ -20,8 +20,8 @@
 #include <QtGui>
 #include <Qt>
 
-#include <settings.h>
-#include <utils.h>
+#include <settings.hpp>
+#include <utils.hpp>
 
 SettingsDlg::SettingsDlg(QWidget *parent) : QDialog(parent)
 {

@@ -299,13 +299,13 @@ struct QA_quantizerState_ {
  * The above type defines a struct that contains function pointers for various operations related to
  * quantization.
  *
- * @var QA_quantizerState_:: {QA_recomputeNextTimesFn} recomputeNextTimes - A function pointer that takes no arguments
+ * @var QA_quantizerState_::{QA_recomputeNextTimesFn} recomputeNextTimes - A function pointer that takes no arguments
  * and returns no value. It is used to recompute the next times for the quantizer.
- * @var QA_quantizerState_:: {QA_recomputeNextTimeFn} recomputeNextTime - A function that takes in a quantized state
+ * @var QA_quantizerState_::{QA_recomputeNextTimeFn} recomputeNextTime - A function that takes in a quantized state
  * and returns the next time at which the state should be recomputed.
- * @var QA_quantizerState_:: {QA_nextTimeFn} nextTime - The nextTime property is a function that calculates the next
+ * @var QA_quantizerState_::{QA_nextTimeFn} nextTime - The nextTime property is a function that calculates the next
  * time step for the quantizer.
- * @var QA_quantizerState_:: {QA_updateQuantizedStateFn} updateQuantizedState - The updateQuantizedState property is a
+ * @var QA_quantizerState_::{QA_updateQuantizedStateFn} updateQuantizedState - The updateQuantizedState property is a
  * function that is responsible for updating the quantized state of the QA_quantizerOps_ struct.
  */
 struct QA_quantizerOps_ {
