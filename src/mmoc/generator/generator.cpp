@@ -85,9 +85,12 @@ int Generator::generate()
       generateIncludes(ffname);
       FunctionTable ft = model.calledFunctions();
       FunctionTable::iterator it;
+      Util::SymbolTable includes;
       for (IR::Function f = ft.begin(it); !ft.end(it); f = ft.next(it)) {
         Function func(f, _flags, _writer);
+        func.addInclude(includes);
         func.definition();
+        includes.merge(func.functionIncludes());
         _fheader.push_back(func.header());
       }
       calledFunctionHeader(ffname);
