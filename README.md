@@ -219,6 +219,18 @@ The makefile script accepts the following targets:
 
 ## Changelog
 
+## [4.5.0] - 03-01-2025
+
+### Added
+- **New Python module** with basic access to the solver, that allows running models, access logs, etc.
+- **New GUI Python console widget** that loads `qss_solver` module to execute and access simulation logs.
+- **New GUI bash widget**.
+- Added a new model option `partitionOnly` to generate partition logs and info without running the model.
+
+### Changed
+- Fixed model function includes in generated C code.
+- Window geometry changes are now saved.
+
 ## [4.4.0] - 28-08-2024
 
 ### Added
@@ -229,17 +241,6 @@ The makefile script accepts the following targets:
 ### Changed
 - Use time variable in initial code.
 - Fixed QSS first order method recompute next time.
-
-## [4.3.0] - 21-09-2022
-
-### Added
-- **mLIQSS and mLIQSS2** methods are now supported.
-
-### Changed
-- Fixed input events code generation for non-autonomous equations. 
-
-### Removed
-- **mLIQSS3** is deprecated.
 
 ## Licensing
 
