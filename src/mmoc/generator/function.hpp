@@ -37,6 +37,7 @@ class Function {
   void setPrefix(std::string prefix);
   void addInclude(std::string include);
   void addInclude(Util::SymbolTable includes);
+  Util::SymbolTable functionIncludes() const;
 
   private:
   void includes();

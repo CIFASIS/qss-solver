@@ -169,5 +169,7 @@ void Function::addInclude(string include) { _include[include] = include; }
 
 void Function::addInclude(SymbolTable includes) { _include.merge(includes); }
 
+Util::SymbolTable Function::functionIncludes() const { return _include; }
+
 }  // namespace Generator
 }  // namespace MicroModelica
