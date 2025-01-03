@@ -25,6 +25,7 @@
 
 class ComboBoxDelegate;
 class RunDlg;
+class QTermWidget;
 class SettingsDlg;
 class TreeModel;
 class Utils;
@@ -34,6 +35,7 @@ class MmomeGui : public QMainWindow, public Ui::MmomeGuiForm {
   public:
   MmomeGui();
   ~MmomeGui();
+
   private slots:
   void cleanBuildDir(int);
   void done(QString name, QString ext);
@@ -70,8 +72,10 @@ class MmomeGui : public QMainWindow, public Ui::MmomeGuiForm {
 
   protected:
   void closeEvent(QCloseEvent *event);
+  void initialize();
 
   private:
+
   QString strippedName(const QString &fullFileName);
   void setCurrentFile(const QString fileName);
   void loadFile(QString fileName);
@@ -88,6 +92,7 @@ class MmomeGui : public QMainWindow, public Ui::MmomeGuiForm {
   bool plotScript();
   void run(QString name);
   void selectVariables();
+
   ComboBoxDelegate *_cboxd;
   QString _iniFile;
   TreeModel *_model;
@@ -100,6 +105,8 @@ class MmomeGui : public QMainWindow, public Ui::MmomeGuiForm {
   bool _settings_only;
   double _timeInterval;
   Utils *_utils;
+  QTermWidget* _python_console;
+  QTermWidget* _console;
   enum { MaxRecentFiles = 5 };
   QAction *recentFileActs[MaxRecentFiles];
   QString _curFile;
