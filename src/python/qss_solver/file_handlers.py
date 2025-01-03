@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 # Configure logging
-logging.basicConfig(level=logging.DEBUG, format='%(levelname)s - %(message)s')
+logging.basicConfig(level=logging.ERROR, format='%(levelname)s - %(message)s')
 
 CONFIG = {
     'MMOC_MODELS': {
