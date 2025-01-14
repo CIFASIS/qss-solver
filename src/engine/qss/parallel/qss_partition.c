@@ -588,6 +588,7 @@ void PRT_createPartitions(PRT_partition partition, QSS_data data, char *name)
     free(ewgt);
   }
   if (data->settings->partition_only > 0) {
+    fprintf(stderr, "Only generate partition files and exit as requested.\nAbort simulation.\n");
     abort();
   }
 }
