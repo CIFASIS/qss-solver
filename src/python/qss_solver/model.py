@@ -1,5 +1,5 @@
-import configparser
 import json
+import libconf
 import re
 
 import file_handlers as fh
@@ -194,36 +194,19 @@ def set_parameters(model, parameters):
 
 def config(model):
     """
-    Reads the model configuration from a given INI file and returns its contents as a dictionary.
+    Reads the model configuration from a given INI file and returns its contents as a dictionary using `libconf` library, 
+    see: https://github.com/ChrisAichinger/python-libconf
 
     :param model: The name of the INI file to read.
     :return: A dictionary containing the configuration key-value pairs.
     """
-    config = configparser.ConfigParser()
-
     config_path = fh.get_full_path(model, 'MMOC_BUILD')
 
     # Read the INI file
     with open(config_path, 'r') as file:
-        first_line = file.readline().strip()
-        # Check if the first line is empty or does not start with a section header
-        if not first_line.startswith('['):
-            # If no section header, prepend a default section header
-            file.seek(0)  # Reset file pointer to the beginning
-            content = '[QSS_SOLVER]\n' + file.read()  # Add the section header
-            with open(config_path, 'w') as write_file:
-                write_file.write(content)  # Write back the modified content
+        config = libconf.load(file) 
 
-    # Read the INI file
-    config.read(config_path)
-
-    # Convert the ConfigParser object to a dictionary
-    ini_dict = {key: value for key, value in config['QSS_SOLVER'].items()}
-
-    # Remove trailing semicolons from the values
-    ini_dict = {key: value.rstrip(';') for key, value in ini_dict.items()}
-
-    return ini_dict
+    return config
 
 def set_config(model, data_dict):
     """
@@ -232,13 +215,9 @@ def set_config(model, data_dict):
     :param model: The name or path of the INI file to write.
     :param data_dict: A dictionary containing the configuration data to write.
     """
-    config = configparser.ConfigParser()
-
-    # Add a section named 'QSS_SOLVER' and populate it with the dictionary items
-    config['QSS_SOLVER'] = {key: f"{value};" for key, value in data_dict.items()}
 
     config_path = fh.get_full_path(model, 'MMOC_BUILD')
 
     # Write the configuration to the specified file
-    with open(config_path, 'w') as configfile:
-        config.write(configfile)
+    with open(config_path, 'w') as config_file:
+        config_file.write(libconf.dumps(data_dict))
