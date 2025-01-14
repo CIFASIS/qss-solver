@@ -40,6 +40,7 @@
 MmomeGui *mainWindow;
 
 static const QString INIT_PYTHON =
+    "pip install libconf\n"
     "python3\n"
     "import os\n"
     "import sys\n"
