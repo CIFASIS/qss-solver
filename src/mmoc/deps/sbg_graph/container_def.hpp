@@ -27,8 +27,8 @@
 
 namespace SB {
 
-typedef int Integer;
-typedef float Real;
+typedef long long int Integer;
+typedef double Real;
 
 template <typename T, class = std::allocator<T>>
 using OrdCT = std::list<T>;

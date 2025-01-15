@@ -1,4 +1,4 @@
-## QSS Solver 4.5.1
+## QSS Solver 4.5.2
 
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
@@ -218,6 +218,11 @@ The makefile script accepts the following targets:
 				 
 
 ## Changelog
+
+## [4.5.2] - 15-01-2025
+
+### Fixed
+- Fixed overflow in `Integer` and `Real` definitions in SBG lib that causes assertion failures in the compiler.
 
 ## [4.5.1] - 14-01-2025
 

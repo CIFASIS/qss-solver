@@ -1,5 +1,10 @@
 ## Changelog
 
+## [4.5.2] - 15-01-2025
+
+### Fixed
+- Fixed overflow in `Integer` and `Real` definitions in SBG lib that causes assertion failures in the compiler.
+
 ## [4.5.1] - 14-01-2025
 
 ### Fixed
