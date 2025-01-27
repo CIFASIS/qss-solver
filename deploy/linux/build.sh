@@ -108,6 +108,7 @@ cp -r ./tmp/src/mmoc ./tmp_deb/opt/qss-solver/src/
 cp -r ./tmp/src/gui ./tmp_deb/opt/qss-solver/src/
 cp -r ./tmp/src/interfaces ./tmp_deb/opt/qss-solver/src/
 cp -r ./tmp/src/usr ./tmp_deb/opt/qss-solver/src/
+cp -r ./tmp/src/python ./tmp_deb/opt/qss-solver/src/
 cp lib/*.a ./tmp_deb/opt/qss-solver/lib
 # Clean generated code.
 rm -rf ./deploy/linux/qss-solver.ini
