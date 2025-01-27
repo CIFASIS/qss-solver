@@ -20,7 +20,7 @@
 cd ..
 echo Export environment variables...
 sed -i.bak '/MMOC/d' ~/.bashrc
-echo 'export MMOC_PATH='`pwd`'' >> ~/.bashrc
+echo 'export MMOC_PATH='`echo $HOME`'' >> ~/.bashrc
 echo 'export MMOC_SRC=$MMOC_PATH/src' >> ~/.bashrc
 echo 'export MMOC_DOC=$MMOC_PATH/doc' >> ~/.bashrc
 echo 'export MMOC_LIBS=$MMOC_PATH/lib' >> ~/.bashrc
@@ -33,5 +33,6 @@ echo 'export MMOC_LIBRARIES=$MMOC_PATH/lib' >> ~/.bashrc
 echo 'export MMOC_TESTS=$MMOC_SRC/test-suite' >> ~/.bashrc
 echo 'export MMOC_ENGINE=$MMOC_SRC/engine/' >> ~/.bashrc
 echo 'export MMOC_INCLUDE=$MMOC_SRC/usr/include' >> ~/.bashrc
+echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MMOC_BIN/lib' >> ~/.bashrc
 cd bin
 echo Done.
