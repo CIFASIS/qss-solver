@@ -19,11 +19,12 @@
 
 #pragma once
 
+#include <common/metis.h>
 #include <stdio.h>
 
 #include <qss/qss_data.h>
 
-typedef long int grp_t;
+typedef idx_t grp_t;
 
 typedef enum { GRP_Success = 0x00, GRP_ReadError = 0x01, GRP_WrongFile = 0x02, GRP_WriteError = 0x03 } GRP_Status;
 
