@@ -20,11 +20,12 @@
 #pragma once
 
 #include <qss/qss_data.h>
+#include <qss/qss_graph.h>
 
 typedef struct PRT_partition_ *PRT_partition;
 
 struct PRT_partition_ {
-  long int *values;
+  grp_t *values;
   int *nOutputs;
   int *nDsc;
   int **dscInf;
