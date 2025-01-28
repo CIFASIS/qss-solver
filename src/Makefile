@@ -90,7 +90,9 @@ install:
 	ln -s $(ROOT)/src/usr/lib/* $(ROOT)/lib/
 	@install $(ROOT)/deploy/linux/qss-solver.ini.in $(ROOT)/bin/qss-solver.ini
 	@echo "Installing partitioners."
+	@install $(ROOT)/src/engine/3rd-party/partitioners/hmetis/khmetis $(ROOT)/bin/
 	@install $(ROOT)/src/engine/3rd-party/partitioners/patoh/Linux-x86_64/libpatoh.a $(ROOT)/lib/
+	@install $(ROOT)/src/engine/3rd-party/partitioners/metis/Linux-x86_64/libmetis.a $(ROOT)/lib/
 	@mkdir -p $(ROOT)/lib/KaHIP
 	@mkdir -p $(ROOT)/lib/KaHIP/parallel
 	@mkdir -p $(ROOT)/bin/KaHIP
