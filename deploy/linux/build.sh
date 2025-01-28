@@ -88,6 +88,7 @@ cp deploy/linux/version ./tmp_deb/opt/qss-solver/
 cp src/mmoc/usr/bin/mmoc  ./tmp_deb/opt/qss-solver/bin/ 
 cp src/gui/usr/bin/qss-solver ./tmp_deb/opt/qss-solver/bin/ 
 cp src/interfaces/sbml/usr/bin/translate-sbml  ./tmp_deb/opt/qss-solver/bin/
+cp src/engine/3rd-party/partitioners/hmetis/khmetis ./tmp_deb/opt/qss-solver/bin/
 cp deploy/linux/qss-solver.ini ./tmp_deb/opt/qss-solver/bin/qss-solver.ini
 cp deploy/images/integrator.svg ./tmp_deb/opt/qss-solver/bin/
 cp -r src/gui/3rd-party/qtermwidget-1-0.14.1/usr/config/* ./tmp_deb/opt/qss-solver/bin/
