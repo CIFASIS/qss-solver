@@ -126,6 +126,7 @@ rm -rf ./tmp_deb/opt/qss-solver/src/gui/usr
 
 cp /usr/lib/x86_64-linux-gnu/$SBML_LIB ./tmp_deb/opt/qss-solver/lib/libsbml.so.5
 cp src/engine/3rd-party/partitioners/patoh/Linux-x86_64/libpatoh.a ./tmp_deb/opt/qss-solver/lib/libpatoh.a
+cp src/engine/3rd-party/partitioners/metis/Linux-x86_64/libmetis.a ./tmp_deb/opt/qss-solver/lib/libmetis.a
 
 chmod 0644 `find tmp_deb/ -iname *.cpp`
 chmod 0644 `find tmp_deb/ -iname *.c`
