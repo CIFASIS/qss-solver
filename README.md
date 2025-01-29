@@ -1,4 +1,4 @@
-## QSS Solver 4.5.2
+## QSS Solver 4.5.3
 
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
@@ -218,6 +218,14 @@ The makefile script accepts the following targets:
 				 
 
 ## Changelog
+
+## [4.5.3] - 29-01-2025
+
+### Fixed
+- Modified build script to include `Python QSS` module.
+
+### Changed
+- Remove local `Scotch` library and use system library instead.
 
 ## [4.5.2] - 15-01-2025
 
