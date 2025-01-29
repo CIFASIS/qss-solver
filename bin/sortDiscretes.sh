@@ -15,7 +15,7 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 4.5.2
+#       VERSION: 4.5.3
 #===================================================================================
 
 if test -n "$(find . -maxdepth 1 -name '*-discrete-*.dat' -print -quit)"; then
