@@ -14,13 +14,13 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 4.5.2
+#       VERSION: 4.5.3
 #===================================================================================
 
 cd ..
 echo Export environment variables...
 sed -i.bak '/MMOC/d' ~/.bashrc
-echo 'export MMOC_PATH='`echo $HOME`'' >> ~/.bashrc
+echo 'export MMOC_PATH='`echo $HOME`/qss-solver'' >> ~/.bashrc
 echo 'export MMOC_SRC=$MMOC_PATH/src' >> ~/.bashrc
 echo 'export MMOC_DOC=$MMOC_PATH/doc' >> ~/.bashrc
 echo 'export MMOC_LIBS=$MMOC_PATH/lib' >> ~/.bashrc

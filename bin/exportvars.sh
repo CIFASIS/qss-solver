@@ -14,12 +14,12 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 4.5.2
+#       VERSION: 4.5.3
 #===================================================================================
 
 cd ..
 echo Export environment variables...
-export MMOC_PATH=`echo $HOME` 
+export MMOC_PATH=`echo $HOME`/qss-solver 
 export MMOC_SRC=$MMOC_PATH/src
 export MMOC_DOC=$MMOC_PATH/doc
 export MMOC_LIBS=$MMOC_PATH/lib

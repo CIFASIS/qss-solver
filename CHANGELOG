@@ -1,5 +1,13 @@
 ## Changelog
 
+## [4.5.3] - 29-01-2025
+
+### Fixed
+- Modified build script to include `Python QSS` module.
+
+### Changed
+- Remove local `Scotch` library and use system library instead.
+
 ## [4.5.2] - 15-01-2025
 
 ### Fixed
