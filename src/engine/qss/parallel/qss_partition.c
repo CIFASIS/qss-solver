@@ -23,14 +23,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+#include <scotch/scotch.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 #include <common/data.h>
 #include <common/metis.h>
 #include <common/patoh.h>
-#include <common/scotch.h>
 #include <common/utils.h>
 #include <qss/qss_graph.h>
 
@@ -454,7 +454,7 @@ void PRT_createPartitions(PRT_partition partition, QSS_data data, char *name)
       METIS_SetDefaultOptions(options);
       options[METIS_OPTION_CONTIG] = 1;
       options[METIS_OPTION_PTYPE] = METIS_PTYPE_KWAY;
-      options[METIS_OPTION_OBJTYPE] = METIS_OBJTYPE_VOL;
+      options[METIS_OPTION_OBJTYPE] = METIS_OBJTYPE_CUT;
       options[METIS_OPTION_RTYPE] = METIS_RTYPE_FM;
       options[METIS_OPTION_SEED] = 1;
       PRT_setMetisOptions(options, data);

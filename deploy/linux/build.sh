@@ -15,7 +15,7 @@
 #         NOTES: --- 
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 4.5.2
+#       VERSION: 4.5.3
 #===================================================================================
 
 rm -rf qss-solver-*.deb
@@ -108,6 +108,7 @@ cp -r ./tmp/src/mmoc ./tmp_deb/opt/qss-solver/src/
 cp -r ./tmp/src/gui ./tmp_deb/opt/qss-solver/src/
 cp -r ./tmp/src/interfaces ./tmp_deb/opt/qss-solver/src/
 cp -r ./tmp/src/usr ./tmp_deb/opt/qss-solver/src/
+cp -r ./tmp/src/python ./tmp_deb/opt/qss-solver/src/
 cp lib/*.a ./tmp_deb/opt/qss-solver/lib
 # Clean generated code.
 rm -rf ./deploy/linux/qss-solver.ini
