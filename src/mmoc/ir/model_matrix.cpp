@@ -32,7 +32,7 @@ using namespace Util;
 namespace IR {
 
 template <typename GraphBuilder, typename MatrixBuilder, typename Config, typename T, typename N>
-ModelMatrix<GraphBuilder, MatrixBuilder, Config, T, N>::ModelMatrix() : _mode(MATRIX::Normal), _access({"", ""})
+ModelMatrix<GraphBuilder, MatrixBuilder, Config, T, N>::ModelMatrix() : _mode(MATRIX::Normal), _access{"", ""}
 {
 }
 
