@@ -1,0 +1,13 @@
+target_sources(
+    qss-seq
+    PRIVATE
+        commands.c
+        data.c
+        engine.c
+        integrator.c
+        random.c
+        settings.c
+        simulator.c
+        tree.c
+        utils.c
+)

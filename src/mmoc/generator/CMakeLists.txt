@@ -1,0 +1,11 @@
+target_sources(
+    mmoc-library
+    PRIVATE
+        files.cpp
+        function.cpp
+        generator.cpp
+        macros.cpp
+        model_instance.cpp
+        package.cpp
+        writer.cpp
+)

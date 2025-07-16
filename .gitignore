@@ -9,10 +9,10 @@ models/
 
 # Generated packages.
 deploy/linux/*.deb
-deploy/windows/*.exe
-deploy/src/*.tar.gz
 
 # Local Changelog
 src/ChangeLog
 ChangeLog
-src/gui/.qmake.stash
+
+# Build folder.
+src/build/
