@@ -33,15 +33,20 @@ TEST_P(SModelTests, SimulateModel)
 {
   const std::string NAME = GetParam();
   std::cout << "Testing model: " << NAME << std::endl;
-  const std::string MODEL = " ./system/gt_data/" + NAME + "/" + NAME + ".mo";
-  const std::string FOLDER_CMD = "mkdir ./system/test_data/" + NAME;
-  const std::string MMOC = "../../mmoc/usr/bin/mmoc";
-  const std::string ARGS = " -o ./system/test_data/" + NAME + "/" + NAME + " -i ./system/test_data/packages ";
-  const std::string TEST_CMD = "./system/test_results.sh " + NAME;
-  const std::string SIM_CMD = "cd ./system/test_data/" + NAME + "; ./" + NAME;
-  const std::string RESULT_FILE = "./system/test_data/" + NAME + "/" + NAME + ".passed";
-  const std::string COMP_CMD = MMOC + ARGS + MODEL + " > ./system/test_data/" + NAME + "/" + NAME + ".log";
-  const std::string MAKE_CMD = "make -f ./system/test_data/" + NAME + "/" + NAME + ".makefile";
+  const std::string TEST_DIR = "../..";
+  const std::string SRC_DIR = "../../../..";
+  const std::string TEST_DATA_DIR = TEST_DIR + "/system/test_data/";
+  const std::string GT_DATA_DIR = TEST_DIR + "/system/gt_data/";
+
+  const std::string MODEL = GT_DATA_DIR  + NAME + "/" + NAME + ".mo";
+  const std::string FOLDER_CMD = "mkdir " + TEST_DATA_DIR + NAME;
+  const std::string MMOC = SRC_DIR + "/mmoc/build/mmoc";
+  const std::string ARGS = " -o " + TEST_DATA_DIR + NAME + "/" + NAME + " -i " + TEST_DATA_DIR + "packages ";
+  const std::string TEST_CMD = TEST_DIR + "/system/test_results.sh " + NAME;
+  const std::string SIM_CMD = "cd " + TEST_DATA_DIR + NAME + "; ./" + NAME;
+  const std::string RESULT_FILE = TEST_DATA_DIR + NAME + "/" + NAME + ".passed";
+  const std::string COMP_CMD = MMOC + ARGS + MODEL + " > " + TEST_DATA_DIR + NAME + "/" + NAME + ".log";
+  const std::string MAKE_CMD = "make -f " + TEST_DATA_DIR + NAME + "/" + NAME + ".makefile";
 
   std::cout << "Setup data folders for " << NAME << std::endl;
   std::system(FOLDER_CMD.c_str());
