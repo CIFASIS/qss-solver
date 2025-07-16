@@ -10,7 +10,7 @@ function random
     input Real x;
     output Real y;
     external "C" y = mmo_random(x) annotation(
-                                Library="mmo_math",
+                                Library="mmo-math",
                                 Include="#include <mmo_math.h>");
   end random;
 
@@ -18,7 +18,7 @@ function random
     input Real x;
     output Real y;
     external "C" y = mmo_rand(x) annotation(
-                                Library="mmo_math",
+                                Library="mmo-math",
                                 Include="#include <mmo_math.h>");
   end rand;
 
@@ -27,7 +27,7 @@ function random
     input Real seed;
     output Real y;
     external "C" y = mmo_rand_seed(x, seed) annotation(
-                                Library="mmo_math",
+                                Library="mmo-math",
                                 Include="#include <mmo_math.h>");
   end rand_seed;
 
@@ -36,7 +36,7 @@ function random
     input Real diff;
     output Real y;
     external "C" y = mmo_rand_int(x, diff) annotation(
-                                Library="mmo_math",
+                                Library="mmo-math",
                                 Include="#include <mmo_math.h>");
   end rand_int;
 
@@ -44,7 +44,7 @@ function random
     input Real x;
     output Real y;
     external "C" y = mmo_integer(x) annotation(
-                                Library="mmo_math",
+                                Library="mmo-math",
                                 Include="#include <mmo_math.h>");
   end integer;
 
@@ -52,7 +52,7 @@ function getRandomMarkedValue
     input Real x;
     output Real y;
     external "C" y = mmo_getRandomMarkedValue(x) annotation(
-                                Library="mmo_math",
+                                Library="mmo-math",
                                 Include="#include <mmo_math.h>");
   end getRandomMarkedValue;
   
@@ -60,7 +60,7 @@ function getRandomValue
     input Real x;
     output Real y;
     external "C" y = mmo_getRandomValue(x) annotation(
-                                Library="mmo_math",
+                                Library="mmo-math",
                                 Include="#include <mmo_math.h>");
   end getRandomValue;
 
@@ -68,7 +68,7 @@ function exponential
     input Real x;
     output Real y;
     external "C" y = mmo_exponential(x) annotation(
-                                Library="mmo_math",
+                                Library="mmo-math",
                                 Include="#include <mmo_math.h>");
   end exponential;
 
@@ -77,7 +77,7 @@ function uniform
     input Real b;
     output Real y;
     external "C" y = mmo_uniform(a,b) annotation(
-                                Library="mmo_math",
+                                Library="mmo-math",
                                 Include="#include <mmo_math.h>");
 end uniform;
 
@@ -85,7 +85,7 @@ function normal
     input Real x;
     output Real y;
     external "C" y = mmo_normal(x) annotation(
-                                Library="mmo_math",
+                                Library="mmo-math",
                                 Include="#include <mmo_math.h>");
 end normal;
   
