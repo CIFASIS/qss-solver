@@ -28,6 +28,7 @@ for cmd in git make dpkg fakeroot; do
   fi
 done
 
+readonly HOME_DIR="../../"
 readonly DEPLOY_DIR="./deploy/linux"
 readonly SRC_DIR="./src"
 readonly TMP_DEB_DIR="./tmp_deb"
@@ -38,13 +39,9 @@ function setup_environment() {
   rm -f qss-solver-*.deb
 
   echo "Retrieving latest from Git..."
-  git pull
-
-  echo "Preparing ini file..."
-  cat "$DEPLOY_DIR/qss-solver.ini.in" > "$DEPLOY_DIR/qss-solver.ini"
+  #git pull
 
   VER=$(cat "$DEPLOY_DIR/version")
-  echo "version=$VER" >> "$DEPLOY_DIR/qss-solver.ini"
 
   SYSTEM_VERSION=$(lsb_release -d)
   CONTROL_FILE="control.amd64"
@@ -58,12 +55,11 @@ function setup_environment() {
   fi
 
   BRANCH=$(git rev-parse --abbrev-ref HEAD)
-  if [[ "$BRANCH" == "qss-solver-dev" ]]; then
+  if [[ "$BRANCH" != "qss-solver-release" ]]; then
     PACKAGE_NAME="${PACKAGE_NAME}-unstable"
   fi
 
   PACKAGE_NAME="${PACKAGE_NAME}.deb"
-  echo "branch=$BRANCH" >> "$DEPLOY_DIR/qss-solver.ini"
 
   echo "Building QSS Solver DEB package for $(uname -m) version $VER"
 
@@ -85,7 +81,7 @@ function prepare_package() {
   rm -rf "$TMP_DEB_DIR" "$TMP_DIR"
   mkdir -p "$TMP_DEB_DIR" "$TMP_DIR"
 
-  CHECKOUT_PATH="${MMOC_PATH:-$TMP_DIR}/"
+  CHECKOUT_PATH="${MMOC_PATH}${TMP_DIR:1}/"
   mkdir -p "$CHECKOUT_PATH"
   git checkout-index -a -f --prefix="$CHECKOUT_PATH"
 
@@ -107,7 +103,6 @@ function prepare_package() {
   cp "$SRC_DIR/gui/usr/bin/qss-solver" "$TMP_DEB_DIR/opt/qss-solver/bin/"
   cp "$SRC_DIR/interfaces/sbml/usr/bin/translate-sbml" "$TMP_DEB_DIR/opt/qss-solver/bin/"
   cp "$SRC_DIR/engine/3rd-party/partitioners/hmetis/khmetis" "$TMP_DEB_DIR/opt/qss-solver/bin/"
-  cp "$DEPLOY_DIR/qss-solver.ini" "$TMP_DEB_DIR/opt/qss-solver/bin/qss-solver.ini"
   cp "$DEPLOY_DIR/images/integrator.svg" "$TMP_DEB_DIR/opt/qss-solver/bin/"
   cp -r "$SRC_DIR/gui/3rd-party/qtermwidget-1-0.14.1/usr/config/"* "$TMP_DEB_DIR/opt/qss-solver/bin/"
   cp -r "$SRC_DIR/gui/3rd-party/qtermwidget-1-0.14.1/usr/lib/"* "$TMP_DEB_DIR/opt/qss-solver/bin/lib/"
@@ -127,7 +122,6 @@ function prepare_package() {
   cp lib/*.a "$TMP_DEB_DIR/opt/qss-solver/lib"
 
   # Clean generated code.
-  rm -f "$DEPLOY_DIR/qss-solver.ini"
   rm -rf "$TMP_DEB_DIR/opt/qss-solver/src/engine/3rd-party"
   rm -rf "$TMP_DEB_DIR/opt/qss-solver/src/engine/usr/obj"
   rm -rf "$TMP_DEB_DIR/opt/qss-solver/src/mmoc/usr/obj"
@@ -172,6 +166,7 @@ function cleanup() {
 }
 
 function main() {
+  cd "$HOME_DIR"
   setup_environment
   build_binaries
   prepare_package

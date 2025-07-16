@@ -40,6 +40,7 @@ fi
 
 # Run the MicroModelica compiler
 echo "Running MicroModelica compiler on file '$FILE' with options '$OPTIONS'..."
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${MMOC_BIN}/lib"
 $MMOC_BIN/mmoc $OPTIONS $FILE
 
 # Check if the mmoc command was successful
