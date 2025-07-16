@@ -1,53 +1,89 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
 
-project(gui)
+project(QSS-Solver-GUI)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-# Build mode flags
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
-else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
-endif()
+set(CMAKE_AUTOMOC ON)
+include(GNUInstallDirs)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
 
-# Include directories
-include_directories(
-  \${PROJECT_SOURCE_DIR}
-  \${PROJECT_SOURCE_DIR}/usr/include
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets)
+
+qt5_add_resources(RESOURCES_RCC mmome.qrc)
+
+add_executable(qss-solver)
+
+target_sources(
+    qss-solver
+    PRIVATE
+    codeeditor.cpp
+    comboboxdelegate.cpp
+    editor.cpp
+    main.cpp
+    mmohighlight.cpp
+    mmomegui.cpp
+    modeleditor.cpp
+    modelinfo.cpp
+    runform.cpp
+    settings.cpp
+    treemodel.cpp
+    ui/mmomegui.ui
+    ui/modeleditor.ui
+    ui/run.ui
+    ui/settings.ui
+    utils.cpp
+    ${RESOURCES_RCC}
 )
 
-# Source files
-file(GLOB_RECURSE SRC_FILES "*.cpp" "*.h")
+target_include_directories(qss-solver PRIVATE 3rd-party/qtermwidget-1-0.14.1/usr/include)
 
-# Output directories
-set(BIN_DIR \${PROJECT_SOURCE_DIR}/usr/bin)
-set(LIB_DIR \${PROJECT_SOURCE_DIR}/usr/lib)
-set(INCLUDE_DIR \${PROJECT_SOURCE_DIR}/usr/include)
-set(BUILD_DIR \${PROJECT_SOURCE_DIR}/usr/obj)
+target_include_directories(qss-solver PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}) 
 
-# Create output directories
-file(MAKE_DIRECTORY \${BIN_DIR} \${LIB_DIR} \${INCLUDE_DIR} \${BUILD_DIR})
-
-# Add executable
-add_executable(qss-solver-gui \${SRC_FILES})
-
-# Set output directory for executable
-set_target_properties(qss-solver-gui PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY \${BIN_DIR}
+target_link_libraries(qss-solver PRIVATE
+    Qt::Core
+    Qt::Gui
+    Qt::Widgets
 )
 
-# Add test target
-add_custom_target(test
-  COMMAND \${CMAKE_COMMAND} --build . --target test
-  WORKING_DIRECTORY \${PROJECT_SOURCE_DIR}/tests
-  COMMENT "Building and running tests"
-)
+target_link_directories(qss-solver PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/3rd-party/qtermwidget-1-0.14.1/usr/lib)
 
-# Add documentation target
-add_custom_target(doc
-  COMMAND doxygen \${PROJECT_SOURCE_DIR}/QSSSolverGUI.doxyfile
-  WORKING_DIRECTORY \${PROJECT_SOURCE_DIR}
-  COMMENT "Generating API documentation with Doxygen"
+# Link the library
+target_link_libraries(qss-solver PRIVATE qtermwidget5)
+
+# Resources:
+# set(mmome_resource_files
+#     "images/ImportFile.png"
+#     "images/cancel.png"
+#     "images/clear.png"
+#     "images/compile.png"
+#     "images/copy.png"
+#     "images/cut.png"
+#     "images/debug.png"
+#     "images/delete.png"
+#     "images/document_save.png"
+#     "images/editfile.png"
+#     "images/folder.svg"
+#     "images/gnuplot.png"
+#     "images/integrator.svg"
+#     "images/log.png"
+#     "images/multiplier.svg"
+#     "images/newFile.png"
+#     "images/run.png"
+#     "images/run_copy.png"
+#     "images/save_all.png"
+#     "images/saveas.png"
+#     "images/settings.png"
+# )
+
+# qt5_add_resources(qss-solver "mmome"
+#      PREFIX"/"
+#      FILES
+#        ${mmome_resource_files}
+# )
+
+install(TARGETS qss-solver
+    BUNDLE DESTINATION .
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )

@@ -3,3 +3,9 @@
 
 # Python generated files.
 *.pyc
+
+# Installed files.
+install/
+
+# Build folder.
+build/

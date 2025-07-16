@@ -1,9 +1,6 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
 
-project(sbml)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+project(SBML)
 
 # Build mode flags
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -12,42 +9,62 @@ else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 endif()
 
-# Include directories
-include_directories(
-  \${PROJECT_SOURCE_DIR}
-  \${PROJECT_SOURCE_DIR}/usr/include
+# mmoc-library
+add_library(sbml-library STATIC)
+
+target_include_directories(sbml-library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Source files.
+target_sources(
+    sbml-library
+    PRIVATE
+        biorica_writer.cpp
+        mmo_assignment.cpp
+        mmo_convert.cpp
+        mmo_decl.cpp
+        mmo_equation.cpp
+        mmo_event.cpp
+        mmo_function.cpp
+        mmo_math.cpp
+        mmo_model.cpp
+        mmo_section.cpp
+        mmo_utils.cpp
+        mmo_writer.cpp
+        mmo_zerocrossing.cpp
 )
-
-# Source files
-file(GLOB_RECURSE SRC_FILES "*.cpp" "*.h")
-
-# Output directories
-set(BIN_DIR \${PROJECT_SOURCE_DIR}/usr/bin)
-set(LIB_DIR \${PROJECT_SOURCE_DIR}/usr/lib)
-set(INCLUDE_DIR \${PROJECT_SOURCE_DIR}/usr/include)
-set(BUILD_DIR \${PROJECT_SOURCE_DIR}/usr/obj)
-
-# Create output directories
-file(MAKE_DIRECTORY \${BIN_DIR} \${LIB_DIR} \${INCLUDE_DIR} \${BUILD_DIR})
 
 # Add executable
-add_executable(translate-sbml \${SRC_FILES})
-
-# Set output directory for executable
-set_target_properties(translate-sbml PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY \${BIN_DIR}
+add_executable(
+    translate-sbml
 )
 
-# Add test target
-add_custom_target(test
-  COMMAND \${CMAKE_COMMAND} --build . --target test
-  WORKING_DIRECTORY \${PROJECT_SOURCE_DIR}/tests
-  COMMENT "Building and running tests"
+target_sources(
+    translate-sbml
+    PRIVATE
+        convert.cpp
 )
 
-# Add documentation target
-add_custom_target(doc
-  COMMAND doxygen \${PROJECT_SOURCE_DIR}/sbml.doxyfile
-  WORKING_DIRECTORY \${PROJECT_SOURCE_DIR}
-  COMMENT "Generating API documentation with Doxygen"
+target_link_libraries(
+    translate-sbml
+    PRIVATE
+        sbml-library
+        sbml
+)
+
+# install
+install(
+    TARGETS translate-sbml sbml-library
+    RUNTIME DESTINATION bin
+    COMPONENT translate-sbml
+    LIBRARY
+        DESTINATION lib
+        PERMISSIONS
+            OWNER_READ
+            OWNER_WRITE
+            OWNER_EXECUTE
+            GROUP_READ
+            GROUP_EXECUTE
+            WORLD_READ
+            WORLD_EXECUTE
+    COMPONENT translate-sbml
 )

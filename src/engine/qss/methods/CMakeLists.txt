@@ -1,0 +1,16 @@
+target_sources(
+    qss-seq
+    PRIVATE
+        cqss.c
+        liqss.c
+        liqss2.c
+        liqss3.c
+        liqss_bdf.c
+        mliqss.c
+        mliqss2.c
+        mliqss3.c
+        qss.c
+        qss2.c
+        qss3.c
+        qss4.c
+)

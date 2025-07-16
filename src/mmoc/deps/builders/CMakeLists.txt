@@ -1,0 +1,9 @@
+target_sources(
+    mmoc-library
+    PRIVATE
+        eq_graph_builder.cpp
+        ev_graph_builder.cpp
+        index_shift_builder.cpp
+        merge_graph.cpp
+        merge_graph_builder.cpp
+)
