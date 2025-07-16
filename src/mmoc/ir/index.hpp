@@ -189,7 +189,7 @@ class Range {
   bool testExpression(AST_Expression exp);
   Expression getExp(std::vector<Expression> exps, size_t pos);
   bool checkRangeVariable(string var, set<string>& added_vars, vector<string>& old_keys, int& pos);
-  bool checkRangeVariables(string ife_idx, string ifr_idx, set<string>& added_vars, vector<string>& old_keys, int& pos);
+  void checkRangeVariables(string ife_idx, string ifr_idx, set<string>& added_vars, vector<string>& old_keys, int& pos);
 
   private:
   void setRangeDefinition(AST_ForIndexList fil, bool from_event = false);

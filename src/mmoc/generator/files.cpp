@@ -85,7 +85,7 @@ void Files::makefile()
   }
   includes << " -L " << Utils::instance().environmentVariable("MMOC_PATH") << "/usr/lib";
   _writer->print(includes);
-  buffer << "LIBS   :=" << (_flags.debug() ? " -lqssd -ltimestepd" : " -lqss -ltimestep");
+  buffer << "LIBS   := " << (_flags.debug() ? " -lqssd -ltime-stepd" : " -lqss -ltime-step");
   _writer->print(buffer);
   buffer << "INC    := -I" + Utils::instance().environmentVariable("MMOC_ENGINE");
   tmp = _model.includeDirectories();

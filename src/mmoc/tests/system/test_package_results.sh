@@ -4,8 +4,10 @@
 
 PACKAGE=$1
 PKG_PREFIX="pkg_"
-GT_PACKAGE="./system/gt_data/packages/"${PKG_PREFIX}${PACKAGE}
-TEST_PACKAGE="./system/test_data/packages/"${PKG_PREFIX}${PACKAGE}
+
+TEST_DIR="../.."
+GT_PACKAGE=$TEST_DIR"/system/gt_data/packages/"${PKG_PREFIX}${PACKAGE}
+TEST_PACKAGE=$TEST_DIR"/system/test_data/packages/"${PKG_PREFIX}${PACKAGE}
 TEST_FILES=".c .h"
 
 test_results () 

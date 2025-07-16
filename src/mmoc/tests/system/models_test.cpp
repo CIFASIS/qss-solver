@@ -41,13 +41,19 @@ TEST_P(IModelTests, GenerateCode)
 {
   const std::string NAME = GetParam();
   std::cout << "Testing model: " << NAME << std::endl;
-  const std::string MODEL = " ./system/gt_data/" + NAME + "/" + NAME + ".mo";
-  const std::string MMOC = "../usr/bin/mmoc";
-  const std::string ARGS = " -o ./system/test_data/" + NAME + " -t -i ./system/test_data/packages ";
+
+  const std::string TEST_DIR = "../..";
+  const std::string SRC_DIR = "../../../..";
+  const std::string TEST_DATA_DIR = TEST_DIR + "/system/test_data/";
+  const std::string GT_DATA_DIR = TEST_DIR + "/system/gt_data/";
+
+  const std::string MODEL = GT_DATA_DIR + NAME + "/" + NAME + ".mo";
+  const std::string MMOC = SRC_DIR + "/mmoc/build/mmoc";
+  const std::string ARGS = " -o " + TEST_DATA_DIR + NAME + " -t -i " + GT_DATA_DIR + "packages ";
   const std::string TEST_FUNCTIONS = (checkGeneratedFunctions(NAME)) ? "TEST_FUNCTIONS" : "";
-  const std::string TEST_CMD = "./system/test_results.sh " + NAME + " " + TEST_FUNCTIONS;
-  const std::string RESULT_FILE = "./system/test_data/" + NAME + ".passed";
-  const std::string COMP_CMD = MMOC + ARGS + MODEL + " > ./system/test_data/" + NAME + ".log";
+  const std::string TEST_CMD = TEST_DIR + "/system/test_results.sh " + NAME + " " + TEST_FUNCTIONS;
+  const std::string RESULT_FILE = TEST_DATA_DIR + NAME + ".passed";
+  const std::string COMP_CMD = MMOC + ARGS + MODEL + " >  " + TEST_DATA_DIR + NAME + ".log";
 
   std::system(COMP_CMD.c_str());
   std::system(TEST_CMD.c_str());
@@ -55,6 +61,10 @@ TEST_P(IModelTests, GenerateCode)
   std::ifstream result(RESULT_FILE.c_str());
   EXPECT_TRUE(result.good());
 }
+
+//  const char* models[] = {
+//                          "virus_replication"
+// };
 
 const char* models[] = {"adr",
                         "adr2D",
@@ -97,6 +107,7 @@ const char* models[] = {"adr",
                         "TYSON",
                         "VIRplanoS",
                         "virus_replication"};
+
 INSTANTIATE_TEST_SUITE_P(Models, IModelTests, testing::ValuesIn(models));
 
 /// @}
