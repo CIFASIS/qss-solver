@@ -19,24 +19,11 @@
 
 #include "utils.hpp"
 
-/**
- * @brief Retrieves the application command associated with the specified command enum.
- * 
- * @param cmd The command enum for which to retrieve the associated command string.
- * @return QString The command string associated with the specified command enum.
- */
 QString Utils::appCommand(AppCmds cmd)
 {
-    QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini", QSettings::IniFormat);
-    return settings.value(appCommandsName(cmd), "Value not found in file qss-solver.ini").toString();
+    return _settings.value(appCommandsName(cmd), "Value not found in file qss-solver.ini").toString();
 }
 
-/**
- * @brief Retrieves the absolute path of the specified application directory.
- * 
- * @param d The directory enum for which to retrieve the absolute path.
- * @return QString The absolute path of the specified directory.
- */
 QString Utils::appDir(AppDirs d)
 {
     QDir dir(QCoreApplication::applicationDirPath());
@@ -44,25 +31,12 @@ QString Utils::appDir(AppDirs d)
     return dir.absolutePath();
 }
 
-/**
- * @brief Checks if the specified application flag is set in the settings.
- * 
- * @param flag The flag enum to check.
- * @return true If the flag is set to true.
- * @return false If the flag is not set or is set to false.
- */
 bool Utils::isSet(AppFlags flag)
 {
-    QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini", QSettings::IniFormat);
-    QString val = settings.value(appFlagName(flag), "Value not found in file qss-solver.ini").toString();
+    QString val = _settings.value(appFlagName(flag), "Value not found in file qss-solver.ini").toString();
     return val == "true";
 }
 
-/**
- * @brief Constructs a string of debug flags based on the current settings.
- * 
- * @return QString A string containing the debug flags that are set.
- */
 QString Utils::getDebugValue()
 {
     static const QMap<AppFlags, QString> debugFlags = {
@@ -87,63 +61,29 @@ QString Utils::getDebugValue()
     return dbg;
 }
 
-/**
- * @brief Retrieves the value of the specified application flag.
- * 
- * @param flag The flag enum for which to retrieve the value.
- * @return QString The value of the specified flag.
- */
 QString Utils::appFlag(AppFlags flag)
 {
     QString val;
-    QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini", QSettings::IniFormat);
     if (flag == FLG_DEBUG) {
         val = getDebugValue();
     } else {
-        val = settings.value(appFlagName(flag), "Value not found in file qss-solver.ini").toString();
+        val = _settings.value(appFlagName(flag), "Value not found in file qss-solver.ini").toString();
     }
     return val;
 }
 
-/**
- * @brief Retrieves the relative path of the specified application directory.
- * 
- * @param d The directory enum for which to retrieve the relative path.
- * @return QString The relative path of the specified directory.
- */
 QString Utils::relativePath(AppDirs d) { return getDir(d); }
 
-/**
- * @brief Retrieves the absolute path of the specified application directory.
- * 
- * @param dir The directory enum for which to retrieve the absolute path.
- * @return QString The absolute path of the specified directory.
- */
 QString Utils::getDir(AppDirs dir)
 {
-    QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini", QSettings::IniFormat);
-    QString path = settings.value(appDirsName(dir), "Value not found in file qss-solver.ini").toString();
-    return path;
+    return _settings.value(appDirsName(dir), "Value not found in file qss-solver.ini").toString();
 }
 
-/**
- * @brief Sets the application command associated with the specified command enum.
- * 
- * @param cmd The command enum for which to set the associated command string.
- * @param value The command string to set.
- */
 void Utils::setCommand(AppCmds cmd, QString value)
 {
-    QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini", QSettings::IniFormat);
-    settings.setValue(appCommandsName(cmd), value);
+    _settings.setValue(appCommandsName(cmd), value);
 }
 
-/**
- * @brief Retrieves the name of the application flag based on the specified flag enum.
- * 
- * @param flag The flag enum for which to retrieve the name.
- * @return QString The name of the specified flag.
- */
 QString Utils::appFlagName(AppFlags flag)
 {
     static const QMap<AppFlags, QString> flagMap = {
@@ -163,12 +103,6 @@ QString Utils::appFlagName(AppFlags flag)
     return "Flags/" + flagMap.value(flag, "");
 }
 
-/**
- * @brief Retrieves the name of the application command based on the specified command enum.
- * 
- * @param cmd The command enum for which to retrieve the name.
- * @return QString The name of the specified command.
- */
 QString Utils::appCommandsName(AppCmds cmd)
 {
     static const QMap<AppCmds, QString> commandMap = {
@@ -182,12 +116,6 @@ QString Utils::appCommandsName(AppCmds cmd)
     return "Commands/" + commandMap.value(cmd, "");
 }
 
-/**
- * @brief Retrieves the name of the application directory based on the specified directory enum.
- * 
- * @param dir The directory enum for which to retrieve the name.
- * @return QString The name of the specified directory.
- */
 QString Utils::appDirsName(AppDirs dir)
 {
     static const QMap<AppDirs, QString> dirMap = {
@@ -205,26 +133,12 @@ QString Utils::appDirsName(AppDirs dir)
     return dirMap.value(dir, "");
 }
 
-/**
- * @brief Sets the path of the specified application directory in the settings.
- * 
- * @param dir The directory enum for which to set the path.
- * @param value The path to set for the specified directory.
- */
 void Utils::setDir(AppDirs dir, QString value)
 {
-    QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini", QSettings::IniFormat);
-    settings.setValue(appDirsName(dir), value);
+    _settings.setValue(appDirsName(dir), value);
 }
 
-/**
- * @brief Sets the value of the specified application flag in the settings.
- * 
- * @param flag The flag enum for which to set the value.
- * @param value The value to set for the specified flag.
- */
 void Utils::setFlag(AppFlags flag, QString value)
 {
-    QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini", QSettings::IniFormat);
-    settings.setValue(appFlagName(flag), value);
+    _settings.setValue(appFlagName(flag), value);
 }

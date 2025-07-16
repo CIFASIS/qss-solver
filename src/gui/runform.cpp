@@ -51,17 +51,17 @@ RunDlg::RunDlg(QWidget *parent) : QDialog(parent)
   _test_methods_lbl->setVisible(false);
 }
 
-void RunDlg::on__showAll_stateChanged(int state)
+void RunDlg::on__show_all_stateChanged(int state)
 {
   _extended_frame->setVisible(state == Qt::Checked);
 }
 
-void RunDlg::on__commInterval_currentIndexChanged(int index)
+void RunDlg::on__comm_interval_currentIndexChanged(int index)
 {
   _period->setEnabled(index != 0);
 }
 
-void RunDlg::on__dtSynch_currentIndexChanged(int index)
+void RunDlg::on__dt_synch_currentIndexChanged(int index)
 {
   _dt_lbl->setText(index == 0 ? "Dt tolerance" : "Dt value");
 }
@@ -81,6 +81,66 @@ void RunDlg::on__parallel_currentIndexChanged(int index)
   _debug_graph_cbx->setEnabled(is_enabled);
   _reorder_partition_cbx->setEnabled(is_enabled);
   _imbalance->setEnabled(is_enabled);
+}
+
+int RunDlg::getComboBoolIdx(QString str)
+{
+  static const QStringList types = { "false", "true" };
+  return types.indexOf(str.trimmed());
+}
+
+QString RunDlg::getComboBoolString(int idx)
+{
+  static const QStringList types = { "false", "true" };
+  return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
+}
+
+int RunDlg::getPartitionMethodIdx(QString str)
+{
+  static const QStringList types = { "Metis", "HMetis", "Scotch", "Patoh", "Manual" };
+  return types.indexOf(str.trimmed());
+}
+
+QString RunDlg::getPartitionMethodString(int idx)
+{
+  static const QStringList types = { "Metis", "HMetis", "Scotch", "Patoh", "Manual" };
+  return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
+}
+
+int RunDlg::getJacobianIdx(QString str)
+{
+  static const QStringList types = { "Sparse", "Dense" };
+  return types.indexOf(str.trimmed());
+}
+
+QString RunDlg::getJacobianString(int idx)
+{
+  static const QStringList types = { "Sparse", "Dense" };
+  return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
+}
+
+int RunDlg::getDtSynchIdx(QString str)
+{
+  static const QStringList types = { "SD_DT_Fixed", "SD_DT_Asynchronous" };
+  return types.indexOf(str.trimmed());
+}
+
+QString RunDlg::getDtSynchString(int idx)
+{
+  static const QStringList types = { "SD_DT_Fixed", "SD_DT_Asynchronous" };
+  return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
+}
+
+int RunDlg::getSchedulerIdx(QString str)
+{
+  static const QStringList types = { "ST_Binary", "ST_Random", "ST_Linear" };
+  return types.indexOf(str.trimmed());
+}
+
+QString RunDlg::getSchedulerString(int idx)
+{
+  static const QStringList types = { "ST_Binary", "ST_Random", "ST_Linear" };
+  return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
 }
 
 int RunDlg::getSolverIdx(QString str)
