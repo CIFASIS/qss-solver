@@ -40,7 +40,8 @@
 MmomeGui *mainWindow;
 
 static const QString INIT_PYTHON =
-    "pip install libconf\n"
+    "./python_console_setup.sh\n"
+    "source .qss-solver-venv/bin/activate\n"
     "python3\n"
     "import os\n"
     "import sys\n"
@@ -606,6 +607,7 @@ bool MmomeGui::compile(bool dbg)
   _compiler_msg->moveCursor(QTextCursor::End);
   _compiler_msg->ensureCursorVisible();
   QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+  env.insert("LD_LIBRARY_PATH", "${LD_LIBRARY_PATH}:${MMOC_BIN}/lib");
   env.insert("MMOC_BUILD", QDir(_utils->appDir(MMOC_BUILD)).absolutePath());
   env.insert("MMOC_BIN", QDir(_utils->appDir(MMOC_BIN)).absolutePath());
   env.insert("MMOC_ENGINE", QDir(_utils->appDir(MMOC_ENGINE)).absolutePath());
