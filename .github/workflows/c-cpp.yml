@@ -50,6 +50,11 @@ jobs:
         sudo apt-get install qtbase5-dev-tools
         sudo apt-get install rapidjson-dev
 
+    - name: Install local deps.
+      working-directory: ./src/mmoc/3rd-party/flex
+      run: | 
+        sudo apt-get install ./flex-old.deb
+
     - name: Create build folder.
       working-directory: ./src
       run: |
