@@ -39,9 +39,12 @@
 
 MmomeGui *mainWindow;
 
-static const QString INIT_PYTHON =
+static const QString INIT_PYTHON_VENV =
     "./python_console_setup.sh\n"
     "source .qss-solver-venv/bin/activate\n"
+    "clear\n";
+
+static const QString INIT_PYTHON =
     "python3\n"
     "import os\n"
     "import sys\n"
@@ -72,7 +75,6 @@ MmomeGui::~MmomeGui()
 
 void MmomeGui::initialize()
 {
-  _iniFile = "/qss-solver.ini";
   _proc = nullptr;
   _plot = nullptr;
   _log = nullptr;
@@ -100,12 +102,14 @@ void MmomeGui::initialize()
   _python_console = new QTermWidget();
   _python_console->setScrollBarPosition(QTermWidget::ScrollBarRight);
   _python_console->setColorScheme("Linux");
+  _python_console->sendText(INIT_PYTHON_VENV);
   _python_console->sendText(INIT_PYTHON);
   _py_console_widget->setWidget(_python_console);
 
   _console = new QTermWidget();
   _console->setScrollBarPosition(QTermWidget::ScrollBarRight);
   _console->setColorScheme("Linux");
+  _console->sendText(INIT_PYTHON_VENV);
   _console_widget->setWidget(_console);
 
   QSettings settings;
@@ -184,7 +188,7 @@ void MmomeGui::closeEvent(QCloseEvent *event)
     Editor::instance()->closeFiles();
   }
   Editor::drop();
-  event->accept();
+  QMainWindow::closeEvent(event);
 }
 
 void MmomeGui::on_action_Save_As_triggered()
@@ -268,25 +272,25 @@ void MmomeGui::on_actionDebug_triggered()
 
 void MmomeGui::on_actionMicroModelica_Language_Scpefication_triggered()
 {
-  QString link = "http://www.fceia.unr.edu.ar/control/modelica/micromodelicaspec.pdf";
+  QString link = "https://www.cifasis-conicet.gov.ar/jfernandez/mmoc-spec/mmospec.pdf";
   QDesktopServices::openUrl(QUrl(link));
 }
 
 void MmomeGui::on_actionQSS_Solver_Engine_Documentation_triggered()
 {
-  QString link = "http://www.cifasis-conicet.gov.ar/jfernandez/engine/";
+  QString link = "https://www.cifasis-conicet.gov.ar/jfernandez/qss-engine/";
   QDesktopServices::openUrl(QUrl(link));
 }
 
 void MmomeGui::on_actionMicroModelica_Compiler_Documentation_triggered()
 {
-  QString link = "http://www.cifasis-conicet.gov.ar/jfernandez/mmoc/";
+  QString link = "https://www.cifasis-conicet.gov.ar/jfernandez/mmoc/";
   QDesktopServices::openUrl(QUrl(link));
 }
 
 void MmomeGui::on_actionSBML_Translator_Documentation_triggered()
 {
-  QString link = "http://www.cifasis-conicet.gov.ar/jfernandez/sbml/";
+  QString link = "https://www.cifasis-conicet.gov.ar/jfernandez/sbml/";
   QDesktopServices::openUrl(QUrl(link));
 }
 
@@ -481,6 +485,39 @@ void MmomeGui::on_actionRun_triggered()
   _runDlg->show();
 }
 
+QString MmomeGui::getPlotFileName(QString base_name, QString variable)
+{
+  QString plot_path;
+  plot_path.append("\"")
+      .append(_utils->appDir(MMOC_OUTPUT))
+      .append(SLASH)
+      .append(base_name)
+      .append(SLASH)
+      .append(variable)
+      .append(".dat\"");
+  return plot_path;
+}
+
+QString MmomeGui::pythonScriptArgs()
+{
+  QString name = Editor::instance()->activeBaseFileName();
+  QString data;
+  for (int k = 0; k < _model->rowCount(); k++) {
+    QStandardItem *it = _model->item(k);
+    for (int g = 0; g < it->rowCount(); g++) {
+      QStandardItem *c = it->child(g, 1);
+      QString name = c->text();
+      if (c->checkState() == Qt::Checked) {
+        data.append(getPlotFileName(_model->item(k)->text(), c->text()));
+        data.append(" ");
+      }
+    }
+  }
+  data.append("\"" + name + "\"");
+  data.append("  \"Time\" \"State Variables\"");
+  return data;
+}
+
 bool MmomeGui::plotScript()
 {
   QString name = Editor::instance()->activeBaseFileName();
@@ -506,13 +543,7 @@ bool MmomeGui::plotScript()
       QStandardItem *c = it->child(g, 1);
       QString name = c->text();
       if (c->checkState() == Qt::Checked) {
-        _data.append("\"")
-            .append(_utils->appDir(MMOC_OUTPUT))
-            .append(SLASH)
-            .append(_model->item(k)->text())
-            .append(SLASH)
-            .append(c->text())
-            .append(".dat\"");
+        _data.append(getPlotFileName(_model->item(k)->text(), c->text()));
         c = it->child(g, 2);
         if (c->text() != "None") {
           _data.append(" with ").append(c->text());
@@ -526,6 +557,7 @@ bool MmomeGui::plotScript()
   int l = _data.length();
   _data = _data.remove(l - 2, 1);
   _data.append("\n");
+
   if (file.write(_data.toStdString().c_str()) == -1) {
     QMessageBox::critical(this, QString(tr("Error")), QString(tr("Can't write data ")) + name + QString(".plt"));
     file.close();
@@ -686,8 +718,7 @@ void MmomeGui::comp_finished(int exitCode, QProcess::ExitStatus exitStatus)
     }
     QFileInfo modelfi = Editor::instance()->activeFullFileName();
     QDir modeldir = modelfi.absoluteDir();
-    QFileInfoList filst = modeldir.entryInfoList(QStringList() << "*.c"
-                                                               << "*.h");
+    QFileInfoList filst = modeldir.entryInfoList(QStringList() << "*.c" << "*.h");
     foreach (QFileInfo qfi, filst) {
       QFile file(qfi.filePath());
       file.copy(buildDir.absolutePath() + SLASH + qfi.fileName());
@@ -788,9 +819,7 @@ void MmomeGui::on_actionClear_Log_triggered()
   QDir outputDir(_utils->appDir(MMOC_OUTPUT));
   outputDir.mkdir(Editor::instance()->activeBaseFileName());
   outputDir.cd(Editor::instance()->activeBaseFileName());
-  QStringList dirs = outputDir.entryList(QStringList() << "*.log"
-                                                       << "*.dat"
-                                                       << "*.plt");
+  QStringList dirs = outputDir.entryList(QStringList() << "*.log" << "*.dat" << "*.plt");
   foreach (QString f, dirs) {
     outputDir.remove(f);
   }
@@ -846,7 +875,7 @@ void MmomeGui::openRecentFiles()
 
 void MmomeGui::updateRecentFileActions()
 {
-  QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini", QSettings::IniFormat);
+  QSettings settings;
 
   QStringList files = settings.value("Editor/recentFileList").toStringList();
 
@@ -874,7 +903,7 @@ void MmomeGui::setCurrentFile(const QString fileName)
 {
   _curFile = fileName;
   setWindowFilePath(_curFile);
-  QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini", QSettings::IniFormat);
+  QSettings settings;
   QStringList files = settings.value("Editor/recentFileList").toStringList();
   files.removeAll(fileName);
   files.prepend(fileName);
@@ -947,28 +976,37 @@ void MmomeGui::addVariables()
 void MmomeGui::on_actionGraphics_triggered()
 {
   QString name = Editor::instance()->activeBaseFileName();
-  if (name.isEmpty()) return;
-  if (!plotScript()) {
+  if (name.isEmpty()) {
     return;
   }
   _compiler_msg->clear();
-  QString plotCmd = _utils->appCommand(CMD_PLOT);
-  QString plotOptions = _utils->appFlag(FLG_PLOT);
-  QString gpxdir = _utils->appDir(MMOC_OUTPUT) + SLASH + name;
-  QFileInfo of(gpxdir + SLASH + name + QString(".plt"));
-  if (!of.exists()) {
-    _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\n Can't find plot script: ") + name + QString(".plt"));
-    return;
+
+  QString plot_cmd = _utils->appCommand(CMD_PLOT);
+  QString plot_options = _utils->appFlag(FLG_PLOT);
+
+  if (plot_cmd == "gnuplot") {
+    if (!plotScript()) {
+      return;
+    }
+    QString gpx_dir = _utils->appDir(MMOC_OUTPUT) + SLASH + name;
+    QFileInfo of(gpx_dir + SLASH + name + QString(".plt"));
+    if (!of.exists()) {
+      _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\n Can't find plot script: ") + name + QString(".plt"));
+      return;
+    }
+    if (plot_options.isEmpty()) {
+      plot_options = "-persist";
+    }
+    QStringList args;
+    args << plot_options;
+    args << of.absoluteFilePath();
+    _plot = new QProcess(this);
+    connect(_plot, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &MmomeGui::plot_finished);
+    _plot->start(plot_cmd, args);
+  } else {
+    QString python_cmd = QString("python3 ./%1 %2 %3 &\n").arg(plot_cmd).arg(plot_options).arg(pythonScriptArgs());
+    _console->sendText(python_cmd);
   }
-  _plot = new QProcess(this);
-  connect(_plot, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &MmomeGui::plot_finished);
-  QStringList args;
-  if (plotOptions.isEmpty()) {
-    plotOptions = "-persist";
-  }
-  args << plotOptions;
-  args << of.absoluteFilePath();
-  _plot->start(plotCmd, args);
 }
 
 void MmomeGui::plot_finished(int exitCode, QProcess::ExitStatus exitStatus)
@@ -990,8 +1028,6 @@ void MmomeGui::on_actionAbout_triggered()
   sh.append("Version: ");
   sh.append(_utils->appFlag(FLG_VERSION));
   sh.append("\n");
-  sh.append("Branch: ");
-  sh.append(_utils->appFlag(FLG_BRANCH));
   sh.append("\n");
   sh.append("HomePage: ");
   sh.append("https://github.com/CIFASIS/qss-solver\n");

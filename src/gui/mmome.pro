@@ -4,8 +4,8 @@ CONFIG += release
 UI_DIR=./ui
 
 message(Qt version: $$QT_VERSION)
-	message(Adding Widgets headers)
-	QT += widgets
+message(Adding Widgets headers)
+QT += widgets
 
 # Sources.
 SOURCES += 	main.cpp  \
