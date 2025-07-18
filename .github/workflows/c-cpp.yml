@@ -34,7 +34,6 @@ jobs:
         sudo apt-get install g++
         sudo apt-get install gfortran
         sudo apt-get install gnuplot
-        sudo apt-get install flex-old
         sudo apt-get install libatlas-base-dev
         sudo apt-get install libboost1.83-dev
         sudo apt-get install libcln-dev
