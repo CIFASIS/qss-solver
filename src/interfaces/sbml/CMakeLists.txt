@@ -14,6 +14,13 @@ add_library(sbml-library STATIC)
 
 target_include_directories(sbml-library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
+# Add custom target for documentation
+add_custom_target(sbml-doc
+  COMMENT "Generating SBML interface documentation"
+  COMMAND doxygen sbml.doxyfile
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
 # Source files.
 target_sources(
     sbml-library
