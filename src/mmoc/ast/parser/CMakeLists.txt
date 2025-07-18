@@ -19,12 +19,11 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/mocc_parser.cpp
                     ${CMAKE_CURRENT_SOURCE_DIR}/mocc.y
  )
 
-set_source_files_properties(mocc_parser.cpp PROPERTIES GENERATED TRUE)
-set_source_files_properties(mocc_scanner.cpp PROPERTIES GENERATED TRUE)
-
 target_sources(
     mmoc-library
     PRIVATE
+        mocc_parser.cpp
+        mocc_scanner.cpp
         parse.cpp
 )
 
