@@ -2,8 +2,7 @@ set(3RD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(KLU_LIB_DIR /usr/lib/${ARCH}-linux-gnu)
 set(KLU_INCLUDE_DIR /usr/include/suitesparse)
 
-
-target_include_directories(qss-seq PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/build/include)
+target_include_directories(qss-seq PUBLIC ${CMAKE_INSTALL_PREFIX}/include)
 
 set(CVODE_LIB "${CMAKE_INSTALL_PREFIX}/lib/libsundials_cvode.a")
 set(GSL_LIB "${CMAKE_INSTALL_PREFIX}/lib/libgsl.a")
@@ -48,4 +47,4 @@ add_custom_target(
     DEPENDS  ${IDA_LIB}   
 )
 
-add_dependencies(qss 3rd-party-libs)
+add_dependencies(qss-seq 3rd-party-libs)
