@@ -50,9 +50,9 @@ set_target_properties(qss PROPERTIES DEBUG_POSTFIX "d")
 
 # Add custom target for documentation
 add_custom_target(engine-doc
+  COMMENT "Generating QSS Solver Engine documentation."
   COMMAND doxygen QSSSolver.doxyfile
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/engine
-  COMMENT "Generating API documentation with Doxygen"
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
 
