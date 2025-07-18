@@ -55,7 +55,6 @@ add_custom_target(engine-doc
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
-
 set_target_properties(engine-doc PROPERTIES EXCLUDE_FROM_ALL ON)
 
 # install

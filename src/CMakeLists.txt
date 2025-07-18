@@ -39,14 +39,14 @@ add_custom_target(
 add_custom_target(
   engine
   ALL
-  COMMENT "Building QSS Solver Debug lib"
   COMMAND mkdir -p ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/debug
 	COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/debug && cmake ../.. -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DQSS_SOLVER_ROOT=${QSS_SOLVER_ROOT}
   COMMAND make -C ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/debug
-  COMMENT "Building QSS Solver Release lib"
+  COMMENT "Building QSS Solver Debug lib"
   COMMAND mkdir -p ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/release
   COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/release && cmake ../.. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DQSS_SOLVER_ROOT=${QSS_SOLVER_ROOT}
   COMMAND make -C ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/release
+  COMMENT "Building QSS Solver Release lib"
 )
 
 add_custom_target(
@@ -88,13 +88,14 @@ add_dependencies(doc mmoc engine interfaces)
 
 add_custom_target(test
     COMMAND echo "Running Tests."
-	  COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/debug && make run-engine-test
-	  #COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/mmoc/build && make run-mmoc-test
+	  #COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/debug && make run-engine-test
+	  COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/mmoc/build && make run-mmoc-test
 )
 
 add_custom_target(reset-targets
     COMMAND echo "Delete build directories from targets."
     COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/engine && ${CMAKE_COMMAND} -E rm -rf build
+    COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/engine/3rd-party && ${CMAKE_COMMAND} -E rm -rf build
     COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/sbml && ${CMAKE_COMMAND} -E rm -rf build
     COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/mmoc && ${CMAKE_COMMAND} -E rm -rf build
     COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/gui && ${CMAKE_COMMAND} -E rm -rf build
