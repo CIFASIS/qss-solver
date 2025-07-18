@@ -57,9 +57,9 @@ target_link_libraries(
 
 # Add custom target for documentation
 add_custom_target(mmoc-doc
-  COMMAND doxygen MMOCompiler.doxyfile
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/mmoc
   COMMENT "Generating MMOC API documentation"
+  COMMAND doxygen MMOCompiler.doxyfile
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
 # install
