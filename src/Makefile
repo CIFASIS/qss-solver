@@ -40,7 +40,7 @@ qss-user-libs: create-folders qss-engine
 
 mmo-compiler: create-folders lib-gtest  
 	@echo BUILDING MICROMODELICA C COMPILER DEPS
-	@cd mmoc && $(MAKE) MODE=$(MODE) lib_sbg sbg_branch=$(sbg_branch) build_sbg=$(build_sbg) repo_checkout=$(repo_checkout)
+	#@cd mmoc && $(MAKE) MODE=$(MODE) lib_sbg sbg_branch=$(sbg_branch) build_sbg=$(build_sbg) repo_checkout=$(repo_checkout)
 	@echo Done
 	@echo BUILDING MICROMODELICA C COMPILER
 	@cd mmoc && $(MAKE) MODE=$(MODE) -j $(CORES) 
