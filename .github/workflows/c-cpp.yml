@@ -22,7 +22,7 @@ env:
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v2
@@ -35,6 +35,7 @@ jobs:
         sudo apt-get install g++
         sudo apt-get install gfortran
         sudo apt-get install gnuplot
+        sudo apt-get install flex-old
         sudo apt-get install libatlas-base-dev
         sudo apt-get install libcln-dev
         sudo apt-get install libconfig-dev
@@ -47,16 +48,27 @@ jobs:
         sudo apt-get install python
         sudo apt-get install qt5-default
         sudo apt-get install rapidjson-dev
-          
-    - name: Build
-      working-directory: ./src
-      run: make repo_checkout=https
 
-    - name: Install
-      working-directory: ./src
-      run: make install
-    
-    - name: Tests
+    - name: Create build folder.
       working-directory: ./src
       run: |
-        make test
+        mkdir -p build
+
+    - name: Configure
+      working-directory: ./src/build
+      run: |
+        cmake ..
+
+    - name: Build
+      working-directory: ./src/build
+      run: |
+        make
+
+    - name: Install
+      working-directory: ./src/build
+      run: |
+        make install
+
+    - name: Tests
+      working-directory: ./src/build
+      run: make test
