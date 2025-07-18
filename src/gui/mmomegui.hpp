@@ -91,9 +91,10 @@ class MmomeGui : public QMainWindow, public Ui::MmomeGuiForm {
   bool plotScript();
   void run(QString name);
   void selectVariables();
+  QString pythonScriptArgs();
+  QString getPlotFileName(QString base_name, QString variable);
 
   ComboBoxDelegate *_cboxd;
-  QString _iniFile;
   TreeModel *_model;
   QProcess *_proc;
   QProcess *_plot;
