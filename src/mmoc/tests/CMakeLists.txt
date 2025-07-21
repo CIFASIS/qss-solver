@@ -14,6 +14,7 @@ set(GOOGLE_TEST_INCLUDE ${GOOGLE_TEST_INSTALL}/usr/include)
 file(MAKE_DIRECTORY
       ${BUILD_DIR}
       ${BIN_DIR}
+      ${TEST_DATA_DIR}
 )
 
 # Add executable
