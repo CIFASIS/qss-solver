@@ -88,7 +88,7 @@ add_dependencies(doc mmoc engine interfaces)
 
 add_custom_target(test
     COMMAND echo "Running Tests."
-	  #COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/debug && make run-engine-test
+	  COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/debug && make run-engine-test
 	  COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/mmoc/build && make run-mmoc-test
 )
 
