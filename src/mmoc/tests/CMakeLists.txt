@@ -1,6 +1,8 @@
 # Output directories
 set(SYSTEM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/system)
 set(TEST_DATA_DIR ${SYSTEM_DIR}/test_data)
+set(PKG_TEST_DATA_DIR ${TEST_DATA_DIR}/packages)
+set(PKG_GT_DATA_DIR ${SYSTEM_DIR}/gt_data/packages)
 set(BUILD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build)
 set(BIN_DIR ${BUILD_DIR}/bin)
 set(MMOC_DIR ${QSS_SOLVER_ROOT}/mmoc)
@@ -57,6 +59,8 @@ set_target_properties(mmoc-test PROPERTIES
 add_custom_target(run-mmoc-test
       COMMENT "Running MMOC tests."
       COMMAND cd ${TEST_DATA_DIR} && rm -rf *
+      COMMAND mkdir ${PKG_TEST_DATA_DIR}
+      COMMAND cp ${PKG_GT_DATA_DIR}/*.mo ${PKG_TEST_DATA_DIR}
       COMMAND cd ${BIN_DIR} && ./mmoc-test
 )
 
