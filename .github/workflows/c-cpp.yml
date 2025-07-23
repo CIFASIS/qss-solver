@@ -29,7 +29,7 @@ jobs:
       run: | 
         echo "$GITHUB_ENV"
         pwd
-        run: echo "MMOC_PATH=$(pwd)" >> $GITHUB_ENV
+        echo "MMOC_PATH=$(pwd)" >> $GITHUB_ENV
         echo "$MMOC_PATH"
 
     - name: Install deps.
