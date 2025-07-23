@@ -26,6 +26,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Workfow environment variables.
+      run: | 
+        echo "$MMOC_PATH"
+        echo "$MMOC_SRC"
+
     - name: Install deps.
       run: | 
         sudo apt-get update
