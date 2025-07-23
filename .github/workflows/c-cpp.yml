@@ -29,7 +29,7 @@ jobs:
     - name: Workfow environment variables.
       run: | 
         echo "$MMOC_PATH"
-        echo "$MMOC_SRC"
+        echo "$GITHUB_ENV"
 
     - name: Install deps.
       run: | 
