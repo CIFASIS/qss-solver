@@ -6,7 +6,6 @@ on:
     branches: [ qss-solver-dev ]
 
 env:
-  MMOC_PATH: ../../../../..
   MMOC_SRC: ../../../../../src
   MMOC_DOC: ../../../../../doc
   MMOC_LIBS: ../../../../../lib
@@ -28,9 +27,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: Workfow environment variables.
       run: | 
-        echo "$MMOC_PATH"
         echo "$GITHUB_ENV"
         pwd
+        run: echo "MMOC_PATH=$(pwd)" >> $GITHUB_ENV
+        echo "$MMOC_PATH"
 
     - name: Install deps.
       run: | 
