@@ -28,11 +28,14 @@ jobs:
     - name: Set the value
       id: step_one
       run: |
-        echo "action_state=$( pwd )" >> "$GITHUB_ENV"
+        echo "MMOC_PATH=$( pwd )" >> "$GITHUB_ENV"
+        echo "MMOC_SRC=$MMOC_PATH/src" >> "$GITHUB_ENV"
+
     - name: Use the value
       id: step_two
       run: |
-        printf '%s\n' "$action_state" # This will output 'yellow'
+        printf '%s\n' "$MMOC_PATH" # This will output 'yellow'
+        printf '%s\n' "$MMOC_SRC" # This will output 'yellow'
 
     - name: Install deps.
       run: | 
