@@ -26,8 +26,7 @@
 /// @addtogroup QssSolverITests
 /// @{
 
-class IPackageTests : public testing::TestWithParam<const char*> {
-};
+class IPackageTests : public testing::TestWithParam<const char*> {};
 
 TEST_P(IPackageTests, GenerateCode)
 {
@@ -35,12 +34,20 @@ TEST_P(IPackageTests, GenerateCode)
   std::cout << "Testing package: " << NAME << std::endl;
 
   const std::string TEST_DIR = "../..";
+  const std::string SRC_DIR = "../../../..";
+  const std::string GT_DATA_DIR = TEST_DIR + "/system/gt_data/packages/";
   const std::string TEST_DATA_DIR = TEST_DIR + "/system/test_data/packages/";
-  const std::string FOLDER_CMD = "mkdir -p " + TEST_DATA_DIR;
+
+  const std::string FOLDER_CMD = "mkdir -p " + TEST_DATA_DIR + NAME + "_test";
   std::cout << "Setup data folders for " << NAME << std::endl;
   std::system(FOLDER_CMD.c_str());
 
-  const std::string GT_DATA_DIR = TEST_DIR + "/system/gt_data/packages/";
+  const std::string MODEL_TEST = TEST_DATA_DIR + NAME + "_test.mo";
+  const std::string MMOC = SRC_DIR + "/mmoc/build/mmoc";
+  const std::string ARGS = " -o " + TEST_DATA_DIR + NAME + "_test -t ";
+  const std::string COMP_CMD = MMOC + ARGS + MODEL_TEST + " > " + TEST_DATA_DIR + NAME + ".log";
+  std::system(COMP_CMD.c_str());
+
   const std::string MODEL = GT_DATA_DIR + NAME + ".mo";
   const std::string TEST_CMD = TEST_DIR + "/system/test_package_results.sh " + NAME;
   const std::string RESULT_FILE = TEST_DATA_DIR + NAME + ".passed";

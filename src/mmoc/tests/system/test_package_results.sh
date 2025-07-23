@@ -38,4 +38,4 @@ for i in $TEST_FILES; do
     [ -f "$TEST_PACKAGE.failed" ] && exit
 done
 
-echo "Test passed" >> ./system/test_data/packages/$PACKAGE.passed
+echo "Test passed" >> $TEST_DIR/system/test_data/packages/$PACKAGE.passed
