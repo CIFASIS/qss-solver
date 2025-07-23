@@ -7,6 +7,7 @@ target_include_directories(qss-seq PUBLIC ${CMAKE_INSTALL_PREFIX}/include)
 set(CVODE_LIB "${CMAKE_INSTALL_PREFIX}/lib/libsundials_cvode.a")
 set(GSL_LIB "${CMAKE_INSTALL_PREFIX}/lib/libgsl.a")
 set(IDA_LIB "${CMAKE_INSTALL_PREFIX}/lib/libsundials_ida.a")
+set(PATOH_LIB "${CMAKE_INSTALL_PREFIX}/lib/libpatoh.a")
 
 add_custom_command(
     OUTPUT ${CVODE_LIB}  
@@ -40,11 +41,18 @@ add_custom_command(
 	COMMAND rm -rf ${CMAKE_CURRENT_SOURCE_DIR}/build/examples
 )
 
+add_custom_command(
+    OUTPUT ${PATOH_LIB}  
+    COMMAND ${CMAKE_COMMAND} -E echo "Installing Patoh."
+	COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/partitioners/patoh/Linux-x86_64/libpatoh.a ${CMAKE_INSTALL_PREFIX}/lib
+)
+
 add_custom_target(
     3rd-party-libs
     DEPENDS  ${CVODE_LIB}
     DEPENDS  ${GSL_LIB}
-    DEPENDS  ${IDA_LIB}   
+    DEPENDS  ${IDA_LIB}
+    DEPENDS  ${PATOH_LIB}   
 )
 
 add_dependencies(qss-seq 3rd-party-libs)
