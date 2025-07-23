@@ -44,7 +44,7 @@ add_custom_command(
 add_custom_command(
     OUTPUT ${PATOH_LIB}  
     COMMAND ${CMAKE_COMMAND} -E echo "Installing Patoh."
-	COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/partitioners/patoh/Linux-x86_64/libpatoh.a ${CMAKE_INSTALL_PREFIX}/lib
+	COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/partitioners/patoh/Linux-x86_64/libpatoh.a ${CMAKE_INSTALL_PREFIX}/lib
 )
 
 add_custom_target(
