@@ -12,8 +12,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set the value
-      id: step_one
+    - name: Set environment values.
       run: |
         echo "MMOC_PATH=$( pwd )" >> "$GITHUB_ENV"
         echo "MMOC_SRC=$( pwd )/src" >> "$GITHUB_ENV"
