@@ -5,19 +5,6 @@ on:
   pull_request:
     branches: [ qss-solver-dev ]
 
-env:
-  MMOC_SRC: ../../../../../src
-  MMOC_DOC: ../../../../../doc
-  MMOC_LIBS: ../../../../../lib
-  MMOC_BUILD: ../../../../../build
-  MMOC_MODELS: ../../../../../models
-  MMOC_OUTPUT: ../../../../../output
-  MMOC_BIN: ../../../../../bin
-  MMOC_PACKAGES: ../../../../../packages
-  MMOC_LIBRARIES: ../../../../../lib
-  MMOC_ENGINE: ../../../../../src/engine
-  MMOC_INCLUDE: ../../../../../src/usr/include
-
 jobs:
   build:
 
@@ -30,12 +17,16 @@ jobs:
       run: |
         echo "MMOC_PATH=$( pwd )" >> "$GITHUB_ENV"
         echo "MMOC_SRC=$( pwd )/src" >> "$GITHUB_ENV"
-
-    - name: Use the value
-      id: step_two
-      run: |
-        printf '%s\n' "$MMOC_PATH" # This will output 'yellow'
-        printf '%s\n' "$MMOC_SRC" # This will output 'yellow'
+        echo "MMOC_DOC=$( pwd )/doc" >> "$GITHUB_ENV"
+        echo "MMOC_LIBS=$( pwd )/lib" >> "$GITHUB_ENV"
+        echo "MMOC_BUILD=$( pwd )/build" >> "$GITHUB_ENV"
+        echo "MMOC_MODELS=$( pwd )/models" >> "$GITHUB_ENV"
+        echo "MMOC_OUTPUT=$( pwd )/output" >> "$GITHUB_ENV"
+        echo "MMOC_BIN=$( pwd )/bin" >> "$GITHUB_ENV"
+        echo "MMOC_PACKAGES=$( pwd )/packages" >> "$GITHUB_ENV"
+        echo "MMOC_LIBRARIES=$( pwd )/lib" >> "$GITHUB_ENV"
+        echo "MMOC_ENGINE=$( pwd )/src/engine" >> "$GITHUB_ENV"
+        echo "MMOC_INCLUDE=$( pwd )/src/usr/include" >> "$GITHUB_ENV"
 
     - name: Install deps.
       run: | 
