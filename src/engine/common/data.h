@@ -64,7 +64,10 @@ typedef enum {
   SD_CVODE_AM,
   SD_IDA,
   SD_mLIQSS,
-  SD_mLIQSS2
+  SD_mLIQSS2,
+  SD_CQSS1,
+  SD_CQSS2,
+  SD_CQSS3
 } SD_Solver;
 
 typedef enum {

@@ -24,6 +24,9 @@
 #include <common/data.h>
 #include <common/utils.h>
 #include <qss/methods/cqss.h>
+#include <qss/methods/cqss1.h>
+#include <qss/methods/cqss2.h>
+#include <qss/methods/cqss3.h>
 #include <qss/methods/liqss.h>
 #include <qss/methods/liqss2.h>
 #include <qss/methods/liqss3.h>
@@ -88,88 +91,53 @@ QA_quantizerState QA_QuantizerState()
   return p;
 }
 
-QA_quantizer QA_Quantizer(QSS_data simData, QSS_time simTime)
+QA_quantizer QA_Quantizer(QSS_data sim_data, QSS_time sim_time)
 {
   QA_quantizer p = checkedMalloc(sizeof(*p));
   p->state = QA_QuantizerState();
   p->ops = QA_QuantizerOps();
-  switch (simData->solver) {
+  switch (sim_data->solver) {
   case SD_QSS:
-    if (simData->params->lps > 0) {
-      QSS_PAR_init(p, simData, simTime);
-    } else {
-      QSS_init(p, simData, simTime);
-    }
+    QSS_MODULE_INIT(QSS, p, sim_data, sim_time);
     break;
   case SD_CQSS:
-    if (simData->params->lps > 0) {
-      CQSS_PAR_init(p, simData, simTime);
-    } else {
-      CQSS_init(p, simData, simTime);
-    }
+    QSS_MODULE_INIT(CQSS, p, sim_data, sim_time);
     break;
   case SD_LIQSS:
-    if (simData->params->lps > 0) {
-      LIQSS_PAR_init(p, simData, simTime);
-    } else {
-      LIQSS_init(p, simData, simTime);
-    }
+    QSS_MODULE_INIT(LIQSS, p, sim_data, sim_time);
     break;
   case SD_QSS2:
-    if (simData->params->lps > 0) {
-      QSS2_PAR_init(p, simData, simTime);
-    } else {
-      QSS2_init(p, simData, simTime);
-    }
+    QSS_MODULE_INIT(QSS2, p, sim_data, sim_time);
     break;
   case SD_LIQSS2:
-    if (simData->params->lps > 0) {
-      LIQSS2_PAR_init(p, simData, simTime);
-    } else {
-      LIQSS2_init(p, simData, simTime);
-    }
+    QSS_MODULE_INIT(LIQSS2, p, sim_data, sim_time);
     break;
   case SD_LIQSS_BDF:
-    if (simData->params->lps > 0) {
-      LIQSS_BDF_PAR_init(p, simData, simTime);
-    } else {
-      LIQSS_BDF_init(p, simData, simTime);
-    }
+    QSS_MODULE_INIT(LIQSS_BDF, p, sim_data, sim_time);
     break;
   case SD_QSS3:
-    if (simData->params->lps > 0) {
-      QSS3_PAR_init(p, simData, simTime);
-    } else {
-      QSS3_init(p, simData, simTime);
-    }
+    QSS_MODULE_INIT(QSS3, p, sim_data, sim_time);
     break;
   case SD_LIQSS3:
-    if (simData->params->lps > 0) {
-      LIQSS3_PAR_init(p, simData, simTime);
-    } else {
-      LIQSS3_init(p, simData, simTime);
-    }
+    QSS_MODULE_INIT(LIQSS3, p, sim_data, sim_time);
     break;
   case SD_QSS4:
-    if (simData->params->lps > 0) {
-      QSS4_PAR_init(p, simData, simTime);
-    } else {
-      QSS4_init(p, simData, simTime);
-    }
+    QSS_MODULE_INIT(QSS4, p, sim_data, sim_time);
     break;
   case SD_mLIQSS:
-    if (simData->params->lps > 0) {
-      mLIQSS_PAR_init(p, simData, simTime);
-    } else {
-      mLIQSS_init(p, simData, simTime);
-    }
+    QSS_MODULE_INIT(mLIQSS, p, sim_data, sim_time);
     break;
   case SD_mLIQSS2:
-    if (simData->params->lps > 0) {
-      mLIQSS2_PAR_init(p, simData, simTime);
-    } else {
-      mLIQSS2_init(p, simData, simTime);
-    }
+    QSS_MODULE_INIT(mLIQSS2, p, sim_data, sim_time);
+    break;
+  case SD_CQSS1:
+    QSS_MODULE_INIT(CQSS1, p, sim_data, sim_time);
+    break;
+  case SD_CQSS2:
+    QSS_MODULE_INIT(CQSS2, p, sim_data, sim_time);
+    break;
+  case SD_CQSS3:
+    QSS_MODULE_INIT(CQSS3, p, sim_data, sim_time);
     break;
   default:
     return NULL;

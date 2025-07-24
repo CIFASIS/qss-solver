@@ -60,6 +60,12 @@ SD_Solver _getSolver(const char *sol)
     return SD_IDA;
   } else if (!strcmp(sol, "CVODE_AM")) {
     return SD_CVODE_AM;
+  } else if (!strcmp(sol, "CQSS1")) {
+    return SD_CQSS1;
+  } else if (!strcmp(sol, "CQSS2")) {
+    return SD_CQSS2;
+  } else if (!strcmp(sol, "CQSS3")) {
+    return SD_CQSS3;
   }
   return SD_QSS;
 }
@@ -97,6 +103,7 @@ int _getOrder(SD_Solver sol)
   switch (sol) {
   case SD_QSS:
   case SD_CQSS:
+  case SD_CQSS1:
   case SD_LIQSS:
   case SD_mLIQSS:
   case SD_DASSL:
@@ -106,11 +113,13 @@ int _getOrder(SD_Solver sol)
   case SD_CVODE_AM:
     return 1;
   case SD_QSS2:
+  case SD_CQSS2:
   case SD_LIQSS2:
   case SD_mLIQSS2:
   case SD_LIQSS_BDF:
     return 2;
   case SD_QSS3:
+  case SD_CQSS3:
   case SD_LIQSS3:
     return 3;
   case SD_QSS4:

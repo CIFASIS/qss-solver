@@ -75,7 +75,6 @@ int Generator::generate()
     Files files(_model_instance, model, _flags);
     files.makefile();
     files.run();
-    files.plot();
     files.settings(model.annotations());
     if (model.annotations().solver() == Solver::LIQSS_BDF && !model.annotations().BDFPartition()->empty()) {
       files.bdfPartition();

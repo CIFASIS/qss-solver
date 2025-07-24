@@ -70,13 +70,17 @@ void Files::makefile()
   SymbolTable include;
   fname.append(".makefile");
   _writer->setFile(fname);
-  _writer->print("#Compiler and Linker");
+
+  _writer->print("# Target variables");
+  _writer->print((_flags.debug() ? "BUILD_TYPE ?= debug" : "BUILD_TYPE ?= release"));
+  _writer->print("");
+  _writer->print("# Compiler and Linker");
   _writer->print("CC    := gcc");
   _writer->print("");
-  _writer->print("#The Target Binary Program ");
+  _writer->print("# The Target Binary Program ");
   _writer->print("TARGET    := " + _fname);
   _writer->print("");
-  _writer->print("#Flags, Libraries and Includes");
+  _writer->print("# Flags, Libraries and Includes");
   includes << "LDFLAGS    :=-L " << Utils::instance().environmentVariable("MMOC_LIBS");
   SymbolTable tmp = _model.libraryDirectories();
   SymbolTable::iterator it;
@@ -119,9 +123,11 @@ void Files::makefile()
   for (string i = tmp.begin(it); !tmp.end(it); i = tmp.next(it)) {
     includes << " -l" << i;
   }
+  buffer << "INSTALL_DIR := " << Utils::instance().environmentVariable("MMOC_PATH");
+  _writer->print(buffer);
   _writer->print("RMS    := rm -rf");
   _writer->print("");
-  _writer->print("#Source Files");
+  _writer->print("# Source Files");
   buffer << "TARGET_SRC    := " << _fname << ".c";
   if (!_model.calledFunctions().empty()) {
     buffer << " " << _fname << "_functions.c";
@@ -137,7 +143,7 @@ void Files::makefile()
   }
   _writer->print("");
   if (_flags.hasObjects()) {
-    _writer->print("#Objects");
+    _writer->print("# Objects");
     _writer->print("OBJ = $(SRC:.c=.o)");
     _writer->print("\%.o: \%.c");
     _writer->print(_writer->indent(1) + "$(CC) $(INC) -c $< -o $@ $(CFLAGS)");
@@ -145,20 +151,21 @@ void Files::makefile()
   }
   _writer->print("default: $(TARGET)");
   _writer->print("");
-  buffer << "$(TARGET):";
+  buffer << "include " << Utils::instance().environmentVariable("MMOC_ENGINE") << "/qss/methods/Makefile.include";
+  _writer->print(buffer);
+  _writer->print("");
+  buffer << "$(TARGET): $(QSS_OBJS)";
   if (_flags.hasObjects()) {
     buffer << " $(OBJ)";
   }
   _writer->print(buffer);
-  buffer << _writer->indent(1) << "$(CC) $(INC)";
+  buffer << _writer->indent(1) << "$(CC) $(INC) $(QSS_OBJS)";
   if (_flags.hasObjects()) {
     buffer << " $(OBJ)";
   }
   buffer << " $(TARGET_SRC) $(CFLAGS) -o $@ -lm -lgsl -lconfig -lgfortran";
-#ifdef __linux__
   buffer << " -lpthread -lmetis -lscotch -lscotcherr -lpatoh -lrt -lsundials_cvode -lsundials_ida -lsundials_nvecserial -llapack -latlas "
             "-lf77blas -lklu";
-#endif
   buffer << " -lgslcblas" << includes.str();
   if (_model.annotations().parallel()) {
     buffer << " -DQSS_PARALLEL";
@@ -193,72 +200,6 @@ void Files::run()
 #ifdef __linux__
   chmod(fname.c_str(), S_IRUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 #endif
-}
-
-string Files::variablePlotSettings()
-{
-  stringstream buffer;
-  /*  if(deps->hasStates())
-    {
-      buffer << " with lines title \"" << varName << "\"";
-    }
-    else
-    {
-      buffer << " with steps title \"" << varName << "\"";
-    }*/
-  return buffer.str();
-}
-
-void Files::plot()
-{
-  /*  if(!_model.outputNbr()) {
-      return;
-    }
-    stringstream buffer;
-    string fname = _fname;
-    fname.append(".plt");
-    _writer->setFile(fname);
-    _writer->print("set terminal wxt");
-    _writer->print("set title \"" + _fname + "\"");
-    _writer->print("set ylabel \"State Variables\"");
-    _writer->print("set xlabel \"Time\"");
-    _writer->print("set grid");
-    buffer << "plot ";
-    EquationTable outputs = _model.outputs();
-    int outs = 0, total = _model.outputNbr();
-    VarSymbolTable vt = _model.symbols();
-    EquationTable::iterator it;
-    for (Equation out = outputs.begin(it); !outputs.end(it); out = outputs.next(it)) {
-      Index index = outputs->key();
-      string varName;
-      Dependencies deps = eq->exp()->deps();
-      if(out.hasRange()) {
-        Option<Range> range = out.range();
-        for(int i = range-> ex.begin(); i <= index.end(); i++)
-        {
-          varName = eq->exp()->print();
-          buffer << "\"" << varName << ".dat\""
-              << _variableSettings(deps, varName);
-          if(i + 1 <= index.end())
-          {
-            buffer << ",";
-          }
-        }
-      }
-      else
-      {
-        varName = eq->exp()->print("");
-        buffer << "\"" << varName << ".dat\"" << _variableSettings(deps, varName);
-      }
-      outs += index.range();
-      if(outs < total)
-      {
-        buffer << ",";
-      }
-    }
-    _writer->print(&buffer);
-    _writer->print("pause mouse close");
-    _writer->clearFile();*/
 }
 
 void Files::settings(ModelAnnotation annotation)
