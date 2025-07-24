@@ -38,13 +38,11 @@ class Files {
   ~Files() = default;
   void makefile();
   void run();
-  void plot();
   void settings(IR::ModelAnnotation annotation);
   void graph();
   void bdfPartition();
 
   protected:
-  std::string variablePlotSettings();
   void printList(const list<string>& ann, const string& tag) const;
   void addAnnotation(const IR::ModelAnnotation& annotation, const string& mmo_name, IR::IntegerAnnotations name);
 

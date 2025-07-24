@@ -29,7 +29,7 @@ RunDlg::RunDlg(QWidget *parent) : QDialog(parent)
   setupUi(this);
   _utils = new Utils();
   _validate = new QDoubleValidator();
-  
+
   // Set validators for input fields
   _start_time->setValidator(_validate);
   _stop_time->setValidator(_validate);
@@ -39,32 +39,23 @@ RunDlg::RunDlg(QWidget *parent) : QDialog(parent)
   _min_step->setValidator(_validate);
   _der_delta->setValidator(_validate);
   _zc_hyst->setValidator(_validate);
-  
+
   _extended_frame->setVisible(false);
   _debug_chk->setCheckState(Qt::Unchecked);
-  
+
   on__parallel_currentIndexChanged(_parallel->currentIndex());
-  
+
   connect(_test_methods_cbx, &QCheckBox::stateChanged, this, &RunDlg::updateTestMethods);
-  
+
   _test_methods_cbx->setVisible(false);
   _test_methods_lbl->setVisible(false);
 }
 
-void RunDlg::on__show_all_stateChanged(int state)
-{
-  _extended_frame->setVisible(state == Qt::Checked);
-}
+void RunDlg::on__show_all_stateChanged(int state) { _extended_frame->setVisible(state == Qt::Checked); }
 
-void RunDlg::on__comm_interval_currentIndexChanged(int index)
-{
-  _period->setEnabled(index != 0);
-}
+void RunDlg::on__comm_interval_currentIndexChanged(int index) { _period->setEnabled(index != 0); }
 
-void RunDlg::on__dt_synch_currentIndexChanged(int index)
-{
-  _dt_lbl->setText(index == 0 ? "Dt tolerance" : "Dt value");
-}
+void RunDlg::on__dt_synch_currentIndexChanged(int index) { _dt_lbl->setText(index == 0 ? "Dt tolerance" : "Dt value"); }
 
 void RunDlg::on__parallel_currentIndexChanged(int index)
 {
@@ -85,93 +76,87 @@ void RunDlg::on__parallel_currentIndexChanged(int index)
 
 int RunDlg::getComboBoolIdx(QString str)
 {
-  static const QStringList types = { "false", "true" };
+  static const QStringList types = {"false", "true"};
   return types.indexOf(str.trimmed());
 }
 
 QString RunDlg::getComboBoolString(int idx)
 {
-  static const QStringList types = { "false", "true" };
+  static const QStringList types = {"false", "true"};
   return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
 }
 
 int RunDlg::getPartitionMethodIdx(QString str)
 {
-  static const QStringList types = { "Metis", "HMetis", "Scotch", "Patoh", "Manual" };
+  static const QStringList types = {"Metis", "HMetis", "Scotch", "Patoh", "Manual"};
   return types.indexOf(str.trimmed());
 }
 
 QString RunDlg::getPartitionMethodString(int idx)
 {
-  static const QStringList types = { "Metis", "HMetis", "Scotch", "Patoh", "Manual" };
+  static const QStringList types = {"Metis", "HMetis", "Scotch", "Patoh", "Manual"};
   return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
 }
 
 int RunDlg::getJacobianIdx(QString str)
 {
-  static const QStringList types = { "Sparse", "Dense" };
+  static const QStringList types = {"Sparse", "Dense"};
   return types.indexOf(str.trimmed());
 }
 
 QString RunDlg::getJacobianString(int idx)
 {
-  static const QStringList types = { "Sparse", "Dense" };
+  static const QStringList types = {"Sparse", "Dense"};
   return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
 }
 
 int RunDlg::getDtSynchIdx(QString str)
 {
-  static const QStringList types = { "SD_DT_Fixed", "SD_DT_Asynchronous" };
+  static const QStringList types = {"SD_DT_Fixed", "SD_DT_Asynchronous"};
   return types.indexOf(str.trimmed());
 }
 
 QString RunDlg::getDtSynchString(int idx)
 {
-  static const QStringList types = { "SD_DT_Fixed", "SD_DT_Asynchronous" };
+  static const QStringList types = {"SD_DT_Fixed", "SD_DT_Asynchronous"};
   return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
 }
 
 int RunDlg::getSchedulerIdx(QString str)
 {
-  static const QStringList types = { "ST_Binary", "ST_Random", "ST_Linear" };
+  static const QStringList types = {"ST_Binary", "ST_Random", "ST_Linear"};
   return types.indexOf(str.trimmed());
 }
 
 QString RunDlg::getSchedulerString(int idx)
 {
-  static const QStringList types = { "ST_Binary", "ST_Random", "ST_Linear" };
+  static const QStringList types = {"ST_Binary", "ST_Random", "ST_Linear"};
   return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
 }
 
 int RunDlg::getSolverIdx(QString str)
 {
-  static const QStringList solvers = {
-    "QSS", "CQSS", "LIQSS", "QSS2", "LIQSS2", "LIQSS_BDF", 
-    "QSS3", "LIQSS3", "QSS4", "DASSL", "DOPRI", 
-    "CVODE_BDF", "CVODE_AM", "IDA", "mLIQSS", "mLIQSS2"
-  };
+  static const QStringList solvers = {"QSS",   "CQSS",      "LIQSS",    "QSS2", "LIQSS2", "LIQSS_BDF", "QSS3",  "LIQSS3", "QSS4", "DASSL",
+                                      "DOPRI", "CVODE_BDF", "CVODE_AM", "IDA",  "mLIQSS", "mLIQSS2",   "CQSS1", "CQSS2",  "CQSS3"};
   return solvers.indexOf(str.trimmed());
 }
 
 QString RunDlg::getSolverString(int idx)
 {
-  static const QStringList solvers = {
-    "QSS", "CQSS", "LIQSS", "QSS2", "LIQSS2", "LIQSS_BDF", 
-    "QSS3", "LIQSS3", "QSS4", "DASSL", "DOPRI", 
-    "CVODE_BDF", "CVODE_AM", "IDA", "mLIQSS", "mLIQSS2"
-  };
+  static const QStringList solvers = {"QSS",   "CQSS",      "LIQSS",    "QSS2", "LIQSS2", "LIQSS_BDF", "QSS3",  "LIQSS3", "QSS4", "DASSL",
+                                      "DOPRI", "CVODE_BDF", "CVODE_AM", "IDA",  "mLIQSS", "mLIQSS2",   "CQSS1", "CQSS2",  "CQSS3"};
   return (idx >= 0 && idx < solvers.size()) ? solvers[idx] : QString();
 }
 
 int RunDlg::getOutputTypeIdx(QString str)
 {
-  static const QStringList output_types = { "CI_Step", "CI_Sampled", "CI_Dense" };
+  static const QStringList output_types = {"CI_Step", "CI_Sampled", "CI_Dense"};
   return output_types.indexOf(str.trimmed());
 }
 
 QString RunDlg::getOutputTypeString(int idx)
 {
-  static const QStringList output_types = { "CI_Step", "CI_Sampled", "CI_Dense" };
+  static const QStringList output_types = {"CI_Step", "CI_Sampled", "CI_Dense"};
   return (idx >= 0 && idx < output_types.size()) ? output_types[idx] : QString();
 }
 
