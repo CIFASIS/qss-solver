@@ -129,7 +129,6 @@ void MmomeGui::enableActions(bool f)
   actionRun_2->setEnabled(f);
   actionSettings->setEnabled(f);
   actionCompile->setEnabled(!f);
-  actionDebug->setEnabled(f);
   actionLog->setEnabled(f);
   actionGraphics->setEnabled(f);
   actionClear_Log->setEnabled(f);
@@ -150,7 +149,6 @@ void MmomeGui::addToolBarItems()
   _model_toolbar->addAction(actionRun);
   _model_toolbar->addAction(actionRun_2);
   _model_toolbar->addAction(actionCompile);
-  _model_toolbar->addAction(actionDebug);
   _model_toolbar->addSeparator();
   _model_toolbar->addAction(actionLog);
   _model_toolbar->addAction(actionGraphics);
@@ -256,14 +254,6 @@ void MmomeGui::on_action_Load_triggered()
     return;
   }
   loadFile(fileName);
-}
-
-void MmomeGui::on_actionDebug_triggered()
-{
-  if (Editor::instance()->activeBaseFileName().isEmpty()) return;
-  _compiler_msg->clear();
-  enableActions(false);
-  compile(true);
 }
 
 void MmomeGui::on_actionMicroModelica_Language_Scpefication_triggered()
