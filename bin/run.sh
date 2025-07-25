@@ -42,7 +42,7 @@ else
     ./qss-solver
   else
     # Previous installation and different version
-    OW=$(zenity --question --text "A different version of MicroModelica Solver is found in your home folder (version: $VERHOME). Do you want to overwrite it with version: $VEROPT?\nNOTE: Your models will not be lost."; echo $?)
+    OW=$(zenity --question --text "A different version of QSS Solver is found in your home folder (version: $VERHOME). Do you want to overwrite it with version: $VEROPT?\nNOTE: Your models will not be lost."; echo $?)
     
     if [ $OW == 0 ]; then 
       cp -a -f /opt/qss-solver/* "$HOME/qss-solver"

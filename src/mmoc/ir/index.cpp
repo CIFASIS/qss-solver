@@ -808,10 +808,10 @@ bool Range::checkRangeVariable(string var, set<string>& added_vars, vector<strin
   return false;
 }
 
-bool Range::checkRangeVariables(string ife_idx, string ifr_idx, set<string>& added_vars, vector<string>& old_keys, int& pos)
+void Range::checkRangeVariables(string ife_idx, string ifr_idx, set<string>& added_vars, vector<string>& old_keys, int& pos)
 {
   if ((!isVariable(ife_idx) || ife_idx.empty()) && (!isVariable(ifr_idx) || ifr_idx.empty())) {
-    return true;
+    return;
   }
   bool found = false;
   if (isVariable(ife_idx)) {
@@ -820,7 +820,7 @@ bool Range::checkRangeVariables(string ife_idx, string ifr_idx, set<string>& add
   if (!found && isVariable(ifr_idx)) {
     found = checkRangeVariable(ifr_idx, added_vars, old_keys, pos);
   }
-  return found;
+  assert(found);
 }
 
 void Range::replace(Index ife_usage, Index ifr_usage)
@@ -867,7 +867,7 @@ void Range::replace(Index ife_usage, Index ifr_usage)
   vector<string> old_keys;
   int pos = 1;
   for (pair<string, string> vars : used_variables) {
-    assert(checkRangeVariables(vars.first, vars.second, added_vars, old_keys, pos));
+    checkRangeVariables(vars.first, vars.second, added_vars, old_keys, pos);
   }
   for (string key : old_keys) {
     _ranges.remove(key);

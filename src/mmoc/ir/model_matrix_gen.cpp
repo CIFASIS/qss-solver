@@ -120,6 +120,7 @@ void ModelMatrixGenerator<NT, N, Config>::printMatrix(MATRIX::Method method, MAT
       Index ife_range_idx = ife_idx;
       ifr_idx = ifr_idx.replace(range);
       ife_idx = ife_idx.replace(range);
+
       if (deps_code.find(ifr_id) == deps_code.end()) {
         MatrixCode dep_code;
         deps_code[ifr_id] = dep_code;

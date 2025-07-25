@@ -1,0 +1,9 @@
+target_sources(
+    mmoc-test
+    PRIVATE
+        algebraics_test.cpp
+        array_use_test.cpp
+        autonomous_test.cpp
+        called_functions_test.cpp
+        convert_cont_red_test.cpp
+)

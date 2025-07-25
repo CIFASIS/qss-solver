@@ -19,7 +19,7 @@
 
 #include "qss_par_integrator.h"
 
-#include "../common/simulator.h"
+#include <common/simulator.h>
 #include <common/utils.h>
 #include <qss/parallel/qss_dt.h>
 #include <qss/qss_frw.h>

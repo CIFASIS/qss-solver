@@ -5,58 +5,77 @@ on:
   pull_request:
     branches: [ qss-solver-dev ]
 
-env:
-  MMOC_PATH: ../../..
-  MMOC_SRC: ../../../src
-  MMOC_DOC: ../../../doc
-  MMOC_LIBS: ../../../lib
-  MMOC_BUILD: ../../../build
-  MMOC_MODELS: ../../../models
-  MMOC_OUTPUT: ../../../output
-  MMOC_BIN: ../../../bin
-  MMOC_PACKAGES: ../../../packages
-  MMOC_LIBRARIES: ../../../lib
-  MMOC_ENGINE: ../../../src/engine
-  MMOC_INCLUDE: ../../../src/usr/include
-
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v2
+    - name: Set environment values.
+      run: |
+        echo "MMOC_PATH=$( pwd )" >> "$GITHUB_ENV"
+        echo "MMOC_SRC=$( pwd )/src" >> "$GITHUB_ENV"
+        echo "MMOC_DOC=$( pwd )/doc" >> "$GITHUB_ENV"
+        echo "MMOC_LIBS=$( pwd )/lib" >> "$GITHUB_ENV"
+        echo "MMOC_BUILD=$( pwd )/build" >> "$GITHUB_ENV"
+        echo "MMOC_MODELS=$( pwd )/models" >> "$GITHUB_ENV"
+        echo "MMOC_OUTPUT=$( pwd )/output" >> "$GITHUB_ENV"
+        echo "MMOC_BIN=$( pwd )/bin" >> "$GITHUB_ENV"
+        echo "MMOC_PACKAGES=$( pwd )/packages" >> "$GITHUB_ENV"
+        echo "MMOC_LIBRARIES=$( pwd )/lib" >> "$GITHUB_ENV"
+        echo "MMOC_ENGINE=$( pwd )/src/engine" >> "$GITHUB_ENV"
+        echo "MMOC_INCLUDE=$( pwd )/src/usr/include" >> "$GITHUB_ENV"
+
     - name: Install deps.
       run: | 
         sudo apt-get update
         sudo apt-get install bison++
-        sudo apt-get install boost1.71
         sudo apt-get install cmake 
         sudo apt-get install g++
         sudo apt-get install gfortran
         sudo apt-get install gnuplot
         sudo apt-get install libatlas-base-dev
+        sudo apt-get install libboost1.83-dev
         sudo apt-get install libcln-dev
         sudo apt-get install libconfig-dev
         sudo apt-get install libginac-dev
         sudo apt-get install libgsl-dev
+        sudo apt-get install libmetis-dev
         sudo apt-get install libsbml5-dev
         sudo apt-get install libscotch-dev
         sudo apt-get install libsuitesparse-dev
         sudo apt-get install pkgconf
-        sudo apt-get install python
-        sudo apt-get install qt5-default
+        sudo apt-get install python3
+        sudo apt-get install qtbase5-dev
+        sudo apt-get install qtbase5-dev-tools
         sudo apt-get install rapidjson-dev
-          
-    - name: Build
-      working-directory: ./src
-      run: make repo_checkout=https
 
-    - name: Install
-      working-directory: ./src
-      run: make install
-    
-    - name: Tests
+    - name: Install local deps.
+      working-directory: ./src/mmoc/3rd-party/flex
+      run: | 
+        sudo apt-get install ./flex-old.deb
+
+    - name: Create build folder.
       working-directory: ./src
       run: |
-        make test
+        mkdir -p build
+
+    - name: Configure
+      working-directory: ./src/build
+      run: |
+        cmake ..
+
+    - name: Build
+      working-directory: ./src/build
+      run: |
+        make
+
+    - name: Install
+      working-directory: ./src/build
+      run: |
+        make install
+
+    - name: Tests
+      working-directory: ./src/build
+      run: make test

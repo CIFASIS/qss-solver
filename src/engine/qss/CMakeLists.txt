@@ -1,0 +1,29 @@
+target_sources(
+    qss-seq
+    PRIVATE
+        qss_bdf.c
+        qss_binary.c
+        qss_binary_random.c
+        qss_biorica.c
+        qss_commands.c
+        qss_data.c
+        qss_file.c
+        qss_frw.c
+        qss_frw_imp.c
+        qss_graph.c
+        qss_hyb_integrator.c
+        qss_integrator.c
+        qss_linear.c
+        qss_log.c
+        qss_memory.c
+        qss_output.c
+        qss_quantizer.c
+        qss_sampled.c
+        qss_scheduler.c
+        qss_seq_integrator.c
+        qss_simulator.c
+        qss_step.c
+)
+
+add_subdirectory(methods)
+add_subdirectory(parallel)
