@@ -76,4 +76,6 @@ class Utils {
   QString appFlagName(AppFlags flag);
   QString appDirsName(AppDirs dir);
   QString appCommandsName(AppCmds cmd);
+
+  QSettings _settings;
 };
