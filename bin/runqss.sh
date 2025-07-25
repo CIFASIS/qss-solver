@@ -19,12 +19,26 @@
 #       VERSION: 4.5.3
 #===================================================================================
 
+# Check if the required parameters are provided
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0 <FILE> <FOLDER> <PARALLEL>"
+    exit 1
+fi
+
 FILE=$1
-
 FOLDER=$2
-
 PARALLEL=$3
 
-$MMOC_BIN/compile.sh $FILE $FOLDER $PARALLEL
+# Compile the MicroModelica file
+if ! $MMOC_BIN/compile.sh "$FILE" "$FOLDER" "$PARALLEL"; then
+    echo "Compilation failed for file: $FILE"
+    exit 1
+fi
 
-$MMOC_BIN/simulate.sh $FILE $PARALLEL
+# Simulate the compiled file
+if ! $MMOC_BIN/simulate.sh "$FILE" "$PARALLEL"; then
+    echo "Simulation failed for file: $FILE"
+    exit 1
+fi
+
+echo "Compilation and simulation completed successfully."
