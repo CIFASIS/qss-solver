@@ -166,58 +166,63 @@ These are generic installation instructions.
 ## Dependences
 
 In order to be able to install and compile the QSS Solver, 
-the following dependencies must be installed (**Ubuntu 22.04**): 
+the following dependencies must be installed (**Ubuntu 24.04**): 
 
 * bison++
-* libboost-dev (boost1.71 in **Ubuntu 20.04**)
 * cmake 
 * g++
-* gfortran 
+* gfortran
 * gnuplot
 * libatlas-base-dev
+* libboost1.83-dev
 * libcln-dev
 * libconfig-dev
 * libginac-dev
 * libgsl-dev
+* libmetis-dev
 * libsbml5-dev
 * libscotch-dev
 * libsuitesparse-dev
 * pkgconf
-* qtbase5-dev qt5-qmake (qt5-default in **Ubuntu 20.04**)
+* python3
+* qtbase5-dev
+* qtbase5-dev-tools
+* rapidjson-dev
+
+Additionally, `flex-old` must be installed:
+`sudo apt install ${QSS_SOLVER_ROOT}/src/mmoc/3rd-party/flex/flex-old.deb`
 
 ## Basic Installation
 
 The simplest way to compile this package is:
 
-1. `cd` to the directory containing the package's source code (**src**) and type
-		 `make` to compile the binaries and libraries.
+1. `cd` to the directory containing the package's source code (**src**) and create
+		 `build` directory to compile the binaries and libraries.
 	
-2. Type `make install` to install all the binary files and the libraries.
-		 The binaries are located in the bin folder and the libraries are located
-		 in the lib folder. 
+2. `cd` to the `build` directory and run `cmake ..` to install all the binary files and the libraries.
 	
-3. You can remove the program binaries and object files from the
-		 source code directory by typing `make clean`.  
+3. Type `make` to build the libraries and binary files.
 
-## Makefile options
+4. Type `make install` to install the package, the binaries are located in the bin folder and the libraries 
+		are located in the lib folder. 
 
-The makefile script accepts the following options:
+## Makefile options and targets
 
-* MODE = <Debug|Release> 	When set to Debug (default), adds the compiler's debug flags.
-	
-## Makefile targets
-
-The makefile script accepts the following targets:
-
-* **qss-engine**: 		Builds the QSS solver libraries.
-* **mmo-compiler**: 	Builds the MicroModelica compiler. 	
-* **qss-solver-gui**:	Builds the graphic interface.
-* **qss-user-libs**:	Builds the user packages included in this distribution.
-* **mmo-interfaces**:	Builds the SBML-MicroModelica translator.
-* **qss-solver-doc**:	Builds the documentation for the QSS solver libraries, the MicroModelica compiler and the QSS solver GUI.
-				 
+* Type `make help` to check the available targets and compile options.
 
 ## Changelog
+
+## [4.5.0] - 04-08-2025
+
+### Added
+- **New CQSS1, CQSS2 and CQSS3** development `QSS` methods that can be edited witout having to recompile the simulation engine.
+- **New Python plot script** not the default option, to enable it add `plot_data.py` as the plot command in the GUI settings.
+- **New Python environment** for the GUI that loads all the required packages.
+- **CMake build system** instead of plain make files.
+
+### Changed
+- Changed default install path.
+- Updated/Improved all binary scripts.
 
 ## [4.5.3] - 29-01-2025
 
@@ -248,17 +253,6 @@ The makefile script accepts the following targets:
 ### Changed
 - Fixed model function includes in generated C code.
 - Window geometry changes are now saved.
-
-## [4.4.0] - 28-08-2024
-
-### Added
-- **Allow discrete Integer** definitions to be able to use them as array indexes.
-- **New MMO_CVODEMaxOder annotation** to select the max order used in `CVODE` solver.
-- **New MMO_XOutput annotation** that allows selecting state variable output (exerimental).
-
-### Changed
-- Use time variable in initial code.
-- Fixed QSS first order method recompute next time.
 
 ## Licensing
 
