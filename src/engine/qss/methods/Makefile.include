@@ -1,0 +1,49 @@
+# The Directories, Source, Includes, Objects, Binary
+QSS_METHODS_DIR 	:= $(INSTALL_DIR)/src/engine/qss/methods
+QSS_PAR_METHODS_DIR	:= parallel
+BUILD_DIR    	:= $(QSS_METHODS_DIR)/build/$(BUILD_TYPE)/qss/methods
+METHODS_CFLAGS 		:= -Wall -msse2 -mfpmath=sse -O2
+ifeq ($(BUILD_TYPE),debug)
+METHODS_CFLAGS 		:= -Wall -msse2 -mfpmath=sse -g -DDEBUG
+endif
+
+# Source files.
+METHODS_SRC=$(QSS_METHODS_DIR)/cqss1.c \
+			$(QSS_METHODS_DIR)/cqss2.c \
+			$(QSS_METHODS_DIR)/cqss3.c
+
+# Objects
+SEQ_METHODS_OBJ=$(addprefix $(BUILD_DIR)/, $(notdir $(METHODS_SRC:.c=.o)))
+
+$(SEQ_METHODS_OBJ): | create-folders
+
+QSS_OBJS = $(SEQ_METHODS_OBJ)
+
+# Parallel Objects
+
+PAR_METHODS_OBJ=$(addprefix $(BUILD_DIR)/$(QSS_PAR_METHODS_DIR)/, $(notdir $(METHODS_SRC:.c=.o)))
+
+$(PAR_METHODS_OBJ): | create-folders 
+
+QSS_OBJS += $(PAR_METHODS_OBJ)
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)/parallel
+
+# Make dependencies
+DEPS = $(QSS_OBJS:.o=.d)
+
+# Build Objects.
+$(BUILD_DIR)/$(QSS_PAR_METHODS_DIR)/%.o: $(QSS_METHODS_DIR)/%.c
+	$(CC) $(INC) $(METHODS_CFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+	$(CC) $(INC) $(METHODS_CFLAGS) -DQSS_PARALLEL -c $< -o $@ 
+
+$(BUILD_DIR)/%.o: $(QSS_METHODS_DIR)/%.c
+	$(CC) $(INC) $(METHODS_CFLAGS) -MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+	$(CC) $(INC) $(METHODS_CFLAGS) -c $< -o $@ 
+
+create-folders::
+	@mkdir -p $(BUILD_DIR)
+
+-include $(DEPS)

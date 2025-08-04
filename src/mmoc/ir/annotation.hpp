@@ -48,7 +48,10 @@ enum class Solver {
   CVODE_AM,
   IDA,
   mLIQSS,
-  mLIQSS2
+  mLIQSS2,
+  CQSS1,
+  CQSS2,
+  CQSS3
 };
 
 enum class DT_Synch { DT_Fixed, DT_Asynchronous };

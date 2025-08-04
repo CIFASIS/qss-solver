@@ -115,11 +115,19 @@ const QStringList MmoHighlighter::_model_functions = {"abs",     "acos",   "asin
 
 const QStringList MmoHighlighter::_model_annotations = {"annotation", "experiment"};
 
-const QStringList MmoHighlighter::_model_qss_tags = {
-    "CI_Dense",    "CI_Sampled", "CI_Step",   "CQSS",      "CVODE_AM",  "CVODE_BDF", "DASSL",     "Dense",  "DOPRI",  "false",
-    "HMetis",      "IDA",        "KaHIP",     "LIQSS",     "LIQSS2",    "LIQSS3",    "LIQSS_BDF", "Manual", "Metis",  "mLIQSS",
-    "mLIQSS2",     "MTPL",       "MTPL_IT",   "Patoh",     "QSS",       "QSS2",      "QSS3",      "QSS4",   "Scotch", "SD_DT_Asynchronous",
-    "SD_DT_Fixed", "Sparse",     "ST_Binary", "ST_Linear", "ST_Random", "true"};
+const QStringList MmoHighlighter::_model_qss_tags = {"CI_Dense",    "CI_Sampled", "CI_Step",
+                                                     "CQSS",        "CQSS1",      "CQSS2",
+                                                     "CQSS3",       "CVODE_AM",   "CVODE_BDF",
+                                                     "DASSL",       "Dense",      "DOPRI",
+                                                     "false",       "HMetis",     "IDA",
+                                                     "KaHIP",       "LIQSS",      "LIQSS2",
+                                                     "LIQSS3",      "LIQSS_BDF",  "Manual",
+                                                     "Metis",       "mLIQSS",     "mLIQSS2",
+                                                     "MTPL",        "MTPL_IT",    "Patoh",
+                                                     "QSS",         "QSS2",       "QSS3",
+                                                     "QSS4",        "Scotch",     "SD_DT_Asynchronous",
+                                                     "SD_DT_Fixed", "Sparse",     "ST_Binary",
+                                                     "ST_Linear",   "ST_Random",  "true"};
 
 const QStringList MmoHighlighter::_log_keywords = {"-",          "Additional",  "Allocated",      "allocated",   "Average",
                                                    "Begin",      "by",          "changes",        "cost",        "CPU",
