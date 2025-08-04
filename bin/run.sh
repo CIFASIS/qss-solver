@@ -23,7 +23,7 @@
 if [ ! -d "$HOME/qss-solver" ]; then
   # No previous installation and first run
   echo "Installing QSS Solver..."
-  cp -a /opt/qss-solver "$HOME/qss-solver"
+  cp -a /opt/CIFASIS-CONICET/qss-solver "$HOME/qss-solver"
   rm "$HOME/qss-solver/bin/run.sh"
   cd "$HOME/qss-solver/bin" || exit
   echo "Registering environment variables..."
