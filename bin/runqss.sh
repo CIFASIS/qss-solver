@@ -16,7 +16,7 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 4.5.3
+#       VERSION: 5.0.0
 #===================================================================================
 
 # Check if the required parameters are provided
