@@ -42,7 +42,6 @@ class MmomeGui : public QMainWindow, public Ui::MmomeGuiForm {
   void on_actionClear_Log_triggered();
   void on_actionClear_Messages_triggered();
   void on_actionCompile_triggered();
-  void on_actionDebug_triggered();
   void on_actionExit_triggered();
   void on_actionGraphics_triggered();
   void on_actionImport_triggered();
@@ -92,9 +91,10 @@ class MmomeGui : public QMainWindow, public Ui::MmomeGuiForm {
   bool plotScript();
   void run(QString name);
   void selectVariables();
+  QString pythonScriptArgs();
+  QString getPlotFileName(QString base_name, QString variable);
 
   ComboBoxDelegate *_cboxd;
-  QString _iniFile;
   TreeModel *_model;
   QProcess *_proc;
   QProcess *_plot;

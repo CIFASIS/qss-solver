@@ -16,14 +16,20 @@
 #         NOTES: --- 
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 4.5.3
+#       VERSION: 5.0.0
 #===================================================================================
 
-OPTIONS=$1
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 [OPTIONS] <file>"
+    exit 1
+fi
 
-FILE=$2
-
+OPTIONS="$1"
+FILE="$2"
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MMOC_LIBS
 
-./translate-sbml $OPTIONS $FILE
+if ! ./translate-sbml $OPTIONS "$FILE"; then
+    echo "Error: Translation failed."
+    exit 1
+fi

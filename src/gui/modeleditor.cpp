@@ -116,8 +116,9 @@ void ModelEditor::editModel(QString name)
   CodeEditor *_textEditor = new CodeEditor(this);
   QString _mname(tr("New Model"));
   QFile file(name);
-  QSettings settings(QCoreApplication::applicationDirPath() + "/qss-solver.ini", QSettings::IniFormat);
-  int _tab = settings.value("Editor/tab", "Value not found in file qss-solver.ini").toInt();
+  QSettings settings;
+  int _tab = settings.value("Editor/tab", "2").toInt();
+
   _textEditor->setTabStopDistance(_tab);
   if (!file.fileName().isEmpty()) {
     QFileInfo fi(name);

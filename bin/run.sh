@@ -5,11 +5,11 @@
 #
 # 				USAGE: run.sh  
 #
-# 	DESCRIPTION: Runs the QSS Solver GUI, if no previous installation is found
-# 							 then the qss-solver folder is created an all the corresponding files
+# 	DESCRIPTION: Runs the QSS Solver GUI. If no previous installation is found,
+# 							 then the qss-solver folder is created and all the corresponding files
 # 							 are copied there. If a previous installation with the same version
 # 						   is found, then run the qss-solver app in the default user
-# 							 folder, otherwise ask the user for an application update.
+# 							 folder; otherwise, ask the user for an application update.
 #
 #    PARAMETERS: ---
 #       OPTIONS: --- 
@@ -17,40 +17,40 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 4.5.3
+#       VERSION: 5.0.0
 #===================================================================================
 
-
-if [ ! -d $HOME/qss-solver ]
-then
-  # No previous instalation and first run
-	echo "Installing MicroModelica Solver..."
-	cp -a /opt/qss-solver $HOME/qss-solver
-	rm $HOME/qss-solver/bin/run.sh
-  cd $HOME/qss-solver/bin
-	echo "Register environment variables..."
+if [ ! -d "$HOME/qss-solver" ]; then
+  # No previous installation and first run
+  echo "Installing QSS Solver..."
+  cp -a /opt/CIFASIS-CONICET/qss-solver "$HOME/qss-solver"
+  rm "$HOME/qss-solver/bin/run.sh"
+  cd "$HOME/qss-solver/bin" || exit
+  echo "Registering environment variables..."
   ./registervars.sh
-	echo "Done."
+  echo "Installation complete."
+  export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${MMOC_BIN}/lib"
   ./qss-solver
 else
-  VEROPT=`cat /opt/qss-solver/version`
-  VERHOME=`cat $HOME/qss-solver/version`
-  if [  "$VEROPT" == "$VERHOME" ];
-  then
-    # Previous instalation and same version
-    cd $HOME/qss-solver/bin
+  VEROPT=$(cat /opt/CIFASIS-CONICET/qss-solver/version)
+  VERHOME=$(cat "$HOME/qss-solver/version")
+  export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${MMOC_BIN}/lib"
+  
+  if [ "$VEROPT" == "$VERHOME" ]; then
+    # Previous installation and same version
+    cd "$HOME/qss-solver/bin" || exit
     ./qss-solver
   else
-    # Previous instalation and different version
-    OW=`zenity --question --text "There is a different version of MicroModelica Solver on your home folder (ver. $VERHOME). Do you wish to overwrite it with ver. $VEROPT?\nNOTE: you will not lose your models."; echo $?`
-    if [ $OW == 0 ];
-    then 
-	    cp -a -f /opt/qss-solver/* $HOME/qss-solver
-    	rm $HOME/qss-solver/bin/run.sh
-      cd $HOME/qss-solver/bin
+    # Previous installation and different version
+    OW=$(zenity --question --text "A different version of QSS Solver is found in your home folder (version: $VERHOME). Do you want to overwrite it with version: $VEROPT?\nNOTE: Your models will not be lost."; echo $?)
+    
+    if [ $OW == 0 ]; then 
+      cp -a -f /opt/CIFASIS-CONICET/qss-solver/* "$HOME/qss-solver"
+      rm "$HOME/qss-solver/bin/run.sh"
+      cd "$HOME/qss-solver/bin" || exit
       ./qss-solver
     else
-      cd $HOME/qss-solver/bin
+      cd "$HOME/qss-solver/bin" || exit
       ./qss-solver
     fi
   fi

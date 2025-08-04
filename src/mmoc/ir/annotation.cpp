@@ -442,6 +442,18 @@ Solver ModelAnnotation::getSolver(string s)
     _order = 2;
     _polyCoeffs = 3;
     return Solver::mLIQSS2;
+  } else if (!s.compare("CQSS1")) {
+    _order = 1;
+    _polyCoeffs = 2;
+    return Solver::CQSS1;
+  } else if (!s.compare("CQSS2")) {
+    _order = 2;
+    _polyCoeffs = 3;
+    return Solver::CQSS2;
+  } else if (!s.compare("CQSS3")) {
+    _order = 3;
+    _polyCoeffs = 4;
+    return Solver::CQSS3;
   }
   return Solver::QSS;
 }
@@ -737,6 +749,9 @@ EvalAnnotation::EvalAnnotation() : _tokens()
   _tokens.emplace_back("QSS4");
   _tokens.emplace_back("mLIQSS");
   _tokens.emplace_back("mLIQSS2");
+  _tokens.emplace_back("CQSS1");
+  _tokens.emplace_back("CQSS2");
+  _tokens.emplace_back("CQSS3");
   _tokens.emplace_back("DASSL");
   _tokens.emplace_back("DOPRI");
   _tokens.emplace_back("CVODE_AM");

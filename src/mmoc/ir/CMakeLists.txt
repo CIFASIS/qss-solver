@@ -1,0 +1,29 @@
+target_sources(
+    mmoc-library
+    PRIVATE
+        alg_usage.cpp
+        annotation.cpp
+        built_in_functions.cpp
+        class.cpp
+        compute_deps.cpp
+        derivative.cpp
+        equation.cpp
+        equation_printer.cpp
+        event.cpp
+        expression.cpp
+        helpers.cpp
+        index.cpp
+        jacobian.cpp
+        mmo_ir.cpp
+        mmo_model_checker.cpp
+        mmo_settings.cpp
+        model_matrix.cpp
+        model_matrix_gen.cpp
+        node_selector.cpp
+        qss_model.cpp
+        qss_model_deps.cpp
+        reduction_functions.cpp
+        statement.cpp
+        stored_definition.cpp
+        user_def_matrix.cpp
+)

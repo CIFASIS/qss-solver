@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import subprocess
 
@@ -14,7 +14,7 @@ def apply_code_style():
                              x.endswith(b'.cpp'), files)
     for f in files:
       print("Apply code style to: " + str(f))
-      subprocess.check_output(['clang-format-7', '-i', f])
+      subprocess.check_output(['clang-format', '-i', f])
       subprocess.check_output(['git', 'add', f])
 
 def main():

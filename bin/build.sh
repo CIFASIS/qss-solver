@@ -15,11 +15,33 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 4.5.3
+#       VERSION: 5.0.0
 #===================================================================================
+
+# Check if a parameter is provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 <file>"
+    exit 1
+fi
 
 FILE=$1
 
-cd $MMOC_BUILD/$FILE
+# Check if the MMOC_BUILD environment variable is set
+if [ -z "$MMOC_BUILD" ]; then
+    echo "Error: MMOC_BUILD environment variable is not set."
+    exit 1
+fi
 
-make -f $FILE.makefile 
+# Change to the specified directory
+if ! cd "$MMOC_BUILD/$FILE"; then
+    echo "Error: Directory $MMOC_BUILD/$FILE does not exist."
+    exit 1
+fi
+
+# Run the make command
+if ! make -f "$FILE.makefile"; then
+    echo "Error: Make command failed."
+    exit 1
+fi
+
+echo "Build completed successfully."

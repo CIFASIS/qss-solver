@@ -29,282 +29,140 @@ RunDlg::RunDlg(QWidget *parent) : QDialog(parent)
   setupUi(this);
   _utils = new Utils();
   _validate = new QDoubleValidator();
-  _startTime->setValidator(_validate);
-  _stopTime->setValidator(_validate);
+
+  // Set validators for input fields
+  _start_time->setValidator(_validate);
+  _stop_time->setValidator(_validate);
   _tolerance->setValidator(_validate);
   _dt->setValidator(_validate);
-  _absTolerance->setValidator(_validate);
-  _minStep->setValidator(_validate);
-  _derDelta->setValidator(_validate);
-  _zcHyst->setValidator(_validate);
-  _extendedFrame->setVisible(false);
-  _debugChk->setCheckState(Qt::Unchecked);
+  _abs_tolerance->setValidator(_validate);
+  _min_step->setValidator(_validate);
+  _der_delta->setValidator(_validate);
+  _zc_hyst->setValidator(_validate);
+
+  _extended_frame->setVisible(false);
+  _debug_chk->setCheckState(Qt::Unchecked);
+
   on__parallel_currentIndexChanged(_parallel->currentIndex());
+
   connect(_test_methods_cbx, &QCheckBox::stateChanged, this, &RunDlg::updateTestMethods);
-  // Not needed for the moment, if adding test methods we should enable it.
-  // updateTestMethods(_test_methods_cbx->checkState());
+
   _test_methods_cbx->setVisible(false);
   _test_methods_lbl->setVisible(false);
 }
 
-void RunDlg::on__showAll_stateChanged(int state)
-{
-  switch (state) {
-  case Qt::Unchecked:
-    _extendedFrame->setVisible(false);
-    break;
-  case Qt::Checked:
-    _extendedFrame->setVisible(true);
-    break;
-  default:
-    break;
-  }
-}
+void RunDlg::on__show_all_stateChanged(int state) { _extended_frame->setVisible(state == Qt::Checked); }
 
-void RunDlg::on__commInterval_currentIndexChanged(int index)
-{
-  if (index == 0) {
-    _period->setEnabled(false);
-  } else {
-    _period->setEnabled(true);
-  }
-}
+void RunDlg::on__comm_interval_currentIndexChanged(int index) { _period->setEnabled(index != 0); }
 
-void RunDlg::on__dtSynch_currentIndexChanged(int index)
-{
-  if (index == 0) {
-    _dtLbl->setText("Dt tolerance");
-  } else {
-    _dtLbl->setText("Dt value");
-  }
-}
+void RunDlg::on__dt_synch_currentIndexChanged(int index) { _dt_lbl->setText(index == 0 ? "Dt tolerance" : "Dt value"); }
 
 void RunDlg::on__parallel_currentIndexChanged(int index)
 {
-  if (index == 1) {
-    _lps->setEnabled(true);
-    _partitionMethod->setEnabled(true);
-    _dt->setEnabled(true);
-    _dtSynch->setEnabled(true);
-    _scotchSettings->setEnabled(true);
-    _metisSettings->setEnabled(true);
-    _patohSettings->setEnabled(true);
-    _semiStaticChk->setEnabled(true);
-    _generateArchCbx->setEnabled(true);
-    _debugGraphCbx->setEnabled(true);
-    _reorderPartitionCbx->setEnabled(true);
-    _imbalance->setEnabled(true);
-  } else {
-    _lps->setEnabled(false);
-    _partitionMethod->setEnabled(false);
-    _dt->setEnabled(false);
-    _dtSynch->setEnabled(false);
-    _scotchSettings->setEnabled(false);
-    _metisSettings->setEnabled(false);
-    _patohSettings->setEnabled(false);
-    _semiStaticChk->setEnabled(false);
-    _generateArchCbx->setEnabled(false);
-    _debugGraphCbx->setEnabled(false);
-    _reorderPartitionCbx->setEnabled(false);
-    _imbalance->setEnabled(false);
-  }
-}
-
-int RunDlg::getSolverIdx(QString str)
-{
-  if (str.trimmed() == "QSS") return 0;
-  if (str.trimmed() == "CQSS") return 1;
-  if (str.trimmed() == "LIQSS") return 2;
-  if (str.trimmed() == "QSS2") return 3;
-  if (str.trimmed() == "LIQSS2") return 4;
-  if (str.trimmed() == "LIQSS_BDF") return 5;
-  if (str.trimmed() == "QSS3") return 6;
-  if (str.trimmed() == "LIQSS3") return 7;
-  if (str.trimmed() == "QSS4") return 8;
-  if (str.trimmed() == "DASSL") return 9;
-  if (str.trimmed() == "DOPRI") return 10;
-  if (str.trimmed() == "CVODE_BDF") return 11;
-  if (str.trimmed() == "CVODE_AM") return 12;
-  if (str.trimmed() == "IDA") return 13;
-  if (str.trimmed() == "mLIQSS") return 14;
-  if (str.trimmed() == "mLIQSS2") return 15;
-  return -1;
-}
-
-QString RunDlg::getSolverString(int idx)
-{
-  switch (idx) {
-  case 0:
-    return "QSS";
-  case 1:
-    return "CQSS";
-  case 2:
-    return "LIQSS";
-  case 3:
-    return "QSS2";
-  case 4:
-    return "LIQSS2";
-  case 5:
-    return "LIQSS_BDF";
-  case 6:
-    return "QSS3";
-  case 7:
-    return "LIQSS3";
-  case 8:
-    return "QSS4";
-  case 9:
-    return "DASSL";
-  case 10:
-    return "DOPRI";
-  case 11:
-    return "CVODE_BDF";
-  case 12:
-    return "CVODE_AM";
-  case 13:
-    return "IDA";
-  case 14:
-    _test_methods_cbx->setCheckState(Qt::Checked);
-    return "mLIQSS";
-  case 15:
-    _test_methods_cbx->setCheckState(Qt::Checked);
-    return "mLIQSS2";
-  }
-  return QString();
-}
-
-QString RunDlg::getJacobianString(int idx)
-{
-  switch (idx) {
-  case 0:
-    return "Sparse";
-  case 1:
-    return "Dense";
-  }
-  return "Sparse";
-}
-
-int RunDlg::getOutputTypeIdx(QString str)
-{
-  if (str.trimmed() == "CI_Step") return 0;
-  if (str.trimmed() == "CI_Sampled") return 1;
-  if (str.trimmed() == "CI_Dense") return 2;
-  return 0;
-}
-
-QString RunDlg::getOutputTypeString(int idx)
-{
-  switch (idx) {
-  case 0:
-    return "CI_Step";
-  case 1:
-    return "CI_Sampled";
-  case 2:
-    return "CI_Dense";
-  }
-  return QString();
-}
-
-int RunDlg::getSchedulerIdx(QString str)
-{
-  if (str.trimmed() == "ST_Binary") return 0;
-  if (str.trimmed() == "ST_Random") return 1;
-  if (str.trimmed() == "ST_Linear") return 2;
-  return 0;
-}
-
-QString RunDlg::getSchedulerString(int idx)
-{
-  switch (idx) {
-  case 0:
-    return "ST_Binary";
-  case 1:
-    return "ST_Random";
-  case 2:
-    return "ST_Linear";
-  }
-  return QString();
+  bool is_enabled = (index == 1);
+  _lps->setEnabled(is_enabled);
+  _partition_method->setEnabled(is_enabled);
+  _dt->setEnabled(is_enabled);
+  _dt_synch->setEnabled(is_enabled);
+  _scotch_settings->setEnabled(is_enabled);
+  _metis_settings->setEnabled(is_enabled);
+  _patoh_settings->setEnabled(is_enabled);
+  _semi_static_chk->setEnabled(is_enabled);
+  _generate_arch_cbx->setEnabled(is_enabled);
+  _debug_graph_cbx->setEnabled(is_enabled);
+  _reorder_partition_cbx->setEnabled(is_enabled);
+  _imbalance->setEnabled(is_enabled);
 }
 
 int RunDlg::getComboBoolIdx(QString str)
 {
-  if (str.trimmed() == "false") return 0;
-  if (str.trimmed() == "true") return 1;
-  return 0;
+  static const QStringList types = {"false", "true"};
+  return types.indexOf(str.trimmed());
 }
 
 QString RunDlg::getComboBoolString(int idx)
 {
-  switch (idx) {
-  case 0:
-    return "false";
-  case 1:
-    return "true";
-  }
-  return "false";
+  static const QStringList types = {"false", "true"};
+  return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
 }
 
 int RunDlg::getPartitionMethodIdx(QString str)
 {
-  if (str.trimmed() == "Metis") return 0;
-  if (str.trimmed() == "HMetis") return 1;
-  if (str.trimmed() == "Scotch") return 2;
-  if (str.trimmed() == "Patoh") return 3;
-  if (str.trimmed() == "KaHIP") return 4;
-  if (str.trimmed() == "Manual") return 5;
-  return 0;
+  static const QStringList types = {"Metis", "HMetis", "Scotch", "Patoh", "Manual"};
+  return types.indexOf(str.trimmed());
 }
 
 QString RunDlg::getPartitionMethodString(int idx)
 {
-  switch (idx) {
-  case 0:
-    return "Metis";
-  case 1:
-    return "HMetis";
-  case 2:
-    return "Scotch";
-  case 3:
-    return "Patoh";
-  case 4:
-    return "KaHIP";
-  case 5:
-    return "Manual";
-  }
-  return "Scotch";
+  static const QStringList types = {"Metis", "HMetis", "Scotch", "Patoh", "Manual"};
+  return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
 }
 
 int RunDlg::getJacobianIdx(QString str)
 {
-  if (str.trimmed() == "Dense") return 1;
-  if (str.trimmed() == "Sparse") return 0;
-  return 0;
+  static const QStringList types = {"Sparse", "Dense"};
+  return types.indexOf(str.trimmed());
+}
+
+QString RunDlg::getJacobianString(int idx)
+{
+  static const QStringList types = {"Sparse", "Dense"};
+  return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
 }
 
 int RunDlg::getDtSynchIdx(QString str)
 {
-  if (str.trimmed() == "SD_DT_Fixed") return 1;
-  if (str.trimmed() == "SD_DT_Asynchronous") return 0;
-  return 0;
+  static const QStringList types = {"SD_DT_Fixed", "SD_DT_Asynchronous"};
+  return types.indexOf(str.trimmed());
 }
 
 QString RunDlg::getDtSynchString(int idx)
 {
-  switch (idx) {
-  case 1:
-    return "SD_DT_Fixed";
-  case 0:
-    return "SD_DT_Asynchronous";
-  }
-  return "SD_DT_Asynchronous";
+  static const QStringList types = {"SD_DT_Fixed", "SD_DT_Asynchronous"};
+  return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
+}
+
+int RunDlg::getSchedulerIdx(QString str)
+{
+  static const QStringList types = {"ST_Binary", "ST_Random", "ST_Linear"};
+  return types.indexOf(str.trimmed());
+}
+
+QString RunDlg::getSchedulerString(int idx)
+{
+  static const QStringList types = {"ST_Binary", "ST_Random", "ST_Linear"};
+  return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
+}
+
+int RunDlg::getSolverIdx(QString str)
+{
+  static const QStringList solvers = {"QSS",   "CQSS",      "LIQSS",    "QSS2", "LIQSS2", "LIQSS_BDF", "QSS3",  "LIQSS3", "QSS4", "DASSL",
+                                      "DOPRI", "CVODE_BDF", "CVODE_AM", "IDA",  "mLIQSS", "mLIQSS2",   "CQSS1", "CQSS2",  "CQSS3"};
+  return solvers.indexOf(str.trimmed());
+}
+
+QString RunDlg::getSolverString(int idx)
+{
+  static const QStringList solvers = {"QSS",   "CQSS",      "LIQSS",    "QSS2", "LIQSS2", "LIQSS_BDF", "QSS3",  "LIQSS3", "QSS4", "DASSL",
+                                      "DOPRI", "CVODE_BDF", "CVODE_AM", "IDA",  "mLIQSS", "mLIQSS2",   "CQSS1", "CQSS2",  "CQSS3"};
+  return (idx >= 0 && idx < solvers.size()) ? solvers[idx] : QString();
+}
+
+int RunDlg::getOutputTypeIdx(QString str)
+{
+  static const QStringList output_types = {"CI_Step", "CI_Sampled", "CI_Dense"};
+  return output_types.indexOf(str.trimmed());
+}
+
+QString RunDlg::getOutputTypeString(int idx)
+{
+  static const QStringList output_types = {"CI_Step", "CI_Sampled", "CI_Dense"};
+  return (idx >= 0 && idx < output_types.size()) ? output_types[idx] : QString();
 }
 
 void RunDlg::updateTestMethods(int state)
 {
-  bool hide = state == Qt::Unchecked;
-  // To hide a test method use:
-  // QListView *solver_list = qobject_cast<QListView *>(_solver->view());
-  // solver_list->setRowHidden(getSolverIdx("my_test_method"), hide);
-  if (hide) {
+  if (state == Qt::Unchecked) {
     setSolver("QSS");
   }
 }

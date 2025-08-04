@@ -1,10 +1,11 @@
 #!/bin/bash
 
 MODEL=$1
-GT_MODEL="./system/gt_data/"${MODEL}/
-TEST_MODEL="./system/test_data/"${MODEL}/
-TEST_MODEL_RESULT="./system/test_data/"${MODEL}/${MODEL}
-TEST_FILES="$(ls ./system/gt_data/"${MODEL}/"*.dat)"
+TEST_DIR="../.."
+GT_MODEL=$TEST_DIR"/system/gt_data/"${MODEL}/
+TEST_MODEL=$TEST_DIR"/system/test_data/"${MODEL}/
+TEST_MODEL_RESULT=$TEST_DIR"/system/test_data/"${MODEL}/${MODEL}
+TEST_FILES="$(ls $TEST_DIR/system/gt_data/"${MODEL}/"*.dat)"
 
 test_results () 
 {

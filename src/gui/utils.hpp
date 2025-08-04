@@ -59,11 +59,11 @@ typedef enum { CMD_COMPILE, CMD_BUILD, CMD_SIMULATE, CMD_PLOT, CMD_SBML, CMD_LOG
 
 class Utils {
   public:
+  Utils();
   ~Utils() = default;
   QString appCommand(AppCmds c);
   QString appDir(AppDirs d);
   QString appFlag(AppFlags f);
-  QString defaultValue(QString tok);
   bool isSet(AppFlags f);
   QString relativePath(AppDirs d);
   void setCommand(AppCmds c, QString value);
@@ -76,4 +76,8 @@ class Utils {
   QString appFlagName(AppFlags flag);
   QString appDirsName(AppDirs dir);
   QString appCommandsName(AppCmds cmd);
+  void initialize();
+  void migrateSettings();
+
+  QSettings _settings;
 };

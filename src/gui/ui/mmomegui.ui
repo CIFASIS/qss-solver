@@ -56,7 +56,6 @@
     </property>
     <addaction name="actionRun"/>
     <addaction name="actionRun_2"/>
-    <addaction name="actionDebug"/>
     <addaction name="actionCompile"/>
     <addaction name="separator"/>
     <addaction name="actionLog"/>
@@ -310,18 +309,6 @@
    </property>
    <property name="text">
     <string>Sa&amp;ve All</string>
-   </property>
-  </action>
-  <action name="actionDebug">
-   <property name="icon">
-    <iconset resource="../mmome.qrc">
-     <normaloff>:/images/debug.png</normaloff>:/images/debug.png</iconset>
-   </property>
-   <property name="text">
-    <string>Debug</string>
-   </property>
-   <property name="shortcut">
-    <string>Shift+F5</string>
    </property>
   </action>
   <action name="actionClear_Messages">

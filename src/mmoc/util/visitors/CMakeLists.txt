@@ -1,0 +1,37 @@
+target_sources(
+    mmoc-library
+    PRIVATE
+        algebraics.cpp
+        apply_var_usage.cpp
+        array_use.cpp
+        autonomous.cpp
+        called_functions.cpp
+        convert_condition.cpp
+        convert_cont_red.cpp
+        convert_disc_red.cpp
+        convert_equation.cpp
+        convert_expression.cpp
+        convert_output_range.cpp
+        convert_statement.cpp
+        discrete_assignment.cpp
+        eval_init_exp.cpp
+        expression_printer.cpp
+        get_index_usage.cpp
+        get_index_variables.cpp
+        has_scalar_index.cpp
+        is_constant_expression.cpp
+        is_constant_index.cpp
+        is_recursive_def.cpp
+        jac_alg_exps.cpp
+        occurs.cpp
+        parse_index.cpp
+        partial_eval_exp.cpp
+        partition_interval.cpp
+        pwl_map_values.cpp
+        replace_constant.cpp
+        replace_der.cpp
+        replace_index.cpp
+        replace_inner_product.cpp
+        revert_index.cpp
+        variable_lookup.cpp
+)
