@@ -52,37 +52,6 @@ target_link_directories(qss-solver PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/3rd-party
 # Link the library
 target_link_libraries(qss-solver PRIVATE qtermwidget5)
 
-# Resources:
-# set(mmome_resource_files
-#     "images/ImportFile.png"
-#     "images/cancel.png"
-#     "images/clear.png"
-#     "images/compile.png"
-#     "images/copy.png"
-#     "images/cut.png"
-#     "images/debug.png"
-#     "images/delete.png"
-#     "images/document_save.png"
-#     "images/editfile.png"
-#     "images/folder.svg"
-#     "images/gnuplot.png"
-#     "images/integrator.svg"
-#     "images/log.png"
-#     "images/multiplier.svg"
-#     "images/newFile.png"
-#     "images/run.png"
-#     "images/run_copy.png"
-#     "images/save_all.png"
-#     "images/saveas.png"
-#     "images/settings.png"
-# )
-
-# qt5_add_resources(qss-solver "mmome"
-#      PREFIX"/"
-#      FILES
-#        ${mmome_resource_files}
-# )
-
 install(TARGETS qss-solver
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

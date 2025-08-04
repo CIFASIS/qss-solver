@@ -32,7 +32,7 @@ if [ ! -d "$HOME/qss-solver" ]; then
   export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${MMOC_BIN}/lib"
   ./qss-solver
 else
-  VEROPT=$(cat /opt/qss-solver/version)
+  VEROPT=$(cat /opt/CIFASIS-CONICET/qss-solver/version)
   VERHOME=$(cat "$HOME/qss-solver/version")
   export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${MMOC_BIN}/lib"
   
@@ -45,7 +45,7 @@ else
     OW=$(zenity --question --text "A different version of QSS Solver is found in your home folder (version: $VERHOME). Do you want to overwrite it with version: $VEROPT?\nNOTE: Your models will not be lost."; echo $?)
     
     if [ $OW == 0 ]; then 
-      cp -a -f /opt/qss-solver/* "$HOME/qss-solver"
+      cp -a -f /opt/CIFASIS-CONICET/qss-solver/* "$HOME/qss-solver"
       rm "$HOME/qss-solver/bin/run.sh"
       cd "$HOME/qss-solver/bin" || exit
       ./qss-solver
