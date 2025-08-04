@@ -1,4 +1,4 @@
-## QSS Solver 4.5.3
+## QSS Solver 5.0.0
 
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
@@ -212,7 +212,7 @@ The simplest way to compile this package is:
 
 ## Changelog
 
-## [4.5.0] - 04-08-2025
+## [5.0.0] - 04-08-2025
 
 ### Added
 - **New CQSS1, CQSS2 and CQSS3** development `QSS` methods that can be edited witout having to recompile the simulation engine.

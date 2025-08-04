@@ -1,6 +1,6 @@
 ## Changelog
 
-## [4.5.0] - 04-08-2025
+## [5.0.0] - 04-08-2025
 
 ### Added
 - **New CQSS1, CQSS2 and CQSS3** development `QSS` methods that can be edited witout having to recompile the simulation engine.
