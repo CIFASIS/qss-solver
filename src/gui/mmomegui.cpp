@@ -20,6 +20,7 @@
 #include <sys/types.h>
 #include <signal.h>
 
+#include <QClipboard>
 #include <QMdiSubWindow>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -105,12 +106,22 @@ void MmomeGui::initialize()
   _python_console->sendText(INIT_PYTHON_VENV);
   _python_console->sendText(INIT_PYTHON);
   _py_console_widget->setWidget(_python_console);
+  connect(_python_console, &QTermWidget::termKeyPressed, this, [=](const QKeyEvent *key) {
+    if (key->matches(QKeySequence::Copy)) {
+      _python_console->copyClipboard();
+    }
+  });
 
   _console = new QTermWidget();
   _console->setScrollBarPosition(QTermWidget::ScrollBarRight);
   _console->setColorScheme("Linux");
   _console->sendText(INIT_PYTHON_VENV);
   _console_widget->setWidget(_console);
+  connect(_console, &QTermWidget::termKeyPressed, this, [=](const QKeyEvent *key) {
+    if (key->matches(QKeySequence::Copy)) {
+      _console->copyClipboard();
+    }
+  });
 
   QSettings settings;
   const auto geometry = settings.value("main_window_geometry").toByteArray();
