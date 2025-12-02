@@ -8,13 +8,18 @@ lines = []
 lined = dict()
 
 def on_pick(event):
+    
+    if event.artist is None or not isinstance(event.artist, plt.Artist):
+        return
     # on the pick event, find the orig line corresponding to the
     # legend proxy line, and toggle the visibility
     leg_line = event.artist
+    if leg_line not in lined:
+        return
     if len(lined) == 1:
         orig_line = leg_line
     else:
-        orig_line = lined[legline]
+        orig_line = lined[leg_line]
     vis = not orig_line.get_visible()
     orig_line.set_visible(vis)
     # Change the alpha on the line in the legend so we can see what lines
