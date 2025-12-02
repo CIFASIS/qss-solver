@@ -66,13 +66,13 @@ def set_annotations(model, annotations):
     with open(model_path, 'w') as file:
         file.write(modified_code)
 
-def set_constant(model, variable_name, new_value):
+def set_value(model, variable_name, new_value, token, token_mod):
     """
-    Change the value of a constant Integer variable in a Modelica model.
+    Change the value of a constant or parameter in a Modelica model.
 
     :param model: Path to the Modelica file to modify.
-    :param variable_name: The name of the constant Integer variable to change.
-    :param new_value: The new value to set for the constant Integer variable.
+    :param variable_name: The name of the constant or parameter to change.
+    :param new_value: The new value to set for the constant or parameter.
     """
     
     model_path = fh.get_full_path(model)
@@ -81,11 +81,11 @@ def set_constant(model, variable_name, new_value):
     with open(model_path, 'r') as file:
         modelica_code = file.read()
 
-    # Regular expression to find the constant Integer variable
-    pattern = rf'constant\s+Integer\s+{variable_name}\s*=\s*\d+;'
+    # Regular expression to find the token
+    pattern = rf'{token}\s+{token_mod}\s+{variable_name}\s*=\s*\d+;'
 
     # Create the new declaration with the new value
-    new_declaration = f'constant Integer {variable_name} = {new_value};'
+    new_declaration = f'{token} {token_mod} {variable_name} = {new_value};'
 
     # Replace the old declaration with the new one
     modified_code = re.sub(pattern, new_declaration, modelica_code)
@@ -94,15 +94,60 @@ def set_constant(model, variable_name, new_value):
     with open(model_path, 'w') as file:
         file.write(modified_code)
 
+
+def set_constant(model, variable_name, new_value):
+    """
+    Change the value of a constant Integer in a Modelica model.
+
+    :param model: Path to the Modelica file to modify.
+    :param variable_name: The name of the constant Integer to change.
+    :param new_value: The new value to set for the constant Integer.
+    """
+    set_value(model, variable_name, new_value, 'constant', 'Integer')
+
 def set_constants(model, constants):
     """
-    Change the value of a constant Integer variable from the given dictionary.
+    Change the value of a constant Integer from the given dictionary.
 
     :param model: Path to the Modelica file to modify.
     :param constants: Dictionary containing the Modelica constants.
     """
     for key, value in constants.items():
         set_constant(model, key, value)
+
+
+def values(model, token, token_mod):
+    """
+    Read all constant or parameters from a Modelica model.
+
+    :param model: Path to the Modelica file to read.
+    :return: A dictionary with token names as keys and their values.
+    """
+    model_path = fh.get_full_path(model)
+
+    # Initialize an empty dictionary to store the token values
+    token_values = {}
+
+    # Read the existing content of the Modelica file
+    with open(model_path, 'r') as file:
+        modelica_code = file.read()
+
+    # Regular expression to find token declarations
+    pattern = rf'{token}\s+{token_mod}\s+(\w+)\s*=\s*(\d+);'
+
+    # Find all matches in the Modelica code
+    matches = re.findall(pattern, modelica_code)
+
+    # Populate the dictionary with token names and their values
+    for token_name, value in matches:
+        tr_value = value
+        if token_mod == "Integer":
+            tr_value = int(value)
+        elif token_mod == "Real":
+            tr_value = float(value)        
+        token_values[token_name] = tr_value
+    
+    return token_values
 
 
 def constants(model):
@@ -112,28 +157,38 @@ def constants(model):
     :param model: Path to the Modelica file to read.
     :return: A dictionary with variable names as keys and their values as integers.
     """
-    model_path = fh.get_full_path(model)
-
-    # Initialize an empty dictionary to store the constant Integer variables
-    constant_integers = {}
-
-    # Read the existing content of the Modelica file
-    with open(model_path, 'r') as file:
-        modelica_code = file.read()
-
-    # Regular expression to find constant Integer declarations
-    pattern = r'constant\s+Integer\s+(\w+)\s*=\s*(\d+);'
-
-    # Find all matches in the Modelica code
-    matches = re.findall(pattern, modelica_code)
-
-    # Populate the dictionary with variable names and their integer values
-    for variable_name, value in matches:
-        constant_integers[variable_name] = int(value)
-
-    return constant_integers
+    return values(model, 'constant', 'Integer')
 
 def parameters(model):
+    """
+    Read all constant Integer variables from a Modelica model.
+
+    :param model: Path to the Modelica file to read.
+    :return: A dictionary with variable names as keys and their values as integers.
+    """
+    return values(model, 'parameter', 'Real')
+
+def set_parameter(model, variable_name, new_value):
+    """
+    Change the value of a parameter in a Modelica model.
+
+    :param model: Path to the Modelica file to modify.
+    :param variable_name: The name of the parameter to change.
+    :param new_value: The new value to set for the parameter.
+    """
+    set_value(model, variable_name, new_value, 'parameter', 'Real')
+
+def set_parameters(model, params):
+    """
+    Change the value of a parameter from the given dictionary.
+
+    :param model: Path to the Modelica file to modify.
+    :param constants: Dictionary containing the Modelica parameters.
+    """
+    for key, value in params.items():
+        set_parameter(model, key, value)
+
+def json_parameters(model):
     """
     Read a JSON file containing a list of parameter records with values that are either 
     a double or a list of doubles.
@@ -170,7 +225,7 @@ def parameters(model):
 
     return records
 
-def set_parameters(model, parameters):
+def set_json_parameters(model, parameters):
     """
     Generate a JSON parameters file with values that are either a double or a list of doubles.
 
