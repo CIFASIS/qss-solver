@@ -24,9 +24,15 @@
 #include <common/data.h>
 #include <common/utils.h>
 #include <qss/methods/cqss.h>
+#include <qss/methods/cheqss1.h>
+#include <qss/methods/cheqss2.h>
+#include <qss/methods/cheqss3.h>
 #include <qss/methods/cqss1.h>
 #include <qss/methods/cqss2.h>
 #include <qss/methods/cqss3.h>
+#include <qss/methods/eqss1.h>
+#include <qss/methods/eqss2.h>
+#include <qss/methods/eqss3.h>
 #include <qss/methods/liqss.h>
 #include <qss/methods/liqss2.h>
 #include <qss/methods/liqss3.h>
@@ -138,6 +144,24 @@ QA_quantizer QA_Quantizer(QSS_data sim_data, QSS_time sim_time)
     break;
   case SD_CQSS3:
     QSS_MODULE_INIT(CQSS3, p, sim_data, sim_time);
+    break;
+  case SD_CHEQSS1:
+    QSS_MODULE_INIT(CHEQSS1, p, sim_data, sim_time);
+    break;
+  case SD_CHEQSS2:
+    QSS_MODULE_INIT(CHEQSS2, p, sim_data, sim_time);
+    break;
+  case SD_CHEQSS3:
+    QSS_MODULE_INIT(CHEQSS3, p, sim_data, sim_time);
+    break;
+  case SD_EQSS1:
+    QSS_MODULE_INIT(EQSS1, p, sim_data, sim_time);
+    break;
+  case SD_EQSS2:
+    QSS_MODULE_INIT(EQSS2, p, sim_data, sim_time);
+    break;
+  case SD_EQSS3:
+    QSS_MODULE_INIT(EQSS3, p, sim_data, sim_time);
     break;
   default:
     return NULL;
