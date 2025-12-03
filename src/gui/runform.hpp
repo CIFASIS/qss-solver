@@ -20,6 +20,8 @@
 #pragma once
 
 #include <QtGui>
+#include <QMap>
+#include <QStringListModel>
 #include "./ui/ui_run.h"
 
 #include "utils.hpp"
@@ -115,6 +117,8 @@ class RunDlg : public QDialog, public Ui::RunForm {
   int getDtSynchIdx(QString str);
   int getJacobianIdx(QString str);
   QString getDtSynchString(int idx);
+  void filterComboBox(QComboBox* combo, const QString& filter);
+  QMap<QComboBox*, QStringList> _originalLists;
   Utils* _utils;
   QDoubleValidator* _validate;
 };
