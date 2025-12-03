@@ -51,7 +51,13 @@ enum class Solver {
   mLIQSS2,
   CQSS1,
   CQSS2,
-  CQSS3
+  CQSS3,
+  CHEQSS1,
+  CHEQSS2,
+  CHEQSS3,
+  EQSS1,
+  EQSS2,
+  EQSS3
 };
 
 enum class DT_Synch { DT_Fixed, DT_Asynchronous };

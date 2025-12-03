@@ -2,6 +2,12 @@ target_sources(
     qss-seq
     PRIVATE
         cqss.c
+        cheqss1.c
+        cheqss2.c
+        cheqss3.c
+        eqss1.c
+        eqss2.c
+        eqss3.c
         liqss.c
         liqss2.c
         liqss3.c

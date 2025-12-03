@@ -177,6 +177,36 @@
           <string>CQSS3</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>CHEQSS1</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>CHEQSS2</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>CHEQSS3</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>EQSS1</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>EQSS2</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>EQSS3</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item row="1" column="2">

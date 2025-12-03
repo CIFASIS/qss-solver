@@ -67,7 +67,13 @@ typedef enum {
   SD_mLIQSS2,
   SD_CQSS1,
   SD_CQSS2,
-  SD_CQSS3
+  SD_CQSS3,
+  SD_CHEQSS1,
+  SD_CHEQSS2,
+  SD_CHEQSS3,
+  SD_EQSS1,
+  SD_EQSS2,
+  SD_EQSS3
 } SD_Solver;
 
 typedef enum {
