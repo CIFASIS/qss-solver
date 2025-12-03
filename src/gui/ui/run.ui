@@ -89,11 +89,6 @@
         </item>
         <item>
          <property name="text">
-          <string>CQSS</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
           <string>LIQSS</string>
          </property>
         </item>
