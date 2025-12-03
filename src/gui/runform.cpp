@@ -168,3 +168,28 @@ void RunDlg::updateTestMethods(int state)
     setSolver("QSS");
   }
 }
+
+void RunDlg::filterComboBox(QComboBox* combo, const QString& filter)
+{
+  if (!_originalLists.contains(combo)) {
+    return;
+  }
+
+  QStringList filteredList;
+  const QStringList& original = _originalLists[combo];
+
+  if (filter.isEmpty()) {
+    filteredList = original;
+  } else {
+    for (const QString& item : original) {
+      if (item.contains(filter, Qt::CaseInsensitive)) {
+        filteredList.append(item);
+      }
+    }
+  }
+
+  QStringListModel* model = qobject_cast<QStringListModel*>(combo->model());
+  if (model) {
+    model->setStringList(filteredList);
+  }
+}
