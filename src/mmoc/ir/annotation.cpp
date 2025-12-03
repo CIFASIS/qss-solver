@@ -454,6 +454,30 @@ Solver ModelAnnotation::getSolver(string s)
     _order = 3;
     _polyCoeffs = 4;
     return Solver::CQSS3;
+  } else if (!s.compare("CHEQSS1")) {
+    _order = 1;
+    _polyCoeffs = 2;
+    return Solver::CHEQSS1;
+  } else if (!s.compare("CHEQSS2")) {
+    _order = 2;
+    _polyCoeffs = 3;
+    return Solver::CHEQSS2;
+  } else if (!s.compare("CHEQSS3")) {
+    _order = 3;
+    _polyCoeffs = 4;
+    return Solver::CHEQSS3;
+  } else if (!s.compare("EQSS1")) {
+    _order = 1;
+    _polyCoeffs = 2;
+    return Solver::EQSS1;
+  } else if (!s.compare("EQSS2")) {
+    _order = 2;
+    _polyCoeffs = 3;
+    return Solver::EQSS2;
+  } else if (!s.compare("EQSS3")) {
+    _order = 3;
+    _polyCoeffs = 4;
+    return Solver::EQSS3;
   }
   return Solver::QSS;
 }
@@ -752,6 +776,12 @@ EvalAnnotation::EvalAnnotation() : _tokens()
   _tokens.emplace_back("CQSS1");
   _tokens.emplace_back("CQSS2");
   _tokens.emplace_back("CQSS3");
+  _tokens.emplace_back("CHEQSS1");
+  _tokens.emplace_back("CHEQSS2");
+  _tokens.emplace_back("CHEQSS3");
+  _tokens.emplace_back("EQSS1");
+  _tokens.emplace_back("EQSS2");
+  _tokens.emplace_back("EQSS3");
   _tokens.emplace_back("DASSL");
   _tokens.emplace_back("DOPRI");
   _tokens.emplace_back("CVODE_AM");

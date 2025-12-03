@@ -136,15 +136,17 @@ QString RunDlg::getSchedulerString(int idx)
 
 int RunDlg::getSolverIdx(QString str)
 {
-  static const QStringList solvers = {"QSS",   "CQSS",      "LIQSS",    "QSS2", "LIQSS2", "LIQSS_BDF", "QSS3",  "LIQSS3", "QSS4", "DASSL",
-                                      "DOPRI", "CVODE_BDF", "CVODE_AM", "IDA",  "mLIQSS", "mLIQSS2",   "CQSS1", "CQSS2",  "CQSS3"};
+  static const QStringList solvers = {"QSS",   "CQSS",    "LIQSS",     "QSS2",     "LIQSS2", "LIQSS_BDF", "QSS3",    "LIQSS3", "QSS4",
+                                      "DASSL", "DOPRI",   "CVODE_BDF", "CVODE_AM", "IDA",    "mLIQSS",    "mLIQSS2", "CQSS1",  "CQSS2",
+                                      "CQSS3", "CHEQSS1", "CHEQSS2",   "CHEQSS3",  "EQSS1",  "EQSS2",     "EQSS3"};
   return solvers.indexOf(str.trimmed());
 }
 
 QString RunDlg::getSolverString(int idx)
 {
-  static const QStringList solvers = {"QSS",   "CQSS",      "LIQSS",    "QSS2", "LIQSS2", "LIQSS_BDF", "QSS3",  "LIQSS3", "QSS4", "DASSL",
-                                      "DOPRI", "CVODE_BDF", "CVODE_AM", "IDA",  "mLIQSS", "mLIQSS2",   "CQSS1", "CQSS2",  "CQSS3"};
+  static const QStringList solvers = {"QSS",   "CQSS",    "LIQSS",     "QSS2",     "LIQSS2", "LIQSS_BDF", "QSS3",    "LIQSS3", "QSS4",
+                                      "DASSL", "DOPRI",   "CVODE_BDF", "CVODE_AM", "IDA",    "mLIQSS",    "mLIQSS2", "CQSS1",  "CQSS2",
+                                      "CQSS3", "CHEQSS1", "CHEQSS2",   "CHEQSS3",  "EQSS1",  "EQSS2",     "EQSS3"};
   return (idx >= 0 && idx < solvers.size()) ? solvers[idx] : QString();
 }
 
