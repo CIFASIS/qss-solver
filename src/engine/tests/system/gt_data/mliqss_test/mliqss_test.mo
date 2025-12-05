@@ -12,7 +12,7 @@ der(x2) = x1 - x2 + 1.2;
 
 	experiment(
 		MMO_Description="",
-		MMO_Solver=mLIQSS,
+		MMO_Solver=mLIQSS1,
 		MMO_PartitionMethod=Metis,
 		MMO_Output={x1, x2},
 		Jacobian=Dense,
