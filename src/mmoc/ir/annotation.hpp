@@ -33,9 +33,9 @@ namespace MicroModelica {
 namespace IR {
 
 enum class Solver {
-  QSS,
+  QSS1,
   CQSS,
-  LIQSS,
+  LIQSS1,
   QSS2,
   LIQSS2,
   LIQSS_BDF,
@@ -47,7 +47,7 @@ enum class Solver {
   CVODE_BDF,
   CVODE_AM,
   IDA,
-  mLIQSS,
+  mLIQSS1,
   mLIQSS2,
   CQSS1,
   CQSS2,
