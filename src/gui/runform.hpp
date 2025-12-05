@@ -29,6 +29,15 @@
 class RunDlg : public QDialog, public Ui::RunForm {
   Q_OBJECT
   public:
+  enum class SolverFilter {
+    QSS1,
+    QSS2,
+    QSS3,
+    QSS4,
+    CLASSIC,
+    EXPERIMENTAL
+  };
+
   RunDlg(QWidget* parent = nullptr);
   ~RunDlg() = default;
   inline QString absTolerance() { return _abs_tolerance->text(); };
@@ -56,7 +65,7 @@ class RunDlg : public QDialog, public Ui::RunForm {
   inline void setOutputType(QString str) { _comm_interval->setCurrentIndex(getOutputTypeIdx(str)); };
   inline void setPeriod(QString str) { _period->setText(str); };
   inline void setScheduler(QString str) { _scheduler->setCurrentIndex(getSchedulerIdx(str)); };
-  inline void setSolver(QString str) { _solver->setCurrentIndex(getSolverIdx(str)); };
+  void setSolver(QString str);
   inline void setStartTime(QString str) { _start_time->setText(str); };
   inline void setStopTime(QString str) { _stop_time->setText(str); };
   inline void setSymDiff(QString str) { _sym_diff->setCurrentIndex(getComboBoolIdx(str)); };
@@ -100,7 +109,6 @@ class RunDlg : public QDialog, public Ui::RunForm {
   void on__parallel_currentIndexChanged(int index);
   void on__show_all_stateChanged(int state);
   void on__dt_synch_currentIndexChanged(int index);
-  void updateTestMethods(int state);
 
   private:
   int getOutputTypeIdx(QString str);
@@ -117,8 +125,11 @@ class RunDlg : public QDialog, public Ui::RunForm {
   int getDtSynchIdx(QString str);
   int getJacobianIdx(QString str);
   QString getDtSynchString(int idx);
-  void filterComboBox(QComboBox* combo, const QString& filter);
-  QMap<QComboBox*, QStringList> _originalLists;
+  void updateQSSSolvers();
+  void updateSolvers(RunDlg::SolverFilter active_solvers);
+  void updateSolversChk(RunDlg::SolverFilter enabled_solvers, Qt::CheckState state, QCheckBox* filter_cmb_1, QCheckBox* filter_cmb_2);
+
   Utils* _utils;
   QDoubleValidator* _validate;
+  RunDlg::SolverFilter _current_solver_map_index{RunDlg::SolverFilter::QSS2};
 };
