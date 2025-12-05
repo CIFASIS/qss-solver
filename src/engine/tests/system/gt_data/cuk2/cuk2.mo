@@ -36,7 +36,7 @@ model cuk2
 
 	experiment(
 		MMO_Description="Cuk converter with change of variables.",
-		MMO_Solver=LIQSS,
+		MMO_Solver=LIQSS1,
 		MMO_SymDiff=false,
 		MMO_PartitionMethod=Metis,
 		MMO_Output={iL,iL1,uC,uC1},

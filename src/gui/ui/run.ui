@@ -23,50 +23,6 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="_start_time"/>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="_tolerance_lbl">
-        <property name="text">
-         <string>Tolerance</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="2">
-       <widget class="QLabel" name="_abs_tolerance_lbl">
-        <property name="text">
-         <string>AbsTolerance</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="_start_time_bl">
-        <property name="text">
-         <string>Start Time</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="2">
-       <widget class="QLabel" name="_output_lbl">
-        <property name="text">
-         <string>Output</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="_description_lbl">
-        <property name="text">
-         <string>Description</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QLineEdit" name="_tolerance"/>
-      </item>
-      <item row="6" column="3">
-       <widget class="QLineEdit" name="_output"/>
-      </item>
       <item row="6" column="0">
        <widget class="QLabel" name="_solver_lbl">
         <property name="text">
@@ -74,152 +30,7 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="3">
-       <widget class="QLineEdit" name="_abs_tolerance"/>
-      </item>
-      <item row="7" column="1" colspan="2">
-       <widget class="QTextEdit" name="_description"/>
-      </item>
-      <item row="6" column="1">
-       <widget class="QComboBox" name="_solver">
-        <item>
-         <property name="text">
-          <string>QSS</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>CQSS</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>LIQSS</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>QSS2</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>LIQSS2</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>LIQSS_BDF</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>QSS3</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>LIQSS3</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>QSS4</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>DASSL</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>DOPRI5</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>CVODE_BDF</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>CVODE_AM</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>IDA</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>mLIQSS</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>mLIQSS2</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>CQSS1</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>CQSS2</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>CQSS3</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>CHEQSS1</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>CHEQSS2</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>CHEQSS3</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>EQSS1</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>EQSS2</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>EQSS3</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="_stop_time_lbl">
-        <property name="text">
-         <string>Stop Time</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QLineEdit" name="_stop_time"/>
-      </item>
-      <item row="7" column="3">
+      <item row="11" column="3">
        <widget class="QFrame" name="frame">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
@@ -258,6 +69,114 @@
         </widget>
        </widget>
       </item>
+      <item row="6" column="1">
+       <widget class="QComboBox" name="_solver"/>
+      </item>
+      <item row="6" column="3">
+       <widget class="QLineEdit" name="_output"/>
+      </item>
+      <item row="4" column="3">
+       <widget class="QLineEdit" name="_abs_tolerance"/>
+      </item>
+      <item row="11" column="0">
+       <widget class="QLabel" name="_description_lbl">
+        <property name="text">
+         <string>Description</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="_stop_time"/>
+      </item>
+      <item row="6" column="2">
+       <widget class="QLabel" name="_output_lbl">
+        <property name="text">
+         <string>Output</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="1" colspan="2">
+       <widget class="QTextEdit" name="_description"/>
+      </item>
+      <item row="7" column="1" colspan="2">
+       <widget class="QFrame" name="frame_2">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="_tolerance_lbl">
+        <property name="text">
+         <string>Tolerance</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="_start_time_bl">
+        <property name="text">
+         <string>Start Time</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="_tolerance"/>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLabel" name="_abs_tolerance_lbl">
+        <property name="text">
+         <string>AbsTolerance</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="_stop_time_lbl">
+        <property name="text">
+         <string>Stop Time</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="_start_time"/>
+      </item>
+      <item row="8" column="1" rowspan="2" colspan="3">
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="3">
+         <widget class="QCheckBox" name="_exp_chk">
+          <property name="text">
+           <string>Experimental</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QCheckBox" name="_classic_chk">
+          <property name="text">
+           <string>Classic</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="_qss_chk">
+          <property name="text">
+           <string>QSS</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSpinBox" name="_qss_order_spb"/>
+        </item>
+       </layout>
+      </item>
+      <item row="8" column="0" rowspan="2">
+       <widget class="QLabel" name="_filter_lbl">
+        <property name="text">
+         <string>Methods</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -276,127 +195,14 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="5" column="2">
-       <widget class="QLabel" name="_lps_lbl">
-        <property name="text">
-         <string>Logical Processes </string>
+      <item row="5" column="3">
+       <widget class="QSpinBox" name="_lps">
+        <property name="minimum">
+         <number>1</number>
         </property>
-       </widget>
-      </item>
-      <item row="12" column="0">
-       <widget class="QLabel" name="_debug_graph_lbl">
-        <property name="text">
-         <string>Debug Graph</string>
+        <property name="maximum">
+         <number>1024</number>
         </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QComboBox" name="_scheduler">
-        <item>
-         <property name="text">
-          <string>BINARY</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>RANDOM</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>LINEAR</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QLineEdit" name="_period">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="3">
-       <widget class="QLineEdit" name="_metis_settings">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="_sym_diff">
-        <item>
-         <property name="text">
-          <string>FALSE</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>TRUE</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QLabel" name="_parallel_lbl">
-        <property name="text">
-         <string>Parallel</string>
-        </property>
-       </widget>
-      </item>
-      <item row="12" column="1">
-       <widget class="QComboBox" name="_debug_graph_cbx">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <item>
-         <property name="text">
-          <string>FALSE</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>TRUE</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="_patoh_settings_lbl">
-        <property name="text">
-         <string>Patoh Settings</string>
-        </property>
-       </widget>
-      </item>
-      <item row="11" column="1">
-       <widget class="QComboBox" name="_reorder_partition_cbx">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <item>
-         <property name="text">
-          <string>FALSE</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>TRUE</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="3" column="3">
-       <widget class="QComboBox" name="_parallel">
-        <item>
-         <property name="text">
-          <string>FALSE</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>TRUE</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item row="10" column="3">
@@ -406,13 +212,6 @@
         </property>
         <property name="text">
          <string>0.01</string>
-        </property>
-       </widget>
-      </item>
-      <item row="13" column="0">
-       <widget class="QLabel" name="_BDF_max_step_lbl">
-        <property name="text">
-         <string>BDF Max Step Size:</string>
         </property>
        </widget>
       </item>
@@ -433,10 +232,75 @@
         </item>
        </widget>
       </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="_zc_hyst_lbl">
+      <item row="6" column="0">
+       <widget class="QLabel" name="_scheduler_lbl">
         <property name="text">
-         <string>Zero Crossing Hysteresis</string>
+         <string>Scheduler</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="1">
+       <widget class="QComboBox" name="_debug_graph_cbx">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>FALSE</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>TRUE</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <widget class="QLineEdit" name="_patoh_settings">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="_sym_diff">
+        <item>
+         <property name="text">
+          <string>FALSE</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>TRUE</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="9" column="2">
+       <widget class="QLabel" name="_semi_static_lbl">
+        <property name="text">
+         <string>Semi-static Partitioning</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="3">
+       <widget class="QLineEdit" name="_BDF_part"/>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="_zc_hyst"/>
+      </item>
+      <item row="12" column="0">
+       <widget class="QLabel" name="_debug_graph_lbl">
+        <property name="text">
+         <string>Debug Graph</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="_patoh_settings_lbl">
+        <property name="text">
+         <string>Patoh Settings</string>
         </property>
        </widget>
       </item>
@@ -447,59 +311,45 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="_dt_synch_lbl">
+      <item row="11" column="2">
+       <widget class="QLabel" name="_generate_arch_lbl">
         <property name="text">
-         <string>Dt Synchronization </string>
+         <string>Generate Arch</string>
         </property>
        </widget>
       </item>
-      <item row="10" column="2">
-       <widget class="QLabel" name="_imbalance_lbl">
+      <item row="5" column="0">
+       <widget class="QLabel" name="_zc_hyst_lbl">
         <property name="text">
-         <string>Imbalance</string>
+         <string>Zero Crossing Hysteresis</string>
         </property>
        </widget>
       </item>
-      <item row="8" column="2">
-       <widget class="QLabel" name="_metis_settings_lbl">
+      <item row="10" column="0">
+       <widget class="QLabel" name="label">
         <property name="text">
-         <string>Metis Settings</string>
+         <string>Jacobian (CVODE/IDA)</string>
         </property>
        </widget>
       </item>
-      <item row="12" column="2">
-       <widget class="QLabel" name="_BDF_part_lbl">
+      <item row="0" column="2">
+       <widget class="QLabel" name="_period_lbl">
         <property name="text">
-         <string>BDF Partition</string>
+         <string>Period</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="_sym_diff_lbl">
+      <item row="5" column="2">
+       <widget class="QLabel" name="_lps_lbl">
         <property name="text">
-         <string>Symbolic Differentiation</string>
+         <string>Logical Processes </string>
         </property>
        </widget>
       </item>
-      <item row="8" column="0">
-       <widget class="QLabel" name="_scotch_settings_lbl">
+      <item row="13" column="0">
+       <widget class="QLabel" name="_BDF_max_step_lbl">
         <property name="text">
-         <string>Scotch Settings</string>
-        </property>
-       </widget>
-      </item>
-      <item row="13" column="2">
-       <widget class="QLabel" name="_bdf_partition_depth_lbl">
-        <property name="text">
-         <string>BDF Partition Depth</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="_comm_interval_lbl">
-        <property name="text">
-         <string>Output Type</string>
+         <string>BDF Max Step Size:</string>
         </property>
        </widget>
       </item>
@@ -525,15 +375,214 @@
         </item>
        </widget>
       </item>
-      <item row="9" column="2">
-       <widget class="QLabel" name="_semi_static_lbl">
+      <item row="3" column="0">
+       <widget class="QLabel" name="_min_step_lbl">
         <property name="text">
-         <string>Semi-static Partitioning</string>
+         <string>Minimum Step Size</string>
         </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="_comm_interval_lbl">
+        <property name="text">
+         <string>Output Type</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLabel" name="_parallel_lbl">
+        <property name="text">
+         <string>Parallel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="0">
+       <widget class="QLabel" name="_reorder_partition_lbl">
+        <property name="text">
+         <string>Reorder Partition</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="3">
+       <widget class="QLineEdit" name="_metis_settings">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QLineEdit" name="_der_delta"/>
+      </item>
+      <item row="13" column="3">
+       <widget class="QSpinBox" name="_BDF_partition_depth">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="_period">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="2">
+       <widget class="QLabel" name="_bdf_partition_depth_lbl">
+        <property name="text">
+         <string>BDF Partition Depth</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QLineEdit" name="_scotch_settings">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="2">
+       <widget class="QLabel" name="_BDF_part_lbl">
+        <property name="text">
+         <string>BDF Partition</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="3">
+       <widget class="QLineEdit" name="_dt">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="_scotch_settings_lbl">
+        <property name="text">
+         <string>Scotch Settings</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1">
+       <widget class="QComboBox" name="_jacobian">
+        <item>
+         <property name="text">
+          <string>Sparse</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Dense</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="10" column="2">
+       <widget class="QLabel" name="_imbalance_lbl">
+        <property name="text">
+         <string>Imbalance</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="3">
+       <widget class="QCheckBox" name="_semi_static_chk">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="2">
+       <widget class="QLabel" name="_pm_lbl">
+        <property name="text">
+         <string>Partition Method</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="1">
+       <widget class="QComboBox" name="_reorder_partition_cbx">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>FALSE</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>TRUE</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="11" column="3">
+       <widget class="QComboBox" name="_generate_arch_cbx">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>FALSE</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>TRUE</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item row="3" column="1">
        <widget class="QLineEdit" name="_min_step"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="_sym_diff_lbl">
+        <property name="text">
+         <string>Symbolic Differentiation</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="2">
+       <widget class="QLabel" name="_dt_lbl">
+        <property name="text">
+         <string>Dt tolerance</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QComboBox" name="_scheduler">
+        <item>
+         <property name="text">
+          <string>BINARY</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>RANDOM</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>LINEAR</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QLabel" name="_metis_settings_lbl">
+        <property name="text">
+         <string>Metis Settings</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="_dt_synch_lbl">
+        <property name="text">
+         <string>Dt Synchronization </string>
+        </property>
+       </widget>
       </item>
       <item row="6" column="3">
        <widget class="QComboBox" name="_partition_method">
@@ -572,11 +621,8 @@
         </item>
        </widget>
       </item>
-      <item row="11" column="3">
-       <widget class="QComboBox" name="_generate_arch_cbx">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
+      <item row="3" column="3">
+       <widget class="QComboBox" name="_parallel">
         <item>
          <property name="text">
           <string>FALSE</string>
@@ -587,147 +633,6 @@
           <string>TRUE</string>
          </property>
         </item>
-       </widget>
-      </item>
-      <item row="13" column="3">
-       <widget class="QSpinBox" name="_BDF_partition_depth">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="1">
-       <widget class="QLineEdit" name="_scotch_settings">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="3">
-       <widget class="QCheckBox" name="_semi_static_chk">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="1">
-       <widget class="QLineEdit" name="_patoh_settings">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="3">
-       <widget class="QSpinBox" name="_lps">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>1024</number>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="_period_lbl">
-        <property name="text">
-         <string>Period</string>
-        </property>
-       </widget>
-      </item>
-      <item row="11" column="0">
-       <widget class="QLabel" name="_reorder_partition_lbl">
-        <property name="text">
-         <string>Reorder Partition</string>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Jacobian (CVODE/IDA)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="_min_step_lbl">
-        <property name="text">
-         <string>Minimum Step Size</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="3">
-       <widget class="QLineEdit" name="_dt">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="12" column="3">
-       <widget class="QLineEdit" name="_BDF_part"/>
-      </item>
-      <item row="2" column="3">
-       <widget class="QLineEdit" name="_der_delta"/>
-      </item>
-      <item row="5" column="1">
-       <widget class="QLineEdit" name="_zc_hyst"/>
-      </item>
-      <item row="6" column="2">
-       <widget class="QLabel" name="_pm_lbl">
-        <property name="text">
-         <string>Partition Method</string>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="1">
-       <widget class="QComboBox" name="_jacobian">
-        <item>
-         <property name="text">
-          <string>Sparse</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Dense</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="_scheduler_lbl">
-        <property name="text">
-         <string>Scheduler</string>
-        </property>
-       </widget>
-      </item>
-      <item row="11" column="2">
-       <widget class="QLabel" name="_generate_arch_lbl">
-        <property name="text">
-         <string>Generate Arch</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="2">
-       <widget class="QLabel" name="_dt_lbl">
-        <property name="text">
-         <string>Dt tolerance</string>
-        </property>
-       </widget>
-      </item>
-      <item row="14" column="1">
-       <widget class="QCheckBox" name="_test_methods_cbx">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="14" column="0">
-       <widget class="QLabel" name="_test_methods_lbl">
-        <property name="text">
-         <string>QSS Test Methods:</string>
-        </property>
        </widget>
       </item>
      </layout>

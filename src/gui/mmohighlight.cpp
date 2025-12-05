@@ -126,7 +126,7 @@ const QStringList MmoHighlighter::_model_qss_tags = {"CI_Dense",    "CI_Sampled"
                                                      "LIQSS3",      "LIQSS_BDF",  "Manual",
                                                      "Metis",       "mLIQSS",     "mLIQSS2",
                                                      "MTPL",        "MTPL_IT",    "Patoh",
-                                                     "QSS",         "QSS2",       "QSS3",
+                                                     "QSS1",        "QSS2",       "QSS3",
                                                      "QSS4",        "Scotch",     "SD_DT_Asynchronous",
                                                      "SD_DT_Fixed", "Sparse",     "ST_Binary",
                                                      "ST_Linear",   "ST_Random",  "true"};

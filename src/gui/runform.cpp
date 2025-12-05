@@ -24,7 +24,24 @@
 #include <runform.hpp>
 #include <utils.hpp>
 
-RunDlg::RunDlg(QWidget *parent) : QDialog(parent)
+static const QStringList first_order_solvers = {"QSS1", "EQSS1", "CHEQSS1", "LIQSS1"};
+
+static const QStringList second_order_solvers = {"QSS2", "EQSS2", "CHEQSS2", "LIQSS2", "LIQSS_BDF"};
+
+static const QStringList third_order_solvers = {"QSS3", "EQSS3", "CHEQSS3", "LIQSS3"};
+
+static const QStringList fourth_order_solvers = {"QSS4"};
+
+static const QStringList classic_solvers = {"DASSL", "DOPRI", "CVODE_BDF", "CVODE_AM", "IDA"};
+
+static const QStringList experimental_solvers = {"mLIQSS", "mLIQSS2", "CQSS1", "CQSS2", "CQSS3"};
+
+static const QMap<RunDlg::SolverFilter, QStringList> solvers_map = {
+    {RunDlg::SolverFilter::QSS1, first_order_solvers}, {RunDlg::SolverFilter::QSS2, second_order_solvers},
+    {RunDlg::SolverFilter::QSS3, third_order_solvers}, {RunDlg::SolverFilter::QSS4, fourth_order_solvers},
+    {RunDlg::SolverFilter::CLASSIC, classic_solvers},  {RunDlg::SolverFilter::EXPERIMENTAL, experimental_solvers}};
+
+RunDlg::RunDlg(QWidget* parent) : QDialog(parent)
 {
   setupUi(this);
   _utils = new Utils();
@@ -45,10 +62,15 @@ RunDlg::RunDlg(QWidget *parent) : QDialog(parent)
 
   on__parallel_currentIndexChanged(_parallel->currentIndex());
 
-  connect(_test_methods_cbx, &QCheckBox::stateChanged, this, &RunDlg::updateTestMethods);
+  _qss_order_spb->setMinimum(1);
+  _qss_order_spb->setMaximum(4);
 
-  _test_methods_cbx->setVisible(false);
-  _test_methods_lbl->setVisible(false);
+  connect(_qss_chk, &QCheckBox::stateChanged, this, &RunDlg::updateQSSSolvers);
+  connect(_qss_order_spb, QOverload<int>::of(&QSpinBox::valueChanged), this, [this]() { updateQSSSolvers(); });
+  connect(_classic_chk, &QCheckBox::stateChanged, this,
+          [this]() { updateSolversChk(RunDlg::SolverFilter::CLASSIC, _classic_chk->checkState(), _qss_chk, _exp_chk); });
+  connect(_exp_chk, &QCheckBox::stateChanged, this,
+          [this]() { updateSolversChk(RunDlg::SolverFilter::EXPERIMENTAL, _exp_chk->checkState(), _qss_chk, _classic_chk); });
 }
 
 void RunDlg::on__show_all_stateChanged(int state) { _extended_frame->setVisible(state == Qt::Checked); }
@@ -136,18 +158,47 @@ QString RunDlg::getSchedulerString(int idx)
 
 int RunDlg::getSolverIdx(QString str)
 {
-  static const QStringList solvers = {"QSS",   "CQSS",    "LIQSS",     "QSS2",     "LIQSS2", "LIQSS_BDF", "QSS3",    "LIQSS3", "QSS4",
-                                      "DASSL", "DOPRI",   "CVODE_BDF", "CVODE_AM", "IDA",    "mLIQSS",    "mLIQSS2", "CQSS1",  "CQSS2",
-                                      "CQSS3", "CHEQSS1", "CHEQSS2",   "CHEQSS3",  "EQSS1",  "EQSS2",     "EQSS3"};
-  return solvers.indexOf(str.trimmed());
+  for (auto m = solvers_map.keyValueBegin(); m != solvers_map.keyValueEnd(); ++m) {
+    if (m->second.contains(str.trimmed())) {
+      _current_solver_map_index = m->first;
+      return m->second.indexOf(str.trimmed());
+    }
+  }
+  return -1;
 }
+
+void RunDlg::setSolver(QString str)
+{
+  int index = getSolverIdx(str);
+  switch (_current_solver_map_index) {
+  case RunDlg::SolverFilter::CLASSIC:
+    _classic_chk->setCheckState(Qt::Checked);
+    break;
+  case RunDlg::SolverFilter::EXPERIMENTAL:
+    _exp_chk->setCheckState(Qt::Checked);
+    break;
+  case RunDlg::SolverFilter::QSS1:
+    _qss_order_spb->setValue(1);
+    _qss_chk->setCheckState(Qt::Checked);
+    break;
+  case RunDlg::SolverFilter::QSS2:
+    _qss_order_spb->setValue(2);
+    _qss_chk->setCheckState(Qt::Checked);
+    break;
+  case RunDlg::SolverFilter::QSS3:
+    _qss_order_spb->setValue(3);
+    _qss_chk->setCheckState(Qt::Checked);
+    break;
+  case RunDlg::SolverFilter::QSS4:
+    _qss_order_spb->setValue(4);
+    _qss_chk->setCheckState(Qt::Checked);
+  }
+  _solver->setCurrentIndex(index);
+};
 
 QString RunDlg::getSolverString(int idx)
 {
-  static const QStringList solvers = {"QSS",   "CQSS",    "LIQSS",     "QSS2",     "LIQSS2", "LIQSS_BDF", "QSS3",    "LIQSS3", "QSS4",
-                                      "DASSL", "DOPRI",   "CVODE_BDF", "CVODE_AM", "IDA",    "mLIQSS",    "mLIQSS2", "CQSS1",  "CQSS2",
-                                      "CQSS3", "CHEQSS1", "CHEQSS2",   "CHEQSS3",  "EQSS1",  "EQSS2",     "EQSS3"};
-  return (idx >= 0 && idx < solvers.size()) ? solvers[idx] : QString();
+  return (idx >= 0 && idx < solvers_map[_current_solver_map_index].size()) ? solvers_map[_current_solver_map_index].at(idx) : QString();
 }
 
 int RunDlg::getOutputTypeIdx(QString str)
@@ -162,9 +213,43 @@ QString RunDlg::getOutputTypeString(int idx)
   return (idx >= 0 && idx < output_types.size()) ? output_types[idx] : QString();
 }
 
-void RunDlg::updateTestMethods(int state)
+void RunDlg::updateSolversChk(RunDlg::SolverFilter enabled_solvers, Qt::CheckState state, QCheckBox* filter_cmb_1, QCheckBox* filter_cmb_2)
 {
-  if (state == Qt::Unchecked) {
-    setSolver("QSS");
+  if (state == Qt::Checked) {
+    updateSolvers(enabled_solvers);
+    filter_cmb_1->setCheckState(Qt::Unchecked);
+    filter_cmb_2->setCheckState(Qt::Unchecked);
+  } else if (_qss_chk->checkState() == Qt::Unchecked && _classic_chk->checkState() == Qt::Unchecked &&
+             _exp_chk->checkState() == Qt::Unchecked) {
+    _qss_order_spb->setValue(2);
+    _qss_chk->setCheckState(Qt::Checked);
   }
+}
+
+void RunDlg::updateQSSSolvers()
+{
+  Qt::CheckState state = _qss_chk->checkState();
+  switch (_qss_order_spb->value()) {
+  case 1:
+    updateSolversChk(RunDlg::SolverFilter::QSS1, state, _classic_chk, _exp_chk);
+    break;
+  case 2:
+    updateSolversChk(RunDlg::SolverFilter::QSS2, state, _classic_chk, _exp_chk);
+    break;
+  case 3:
+    updateSolversChk(RunDlg::SolverFilter::QSS3, state, _classic_chk, _exp_chk);
+    break;
+  case 4:
+    updateSolversChk(RunDlg::SolverFilter::QSS4, state, _classic_chk, _exp_chk);
+    break;
+  default:
+    break;
+  }
+}
+
+void RunDlg::updateSolvers(RunDlg::SolverFilter active_solvers)
+{
+  _current_solver_map_index = active_solvers;
+  _solver->clear();
+  _solver->addItems(solvers_map[active_solvers]);
 }

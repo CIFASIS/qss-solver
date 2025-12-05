@@ -378,18 +378,18 @@ DT_Synch ModelAnnotation::getDtSynch(string s)
 
 Solver ModelAnnotation::getSolver(string s)
 {
-  if (!s.compare("QSS")) {
+  if (!s.compare("QSS1")) {
     _order = 1;
     _polyCoeffs = 2;
-    return Solver::QSS;
+    return Solver::QSS1;
   } else if (!s.compare("CQSS")) {
     _order = 1;
     _polyCoeffs = 2;
     return Solver::CQSS;
-  } else if (!s.compare("LIQSS")) {
+  } else if (!s.compare("LIQSS1")) {
     _order = 1;
     _polyCoeffs = 2;
-    return Solver::LIQSS;
+    return Solver::LIQSS1;
   } else if (!s.compare("QSS2")) {
     _order = 2;
     _polyCoeffs = 3;
@@ -434,10 +434,10 @@ Solver ModelAnnotation::getSolver(string s)
     _order = 4;
     _polyCoeffs = 5;
     return Solver::QSS4;
-  } else if (!s.compare("mLIQSS")) {
+  } else if (!s.compare("mLIQSS1")) {
     _order = 1;
     _polyCoeffs = 2;
-    return Solver::mLIQSS;
+    return Solver::mLIQSS1;
   } else if (!s.compare("mLIQSS2")) {
     _order = 2;
     _polyCoeffs = 3;
@@ -479,7 +479,7 @@ Solver ModelAnnotation::getSolver(string s)
     _polyCoeffs = 4;
     return Solver::EQSS3;
   }
-  return Solver::QSS;
+  return Solver::QSS1;
 }
 
 void ModelAnnotation::parseMatrix(AST_Expression exp, IR::MATRIX::UserDefMatrixExps &matrix)
@@ -762,16 +762,16 @@ void AnnotationValue::setPlainStr(string plain_str) { _plain_str = plain_str; }
 
 EvalAnnotation::EvalAnnotation() : _tokens()
 {
-  _tokens.emplace_back("QSS");
+  _tokens.emplace_back("QSS1");
   _tokens.emplace_back("CQSS");
   _tokens.emplace_back("QSS2");
   _tokens.emplace_back("QSS3");
-  _tokens.emplace_back("LIQSS");
+  _tokens.emplace_back("LIQSS1");
   _tokens.emplace_back("LIQSS2");
   _tokens.emplace_back("LIQSS_BDF");
   _tokens.emplace_back("LIQSS3");
   _tokens.emplace_back("QSS4");
-  _tokens.emplace_back("mLIQSS");
+  _tokens.emplace_back("mLIQSS1");
   _tokens.emplace_back("mLIQSS2");
   _tokens.emplace_back("CQSS1");
   _tokens.emplace_back("CQSS2");

@@ -103,13 +103,13 @@ QA_quantizer QA_Quantizer(QSS_data sim_data, QSS_time sim_time)
   p->state = QA_QuantizerState();
   p->ops = QA_QuantizerOps();
   switch (sim_data->solver) {
-  case SD_QSS:
+  case SD_QSS1:
     QSS_MODULE_INIT(QSS, p, sim_data, sim_time);
     break;
   case SD_CQSS:
     QSS_MODULE_INIT(CQSS, p, sim_data, sim_time);
     break;
-  case SD_LIQSS:
+  case SD_LIQSS1:
     QSS_MODULE_INIT(LIQSS, p, sim_data, sim_time);
     break;
   case SD_QSS2:
@@ -130,7 +130,7 @@ QA_quantizer QA_Quantizer(QSS_data sim_data, QSS_time sim_time)
   case SD_QSS4:
     QSS_MODULE_INIT(QSS4, p, sim_data, sim_time);
     break;
-  case SD_mLIQSS:
+  case SD_mLIQSS1:
     QSS_MODULE_INIT(mLIQSS, p, sim_data, sim_time);
     break;
   case SD_mLIQSS2:
