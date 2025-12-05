@@ -50,6 +50,7 @@ typedef enum { CI_Step, CI_Dense, CI_Sampled } SD_CommInterval;
 
 typedef enum {
   SD_QSS,
+  SD_CQSS,  // Deprecated.
   SD_LIQSS,
   SD_QSS2,
   SD_LIQSS2,

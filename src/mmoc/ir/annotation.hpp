@@ -34,6 +34,7 @@ namespace IR {
 
 enum class Solver {
   QSS,
+  CQSS, // Deprecated.
   LIQSS,
   QSS2,
   LIQSS2,
