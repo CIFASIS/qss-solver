@@ -1,5 +1,15 @@
 ## Changelog
 
+## [6.0.0] - 09-12-2025
+
+### Added
+- **New EQSS1, EQSS2 and EQSS3** `LIQSS` based methods.
+- **New CHEQSS1, CHEQSS2 and CHEQSS3** `LIQSS` based methods.
+- **New Python mehtod to update model parameters**.
+
+### Removed
+- **CQSS** is deprecated.
+
 ## [5.0.0] - 04-08-2025
 
 ### Added
