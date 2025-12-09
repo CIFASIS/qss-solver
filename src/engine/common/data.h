@@ -49,9 +49,9 @@ typedef enum { SD_File, SD_Memory } SD_StoreData;
 typedef enum { CI_Step, CI_Dense, CI_Sampled } SD_CommInterval;
 
 typedef enum {
-  SD_QSS,
-  SD_CQSS,
-  SD_LIQSS,
+  SD_QSS1,
+  SD_CQSS,  // Deprecated.
+  SD_LIQSS1,
   SD_QSS2,
   SD_LIQSS2,
   SD_LIQSS_BDF,
@@ -63,11 +63,17 @@ typedef enum {
   SD_CVODE_BDF,
   SD_CVODE_AM,
   SD_IDA,
-  SD_mLIQSS,
+  SD_mLIQSS1,
   SD_mLIQSS2,
   SD_CQSS1,
   SD_CQSS2,
-  SD_CQSS3
+  SD_CQSS3,
+  SD_CHEQSS1,
+  SD_CHEQSS2,
+  SD_CHEQSS3,
+  SD_EQSS1,
+  SD_EQSS2,
+  SD_EQSS3
 } SD_Solver;
 
 typedef enum {

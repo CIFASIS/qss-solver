@@ -73,7 +73,7 @@ static const QMap<AppDirs, QString> dir_map = {
 // Set defaults for each section.
 
 static const QMap<AppFlags, QString> flag_default_map = {
-    {FLG_FLAGS, "false"},
+    {FLG_FLAGS, ""},
     {FLG_DBG_ALL, "false"},
     {FLG_DBG_INIT_VALUES, "false"},
     {FLG_DBG_EXTERNAL_EVENT, "false"},

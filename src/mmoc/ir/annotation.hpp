@@ -33,9 +33,9 @@ namespace MicroModelica {
 namespace IR {
 
 enum class Solver {
-  QSS,
-  CQSS,
-  LIQSS,
+  QSS1,
+  CQSS, // Deprecated.
+  LIQSS1,
   QSS2,
   LIQSS2,
   LIQSS_BDF,
@@ -47,11 +47,17 @@ enum class Solver {
   CVODE_BDF,
   CVODE_AM,
   IDA,
-  mLIQSS,
+  mLIQSS1,
   mLIQSS2,
   CQSS1,
   CQSS2,
-  CQSS3
+  CQSS3,
+  CHEQSS1,
+  CHEQSS2,
+  CHEQSS3,
+  EQSS1,
+  EQSS2,
+  EQSS3
 };
 
 enum class DT_Synch { DT_Fixed, DT_Asynchronous };

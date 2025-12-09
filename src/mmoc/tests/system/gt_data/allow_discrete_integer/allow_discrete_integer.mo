@@ -16,7 +16,7 @@ algorithm
 	experiment(
 		MMO_Description="Use time variable in initialization code.",
 
-		MMO_Solver=QSS,
+		MMO_Solver=QSS1,
 		MMO_PartitionMethod=Metis,
 		Jacobian=Dense,
 		MMO_BDF_PDepth=1,

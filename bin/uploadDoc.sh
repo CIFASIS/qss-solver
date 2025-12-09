@@ -13,7 +13,7 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 5.0.0
+#       VERSION: 6.0.0
 #===================================================================================
 
 # Check if MMOC_SRC is set

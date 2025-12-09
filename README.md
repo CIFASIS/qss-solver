@@ -1,4 +1,4 @@
-## QSS Solver 5.0.0
+## QSS Solver 6.0.0
 
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
@@ -212,6 +212,16 @@ The simplest way to compile this package is:
 
 ## Changelog
 
+## [6.0.0] - 09-12-2025
+
+### Added
+- **New EQSS1, EQSS2 and EQSS3** `LIQSS` based methods.
+- **New CHEQSS1, CHEQSS2 and CHEQSS3** `LIQSS` based methods.
+- **New Python mehtod to update model parameters**.
+
+### Removed
+- **CQSS** is deprecated.
+
 ## [5.0.0] - 04-08-2025
 
 ### Added
@@ -232,27 +242,6 @@ The simplest way to compile this package is:
 ### Changed
 - Remove local `Scotch` library and use system library instead.
 
-## [4.5.2] - 15-01-2025
-
-### Fixed
-- Fixed overflow in `Integer` and `Real` definitions in SBG lib that causes assertion failures in the compiler.
-
-## [4.5.1] - 14-01-2025
-
-### Fixed
-- Python module model config methods now use Python 3 libconf to access and update the files.
-
-## [4.5.0] - 03-01-2025
-
-### Added
-- **New Python module** with basic access to the solver, that allows running models, access logs, etc.
-- **New GUI Python console widget** that loads `qss_solver` module to execute and access simulation logs.
-- **New GUI bash widget**.
-- Added a new model option `partitionOnly` to generate partition logs and info without running the model.
-
-### Changed
-- Fixed model function includes in generated C code.
-- Window geometry changes are now saved.
 
 ## Licensing
 

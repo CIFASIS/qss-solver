@@ -286,10 +286,7 @@ void QSS_SEQ_logMemory(QSS_simulator simulator)
   }
   int solverM = 0;
   switch (simulator->data->solver) {
-  case SD_CQSS:
-    solverM = 3 * states * sDouble;
-    break;
-  case SD_LIQSS:
+  case SD_LIQSS1:
     solverM = 6 * states * sDouble;
     break;
   case SD_LIQSS2:
@@ -911,10 +908,7 @@ void QSS_PAR_logMemory(QSS_simulator simulator)
   }
   int solverM = 0;
   switch (simulator->data->solver) {
-  case SD_CQSS:
-    solverM = 3 * states * sDouble;
-    break;
-  case SD_LIQSS:
+  case SD_LIQSS1:
     solverM = 6 * states * sDouble;
     break;
   case SD_LIQSS2:

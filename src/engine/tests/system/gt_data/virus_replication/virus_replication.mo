@@ -48,7 +48,7 @@ end for;
 
 	experiment(
 		MMO_Description="",
-		MMO_Solver=QSS,
+		MMO_Solver=QSS1,
 		MMO_SymDiff=false,
 		MMO_Period={100/1000},
 		MMO_PartitionMethod=Metis,

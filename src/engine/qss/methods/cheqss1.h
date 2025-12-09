@@ -22,4 +22,4 @@
 #include <qss/qss_data.h>
 #include <qss/qss_quantizer.h>
 
-QSS_DECLARE_QUANTIZER_INTERFACE(CQSS)
+QSS_DECLARE_QUANTIZER_INTERFACE(CHEQSS1)

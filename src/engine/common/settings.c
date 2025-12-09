@@ -28,12 +28,10 @@
 
 SD_Solver _getSolver(const char *sol)
 {
-  if (!strcmp(sol, "QSS")) {
-    return SD_QSS;
-  } else if (!strcmp(sol, "CQSS")) {
-    return SD_CQSS;
-  } else if (!strcmp(sol, "LIQSS")) {
-    return SD_LIQSS;
+  if (!strcmp(sol, "QSS1")) {
+    return SD_QSS1;
+  } else if (!strcmp(sol, "LIQSS1")) {
+    return SD_LIQSS1;
   } else if (!strcmp(sol, "QSS2")) {
     return SD_QSS2;
   } else if (!strcmp(sol, "LIQSS2")) {
@@ -46,8 +44,8 @@ SD_Solver _getSolver(const char *sol)
     return SD_LIQSS3;
   } else if (!strcmp(sol, "QSS4")) {
     return SD_QSS4;
-  } else if (!strcmp(sol, "mLIQSS")) {
-    return SD_mLIQSS;
+  } else if (!strcmp(sol, "mLIQSS1")) {
+    return SD_mLIQSS1;
   } else if (!strcmp(sol, "mLIQSS2")) {
     return SD_mLIQSS2;
   } else if (!strcmp(sol, "DASSL")) {
@@ -66,8 +64,20 @@ SD_Solver _getSolver(const char *sol)
     return SD_CQSS2;
   } else if (!strcmp(sol, "CQSS3")) {
     return SD_CQSS3;
+  } else if (!strcmp(sol, "CHEQSS1")) {
+    return SD_CHEQSS1;
+  } else if (!strcmp(sol, "CHEQSS2")) {
+    return SD_CHEQSS2;
+  } else if (!strcmp(sol, "CHEQSS3")) {
+    return SD_CHEQSS3;
+  } else if (!strcmp(sol, "EQSS1")) {
+    return SD_EQSS1;
+  } else if (!strcmp(sol, "EQSS2")) {
+    return SD_EQSS2;
+  } else if (!strcmp(sol, "EQSS3")) {
+    return SD_EQSS3;
   }
-  return SD_QSS;
+  return SD_QSS1;
 }
 
 SD_PartitionMethod _getPartitionMethod(const char *sol)
@@ -101,11 +111,12 @@ SD_DtSynch _getDtSynch(const char *sol)
 int _getOrder(SD_Solver sol)
 {
   switch (sol) {
-  case SD_QSS:
-  case SD_CQSS:
+  case SD_QSS1:
   case SD_CQSS1:
-  case SD_LIQSS:
-  case SD_mLIQSS:
+  case SD_LIQSS1:
+  case SD_mLIQSS1:
+  case SD_CHEQSS1:
+  case SD_EQSS1:
   case SD_DASSL:
   case SD_DOPRI:
   case SD_CVODE_BDF:
@@ -117,10 +128,14 @@ int _getOrder(SD_Solver sol)
   case SD_LIQSS2:
   case SD_mLIQSS2:
   case SD_LIQSS_BDF:
+  case SD_CHEQSS2:
+  case SD_EQSS2:
     return 2;
   case SD_QSS3:
   case SD_CQSS3:
   case SD_LIQSS3:
+  case SD_CHEQSS3:
+  case SD_EQSS3:
     return 3;
   case SD_QSS4:
     return 4;
