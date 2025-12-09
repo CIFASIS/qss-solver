@@ -194,7 +194,7 @@
      <normaloff>:/images/editfile.png</normaloff>:/images/editfile.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Load</string>
+    <string>&amp;Open</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
