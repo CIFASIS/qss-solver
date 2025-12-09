@@ -25,7 +25,7 @@
 int main(int argc, char *argv[])
 {
   QCoreApplication::setOrganizationName("CIFASIS");
-  QCoreApplication::setApplicationVersion("5.0.0");
+  QCoreApplication::setApplicationVersion("6.0.0");
   QCoreApplication::setApplicationName("QSS Solver");
   QApplication app(argc, argv);
   QDir d;

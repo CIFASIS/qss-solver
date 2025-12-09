@@ -15,7 +15,7 @@
 #         NOTES: --- 
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 5.0.0
+#       VERSION: 6.0.0
 #===================================================================================
 
 set -euo pipefail
@@ -76,6 +76,7 @@ function build_binaries() {
   cd "$BUILD_DIR"
   cmake ..
   make clean
+  make reset-targets
   make
   make install
   cd "$HOME_DIR"
