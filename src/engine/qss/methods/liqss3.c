@@ -111,6 +111,7 @@ void QSS_FUNC_DECL(LIQSS3, recomputeNextTime)(QA_quantizer quantizer, int var, d
     coeff[3] = -x[cf3];
     int sign = (q[cf0] > x[cf0]) ? 1 : ((q[cf0] < x[cf0]) ? -1 : 0);
     coeff[0] = q[cf0] - sign * 0.001 * lqu[var] - x[cf0];
+    if ((coeff[0] == 0) && (t - quantizer->state->lSimTime->tq[var] == 0)) coeff[0] = q[cf0] + sign * 1.001 * lqu[var] - x[cf0];
     timeaux = t + minPosRoot(coeff, 3);
     coeff[0] = q[cf0] - 1.001 * sign * lqu[var] - x[cf0];
     timeaux2 = t + minPosRoot(coeff, 3);

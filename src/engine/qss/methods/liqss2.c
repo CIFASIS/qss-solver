@@ -101,6 +101,7 @@ void QSS_FUNC_DECL(LIQSS2, recomputeNextTime)(QA_quantizer quantizer, int var, d
     coeff[2] = -x[cf2];
     int sign = (q[cf0] > x[cf0]) ? 1 : ((q[cf0] < x[cf0]) ? -1 : 0);
     coeff[0] = q[cf0] - sign * 0.001 * lqu[var] - x[cf0];
+    if ((coeff[0] == 0) && (t - quantizer->state->lSimTime->tq[var] == 0)) coeff[0] = q[cf0] + sign * 1.001 * lqu[var] - x[cf0];
     timeaux = t + minPosRoot(coeff, 2);
     coeff[0] = q[cf0] - 1.001 * sign * lqu[var] - x[cf0];
     timeaux2 = t + minPosRoot(coeff, 2);
@@ -191,6 +192,12 @@ void QSS_FUNC_DECL(LIQSS2, updateQuantizedState)(QA_quantizer quantizer, int var
         }
         q[cf0] = x[cf0] - sign * lqu[var];
         q[cf1] = a[var] * q[cf0] + u0[var] + 2 / tm2 * sign * lqu[var];
+        /*
+               if (var==0) {
+                  printf("t:=%g  --  tm2=%g  --   disc=%g -- q=[0,%g,%g]  -- x=[%g,%g,%g]  a=%g
+           \n",t,tm2,disc,q[cf1],q[cf0],x[cf2],x[cf1],x[cf0],a[var]);
+                }
+        */
       }
     }
   }
