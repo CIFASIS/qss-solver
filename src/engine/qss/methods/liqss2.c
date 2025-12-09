@@ -39,7 +39,6 @@ void QSS_FUNC_DECL(LIQSS2, init)(QA_quantizer quantizer, QSS_data simData, QSS_t
   quantizer->state->tx = (double *)malloc(states * sizeof(double));
   quantizer->state->flag2 = (int *)malloc(states * sizeof(double));
   quantizer->state->finTime = simData->ft;
-
   for (i = 0; i < states; i++) {
     int cf0 = i * 3;
     simData->x[cf0 + 2] = 0;
@@ -67,16 +66,25 @@ void QSS_FUNC_DECL(LIQSS2, recomputeNextTime)(QA_quantizer quantizer, int var, d
   double *u0 = quantizer->state->u0;
   double *u1 = quantizer->state->u1;
   bool self = quantizer->state->lSimTime->minIndex == var && quantizer->state->lSimTime->type == ST_State;
-  double diffQ, timeaux;
+  bool stateEvent = (quantizer->state->lSimTime->type == ST_Event) && (quantizer->state->nSZ[var] > 0);
+  double diffQ;
   double coeff[3];
   double *tu = quantizer->state->tx;
-  int *flag2 = quantizer->state->flag2;
-
+  if (stateEvent) {
+    // we check if the state event can be triggered by this state variable.
+    for (int i = 0; i < quantizer->state->nSZ[var]; i++) {
+      if (quantizer->state->SZ[var][i] == quantizer->state->lSimTime->minIndex) {
+        quantizer->state->flag2[var] = 1;
+      }
+    }
+  }
   if (self) {
     if (t > 0) {
       diffQ = q[cf0] - quantizer->state->qAux[var];
-      if (diffQ) a[var] = (x[cf1] - quantizer->state->oldDx[var]) / diffQ;
-      if (a[var] > 0) a[var] = 0;
+      if (diffQ) {
+        a[var] = (x[cf1] - quantizer->state->oldDx[var]) / diffQ;
+        if (a[var] > 0) a[var] = 0;
+      }
     } else {
       a[var] = 0;
     }
@@ -84,49 +92,30 @@ void QSS_FUNC_DECL(LIQSS2, recomputeNextTime)(QA_quantizer quantizer, int var, d
   u0[var] = x[cf1] - q[cf0] * a[var];
   u1[var] = 2 * x[cf2] - q[cf1] * a[var];
   tu[var] = t;
-
-  coeff[1] = q[cf1] - x[cf1];
-  coeff[2] = -x[cf2];
-  if (flag2[var] != 1) {
-    if ((quantizer->state->lSimTime->type == ST_Event) && (a[var] < 0) &&
-        (quantizer->state->nSZ[var] > 0)) {  // we check if var is involved in the zero crossing function that produced the current event
-      int i;
-      for (i = 0; i < quantizer->state->nSZ[var]; i++) {
-        if (quantizer->state->SZ[var][i] == quantizer->state->lSimTime->minIndex) {
-          nTime[var] = t;
-          flag2[var] = 1;  // it does, so we restart the quantized state q[var]
-        }
-      }
-    }
-    if (flag2[var] != 1) {
-      if (a[var] < 0 && self && x[cf2] != 0) {
-        nTime[var] = t + fabs((q[cf1] - x[cf1]) / x[cf2]);
-      } else {
-        nTime[var] = INF;
-      }
-      coeff[0] = q[cf0] + 2 * lqu[var] - x[cf0];
-      timeaux = t + minPosRoot(coeff, 2);
-      if (timeaux < nTime[var]) {
-        nTime[var] = timeaux;
-      }
-      coeff[0] = q[cf0] - 2 * lqu[var] - x[cf0];
-      timeaux = t + minPosRoot(coeff, 2);
-      if (timeaux < nTime[var]) {
-        nTime[var] = timeaux;
-      }
-
-      if (q[cf0] * q[cf1] < 0 && fabs(q[cf0]) > 10 * lqu[var]) {
-        timeaux = -q[cf0] / q[cf1] - 2 * fabs(lqu[var] / q[cf1]);
-        if (nTime[var] > t + timeaux) nTime[var] = t + timeaux;
-      }
-      if (flag2[var] == 2 && self) flag2[var] = 0;
-      double err1 = q[cf0] - x[cf0] + coeff[1] * (nTime[var] - t) / 2 + coeff[2] * pow((nTime[var] - t) / 2, 2);
-      if (fabs(err1) > 3 * fabs(lqu[var])) nTime[var] = t + quantizer->state->finTime * quantizer->state->minStep;
-    }
+  if (quantizer->state->flag2[var] == 1) {
+    // the quantized state will be restarted at its current value to avoid that the zero crossing function changes its sign back
+    nTime[var] = t;
   } else {
-    if (self) {
-      flag2[var] = 2;
-      nTime[var] = t;
+    double timeaux, timeaux2;
+    coeff[1] = q[cf1] - x[cf1];
+    coeff[2] = -x[cf2];
+    int sign = (q[cf0] > x[cf0]) ? 1 : ((q[cf0] < x[cf0]) ? -1 : 0);
+    coeff[0] = q[cf0] - sign * 0.001 * lqu[var] - x[cf0];
+    if ((coeff[0] == 0) && (t - quantizer->state->lSimTime->tq[var] == 0)) coeff[0] = q[cf0] + sign * 1.001 * lqu[var] - x[cf0];
+    timeaux = t + minPosRoot(coeff, 2);
+    coeff[0] = q[cf0] - 1.001 * sign * lqu[var] - x[cf0];
+    timeaux2 = t + minPosRoot(coeff, 2);
+    if (timeaux < timeaux2) {
+      nTime[var] = timeaux;
+    } else {
+      nTime[var] = timeaux2;
+    }
+    double dt = (nTime[var] - t) / 2;
+    if (dt > quantizer->state->finTime - t) dt = quantizer->state->finTime - t;
+    double err1 = q[cf0] - x[cf0] + coeff[1] * dt + coeff[2] * dt * dt;
+    // we verify next that the difference between x and q at the middle of the step is less than de quantum (within certain margin).
+    if (fabs(err1) > 1.1 * lqu[var]) {
+      nTime[var] = t + quantizer->state->minStep;
     }
   }
 }
@@ -160,71 +149,56 @@ void QSS_FUNC_DECL(LIQSS2, updateQuantizedState)(QA_quantizer quantizer, int var
   double *u0 = quantizer->state->u0;
   double *u1 = quantizer->state->u1;
   double *tu = quantizer->state->tx;
-  int cf0 = var * 3, cf1 = cf0 + 1, cf2 = cf1 + 1;
+  int cf0 = var * 3, cf1 = cf0 + 1;
   double elapsed;
-  double h;
-  int *flag2 = quantizer->state->flag2;
-
   elapsed = t - quantizer->state->lSimTime->tq[var];
   quantizer->state->qAux[var] = q[cf0] + elapsed * q[cf1];
   quantizer->state->oldDx[var] = x[cf1];
   elapsed = t - tu[var];
   u0[var] = u0[var] + elapsed * u1[var];
   tu[var] = t;
-  double ddx = x[cf2] * 2;
-  double oldq1 = q[cf1];
-
-  if (a[var] < 0) {
-    if (ddx == 0) {
-      ddx = a[var] * a[var] * q[cf0] + a[var] * u0[var] + u1[var];
-      if (ddx == 0) ddx = 1e-40;
+  if (quantizer->state->flag2[var] == 1 && t > 0) {
+    // Restart quantized state from a nearby value in case there was an event.
+    int signDx = (q[cf1] > 0) ? 1 : ((q[cf1] < 0) ? -1 : 0);
+    q[cf0] = quantizer->state->qAux[var] + 1e-6 * lqu[var] * signDx;
+    q[cf1] = 0;
+    if (fabs(q[cf0] - x[cf0]) > 1.001 * lqu[var]) {
+      x[cf0] = q[cf0];  // we reinit the state value at the quantized state.
     }
-
-    h = (quantizer->state->finTime - t);
-    q[cf0] = ((x[cf0] + h * u0[var] + h * h / 2 * u1[var]) * (1 - h * a[var]) + (h * h / 2 * a[var] - h) * (u0[var] + h * u1[var])) /
-             (1 - h * a[var] + h * h * a[var] * a[var] / 2);
-    if (fabs(q[cf0] - x[cf0]) > 2 * lqu[var]) {
-      h = sqrt(fabs(2 * lqu[var] / ddx));
-      q[cf0] = ((x[cf0] + h * u0[var] + h * h / 2 * u1[var]) * (1 - h * a[var]) + (h * h / 2 * a[var] - h) * (u0[var] + h * u1[var])) /
-               (1 - h * a[var] + h * h * a[var] * a[var] / 2);
-    }
-    while (fabs(q[cf0] - x[cf0]) > 2 * lqu[var]) {
-      h = h * sqrt(lqu[var] / fabs(q[cf0] - x[cf0]));
-      q[cf0] = ((x[cf0] + h * u0[var] + h * h / 2 * u1[var]) * (1 - h * a[var]) + (h * h / 2 * a[var] - h) * (u0[var] + h * u1[var])) /
-               (1 - h * a[var] + h * h * a[var] * a[var] / 2);
-    }
-    q[cf1] = (a[var] * q[cf0] + u0[var] + h * u1[var]) / (1 - h * a[var]);
-
-    if (x[cf2] * ddx < 0)  // no hace falta
-    {
-      q[cf1] = -u1[var] / a[var];
-      q[cf0] = (q[cf1] - u0[var]) / a[var];
-      if (fabs(q[cf0] - x[cf0]) > 2 * lqu[var]) {
-        if (q[cf0] > x[cf0])
-          q[cf0] = x[cf0] + lqu[var];
-        else
-          q[cf0] = x[cf0] - lqu[var];
+    quantizer->state->flag2[var] = 0;
+  } else {
+    double disc = a[var] * a[var] * x[cf0] + a[var] * u0[var] + u1[var];
+    if (quantizer->state->flag2[var] == 1 && t > 0) {
+      // Restart quantized state from a nearby value in case there was an event.
+      int signDx = (q[cf1] > 0) ? 1 : ((q[cf1] < 0) ? -1 : 0);
+      q[cf0] = quantizer->state->qAux[var] + 1e-6 * lqu[var] * signDx;
+      q[cf1] = 0;
+      if (fabs(q[cf0] - x[cf0]) > 1.001 * lqu[var]) {
+        x[cf0] = q[cf0];  // we reinit the state value at the quantized state.
+      }
+      quantizer->state->flag2[var] = 0;
+    } else {
+      if (fabs(disc) < a[var] * a[var] * lqu[var]) {
+        q[cf0] = -u1[var] / (a[var] * a[var]) - u0[var] / a[var];
+        q[cf1] = -u1[var] / a[var];
+      } else {
+        int sign = (disc > 0) ? 1 : ((disc < 0) ? -1 : 0);
+        double tm2 = 1e20;
+        if (a[var] == 0) {
+          if (disc) tm2 = sqrt(lqu[var] / fabs(disc));
+        } else {
+          double c2 = fabs(disc) / lqu[var] - a[var] * a[var];
+          tm2 = (-a[var] + sqrt(a[var] * a[var] + 2 * c2)) / c2;
+        }
+        q[cf0] = x[cf0] - sign * lqu[var];
+        q[cf1] = a[var] * q[cf0] + u0[var] + 2 / tm2 * sign * lqu[var];
+        /*
+               if (var==0) {
+                  printf("t:=%g  --  tm2=%g  --   disc=%g -- q=[0,%g,%g]  -- x=[%g,%g,%g]  a=%g
+           \n",t,tm2,disc,q[cf1],q[cf0],x[cf2],x[cf1],x[cf0],a[var]);
+                }
+        */
       }
     }
-  } else {
-    ddx = u1[var];
-    if (ddx > 0)
-      q[cf0] = x[cf0] - lqu[var];
-    else
-      q[cf0] = x[cf0] + lqu[var];
-    if (ddx != 0) {
-      h = sqrt(2 * lqu[var] / fabs(ddx));
-      q[cf1] = u0[var] + h * u1[var];
-    } else {
-      q[cf1] = u0[var];
-    }
-  }
-  if (fabs(q[cf0] - x[cf0]) > 2 * lqu[var]) q[cf0] = x[cf0];
-  if (flag2[var] >= 1) {
-    if (oldq1 > 0)
-      q[cf0] = quantizer->state->qAux[var] + lqu[var] / 100;
-    else
-      q[cf0] = quantizer->state->qAux[var] - lqu[var] / 100;
-    q[cf1] = 0;
   }
 }

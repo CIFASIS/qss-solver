@@ -58,6 +58,6 @@ equation
 		StartTime=0.0,
 		StopTime=5,
 		Tolerance={1e-3},
-		AbsTolerance={1e-4}
+		AbsTolerance={1e-3}
 	));
 end ar2d2;
