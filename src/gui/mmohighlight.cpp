@@ -118,7 +118,7 @@ const QStringList MmoHighlighter::_model_annotations = {"annotation", "experimen
 const QStringList MmoHighlighter::_model_qss_tags = {"CI_Dense",    "CI_Sampled", "CI_Step",
                                                      "CHEQSS1",     "CHEQSS2",    "CHEQSS3",
                                                      "EQSS1",       "EQSS2",      "EQSS3",
-                                                     "CQSS",        "CQSS1",      "CQSS2",
+                                                     "CQSS1",      "CQSS2",
                                                      "CQSS3",       "CVODE_AM",   "CVODE_BDF",
                                                      "DASSL",       "Dense",      "DOPRI",
                                                      "false",       "HMetis",     "IDA",

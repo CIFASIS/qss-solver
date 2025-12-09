@@ -382,10 +382,6 @@ Solver ModelAnnotation::getSolver(string s)
     _order = 1;
     _polyCoeffs = 2;
     return Solver::QSS1;
-  } else if (!s.compare("CQSS")) {
-    _order = 1;
-    _polyCoeffs = 2;
-    return Solver::CQSS;
   } else if (!s.compare("LIQSS1")) {
     _order = 1;
     _polyCoeffs = 2;
@@ -763,7 +759,6 @@ void AnnotationValue::setPlainStr(string plain_str) { _plain_str = plain_str; }
 EvalAnnotation::EvalAnnotation() : _tokens()
 {
   _tokens.emplace_back("QSS1");
-  _tokens.emplace_back("CQSS");
   _tokens.emplace_back("QSS2");
   _tokens.emplace_back("QSS3");
   _tokens.emplace_back("LIQSS1");

@@ -3,7 +3,6 @@ set(METHODS_DIR ${ENGINE_DIR}/qss/methods)
 target_sources(
     qss-parallel
     PRIVATE
-        ${METHODS_DIR}/cqss.c
         ${METHODS_DIR}/cheqss1.c
         ${METHODS_DIR}/cheqss2.c
         ${METHODS_DIR}/cheqss3.c

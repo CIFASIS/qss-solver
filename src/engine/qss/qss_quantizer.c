@@ -23,7 +23,6 @@
 
 #include <common/data.h>
 #include <common/utils.h>
-#include <qss/methods/cqss.h>
 #include <qss/methods/cheqss1.h>
 #include <qss/methods/cheqss2.h>
 #include <qss/methods/cheqss3.h>
@@ -105,9 +104,6 @@ QA_quantizer QA_Quantizer(QSS_data sim_data, QSS_time sim_time)
   switch (sim_data->solver) {
   case SD_QSS1:
     QSS_MODULE_INIT(QSS, p, sim_data, sim_time);
-    break;
-  case SD_CQSS:
-    QSS_MODULE_INIT(CQSS, p, sim_data, sim_time);
     break;
   case SD_LIQSS1:
     QSS_MODULE_INIT(LIQSS, p, sim_data, sim_time);

@@ -30,8 +30,6 @@ SD_Solver _getSolver(const char *sol)
 {
   if (!strcmp(sol, "QSS1")) {
     return SD_QSS1;
-  } else if (!strcmp(sol, "CQSS")) {
-    return SD_CQSS;
   } else if (!strcmp(sol, "LIQSS1")) {
     return SD_LIQSS1;
   } else if (!strcmp(sol, "QSS2")) {
@@ -114,7 +112,6 @@ int _getOrder(SD_Solver sol)
 {
   switch (sol) {
   case SD_QSS1:
-  case SD_CQSS:
   case SD_CQSS1:
   case SD_LIQSS1:
   case SD_mLIQSS1:

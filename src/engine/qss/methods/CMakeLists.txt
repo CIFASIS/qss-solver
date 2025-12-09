@@ -1,7 +1,6 @@
 target_sources(
     qss-seq
     PRIVATE
-        cqss.c
         cheqss1.c
         cheqss2.c
         cheqss3.c
