@@ -276,7 +276,7 @@ def main():
     example_models = ["bouncing_ball", "pendulum", "van_der_pol"]
     
     # Choose a model that exists in your models directory
-    model_name = "bouncing_ball"  # Change this to your model
+    model_name = "BouncingBall"  # Change this to your model
     
     # Check if model file exists
     model_path = os.path.join(env_vars['MMOC_MODELS'], f"{model_name}.mo")
