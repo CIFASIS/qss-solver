@@ -5,20 +5,22 @@ from pathlib import Path
 # Configure logging
 logging.basicConfig(level=logging.ERROR, format='%(levelname)s - %(message)s')
 
-CONFIG = {
-    'MMOC_MODELS': {
-        'path': os.environ['MMOC_MODELS'],
-        'ext': ".mo"
-    },
-    'MMOC_LOG': {
-        'path': os.environ['MMOC_OUTPUT'],
-        'ext': ".log"
-    },
-    'MMOC_BUILD': {
-        'path': os.environ['MMOC_BUILD'],
-        'ext': ".ini"
+def get_config():
+    """Get configuration dictionary with current environment variables."""
+    return {
+        'MMOC_MODELS': {
+            'path': os.environ.get('MMOC_MODELS', ''),
+            'ext': ".mo"
+        },
+        'MMOC_LOG': {
+            'path': os.environ.get('MMOC_OUTPUT', ''),
+            'ext': ".log"
+        },
+        'MMOC_BUILD': {
+            'path': os.environ.get('MMOC_BUILD', ''),
+            'ext': ".ini"
+        }
     }
-}
 
 def has_extension(file_name):
     """
@@ -72,7 +74,8 @@ def find_model_file(rel_path, config_entry):
         model_path = (path.parent).relative_to('')
     
     # Construct the model directory path
-    model_directory = Path(CONFIG[config_entry]['path']) / model_path / f"{base_file_name}{CONFIG[config_entry]['ext']}"
+    config = get_config()
+    model_directory = Path(config[config_entry]['path']) / model_path / f"{base_file_name}{config[config_entry]['ext']}"
     logging.debug(f"Constructed model directory path: {model_directory}")
 
     # Check if the file exists in the models directory
@@ -81,7 +84,7 @@ def find_model_file(rel_path, config_entry):
         return model_directory
 
     # Construct the model directory path
-    model_directory = Path(CONFIG[config_entry]['path']) / f"{base_file_name}{CONFIG[config_entry]['ext']}"
+    model_directory = Path(config[config_entry]['path']) / f"{base_file_name}{config[config_entry]['ext']}"
     logging.debug(f"Constructed model directory path: {model_directory}")
 
     # Check if the file exists in the models directory
