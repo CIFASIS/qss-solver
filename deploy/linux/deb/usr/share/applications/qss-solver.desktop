@@ -1,7 +1,7 @@
 [Desktop Entry]
 Comment= QSS Solver.
 Exec=/opt/CIFASIS-CONICET/qss-solver/bin/run.sh
-Icon=/opt/qss-solver/bin/integrator.svg
+Icon=/opt/CIFASIS-CONICET/qss-solver/bin/integrator.svg
 Name=QSS Solver
 StartupNotify=false
 Terminal=false
