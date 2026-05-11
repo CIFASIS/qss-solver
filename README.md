@@ -1,4 +1,4 @@
-## QSS Solver 6.0.0
+## QSS Solver 6.0.2
 
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
@@ -212,6 +212,12 @@ The simplest way to compile this package is:
 
 ## Changelog
 
+## [6.0.2] - 11-05-2026
+
+### Fixed
+- **GUI Initialization** scripts, environment variables and app icon.
+- **Python module initialization** for stand alone scripts.
+
 ## [6.0.0] - 09-12-2025
 
 ### Added
@@ -233,15 +239,6 @@ The simplest way to compile this package is:
 ### Changed
 - Changed default install path.
 - Updated/Improved all binary scripts.
-
-## [4.5.3] - 29-01-2025
-
-### Fixed
-- Modified build script to include `Python QSS` module.
-
-### Changed
-- Remove local `Scotch` library and use system library instead.
-
 
 ## Licensing
 

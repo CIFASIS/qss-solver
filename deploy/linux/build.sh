@@ -15,7 +15,7 @@
 #         NOTES: --- 
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 6.0.0
+#       VERSION: 6.0.2
 #===================================================================================
 
 set -euo pipefail

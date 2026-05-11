@@ -1,5 +1,11 @@
 ## Changelog
 
+## [6.0.2] - 11-05-2026
+
+### Fixed
+- **GUI Initialization** scripts, environment variables and app icon.
+- **Python module initialization** for stand alone scripts.
+
 ## [6.0.0] - 09-12-2025
 
 ### Added
