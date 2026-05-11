@@ -18,7 +18,7 @@ from pathlib import Path
 
 # Add the qss_solver module to the Python path
 # Adjust this path according to your installation
-sys.path.insert(0, '/home/joaquin/work/qss-solver/src/python')
+sys.path.insert(0, '/opt/CIFASIS-CONICET/qss-solver/src/python')
 
 try:
     from qss_solver import (
@@ -273,10 +273,10 @@ def main():
     env_vars = setup_environment()
     
     # Example model names (adjust according to your available models)
-    example_models = ["bouncing_ball", "pendulum", "van_der_pol"]
+    # example_models = ["bouncing_ball", "pendulum", "van_der_pol"]
     
     # Choose a model that exists in your models directory
-    model_name = "BouncingBall"  # Change this to your model
+    model_name = "bball_downstairs"  # Change this to your model
     
     # Check if model file exists
     model_path = os.path.join(env_vars['MMOC_MODELS'], f"{model_name}.mo")
@@ -290,15 +290,15 @@ def main():
         example_basic_simulation(model_name)
         
         # Example 2: Advanced configuration
-        example_advanced_configuration(model_name)
+        #example_advanced_configuration(model_name)
         
         # Example 3: Batch simulation with different parameters
-        parameter_sets = [
-            {'k': 1.0, 'damping': 0.1},
-            {'k': 2.0, 'damping': 0.2},
-            {'k': 3.0, 'damping': 0.3}
-        ]
-        example_batch_simulation(model_name, parameter_sets)
+        #parameter_sets = [
+        #    {'k': 1.0, 'damping': 0.1},
+        #    {'k': 2.0, 'damping': 0.2},
+        #    {'k': 3.0, 'damping': 0.3}
+        #]
+        #example_batch_simulation(model_name, parameter_sets)
         
     except Exception as e:
         print(f"Error during simulation: {e}")
