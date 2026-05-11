@@ -2,7 +2,7 @@ import logging
 import os
 import subprocess
 
-import file_handlers as fh
+from . import file_handlers as fh
 
 def compile_model(model_file, flags=''):
     """

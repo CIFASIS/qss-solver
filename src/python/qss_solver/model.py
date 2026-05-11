@@ -2,7 +2,7 @@ import json
 import libconf
 import re
 
-import file_handlers as fh
+from . import file_handlers as fh
 
 def annotations(model):
     """

@@ -20,6 +20,9 @@
 #       VERSION: 6.0.0
 #===================================================================================
 
+echo "Registering environment variables"
+./generate_conf.sh
+
 if [ ! -d "$HOME/qss-solver" ]; then
   # No previous installation and first run
   echo "Installing QSS Solver..."
@@ -29,12 +32,12 @@ if [ ! -d "$HOME/qss-solver" ]; then
   echo "Registering environment variables..."
   ./registervars.sh
   echo "Installation complete."
-  export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${MMOC_BIN}/lib"
+  export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/CIFASIS-CONICET/qss-solver/bin/lib"
   ./qss-solver
 else
   VEROPT=$(cat /opt/CIFASIS-CONICET/qss-solver/version)
   VERHOME=$(cat "$HOME/qss-solver/version")
-  export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${MMOC_BIN}/lib"
+  export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/CIFASIS-CONICET/qss-solver/bin/lib"
   
   if [ "$VEROPT" == "$VERHOME" ]; then
     # Previous installation and same version
