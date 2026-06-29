@@ -8,6 +8,7 @@ target_sources(
         random.c
         settings.c
         simulator.c
+        solve_loop.c
         tree.c
         utils.c
 )
