@@ -139,12 +139,14 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, Equati
   ModelConfig::instance().setLocalInitSymbols();
   ModelAnnotation annotations = ModelConfig::instance().modelAnnotations();
 
-  IR::MATRIX::EQMatrixConfig SDCfg(INT_CONTAINER, vector<string>{"nSD", "nDS", "SD", "DS"}, vector<string>{STATES, STATES},
-                                   vector<string>{"", ""}, EQSelector(eqs));
+  if (annotations.generateJac()) {
+    IR::MATRIX::EQMatrixConfig SDCfg(INT_CONTAINER, vector<string>{"nSD", "nDS", "SD", "DS"}, vector<string>{STATES, STATES},
+                                     vector<string>{"", ""}, EQSelector(eqs));
 
-  _SD.build(SDCfg);
+    _SD.build(SDCfg);
 
-  _JAC.build();
+    _JAC.build();
+  }
 
   IR::MATRIX::EQMatrixConfig SOCfg(OUT_CONTAINER, vector<string>{"nSO", "nOS", "SO", "OS"}, vector<string>{STATES, OUTPUTS},
                                    vector<string>{"", ""}, EQSelector(outputs));
@@ -153,6 +155,12 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, Equati
   IR::MATRIX::EQMatrixConfig DOCfg(OUT_CONTAINER, vector<string>{"nDO", "nOD", "DO", "OD"}, vector<string>{DISCRETES, OUTPUTS},
                                    vector<string>{"", ""}, EQSelector(outputs));
   _DO.build(DOCfg);
+
+  // Early return with classic solvers, we don't have to compute the rest of the dependencies.
+  if (annotations.isClassic()) {
+    ModelConfig::instance().unsetLocalInitSymbols();
+    return;
+  }
 
   IR::MATRIX::EQMatrixConfig SZCfg(INT_CONTAINER, vector<string>{"nSZ", "nZS", "SZ", "ZS"}, vector<string>{STATES, EVENTS},
                                    vector<string>{"", ""}, EQSelector(zeroCrossingTable(events)));
