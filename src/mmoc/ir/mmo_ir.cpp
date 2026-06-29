@@ -126,7 +126,11 @@ void MicroModelicaIR::visit(AST_Element x)
         _class->insert(current_element(it)->name(), vi, t);
       } else {
         Variable new_var;
-        if ((tp & TP_PARAMETER) && c->isInteger()) {
+        std::string var_name = current_element(it)->name();
+        const std::string TEARING_VAR_GUESS = "tearing_var_guess";
+        if (var_name.find(TEARING_VAR_GUESS) != std::string::npos) {
+          new_var = Variable(newType_Integer(), TP_PARAMETER, current_element(it)->modification(), nullptr, size, array);
+        } else if ((tp & TP_PARAMETER) && c->isInteger()) {
           new_var = Variable(newType_Integer(), tp, current_element(it)->modification(), nullptr, size, array);
         } else if (c->isString()) {
           new_var = Variable(newType_String(), tp, current_element(it)->modification(), nullptr, size, array);
