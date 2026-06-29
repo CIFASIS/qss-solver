@@ -33,6 +33,7 @@ class EvalInitExp : public AST_Expression_Fold<int> {
   int foldTraverseElement(AST_Expression exp);
   int foldTraverseElement(int l, int r, BinOpType bot);
   int foldTraverseElementUMinus(AST_Expression exp);
+  int _u_minus;
 };
 
 }  // namespace Util

@@ -28,7 +28,7 @@ namespace MicroModelica {
 using namespace IR;
 namespace Util {
 
-ParseIndex::ParseIndex() : _constant(0), _factor(1), _variable() {}
+ParseIndex::ParseIndex() : _constant(0), _factor(1), _variable(), _u_minus(1), _minus_sign(1) {}
 
 int ParseIndex::constant() { return _constant; }
 
@@ -57,6 +57,7 @@ AST_Expression ParseIndex::foldTraverseElement(AST_Expression exp)
       }
     } else {
       _variable = cr->name();
+      _factor *= _u_minus;
     }
     break;
   }
@@ -67,24 +68,33 @@ AST_Expression ParseIndex::foldTraverseElement(AST_Expression exp)
     foreach (it, outputs) {
       apply(current_element(it));
     }
+    break;
   }
   case EXPINTEGER:
     _constant = exp->getAsInteger()->val();
+    break;
   default:
     break;
   }
   return exp;
 }
 
-// @TODO: review if this is needed.
-AST_Expression ParseIndex::foldTraverseElementUMinus(AST_Expression exp) { return apply(exp->getAsUMinus()->exp()); }
+AST_Expression ParseIndex::foldTraverseElementUMinus(AST_Expression exp)
+{
+  _u_minus = -1;
+  AST_Expression ret = newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp()));
+  _u_minus = 1;
+  return ret;
+}
 
 int ParseIndex::getConstant(AST_Expression left, AST_Expression right)
 {
   if (left->expressionType() == EXPINTEGER) {
+    _minus_sign = 1;
     return left->getAsInteger()->val();
   }
   if (right->expressionType() == EXPINTEGER) {
+    _minus_sign = -1;
     return right->getAsInteger()->val();
   }
   assert(false);
@@ -95,13 +105,14 @@ AST_Expression ParseIndex::foldTraverseElement(AST_Expression l, AST_Expression 
 {
   switch (bot) {
   case BINOPADD:
-    _constant = getConstant(l, r);
+    _constant = _u_minus * getConstant(l, r);
     break;
   case BINOPSUB:
-    _constant = -1 * getConstant(l, r);
+    _constant = _u_minus * _minus_sign * getConstant(l, r);
+    _factor = _minus_sign * -1;
     break;
   case BINOPMULT:
-    _factor = getConstant(l, r);
+    _factor = _u_minus * getConstant(l, r);
     break;
   default:
     break;

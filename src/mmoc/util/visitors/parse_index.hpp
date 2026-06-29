@@ -46,6 +46,8 @@ class ParseIndex : public AST_Expression_Visitor<AST_Expression> {
   int _constant;
   int _factor;
   std::string _variable;
+  int _u_minus;
+  int _minus_sign;
 };
 
 }  // namespace Util
