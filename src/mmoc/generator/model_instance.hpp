@@ -46,7 +46,9 @@ enum class Component {
   Jacobian,
   BdfModel,
   CLC_Init,
-  QSS_Init
+  QSS_Init,
+  Tearing_Variables,
+  Tearing_Iteration
 };
 
 enum class NodeType { SD, SZ, HD, HZ, DD };
