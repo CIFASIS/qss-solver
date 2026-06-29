@@ -22,6 +22,7 @@
 #include <string>
 
 #include <ast/ast_types.hpp>
+#include <util/table.hpp>
 #include <util/symbol_table.hpp>
 
 namespace MicroModelica {
@@ -59,5 +60,6 @@ class Expression {
 };
 
 typedef list<Expression> ExpressionList;
+typedef ModelTable<int, Expression> ExpressionTable;
 }  // namespace IR
 }  // namespace MicroModelica

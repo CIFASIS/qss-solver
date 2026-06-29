@@ -238,5 +238,42 @@ std::multimap<std::string, int> Equation::usedVariables() const
   return ret;
 }
 
+bool Equation::tearingEq(EQUATION::Tearing type) const
+{
+  if (type == EQUATION::Tearing::Var && isRHSReference()) {
+    Option<Variable> rhs_var = _rhs.reference();
+    if (rhs_var) {
+      return rhs_var->name().find(TEARING_VAR_GUESS) != std::string::npos;
+    }
+  } else if (type == EQUATION::Tearing::Res) {
+    Option<Variable> lhs_var = LHSVariable();
+    assert(lhs_var);
+    return lhs_var->name().find(TEARING_VAR_RES) != std::string::npos;
+  }
+
+  return false;
+}
+
+int Equation::tearingEqNumber(EQUATION::Tearing type) const
+{
+  Option<Variable> lhs_var = LHSVariable();
+  assert(lhs_var);
+  std::string tearing_var = lhs_var->name();
+  if (type == EQUATION::Tearing::Var && isRHSReference()) {
+    Option<Variable> rhs_var = _rhs.reference();
+    if (rhs_var) {
+      tearing_var = rhs_var->name();
+    }
+  }
+
+  size_t last_underscore = tearing_var.find_last_of('_');
+  int value = 0;
+  if (last_underscore != std::string::npos) {
+    std::string number_str = tearing_var.substr(last_underscore + 1);
+    value = std::stoi(number_str);
+  }
+  return value;
+}
+
 }  // namespace IR
 }  // namespace MicroModelica

@@ -31,6 +31,7 @@ typedef ModelTable<std::string, std::string> SymbolTable;
 namespace IR {
 namespace EQUATION {
 typedef enum { ClassicDerivative, QSSDerivative, Algebraic, Dependency, Output, ZeroCrossing, QSSBDFDerivative } Type;
+enum class Tearing { Var, Res };
 }
 class EquationVariable {
   public:
@@ -95,6 +96,8 @@ class Equation {
   void setAlgCode(std::string alg_code);
   std::string algCode() const;
   std::multimap<std::string, int> usedVariables() const;
+  bool tearingEq(EQUATION::Tearing type) const;
+  int tearingEqNumber(EQUATION::Tearing type) const;
 
   protected:
   void initialize(AST_Equation eq);
@@ -115,6 +118,8 @@ class Equation {
   std::string _lhs_exp;
   Index _usage;
   std::string _alg_code;
+  static constexpr std::string_view TEARING_VAR_GUESS = "tearing_var_guess";
+  static constexpr std::string_view TEARING_VAR_RES = "tearing_var_res";
 };
 
 class EquationDefOrder {
