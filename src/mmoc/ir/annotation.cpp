@@ -544,7 +544,7 @@ void ModelAnnotation::processAnnotation(string annot, AST_Modification_Equal x)
     _scheduler = av.str();
     break;
   case type::JACOBIAN:
-    _jacobian = ("Sparse" == av.str() ? 0 : 1);
+    _jacobian = ("Sparse" == av.str() ? 1 : 0);
     break;
   case type::SYM_DIFF:
     _symDiff = true;
@@ -678,6 +678,8 @@ string ModelAnnotation::storeData() { return _storeData; }
 
 int ModelAnnotation::jacobian() { return _jacobian; }
 
+bool ModelAnnotation::generateJac() const { return _jacobian == 1; }
+
 bool ModelAnnotation::isClassic()
 {
   return _solver == Solver::DASSL || _solver == Solver::DOPRI || _solver == Solver::CVODE_BDF || _solver == Solver::IDA ||
@@ -794,7 +796,6 @@ EvalAnnotation::EvalAnnotation() : _tokens()
   _tokens.emplace_back("HMetis");
   _tokens.emplace_back("Scotch");
   _tokens.emplace_back("Patoh");
-  _tokens.emplace_back("KaHIP");
   _tokens.emplace_back("Manual");
   _tokens.emplace_back("SD_DT_Fixed");
   _tokens.emplace_back("Sparse");

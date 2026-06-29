@@ -26,6 +26,7 @@
 #include <ast/expression.hpp>
 #include <deps/builders/eq_graph_builder.hpp>
 #include <generator/macros.hpp>
+#include <generator/tearing.hpp>
 #include <ir/annotation.hpp>
 #include <ir/class.hpp>
 #include <ir/equation.hpp>
@@ -359,6 +360,10 @@ string ModelInstance::componentDefinition(MODEL_INSTANCE::Component c)
     return "void CLC_initializeDataStructs(CLC_simulator simulator)";
   case MODEL_INSTANCE::Component::QSS_Init:
     return "void QSS_initializeDataStructs(QSS_simulator simulator)";
+  case MODEL_INSTANCE::Component::Tearing_Variables:
+    return "void MOD_EvalTearingVars(double *x, double *d, double *a, double *t, double *dx, double *ret)";
+  case MODEL_INSTANCE::Component::Tearing_Iteration:
+    return "void MOD_AssignLoop(double *x, double *d, double *a, double *t, double *dx)";
   }
   return "";
 }
@@ -470,7 +475,9 @@ void ModelInstance::generate()
   handler();
   output();
   initialCode();
-  jacobian();
+  if (_model.annotations().generateJac()) {
+    jacobian();
+  }
   // Print generated Model Instance.
   _writer->print(WRITER::Include);
   _writer->print(componentDefinition(MODEL_INSTANCE::Component::Model_Settings));
@@ -585,7 +592,8 @@ void QSSModelInstance::initializeDataStructures()
 {
   stringstream buffer;
   ModelConfig::instance().setLocalInitSymbols();
-  const bool PARALLEL = _model.annotations().parallel();
+  ModelAnnotation annotations = _model.annotations();
+  const bool PARALLEL = annotations.parallel();
   allocateSolver();
   allocateVectors();
   freeVectors();
@@ -595,8 +603,10 @@ void QSSModelInstance::initializeDataStructures()
   initializeMatrix(deps.DS(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
   inputs();
 
-  // Initialize Jacobian matrices.
-  initializeMatrix(deps.JAC(), WRITER::Alloc_Data, WRITER::Init_Data, 0);
+  if (annotations.generateJac()) {
+    // Initialize Jacobian matrices.
+    initializeMatrix(deps.JAC(), WRITER::Alloc_Data, WRITER::Init_Data, 0);
+  }
 
   // Initialize Event Data Structures.
   initializeMatrix(deps.SZ(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
@@ -614,7 +624,9 @@ void QSSModelInstance::initializeDataStructures()
   }
   configEvents();
   _writer->write("QSS_allocDataMatrix(modelData);", WRITER::Alloc_Data);
-  _writer->write("SD_setupJacMatrices(modelData->jac_matrices);", WRITER::Init_Data);
+  if (annotations.generateJac()) {
+    _writer->write("SD_setupJacMatrices(modelData->jac_matrices);", WRITER::Init_Data);
+  }
   // Initialize Output Data Structures.
   allocateOutput();
   initializeMatrix(deps.OS(), WRITER::Alloc_Output, WRITER::Init_Output, _model.outputNbr());
@@ -693,11 +705,43 @@ ClassicModelInstance::ClassicModelInstance(Model &model, CompileFlags &flags, Wr
 
 void ClassicModelInstance::definition()
 {
-  EquationTable derivatives = _model.derivatives();
-  EquationTable algebraics = _model.algebraics();
+  auto tearing = Tearing(_model.derivatives(), _model.algebraics());
+  tearing.detect();
+  EquationTable derivatives = tearing.derivatives();
+  EquationTable algebraics = tearing.algebraics();
+  EquationTable tearing_variables = tearing.variableEquations();
+  EquationTable tearing_iteration = tearing.iterationEquations();
+
   EquationTable::iterator it;
   VarSymbolTable symbols = _model.symbols();
   stringstream buffer;
+  if (tearing.detected()) {
+    ModelConfig::instance().clearLocalSymbols();
+    int var_counter = 0;
+    for (Equation eq = tearing_variables.begin(it); !tearing_variables.end(it); eq = tearing_variables.next(it)) {
+      _writer->write(eq, WRITER::Tearing_Variables);
+      buffer << "ret[" << var_counter++ << "] = " << eq.lhs() << ";" << endl;
+      _writer->write(buffer, WRITER::Tearing_Variables);
+    }
+    _writer->write(ModelConfig::instance().localSymbols(), WRITER::Tearing_Variables_Def);
+
+    for (Equation eq = tearing_iteration.begin(it); !tearing_iteration.end(it); eq = tearing_iteration.next(it)) {
+      _writer->write(eq, WRITER::Tearing_Iteration);
+    }
+    _writer->write(ModelConfig::instance().localSymbols(), WRITER::Tearing_Iteration_Def);
+
+    buffer << endl << "// Fordward declare tearing functions. " << endl;
+    buffer << componentDefinition(MODEL_INSTANCE::Component::Tearing_Variables) << ";" << endl;
+    buffer << componentDefinition(MODEL_INSTANCE::Component::Tearing_Iteration) << ";" << endl << endl;
+    _writer->write(buffer, WRITER::Model_Header);
+
+    buffer << endl << "#include <common/solve_loop.h>" << endl;
+    _writer->write(buffer, WRITER::Include);
+
+    buffer << "SVL_SolveLoop(x, d, a, &t, dx, " << tearing_variables.size() << ", MOD_AssignLoop, MOD_EvalTearingVars);" << endl;
+    _writer->write(buffer, WRITER::Model_Simple);
+  }
+
   ModelConfig::instance().clearLocalSymbols();
   for (Equation alg = algebraics.begin(it); !algebraics.end(it); alg = algebraics.next(it)) {
     _writer->write(alg, WRITER::Model_Simple);
@@ -716,16 +760,25 @@ void ClassicModelInstance::initializeDataStructures()
   allocateVectors();
   freeVectors();
   ModelDependencies deps = _model.dependencies();
-  // Initialize Solver Data Structures.
-  initializeMatrix(deps.SD(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
-  initializeMatrix(deps.DS(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+  ModelAnnotation annotations = _model.annotations();
+
+  if (annotations.generateJac()) {
+    // Initialize Solver Data Structures.
+    initializeMatrix(deps.SD(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+    initializeMatrix(deps.DS(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+  }
   configEvents();
   inputs();
-  // Initialize Jacobian matrices.
-  initializeMatrix(deps.JAC(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+  if (annotations.generateJac()) {
+    // Initialize Jacobian matrices.
+    initializeMatrix(deps.JAC(), WRITER::Alloc_Data, WRITER::Init_Data, _model.stateNbr());
+  }
 
   _writer->write("CLC_allocDataMatrix(modelData);", WRITER::Alloc_Data);
-  _writer->write("SD_setupJacMatrices(modelData->jac_matrices);", WRITER::Init_Data);
+
+  if (annotations.generateJac()) {
+    _writer->write("SD_setupJacMatrices(modelData->jac_matrices);", WRITER::Init_Data);
+  }
 
   // Initialize Output Data Structures.
   allocateOutput();
@@ -769,6 +822,16 @@ void ClassicModelInstance::generate()
   definition();
   initializeDataStructures();
   ModelInstance::generate();
+  _writer->print(componentDefinition(MODEL_INSTANCE::Component::Tearing_Variables));
+  _writer->beginBlock();
+  _writer->print(WRITER::Tearing_Variables_Def);
+  _writer->print(WRITER::Tearing_Variables);
+  _writer->endBlock();
+  _writer->print(componentDefinition(MODEL_INSTANCE::Component::Tearing_Iteration));
+  _writer->beginBlock();
+  _writer->print(WRITER::Tearing_Iteration_Def);
+  _writer->print(WRITER::Tearing_Iteration);
+  _writer->endBlock();
   _writer->print(componentDefinition(MODEL_INSTANCE::Component::CLC_Init));
   _writer->beginBlock();
   _writer->print(WRITER::Prologue);

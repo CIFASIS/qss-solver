@@ -423,7 +423,7 @@ void QSS_HYB_integrate(SIM_simulator simulate)
   flag = CVodeSVtolerances(cvode_mem, reltol, abstol);
   if (check_flag(&flag, "CVodeInit", 1, simulator)) return;
 
-  if (simulator->data->params->jacobian == 0) {
+  if (simulator->data->params->jacobian == 1) {
     int nnz = 0;
     for (i = 0; i < nBDF; i++) {
       int row = BDFMap[i];
