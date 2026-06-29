@@ -611,11 +611,6 @@
         </item>
         <item>
          <property name="text">
-          <string>KAHIP</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
           <string>MANUAL</string>
          </property>
         </item>
