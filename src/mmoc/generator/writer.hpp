@@ -17,20 +17,24 @@
 
  ******************************************************************************/
 
-#ifndef MMO_WRITER_H_
-#define MMO_WRITER_H_
+#pragma once
 
 #include <boost/variant/variant.hpp>
 #include <fstream>
 #include <list>
 #include <string>
 
-#include "../util/util.hpp"
+#include <util/util.hpp>
 
 namespace MicroModelica {
 namespace Generator {
 
-#define SECTIONS 35
+/************************************************************
+ *  IMPORTANT: Update **SECTIONS** define if new sections
+ *  are added to the writer to avoid segfaults.
+ ************************************************************/
+#define SECTIONS 39
+
 namespace WRITER {
 typedef enum {
   Prologue,
@@ -67,8 +71,16 @@ typedef enum {
   Function_Header,
   Function_Code,
   Model_Header,
+  Tearing_Variables_Def,
+  Tearing_Iteration_Def,
+  Tearing_Variables,
+  Tearing_Iteration,
   Empty
 } Section;
+/************************************************************
+ *  IMPORTANT: Update **SECTIONS** define above new sections
+ *  are added to the writer to avoid segfaults.
+ ************************************************************/
 
 typedef enum { Append_Simple, Append_Generic, Prepend } Insert;
 }  // namespace WRITER
@@ -187,5 +199,3 @@ class FileWriter : public Writer {
 typedef boost::variant<MemoryWriter, FileWriter> WriterType;
 }  // namespace Generator
 }  // namespace MicroModelica
-
-#endif /* MMO_WRITER_H_ */
