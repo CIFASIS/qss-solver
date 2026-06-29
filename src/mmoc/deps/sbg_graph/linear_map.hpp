@@ -38,13 +38,11 @@ struct LMapImp {
         negative = true;
       }
     }
-    if (!negative) {
       if (slopes.size() == constants.size()) {
         _slopes = slopes;
         _constants = constants;
         _dims = slopes.size();
       }
-    }
   }
 
   // Constructs the id of LMaps
