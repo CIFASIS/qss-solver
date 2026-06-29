@@ -92,10 +92,8 @@ SD_PartitionMethod _getPartitionMethod(const char *sol)
     return SD_Patoh;
   } else if (!strcmp(sol, "Manual")) {
     return SD_Manual;
-  } else if (!strcmp(sol, "KaHIP")) {
-    return SD_KaHIP;
   }
-  return SD_Scotch;
+  return SD_Manual;
 }
 
 SD_DtSynch _getDtSynch(const char *sol)

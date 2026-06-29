@@ -89,7 +89,7 @@ typedef enum {
   SD_DBG_Dt = 1 << 8
 } SD_Debug;
 
-typedef enum { SD_Metis, SD_HMetis, SD_Scotch, SD_Patoh, SD_Manual, SD_KaHIP } SD_PartitionMethod;
+typedef enum { SD_Metis, SD_HMetis, SD_Scotch, SD_Patoh, SD_Manual } SD_PartitionMethod;
 
 typedef enum { SD_DT_Fixed, SD_DT_Adaptive, SD_DT_AdaptiveDiscrete } SD_DtSynch;
 
