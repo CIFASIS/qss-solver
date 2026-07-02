@@ -63,7 +63,7 @@ echo "Created build directory: $BUILD_DIR"
 
 # Compile the MicroModelica file
 echo "Compiling $MO_FILE..."
-if ! "$MMOC_BIN/mmoc" $FLAGS -o "$BUILD_DIR/$FILE" "$MO_FILE"; then
+if ! "$MMOC_BIN/mmoc" "$MO_FILE" $FLAGS -o "$BUILD_DIR/$FILE"; then
     echo "Error: Compilation failed."
     exit 1
 fi
