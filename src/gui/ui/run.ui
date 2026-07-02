@@ -466,12 +466,12 @@
        <widget class="QComboBox" name="_jacobian">
         <item>
          <property name="text">
-          <string>Sparse</string>
+          <string>Dense</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Dense</string>
+          <string>Sparse</string>
          </property>
         </item>
        </widget>

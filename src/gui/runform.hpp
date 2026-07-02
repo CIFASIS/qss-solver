@@ -73,7 +73,7 @@ class RunDlg : public QDialog, public Ui::RunForm {
   inline void setZcHyst(QString str) { _zc_hyst->setText(str); };
   inline QString LPS() { return QString::number(_lps->value()); };
   inline void setLPS(QString lps) { _lps->setValue(lps.toInt()); };
-  inline void setJacobian(QString str) { _jacobian->setCurrentIndex(str == "Sparse" ? 0 : 1); };
+  inline void setJacobian(QString str) { _jacobian->setCurrentIndex(str == "Sparse" ? 1 : 0); };
   inline QString parallel() { return getComboBoolString(_parallel->currentIndex()); };
   inline QString partitionMethod() { return getPartitionMethodString(_partition_method->currentIndex()); };
   inline void setParallel(QString str) { _parallel->setCurrentIndex(getComboBoolIdx(str)); };
