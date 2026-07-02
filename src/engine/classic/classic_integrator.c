@@ -83,7 +83,7 @@ void CLC_write_output(SD_output simOutput, double **solution, double *solution_t
     sprintf(name, "%s.dat", simOutput->variable[i].name);
     FILE *out = fopen(name, "w");
     for (j = 0; j < totalOutputSteps; j++) {
-      fprintf(out, "%13.13g\t\t%13.13g\n", solution_time[j], solution[i][j]);
+      fprintf(out, "%lf\t%lf\n", solution_time[j], solution[i][j]);
     }
     fclose(out);
   }
