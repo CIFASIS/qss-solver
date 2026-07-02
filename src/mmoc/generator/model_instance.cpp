@@ -699,7 +699,7 @@ void QSSModelInstance::header()
 /* ClassicModelInstance Model Instance class. */
 
 ClassicModelInstance::ClassicModelInstance(Model &model, CompileFlags &flags, WriterPtr writer)
-    : ModelInstance(model, flags, writer), _model(model), _flags(flags), _writer(writer)
+    : ModelInstance(model, flags, writer), _model(model), _flags(flags), _writer(writer), _tearing(false)
 {
 }
 
@@ -707,6 +707,7 @@ void ClassicModelInstance::definition()
 {
   auto tearing = Tearing(_model.derivatives(), _model.algebraics());
   tearing.detect();
+
   EquationTable derivatives = tearing.derivatives();
   EquationTable algebraics = tearing.algebraics();
   EquationTable tearing_variables = tearing.variableEquations();
@@ -715,7 +716,8 @@ void ClassicModelInstance::definition()
   EquationTable::iterator it;
   VarSymbolTable symbols = _model.symbols();
   stringstream buffer;
-  if (tearing.detected()) {
+  _tearing = tearing.detected();
+  if (_tearing) {
     ModelConfig::instance().clearLocalSymbols();
     int var_counter = 0;
     for (Equation eq = tearing_variables.begin(it); !tearing_variables.end(it); eq = tearing_variables.next(it)) {
@@ -822,16 +824,18 @@ void ClassicModelInstance::generate()
   definition();
   initializeDataStructures();
   ModelInstance::generate();
-  _writer->print(componentDefinition(MODEL_INSTANCE::Component::Tearing_Variables));
-  _writer->beginBlock();
-  _writer->print(WRITER::Tearing_Variables_Def);
-  _writer->print(WRITER::Tearing_Variables);
-  _writer->endBlock();
-  _writer->print(componentDefinition(MODEL_INSTANCE::Component::Tearing_Iteration));
-  _writer->beginBlock();
-  _writer->print(WRITER::Tearing_Iteration_Def);
-  _writer->print(WRITER::Tearing_Iteration);
-  _writer->endBlock();
+  if (_tearing) {
+    _writer->print(componentDefinition(MODEL_INSTANCE::Component::Tearing_Variables));
+    _writer->beginBlock();
+    _writer->print(WRITER::Tearing_Variables_Def);
+    _writer->print(WRITER::Tearing_Variables);
+    _writer->endBlock();
+    _writer->print(componentDefinition(MODEL_INSTANCE::Component::Tearing_Iteration));
+    _writer->beginBlock();
+    _writer->print(WRITER::Tearing_Iteration_Def);
+    _writer->print(WRITER::Tearing_Iteration);
+    _writer->endBlock();
+  }
   _writer->print(componentDefinition(MODEL_INSTANCE::Component::CLC_Init));
   _writer->beginBlock();
   _writer->print(WRITER::Prologue);

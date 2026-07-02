@@ -680,11 +680,13 @@ int ModelAnnotation::jacobian() { return _jacobian; }
 
 bool ModelAnnotation::generateJac() const { return _jacobian == 1; }
 
-bool ModelAnnotation::isClassic()
+bool ModelAnnotation::isClassic() const
 {
   return _solver == Solver::DASSL || _solver == Solver::DOPRI || _solver == Solver::CVODE_BDF || _solver == Solver::IDA ||
          _solver == Solver::CVODE_AM;
 }
+
+bool ModelAnnotation::isQSS() const { return !isClassic(); }
 
 int ModelAnnotation::lps() { return _lps; }
 

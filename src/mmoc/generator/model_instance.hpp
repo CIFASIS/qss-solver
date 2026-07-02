@@ -160,6 +160,7 @@ class ClassicModelInstance : public ModelInstance {
   IR::Model _model;
   Util::CompileFlags _flags;
   WriterPtr _writer;
+  bool _tearing;
 };
 
 using ModelInstancePtr = std::shared_ptr<ModelInstance>;

@@ -139,12 +139,14 @@ void ModelDependencies::compute(EquationTable eqs, EquationTable outputs, Equati
   ModelConfig::instance().setLocalInitSymbols();
   ModelAnnotation annotations = ModelConfig::instance().modelAnnotations();
 
-  if (annotations.generateJac()) {
+  if (annotations.generateJac() || annotations.isQSS()) {
     IR::MATRIX::EQMatrixConfig SDCfg(INT_CONTAINER, vector<string>{"nSD", "nDS", "SD", "DS"}, vector<string>{STATES, STATES},
                                      vector<string>{"", ""}, EQSelector(eqs));
 
     _SD.build(SDCfg);
+  }
 
+  if (annotations.generateJac()) {
     _JAC.build();
   }
 

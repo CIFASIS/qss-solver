@@ -131,7 +131,8 @@ class ModelAnnotation {
   list<string> metisSettings();
   int jacobian();
   bool generateJac() const;
-  bool isClassic();
+  bool isClassic() const;
+  bool isQSS() const;
   AST_ExpressionList BDFPartition();
   int BDFPartitionDepth();
   double BDFMaxStep();
