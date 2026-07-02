@@ -44,7 +44,7 @@ model advection2D
 		MMO_PartitionMethod=Scotch,
 		MMO_DT_Min=1,
 		MMO_Output={u[N,N], u[1,1]},
-		Jacobian=Dense,
+		Jacobian=Sparse,
 		MMO_BDF_PDepth=1,
 		MMO_BDF_Max_Step=0,
 		StartTime=0.0,
