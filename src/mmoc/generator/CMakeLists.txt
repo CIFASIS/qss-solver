@@ -7,5 +7,6 @@ target_sources(
         macros.cpp
         model_instance.cpp
         package.cpp
+        tearing.cpp
         writer.cpp
 )

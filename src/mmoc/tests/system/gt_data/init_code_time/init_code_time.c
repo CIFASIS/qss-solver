@@ -52,26 +52,6 @@ void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
 
 void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx, double *jac)
 {
-	int row, row_t, eq_var, c_row, c_row_g;
-	int col, col_g, col_t;
-	int x_ind;
-	double aux;
-	int _d1;
-	int _rg_d1;
-	int i;
-	SD_cleanJacMatrices(dvdx);
-	for(row = 1; row <= 1000; row++) {
-		c_row = _c_index(row);
-		_get_eq_1_var_idxs(row, eq_var);
-		_get_u_idxs(eq_var);
-	}
-	// Assign Jacobian Matrix values for equation: 0
-	for (row = 0; row < 1000; row++) {
-	  for (col = 0; col < dvdx->df_dx[0]->size[row]; col++) {
-	    row_t = dvdx->df_dx[0]->index[row][col];
-	    _assign_jac(row_t, dvdx->df_dx[0]->value[row][col]);
-	  }
-	}
 }
 
 void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double *dx, int *map)
@@ -105,29 +85,14 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	QSS_data modelData = simulator->data;
 	MODEL_DATA_ACCESS(modelData)
 	int* states = (int*) malloc(1000*sizeof(int));
-	int row, eq_var, c_row;
-	int x_ind;
 	int _d1;
-	int _rg_d1;
 	int i;
 	int t = 0;
 	for(i = 1; i<=999; i+=1) {
 		_init_u(i,0) = _time;
 	}
 	_init_u(1000,0) = _time;
-	for(row = 1; row <= 1000; row++) {
-		c_row = _c_index(row);
-		_get_eq_1_var_idxs(row, eq_var);
-		_get_u_idxs(eq_var);
-	}
 	QSS_allocDataMatrix(modelData);
-	cleanVector(states, 0, 1000);
-	for(row = 1; row <= 1000; row++) {
-		c_row = _c_index(row);
-		_get_eq_1_var_idxs(row, eq_var);
-		_get_u_idxs(eq_var);
-	}
-	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->time = QSS_Time(1000,0,1000,0,ST_Binary, NULL);
 	for(i = 1; i<=1000; i+=1) {
 		modelData->IT[_input_1(i)] = _idx_u(i,0);

@@ -218,7 +218,7 @@ void CVODE_integrate(SIM_simulator simulate)
   flag = CVodeRootInit(cvode_mem, clcData->events, CVODE_events);
   if (check_flag(&flag, "CVodeRootInit", 1, simulator)) return;
 
-  if (simulator->data->params->jacobian == 0) {
+  if (simulator->data->params->jacobian == 1) {
     nnz = 0;
     for (i = 0; i < size; i++) {
       nnz += clcData->nSD[i];
