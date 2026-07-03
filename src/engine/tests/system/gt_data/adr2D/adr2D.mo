@@ -30,7 +30,7 @@ end for;
 		MMO_DT_Synch=SD_DT_Fixed,
 		MMO_DT_Min=1e-3,
 		MMO_Output={u[2,2]},
-		Jacobian=Sparse,
+		Jacobian=Dense,
 		MMO_BDF_PDepth=1,
 		MMO_BDF_Max_Step=0,
 		StartTime=0.0,
