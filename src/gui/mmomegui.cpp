@@ -631,12 +631,12 @@ bool MmomeGui::compile(bool dbg)
     set += flags;
   }
   set += "-o " + buildDir.absolutePath() + SLASH + Editor::instance()->activeBaseFileName();
-  args << set;
   args << Editor::instance()->activeFullFileName();
+  args << set;
   QString comp = _utils->appCommand(CMD_COMPILE);
   _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\nCompiling model: "));
-  _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\n") + _utils->appDir(MMOC_BIN) + SLASH + comp + " " + set + " " +
-                              Editor::instance()->activeFullFileName());
+  _compiler_msg->setPlainText(_compiler_msg->toPlainText() + QString("\n") + _utils->appDir(MMOC_BIN) + SLASH + comp + " " + Editor::instance()->activeFullFileName() + " " +
+                              set);
   _compiler_msg->moveCursor(QTextCursor::End);
   _compiler_msg->ensureCursorVisible();
   QProcessEnvironment env = QProcessEnvironment::systemEnvironment();

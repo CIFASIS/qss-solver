@@ -130,7 +130,9 @@ class ModelAnnotation {
   list<string> scotchSettings();
   list<string> metisSettings();
   int jacobian();
-  bool isClassic();
+  bool generateJac() const;
+  bool isClassic() const;
+  bool isQSS() const;
   AST_ExpressionList BDFPartition();
   int BDFPartitionDepth();
   double BDFMaxStep();

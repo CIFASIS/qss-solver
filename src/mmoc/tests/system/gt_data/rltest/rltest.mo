@@ -21,7 +21,7 @@ for i in 1:N-1 loop
 		MMO_Solver=CVODE_BDF,
 		MMO_PartitionMethod=Metis,
 		MMO_Output={x1[1:N],x2[1]},
-		Jacobian=Dense,
+		Jacobian=Sparse,
 		MMO_BDF_PDepth=1,
 		MMO_BDF_Max_Step=0,
 		StartTime=0.0,

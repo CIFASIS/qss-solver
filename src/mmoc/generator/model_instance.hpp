@@ -46,7 +46,9 @@ enum class Component {
   Jacobian,
   BdfModel,
   CLC_Init,
-  QSS_Init
+  QSS_Init,
+  Tearing_Variables,
+  Tearing_Iteration
 };
 
 enum class NodeType { SD, SZ, HD, HZ, DD };
@@ -158,6 +160,7 @@ class ClassicModelInstance : public ModelInstance {
   IR::Model _model;
   Util::CompileFlags _flags;
   WriterPtr _writer;
+  bool _tearing;
 };
 
 using ModelInstancePtr = std::shared_ptr<ModelInstance>;

@@ -398,6 +398,11 @@ EdgeMaps generatePWLMaps(Expression exp, Set dom, Set unk_dom, int offset, strin
     LOG << "Init: " << range_init_value << endl;
     int map_first_value = pwl_map_values.constant() + pwl_map_values.slope() * range_init_value + set_vertex_init;
     LOG << "Map first: " << map_first_value << endl;
+    LOG << "Constant: " << pwl_map_values.constant() << endl;
+    LOG << "Slope: " << pwl_map_values.slope() << endl;
+    LOG << "Range init value: " << range_init_value << endl;
+    LOG << "Set vertex init: " << set_vertex_init << endl;
+    LOG << "Set vertex offset: " << set_vertex_offset << endl;
     constant_pwl_map_u_it = constant_pwl_map_u.insert(constant_pwl_map_u_it, map_first_value - set_vertex_offset);
     slope_pwl_map_u_it = slope_pwl_map_u.insert(slope_pwl_map_u_it, pwl_map_values.slope());
     exp_constants.insert(pwl_map_values.constant());

@@ -38,7 +38,7 @@ equation
 		MMO_SymDiff=false,
 		MMO_PartitionMethod=Metis,
 		MMO_Output={p[1:N/5:N]},
-		Jacobian=Sparse,
+		Jacobian=Dense,
 		MMO_BDF_PDepth=1,
 		MMO_BDF_Max_Step=0,
 		StartTime=0.0,

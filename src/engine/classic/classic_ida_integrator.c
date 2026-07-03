@@ -19,11 +19,11 @@
 
 /* Header files with a description of contents used */
 
-//#define USE_JACOBIAN
-//#ifdef USE_JACOBIAN
+// #define USE_JACOBIAN
+// #ifdef USE_JACOBIAN
 #include <ida/ida_klu.h>              /* prototype for CVSUPERLUMT */
 #include <sundials/sundials_sparse.h> /* definitions SlsMat */
-//#endif
+// #endif
 
 #include <ida/ida.h>
 #include <ida/ida_dense.h>
@@ -52,7 +52,7 @@ static CLC_model clcModel = NULL;
 
 static SD_output simOutput = NULL;
 
-//#ifdef USE_JACOBIAN
+// #ifdef USE_JACOBIAN
 /* Test jacobian */
 static int IDA_Jac(realtype t, realtype cj, N_Vector y, N_Vector fy, N_Vector resvec, SlsMat JacMat, void *user_data, N_Vector tmp1,
                    N_Vector tmp2, N_Vector tmp3)
@@ -81,7 +81,7 @@ static int IDA_Jac(realtype t, realtype cj, N_Vector y, N_Vector fy, N_Vector re
 
   return 0;
 }
-//#endif
+// #endif
 
 /* Test jacobian */
 static int check_flag(void *flagvalue, const char *funcname, int opt, CLC_simulator simulator)
@@ -200,11 +200,7 @@ void IDA_integrate(SIM_simulator simulate)
   flag = IDARootInit(mem, clcData->events, IDA_events);
   if (check_flag(&flag, "IDARootInit", 1, simulator)) return;
 
-  //#ifndef USE_JACOBIAN
   if (simulator->data->params->jacobian == 1) {
-    flag = IDADense(mem, size);
-    if (check_flag(&flag, "IDADense", 1, simulator)) return;
-  } else {
     nnz = 0;
     for (i = 0; i < size; i++) {
       nnz += clcData->nSD[i];
@@ -217,9 +213,11 @@ void IDA_integrate(SIM_simulator simulate)
 
     flag = IDASlsSetSparseJacFn(mem, IDA_Jac);
     if (check_flag(&flag, "IDASlsSetSparseJacFn", 1, simulator)) return;
+  } else {
+    flag = IDADense(mem, size);
+    if (check_flag(&flag, "IDADense", 1, simulator)) return;
   }
 
-  //#endif
   double *res = malloc(sizeof(double) * size);
   IDASetUserData(mem, res);
   getTime(simulator->stats->sTime);

@@ -122,13 +122,13 @@ QString RunDlg::getPartitionMethodString(int idx)
 
 int RunDlg::getJacobianIdx(QString str)
 {
-  static const QStringList types = {"Sparse", "Dense"};
+  static const QStringList types = {"Dense", "Sparse"};
   return types.indexOf(str.trimmed());
 }
 
 QString RunDlg::getJacobianString(int idx)
 {
-  static const QStringList types = {"Sparse", "Dense"};
+  static const QStringList types = {"Dense", "Sparse"};
   return (idx >= 0 && idx < types.size()) ? types[idx] : QString();
 }
 

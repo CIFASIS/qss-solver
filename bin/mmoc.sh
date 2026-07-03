@@ -3,10 +3,10 @@
 #
 # 				 FILE: mmoc.sh
 #
-# 				USAGE: mmoc.sh [OPTIONS] <FILE> 
+# 				USAGE: mmoc.sh <FILE> [OPTIONS]
 #
 # 	DESCRIPTION: Runs the MicroModelica compiler on file <FILE> 
-#                with options defined in <OPTIONS>  
+#                with options defined in [OPTIONS]  
 #
 #    PARAMETERS: <FILE> MicroModelica file.
 #       OPTIONS: [OPTIONS] MicroModelica compiler options (see ./mmoc --help). 
@@ -14,7 +14,7 @@
 #         NOTES: --- 
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 6.0.2
+#       VERSION: 6.1.1
 #===================================================================================
 
 # Check if MMOC_BIN is set
@@ -25,12 +25,12 @@ fi
 
 # Validate input parameters
 if [ $# -lt 2 ]; then
-    echo "Usage: $0 [OPTIONS] <FILE>"
+    echo "Usage: $0 <FILE> [OPTIONS]"
     exit 1
 fi
 
-OPTIONS=$1
-FILE=$2
+FILE=$1
+OPTIONS=$2
 
 # Check if the specified file exists
 if [ ! -f "$FILE" ]; then

@@ -55,21 +55,6 @@ void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
 
 void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx, double *jac)
 {
-	int row, row_t, eq_var, c_row, c_row_g;
-	int col, col_g, col_t;
-	int x_ind;
-	double aux;
-	SD_cleanJacMatrices(dvdx);
-	for(row = 1; row <= 1; row++) {
-		c_row = _c_index(row);
-	}
-	// Assign Jacobian Matrix values for equation: 0
-	for (row = 0; row < 1; row++) {
-	  for (col = 0; col < dvdx->df_dx[0]->size[row]; col++) {
-	    row_t = dvdx->df_dx[0]->index[row][col];
-	    _assign_jac(row_t, dvdx->df_dx[0]->value[row][col]);
-	  }
-	}
 }
 
 void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double *dx, int *map)
@@ -100,17 +85,7 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	MODEL_DATA_ACCESS(modelData)
 	int* states = (int*) malloc(1*sizeof(int));
 	int* outputs = (int*) malloc(1*sizeof(int));
-	int row, eq_var, c_row;
-	int x_ind;
-	for(row = 1; row <= 1; row++) {
-		c_row = _c_index(row);
-	}
 	QSS_allocDataMatrix(modelData);
-	cleanVector(states, 0, 1);
-	for(row = 1; row <= 1; row++) {
-		c_row = _c_index(row);
-	}
-	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->time = QSS_Time(1,0,1,0,ST_Binary, NULL);
 	modelData->IT[_input_1] = _idx_y(0);
 	simulator->output = SD_Output("test_input",1,0,1,NULL,0,0,CI_Step,SD_Memory,MOD_output);

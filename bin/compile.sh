@@ -18,7 +18,7 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 6.0.2
+#       VERSION: 6.1.1
 #===================================================================================
 
 set -e  # Exit immediately if a command exits with a non-zero status.
@@ -63,7 +63,7 @@ echo "Created build directory: $BUILD_DIR"
 
 # Compile the MicroModelica file
 echo "Compiling $MO_FILE..."
-if ! "$MMOC_BIN/mmoc" $FLAGS -o "$BUILD_DIR/$FILE" "$MO_FILE"; then
+if ! "$MMOC_BIN/mmoc" "$MO_FILE" $FLAGS -o "$BUILD_DIR/$FILE"; then
     echo "Error: Compilation failed."
     exit 1
 fi

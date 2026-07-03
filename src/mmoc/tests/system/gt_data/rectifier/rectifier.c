@@ -90,43 +90,6 @@ void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
 
 void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx, double *jac)
 {
-	int row, row_t, eq_var, c_row, c_row_g;
-	int col, col_g, col_t;
-	int x_ind;
-	double aux;
-	SD_cleanJacMatrices(dvdx);
-	for(row = 1; row <= 1; row++) {
-		c_row = _c_index(row);
-		x_ind = _idx_u(0);
-		col = pos(dvdx->df_dx[0]->index[c_row], dvdx->df_dx[0]->size[c_row], x_ind);
-		aux = 0;
-		dvdx->df_dx[0]->value[c_row][col] +=  aux;
-	}
-	for(row = 1; row <= 1; row++) {
-		c_row = _c_index(row);
-		x_ind = _idx_iL(0);
-		col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
-		aux = 0;
-		dvdx->df_dx[1]->value[c_row][col] +=  aux;
-		x_ind = _idx_u(0);
-		col = pos(dvdx->df_dx[1]->index[c_row], dvdx->df_dx[1]->size[c_row], x_ind);
-		aux = 0;
-		dvdx->df_dx[1]->value[c_row][col] +=  aux;
-	}
-	// Assign Jacobian Matrix values for equation: 0
-	for (row = 0; row < 1; row++) {
-	  for (col = 0; col < dvdx->df_dx[0]->size[row]; col++) {
-	    row_t = dvdx->df_dx[0]->index[row][col];
-	    _assign_jac(row_t, dvdx->df_dx[0]->value[row][col]);
-	  }
-	}
-	// Assign Jacobian Matrix values for equation: 1
-	for (row = 0; row < 1; row++) {
-	  for (col = 0; col < dvdx->df_dx[1]->size[row]; col++) {
-	    row_t = dvdx->df_dx[1]->index[row][col];
-	    _assign_jac(row_t, dvdx->df_dx[1]->value[row][col]);
-	  }
-	}
 }
 
 void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double *dx, int *map)
@@ -179,8 +142,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int* discretes = (int*) malloc(1*sizeof(int));
 	int* events = (int*) malloc(2*sizeof(int));
 	int* outputs = (int*) malloc(2*sizeof(int));
-	int row, eq_var, c_row;
-	int x_ind;
 	_L = 1.000000e-03;
 	_R = 10;
 	_Rd = 1.000000e+05;
@@ -194,15 +155,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	modelData->nDS[_idx_iL(0)]++;
 	modelData->nDS[_idx_u(0)]++;
 	modelData->nDS[_idx_iL(0)]++;
-	for(row = 1; row <= 1; row++) {
-		c_row = _c_index(row);
-			modelData->jac_matrices->df_dx[0]->size[c_row]++;
-	}
-	for(row = 1; row <= 1; row++) {
-		c_row = _c_index(row);
-			modelData->jac_matrices->df_dx[1]->size[c_row]++;
-			modelData->jac_matrices->df_dx[1]->size[c_row]++;
-	}
 	modelData->nSZ[_idx_iL(0)]++;
 	modelData->nSZ[_idx_u(0)]++;
 	modelData->nZS[_idx_event_1]++;
@@ -221,32 +173,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	modelData->DS[_idx_u(0)][states[_idx_u(0)]++] = _idx_u(0);
 	modelData->DS[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_u(0);
 	cleanVector(states, 0, 2);
-	for(row = 1; row <= 1; row++) {
-		c_row = _c_index(row);
-			x_ind = _idx_u(0);
-			if(in(modelData->jac_matrices->df_dx[0]->index[c_row],modelData->jac_matrices->df_dx[0]->size[c_row], x_ind)){
-				modelData->jac_matrices->df_dx[0]->size[c_row]--;
-			} else {
-				modelData->jac_matrices->df_dx[0]->index[c_row][states[c_row]++] = x_ind;
-			}
-	}
-	cleanVector(states, 0, 2);
-	for(row = 1; row <= 1; row++) {
-		c_row = _c_index(row);
-			x_ind = _idx_iL(0);
-			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
-				modelData->jac_matrices->df_dx[1]->size[c_row]--;
-			} else {
-				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
-			}
-			x_ind = _idx_u(0);
-			if(in(modelData->jac_matrices->df_dx[1]->index[c_row],modelData->jac_matrices->df_dx[1]->size[c_row], x_ind)){
-				modelData->jac_matrices->df_dx[1]->size[c_row]--;
-			} else {
-				modelData->jac_matrices->df_dx[1]->index[c_row][states[c_row]++] = x_ind;
-			}
-	}
-	cleanVector(states, 0, 2);
 	modelData->SZ[_idx_iL(0)][states[_idx_iL(0)]++] = _idx_event_1;
 	modelData->SZ[_idx_u(0)][states[_idx_u(0)]++] = _idx_event_2;
 	cleanVector(events, 0, 2);
@@ -262,7 +188,6 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	modelData->event[_idx_event_1].relation = 0;
 	modelData->event[_idx_event_2].direction = 1;
 	modelData->event[_idx_event_2].relation = 2;
-	SD_setupJacMatrices(modelData->jac_matrices);
 	simulator->time = QSS_Time(2,2,0,0,ST_Binary, NULL);
 	simulator->output = SD_Output("rectifier",2,1,2,NULL,0,0,CI_Step,SD_Memory,MOD_output);
 	SD_output modelOutput = simulator->output;

@@ -78,8 +78,7 @@ AST_Expression PartialEvalExp::foldTraverseElement(AST_Expression exp)
 
 AST_Expression PartialEvalExp::foldTraverseElementUMinus(AST_Expression exp)
 {
-  AST_Expression_Integer zero = (AST_Expression_Integer)newAST_Expression_Integer(0);
-  return (foldTraverseElement(zero, apply(exp->getAsUMinus()->exp()), BINOPSUB));
+  return newAST_Expression_UnaryMinus(apply(exp->getAsUMinus()->exp()));
 }
 
 AST_Expression PartialEvalExp::foldTraverseElement(AST_Expression left, AST_Expression right, BinOpType binOpType)
