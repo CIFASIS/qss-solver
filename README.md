@@ -1,4 +1,4 @@
-## QSS Solver 6.0.2
+## QSS Solver 6.1.1
 
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
@@ -212,6 +212,19 @@ The simplest way to compile this package is:
 
 ## Changelog
 
+## [6.1.1] - 03-07-2026
+
+### Added
+- **New compile_c_model and compile_mmoc_model** Python console methods available.
+- **New code generation to solve algebraic loops** call a generic `solve`function in the model and generate the code to compute tearing variables and iteration assignment.
+
+### Fixed
+- **plot_data.py** script for classic methods plots.
+
+### Changed
+- Generate Jacobian code only when needed.
+- Allow indexes with negative slope in SBG.
+
 ## [6.0.2] - 11-05-2026
 
 ### Fixed
@@ -227,18 +240,6 @@ The simplest way to compile this package is:
 
 ### Removed
 - **CQSS** is deprecated.
-
-## [5.0.0] - 04-08-2025
-
-### Added
-- **New CQSS1, CQSS2 and CQSS3** development `QSS` methods that can be edited witout having to recompile the simulation engine.
-- **New Python plot script** not the default option, to enable it add `plot_data.py` as the plot command in the GUI settings.
-- **New Python environment** for the GUI that loads all the required packages.
-- **CMake build system** instead of plain make files.
-
-### Changed
-- Changed default install path.
-- Updated/Improved all binary scripts.
 
 ## Licensing
 
