@@ -69,6 +69,8 @@ Event::Event(AST_Expression cond, int id, int offset, Option<Range> range, strin
   _zc_relation = cc.zeroCrossingRelation();
 }
 
+void Event::setZeroCrossing(Equation zero_crossing) { _zero_crossing = zero_crossing; }
+
 void Event::add(AST_Statement stm)
 {
   Statement s(stm, _range);
@@ -76,6 +78,29 @@ void Event::add(AST_Statement stm)
     _positive_handler.insert(_positive_handler_id++, s);
   } else if (_current == EVENT::Negative) {
     _negative_handler.insert(_negative_handler_id++, s);
+  }
+}
+
+void Event::replaceHandlerAlgs(EVENT::Type type)
+{
+  StatementTable stm_rep;
+  StatementTable stms;
+
+  if (type == EVENT::Positive) {
+    stms = _positive_handler;
+  } else {
+    stms = _negative_handler;
+  }
+
+  StatementTable::iterator stm_it;
+  for (Statement stm = stms.begin(stm_it); !stms.end(stm_it); stm = stms.next(stm_it)) {
+    const bool REPLACE_ALGS = true;
+    stm_rep.insert(stms.key(stm_it), Statement(stm.statement(), REPLACE_ALGS, _range));
+  }
+  if (type == EVENT::Positive) {
+    _positive_handler = stm_rep;
+  } else {
+    _negative_handler = stm_rep;
   }
 }
 
