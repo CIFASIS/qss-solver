@@ -38,7 +38,8 @@ class Statement {
   public:
   Statement(AST_Statement stm, bool initial = false, const std::string& block = "");
   Statement(AST_Statement stm, Option<Range> range, bool initial = false, const std::string& block = "");
-  Statement() : _stm(nullptr), _range(), _block(), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states(){};
+  Statement(AST_Statement stm, bool replace_algs, Option<Range> range);
+  Statement();
   ~Statement() = default;
 
   inline bool hasRange() { return _range.is_initialized(); };
@@ -58,6 +59,7 @@ class Statement {
   bool isForStatement() const;
   inline Option<Range> range() { return _range; };
   bool autonomous() const;
+  AST_Statement statement();
 
   protected:
   void initialize();
@@ -66,6 +68,7 @@ class Statement {
   bool checkStateAssignment(Expression exp) const;
   std::string printAssignment(AST_Statement_Assign asg) const;
   void setRange();
+  Expression generateExpression(AST_Expression stm) const;
 
   private:
   AST_Statement _stm;
@@ -76,6 +79,7 @@ class Statement {
   ExpressionList _rhs_assignments;
   ExpressionList _lhs_discretes;
   ExpressionList _lhs_states;
+  bool _replace_algs;
 };
 
 typedef ModelTable<int, Statement> StatementTable;
