@@ -77,6 +77,8 @@ void usage()
   cout << "                Include <path> in the library path search.          " << endl;
   cout << "-o <file>, --output <file>" << endl;
   cout << "                Sets the output to <file>" << endl;
+  cout << "-r, --replace-algs" << endl;
+  cout << "                Replace algebraic variables on scalar models." << endl;
   cout << "-s, --settings-only" << endl;
   cout << "                Generate only the settings (.ini) file." << endl;
   cout << "-t, --test" << endl;
@@ -172,13 +174,19 @@ int main(int argc, char** argv)
   bool settings = false;
   CompileFlags flags;
   while (true) {
-    static struct option long_options[] = {{"version", no_argument, 0, 'v'},       {"help", no_argument, 0, 'h'},
-                                           {"include", required_argument, 0, 'i'}, {"external-structure-file", required_argument, 0, 'e'},
-                                           {"force", no_argument, 0, 'f'},         {"settings-only", no_argument, 0, 's'},
-                                           {"test", no_argument, 0, 't'},          {"debug", required_argument, 0, 'd'},
-                                           {"output", required_argument, 0, 'o'},  {0, 0, 0, 0}};
+    static struct option long_options[] = {{"version", no_argument, 0, 'v'},
+                                           {"help", no_argument, 0, 'h'},
+                                           {"include", required_argument, 0, 'i'},
+                                           {"external-structure-file", required_argument, 0, 'e'},
+                                           {"force", no_argument, 0, 'f'},
+                                           {"replace-algs", no_argument, 0, 'r'},
+                                           {"settings-only", no_argument, 0, 's'},
+                                           {"test", no_argument, 0, 't'},
+                                           {"debug", required_argument, 0, 'd'},
+                                           {"output", required_argument, 0, 'o'},
+                                           {0, 0, 0, 0}};
     int option_index = 0;
-    opt = getopt_long(argc, argv, "vhmfsti:e:d:o:", long_options, &option_index);
+    opt = getopt_long(argc, argv, "vhmfrsti:e:d:o:", long_options, &option_index);
     if (opt == EOF) break;
     switch (opt) {
     case 'v':
@@ -205,6 +213,9 @@ int main(int argc, char** argv)
       break;
     case 'f':
       recompile = true;
+      break;
+    case 'r':
+      flags.setReplaceAlgebraics(true);
       break;
     case 's':
       settings = true;
