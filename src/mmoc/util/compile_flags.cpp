@@ -38,7 +38,9 @@ CompileFlags::CompileFlags()
       _incidenceMatrices(false),
       _externalFunctions(false),
       _lps(0),
-      _debugOptions()
+      _debugOptions(),
+      _testing(false),
+      _replace_algebraics(false)
 {
   _debugOptions["SD_DBG_VarChanges"] = 1 << 0;
   _debugOptions["SD_DBG_InitValues"] = 1 << 1;
@@ -118,7 +120,11 @@ void CompileFlags::setDebug(string s)
 
 void CompileFlags::setTesting(bool testing) { _testing = testing; }
 
-bool CompileFlags::testing() { return _testing; }
+bool CompileFlags::testing() const { return _testing; }
+
+void CompileFlags::setReplaceAlgebraics(bool replace_algebraics) { _replace_algebraics = replace_algebraics; }
+
+bool CompileFlags::replaceAlgebraics() const { return _replace_algebraics; }
 
 }  // namespace Util
 }  // namespace MicroModelica

@@ -66,7 +66,9 @@ class CompileFlags {
   int lps() const { return _lps; }
   void setLps(int lps) { _lps = lps; }
   void setTesting(bool testing);
-  bool testing();
+  bool testing() const;
+  void setReplaceAlgebraics(bool replace_algebraics);
+  bool replaceAlgebraics() const; 
   
   private:
   bool _store;
@@ -82,6 +84,7 @@ class CompileFlags {
   int _lps;
   map<string, int> _debugOptions;
   bool _testing;
+  bool _replace_algebraics;
 };
 }  // namespace Util
 }  // namespace MicroModelica
