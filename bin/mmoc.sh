@@ -24,7 +24,7 @@ if [ -z "$MMOC_BIN" ]; then
 fi
 
 # Validate input parameters
-if [ $# -lt 2 ]; then
+if [ $# -lt 1 ]; then
     echo "Usage: $0 <FILE> [OPTIONS]"
     exit 1
 fi
