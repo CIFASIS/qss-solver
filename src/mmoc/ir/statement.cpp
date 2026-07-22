@@ -26,14 +26,26 @@
 #include <util/util.hpp>
 #include <util/process_statement.hpp>
 #include <util/visitors/called_functions.hpp>
+#include <util/visitors/replace_algebraic.hpp>
 
 namespace MicroModelica {
 using namespace Util;
 namespace IR {
 
+Statement::Statement()
+    : _stm(nullptr), _range(), _block(), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states(), _replace_algs(false){};
+
 Statement::Statement(AST_Statement stm, Option<Range> range, bool initial, const string& block)
     : _stm(stm), _range(range), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states()
 {
+  initialize();
+}
+
+Statement::Statement(AST_Statement stm, bool replace_algs, Option<Range> range) : Statement()
+{
+  _stm = stm;
+  _range = range;
+  _replace_algs = replace_algs;
   initialize();
 }
 
@@ -54,6 +66,8 @@ void Statement::initialize()
   _lhs_states = generateExps(STATEMENT::LHS_STATES);
 }
 
+AST_Statement Statement::statement() { return _stm; }
+
 void Statement::setRange()
 {
   // In case of for statements, the statement can have a range even if
@@ -62,6 +76,17 @@ void Statement::setRange()
     AST_Statement_For for_stm = _stm->getAsFor();
     _range = Range(for_stm);
   }
+}
+
+Expression Statement::generateExpression(AST_Expression exp) const
+{
+  if (_replace_algs) {
+    EquationTable algs = ModelConfig::instance().algebraics();
+    ReplaceAlgebraic replace_algebraics(algs);
+    AST_Expression new_exp = replace_algebraics.apply(exp);
+    return Expression(new_exp);
+  }
+  return Expression(exp);
 }
 
 ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
@@ -73,7 +98,7 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
     AST_StatementList stl = sti->statements();
     AST_StatementListIterator stlit;
     if (asg == STATEMENT::RHS) {
-      asgs.push_back(Expression(sti->condition()));
+      asgs.push_back(generateExpression(sti->condition()));
     } else if (asg == STATEMENT::LHS_DISCRETES || asg == STATEMENT::LHS_STATES) {
       asgs.push_back(emptyRef());
     }
@@ -85,7 +110,7 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
     AST_Statement_ElseListIterator stelselit;
     foreach (stelselit, stelsel) {
       if (asg == STATEMENT::RHS) {
-        asgs.push_back(Expression(current_element(stelselit)->condition()));
+        asgs.push_back(generateExpression(current_element(stelselit)->condition()));
       } else if (asg == STATEMENT::LHS_DISCRETES || asg == STATEMENT::LHS_STATES) {
         asgs.push_back(emptyRef());
       }
@@ -108,7 +133,7 @@ ExpressionList Statement::generateExps(STATEMENT::AssignTerm asg)
     if (asg == STATEMENT::LHS || asg == STATEMENT::LHS_DISCRETES || asg == STATEMENT::LHS_STATES) {
       asgs.push_back(Expression(_stm->getAsAssign()->lhs()));
     } else {
-      asgs.push_back(Expression(_stm->getAsAssign()->exp()));
+      asgs.push_back(generateExpression(_stm->getAsAssign()->exp()));
     }
     break;
   }
@@ -162,7 +187,7 @@ string Statement::printAssignment(AST_Statement_Assign asg) const
     break;
   default: {
     Expression lhs(asg->lhs());
-    Expression rhs(asg->exp());
+    Expression rhs = generateExpression(asg->exp());
     bool state_assignment = checkStateAssignment(lhs);
     if (state_assignment) {
       ModelConfig::instance().setReinit(true);
