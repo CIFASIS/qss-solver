@@ -269,6 +269,7 @@ void MergeGraphGenerator<S>::addEdges(SB::Deps::SetVertex vertex, SB::Deps::Vari
 {
   Intersections inters = computeIntersections(var_dep.variables());
   if (!inters.empty()) {
+    // Get the IFE of the merged graph which is the IFR in the calling graph.
     VertexIt ife_vertex_it = SB::Deps::findSetVertexByName(_graph, _config.nodeName(vertex.index()));
     SB::Deps::SetVertex ife_vertex = _graph[*ife_vertex_it];
 
