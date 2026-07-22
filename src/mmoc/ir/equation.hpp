@@ -99,6 +99,8 @@ class Equation {
   bool tearingEq(EQUATION::Tearing type) const;
   int tearingEqNumber(EQUATION::Tearing type) const;
 
+  void setRHS(Expression rhs);
+
   protected:
   void initialize(AST_Equation eq);
   void initialize(AST_Expression exp);

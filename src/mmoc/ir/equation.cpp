@@ -141,6 +141,14 @@ void Equation::setup()
   _lhs_exp = buffer.str();
 }
 
+void Equation::setRHS(Expression rhs)
+{
+  _rhs = rhs;
+  _autonomous = _rhs.autonomous();
+  CalledFunctions cf;
+  _calledFunctions = cf.apply(_rhs.expression());
+}
+
 string Equation::identifier() const { return getPrinter(*this)->identifier(); }
 
 string Equation::applyId() const { return getPrinter(*this)->equationId(); }
