@@ -36,7 +36,7 @@ Statement::Statement()
     : _stm(nullptr), _range(), _block(), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states(), _replace_algs(false){};
 
 Statement::Statement(AST_Statement stm, Option<Range> range, bool initial, const string& block)
-    : _stm(stm), _range(range), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states()
+    : _stm(stm), _range(range), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states(), _replace_algs(false)
 {
   initialize();
 }
@@ -50,7 +50,7 @@ Statement::Statement(AST_Statement stm, bool replace_algs, Option<Range> range) 
 }
 
 Statement::Statement(AST_Statement stm, bool initial, const string& block)
-    : _stm(stm), _range(), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states()
+    : _stm(stm), _range(), _block(block), _lhs_assignments(), _rhs_assignments(), _lhs_discretes(), _lhs_states(), _replace_algs(false)
 {
   initialize();
 }
