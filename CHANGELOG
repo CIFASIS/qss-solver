@@ -1,5 +1,14 @@
 ## Changelog
 
+## [6.2.0] - 27-07-2026
+
+### Added
+- **New --replace-algs** MicroModelica Compiler command line option to replace algebraic variables in scalar models. 
+- **New differential-mode single-phase PWM inverters** models.
+
+### Fixed
+- **mmoc.sh** script argument control.
+
 ## [6.1.1] - 03-07-2026
 
 ### Added
