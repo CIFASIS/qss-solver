@@ -19,7 +19,7 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 6.1.1
+#       VERSION: 6.2.0
 #===================================================================================
 
 set -e  # Exit immediately if a command exits with a non-zero status.
