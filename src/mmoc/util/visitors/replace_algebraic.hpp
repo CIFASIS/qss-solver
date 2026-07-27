@@ -17,21 +17,29 @@
 
  ******************************************************************************/
 
-#include <QApplication>
-#include <QDir>
+#pragma once
 
-#include <mmomegui.hpp>
+#include <ast/ast_builder.hpp>
+#include <util/ast_util.hpp>
 
-int main(int argc, char *argv[])
-{
-  QCoreApplication::setOrganizationName("CIFASIS");
-  QCoreApplication::setApplicationVersion("6.2.0");
-  QCoreApplication::setApplicationName("QSS Solver");
-  QApplication app(argc, argv);
-  QDir d;
-  d.setCurrent(QCoreApplication::applicationDirPath());
-  MmomeGui mmome;
-  mmome.show();
-  int ret = app.exec();
-  return ret;
-}
+namespace MicroModelica {
+namespace Util {
+class ReplaceAlgebraic : public AST_Expression_Visitor<AST_Expression> {
+  public:
+  ReplaceAlgebraic(IR::EquationTable algebraics);
+  ~ReplaceAlgebraic() = default;
+
+  private:
+  IR::EquationTable _algebraics;
+
+  // Expression visitor implementation.
+  AST_Expression foldTraverseElement(AST_Expression exp);
+  AST_Expression foldTraverseElementUMinus(AST_Expression exp);
+  AST_Expression foldTraverseElement(AST_Expression l, AST_Expression r, BinOpType bot);
+
+  // Search and return the corresponding algebraic equation for the input variable.  
+  IR::Expression searchAlgebraic(Variable variable);
+};
+
+}  // namespace Util
+}  // namespace MicroModelica

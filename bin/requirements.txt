@@ -7,7 +7,7 @@ matplotlib==3.10.3
 numpy==2.3.0
 packaging==25.0
 pandas==2.3.0
-pillow==12.2.0
+pillow==12.3.0
 pyparsing==3.2.3
 PyQt5==5.15.11
 PyQt5-Qt5==5.15.18

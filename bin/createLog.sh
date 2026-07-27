@@ -14,7 +14,7 @@
 #         NOTES: --- 
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 6.1.1
+#       VERSION: 6.2.0
 #===================================================================================
 
 # Check for required environment variables

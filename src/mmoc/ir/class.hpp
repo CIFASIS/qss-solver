@@ -188,6 +188,8 @@ class Model : public Class {
   void orderEquations();
   EquationDefOrder getEquationDefOrder(Equation eq);
   int computeEventOffsetShift(Option<Range> range);
+  void replaceAlgebraic(Equation eq, EquationTable& alg_rep, EquationTable& new_eqs, int key);
+  void replaceAlgebraics();
 
   std::string _name;
   Util::ImportTable _imports;

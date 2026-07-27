@@ -14,7 +14,7 @@
 #         NOTES: --- 
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 6.1.1
+#       VERSION: 6.2.0
 #===================================================================================
 
 # Check if MMOC_BIN is set
@@ -24,7 +24,7 @@ if [ -z "$MMOC_BIN" ]; then
 fi
 
 # Validate input parameters
-if [ $# -lt 2 ]; then
+if [ $# -lt 1 ]; then
     echo "Usage: $0 <FILE> [OPTIONS]"
     exit 1
 fi

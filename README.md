@@ -1,4 +1,4 @@
-## QSS Solver 6.1.1
+## QSS Solver 6.2.0
 
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
@@ -212,6 +212,15 @@ The simplest way to compile this package is:
 
 ## Changelog
 
+## [6.2.0] - 27-07-2026
+
+### Added
+- **New --replace-algs** MicroModelica Compiler command line option to replace algebraic variables in scalar models. 
+- **New differential-mode single-phase PWM inverters** models.
+
+### Fixed
+- **mmoc.sh** script argument control.
+
 ## [6.1.1] - 03-07-2026
 
 ### Added
@@ -230,16 +239,6 @@ The simplest way to compile this package is:
 ### Fixed
 - **GUI Initialization** scripts, environment variables and app icon.
 - **Python module initialization** for stand alone scripts.
-
-## [6.0.0] - 09-12-2025
-
-### Added
-- **New EQSS1, EQSS2 and EQSS3** `LIQSS` based methods.
-- **New CHEQSS1, CHEQSS2 and CHEQSS3** `LIQSS` based methods.
-- **New Python mehtod to update model parameters**.
-
-### Removed
-- **CQSS** is deprecated.
 
 ## Licensing
 
