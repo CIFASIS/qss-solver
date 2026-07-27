@@ -88,6 +88,9 @@ class ModelConfig {
 
   inline void setEvents(IR::EventTable events) { _events = events; }
   inline IR::EventTable events() const { return _events; }
+  
+  inline bool replaceAlgebraics() const { return Utils::instance().compileFlags().replaceAlgebraics(); }
+
   inline bool functionOutputs() const { return _function_outputs; }
   inline void setFunctionOutputs(bool function_outputs) { _function_outputs = function_outputs; }
   inline bool functionCode() const { return _function_code; }
@@ -130,6 +133,8 @@ class ModelConfig {
   Deps::ModelDependencies _dependencies;
   IR::EquationTable _derivatives;
   IR::EquationTable _ordered_derivatives;
+  IR::EquationTable _alg_replaced_derivatives;
+  IR::EventTable _alg_replaced_events;
   IR::EventTable _events;
   bool _algorithm;
   int _algebraic_nbr;

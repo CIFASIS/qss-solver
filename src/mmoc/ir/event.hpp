@@ -53,9 +53,12 @@ class Event {
   Event(AST_Expression cond, int id, int offset, Option<Range> range, std::string event_id);
   ~Event() = default;
 
+  void setZeroCrossing(Equation zero_crossing);
   inline Equation zeroCrossing() { return _zero_crossing; };
   inline StatementTable positiveHandler() { return _positive_handler; };
   inline StatementTable negativeHandler() { return _negative_handler; };
+  void replaceHandlerAlgs(EVENT::Type type);
+
   std::string handler(EVENT::Type type) const;
   void add(AST_Statement);
   bool compare(AST_Expression zc);

@@ -28,6 +28,7 @@ target_sources(
         partial_eval_exp.cpp
         partition_interval.cpp
         pwl_map_values.cpp
+        replace_algebraic.cpp
         replace_constant.cpp
         replace_der.cpp
         replace_index.cpp

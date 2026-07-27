@@ -41,6 +41,7 @@
 #include <util/visitors/convert_statement.hpp>
 #include <util/visitors/eval_init_exp.hpp>
 #include <util/visitors/partial_eval_exp.hpp>
+#include <util/visitors/replace_algebraic.hpp>
 #include <util/visitors/variable_lookup.hpp>
 
 namespace MicroModelica {
@@ -474,6 +475,57 @@ void Model::reduceEquation(AST_Equation_Equality eq, list<AST_Equation> &new_eqs
   }
 }
 
+void Model::replaceAlgebraic(Equation eq, EquationTable &alg_rep, EquationTable &new_eqs, int key)
+{
+  ReplaceAlgebraic replace_algebraics(alg_rep);
+  AST_Expression new_exp = replace_algebraics.apply(eq.rhs().expression());
+  eq.setRHS(Expression(new_exp));
+  new_eqs.insert(key, eq);
+}
+
+void Model::replaceAlgebraics()
+{
+  EquationTable::iterator eq_it;
+  EquationTable alg_rep;
+  Equation eq = _algebraics.begin(eq_it);
+  alg_rep.insert(_algebraics.key(eq_it), eq);
+
+  for (; !_algebraics.end(eq_it); eq = _algebraics.next(eq_it)) {
+    replaceAlgebraic(eq, alg_rep, alg_rep, _algebraics.key(eq_it));
+  }
+  _algebraics = alg_rep;
+  ModelConfig::instance().setAlgebraics(_algebraics);
+
+  EquationTable der_rep;
+  for (eq = _derivatives.begin(eq_it); !_derivatives.end(eq_it); eq = _derivatives.next(eq_it)) {
+    replaceAlgebraic(eq, _algebraics, der_rep, _derivatives.key(eq_it));
+  }
+  _derivatives = der_rep;
+  ModelConfig::instance().setDerivatives(_derivatives);
+
+  EquationTable zc_rep;
+  EventTable ev_rep;
+  map<int, StatementTable> stm_reps;
+
+  EventTable::iterator ev_it;
+  for (Event ev = _events.begin(ev_it); !_events.end(ev_it); ev = _events.next(ev_it)) {
+    replaceAlgebraic(ev.zeroCrossing(), _algebraics, zc_rep, _events.key(ev_it));
+  }
+
+  for (Event ev = _events.begin(ev_it); !_events.end(ev_it); ev = _events.next(ev_it)) {
+    int ev_key = _events.key(ev_it);
+    Option<Equation> zc = zc_rep[ev_key];
+    assert(zc);
+    ev.setZeroCrossing(zc.get());
+    ev.replaceHandlerAlgs(EVENT::Positive);
+    ev.replaceHandlerAlgs(EVENT::Negative);
+    ev_rep.insert(ev_key, ev);
+  }
+
+  _events = ev_rep;
+  ModelConfig::instance().setEvents(_events);
+}
+
 EquationTable Model::BDFDerivatives()
 {
   EquationTable bdf_equations;
@@ -747,6 +799,9 @@ void Model::setModelConfig()
   ModelConfig::instance().setStateNbr(_state_nbr);
   ModelConfig::instance().setAlgebraicNbr(_algebraic_nbr);
   ModelConfig::instance().setEvents(_events);
+  if (ModelConfig::instance().replaceAlgebraics()) {
+    replaceAlgebraics();
+  }
 }
 }  // namespace IR
 }  // namespace MicroModelica

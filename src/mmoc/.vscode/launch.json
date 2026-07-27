@@ -12,9 +12,9 @@
             "name": "Mixed Mode buck term model.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/buck_term/buck_term ", "/home/joaquin/work/qss-solver/models/mixed-mode/buck_term.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -31,9 +31,9 @@
             "name": "Advection model.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/advection/advection ", "/home/joaquin/work/qss-solver/models/advection/advection.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -50,9 +50,9 @@
             "name": "Inverters model.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/inverters/inverters ", "/home/joaquin/work/qss-solver/models/inverters/inverters.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -69,9 +69,9 @@
             "name": "Boost model.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/boost/boost ", "/home/joaquin/work/qss-solver/models/converters/boost.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -88,9 +88,9 @@
             "name": "LC Line model.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/lc_line/lc_line ", "/home/joaquin/work/qss-solver/models/lc_line/lc_line.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -107,9 +107,9 @@
             "name": "Rectifier model.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/rectifier/rectifier ", "/home/joaquin/work/qss-solver/models/rectifier/rectifier.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -126,9 +126,9 @@
             "name": "Spikings model.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/spikings/spikings ", "/home/joaquin/work/qss-solver/models/spikings/spikings.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -145,9 +145,9 @@
             "name": "Interleaved model.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/interleaved/interleaved ", "/home/joaquin/work/qss-solver/models/interleaved/interleaved.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -164,9 +164,9 @@
             "name": "Sum Test.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/sum_test/sum_test ", "/home/joaquin/work/qss-solver/models/tests/sum_test.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -183,9 +183,9 @@
             "name": "Partial Sum Test.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/par_sum_test/par_sum_test ", "/home/joaquin/work/qss-solver/models/par_sum_test.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -202,9 +202,9 @@
             "name": "Simple Algebraic Test.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/simple_alg/simple_alg ", "/home/joaquin/work/qss-solver/models/simple_alg.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -221,9 +221,9 @@
             "name": "Airconds simple.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/airconds/airconds ", "/home/joaquin/work/qss-solver/models/airs/airconds.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -240,9 +240,9 @@
             "name": "Aircont model.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/aircont/aircont ", "/home/joaquin/work/qss-solver/models/airs/aircont.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -259,9 +259,9 @@
             "name": "Lotka-Volterra Test.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/lotka-volterra/lotka_volterra ", "/home/joaquin/work/qss-solver/models/lotka-volterra/lotka_volterra.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -278,9 +278,9 @@
             "name": "Small RL Test model.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/small_rltest/small_rltest ", "/home/joaquin/work/qss-solver/models/tests/small_rltest.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -297,9 +297,9 @@
             "name": "Simple Alg RL Test model.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/rltest_simple_alg/rltest_simple_alg ", "/home/joaquin/work/qss-solver/models/tests/rltest_simple_alg.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -316,9 +316,9 @@
             "name": "RL Test model.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/rltest/rltest ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/rltest/rltest.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -353,9 +353,9 @@
             "name": "Bball downstairs model",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/bball_downstairs ", "/home/joaquin/work/qss-solver/models/bball/bball_downstairs.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -372,9 +372,9 @@
             "name": "ADR mixed mode model",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/adr ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/adr/adr.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -391,9 +391,9 @@
             "name": "Buck mixed mode model",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/buck_term ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/buck_term/buck_term.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -411,9 +411,9 @@
             "name": "Advection 2D model",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/advection2D ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/advection2D/advection2D.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -430,9 +430,9 @@
             "name": "Neurons ST model",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/neuronsST ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/neuronsST/neuronsST.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -449,9 +449,9 @@
             "name": "NeuronNetworkE model",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/NeuronNetworkE ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/NeuronNetworkE/NeuronNetworkE.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -468,9 +468,9 @@
             "name": "Function Import",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/funct_test ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/func_test/func_test.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -487,9 +487,9 @@
             "name": "When For Test",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/when_for_test ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/when_for_test/when_for_test.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -506,9 +506,9 @@
             "name": "Cuk2 model",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/cuk2 ", "/home/joaquin/work/qss-solver/src/mmoc/tests/integration/gt_data/cuk2/cuk2.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -525,9 +525,9 @@
             "name": "Airconds Cont model",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/airconds_cont ", "/home/joaquin/work/qss-solver/models/parallel/airconds_cont/airconds_cont.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -544,9 +544,9 @@
             "name": "Airconds Parallel model",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/airconds ", "/home/joaquin/work/qss-solver/models/parallel/airconds/airconds.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -563,9 +563,9 @@
             "name": "NeuralNetwork1",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/NeuralNetwork1 ", "/home/joaquin/work/qss-solver/src/mmoc/tests/system/gt_data/NeuralNetwork1/NeuralNetwork1.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -582,9 +582,9 @@
             "name": "cells_deathtime_stim_TDi",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/cells_deathtime_stim_TDi ", "/home/joaquin/work/qss-solver/src/mmoc/tests/system/gt_data/cells_deathtime_stim_TDi/cells_deathtime_stim_TDi.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -601,9 +601,9 @@
             "name": "ADR 2D Test model.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/adr2D/adr2D ", "/home/joaquin/work/qss-solver/src/mmoc/tests/system/gt_data/adr2D/adr2D.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -620,9 +620,9 @@
             "name": "Init Code Time Test model.",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/usr/bin/mmoc",
+            "program": "${workspaceFolder}/build/mmoc",
             "args": ["-o /home/joaquin/work/qss-solver/build/init_code_time/init_code_time ", "/home/joaquin/work/qss-solver/src/mmoc/tests/system/gt_data/init_code_time/init_code_time.mo"],
-            "cwd": "${workspaceFolder}/usr/bin/",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
             "MIMode": "gdb",
             "setupCommands": [
@@ -632,7 +632,43 @@
                     "ignoreFailures": true
                 }
             ]
-        }        
+        },
+        
+        {
+            "name": "Single phase PWM inverters.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/boostinvLCmuModelica/boostinvLCmuModelica ", "--replace-algs", "/home/joaquin/work/qss-solver/src/mmoc/tests/system/gt_data/boostinvLCmuModelica/boostinvLCmuModelica.mo"],
+            "cwd": "${workspaceFolder}/build/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        
+        {
+            "name": "MLIQSS experimental.",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/mmoc",
+            "args": ["-o /home/joaquin/work/qss-solver/build/mliqss_buck/mliqss_buck ", "/home/joaquin/work/qss-solver/src/mmoc/tests/system/gt_data/mliqss_buck/mliqss_buck.mo"],
+            "cwd": "${workspaceFolder}/build/",
+            "environment": [],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
 
     ]        
 }
