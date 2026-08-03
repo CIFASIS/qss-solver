@@ -100,8 +100,7 @@ equation
   Vref = VrefMax*sin(2*3.1416*frecRef*time);
   V01ref = Vdc + Vref/sqrt(2);
   V02ref = uC1 - sqrt(2)*Vref;
-
-U = lastU + pteU*(time - timeLastU);
+  U = lastU + pteU*(time - timeLastU);
 //======================
 //VoltageLoop 1
 //======================
@@ -109,7 +108,6 @@ U = lastU + pteU*(time - timeLastU);
   der(i01filt) = (dU/R - i01filt)/Tf;
   PiVerr1 = V01ref - V01filt;
   der(PiV1intErr) = PiVerr1*(1 - SatV1);
-// der(PiV1intErr)= 0 if satV1=1 else PiVerr1
   PiVOut1 = kiv*PiV1intErr + kpv*PiVerr1;
   satVInV1 = (PiVOut1 + i01filt)*V01filt/U;
   iL1ref = satVInV1*(1 - SatV1) + satValV1;
@@ -120,7 +118,6 @@ U = lastU + pteU*(time - timeLastU);
   der(i02filt) = (-dU/R - i02filt)/Tf;
   PiVerr2 = V02ref - V02filt;
   der(PiV2intErr) = PiVerr2*(1 - SatV2);
-// der(PiV1intErr)= 0 if satV1=1 else PiVerr1
   PiVOut2 = kiv*PiV2intErr + kpv*PiVerr2;
   satVInV2 = (PiVOut2 + i02filt)*V02filt/U;
   iL2ref = satVInV2*(1 - SatV2) + satValV2;
@@ -130,7 +127,6 @@ U = lastU + pteU*(time - timeLastU);
   der(iL1Filt) = (iL1 - iL1Filt)/Tf;
   PiIerr1 = iL1ref - iL1Filt;
   der(PiI1intErr) = PiIerr1*(1 - SatI1);
-// der(PiI1intErr)= 0 if satI1=1 else PiIerr1
   PiIOut1 = kii*PiI1intErr + kpi*PiIerr1;
   satIInDC1 = (U - PiIOut1)/(abs(V01filt) + 1e-8);
   DC1ref = satIInDC1*(1 - SatI1) + satValDC1;
@@ -140,7 +136,6 @@ U = lastU + pteU*(time - timeLastU);
   der(iL2Filt) = (iL2 - iL2Filt)/Tf;
   PiIerr2 = iL2ref - iL2Filt;
   der(PiI2intErr) = PiIerr2*(1 - SatI2);
-// der(PiI1intErr)= 0 if satI1=1 else PiIerr1
   PiIOut2 = kii*PiI2intErr + kpi*PiIerr2;
   satIInDC2 = (U - PiIOut2)/(abs(V02filt) + 1e-8);
   DC2ref = satIInDC2*(1 - SatI2) + satValDC2;
@@ -158,8 +153,8 @@ U = lastU + pteU*(time - timeLastU);
   s2 = diodeon2*iD2 + (1 - diodeon2)*iD2*Rd22;
   der(uC2) = (iD2 + iD2*Rd22/Rs22 - (uC2 - uC1)/R)/C2;
   der(iL2) = (U - Rs21*(iL2 - (iD2 + iD2*Rd22/Rs22)))/L2;
-    R = lastR + pteR*(time - timeLastR);
-  T=lastTc + pteTc*(time - timeLastTc);
+  R = lastR + pteR*(time - timeLastR);
+  T = 1/20000;
   dU = uC1 - uC2;
 algorithm
 //======================
@@ -286,20 +281,20 @@ algorithm
     pteU := 0;
     timeLastU := 0;
   end when;
-  when time>0.1021 then
-    lastU:=48;
-    pteU:=-(48*0.2)/0.01;
-    timeLastU:=0.1021;
+  when time > 0.1021 then
+    lastU := 48;
+    pteU := -(48*0.2)/0.01;
+    timeLastU := 0.1021;
   end when;
-  when time>0.1021+0.01 then
-    lastU:=48*0.8;
-    pteU:=0;
-    timeLastU:=0.1021+0.01;
+  when time > 0.1021 + 0.01 then
+    lastU := 48*0.8;
+    pteU := 0;
+    timeLastU := 0.1021 + 0.01;
   end when;
-  when time>0.15 then
-    lastU:=48;
-    pteU:=0;
-    timeLastU:=0.15;
+  when time > 0.15 then
+    lastU := 48;
+    pteU := 0;
+    timeLastU := 0.15;
   end when;
 //-----------------------------
 //Load perturbation
@@ -309,57 +304,60 @@ algorithm
     pteR := 0;
     timeLastR := 0;
   end when;
-  when time>0.51 then
-    lastR:=32.3;
-    pteR:=(32.3*0.2)/0.015;
-    timeLastR:=0.51;
+  when time > 0.51 then
+    lastR := 32.3;
+    pteR := (32.3*0.2)/0.015;
+    timeLastR := 0.51;
   end when;
-  when time>0.51+0.015 then
-    lastR:=32.3*1.2;
-    pteR:=0;
-    timeLastR:=0.51+0.015;
+  when time > 0.51 + 0.015 then
+    lastR := 32.3*1.2;
+    pteR := 0;
+    timeLastR := 0.51 + 0.015;
   end when;
-  when time>0.55 then
-    lastR:=32.3;
-    pteR:=0;
-    timeLastR:=0.55;
+  when time > 0.55 then
+    lastR := 32.3;
+    pteR := 0;
+    timeLastR := 0.55;
   end when;
 //-----------------------------
 //Commutation frequency perturbation
 //-----------------------------
   when time > 0 then
-    lastTc :=1/20000;// 2e-5;
+    lastTc := 1/20000;
     pteTc := 0;
     timeLastTc := 0;
   end when;
- when time>0.887 then
-    lastTc:=1/20000;
-    pteTc:=(0.000005-0.00005)/0.04;
-    timeLastTc:=0.887;
+  when time > 0.887 then
+    lastTc := 1/20000;
+    pteTc := (0.000005 - 0.00005)/0.04;
+    timeLastTc := 0.887;
   end when;
-  when time>0.887+0.04 then
-    lastTc:=0.000005;
-    pteTc:=0;
-    timeLastTc:=0.887+0.04;
+  when time > 0.887 + 0.04 then
+    lastTc := 0.000005;
+    pteTc := 0;
+    timeLastTc := 0.887 + 0.04;
   end when;
-  when time>0.94 then
-    lastTc:=1/20000;
-    pteTc:=0;
-    timeLastTc:=0.94;
+  when time > 0.94 then
+    lastTc := 1/20000;
+    pteTc := 0;
+    timeLastTc := 0.94;
   end when;
 	annotation(
 
 	experiment(
 		MMO_Description="",
 		MMO_Solver=DASSL,
-		MMO_SymDiff=false,
-		MMO_Output={dU, iL1,T,R,U},
+    MMO_SymDiff=false,
+		MMO_Period={1e-6},
+		MMO_Output={dU,iL1},
+		MMO_OutputType=CI_Sampled,
 		Jacobian=Dense,
 		MMO_BDF_PDepth=1,
 		MMO_BDF_Max_Step=0,
 		StartTime=0.0,
-		StopTime=1,
+		StopTime=1.0,
 		Tolerance={1e-3},
 		AbsTolerance={1e-3}
 	));
+
 end boost_inv_LC_mu_Modelica_R;
