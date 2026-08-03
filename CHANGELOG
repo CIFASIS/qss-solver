@@ -1,5 +1,10 @@
 ## Changelog
 
+## [6.2.1] - 03-08-2026
+
+### Changed
+- **Differential-mode single-phase PWM inverters**  closed loop models.
+
 ## [6.2.0] - 27-07-2026
 
 ### Added
