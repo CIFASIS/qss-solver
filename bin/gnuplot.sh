@@ -13,7 +13,7 @@
 #         NOTES: -persist is the default option used by the QSS Solver GUI.
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 6.2.0
+#       VERSION: 6.2.1
 #===================================================================================
 
 # Check if gnuplot is installed

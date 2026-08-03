@@ -1,4 +1,4 @@
-## QSS Solver 6.2.0
+## QSS Solver 6.2.1
 
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
@@ -212,6 +212,11 @@ The simplest way to compile this package is:
 
 ## Changelog
 
+## [6.2.1] - 03-08-2026
+
+### Changed
+- **Differential-mode single-phase PWM inverters**  closed loop models.
+
 ## [6.2.0] - 27-07-2026
 
 ### Added
@@ -233,12 +238,6 @@ The simplest way to compile this package is:
 ### Changed
 - Generate Jacobian code only when needed.
 - Allow indexes with negative slope in SBG.
-
-## [6.0.2] - 11-05-2026
-
-### Fixed
-- **GUI Initialization** scripts, environment variables and app icon.
-- **Python module initialization** for stand alone scripts.
 
 ## Licensing
 
