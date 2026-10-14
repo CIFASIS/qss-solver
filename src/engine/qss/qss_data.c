@@ -321,10 +321,10 @@ QSS_data QSS_Data(int states, int discretes, int events, int inputs, int algs, i
   } else {
     p->d = NULL;
   }
-  p->q = (double *)malloc(states * xOrder * sizeof(double));
-  p->x = (double *)malloc(states * xOrder * sizeof(double));
+  p->q = (double *)malloc((size_t)states * xOrder * sizeof(double));
+  p->x = (double *)malloc((size_t)states * xOrder * sizeof(double));
   if (algs) {
-    p->alg = (double *)malloc(algs * xOrder * sizeof(double));
+    p->alg = (double *)malloc((size_t)algs * xOrder * sizeof(double));
   } else {
     p->alg = NULL;
   }
@@ -635,15 +635,15 @@ QSS_data QSS_copyData(QSS_data data)
   } else {
     p->lqu = (double *)malloc(states * sizeof(double));
     cleanDoubleVector(p->lqu, 0, states);
-    p->x = (double *)malloc(states * xOrder * sizeof(double));
-    p->q = (double *)malloc(states * xOrder * sizeof(double));
+    p->x = (double *)malloc((size_t)states * xOrder * sizeof(double));
+    p->q = (double *)malloc((size_t)states * xOrder * sizeof(double));
     for (i = 0; i < states; i++) {
       p->x[i * xOrder] = data->x[i * xOrder];
       p->q[i * xOrder] = data->q[i * xOrder];
     }
   }
   if (algs) {
-    p->alg = (double *)malloc(algs * xOrder * sizeof(double));
+    p->alg = (double *)malloc((size_t)algs * xOrder * sizeof(double));
     cleanDoubleVector(p->alg, 0, algs * xOrder);
   } else {
     p->alg = NULL;

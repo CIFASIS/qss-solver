@@ -281,8 +281,7 @@ string AST_Expression_ComponentReference_::print() const
     if (current_element(exp_it)->size()) {
       ret << "[";
       int size2 = current_element(exp_it)->size(), i2 = 0;
-      foreach (exp_it2, current_element(exp_it))
-        ret << current_element(exp_it2)->print() << (++i2 < size2 ? "," : "");
+      foreach (exp_it2, current_element(exp_it)) ret << current_element(exp_it2)->print() << (++i2 < size2 ? "," : "");
       ret << "]";
     }
     ret << (i < size ? "." : "");
@@ -306,8 +305,6 @@ void AST_Expression_ComponentReference_::prepend(AST_String s, AST_ExpressionLis
 }
 
 AST_StringList AST_Expression_ComponentReference_::names() const { return _name; }
-
-const char *AST_Expression_ComponentReference_::cname() { return name().c_str(); }
 
 string AST_Expression_ComponentReference_::name()
 {
@@ -380,8 +377,8 @@ string AST_Expression_If_::print() const
   stringstream ret;
   AST_ExpressionListIterator it;
   ret << "if " << condition() << " then " << then();
-  if (!elseif_list()->empty()) foreach (it, elseif_list())
-      ret << current_element(it)->getAsElseIf();
+  if (!elseif_list()->empty())
+    foreach (it, elseif_list()) ret << current_element(it)->getAsElseIf();
   ret << " else " << else_exp();
   return ret.str();
 }

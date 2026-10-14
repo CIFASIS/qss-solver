@@ -325,15 +325,15 @@ void IDA_integrate(SIM_simulator simulate)
     SD_print(simulator->simulationLog, "Simulation time (IDA)");
     SD_print(simulator->simulationLog, "----------------");
     SD_print(simulator->simulationLog, "Miliseconds: %g", getTimeValue(simulator->stats->sTime));
-    SD_print(simulator->simulationLog, "Scalar function evaluations: %d", clcData->scalarEvaluations);
-    SD_print(simulator->simulationLog, "Individual Zero Crossings : %d", clcData->zeroCrossings);
+    SD_print(simulator->simulationLog, "Scalar function evaluations: %lu", clcData->scalarEvaluations);
+    SD_print(simulator->simulationLog, "Individual Zero Crossings : %lu", clcData->zeroCrossings);
     SD_print(simulator->simulationLog, "Function evaluations: %llu", clcData->funEvaluations);
     SD_print(simulator->simulationLog, "Residual evaluations (reported by IDA): %ld", nfe);
-    SD_print(simulator->simulationLog, "Output steps: %d", totalOutputSteps);
+    SD_print(simulator->simulationLog, "Output steps: %lu", totalOutputSteps);
     SD_print(simulator->simulationLog, "Simulation steps: %ld", nst);
     SD_print(simulator->simulationLog, "Simulation steps (rejected) : %ld", netf);
     SD_print(simulator->simulationLog, "Nonlinear solver iterations performed: (reported by IDA): %ld", nni);
-    SD_print(simulator->simulationLog, "Events detected : %d", clcData->totalEvents);
+    SD_print(simulator->simulationLog, "Events detected : %lu", clcData->totalEvents);
   }
   CLC_write_output(simOutput, solution, solution_time, totalOutputSteps);
   /* Free y and abstol vectors */

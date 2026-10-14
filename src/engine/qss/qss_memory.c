@@ -134,7 +134,7 @@ void M_writeFile(LG_log mem_log, LG_log file_log)
     int local_idx = 0;
 #endif
     int outputs = mem_log->state->output->outputs;
-    double *tmp1 = (double *)malloc(mem_log->state->data->states * (mem_log->state->data->order + 1) * sizeof(double));
+    double *tmp1 = (double *)malloc((size_t)mem_log->state->data->states * (mem_log->state->data->order + 1) * sizeof(double));
     for (i = 0; i < outputs; i++) {
 #ifdef QSS_PARALLEL
       if (mem_log->state->data->lp->oMap[i] <= NOT_ASSIGNED) {
@@ -214,9 +214,9 @@ void M_toFile(LG_log log)
   int max_open_files = log->state->max_open_files;
   int output_iter = (outputs / max_open_files) + 1;
   int remaining = outputs - log->state->batch_end;
-  log->state->batch_end = (remaining > max_open_files) ? max_open_files : remaining; 
+  log->state->batch_end = (remaining > max_open_files) ? max_open_files : remaining;
   for (i = 0; i < output_iter; i++) {
-    LG_log file_log = LG_copy(log, SD_File); 
+    LG_log file_log = LG_copy(log, SD_File);
 #ifdef QSS_PARALLEL
     M_PAR_writeFile(log, file_log);
 #else
@@ -225,6 +225,6 @@ void M_toFile(LG_log log)
     LG_freeLog(file_log);
     log->state->batch_init += max_open_files;
     remaining = outputs - log->state->batch_end;
-    log->state->batch_end += (remaining > max_open_files) ? max_open_files : remaining; 
+    log->state->batch_end += (remaining > max_open_files) ? max_open_files : remaining;
   }
 }
