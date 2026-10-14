@@ -173,7 +173,7 @@ class AST_Statement_Visitor {
     }
     case STOUTASSING: {
       AST_Statement_OutputAssigment out_stm = stm->getAsOutputAssigment();
-      AST_Expression call_exp = newAST_Expression_Call(new string(out_stm->function()->cname()), nullptr, out_stm->arguments());
+      AST_Expression call_exp = newAST_Expression_Call(new string(out_stm->function()->name()), nullptr, out_stm->arguments());
       c = foldTraverse(_visitor.apply(call_exp));
       return c;
     }

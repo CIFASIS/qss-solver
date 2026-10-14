@@ -259,10 +259,10 @@ void QSS_HYB_initialize(SIM_simulator simulate)
   QSS_data qssData = simulator->data;
   double *x = qssData->x;
   double t = simulator->time->time;
-  qBDF = (double *)malloc(qssData->states * (qssData->order + 1) * sizeof(double));
-  qQSS = (double *)malloc(qssData->states * (qssData->order + 1) * sizeof(double));
+  qBDF = (double *)malloc((size_t)qssData->states * (qssData->order + 1) * sizeof(double));
+  qQSS = (double *)malloc((size_t)qssData->states * (qssData->order + 1) * sizeof(double));
   qssTQ = (double *)malloc(qssData->states * sizeof(double));
-  bdfQ = (double *)malloc(qssData->states * (qssData->order + 1) * sizeof(double));
+  bdfQ = (double *)malloc((size_t)qssData->states * (qssData->order + 1) * sizeof(double));
   Q = (double *)malloc(qssData->states * sizeof(double));
 
   QSS_model qssModel = simulator->model;

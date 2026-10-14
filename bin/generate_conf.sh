@@ -13,7 +13,7 @@
 #         NOTES: ---
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 6.2.1
+#       VERSION: 6.2.2
 #===================================================================================
 
 ENV_DIR="$HOME/.config/environment.d"

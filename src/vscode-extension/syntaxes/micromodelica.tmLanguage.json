@@ -1,0 +1,54 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "MicroModelica",
+  "scopeName": "source.micromodelica",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#annotations" },
+    { "include": "#qss-tags" },
+    { "include": "#functions" },
+    { "include": "#keywords" },
+    { "include": "#numbers" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.micromodelica",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.micromodelica",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.micromodelica",
+      "begin": "\"",
+      "end": "\""
+    },
+    "numbers": {
+      "name": "constant.numeric.micromodelica",
+      "match": "\\b[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?\\b"
+    },
+    "annotations": {
+      "name": "storage.type.annotation.micromodelica",
+      "match": "\\b(annotation|experiment)\\b"
+    },
+    "keywords": {
+      "name": "keyword.control.micromodelica",
+      "match": "\\b(AbsTolerance|algorithm|and|bin|Boolean|constant|derivative|discrete|each|else|elseif|elsewhen|end|equation|external|for|function|if|import|Include|IncludeDirectory|initial|input|Integer|Jacobian|Library|LibraryDirectory|loop|MMO_BDF_Max_Step|MMO_BDF_Part|MMO_BDF_PDepth|MMO_CVODEMaxOrder|MMO_DebugGraph|MMO_DerDelta|MMO_Description|MMO_DH|MMO_DT_Min|MMO_DT_Synch|MMO_Event_Id|MMO_GenerateArch|MMO_HD|MMO_HH|MMO_HZ|MMO_Imbalance|MMO_LHS_DSC|MMO_LHS_ST|MMO_LPS|MMO_MetisSettings|MMO_MinStep|MMO_NodeSize|MMO_Output|MMO_OutputType|MMO_Parallel|MMO_PartitionMethod|MMO_PatohSettings|MMO_Period|MMO_RandomSeed|MMO_ReorderPartition|MMO_RHS_ST|MMO_Scheduler|MMO_ScotchSettings|MMO_SD|MMO_SH|MMO_Solver|MMO_StoreData|MMO_SymDiff|MMO_SZ|MMO_Weight|MMO_XOutput|MMO_ZCHyst|model|not|or|output|package|parameter|protected|Real|return|start|StartTime|StopTime|then|time|Tolerance|when)\\b"
+    },
+    "functions": {
+      "name": "support.function.micromodelica",
+      "match": "\\b(abs|acos|asin|atan2?|ceil|conh|cos|der|div|exp|floor|log10?|max|min|mod|pre|product|reinit|sinh?|sum|tanh?|terminate)\\b"
+    },
+    "qss-tags": {
+      "name": "constant.language.micromodelica",
+      "match": "\\b(CI_Dense|CI_Sampled|CI_Step|CHEQSS[123]|EQSS[123]|CQSS[123]|CVODE_AM|CVODE_BDF|DASSL|Dense|DOPRI|false|HMetis|IDA|LIQSS(2|3|_BDF)?|Manual|Metis|mLIQSS2?|MTPL(_IT)?|Patoh|QSS[1234]|Scotch|SD_DT_Asynchronous|SD_DT_Fixed|Sparse|ST_Binary|ST_Linear|ST_Random|true)\\b"
+    }
+  }
+}

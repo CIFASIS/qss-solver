@@ -181,7 +181,6 @@ class AST_Expression_ComponentReference_ : public AST_Expression_ {
   ExpressionType expressionType();
   AST_StringList names() const;
   string name();
-  const char *cname();
   bool hasIndexes() const;
   AST_ExpressionListList indexes() const;
   AST_ExpressionList firstIndex();
