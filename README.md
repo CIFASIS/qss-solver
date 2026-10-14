@@ -1,5 +1,4 @@
-## QSS Solver 6.2.1
-
+## QSS Solver 6.2.2
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
 The solver is implemented as a set of modules coded in plain C language, 
@@ -211,6 +210,15 @@ The simplest way to compile this package is:
 * Type `make help` to check the available targets and compile options.
 
 ## Changelog
+
+## [6.2.2] - 14-10-2026
+
+### Added
+- **New VS code extension** that can be used instead of the GUI. 
+
+### Fixed
+- **Solve loop variable assignment** segfault is fixed.
+- **Code Scanning alerts** from GitHub fixed.
 
 ## [6.2.1] - 03-08-2026
 
