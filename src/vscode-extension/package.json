@@ -1,0 +1,336 @@
+{
+  "name": "qss-solver",
+  "displayName": "QSS Solver",
+  "description": "Edit, compile, run and plot MicroModelica (.mo) models with the QSS Solver engine.",
+  "version": "0.1.0",
+  "publisher": "cifasis-conicet",
+  "icon": "icons/icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:micromodelica"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "micromodelica",
+        "aliases": [
+          "MicroModelica",
+          "mmo"
+        ],
+        "extensions": [
+          ".mo"
+        ],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "qss-log",
+        "aliases": [
+          "QSS Solver Log"
+        ],
+        "extensions": [
+          ".log"
+        ]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "micromodelica",
+        "scopeName": "source.micromodelica",
+        "path": "./syntaxes/micromodelica.tmLanguage.json"
+      },
+      {
+        "language": "qss-log",
+        "scopeName": "source.qss-log",
+        "path": "./syntaxes/qss-log.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "qssSolver.newModel",
+        "title": "New Model",
+        "category": "QSS Solver"
+      },
+      {
+        "command": "qssSolver.run",
+        "title": "Run...",
+        "category": "QSS Solver",
+        "icon": "$(play)"
+      },
+      {
+        "command": "qssSolver.compile",
+        "title": "Compile",
+        "category": "QSS Solver",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "qssSolver.compileSettingsOnly",
+        "title": "Compile (Settings Only)",
+        "category": "QSS Solver"
+      },
+      {
+        "command": "qssSolver.build",
+        "title": "Build",
+        "category": "QSS Solver"
+      },
+      {
+        "command": "qssSolver.stop",
+        "title": "Stop",
+        "category": "QSS Solver",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "qssSolver.showLog",
+        "title": "Show Log",
+        "category": "QSS Solver"
+      },
+      {
+        "command": "qssSolver.plot",
+        "title": "Plot Results",
+        "category": "QSS Solver",
+        "icon": "$(graph-line)"
+      },
+      {
+        "command": "qssSolver.importSbml",
+        "title": "Import SBML Model...",
+        "category": "QSS Solver"
+      },
+      {
+        "command": "qssSolver.clearOutput",
+        "title": "Clear Messages",
+        "category": "QSS Solver"
+      },
+      {
+        "command": "qssSolver.openSettings",
+        "title": "Settings...",
+        "category": "QSS Solver",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "qssSolver.openPythonConsole",
+        "title": "Python Console",
+        "category": "QSS Solver",
+        "icon": "$(terminal)"
+      },
+      {
+        "command": "qssSolver.refreshResults",
+        "title": "Refresh",
+        "category": "QSS Solver",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "qssSolver.openMmocDocs",
+        "title": "MicroModelica Compiler Documentation",
+        "category": "QSS Solver"
+      },
+      {
+        "command": "qssSolver.openEngineDocs",
+        "title": "QSS Engine Documentation",
+        "category": "QSS Solver"
+      },
+      {
+        "command": "qssSolver.openSbmlDocs",
+        "title": "SBML Translator Documentation",
+        "category": "QSS Solver"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "qssSolver.run",
+          "when": "resourceLangId == micromodelica",
+          "group": "navigation@1"
+        },
+        {
+          "command": "qssSolver.compile",
+          "when": "resourceLangId == micromodelica",
+          "group": "navigation@2"
+        },
+        {
+          "command": "qssSolver.stop",
+          "when": "resourceLangId == micromodelica",
+          "group": "navigation@3"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "qssSolver.run",
+          "when": "view == qssSolver.actions",
+          "group": "navigation@1"
+        },
+        {
+          "command": "qssSolver.openSettings",
+          "when": "view == qssSolver.actions",
+          "group": "navigation@2"
+        },
+        {
+          "command": "qssSolver.openPythonConsole",
+          "when": "view == qssSolver.actions",
+          "group": "navigation@3"
+        },
+        {
+          "command": "qssSolver.plot",
+          "when": "view == qssSolver.results",
+          "group": "navigation@1"
+        },
+        {
+          "command": "qssSolver.refreshResults",
+          "when": "view == qssSolver.results",
+          "group": "navigation@2"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "qssSolver",
+          "title": "QSS Solver",
+          "icon": "icons/activity-bar.svg"
+        }
+      ]
+    },
+    "views": {
+      "qssSolver": [
+        {
+          "id": "qssSolver.actions",
+          "name": "Actions"
+        },
+        {
+          "id": "qssSolver.results",
+          "name": "Simulation Results"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "QSS Solver",
+      "properties": {
+        "qssSolver.dirs.models": {
+          "type": "string",
+          "default": "models",
+          "description": "Directory containing MicroModelica (.mo) model files, relative to the workspace root."
+        },
+        "qssSolver.dirs.output": {
+          "type": "string",
+          "default": "output",
+          "description": "Directory where simulation results (.dat/.log) are written."
+        },
+        "qssSolver.dirs.build": {
+          "type": "string",
+          "default": "build",
+          "description": "Directory where compiled models (generated C code, makefiles, executables) are placed."
+        },
+        "qssSolver.dirs.engine": {
+          "type": "string",
+          "default": "src/engine",
+          "description": "QSS engine source directory (MMOC_ENGINE)."
+        },
+        "qssSolver.dirs.libs": {
+          "type": "string",
+          "default": "lib",
+          "description": "Native libraries directory (MMOC_LIBS)."
+        },
+        "qssSolver.dirs.bin": {
+          "type": "string",
+          "default": "bin",
+          "description": "Directory containing mmoc, the compiler/build/simulate scripts and plot_data.py (MMOC_BIN)."
+        },
+        "qssSolver.dirs.source": {
+          "type": "string",
+          "default": "src",
+          "description": "MicroModelica compiler source directory (MMOC_SRC)."
+        },
+        "qssSolver.dirs.packages": {
+          "type": "string",
+          "default": "packages",
+          "description": "Directory used to resolve MicroModelica package imports (MMOC_PACKAGES)."
+        },
+        "qssSolver.dirs.libraries": {
+          "type": "string",
+          "default": "lib",
+          "description": "Directory used to resolve external native libraries (MMOC_LIBRARIES)."
+        },
+        "qssSolver.dirs.include": {
+          "type": "string",
+          "default": "src/usr/include",
+          "description": "Include search path for the compiler (MMOC_INCLUDE)."
+        },
+        "qssSolver.commands.compile": {
+          "type": "string",
+          "default": "mmoc.sh",
+          "description": "Compiler script name, resolved under dirs.bin."
+        },
+        "qssSolver.commands.build": {
+          "type": "string",
+          "default": "build.sh",
+          "description": "Build script name, resolved under dirs.bin."
+        },
+        "qssSolver.commands.simulate": {
+          "type": "string",
+          "default": "simulate.sh",
+          "description": "Simulation-run script name, resolved under dirs.bin."
+        },
+        "qssSolver.commands.log": {
+          "type": "string",
+          "default": "createLog.sh",
+          "description": "Log-merging script name, resolved under dirs.bin."
+        },
+        "qssSolver.commands.sbml": {
+          "type": "string",
+          "default": "sbml.sh",
+          "description": "SBML import script name, resolved under dirs.bin."
+        },
+        "qssSolver.plot.script": {
+          "type": "string",
+          "default": "plot_data.py",
+          "description": "Python plotting script name, resolved under dirs.bin."
+        },
+        "qssSolver.plot.pythonPath": {
+          "type": "string",
+          "default": "python3",
+          "description": "Bootstrap Python interpreter used to create the bin/.qss-solver-venv virtual environment (matching bin/python_console_setup.sh) that plot_data.py's dependencies are installed into and run from."
+        },
+        "qssSolver.plot.markers": {
+          "type": "boolean",
+          "default": false,
+          "description": "Draw a marker at each data point when plotting (plot_data.py --plot_markers)."
+        },
+        "qssSolver.compiler.extraFlags": {
+          "type": "string",
+          "default": "",
+          "description": "Extra flags appended to every mmoc compiler invocation."
+        },
+        "qssSolver.debug.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Pass -d <flags> to the compiler when compiling with debug enabled."
+        },
+        "qssSolver.debug.all": { "type": "boolean", "default": false, "description": "SD_DBG_All" },
+        "qssSolver.debug.initValues": { "type": "boolean", "default": false, "description": "SD_DBG_InitValues" },
+        "qssSolver.debug.externalEvent": { "type": "boolean", "default": false, "description": "SD_DBG_ExternalEvent" },
+        "qssSolver.debug.memory": { "type": "boolean", "default": false, "description": "SD_DBG_Memory" },
+        "qssSolver.debug.synchronize": { "type": "boolean", "default": false, "description": "SD_DBG_Synchronize" },
+        "qssSolver.debug.stepInfo": { "type": "boolean", "default": false, "description": "SD_DBG_StepInfo" },
+        "qssSolver.debug.varChanges": { "type": "boolean", "default": false, "description": "SD_DBG_VarChanges" },
+        "qssSolver.debug.waitFor": { "type": "boolean", "default": false, "description": "SD_DBG_WaitFor" },
+        "qssSolver.debug.weights": { "type": "boolean", "default": false, "description": "SD_DBG_Weights" },
+        "qssSolver.debug.dt": { "type": "boolean", "default": false, "description": "SD_DBG_Dt" }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -w -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.4.0"
+  }
+}
