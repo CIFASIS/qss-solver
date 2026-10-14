@@ -361,7 +361,7 @@ string ModelInstance::componentDefinition(MODEL_INSTANCE::Component c)
   case MODEL_INSTANCE::Component::QSS_Init:
     return "void QSS_initializeDataStructs(QSS_simulator simulator)";
   case MODEL_INSTANCE::Component::Tearing_Variables:
-    return "void MOD_EvalTearingVars(double *x, double *d, double *a, double *t, double *dx, double *ret)";
+    return "void MOD_EvalTearingVars(double *x, double *d, double *a, double *t, double *dx, const double *guess, double *ret)";
   case MODEL_INSTANCE::Component::Tearing_Iteration:
     return "void MOD_AssignLoop(double *x, double *d, double *a, double *t, double *dx)";
   }
@@ -719,12 +719,17 @@ void ClassicModelInstance::definition()
   _tearing = tearing.detected();
   if (_tearing) {
     ModelConfig::instance().clearLocalSymbols();
+    // Assign the tearing variables from the solver guess, solve the iteration
+    // equations and compute the loop residuals.
+    stringstream residuals;
     int var_counter = 0;
     for (Equation eq = tearing_variables.begin(it); !tearing_variables.end(it); eq = tearing_variables.next(it)) {
-      _writer->write(eq, WRITER::Tearing_Variables);
-      buffer << "ret[" << var_counter++ << "] = " << eq.lhs() << ";" << endl;
-      _writer->write(buffer, WRITER::Tearing_Variables);
+      buffer << eq.lhs() << " = guess[" << var_counter << "];" << endl;
+      residuals << "ret[" << var_counter++ << "] = " << eq.rhs() << ";" << endl;
     }
+    buffer << "MOD_AssignLoop(x, d, a, t, dx);" << endl;
+    buffer << residuals.str();
+    _writer->write(buffer, WRITER::Tearing_Variables);
     _writer->write(ModelConfig::instance().localSymbols(), WRITER::Tearing_Variables_Def);
 
     for (Equation eq = tearing_iteration.begin(it); !tearing_iteration.end(it); eq = tearing_iteration.next(it)) {
@@ -740,7 +745,7 @@ void ClassicModelInstance::definition()
     buffer << endl << "#include <common/solve_loop.h>" << endl;
     _writer->write(buffer, WRITER::Include);
 
-    buffer << "SVL_SolveLoop(x, d, a, &t, dx, " << tearing_variables.size() << ", MOD_AssignLoop, MOD_EvalTearingVars);" << endl;
+    buffer << "SVL_SolveLoop(x, d, a, &t, dx, " << tearing_variables.size() << ", MOD_EvalTearingVars);" << endl;
     _writer->write(buffer, WRITER::Model_Simple);
   }
 
