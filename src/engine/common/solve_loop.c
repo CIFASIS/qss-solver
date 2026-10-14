@@ -17,93 +17,90 @@
 
  ******************************************************************************/
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <gsl/gsl_multiroots.h>
 
 #include "solve_loop.h"
 
-// Eval and argument function callbacks.
-SVL_eval _eval_callback;
-double *_x = NULL;
-double *_d = NULL;
-double *_a = NULL;
-double *_t = NULL;
-double *_dx = NULL;
-int _tearing_vars;
-double *_tearing_var_values = NULL;
+#define SVL_MAX_ITER 100
+#define SVL_TOL 1e-7
 
-int SVL_SolveEval(const gsl_vector *__x, void *__p, gsl_vector *__f)
+typedef struct {
+  double *x;
+  double *d;
+  double *a;
+  double *t;
+  double *dx;
+  int tearing_vars;
+  double *guess;
+  double *res;
+  SVL_eval eval_tearing_vars;
+} SVL_context;
+
+// Evaluates the loop residuals for the candidate tearing values given by GSL.
+// The generated callback assigns the guesses to the tearing variables, solves
+// the iteration equations and computes the residuals.
+static int SVL_SolveEval(const gsl_vector *tearing_values, void *params, gsl_vector *f)
 {
-  _eval_callback(_x, _d, _a, _t, _dx, _tearing_var_values);
-  for (int i = 0; i < _tearing_vars; i++) {
-    gsl_vector_set(__f, i, _tearing_var_values[i]);
+  SVL_context *ctx = (SVL_context *)params;
+  for (int i = 0; i < ctx->tearing_vars; i++) {
+    ctx->guess[i] = gsl_vector_get(tearing_values, i);
+  }
+  ctx->eval_tearing_vars(ctx->x, ctx->d, ctx->a, ctx->t, ctx->dx, ctx->guess, ctx->res);
+  for (int i = 0; i < ctx->tearing_vars; i++) {
+    gsl_vector_set(f, i, ctx->res[i]);
   }
   return GSL_SUCCESS;
 }
 
-void SVL_AssignCallback(double *x, double *d, double *a, double *t, double *dx, int tearing_vars, SVL_eval eval_tearing_vars)
+void SVL_SolveLoop(double *x, double *d, double *a, double *t, double *dx, int tearing_vars, SVL_eval eval_tearing_vars)
 {
-  if (_tearing_var_values == NULL) {
-    _eval_callback = eval_tearing_vars;
-    _x = x;
-    _d = d;
-    _a = a;
-    _t = t;
-    _dx = dx;
-    _tearing_vars = tearing_vars;
-    _tearing_var_values = (double *)malloc(sizeof(double) * _tearing_vars);
+  // Last solution found, used as the initial guess for the next call.
+  static gsl_vector *solution = NULL;
+  static gsl_vector *f = NULL;
+  static double *guess = NULL;
+  static double *res = NULL;
+
+  if (solution == NULL) {
+    solution = gsl_vector_calloc(tearing_vars);
+    f = gsl_vector_alloc(tearing_vars);
+    guess = (double *)malloc(sizeof(double) * tearing_vars);
+    res = (double *)malloc(sizeof(double) * tearing_vars);
   }
-}
 
-void SVL_SolveLoop(double *x, double *d, double *a, double *t, double *dx, int tearing_vars, SVL_iter assign_loop_vars,
-                   SVL_eval eval_tearing_vars)
-{
-  size_t __iter = 0;
-  int __status;
+  SVL_context ctx = {x, d, a, t, dx, tearing_vars, guess, res, eval_tearing_vars};
+  gsl_multiroot_function F = {SVL_SolveEval, (size_t)tearing_vars, &ctx};
 
-  SVL_AssignCallback(x, d, a, t, dx, tearing_vars, eval_tearing_vars);
-
-  const gsl_multiroot_fsolver_type *__T = gsl_multiroot_fsolver_hybrid;
-  gsl_multiroot_fsolver *__s = gsl_multiroot_fsolver_alloc(__T, tearing_vars);
-  gsl_multiroot_function __F;
-  static gsl_vector *__x = NULL;
-
-  if (__x == NULL) {
-    __x = gsl_vector_alloc(tearing_vars);
-    for (int i = 0; i < tearing_vars; i++) {
-      gsl_vector_set(__x, i, 0);
-    }
-  }
-  __F.n = tearing_vars;
-  __F.f = SVL_SolveEval;
-  gsl_vector *__f = gsl_vector_alloc(tearing_vars);
   // Try if we are already in the solution from the start (useful for discrete dependendt loops)
-  SVL_SolveEval(__x, NULL, __f);
-  if (gsl_multiroot_test_residual(__f, 1e-7) == GSL_SUCCESS) {
-    gsl_vector_free(__f);
-    gsl_multiroot_fsolver_free(__s);
+  SVL_SolveEval(solution, &ctx, f);
+  if (gsl_multiroot_test_residual(f, SVL_TOL) == GSL_SUCCESS) {
     return;
   }
-  gsl_vector_free(__f);
-  gsl_multiroot_fsolver_set(__s, &__F, __x);
 
+  gsl_multiroot_fsolver *s = gsl_multiroot_fsolver_alloc(gsl_multiroot_fsolver_hybrid, tearing_vars);
+  gsl_multiroot_fsolver_set(s, &F, solution);
+
+  size_t iter = 0;
+  int status;
   do {
-    __iter++;
-    __status = gsl_multiroot_fsolver_iterate(__s);
-    if (__status) { /* check if solver is stuck */
+    iter++;
+    status = gsl_multiroot_fsolver_iterate(s);
+    if (status) { /* check if solver is stuck */
       break;
     }
-    __status = gsl_multiroot_test_residual(__s->f, 1e-7);
-    assign_loop_vars(x, d, a, t, dx);
-  } while (__status == GSL_CONTINUE && __iter < 100);
+    status = gsl_multiroot_test_residual(s->f, SVL_TOL);
+  } while (status == GSL_CONTINUE && iter < SVL_MAX_ITER);
 
-  if (__iter == 100) {
-    printf("Warning: GSL could not solve an algebraic loop after %d iterations\n", (int)__iter);
+  if (status != GSL_SUCCESS) {
+    printf("Warning: GSL could not solve an algebraic loop after %d iterations: %s\n", (int)iter, gsl_strerror(status));
   }
 
-  for (int i = 0; i < tearing_vars; i++) {
-    double ret = gsl_vector_get(__s->x, i);
-    gsl_vector_set(__x, i, ret);
-  }
+  gsl_vector_memcpy(solution, s->x);
+  gsl_multiroot_fsolver_free(s);
 
-  gsl_multiroot_fsolver_free(__s);
+  // The last evaluation done by the solver may correspond to a trial point,
+  // evaluate again so the model variables are consistent with the solution.
+  SVL_SolveEval(solution, &ctx, f);
 }

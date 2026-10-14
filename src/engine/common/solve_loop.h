@@ -22,13 +22,16 @@
 
 #include "data.h"
 
-typedef void (*SVL_iter)(double *, double *, double *, double *, double *);
-typedef void (*SVL_eval)(double *, double *, double *, double *, double *, double *);
+/**
+ * Evaluates the residuals of an algebraic loop: assigns the tearing variables
+ * from the guess vector (second to last argument), solves the iteration
+ * equations and stores the residuals in the last argument.
+ */
+typedef void (*SVL_eval)(double *, double *, double *, double *, double *, const double *, double *);
 
 /**
- *
+ * Solves an algebraic loop with tearing_vars tearing variables using GSL.
  */
-void SVL_solve_loop(double *x, double *d, double *a, double *t, double *dx, int tearing_vars, SVL_iter assign_loop_vars,
-                    SVL_eval eval_tearing_vars);
+void SVL_SolveLoop(double *x, double *d, double *a, double *t, double *dx, int tearing_vars, SVL_eval eval_tearing_vars);
 
 #endif /* SOLVE_LOOP_H_ */
