@@ -68,8 +68,8 @@ const char* models[] = {"acousticsBase", "acousticsRiemann", "acousticsRiemDes",
                         "cuk2", "cukDASSL", "GOLDBETER", "interleaved", "inverters", "invertersDOPRI", "mliqss_adr", "mliqss_buck",
                         "mliqss_test", "mliqss_TYSON", "lc_line", "lotka_volterra", "lotka_volterraDASSL", "lotka_volterraDOPRI",
                         // "par_air_conds", Temp disabled for Ubuntu 24 until the partitioners are fixed.
-                        "rectifier", "rectifierDASSL", "rectifierLIQSS3", "rltest", "spikings", "testFor", "test_input", "TYSON",
-                        "VIRplanoS", "virus_replication"};
+                        "rectifier", "rectifierDASSL", "rectifierLIQSS3", "rltest", "spikings", "testFor", "tearing_vars", "test_input",
+                        "TYSON", "VIRplanoS", "virus_replication"};
 
 INSTANTIATE_TEST_SUITE_P(Models, SModelTests, testing::ValuesIn(models));
 
