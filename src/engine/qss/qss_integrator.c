@@ -487,7 +487,7 @@ void QSS_PAR_printSimulationLog(QSS_simulator simulator)
   }
   SD_print(simulator->simulationLog, "Simulation messages sent: %lu", simulator->stats->messages);
   SD_print(simulator->simulationLog, "Simulation external events: %lu", simulator->stats->extTrans);
-  SD_print(simulator->simulationLog, "Simulation past events: %lu (%.2f %%)", simulator->stats->pastEvents,
+  SD_print(simulator->simulationLog, "Simulation past events: %u (%.2f %%)", simulator->stats->pastEvents,
            (simulator->stats->extTrans > 0) ? ((double)simulator->stats->pastEvents / (double)simulator->stats->extTrans) * 100 : 0);
   SD_print(simulator->simulationLog, "Dt sum: %g", simulator->dt->state->avgDt);
   SD_print(simulator->simulationLog, "Dt changes: %d", simulator->dt->state->dtChanges);
@@ -960,7 +960,7 @@ void QSS_PAR_logMemory(QSS_simulator simulator)
     }
     simulator->stats->memory += treeT + solverM;
   }
-  simulator->stats->memory += (states * sDouble + 64 * sMessage + 10000 * sMessage + 8) * lps;
+  simulator->stats->memory += ((unsigned long)states * sDouble + 64UL * sMessage + 10000UL * sMessage + 8) * lps;
 }
 
 void QSS_PAR_initialize(SIM_simulator simulate)

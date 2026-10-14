@@ -5,6 +5,9 @@ on:
   pull_request:
     branches: [ qss-solver-dev ]
 
+permissions:
+  contents: read
+
 jobs:
   build:
 

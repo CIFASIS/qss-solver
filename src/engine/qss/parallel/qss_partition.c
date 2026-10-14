@@ -507,8 +507,8 @@ void PRT_createPartitions(PRT_partition partition, QSS_data data, char *name)
           }
           fclose(file);
         }
-        char parts[10];
-        sprintf(parts, "%ld", nparts);
+        char parts[32];
+        snprintf(parts, sizeof(parts), "%ld", nparts);
         execlp("./khmetis", "./khmetis", hgraphName, parts, "5", "10", "1", "1", "0", "0", NULL);
         abort();
       }
