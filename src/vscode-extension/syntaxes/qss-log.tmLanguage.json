@@ -1,0 +1,19 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "QSS Solver Log",
+  "scopeName": "source.qss-log",
+  "patterns": [
+    { "include": "#numbers" },
+    { "include": "#keywords" }
+  ],
+  "repository": {
+    "numbers": {
+      "name": "constant.numeric.qss-log",
+      "match": "\\b[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?\\b"
+    },
+    "keywords": {
+      "name": "keyword.other.qss-log",
+      "match": "\\b(Additional|Allocated|allocated|Average|Begin|by|changes|cost|CPU|crossing|Crossings|DASSL|data|dependencies|derivative|derivatives|detected|done|Dt|dt|efficiency|Estimated|evaluations|Event|events|Events|execution|external|External|for|Function|function|Handler|Individual|Init|Initial|Initialization|Initialize|input|iterations|Jacobian|load|LP|LPS|max|memory|messages|Messages|Miliseconds|min|ms|Newton|next|output|Output|Parallel|Partitioning|past|per|performed|Processed|reinits|reported|Results|Save|Scalar|Seconds|sent|sequential|Simulation|simulation|solver|speedup|State|state|Statistics|step|steps|sum|time|Time|Total|transition|transitions|value|values|Variable|variable|variables|Variables|Zero)\\b"
+    }
+  }
+}
