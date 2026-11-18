@@ -64,4 +64,5 @@ add_custom_target(run-mmoc-test
       COMMAND cd ${BIN_DIR} && ./mmoc-test
 )
 
-add_dependencies(run-mmoc-test mmoc-test)
+# The system tests run the mmoc executable, so it must be up to date too.
+add_dependencies(run-mmoc-test mmoc-test mmoc)

@@ -86,11 +86,32 @@ add_custom_target(
 
 add_dependencies(doc mmoc engine interfaces)
 
+# Environment used by the tests: the models are compiled and linked against this source tree,
+# regardless of the MMOC_* variables defined in the user environment.
+get_filename_component(QSS_SOLVER_PATH ${QSS_SOLVER_ROOT}/.. ABSOLUTE)
+set(TEST_ENV
+    MMOC_PATH=${QSS_SOLVER_PATH}
+    MMOC_LIBS=${QSS_SOLVER_PATH}/lib
+    MMOC_ENGINE=${CMAKE_CURRENT_SOURCE_DIR}/engine/
+    MMOC_INCLUDE=${CMAKE_CURRENT_SOURCE_DIR}/usr/include
+    MMOC_PACKAGES=${QSS_SOLVER_PATH}/packages
+)
+
 add_custom_target(test
     COMMAND echo "Running Tests."
 	  COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/mmoc/build && make run-mmoc-test
-	  COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/debug && make run-engine-test
+	  # The simulated models link the engine libraries from lib, update them with the ones just built.
+	  COMMAND ${CMAKE_COMMAND} -E copy
+	          ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/release/libqss.a
+	          ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/release/libtime-step.a
+	          ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/debug/libqssd.a
+	          ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/debug/libtime-stepd.a
+	          ${QSS_SOLVER_PATH}/lib
+	  COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}/engine/build/debug && ${CMAKE_COMMAND} -E env ${TEST_ENV} make run-engine-test
 )
+
+# Run the tests with the current mmoc and engine sources.
+add_dependencies(test mmoc engine)
 
 add_custom_target(reset-targets
     COMMAND echo "Delete build directories from targets."
