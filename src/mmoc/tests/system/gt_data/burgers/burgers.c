@@ -205,7 +205,9 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int* outputs = (int*) malloc(5*sizeof(int));
 	int _d1;
 	int i;
-	_ap(_d1) = 0;
+	for(_d1 = 1; _d1<=1000; _d1+=1) {
+			_ap(_d1) = 0;
+	}
 	_beta = 100;
 	_inVal = 1;
 	_outVal = 1;
