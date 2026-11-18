@@ -262,25 +262,41 @@ bool Equation::tearingEq(EQUATION::Tearing type) const
   return false;
 }
 
-int Equation::tearingEqNumber(EQUATION::Tearing type) const
+Option<Variable> Equation::tearingVariable(EQUATION::Tearing type) const
 {
-  Option<Variable> lhs_var = LHSVariable();
-  assert(lhs_var);
-  std::string tearing_var = lhs_var->name();
-  if (type == EQUATION::Tearing::Var && isRHSReference()) {
-    Option<Variable> rhs_var = _rhs.reference();
-    if (rhs_var) {
-      tearing_var = rhs_var->name();
-    }
+  if (type == EQUATION::Tearing::Var) {
+    return isRHSReference() ? _rhs.reference() : Option<Variable>();
   }
+  return LHSVariable();
+}
 
-  size_t last_underscore = tearing_var.find_last_of('_');
-  int value = 0;
-  if (last_underscore != std::string::npos) {
-    std::string number_str = tearing_var.substr(last_underscore + 1);
-    value = std::stoi(number_str);
+std::string Equation::tearingId(EQUATION::Tearing type) const
+{
+  // Tearing variables are named <prefix>_<id> (e.g. tearing_var_guess_1 or tearing_var_guess_Ua),
+  // guess and residual variables of the same loop share the same <id>.
+  Option<Variable> tearing_var = tearingVariable(type);
+  assert(tearing_var);
+  std::string name = tearing_var->name();
+  std::string_view prefix = (type == EQUATION::Tearing::Var) ? TEARING_VAR_GUESS : TEARING_VAR_RES;
+  size_t prefix_pos = name.find(prefix);
+  assert(prefix_pos != std::string::npos);
+  std::string id = name.substr(prefix_pos + prefix.size());
+  if (!id.empty() && id[0] == '_') {
+    id.erase(0, 1);
   }
-  return value;
+  return id;
+}
+
+bool Equation::isTearingResidualZero() const
+{
+  AST_Expression rhs = _rhs.expression();
+  if (rhs->expressionType() == EXPINTEGER) {
+    return rhs->getAsInteger()->val() == 0;
+  }
+  if (rhs->expressionType() == EXPREAL) {
+    return rhs->getAsReal()->val() == 0;
+  }
+  return false;
 }
 
 }  // namespace IR
