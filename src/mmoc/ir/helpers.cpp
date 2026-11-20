@@ -215,25 +215,58 @@ string FunctionPrinter::beginExpression(string token, Option<Range> range) const
 string FunctionPrinter::endExpression(Option<Range> range, FUNCTION_PRINTER::ReturnStatementType ret) const
 {
   stringstream buffer;
-  switch (ret) {
-  case FUNCTION_PRINTER::Return:
-    buffer << "return;" << endl;
-    break;
-  case FUNCTION_PRINTER::Break: {
-    if (!range) {
-      buffer << "break;" << endl;
-    }
-    break;
-  }
-  case FUNCTION_PRINTER::Continue:
-    buffer << "continue;" << endl;
-    break;
-  }
+  // For ranged expressions the return statement is printed inside the dimension guards
+  // (see returnStatement), several equations can define the same variable, so the
+  // remaining blocks must be reachable when the guards of this one don't hold.
   if (!range) {
+    switch (ret) {
+    case FUNCTION_PRINTER::Return:
+      buffer << "return;" << endl;
+      break;
+    case FUNCTION_PRINTER::Break:
+      buffer << "break;" << endl;
+      break;
+    case FUNCTION_PRINTER::Continue:
+      buffer << "continue;" << endl;
+      break;
+    }
     buffer << TAB;
   }
   buffer << "}";
   return buffer.str();
+}
+
+string FunctionPrinter::returnStatement(Option<Range> range, FUNCTION_PRINTER::ReturnStatementType ret) const
+{
+  if (!range) {
+    return "";
+  }
+  switch (ret) {
+  case FUNCTION_PRINTER::Return:
+    return "return;";
+  case FUNCTION_PRINTER::Continue:
+    return "continue;";
+  default:
+    return "";
+  }
+}
+
+vector<string> FunctionPrinter::constantIndexGuards(Index index) const
+{
+  // Dimensions of the variable fixed by a constant index, e.g. u[1,j] only holds for _d1 == 1.
+  vector<string> guards;
+  if (index.isEmpty()) {
+    return guards;
+  }
+  int dims = index.dimension();
+  for (int dim = 0; dim < dims; dim++) {
+    if (!index.hasVariable(dim)) {
+      stringstream guard;
+      guard << "_d" << dim + 1 << " == " << index.constant(dim);
+      guards.push_back(guard.str());
+    }
+  }
+  return guards;
 }
 
 string FunctionPrinter::endDimGuards(Option<Range> range) const
@@ -246,21 +279,29 @@ string FunctionPrinter::endDimGuards(Option<Range> range) const
   return "";
 }
 
-string FunctionPrinter::beginDimGuards(string token, string args, Option<Range> range, std::multimap<std::string, int> used_variables) const
+string FunctionPrinter::beginDimGuards(string token, string args, Option<Range> range, std::multimap<std::string, int> used_variables,
+                                       vector<string> index_guards) const
 {
   stringstream buffer;
   if (range) {
     buffer << TAB << "_apply_usage" << token << "(" << args << ");" << endl;
+    vector<string> conditions = index_guards;
     RangeDefinitionTable ranges = range->definition();
     RangeDefinitionTable::iterator it;
-    int size = ranges.size(), idx = 1;
-    buffer << TAB << "if (";
-    for (RangeDefinition rd = ranges.begin(it); !ranges.end(it); rd = ranges.next(it), idx++) {
+    for (RangeDefinition rd = ranges.begin(it); !ranges.end(it); rd = ranges.next(it)) {
       string variable = ranges.key(it);
       if (used_variables.find(variable) != used_variables.end()) {
-        buffer << "(" << ranges.key(it) << " >= " << rd.begin() << " && " << ranges.key(it) << " <= " << rd.end() << ")";
-        buffer << (idx < size ? " && " : "");
+        stringstream condition;
+        condition << "(" << variable << " >= " << rd.begin() << " && " << variable << " <= " << rd.end() << ")";
+        conditions.push_back(condition.str());
       }
+    }
+    buffer << TAB << "if (";
+    if (conditions.empty()) {
+      buffer << "1";
+    }
+    for (size_t i = 0; i < conditions.size(); i++) {
+      buffer << (i > 0 ? " && " : "") << conditions[i];
     }
     buffer << ") {" << endl;
     range->addLocalVariables();

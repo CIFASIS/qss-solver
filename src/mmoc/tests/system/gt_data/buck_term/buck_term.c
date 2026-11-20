@@ -58,10 +58,10 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 		if ((i >= 2 && i <= 99)) {
 			_der_u(i,0) = _sigma*(_u(i-1,0)-2*_u(i,0)+_u(i+1,0))/(_l*_l/100/100);
 			_der_u(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)
@@ -278,10 +278,10 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		if ((i >= 2 && i <= 99)) {
 			_eval_dep_u(i,1) = _sigma*(_u(i-1,0)-2*_u(i,0)+_u(i+1,0))/(_l*_l/100/100);
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	}
 }
 

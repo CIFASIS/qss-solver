@@ -42,10 +42,10 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 		if ((j >= 2 && j <= 999)) {
 			_der_u(j,0) = _ap(j)*(_u(j,0)+_u(j-1,0))/(double)2*(-_u(j,0)+_u(j-1,0))*1000+(1-_ap(j))*(_u(j+1,0)+_u(j,0))*(-_u(j+1,0)+_u(j,0))*1000;
 	
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)
@@ -58,10 +58,10 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		if ((i >= 1 && i <= 1000)) {
 			_zc(0) = _u(i,0)-(0);
 	
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double t)
@@ -73,9 +73,9 @@ void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double 
 		_apply_usage_event_1(_d1);
 		if ((i >= 1 && i <= 1000)) {
 			_ap(i) = 1;
-			}
 			return;
-	}
+			}
+			}
 }
 
 void MOD_handlerNeg(int idx, double *x, double* q, double *d, double *a, double t)
@@ -87,9 +87,9 @@ void MOD_handlerNeg(int idx, double *x, double* q, double *d, double *a, double 
 		_apply_usage_event_1(_d1);
 		if ((i >= 1 && i <= 1000)) {
 			_ap(i) = 0;
-			}
 			return;
-	}
+			}
+			}
 }
 
 void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
@@ -100,9 +100,9 @@ void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
 		_apply_usage_out_exp_1(_d1);
 		if ((_d1 >= 1 && _d1 <= 5)) {
 			_out = _u(200*_d1-199,0);
+			return;
 		}
-		return;
-	}
+		}
 }
 
 void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx, double *jac)
@@ -187,10 +187,10 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		if ((j >= 2 && j <= 999)) {
 			_eval_dep_u(j,1) = _ap(j)*(_u(j,0)+_u(j-1,0))/(double)2*(-_u(j,0)+_u(j-1,0))*1000+(1-_ap(j))*(_u(j+1,0)+_u(j,0))*(-_u(j+1,0)+_u(j,0))*1000;
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	}
 }
 
@@ -205,7 +205,9 @@ void QSS_initializeDataStructs(QSS_simulator simulator)
 	int* outputs = (int*) malloc(5*sizeof(int));
 	int _d1;
 	int i;
-	_ap(_d1) = 0;
+	for(_d1 = 1; _d1<=1000; _d1+=1) {
+			_ap(_d1) = 0;
+	}
 	_beta = 100;
 	_inVal = 1;
 	_outVal = 1;

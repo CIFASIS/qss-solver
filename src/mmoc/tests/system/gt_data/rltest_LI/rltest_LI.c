@@ -56,10 +56,10 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 		if ((i >= 1 && i <= 9)) {
 			_der_x1(i,0) = (pow((_a1(i,0)-_a1(i+1,0)),3))/_C;
 			_der_x1(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)
@@ -88,9 +88,9 @@ void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
 		_apply_usage_out_exp_1(_d1);
 		if ((_d1 >= 1 && _d1 <= 10)) {
 			_out = _x1(_d1,0);
+			return;
 		}
-		return;
-	}
+		}
 }
 
 void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx, double *jac)
@@ -229,10 +229,10 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		if ((i >= 1 && i <= 9)) {
 			_eval_dep_x1(i,1) = (pow((_a1(i,0)-_a1(i+1,0)),3))/_C;
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	}
 }
 

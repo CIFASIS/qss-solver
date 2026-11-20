@@ -58,10 +58,10 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		if ((i >= 1 && i <= 200)) {
 			_zc = _th(i)-_tref-_dtref+_on(i)-5.000000e-01-(0);
 	
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_handlerPos(int idx, double *x, double *d, double *a, double t)
@@ -91,9 +91,9 @@ void MOD_handlerPos(int idx, double *x, double *d, double *a, double t)
 		if ((i >= 1 && i <= 200)) {
 			_on(i) = 1;
 			_ptotal = _ptotal+_POT(i);
-			}
 			return;
-	}
+			}
+			}
 }
 
 void MOD_handlerNeg(int idx, double *x, double *d, double *a, double t)
@@ -106,9 +106,9 @@ void MOD_handlerNeg(int idx, double *x, double *d, double *a, double t)
 		if ((i >= 1 && i <= 200)) {
 			_on(i) = 0;
 			_ptotal = _ptotal-_POT(i);
-			}
 			return;
-	}
+			}
+			}
 }
 
 void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
