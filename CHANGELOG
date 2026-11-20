@@ -1,5 +1,23 @@
 ## Changelog
 
+## [6.2.3] - 20-11-2026
+
+### Added
+- **Generate algebraic loop code** for variable arrays definition. 
+
+### Fixed
+- **Code generation** for multi-loop 2D array equations .
+- **Code generation** for array variable start modifier.
+
+## [6.2.2] - 14-10-2026
+
+### Added
+- **New VS code extension** that can be used instead of the GUI. 
+
+### Fixed
+- **Solve loop variable assignment** segfault is fixed.
+- **Code Scanning alerts** from GitHub fixed.
+
 ## [6.2.1] - 03-08-2026
 
 ### Changed
