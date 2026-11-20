@@ -1,4 +1,4 @@
-## QSS Solver 6.2.2
+## QSS Solver 6.2.3
 The QSS Solver is a modeling and simulation environment for 
 continuous and hybrid systems and it's optimized for large scale model simulation.
 The solver is implemented as a set of modules coded in plain C language, 
@@ -262,6 +262,15 @@ work as on Linux, and compiling is much slower.
 
 ## Changelog
 
+## [6.2.3] - 20-11-2026
+
+### Added
+- **Generate algebraic loop code** for variable arrays definition. 
+
+### Fixed
+- **Code generation** for multi-loop 2D array equations .
+- **Code generation** for array variable start modifier.
+
 ## [6.2.2] - 14-10-2026
 
 ### Added
@@ -275,28 +284,6 @@ work as on Linux, and compiling is much slower.
 
 ### Changed
 - **Differential-mode single-phase PWM inverters**  closed loop models.
-
-## [6.2.0] - 27-07-2026
-
-### Added
-- **New --replace-algs** MicroModelica Compiler command line option to replace algebraic variables in scalar models. 
-- **New differential-mode single-phase PWM inverters** models.
-
-### Fixed
-- **mmoc.sh** script argument control.
-
-## [6.1.1] - 03-07-2026
-
-### Added
-- **New compile_c_model and compile_mmoc_model** Python console methods available.
-- **New code generation to solve algebraic loops** call a generic `solve`function in the model and generate the code to compute tearing variables and iteration assignment.
-
-### Fixed
-- **plot_data.py** script for classic methods plots.
-
-### Changed
-- Generate Jacobian code only when needed.
-- Allow indexes with negative slope in SBG.
 
 ## Licensing
 
