@@ -35,33 +35,33 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_2(_d1,_d2);
-		if ((i >= 2 && i <= 20)) {
+		if (_d2 == 1 && (i >= 2 && i <= 20)) {
 			_der_u(i,1,0) = -_ax*_u(i,1,0)/_dx-_ay*(_u(i,1,0)-_u(i-1,1,0))/_dy+_r*(pow(_u(i,1,0),2)-pow(_u(i,1,0),3));
 			_der_u(i,1,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_3(_d1,_d2);
-		if ((j >= 2 && j <= 20)) {
+		if (_d1 == 1 && (j >= 2 && j <= 20)) {
 			_der_u(1,j,0) = -_ax*(_u(1,j,0)-_u(1,j-1,0))/_dx-_ay*_u(1,j,0)/_dy+_r*(pow(_u(1,j,0),2)-pow(_u(1,j,0),3));
 			_der_u(1,j,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_4(_d1,_d2);
 		if ((i >= 2 && i <= 20) && (j >= 2 && j <= 20)) {
 				_der_u(i,j,0) = -_ax*(_u(i,j,0)-_u(i,j-1,0))/_dx-_ay*(_u(i,j,0)-_u(i-1,j,0))/_dy+_r*(pow(_u(i,j,0),2)-pow(_u(i,j,0),3));
 				_der_u(i,j,1) = (0)/2;
+				return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)
@@ -110,7 +110,7 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_2(_d1,1);
-		if ((i >= 2 && i <= 20)) {
+		if (_d2 == 1 && (i >= 2 && i <= 20)) {
 			_eval_dep_u(i,1,1) = -_ax*_u(i,1,0)/_dx-_ay*(_u(i,1,0)-_u(i-1,1,0))/_dy+_r*(pow(_u(i,1,0),2)-pow(_u(i,1,0),3));
 			_eval_dep_u(i,1,2) = (0)/2;
 		}
@@ -118,7 +118,7 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_2(_d1+1,1);
-		if ((i >= 2 && i <= 20)) {
+		if (_d2 == 1 && (i >= 2 && i <= 20)) {
 			_eval_dep_u(i,1,1) = -_ax*_u(i,1,0)/_dx-_ay*(_u(i,1,0)-_u(i-1,1,0))/_dy+_r*(pow(_u(i,1,0),2)-pow(_u(i,1,0),3));
 			_eval_dep_u(i,1,2) = (0)/2;
 		}
@@ -126,7 +126,7 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_3(1,_d2);
-		if ((j >= 2 && j <= 20)) {
+		if (_d1 == 1 && (j >= 2 && j <= 20)) {
 			_eval_dep_u(1,j,1) = -_ax*(_u(1,j,0)-_u(1,j-1,0))/_dx-_ay*_u(1,j,0)/_dy+_r*(pow(_u(1,j,0),2)-pow(_u(1,j,0),3));
 			_eval_dep_u(1,j,2) = (0)/2;
 		}
@@ -134,7 +134,7 @@ void MOD_dependencies(int idx, double *x, double *d, double *a, double t, double
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_3(1,_d2+1);
-		if ((j >= 2 && j <= 20)) {
+		if (_d1 == 1 && (j >= 2 && j <= 20)) {
 			_eval_dep_u(1,j,1) = -_ax*(_u(1,j,0)-_u(1,j-1,0))/_dx-_ay*_u(1,j,0)/_dy+_r*(pow(_u(1,j,0),2)-pow(_u(1,j,0),3));
 			_eval_dep_u(1,j,2) = (0)/2;
 		}
@@ -186,33 +186,33 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_2(_d1,_d2);
-		if ((i >= 2 && i <= 20)) {
+		if (_d2 == 1 && (i >= 2 && i <= 20)) {
 			_eval_dep_u(i,1,1) = -_ax*_u(i,1,0)/_dx-_ay*(_u(i,1,0)-_u(i-1,1,0))/_dy+_r*(pow(_u(i,1,0),2)-pow(_u(i,1,0),3));
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_3(_d1,_d2);
-		if ((j >= 2 && j <= 20)) {
+		if (_d1 == 1 && (j >= 2 && j <= 20)) {
 			_eval_dep_u(1,j,1) = -_ax*(_u(1,j,0)-_u(1,j-1,0))/_dx-_ay*_u(1,j,0)/_dy+_r*(pow(_u(1,j,0),2)-pow(_u(1,j,0),3));
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_4(_d1,_d2);
 		if ((i >= 2 && i <= 20) && (j >= 2 && j <= 20)) {
 				_eval_dep_u(i,j,1) = -_ax*(_u(i,j,0)-_u(i,j-1,0))/_dx-_ay*(_u(i,j,0)-_u(i-1,j,0))/_dy+_r*(pow(_u(i,j,0),2)-pow(_u(i,j,0),3));
 	
+				continue;
 	
 		}
-		continue;
-	}
+		}
 	}
 }
 

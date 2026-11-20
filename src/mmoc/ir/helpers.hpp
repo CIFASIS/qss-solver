@@ -124,8 +124,11 @@ class FunctionPrinter {
   std::string getIndexes(string var, Option<Range> range, int offset, bool modelica_index) const;
   std::map<std::string, std::string> parseIndexes(string var, Option<Range> range, int offset, bool modelica_index = true) const;
   std::map<int, std::string> parseConstants(Expression ref) const;
-  std::string beginDimGuards(std::string token, string args, Option<Range> range, std::multimap<std::string, int> used_variables) const;
+  std::string beginDimGuards(std::string token, string args, Option<Range> range, std::multimap<std::string, int> used_variables,
+                             std::vector<std::string> index_guards = std::vector<std::string>()) const;
   std::string endDimGuards(Option<Range> range) const;
+  std::vector<std::string> constantIndexGuards(Index index) const;
+  std::string returnStatement(Option<Range> range, FUNCTION_PRINTER::ReturnStatementType ret) const;
   std::string printAlgebraicGuards(Equation alg, Index usage);
   /// TODO: Review modelica_index parameter usage.
   std::string accessMacros(std::string token, int offset, Option<Range> range, bool modelica_index = true) const;

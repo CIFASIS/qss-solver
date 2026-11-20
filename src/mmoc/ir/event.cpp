@@ -153,6 +153,9 @@ string Event::handler(EVENT::Type type) const
   for (Statement stm = stms.begin(it); !stms.end(it); stm = stms.next(it)) {
     buffer << block << stm << endl;
   }
+  if (_range) {
+    buffer << block << fp.returnStatement(_range, FUNCTION_PRINTER::Return) << endl;
+  }
   buffer << block << fp.endDimGuards(_range);
   buffer << block << fp.endExpression(_range);
   ModelConfig::instance().setAlgorithm(false);

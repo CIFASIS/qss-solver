@@ -35,10 +35,10 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 		if ((i >= 1 && i <= 100)) {
 			_der_V(i,0) = (-(_V(i,0)/_cV-_EL)/_taum+_Is(i,0)/_Cm/_cI)*_cV*_active(i);
 			_der_V(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)
@@ -51,30 +51,30 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		if ((i >= 1 && i <= 100)) {
 			_zc(0) = _V(i,0)-(_theta*_cV);
 			_zc(1) = (0)/1;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_event_2(idx)) {
 		_get_event_2_idxs(idx);
 		_apply_usage_event_2(_d1);
 		if ((i >= 1 && i <= 100)) {
 			_zc(0) = _time-(_tnext(i));
 			_zc(1) = (0)/1;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_event_3(idx)) {
 		_get_event_3_idxs(idx);
 		_apply_usage_event_3(_d1);
 		if ((i >= 1 && i <= 100)) {
 			_zc(0) = _time-(_tnextr(i));
 			_zc(1) = (0)/1;
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double t)
@@ -93,9 +93,9 @@ void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double 
 		_Islast(_C(i,j)) = _Islast(_C(i,j))*exp(-(_time-_tlast(_C(i,j)))/_taus)+_J(_C(i,j))*_cI;
 		_tlast(_C(i,j)) = _time;
 	}
-			}
 			return;
-	}
+			}
+			}
 	if (_is_var_event_2(idx)) {
 		_get_event_2_idxs(idx);
 		_apply_usage_event_2(_d1);
@@ -103,17 +103,17 @@ void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double 
 			_Islast(i) = _Islast(i)*exp(-(&_tnext(0)-&_tlast(0))/_taus)+_Jmean*_cI;
 			_tlast(i) = _time;
 			_tnext(i) = _time+__math__exponential(1/_vext);
-			}
 			return;
-	}
+			}
+			}
 	if (_is_var_event_3(idx)) {
 		_get_event_3_idxs(idx);
 		_apply_usage_event_3(_d1);
 		if ((i >= 1 && i <= 100)) {
 			_active(i) = 1;
-			}
 			return;
-	}
+			}
+			}
 }
 
 void MOD_handlerNeg(int idx, double *x, double* q, double *d, double *a, double t)
@@ -128,9 +128,9 @@ void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
 		_apply_usage_out_exp_1(_d1);
 		if ((_d1 >= 1 && _d1 <= 10)) {
 			_out = _V(10*_d1-9,0);
+			return;
 		}
-		return;
-	}
+		}
 }
 
 void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx, double *jac)
@@ -175,10 +175,10 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		if ((i >= 1 && i <= 100)) {
 			_eval_dep_V(i,1) = (-(_V(i,0)/_cV-_EL)/_taum+_Is(i,0)/_Cm/_cI)*_cV*_active(i);
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	}
 }
 
