@@ -29,10 +29,10 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 			_der_th(i,0) = (_THA/_RES(i)-_POT(i)*_on(i)-_th(i,0)/_RES(i)+_noise(i)/_RES(i))/_CAP(i);
 			_der_th(i,1) = (0)/2;
 			_der_th(i,2) = (0)/6;
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)
@@ -46,10 +46,10 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 			_zc(0) = _th(i,0)-_tref(i)+_on(i)-5.000000e-01-(0);
 			_zc(1) = (0)/1;
 			_zc(2) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_event_2(idx)) {
 		_get_event_2_idxs(idx);
 		_apply_usage_event_2(_d1);
@@ -57,10 +57,10 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 			_zc(0) = _time-(1000);
 			_zc(1) = (0)/1;
 			_zc(2) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_event_3(idx)) {
 		_get_event_3_idxs(idx);
 		_apply_usage_event_3(_d1);
@@ -68,10 +68,10 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 			_zc(0) = _time-(2000);
 			_zc(1) = (0)/1;
 			_zc(2) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_event_4(idx)) {
 		_get_event_4_idxs(idx);
 		_apply_usage_event_4(_d1);
@@ -79,10 +79,10 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 			_zc(0) = _time-(_nextSample(i));
 			_zc(1) = (0)/1;
 			_zc(2) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double t)
@@ -95,34 +95,34 @@ void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double 
 		if ((i >= 1 && i <= 20000)) {
 			_on(i) = 1;
 			_ptotal = _ptotal+_POT(i);
-			}
 			return;
-	}
+			}
+			}
 	if (_is_var_event_2(idx)) {
 		_get_event_2_idxs(idx);
 		_apply_usage_event_2(_d1);
 		if ((i >= 1 && i <= 20000)) {
 			_tref(i) = 2.050000e+01;
-			}
 			return;
-	}
+			}
+			}
 	if (_is_var_event_3(idx)) {
 		_get_event_3_idxs(idx);
 		_apply_usage_event_3(_d1);
 		if ((i >= 1 && i <= 20000)) {
 			_tref(i) = 20;
-			}
 			return;
-	}
+			}
+			}
 	if (_is_var_event_4(idx)) {
 		_get_event_4_idxs(idx);
 		_apply_usage_event_4(_d1);
 		if ((i >= 1 && i <= 20000)) {
 			_nextSample(i) = _nextSample(i)+1;
 			_noise(i) = 2-1;
-			}
 			return;
-	}
+			}
+			}
 }
 
 void MOD_handlerNeg(int idx, double *x, double* q, double *d, double *a, double t)
@@ -135,9 +135,9 @@ void MOD_handlerNeg(int idx, double *x, double* q, double *d, double *a, double 
 		if ((i >= 1 && i <= 20000)) {
 			_on(i) = 0;
 			_ptotal = _ptotal-_POT(i);
-			}
 			return;
-	}
+			}
+			}
 }
 
 void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
@@ -187,10 +187,10 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		if ((i >= 1 && i <= 20000)) {
 			_eval_dep_th(i,1) = (_THA/_RES(i)-_POT(i)*_on(i)-_th(i,0)/_RES(i)+_noise(i)/_RES(i))/_CAP(i);
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	}
 }
 

@@ -54,13 +54,20 @@ void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx
 
 void MOD_EvalTearingVars(double *x, double *d, double *a, double *t, double *dx, const double *guess, double *ret)
 {
-	_a = guess[0];
+	int tearing_idx;
+	tearing_idx = 0;
+	_tearing_var_guess_1 = guess[tearing_idx++];
 	MOD_AssignLoop(x, d, a, t, dx);
-	ret[0] = _x+_a;
+		_tearing_var_res_1 = _x+_a;
+	
+	tearing_idx = 0;
+	ret[tearing_idx++] = _tearing_var_res_1;
 }
 
 void MOD_AssignLoop(double *x, double *d, double *a, double *t, double *dx)
 {
+		_a = _tearing_var_guess_1;
+	
 }
 
 void CLC_initializeDataStructs(CLC_simulator simulator)

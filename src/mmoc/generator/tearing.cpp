@@ -20,40 +20,56 @@
 #include "tearing.hpp"
 
 #include <ir/index.hpp>
+#include <util/error.hpp>
 
 namespace MicroModelica {
 namespace Generator {
 
-Tearing::Tearing(IR::EquationTable derivatives, IR::EquationTable algebraics)
-    : _derivatives(derivatives), _algebraics(algebraics), _max_tearing_var(0), _detect(false)
+Tearing::Tearing(IR::EquationTable derivatives, IR::EquationTable algebraics) : _derivatives(derivatives), _algebraics(algebraics) {}
+
+void Tearing::addVariable(std::vector<Util::Variable>& variables, Util::Variable var)
 {
+  for (Util::Variable& v : variables) {
+    if (v.name() == var.name()) {
+      return;
+    }
+  }
+  variables.push_back(var);
 }
 
+int Tearing::variablesSize(std::vector<Util::Variable> variables)
+{
+  int size = 0;
+  for (Util::Variable& var : variables) {
+    size += var.size();
+  }
+  return size;
+}
+
+// A tearing loop starts with the equations that assign the guess variables (v = tearing_var_guess_<id>),
+// followed by the iteration equations and the residual equations (tearing_var_res_<id> = <exp> and
+// tearing_var_res_<id> = 0). Each of them can be defined inside a for loop, the loop ends
+// when the residuals of all the open guess variables are found.
 void Tearing::processEquations(IR::EquationTable& equations, IR::EquationTable& model_equations)
 {
   IR::EquationTable::iterator it;
   for (IR::Equation eq = equations.begin(it); !equations.end(it); eq = equations.next(it)) {
     if (eq.tearingEq(IR::EQUATION::Tearing::Var)) {
-      _detect = true;
-      _max_tearing_var = eq.tearingEqNumber(IR::EQUATION::Tearing::Var);
-      _tearing_lhs.insert(_max_tearing_var, eq.lhs());
-      _tearing_variable_type[_max_tearing_var] = eq.type();
+      _open_loops.insert(eq.tearingId(IR::EQUATION::Tearing::Var));
+      addVariable(_guess_variables, eq.tearingVariable(IR::EQUATION::Tearing::Var).get());
+      _iteration_equations.insert(eq.id(), eq);
       continue;
     }
 
-    if (_detect) {
-      int curr_tearing_var = eq.tearingEqNumber(IR::EQUATION::Tearing::Res);
-      if (eq.tearingEq(IR::EQUATION::Tearing::Res)) {
-        if (!_tearing_rhs.lookup(curr_tearing_var)) {
-          _tearing_rhs.insert(curr_tearing_var, eq.rhs());
-          if (curr_tearing_var == _max_tearing_var) {
-            _detect = false;
-          }
-        }
-      } else {
-        _iteration_equations.insert(eq.id(), eq);
+    if (eq.tearingEq(IR::EQUATION::Tearing::Res)) {
+      if (!_open_loops.empty() && !eq.isTearingResidualZero()) {
+        addVariable(_residual_variables, eq.tearingVariable(IR::EQUATION::Tearing::Res).get());
+        _residual_equations.insert(eq.id(), eq);
+        _open_loops.erase(eq.tearingId(IR::EQUATION::Tearing::Res));
       }
-    } else if (!eq.tearingEq(IR::EQUATION::Tearing::Res)) {
+    } else if (!_open_loops.empty()) {
+      _iteration_equations.insert(eq.id(), eq);
+    } else {
       model_equations.insert(eq.id(), eq);
     }
   }
@@ -61,20 +77,13 @@ void Tearing::processEquations(IR::EquationTable& equations, IR::EquationTable& 
 
 void Tearing::detect()
 {
-  _detect = false;
-  _max_tearing_var = 0;
-
+  _open_loops.clear();
   processEquations(_algebraics, _algebraic_equations);
   processEquations(_derivatives, _derivative_equations);
-
-  IR::ExpressionTable::iterator it;
-  for (IR::Expression lhs = _tearing_lhs.begin(it); !_tearing_lhs.end(it); lhs = _tearing_lhs.next(it)) {
-    int id = _tearing_lhs.key(it);
-    Option<IR::Expression> rhs = _tearing_rhs[id];
-    IR::EQUATION::Type type = _tearing_variable_type[id];
-    assert(rhs);
-    IR::Equation tearing_eq = IR::Equation(lhs.expression(), rhs.get().expression(), Option<IR::Range>(), type, id);
-    _variable_equations.insert(id, tearing_eq);
+  if (detected() && variablesSize(_guess_variables) != variablesSize(_residual_variables)) {
+    Util::Error::instance().add(0, EM_CG | EM_EQ_DEF, Util::ER_Fatal,
+                                "Tearing: the number of guess variables (%d) and residual variables (%d) differ.",
+                                variablesSize(_guess_variables), variablesSize(_residual_variables));
   }
 }
 
@@ -84,9 +93,15 @@ IR::EquationTable Tearing::algebraics() { return _algebraic_equations; }
 
 IR::EquationTable Tearing::iterationEquations() { return _iteration_equations; }
 
-IR::EquationTable Tearing::variableEquations() { return _variable_equations; }
+IR::EquationTable Tearing::residualEquations() { return _residual_equations; }
 
-bool Tearing::detected() { return _variable_equations.size() > 0; }
+std::vector<Util::Variable> Tearing::guessVariables() { return _guess_variables; }
+
+std::vector<Util::Variable> Tearing::residualVariables() { return _residual_variables; }
+
+int Tearing::size() { return variablesSize(_guess_variables); }
+
+bool Tearing::detected() { return !_guess_variables.empty(); }
 
 }  // namespace Generator
 }  // namespace MicroModelica

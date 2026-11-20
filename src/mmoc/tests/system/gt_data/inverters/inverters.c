@@ -36,10 +36,10 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 		if ((i >= 2 && i <= 502)) {
 			_der_x(i,0) = _UOP-_x(i,0)-_G*(_satx(i-1)*pow((_x(i-1,0)-_UTH),2)-_satdx(i-1)*pow((_x(i-1,0)-_x(i,0)-_UTH),2));
 			_der_x(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)
@@ -60,20 +60,20 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		if ((i >= 1 && i <= 501)) {
 			_zc(0) = _x(i,0)-(_UTH);
 			_zc(1) = (0)/1;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_event_2(idx)) {
 		_get_event_2_idxs(idx);
 		_apply_usage_event_2(_d1);
 		if ((i >= 1 && i <= 501)) {
 			_zc(0) = _x(i,0)-_x(i+1,0)-(_UTH);
 			_zc(1) = (0)/1;
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double t)
@@ -103,17 +103,17 @@ void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double 
 		_apply_usage_event_1(_d1);
 		if ((i >= 1 && i <= 501)) {
 			_satx(i) = 1;
-			}
 			return;
-	}
+			}
+			}
 	if (_is_var_event_2(idx)) {
 		_get_event_2_idxs(idx);
 		_apply_usage_event_2(_d1);
 		if ((i >= 1 && i <= 501)) {
 			_satdx(i) = 1;
-			}
 			return;
-	}
+			}
+			}
 }
 
 void MOD_handlerNeg(int idx, double *x, double* q, double *d, double *a, double t)
@@ -125,17 +125,17 @@ void MOD_handlerNeg(int idx, double *x, double* q, double *d, double *a, double 
 		_apply_usage_event_1(_d1);
 		if ((i >= 1 && i <= 501)) {
 			_satx(i) = 0;
-			}
 			return;
-	}
+			}
+			}
 	if (_is_var_event_2(idx)) {
 		_get_event_2_idxs(idx);
 		_apply_usage_event_2(_d1);
 		if ((i >= 1 && i <= 501)) {
 			_satdx(i) = 0;
-			}
 			return;
-	}
+			}
+			}
 }
 
 void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
@@ -200,10 +200,10 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		if ((i >= 2 && i <= 502)) {
 			_eval_dep_x(i,1) = _UOP-_x(i,0)-_G*(_satx(i-1)*pow((_x(i-1,0)-_UTH),2)-_satdx(i-1)*pow((_x(i-1,0)-_x(i,0)-_UTH),2));
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	}
 }
 

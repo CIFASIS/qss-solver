@@ -28,10 +28,10 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 		if ((i >= 1 && i <= 1000)) {
 			_der_u(i,0) = _time;
 	
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)
@@ -86,10 +86,10 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		if ((i >= 1 && i <= 1000)) {
 			_eval_dep_u(i,1) = _time;
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	}
 }
 

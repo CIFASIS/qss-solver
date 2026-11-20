@@ -62,14 +62,14 @@ TEST_P(SModelTests, SimulateModel)
   EXPECT_TRUE(result.good());
 }
 
-const char* models[] = {"acousticsBase", "acousticsRiemann", "acousticsRiemDes", "adr", "adr2D", "advection", "advection2D",
-                        "advectionFlux", "advectionUpwind", "advection_x", "airconds", "aircondsDOPRI", "aircont", "ar2d2",
+const char* models[] = {"acousticsBase", "acousticsRiemann", "acousticsRiemDes", "adr", "adr2D", "adr2D_boundaries", "advection",
+                        "advection2D", "advectionFlux", "advectionUpwind", "advection_x", "airconds", "aircondsDOPRI", "aircont", "ar2d2",
                         "bball_downstairs", "BouncingBall", "boost", "buck", "buckboost", "buck_circuit", "buck_term", "burgers", "cuk",
                         "cuk2", "cukDASSL", "GOLDBETER", "interleaved", "inverters", "invertersDOPRI", "mliqss_adr", "mliqss_buck",
                         "mliqss_test", "mliqss_TYSON", "lc_line", "lotka_volterra", "lotka_volterraDASSL", "lotka_volterraDOPRI",
                         // "par_air_conds", Temp disabled for Ubuntu 24 until the partitioners are fixed.
                         "rectifier", "rectifierDASSL", "rectifierLIQSS3", "rltest", "spikings", "testFor", "tearing_vars", "test_input",
-                        "TYSON", "VIRplanoS", "virus_replication"};
+                        "TestRL1", "TestRL2", "TestRL3", "TYSON", "VIRplanoS", "virus_replication"};
 
 INSTANTIATE_TEST_SUITE_P(Models, SModelTests, testing::ValuesIn(models));
 

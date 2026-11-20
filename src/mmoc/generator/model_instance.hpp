@@ -156,6 +156,7 @@ class ClassicModelInstance : public ModelInstance {
   private:
   void allocateSolver();
   std::string allocateModel();
+  std::string tearingCopy(Util::Variable var, std::string prefix, std::string suffix) const;
 
   IR::Model _model;
   Util::CompileFlags _flags;

@@ -16,7 +16,7 @@
 #         NOTES: --- 
 #        AUTHOR: Joaquin Fernandez, joaquin.f.fernandez@gmail.com
 #       PROJECT: QSS Solver
-#       VERSION: 6.2.2
+#       VERSION: 6.2.3
 #===================================================================================
 
 if [ "$#" -ne 2 ]; then
