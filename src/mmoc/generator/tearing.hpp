@@ -22,6 +22,9 @@
 #include <ir/equation.hpp>
 #include <ir/expression.hpp>
 
+#include <set>
+#include <vector>
+
 namespace MicroModelica {
 namespace Generator {
 
@@ -32,25 +35,27 @@ class Tearing {
   void detect();
   IR::EquationTable derivatives();
   IR::EquationTable algebraics();
-  IR::EquationTable iterationEquations();  
-  IR::EquationTable variableEquations();
+  IR::EquationTable iterationEquations();
+  IR::EquationTable residualEquations();
+  std::vector<Util::Variable> guessVariables();
+  std::vector<Util::Variable> residualVariables();
+  int size();
   bool detected();
 
   protected:
   IR::EquationTable _derivatives;
   IR::EquationTable _algebraics;
   IR::EquationTable _iteration_equations;
-  IR::EquationTable _variable_equations;
+  IR::EquationTable _residual_equations;
   IR::EquationTable _algebraic_equations;
   IR::EquationTable _derivative_equations;
-  IR::ExpressionTable _tearing_lhs;
-  IR::ExpressionTable _tearing_rhs;
-  std::map<int, IR::EQUATION::Type> _tearing_variable_type;
-  int _max_tearing_var;
-  bool _detect;
+  std::vector<Util::Variable> _guess_variables;
+  std::vector<Util::Variable> _residual_variables;
+  std::set<std::string> _open_loops;
 
   void processEquations(IR::EquationTable& equations, IR::EquationTable& model_equations);
-
+  void addVariable(std::vector<Util::Variable>& variables, Util::Variable var);
+  int variablesSize(std::vector<Util::Variable> variables);
 };
 
 }  // namespace Generator

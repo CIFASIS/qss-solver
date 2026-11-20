@@ -97,7 +97,9 @@ class Equation {
   std::string algCode() const;
   std::multimap<std::string, int> usedVariables() const;
   bool tearingEq(EQUATION::Tearing type) const;
-  int tearingEqNumber(EQUATION::Tearing type) const;
+  Option<Util::Variable> tearingVariable(EQUATION::Tearing type) const;
+  std::string tearingId(EQUATION::Tearing type) const;
+  bool isTearingResidualZero() const;
 
   void setRHS(Expression rhs);
 

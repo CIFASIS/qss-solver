@@ -36,7 +36,7 @@ void MOD_AssignLoop(double *x, double *d, double *a, double *t, double *dx);
 // Model Parameters Declaration
 
 // Macro for parameter: tearing_var_guess_1
-int __PAR__tearing_var_guess_1;
+double __PAR__tearing_var_guess_1;
 
 // Derivative Equations Macros
 

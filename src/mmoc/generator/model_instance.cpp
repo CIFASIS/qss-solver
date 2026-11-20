@@ -703,6 +703,21 @@ ClassicModelInstance::ClassicModelInstance(Model &model, CompileFlags &flags, Wr
 {
 }
 
+string ClassicModelInstance::tearingCopy(Variable var, string prefix, string suffix) const
+{
+  stringstream buffer;
+  Range range(var);
+  Expression var_exp = Utils::instance().variableExpression(var.name(), range);
+  if (var.isArray()) {
+    buffer << range;
+    buffer << TAB << prefix << var_exp << suffix << endl;
+    buffer << range.end() << endl;
+  } else {
+    buffer << prefix << var_exp << suffix << endl;
+  }
+  return buffer.str();
+}
+
 void ClassicModelInstance::definition()
 {
   auto tearing = Tearing(_model.derivatives(), _model.algebraics());
@@ -710,8 +725,8 @@ void ClassicModelInstance::definition()
 
   EquationTable derivatives = tearing.derivatives();
   EquationTable algebraics = tearing.algebraics();
-  EquationTable tearing_variables = tearing.variableEquations();
   EquationTable tearing_iteration = tearing.iterationEquations();
+  EquationTable tearing_residuals = tearing.residualEquations();
 
   EquationTable::iterator it;
   VarSymbolTable symbols = _model.symbols();
@@ -719,19 +734,25 @@ void ClassicModelInstance::definition()
   _tearing = tearing.detected();
   if (_tearing) {
     ModelConfig::instance().clearLocalSymbols();
-    // Assign the tearing variables from the solver guess, solve the iteration
-    // equations and compute the loop residuals.
-    stringstream residuals;
-    int var_counter = 0;
-    for (Equation eq = tearing_variables.begin(it); !tearing_variables.end(it); eq = tearing_variables.next(it)) {
-      buffer << eq.lhs() << " = guess[" << var_counter << "];" << endl;
-      residuals << "ret[" << var_counter++ << "] = " << eq.rhs() << ";" << endl;
+    ModelConfig::instance().addLocalSymbol("int tearing_idx;");
+    // Assign the solver guess to the tearing guess variables, solve the iteration
+    // equations, compute the loop residuals and return them to the solver.
+    buffer << "tearing_idx = 0;" << endl;
+    for (Variable var : tearing.guessVariables()) {
+      buffer << tearingCopy(var, "", " = guess[tearing_idx++];");
     }
     buffer << "MOD_AssignLoop(x, d, a, t, dx);" << endl;
-    buffer << residuals.str();
+    for (Equation eq = tearing_residuals.begin(it); !tearing_residuals.end(it); eq = tearing_residuals.next(it)) {
+      buffer << eq;
+    }
+    buffer << "tearing_idx = 0;" << endl;
+    for (Variable var : tearing.residualVariables()) {
+      buffer << tearingCopy(var, "ret[tearing_idx++] = ", ";");
+    }
     _writer->write(buffer, WRITER::Tearing_Variables);
     _writer->write(ModelConfig::instance().localSymbols(), WRITER::Tearing_Variables_Def);
 
+    ModelConfig::instance().clearLocalSymbols();
     for (Equation eq = tearing_iteration.begin(it); !tearing_iteration.end(it); eq = tearing_iteration.next(it)) {
       _writer->write(eq, WRITER::Tearing_Iteration);
     }
@@ -745,7 +766,7 @@ void ClassicModelInstance::definition()
     buffer << endl << "#include <common/solve_loop.h>" << endl;
     _writer->write(buffer, WRITER::Include);
 
-    buffer << "SVL_SolveLoop(x, d, a, &t, dx, " << tearing_variables.size() << ", MOD_EvalTearingVars);" << endl;
+    buffer << "SVL_SolveLoop(x, d, a, &t, dx, " << tearing.size() << ", MOD_EvalTearingVars);" << endl;
     _writer->write(buffer, WRITER::Model_Simple);
   }
 

@@ -129,7 +129,8 @@ void MicroModelicaIR::visit(AST_Element x)
         std::string var_name = current_element(it)->name();
         const std::string TEARING_VAR_GUESS = "tearing_var_guess";
         if (var_name.find(TEARING_VAR_GUESS) != std::string::npos) {
-          new_var = Variable(newType_Integer(), TP_PARAMETER, current_element(it)->modification(), nullptr, size, array);
+          // Tearing guesses are set by the loop solver, so they are not model unknowns.
+          new_var = Variable(newType_Real(), TP_PARAMETER, current_element(it)->modification(), nullptr, size, array);
         } else if ((tp & TP_PARAMETER) && c->isInteger()) {
           new_var = Variable(newType_Integer(), tp, current_element(it)->modification(), nullptr, size, array);
         } else if (c->isString()) {
