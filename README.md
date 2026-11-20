@@ -210,6 +210,57 @@ The simplest way to compile this package is:
 
 * Type `make help` to check the available targets and compile options.
 
+## Running on Windows (WSL)
+
+QSS Solver runs on Windows 11 inside Ubuntu under the Windows Subsystem for Linux (WSL). The GUI is displayed
+through WSLg, which is included in Windows 11, so no X server is needed.
+
+### Prerequisites
+
+1. Ubuntu must run under **WSL2** (WSL1 cannot display the GUI). In PowerShell, run `wsl -l -v` and check
+   that the VERSION column says `2`. If it does not, run `wsl --set-version Ubuntu 2`.
+2. Update WSL once, so that the GUI support is current: `wsl --update`, then `wsl --shutdown`, and reopen Ubuntu.
+
+### Installation
+
+1. Check your Ubuntu version with `lsb_release -d` and download the matching package:
+   * Ubuntu 24.04: `qss-solver-X.Y.Z.deb`
+   * Ubuntu 22.04: `qss-solver-X.Y.Z-u22.deb`
+2. Copy the package into your Linux home folder and install it with `apt`, which also installs the
+   required dependencies (`dpkg -i` does not):
+
+   ```bash
+   cp /mnt/c/Users/<windows-user>/Downloads/qss-solver-X.Y.Z.deb ~/
+   sudo apt install ~/qss-solver-X.Y.Z.deb
+   ```
+
+3. Start QSS Solver from an Ubuntu terminal. `run.sh` must be run from its own folder:
+
+   ```bash
+   cd /opt/CIFASIS-CONICET/qss-solver/bin && ./run.sh
+   ```
+
+   On the first run, the application is copied to `~/qss-solver`.
+
+### Working with models
+
+No folder mapping is needed. Keep your models inside Ubuntu, under `~/qss-solver/models`:
+
+* To open them from Windows, go to `\\wsl$\Ubuntu\home\<linux-user>\qss-solver` in File Explorer.
+* Windows drives are available inside Ubuntu under `/mnt` (for example, `C:` is `/mnt/c`). To bring existing
+  models in, copy them: `cp -r /mnt/c/path/to/models ~/qss-solver/models/`.
+
+Do not install, build or simulate from `/mnt/c`. On Windows drives, symbolic links and file permissions do not
+work as on Linux, and compiling is much slower.
+
+### Troubleshooting
+
+* **`error while loading shared libraries: libqtermwidget5.so.0`**: the package is not installed inside
+  Ubuntu, `qss-solver` was started directly instead of through `run.sh`, or the files were copied or extracted
+  from Windows and their symbolic links were lost. Install the `.deb` as described above and start the
+  application with `run.sh`.
+* **The window does not appear**: check that Ubuntu runs under WSL2 and update WSL (see Prerequisites).
+
 ## Changelog
 
 ## [6.2.1] - 03-08-2026

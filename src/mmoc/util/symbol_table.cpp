@@ -243,7 +243,9 @@ string Variable::initialization()
     auto range = Range(*this);
     Expression ex(exp());
     Expression var = Utils::instance().variableExpression(name(), range);
-    if (hasEachModifier()) {
+    // A scalar start value on an array variable is applied to every element.
+    bool scalar_start = isArray() && hasStartModifier() && exp() && exp()->expressionType() != EXPBRACE;
+    if (hasEachModifier() || scalar_start) {
       buffer << range;
       buffer << TAB << TAB << var << " = " << ex << ";" << endl;
       buffer << range.end();
