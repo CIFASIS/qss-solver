@@ -42,10 +42,10 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 		if ((i >= 2 && i <= 99)) {
 			_der_u(i,0) = -_a*(_u(i,0)-_u(i-1,0))/_dx+_d*(_u(i+1,0)-2*_u(i,0)+_u(i-1,0))/(pow(_dx,2))+_r*(pow(_u(i,0),2))*(1-_u(i,0));
 			_der_u(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)
@@ -68,9 +68,9 @@ void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
 		_apply_usage_out_exp_1(_d1);
 		if ((_d1 >= 1 && _d1 <= 10)) {
 			_out = _u(10*_d1-9,0);
+			return;
 		}
-		return;
-	}
+		}
 }
 
 void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx, double *jac)
@@ -157,10 +157,10 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		if ((i >= 2 && i <= 99)) {
 			_eval_dep_u(i,1) = -_a*(_u(i,0)-_u(i-1,0))/_dx+_d*(_u(i+1,0)-2*_u(i,0)+_u(i-1,0))/(pow(_dx,2))+_r*(pow(_u(i,0),2))*(1-_u(i,0));
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	}
 }
 

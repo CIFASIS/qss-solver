@@ -29,10 +29,10 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 			_der_v(i,0) = 4.000000e-02*_v(i,0)*_v(i,0)+5*_v(i,0)+140-_u(i,0)+_I(i);
 			_der_v(i,1) = (0)/2;
 			_der_v(i,2) = (0)/6;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_2(_d1);
@@ -40,10 +40,10 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 			_der_u(i,0) = _a*(_b*_v(i,0)-_u(i,0));
 			_der_u(i,1) = (0)/2;
 			_der_u(i,2) = (0)/6;
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)
@@ -57,10 +57,10 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 			_zc(0) = _v(i,0)-(30);
 			_zc(1) = (0)/1;
 			_zc(2) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double t)
@@ -73,9 +73,9 @@ void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double 
 		if ((i >= 1 && i <= 1000)) {
 			_init_v(i,0) = _c(i);
 			_init_u(i,0) = _init_u(i,0)+_d(i);
-			}
 			return;
-	}
+			}
+			}
 }
 
 void MOD_handlerNeg(int idx, double *x, double* q, double *d, double *a, double t)
@@ -156,20 +156,20 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		if ((i >= 1 && i <= 1000)) {
 			_eval_dep_v(i,1) = 4.000000e-02*_v(i,0)*_v(i,0)+5*_v(i,0)+140-_u(i,0)+_I(i);
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	if (_is_var_u(idx)) {
 		_get_u_idxs(idx);
 		_apply_usage_eq_2(_d1);
 		if ((i >= 1 && i <= 1000)) {
 			_eval_dep_u(i,1) = _a*(_b*_v(i,0)-_u(i,0));
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	}
 }
 

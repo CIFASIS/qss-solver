@@ -68,6 +68,7 @@ TEST_P(IModelTests, GenerateCode)
 
 const char* models[] = {"adr",
                         "adr2D",
+                        "adr2D_boundaries",
                         "advection",
                         "advection2D",
                         "advection2D_LI",

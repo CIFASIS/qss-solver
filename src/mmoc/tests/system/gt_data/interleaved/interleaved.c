@@ -47,10 +47,10 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 		if ((i >= 1 && i <= 4)) {
 			_der_iL(i,0) = (((_U/_Rs(i))-_iL(i,0))*(_Rs(i)*_Rd(i)/(_Rs(i)+_Rd(i)))-_uC(0))/_L;
 			_der_iL(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)
@@ -71,30 +71,30 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		if ((i >= 1 && i <= 4)) {
 			_zc(0) = _time-_lastT-_T*(i-1)/4-1.000000e-02*_T-(0);
 			_zc(1) = (0)/1;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_event_3(idx)) {
 		_get_event_3_idxs(idx);
 		_apply_usage_event_3(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_zc(0) = _time-_lastT-_T*(i-1)/4-_DC*_T/4-1.000000e-02*_T-(0);
 			_zc(1) = (0)/1;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_event_4(idx)) {
 		_get_event_4_idxs(idx);
 		_apply_usage_event_4(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_zc(0) = _iL(i,0)-(0);
 			_zc(1) = (0)/1;
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double t)
@@ -114,18 +114,18 @@ void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double 
 		if ((i >= 1 && i <= 4)) {
 			_Rs(i) = _ROn;
 			_Rd(i) = _ROff;
-			}
 			return;
-	}
+			}
+			}
 	if (_is_var_event_3(idx)) {
 		_get_event_3_idxs(idx);
 		_apply_usage_event_3(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_Rs(i) = _ROff;
 			_Rd(i) = _ROn;
-			}
 			return;
-	}
+			}
+			}
 }
 
 void MOD_handlerNeg(int idx, double *x, double* q, double *d, double *a, double t)
@@ -137,9 +137,9 @@ void MOD_handlerNeg(int idx, double *x, double* q, double *d, double *a, double 
 		_apply_usage_event_4(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_Rd(i) = _ROff;
-			}
 			return;
-	}
+			}
+			}
 }
 
 void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
@@ -156,9 +156,9 @@ void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
 		_apply_usage_out_exp_2(_d1);
 		if ((_d1 >= 1 && _d1 <= 4)) {
 			_out = _iL(_d1,0);
+			return;
 		}
-		return;
-	}
+		}
 }
 
 void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx, double *jac)
@@ -252,10 +252,10 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		if ((i >= 1 && i <= 4)) {
 			_eval_dep_iL(i,1) = (((_U/_Rs(i))-_iL(i,0))*(_Rs(i)*_Rd(i)/(_Rs(i)+_Rd(i)))-_uC(0))/_L;
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	}
 }
 

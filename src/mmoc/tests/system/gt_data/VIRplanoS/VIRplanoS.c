@@ -65,10 +65,10 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 		if ((i >= 1 && i <= 4)) {
 			_der_V(i,0) = _gv(i)*_I(i,0)-_gva(i)*_S(i,0)*_A(i,0)*_V(i,0)-_gvh(i)*_H(i,0)*_V(i,0)-_av(i)*_V(i,0)-_av1(i)*_V(i,0)/(1+_av2(i)*_V(i,0))+_inside(i)*_re(i)*_Vr(0);
 			_der_V(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_H(idx)) {
 		_get_H_idxs(idx);
 		_apply_usage_alg_eq_1(_d1);
@@ -80,20 +80,20 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 		if ((i >= 1 && i <= 4)) {
 			_der_H(i,0) = _bhd(i)*_D(i,0)*(_H(i,0)+_R(i,0))+_ar(i)*_R(i,0)-_ghv(i)*_V(i,0)*_H(i,0)-_bhf(i)*_F(i,0)*_H(i,0);
 			_der_H(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_I(idx)) {
 		_get_I_idxs(idx);
 		_apply_usage_eq_3(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_der_I(i,0) = _ghv(i)*_V(i,0)*_H(i,0)-_bie(i)*_E(i,0)*_I(i,0)-_ai(i)*_I(i,0);
 			_der_I(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_M(idx)) {
 		_get_M_idxs(idx);
 		_apply_usage_alg_eq_1(_d1);
@@ -105,70 +105,70 @@ void MOD_definition(int idx, double *x, double *d, double *a, double t, double *
 		if ((i >= 1 && i <= 4)) {
 			_der_M(i,0) = (_bmd(i)*_D(i,0)+_bmv(i)*_V(i,0))*(1-_M(i,0))-_am(i)*_M(i,0);
 			_der_M(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_F(idx)) {
 		_get_F_idxs(idx);
 		_apply_usage_eq_5(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_der_F(i,0) = _bf(i)*_M(i,0)+_cf(i)*_I(i,0)-_bfh(i)*_H(i,0)*_F(i,0)-_af(i)*_F(i,0);
 			_der_F(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_R(idx)) {
 		_get_R_idxs(idx);
 		_apply_usage_eq_6(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_der_R(i,0) = _bhf(i)*_F(i,0)*_H(i,0)-_ar(i)*_R(i,0);
 			_der_R(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_E(idx)) {
 		_get_E_idxs(idx);
 		_apply_usage_eq_7(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_der_E(i,0) = _bem(i)*_M(i,0)*_E(i,0)-_bei(i)*_I(i,0)*_E(i,0)+_ae(i)*(1-_E(i,0));
 			_der_E(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_P(idx)) {
 		_get_P_idxs(idx);
 		_apply_usage_eq_8(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_der_P(i,0) = _bpm(i)*_M(i,0)*_P(i,0)+_ap(i)*(1-_P(i,0));
 			_der_P(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_A(idx)) {
 		_get_A_idxs(idx);
 		_apply_usage_eq_9(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_der_A(i,0) = _ba(i)*_P(i,0)-_gav(i)*_S(i,0)*_A(i,0)*_V(i,0)-_aa(i)*_A(i,0);
 			_der_A(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_S(idx)) {
 		_get_S_idxs(idx);
 		_apply_usage_eq_10(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_der_S(i,0) = _r(i)*_P(i,0)*(1-_S(i,0));
 			_der_S(i,1) = (0)/2;
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double *zc)
@@ -181,30 +181,30 @@ void MOD_zeroCrossing(int idx, double *x, double *d, double *a, double t, double
 		if ((i >= 1 && i <= 4)) {
 			_zc(0) = _time-(_inst(i));
 			_zc(1) = (0)/1;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_event_2(idx)) {
 		_get_event_2_idxs(idx);
 		_apply_usage_event_2(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_zc(0) = _V(i,0)-(1);
 			_zc(1) = (0)/1;
+			return;
 	
 		}
-		return;
-	}
+		}
 	if (_is_var_event_3(idx)) {
 		_get_event_3_idxs(idx);
 		_apply_usage_event_3(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_zc(0) = _time-(_day(i));
 			_zc(1) = (0)/1;
+			return;
 	
 		}
-		return;
-	}
+		}
 }
 
 void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double t)
@@ -222,9 +222,9 @@ void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double 
 		_inside(i) = 1-_inside(i);
 		_inst(i) = _inst(i)+__math__rand(2.075000e-01)+8.330000e-01;
 	}
-			}
 			return;
-	}
+			}
+			}
 	if (_is_var_event_2(idx)) {
 		_get_event_2_idxs(idx);
 		_apply_usage_event_2(_d1);
@@ -232,18 +232,18 @@ void MOD_handlerPos(int idx, double *x, double* q, double *d, double *a, double 
 			_Su = _Su-1;
 			_In1 = _In1+1;
 			_day(i) = _time+10;
-			}
 			return;
-	}
+			}
+			}
 	if (_is_var_event_3(idx)) {
 		_get_event_3_idxs(idx);
 		_apply_usage_event_3(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_In1 = _In1-1;
 			_Rec = _Rec+1;
-			}
 			return;
-	}
+			}
+			}
 }
 
 void MOD_handlerNeg(int idx, double *x, double* q, double *d, double *a, double t)
@@ -729,10 +729,10 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		if ((i >= 1 && i <= 4)) {
 			_eval_dep_V(i,1) = _gv(i)*_I(i,0)-_gva(i)*_S(i,0)*_A(i,0)*_V(i,0)-_gvh(i)*_H(i,0)*_V(i,0)-_av(i)*_V(i,0)-_av1(i)*_V(i,0)/(1+_av2(i)*_V(i,0))+_inside(i)*_re(i)*_Vr(0);
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	if (_is_var_H(idx)) {
 		_get_H_idxs(idx);
 		_apply_usage_alg_eq_1(_d1);
@@ -744,20 +744,20 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		if ((i >= 1 && i <= 4)) {
 			_eval_dep_H(i,1) = _bhd(i)*_D(i,0)*(_H(i,0)+_R(i,0))+_ar(i)*_R(i,0)-_ghv(i)*_V(i,0)*_H(i,0)-_bhf(i)*_F(i,0)*_H(i,0);
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	if (_is_var_I(idx)) {
 		_get_I_idxs(idx);
 		_apply_usage_eq_3(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_eval_dep_I(i,1) = _ghv(i)*_V(i,0)*_H(i,0)-_bie(i)*_E(i,0)*_I(i,0)-_ai(i)*_I(i,0);
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	if (_is_var_M(idx)) {
 		_get_M_idxs(idx);
 		_apply_usage_alg_eq_1(_d1);
@@ -769,70 +769,70 @@ void MOD_BDF_definition(double *x, double *d, double *a, double t, double *dx, i
 		if ((i >= 1 && i <= 4)) {
 			_eval_dep_M(i,1) = (_bmd(i)*_D(i,0)+_bmv(i)*_V(i,0))*(1-_M(i,0))-_am(i)*_M(i,0);
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	if (_is_var_F(idx)) {
 		_get_F_idxs(idx);
 		_apply_usage_eq_5(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_eval_dep_F(i,1) = _bf(i)*_M(i,0)+_cf(i)*_I(i,0)-_bfh(i)*_H(i,0)*_F(i,0)-_af(i)*_F(i,0);
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	if (_is_var_R(idx)) {
 		_get_R_idxs(idx);
 		_apply_usage_eq_6(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_eval_dep_R(i,1) = _bhf(i)*_F(i,0)*_H(i,0)-_ar(i)*_R(i,0);
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	if (_is_var_E(idx)) {
 		_get_E_idxs(idx);
 		_apply_usage_eq_7(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_eval_dep_E(i,1) = _bem(i)*_M(i,0)*_E(i,0)-_bei(i)*_I(i,0)*_E(i,0)+_ae(i)*(1-_E(i,0));
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	if (_is_var_P(idx)) {
 		_get_P_idxs(idx);
 		_apply_usage_eq_8(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_eval_dep_P(i,1) = _bpm(i)*_M(i,0)*_P(i,0)+_ap(i)*(1-_P(i,0));
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	if (_is_var_A(idx)) {
 		_get_A_idxs(idx);
 		_apply_usage_eq_9(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_eval_dep_A(i,1) = _ba(i)*_P(i,0)-_gav(i)*_S(i,0)*_A(i,0)*_V(i,0)-_aa(i)*_A(i,0);
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	if (_is_var_S(idx)) {
 		_get_S_idxs(idx);
 		_apply_usage_eq_10(_d1);
 		if ((i >= 1 && i <= 4)) {
 			_eval_dep_S(i,1) = _r(i)*_P(i,0)*(1-_S(i,0));
 	
+			continue;
 	
 		}
-		continue;
-	}
+		}
 	}
 }
 

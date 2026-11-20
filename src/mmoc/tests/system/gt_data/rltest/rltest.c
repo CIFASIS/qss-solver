@@ -61,9 +61,9 @@ void MOD_output(int idx, double *x, double *d, double *a, double t, double *out)
 		_apply_usage_out_exp_1(_d1);
 		if ((_d1 >= 1 && _d1 <= 10)) {
 			_out = _x1(_d1);
+			return;
 		}
-		return;
-	}
+		}
 }
 
 void MOD_jacobian(double *x, double *d, double *a, double t, SD_jacMatrices dvdx, double *jac)
