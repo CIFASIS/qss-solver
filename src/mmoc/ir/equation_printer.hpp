@@ -46,6 +46,7 @@ class EquationPrinter {
   virtual std::string equationId() const;
   FUNCTION_PRINTER::ReturnStatementType returnStm() const;
   std::multimap<std::string, int> usedVariables() const;
+  int type() const { return _type; };
 
   protected:
   void setup(Equation eq);

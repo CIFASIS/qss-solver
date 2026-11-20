@@ -228,11 +228,21 @@ string DerivativePrinter::print() const
     arguments = _lhs.dimVariables();
   }
   tabs += TAB;
+  // Equations defined over a slice of the variable, e.g. der(u[1,j]), must only be evaluated
+  // for the elements of that slice.
+  vector<string> index_guards;
+  const bool DERIVATIVE = type() == EQUATION::QSSDerivative || type() == EQUATION::QSSBDFDerivative;
+  if (_range && DERIVATIVE) {
+    index_guards = printer.constantIndexGuards(Index(_lhs));
+  }
   buffer << printer.beginExpression(identifier(), _range);
   buffer << algCode();
-  buffer << printer.beginDimGuards(equationId(), arguments, _range, usedVariables());
+  buffer << printer.beginDimGuards(equationId(), arguments, _range, usedVariables(), index_guards);
   buffer << tabs << prefix() << lhs() << " = " << _rhs << ";" << endl;
   buffer << generateDerivatives(tabs) << endl;
+  if (_range) {
+    buffer << tabs << printer.returnStatement(_range, returnStm()) << endl;
+  }
   buffer << endl << TAB << printer.endDimGuards(_range);
   buffer << TAB << printer.endExpression(_range, returnStm());
   return buffer.str();
@@ -280,6 +290,9 @@ string OutputPrinter::print() const
   buffer << fp.beginDimGuards(equationId(), arguments, _range, usedVariables());
   buffer << algCode();
   buffer << block << prefix() << lhs() << " = " << _rhs << ";";
+  if (_range) {
+    buffer << endl << block << fp.returnStatement(_range, FUNCTION_PRINTER::Return);
+  }
   buffer << endl << TAB << fp.endDimGuards(_range);
   buffer << TAB << fp.endExpression(_range);
   return buffer.str();
@@ -359,6 +372,7 @@ string DependencyPrinter::print() const
   string arguments;
   // Case 1 -> N
   const bool PRINT_EQ_RANGE = _usage.isConstant() && _range;
+  vector<string> index_guards;
   if (_range) {
     tabs = _range->block();
     if (PRINT_EQ_RANGE) {
@@ -367,10 +381,13 @@ string DependencyPrinter::print() const
     } else {
       Index revert = _usage.revert().replace();
       arguments = revert.usageExp();
+      // The equation only depends on the elements of the used variable selected by the
+      // constant indexes in the usage, e.g. u[2,j] in der(u[1,j]) only for _d1 == 2.
+      index_guards = printer.constantIndexGuards(_usage);
     }
   }
   tabs += TAB;
-  buffer << printer.beginDimGuards(equationId(), arguments, _range, usedVariables());
+  buffer << printer.beginDimGuards(equationId(), arguments, _range, usedVariables(), index_guards);
   buffer << beginParallelMap(tabs);
   buffer << tabs << prefix() << lhs(FIRST_ORDER) << " = " << _rhs << ";" << endl;
   buffer << generateDerivatives(tabs, SECOND_ORDER) << endl;
